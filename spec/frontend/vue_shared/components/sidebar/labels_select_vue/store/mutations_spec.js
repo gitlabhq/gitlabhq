@@ -189,7 +189,7 @@ describe('LabelsSelect Mutations', () => {
       });
 
       labelGroupIds.forEach((l) => {
-        expect(state.labels[l.id - 1].touched).toBeFalsy();
+        expect(state.labels[l.id - 1].touched).toBeUndefined();
         expect(state.labels[l.id - 1].set).toBe(false);
       });
     });

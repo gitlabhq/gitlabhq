@@ -150,6 +150,18 @@ secret_detection:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
 ```
 
+### Ignoring Secrets
+
+You might want to add a fake secret to your code base. For instance, you can use a fake secret as an example in your documentation or test suite.
+
+In these cases, Secret Detection can ignore the fake secret and not report it as a vulnerability. To ignore a secret, add `gitleaks:allow` as a comment to the line that contains the secret.
+
+For example:
+
+```ruby
+ "A personal token for GitLab will look like glpat-JUST20LETTERSANDNUMB" #gitleaks:allow
+```
+
 ### Available CI/CD variables
 
 Secret Detection can be customized by defining available CI/CD variables:

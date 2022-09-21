@@ -138,7 +138,7 @@ describe('IssuableBody', () => {
 
         wrapper.vm.handleTaskListUpdateSuccess(updatedIssuable);
 
-        expect(wrapper.emitted('task-list-update-success')).toBeTruthy();
+        expect(wrapper.emitted('task-list-update-success')).toHaveLength(1);
         expect(wrapper.emitted('task-list-update-success')[0]).toEqual([updatedIssuable]);
       });
     });
@@ -147,7 +147,7 @@ describe('IssuableBody', () => {
       it('emits `task-list-update-failure` event on component', () => {
         wrapper.vm.handleTaskListUpdateFailure();
 
-        expect(wrapper.emitted('task-list-update-failure')).toBeTruthy();
+        expect(wrapper.emitted('task-list-update-failure')).toHaveLength(1);
       });
     });
   });
@@ -202,7 +202,7 @@ describe('IssuableBody', () => {
 
         issuableTitle.vm.$emit('edit-issuable');
 
-        expect(wrapper.emitted('edit-issuable')).toBeTruthy();
+        expect(wrapper.emitted('edit-issuable')).toHaveLength(1);
       });
 
       it.each(['keydown-title', 'keydown-description'])(
@@ -227,7 +227,7 @@ describe('IssuableBody', () => {
 
           issuableEditForm.vm.$emit(eventName, eventObj, issuableMeta);
 
-          expect(wrapper.emitted(eventName)).toBeTruthy();
+          expect(wrapper.emitted(eventName)).toHaveLength(1);
           expect(wrapper.emitted(eventName)[0]).toMatchObject([eventObj, issuableMeta]);
         },
       );

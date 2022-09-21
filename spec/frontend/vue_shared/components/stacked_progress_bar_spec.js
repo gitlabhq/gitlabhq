@@ -47,7 +47,7 @@ describe('StackedProgressBarComponent', () => {
 
   describe('template', () => {
     it('renders container element', () => {
-      expect(vm.$el.classList.contains('stacked-progress-bar')).toBeTruthy();
+      expect(vm.$el.classList.contains('stacked-progress-bar')).toBe(true);
     });
 
     it('renders empty state when count is unavailable', () => {

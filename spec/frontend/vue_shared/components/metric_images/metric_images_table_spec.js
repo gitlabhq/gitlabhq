@@ -139,8 +139,7 @@ describe('Metrics upload item', () => {
         closeModal();
 
         await waitForPromises();
-
-        expect(findModal().attributes('visible')).toBeFalsy();
+        expect(findModal().attributes('visible')).toBeUndefined();
       });
 
       it('should delete the image when selected', async () => {
@@ -189,8 +188,7 @@ describe('Metrics upload item', () => {
         closeEditModal();
 
         await waitForPromises();
-
-        expect(findEditModal().attributes('visible')).toBeFalsy();
+        expect(findEditModal().attributes('visible')).toBeUndefined();
       });
 
       it('should delete the image when selected', async () => {

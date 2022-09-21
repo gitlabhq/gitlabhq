@@ -12,7 +12,7 @@ You can read more about [personal access tokens](../user/profile/personal_access
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227264) in GitLab 13.3.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/270200) from GitLab Ultimate to GitLab Free in 13.6.
-> - `created_after`, `created_before`, `last_used_after`, `last_used_before`, `revoked`, `search` and `state` filters were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362248) in GitLab 15.4.
+> - `created_after`, `created_before`, `last_used_after`, `last_used_before`, `revoked`, `search` and `state` filters were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362248) in GitLab 15.5.
 
 Get all personal access tokens the authenticated user has access to. By default, returns an unfiltered list of:
 
@@ -22,12 +22,12 @@ Get all personal access tokens the authenticated user has access to. By default,
 Administrators:
 
 - Can use the `user_id` parameter to filter by a user.
-- Can use other filters on all personal access tokens (GitLab 15.3 and later).
+- Can use other filters on all personal access tokens (GitLab 15.5 and later).
 
 Non-administrators:
 
 - Cannot use the `user_id` parameter to filter on any user except themselves, otherwise they receive a `401 Unauthorized` response.
-- Can only filter on their own personal access tokens (GitLab 15.3 and later).
+- Can only filter on their own personal access tokens (GitLab 15.5 and later).
 
 ```plaintext
 GET /personal_access_tokens

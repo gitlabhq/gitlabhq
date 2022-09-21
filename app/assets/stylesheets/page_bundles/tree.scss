@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 .project-last-commit {
   min-height: 4.75rem;
 }
@@ -100,11 +102,11 @@
     margin-bottom: 0;
 
     tr {
-      border-bottom: 1px solid $white-normal;
-      border-top: 1px solid $white-normal;
+      border-bottom: 1px solid var(--gray-50, $gray-50);
+      border-top: 1px solid var(--gray-50, $gray-50);
 
       &:last-of-type {
-        border-bottom-color: $white;
+        border-bottom-color: transparent;
       }
 
       td,
@@ -117,24 +119,24 @@
       }
 
       td {
-        border-color: $border-color;
+        border-color: var(--border-color, $border-color);
       }
 
       &:hover:not(.tree-truncated-warning) {
         td {
-          background-color: $blue-50;
+          background-color: var(--blue-50, $blue-50);
           background-clip: padding-box;
-          border-top: 1px solid $blue-200;
-          border-bottom: 1px solid $blue-200;
+          border-top: 1px solid var(--blue-200, $blue-200);
+          border-bottom: 1px solid var(--blue-200, $blue-200);
           cursor: pointer;
         }
       }
 
       &.selected {
         td {
-          background: $white-normal;
-          border-top: 1px solid $border-white-normal;
-          border-bottom: 1px solid $border-white-normal;
+          background: var(--gray-50, $gray-50);
+          border-top: 1px solid var(--border-color, $border-color);
+          border-bottom: 1px solid var(--border-color, $border-color);
         }
       }
     }
@@ -156,7 +158,7 @@
 
       i,
       a {
-        color: $gl-text-color;
+        color: var(--gl-text-color, $gl-text-color);
       }
 
       img {
@@ -175,22 +177,18 @@
   }
 
   .tree-truncated-warning {
-    color: $orange-600;
-    background-color: $orange-50;
+    color: var(--orange-600, $orange-600);
+    background-color: var(--orange-50, $orange-50);
   }
 
   .tree-time-ago {
     min-width: 135px;
-    color: $gl-text-color-secondary;
   }
 
   .tree-commit {
     max-width: 320px;
-    color: $gl-text-color-secondary;
 
     .tree-commit-link {
-      color: $gl-text-color-secondary;
-
       &:hover {
         text-decoration: underline;
       }
@@ -206,41 +204,4 @@
 
 .blob-content-holder {
   margin-top: $gl-padding;
-}
-
-.blob-upload-dropzone-previews {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  border: 2px;
-  border-style: dashed;
-  border-color: $border-color;
-  min-height: 200px;
-}
-
-.repo-charts {
-  .sub-header {
-    margin: 20px 0;
-  }
-
-  .sub-header-block.border-top {
-    margin-top: 20px;
-    padding: 0;
-    border-top: 1px solid $white-dark;
-    border-bottom: 0;
-  }
-
-  .commit-stats li {
-    font-size: 16px;
-  }
-
-  .tree-ref-header {
-    margin-bottom: 20px;
-
-    h4 {
-      margin: 0;
-      line-height: 36px;
-    }
-  }
 }

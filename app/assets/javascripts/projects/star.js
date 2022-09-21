@@ -7,7 +7,7 @@ export default class Star {
   constructor(containerSelector = '.project-home-panel') {
     const container = document.querySelector(containerSelector);
     const starToggle = container.querySelector('.toggle-star');
-    starToggle.addEventListener('click', function toggleStarClickCallback() {
+    starToggle?.addEventListener('click', function toggleStarClickCallback() {
       const starSpan = starToggle.querySelector('span');
       const starIcon = starToggle.querySelector('svg');
       const iconClasses = Array.from(starIcon.classList.values());

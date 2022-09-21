@@ -216,7 +216,7 @@ include the child pipeline configuration.
 For an overview, see [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).
 
 NOTE:
-The artifact containing the generated YAML file must not be larger than 5MB.
+The artifact containing the generated YAML file must not be [larger than 5MB](https://gitlab.com/gitlab-org/gitlab/-/issues/249140).
 
 ### Trigger a parent-child pipeline
 
