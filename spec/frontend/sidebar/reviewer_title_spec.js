@@ -47,7 +47,7 @@ describe('ReviewerTitle component', () => {
       editable: false,
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
   });
 
   it('renders spinner when loading', () => {
@@ -57,7 +57,7 @@ describe('ReviewerTitle component', () => {
       editable: false,
     });
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('does not render edit link when not editable', () => {

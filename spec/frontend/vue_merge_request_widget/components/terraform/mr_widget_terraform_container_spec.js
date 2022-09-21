@@ -53,7 +53,7 @@ describe('MrWidgetTerraformConainer', () => {
 
     it('diplays loading skeleton', () => {
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
-      expect(wrapper.find(MrWidgetExpanableSection).exists()).toBe(false);
+      expect(wrapper.findComponent(MrWidgetExpanableSection).exists()).toBe(false);
     });
   });
 
@@ -65,7 +65,7 @@ describe('MrWidgetTerraformConainer', () => {
 
     it('displays terraform content', () => {
       expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(false);
-      expect(wrapper.find(MrWidgetExpanableSection).exists()).toBe(true);
+      expect(wrapper.findComponent(MrWidgetExpanableSection).exists()).toBe(true);
       expect(findPlans()).toEqual(Object.values(plans));
     });
 

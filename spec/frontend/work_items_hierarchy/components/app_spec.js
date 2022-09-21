@@ -32,7 +32,7 @@ describe('WorkItemsHierarchy App', () => {
     it('shows when the banner is visible', () => {
       createComponent({}, { bannerVisible: true });
 
-      expect(wrapper.find(GlBanner).exists()).toBe(true);
+      expect(wrapper.findComponent(GlBanner).exists()).toBe(true);
     });
 
     it('hide when close is called', async () => {
@@ -42,7 +42,7 @@ describe('WorkItemsHierarchy App', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlBanner).exists()).toBe(false);
+      expect(wrapper.findComponent(GlBanner).exists()).toBe(false);
     });
   });
 

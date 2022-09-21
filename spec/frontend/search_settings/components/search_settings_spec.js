@@ -46,8 +46,8 @@ describe('search_settings/components/search_settings.vue', () => {
   };
 
   const findMatchSiblingElement = () => document.querySelector(`[data-testid="sibling"]`);
-  const findSearchBox = () => wrapper.find(GlSearchBoxByType);
-  const findEmptyState = () => wrapper.find(GlEmptyState);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findHideWhenEmpty = () => document.querySelector(`.${HIDE_WHEN_EMPTY_CLASS}`);
   const search = (term) => {
     findSearchBox().vm.$emit('input', term);

@@ -114,7 +114,7 @@ class RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(user)
     Gitlab::AppLogger.info(user_created_message(confirmed: user.confirmed?))
 
-    users_sign_up_welcome_path(request.query_parameters.slice(:glm_source, :glm_content))
+    users_sign_up_welcome_path
   end
 
   def after_inactive_sign_up_path_for(resource)

@@ -10,8 +10,8 @@ describe('WorkItemLinksMenu', () => {
     wrapper = shallowMountExtended(WorkItemLinksMenu);
   };
 
-  const findDropdown = () => wrapper.find(GlDropdown);
-  const findRemoveDropdownItem = () => wrapper.find(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findRemoveDropdownItem = () => wrapper.findComponent(GlDropdownItem);
 
   beforeEach(async () => {
     createComponent();

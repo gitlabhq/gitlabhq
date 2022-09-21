@@ -148,17 +148,7 @@ module Types
       end
 
       def stage
-        ::Gitlab::Graphql::Lazy.with_value(pipeline) do |pl|
-          BatchLoader::GraphQL.for([pl, object.stage]).batch do |ids, loader|
-            by_pipeline = ids
-              .group_by(&:first)
-              .transform_values { |grp| grp.map(&:second) }
-
-            by_pipeline.each do |p, names|
-              p.stages.by_name(names).each { |s| loader.call([p, s.name], s) }
-            end
-          end
-        end
+        ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Stage, object.stage_id).find
       end
 
       # This class is a secret union!

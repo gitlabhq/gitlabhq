@@ -59,7 +59,7 @@ describe('SidebarSeverity', () => {
   const findCriticalSeverityDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
-  const findCollapsedSeverity = () => wrapper.find({ ref: 'severity' });
+  const findCollapsedSeverity = () => wrapper.findComponent({ ref: 'severity' });
 
   describe('Severity widget', () => {
     it('renders severity dropdown and token', () => {

@@ -887,7 +887,10 @@ describe('MrWidgetOptions', () => {
       await nextTick();
 
       expect(
-        wrapper.find('[data-testid="widget-extension-top-level"]').find(GlDropdown).exists(),
+        wrapper
+          .find('[data-testid="widget-extension-top-level"]')
+          .findComponent(GlDropdown)
+          .exists(),
       ).toBe(false);
 
       await nextTick();
@@ -897,19 +900,19 @@ describe('MrWidgetOptions', () => {
       expect(collapsedSection.text()).toContain('Hello world');
 
       // Renders icon in the row
-      expect(collapsedSection.find(GlIcon).exists()).toBe(true);
-      expect(collapsedSection.find(GlIcon).props('name')).toBe('status-failed');
+      expect(collapsedSection.findComponent(GlIcon).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlIcon).props('name')).toBe('status-failed');
 
       // Renders badge in the row
-      expect(collapsedSection.find(GlBadge).exists()).toBe(true);
-      expect(collapsedSection.find(GlBadge).text()).toBe('Closed');
+      expect(collapsedSection.findComponent(GlBadge).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlBadge).text()).toBe('Closed');
 
       // Renders a link in the row
-      expect(collapsedSection.find(GlLink).exists()).toBe(true);
-      expect(collapsedSection.find(GlLink).text()).toBe('GitLab.com');
+      expect(collapsedSection.findComponent(GlLink).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlLink).text()).toBe('GitLab.com');
 
-      expect(collapsedSection.find(GlButton).exists()).toBe(true);
-      expect(collapsedSection.find(GlButton).text()).toBe('Full report');
+      expect(collapsedSection.findComponent(GlButton).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlButton).text()).toBe('Full report');
     });
 
     it('extension polling is not called if enablePolling flag is not passed', () => {

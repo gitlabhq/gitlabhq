@@ -44,31 +44,15 @@ module Gitlab
           attr_reader :json_data, :report, :validate
 
           def valid?
-            # We want validation to happen regardless of VALIDATE_SCHEMA
-            # CI variable.
-            #
-            # Previously it controlled BOTH validation and enforcement of
-            # schema validation result.
-            #
-            # After 15.0 we will enforce schema validation by default
-            # See: https://gitlab.com/groups/gitlab-org/-/epics/6968
+            return true unless validate
+
+            schema_validation_passed = schema_validator.valid?
+
+            schema_validator.errors.each { |error| report.add_error('Schema', error) }
             schema_validator.deprecation_warnings.each { |deprecation_warning| report.add_warning('Schema', deprecation_warning) }
+            schema_validator.warnings.each { |warning| report.add_warning('Schema', warning) }
 
-            if validate
-              schema_validation_passed = schema_validator.valid?
-
-              # Validation warnings are errors
-              schema_validator.errors.each { |error| report.add_error('Schema', error) }
-              schema_validator.warnings.each { |warning| report.add_error('Schema', warning) }
-
-              schema_validation_passed
-            else
-              # Validation warnings are warnings
-              schema_validator.errors.each { |error| report.add_warning('Schema', error) }
-              schema_validator.warnings.each { |warning| report.add_warning('Schema', warning) }
-
-              true
-            end
+            schema_validation_passed
           end
 
           def schema_validator

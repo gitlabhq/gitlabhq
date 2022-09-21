@@ -213,6 +213,16 @@ To view epics in a group:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics**.
 
+### Who can view an epic
+
+Whether you can view an epic depends on the [group visibility level](../../public_access.md) and
+the epic's [confidentiality status](#make-an-epic-confidential):
+
+- Public group and a non-confidential epic: You don't have to be a member of the group.
+- Private group and non-confidential epic: You must have at least the Guest role for the group.
+- Confidential epic (regardless of group visibility): You must have at least the Reporter
+  role for the group.
+
 ### Cached epic count
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299540) in GitLab 13.11 [with a flag](../../../administration/feature_flags.md) named `cached_sidebar_open_epics_count`. Enabled by default.
@@ -329,8 +339,8 @@ automatically added to the epic.
 
 #### Add an existing issue to an epic
 
-Existing issues that belong to a project in an epic's group, or any of the epic's
-subgroups, are eligible to be added to the epic. Newly added issues appear at the top of the list of
+You can add existing issues to an epic, including issues in a project in an epic's group, or any of
+the epic's subgroups. Newly added issues appear at the top of the list of
 issues in the **Epics and Issues** tab.
 
 An epic contains a list of issues and an issue can be associated with at most one epic.
@@ -339,7 +349,7 @@ current parent.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the epic's group.
+- You must be able to [view the epic](#who-can-view-an-epic).
 - You must be able to [edit the issue](../../project/issues/managing_issues.md#edit-an-issue).
 
 To add an existing issue to an epic:
@@ -356,14 +366,13 @@ To add an existing issue to an epic:
 
 #### Create an issue from an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5419) in GitLab 12.7.
-
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the epic's group.
+- You must be able to [view the epic](#who-can-view-an-epic).
+- You must have at least the Reporter role for the project.
 
 To create an issue from an epic:
 

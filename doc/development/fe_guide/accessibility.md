@@ -68,9 +68,9 @@ We should ensure that:
 
 To provide markup with accessible names, ensure every:
 
-- `input` has an associated `label`.
-- `button` and `a` have child text, or `aria-label` when child text isn't present, such as for an icon button with no content.
-- `img` has an `alt` attribute.
+- input has an [associated `label`](#examples-of-providing-accessible-names).
+- button and link have [visible text](#buttons-and-links-with-descriptive-accessible-names), or `aria-label` when there is no visible text, such as for an icon button with no content.
+- image has an [`alt` attribute](#images-with-accessible-names).
 - `fieldset` has `legend` as its first child.
 - `figure` has `figcaption` as its first child.
 - `table` has `caption` as its first child.
@@ -100,12 +100,12 @@ Text input examples:
 ```html
 <!-- Input with label -->
 <gl-form-group :label="__('Issue title')" label-for="issue-title">
-  <gl-form-input id="issue-title" v-model="title" name="title" />
+  <gl-form-input id="issue-title" v-model="title" />
 </gl-form-group>
 
 <!-- Input with hidden label -->
-<gl-form-group :label="__('Issue title')" label-for="issue-title" :label-sr-only="true">
-  <gl-form-input id="issue-title" v-model="title" name="title" />
+<gl-form-group :label="__('Issue title')" label-for="issue-title" label-sr-only>
+  <gl-form-input id="issue-title" v-model="title" />
 </gl-form-group>
 ```
 
@@ -114,12 +114,12 @@ Textarea examples:
 ```html
 <!-- Textarea with label -->
 <gl-form-group :label="__('Issue description')" label-for="issue-description">
-  <gl-form-textarea id="issue-description" v-model="description" name="description" />
+  <gl-form-textarea id="issue-description" v-model="description" />
 </gl-form-group>
 
 <!-- Textarea with hidden label -->
-<gl-form-group :label="__('Issue description')" label-for="issue-description" :label-sr-only="true">
-  <gl-form-textarea id="issue-description" v-model="description" name="description" />
+<gl-form-group :label="__('Issue description')" label-for="issue-description" label-sr-only>
+  <gl-form-textarea id="issue-description" v-model="description" />
 </gl-form-group>
 ```
 
@@ -128,11 +128,11 @@ Alternatively, you can use a plain `label` element:
 ```html
 <!-- Input with label using `label` -->
 <label for="issue-title">{{ __('Issue title') }}</label>
-<gl-form-input id="issue-title" v-model="title" name="title" />
+<gl-form-input id="issue-title" v-model="title" />
 
 <!-- Input with hidden label using `label` -->
 <label for="issue-title" class="gl-sr-only">{{ __('Issue title') }}</label>
-<gl-form-input id="issue-title" v-model="title" name="title" />
+<gl-form-input id="issue-title" v-model="title" />
 ```
 
 #### Select inputs with accessible names
@@ -142,12 +142,12 @@ Select input examples:
 ```html
 <!-- Select input with label -->
 <gl-form-group :label="__('Issue status')" label-for="issue-status">
-  <gl-form-select id="issue-status" v-model="status" name="status" :options="options" />
+  <gl-form-select id="issue-status" v-model="status" :options="options" />
 </gl-form-group>
 
 <!-- Select input with hidden label -->
-<gl-form-group :label="__('Issue status')" label-for="issue-status" :label-sr-only="true">
-  <gl-form-select id="issue-status" v-model="status" name="status" :options="options" />
+<gl-form-group :label="__('Issue status')" label-for="issue-status" label-sr-only>
+  <gl-form-select id="issue-status" v-model="status" :options="options" />
 </gl-form-group>
 ```
 
@@ -157,12 +157,12 @@ Single checkbox:
 
 ```html
 <!-- Single checkbox with label -->
-<gl-form-checkbox v-model="status" name="status" value="task-complete">
+<gl-form-checkbox v-model="status" value="task-complete">
   {{ __('Task complete') }}
 </gl-form-checkbox>
 
 <!-- Single checkbox with hidden label -->
-<gl-form-checkbox v-model="status" name="status" value="task-complete">
+<gl-form-checkbox v-model="status" value="task-complete">
   <span class="gl-sr-only">{{ __('Task complete') }}</span>
 </gl-form-checkbox>
 ```
@@ -172,24 +172,24 @@ Multiple checkboxes:
 ```html
 <!-- Multiple labeled checkboxes grouped within a fieldset -->
 <gl-form-group :label="__('Task list')">
-  <gl-form-checkbox name="task-list" value="task-1">{{ __('Task 1') }}</gl-form-checkbox>
-  <gl-form-checkbox name="task-list" value="task-2">{{ __('Task 2') }}</gl-form-checkbox>
+  <gl-form-checkbox value="task-1">{{ __('Task 1') }}</gl-form-checkbox>
+  <gl-form-checkbox value="task-2">{{ __('Task 2') }}</gl-form-checkbox>
 </gl-form-group>
 
 <!-- Or -->
 <gl-form-group :label="__('Task list')">
-  <gl-form-checkbox-group v-model="selected" :options="options" name="task-list" />
+  <gl-form-checkbox-group v-model="selected" :options="options" />
 </gl-form-group>
 
 <!-- Multiple labeled checkboxes grouped within a fieldset with hidden legend -->
-<gl-form-group :label="__('Task list')" :label-sr-only="true">
-  <gl-form-checkbox name="task-list" value="task-1">{{ __('Task 1') }}</gl-form-checkbox>
-  <gl-form-checkbox name="task-list" value="task-2">{{ __('Task 2') }}</gl-form-checkbox>
+<gl-form-group :label="__('Task list')" label-sr-only>
+  <gl-form-checkbox value="task-1">{{ __('Task 1') }}</gl-form-checkbox>
+  <gl-form-checkbox value="task-2">{{ __('Task 2') }}</gl-form-checkbox>
 </gl-form-group>
 
 <!-- Or -->
-<gl-form-group :label="__('Task list')" :label-sr-only="true">
-  <gl-form-checkbox-group v-model="selected" :options="options" name="task-list" />
+<gl-form-group :label="__('Task list')" label-sr-only>
+  <gl-form-checkbox-group v-model="selected" :options="options" />
 </gl-form-group>
 ```
 
@@ -199,12 +199,12 @@ Single radio input:
 
 ```html
 <!-- Single radio with a label -->
-<gl-form-radio v-model="status" name="status" value="opened">
+<gl-form-radio v-model="status" value="opened">
   {{ __('Opened') }}
 </gl-form-radio>
 
 <!-- Single radio with a hidden label -->
-<gl-form-radio v-model="status" name="status" value="opened">
+<gl-form-radio v-model="status" value="opened">
   <span class="gl-sr-only">{{ __('Opened') }}</span>
 </gl-form-radio>
 ```
@@ -214,24 +214,24 @@ Multiple radio inputs:
 ```html
 <!-- Multiple labeled radio inputs grouped within a fieldset -->
 <gl-form-group :label="__('Issue status')">
-  <gl-form-radio name="status" value="opened">{{ __('Opened') }}</gl-form-radio>
-  <gl-form-radio name="status" value="closed">{{ __('Closed') }}</gl-form-radio>
+  <gl-form-radio value="opened">{{ __('Opened') }}</gl-form-radio>
+  <gl-form-radio value="closed">{{ __('Closed') }}</gl-form-radio>
 </gl-form-group>
 
 <!-- Or -->
 <gl-form-group :label="__('Issue status')">
-  <gl-form-radio-group v-model="selected" :options="options" name="status" />
+  <gl-form-radio-group v-model="selected" :options="options" />
 </gl-form-group>
 
 <!-- Multiple labeled radio inputs grouped within a fieldset with hidden legend -->
-<gl-form-group :label="__('Issue status')" :label-sr-only="true">
-  <gl-form-radio name="status" value="opened">{{ __('Opened') }}</gl-form-radio>
-  <gl-form-radio name="status" value="closed">{{ __('Closed') }}</gl-form-radio>
+<gl-form-group :label="__('Issue status')" label-sr-only>
+  <gl-form-radio value="opened">{{ __('Opened') }}</gl-form-radio>
+  <gl-form-radio value="closed">{{ __('Closed') }}</gl-form-radio>
 </gl-form-group>
 
 <!-- Or -->
-<gl-form-group :label="__('Issue status')" :label-sr-only="true">
-  <gl-form-radio-group v-model="selected" :options="options" name="status" />
+<gl-form-group :label="__('Issue status')" label-sr-only>
+  <gl-form-radio-group v-model="selected" :options="options" />
 </gl-form-group>
 ```
 
@@ -242,11 +242,11 @@ File input examples:
 ```html
 <!-- File input with a label -->
 <label for="attach-file">{{ __('Attach a file') }}</label>
-<input id="attach-file" type="file" name="attach-file" />
+<input id="attach-file" type="file" />
 
 <!-- File input with a hidden label -->
 <label for="attach-file" class="gl-sr-only">{{ __('Attach a file') }}</label>
-<input id="attach-file" type="file" name="attach-file" />
+<input id="attach-file" type="file" />
 ```
 
 #### GlToggle components with an accessible names
@@ -337,7 +337,7 @@ element is interactive you must ensure:
 - It can receive keyboard focus.
 - It has a visible focus state.
 
-Use semantic HTML, such as `a` and `button`, which provides these behaviours by default.
+Use semantic HTML, such as `a` (`GlLink`) and `button` (`GlButton`), which provides these behaviours by default.
 
 Keep in mind that:
 
@@ -351,7 +351,7 @@ See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility-aud
 
 Prefer **no** `tabindex` to using `tabindex`, since:
 
-- Using semantic HTML such as `button` implicitly provides `tabindex="0"`.
+- Using semantic HTML such as `button` (`GlButton`) implicitly provides `tabindex="0"`.
 - Tabbing order should match the visual reading order and positive `tabindex`s interfere with this.
 
 ### Avoid using `tabindex="0"` to make an element interactive
@@ -359,8 +359,8 @@ Prefer **no** `tabindex` to using `tabindex`, since:
 Use interactive elements instead of `div` and `span` tags.
 For example:
 
-- If the element should be clickable, use a `button`.
-- If the element should be text editable, use an `input` or `textarea`.
+- If the element should be clickable, use a `button` (`GlButton`).
+- If the element should be text editable, use an [`input` or `textarea`](#text-inputs-with-accessible-names).
 
 Once the markup is semantically complete, use CSS to update it to its desired visual state.
 

@@ -39,7 +39,7 @@ describe('Repository parent row component', () => {
   `('renders link in $path to $to', ({ path, to }) => {
     factory(path);
 
-    expect(vm.find(RouterLinkStub).props().to).toEqual({
+    expect(vm.findComponent(RouterLinkStub).props().to).toEqual({
       path: to,
     });
   });
@@ -69,6 +69,6 @@ describe('Repository parent row component', () => {
   it('renders loading icon when loading parent', () => {
     factory('app/assets', 'app');
 
-    expect(vm.find(GlLoadingIcon).exists()).toBe(true);
+    expect(vm.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 });

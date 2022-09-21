@@ -1,7 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://gitlab.com/.gitlab-ci.yml",
-  "title": "Gitlab CI configuration",
   "markdownDescription": "Gitlab has a built-in solution for doing CI called Gitlab CI. It is configured by supplying a file called `.gitlab-ci.yml`, which will list all the jobs that are going to run for the project. A full list of all options can be found [here](https://docs.gitlab.com/ee/ci/yaml). [Learn More](https://docs.gitlab.com/ee/ci/index.html).",
   "type": "object",
   "properties": {
@@ -408,6 +407,13 @@
             }
           },
           "required": ["name"]
+        },
+        {
+          "type": "array",
+          "minLength": 1,
+          "items": {
+            "type": "string"
+          }
         }
       ],
       "markdownDescription": "Specifies the docker image to use for the job or globally for all jobs. Job configuration takes precedence over global setting. Requires a certain kind of Gitlab runner executor. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#image)."
@@ -1047,10 +1053,21 @@
           ]
         },
         "stage": {
-          "type": "string",
           "description": "Define what stage the job will run in.",
-          "minLength": 1
-        },
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "array",
+              "minLength": 1,
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+          },
         "only": {
           "$ref": "#/definitions/filter",
           "description": "Job will run *only* when these filtering options match."
@@ -1583,9 +1600,22 @@
     },
     "tags": {
       "type": "array",
+      "minLength": 1,
       "markdownDescription": "Used to select runners from the list of available runners. A runner must have all tags listed here to run the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#tags).",
       "items": {
-        "type": "string"
+        "anyOf": [
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "array",
+            "minLength": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        ]
       }
     }
   }

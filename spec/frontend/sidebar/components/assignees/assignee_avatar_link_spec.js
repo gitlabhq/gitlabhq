@@ -46,7 +46,7 @@ describe('AssigneeAvatarLink component', () => {
   it('renders assignee avatar', () => {
     createComponent();
 
-    expect(wrapper.find(AssigneeAvatar).props()).toEqual(
+    expect(wrapper.findComponent(AssigneeAvatar).props()).toEqual(
       expect.objectContaining({
         issuableType: TEST_ISSUABLE_TYPE,
         user: userDataMock(),

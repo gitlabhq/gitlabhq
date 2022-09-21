@@ -36,7 +36,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       cluster_agent cluster_agents agent_configurations
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
-      timelog_categories fork_targets branch_rules ci_config_variables
+      timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

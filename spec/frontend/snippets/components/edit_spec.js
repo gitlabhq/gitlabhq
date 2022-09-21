@@ -206,7 +206,7 @@ describe('Snippet Edit app', () => {
     });
 
     it('should hide loader', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     });
   });
 
@@ -237,7 +237,7 @@ describe('Snippet Edit app', () => {
           !titleHasErrors,
         );
 
-        expect(wrapper.find(SnippetBlobActionsEdit).props('isValid')).toEqual(
+        expect(wrapper.findComponent(SnippetBlobActionsEdit).props('isValid')).toEqual(
           !blobActionsHasErrors,
         );
       },
@@ -273,7 +273,7 @@ describe('Snippet Edit app', () => {
         selectedLevel: visibility,
       });
 
-      expect(wrapper.find(SnippetVisibilityEdit).props('value')).toBe(visibility);
+      expect(wrapper.findComponent(SnippetVisibilityEdit).props('value')).toBe(visibility);
     });
 
     describe('form submission handling', () => {

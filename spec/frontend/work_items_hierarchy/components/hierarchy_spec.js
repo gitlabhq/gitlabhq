@@ -57,7 +57,7 @@ describe('WorkItemsHierarchy Hierarchy', () => {
     });
 
     it('does not render badges', () => {
-      expect(wrapper.find(GlBadge).exists()).toBe(false);
+      expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
     });
   });
 

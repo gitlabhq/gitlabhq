@@ -28,7 +28,7 @@ describe('Sidebar date Widget', () => {
 
   const findEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findPopoverIcon = () => wrapper.find('[data-testid="inherit-date-popover"]');
-  const findDatePicker = () => wrapper.find(GlDatepicker);
+  const findDatePicker = () => wrapper.findComponent(GlDatepicker);
 
   const createComponent = ({
     dueDateQueryHandler = jest.fn().mockResolvedValue(issuableDueDateResponse()),
@@ -149,14 +149,14 @@ describe('Sidebar date Widget', () => {
       createComponent({ canInherit });
       await waitForPromises();
 
-      expect(wrapper.find(component).exists()).toBe(expected);
+      expect(wrapper.findComponent(component).exists()).toBe(expected);
     },
   );
 
   it('does not render SidebarInheritDate when canInherit is true and date is loading', async () => {
     createComponent({ canInherit: true });
 
-    expect(wrapper.find(SidebarInheritDate).exists()).toBe(false);
+    expect(wrapper.findComponent(SidebarInheritDate).exists()).toBe(false);
   });
 
   it('displays a flash message when query is rejected', async () => {

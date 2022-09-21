@@ -60,7 +60,7 @@ describe('Merge Requests Artifacts list app', () => {
     });
 
     it('renders a loading icon', () => {
-      const loadingIcon = wrapper.find(GlLoadingIcon);
+      const loadingIcon = wrapper.findComponent(GlLoadingIcon);
       expect(loadingIcon.exists()).toBe(true);
     });
 

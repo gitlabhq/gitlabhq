@@ -21,7 +21,7 @@ describe('SeverityToken', () => {
     }
   });
 
-  const findIcon = () => wrapper.find(GlIcon);
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
   it('renders severity token for each severity type', () => {
     Object.values(INCIDENT_SEVERITY).forEach((severity) => {

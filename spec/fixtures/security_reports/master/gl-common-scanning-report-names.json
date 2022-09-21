@@ -12,8 +12,29 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "location": {},
-      "identifiers": [],
+      "location": {
+        "file": "yarn/yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
+      "identifiers": [
+        {
+          "value": "2017-11429",
+          "type": "cwe",
+          "name": "CWE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cwename.cgi?name=CWE-2017-11429"
+        },
+        {
+          "value": "2017-11429",
+          "type": "cve",
+          "name": "CVE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
+        }
+      ],
       "links": [
         {
           "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-1020"
@@ -33,8 +54,29 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "location": {},
-      "identifiers": [],
+      "location": {
+        "file": "yarn/yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
+      "identifiers": [
+        {
+          "value": "2017-11429",
+          "type": "cwe",
+          "name": "CWE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cwename.cgi?name=CWE-2017-11429"
+        },
+        {
+          "value": "2017-11429",
+          "type": "cve",
+          "name": "CVE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
+        }
+      ],
       "links": [
         {
           "name": "CVE-1030",
@@ -161,8 +203,9 @@
       "version": "2.18.0"
     },
     "type": "dependency_scanning",
-    "start_time": "placeholder-value",
-    "end_time": "placeholder-value",
+    "start_time": "2022-08-10T21:37:00",
+    "end_time": "2022-08-10T21:38:00",
     "status": "success"
-  }
+  },
+  "version": "14.0.6"
 }

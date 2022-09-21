@@ -194,7 +194,7 @@
     },
     "type": "sast",
     "status": "success",
-    "start_time": "placeholder-value",
-    "end_time": "placeholder-value"
+    "start_time": "2022-08-10T21:37:00",
+    "end_time": "2022-08-10T21:38:00"
   }
 }

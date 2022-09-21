@@ -18,7 +18,7 @@ describe('Squash before merge component', () => {
     wrapper.destroy();
   });
 
-  const findCheckbox = () => wrapper.find(GlFormCheckbox);
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   describe('checkbox', () => {
     it('is unchecked if passed value prop is false', () => {

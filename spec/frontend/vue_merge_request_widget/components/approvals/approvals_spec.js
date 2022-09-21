@@ -49,7 +49,7 @@ describe('MRWidget approvals', () => {
     });
   };
 
-  const findAction = () => wrapper.find(GlButton);
+  const findAction = () => wrapper.findComponent(GlButton);
   const findActionData = () => {
     const action = findAction();
 
@@ -61,8 +61,8 @@ describe('MRWidget approvals', () => {
           text: action.text(),
         };
   };
-  const findSummary = () => wrapper.find(ApprovalsSummary);
-  const findOptionalSummary = () => wrapper.find(ApprovalsSummaryOptional);
+  const findSummary = () => wrapper.findComponent(ApprovalsSummary);
+  const findOptionalSummary = () => wrapper.findComponent(ApprovalsSummaryOptional);
   const findInvalidRules = () => wrapper.find('[data-testid="invalid-rules"]');
 
   beforeEach(() => {

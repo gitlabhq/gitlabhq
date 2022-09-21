@@ -825,7 +825,7 @@ RSpec.describe ProjectsHelper do
     end
 
     context 'gitaly is working appropriately' do
-      let(:license) { Licensee::License.new('mit') }
+      let(:license) { ::Gitlab::Git::DeclaredLicense.new(key: 'mit', name: 'MIT License') }
 
       before do
         expect(repository).to receive(:license).and_return(license)

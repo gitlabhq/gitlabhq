@@ -283,12 +283,10 @@ module Gitlab
         response.path.presence
       end
 
-      def license_short_name
+      def find_license
         request = Gitaly::FindLicenseRequest.new(repository: @gitaly_repo)
 
-        response = GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
-
-        response.license_short_name.presence
+        GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
       end
 
       def calculate_checksum

@@ -54,7 +54,7 @@ describe('App', () => {
     });
   };
 
-  const findInfiniteScroll = () => wrapper.find(GlInfiniteScroll);
+  const findInfiniteScroll = () => wrapper.findComponent(GlInfiniteScroll);
 
   const setup = async () => {
     document.body.dataset.page = 'test-page';
@@ -80,7 +80,7 @@ describe('App', () => {
       setup();
     });
 
-    const getDrawer = () => wrapper.find(GlDrawer);
+    const getDrawer = () => wrapper.findComponent(GlDrawer);
     const getBackdrop = () => wrapper.find('.whats-new-modal-backdrop');
 
     it('contains a drawer', () => {
@@ -173,7 +173,7 @@ describe('App', () => {
 
       value();
 
-      expect(getDrawerBodyHeight).toHaveBeenCalledWith(wrapper.find(GlDrawer).element);
+      expect(getDrawerBodyHeight).toHaveBeenCalledWith(wrapper.findComponent(GlDrawer).element);
 
       expect(actions.setDrawerBodyHeight).toHaveBeenCalledWith(
         expect.any(Object),

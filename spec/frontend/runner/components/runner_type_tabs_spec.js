@@ -113,7 +113,7 @@ describe('RunnerTypeTabs', () => {
     });
 
     findTabs().wrappers.forEach((tab) => {
-      expect(tab.find(RunnerCount).props()).toEqual({
+      expect(tab.findComponent(RunnerCount).props()).toEqual({
         scope: INSTANCE_TYPE,
         skip: false,
         variables: expect.objectContaining(mockVariables),

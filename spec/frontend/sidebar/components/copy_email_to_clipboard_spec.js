@@ -12,6 +12,6 @@ describe('CopyEmailToClipboard component', () => {
   });
 
   it('sets CopyableField `value` prop to issueEmailAddress', () => {
-    expect(wrapper.find(CopyableField).props('value')).toBe(mockIssueEmailAddress);
+    expect(wrapper.findComponent(CopyableField).props('value')).toBe(mockIssueEmailAddress);
   });
 });

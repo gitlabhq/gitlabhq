@@ -10,6 +10,7 @@
 - advanced_deployments
 - advisory_database
 - api_security
+- application_instrumentation
 - application_performance
 - attack_emulation
 - audit_events
@@ -38,6 +39,7 @@
 - dedicated
 - delivery
 - dependency_firewall
+- dependency_management
 - dependency_proxy
 - dependency_scanning
 - deployment_management

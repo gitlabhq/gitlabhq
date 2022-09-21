@@ -54,24 +54,15 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
 
         context 'when the validate flag is set to `false`' do
           let(:validate) { false }
-          let(:valid?) { false }
-          let(:errors) { ['foo'] }
-          let(:warnings) { ['bar'] }
 
           before do
-            allow_next_instance_of(validator_class) do |instance|
-              allow(instance).to receive(:valid?).and_return(valid?)
-              allow(instance).to receive(:errors).and_return(errors)
-              allow(instance).to receive(:warnings).and_return(warnings)
-            end
-
             allow(parser).to receive_messages(create_scanner: true, create_scan: true)
           end
 
-          it 'instantiates the validator with correct params' do
+          it 'does not instantiate the validator' do
             parse_report
 
-            expect(validator_class).to have_received(:new).with(
+            expect(validator_class).not_to have_received(:new).with(
               report.type,
               data.deep_stringify_keys,
               report.version,
@@ -80,43 +71,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             )
           end
 
-          context 'when the report data is not valid according to the schema' do
-            it 'adds warnings to the report' do
-              expect { parse_report }.to change { report.warnings }.from([]).to(
-                [
-                  { message: 'foo', type: 'Schema' },
-                  { message: 'bar', type: 'Schema' }
-                ]
-              )
-            end
+          it 'marks the report as valid' do
+            parse_report
 
-            it 'keeps the execution flow as normal' do
-              parse_report
-
-              expect(parser).to have_received(:create_scanner)
-              expect(parser).to have_received(:create_scan)
-            end
+            expect(report).not_to be_errored
           end
 
-          context 'when the report data is valid according to the schema' do
-            let(:valid?) { true }
-            let(:errors) { [] }
-            let(:warnings) { [] }
+          it 'keeps the execution flow as normal' do
+            parse_report
 
-            it 'does not add errors to the report' do
-              expect { parse_report }.not_to change { report.errors }
-            end
-
-            it 'does not add warnings to the report' do
-              expect { parse_report }.not_to change { report.warnings }
-            end
-
-            it 'keeps the execution flow as normal' do
-              parse_report
-
-              expect(parser).to have_received(:create_scanner)
-              expect(parser).to have_received(:create_scan)
-            end
+            expect(parser).to have_received(:create_scanner)
+            expect(parser).to have_received(:create_scan)
           end
         end
 
@@ -152,10 +117,15 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             it 'adds errors to the report' do
               expect { parse_report }.to change { report.errors }.from([]).to(
                 [
-                  { message: 'foo', type: 'Schema' },
-                  { message: 'bar', type: 'Schema' }
+                  { message: 'foo', type: 'Schema' }
                 ]
               )
+            end
+
+            it 'marks the report as invalid' do
+              parse_report
+
+              expect(report).to be_errored
             end
 
             it 'does not try to create report entities' do
@@ -175,8 +145,24 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
               expect { parse_report }.not_to change { report.errors }.from([])
             end
 
-            it 'does not add warnings to the report' do
-              expect { parse_report }.not_to change { report.warnings }.from([])
+            context 'and no warnings are present' do
+              let(:warnings) { [] }
+
+              it 'does not add warnings to the report' do
+                expect { parse_report }.not_to change { report.warnings }.from([])
+              end
+            end
+
+            context 'and some warnings are present' do
+              let(:warnings) { ['bar'] }
+
+              it 'does add warnings to the report' do
+                expect { parse_report }.to change { report.warnings }.from([]).to(
+                  [
+                    { message: 'bar', type: 'Schema' }
+                  ]
+                )
+              end
             end
 
             it 'keeps the execution flow as normal' do
@@ -298,8 +284,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             scans = report.findings.map(&:scan)
 
             expect(scans.map(&:status).all?('success')).to be(true)
-            expect(scans.map(&:start_time).all?('placeholder-value')).to be(true)
-            expect(scans.map(&:end_time).all?('placeholder-value')).to be(true)
+            expect(scans.map(&:start_time).all?('2022-08-10T21:37:00')).to be(true)
+            expect(scans.map(&:end_time).all?('2022-08-10T21:38:00')).to be(true)
             expect(scans.size).to eq(7)
             expect(scans.first).to be_a(::Gitlab::Ci::Reports::Security::Scan)
           end

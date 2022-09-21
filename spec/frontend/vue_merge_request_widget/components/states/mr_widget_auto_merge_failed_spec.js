@@ -7,7 +7,7 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 describe('MRWidgetAutoMergeFailed', () => {
   let wrapper;
   const mergeError = 'This is the merge error';
-  const findButton = () => wrapper.find(GlButton);
+  const findButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (props = {}, mergeRequestWidgetGraphql = false) => {
     wrapper = mount(AutoMergeFailedComponent, {
@@ -61,7 +61,7 @@ describe('MRWidgetAutoMergeFailed', () => {
         await nextTick();
 
         expect(findButton().attributes('disabled')).toBe('disabled');
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
     });
   });

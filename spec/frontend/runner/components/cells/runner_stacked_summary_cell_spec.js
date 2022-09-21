@@ -85,7 +85,7 @@ describe('RunnerTypeCell', () => {
       contactedAt: '2022-01-02',
     });
 
-    expect(findRunnerSummaryField('clock').find(TimeAgo).props('time')).toBe('2022-01-02');
+    expect(findRunnerSummaryField('clock').findComponent(TimeAgo).props('time')).toBe('2022-01-02');
   });
 
   it('Displays empty last contact', () => {
@@ -93,7 +93,7 @@ describe('RunnerTypeCell', () => {
       contactedAt: null,
     });
 
-    expect(findRunnerSummaryField('clock').find(TimeAgo).exists()).toBe(false);
+    expect(findRunnerSummaryField('clock').findComponent(TimeAgo).exists()).toBe(false);
     expect(findRunnerSummaryField('clock').text()).toContain(__('Never'));
   });
 
@@ -134,7 +134,7 @@ describe('RunnerTypeCell', () => {
   });
 
   it('Displays created at', () => {
-    expect(findRunnerSummaryField('calendar').find(TimeAgo).props('time')).toBe(
+    expect(findRunnerSummaryField('calendar').findComponent(TimeAgo).props('time')).toBe(
       mockRunner.createdAt,
     );
   });

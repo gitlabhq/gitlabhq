@@ -195,7 +195,7 @@ describe('AdminRunnersApp', () => {
     const { id, shortSha } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
 
-    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').findComponent(GlLink);
 
     expect(runnerLink.text()).toBe(`#${numericId} (${shortSha})`);
     expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${numericId}`);
@@ -204,7 +204,9 @@ describe('AdminRunnersApp', () => {
   it('renders runner actions for each runner', async () => {
     await createComponent({ mountFn: mountExtended });
 
-    const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
+    const runnerActions = wrapper
+      .find('tr [data-testid="td-actions"]')
+      .findComponent(RunnerActionsCell);
     const runner = mockRunners[0];
 
     expect(runnerActions.props()).toEqual({
@@ -255,7 +257,7 @@ describe('AdminRunnersApp', () => {
     });
 
     it('Links to the runner page', async () => {
-      const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+      const runnerLink = wrapper.find('tr [data-testid="td-summary"]').findComponent(GlLink);
 
       expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
       expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);

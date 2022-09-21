@@ -159,7 +159,7 @@ describe('Repository table component', () => {
   });
 
   describe('Show more button', () => {
-    const showMoreButton = () => vm.find(GlButton);
+    const showMoreButton = () => vm.findComponent(GlButton);
 
     it.each`
       hasMore  | expectButtonToExist

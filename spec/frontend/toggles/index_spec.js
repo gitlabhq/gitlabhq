@@ -83,12 +83,12 @@ describe('toggles/index.js', () => {
 
         expect(listener).toHaveBeenCalledTimes(0);
 
-        wrapper.find(GlToggle).vm.$emit(event, true);
+        wrapper.findComponent(GlToggle).vm.$emit(event, true);
 
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenLastCalledWith(true);
 
-        wrapper.find(GlToggle).vm.$emit(event, false);
+        wrapper.findComponent(GlToggle).vm.$emit(event, false);
 
         expect(listener).toHaveBeenCalledTimes(2);
         expect(listener).toHaveBeenLastCalledWith(false);

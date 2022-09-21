@@ -105,7 +105,7 @@ describe('CI Badge Link Component', () => {
   it('should emit ciStatusBadgeClick event', async () => {
     createComponent({ status: statuses.success });
 
-    await wrapper.find(GlLink).vm.$emit('click');
+    await wrapper.findComponent(GlLink).vm.$emit('click');
 
     expect(wrapper.emitted('ciStatusBadgeClick')).toEqual([[]]);
   });

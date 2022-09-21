@@ -6,8 +6,8 @@ import MrCollapsibleSection from '~/vue_merge_request_widget/components/mr_widge
 describe('MrWidgetExpanableSection', () => {
   let wrapper;
 
-  const findButton = () => wrapper.find(GlButton);
-  const findCollapse = () => wrapper.find(GlCollapse);
+  const findButton = () => wrapper.findComponent(GlButton);
+  const findCollapse = () => wrapper.findComponent(GlCollapse);
 
   beforeEach(() => {
     wrapper = shallowMount(MrCollapsibleSection, {
@@ -19,7 +19,7 @@ describe('MrWidgetExpanableSection', () => {
   });
 
   it('renders Icon', () => {
-    expect(wrapper.find(GlIcon).exists()).toBe(true);
+    expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
   });
 
   it('renders header slot', () => {

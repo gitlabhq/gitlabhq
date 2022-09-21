@@ -30046,6 +30046,9 @@ msgstr ""
 msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
 msgstr ""
 
+msgid "Please wait a few moments while we load the file history for this line."
+msgstr ""
+
 msgid "Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
@@ -44266,6 +44269,9 @@ msgstr ""
 msgid "Vulnerability|File"
 msgstr ""
 
+msgid "Vulnerability|File:"
+msgstr ""
+
 msgid "Vulnerability|GitLab Security Report"
 msgstr ""
 
@@ -44288,6 +44294,9 @@ msgid "Vulnerability|Information related to how the vulnerability was discovered
 msgstr ""
 
 msgid "Vulnerability|Links"
+msgstr ""
+
+msgid "Vulnerability|Location"
 msgstr ""
 
 msgid "Vulnerability|Method"

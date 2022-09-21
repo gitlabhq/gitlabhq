@@ -8,8 +8,8 @@ import { defaultConfig, harborTagsList } from '../../mock_data';
 describe('Harbor tag list row', () => {
   let wrapper;
 
-  const findListItem = () => wrapper.find(ListItem);
-  const findClipboardButton = () => wrapper.find(ClipboardButton);
+  const findListItem = () => wrapper.findComponent(ListItem);
+  const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findByTestId = (testId) => wrapper.findByTestId(testId);
 
   const $route = {

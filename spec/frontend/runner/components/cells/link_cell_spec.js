@@ -5,7 +5,7 @@ import LinkCell from '~/runner/components/cells/link_cell.vue';
 describe('LinkCell', () => {
   let wrapper;
 
-  const findGlLink = () => wrapper.find(GlLink);
+  const findGlLink = () => wrapper.findComponent(GlLink);
   const findSpan = () => wrapper.find('span');
 
   const createComponent = ({ props = {}, ...options } = {}) => {

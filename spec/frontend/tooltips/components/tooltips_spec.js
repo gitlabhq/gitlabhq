@@ -49,7 +49,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlTooltip).props('target')).toBe(target);
+      expect(wrapper.findComponent(GlTooltip).props('target')).toBe(target);
     });
 
     it('does not attach a tooltip to a target with empty title', async () => {
@@ -59,7 +59,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlTooltip).exists()).toBe(false);
+      expect(wrapper.findComponent(GlTooltip).exists()).toBe(false);
     });
 
     it('does not attach a tooltip twice to the same element', async () => {
@@ -76,7 +76,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlTooltip).text()).toBe(target.getAttribute('title'));
+      expect(wrapper.findComponent(GlTooltip).text()).toBe(target.getAttribute('title'));
     });
 
     it('supports HTML content', async () => {
@@ -88,7 +88,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlTooltip).html()).toContain(target.getAttribute('title'));
+      expect(wrapper.findComponent(GlTooltip).html()).toContain(target.getAttribute('title'));
     });
 
     it('sets the configuration values passed in the config object', async () => {
@@ -96,7 +96,7 @@ describe('tooltips/components/tooltips.vue', () => {
       target = createTooltipTarget();
       wrapper.vm.addTooltips([target], config);
       await nextTick();
-      expect(wrapper.find(GlTooltip).props()).toMatchObject(config);
+      expect(wrapper.findComponent(GlTooltip).props()).toMatchObject(config);
     });
 
     it.each`
@@ -113,7 +113,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
         await nextTick();
 
-        expect(wrapper.find(GlTooltip).props(prop)).toBe(value);
+        expect(wrapper.findComponent(GlTooltip).props(prop)).toBe(value);
       },
     );
   });
@@ -180,7 +180,7 @@ describe('tooltips/components/tooltips.vue', () => {
 
       wrapper.vm.triggerEvent(target, event);
 
-      expect(wrapper.find(GlTooltip).emitted(event)).toHaveLength(1);
+      expect(wrapper.findComponent(GlTooltip).emitted(event)).toHaveLength(1);
     });
   });
 
@@ -198,14 +198,14 @@ describe('tooltips/components/tooltips.vue', () => {
 
       await nextTick();
 
-      expect(wrapper.find(GlTooltip).text()).toBe(currentTitle);
+      expect(wrapper.findComponent(GlTooltip).text()).toBe(currentTitle);
 
       target.setAttribute('title', newTitle);
       wrapper.vm.fixTitle(target);
 
       await nextTick();
 
-      expect(wrapper.find(GlTooltip).text()).toBe(newTitle);
+      expect(wrapper.findComponent(GlTooltip).text()).toBe(newTitle);
     });
   });
 

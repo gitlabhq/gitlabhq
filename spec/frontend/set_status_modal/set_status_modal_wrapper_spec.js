@@ -51,11 +51,11 @@ describe('SetStatusModalWrapper', () => {
     });
   };
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findMessageField = () =>
     wrapper.findByPlaceholderText(SetStatusForm.i18n.statusMessagePlaceholder);
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
-  const findAvailabilityCheckbox = () => wrapper.find(GlFormCheckbox);
+  const findAvailabilityCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findClearStatusAtMessage = () => wrapper.find('[data-testid="clear-status-at-message"]');
   const getEmojiPicker = () => wrapper.findComponent(EmojiPickerStub);
 

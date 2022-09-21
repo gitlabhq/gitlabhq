@@ -193,7 +193,7 @@ describe('TrainingProviderList component', () => {
         });
 
         it(`shows the learn more link for enabled card ${index}`, () => {
-          const learnMoreLink = findCards().at(index).find(GlLink);
+          const learnMoreLink = findCards().at(index).findComponent(GlLink);
           const tempLogo = TEMP_PROVIDER_URLS[name];
 
           if (tempLogo) {
@@ -224,7 +224,7 @@ describe('TrainingProviderList component', () => {
         });
 
         it('shows a info-tooltip that describes the purpose of a primary provider', () => {
-          const infoIcon = findPrimaryProviderRadios().at(index).find(GlIcon);
+          const infoIcon = findPrimaryProviderRadios().at(index).findComponent(GlIcon);
           const tooltip = getBinding(infoIcon.element, 'gl-tooltip');
 
           expect(infoIcon.props()).toMatchObject({

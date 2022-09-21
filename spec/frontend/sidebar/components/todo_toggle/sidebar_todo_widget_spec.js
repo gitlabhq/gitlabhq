@@ -97,13 +97,13 @@ describe('Sidebar Todo Widget', () => {
     });
 
     it('shows add todo icon', () => {
-      expect(wrapper.find(GlIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
 
-      expect(wrapper.find(GlIcon).props('name')).toBe('todo-add');
+      expect(wrapper.findComponent(GlIcon).props('name')).toBe('todo-add');
     });
 
     it('sets default tooltip title', () => {
-      expect(wrapper.find(GlButton).attributes('title')).toBe('Add a to do');
+      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Add a to do');
     });
 
     it('when user has a to do', async () => {
@@ -112,12 +112,12 @@ describe('Sidebar Todo Widget', () => {
       });
 
       await waitForPromises();
-      expect(wrapper.find(GlIcon).props('name')).toBe('todo-done');
-      expect(wrapper.find(GlButton).attributes('title')).toBe('Mark as done');
+      expect(wrapper.findComponent(GlIcon).props('name')).toBe('todo-done');
+      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Mark as done');
     });
 
     it('emits `todoUpdated` event on click on icon', async () => {
-      wrapper.find(GlIcon).vm.$emit('click', event);
+      wrapper.findComponent(GlIcon).vm.$emit('click', event);
 
       await nextTick();
       expect(wrapper.emitted('todoUpdated')).toEqual([[false]]);

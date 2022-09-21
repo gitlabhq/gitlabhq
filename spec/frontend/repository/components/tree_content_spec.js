@@ -38,7 +38,7 @@ function factory(path, data = () => ({})) {
 }
 
 describe('Repository table component', () => {
-  const findFileTable = () => vm.find(FileTable);
+  const findFileTable = () => vm.findComponent(FileTable);
 
   afterEach(() => {
     vm.destroy();
@@ -53,7 +53,7 @@ describe('Repository table component', () => {
 
     await nextTick();
 
-    expect(vm.find(FilePreview).exists()).toBe(true);
+    expect(vm.findComponent(FilePreview).exists()).toBe(true);
   });
 
   it('trigger fetchFiles and resetRequestedCommits when mounted', async () => {

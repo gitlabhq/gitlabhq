@@ -59,7 +59,7 @@ describe('User Lists Table', () => {
 
   describe('delete button', () => {
     it('should display the confirmation modal', async () => {
-      const modal = wrapper.find(GlModal);
+      const modal = wrapper.findComponent(GlModal);
 
       wrapper.find('[data-testid="delete-user-list"]').trigger('click');
 
@@ -73,7 +73,7 @@ describe('User Lists Table', () => {
     let modal;
 
     beforeEach(async () => {
-      modal = wrapper.find(GlModal);
+      modal = wrapper.findComponent(GlModal);
 
       wrapper.find('button').trigger('click');
 

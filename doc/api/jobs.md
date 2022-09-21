@@ -76,6 +76,9 @@ Example of response
     "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -132,6 +135,9 @@ Example of response
     "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -216,6 +222,9 @@ Example of response
     "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -281,6 +290,9 @@ Example of response
     "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",

@@ -27,6 +27,10 @@ module Projects
         .page(page)
     end
 
+    def per_page
+      PER_PAGE
+    end
+
     private
 
     attr_reader :blob, :commit, :pagination_enabled
@@ -46,10 +50,6 @@ module Projects
       return 1 if page < 1 || overlimit?(page)
 
       page
-    end
-
-    def per_page
-      PER_PAGE
     end
 
     def pagination_state(params)

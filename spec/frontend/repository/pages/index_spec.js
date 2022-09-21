@@ -34,7 +34,7 @@ describe('Repository index page component', () => {
   it('renders TreePage', () => {
     factory();
 
-    const child = wrapper.find(TreePage);
+    const child = wrapper.findComponent(TreePage);
 
     expect(child.exists()).toBe(true);
     expect(child.props()).toEqual({ path: '/' });

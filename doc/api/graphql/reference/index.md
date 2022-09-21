@@ -8352,6 +8352,30 @@ The edge type for [`Pipeline`](#pipeline).
 | <a id="pipelineedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelineedgenode"></a>`node` | [`Pipeline`](#pipeline) | The item at the end of the edge. |
 
+#### `PipelineScheduleConnection`
+
+The connection type for [`PipelineSchedule`](#pipelineschedule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinescheduleconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="pipelinescheduleconnectionedges"></a>`edges` | [`[PipelineScheduleEdge]`](#pipelinescheduleedge) | A list of edges. |
+| <a id="pipelinescheduleconnectionnodes"></a>`nodes` | [`[PipelineSchedule]`](#pipelineschedule) | A list of nodes. |
+| <a id="pipelinescheduleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PipelineScheduleEdge`
+
+The edge type for [`PipelineSchedule`](#pipelineschedule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinescheduleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pipelinescheduleedgenode"></a>`node` | [`PipelineSchedule`](#pipelineschedule) | The item at the end of the edge. |
+
 #### `PipelineSecurityReportFindingConnection`
 
 The connection type for [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding).
@@ -15892,6 +15916,37 @@ Represents pipeline counts for the project.
 | <a id="pipelinepermissionsdestroypipeline"></a>`destroyPipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_pipeline` on this resource. |
 | <a id="pipelinepermissionsupdatepipeline"></a>`updatePipeline` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline` on this resource. |
 
+### `PipelineSchedule`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinescheduleactive"></a>`active` | [`Boolean!`](#boolean) | Indicates if a pipeline schedule is active. |
+| <a id="pipelineschedulecron"></a>`cron` | [`String!`](#string) | Cron notation for the schedule. |
+| <a id="pipelineschedulecrontimezone"></a>`cronTimezone` | [`String!`](#string) | Timezone for the pipeline schedule. |
+| <a id="pipelinescheduledescription"></a>`description` | [`String`](#string) | Description of the pipeline schedule. |
+| <a id="pipelineschedulefortag"></a>`forTag` | [`Boolean!`](#boolean) | Indicates if a pipelines schedule belongs to a tag. |
+| <a id="pipelinescheduleid"></a>`id` | [`ID!`](#id) | ID of the pipeline schedule. |
+| <a id="pipelineschedulelastpipeline"></a>`lastPipeline` | [`Pipeline`](#pipeline) | Last pipeline object. |
+| <a id="pipelineschedulenextrunat"></a>`nextRunAt` | [`Time!`](#time) | Time when the next pipeline will run. |
+| <a id="pipelinescheduleowner"></a>`owner` | [`UserCore!`](#usercore) | Owner of the pipeline schedule. |
+| <a id="pipelineschedulerealnextrun"></a>`realNextRun` | [`Time!`](#time) | Time when the next pipeline will run. |
+| <a id="pipelineschedulereffordisplay"></a>`refForDisplay` | [`String`](#string) | Git ref for the pipeline schedule. |
+| <a id="pipelineschedulerefpath"></a>`refPath` | [`String`](#string) | Path to the ref that triggered the pipeline. |
+| <a id="pipelinescheduleuserpermissions"></a>`userPermissions` | [`PipelineSchedulePermissions!`](#pipelineschedulepermissions) | Permissions for the current user on the resource. |
+
+### `PipelineSchedulePermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineschedulepermissionsadminpipelineschedule"></a>`adminPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `play_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `take_ownership_pipeline_schedule` on this resource. |
+| <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline_schedule` on this resource. |
+
 ### `PipelineSecurityReportFinding`
 
 Represents vulnerability finding of a security report on the pipeline.
@@ -16773,6 +16828,22 @@ Returns [`PipelineCounts`](#pipelinecounts).
 | <a id="projectpipelinecountsref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="projectpipelinecountssha"></a>`sha` | [`String`](#string) | Filter pipelines by the SHA of the commit they are run for. |
 | <a id="projectpipelinecountssource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
+
+##### `Project.pipelineSchedules`
+
+Pipeline schedules of the project. This field can only be resolved for one project per request.
+
+Returns [`PipelineScheduleConnection`](#pipelinescheduleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectpipelineschedulesstatus"></a>`status` | [`PipelineScheduleStatus`](#pipelineschedulestatus) | Filter pipeline schedules by active status. |
 
 ##### `Project.pipelines`
 
@@ -20941,6 +21012,13 @@ Event type of the pipeline associated with a merge request.
 | <a id="pipelinemergerequesteventtypedetached"></a>`DETACHED` | Pipeline run on the changes in the merge request source branch. |
 | <a id="pipelinemergerequesteventtypemerged_result"></a>`MERGED_RESULT` | Pipeline run on the changes from the source branch combined with the target branch. |
 | <a id="pipelinemergerequesteventtypemerge_train"></a>`MERGE_TRAIN` | Pipeline ran as part of a merge train. |
+
+### `PipelineScheduleStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="pipelineschedulestatusactive"></a>`ACTIVE` | Active pipeline schedules. |
+| <a id="pipelineschedulestatusinactive"></a>`INACTIVE` | Inactive pipeline schedules. |
 
 ### `PipelineScopeEnum`
 

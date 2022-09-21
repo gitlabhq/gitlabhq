@@ -91,6 +91,7 @@ The following table lists project permissions available for each role:
 | [Issue boards](project/issue_board.md):<br>Create or delete lists                                                                                                                    |          | ✓        | ✓         | ✓          | ✓        |
 | [Issue boards](project/issue_board.md):<br>Move issues between lists                                                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Add Labels                                                                                                                                     | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
+| [Issues](project/issues/index.md):<br>Add to epic                                                                                                                                    |           | ✓ (*23*) | ✓ (*23*)  | ✓ (*23*)   | ✓ (*23*) |
 | [Issues](project/issues/index.md):<br>Assign                                                                                                                                         | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Create (*18*)                                                                                                                                  | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Create [confidential issues](project/issues/confidential_issues.md)                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
@@ -246,6 +247,7 @@ The following table lists project permissions available for each role:
 20. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
 21. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
 22. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
+23. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
 
 <!-- markdownlint-enable MD029 -->
 
@@ -379,6 +381,7 @@ The following table lists group permissions available for each role:
 
 | Action                                                                                  | Guest | Reporter | Developer | Maintainer | Owner |
 |-----------------------------------------------------------------------------------------|-------|----------|-----------|------------|-------|
+| Add an issue to an [epic](group/epics/index.md)                                         | ✓ (7) | ✓ (7)    | ✓ (7)     | ✓ (7)      | ✓ (7) |
 | Browse group                                                                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Pull a container image using the dependency proxy                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
 | View Contribution analytics                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -445,6 +448,7 @@ The following table lists group permissions available for each role:
 4. Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected".
 5. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 6. Users can only view events based on their individual actions.
+7. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
 
 <!-- markdownlint-enable MD029 -->
 

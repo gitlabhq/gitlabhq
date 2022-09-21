@@ -110,11 +110,11 @@ const createComponent = (
   });
 };
 
-const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
+const findCheckboxElement = () => wrapper.findComponent(SquashBeforeMerge);
 const findCommitEditElements = () => wrapper.findAllComponents(CommitEdit);
-const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
+const findCommitDropdownElement = () => wrapper.findComponent(CommitMessageDropdown);
 const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
-const findTipLink = () => wrapper.find(GlSprintf);
+const findTipLink = () => wrapper.findComponent(GlSprintf);
 const findCommitEditWithInputId = (inputId) =>
   findCommitEditElements().wrappers.find((x) => x.props('inputId') === inputId);
 const findMergeCommitMessage = () => findCommitEditWithInputId('merge-message-edit').props('value');

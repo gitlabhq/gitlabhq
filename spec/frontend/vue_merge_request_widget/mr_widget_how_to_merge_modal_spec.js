@@ -24,7 +24,7 @@ describe('MRWidgetHowToMerge', () => {
     mountComponent();
   });
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findInstructionsFields = () =>
     wrapper.findAll('[ data-testid="how-to-merge-instructions"]');
   const findTipLink = () => wrapper.find("[data-testid='docs-tip']");

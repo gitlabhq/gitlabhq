@@ -53,7 +53,7 @@ describe('ProjectFilter', () => {
     wrapper.destroy();
   });
 
-  const findSearchableDropdown = () => wrapper.find(SearchableDropdown);
+  const findSearchableDropdown = () => wrapper.findComponent(SearchableDropdown);
 
   describe('template', () => {
     beforeEach(() => {

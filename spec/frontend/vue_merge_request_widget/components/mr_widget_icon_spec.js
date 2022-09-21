@@ -21,6 +21,6 @@ describe('MrWidgetIcon', () => {
 
   it('renders icon and container', () => {
     expect(wrapper.element.className).toContain('circle-icon-container');
-    expect(wrapper.find(GlIcon).props('name')).toEqual(TEST_ICON);
+    expect(wrapper.findComponent(GlIcon).props('name')).toEqual(TEST_ICON);
   });
 });

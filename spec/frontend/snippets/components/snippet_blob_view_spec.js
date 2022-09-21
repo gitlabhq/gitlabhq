@@ -69,13 +69,13 @@ describe('Blob Embeddable', () => {
   describe('rendering', () => {
     it('renders correct components', () => {
       createComponent();
-      expect(wrapper.find(BlobHeader).exists()).toBe(true);
-      expect(wrapper.find(BlobContent).exists()).toBe(true);
+      expect(wrapper.findComponent(BlobHeader).exists()).toBe(true);
+      expect(wrapper.findComponent(BlobContent).exists()).toBe(true);
     });
 
     it('sets simple viewer correctly', () => {
       createComponent();
-      expect(wrapper.find(SimpleViewer).exists()).toBe(true);
+      expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
     });
 
     it('sets rich viewer correctly', () => {
@@ -83,20 +83,20 @@ describe('Blob Embeddable', () => {
       createComponent({
         data,
       });
-      expect(wrapper.find(RichViewer).exists()).toBe(true);
+      expect(wrapper.findComponent(RichViewer).exists()).toBe(true);
     });
 
     it('correctly switches viewer type', async () => {
       createComponent();
-      expect(wrapper.find(SimpleViewer).exists()).toBe(true);
+      expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
 
       wrapper.vm.switchViewer(RichViewerMock.type);
 
       await nextTick();
-      expect(wrapper.find(RichViewer).exists()).toBe(true);
+      expect(wrapper.findComponent(RichViewer).exists()).toBe(true);
       await wrapper.vm.switchViewer(SimpleViewerMock.type);
 
-      expect(wrapper.find(SimpleViewer).exists()).toBe(true);
+      expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
     });
 
     it('passes information about render error down to blob header', () => {
@@ -110,7 +110,7 @@ describe('Blob Embeddable', () => {
         },
       });
 
-      expect(wrapper.find(BlobHeader).props('hasRenderError')).toBe(true);
+      expect(wrapper.findComponent(BlobHeader).props('hasRenderError')).toBe(true);
     });
 
     describe('bob content in multi-file scenario', () => {
@@ -161,7 +161,7 @@ describe('Blob Embeddable', () => {
 
           await nextTick();
 
-          const findContent = () => wrapper.find(BlobContent);
+          const findContent = () => wrapper.findComponent(BlobContent);
 
           expect(findContent().props('content')).toBe(expectedContent);
         },
@@ -183,7 +183,7 @@ describe('Blob Embeddable', () => {
         });
 
         expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
-        expect(wrapper.find(SimpleViewer).exists()).toBe(true);
+        expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
       });
 
       describe('switchViewer()', () => {
@@ -194,11 +194,11 @@ describe('Blob Embeddable', () => {
 
           await nextTick();
           expect(wrapper.vm.activeViewerType).toBe(RichViewerMock.type);
-          expect(wrapper.find(RichViewer).exists()).toBe(true);
+          expect(wrapper.findComponent(RichViewer).exists()).toBe(true);
 
           await wrapper.vm.switchViewer(SimpleViewerMock.type);
           expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
-          expect(wrapper.find(SimpleViewer).exists()).toBe(true);
+          expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
         });
       });
     });
@@ -206,7 +206,7 @@ describe('Blob Embeddable', () => {
 
   describe('functionality', () => {
     describe('render error', () => {
-      const findContentEl = () => wrapper.find(BlobContent);
+      const findContentEl = () => wrapper.findComponent(BlobContent);
 
       it('correctly sets blob on the blob-content-error component', () => {
         createComponent();

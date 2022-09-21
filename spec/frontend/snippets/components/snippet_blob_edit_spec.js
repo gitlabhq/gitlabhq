@@ -46,9 +46,9 @@ describe('Snippet Blob Edit component', () => {
     });
   };
 
-  const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findHeader = () => wrapper.find(BlobHeaderEdit);
-  const findContent = () => wrapper.find(SourceEditor);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findHeader = () => wrapper.findComponent(BlobHeaderEdit);
+  const findContent = () => wrapper.findComponent(SourceEditor);
   const getLastUpdatedArgs = () => {
     const event = wrapper.emitted()['blob-updated'];
 

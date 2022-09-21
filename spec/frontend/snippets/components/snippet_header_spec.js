@@ -311,7 +311,7 @@ describe('Snippet header component', () => {
 
   it('renders modal for deletion of a snippet', () => {
     createComponent();
-    expect(wrapper.find(GlModal).exists()).toBe(true);
+    expect(wrapper.findComponent(GlModal).exists()).toBe(true);
   });
 
   it.each`
