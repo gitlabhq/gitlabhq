@@ -143,6 +143,7 @@ crosslinks
 Crossplane
 Crowdin
 CSV
+customappsso
 cybersecurity
 Dangerfile
 Datadog

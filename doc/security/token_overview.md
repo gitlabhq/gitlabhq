@@ -129,7 +129,7 @@ This table shows available scopes per token. Scopes can be limited further on to
   also generally logged by proxies and application servers, which makes those credentials visible to system administrators. Instead, pass API calls an access token using
   headers like [the `Private-Token` header](../api/index.md#personalprojectgroup-access-tokens).
 - Tokens can also be stored using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
-- Tokens should not be committed to your source code. Instead, consider an approach such as [using external secrets in CI](../ci/secrets/index.md).
+- Tokens must not be committed to your source code. Instead, consider an approach such as [using external secrets in CI](../ci/secrets/index.md).
 - When creating a scoped token, consider using the most limited scope possible to reduce the impact of accidentally leaking the token.
 - When creating a token, consider setting a token that expires when your task is complete. For example, if performing a one-off import, set the
   token to expire after a few hours or a day. This reduces the impact of a token that is accidentally leaked because it is useless when it expires.

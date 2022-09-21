@@ -104,6 +104,15 @@ GitLab.com is only hosted within the United States of America. Organizations loc
 Pods would provide a solution for organizations in the small to medium business (up to 100 users) and the mid-market segment (up to 2000 users).
 (See [segmentation definitions](https://about.gitlab.com/handbook/sales/field-operations/gtm-resources/#segmentation).)
 Larger organizations may benefit substantially from [GitLab Dedicated](../../../subscriptions/gitlab_dedicated/index.md).
+At this moment, GitLab.com has many more "social-network"-like capabilities that may not fit well into a more isolated workspace model.
+
+Removing them, however, possesses a ton of challenges:
+
+1. How will existing `gitlab-org` contributors contribute to workspaces?
+1. How do we move existing workspaces into the new model (effectively breaking their social features)?
+1. How does this affect on-premise installations that by design use many top-level namespaces (workspaces) if we forbid in-between workspace interactions? (on-premise customers or open source projects like [https://salsa.debian.org](https://salsa.debian.org/))
+
+We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases. 
 
 ## High-level architecture problems to solve
 
@@ -117,23 +126,67 @@ A number of technical issues need to be resolved to implement Pods (in no partic
 
 ## Iteration 1
 
-Ultimately, a Pods architecture should offer the same user experience as self-managed and GitLab dedicated. However, at this moment GitLab.com has many more "social-network"-like capabilities that will be difficult to implement with a Pods architecture. We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases.
+A Pods architecture should offer the same user experience as a self-managed instance and GitLab dedicated for existing and new users of GitLab.com. In order to get there, we have to ship smaller iterations that already provide value. In the first iteration, we will ship two different user experiences:
 
-The first iteration of Pods will still contain some limitations that would break cross-workspace workflows. This means it may only be acceptable for new customers, or for existing customers that are briefed.
+1. For existing users of GitLab.com
+1. For new users of GitLab.com (opt-in)
 
-Limitations are:
+### Why should users opt-in? Who can opt-in?
 
-- An organization can create only a single workspace.
-- Workspaces are isolated from each other. This means cross-workspace workflows are broken.
+In order to get adoption, we must offer distinct advantages to Pods even in the first iteration. We could consider supporting specific Premium+ features on Pods already, that we won't be able to support without Pods. Candidates for this are
+
+- Disaster Recovery with lower SLOs
+- Regional support
+- Fewer noisy neighbors (free)
+
+We should likely position this as a push for GitLab workspaces and not talk about the underlying Pods architecture.
+
+What are other distinct advantages of workspaces that could be shipped?
+
+- Easier admin controls
+- Better permission management
+- Instance-like UX
+
+### GitLab.com as Pod US0
+
+GitLab.com will be treated as the first pod `Pod US0`. It will be unique and much larger compared to newly created pods. All existing users will remain on `Pod US0` in the first iteration.
+
+### Users are globally available
+
+Users are globally available and the same for all pods. This means that user data needs to be handled separately, for example via decomposition, see [!95941](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95941).
+
+### Users have a default workspace
+
+1. Existing users on GitLab.com (`Pod US0`) will start by defaulting to no workspace. This allows them to access all the data on GitLab.com, exactly as it does now.
+
+1. Any user wanting to opt-in to the benefits of pods will need to set a single default workspace. Workspaces will be located on `Pod US1`. Any attempts for these users to load a global page like `/dashboard` will end up redirecting to `<DEFAULT_WORKSPACE>/-/dashboard`.
+
+### User experience is always isolated to a single workspace at a time
+
+1. Existing users whose workspaces are located on `Pod US0` will be able to continue to see aggregated data for all workspaces except for new workspaces that opt-in to be on a new pod. The user experience is the same.
+1. New users that opted in to Pods will only ever see data that is related to a single workspace. Upon login, data is shown for the default workspace. It will be clear to the user how they can switch to a different workspace. Users can still navigate to the `GitLab.com` workspace and but they won't see TODOs from their new workspace in any such views. Instead they'd need to navigate directly to /dashboard/-/my-company.
+
+### Features are restricted to a workspace
+
+Even though some workspaces are on the same Pod, we will not allow features to cross workspace boundaries. As explored in [#330785](https://gitlab.com/gitlab-org/gitlab/-/issues/330785) this will break a number of features that are allowed to work across top-level namespaces today. We assume that
+
+1. Users care about what happens within a workspace
+1. Most features need to only work within a workspace
+1. Using features that cut across workspaces are the exception
+
+Over time, we may have to add back certain features via APIs but if the workspace is similar to a self-managed instance, there are few use cases where features must work across instances. Sometimes isolation may even be preferrable.
+
+For existing users, `Pod US0` will work as it does
+
+For users that opted-in, all features are restricted to interacting with a single workspace at a time and there are no cross-workspace features available to them. They can still interact with projects located in the `GitLab.com` workspace.
 
 ## Iteration 2
 
-Based on user research, we may want to change certain features to work across namespaces to allow organizations to interact with each other in specific circumstances. We may also allow organizations to have more than one workspace. This is particularly relevant for organizations with sub-divisions, or multi-national organizations that want to have workspaces in different regions.
+Based on user research, we may want to change certain features to work across namespaces to allow organizations to interact with each other in specific circumstances.
 
 Additional features:
 
 - Specific features allow for cross-workspace interactions, for example forking, search.
-- An organization can own multiple workspaces on different Pods.
 
 ### Links
 

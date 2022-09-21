@@ -1,5 +1,4 @@
 ---
-type: reference, howto
 stage: Manage
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -237,12 +236,15 @@ For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & S
 | GitLab single sign-on URL            | Login page URL (under **Application Login Page** settings) |
 | Identity provider single sign-on URL | Identity Provider Single Sign-On URL                       |
 
-Under Okta's **Single sign-on URL** field, check the option **Use this for Recipient URL and Destination URL**.
+Under the Okta **Single sign-on URL** field, check the option **Use this for Recipient URL and Destination URL**.
 
 For NameID, the following settings are recommended; for SCIM, the following settings are required:
 
 - **Application username** (NameID) set to **Custom** `user.getInternalProperty("id")`.
 - **Name ID Format** set to **Persistent**.
+
+The Okta GitLab application available in the App Catalog only supports [SCIM](scim_setup.md). Support
+for SAML is proposed in issue [216173](https://gitlab.com/gitlab-org/gitlab/-/issues/216173).
 
 ### OneLogin setup notes
 
@@ -383,8 +385,8 @@ convert the information to XML. An example SAML response is shown here.
 
 By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can
 [configure GitLab with a custom domain](../../project/pages/custom_domains_ssl_tls_certification/index.md) and GitLab
-will automatically confirm user accounts. Users will still receive an enterprise user welcome email. 
-Confirmation is bypassed for users:
+automatically confirms user accounts. Users still receive an enterprise user welcome email. Confirmation is bypassed for
+users:
 
 - That are provisioned with SAML or SCIM.
 - That have an email address that belongs to the verified domain.
