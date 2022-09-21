@@ -21,6 +21,9 @@ class JiraConnectInstallation < ApplicationRecord
       })
   }
 
+  scope :direct_installations, -> { joins(:subscriptions) }
+  scope :proxy_installations, -> { where.not(instance_url: nil) }
+
   def client
     Atlassian::JiraConnect::Client.new(base_url, shared_secret)
   end

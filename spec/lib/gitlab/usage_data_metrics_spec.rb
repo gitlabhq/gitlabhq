@@ -31,6 +31,8 @@ RSpec.describe Gitlab::UsageDataMetrics do
       it 'includes counts keys', :aggregate_failures do
         expect(subject[:counts]).to include(:boards)
         expect(subject[:counts]).to include(:issues)
+        expect(subject[:counts]).to include(:gitlab_for_jira_app_direct_installations)
+        expect(subject[:counts]).to include(:gitlab_for_jira_app_proxy_installations)
       end
 
       it 'includes usage_activity_by_stage keys' do

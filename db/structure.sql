@@ -29116,6 +29116,8 @@ CREATE INDEX index_iterations_cadences_on_group_id ON iterations_cadences USING 
 
 CREATE UNIQUE INDEX index_jira_connect_installations_on_client_key ON jira_connect_installations USING btree (client_key);
 
+CREATE INDEX index_jira_connect_installations_on_instance_url ON jira_connect_installations USING btree (instance_url);
+
 CREATE INDEX index_jira_connect_subscriptions_on_namespace_id ON jira_connect_subscriptions USING btree (namespace_id);
 
 CREATE INDEX index_jira_imports_on_label_id ON jira_imports USING btree (label_id);

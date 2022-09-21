@@ -642,6 +642,8 @@ stunnel
 stylelint
 subchart
 subcharts
+subcommand
+subcommands
 subfolder
 subfolders
 subgraph

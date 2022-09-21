@@ -525,7 +525,7 @@ indentation as the list item. This can be done with:
 - [Images](#images)
 
 Items nested in lists should always align with the first character of the list
-item. In unordered lists (using `-`), this means two spaces for each level of
+item. For unordered lists (using `-`), use two spaces for each level of
 indentation:
 
 ````markdown

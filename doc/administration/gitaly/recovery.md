@@ -4,11 +4,12 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Recovery options
+# Gitaly Cluster recovery options and tools
 
-Gitaly Cluster can [recover from certain types of failure](recovery.md).
+Gitaly Cluster can recover from primary-node failure and unavailable repositories. Gitaly Cluster can perform data
+recovery and has Praefect tracking database tools.
 
-## Primary Node Failure
+## Primary node failure
 
 Gitaly Cluster recovers from a failing primary Gitaly node by promoting a healthy secondary as the
 new primary.
@@ -29,14 +30,12 @@ To minimize data loss in GitLab 13.0 to 14.0, Gitaly Cluster:
 
 > - Introduced in GitLab 13.0 as [generally available](../../policy/alpha-beta-support.md#generally-available-ga).
 > - Between GitLab 13.0 and GitLab 13.2, read-only mode applied to the whole virtual storage and occurred whenever failover occurred.
-> - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/2862), read-only mode applies on a per-repository basis and only occurs if a new primary is out of date.
-new primary. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).
+> - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/2862), read-only mode applies on a per-repository basis and only occurs if a new primary is out of date. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).
 > - Removed in GitLab 14.1. Instead, repositories [become unavailable](#unavailable-repositories).
 
-When Gitaly Cluster switches to a new primary in GitLab 13.0 to 14.0, repositories enter
-read-only mode if they are out of date. This can happen after failing over to an outdated
-secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
-with the unreplicated writes on other nodes.
+When Gitaly Cluster switches to a new primary in GitLab 13.0 to 14.0, repositories enter read-only mode if they are
+out-of-date. This can happen after failing over to an outdated secondary. Read-only mode eases data recovery efforts by
+preventing writes that may conflict with the unreplicated writes on other nodes.
 
 To enable writes again in GitLab 13.0 to 14.0, an administrator can:
 
@@ -46,7 +45,7 @@ To enable writes again in GitLab 13.0 to 14.0, an administrator can:
    [accept data loss](#enable-writes-or-accept-data-loss) if necessary, depending on the version of
    GitLab.
 
-## Unavailable repositories
+### Unavailable repositories
 
 > - From GitLab 13.0 through 14.0, repositories became read-only if they were outdated on the primary but fully up to date on a healthy secondary. `dataloss` sub-command displays read-only repositories by default through these versions.
 > - Since GitLab 14.1, Praefect contains more responsive failover logic which immediately fails over to one of the fully up to date secondaries rather than placing the repository in read-only mode. Since GitLab 14.1, the `dataloss` sub-command displays repositories which are unavailable due to having no fully up to date copies on healthy Gitaly nodes.
@@ -252,7 +251,7 @@ These tools reconcile the outdated repositories to bring them fully up to date a
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2717) in GitLab 13.4.
 
 Praefect automatically reconciles repositories that are not up to date. By default, this is done every
-five minutes. For each outdated repository on a healthy Gitaly node, the Praefect picks a
+five minutes. For each outdated repository on a healthy Gitaly node, Praefect picks a
 random, fully up-to-date replica of the repository on another healthy Gitaly node to replicate from. A
 replication job is scheduled only if there are no other replication jobs pending for the target
 repository.
@@ -296,7 +295,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3767) in GitLab 14.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4054) in GitLab 14.6, support for dry-run mode.
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4715) in GitLab 15.3, support for removing repositories from Praefect's database.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4715) in GitLab 15.3, support for removing repositories from the Praefect tracking database.
 
 The `remove-repository` Praefect sub-command removes a repository from a Gitaly Cluster, and all state associated with a given repository including:
 
@@ -311,9 +310,9 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
 - Replace `<virtual-storage>` with the name of the virtual storage containing the repository.
 - Replace `<repository>` with the relative path of the repository to remove.
-- In GitLab 15.3 and later, add `-db-only` to remove the Praefect database entry without removing the on-disk repository. Use this option to remove orphaned database entries and to
+- In GitLab 15.3 and later, add `-db-only` to remove the Praefect tracking database entry without removing the on-disk repository. Use this option to remove orphaned database entries and to
   protect on-disk repository data from deletion when a valid repository is accidentally specified. If the database entry is accidentally deleted, re-track the repository with the
-  [`track-repository` command](#manually-track-repositories).
+  [`track-repository` command](#manually-add-a-single-repository-to-the-tracking-database).
 - In GitLab 14.6 and later, add `-apply` to run the command outside of dry-run mode and remove the repository. For example:
 
   ```shell
@@ -349,7 +348,11 @@ Parts of the repository can continue to exist after running `remove-repository`.
 
 If this occurs, run `remove-repository` again.
 
-### Manually list untracked repositories
+## Praefect tracking database maintenance
+
+Common maintenance tasks on the Praefect tracking database are documented in this section.
+
+### List untracked repositories
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3926) in GitLab 14.4.
 > - `older-than` option added in GitLab 15.0.
@@ -357,10 +360,14 @@ If this occurs, run `remove-repository` again.
 The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster that both:
 
 - Exist for at least one Gitaly storage.
-- Aren't tracked in the Praefect database.
+- Aren't tracked in the Praefect tracking database.
 
-Add the `-older-than` option to avoid showing repositories that are the process of being created and for which a record doesn't yet exist in the
-Praefect database. Replace `<duration>` with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
+Add the `-older-than` option to avoid showing repositories that:
+
+- Are in the process of being created.
+- For which a record doesn't yet exist in the Praefect tracking database.
+
+Replace `<duration>` with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories -older-than <duration>
@@ -382,12 +389,12 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 {"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567891.git"}
 ```
 
-### Manually track repositories
+### Manually add a single repository to the tracking database
 
 > - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5658) in GitLab 14.4.
 > - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5789) in GitLab 14.6, support for immediate replication.
 
-The `track-repository` Praefect sub-command adds repositories on disk to the Praefect database to be tracked.
+The `track-repository` Praefect sub-command adds repositories on disk to the Praefect tracking database to be tracked.
 
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -authoritative-storage <storage-name> -repository <repository> -replicate-immediately
@@ -427,15 +434,17 @@ The command outputs:
 
 This command fails if:
 
-- The repository is already being tracked by the Praefect database.
+- The repository is already being tracked by the Praefect tracking database.
 - The repository does not exist on disk.
 
-### Manually track large numbers of repositories
+### Manually add many repositories to the tracking database
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
 
-The `track-repositories` Praefect sub-command adds large batches of on-disk repositories to the Praefect database for tracking. This can
-be useful when migrating an existing instance to new infrastructure and ingesting all existing repositories into a fresh Gitaly Cluster.
+Migrations using the API automatically add repositories to the Praefect tracking database.
+
+If you are instead manually copying repositories over from existing infrastructure, you can use the `track-repositories`
+Praefect subcommand. This subcommand adds large batches of on-disk repositories to the Praefect tracking database.
 
 ```shell
 # Omnibus GitLab install
@@ -449,21 +458,21 @@ The command validates that all entries:
 
 - Are formatted correctly and contain required fields.
 - Correspond to a valid Git repository on disk.
-- Are not currently tracked in the Praefect database.
+- Are not currently tracked in the Praefect tracking database.
 
 If any entry fails these checks, the command aborts prior to attempting to track a repository.
 
 - `input-path` is the path to a file containing a list of repositories formatted as newline-delimited JSON objects. Objects must contain the following keys:
-  - `relative_path`: corresponds with `repository` in [track-repositories](#manually-track-repositories).
+  - `relative_path`: corresponds with `repository` in [`track-repository`](#manually-add-a-single-repository-to-the-tracking-database).
   - `authoritative-storage`: the storage Praefect is to treat as the primary.
   - `virtual-storage`: the virtual storage the repository is located in.
 
-   For example:
+    For example:
 
-   ```json
-   {"relative_path":"@hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git","authoritative_storage":"gitaly-1","virtual_storage":"default"}
-   {"relative_path":"@hashed/f8/9f/f89f8d0e735a91c5269ab08d72fa27670d000e7561698d6e664e7b603f5c4e40.git","authoritative_storage":"gitaly-2","virtual_storage":"default"}
-   ```
+    ```json
+    {"relative_path":"@hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git","authoritative_storage":"gitaly-1","virtual_storage":"default"}
+    {"relative_path":"@hashed/f8/9f/f89f8d0e735a91c5269ab08d72fa27670d000e7561698d6e664e7b603f5c4e40.git","authoritative_storage":"gitaly-2","virtual_storage":"default"}
+    ```
 
 - `-replicate-immediately`, causes the command to replicate the repository to its secondaries immediately.
    Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
