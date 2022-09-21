@@ -103,7 +103,7 @@
     "codesandbox-api": "0.0.23",
     "compression-webpack-plugin": "^5.0.2",
     "copy-webpack-plugin": "^6.4.1",
-    "core-js": "^3.25.1",
+    "core-js": "^3.25.2",
     "cron-validator": "^1.1.1",
     "cronstrue": "^1.122.0",
     "cropper": "^2.3.0",
@@ -246,7 +246,7 @@
     "sass": "^1.49.9",
     "stylelint": "^14.9.1",
     "timezone-mock": "^1.0.8",
-    "webpack-dev-server": "4.11.0",
+    "webpack-dev-server": "4.11.1",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",
     "yarn-deduplicate": "^6.0.0"

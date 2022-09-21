@@ -158,6 +158,17 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations do
       end
     end
 
+    context 'when the migration is not paused' do
+      let!(:migration) { create(:batched_background_migration, :failed) }
+      let(:params) { { database: database } }
+
+      it 'returns 422' do
+        put api("/admin/batched_background_migrations/#{migration.id}/resume", admin), params: params
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
     context 'when multiple database is enabled' do
       let(:ci_model) { Ci::ApplicationRecord }
       let(:database) { :ci }
@@ -202,6 +213,17 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations do
         put api("/admin/batched_background_migrations/#{non_existing_record_id}/pause", admin), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the migration is not active' do
+      let!(:migration) { create(:batched_background_migration, :failed) }
+      let(:params) { { database: :main } }
+
+      it 'returns 422' do
+        put api("/admin/batched_background_migrations/#{migration.id}/pause", admin), params: params
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
 

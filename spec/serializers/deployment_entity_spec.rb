@@ -3,56 +3,47 @@
 require 'spec_helper'
 
 RSpec.describe DeploymentEntity do
-  let(:user) { developer }
-  let(:developer) { create(:user) }
-  let(:reporter) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:user) { developer }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:environment) { create(:environment, project: project) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+  let_it_be_with_reload(:build) { create(:ci_build, :manual, :environment_with_deployment_tier, pipeline: pipeline) }
+
+  let_it_be_with_refind(:deployment) { create(:deployment, deployable: build, environment: environment) }
+
   let(:request) { double('request') }
-  let(:deployment) { create(:deployment, deployable: build, project: project) }
-  let(:build) { create(:ci_build, :manual, :environment_with_deployment_tier, pipeline: pipeline) }
-  let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:entity) { described_class.new(deployment, request: request) }
 
   subject { entity.as_json }
 
-  before do
+  before_all do
     project.add_developer(developer)
     project.add_reporter(reporter)
+  end
+
+  before do
     allow(request).to receive(:current_user).and_return(user)
     allow(request).to receive(:project).and_return(project)
   end
 
-  it 'exposes internal deployment id' do
+  it 'exposes fields', :aggregate_failures do
     expect(subject).to include(:iid)
-  end
-
-  it 'exposes nested information about branch' do
     expect(subject[:ref][:name]).to eq 'master'
-  end
-
-  it 'exposes status' do
     expect(subject).to include(:status)
-  end
-
-  it 'exposes creation date' do
     expect(subject).to include(:created_at)
-  end
-
-  it 'exposes deployed_at' do
     expect(subject).to include(:deployed_at)
-  end
-
-  it 'exposes last? as is_last' do
     expect(subject).to include(:is_last)
-  end
-
-  it 'exposes deployment tier in yaml' do
     expect(subject).to include(:tier_in_yaml)
   end
 
   context 'when deployable is nil' do
     let(:entity) { described_class.new(deployment, request: request, deployment_details: false) }
-    let(:deployment) { create(:deployment, deployable: nil, project: project) }
+
+    before do
+      deployment.update!(deployable: nil)
+    end
 
     it 'does not expose deployable entry' do
       expect(subject).not_to include(:deployable)
@@ -60,11 +51,11 @@ RSpec.describe DeploymentEntity do
   end
 
   context 'when the pipeline has another manual action' do
-    let!(:other_build) do
+    let_it_be(:other_build) do
       create(:ci_build, :manual, name: 'another deploy', pipeline: pipeline, environment: build.environment)
     end
 
-    let!(:other_deployment) { create(:deployment, deployable: build) }
+    let_it_be(:other_deployment) { create(:deployment, deployable: build, environment: environment) }
 
     it 'returns another manual action' do
       expect(subject[:manual_actions].count).to eq(2)
@@ -72,7 +63,7 @@ RSpec.describe DeploymentEntity do
     end
 
     context 'when user is a reporter' do
-      let(:user) { reporter }
+      let_it_be(:user) { reporter }
 
       it 'returns another manual action' do
         expect(subject[:manual_actions]).not_to be_present
@@ -91,14 +82,15 @@ RSpec.describe DeploymentEntity do
   end
 
   describe 'scheduled_actions' do
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
     let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-    let(:deployment) { create(:deployment, deployable: build) }
+
+    before do
+      deployment.update!(deployable: build)
+    end
 
     context 'when the same pipeline has a scheduled action' do
       let(:other_build) { create(:ci_build, :schedulable, :success, pipeline: pipeline, name: 'other build') }
-      let!(:other_deployment) { create(:deployment, deployable: other_build) }
+      let!(:other_deployment) { create(:deployment, deployable: other_build, environment: environment) }
 
       it 'returns other scheduled actions' do
         expect(subject[:scheduled_actions][0][:name]).to eq 'other build'
@@ -123,7 +115,9 @@ RSpec.describe DeploymentEntity do
   end
 
   describe 'playable_build' do
-    let_it_be(:project) { create(:project, :repository) }
+    before do
+      deployment.update!(deployable: build)
+    end
 
     context 'when the deployment has a playable deployable' do
       context 'when this build is ready to be played' do
@@ -144,7 +138,7 @@ RSpec.describe DeploymentEntity do
     end
 
     context 'when the deployment does not have a playable deployable' do
-      let(:build) { create(:ci_build) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
       it 'is not exposed' do
         expect(subject[:playable_build]).to be_nil

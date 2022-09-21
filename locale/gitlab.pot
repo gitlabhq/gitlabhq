@@ -7483,6 +7483,9 @@ msgstr ""
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr ""
 
+msgid "Cannot assign an issue from same hierarchy that does not belong under the same group (or descendant) as the epic."
+msgstr ""
+
 msgid "Cannot assign an issue that does not belong under the same group (or descendant) as the epic."
 msgstr ""
 
@@ -23399,6 +23402,9 @@ msgstr ""
 msgid "Last successful update"
 msgstr ""
 
+msgid "Last successful update %{time}."
+msgstr ""
+
 msgid "Last time verified"
 msgstr ""
 
@@ -25826,6 +25832,9 @@ msgid "Mirror settings are only available to GitLab administrators."
 msgstr ""
 
 msgid "Mirror user"
+msgstr ""
+
+msgid "Mirrored from %{link}."
 msgstr ""
 
 msgid "Mirrored repositories"
@@ -32437,6 +32446,9 @@ msgstr ""
 msgid "Pull"
 msgstr ""
 
+msgid "Pull mirroring updated %{time}."
+msgstr ""
+
 msgid "Pull requests from fork are not supported"
 msgstr ""
 
@@ -33737,6 +33749,9 @@ msgid "Repository mirroring"
 msgstr ""
 
 msgid "Repository mirroring configuration"
+msgstr ""
+
+msgid "Repository mirroring has been paused due to too many failed attempts. It can be resumed by a project maintainer."
 msgstr ""
 
 msgid "Repository must contain at least 1 file."
@@ -40606,6 +40621,9 @@ msgstr ""
 msgid "This board's scope is reduced"
 msgstr ""
 
+msgid "This branch has diverged from upstream."
+msgstr ""
+
 msgid "This change will remove %{strongOpen}ALL%{strongClose} Premium and Ultimate features for %{strongOpen}ALL%{strongClose} SaaS customers and make tests start failing."
 msgstr ""
 
@@ -41015,6 +41033,9 @@ msgid "This project is archived and cannot be commented on."
 msgstr ""
 
 msgid "This project is licensed under the %{strong_start}%{license_name}%{strong_end}."
+msgstr ""
+
+msgid "This project is mirrored from %{link}."
 msgstr ""
 
 msgid "This project is not subscribed to any project pipelines."

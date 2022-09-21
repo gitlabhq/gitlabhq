@@ -61,6 +61,11 @@ module API
           end
           put do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
+              unless batched_background_migration.paused?
+                msg = 'You can resume only `paused` batched background migrations.'
+                render_api_error!(msg, 422)
+              end
+
               batched_background_migration.execute!
               present_entity(batched_background_migration)
             end
@@ -81,6 +86,11 @@ module API
           end
           put do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
+              unless batched_background_migration.active?
+                msg = 'You can pause only `active` batched background migrations.'
+                render_api_error!(msg, 422)
+              end
+
               batched_background_migration.pause!
               present_entity(batched_background_migration)
             end
