@@ -1,5 +1,4 @@
 /* Common setup for both unit and integration test environments */
-import { config as testUtilsConfig } from '@vue/test-utils';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
 import 'jquery';
@@ -43,16 +42,6 @@ Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
 });
 
 expect.extend(customMatchers);
-
-testUtilsConfig.deprecationWarningHandler = (method, message) => {
-  const ALLOWED_DEPRECATED_METHODS = [
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/295679
-    'finding components with `find` or `get`',
-  ];
-  if (!ALLOWED_DEPRECATED_METHODS.includes(method)) {
-    global.console.error(message);
-  }
-};
 
 Object.assign(global, {
   requestIdleCallback(cb) {

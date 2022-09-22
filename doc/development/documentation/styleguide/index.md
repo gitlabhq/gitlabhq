@@ -1,5 +1,5 @@
 ---
-info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
@@ -115,7 +115,7 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 
 If you have questions when considering, authoring, or editing documentation, ask
 the Technical Writing team. They're available on Slack in `#docs` or in GitLab by
-mentioning [the writer for](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+mentioning [the writer for](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 the applicable [DevOps stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 Otherwise, forge ahead with your best effort. It does not need to be perfect;
 the team is happy to review and improve upon your content. Review the

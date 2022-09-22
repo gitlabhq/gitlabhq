@@ -94,7 +94,7 @@ belongs to, as well as an information block as described below:
   ```plaintext
   To determine the technical writer assigned to the Stage/Group
   associated with this page, see
-  https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+  https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
   ```
 
 For example:
@@ -171,7 +171,7 @@ contains an array of groups and their assigned technical writer. This task:
 
 To prepare an update to the `CODEOWNERS` file:
 
-1. Update `lib/tasks/gitlab/tw/codeowners.rake` with the latest [TW team assignments](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+1. Update `lib/tasks/gitlab/tw/codeowners.rake` with the latest [TW team assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
    Make this update in a standalone merge request, as it runs a long pipeline and
    requires backend maintainer review. Make sure this is merged before you update
    `CODEOWNERS` in another merge request.

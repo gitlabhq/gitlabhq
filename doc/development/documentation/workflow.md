@@ -13,7 +13,7 @@ Anyone can contribute to the GitLab documentation! You can create a merge reques
   accomplish their work with GitLab.
 
 If you are working on a feature or enhancement, use the
-[feature workflow process described in the GitLab Handbook](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#for-a-product-change).
+[feature workflow process described in the GitLab Handbook](https://about.gitlab.com/handbook/product/ux/technical-writing/workflow/#for-a-product-change).
 
 ## How to update the docs
 
@@ -54,7 +54,7 @@ Ask for help from the Technical Writing team if you:
 To identify someone who can help you:
 
 1. Locate the Technical Writer for the relevant
-   [DevOps stage group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+   [DevOps stage group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 1. Either:
    - If urgent help is required, directly assign the Technical Writer in the issue or in the merge request.
    - If non-urgent help is required, ping the Technical Writer in the issue or merge request.
@@ -86,7 +86,7 @@ merge documentation changes. Maintainers must make a good-faith effort to ensure
 - Meets the [Documentation Guidelines](index.md) and [Style Guide](styleguide/index.md).
 
 If the author or reviewer has any questions, they can mention the writer who is assigned to the relevant
-[DevOps stage group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+[DevOps stage group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
 The process involves the following:
 
@@ -96,7 +96,7 @@ The process involves the following:
 - Technical Writer (Optional). If not completed for a merge request before merging, must be scheduled
   post-merge. Schedule post-merge reviews only if an urgent merge is required. To request a:
   - Pre-merge review, assign the Technical Writer listed for the applicable
-    [DevOps stage group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+    [DevOps stage group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
   - Post-merge review, see [Post-merge reviews](#post-merge-reviews).
 - Maintainer. For merge requests, Maintainers:
   - Can always request any of the above reviews.

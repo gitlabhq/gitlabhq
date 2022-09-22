@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Development
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
 # Development processes
@@ -56,10 +56,10 @@ group. For example, if you're documenting a new internal API used exclusively by
 a given group, request an engineering review from one of the group's members.
 
 After the engineering review is complete, assign the MR to the
-[Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+[Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 in the modified documentation page's metadata.
 If the page is not assigned to a specific group, follow the
-[Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines).
+[Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines).
 
 #### Broader changes
 
@@ -84,7 +84,7 @@ In these cases, use the following workflow:
    - [Quality](https://about.gitlab.com/handbook/engineering/quality/)
      - [Engineering Productivity](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/)
    - [Infrastructure](https://about.gitlab.com/handbook/engineering/infrastructure/)
-   - [Technical Writing](https://about.gitlab.com/handbook/engineering/ux/technical-writing/)
+   - [Technical Writing](https://about.gitlab.com/handbook/product/ux/technical-writing/)
 
    You can skip this step for MRs authored by EMs or Staff Engineers responsible
    for their area.
@@ -100,10 +100,10 @@ In these cases, use the following workflow:
    @clefelhocz1.
 
 1. After all approvals are complete, assign the MR to the
-   [Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+   [Technical Writer associated with the stage and group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
    in the modified documentation page's metadata.
    If the page is not assigned to a specific group, follow the
-   [Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines).
+   [Technical Writing review process for development guidelines](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines).
    The Technical Writer may ask for additional approvals as previously suggested before merging the MR.
 
 ### Reviewer values
