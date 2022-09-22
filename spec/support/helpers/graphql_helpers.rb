@@ -717,7 +717,7 @@ module GraphqlHelpers
   end
 
   def allow_high_graphql_transaction_threshold
-    stub_const("Gitlab::QueryLimiting::Transaction::THRESHOLD", 1000)
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(1000)
   end
 
   def allow_high_graphql_query_size

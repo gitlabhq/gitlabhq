@@ -52,7 +52,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
     context 'when the query threshold is exceeded' do
       let(:transaction) do
         trans = described_class.new
-        trans.count = described_class::THRESHOLD + 1
+        trans.count = described_class.threshold + 1
 
         trans
       end
@@ -120,7 +120,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
 
     it 'returns true when the threshold is exceeded' do
       transaction = described_class.new
-      transaction.count = described_class::THRESHOLD + 1
+      transaction.count = described_class.threshold + 1
 
       expect(transaction.threshold_exceeded?).to eq(true)
     end
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
   describe '#error_message' do
     it 'returns the error message to display when the threshold is exceeded' do
       transaction = described_class.new
-      transaction.count = max = described_class::THRESHOLD
+      transaction.count = max = described_class.threshold
 
       expect(transaction.error_message).to eq(
         "Too many SQL queries were executed: a maximum of #{max} " \
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
 
     it 'includes a list of executed queries' do
       transaction = described_class.new
-      transaction.count = max = described_class::THRESHOLD
+      transaction.count = max = described_class.threshold
       %w[foo bar baz].each { |sql| transaction.executed_sql(sql) }
 
       message = transaction.error_message
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
 
     it 'indicates if the log is truncated' do
       transaction = described_class.new
-      transaction.count = described_class::THRESHOLD * 2
+      transaction.count = described_class.threshold * 2
 
       message = transaction.error_message
 
@@ -163,7 +163,7 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
 
     it 'includes the action name in the error message when present' do
       transaction = described_class.new
-      transaction.count = max = described_class::THRESHOLD
+      transaction.count = max = described_class.threshold
       transaction.action = 'UsersController#show'
 
       expect(transaction.error_message).to eq(

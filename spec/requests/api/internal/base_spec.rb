@@ -1033,7 +1033,7 @@ RSpec.describe API::Internal::Base do
 
       context 'git push' do
         before do
-          stub_const('Gitlab::QueryLimiting::Transaction::THRESHOLD', 120)
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(120)
         end
 
         subject { push_with_path(key, full_path: path, changes: '_any') }

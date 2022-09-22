@@ -20511,7 +20511,8 @@ CREATE TABLE push_rules (
     reject_unsigned_commits boolean,
     commit_committer_check boolean,
     regexp_uses_re2 boolean DEFAULT true,
-    commit_message_negative_regex character varying
+    commit_message_negative_regex character varying,
+    reject_non_dco_commits boolean
 );
 
 CREATE SEQUENCE push_rules_id_seq

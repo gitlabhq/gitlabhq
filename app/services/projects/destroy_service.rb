@@ -134,7 +134,7 @@ module Projects
       destroy_ci_records!
       destroy_mr_diff_relations!
 
-      destroy_merge_request_diffs! if ::Feature.enabled?(:extract_mr_diff_deletions)
+      destroy_merge_request_diffs!
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510

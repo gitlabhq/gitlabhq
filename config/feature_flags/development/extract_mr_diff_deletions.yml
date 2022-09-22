@@ -1,8 +1,0 @@
----
-name: extract_mr_diff_deletions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96455
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372060
-milestone: '15.4'
-type: development
-group: group::source code
-default_enabled: false

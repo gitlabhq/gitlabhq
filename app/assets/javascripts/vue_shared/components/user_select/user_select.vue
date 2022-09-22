@@ -103,6 +103,7 @@ export default {
         return {
           iid: this.iid,
           fullPath: this.fullPath,
+          getStatus: true,
         };
       },
       update(data) {

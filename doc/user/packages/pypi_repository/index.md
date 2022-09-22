@@ -426,7 +426,7 @@ the three characters, such as `my-package`, `my_package`, and `my....package`.
 
 ## Troubleshooting
 
-To improve performance, PyPI caches files related to a package. Note that PyPI doesn't remove data by
+To improve performance, the pip command caches files related to a package. Note that pip doesn't remove data by
 itself. The cache grows as new packages are installed. If you encounter issues, clear the cache with
 this command:
 
