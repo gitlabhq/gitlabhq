@@ -37,17 +37,13 @@ func (s *s3Session) isExpired() bool {
 	return time.Now().After(s.expiry)
 }
 
-func newS3SessionCache() *s3SessionCache {
-	return &s3SessionCache{sessions: make(map[config.S3Config]*s3Session)}
-}
-
 var (
 	// By default, it looks like IAM instance profiles may last 6 hours
 	// (via curl http://169.254.169.254/latest/meta-data/iam/security-credentials/<role_name>),
 	// but this may be configurable from anywhere for 15 minutes to 12
 	// hours. To be safe, refresh AWS sessions every 10 minutes.
 	sessionExpiration = time.Duration(10 * time.Minute)
-	sessionCache      = newS3SessionCache()
+	sessionCache      = &s3SessionCache{sessions: make(map[config.S3Config]*s3Session)}
 )
 
 // SetupS3Session initializes a new AWS S3 session and refreshes one if
@@ -104,11 +100,4 @@ func setupS3Session(s3Credentials config.S3Credentials, s3Config config.S3Config
 	}
 
 	return sess, nil
-}
-
-func ResetS3Session(s3Config config.S3Config) {
-	sessionCache.Lock()
-	defer sessionCache.Unlock()
-
-	delete(sessionCache.sessions, s3Config)
 }

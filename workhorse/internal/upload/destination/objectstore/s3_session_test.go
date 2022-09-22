@@ -12,6 +12,8 @@ import (
 )
 
 func TestS3SessionSetup(t *testing.T) {
+	resetS3Sessions()
+
 	credentials := config.S3Credentials{}
 	cfg := config.S3Config{Region: "us-west-1", PathStyle: true}
 
@@ -28,11 +30,11 @@ func TestS3SessionSetup(t *testing.T) {
 	_, err = setupS3Session(credentials, anotherConfig)
 	require.NoError(t, err)
 	require.Equal(t, len(sessionCache.sessions), 1)
-
-	ResetS3Session(cfg)
 }
 
 func TestS3SessionEndpointSetup(t *testing.T) {
+	resetS3Sessions()
+
 	credentials := config.S3Credentials{}
 	const customS3Endpoint = "https://example.com"
 	const region = "us-west-2"
@@ -48,11 +50,11 @@ func TestS3SessionEndpointSetup(t *testing.T) {
 
 	stsConfig := sess.ClientConfig(endpoints.StsServiceID)
 	require.Equal(t, "https://sts.amazonaws.com", stsConfig.Endpoint, "STS should use default endpoint")
-
-	ResetS3Session(cfg)
 }
 
 func TestS3SessionExpiry(t *testing.T) {
+	resetS3Sessions()
+
 	credentials := config.S3Credentials{}
 	cfg := config.S3Config{Region: "us-west-1", PathStyle: true}
 
@@ -75,6 +77,10 @@ func TestS3SessionExpiry(t *testing.T) {
 	nextSession, ok := sessionCache.sessions[cfg]
 	require.True(t, ok)
 	require.False(t, nextSession.isExpired())
+}
 
-	ResetS3Session(cfg)
+func resetS3Sessions() {
+	sessionCache.Lock()
+	defer sessionCache.Unlock()
+	sessionCache.sessions = make(map[config.S3Config]*s3Session)
 }

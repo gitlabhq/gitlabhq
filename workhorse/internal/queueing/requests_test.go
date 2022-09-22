@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 var httpHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +23,7 @@ func pausedHttpHandler(pauseCh chan struct{}) http.Handler {
 
 func TestNormalRequestProcessing(t *testing.T) {
 	w := httptest.NewRecorder()
-	h := QueueRequests("Normal request processing", httpHandler, 1, 1, time.Second)
+	h := QueueRequests("Normal request processing", httpHandler, 1, 1, time.Second, prometheus.NewRegistry())
 	h.ServeHTTP(w, nil)
 	if w.Code != 200 {
 		t.Fatal("QueueRequests should process request")
@@ -36,7 +38,7 @@ func testSlowRequestProcessing(name string, count int, limit, queueLimit uint, q
 	pauseCh := make(chan struct{})
 	defer close(pauseCh)
 
-	handler := QueueRequests("Slow request processing: "+name, pausedHttpHandler(pauseCh), limit, queueLimit, queueTimeout)
+	handler := QueueRequests("Slow request processing: "+name, pausedHttpHandler(pauseCh), limit, queueLimit, queueTimeout, prometheus.NewRegistry())
 
 	respCh := make(chan *httptest.ResponseRecorder, count)
 

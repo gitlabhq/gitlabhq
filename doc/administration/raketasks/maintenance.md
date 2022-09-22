@@ -310,6 +310,12 @@ To check the status of specific migrations, you can use the following Rake task:
 sudo gitlab-rake db:migrate:status
 ```
 
+To check the [tracking database on a Geo secondary site](../geo/setup/external_database.md#configure-the-tracking-database), you can use the following Rake task:
+
+```shell
+sudo gitlab-rake db:migrate:status:geo
+```
+
 This outputs a table with a `Status` of `up` or `down` for
 each Migration ID.
 

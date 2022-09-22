@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
+import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -39,7 +39,7 @@ describe('Board card component', () => {
   let list;
   let store;
 
-  const findBoardBlockedIcon = () => wrapper.findComponent(BoardBlockedIcon);
+  const findIssuableBlockedIcon = () => wrapper.findComponent(IssuableBlockedIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEpicCountablesTotalTooltip = () => wrapper.findComponent(GlTooltip);
   const findEpicCountables = () => wrapper.findByTestId('epic-countables');
@@ -189,7 +189,7 @@ describe('Board card component', () => {
         },
       });
 
-      expect(findBoardBlockedIcon().exists()).toBe(true);
+      expect(findIssuableBlockedIcon().exists()).toBe(true);
     });
 
     it('does not show blocked icon if issue is not blocked', () => {
@@ -200,7 +200,7 @@ describe('Board card component', () => {
         },
       });
 
-      expect(findBoardBlockedIcon().exists()).toBe(false);
+      expect(findIssuableBlockedIcon().exists()).toBe(false);
     });
   });
 

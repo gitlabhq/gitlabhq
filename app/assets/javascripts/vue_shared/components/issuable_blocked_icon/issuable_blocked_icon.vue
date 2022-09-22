@@ -1,10 +1,11 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlLoadingIcon } from '@gitlab/ui';
-import { blockingIssuablesQueries, issuableTypes } from '~/boards/constants';
+import { issuableTypes } from '~/boards/constants';
 import { TYPE_ISSUE, TYPE_EPIC } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { truncate } from '~/lib/utils/text_utility';
 import { __, n__, s__, sprintf } from '~/locale';
+import { blockingIssuablesQueries } from './constants';
 
 export default {
   i18n: {
@@ -28,7 +29,6 @@ export default {
     GlLink,
     GlLoadingIcon,
   },
-  blockingIssuablesQueries,
   props: {
     item: {
       type: Object,
@@ -169,8 +169,8 @@ export default {
       :id="glIconId"
       ref="icon"
       :name="blockIcon"
-      class="issue-blocked-icon gl-mr-2 gl-cursor-pointer gl-text-red-500"
-      data-testid="issue-blocked-icon"
+      class="issuable-blocked-icon gl-mr-2 gl-cursor-pointer gl-text-red-500"
+      data-testid="issuable-blocked-icon"
       @mouseenter="handleMouseEnter"
     />
     <gl-popover :target="glIconId" placement="top">
@@ -182,12 +182,19 @@ export default {
         <p class="gl-mt-4 gl-mb-0 gl-font-small">{{ loadingMessage }}</p>
       </template>
       <template v-else>
-        <ul class="gl-list-style-none gl-p-0">
-          <li v-for="issuable in displayedIssuables" :key="issuable.id">
+        <ul class="gl-list-style-none gl-p-0 gl-mb-0">
+          <li v-for="(issuable, index) in displayedIssuables" :key="issuable.id">
             <gl-link :href="issuable.webUrl" class="gl-text-blue-500! gl-font-sm">{{
               issuable.reference
             }}</gl-link>
-            <p class="gl-mb-3 gl-display-block!" data-testid="issuable-title">
+            <p
+              class="gl-display-block!"
+              :class="{
+                'gl-mb-3': index < displayedIssuables.length - 1,
+                'gl-mb-0': index === displayedIssuables.length - 1,
+              }"
+              data-testid="issuable-title"
+            >
               {{ issuable.title }}
             </p>
           </li>

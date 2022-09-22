@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"github.com/gorilla/websocket"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/tracing"
@@ -221,7 +222,7 @@ func configureRoutes(u *upstream) {
 	mimeMultipartUploader := upload.Multipart(api, signingProxy, preparer)
 
 	tempfileMultipartProxy := upload.FixedPreAuthMultipart(api, proxy, preparer)
-	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", tempfileMultipartProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout)
+	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", tempfileMultipartProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout, prometheus.DefaultRegisterer)
 	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, u.watchKeyHandler, u.APICILongPollingDuration)
 
 	dependencyProxyInjector.SetUploadHandler(requestBodyUploader)

@@ -52,7 +52,10 @@ good title can help communicate what the blueprint is and should be considered
 as part of any review.
 -->
 
-[[_TOC_]]
+<!--
+For long pages, consider creating a table of contents.
+The `[_TOC_]` function is not supported on docs.gitlab.com.
+-->
 
 ## Summary
 

@@ -5,8 +5,9 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import BoardBlockedIcon from '~/boards/components/board_blocked_icon.vue';
-import { blockingIssuablesQueries, issuableTypes } from '~/boards/constants';
+import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
+import { blockingIssuablesQueries } from '~/vue_shared/components/issuable_blocked_icon/constants';
+import { issuableTypes } from '~/boards/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import {
   mockIssue,
@@ -21,9 +22,9 @@ import {
   mockBlockedIssue2,
   mockBlockedEpic1,
   mockBlockingEpicIssuablesResponse1,
-} from '../mock_data';
+} from '../../boards/mock_data';
 
-describe('BoardBlockedIcon', () => {
+describe('IssuableBlockedIcon', () => {
   let wrapper;
   let mockApollo;
 
@@ -64,7 +65,7 @@ describe('BoardBlockedIcon', () => {
 
     Vue.use(VueApollo);
     wrapper = extendedWrapper(
-      mount(BoardBlockedIcon, {
+      mount(IssuableBlockedIcon, {
         apolloProvider: mockApollo,
         propsData: {
           item: {
@@ -88,7 +89,7 @@ describe('BoardBlockedIcon', () => {
     issuableType = issuableTypes.issue,
   } = {}) => {
     wrapper = extendedWrapper(
-      shallowMount(BoardBlockedIcon, {
+      shallowMount(IssuableBlockedIcon, {
         propsData: {
           item: {
             ...mockIssuable,

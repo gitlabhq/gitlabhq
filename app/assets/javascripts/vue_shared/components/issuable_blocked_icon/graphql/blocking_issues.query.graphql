@@ -1,4 +1,4 @@
-query BoardBlockingIssues($id: IssueID!) {
+query BlockingIssues($id: IssueID!) {
   issuable: issue(id: $id) {
     id
     blockingIssuables: blockedByIssues {

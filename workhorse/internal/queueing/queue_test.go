@@ -3,10 +3,12 @@ package queueing
 import (
 	"testing"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 func TestNormalQueueing(t *testing.T) {
-	q := newQueue("queue 1", 2, 1, time.Microsecond)
+	q := newQueue("queue name", 2, 1, time.Microsecond, prometheus.NewRegistry())
 	err1 := q.Acquire()
 	if err1 != nil {
 		t.Fatal("we should acquire a new slot")
@@ -31,7 +33,7 @@ func TestNormalQueueing(t *testing.T) {
 }
 
 func TestQueueLimit(t *testing.T) {
-	q := newQueue("queue 2", 1, 0, time.Microsecond)
+	q := newQueue("queue name", 1, 0, time.Microsecond, prometheus.NewRegistry())
 	err1 := q.Acquire()
 	if err1 != nil {
 		t.Fatal("we should acquire a new slot")
@@ -44,7 +46,7 @@ func TestQueueLimit(t *testing.T) {
 }
 
 func TestQueueProcessing(t *testing.T) {
-	q := newQueue("queue 3", 1, 1, time.Second)
+	q := newQueue("queue name", 1, 1, time.Second, prometheus.NewRegistry())
 	err1 := q.Acquire()
 	if err1 != nil {
 		t.Fatal("we should acquire a new slot")

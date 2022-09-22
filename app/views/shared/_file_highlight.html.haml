@@ -4,11 +4,10 @@
     - blame_path = project_blame_path(@project, tree_join(@ref, blob.path))
   .line-numbers{ class: "gl-px-0!", data: { blame_path: blame_path } }
     - if blob.data.present?
-      - link = blob_link if defined?(blob_link)
       - blob.data.each_line.each_with_index do |_, index|
         - i = index + offset
         -# We're not using `link_to` because it is too slow once we get to thousands of lines.
-        %a.file-line-num.diff-line-num{ class: ("js-line-links" if Feature.enabled?(:file_line_blame)), href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i }
+        %a.file-line-num.diff-line-num{ class: ("js-line-links" if Feature.enabled?(:file_line_blame)), href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
           = i
   - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
   .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight, qa_selector: 'file_content' } }

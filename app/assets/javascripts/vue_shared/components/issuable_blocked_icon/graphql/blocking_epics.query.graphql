@@ -1,4 +1,4 @@
-query BoardBlockingEpics($fullPath: ID!, $iid: ID) {
+query BlockingEpics($fullPath: ID!, $iid: ID) {
   group(fullPath: $fullPath) {
     id
     issuable: epic(iid: $iid) {
