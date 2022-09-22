@@ -327,10 +327,12 @@ export const filters = {
   [TOKEN_TYPE_HEALTH]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'healthStatus',
+      [SPECIAL_FILTER]: 'healthStatus',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'health_status',
+        [SPECIAL_FILTER]: 'health_status',
       },
     },
   },

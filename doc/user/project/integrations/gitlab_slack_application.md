@@ -89,3 +89,17 @@ project, you would do:
 In GitLab 15.0 the Slack app is updated to [Slack's new granular permissions app model](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
 
 There is no change in functionality. A reinstall is not required but recommended.
+
+## Troubleshooting
+
+When you work with the Slack app, the
+[App Home](https://api.slack.com/start/overview#app_home) might not display properly.
+As a workaround, ensure your app is up to date.
+
+To update an existing Slack integration:
+
+1. Go to your [chat settings](https://gitlab.com/-/profile/chat_names).
+1. Next to your project, select **Slack application**.
+1. Select **Reinstall Slack app**.
+
+Alternatively, you can [configure a new Slack integration](https://about.gitlab.com/solutions/slack/).

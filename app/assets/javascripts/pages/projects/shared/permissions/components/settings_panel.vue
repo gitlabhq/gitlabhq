@@ -898,7 +898,9 @@ export default {
         :help-path="pagesHelpPath"
         :label="$options.i18n.pagesLabel"
         :help-text="
-          s__('ProjectSettings|With GitLab Pages you can host your static websites on GitLab.')
+          s__(
+            'ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute.',
+          )
         "
       >
         <project-feature-setting

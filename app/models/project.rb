@@ -32,7 +32,6 @@ class Project < ApplicationRecord
   include FeatureGate
   include OptionallySearch
   include FromUnion
-  include IgnorableColumns
   include Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper
@@ -48,8 +47,6 @@ class Project < ApplicationRecord
 
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
-
-  ignore_columns :build_coverage_regex, remove_after: '2022-10-22', remove_with: '15.5'
 
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'

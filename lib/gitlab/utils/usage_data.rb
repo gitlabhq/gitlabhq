@@ -291,14 +291,6 @@ module Gitlab
         end
       end
 
-      def epics_deepest_relationship_level
-        with_duration do
-          # rubocop: disable UsageData/LargeTable
-          { epics_deepest_relationship_level: ::Epic.deepest_relationship_level.to_i }
-          # rubocop: enable UsageData/LargeTable
-        end
-      end
-
       private
 
       def prometheus_client(verify:)

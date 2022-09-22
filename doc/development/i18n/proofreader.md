@@ -65,6 +65,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Michael Hahnle - [GitLab](https://gitlab.com/mhah), [Crowdin](https://crowdin.com/profile/mhah)
   - Katrin Leinweber - [GitLab](https://gitlab.com/katrinleinweber), [Crowdin](https://crowdin.com/profile/katrinleinweber)
   - Vladislav Wanner - [GitLab](https://gitlab.com/RumBugen), [Crowdin](https://crowdin.com/profile/RumBugen)
+  - Daniel Ziegenberg - [GitLab](https://gitlab.com/ziegenberg), [Crowdin](https://crowdin.com/profile/ziegenberg)
 - Greek
   - Proofreaders needed.
 - Hebrew

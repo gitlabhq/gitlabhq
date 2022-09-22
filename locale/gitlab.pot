@@ -31639,7 +31639,7 @@ msgstr ""
 msgid "ProjectSettings|Wiki"
 msgstr ""
 
-msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab."
+msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute."
 msgstr ""
 
 msgid "ProjectTemplates|.NET Core"
@@ -43592,6 +43592,33 @@ msgid "UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}"
 msgstr ""
 
 msgid "UsersSelect|Unassigned"
+msgstr ""
+
+msgid "User|Data Analyst"
+msgstr ""
+
+msgid "User|Development Team Lead"
+msgstr ""
+
+msgid "User|Devops Engineer"
+msgstr ""
+
+msgid "User|Other"
+msgstr ""
+
+msgid "User|Product Designer"
+msgstr ""
+
+msgid "User|Product Manager"
+msgstr ""
+
+msgid "User|Security Analyst"
+msgstr ""
+
+msgid "User|Software Developer"
+msgstr ""
+
+msgid "User|Systems Administrator"
 msgstr ""
 
 msgid "Uses GitLab as an alternative to Sentry."

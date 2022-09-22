@@ -2018,6 +2018,8 @@ On each node perform the following:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
+1. If you're not using NFS, [enable incremental logging](#enable-incremental-logging).
+
 1. If you're [using NFS](#configure-nfs-optional):
    1. If necessary, install the NFS client utility packages using the following
       commands:

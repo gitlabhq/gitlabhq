@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User edit profile' do
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     stub_feature_flags(remove_user_attributes_projects: false)
@@ -456,6 +456,8 @@ RSpec.describe 'User edit profile' do
       end
 
       context 'Remove status button' do
+        let(:user) { create(:user) }
+
         before do
           user.status = UserStatus.new(message: 'Eating bread', emoji: 'stuffed_flatbread')
 
@@ -497,8 +499,8 @@ RSpec.describe 'User edit profile' do
       end
 
       context 'note header' do
-        let(:project) { create(:project_empty_repo, :public) }
-        let(:issue) { create(:issue, project: project) }
+        let_it_be(:project) { create(:project_empty_repo, :public) }
+        let_it_be(:issue) { create(:issue, project: project) }
         let(:emoji) { "stuffed_flatbread" }
 
         before do

@@ -287,6 +287,21 @@ module UsersHelper
       }
     ]
   end
+
+  # the keys should match the user model defined roles in app/models/user.rb
+  def localized_user_roles
+    {
+      software_developer: s_('User|Software Developer'),
+      development_team_lead: s_('User|Development Team Lead'),
+      devops_engineer: s_('User|Devops Engineer'),
+      systems_administrator: s_('User|Systems Administrator'),
+      security_analyst: s_('User|Security Analyst'),
+      data_analyst: s_('User|Data Analyst'),
+      product_manager: s_('User|Product Manager'),
+      product_designer: s_('User|Product Designer'),
+      other: s_('User|Other')
+    }.with_indifferent_access.freeze
+  end
 end
 
 UsersHelper.prepend_mod_with('UsersHelper')
