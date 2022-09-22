@@ -1,3 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
 .clusters-container {
   @include media-breakpoint-down(xs) {
     .nav-controls {
@@ -16,17 +18,5 @@
   @include media-breakpoint-up(sm) {
     @include gl-pt-2;
     min-height: 372px;
-  }
-}
-
-.agent-activity-list {
-  .system-note .timeline-entry-inner {
-    .timeline-icon {
-      @include gl-mt-1;
-    }
-  }
-
-  &.issuable-discussion .main-notes-list::before {
-    @include gl-top-3;
   }
 }

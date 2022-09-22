@@ -59,15 +59,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
   end
 
   let(:project_identifier) { 'namespace/repo' }
-
-  let(:data) do
-    {
-      'bb_session' => {
-        'bitbucket_token' => "123456",
-        'bitbucket_refresh_token' => "secret"
-      }
-    }
-  end
+  let(:data) { { 'token' => 'token' } }
 
   let(:project) do
     create(

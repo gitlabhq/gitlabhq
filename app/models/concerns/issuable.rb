@@ -431,7 +431,16 @@ module Issuable
   end
 
   def assignee_or_author?(user)
-    author_id == user.id || assignees.exists?(user.id)
+    author_id == user.id || assignee?(user)
+  end
+
+  def assignee?(user)
+    # Necessary so we can preload the association and avoid N + 1 queries
+    if assignees.loaded?
+      assignees.to_a.include?(user)
+    else
+      assignees.exists?(user.id)
+    end
   end
 
   def today?
