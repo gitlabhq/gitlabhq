@@ -25,7 +25,7 @@ module Registrations
 
         members = current_user.members
 
-        if members.count == 1 && members.last.source.present?
+        if registering_from_invite?(members)
           redirect_to members_activity_path(members), notice: helpers.invite_accepted_notice(members.last)
         else
           redirect_to path_for_signed_in_user(current_user)
@@ -36,6 +36,10 @@ module Registrations
     end
 
     private
+
+    def registering_from_invite?(members)
+      members.count == 1 && members.last.source.present?
+    end
 
     def require_current_user
       return redirect_to new_user_registration_path unless current_user

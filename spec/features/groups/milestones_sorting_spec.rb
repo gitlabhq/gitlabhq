@@ -14,6 +14,7 @@ RSpec.describe 'Milestones sorting', :js do
   let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
   before do
+    stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
     sign_in(user)
   end
 

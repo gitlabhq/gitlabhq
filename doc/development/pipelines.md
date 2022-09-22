@@ -62,6 +62,8 @@ The test mappings contain a map of each source files to a list of test files whi
 
 In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current merge request.
 
+Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the minimal tests needed for the current merge request.
+
 #### Exceptional cases
 
 In addition, there are a few circumstances where we would always run the full RSpec tests:
@@ -96,18 +98,6 @@ We only run the minimal RSpec & Jest jobs for fork pipelines unless the `pipelin
 label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
-
-## Faster feedback when reverting merge requests
-
-When you need to revert a merge request, to get accelerated feedback, you can add the `~pipeline:revert` label to your merge request.
-
-When this label is assigned, the following steps of the CI/CD pipeline are skipped:
-
-- The `e2e:package-and-test` job.
-- The `rspec:undercoverage` job.
-- The entire [Review Apps process](testing_guide/review_apps.md).
-
-Apply the label to the merge request, and run a new pipeline for the MR.
 
 ## Fail-fast job in merge request pipelines
 
@@ -154,6 +144,18 @@ merge request. This prevents `rspec fail-fast` duration from exceeding the avera
 `rspec` job duration and defeating its purpose.
 
 This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
+
+## Faster feedback when reverting merge requests
+
+When you need to revert a merge request, to get accelerated feedback, you can add the `~pipeline:revert` label to your merge request.
+
+When this label is assigned, the following steps of the CI/CD pipeline are skipped:
+
+- The `e2e:package-and-test` job.
+- The `rspec:undercoverage` job.
+- The entire [Review Apps process](testing_guide/review_apps.md).
+
+Apply the label to the merge request, and run a new pipeline for the MR.
 
 ## Test jobs
 

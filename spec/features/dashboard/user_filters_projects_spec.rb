@@ -9,6 +9,8 @@ RSpec.describe 'Dashboard > User filters projects' do
   let(:project2) { create(:project, name: 'Treasure', namespace: user2.namespace, created_at: 1.second.ago, updated_at: 1.second.ago) }
 
   before do
+    stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
+
     project.add_maintainer(user)
 
     sign_in(user)

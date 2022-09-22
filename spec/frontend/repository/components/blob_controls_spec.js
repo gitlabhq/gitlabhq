@@ -8,9 +8,13 @@ import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql'
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createRouter from '~/repository/router';
 import { updateElementsVisibility } from '~/repository/utils/dom';
+import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
+import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import { blobControlsDataMock, refMock } from '../mock_data';
 
 jest.mock('~/repository/utils/dom');
+jest.mock('~/behaviors/shortcuts/shortcuts_blob');
+jest.mock('~/blob/blob_line_permalink_updater');
 
 let router;
 let wrapper;
@@ -82,4 +86,12 @@ describe('Blob controls component', () => {
       expect(updateElementsVisibility).toHaveBeenCalledWith('.tree-controls', true);
     },
   );
+
+  it('loads the ShortcutsBlob', () => {
+    expect(ShortcutsBlob).toHaveBeenCalled();
+  });
+
+  it('loads the BlobLinePermalinkUpdater', () => {
+    expect(BlobLinePermalinkUpdater).toHaveBeenCalled();
+  });
 });

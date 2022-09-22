@@ -19,6 +19,7 @@ import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
+import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import { temporaryConfig } from '~/graphql_shared/issuable_client';
@@ -29,6 +30,7 @@ import {
   workItemResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemWeightSubscriptionResponse,
+  workItemAssigneesSubscriptionResponse,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -46,6 +48,9 @@ describe('WorkItemDetail component', () => {
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
+  const assigneesSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemAssigneesSubscriptionResponse);
   const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -80,6 +85,7 @@ describe('WorkItemDetail component', () => {
       [workItemQuery, handler],
       [workItemTitleSubscription, subscriptionHandler],
       [workItemDatesSubscription, datesSubscriptionHandler],
+      [workItemAssigneesSubscription, assigneesSubscriptionHandler],
       confidentialityMock,
     ];
 
@@ -410,6 +416,30 @@ describe('WorkItemDetail component', () => {
 
       expect(titleSubscriptionHandler).toHaveBeenCalledWith({
         issuableId: workItemQueryResponse.data.workItem.id,
+      });
+    });
+
+    describe('assignees subscription', () => {
+      describe('when the assignees widget exists', () => {
+        it('calls the assignees subscription', async () => {
+          createComponent();
+          await waitForPromises();
+
+          expect(assigneesSubscriptionHandler).toHaveBeenCalledWith({
+            issuableId: workItemQueryResponse.data.workItem.id,
+          });
+        });
+      });
+
+      describe('when the assignees widget does not exist', () => {
+        it('does not call the assignees subscription', async () => {
+          const response = workItemResponseFactory({ assigneesWidgetPresent: false });
+          const handler = jest.fn().mockResolvedValue(response);
+          createComponent({ handler, workItemsMvc2Enabled: true });
+          await waitForPromises();
+
+          expect(assigneesSubscriptionHandler).not.toHaveBeenCalled();
+        });
       });
     });
 

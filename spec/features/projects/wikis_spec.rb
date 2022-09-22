@@ -3,6 +3,10 @@
 require "spec_helper"
 
 RSpec.describe 'Project wikis', :js do
+  before do
+    stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
+  end
+
   let_it_be(:user) { create(:user) }
 
   let(:wiki) { create(:project_wiki, user: user, project: project) }

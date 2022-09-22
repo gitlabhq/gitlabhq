@@ -5859,32 +5859,6 @@ Input type: `WorkItemUpdateTaskInput`
 | <a id="mutationworkitemupdatetasktask"></a>`task` | [`WorkItem`](#workitem) | Updated task. |
 | <a id="mutationworkitemupdatetaskworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
-### `Mutation.workItemUpdateWidgets`
-
-Updates the attributes of a work item's widgets by global ID. Available only when feature flag `work_items` is enabled.
-
-WARNING:
-**Introduced** in 15.1.
-This feature is in Alpha. It can be changed or removed at any time.
-
-Input type: `WorkItemUpdateWidgetsInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemupdatewidgetsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemupdatewidgetsdescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
-| <a id="mutationworkitemupdatewidgetsid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemupdatewidgetsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemupdatewidgetserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationworkitemupdatewidgetsworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
-
 ## Connections
 
 Some types in our schema are `Connection` types - they represent a paginated

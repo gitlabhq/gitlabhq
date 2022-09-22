@@ -44,6 +44,7 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context "from explore projects" do
     before do
+      stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
       sign_in(user)
       visit(explore_projects_path)
       find('#sort-projects-dropdown').click
@@ -55,6 +56,7 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context 'from dashboard projects' do
     before do
+      stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
       sign_in(user)
       visit(dashboard_projects_path)
       find('#sort-projects-dropdown').click
@@ -66,6 +68,7 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context 'from group homepage', :js do
     before do
+      stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
       stub_feature_flags(group_overview_tabs_vue: false)
       sign_in(user)
       visit(group_canonical_path(group))
@@ -80,6 +83,7 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context 'from group details', :js do
     before do
+      stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
       stub_feature_flags(group_overview_tabs_vue: false)
       sign_in(user)
       visit(details_group_path(group))

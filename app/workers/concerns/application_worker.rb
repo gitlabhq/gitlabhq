@@ -134,10 +134,6 @@ module ApplicationWorker
       @log_bulk_perform_async = true
     end
 
-    def queue_size
-      Sidekiq::Queue.new(queue).size
-    end
-
     def bulk_perform_async(args_list)
       if log_bulk_perform_async?
         Sidekiq.logger.info('class' => self.name, 'args_list' => args_list, 'args_list_count' => args_list.length, 'message' => 'Inserting multiple jobs')

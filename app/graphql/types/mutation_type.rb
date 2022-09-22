@@ -146,7 +146,6 @@ module Types
     mount_mutation Mutations::WorkItems::Delete, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::DeleteTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Update, alpha: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::UpdateWidgets, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::UpdateTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update

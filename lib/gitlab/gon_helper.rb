@@ -56,6 +56,7 @@ module Gitlab
       push_frontend_feature_flag(:new_header_search)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:gl_avatar_for_all_user_avatars)
+      push_frontend_feature_flag(:gl_listbox_for_sort_dropdowns)
     end
 
     # Exposes the state of a feature flag to the frontend code.

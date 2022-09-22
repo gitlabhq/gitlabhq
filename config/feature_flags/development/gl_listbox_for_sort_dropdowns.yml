@@ -1,0 +1,8 @@
+---
+name: gl_listbox_for_sort_dropdowns
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98363
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364715
+milestone: '15.5'
+type: development
+group: group::foundations
+default_enabled: false

@@ -26,7 +26,7 @@
 
 <!-- #### TODO Checklist
  Consider adding a checklist in order to keep track of what stage the research is up to. Some possible checklist templates are here:
- https://about.gitlab.com/handbook/engineering/ux/ux-research-training/templates-resources-for-research-studies/#checklists
+ https://about.gitlab.com/handbook/product/ux/ux-research-training/templates-resources-for-research-studies/#checklists
  -->
 
 /label ~"workflow::solution validation"

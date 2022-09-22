@@ -183,7 +183,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def resource
     @resource ||= Users::RegistrationsBuildService
-                    .new(current_user, sign_up_params.merge({ skip_confirmation: skip_email_confirmation? }))
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email? }))
                     .execute
   end
 
@@ -191,7 +191,7 @@ class RegistrationsController < Devise::RegistrationsController
     @devise_mapping ||= Devise.mappings[:user]
   end
 
-  def skip_email_confirmation?
+  def registered_with_invite_email?
     invite_email = session.delete(:invite_email)
 
     sign_up_params[:email] == invite_email

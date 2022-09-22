@@ -4,6 +4,8 @@ import { __ } from '~/locale';
 import createFlash from '~/flash';
 import getRefMixin from '~/repository/mixins/get_ref';
 import initSourcegraph from '~/sourcegraph';
+import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
+import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import { updateElementsVisibility } from '../utils/dom';
 import blobControlsQuery from '../queries/blob_controls.query.graphql';
 
@@ -84,6 +86,33 @@ export default {
     },
     blobInfo() {
       initSourcegraph();
+      this.$nextTick(() => {
+        this.initShortcuts();
+        this.initLinksUpdate();
+      });
+    },
+  },
+  methods: {
+    initShortcuts() {
+      const fileBlobPermalinkUrlElement = document.querySelector(
+        '.js-data-file-blob-permalink-url',
+      );
+      const fileBlobPermalinkUrl =
+        fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+      // eslint-disable-next-line no-new
+      new ShortcutsBlob({
+        skipResetBindings: true,
+        fileBlobPermalinkUrl,
+        fileBlobPermalinkUrlElement,
+      });
+    },
+    initLinksUpdate() {
+      // eslint-disable-next-line no-new
+      new BlobLinePermalinkUpdater(
+        document.querySelector('.tree-holder'),
+        '.file-line-num[data-line-number], .file-line-num[data-line-number] *',
+        document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
+      );
     },
   },
 };
@@ -99,6 +128,7 @@ export default {
       data-testid="blame"
       :href="blobInfo.blamePath"
       :class="$options.buttonClassList"
+      class="js-blob-blame-link"
     >
       {{ $options.i18n.blame }}
     </gl-button>

@@ -25,6 +25,7 @@ import {
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
+import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 
@@ -128,6 +129,17 @@ export default {
           },
           skip() {
             return !this.workItemDueDate;
+          },
+        },
+        {
+          document: workItemAssigneesSubscription,
+          variables() {
+            return {
+              issuableId: this.workItemId,
+            };
+          },
+          skip() {
+            return !this.workItemAssignees;
           },
         },
       ],

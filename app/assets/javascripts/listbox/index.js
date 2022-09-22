@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlListbox } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -31,6 +31,28 @@ export function initListbox(el, { onChange } = {}) {
       },
     },
     render(h) {
+      if (gon.features?.glListboxForSortDropdowns) {
+        return h(GlListbox, {
+          props: {
+            items,
+            right,
+            selected: this.selected,
+            toggleText: this.text,
+          },
+          class: className,
+          on: {
+            select: (selectedValue) => {
+              this.selected = selectedValue;
+              const selectedItem = items.find(({ value }) => value === selectedValue);
+
+              if (typeof onChange === 'function') {
+                onChange(selectedItem);
+              }
+            },
+          },
+        });
+      }
+
       return h(
         GlDropdown,
         {

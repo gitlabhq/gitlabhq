@@ -22,6 +22,7 @@ const updateLineNumbersOnBlobPermalinks = (linksToUpdate) => {
 };
 
 function BlobLinePermalinkUpdater(blobContentHolder, lineNumberSelector, elementsToUpdate) {
+  if (!blobContentHolder) return;
   const updateBlameAndBlobPermalinkCb = () => {
     // Wait for the hash to update from the LineHighlighter callback
     setTimeout(() => {

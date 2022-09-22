@@ -3,12 +3,15 @@ import { GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 const STATUS_TYPES = {
   SUCCESS: 'success',
   WARNING: 'warning',
   DANGER: 'danger',
 };
+
+const UPGRADE_DOCS_URL = helpPagePath('update/index');
 
 export default {
   name: 'GitlabVersionCheck',
@@ -58,11 +61,17 @@ export default {
         });
     },
   },
+  UPGRADE_DOCS_URL,
 };
 </script>
 
 <template>
-  <gl-badge v-if="status" class="version-check-badge" :variant="status" :size="size">{{
-    title
-  }}</gl-badge>
+  <gl-badge
+    v-if="status"
+    :href="$options.UPGRADE_DOCS_URL"
+    class="version-check-badge"
+    :variant="status"
+    :size="size"
+    >{{ title }}</gl-badge
+  >
 </template>

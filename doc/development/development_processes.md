@@ -79,7 +79,7 @@ In these cases, use the following workflow:
    - [Frontend](https://about.gitlab.com/handbook/engineering/frontend/)
    - [Backend](https://about.gitlab.com/handbook/engineering/)
    - [Database](https://about.gitlab.com/handbook/engineering/development/database/)
-   - [User Experience (UX)](https://about.gitlab.com/handbook/engineering/ux/)
+   - [User Experience (UX)](https://about.gitlab.com/handbook/product/ux/)
    - [Security](https://about.gitlab.com/handbook/engineering/security/)
    - [Quality](https://about.gitlab.com/handbook/engineering/quality/)
      - [Engineering Productivity](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/)

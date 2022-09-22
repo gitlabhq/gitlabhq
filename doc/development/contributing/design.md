@@ -100,7 +100,7 @@ When the design is ready, _before_ starting its implementation:
 
 - Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#copy-link)
   link or [GitLab Designs feature](../../user/project/issues/design_management.md).
-  See [when you should use each tool](https://about.gitlab.com/handbook/engineering/ux/product-designer/#deliver).
+  See [when you should use each tool](https://about.gitlab.com/handbook/product/ux/product-designer/#deliver).
 - Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
 - Document animations and transitions.
 - Document responsive behaviors.

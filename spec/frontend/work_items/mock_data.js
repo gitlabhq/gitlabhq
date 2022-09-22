@@ -444,6 +444,22 @@ export const workItemWeightSubscriptionResponse = {
   },
 };
 
+export const workItemAssigneesSubscriptionResponse = {
+  data: {
+    issuableAssigneesUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemAssigneesWeight',
+          assignees: {
+            nodes: [mockAssignees[0]],
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const workItemHierarchyEmptyResponse = {
   data: {
     workItem: {

@@ -8,7 +8,7 @@ type: index
 
 # Security **(FREE)**
 
-- [Password storage](password_storage.md)
+- [Passwords and OAuth tokens storage](password_storage.md)
 - [Password length limits](password_length_limits.md)
 - [Generated passwords for users created through integrated authentication](passwords_for_integrated_authentication_methods.md)
 - [Restrict SSH key technologies and minimum length](ssh_keys_restrictions.md)

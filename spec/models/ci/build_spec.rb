@@ -5362,7 +5362,7 @@ RSpec.describe Ci::Build do
   end
 
   describe '#clone' do
-    let_it_be(:user) { FactoryBot.build(:user) }
+    let_it_be(:user) { create(:user) }
 
     context 'when given new job variables' do
       context 'when the cloned build has an action' do

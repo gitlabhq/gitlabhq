@@ -972,37 +972,7 @@ License.select(&TYPE).each(&:destroy!)
 
 ### Registry Disk Space Usage by Project
 
-As a GitLab administrator, you may want to reduce disk space consumption.
-A common culprit is Docker Registry images that are no longer in use. To find
-the storage broken down by each project, run the following in the
-[GitLab Rails console](../operations/rails_console.md):
-
-```ruby
-projects_and_size = [["project_id", "creator_id", "registry_size_bytes", "project path"]]
-# You need to specify the projects that you want to look through. You can get these in any manner.
-projects = Project.last(100)
-
-projects.each do |p|
-   project_total_size = 0
-   container_repositories = p.container_repositories
-
-   container_repositories.each do |c|
-       c.tags.each do |t|
-          project_total_size = project_total_size + t.total_size unless t.total_size.nil?
-       end
-   end
-
-   if project_total_size > 0
-      projects_and_size << [p.project_id, p.creator.id, project_total_size, p.full_path]
-   end
-end
-
-# projects_and_size is filled out now
-# maybe print it as comma separated output?
-projects_and_size.each do |ps|
-   puts "%s,%s,%s,%s" % ps
-end
-```
+Find this content in the [Container Registry troubleshooting documentation](../packages/container_registry.md#registry-disk-space-usage-by-project).
 
 ### Run the Cleanup policy now
 

@@ -2,12 +2,15 @@ import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import axios from '~/lib/utils/axios_utils';
 import GitlabVersionCheck from '~/vue_shared/components/gitlab_version_check.vue';
 
 describe('GitlabVersionCheck', () => {
   let wrapper;
   let mock;
+
+  const UPGRADE_DOCS_URL = helpPagePath('update/index');
 
   const defaultResponse = {
     code: 200,
@@ -101,6 +104,10 @@ describe('GitlabVersionCheck', () => {
 
         it(`variant is ${expectedUI.variant}`, () => {
           expect(findGlBadge().attributes('variant')).toBe(expectedUI.variant);
+        });
+
+        it(`link is ${UPGRADE_DOCS_URL}`, () => {
+          expect(findGlBadge().attributes('href')).toBe(UPGRADE_DOCS_URL);
         });
       });
     });

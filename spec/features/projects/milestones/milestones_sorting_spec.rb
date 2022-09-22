@@ -21,6 +21,7 @@ RSpec.describe 'Milestones sorting', :js do
   end
 
   before do
+    stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
     create(:milestone, start_date: 7.days.from_now, due_date: 10.days.from_now, title: "a", project: project)
     create(:milestone, start_date: 6.days.from_now, due_date: 11.days.from_now, title: "c", project: project)
     create(:milestone, start_date: 5.days.from_now, due_date: 12.days.from_now, title: "b", project: project)

@@ -9,6 +9,8 @@ RSpec.describe 'Sort labels', :js do
   let!(:label2) { create(:label, title: 'Bar', description: 'Fusce consequat', project: project) }
 
   before do
+    stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
+
     project.add_maintainer(user)
     sign_in(user)
 
