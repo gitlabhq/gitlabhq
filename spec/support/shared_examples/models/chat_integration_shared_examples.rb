@@ -166,7 +166,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
       let(:opts) { { title: "Awesome issue", description: "please fix" } }
       let(:sample_data) do
         service = Issues::CreateService.new(project: project, current_user: user, params: opts, spam_params: nil)
-        issue = service.execute
+        issue = service.execute[:issue]
         service.hook_data(issue, "open")
       end
 

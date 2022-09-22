@@ -481,6 +481,23 @@ RSpec.describe Boards::IssuesController do
       end
     end
 
+    context 'when create service returns an unrecoverable error' do
+      before do
+        allow_next_instance_of(Issues::CreateService) do |create_service|
+          allow(create_service).to receive(:execute).and_return(
+            ServiceResponse.error(message: 'unrecoverable error', http_status: 404)
+          )
+        end
+      end
+
+      it 'returns an array with errors an service http_status' do
+        create_issue user: user, board: board, list: list1, title: 'New issue'
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response).to contain_exactly('unrecoverable error')
+      end
+    end
+
     context 'with guest user' do
       context 'in open list' do
         it 'returns a successful 200 response' do

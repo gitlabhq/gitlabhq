@@ -34,13 +34,14 @@ module Boards
     end
 
     def create
-      service = Boards::Issues::CreateService.new(board_parent, project, current_user, issue_params)
-      issue = service.execute
+      result = Boards::Issues::CreateService.new(board_parent, project, current_user, issue_params).execute
 
-      if issue.valid?
-        render json: serialize_as_json(issue)
+      if result.success?
+        render json: serialize_as_json(result[:issue])
+      elsif result[:issue]
+        render json: result[:issue].errors, status: :unprocessable_entity
       else
-        render json: issue.errors, status: :unprocessable_entity
+        render json: result.errors, status: result.http_status || 422
       end
     end
 

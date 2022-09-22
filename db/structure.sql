@@ -30187,15 +30187,23 @@ CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replie
 
 CREATE INDEX index_sbom_component_versions_on_component_id ON sbom_component_versions USING btree (component_id);
 
+CREATE UNIQUE INDEX index_sbom_component_versions_on_component_id_and_version ON sbom_component_versions USING btree (component_id, version);
+
+CREATE UNIQUE INDEX index_sbom_components_on_component_type_and_name ON sbom_components USING btree (component_type, name);
+
 CREATE INDEX index_sbom_occurrences_on_component_id ON sbom_occurrences USING btree (component_id);
 
 CREATE INDEX index_sbom_occurrences_on_component_version_id ON sbom_occurrences USING btree (component_version_id);
+
+CREATE UNIQUE INDEX index_sbom_occurrences_on_ingestion_attributes ON sbom_occurrences USING btree (project_id, component_id, component_version_id, source_id, commit_sha);
 
 CREATE INDEX index_sbom_occurrences_on_pipeline_id ON sbom_occurrences USING btree (pipeline_id);
 
 CREATE INDEX index_sbom_occurrences_on_project_id ON sbom_occurrences USING btree (project_id);
 
 CREATE INDEX index_sbom_occurrences_on_source_id ON sbom_occurrences USING btree (source_id);
+
+CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources USING btree (source_type, source);
 
 CREATE INDEX index_scim_identities_on_group_id ON scim_identities USING btree (group_id);
 

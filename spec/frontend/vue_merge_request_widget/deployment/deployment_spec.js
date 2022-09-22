@@ -137,9 +137,11 @@ describe('Deployment component', () => {
         if (actionButtons.includes(DeploymentViewButton)) {
           it('renders the View button with expected text', () => {
             if (status === SUCCESS) {
-              expect(wrapper.find(DeploymentViewButton).text()).toContain('View app');
+              expect(wrapper.findComponent(DeploymentViewButton).text()).toContain('View app');
             } else {
-              expect(wrapper.find(DeploymentViewButton).text()).toContain('View latest app');
+              expect(wrapper.findComponent(DeploymentViewButton).text()).toContain(
+                'View latest app',
+              );
             }
           });
         }

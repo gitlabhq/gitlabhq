@@ -4,6 +4,7 @@ module Issues
   class CreateService < Issues::BaseService
     include ResolveDiscussions
     prepend RateLimitedService
+    include ::Services::ReturnServiceResponses
 
     rate_limit key: :issues_create,
                opts: { scope: [:project, :current_user, :external_author] }
@@ -27,7 +28,13 @@ module Issues
       @add_related_issue ||= params.delete(:add_related_issue)
       filter_resolve_discussion_params
 
-      create(@issue, skip_system_notes: skip_system_notes)
+      issue = create(@issue, skip_system_notes: skip_system_notes)
+
+      if issue.persisted?
+        success(issue: issue)
+      else
+        error(issue.errors.full_messages, 422, pass_back: { issue: issue })
+      end
     end
 
     def external_author

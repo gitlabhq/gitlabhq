@@ -35,6 +35,23 @@ RSpec.describe Issues::MoveService do
       let!(:new_issue) { move_service.execute(old_issue, new_project) }
     end
 
+    context 'when issue creation fails' do
+      include_context 'user can move issue'
+
+      before do
+        allow_next_instance_of(Issues::CreateService) do |create_service|
+          allow(create_service).to receive(:execute).and_return(ServiceResponse.error(message: 'some error'))
+        end
+      end
+
+      it 'raises a move error' do
+        expect { move_service.execute(old_issue, new_project) }.to raise_error(
+          Issues::MoveService::MoveError,
+          'some error'
+        )
+      end
+    end
+
     context 'issue movable' do
       include_context 'user can move issue'
 

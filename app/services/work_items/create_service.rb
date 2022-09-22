@@ -2,7 +2,6 @@
 
 module WorkItems
   class CreateService < Issues::CreateService
-    include ::Services::ReturnServiceResponses
     include WidgetableService
 
     def initialize(project:, current_user: nil, params: {}, spam_params:, widget_params: {})
@@ -21,7 +20,10 @@ module WorkItems
         return error(_('Operation not allowed'), :forbidden)
       end
 
-      work_item = super
+      result = super
+      return result if result.error?
+
+      work_item = result[:issue]
 
       if work_item.valid?
         success(payload(work_item))

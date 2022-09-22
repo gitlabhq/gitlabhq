@@ -219,7 +219,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
     end
 
     context 'with a match line' do
-      it 'does not allow commenting' do
+      it 'does not allow commenting', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375024' do
         match_should_not_allow_commenting(find_by_scrolling('.match', match: :first))
       end
     end

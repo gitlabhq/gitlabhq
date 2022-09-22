@@ -675,7 +675,7 @@ RSpec.describe 'File blob', :js do
           expect(page).to have_content('This project is licensed under the MIT License.')
 
           # shows a learn more link
-          expect(page).to have_link('Learn more', href: 'http://choosealicense.com/licenses/mit/')
+          expect(page).to have_link('Learn more', href: 'https://opensource.org/licenses/MIT')
         end
       end
     end

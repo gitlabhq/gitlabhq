@@ -249,7 +249,7 @@ export default {
 
       this.updateContent(params);
 
-      this.track('click_filter_tabs', { label: TRACKING_CATEGORIES.tabs });
+      this.track('click_filter_tabs', { label: TRACKING_CATEGORIES.tabs, property: scope });
     },
     successCallback(resp) {
       // Because we are polling & the user is interacting verify if the response received

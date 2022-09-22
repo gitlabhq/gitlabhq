@@ -96,7 +96,7 @@ RSpec.describe AutocompleteController do
     end
 
     context 'user order' do
-      it 'shows exact matches first' do
+      it 'shows exact matches first', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375028' do
         reported_user = create(:user, username: 'reported_user', name: 'Doug')
         user = create(:user, username: 'user', name: 'User')
         user1 = create(:user, username: 'user1', name: 'Ian')

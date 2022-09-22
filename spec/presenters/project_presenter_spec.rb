@@ -10,13 +10,15 @@ RSpec.describe ProjectPresenter do
   describe '#license_short_name' do
     context 'when project.repository has a license_key' do
       it 'returns the nickname of the license if present' do
-        allow(project.repository).to receive(:license_key).and_return('agpl-3.0')
+        allow(project.repository).to receive(:license).and_return(
+          ::Gitlab::Git::DeclaredLicense.new(name: 'foo', nickname: 'GNU AGPLv3'))
 
         expect(presenter.license_short_name).to eq('GNU AGPLv3')
       end
 
       it 'returns the name of the license if nickname is not present' do
-        allow(project.repository).to receive(:license_key).and_return('mit')
+        allow(project.repository).to receive(:license).and_return(
+          ::Gitlab::Git::DeclaredLicense.new(name: 'MIT License'))
 
         expect(presenter.license_short_name).to eq('MIT License')
       end
@@ -24,7 +26,7 @@ RSpec.describe ProjectPresenter do
 
     context 'when project.repository has no license_key but a license_blob' do
       it 'returns LICENSE' do
-        allow(project.repository).to receive(:license_key).and_return(nil)
+        allow(project.repository).to receive(:license).and_return(nil)
 
         expect(presenter.license_short_name).to eq('LICENSE')
       end

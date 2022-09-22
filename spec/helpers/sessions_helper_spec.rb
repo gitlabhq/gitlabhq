@@ -92,6 +92,12 @@ RSpec.describe SessionsHelper do
     end
 
     context 'when an email address is very short' do
+      let(:email) { 'a@b.c' }
+
+      it { is_expected.to eq('a@b.c') }
+    end
+
+    context 'when an email address is even shorter' do
       let(:email) { 'a@b' }
 
       it { is_expected.to eq('a@b') }

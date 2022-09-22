@@ -21,12 +21,16 @@ module Gitlab
         title = match[:title]
         description = match[:description].to_s.rstrip
 
-        issue = create_issue(title: title, description: description)
+        result = create_issue(title: title, description: description)
 
-        if issue.persisted?
-          presenter(issue).present
+        if result.success?
+          presenter(result[:issue]).present
+        elsif result[:issue]
+          presenter(result[:issue]).display_errors
         else
-          presenter(issue).display_errors
+          Gitlab::SlashCommands::Presenters::Error.new(
+            result.errors.join(', ')
+          ).message
         end
       end
 

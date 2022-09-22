@@ -550,8 +550,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *core-backend-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *backend-patterns
     - <<: *if-security-merge-request
@@ -579,8 +577,6 @@
       changes: *core-backend-patterns
     - <<: *if-merge-request
       changes: *workhorse-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
@@ -629,8 +625,6 @@
 ######################
 .build-images:rules:build-qa-image:
   rules:
-    - <<: *if-not-ee
-      when: never
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-merge-request-targeting-stable-branch
@@ -768,8 +762,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *startup-css-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
 
 .frontend:rules:frontend_fixture-as-if-foss:
   rules:
@@ -906,8 +898,6 @@
       changes: *code-qa-patterns
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request
-      changes: *ci-patterns
 
 .qa:rules:internal-as-if-foss:
   rules:
@@ -1009,8 +999,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *core-backend-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
     # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
@@ -1112,8 +1100,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *core-backend-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
     # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
@@ -1201,8 +1187,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *core-backend-patterns
-    - <<: *if-merge-request
-      changes: *ci-patterns
     # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request-labels-as-if-foss
@@ -1415,9 +1399,6 @@
       when: never
     - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true" || $RETRY_FAILED_TESTS_IN_NEW_PROCESS == "true"'
       changes: *code-backstage-patterns
-      when: always
-    - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true" || $RETRY_FAILED_TESTS_IN_NEW_PROCESS == "true"'
-      changes: *ci-patterns
       when: always
 
 #########################

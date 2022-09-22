@@ -1164,6 +1164,21 @@ RSpec.describe API::Issues do
       expect(json_response['title']).to eq('new issue')
       expect(json_response['issue_type']).to eq('issue')
     end
+
+    context 'when issue create service returns an unrecoverable error' do
+      before do
+        allow_next_instance_of(Issues::CreateService) do |create_service|
+          allow(create_service).to receive(:execute).and_return(ServiceResponse.error(message: 'some error', http_status: 403))
+        end
+      end
+
+      it 'returns and error message and status code from the service' do
+        post api("/projects/#{project.id}/issues", user), params: { title: 'new issue' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('some error')
+      end
+    end
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid' do

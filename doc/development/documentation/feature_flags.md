@@ -34,7 +34,7 @@ Possible version history entries are:
 > - [Enabled on GitLab.com](issue-link) in GitLab X.X.
 > - [Enabled on GitLab.com](issue-link) in GitLab X.X. Available to GitLab.com administrators only.
 > - [Enabled on self-managed](issue-link) in GitLab X.X.
-> - [Generally available](issue-link) in GitLab X.Y. [Feature flag `flag_name`](issue-link) removed.
+> - [Generally available](issue-link) in GitLab X.Y. Feature flag `flag_name` removed.
 ```
 
 You can combine entries if they happened in the same release:
@@ -115,5 +115,5 @@ And, when the feature is done and fully available to all users:
 > - Introduced in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/issue/etc) in GitLab 13.8.
 > - [Enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab 13.9.
-> - [Generally available](issue-link) in GitLab 14.0. [Feature flag `forti_token_cloud`](issue-link) removed.
+> - [Generally available](issue-link) in GitLab 14.0. Feature flag `forti_token_cloud` removed.
 ```

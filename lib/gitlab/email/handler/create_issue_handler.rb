@@ -36,8 +36,14 @@ module Gitlab
 
           validate_permission!(:create_issue)
 
+          result = create_issue
+          issue = result[:issue]
+
+          # issue won't be present only on unrecoverable errors
+          raise InvalidIssueError, result.errors.join(', ') if result.error? && issue.blank?
+
           verify_record!(
-            record: create_issue,
+            record: issue,
             invalid_exception: InvalidIssueError,
             record_name: 'issue')
         end

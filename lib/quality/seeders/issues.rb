@@ -31,9 +31,9 @@ module Quality
             }
             params[:closed_at] = params[:created_at] + rand(35).days if params[:state] == 'closed'
 
-            issue = ::Issues::CreateService.new(project: project, current_user: team.sample, params: params, spam_params: nil).execute_without_rate_limiting
+            create_result = ::Issues::CreateService.new(project: project, current_user: team.sample, params: params, spam_params: nil).execute_without_rate_limiting
 
-            if issue.persisted?
+            if create_result.success?
               created_issues_count += 1
               print '.' # rubocop:disable Rails/Output
             end

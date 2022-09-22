@@ -206,6 +206,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [GitLab chart with Geo](https://docs.gitlab.com/charts/advanced/geo/) does not support [Unified URLs](secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites). See [GitLab issue #3522](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3522) for more details.
+- [Disaster recovery](disaster_recovery/index.md) for multi-secondary sites causes downtime due to the complete re-synchronization and re-configuration of all non-promoted secondaries.
 
 ### Limitations on replication/verification
 

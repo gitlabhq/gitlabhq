@@ -77,7 +77,7 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
 
       it 'responds with errors' do
         expect(create_incident).to be_error
-        expect(create_incident.message).to eq("Title can't be blank")
+        expect(create_incident.errors).to contain_exactly("Title can't be blank")
       end
 
       it 'result payload contains an Issue object' do
@@ -98,7 +98,7 @@ RSpec.describe IncidentManagement::Incidents::CreateService do
 
           it 'responds with errors' do
             expect(create_incident).to be_error
-            expect(create_incident.message).to eq('Hosts hosts array is over 255 chars')
+            expect(create_incident.errors).to contain_exactly('Hosts hosts array is over 255 chars')
           end
         end
       end

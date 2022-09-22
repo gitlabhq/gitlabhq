@@ -21,7 +21,7 @@ module AlertManagement
       result = create_incident
       return result unless result.success?
 
-      issue = result.payload[:issue]
+      issue = result[:issue]
       perform_after_create_tasks(issue)
 
       result

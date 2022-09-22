@@ -261,9 +261,14 @@ describe('Pipelines', () => {
             );
           });
 
-          it('tracks tab change click', () => {
+          it.each(['all', 'finished', 'branches', 'tags'])('tracks %p tab click', async (scope) => {
+            goToTab(scope);
+
+            await waitForPromises();
+
             expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_filter_tabs', {
               label: TRACKING_CATEGORIES.tabs,
+              property: scope,
             });
           });
         });

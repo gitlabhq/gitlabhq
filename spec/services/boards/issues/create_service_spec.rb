@@ -29,9 +29,10 @@ RSpec.describe Boards::Issues::CreateService do
     end
 
     it 'adds the label of the list to the issue' do
-      issue = service.execute
+      result = service.execute
 
-      expect(issue.labels).to eq [label]
+      expect(result).to be_success
+      expect(result[:issue].labels).to contain_exactly(label)
     end
   end
 end

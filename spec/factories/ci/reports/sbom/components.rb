@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :ci_reports_sbom_component, class: '::Gitlab::Ci::Reports::Sbom::Component' do
-    type { :library }
+    type { "library" }
     sequence(:name) { |n| "component-#{n}" }
     sequence(:version) { |n| "v0.0.#{n}" }
 

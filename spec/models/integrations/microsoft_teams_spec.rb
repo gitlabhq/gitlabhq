@@ -81,7 +81,7 @@ RSpec.describe Integrations::MicrosoftTeams do
       let(:opts) { { title: 'Awesome issue', description: 'please fix' } }
       let(:issues_sample_data) do
         service = Issues::CreateService.new(project: project, current_user: user, params: opts, spam_params: nil)
-        issue = service.execute
+        issue = service.execute[:issue]
         service.hook_data(issue, 'open')
       end
 
