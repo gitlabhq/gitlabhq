@@ -234,6 +234,23 @@ Image URLs are not rewritten if:
 
 For more information about supported events for Webhooks, go to [Webhook events](webhook_events.md).
 
+## Delivery headers
+
+> `X-Gitlab-Instance` header introduced in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `webhooks_gitlab_instance_header`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `webhooks_gitlab_instance_header`.
+The feature is not ready for production use.
+
+Webhook requests to your endpoint include the following headers:
+
+| Header | Description | Example |
+| ------ | ------ | ------ |
+| `User-Agent` | In the format `"Gitlab/<VERSION>"`. | `"GitLab/15.5.0-pre"` |
+| `X-Gitlab-Event` | Name of the webhook type. Corresponds to [event types](webhook_events.md) but in the format `"<EVENT> Hook"`. | `"Push Hook"` |
+| `X-Gitlab-Instance` | Hostname of the GitLab instance that sent the webhook. | `"https://gitlab.com"` |
+
 ## Troubleshoot webhooks
 
 > **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.

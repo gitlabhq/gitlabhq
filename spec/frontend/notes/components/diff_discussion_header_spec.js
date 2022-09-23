@@ -42,7 +42,7 @@ describe('diff_discussion_header component', () => {
       expect(props).toMatchObject({
         src: firstNoteAuthor.avatar_url,
         alt: firstNoteAuthor.name,
-        size: { default: 24, md: 32 },
+        size: 32,
       });
     });
   });

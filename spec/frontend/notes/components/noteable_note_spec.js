@@ -214,7 +214,7 @@ describe('issue_note', () => {
       expect(avatarProps.src).toBe(author.avatar_url);
       expect(avatarProps.entityName).toBe(author.username);
       expect(avatarProps.alt).toBe(author.name);
-      expect(avatarProps.size).toEqual({ default: 24, md: 32 });
+      expect(avatarProps.size).toEqual(32);
     });
 
     it('should render note header content', () => {

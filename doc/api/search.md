@@ -1,7 +1,7 @@
 ---
-stage: Create
-group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: Data Stores
+group: Global Search
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Search API **(FREE)**
@@ -10,28 +10,30 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Every API call to search must be authenticated.
 
+## Additional scopes **(PREMIUM)**
+
+Additional scopes are available for the [Advanced Search API](#advanced-search-api)
+and [Group Search API](#group-search-api) if
+[Elasticsearch is enabled](../integration/advanced_search/elasticsearch.md):
+`blobs`, `commits`, `notes`, `wiki_blobs`.
+
 ## Advanced Search API
 
-Search globally across the GitLab instance.
+Search for an expression globally across the GitLab instance, in a specified scope.
+The response depends on the requested scope.
 
 ```plaintext
 GET /search
 ```
 
-| Attribute     | Type     | Required   | Description            |
-| ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `scope`       | string   | yes        | The scope to search in                |
-| `search`      | string   | yes        | The search query  |
-| `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
-| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. |
-| `order_by`    | string   | no         | Allowed values are `created_at` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
-| `sort`    | string   | no         | Allowed values are `asc` or `desc` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
-
-Search the expression in the specified scope. These scopes are supported: `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, `users`.
-
-If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/advanced_search/elasticsearch.md). **(PREMIUM)**
-
-The response depends on the requested scope.
+| Attribute     | Type     | Required   | Description |
+| ------------- | -------- | ---------- | ------------|
+| `scope`       | string   | Yes | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, `users`. [Additional scopes](#additional-scopes): `blobs`, `commits`, `notes`, `wiki_blobs`. |
+| `search`      | string   | Yes | The search query. |
+| `confidential` | boolean   | No | Filter by confidentiality. Supports `issues` scope; other scopes are ignored. |
+| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `state`       | string   | No | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored. |
 
 ### Scope: `projects`
 
@@ -129,7 +131,7 @@ Example response:
 ```
 
 NOTE:
-`assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+The `assignee` column is deprecated. It is shown as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ### Scope: `merge_requests`
 
@@ -432,27 +434,23 @@ Example response:
 
 ## Group Search API
 
-Search in the specified group.
+Search for an expression in the specified group.
 
-If a user is not a member of a group and the group is private, a `GET` request on that group results in a `404` status code.
+If a user is not a member of a group and the group is private, a `GET` request on that group results in a `404 Not Found` status code.
 
 ```plaintext
 GET /groups/:id/search
 ```
 
-| Attribute     | Type     | Required   | Description            |
-| ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
-| `scope`       | string   | yes        | The scope to search in                |
-| `search`      | string   | yes        | The search query  |
-| `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
-| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. |
-| `order_by`    | string   | no         | Allowed values are `created_at` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
-| `sort`    | string   | no         | Allowed values are `asc` or `desc` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
-
-Search the expression in the specified scope. These scopes are supported: `projects`, `issues`, `merge_requests`, `milestones`, `users`.
-
-If Elasticsearch is enabled additional scopes available are `blobs`, `wiki_blobs`, `notes`, and `commits`. Find more about [the feature](../integration/advanced_search/elasticsearch.md). **(PREMIUM)**
+| Attribute | Type | Required | Description  |
+| --------- | ---- | -------- | -------------|
+| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `scope`       | string   | Yes | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, `projects`, `users`. [Additional scopes](#additional-scopes): `blobs`, `commits`, `notes`, `wiki_blobs`. |
+| `search`      | string   | Yes | The search query. |
+| `confidential` | boolean   | No | Filter by confidentiality. Supports only `issues` scope; other scopes are ignored. |
+| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `state`       | string   | No | Filter by state. Supports `issues` and `merge_requests` only; other scopes are ignored. |
 
 The response depends on the requested scope.
 
@@ -824,7 +822,7 @@ Example response:
 
 ## Project Search API
 
-Search in the specified project.
+Search for an expression in the specified project.
 
 If a user is not a member of a project and the project is private, a `GET` request on that project results in a `404` status code.
 
@@ -832,18 +830,16 @@ If a user is not a member of a project and the project is private, a `GET` reque
 GET /projects/:id/search
 ```
 
-| Attribute     | Type     | Required   | Description            |
-| ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                |
-| `scope`       | string   | yes        | The scope to search in                |
-| `search`      | string   | yes        | The search query  |
-| `ref`         | string   | no         | The name of a repository branch or tag to search on. The project's default branch is used by default. This is only applicable for scopes: `commits`, `blobs`, and `wiki_blobs`.  |
-| `state`       | string   | no        | Filter by state. Issues and merge requests are supported; it is ignored for other scopes. |
-| `confidential` | boolean   | no         | Filter by confidentiality. Issues scope is supported; it is ignored for other scopes. |
-| `order_by`    | string   | no         | Allowed values are `created_at` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
-| `sort`    | string   | no         | Allowed values are `asc` or `desc` only. If this is not set, the results are either sorted by `created_at` in descending order for basic search, or by the most relevant documents when using advanced search.|
-
-Search the expression in the specified scope. These scopes are supported: `issues`, `merge_requests`, `milestones`, `notes`, `wiki_blobs`, `commits`, `blobs`, `users`.
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ------------|
+| `id` | integer or string | Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `scope`       | string   | Yes | The scope to search in. Values include `blobs`, `commits`, `issues`, `merge_requests`, `milestones`, `notes`, `users`, and `wiki_blobs`. |
+| `search`      | string   | Yes | The search query. |
+| `confidential` | boolean   | No | Filter by confidentiality. Supports `issues` scope; other scopes are ignored. |
+| `ref`         | string   | No | The name of a repository branch or tag to search on. The project's default branch is used by default. Applicable only for scopes `blobs`, `commits`, and `wiki_blobs`. |
+| `order_by`    | string   | No | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `sort`    | string   | No | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for Advanced Search.|
+| `state`       | string   | No | Filter by state. Supports the `issues` and `merge_requests` scopes; other scopes are ignored. |
 
 The response depends on the requested scope.
 
@@ -1144,9 +1140,9 @@ This scope is available only if [Elasticsearch](../integration/advanced_search/e
 
 Filters are available for this scope:
 
-- filename
-- path
-- extension
+- Filename
+- Path
+- Extension
 
 To use a filter, include it in your query. For example: `a query filename:some_name*`.
 You may use wildcards (`*`) to use glob matching.

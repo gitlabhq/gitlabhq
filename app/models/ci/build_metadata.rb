@@ -11,6 +11,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
 
     self.table_name = 'ci_builds_metadata'
+    self.primary_key = 'id'
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project

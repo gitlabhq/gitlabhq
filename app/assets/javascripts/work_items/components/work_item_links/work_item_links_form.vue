@@ -182,7 +182,7 @@ export default {
     >
       <template #result="{ item }">
         <div class="gl-display-flex">
-          <div class="gl-text-gray-400 gl-mr-4">{{ getIdFromGraphQLId(item.id) }}</div>
+          <div class="gl-text-secondary gl-mr-4">{{ getIdFromGraphQLId(item.id) }}</div>
           <div>{{ item.title }}</div>
         </div>
       </template>

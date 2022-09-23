@@ -197,6 +197,10 @@ class WebHookService
         Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name)
       }
 
+      if Feature.enabled?(:webhooks_gitlab_instance_header)
+        headers[Gitlab::WebHooks::GITLAB_INSTANCE_HEADER] = Gitlab.config.gitlab.base_url
+      end
+
       headers['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
       headers.merge!(Gitlab::WebHooks::RecursionDetection.header(hook))
     end

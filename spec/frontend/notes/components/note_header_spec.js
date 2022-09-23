@@ -149,7 +149,7 @@ describe('NoteHeader component', () => {
   it('renders busy status if author availability is set', () => {
     createComponent({ author: { ...author, availability: AVAILABILITY_STATUS.BUSY } });
 
-    expect(wrapper.find('.js-user-link').text()).toContain('(Busy)');
+    expect(wrapper.find('.note-header-info').text()).toContain('(Busy)');
   });
 
   it('renders author status', () => {

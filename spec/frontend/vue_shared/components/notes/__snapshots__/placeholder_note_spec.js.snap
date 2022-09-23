@@ -2,13 +2,12 @@
 
 exports[`Issue placeholder note component matches snapshot 1`] = `
 <timeline-entry-item-stub
-  class="note note-wrapper being-posted fade-in-half"
+  class="note note-wrapper note-comment being-posted fade-in-half"
 >
   <div
-    class="timeline-icon"
+    class="timeline-avatar gl-float-left"
   >
     <gl-avatar-link-stub
-      class="gl-mr-3"
       href="/root"
     >
       <gl-avatar-stub
@@ -16,7 +15,7 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
         entityid="0"
         entityname="root"
         shape="circle"
-        size="[object Object]"
+        size="32"
         src="mock_path"
       />
     </gl-avatar-link-stub>
@@ -50,16 +49,20 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
     </div>
      
     <div
-      class="note-body"
+      class="timeline-discussion-body"
     >
       <div
-        class="note-text md"
+        class="note-body"
       >
-        <p>
-          Foo
-        </p>
-        
+        <div
+          class="note-text md"
+        >
+          <p>
+            Foo
+          </p>
+          
 
+        </div>
       </div>
     </div>
   </div>

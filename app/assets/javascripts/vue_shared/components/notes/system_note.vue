@@ -141,7 +141,7 @@ export default {
               variant="link"
               :icon="descriptionVersionToggleIcon"
               data-testid="compare-btn"
-              class="gl-vertical-align-text-bottom"
+              class="gl-vertical-align-text-bottom gl-font-sm!"
               @click="toggleDescriptionVersion"
               >{{ __('Compare with previous version') }}</gl-button
             >
@@ -150,7 +150,7 @@ export default {
               :icon="showLines ? 'chevron-up' : 'chevron-down'"
               variant="link"
               data-testid="outdated-lines-change-btn"
-              class="gl-vertical-align-text-bottom"
+              class="gl-vertical-align-text-bottom gl-font-sm!"
               @click="toggleDiff"
             >
               {{ __('Compare changes') }}
@@ -190,7 +190,7 @@ export default {
         </div>
         <div
           v-if="lines.length && showLines"
-          class="diff-content gl-border-solid gl-border-1 gl-border-gray-200 gl-mt-4 gl-rounded-small gl-overflow-hidden"
+          class="diff-content outdated-lines-wrapper gl-border-solid gl-border-1 gl-border-gray-200 gl-mt-4 gl-rounded-small gl-overflow-hidden"
         >
           <table
             :class="$options.userColorSchemeClass"

@@ -142,7 +142,7 @@ export default {
               :edited-at="discussion.resolved_at"
               :edited-by="discussion.resolved_by"
               :action-text="resolvedText"
-              class-name="discussion-headline-light js-discussion-headline discussion-resolved-text"
+              class-name="discussion-headline-light js-discussion-headline discussion-resolved-text gl-mb-2"
             />
           </template>
           <template #avatar-badge>

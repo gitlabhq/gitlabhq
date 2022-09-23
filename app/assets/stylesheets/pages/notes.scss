@@ -1,15 +1,15 @@
-$system-note-icon-size: 32px;
-$system-note-svg-size: 16px;
+$system-note-icon-size: 2rem;
+$system-note-svg-size: 1rem;
 
 @mixin vertical-line($left) {
   &::before {
     content: '';
-    border-left: 2px solid $gray-10;
+    border-left: 2px solid var(--gray-10, $gray-10);
     position: absolute;
     top: 0;
     bottom: 0;
-    left: $left;
-    height: calc(100% - 20px);
+    left: calc(#{$left} - 1px);
+    height: calc(100% + 1.5rem);
   }
 }
 
@@ -19,17 +19,10 @@ $system-note-svg-size: 16px;
   border-radius: $border-radius-default;
 }
 
-.note-wrapper {
-  padding: $gl-padding $gl-padding-8 $gl-padding $gl-padding;
-
-  &.outlined {
-    @include outline-comment();
-  }
-}
-
-.issuable-discussion {
-  .main-notes-list {
-    @include vertical-line(35px);
+.issuable-discussion:not(.incident-timeline-events),
+.limited-width-notes {
+  .main-notes-list > li.timeline-entry:not(:last-of-type) {
+    @include vertical-line(1rem);
   }
 }
 
@@ -41,13 +34,108 @@ $system-note-svg-size: 16px;
   position: relative;
 
   &.timeline > .timeline-entry {
-    border: 1px solid $border-color;
-    border-radius: $border-radius-default;
     margin: $gl-padding 0;
 
     &.system-note,
     &.note-form {
       border: 0;
+    }
+
+    .timeline-avatar {
+      height: 2rem;
+    }
+
+    &.note-comment,
+    &.note-skeleton,
+    .draft-note {
+      .timeline-avatar {
+        margin-top: 5px;
+      }
+
+      .timeline-content:not(.flash-container) {
+        margin-left: 2.5rem;
+        border: 1px solid $border-color;
+        border-radius: $gl-border-radius-base;
+        background-color: $white;
+        padding: $gl-padding-4 $gl-padding-8;
+      }
+
+      .note-header-info {
+        min-height: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0 0.25rem;
+        flex-wrap: wrap;
+      }
+    }
+
+    &.note-discussion {
+      .timeline-content .discussion-wrapper {
+        background-color: transparent;
+      }
+
+      .timeline-content {
+        ul li {
+          &:first-of-type {
+            .timeline-avatar {
+              margin-top: 5px;
+            }
+
+            .timeline-content {
+              margin-left: 2.5rem;
+              border-left: 1px solid $border-color;
+              border-right: 1px solid $border-color;
+              border-top: 1px solid $border-color;
+              border-top-left-radius: $gl-border-radius-base;
+              border-top-right-radius: $gl-border-radius-base;
+              background-color: $white;
+              padding: $gl-padding-4 $gl-padding-8;
+            }
+          }
+
+          &:not(:first-of-type) .timeline-entry-inner {
+            margin-left: 2.5rem;
+            border-left: 1px solid $border-color;
+            border-right: 1px solid $border-color;
+            background-color: $white;
+            padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+
+            .timeline-discussion-body {
+              margin-left: 2rem;
+            }
+          }
+        }
+
+        .diff-content {
+          ul li:first-of-type {
+            .timeline-avatar {
+              margin-top: 0;
+            }
+
+            .timeline-content {
+              margin-left: 0;
+              border: 0;
+              padding: 0;
+            }
+
+            .timeline-entry-inner {
+              margin-left: 2.5rem;
+              border-left: 1px solid $border-color;
+              border-right: 1px solid $border-color;
+              background-color: $white;
+              padding: $gl-padding-8 $gl-padding-8 $gl-padding-4 $gl-padding;
+
+              .timeline-discussion-body {
+                margin-left: 2rem;
+              }
+            }
+          }
+        }
+      }
+
+      .discussion-reply-holder {
+        border: 1px solid $border-color;
+      }
     }
 
     &.note-form {
@@ -88,10 +176,14 @@ $system-note-svg-size: 16px;
     .card {
       margin-bottom: 0;
     }
-  }
 
-  .timeline-discussion-body {
-    margin-top: -$gl-padding-8;
+    .note-header-info {
+      min-height: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0 0.25rem;
+      flex-wrap: wrap;
+    }
   }
 
   .discussion {
@@ -116,15 +208,10 @@ $system-note-svg-size: 16px;
     &.being-posted {
       pointer-events: none;
       opacity: 0.5;
-      padding: $gl-padding;
 
       .dummy-avatar {
         background-color: $gray-100;
         border: 1px solid darken($gray-100, 25%);
-      }
-
-      .note-headline-light {
-        margin-left: 3px;
       }
     }
 
@@ -156,6 +243,7 @@ $system-note-svg-size: 16px;
       .note-edit-form {
         display: block;
         margin-left: 0;
+        margin-top: 0.5rem;
 
         &.current-note-edit-form + .note-awards {
           display: none;
@@ -164,12 +252,16 @@ $system-note-svg-size: 16px;
     }
 
     .note-body {
-      padding: $gl-padding-4 $gl-padding-4 $gl-padding-4 $gl-padding-8;
+      padding: $gl-padding-8;
       overflow-x: auto;
       overflow-y: hidden;
 
       .note-text {
         word-wrap: break-word;
+      }
+
+      .suggestions {
+        margin-top: 4px;
       }
     }
 
@@ -186,9 +278,10 @@ $system-note-svg-size: 16px;
   }
 
   .system-note {
-    padding: $gl-padding-4 20px;
+    padding: $gl-padding-8 0;
     margin: $gl-padding 0;
     background-color: transparent;
+    font-size: $gl-font-size-sm;
 
     .note-header-info {
       padding-bottom: 0;
@@ -229,6 +322,15 @@ $system-note-svg-size: 16px;
 
     .note-body {
       overflow: hidden;
+      padding: 0;
+
+      ul {
+        margin: 0.5rem 0;
+      }
+
+      p {
+        margin-left: 1rem;
+      }
 
       .description-version {
         position: relative;
@@ -305,7 +407,7 @@ $system-note-svg-size: 16px;
       height: $system-note-icon-size;
       border: 1px solid $gray-10;
       border-radius: $system-note-icon-size;
-      margin: -6px 0 0;
+      margin: -8px 0 0;
 
       svg {
         width: $system-note-svg-size;
@@ -330,8 +432,9 @@ $system-note-svg-size: 16px;
 .discussion-body .diff-file {
   .file-title {
     cursor: default;
-    border-top: 1px solid $border-color;
+    border-top: 0;
     border-radius: 0;
+    margin-left: 2.5rem;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
       --initial-top: calc(#{$header-height} + #{$mr-tabs-height});
@@ -356,6 +459,40 @@ $system-note-svg-size: 16px;
 
   .line_content {
     white-space: pre-wrap;
+  }
+
+  .diff-content {
+    margin-left: 2.5rem;
+
+    &.outdated-lines-wrapper {
+      margin-left: 0;
+    }
+
+    .line_holder td:first-of-type {
+      @include gl-border-l;
+    }
+
+    .line_holder td:last-of-type {
+      @include gl-border-r;
+    }
+
+    .discussion-notes {
+      margin-left: -2.5rem;
+
+      .notes {
+        background-color: transparent;
+      }
+
+      .notes-content {
+        border: 0;
+      }
+
+      .timeline-content {
+        border-top: 0 !important;
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+      }
+    }
   }
 }
 
@@ -394,8 +531,12 @@ $system-note-svg-size: 16px;
     }
 
     .system-note {
-      background-color: $white;
-      padding: $gl-padding;
+      background-color: transparent;
+      padding: 0;
+
+      .timeline-icon {
+        margin-top: -2px;
+      }
     }
   }
 
@@ -487,6 +628,19 @@ $system-note-svg-size: 16px;
 .code-commit .notes-content,
 .diff-viewer > .image ~ .note-container {
   background-color: $white;
+
+  li.note-comment {
+    padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+
+    .avatar {
+      margin-right: 0;
+    }
+
+    .note-body {
+      padding: $gl-padding-4 0 $gl-padding-8;
+      margin-left: 2.5rem;
+    }
+  }
 }
 
 .diff-viewer > .image ~ .note-container form.new-note {
@@ -540,9 +694,21 @@ $system-note-svg-size: 16px;
     padding-bottom: 0;
   }
 
+  .timeline-avatar {
+    margin-top: 5px;
+  }
+
   .timeline-content {
     overflow-x: auto;
     overflow-y: hidden;
+    border-radius: $gl-border-radius-base;
+    padding: $gl-padding-8 !important;
+    @include gl-border;
+
+    &.expanded {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
 
   &.note-wrapper {
@@ -568,18 +734,9 @@ $system-note-svg-size: 16px;
 .note {
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     .note-header {
-      .note-actions {
-        flex-wrap: wrap;
-        margin-bottom: $gl-padding-12;
-
-        > :first-child {
-          margin-left: 0;
-        }
+      .note-actions > :first-child {
+        margin-left: 0;
       }
-    }
-
-    .note-header-author-name {
-      display: block;
     }
   }
 }
@@ -591,11 +748,6 @@ $system-note-svg-size: 16px;
   &.discussion {
     padding-bottom: 0;
   }
-}
-
-.note-header-info,
-.note-actions {
-  padding-bottom: $gl-padding-4;
 }
 
 .system-note .note-header-info {
@@ -618,10 +770,6 @@ $system-note-svg-size: 16px;
 }
 
 .note-headline-meta {
-  .system-note-separator {
-    color: $gray-500;
-  }
-
   .note-timestamp {
     white-space: nowrap;
   }
@@ -674,7 +822,6 @@ $system-note-svg-size: 16px;
   align-items: center;
   margin-left: 10px;
   color: $gray-400;
-  margin-top: -4px;
 
   @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;
@@ -719,7 +866,7 @@ $system-note-svg-size: 16px;
 }
 
 .discussion-toggle-button {
-  padding: 0;
+  padding: 0 $gl-padding-8 0 0;
   background-color: transparent;
   border: 0;
   line-height: 20px;
@@ -867,6 +1014,22 @@ $system-note-svg-size: 16px;
   .diff-discussions {
     .note-discussion.timeline-entry {
       padding-left: 0;
+
+      ul.notes li.note-wrapper {
+        padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+      }
+
+      ul.notes {
+        li.toggle-replies-widget {
+          margin-left: 0;
+          border-left: 0;
+          border-right: 0;
+        }
+
+        div.discussion-reply-holder {
+          margin-left: 0;
+        }
+      }
 
       &:last-child {
         border-bottom: 0;

@@ -946,6 +946,7 @@
   .timeline-event-note {
     p {
       margin-bottom: 0;
+      font-size: 0.875rem;
     }
   }
 }
@@ -961,7 +962,7 @@
     content: '';
     border-left: 2px solid $gray-50;
     position: absolute;
-    left: 39px;
+    left: 20px;
     height: calc(100% + #{$gl-spacing-scale-5});
     top: -#{$gl-spacing-scale-5};
   }
@@ -988,10 +989,6 @@
       content: none;
     }
   }
-}
-
-.timeline-event-note-form {
-  padding-left: 20px;
 }
 
 .timeline-entry:not(:last-child) {

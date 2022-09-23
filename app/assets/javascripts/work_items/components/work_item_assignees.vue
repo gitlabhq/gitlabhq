@@ -10,7 +10,7 @@ import {
   GlDropdownDivider,
   GlIntersectionObserver,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, uniqueId } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
@@ -126,6 +126,9 @@ export default {
     },
   },
   computed: {
+    assigneesTitleId() {
+      return uniqueId('assignees-title-');
+    },
     searchUsers() {
       return this.users.nodes.map((node) => addClass({ ...node, ...node.user }));
     },
@@ -296,12 +299,14 @@ export default {
 <template>
   <div class="form-row gl-mb-5 work-item-assignees gl-relative gl-flex-nowrap">
     <span
+      :id="assigneesTitleId"
       class="gl-font-weight-bold col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
       data-testid="assignees-title"
       >{{ assigneeText }}</span
     >
     <gl-token-selector
       ref="tokenSelector"
+      :aria-labelledby="assigneesTitleId"
       :selected-tokens="localAssignees"
       :container-class="containerClass"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"
@@ -319,7 +324,7 @@ export default {
     >
       <template #empty-placeholder>
         <div
-          class="add-assignees gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-300 gl-pr-4 gl-pl-2 gl-top-2"
+          class="add-assignees gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-secondary gl-pr-4 gl-pl-2 gl-top-2"
           data-testid="empty-state"
         >
           <gl-icon name="profile" />

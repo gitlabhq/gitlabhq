@@ -1013,7 +1013,7 @@ table.code {
     clear: left;
 
     .note-body {
-      margin-top: 0 !important;
+      padding: 0 0 $gl-padding-8;
     }
   }
 
@@ -1023,8 +1023,12 @@ table.code {
   }
 
   // tiny adjustment to vertical align with the note header text
-  .discussion-collapsible .timeline-icon {
-    padding-top: 2px;
+  .discussion-collapsible {
+    margin-left: 1rem;
+
+    .timeline-icon {
+      padding-top: 2px;
+    }
   }
 }
 
@@ -1097,6 +1101,7 @@ table.code {
 
 .discussion-notes {
   min-height: 35px;
+  background-color: transparent;
 
   &:first-child {
     // First child does not have the jagged borders
@@ -1119,6 +1124,17 @@ table.code {
     .note,
     .discussion-reply-holder {
       display: none;
+    }
+  }
+
+  ul.notes {
+    li.toggle-replies-widget,
+    .discussion-reply-holder {
+      margin-left: 2.5rem;
+
+      .reply-author-avatar {
+        height: 1.5rem;
+      }
     }
   }
 }

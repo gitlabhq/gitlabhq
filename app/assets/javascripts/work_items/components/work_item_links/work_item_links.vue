@@ -257,7 +257,7 @@ export default {
           class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
           data-testid="children-count"
         >
-          <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-gray-500" />
+          <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-secondary" />
           {{ childrenCountLabel }}
         </span>
       </div>

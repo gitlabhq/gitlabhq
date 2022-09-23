@@ -199,9 +199,6 @@ export default {
     isMRDiffView() {
       return this.line && !this.isOverviewTab;
     },
-    authorAvatarAdaptiveSize() {
-      return { default: 24, md: 32 };
-    },
   },
   created() {
     const line = this.note.position?.line_range?.start || this.line;
@@ -409,7 +406,7 @@ export default {
     :class="{ ...classNameBindings, 'internal-note': note.internal }"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note note-wrapper"
+    class="note note-wrapper note-comment"
     data-qa-selector="noteable_note_container"
   >
     <div
@@ -427,7 +424,7 @@ export default {
       </gl-sprintf>
     </div>
 
-    <div v-if="isMRDiffView" class="gl-float-left gl-mt-n1 gl-mr-3">
+    <div v-if="isMRDiffView" class="gl-float-left gl-mt-2">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"
@@ -440,13 +437,13 @@ export default {
       </gl-avatar-link>
     </div>
 
-    <div v-else class="gl-float-left gl-pl-3 gl-md-pl-2">
+    <div v-else class="timeline-avatar gl-float-left">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"
           :entity-name="author.username"
           :alt="author.name"
-          :size="authorAvatarAdaptiveSize"
+          :size="32"
         />
 
         <slot name="avatar-badge"></slot>

@@ -75,7 +75,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
         'Content-Type' => 'application/json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}",
         'X-Gitlab-Event' => 'Push Hook',
-        'X-Gitlab-Event-UUID' => uuid
+        'X-Gitlab-Event-UUID' => uuid,
+        'X-Gitlab-Instance' => Gitlab.config.gitlab.base_url
       }
     end
 
@@ -164,7 +165,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
       end
     end
 
-    it 'POSTs the data as JSON' do
+    it 'POSTs the data as JSON and returns expected headers' do
       stub_full_request(project_hook.url, method: :post)
 
       service_instance.execute
@@ -172,6 +173,22 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state 
       expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).with(
         headers: headers
       ).once
+    end
+
+    context 'when webhooks_gitlab_instance_header flag is disabled' do
+      before do
+        stub_feature_flags(webhooks_gitlab_instance_header: false)
+      end
+
+      it 'excludes the X-Gitlab-Instance header' do
+        stub_full_request(project_hook.url, method: :post)
+
+        service_instance.execute
+
+        expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).with(
+          headers: headers.except('X-Gitlab-Instance')
+        ).once
+      end
     end
 
     context 'when the data is a Gitlab::DataBuilder::Pipeline' do

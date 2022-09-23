@@ -15,27 +15,7 @@ build-qa-image:
   stage: build-images
   needs: []
   script:
-    # Tag with commit SHA by default
-    - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
-    # For branches, tag with slugified branch name. For tags, use the tag directly
-    - export QA_IMAGE_BRANCH="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_TAG:-$CI_COMMIT_REF_SLUG}"
-    # Auto-deploy tag format uses first 12 letters of commit SHA. Tag with that
-    # reference also
-    - export QA_IMAGE_FOR_AUTO_DEPLOY="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA:0:11}"
-    - echo $QA_IMAGE
-    - echo $QA_IMAGE_BRANCH
-    - echo $QA_IMAGE_FOR_AUTO_DEPLOY
-    - |
-      /kaniko/executor \
-        --context=${CI_PROJECT_DIR} \
-        --dockerfile=${CI_PROJECT_DIR}/qa/Dockerfile \
-        --destination=${QA_IMAGE} \
-        --destination=${QA_IMAGE_BRANCH} \
-        --destination=${QA_IMAGE_FOR_AUTO_DEPLOY} \
-        --build-arg=CHROME_VERSION=${CHROME_VERSION} \
-        --build-arg=DOCKER_VERSION=${DOCKER_VERSION} \
-        --build-arg=QA_BUILD_TARGET=${QA_BUILD_TARGET:-qa} \
-        --cache=true
+    - ./scripts/build_qa_image
 
 # This image is used by:
 # - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335

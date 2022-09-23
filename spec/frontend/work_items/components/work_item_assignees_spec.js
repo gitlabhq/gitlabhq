@@ -157,6 +157,12 @@ describe('WorkItemAssignees component', () => {
     expect(findTokenSelector().props('viewOnly')).toBe(true);
   });
 
+  it('has a label', () => {
+    createComponent();
+
+    expect(findTokenSelector().props('ariaLabelledby')).toContain('assignees-title-');
+  });
+
   describe('when clicking outside the token selector', () => {
     function arrange(args) {
       createComponent(args);

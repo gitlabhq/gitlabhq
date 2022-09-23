@@ -84,8 +84,8 @@ export default {
 
       return sprintf(text, { commitDisplay, linkStart, linkEnd }, false);
     },
-    adaptiveAvatarSize() {
-      return { default: 24, md: 32 };
+    toggleClass() {
+      return this.discussion.expanded ? 'expanded' : 'collapsed';
     },
   },
   methods: {
@@ -98,16 +98,13 @@ export default {
 </script>
 
 <template>
-  <div class="discussion-header gl-display-flex gl-align-items-center gl-p-5">
-    <div
-      v-once
-      class="timeline-icon gl-align-self-start gl-flex-shrink-0 gl-flex-shrink gl-mx-3 gl-md-ml-2 gl-md-mr-5"
-    >
+  <div class="discussion-header gl-display-flex gl-align-items-center">
+    <div v-once class="timeline-avatar gl-align-self-start gl-flex-shrink-0 gl-flex-shrink">
       <gl-avatar-link v-if="author" :href="author.path">
-        <gl-avatar :src="author.avatar_url" :alt="author.name" :size="adaptiveAvatarSize" />
+        <gl-avatar :src="author.avatar_url" :alt="author.name" :size="32" />
       </gl-avatar-link>
     </div>
-    <div class="timeline-content w-100">
+    <div class="timeline-content w-100 gl-ml-3" :class="toggleClass">
       <note-header
         :author="author"
         :created-at="firstNote.created_at"
@@ -123,14 +120,14 @@ export default {
         :edited-at="discussion.resolved_at"
         :edited-by="discussion.resolved_by"
         :action-text="resolvedText"
-        class-name="discussion-headline-light js-discussion-headline gl-pl-2"
+        class-name="discussion-headline-light js-discussion-headline gl-pl-3"
       />
       <note-edited-text
         v-else-if="lastUpdatedAt"
         :edited-at="lastUpdatedAt"
         :edited-by="lastUpdatedBy"
         :action-text="__('Last updated')"
-        class-name="discussion-headline-light js-discussion-headline gl-pl-2"
+        class-name="discussion-headline-light js-discussion-headline gl-pl-3"
       />
     </div>
   </div>

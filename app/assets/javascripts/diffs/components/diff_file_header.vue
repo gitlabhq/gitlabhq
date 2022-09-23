@@ -281,7 +281,7 @@ export default {
       'gl-z-dropdown-menu!': idState.moreActionsShown,
       'is-sidebar-moved': glFeatures.movedMrSidebar,
     }"
-    class="js-file-title file-title file-title-flex-parent"
+    class="js-file-title file-title file-title-flex-parent gl-border"
     data-qa-selector="file_title_container"
     :data-qa-file-name="filePath"
     @click.self="handleToggleFile"

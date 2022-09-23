@@ -292,7 +292,11 @@ export default {
       <template #comments>
         <ul id="notes-list" class="notes main-notes-list timeline">
           <template v-for="discussion in allDiscussions">
-            <skeleton-loading-container v-if="discussion.isSkeletonNote" :key="discussion.id" />
+            <skeleton-loading-container
+              v-if="discussion.isSkeletonNote"
+              :key="discussion.id"
+              class="note-skeleton"
+            />
             <timeline-entry-item v-else-if="discussion.isDraft" :key="discussion.id">
               <draft-note :draft="discussion" />
             </timeline-entry-item>
@@ -327,7 +331,7 @@ export default {
               :help-page-path="helpPagePath"
             />
           </template>
-          <discussion-filter-note v-show="commentsDisabled" />
+          <discussion-filter-note v-if="commentsDisabled" />
         </ul>
       </template>
     </ordered-layout>

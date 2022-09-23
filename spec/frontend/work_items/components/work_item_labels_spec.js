@@ -60,6 +60,12 @@ describe('WorkItemLabels component', () => {
     wrapper.destroy();
   });
 
+  it('has a label', () => {
+    createComponent();
+
+    expect(findTokenSelector().props('ariaLabelledby')).toContain('labels-title-');
+  });
+
   it('focuses token selector on token selector input event', async () => {
     createComponent();
     findTokenSelector().vm.$emit('input', [mockLabels[0]]);

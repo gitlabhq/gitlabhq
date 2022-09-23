@@ -235,40 +235,56 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
 
     subject { memory_killer.send(:restart_sidekiq) }
 
-    before do
-      stub_const("#{described_class}::SHUTDOWN_TIMEOUT_SECONDS", shutdown_timeout_seconds)
-      allow(Sidekiq).to receive(:options).and_return(timeout: 9)
-      allow(memory_killer).to receive(:get_rss).and_return(100)
-      allow(memory_killer).to receive(:get_soft_limit_rss).and_return(200)
-      allow(memory_killer).to receive(:get_hard_limit_rss).and_return(300)
+    context 'when sidekiq_memory_killer_read_only_mode is enabled' do
+      before do
+        stub_feature_flags(sidekiq_memory_killer_read_only_mode: true)
+      end
+
+      it 'does not send signal' do
+        expect(memory_killer).not_to receive(:refresh_state)
+        expect(memory_killer).not_to receive(:signal_and_wait)
+
+        subject
+      end
     end
 
-    it 'send signal' do
-      expect(memory_killer).to receive(:refresh_state)
-        .with(:stop_fetching_new_jobs)
-        .ordered
-        .and_call_original
-      expect(memory_killer).to receive(:signal_and_wait)
-        .with(shutdown_timeout_seconds, 'SIGTSTP', 'stop fetching new jobs')
-        .ordered
+    context 'when sidekiq_memory_killer_read_only_mode is disabled' do
+      before do
+        stub_const("#{described_class}::SHUTDOWN_TIMEOUT_SECONDS", shutdown_timeout_seconds)
+        stub_feature_flags(sidekiq_memory_killer_read_only_mode: false)
+        allow(Sidekiq).to receive(:options).and_return(timeout: 9)
+        allow(memory_killer).to receive(:get_rss).and_return(100)
+        allow(memory_killer).to receive(:get_soft_limit_rss).and_return(200)
+        allow(memory_killer).to receive(:get_hard_limit_rss).and_return(300)
+      end
 
-      expect(memory_killer).to receive(:refresh_state)
-        .with(:shutting_down)
-        .ordered
-        .and_call_original
-      expect(memory_killer).to receive(:signal_and_wait)
-        .with(11, 'SIGTERM', 'gracefully shut down')
-        .ordered
+      it 'send signal' do
+        expect(memory_killer).to receive(:refresh_state)
+          .with(:stop_fetching_new_jobs)
+          .ordered
+          .and_call_original
+        expect(memory_killer).to receive(:signal_and_wait)
+          .with(shutdown_timeout_seconds, 'SIGTSTP', 'stop fetching new jobs')
+          .ordered
 
-      expect(memory_killer).to receive(:refresh_state)
-        .with(:killing_sidekiq)
-        .ordered
-        .and_call_original
-      expect(memory_killer).to receive(:signal_pgroup)
-        .with('SIGKILL', 'die')
-        .ordered
+        expect(memory_killer).to receive(:refresh_state)
+          .with(:shutting_down)
+          .ordered
+          .and_call_original
+        expect(memory_killer).to receive(:signal_and_wait)
+          .with(11, 'SIGTERM', 'gracefully shut down')
+          .ordered
 
-      subject
+        expect(memory_killer).to receive(:refresh_state)
+          .with(:killing_sidekiq)
+          .ordered
+          .and_call_original
+        expect(memory_killer).to receive(:signal_pgroup)
+          .with('SIGKILL', 'die')
+          .ordered
+
+        subject
+      end
     end
   end
 

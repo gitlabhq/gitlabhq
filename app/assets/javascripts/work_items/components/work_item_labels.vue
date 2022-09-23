@@ -1,6 +1,6 @@
 <script>
 import { GlTokenSelector, GlLabel, GlSkeletonLoader } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, uniqueId } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
@@ -89,6 +89,9 @@ export default {
     },
   },
   computed: {
+    labelsTitleId() {
+      return uniqueId('labels-title-');
+    },
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -194,6 +197,7 @@ export default {
 <template>
   <div class="form-row gl-mb-5 work-item-labels gl-relative gl-flex-nowrap">
     <span
+      :id="labelsTitleId"
       class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
       data-testid="labels-title"
       >{{ __('Labels') }}</span
@@ -201,6 +205,7 @@ export default {
     <gl-token-selector
       ref="tokenSelector"
       v-model="localLabels"
+      :aria-labelledby="labelsTitleId"
       :container-class="containerClass"
       :dropdown-items="searchLabels"
       :loading="isLoading"
@@ -216,7 +221,7 @@ export default {
     >
       <template #empty-placeholder>
         <div
-          class="add-labels gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-400 gl-pr-4 gl-top-2"
+          class="add-labels gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-secondary gl-pr-4 gl-top-2"
           data-testid="empty-state"
         >
           <span v-if="canUpdate" class="gl-ml-2">{{ __('Add labels') }}</span>

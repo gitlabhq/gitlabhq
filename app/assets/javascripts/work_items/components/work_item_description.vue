@@ -228,7 +228,7 @@ export default {
         class="gl-ml-auto"
         icon="pencil"
         data-testid="edit-description"
-        :aria-label="__('Edit')"
+        :aria-label="__('Edit description')"
         @click="startEditing"
       />
     </div>

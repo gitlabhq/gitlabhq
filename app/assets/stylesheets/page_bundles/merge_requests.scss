@@ -661,10 +661,10 @@ $tabs-holder-z-index: 250;
 
   &:not(:last-child)::before {
     content: '';
-    border-left: 1px solid var(--gray-100, $gray-100);
+    border-left: 2px solid var(--gray-10, $gray-10);
     position: absolute;
-    left: 28px;
     bottom: -17px;
+    left: calc(1rem - 1px);
     height: 16px;
   }
 }

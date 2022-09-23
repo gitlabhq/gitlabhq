@@ -1,0 +1,8 @@
+---
+name: webhooks_gitlab_instance_header
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98624
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375001
+milestone: '15.5'
+type: development
+group: group::integrations
+default_enabled: false

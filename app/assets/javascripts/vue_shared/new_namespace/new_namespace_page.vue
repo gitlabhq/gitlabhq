@@ -1,11 +1,13 @@
 <script>
 import { GlBreadcrumb, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 
 import LegacyContainer from './components/legacy_container.vue';
 import WelcomePage from './components/welcome.vue';
 
 export default {
   components: {
+    NewTopLevelGroupAlert,
     GlBreadcrumb,
     GlIcon,
     WelcomePage,
@@ -79,6 +81,14 @@ export default {
     shouldVerify() {
       return this.verificationRequired && !this.verificationCompleted;
     },
+
+    showNewTopLevelGroupAlert() {
+      if (this.activePanel.detailProps === undefined) {
+        return false;
+      }
+
+      return this.activePanel.detailProps.parentGroupName === '';
+    },
   },
 
   created() {
@@ -130,6 +140,7 @@ export default {
       <slot name="extra-description"></slot>
     </div>
     <div class="col-lg-9">
+      <new-top-level-group-alert v-if="showNewTopLevelGroupAlert" />
       <gl-breadcrumb v-if="breadcrumbs" :items="breadcrumbs" />
       <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
     </div>

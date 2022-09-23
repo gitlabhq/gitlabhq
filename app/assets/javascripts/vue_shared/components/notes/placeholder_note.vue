@@ -50,29 +50,19 @@ export default {
     renderedNote() {
       return renderMarkdown(this.note.body);
     },
-    avatarSize() {
-      if (this.line && !this.isOverviewTab) {
-        return 24;
-      }
-
-      return {
-        default: 24,
-        md: 32,
-      };
-    },
   },
 };
 </script>
 
 <template>
-  <timeline-entry-item class="note note-wrapper being-posted fade-in-half">
-    <div class="timeline-icon">
-      <gl-avatar-link class="gl-mr-3" :href="getUserData.path">
+  <timeline-entry-item class="note note-wrapper note-comment being-posted fade-in-half">
+    <div class="timeline-avatar gl-float-left">
+      <gl-avatar-link :href="getUserData.path">
         <gl-avatar
           :src="getUserData.avatar_url"
           :entity-name="getUserData.username"
           :alt="getUserData.name"
-          :size="avatarSize"
+          :size="32"
         />
       </gl-avatar-link>
     </div>
@@ -85,8 +75,10 @@ export default {
           </a>
         </div>
       </div>
-      <div class="note-body">
-        <div v-safe-html="renderedNote" class="note-text md"></div>
+      <div class="timeline-discussion-body">
+        <div class="note-body">
+          <div v-safe-html="renderedNote" class="note-text md"></div>
+        </div>
       </div>
     </div>
   </timeline-entry-item>

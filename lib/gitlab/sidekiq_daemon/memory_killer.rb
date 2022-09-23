@@ -107,6 +107,8 @@ module Gitlab
       end
 
       def restart_sidekiq
+        return if Feature.enabled?(:sidekiq_memory_killer_read_only_mode, type: :ops)
+
         # Tell Sidekiq to stop fetching new jobs
         # We first SIGNAL and then wait given time
         # We also monitor a number of running jobs and allow to restart early

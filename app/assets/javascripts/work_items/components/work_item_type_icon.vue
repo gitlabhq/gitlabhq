@@ -53,7 +53,7 @@ export default {
       v-gl-tooltip.hover="showTooltipOnHover"
       :name="iconName"
       :title="workItemTooltipTitle"
-      class="gl-mr-2 gl-text-gray-500"
+      class="gl-mr-2 gl-text-secondary"
     />
     <span v-if="workItemTypeName" :class="{ 'gl-sr-only': !showText }">{{ workItemTypeName }}</span>
   </span>

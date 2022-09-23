@@ -3,7 +3,7 @@ key_path: database.flavor
 description: What PostgreSQL flavor is being used. Possible values are
   "Amazon Aurora PostgreSQL", "PostgreSQL on Amazon RDS", "Cloud SQL for PostgreSQL",
   "Azure Database for PostgreSQL - Single Server", "Azure Database for PostgreSQL - Flexible Server",
-  or "null".
+  "AlloyDB for PostgreSQL", or "null".
 product_section: enablement
 product_stage: enablement
 product_group: database

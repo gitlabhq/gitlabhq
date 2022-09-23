@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlAvatar } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import IssuePlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
@@ -52,18 +51,5 @@ describe('Issue placeholder note component', () => {
     createComponent();
 
     expect(findNote().classes()).toContain('discussion');
-  });
-
-  describe('avatar size', () => {
-    it.each`
-      size                       | line                    | isOverviewTab
-      ${{ default: 24, md: 32 }} | ${null}                 | ${false}
-      ${24}                      | ${{ line_code: '123' }} | ${false}
-      ${{ default: 24, md: 32 }} | ${{ line_code: '123' }} | ${true}
-    `('renders avatar $size for $line and $isOverviewTab', ({ size, line, isOverviewTab }) => {
-      createComponent(false, { line, isOverviewTab });
-
-      expect(wrapper.findComponent(GlAvatar).props('size')).toEqual(size);
-    });
   });
 });
