@@ -110,7 +110,7 @@ export default {
 </script>
 
 <template>
-  <div class="row gl-mt-3 js-preferences-form">
+  <div class="row gl-mt-3 js-preferences-form js-search-settings-section">
     <div v-if="integrationViews.length" class="col-sm-12">
       <hr data-testid="profile-preferences-integrations-rule" />
     </div>

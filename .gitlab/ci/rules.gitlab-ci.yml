@@ -31,11 +31,14 @@
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_IID'
 
+# Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
+# if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
+# or any similar condition to check that the MR has *any* approval (not just required approval).
 .if-merge-request-approved: &if-merge-request-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVED'
+  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
 
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_APPROVED != "true"'
+  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
 
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'
@@ -532,9 +535,6 @@
   rules:
     - <<: *if-merge-request-approved
       when: never
-    # Temporarily disabled minimal rspec jobs before and after approval because of https://gitlab.com/gitlab-org/gitlab/-/issues/373064.
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-automated-merge-request
       when: never
     - <<: *if-security-merge-request
@@ -554,6 +554,8 @@
       changes: *backend-patterns
     - <<: *if-security-merge-request
       changes: *backend-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
 
 .rails:rules:as-if-foss-migration-unit-integration:minimal-default-rules:
   rules:
@@ -581,6 +583,8 @@
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
 
 .rails:rules:system:minimal-default-rules:
   rules:
@@ -1007,6 +1011,8 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - changes: *db-patterns
 
 .rails:rules:ee-and-foss-migration:minimal:
@@ -1108,6 +1114,8 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - changes: *db-patterns
 
 .rails:rules:ee-only-migration:minimal:
@@ -1195,6 +1203,8 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
 
 .rails:rules:as-if-foss-migration:minimal:
   rules:

@@ -69,6 +69,8 @@ RSpec.describe WebHooks::LogExecutionService do
           subject(:service) { described_class.new(hook: project_hook, log_data: data, response_category: response_category) }
 
           before do
+            # stub LOCK_RETRY to be 0 in order for tests to run quicker
+            stub_const("#{described_class.name}::LOCK_RETRY", 0)
             stub_exclusive_lease_taken(lease_key, timeout: described_class::LOCK_TTL)
             allow(project_hook).to receive(:executable?).and_return(executable)
           end

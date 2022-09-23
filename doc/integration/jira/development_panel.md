@@ -70,7 +70,7 @@ To simplify administration, we recommend that a GitLab group maintainer or group
 | Jira usage | GitLab.com customers need | GitLab self-managed customers need |
 |------------|---------------------------|------------------------------------|
 | [Atlassian cloud](https://www.atlassian.com/migration/assess/why-cloud) | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab.com and Jira. For more information, see the documentation for the [GitLab.com for Jira Cloud app](connect-app.md). | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab.com for Jira Cloud app for self-managed instances](connect-app.md#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances) for more information. |
-| Your own server | The [Jira DVCS (distributed version control system) connector](dvcs.md). This syncs data hourly. | The [Jira DVCS Connector](dvcs.md). |
+| Your own server | The [Jira DVCS (distributed version control system) connector](dvcs.md). This syncs data hourly. | The [Jira DVCS (distributed version control system) connector](dvcs.md). This syncs data hourly. |
 
 Each GitLab project can be configured to connect to an entire Jira instance. That means after
 configuration, one GitLab project can interact with all Jira projects in that instance. For:

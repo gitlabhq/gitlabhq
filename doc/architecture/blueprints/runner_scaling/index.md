@@ -94,7 +94,7 @@ data that can be shared between job runs.
 Because there is no viable replacement and we might be unable to support all
 cloud providers that Docker Machine used to support, the key design requirement
 is to make it really simple and easy for the wider community to write a custom
-GitLab auto-scaling plugin, whatever cloud provider they might be using. We
+GitLab plugin for whatever cloud provider they might be using. We
 want to design a simple abstraction that users will be able to build on top, as
 will we to support existing workflows on GitLab.com.
 
@@ -129,12 +129,11 @@ the need of rebuilding GitLab Runner whenever it happens.
 
 ### 💡 Write a solid documentation about how to build your own plugin
 
-It is important to show users how to build an auto-scaling plugin, so that they
+It is important to show users how to build a plugin, so that they
 can implement support for their own cloud infrastructure.
 
-Building new plugins should be simple, and with the support of great
-documentation it should not require advanced skills, like understanding how
-gRPC works. We want to design the plugin system in a way that the entry barrier
+Building new plugins should be simple and supported with great
+documentation. We want to design the plugin system in a way that the entry barrier
 for contributing new plugins is very low.
 
 ### 💡 Build a PoC to run multiple builds on a single machine
@@ -171,38 +170,65 @@ configures the Docker daemon there to allow external authenticated requests. It
 stores credentials to such ephemeral Docker environments on disk. Once a
 machine has been provisioned and made available for GitLab Runner Manager to
 run builds, it is using one of the existing executors to run a user-provided
-script. In auto-scaling, this is typically done using Docker executor.
+script. In auto-scaling, this is typically done using the Docker executor.
 
-### Custom provider
+### Separation of concerns
 
-In order to reduce the scope of work, we only want to introduce the new
-abstraction layer in one place.
+There are several concerns represented in the current architecture. They are
+coupled in the current implementation so we will break them out here to consider
+them each separately.
 
-A few years ago we introduced the [Custom Executor](https://docs.gitlab.com/runner/executors/custom.html)
-feature in GitLab Runner. It allows users to design custom build execution
-methods. The custom executor driver can be implemented in any way - from a
-simple shell script to a dedicated binary - that is then used by a Runner
-through os/exec system calls.
+1. **Virtual Machine (VM) shape**. The underlying provider of a VM requires configuration to
+   know what kind of machine to create. E.g. Cores, memory, failure domain,
+   etc... This information is very provider specific.
+1. **VM lifecycle management**. Multiple machines will be created and a
+   system must keep track of which machines belong to this executor. Typically
+   a cloud provider will have a way to manage a set of homogenous machines.
+   E.g. GCE Instance Group. The basic operations are increase, decrease and
+   usually delete a specific machine.
+1. **VM autoscaling**. In addition to low-level lifecycle management,
+   job-aware capacity decisions must be made to the set of machines to provide
+   capacity when it is needed but not maintain excess capacity for cost reasons.
+1. **Job to VM mapping (routing)**. Currently the system assigns only one job to a
+   given a machine. A machine may be reused based on the specific executor
+   configuration.
+1. **In-VM job execution**. Within each VM a job must be driven through
+   various pre-defined stages and results and trace information returned
+   to the Runner system. These details are highly dependent on the VM
+   architecture and operating system as well as Executor type.
 
-Thanks to the custom executor abstraction there is no more need to implement
-new executors internally in Runner. Users who have specific needs can implement
-their own drivers and don't need to wait for us to make their work part of the
-"official" GitLab Runner. As each driver is a separate project, it also makes
-it easier to create communities around them, where interested people can
-collaborate together on improvements and bug fixes.
+The current architecture has several points of coupling between concerns.
+Coupling reduces opportunities for abstraction (e.g. community supported
+plugins) and increases complexity, making the code harder to understand,
+test, maintain and extend.
 
-We want to design the new Custom Provider to replicate the success of the
-Custom Executor. It will make it easier for users to build their own ways to
-provide a context and an environment in which a build will be executed by one
-of the Custom Executors.
+A primary design decision will be which concerns to externalize to the plugin
+and which should remain with the runner system. The current implementation
+has several abstractions internally which could be used as cut points for a
+new abstraction. 
 
-There are multiple solutions to implementing a custom provider abstraction. We
-can use raw Go plugins, Hashcorp's Go Plugin, HTTP interface or gRPC based
-facade service. There are many solutions, and we want to choose the most
-optimal one. In order to do that, we will describe the solutions in a separate
-document, define requirements and score the solution accordingly. This will
-allow us to choose a solution that will work best for us and the wider
-community.
+For example the [`Build`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/build.go#L125)
+type uses the [`GetExecutorProvider`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/executor.go#L171)
+function to get an executor provider based on a dispatching executor string.
+Various executor types register with the system by being imported and calling
+[`RegisterExecutorProvider`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/executor.go#L154)
+during initialization. Here the abstractions are the [`ExecutorProvider`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/executor.go#L80)
+and [`Executor`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/executor.go#L59)
+interfaces.
+
+Within the `docker+autoscaling` executor the [`machineExecutor`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/executors/docker/machine/machine.go#L19)
+type has a [`Machine`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/helpers/docker/machine.go#L7)
+interface which it uses to aquire a VM during the common [`Prepare`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/executors/docker/machine/machine.go#L71)
+phase. This abstraction primarily creates, accesses and deletes VMs.
+
+There is no current abstraction for the VM autoscaling logic. It is tightly
+coupled with the VM lifecycle and job routing logic. Creating idle capacity
+happens as a side-effect of calling [`Acquire`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/executors/docker/machine/provider.go#L449) on the `machineProvider` while binding a job to a VM.
+
+There is also no current abstraction for in-VM job execution. VM-specific
+commands are generated by the Runner Manager using the [`GenerateShellScript`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/build.go#L336)
+function and [injected](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/build.go#L373)
+into the VM as the manager drives the job execution stages.
 
 ### Design principles
 
@@ -235,12 +261,84 @@ abstraction.
 1. Build an abstraction that serves our community well but allows us to ship it quickly.
 1. Invest in a flexible solution, avoid one-way-door decisions, foster iteration.
 1. When in doubts err on the side of making things more simple for the wider community.
+1. Limit coupling between concerns in order to make the system more simple and extensible.
+1. Concerns should live on one side of the plug or the other--not both, which
+   duplicates effort and increases coupling.
 
 #### The most important technical details
 
 1. Favor gRPC communication between a plugin and GitLab Runner.
 1. Make it possible to version communication interface and support many versions.
 1. Make Go a primary language for writing plugins but accept other languages too.
+1. Prefer a GitLab job-aware autoscaler to provider specific autoscalers. Cloud provider
+   autoscalers don't know which VM to delete when scaling down so they make sub-optimal
+   decisions. Rather than teaching all autoscalers about GitLab jobs, we prefer to
+   have one, GitLab-owned autoscaler (not in the plugin).
+
+## Plugin boundary proposals
+
+The following are proposals for where to draw the plugin boundary. We will evaluate
+these proposals and others by the design principles and technical constraints
+listed above.
+
+### Custom provider
+
+In order to reduce the scope of work, we only want to introduce the new
+abstraction layer in one place.
+
+A few years ago we introduced the [Custom Executor](https://docs.gitlab.com/runner/executors/custom.html)
+feature in GitLab Runner. It allows users to design custom build execution
+methods. The custom executor driver can be implemented in any way - from a
+simple shell script to a dedicated binary - that is then used by a Runner
+through os/exec system calls.
+
+Thanks to the custom executor abstraction there is no more need to implement
+new executors internally in Runner. Users who have specific needs can implement
+their own drivers and don't need to wait for us to make their work part of the
+"official" GitLab Runner. As each driver is a separate project, it also makes
+it easier to create communities around them, where interested people can
+collaborate together on improvements and bug fixes.
+
+We want to design the new Custom Provider to replicate the success of the
+Custom Executor. It will make it easier for users to build their own ways to
+provide a context and an environment in which a build will be executed by one
+of the Custom Executors.
+
+There are multiple solutions to implementing a custom provider abstraction. We
+can use raw Go plugins, Hashcorp's Go Plugin, HTTP interface or gRPC based
+facade service. There are many solutions, and we want to choose the most
+optimal one. In order to do that, we will describe the solutions in a separate
+document, define requirements and score the solution accordingly. This will
+allow us to choose a solution that will work best for us and the wider
+community.
+
+This proposal places VM lifecycle and autoscaling concerns as well as job to
+VM mapping (routing) into the plugin. The build need only ask for a VM and
+it will get one with all aspects of lifecycle and routing already accounted
+for by the plugin.
+
+Rationale: [Description of the Custom Executor Provider proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28848#note_823321515)
+
+### Fleeting VM provider
+
+We can introduce a more simple version of the `Machine` abstraction in the
+form of a "Fleeting" interface. Fleeting provides a low-level interface to
+a homogenous VM group which allows increasing and decreasing the set size
+as well as consuming a VM from within the set.
+
+Plugins for cloud providers and other VM sources are implemented via the
+Hashicorp go-plugin library. This is in practice gRPC over STDIN/STDOUT
+but other wire protocols can be used also.
+
+In order to make use of the new interface, the autoscaling logic is pulled
+out of the Docker Executor and placed into a new Taskscaler library.
+
+This places the concerns of VM lifecycle, VM shape and job routing within
+the plugin. It also places the conern of VM autoscaling into a separate
+component so it can be used by multiple Runner Executors (not just `docker+autoscaling`).
+
+Rationale: [Description of the InstanceGroup / Fleeting proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28848#note_823430883)
+POC: [Merge request](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3315)
 
 ## Status
 
@@ -253,12 +351,12 @@ Proposal:
 <!-- vale gitlab.Spelling = NO -->
 
 | Role                         | Who
-|------------------------------|------------------------------------------|
-| Authors                      | Grzegorz Bizon, Tomasz Maczukin          |
-| Architecture Evolution Coach | Kamil Trzciński                          |
-| Engineering Leader           | Elliot Rushton, Cheryl Li                |
-| Product Manager              | Darren Eastman, Jackie Porter            |
-| Domain Expert / Runner       | Arran Walker                             |
+|------------------------------|-------------------------------------------------|
+| Authors                      | Grzegorz Bizon, Tomasz Maczukin, Joseph Burnett |
+| Architecture Evolution Coach | Kamil Trzciński                                 |
+| Engineering Leader           | Elliot Rushton, Cheryl Li                       |
+| Product Manager              | Darren Eastman, Jackie Porter                   |
+| Domain Expert / Runner       | Arran Walker                                    |
 
 DRIs:
 

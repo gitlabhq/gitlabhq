@@ -13,6 +13,9 @@ inherit_from:
     <% end %>
   - '.rubocop_todo.yml'
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
+  - ./rubocop/rubocop-ruby30.yml
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -84,7 +87,6 @@ Lint/EmptyFile:
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).
 Style/MutableConstant:
-  Enabled: true
   Exclude:
     - 'db/migrate/**/*'
     - 'db/post_migrate/**/*'
