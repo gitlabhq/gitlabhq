@@ -37,20 +37,20 @@ module Gitlab
           # event - An instance of `Sawyer::Resource` containing the event details.
           def from_api_response(event, additional_data = {})
             new(
-              id: event.id,
-              actor: user_representation(event.actor),
-              event: event.event,
-              commit_id: event.commit_id,
-              label_title: event.label && event.label[:name],
-              old_title: event.rename && event.rename[:from],
-              new_title: event.rename && event.rename[:to],
-              milestone_title: event.milestone && event.milestone[:title],
-              issue: event.issue&.to_h&.symbolize_keys,
-              source: event.source,
-              assignee: user_representation(event.assignee),
-              requested_reviewer: user_representation(event.requested_reviewer),
-              review_requester: user_representation(event.review_requester),
-              created_at: event.created_at
+              id: event[:id],
+              actor: user_representation(event[:actor]),
+              event: event[:event],
+              commit_id: event[:commit_id],
+              label_title: event.dig(:label, :name),
+              old_title: event.dig(:rename, :from),
+              new_title: event.dig(:rename, :to),
+              milestone_title: event.dig(:milestone, :title),
+              issue: event[:issue]&.symbolize_keys,
+              source: event[:source],
+              assignee: user_representation(event[:assignee]),
+              requested_reviewer: user_representation(event[:requested_reviewer]),
+              review_requester: user_representation(event[:review_requester]),
+              created_at: event[:created_at]
             )
           end
 

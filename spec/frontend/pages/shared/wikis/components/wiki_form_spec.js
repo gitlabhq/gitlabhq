@@ -123,7 +123,7 @@ describe('WikiForm', () => {
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
         markdownDocsPath: pageInfoPersisted.markdownHelpPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
-        autofocus: pageInfoPersisted.persisted,
+        initOnAutofocus: pageInfoPersisted.persisted,
         formFieldId: 'wiki_content',
         formFieldName: 'wiki[content]',
       }),

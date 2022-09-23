@@ -31,7 +31,8 @@ export default {
     },
     uploadsPath: {
       type: String,
-      required: true,
+      required: false,
+      default: () => window.uploads_path,
     },
     enableContentEditor: {
       type: Boolean,
@@ -56,11 +57,6 @@ export default {
       required: false,
       default: true,
     },
-    autofocus: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     formFieldPlaceholder: {
       type: String,
       required: false,
@@ -71,17 +67,30 @@ export default {
       required: false,
       default: '',
     },
+    initOnAutofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       editingMode: EDITING_MODE_MARKDOWN_FIELD,
       switchEditingControlEnabled: true,
+      autofocus: this.initOnAutofocus,
     };
   },
   computed: {
     isContentEditorActive() {
       return this.enableContentEditor && this.editingMode === EDITING_MODE_CONTENT_EDITOR;
     },
+    contentEditorAutofocus() {
+      // Match textarea focus behavior
+      return this.autofocus ? 'end' : false;
+    },
+  },
+  mounted() {
+    this.autofocusTextarea(this.editingMode);
   },
   methods: {
     updateMarkdownFromContentEditor({ markdown }) {
@@ -99,8 +108,24 @@ export default {
     renderMarkdown(markdown) {
       return axios.post(this.renderMarkdownPath, { text: markdown }).then(({ data }) => data.body);
     },
+    onEditingModeChange(editingMode) {
+      this.notifyEditingModeChange(editingMode);
+      this.enableAutofocus(editingMode);
+    },
+    onEditingModeRestored(editingMode) {
+      this.notifyEditingModeChange(editingMode);
+    },
     notifyEditingModeChange(editingMode) {
       this.$emit(editingMode);
+    },
+    enableAutofocus(editingMode) {
+      this.autofocus = true;
+      this.autofocusTextarea(editingMode);
+    },
+    autofocusTextarea(editingMode) {
+      if (this.autofocus && editingMode === EDITING_MODE_MARKDOWN_FIELD) {
+        this.$refs.textarea.focus();
+      }
     },
   },
   switchEditingControlOptions: [
@@ -119,13 +144,13 @@ export default {
         class="gl-display-flex"
         :options="$options.switchEditingControlOptions"
         :disabled="!enableContentEditor || !switchEditingControlEnabled"
-        @change="notifyEditingModeChange"
+        @change="onEditingModeChange"
       />
     </div>
     <local-storage-sync
       v-model="editingMode"
       storage-key="gl-wiki-content-editor-enabled"
-      @input="notifyEditingModeChange"
+      @input="onEditingModeRestored"
     />
     <markdown-field
       v-if="!isContentEditorActive"
@@ -148,7 +173,6 @@ export default {
           dir="auto"
           data-supports-quick-actions="false"
           data-qa-selector="markdown_editor_form_field"
-          :autofocus="autofocus"
           :aria-label="formFieldAriaLabel"
           :placeholder="formFieldPlaceholder"
           @input="updateMarkdownFromMarkdownField"
@@ -161,6 +185,7 @@ export default {
         :render-markdown="renderMarkdown"
         :uploads-path="uploadsPath"
         :markdown="value"
+        :autofocus="contentEditorAutofocus"
         @change="updateMarkdownFromContentEditor"
         @loading="disableSwitchEditingControl"
         @loadingSuccess="enableSwitchEditingControl"

@@ -27,8 +27,9 @@ Features behind flags can be gradually rolled out, typically:
 1. The feature flag is removed.
 
 These features can be enabled and disabled to allow or prevent users from using
-them. It can be done by GitLab administrators with access to GitLab Rails
-console.
+them. It can be done by GitLab administrators with access to the
+[Rails console](#how-to-enable-and-disable-features-behind-flags) or the
+[Feature flags API](../api/features.md).
 
 When you disable a feature flag, the feature is hidden from users and all of the functionality is turned off.
 For example, data is not recorded and services do not run.

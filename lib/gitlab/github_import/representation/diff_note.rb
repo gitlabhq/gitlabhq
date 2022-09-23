@@ -21,31 +21,31 @@ module Gitlab
         #
         # note - An instance of `Sawyer::Resource` containing the note details.
         def self.from_api_response(note, additional_data = {})
-          matches = note.html_url.match(NOTEABLE_ID_REGEX)
+          matches = note[:html_url].match(NOTEABLE_ID_REGEX)
 
           unless matches
             raise(
               ArgumentError,
-              "The note URL #{note.html_url.inspect} is not supported"
+              "The note URL #{note[:html_url].inspect} is not supported"
             )
           end
 
-          user = Representation::User.from_api_response(note.user) if note.user
+          user = Representation::User.from_api_response(note[:user]) if note[:user]
           hash = {
             noteable_id: matches[:iid].to_i,
-            file_path: note.path,
-            commit_id: note.commit_id,
-            original_commit_id: note.original_commit_id,
-            diff_hunk: note.diff_hunk,
+            file_path: note[:path],
+            commit_id: note[:commit_id],
+            original_commit_id: note[:original_commit_id],
+            diff_hunk: note[:diff_hunk],
             author: user,
-            note: note.body,
-            created_at: note.created_at,
-            updated_at: note.updated_at,
-            note_id: note.id,
-            end_line: note.line,
-            start_line: note.start_line,
-            side: note.side,
-            in_reply_to_id: note.in_reply_to_id
+            note: note[:body],
+            created_at: note[:created_at],
+            updated_at: note[:updated_at],
+            note_id: note[:id],
+            end_line: note[:line],
+            start_line: note[:start_line],
+            side: note[:side],
+            in_reply_to_id: note[:in_reply_to_id]
           }
 
           new(hash)

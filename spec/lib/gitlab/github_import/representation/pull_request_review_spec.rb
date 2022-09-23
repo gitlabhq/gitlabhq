@@ -21,15 +21,14 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
 
   describe '.from_api_response' do
     let(:response) do
-      double(
-        :response,
+      {
         id: 999,
         merge_request_id: 42,
         body: 'note',
         state: 'APPROVED',
-        user: double(:user, id: 4, login: 'alice'),
+        user: { id: 4, login: 'alice' },
         submitted_at: submitted_at
-      )
+      }
     end
 
     it_behaves_like 'a PullRequest review' do
@@ -37,9 +36,7 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
     end
 
     it 'does not set the user if the response did not include a user' do
-      allow(response)
-        .to receive(:user)
-        .and_return(nil)
+      response[:user] = nil
 
       review = described_class.from_api_response(response)
 

@@ -12601,7 +12601,6 @@ CREATE TABLE ci_build_trace_metadata (
 CREATE TABLE ci_builds (
     status character varying,
     finished_at timestamp without time zone,
-    trace text,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
@@ -30909,8 +30908,6 @@ CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 
 CREATE INDEX tmp_index_system_note_metadata_on_attention_request_actions ON system_note_metadata USING btree (id) WHERE ((action)::text = ANY ((ARRAY['attention_requested'::character varying, 'attention_request_removed'::character varying])::text[]));
-
-CREATE INDEX tmp_index_system_note_metadata_on_id_where_task ON system_note_metadata USING btree (id, action) WHERE ((action)::text = 'task'::text);
 
 CREATE INDEX tmp_index_vulnerability_occurrences_on_id_and_scanner_id ON vulnerability_occurrences USING btree (id, scanner_id) WHERE (report_type = ANY (ARRAY[7, 99]));
 

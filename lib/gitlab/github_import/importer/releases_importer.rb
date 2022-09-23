@@ -21,21 +21,21 @@ module Gitlab
         end
 
         def already_imported?(release)
-          existing_tags.include?(release.tag_name) || release.tag_name.nil?
+          existing_tags.include?(release[:tag_name]) || release[:tag_name].nil?
         end
 
         def build(release)
-          existing_tags.add(release.tag_name)
+          existing_tags.add(release[:tag_name])
 
           {
-            name: release.name,
-            tag: release.tag_name,
+            name: release[:name],
+            tag: release[:tag_name],
             author_id: fetch_author_id(release),
             description: description_for(release),
-            created_at: release.created_at,
-            updated_at: release.created_at,
+            created_at: release[:created_at],
+            updated_at: release[:created_at],
             # Draft releases will have a null published_at
-            released_at: release.published_at || Time.current,
+            released_at: release[:published_at] || Time.current,
             project_id: project.id
           }
         end
@@ -45,7 +45,7 @@ module Gitlab
         end
 
         def description_for(release)
-          release.body.presence || "Release for tag #{release.tag_name}"
+          release[:body].presence || "Release for tag #{release[:tag_name]}"
         end
 
         def object_type

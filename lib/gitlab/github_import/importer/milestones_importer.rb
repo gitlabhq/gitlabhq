@@ -22,7 +22,7 @@ module Gitlab
         end
 
         def already_imported?(milestone)
-          existing_milestones.include?(milestone.number)
+          existing_milestones.include?(milestone[:number])
         end
 
         def build_milestones_cache
@@ -31,19 +31,19 @@ module Gitlab
 
         def build(milestone)
           {
-            iid: milestone.number,
-            title: milestone.title,
-            description: milestone.description,
+            iid: milestone[:number],
+            title: milestone[:title],
+            description: milestone[:description],
             project_id: project.id,
             state: state_for(milestone),
-            due_date: milestone.due_on&.to_date,
-            created_at: milestone.created_at,
-            updated_at: milestone.updated_at
+            due_date: milestone[:due_on]&.to_date,
+            created_at: milestone[:created_at],
+            updated_at: milestone[:updated_at]
           }
         end
 
         def state_for(milestone)
-          milestone.state == 'open' ? :active : :closed
+          milestone[:state] == 'open' ? :active : :closed
         end
 
         def each_milestone

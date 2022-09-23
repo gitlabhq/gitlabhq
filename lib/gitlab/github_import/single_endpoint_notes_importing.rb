@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def id_for_already_imported_cache(associated)
-        associated.id
+        associated[:id]
       end
 
       def parent_collection

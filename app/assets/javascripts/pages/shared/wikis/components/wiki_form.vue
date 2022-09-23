@@ -299,7 +299,7 @@ export default {
             :uploads-path="pageInfo.uploadsPath"
             :enable-content-editor="isMarkdownFormat"
             :enable-preview="isMarkdownFormat"
-            :autofocus="pageInfo.persisted"
+            :init-on-autofocus="pageInfo.persisted"
             :form-field-placeholder="$options.i18n.content.placeholder"
             :form-field-aria-label="$options.i18n.content.label"
             form-field-id="wiki_content"

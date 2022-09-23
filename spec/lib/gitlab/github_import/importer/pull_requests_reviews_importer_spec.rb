@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
   end
 
   describe '#id_for_already_imported_cache' do
-    it { expect(subject.id_for_already_imported_cache(double(id: 1))).to eq(1) }
+    it { expect(subject.id_for_already_imported_cache({ id: 1 })).to eq(1) }
   end
 
   describe '#each_object_to_import', :clean_gitlab_redis_cache do
@@ -36,14 +36,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
       )
     end
 
-    let(:review) { double(id: 1) }
+    let(:review) { { id: 1 } }
 
     it 'fetches the pull requests reviews data' do
       page = double(objects: [review], number: 1)
-
-      expect(review)
-        .to receive(:merge_request_id=)
-        .with(merge_request.id)
 
       expect(client)
         .to receive(:each_page)
@@ -55,6 +51,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsReviewsImporter do
         .to yield_with_args(review)
 
       subject.each_object_to_import {}
+
+      expect(review[:merge_request_id]).to eq(merge_request.id)
     end
 
     it 'skips cached pages' do

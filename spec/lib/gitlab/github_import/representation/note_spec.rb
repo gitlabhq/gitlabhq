@@ -48,15 +48,14 @@ RSpec.describe Gitlab::GithubImport::Representation::Note do
 
   describe '.from_api_response' do
     let(:response) do
-      double(
-        :response,
+      {
         html_url: 'https://github.com/foo/bar/issues/42',
-        user: double(:user, id: 4, login: 'alice'),
+        user: { id: 4, login: 'alice' },
         body: 'Hello world',
         created_at: created_at,
         updated_at: updated_at,
         id: 1
-      )
+      }
     end
 
     it_behaves_like 'a Note' do
@@ -64,9 +63,7 @@ RSpec.describe Gitlab::GithubImport::Representation::Note do
     end
 
     it 'does not set the user if the response did not include a user' do
-      allow(response)
-        .to receive(:user)
-        .and_return(nil)
+      response[:user] = nil
 
       note = described_class.from_api_response(response)
 

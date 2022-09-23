@@ -26,12 +26,13 @@ describe('ContentEditor', () => {
   const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
   const findLoadingIndicator = () => wrapper.findComponent(LoadingIndicator);
   const findContentEditorAlert = () => wrapper.findComponent(ContentEditorAlert);
-  const createWrapper = ({ markdown } = {}) => {
+  const createWrapper = ({ markdown, autofocus } = {}) => {
     wrapper = shallowMountExtended(ContentEditor, {
       propsData: {
         renderMarkdown,
         uploadsPath,
         markdown,
+        autofocus,
       },
       stubs: {
         EditorStateObserver,
@@ -70,14 +71,22 @@ describe('ContentEditor', () => {
     expect(editorContent.classes()).toContain('md');
   });
 
-  it('renders ContentEditorProvider component', async () => {
-    await createWrapper();
+  it('allows setting the tiptap editor to autofocus', async () => {
+    createWrapper({ autofocus: 'start' });
+
+    await nextTick();
+
+    expect(findEditorContent().props().editor.options.autofocus).toBe('start');
+  });
+
+  it('renders ContentEditorProvider component', () => {
+    createWrapper();
 
     expect(wrapper.findComponent(ContentEditorProvider).exists()).toBe(true);
   });
 
-  it('renders top toolbar component', async () => {
-    await createWrapper();
+  it('renders top toolbar component', () => {
+    createWrapper();
 
     expect(wrapper.findComponent(TopToolbar).exists()).toBe(true);
   });

@@ -9,20 +9,19 @@ RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter do
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
   let(:github_issue) do
-    double(
-      :response,
+    {
       number: 42,
       title: 'My Issue',
       body: 'This is my issue',
-      milestone: double(:milestone, number: 4),
+      milestone: { number: 4 },
       state: 'open',
-      assignees: [double(:user, id: 4, login: 'alice')],
-      labels: [double(:label, name: 'bug')],
-      user: double(:user, id: 4, login: 'alice'),
+      assignees: [{ id: 4, login: 'alice' }],
+      labels: [{ name: 'bug' }],
+      user: { id: 4, login: 'alice' },
       created_at: created_at,
       updated_at: updated_at,
       pull_request: false
-    )
+    }
   end
 
   describe '#parallel?' do

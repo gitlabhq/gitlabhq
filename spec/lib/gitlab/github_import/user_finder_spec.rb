@@ -17,8 +17,8 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
   describe '#author_id_for' do
     context 'with default author_key' do
       it 'returns the user ID for the author of an object' do
-        user = double(:user, id: 4, login: 'kittens')
-        note = double(:note, author: user)
+        user = { id: 4, login: 'kittens' }
+        note = { author: user }
 
         expect(finder).to receive(:user_id_for).with(user).and_return(42)
 
@@ -26,8 +26,8 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
       end
 
       it 'returns the ID of the project creator if no user ID could be found' do
-        user = double(:user, id: 4, login: 'kittens')
-        note = double(:note, author: user)
+        user = { id: 4, login: 'kittens' }
+        note = { author: user }
 
         expect(finder).to receive(:user_id_for).with(user).and_return(nil)
 
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
       end
 
       it 'returns the ID of the ghost user when the object has no user' do
-        note = double(:note, author: nil)
+        note = { author: nil }
 
         expect(finder.author_id_for(note)).to eq([User.ghost.id, true])
       end
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
     end
 
     context 'with a non-default author_key' do
-      let(:user) { double(:user, id: 4, login: 'kittens') }
+      let(:user) { { id: 4, login: 'kittens' } }
 
       shared_examples 'user ID finder' do |author_key|
         it 'returns the user ID for an object' do
@@ -57,25 +57,25 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
       end
 
       context 'when the author_key parameter is :actor' do
-        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', actor: user) }
+        let(:issue_event) { { actor: user } }
 
         it_behaves_like 'user ID finder', :actor
       end
 
       context 'when the author_key parameter is :assignee' do
-        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', assignee: user) }
+        let(:issue_event) { { assignee: user } }
 
         it_behaves_like 'user ID finder', :assignee
       end
 
       context 'when the author_key parameter is :requested_reviewer' do
-        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', requested_reviewer: user) }
+        let(:issue_event) { { requested_reviewer: user } }
 
         it_behaves_like 'user ID finder', :requested_reviewer
       end
 
       context 'when the author_key parameter is :review_requester' do
-        let(:issue_event) { double('Gitlab::GithubImport::Representation::IssueEvent', review_requester: user) }
+        let(:issue_event) { { review_requester: user } }
 
         it_behaves_like 'user ID finder', :review_requester
       end
@@ -84,15 +84,15 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
 
   describe '#assignee_id_for' do
     it 'returns the user ID for the assignee of an issuable' do
-      user = double(:user, id: 4, login: 'kittens')
-      issue = double(:issue, assignee: user)
+      user = { id: 4, login: 'kittens' }
+      issue = { assignee: user }
 
       expect(finder).to receive(:user_id_for).with(user).and_return(42)
       expect(finder.assignee_id_for(issue)).to eq(42)
     end
 
     it 'returns nil if the issuable does not have an assignee' do
-      issue = double(:issue, assignee: nil)
+      issue = { assignee: nil }
 
       expect(finder).not_to receive(:user_id_for)
       expect(finder.assignee_id_for(issue)).to be_nil
@@ -101,9 +101,9 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
 
   describe '#user_id_for' do
     it 'returns the user ID for the given user' do
-      user = double(:user, id: 4, login: 'kittens')
+      user = { id: 4, login: 'kittens' }
 
-      expect(finder).to receive(:find).with(user.id, user.login).and_return(42)
+      expect(finder).to receive(:find).with(user[:id], user[:login]).and_return(42)
       expect(finder.user_id_for(user)).to eq(42)
     end
 
@@ -221,7 +221,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
     end
 
     context 'when an Email address is not cached' do
-      let(:user) { double(:user, email: email) }
+      let(:user) { { email: email } }
 
       it 'retrieves the Email address from the GitHub API' do
         expect(client).to receive(:user).with('kittens').and_return(user)
@@ -251,7 +251,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache do
       end
 
       it 'shortens the timeout for Email address in cache when an Email address is private/nil from GitHub' do
-        user = double(:user, email: nil)
+        user = { email: nil }
         expect(client).to receive(:user).with('kittens').and_return(user)
 
         expect(Gitlab::Cache::Import::Caching)

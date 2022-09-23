@@ -22,7 +22,8 @@ a database schema.
 Adding a `:migration` tag to a test signature enables some custom RSpec
 `before` and `after` hooks in our
 [`spec/support/migration.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/f81fa6ab1dd788b70ef44b85aaba1f31ffafae7d/spec/support/migration.rb)
-to run.
+to run. If performing a migration against a database schema other than
+`:gitlab_main` (for example `:gitlab_ci`), then you must specify it as well: `migration: :gitlab_ci`. See [spec/migrations/change_public_projects_cost_factor_spec.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/change_public_projects_cost_factor_spec.rb#L6-6) for an example.
 
 A `before` hook reverts all migrations to the point that a migration
 under test is not yet migrated.

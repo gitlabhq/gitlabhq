@@ -40,7 +40,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
   end
 
   describe '#id_for_already_imported_cache' do
-    let(:event) { instance_double('Event', id: 1) }
+    let(:event) { { id: 1 } }
 
     it { expect(subject.id_for_already_imported_cache(event)).to eq(1) }
   end
@@ -116,8 +116,8 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
         counter = 0
         subject.each_object_to_import do |object|
           expect(object).to eq issue_event
-          expect(issue_event.issue['number']).to eq issuable.iid
-          expect(issue_event.issue['pull_request']).to eq false
+          expect(issue_event[:issue]['number']).to eq issuable.iid
+          expect(issue_event[:issue]['pull_request']).to eq false
           counter += 1
         end
         expect(counter).to eq 1
@@ -131,8 +131,8 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
         counter = 0
         subject.each_object_to_import do |object|
           expect(object).to eq issue_event
-          expect(issue_event.issue['number']).to eq issuable.iid
-          expect(issue_event.issue['pull_request']).to eq true
+          expect(issue_event[:issue]['number']).to eq issuable.iid
+          expect(issue_event[:issue]['pull_request']).to eq true
           counter += 1
         end
         expect(counter).to eq 1

@@ -16,8 +16,8 @@ module Gitlab
         # user - An instance of `Sawyer::Resource` containing the user details.
         def self.from_api_response(user, additional_data = {})
           new(
-            id: user.id,
-            login: user.login
+            id: user[:id],
+            login: user[:login]
           )
         end
 

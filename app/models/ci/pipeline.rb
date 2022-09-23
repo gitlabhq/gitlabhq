@@ -856,7 +856,6 @@ module Ci
           variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
           variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
           variables.append(key: 'CI_COMMIT_BRANCH', value: ref) if branch?
-          variables.append(key: 'CI_COMMIT_TAG', value: ref) if tag?
           variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
           variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
           variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
@@ -869,7 +868,8 @@ module Ci
           variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
           variables.append(key: 'CI_BUILD_REF_NAME', value: source_ref)
           variables.append(key: 'CI_BUILD_REF_SLUG', value: source_ref_slug)
-          variables.append(key: 'CI_BUILD_TAG', value: ref) if tag?
+
+          variables.concat(predefined_commit_tag_variables)
         end
       end
     end
@@ -890,6 +890,20 @@ module Ci
           end
 
           variables.concat(merge_request.predefined_variables)
+        end
+      end
+    end
+
+    def predefined_commit_tag_variables
+      strong_memoize(:predefined_commit_ref_variables) do
+        Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          next variables unless tag?
+
+          variables.append(key: 'CI_COMMIT_TAG', value: ref)
+          variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: project.repository.find_tag(ref).message)
+
+          # legacy variable
+          variables.append(key: 'CI_BUILD_TAG', value: ref)
         end
       end
     end

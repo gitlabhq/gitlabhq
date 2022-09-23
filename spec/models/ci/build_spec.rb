@@ -3069,8 +3069,24 @@ RSpec.describe Ci::Build do
     end
 
     context 'when build is for tag' do
+      let(:tag_name) { project.repository.tags.first.name }
+      let(:tag_message) { project.repository.tags.first.message }
+
+      let!(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: project.commit.id,
+                             ref: tag_name,
+                             status: 'success')
+      end
+
+      let!(:build) { create(:ci_build, pipeline: pipeline, ref: tag_name) }
+
       let(:tag_variable) do
-        { key: 'CI_COMMIT_TAG', value: 'master', public: true, masked: false }
+        { key: 'CI_COMMIT_TAG', value: tag_name, public: true, masked: false }
+      end
+
+      let(:tag_message_variable) do
+        { key: 'CI_COMMIT_TAG_MESSAGE', value: tag_message, public: true, masked: false }
       end
 
       before do
@@ -3081,7 +3097,7 @@ RSpec.describe Ci::Build do
       it do
         build.reload
 
-        expect(subject).to include(tag_variable)
+        expect(subject).to include(tag_variable, tag_message_variable)
       end
     end
 

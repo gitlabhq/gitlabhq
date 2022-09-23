@@ -39,18 +39,19 @@ module Gitlab
       #
       # If the object has no author ID we'll use the ID of the GitLab ghost
       # user.
+      # object - An instance of `Sawyer::Resource` or a `Github::Representer`
       def author_id_for(object, author_key: :author)
         user_info = case author_key
                     when :actor
-                      object&.actor
+                      object[:actor]
                     when :assignee
-                      object&.assignee
+                      object[:assignee]
                     when :requested_reviewer
-                      object&.requested_reviewer
+                      object[:requested_reviewer]
                     when :review_requester
-                      object&.review_requester
+                      object[:review_requester]
                     else
-                      object&.author
+                      object ? object[:author] : nil
                     end
 
         id = user_info ? user_id_for(user_info) : GithubImport.ghost_user_id
@@ -64,14 +65,14 @@ module Gitlab
 
       # Returns the GitLab user ID of an issuable's assignee.
       def assignee_id_for(issuable)
-        user_id_for(issuable.assignee) if issuable.assignee
+        user_id_for(issuable[:assignee]) if issuable[:assignee]
       end
 
       # Returns the GitLab user ID for a GitHub user.
       #
-      # user - An instance of `Gitlab::GithubImport::Representation::User`.
+      # user - An instance of `Gitlab::GithubImport::Representation::User` or `Sawyer::Resource`.
       def user_id_for(user)
-        find(user.id, user.login) if user.present?
+        find(user[:id], user[:login]) if user.present?
       end
 
       # Returns the GitLab ID for the given GitHub ID or username.
@@ -114,7 +115,7 @@ module Gitlab
 
         unless email
           user = client.user(username)
-          email = Gitlab::Cache::Import::Caching.write(cache_key, user.email, timeout: timeout(user.email)) if user
+          email = Gitlab::Cache::Import::Caching.write(cache_key, user[:email], timeout: timeout(user[:email])) if user
         end
 
         email

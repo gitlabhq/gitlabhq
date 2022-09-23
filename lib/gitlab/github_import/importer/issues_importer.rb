@@ -33,7 +33,7 @@ module Gitlab
         end
 
         def id_for_already_imported_cache(issue)
-          issue.number
+          issue[:number]
         end
 
         def collection_options

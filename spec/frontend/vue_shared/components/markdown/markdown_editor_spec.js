@@ -1,12 +1,15 @@
 import { GlSegmentedControl } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { EDITING_MODE_MARKDOWN_FIELD, EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
+import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('~/emoji');
 
@@ -15,7 +18,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const value = 'test markdown';
   const renderMarkdownPath = '/api/markdown';
   const markdownDocsPath = '/help/markdown';
-  const uploadsPath = '/uploads';
   const enableAutocomplete = true;
   const enablePreview = false;
   const formFieldId = 'markdown_field';
@@ -24,13 +26,13 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const formFieldAriaLabel = 'Edit your content';
   let mock;
 
-  const buildWrapper = (propsData = {}) => {
+  const buildWrapper = ({ propsData = {}, attachTo } = {}) => {
     wrapper = mountExtended(MarkdownEditor, {
+      attachTo,
       propsData: {
         value,
         renderMarkdownPath,
         markdownDocsPath,
-        uploadsPath,
         enableAutocomplete,
         enablePreview,
         formFieldId,
@@ -38,6 +40,9 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         formFieldPlaceholder,
         formFieldAriaLabel,
         ...propsData,
+      },
+      stubs: {
+        BubbleMenu: stubComponent(BubbleMenu),
       },
     });
   };
@@ -48,6 +53,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const findContentEditor = () => wrapper.findComponent(ContentEditor);
 
   beforeEach(() => {
+    window.uploads_path = 'uploads';
     mock = new MockAdapter(axios);
   });
 
@@ -66,7 +72,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         enableAutocomplete,
         textareaValue: value,
         markdownDocsPath,
-        uploadsPath,
+        uploadsPath: window.uploads_path,
         enablePreview,
       }),
     );
@@ -129,18 +135,32 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(wrapper.emitted('input')).toEqual([[newValue]]);
     });
 
+    describe('when initOnAutofocus is true', () => {
+      beforeEach(async () => {
+        buildWrapper({ attachTo: document.body, propsData: { initOnAutofocus: true } });
+
+        await nextTick();
+      });
+
+      it('sets the markdown field as the active element in the document', () => {
+        expect(document.activeElement).toBe(findTextarea().element);
+      });
+    });
+
     describe(`when segmented control triggers input event with ${EDITING_MODE_CONTENT_EDITOR} value`, () => {
       beforeEach(() => {
         buildWrapper();
         findSegmentedControl().vm.$emit('input', EDITING_MODE_CONTENT_EDITOR);
+        findSegmentedControl().vm.$emit('change', EDITING_MODE_CONTENT_EDITOR);
       });
 
       it('displays the content editor', () => {
         expect(findContentEditor().props()).toEqual(
           expect.objectContaining({
             renderMarkdown: expect.any(Function),
-            uploadsPath,
+            uploadsPath: window.uploads_path,
             markdown: value,
+            autofocus: 'end',
           }),
         );
       });
@@ -173,6 +193,17 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       findSegmentedControl().vm.$emit('input', EDITING_MODE_CONTENT_EDITOR);
     });
 
+    describe('when initOnAutofocus is true', () => {
+      beforeEach(() => {
+        buildWrapper({ propsData: { initOnAutofocus: true } });
+        findLocalStorageSync().vm.$emit('input', EDITING_MODE_CONTENT_EDITOR);
+      });
+
+      it('sets the content editor autofocus property to end', () => {
+        expect(findContentEditor().props().autofocus).toBe('end');
+      });
+    });
+
     it('emits input event when content editor emits change event', async () => {
       const newValue = 'new value';
 
@@ -196,6 +227,19 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
       it('updates localStorage value', () => {
         expect(findLocalStorageSync().props().value).toBe(EDITING_MODE_MARKDOWN_FIELD);
+      });
+
+      it('sets the textarea as the activeElement in the document', async () => {
+        // The component should be rebuilt to attach it to the document body
+        buildWrapper({ attachTo: document.body });
+        await findSegmentedControl().vm.$emit('input', EDITING_MODE_CONTENT_EDITOR);
+
+        expect(findContentEditor().exists()).toBe(true);
+
+        await findSegmentedControl().vm.$emit('input', EDITING_MODE_MARKDOWN_FIELD);
+        await findSegmentedControl().vm.$emit('change', EDITING_MODE_MARKDOWN_FIELD);
+
+        expect(document.activeElement).toBe(findTextarea().element);
       });
     });
 

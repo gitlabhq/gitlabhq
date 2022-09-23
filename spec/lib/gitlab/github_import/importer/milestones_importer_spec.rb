@@ -11,8 +11,7 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
   let(:milestone) do
-    double(
-      :milestone,
+    {
       number: 1,
       title: '1.0',
       description: 'The first release',
@@ -20,12 +19,11 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
       due_on: due_on,
       created_at: created_at,
       updated_at: updated_at
-    )
+    }
   end
 
   let(:milestone2) do
-    double(
-      :milestone,
+    {
       number: 1,
       title: '1.0',
       description: 'The first release',
@@ -33,7 +31,7 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
       due_on: nil,
       created_at: created_at,
       updated_at: updated_at
-    )
+    }
   end
 
   describe '#execute' do

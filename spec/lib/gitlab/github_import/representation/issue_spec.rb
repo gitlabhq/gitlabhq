@@ -74,20 +74,19 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
 
   describe '.from_api_response' do
     let(:response) do
-      double(
-        :response,
+      {
         number: 42,
         title: 'My Issue',
         body: 'This is my issue',
-        milestone: double(:milestone, number: 4),
+        milestone: { number: 4 },
         state: 'open',
-        assignees: [double(:user, id: 4, login: 'alice')],
-        labels: [double(:label, name: 'bug')],
-        user: double(:user, id: 4, login: 'alice'),
+        assignees: [{ id: 4, login: 'alice' }],
+        labels: [{ name: 'bug' }],
+        user: { id: 4, login: 'alice' },
         created_at: created_at,
         updated_at: updated_at,
         pull_request: false
-      )
+      }
     end
 
     let(:additional_data) { { work_item_type_id: work_item_type_id } }
@@ -97,9 +96,7 @@ RSpec.describe Gitlab::GithubImport::Representation::Issue do
     end
 
     it 'does not set the user if the response did not include a user' do
-      allow(response)
-        .to receive(:user)
-        .and_return(nil)
+      response[:user] = nil
 
       issue = described_class.from_api_response(response, additional_data)
 
