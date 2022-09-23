@@ -13,7 +13,13 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 ask an administrator to [enable the feature flag](../../administration/feature_flags.md)
 named `ci_secure_files`. Limited to 100 secure files per project. Files must be smaller
-than 5 MB. The feature is not ready for production use.
+than 5 MB. Project-level Secure Files is an experimental feature developed by [GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/).
+
+Project-level Secure Files is still in development, but you can:
+
+- [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).
+- [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
+- [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=general_feedback).
 
 You can securely store files for use in CI/CD pipelines as "secure files". These files
 are stored securely outside of your project's repository, and are not version controlled.

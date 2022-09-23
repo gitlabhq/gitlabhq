@@ -29386,6 +29386,12 @@ msgstr ""
 msgid "Pipelines|\"Hello world\" with GitLab CI"
 msgstr ""
 
+msgid "Pipelines|%{jobs} %{ref_text} in %{duration}"
+msgstr ""
+
+msgid "Pipelines|(queued for %{queued_duration})"
+msgstr ""
+
 msgid "Pipelines|1. Set up a runner"
 msgstr ""
 

@@ -77,14 +77,10 @@ module TimeboxesHelper
   end
 
   def milestone_progress_bar(milestone)
-    options = {
-      class: 'progress-bar bg-success',
-      style: "width: #{milestone.percent_complete}%;"
-    }
-
-    content_tag :div, class: 'progress' do
-      content_tag :div, nil, options
-    end
+    render Pajamas::ProgressComponent.new(
+      value: milestone.percent_complete,
+      variant: :success
+    )
   end
 
   def milestone_time_for(date, date_type)

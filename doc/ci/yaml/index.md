@@ -3260,8 +3260,19 @@ branch or merge request pipelines.
 
 **Possible inputs**:
 
-- An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
-- Alternatively, the array of file paths can be in [`rules:changes:paths`](#ruleschangespaths).
+An array including any number of:
+
+- Paths to files. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+  A file path array can also be in [`rules:changes:paths`](#ruleschangespaths).
+- Wildcard paths for:
+  - Single directories, for example `path/to/directory/*`.
+  - A directory and all its subdirectories, for example `path/to/directory/**/*`.
+- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
+  with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
+  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  for the supported syntax list.
+- Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
+  For example `"*.json"` or `"**/*.json"`.
 
 **Example of `rules:changes`**:
 

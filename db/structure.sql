@@ -17275,9 +17275,7 @@ CREATE TABLE merge_request_assignees (
     id bigint NOT NULL,
     user_id integer NOT NULL,
     merge_request_id integer NOT NULL,
-    created_at timestamp with time zone,
-    state smallint DEFAULT 0 NOT NULL,
-    updated_state_by_user_id bigint
+    created_at timestamp with time zone
 );
 
 CREATE SEQUENCE merge_request_assignees_id_seq
@@ -29554,10 +29552,6 @@ CREATE INDEX index_on_issues_closed_incidents_by_project_id_and_closed_at ON iss
 
 CREATE INDEX index_on_label_links_all_columns ON label_links USING btree (target_id, label_id, target_type);
 
-CREATE INDEX index_on_merge_request_assignees_updated_state_by_user_id ON merge_request_assignees USING btree (updated_state_by_user_id);
-
-CREATE INDEX index_on_merge_request_assignees_user_id_and_state ON merge_request_assignees USING btree (user_id, state) WHERE (state = 2);
-
 CREATE INDEX index_on_merge_request_reviewers_user_id_and_state ON merge_request_reviewers USING btree (user_id, state) WHERE (state = 2);
 
 CREATE INDEX index_on_merge_requests_for_latest_diffs ON merge_requests USING btree (target_project_id) INCLUDE (id, latest_merge_request_diff_id);
@@ -32906,9 +32900,6 @@ ALTER TABLE ONLY vulnerability_reads
 
 ALTER TABLE ONLY dast_profile_schedules
     ADD CONSTRAINT fk_aef03d62e5 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY merge_request_assignees
-    ADD CONSTRAINT fk_af036e3261 FOREIGN KEY (updated_state_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_analytics_cycle_analytics_group_stages_group_value_stream_id FOREIGN KEY (group_value_stream_id) REFERENCES analytics_cycle_analytics_group_value_streams(id) ON DELETE CASCADE;

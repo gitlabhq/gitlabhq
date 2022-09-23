@@ -122,7 +122,7 @@ There are multiple ways to create a branch from the GitLab web interface.
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
-Once merged, the merge request closes the issue.
+After merging the merge request, the issue is closed automatically, unless [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
 You can see a **Create merge request** dropdown below the issue description.
 
 NOTE:
