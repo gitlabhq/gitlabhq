@@ -9,5 +9,7 @@
 
   &.issuable-discussion .main-notes-list::before {
     @include gl-top-3;
+    @include gl-left-5;
+    height: calc(100% - 30px);
   }
 }

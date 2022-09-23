@@ -15,6 +15,14 @@ module Types
             description: "Include runners that have either a direct or inherited relationship. " \
               "These runners can be specific to a project or a group.",
             value: :descendants
+
+      value 'ALL_AVAILABLE',
+            description:
+                           "Include all runners. This list includes runners for all projects in the group " \
+                           "and subgroups, as well as for the parent groups and instance. " \
+                           "Will not return runners if `runners_finder_all_available` feature flag is disabled.",
+            value: :all_available,
+            deprecated: { milestone: '15.5', reason: :alpha }
     end
   end
 end

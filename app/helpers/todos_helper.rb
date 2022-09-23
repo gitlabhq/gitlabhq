@@ -130,12 +130,12 @@ module TodosHelper
 
   def todos_filter_params
     {
-      state: params[:state],
+      state: params[:state].presence,
       project_id: params[:project_id],
       author_id: params[:author_id],
       type: params[:type],
       action_id: params[:action_id]
-    }
+    }.compact
   end
 
   def todos_filter_empty?

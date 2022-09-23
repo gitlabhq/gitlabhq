@@ -3885,6 +3885,9 @@ msgstr ""
 msgid "All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URLs%{relative_url_link_end}."
 msgstr ""
 
+msgid "All project members"
+msgstr ""
+
 msgid "All projects"
 msgstr ""
 
@@ -5360,6 +5363,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Attaching the file failed."
+msgstr ""
+
+msgid "Attempted sign in to %{host} using a wrong two-factor authentication code"
 msgstr ""
 
 msgid "Audit Events"
@@ -20088,6 +20094,12 @@ msgstr ""
 msgid "If you did not recently sign in, you should immediately change your password: %{password_link}."
 msgstr ""
 
+msgid "If you did not recently try to sign in, you should immediately %{password_link_start}change your password%{password_link_end}."
+msgstr ""
+
+msgid "If you did not recently try to sign in, you should immediately change your password: %{password_link}."
+msgstr ""
+
 msgid "If you get a lot of false alarms from repository checks, you can clear all repository check information from the database."
 msgstr ""
 
@@ -20095,6 +20107,9 @@ msgid "If you lose your recovery codes you can generate new ones, invalidating a
 msgstr ""
 
 msgid "If you recently signed in and recognize the IP address, you may disregard this email."
+msgstr ""
+
+msgid "If you recently tried to sign in, but mistakenly entered a wrong two-factor authentication code, you may ignore this email."
 msgstr ""
 
 msgid "If you want to re-enable two-factor authentication, visit %{two_factor_link}"
@@ -21205,6 +21220,9 @@ msgid "Incomplete"
 msgstr ""
 
 msgid "Increase"
+msgstr ""
+
+msgid "Indent line"
 msgstr ""
 
 msgid "Index"
@@ -24308,6 +24326,9 @@ msgstr ""
 msgid "Make issue confidential"
 msgstr ""
 
+msgid "Make sure you choose a strong, unique password."
+msgstr ""
+
 msgid "Make sure you have the correct permissions to link your project."
 msgstr ""
 
@@ -24444,6 +24465,18 @@ msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)"
 msgstr ""
 
 msgid "MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)"
+msgstr ""
+
+msgid "MarkdownEditor|Indent line (%{modifierKey}])"
+msgstr ""
+
+msgid "MarkdownEditor|Indent line (%{modifier_key}])"
+msgstr ""
+
+msgid "MarkdownEditor|Outdent line (%{modifierKey}[)"
+msgstr ""
+
+msgid "MarkdownEditor|Outdent line (%{modifier_key}[)"
 msgstr ""
 
 msgid "MarkdownToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}"
@@ -28163,6 +28196,9 @@ msgid "OutdatedBrowser|GitLab may not work properly, because you are using an ou
 msgstr ""
 
 msgid "OutdatedBrowser|Please install a %{browser_link_start}supported web browser%{browser_link_end} for a better experience."
+msgstr ""
+
+msgid "Outdent line"
 msgstr ""
 
 msgid "Overridden"
@@ -38771,6 +38807,9 @@ msgstr ""
 msgid "Suggestion is not applicable as the suggestion was not found."
 msgstr ""
 
+msgid "Suggestion(s)"
+msgstr ""
+
 msgid "Suggestions are not applicable as one or more suggestions were not found."
 msgstr ""
 
@@ -44528,6 +44567,12 @@ msgid "We couldn't reach the Prometheus server. Either the server no longer exis
 msgstr ""
 
 msgid "We created a sandbox project that will help you learn the basics of GitLab. You’ll be guided by issues in an issue board. You can go through the issues at your own pace."
+msgstr ""
+
+msgid "We detected an attempt to sign in to your %{host} account using a wrong two-factor authentication code"
+msgstr ""
+
+msgid "We detected an attempt to sign in to your %{host} account using a wrong two-factor authentication code, from the following IP address: %{ip}, at %{time}"
 msgstr ""
 
 msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."

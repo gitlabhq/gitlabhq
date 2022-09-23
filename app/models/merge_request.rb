@@ -73,6 +73,13 @@ class MergeRequest < ApplicationRecord
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
 
+  def suggested_reviewer_users
+    return [] unless predictions && predictions.suggested_reviewers.is_a?(Hash)
+
+    usernames = Array.wrap(suggested_reviewers["reviewers"])
+    project.authorized_users.active.by_username(usernames)
+  end
+
   # This is the same as latest_merge_request_diff unless:
   # 1. There are arguments - in which case we might be trying to force-reload.
   # 2. This association is already loaded.

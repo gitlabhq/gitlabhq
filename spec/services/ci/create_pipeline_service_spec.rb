@@ -423,7 +423,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       expect(response.message).to eq('Missing CI config file')
       expect(response.payload).not_to be_persisted
       expect(Ci::Pipeline.count).to eq(0)
-      expect(Namespaces::OnboardingPipelineCreatedWorker).not_to receive(:perform_async)
+      expect(Onboarding::PipelineCreatedWorker).not_to receive(:perform_async)
     end
 
     shared_examples 'a failed pipeline' do
@@ -1547,7 +1547,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             end
 
             it 'schedules a namespace onboarding create action worker' do
-              expect(Namespaces::OnboardingPipelineCreatedWorker)
+              expect(Onboarding::PipelineCreatedWorker)
                 .to receive(:perform_async).with(project.namespace_id)
 
               pipeline

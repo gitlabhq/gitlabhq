@@ -131,6 +131,18 @@ module Emails
       end
     end
 
+    def two_factor_otp_attempt_failed_email(user, ip, time = Time.current)
+      @user = user
+      @ip = ip
+      @time = time
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        email_with_layout(
+          to: @user.notification_email_or_default,
+          subject: subject(_("Attempted sign in to %{host} using a wrong two-factor authentication code") % { host: Gitlab.config.gitlab.host }))
+      end
+    end
+
     def disabled_two_factor_email(user)
       return unless user
 

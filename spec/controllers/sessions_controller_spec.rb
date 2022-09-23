@@ -399,17 +399,30 @@ RSpec.describe SessionsController do
             end
 
             context 'when OTP is invalid' do
-              before do
-                authenticate_2fa(otp_attempt: 'invalid')
-              end
+              let(:code) { 'invalid' }
 
               it 'does not authenticate' do
+                authenticate_2fa(otp_attempt: code)
+
                 expect(subject.current_user).not_to eq user
               end
 
               it 'warns about invalid OTP code' do
+                authenticate_2fa(otp_attempt: code)
+
                 expect(controller).to set_flash.now[:alert]
                   .to(/Invalid two-factor code/)
+              end
+
+              it 'sends an email to the user informing about the attempt to sign in with a wrong OTP code' do
+                controller.request.remote_addr = '1.2.3.4'
+                stub_feature_flags(email_for_two_factor_otp_failure: true)
+
+                expect_next_instance_of(NotificationService) do |instance|
+                  expect(instance).to receive(:two_factor_otp_attempt_failed).with(user, '1.2.3.4')
+                end
+
+                authenticate_2fa(otp_attempt: code)
               end
             end
           end

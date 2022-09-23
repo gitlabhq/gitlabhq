@@ -141,7 +141,7 @@ module Ci
     end
 
     def create_namespace_onboarding_action
-      Namespaces::OnboardingPipelineCreatedWorker.perform_async(project.namespace_id)
+      Onboarding::PipelineCreatedWorker.perform_async(project.namespace_id)
     end
 
     def extra_options(content: nil, dry_run: false)

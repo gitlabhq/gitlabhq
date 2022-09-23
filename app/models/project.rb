@@ -3027,6 +3027,11 @@ class Project < ApplicationRecord
     pages_domains.count < Gitlab::CurrentSettings.max_pages_custom_domains_per_project
   end
 
+  # overridden in EE
+  def suggested_reviewers_available?
+    false
+  end
+
   private
 
   # overridden in EE

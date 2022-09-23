@@ -5171,4 +5171,76 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
   end
+
+  describe '#suggested_reviewer_users' do
+    let_it_be(:merge_request) { build(:merge_request, project: project) }
+
+    subject(:suggested_reviewer_users) { merge_request.suggested_reviewer_users }
+
+    shared_examples 'blank suggestions' do
+      it 'returns blank' do
+        expect(suggested_reviewer_users).to eq([])
+      end
+    end
+
+    context 'predictions is nil' do
+      it_behaves_like 'blank suggestions'
+    end
+
+    context 'predictions is not nil' do
+      before do
+        merge_request.build_predictions
+      end
+
+      context 'a non hash' do
+        before do
+          merge_request.build_predictions
+          merge_request.predictions.suggested_reviewers = 1
+        end
+
+        it_behaves_like 'blank suggestions'
+      end
+
+      context 'an empty hash' do
+        before do
+          merge_request.predictions.suggested_reviewers = {}
+        end
+
+        it_behaves_like 'blank suggestions'
+      end
+
+      context 'suggests a user which is not a member' do
+        let_it_be(:non_member) { create(:user) }
+
+        before do
+          merge_request.predictions.suggested_reviewers = { 'reviewers' => [non_member.username] }
+        end
+
+        it_behaves_like 'blank suggestions'
+      end
+
+      context 'suggests a user which is a non member' do
+        let_it_be(:member) { create(:user) }
+
+        before do
+          project.add_developer(member)
+          merge_request.predictions.suggested_reviewers = { 'reviewers' => [member.username] }
+        end
+
+        context 'user is nonactive' do
+          before do
+            member.deactivate
+          end
+
+          it_behaves_like 'blank suggestions'
+        end
+
+        context 'user is active' do
+          it 'returns the user' do
+            expect(suggested_reviewer_users).to eq([member])
+          end
+        end
+      end
+    end
+  end
 end

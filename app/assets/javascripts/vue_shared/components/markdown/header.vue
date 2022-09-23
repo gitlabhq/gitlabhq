@@ -7,6 +7,8 @@ import {
   ITALIC_TEXT,
   STRIKETHROUGH_TEXT,
   LINK_TEXT,
+  INDENT_LINE,
+  OUTDENT_LINE,
 } from '~/behaviors/shortcuts/keybindings';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
@@ -170,6 +172,8 @@ export default {
     italic: keysFor(ITALIC_TEXT),
     strikethrough: keysFor(STRIKETHROUGH_TEXT),
     link: keysFor(LINK_TEXT),
+    indent: keysFor(INDENT_LINE),
+    outdent: keysFor(OUTDENT_LINE),
   },
   i18n: {
     writeTabTitle: __('Write'),
@@ -316,6 +320,32 @@ export default {
             tag="- [ ] "
             :button-title="__('Add a checklist')"
             icon="list-task"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('indent')"
+            class="gl-display-none"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Indent line (%{modifierKey}])'), {
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              })
+            "
+            :shortcuts="$options.shortcuts.indent"
+            command="indentLines"
+            icon="list-indent"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('outdent')"
+            class="gl-display-none"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Outdent line (%{modifierKey}[)'), {
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              })
+            "
+            :shortcuts="$options.shortcuts.outdent"
+            command="outdentLines"
+            icon="list-outdent"
           />
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('collapsible-section')"

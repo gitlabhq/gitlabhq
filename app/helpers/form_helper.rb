@@ -117,7 +117,13 @@ module FormHelper
       dropdown_data = multiple_reviewers_dropdown_options(dropdown_data)
     end
 
+    dropdown_data[:data].merge!(reviewers_dropdown_options_for_suggested_reviewers)
     dropdown_data
+  end
+
+  # Overwritten
+  def reviewers_dropdown_options_for_suggested_reviewers
+    {}
   end
 
   # Overwritten

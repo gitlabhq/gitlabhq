@@ -1266,6 +1266,90 @@ RSpec.describe GroupPolicy do
     end
   end
 
+  describe 'read_group_all_available_runners' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        context 'with runners_finder_all_available FF disabled' do
+          before do
+            stub_feature_flags(runners_finder_all_available: false)
+          end
+
+          specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+        end
+
+        context 'with runners_finder_all_available FF enabled' do
+          before do
+            stub_feature_flags(runners_finder_all_available: [group])
+          end
+
+          specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      context 'with runners_finder_all_available FF disabled' do
+        before do
+          stub_feature_flags(runners_finder_all_available: false)
+        end
+
+        specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      end
+
+      context 'with runners_finder_all_available FF enabled' do
+        before do
+          stub_feature_flags(runners_finder_all_available: [group])
+        end
+
+        specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+      end
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+  end
+
   describe 'change_prevent_sharing_groups_outside_hierarchy' do
     context 'with owner' do
       let(:current_user) { owner }

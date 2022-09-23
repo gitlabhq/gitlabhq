@@ -21,7 +21,7 @@ import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
-import { getLocationHash, visitUrl } from './lib/utils/url_utility';
+import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utility';
 
 // everything else
 import initFeatureHighlight from './feature_highlight';
@@ -250,11 +250,10 @@ $('form.filter-form').on('submit', function filterFormSubmitCallback(event) {
   const link = document.createElement('a');
   link.href = this.action;
 
-  const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+  const action = mergeUrlParams(Object.fromEntries(new FormData(this)), this.action);
 
   event.preventDefault();
-  // eslint-disable-next-line no-jquery/no-serialize
-  visitUrl(`${action}${$(this).serialize()}`);
+  visitUrl(action);
 });
 
 const flashContainer = document.querySelector('.flash-container');

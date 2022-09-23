@@ -3,7 +3,7 @@
 module MergeRequests
   class ApprovalService < MergeRequests::BaseService
     def execute(merge_request)
-      return unless can_be_approved?(merge_request)
+      return unless eligible_for_approval?(merge_request)
 
       approval = merge_request.approvals.new(user: current_user)
 
@@ -28,8 +28,8 @@ module MergeRequests
 
     private
 
-    def can_be_approved?(merge_request)
-      merge_request.can_be_approved_by?(current_user)
+    def eligible_for_approval?(merge_request)
+      merge_request.eligible_for_approval_by?(current_user)
     end
 
     def save_approval(approval)

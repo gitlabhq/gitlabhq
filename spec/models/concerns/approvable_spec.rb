@@ -32,8 +32,8 @@ RSpec.describe Approvable do
     end
   end
 
-  describe '#can_be_approved_by?' do
-    subject { merge_request.can_be_approved_by?(user) }
+  describe '#eligible_for_approval_by?' do
+    subject { merge_request.eligible_for_approval_by?(user) }
 
     before do
       merge_request.project.add_developer(user) if user
@@ -60,8 +60,8 @@ RSpec.describe Approvable do
     end
   end
 
-  describe '#can_be_unapproved_by?' do
-    subject { merge_request.can_be_unapproved_by?(user) }
+  describe '#eligible_for_unapproval_by?' do
+    subject { merge_request.eligible_for_unapproval_by?(user) }
 
     before do
       merge_request.project.add_developer(user) if user

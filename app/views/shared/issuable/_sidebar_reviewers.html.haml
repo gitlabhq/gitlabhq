@@ -36,6 +36,9 @@
   - data[:multi_select] = true
   - data['dropdown-title'] = title
   - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
+  - data[:suggested_reviewers_header] = dropdown_options[:data][:suggested_reviewers_header]
+  - data[:all_members_header] = dropdown_options[:data][:all_members_header]
+  - data[:show_suggested] = dropdown_options[:data][:show_suggested]
   - data['max-select'] = dropdown_max_select(dropdown_options[:data])
   - options[:data].merge!(data)
 

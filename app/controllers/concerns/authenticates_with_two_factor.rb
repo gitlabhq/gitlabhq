@@ -89,6 +89,7 @@ module AuthenticatesWithTwoFactor
       user.save!
       sign_in(user, message: :two_factor_authenticated, event: :authentication)
     else
+      send_two_factor_otp_attempt_failed_email(user)
       handle_two_factor_failure(user, 'OTP', _('Invalid two-factor code.'))
     end
   end
@@ -156,6 +157,12 @@ module AuthenticatesWithTwoFactor
     Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=#{method}")
     flash.now[:alert] = message
     prompt_for_two_factor(user)
+  end
+
+  def send_two_factor_otp_attempt_failed_email(user)
+    return if Feature.disabled?(:email_for_two_factor_otp_failure)
+
+    user.notification_service.two_factor_otp_attempt_failed(user, request.remote_ip)
   end
 
   def log_failed_two_factor(user, method)

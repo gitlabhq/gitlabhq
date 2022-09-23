@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Namespaces
-  class OnboardingUserAddedWorker
+module Onboarding
+  class UserAddedWorker
     include ApplicationWorker
 
     data_consistency :always
@@ -19,3 +19,6 @@ module Namespaces
     end
   end
 end
+
+# remove in %15.6 as per https://gitlab.com/gitlab-org/gitlab/-/issues/372432
+Namespaces::OnboardingUserAddedWorker = Onboarding::UserAddedWorker

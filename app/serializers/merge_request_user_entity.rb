@@ -25,6 +25,10 @@ class MergeRequestUserEntity < ::API::Entities::UserBasic
     # makes one query per merge request, whereas #approved_by? makes one per user
     options[:merge_request].approvals.any? { |app| app.user_id == user.id }
   end
+
+  expose :suggested, if: satisfies(:present?) do |user, options|
+    options[:suggested]
+  end
 end
 
 MergeRequestUserEntity.prepend_mod_with('MergeRequestUserEntity')

@@ -87,6 +87,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
   end
 
+  condition(:runners_finder_all_available, scope: :subject) do
+    Feature.enabled?(:runners_finder_all_available, group)
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -150,7 +154,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_crm_organization
     enable :admin_crm_contact
     enable :read_cluster
+
+    enable :read_group_all_available_runners
   end
+
+  rule { ~runners_finder_all_available }.prevent :read_group_all_available_runners
 
   rule { reporter }.policy do
     enable :reporter_access

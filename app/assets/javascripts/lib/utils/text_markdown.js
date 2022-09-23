@@ -391,13 +391,15 @@ function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagCo
 /**
  * Indents selected lines to the right by 2 spaces
  *
- * @param {Object} textArea - the targeted text area
+ * @param {Object} textArea - jQuery object with the targeted text area
  */
-function indentLines(textArea) {
+function indentLines($textArea) {
+  const textArea = $textArea.get(0);
   const { lines, selectionStart, selectionEnd, startPos, endPos } = linesFromSelection(textArea);
   const shiftedLines = [];
   let totalAdded = 0;
 
+  textArea.focus();
   textArea.setSelectionRange(startPos, endPos);
 
   lines.forEach((line) => {
@@ -418,13 +420,15 @@ function indentLines(textArea) {
  *
  * @param {Object} textArea - the targeted text area
  */
-function outdentLines(textArea) {
+function outdentLines($textArea) {
+  const textArea = $textArea.get(0);
   const { lines, selectionStart, selectionEnd, startPos, endPos } = linesFromSelection(textArea);
   const shiftedLines = [];
   let totalRemoved = 0;
   let removedFromFirstline = -1;
   let removedFromLine = 0;
 
+  textArea.focus();
   textArea.setSelectionRange(startPos, endPos);
 
   lines.forEach((line) => {
@@ -460,28 +464,10 @@ function outdentLines(textArea) {
   );
 }
 
-function handleIndentOutdent(e, textArea) {
-  if (e.altKey || e.ctrlKey || e.shiftKey) return;
-  if (!e.metaKey) return;
-
-  switch (e.key) {
-    case ']':
-      e.preventDefault();
-      indentLines(textArea);
-      break;
-    case '[':
-      e.preventDefault();
-      outdentLines(textArea);
-      break;
-    default:
-      break;
-  }
-}
-
 /* eslint-disable @gitlab/require-i18n-strings */
 function handleSurroundSelectedText(e, textArea) {
   if (!gon.markdown_surround_selection) return;
-  if (e.metaKey) return;
+  if (e.metaKey || e.ctrlKey) return;
   if (textArea.selectionStart === textArea.selectionEnd) return;
 
   const keys = {
@@ -586,7 +572,6 @@ export function keypressNoteText(e) {
 
   if ($(textArea).atwho?.('isSelecting')) return;
 
-  handleIndentOutdent(e, textArea);
   handleContinueList(e, textArea);
   handleSurroundSelectedText(e, textArea);
 }
@@ -600,15 +585,26 @@ export function compositionEndNoteText() {
 }
 
 export function updateTextForToolbarBtn($toolbarBtn) {
-  return updateText({
-    textArea: $toolbarBtn.closest('.md-area').find('textarea'),
-    tag: $toolbarBtn.data('mdTag'),
-    cursorOffset: $toolbarBtn.data('mdCursorOffset'),
-    blockTag: $toolbarBtn.data('mdBlock'),
-    wrap: !$toolbarBtn.data('mdPrepend'),
-    select: $toolbarBtn.data('mdSelect'),
-    tagContent: $toolbarBtn.attr('data-md-tag-content'),
-  });
+  const $textArea = $toolbarBtn.closest('.md-area').find('textarea');
+
+  switch ($toolbarBtn.data('mdCommand')) {
+    case 'indentLines':
+      indentLines($textArea);
+      break;
+    case 'outdentLines':
+      outdentLines($textArea);
+      break;
+    default:
+      return updateText({
+        textArea: $textArea,
+        tag: $toolbarBtn.data('mdTag'),
+        cursorOffset: $toolbarBtn.data('mdCursorOffset'),
+        blockTag: $toolbarBtn.data('mdBlock'),
+        wrap: !$toolbarBtn.data('mdPrepend'),
+        select: $toolbarBtn.data('mdSelect'),
+        tagContent: $toolbarBtn.attr('data-md-tag-content'),
+      });
+  }
 }
 
 export function addMarkdownListeners(form) {

@@ -319,6 +319,33 @@ RSpec.describe Ci::RunnersFinder do
             end
           end
 
+          context 'with :all_available membership' do
+            let(:membership) { :all_available }
+
+            context 'with runners_finder_all_available FF disabled' do
+              before do
+                stub_feature_flags(runners_finder_all_available: false)
+              end
+
+              it 'returns no runners' do
+                expect(subject).to be_empty
+              end
+            end
+
+            context 'with runners_finder_all_available FF enabled' do
+              before do
+                stub_feature_flags(runners_finder_all_available: [target_group])
+              end
+
+              it 'returns runners available to group' do
+                expect(subject).to match_array([runner_project_7, runner_project_6, runner_project_5,
+                                                runner_project_4, runner_project_3, runner_project_2,
+                                                runner_project_1, runner_sub_group_4, runner_sub_group_3,
+                                                runner_sub_group_2, runner_sub_group_1, runner_group, runner_instance])
+              end
+            end
+          end
+
           context 'with unknown membership' do
             let(:membership) { :unsupported }
 
@@ -400,11 +427,37 @@ RSpec.describe Ci::RunnersFinder do
 
         with_them do
           before do
-            create(:group_member, user_permission, group: group, user: user)
+            create(:group_member, user_permission, group: sub_group_1, user: user)
           end
 
-          it 'returns no runners' do
-            expect(subject).to be_empty
+          context 'with :sub_group_1 as target group' do
+            let(:target_group) { sub_group_1 }
+
+            it 'returns no runners' do
+              is_expected.to be_empty
+            end
+          end
+
+          context 'with :group as target group' do
+            let(:target_group) { group }
+
+            it 'returns no runners' do
+              is_expected.to be_empty
+            end
+
+            context 'with :all_available membership' do
+              let(:membership) { :all_available }
+
+              context 'with runners_finder_all_available FF enabled' do
+                before do
+                  stub_feature_flags(runners_finder_all_available: [target_group])
+                end
+
+                it 'returns no runners' do
+                  expect(subject).to be_empty
+                end
+              end
+            end
           end
         end
       end

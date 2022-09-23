@@ -145,6 +145,20 @@ export const LINK_TEXT = {
   customizable: false,
 };
 
+export const INDENT_LINE = {
+  id: 'editing.indentLine',
+  description: __('Indent line'),
+  defaultKeys: ['mod+]'], // eslint-disable-line @gitlab/require-i18n-strings
+  customizable: false,
+};
+
+export const OUTDENT_LINE = {
+  id: 'editing.outdentLine',
+  description: __('Outdent line'),
+  defaultKeys: ['mod+['], // eslint-disable-line @gitlab/require-i18n-strings
+  customizable: false,
+};
+
 export const TOGGLE_MARKDOWN_PREVIEW = {
   id: 'editing.toggleMarkdownPreview',
   description: __('Toggle Markdown preview'),

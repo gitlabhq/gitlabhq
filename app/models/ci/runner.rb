@@ -152,6 +152,17 @@ module Ci
       )
     end
 
+    scope :usable_from_scope, -> (group) do
+      from_union(
+        [
+          belonging_to_group(group.ancestor_ids),
+          belonging_to_group_or_project_descendants(group.id),
+          group.shared_runners
+        ],
+        remove_duplicates: false
+      )
+    end
+
     scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.

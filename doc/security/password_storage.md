@@ -9,7 +9,7 @@ type: reference
 
 GitLab administrators can configure how passwords and OAuth tokens are stored.
 
-## Password storage **(FREE)**
+## Password storage
 
 > PBKDF2 and SHA512 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360658) in GitLab 15.2 [with flags](../administration/feature_flags.md) named `pbkdf2_password_encryption` and `pbkdf2_password_encryption_write`. Disabled by default.
 
@@ -21,8 +21,8 @@ library to hash user passwords. Created password hashes have these attributes:
 
 - **Hashing**:
   - **BCrypt**: By default, the [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hashing
-    function is used to generate the hash of the provided password. This is a
-    strong, industry-standard cryptographic hashing function.
+    function is used to generate the hash of the provided password. This cryptographic hashing function is
+    strong and industry-standard.
   - **PBKDF2 and SHA512**: Starting in GitLab 15.2, PBKDF2 and SHA512 are supported
     behind the following feature flags (disabled by default):
     - `pbkdf2_password_encryption` - Enables reading and comparison of PBKDF2 + SHA512

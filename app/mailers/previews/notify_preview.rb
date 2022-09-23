@@ -185,6 +185,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.unknown_sign_in_email(user, '127.0.0.1', Time.current).message
   end
 
+  def two_factor_otp_attempt_failed_email
+    Notify.two_factor_otp_attempt_failed_email(user, '127.0.0.1').message
+  end
+
   def new_email_address_added_email
     Notify.new_email_address_added_email(user, 'someone@gitlab.com').message
   end

@@ -27,6 +27,6 @@ for a notification email to be sent.
 - Cookie: After successful sign in, an encrypted cookie is stored in the browser.
   This cookie is set to expire 14 days after the last successful sign in.
 
-## Example email
+## Example notification email
 
 ![Unknown sign in email](img/unknown_sign_in_email_v14_0.png)

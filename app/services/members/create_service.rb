@@ -179,7 +179,7 @@ module Members
     def enqueue_onboarding_progress_action
       return unless member_created_namespace_id
 
-      Namespaces::OnboardingUserAddedWorker.perform_async(member_created_namespace_id)
+      Onboarding::UserAddedWorker.perform_async(member_created_namespace_id)
     end
 
     def result

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::OnboardingIssueCreatedWorker, '#perform' do
+RSpec.describe Onboarding::IssueCreatedWorker, '#perform' do
   let_it_be(:issue) { create(:issue) }
 
   let(:namespace) { issue.project.namespace }

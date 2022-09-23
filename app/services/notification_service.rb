@@ -109,6 +109,14 @@ class NotificationService
     mailer.unknown_sign_in_email(user, ip, time).deliver_later
   end
 
+  # Notify a user when a wrong 2FA OTP has been entered to
+  # try to sign in to their account
+  def two_factor_otp_attempt_failed(user, ip)
+    return unless user.can?(:receive_notifications)
+
+    mailer.two_factor_otp_attempt_failed_email(user, ip).deliver_later
+  end
+
   # Notify a user when a new email address is added to the their account
   def new_email_address_added(user, email)
     return unless user.can?(:receive_notifications)

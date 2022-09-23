@@ -176,7 +176,7 @@ module Gitlab
         explanation { _('Approve the current merge request.') }
         types MergeRequest
         condition do
-          quick_action_target.persisted? && quick_action_target.can_be_approved_by?(current_user)
+          quick_action_target.persisted? && quick_action_target.eligible_for_approval_by?(current_user)
         end
         command :approve do
           success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
@@ -190,7 +190,7 @@ module Gitlab
         explanation { _('Unapprove the current merge request.') }
         types MergeRequest
         condition do
-          quick_action_target.persisted? && quick_action_target.can_be_unapproved_by?(current_user)
+          quick_action_target.persisted? && quick_action_target.eligible_for_unapproval_by?(current_user)
         end
         command :unapprove do
           success = ::MergeRequests::RemoveApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)

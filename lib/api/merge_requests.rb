@@ -560,7 +560,7 @@ module API
       put ':id/merge_requests/:merge_request_iid/reset_approvals', feature_category: :code_review, urgency: :low do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        unauthorized! unless current_user.bot? && merge_request.can_be_approved_by?(current_user)
+        unauthorized! unless current_user.bot? && merge_request.eligible_for_approval_by?(current_user)
 
         merge_request.approvals.delete_all
 

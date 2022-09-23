@@ -634,7 +634,7 @@ not deadlines and can change at any time.
 gantt
   title CI Data Partitioning Timeline
   dateFormat  YYYY-MM-DD
-  axisFormat  %Y-%m
+  axisFormat  %m-%y
 
   section Phase 0
     Build data partitioning strategy :done, 0_1, 2022-06-01, 90d

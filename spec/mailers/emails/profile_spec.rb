@@ -396,6 +396,39 @@ RSpec.describe Emails::Profile do
     end
   end
 
+  describe 'user attempted sign in with wrong 2FA OTP email' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:ip) { '169.0.0.1' }
+    let_it_be(:current_time) { Time.current }
+    let_it_be(:email) { Notify.two_factor_otp_attempt_failed_email(user, ip, current_time) }
+
+    subject { email }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+
+    it 'is sent to the user' do
+      is_expected.to deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      is_expected.to have_subject "Attempted sign in to #{Gitlab.config.gitlab.host} using a wrong two-factor authentication code"
+    end
+
+    it 'mentions the IP address' do
+      is_expected.to have_body_text ip
+    end
+
+    it 'mentioned the time' do
+      is_expected.to have_body_text current_time.strftime('%Y-%m-%d %H:%M:%S %Z')
+    end
+
+    it 'includes a link to the change password documentation' do
+      is_expected.to have_body_text 'https://docs.gitlab.com/ee/user/profile/#changing-your-password'
+    end
+  end
+
   describe 'disabled two-factor authentication email' do
     let_it_be(:user) { create(:user) }
 

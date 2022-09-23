@@ -1595,22 +1595,10 @@ RSpec.describe Ci::Runner do
     end
 
     describe '.belonging_to_group_and_ancestors' do
-      subject(:relation) { described_class.belonging_to_group_and_ancestors(scope.id) }
+      subject(:relation) { described_class.belonging_to_group_and_ancestors(child_group.id) }
 
-      context 'with scope set to top_level_group' do
-        let(:scope) { top_level_group }
-
-        it 'returns the group runners from the group' do
-          is_expected.to contain_exactly(top_level_group_runner)
-        end
-      end
-
-      context 'with scope set to child_group' do
-        let(:scope) { child_group }
-
-        it 'returns the group runners from the group and parent group' do
-          is_expected.to contain_exactly(child_group_runner, top_level_group_runner)
-        end
+      it 'returns the group runners from the group and parent group' do
+        is_expected.to contain_exactly(child_group_runner, top_level_group_runner)
       end
     end
 
@@ -1647,6 +1635,55 @@ RSpec.describe Ci::Runner do
 
           # Ensure no duplicates are returned
           expect(relation.distinct).to match_array(relation)
+        end
+      end
+    end
+
+    describe '.usable_from_scope' do
+      subject(:relation) { described_class.usable_from_scope(scope) }
+
+      context 'with scope set to top_level_group' do
+        let(:scope) { top_level_group }
+
+        it 'returns all runners usable from top_level_group without duplicates' do
+          expect(relation).to contain_exactly(
+            instance_runner,
+            top_level_group_runner,
+            top_level_group_project_runner,
+            child_group_runner,
+            child_group_project_runner,
+            child_group2_runner,
+            shared_top_level_group_project_runner
+          )
+
+          # Ensure no duplicates are returned
+          expect(relation.distinct).to match_array(relation)
+        end
+      end
+
+      context 'with scope set to child_group' do
+        let(:scope) { child_group }
+
+        it 'returns all runners usable from child_group' do
+          expect(relation).to contain_exactly(
+            instance_runner,
+            top_level_group_runner,
+            child_group_runner,
+            child_group_project_runner,
+            shared_top_level_group_project_runner
+          )
+        end
+      end
+
+      context 'with scope set to other_top_level_group' do
+        let(:scope) { other_top_level_group }
+
+        it 'returns all runners usable from other_top_level_group' do
+          expect(relation).to contain_exactly(
+            instance_runner,
+            other_top_level_group_runner,
+            other_top_level_group_project_runner
+          )
         end
       end
     end
