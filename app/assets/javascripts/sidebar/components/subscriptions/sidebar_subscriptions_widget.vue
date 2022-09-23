@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLoadingIcon, GlToggle, GlTooltipDirective } from '@gitlab/ui';
+import { GlDropdownForm, GlIcon, GlLoadingIcon, GlToggle, GlTooltipDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -22,6 +22,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlDropdownForm,
     GlIcon,
     GlLoadingIcon,
     GlToggle,
@@ -181,7 +182,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="isMergeRequest" class="gl-new-dropdown-item">
+  <gl-dropdown-form v-if="isMergeRequest" class="gl-new-dropdown-item">
     <div class="gl-px-5 gl-pb-2 gl-pt-1">
       <gl-toggle
         :value="subscribed"
@@ -192,7 +193,7 @@ export default {
         @change="toggleSubscribed"
       />
     </div>
-  </div>
+  </gl-dropdown-form>
   <sidebar-editable-item
     v-else
     ref="editable"

@@ -27162,6 +27162,9 @@ msgstr ""
 msgid "Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{reviewer_highlight}was unapproved by%{highlight_end} %{reviewer_avatar} %{reviewer_link}"
 msgstr ""
 
+msgid "Notify|%{name} requested a new review on %{mr_link}."
+msgstr ""
+
 msgid "Notify|%{paragraph_start}Hi %{name}!%{paragraph_end} %{paragraph_start}A new public key was added to your account:%{paragraph_end} %{paragraph_start}title: %{key_title}%{paragraph_end} %{paragraph_start}If this key was added in error, you can remove it under %{removal_link}%{paragraph_end}"
 msgstr ""
 
@@ -34174,6 +34177,9 @@ msgid "Revoked impersonation token %{token_name}!"
 msgstr ""
 
 msgid "Revoked personal access token %{personal_access_token_name}!"
+msgstr ""
+
+msgid "Rich text"
 msgstr ""
 
 msgid "RightSidebar|Copy email address"
@@ -44967,12 +44973,6 @@ msgid "Why are you signing up? (optional)"
 msgstr ""
 
 msgid "Wiki"
-msgstr ""
-
-msgid "Wiki Page|Rich text"
-msgstr ""
-
-msgid "Wiki Page|Source"
 msgstr ""
 
 msgid "Wiki page"

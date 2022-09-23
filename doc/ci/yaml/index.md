@@ -3343,7 +3343,8 @@ In this example, both jobs have the same behavior.
 
 ##### `rules:changes:compare_to`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366412) in GitLab 15.5. Feature flag `ci_rules_changes_compare` removed.
 
 Use `rules:changes:compare_to` to specify which ref to compare against for changes to the files
 listed under [`rules:changes:paths`](#ruleschangespaths).

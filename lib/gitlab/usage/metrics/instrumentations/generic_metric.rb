@@ -28,9 +28,8 @@ module Gitlab
             end
           end
 
-          def initialize(time_frame: 'none', options: {})
-            @time_frame = time_frame
-            @options = options
+          def initialize(metric_definition)
+            super(metric_definition.reverse_merge(time_frame: 'none'))
           end
 
           def value

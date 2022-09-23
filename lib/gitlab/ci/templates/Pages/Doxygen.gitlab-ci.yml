@@ -11,6 +11,7 @@ pages:
     - apk update && apk add doxygen
     - doxygen doxygen/Doxyfile
     - mv doxygen/documentation/html/ public/
+  environment: production
   artifacts:
     paths:
       - public

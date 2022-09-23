@@ -21,6 +21,7 @@ test:
 
 pages:
   stage: deploy
+  environment: production
   script:
     - pip install hyde
     - hyde gen -d public

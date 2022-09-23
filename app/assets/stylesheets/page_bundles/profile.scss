@@ -1,4 +1,46 @@
 @import 'mixins_and_variables_and_functions';
+@import 'framework/buttons';
+
+.avatar-image {
+  margin-bottom: $grid-size;
+
+  .avatar {
+    float: none;
+  }
+
+  @include media-breakpoint-up(sm) {
+    float: left;
+    margin-bottom: 0;
+  }
+}
+
+.edit-user {
+  .emoji-menu-toggle-button {
+    @include emoji-menu-toggle-button;
+  }
+
+  @include media-breakpoint-down(sm) {
+    .input-md,
+    .input-lg {
+      max-width: 100%;
+    }
+  }
+}
+
+.modal-profile-crop {
+  .modal-dialog {
+    width: 380px;
+
+    @include media-breakpoint-down(xs) {
+      width: auto;
+    }
+  }
+
+  .profile-crop-image-container {
+    height: 300px;
+    margin: 0 auto;
+  }
+}
 
 .calendar-block {
   padding-left: 0;

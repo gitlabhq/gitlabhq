@@ -21,9 +21,9 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/httptransport"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
 
 type Resizer struct {
@@ -69,7 +69,7 @@ const (
 var envInjector = tracing.NewEnvInjector()
 
 var httpClient = &http.Client{
-	Transport: httptransport.New(),
+	Transport: transport.NewRestrictedTransport(),
 }
 
 const (

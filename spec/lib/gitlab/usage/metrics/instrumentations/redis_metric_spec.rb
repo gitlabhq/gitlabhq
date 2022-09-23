@@ -11,14 +11,21 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
 
   let(:expected_value) { 4 }
 
-  it_behaves_like 'a correct instrumented metric value', { options: { event: 'pushes', prefix: 'source_code' } }
+  it_behaves_like 'a correct instrumented metric value', {
+    options: { event: 'pushes', prefix: 'source_code' },
+    time_frame: 'all'
+  }
 
   it 'raises an exception if event option is not present' do
-    expect { described_class.new(prefix: 'source_code') }.to raise_error(ArgumentError)
+    expect do
+      described_class.new(options: { prefix: 'source_code' }, time_frame: 'all')
+    end.to raise_error(ArgumentError, /'event' option is required/)
   end
 
   it 'raises an exception if prefix option is not present' do
-    expect { described_class.new(event: 'pushes') }.to raise_error(ArgumentError)
+    expect do
+      described_class.new(options: { event: 'pushes' }, time_frame: 'all')
+    end.to raise_error(ArgumentError, /'prefix' option is required/)
   end
 
   describe 'children classes' do
@@ -55,7 +62,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
     end
 
     it_behaves_like 'a correct instrumented metric value', {
-      options: { event: 'merge_requests_count', prefix: 'web_ide', include_usage_prefix: false }
+      options: { event: 'merge_requests_count', prefix: 'web_ide', include_usage_prefix: false },
+      time_frame: 'all'
     }
   end
 

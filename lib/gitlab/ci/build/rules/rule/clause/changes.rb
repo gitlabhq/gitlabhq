@@ -41,7 +41,6 @@ module Gitlab
 
         def find_modified_paths(pipeline)
           return unless pipeline
-          return pipeline.modified_paths unless ::Feature.enabled?(:ci_rules_changes_compare, pipeline.project)
 
           compare_to_sha = find_compare_to_sha(pipeline)
 

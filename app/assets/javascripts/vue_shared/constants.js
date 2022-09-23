@@ -93,3 +93,6 @@ export const confidentialityInfoText = (workspaceType, issuableType) =>
           : __('at least the Reporter role'),
     },
   );
+
+export const EDITING_MODE_MARKDOWN_FIELD = 'markdownField';
+export const EDITING_MODE_CONTENT_EDITOR = 'contentEditor';

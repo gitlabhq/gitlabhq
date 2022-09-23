@@ -5516,4 +5516,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
   end
+
+  describe '#notes=' do
+    context 'when notes already exist' do
+      it 'does not create duplicate notes', :aggregate_failures do
+        time = Time.zone.now
+        pipeline = create(:ci_pipeline, user: user, project: project)
+        note = Note.new(
+          note: 'note',
+          noteable_type: 'Commit',
+          noteable_id: pipeline.id,
+          commit_id: pipeline.id,
+          author_id: user.id,
+          project_id: pipeline.project_id,
+          created_at: time
+        )
+        another_note = note.dup.tap { |note| note.note = 'another note' }
+
+        expect(project.notes.for_commit_id(pipeline.sha).count).to eq(0)
+
+        pipeline.notes = [note]
+
+        expect(project.notes.for_commit_id(pipeline.sha).count).to eq(1)
+
+        pipeline.notes = [note, note, another_note]
+
+        expect(project.notes.for_commit_id(pipeline.sha).count).to eq(2)
+        expect(project.notes.for_commit_id(pipeline.sha).pluck(:note)).to contain_exactly(note.note, another_note.note)
+      end
+    end
+  end
 end

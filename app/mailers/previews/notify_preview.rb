@@ -217,6 +217,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.project_was_exported_email(user, project).message
   end
 
+  def request_review_merge_request_email
+    Notify.request_review_merge_request_email(user.id, merge_request.id, user.id).message
+  end
+
   private
 
   def project

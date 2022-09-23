@@ -9,12 +9,12 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/httptransport"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
 
 var httpClient = &http.Client{
-	Transport: httptransport.New(),
+	Transport: transport.NewRestrictedTransport(),
 }
 
 type Injector struct {

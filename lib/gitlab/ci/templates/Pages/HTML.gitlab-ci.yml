@@ -6,6 +6,7 @@
 # Full project: https://gitlab.com/pages/plain-html
 pages:
   stage: deploy
+  environment: production
   script:
     - mkdir .public
     - cp -r ./* .public

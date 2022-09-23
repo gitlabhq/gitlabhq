@@ -22,8 +22,8 @@ module QA
             element :file_upload_field
           end
 
-          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue' do
-            element :wiki_hidden_content
+          base.view 'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue' do
+            element :markdown_editor_form_field
           end
         end
 
@@ -47,7 +47,7 @@ module QA
           end
 
           QA::Support::Retrier.retry_on_exception do
-            source = find_element(:wiki_hidden_content, visible: false)
+            source = find_element(:markdown_editor_form_field, visible: false)
             source.value =~ %r{uploads/.*#{::File.basename(image_path)}}
           end
         end

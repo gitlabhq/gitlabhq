@@ -8,21 +8,18 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormSelect,
-  GlSegmentedControl,
 } from '@gitlab/ui';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import {
-  CONTENT_EDITOR_LOADED_ACTION,
   SAVED_USING_CONTENT_EDITOR_ACTION,
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
   WIKI_FORMAT_UPDATED_ACTION,
+  CONTENT_EDITOR_LOADED_ACTION,
 } from '../constants';
 
 const trackingMixin = Tracking.mixin({
@@ -74,10 +71,6 @@ export default {
     },
     cancel: s__('WikiPage|Cancel'),
   },
-  switchEditingControlOptions: [
-    { text: s__('Wiki Page|Source'), value: 'source' },
-    { text: s__('Wiki Page|Rich text'), value: 'richText' },
-  ],
   components: {
     GlIcon,
     GlForm,
@@ -87,13 +80,7 @@ export default {
     GlSprintf,
     GlLink,
     GlButton,
-    GlSegmentedControl,
-    MarkdownField,
-    LocalStorageSync,
-    ContentEditor: () =>
-      import(
-        /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
-      ),
+    MarkdownEditor,
   },
   mixins: [trackingMixin],
   inject: ['formatOptions', 'pageInfo'],
@@ -106,7 +93,7 @@ export default {
       commitMessage: '',
       isDirty: false,
       contentEditorEmpty: false,
-      switchEditingControlDisabled: false,
+      isContentEditorActive: false,
     };
   },
   computed: {
@@ -162,12 +149,6 @@ export default {
     disableSubmitButton() {
       return this.noContent || !this.title;
     },
-    isContentEditorActive() {
-      return this.isMarkdownFormat && this.useContentEditor;
-    },
-    useContentEditor() {
-      return this.editingMode === 'richText';
-    },
   },
   mounted() {
     this.updateCommitMessage();
@@ -178,23 +159,10 @@ export default {
     window.removeEventListener('beforeunload', this.onPageUnload);
   },
   methods: {
-    renderMarkdown(content) {
-      return axios
-        .post(this.pageInfo.markdownPreviewPath, { text: content })
-        .then(({ data }) => data.body);
-    },
-
-    setEditingMode(editingMode) {
-      this.editingMode = editingMode;
-    },
-
     async handleFormSubmit(e) {
       e.preventDefault();
 
-      if (this.useContentEditor) {
-        this.trackFormSubmit();
-      }
-
+      this.trackFormSubmit();
       this.trackWikiFormat();
 
       // Wait until form field values are refreshed
@@ -203,16 +171,6 @@ export default {
       e.target.submit();
 
       this.isDirty = false;
-    },
-
-    handleContentChange() {
-      this.isDirty = true;
-    },
-
-    handleContentEditorChange({ empty, markdown, changed }) {
-      this.contentEditorEmpty = empty;
-      this.isDirty = changed;
-      this.content = markdown;
     },
 
     onPageUnload(event) {
@@ -235,8 +193,13 @@ export default {
       this.commitMessage = newCommitMessage;
     },
 
-    trackContentEditorLoaded() {
-      this.track(CONTENT_EDITOR_LOADED_ACTION);
+    notifyContentEditorActive() {
+      this.isContentEditorActive = true;
+      this.trackContentEditorLoaded();
+    },
+
+    notifyContentEditorInactive() {
+      this.isContentEditorActive = false;
     },
 
     trackFormSubmit() {
@@ -256,12 +219,12 @@ export default {
       });
     },
 
-    enableSwitchEditingControl() {
-      this.switchEditingControlDisabled = false;
+    trackContentEditorLoaded() {
+      this.track(CONTENT_EDITOR_LOADED_ACTION);
     },
 
-    disableSwitchEditingControl() {
-      this.switchEditingControlDisabled = true;
+    checkDirty(markdown) {
+      this.isDirty = this.pageInfo.content !== markdown;
     },
   },
 };
@@ -329,74 +292,22 @@ export default {
     <div class="row" data-testid="wiki-form-content-fieldset">
       <div class="col-sm-12 row-sm-5">
         <gl-form-group>
-          <div v-if="isMarkdownFormat" class="gl-display-flex gl-justify-content-start gl-mb-3">
-            <gl-segmented-control
-              data-testid="toggle-editing-mode-button"
-              data-qa-selector="editing_mode_button"
-              class="gl-display-flex"
-              :checked="editingMode"
-              :options="$options.switchEditingControlOptions"
-              :disabled="switchEditingControlDisabled"
-              @input="setEditingMode"
-            />
-          </div>
-          <local-storage-sync
-            storage-key="gl-wiki-content-editor-enabled"
-            :value="editingMode"
-            @input="setEditingMode"
-          />
-          <markdown-field
-            v-if="!isContentEditorActive"
-            :markdown-preview-path="pageInfo.markdownPreviewPath"
-            :can-attach-file="true"
-            :enable-autocomplete="true"
-            :textarea-value="content"
+          <markdown-editor
+            v-model="content"
+            :render-markdown-path="pageInfo.markdownPreviewPath"
             :markdown-docs-path="pageInfo.markdownHelpPath"
             :uploads-path="pageInfo.uploadsPath"
+            :enable-content-editor="isMarkdownFormat"
             :enable-preview="isMarkdownFormat"
-            class="bordered-box"
-          >
-            <template #textarea>
-              <textarea
-                id="wiki_content"
-                ref="textarea"
-                v-model="content"
-                name="wiki[content]"
-                class="note-textarea js-gfm-input js-autosize markdown-area"
-                dir="auto"
-                data-supports-quick-actions="false"
-                data-qa-selector="wiki_content_textarea"
-                :autofocus="pageInfo.persisted"
-                :aria-label="$options.i18n.content.label"
-                :placeholder="$options.i18n.content.placeholder"
-                @input="handleContentChange"
-              >
-              </textarea>
-            </template>
-          </markdown-field>
-          <div v-if="isContentEditorActive">
-            <content-editor
-              :render-markdown="renderMarkdown"
-              :uploads-path="pageInfo.uploadsPath"
-              :markdown="content"
-              @initialized="trackContentEditorLoaded"
-              @change="handleContentEditorChange"
-              @loading="disableSwitchEditingControl"
-              @loadingSuccess="enableSwitchEditingControl"
-              @loadingError="enableSwitchEditingControl"
-            />
-            <input
-              id="wiki_content"
-              v-model.trim="content"
-              type="hidden"
-              name="wiki[content]"
-              data-qa-selector="wiki_hidden_content"
-            />
-          </div>
-
-          <div class="clearfix"></div>
-          <div class="error-alert"></div>
-
+            :autofocus="pageInfo.persisted"
+            :form-field-placeholder="$options.i18n.content.placeholder"
+            :form-field-aria-label="$options.i18n.content.label"
+            form-field-id="wiki_content"
+            form-field-name="wiki[content]"
+            @contentEditor="notifyContentEditorActive"
+            @markdownField="notifyContentEditorInactive"
+            @input="checkDirty"
+          />
           <div class="form-text gl-text-gray-600">
             <gl-sprintf
               v-if="displayWikiSpecificMarkdownHelp"

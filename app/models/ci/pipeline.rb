@@ -760,8 +760,14 @@ module Ci
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
     # them using the +Gitlab::ImportExport::Project::RelationFactory+ class.
-    def notes=(notes)
-      notes.each do |note|
+    def notes=(notes_to_save)
+      notes_to_save.reject! do |note_to_save|
+        notes.any? do |note|
+          [note_to_save.note, note_to_save.created_at.to_i] == [note.note, note.created_at.to_i]
+        end
+      end
+
+      notes_to_save.each do |note|
         note[:id] = nil
         note[:commit_id] = sha
         note[:noteable_id] = self['id']

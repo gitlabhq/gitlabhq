@@ -29,6 +29,7 @@ before_script:
 
 # This build job produced the output directory of your site
 pages:
+  environment: production
   script:
     - jbake . public
   artifacts:

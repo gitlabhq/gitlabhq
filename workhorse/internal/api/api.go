@@ -19,7 +19,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
-
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 )
 

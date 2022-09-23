@@ -161,11 +161,7 @@ export default {
           @click="handleEmojiClick"
         >
           <template #button-content>
-            <span
-              v-if="noEmoji"
-              class="no-emoji-placeholder position-relative"
-              data-testid="no-emoji-placeholder"
-            >
+            <span v-if="noEmoji" class="gl-relative" data-testid="no-emoji-placeholder">
               <gl-icon name="slight-smile" class="award-control-icon-neutral" />
               <gl-icon name="smiley" class="award-control-icon-positive" />
               <gl-icon name="smile" class="award-control-icon-super-positive" />
