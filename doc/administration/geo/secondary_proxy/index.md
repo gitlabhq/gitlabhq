@@ -147,6 +147,13 @@ for details.
 
 - [Viewing projects and designs data from a primary site is not possible when using a unified URL](../index.md#view-replication-data-on-the-primary-site).
 
+- When secondary proxying is used together with separate URLs, registering [GitLab runners](https://docs.gitlab.com/runner/) to clone from
+secondary sites is not supported. The runner registration will succeed, but the clone URL will default to the primary site. The runner
+[clone URL](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) is configured per GitLab deployment
+and cannot be configured per Geo site. Therefore, all runners will clone from the primary site (or configured clone URL) irrespective of
+which Geo site they register on. For information about GitLab CI using a specific Geo secondary to clone from, see issue
+[3294](https://gitlab.com/gitlab-org/gitlab/-/issues/3294#note_1009488466).
+
 ## Behavior of secondary sites when the primary Geo site is down
 
 Considering that web traffic is proxied to the primary, the behavior of the secondary sites differs when the primary

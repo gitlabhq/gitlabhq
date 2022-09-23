@@ -12,6 +12,10 @@ milestone: '13.12'
 introduced_by_url:
 time_frame: all
 data_source: redis
+instrumentation_class: RedisMetric
+options:
+  prefix: kubernetes_agent
+  event: k8s_api_proxy_request
 distribution:
 - ce
 - ee

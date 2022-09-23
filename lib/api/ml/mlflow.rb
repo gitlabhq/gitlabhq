@@ -160,7 +160,7 @@ module API
                 @candidate.status = params[:status].downcase if params[:status]
                 @candidate.end_time = params[:end_time] if params[:end_time]
 
-                @candidate.save if @candidate.valid?
+                @candidate.save
 
                 present @candidate, with: Entities::Ml::Mlflow::UpdateRun
               end
@@ -185,6 +185,74 @@ module API
                   tracked_at: params[:timestamp],
                   step: params[:step]
                 )
+
+                {}
+              end
+
+              desc 'Logs a parameter to a run.' do
+                summary 'Log a param used for a run. A param is a key-value pair (string key, string value). '\
+                        'Examples include hyperparameters used for ML model training and constant dates and values '\
+                        'used in an ETL pipeline. A param can be logged only once for a run, duplicate will be .'\
+                        'ignored'
+
+                detail  'https://www.mlflow.org/docs/1.28.0/rest-api.html#log-param'
+              end
+              params do
+                requires :run_id, type: String, desc: 'UUID of the run.'
+                requires :key, type: String, desc: 'Name for the parameter.'
+                requires :value, type: String, desc: 'Value for the parameter.'
+              end
+              post 'log-parameter', urgency: :low do
+                ::Ml::CandidateParam.create(candidate: @candidate, name: params[:key], value: params[:value])
+
+                {}
+              end
+
+              desc 'Logs multiple parameters and metrics.' do
+                summary 'Log a batch of metrics and params for a run. Validation errors will block the entire batch, '\
+                        'duplicate errors will be ignored.'
+
+                detail  'https://www.mlflow.org/docs/1.28.0/rest-api.html#log-param'
+              end
+              params do
+                requires :run_id, type: String, desc: 'UUID of the run.'
+                optional :metrics, type: Array, default: [] do
+                  requires :key, type: String, desc: 'Name for the metric.'
+                  requires :value, type: Float, desc: 'Value of the metric.'
+                  requires :timestamp, type: Integer, desc: 'Unix timestamp in milliseconds when metric was recorded'
+                  optional :step, type: Integer, desc: 'Step at which the metric was recorded'
+                end
+                optional :params, type: Array, default: [] do
+                  requires :key, type: String, desc: 'Name for the metric.'
+                  requires :value, type: String, desc: 'Value of the metric.'
+                end
+              end
+              post 'log-batch', urgency: :low do
+                times = { created_at: Time.zone.now, updated_at: Time.zone.now }
+
+                metrics = params[:metrics].map do |metric|
+                  {
+                    candidate_id: @candidate.id,
+                    name: metric[:key],
+                    value: metric[:value],
+                    tracked_at: metric[:timestamp],
+                    step: metric[:step],
+                    **times
+                  }
+                end
+
+                ::Ml::CandidateMetric.insert_all(metrics, returning: false) unless metrics.empty?
+
+                parameters = params[:params].map do |p|
+                  {
+                    candidate_id: @candidate.id,
+                    name: p[:key],
+                    value: p[:value],
+                    **times
+                  }
+                end
+
+                ::Ml::CandidateParam.insert_all(parameters, returning: false) unless parameters.empty?
 
                 {}
               end

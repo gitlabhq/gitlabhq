@@ -65,7 +65,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
             end
 
             it 'responds with error' do
-              expect(resolve).to eq(timeline_event: nil, errors: ["Note can't be blank"])
+              expect(resolve).to eq(timeline_event: nil, errors: ["Timeline text can't be blank"])
             end
           end
 

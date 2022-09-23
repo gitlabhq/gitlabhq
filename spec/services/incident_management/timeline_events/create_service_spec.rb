@@ -71,7 +71,7 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
     context 'when error occurs during creation' do
       let(:args) { {} }
 
-      it_behaves_like 'error response', "Occurred at can't be blank, Note can't be blank, and Note html can't be blank"
+      it_behaves_like 'error response', "Occurred at can't be blank and Timeline text can't be blank"
     end
 
     context 'with default action' do

@@ -48,7 +48,7 @@ RSpec.describe IncidentManagement::TimelineEvents::DestroyService do
         timeline_event.errors.add(:note, 'cannot be removed')
       end
 
-      it_behaves_like 'error response', 'Note cannot be removed'
+      it_behaves_like 'error response', 'Timeline text cannot be removed'
     end
 
     context 'success response' do

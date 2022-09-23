@@ -98,7 +98,7 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
       context 'when note is blank' do
         let(:params) { { note: '', occurred_at: occurred_at } }
 
-        it_behaves_like 'error response', "Note can't be blank"
+        it_behaves_like 'error response', "Timeline text can't be blank"
       end
 
       context 'when occurred_at is nil' do

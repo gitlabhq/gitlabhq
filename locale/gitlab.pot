@@ -40327,9 +40327,6 @@ msgstr ""
 msgid "There is no data available. Please change your selection."
 msgstr ""
 
-msgid "There is no seat left to activate the member"
-msgstr ""
-
 msgid "There is no table data available."
 msgstr ""
 

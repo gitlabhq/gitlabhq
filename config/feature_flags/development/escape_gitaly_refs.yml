@@ -1,8 +1,0 @@
----
-name: escape_gitaly_refs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91058
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366437
-milestone: '15.2'
-type: development
-group: group::source code
-default_enabled: true

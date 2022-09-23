@@ -5,7 +5,6 @@ module UsageDataHelpers
       snippet_comment
       merge_request_comment
       commit_comment
-      navbar_searches
     ).freeze
 
   COUNTS_KEYS = %i(

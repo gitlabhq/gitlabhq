@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Candidate, factory_default: :keep do
-  let_it_be(:candidate) { create_default(:ml_candidates, :with_metrics) }
+  let_it_be(:candidate) { create_default(:ml_candidates, :with_metrics_and_params) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:experiment) }

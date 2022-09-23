@@ -9,6 +9,7 @@ module API
             expose(:info) { |candidate| RunInfo.represent(candidate) }
             expose :data do
               expose :metrics, using: Metric
+              expose :params, using: RunParam
             end
           end
         end

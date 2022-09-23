@@ -73,8 +73,6 @@ module Gitlab
 
     # This method escapes unsupported UTF-8 characters instead of deleting them
     def encode_utf8_with_escaping!(message)
-      return encode!(message) if Feature.disabled?(:escape_gitaly_refs)
-
       message = force_encode_utf8(message)
       return message if message.valid_encoding?
 
