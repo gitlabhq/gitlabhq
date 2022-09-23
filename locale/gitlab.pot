@@ -35929,6 +35929,9 @@ msgstr ""
 msgid "SecurityReports|Create issue"
 msgstr ""
 
+msgid "SecurityReports|Detection"
+msgstr ""
+
 msgid "SecurityReports|Development vulnerabilities"
 msgstr ""
 
@@ -35939,6 +35942,9 @@ msgid "SecurityReports|Dismissed '%{vulnerabilityName}'"
 msgstr ""
 
 msgid "SecurityReports|Dismissed '%{vulnerabilityName}'. Turn off the hide dismissed toggle to view."
+msgstr ""
+
+msgid "SecurityReports|Does not have issue"
 msgstr ""
 
 msgid "SecurityReports|Download %{artifactName}"
@@ -35971,10 +35977,16 @@ msgstr ""
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
 msgstr ""
 
+msgid "SecurityReports|Has issue"
+msgstr ""
+
 msgid "SecurityReports|Hide dismissed"
 msgstr ""
 
 msgid "SecurityReports|Image"
+msgstr ""
+
+msgid "SecurityReports|Issue"
 msgstr ""
 
 msgid "SecurityReports|Issue Created"
@@ -36092,6 +36104,9 @@ msgid "SecurityReports|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "SecurityReports|Status"
+msgstr ""
+
+msgid "SecurityReports|Still Detected"
 msgstr ""
 
 msgid "SecurityReports|Submit vulnerability"

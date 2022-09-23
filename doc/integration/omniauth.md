@@ -439,8 +439,9 @@ then override the icon in one of two ways:
 
 ## Change apps or configuration
 
-Because GitLab doesn't support having multiple providers in OAuth, GitLab configuration and user identification must be
-updated at the same time if the provider or app is changed.
+Because OAuth in GitLab doesn't support setting the same external authentication and authorization provider as multiple providers, GitLab configuration and
+user identification must be updated at the same time if the provider or app is changed.
+For example, you can set up `saml` and `azure_activedirectory_v2` but cannot add a second `azure_activedirectory_v2` to the same configuration.
 
 These instructions apply to all methods of authentication where GitLab stores an `extern_uid` and it is the only data used
 for user authentication.
