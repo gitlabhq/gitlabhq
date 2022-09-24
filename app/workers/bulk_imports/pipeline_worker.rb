@@ -44,7 +44,8 @@ module BulkImports
     attr_reader :pipeline_tracker
 
     def run
-      raise(Entity::FailedError, 'Failed entity status') if pipeline_tracker.entity.failed?
+      return skip_tracker if pipeline_tracker.entity.failed?
+
       raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?
       raise(Pipeline::FailedError, export_status.error) if export_failed?
 
@@ -147,6 +148,18 @@ module BulkImports
       pipeline_tracker.update!(status_event: 'retry', jid: jid)
 
       re_enqueue(exception.retry_delay)
+    end
+
+    def skip_tracker
+      logger.info(
+        structured_payload(
+          entity_id: pipeline_tracker.entity.id,
+          pipeline_name: pipeline_tracker.pipeline_name,
+          message: 'Skipping pipeline due to failed entity'
+        )
+      )
+
+      pipeline_tracker.update!(status_event: 'skip', jid: jid)
     end
   end
 end

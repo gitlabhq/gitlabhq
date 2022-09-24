@@ -160,7 +160,7 @@ RSpec.describe BulkImports::PipelineWorker do
     end
 
     context 'when entity is failed' do
-      it 'marks tracker as failed and logs the error' do
+      it 'marks tracker as skipped and logs the skip' do
         pipeline_tracker = create(
           :bulk_import_tracker,
           entity: entity,
@@ -170,22 +170,23 @@ RSpec.describe BulkImports::PipelineWorker do
 
         entity.update!(status: -1)
 
-        expect(BulkImports::Failure).to receive(:create)
         expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          allow(logger).to receive(:info)
+
           expect(logger)
-            .to receive(:error)
+            .to receive(:info)
             .with(
               hash_including(
                 'pipeline_name' => 'FakePipeline',
                 'entity_id' => entity.id,
-                'message' => 'Failed entity status'
+                'message' => 'Skipping pipeline due to failed entity'
               )
             )
         end
 
         subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
 
-        expect(pipeline_tracker.reload.status_name).to eq(:failed)
+        expect(pipeline_tracker.reload.status_name).to eq(:skipped)
       end
     end
 
