@@ -6,5 +6,5 @@
   = gitlab_ui_form_for [@project, @deploy_key], include_id: false, html: { class: 'js-requires-input' } do |f|
     = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
-      = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'
+      = f.submit _('Save changes'), pajamas_button: true
       = link_to _('Cancel'), project_settings_repository_path(@project), class: 'gl-button btn btn-default btn-cancel'
