@@ -1,4 +1,4 @@
-import { Matrix4, MeshLambertMaterial, Mesh } from 'three/build/three.module';
+import { Matrix4, MeshLambertMaterial, Mesh } from 'three';
 
 const defaultColor = 0xe24329;
 const materials = {

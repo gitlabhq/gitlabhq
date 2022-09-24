@@ -124,14 +124,14 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
 
       it 'removes the increment entry from Redis' do
         Gitlab::Redis::SharedState.with do |redis|
-          key_exists = redis.exists(model.counter_key(incremented_attribute))
+          key_exists = redis.exists?(model.counter_key(incremented_attribute))
           expect(key_exists).to be_truthy
         end
 
         subject
 
         Gitlab::Redis::SharedState.with do |redis|
-          key_exists = redis.exists(model.counter_key(incremented_attribute))
+          key_exists = redis.exists?(model.counter_key(incremented_attribute))
           expect(key_exists).to be_falsey
         end
       end
@@ -162,7 +162,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
           subject
 
           Gitlab::Redis::SharedState.with do |redis|
-            key_exists = redis.exists(model.counter_flushed_key(incremented_attribute))
+            key_exists = redis.exists?(model.counter_flushed_key(incremented_attribute))
             expect(key_exists).to be_falsey
           end
         end
@@ -208,7 +208,7 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
       model.clear_counter!(attribute)
 
       Gitlab::Redis::SharedState.with do |redis|
-        key_exists = redis.exists(model.counter_key(attribute))
+        key_exists = redis.exists?(model.counter_key(attribute))
         expect(key_exists).to be_falsey
       end
     end

@@ -267,7 +267,13 @@ class IssuableBaseService < ::BaseProjectService
   end
 
   def after_update(issuable)
-    # To be overridden by subclasses
+    handle_description_updated(issuable) if Feature.enabled?(:broadcast_issuable_description_updated)
+  end
+
+  def handle_description_updated(issuable)
+    return unless issuable.previous_changes.include?('description')
+
+    GraphqlTriggers.issuable_description_updated(issuable)
   end
 
   def update(issuable)

@@ -41,7 +41,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
   context 'hook object' do
     let(:relation_sym) { :hooks }
     let(:id) { 999 }
-    let(:service_id) { 99 }
+    let(:integration_id) { 99 }
     let(:original_project_id) { 8 }
     let(:token) { 'secret' }
 
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         'project_id' => original_project_id,
         'created_at' => '2016-08-12T09:41:03.462Z',
         'updated_at' => '2016-08-12T09:41:03.462Z',
-        'service_id' => service_id,
+        'integration_id' => integration_id,
         'push_events' => true,
         'issues_events' => false,
         'confidential_issues_events' => false,
@@ -71,8 +71,8 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       expect(created_object.id).not_to eq(id)
     end
 
-    it 'does not have the original service_id' do
-      expect(created_object.service_id).not_to eq(service_id)
+    it 'does not have the original integration_id' do
+      expect(created_object.integration_id).not_to eq(integration_id)
     end
 
     it 'does not have the original project_id' do
@@ -88,10 +88,10 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
 
     context 'original service exists' do
-      let(:service_id) { create(:integration, project: project).id }
+      let(:integration_id) { create(:integration, project: project).id }
 
-      it 'does not have the original service_id' do
-        expect(created_object.service_id).not_to eq(service_id)
+      it 'does not have the original integration_id' do
+        expect(created_object.integration_id).not_to eq(integration_id)
       end
     end
 
@@ -302,7 +302,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     let(:relation_sym) { :hazardous_foo_model }
     let(:relation_hash) do
       {
-        'service_id' => 99,
+        'integration_id' => 99,
         'moved_to_id' => 99,
         'namespace_id' => 99,
         'ci_id' => 99,
@@ -317,7 +317,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     before do
       stub_const('HazardousFooModel', Class.new(FooModel))
       HazardousFooModel.class_eval do
-        attr_accessor :service_id, :moved_to_id, :namespace_id, :ci_id, :random_project_id, :random_id, :milestone_id, :project_id
+        attr_accessor :integration_id, :moved_to_id, :namespace_id, :ci_id, :random_project_id, :random_id, :milestone_id, :project_id
       end
 
       allow(HazardousFooModel).to receive(:reflect_on_association).and_return(nil)

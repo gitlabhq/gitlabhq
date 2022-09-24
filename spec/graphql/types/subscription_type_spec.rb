@@ -8,6 +8,7 @@ RSpec.describe GitlabSchema.types['Subscription'] do
       issuable_assignees_updated
       issue_crm_contacts_updated
       issuable_title_updated
+      issuable_description_updated
       issuable_labels_updated
       issuable_dates_updated
       merge_request_reviewers_updated

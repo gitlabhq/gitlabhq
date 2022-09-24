@@ -13,6 +13,9 @@ module Types
     field :issuable_title_updated, subscription: Subscriptions::IssuableUpdated, null: true,
                                    description: 'Triggered when the title of an issuable is updated.'
 
+    field :issuable_description_updated, subscription: Subscriptions::IssuableUpdated, null: true,
+                                         description: 'Triggered when the description of an issuable is updated.'
+
     field :issuable_labels_updated, subscription: Subscriptions::IssuableUpdated, null: true,
                                     description: 'Triggered when the labels of an issuable are updated.'
 

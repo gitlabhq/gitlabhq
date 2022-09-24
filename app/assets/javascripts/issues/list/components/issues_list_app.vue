@@ -247,8 +247,8 @@ export default {
     },
     defaultWorkItemTypes() {
       return this.isWorkItemsEnabled
-        ? defaultWorkItemTypes.concat(WORK_ITEM_TYPE_ENUM_TASK)
-        : defaultWorkItemTypes;
+        ? defaultWorkItemTypes
+        : defaultWorkItemTypes.filter((type) => type !== WORK_ITEM_TYPE_ENUM_TASK);
     },
     typeTokenOptions() {
       return this.isWorkItemsEnabled

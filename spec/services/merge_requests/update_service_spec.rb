@@ -625,6 +625,32 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           expect(Todo.count).to eq(2)
         end
+
+        it 'triggers GraphQL description updated subscription' do
+          expect(GraphqlTriggers).to receive(:issuable_description_updated).with(merge_request).and_call_original
+
+          update_merge_request(description: 'updated description')
+        end
+
+        context 'when broadcast_issuable_description_updated is disabled' do
+          before do
+            stub_feature_flags(broadcast_issuable_description_updated: false)
+          end
+
+          it 'does not trigger GraphQL description updated subscription' do
+            expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
+
+            update_merge_request(description: 'updated description')
+          end
+        end
+      end
+
+      context 'when decription is not changed' do
+        it 'does not trigger GraphQL description updated subscription' do
+          expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
+
+          update_merge_request(title: 'updated title')
+        end
       end
 
       context 'when is reassigned' do

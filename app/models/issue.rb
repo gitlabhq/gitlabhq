@@ -40,10 +40,15 @@ class Issue < ApplicationRecord
 
   SORTING_PREFERENCE_FIELD = :issues_sort
 
-  # Types of issues that should be displayed on lists across the app
-  # for example, project issues list, group issues list and issue boards.
-  # Some issue types, like test cases, should be hidden by default.
-  TYPES_FOR_LIST = %w(issue incident).freeze
+  # Types of issues that should be displayed on issue lists across the app
+  # for example, project issues list, group issues list, and issues dashboard.
+  #
+  # This should be kept consistent with the enums used for the GraphQL issue list query in
+  # https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/assets/javascripts/issues/list/constants.js#L154-158
+  TYPES_FOR_LIST = %w(issue incident test_case task).freeze
+
+  # Types of issues that should be displayed on issue board lists
+  TYPES_FOR_BOARD_LIST = %w(issue incident).freeze
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues

@@ -1,4 +1,4 @@
-import { BoxGeometry } from 'three/build/three.module';
+import { BoxGeometry } from 'three';
 import MeshObject from '~/blob/3d_viewer/mesh_object';
 
 describe('Mesh object', () => {

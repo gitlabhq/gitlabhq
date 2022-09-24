@@ -12,6 +12,7 @@ import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
+  WORK_ITEM_TYPE_ENUM_TASK,
 } from '~/work_items/constants';
 
 export const i18n = {
@@ -151,10 +152,13 @@ export const TOKEN_TYPE_HEALTH = 'health_status';
 
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'task-done', title: 'task', value: 'task' };
 
+// This should be consistent with Issue::TYPES_FOR_LIST in the backend
+// https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/models/issue.rb#L48
 export const defaultWorkItemTypes = [
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
+  WORK_ITEM_TYPE_ENUM_TASK,
 ];
 
 export const defaultTypeTokenOptions = [

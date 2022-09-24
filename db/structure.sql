@@ -22,40 +22,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION function_for_trigger_a645cee67576() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."service_id" := NEW."integration_id";
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION function_for_trigger_a87bcfdf0f0b() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  IF NEW."service_id" IS NULL AND NEW."integration_id" IS NOT NULL THEN
-    NEW."service_id" = NEW."integration_id";
-  END IF;
-
-  IF NEW."integration_id" IS NULL AND NEW."service_id" IS NOT NULL THEN
-    NEW."integration_id" = NEW."service_id";
-  END IF;
-
-  RETURN NEW;
-END
-$$;
-
-CREATE FUNCTION function_for_trigger_aca5c963d732() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."integration_id" := NEW."service_id";
-  RETURN NEW;
-END
-$$;
-
 CREATE FUNCTION gitlab_schema_prevent_write() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -22935,7 +22901,6 @@ CREATE TABLE web_hooks (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     type character varying DEFAULT 'ProjectHook'::character varying,
-    service_id integer,
     push_events boolean DEFAULT true NOT NULL,
     issues_events boolean DEFAULT false NOT NULL,
     merge_requests_events boolean DEFAULT false NOT NULL,
@@ -30767,8 +30732,6 @@ CREATE INDEX index_web_hooks_on_project_id ON web_hooks USING btree (project_id)
 
 CREATE INDEX index_web_hooks_on_project_id_recent_failures ON web_hooks USING btree (project_id, recent_failures);
 
-CREATE INDEX index_web_hooks_on_service_id ON web_hooks USING btree (service_id);
-
 CREATE INDEX index_web_hooks_on_type ON web_hooks USING btree (type);
 
 CREATE UNIQUE INDEX index_webauthn_registrations_on_credential_xid ON webauthn_registrations USING btree (credential_xid);
@@ -32241,12 +32204,6 @@ CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE 
 
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER trigger_a645cee67576 BEFORE UPDATE OF integration_id ON web_hooks FOR EACH ROW EXECUTE FUNCTION function_for_trigger_a645cee67576();
-
-CREATE TRIGGER trigger_a87bcfdf0f0b BEFORE INSERT ON web_hooks FOR EACH ROW EXECUTE FUNCTION function_for_trigger_a87bcfdf0f0b();
-
-CREATE TRIGGER trigger_aca5c963d732 BEFORE UPDATE OF service_id ON web_hooks FOR EACH ROW EXECUTE FUNCTION function_for_trigger_aca5c963d732();
-
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
@@ -33049,9 +33006,6 @@ ALTER TABLE ONLY environments
 
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_d3130c9a7f FOREIGN KEY (commit_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY web_hooks
-    ADD CONSTRAINT fk_d47999a98a FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;

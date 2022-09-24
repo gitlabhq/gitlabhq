@@ -4,11 +4,14 @@ require 'spec_helper'
 
 RSpec.describe DashboardController do
   context 'signed in' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+
+    before_all do
+      project.add_maintainer(user)
+    end
 
     before do
-      project.add_maintainer(user)
       sign_in(user)
     end
 
@@ -30,6 +33,28 @@ RSpec.describe DashboardController do
       end
 
       it_behaves_like 'issuables requiring filter', :issues
+
+      it 'includes tasks in issue list' do
+        task = create(:work_item, :task, project: project, author: user)
+
+        get :issues, params: { author_id: user.id }
+
+        expect(assigns[:issues].map(&:id)).to include(task.id)
+      end
+
+      context 'when work_items is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it 'does not include tasks in issue list' do
+          task = create(:work_item, :task, project: project, author: user)
+
+          get :issues, params: { author_id: user.id }
+
+          expect(assigns[:issues].map(&:id)).not_to include(task.id)
+        end
+      end
     end
 
     describe 'GET merge requests' do

@@ -35587,9 +35587,6 @@ msgstr ""
 msgid "SecurityOrchestration|%{scanners} %{severities} in an open merge request targeting %{branches}."
 msgstr ""
 
-msgid "SecurityOrchestration|+%{count} more"
-msgstr ""
-
 msgid "SecurityOrchestration|, and %{count} more"
 msgstr ""
 

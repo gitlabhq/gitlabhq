@@ -405,6 +405,7 @@ class Projects::IssuesController < Projects::ApplicationController
     options = super
 
     options[:issue_types] = Issue::TYPES_FOR_LIST
+    options[:issue_types] = options[:issue_types].excluding('task') unless project.work_items_feature_flag_enabled?
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }

@@ -26,6 +26,11 @@ if log_deprecations?
       Gitlab::DeprecationJsonLogger.info(message: warning.strip, source: 'ruby')
       # Returning :default means we continue emitting this to stderr as well.
       :default
+    end,
+    # This won't be needed when https://gitlab.com/gitlab-org/gitlab/-/issues/340602 is completed
+    /\A`Redis#exists\(key\)` will return an Integer in redis-rb 4\.3/ => lambda do |warning|
+      Gitlab::DeprecationJsonLogger.info(message: warning.strip, source: 'redis')
+      :default
     end
   }
 

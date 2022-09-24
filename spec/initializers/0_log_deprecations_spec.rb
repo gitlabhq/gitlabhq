@@ -86,6 +86,18 @@ RSpec.describe '0_log_deprecations' do
         expect { warn('ABC gem is deprecated') }.to output.to_stderr
       end
     end
+
+    it 'logs Redis exists_returns_integer deprecation message' do
+      msg = "`Redis#exists(key)` will return an Integer in redis-rb 4.3. `exists?` returns a boolean, you " \
+            "should use it instead. To opt-in to the new behavior now you can set Redis.exists_returns_integer =  " \
+            "true. To disable this message and keep the current (boolean) behaviour of 'exists' you can set " \
+            "`Redis.exists_returns_integer = false`, but this option will be removed in 5.0.0. " \
+            "(#{::Kernel.caller(1, 1).first})\n"
+
+      expect(Gitlab::DeprecationJsonLogger).to receive(:info).with(message: msg.strip, source: 'redis')
+
+      expect { warn(msg) }.to output.to_stderr
+    end
   end
 
   describe 'Rails deprecations' do

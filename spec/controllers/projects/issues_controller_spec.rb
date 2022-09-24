@@ -1701,12 +1701,26 @@ RSpec.describe Projects::IssuesController do
       end
 
       it 'allows CSV export' do
-        expect(IssuableExportCsvWorker).to receive(:perform_async).with(:issue, viewer.id, project.id, anything)
+        expect(IssuableExportCsvWorker).to receive(:perform_async)
+          .with(:issue, viewer.id, project.id, hash_including('issue_types' => Issue::TYPES_FOR_LIST))
 
         request_csv
 
         expect(response).to redirect_to(project_issues_path(project))
         expect(controller).to set_flash[:notice].to match(/\AYour CSV export has started/i)
+      end
+
+      context 'when work_items is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it 'does not include tasks in CSV export' do
+          expect(IssuableExportCsvWorker).to receive(:perform_async)
+            .with(:issue, viewer.id, project.id, hash_including('issue_types' => Issue::TYPES_FOR_LIST.excluding('task')))
+
+          request_csv
+        end
       end
     end
 
