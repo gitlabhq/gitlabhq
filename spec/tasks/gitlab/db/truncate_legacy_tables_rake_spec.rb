@@ -43,10 +43,6 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
   end
 
   shared_examples 'truncating legacy tables' do
-    before do
-      allow(ENV).to receive(:[]).and_return(nil)
-    end
-
     context 'when tables are not locked for writes' do
       it 'raises an error when trying to truncate the tables' do
         error_message = /is not locked for writes. Run the rake task gitlab:db:lock_writes first/
@@ -97,7 +93,7 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
 
       context 'when running in dry_run mode' do
         before do
-          allow(ENV).to receive(:[]).with("DRY_RUN").and_return("true")
+          stub_env('DRY_RUN', 'true')
         end
 
         it 'does not truncate any tables' do
@@ -115,7 +111,7 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
 
       context 'when passing until_table parameter via environment variable' do
         before do
-          allow(ENV).to receive(:[]).with("UNTIL_TABLE").and_return(legacy_table)
+          stub_env('UNTIL_TABLE', legacy_table)
         end
 
         it 'sends the table name to TablesTruncate' do
