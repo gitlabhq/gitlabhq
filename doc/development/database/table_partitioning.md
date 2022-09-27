@@ -142,7 +142,7 @@ substantial. Partitioning should only be leveraged if the access patterns
 of the data support the partitioning strategy, otherwise performance
 suffers.
 
-## Partitioning a table
+## Partitioning a table (Range)
 
 Unfortunately, tables can only be partitioned at their creation, making
 it nontrivial to apply to a busy database. A suite of migration
@@ -256,3 +256,205 @@ The final step of the migration makes the partitioned table ready
 for use by the application. This section will be updated when the
 migration helper is ready, for now development can be followed in the
 [Tracking Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241267).
+
+## Partitioning a table (List)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96815) in GitLab 15.4.
+
+Add the partitioning key column to the table you are partitioning.
+Include the partitioning key in the following constraints:
+
+- The primary key.
+- All foreign keys referencing the table to be partitioned.
+- All unique constraints.
+
+### Step 1 - Add partition key
+
+Add the partitioning key column. For example, in a rails migration:
+
+```ruby
+class AddPartitionNumberForPartitioning < Gitlab::Database::Migration[2.0]
+  enable_lock_retries!
+
+  TABLE_NAME = :table_name
+  COLUMN_NAME = :partition_id
+  DEFAULT_VALUE = 100
+
+  def change
+    add_column(TABLE_NAME, COLUMN_NAME, :bigint, default: 100)
+  end
+end
+```
+
+### Step 2 - Create required indexes
+
+Add indexes including the partitioning key column. For example, in a rails migration:
+
+```ruby
+class PrepareIndexesForPartitioning < Gitlab::Database::Migration[2.0]
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  INDEX_NAME = :index_name
+
+  def up
+    add_concurrent_index(TABLE_NAME, [:id, :partition_id], unique: true, name: INDEX_NAME)
+  end
+
+  def down
+    remove_concurrent_index_by_name(TABLE_NAME, INDEX_NAME)
+  end
+end
+```
+
+### Step 3 - Swap primary key
+
+Swap the primary key including the partitioning key column. For example, in a rails migration:
+
+```ruby
+class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.0]
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  PRIMARY_KEY = :primary_key
+  OLD_INDEX_NAME = :old_index_name
+  NEW_INDEX_NAME = :new_index_name
+
+  def up
+    with_lock_retries(raise_on_exhaustion: true) do
+      execute("ALTER TABLE #{TABLE_NAME} DROP CONSTRAINT #{PRIMARY_KEY} CASCADE")
+
+      rename_index(TABLE_NAME, NEW_INDEX_NAME, PRIMARY_KEY)
+
+      execute("ALTER TABLE #{TABLE_NAME} ADD CONSTRAINT #{PRIMARY_KEY} PRIMARY KEY USING INDEX #{PRIMARY_KEY}")
+    end
+  end
+
+  def down
+    add_concurrent_index(TABLE_NAME, :id, unique: true, name: OLD_INDEX_NAME)
+    add_concurrent_index(TABLE_NAME, [:id, :partition_id], unique: true, name: NEW_INDEX_NAME)
+
+    with_lock_retries(raise_on_exhaustion: true) do
+      execute("ALTER TABLE #{TABLE_NAME} DROP CONSTRAINT #{PRIMARY_KEY} CASCADE")
+
+      rename_index(TABLE_NAME, OLD_INDEX_NAME, PRIMARY_KEY)
+
+      execute("ALTER TABLE #{TABLE_NAME} ADD CONSTRAINT #{PRIMARY_KEY} PRIMARY KEY USING INDEX #{PRIMARY_KEY}")
+    end
+  end
+end
+```
+
+NOTE:
+Do not forget to set the primary key explicitly in your model as `ActiveRecord` does not support composite primary keys.
+
+```ruby
+class Model < ApplicationRecord
+  self.primary_key = :id
+end
+```
+
+### Step 4 - Enforce unique constraint
+
+Enforce unique indexes including the partitioning key column. For example, in a rails migration:
+
+```ruby
+class PrepareUniqueContraintForPartitioning < Gitlab::Database::Migration[2.0]
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  OLD_UNIQUE_INDEX_NAME = :index_name_unique
+  NEW_UNIQUE_INDEX_NAME = :new_index_name
+
+  def up
+    add_concurrent_index(TABLE_NAME, [:some_column, :partition_id], unique: true, name: NEW_UNIQUE_INDEX_NAME)
+
+    remove_concurrent_index_by_name(TABLE_NAME, OLD_UNIQUE_INDEX_NAME)
+  end
+
+  def down
+    add_concurrent_index(TABLE_NAME, :some_column, unique: true, name: OLD_UNIQUE_INDEX_NAME)
+
+    remove_concurrent_index_by_name(TABLE_NAME, NEW_UNIQUE_INDEX_NAME)
+  end
+end
+```
+
+### Step 5 - Enforce foreign key constraint
+
+Enforce foreign keys including the partitioning key column. For example, in a rails migration:
+
+```ruby
+class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.0]
+  disable_ddl_transaction!
+
+  REFERENCED_TABLE_NAME = :references_table_name
+  FOREIGN_KEY_COLUMN = :foreign_key_id
+  FOREIGN_KEY_NAME = :fk_365d1db505_p
+  TABLE_NAME = :table_name
+  PARTITION_COLUMN = :partition_id
+
+  def up
+    execute("ALTER TABLE #{REFERENCED_TABLE_NAME} ADD CONSTRAINT #{FOREIGN_KEY_NAME} " \
+      "FOREIGN KEY (#{FOREIGN_KEY_COLUMN}, #{PARTITION_COLUMN}) " \
+      "REFERENCES #{TABLE_NAME}(id, #{PARTITION_COLUMN}) ON DELETE CASCADE NOT VALID")
+
+    execute("ALTER TABLE #{TABLE_NAME} VALIDATE CONSTRAINT #{FOREIGN_KEY_NAME}")
+  end
+
+  def down
+    execute("ALTER TABLE #{TABLE_NAME} DROP CONSTRAINT #{FOREIGN_KEY_NAME}")
+  end
+end
+```
+
+### Step 6 - Create parent table and attach existing table as the initial paritition
+
+You can now create the parent table attaching the existing table as the initial partition by using the following helpers provided by the database team.
+
+For example, using list partitioning in a Rails migration:
+
+```ruby
+class ConvertTableToZeroPartitioning < Gitlab::Database::Migration[2.0]
+  include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
+
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  PARENT_TABLE_NAME = :p_table_name
+  FIRST_PARTITION = 100
+  PARTITION_COLUMN = :partition_id
+
+  def up
+    prepare_constraint_for_list_partitioning(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION
+    )
+
+    convert_table_to_first_list_partition(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION
+    )
+  end
+
+  def down
+    revert_converting_table_to_first_list_partition(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION
+    )
+
+    revert_preparing_constraint_for_list_partitioning(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION
+    )
+  end
+end
+```
