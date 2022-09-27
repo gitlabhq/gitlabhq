@@ -17622,7 +17622,7 @@ Represents a requirement.
 | <a id="requirementauthor"></a>`author` | [`UserCore!`](#usercore) | Author of the requirement. |
 | <a id="requirementcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the requirement was created. |
 | <a id="requirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
-| <a id="requirementdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
+| <a id="requirementdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="requirementid"></a>`id` | [`ID!`](#id) | ID of the requirement. |
 | <a id="requirementiid"></a>`iid` | [`ID!`](#id) | Internal ID of the requirement. |
 | <a id="requirementlasttestreportmanuallycreated"></a>`lastTestReportManuallyCreated` | [`Boolean`](#boolean) | Indicates if latest test report was created by user. |
@@ -17630,7 +17630,7 @@ Represents a requirement.
 | <a id="requirementproject"></a>`project` | [`Project!`](#project) | Project to which the requirement belongs. |
 | <a id="requirementstate"></a>`state` | [`RequirementState!`](#requirementstate) | State of the requirement. |
 | <a id="requirementtitle"></a>`title` | [`String`](#string) | Title of the requirement. |
-| <a id="requirementtitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
+| <a id="requirementtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
 | <a id="requirementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the requirement was last updated. |
 | <a id="requirementuserpermissions"></a>`userPermissions` | [`RequirementPermissions!`](#requirementpermissions) | Permissions for the current user on the resource. |
 

@@ -1,0 +1,8 @@
+---
+name: ci_destroy_unlocked_pipeline_artifacts
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98633
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375011
+milestone: '15.5'
+type: development
+group: group::pipeline insights
+default_enabled: false

@@ -1,0 +1,20 @@
+---
+Gitlab/NoCodeCoverageComment:
+  Details: grace period
+  Exclude:
+    - 'app/models/integration.rb'
+    - 'app/services/ci/job_artifacts/destroy_batch_service.rb'
+    - 'app/workers/database/batched_background_migration/single_database_worker.rb'
+    - 'config/initializers/net_http_response_patch.rb'
+    - 'ee/app/models/concerns/geo/replicable_model.rb'
+    - 'ee/app/services/namespaces/free_user_cap/remove_group_group_links_outside_hierarchy_service.rb'
+    - 'ee/app/workers/namespaces/free_user_cap/remediation_worker.rb'
+    - 'ee/lib/gitlab/geo/replicator.rb'
+    - 'lib/gitlab/auth/o_auth/session.rb'
+    - 'lib/gitlab/cycle_analytics/summary/defaults.rb'
+    - 'lib/gitlab/database/background_migration/health_status/signals.rb'
+    - 'lib/gitlab/seeder.rb'
+    - 'lib/gitlab/webpack/dev_server_middleware.rb'
+    - 'lib/tasks/dev.rake'
+    - 'lib/tasks/gems.rake'
+    - 'lib/tasks/gitlab/db.rake'

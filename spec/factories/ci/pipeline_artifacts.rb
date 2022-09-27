@@ -17,6 +17,11 @@ FactoryBot.define do
       association :pipeline, :unlocked, factory: :ci_pipeline
     end
 
+    trait :artifact_unlocked do
+      association :pipeline, :unlocked, factory: :ci_pipeline
+      locked { :unlocked }
+    end
+
     trait :checksummed do
       verification_checksum { 'abc' }
     end
