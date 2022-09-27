@@ -20,6 +20,8 @@ RSpec.shared_examples 'date sidebar widget' do
         scroll_to(button)
         button.click
 
+        execute_script('document.querySelector(".issuable-sidebar")?.scrollBy(0, 50)')
+
         click_button today.to_s
 
         wait_for_requests

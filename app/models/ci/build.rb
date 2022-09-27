@@ -112,11 +112,20 @@ module Ci
     end
 
     scope :unstarted, -> { where(runner_id: nil) }
+
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)
           .where('ci_builds.id = ci_job_artifacts.job_id')
           .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
+      )
+    end
+
+    scope :with_erasable_artifacts, -> do
+      where('EXISTS (?)',
+        Ci::JobArtifact.select(1)
+          .where('ci_builds.id = ci_job_artifacts.job_id')
+        .where(file_type: Ci::JobArtifact.erasable_file_types)
       )
     end
 

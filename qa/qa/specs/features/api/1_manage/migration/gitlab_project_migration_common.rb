@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  # Disable on live envs until bulk_import_projects toggle is on by default
-  # Otherwise tests running in parallel can disable feature in the middle of other test
   RSpec.shared_context 'with gitlab project migration', requires_admin: 'creates a user via API',
+                                                        quarantine: {
+                                                          type: :flaky,
+                                                          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/364839'
+                                                        },
                                                         feature_flag: {
                                                           name: 'bulk_import_projects',
                                                           scope: :global

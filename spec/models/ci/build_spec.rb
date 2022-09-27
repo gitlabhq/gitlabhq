@@ -160,6 +160,42 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '.with_erasable_artifacts' do
+    subject { described_class.with_erasable_artifacts }
+
+    context 'when job does not have any artifacts' do
+      let!(:job) { create(:ci_build) }
+
+      it 'does not return the job' do
+        is_expected.not_to include(job)
+      end
+    end
+
+    ::Ci::JobArtifact.erasable_file_types.each do |type|
+      context "when job has a #{type} artifact" do
+        it 'returns the job' do
+          job = create(:ci_build)
+          create(
+            :ci_job_artifact,
+            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_type: type,
+            job: job
+          )
+
+          is_expected.to include(job)
+        end
+      end
+    end
+
+    context 'when job has a non-erasable artifact' do
+      let!(:job) { create(:ci_build, :trace_artifact) }
+
+      it 'does not return the job' do
+        is_expected.not_to include(job)
+      end
+    end
+  end
+
   describe '.with_live_trace' do
     subject { described_class.with_live_trace }
 

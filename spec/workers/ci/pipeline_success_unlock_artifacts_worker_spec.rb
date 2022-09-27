@@ -27,15 +27,18 @@ RSpec.describe Ci::PipelineSuccessUnlockArtifactsWorker do
     end
 
     context 'when pipeline exists' do
-      let(:pipeline) { create(:ci_pipeline, :success, :with_job) }
+      let!(:pipeline) { create(:ci_pipeline, :success, :with_job) }
       let(:pipeline_id) { pipeline.id }
 
-      context 'when pipeline has artifacts' do
-        before do
-          create(:ci_job_artifact, job: pipeline.builds.first)
-        end
+      before do
+        allow(Ci::Pipeline).to receive(:find_by_id).with(pipeline.id).and_return(pipeline)
+        allow(pipeline).to receive(:has_erasable_artifacts?).and_return(has_erasable_artifacts)
+      end
 
-        it 'calls the service' do
+      context 'when pipeline has erasable artifacts' do
+        let(:has_erasable_artifacts) { true }
+
+        it 'calls the unlock service' do
           service = spy(Ci::UnlockArtifactsService)
           expect(Ci::UnlockArtifactsService).to receive(:new).and_return(service)
 
@@ -45,8 +48,10 @@ RSpec.describe Ci::PipelineSuccessUnlockArtifactsWorker do
         end
       end
 
-      context 'when pipeline does not have artifacts' do
-        it 'does not call service' do
+      context 'when pipeline has no erasable artifacts' do
+        let(:has_erasable_artifacts) { false }
+
+        it 'does not call the unlock service' do
           expect(Ci::UnlockArtifactsService).not_to receive(:new)
 
           perform

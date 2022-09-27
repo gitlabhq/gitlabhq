@@ -1090,10 +1090,10 @@
   dependencies:
     mustache "^4.2.0"
 
-"@graphql-eslint/eslint-plugin@3.11.1":
-  version "3.11.1"
-  resolved "https://registry.yarnpkg.com/@graphql-eslint/eslint-plugin/-/eslint-plugin-3.11.1.tgz#3ff3fce52d31d169fdbe33f70cb5234966d2bea1"
-  integrity sha512-y72HwLgCBMS5diGhtOM9EnDRY7rcyevbiHeLJPy0gjcVzAhj0xdH7dJV7aNLlVNSSqZ+3M8ZuKfwEX5ByFqx4w==
+"@graphql-eslint/eslint-plugin@3.11.2":
+  version "3.11.2"
+  resolved "https://registry.yarnpkg.com/@graphql-eslint/eslint-plugin/-/eslint-plugin-3.11.2.tgz#d982a45291aadd483c79c2bcb209166115ef6123"
+  integrity sha512-gnR6L2S64mesNyF34n/c3qOTIwu6MtapRhPQLHqU1/Qdf/7Ga9KKtFJKKxRrK7YbzlteMYweC05khhZycxDtLw==
   dependencies:
     "@babel/code-frame" "^7.16.7"
     "@graphql-tools/code-file-loader" "^7.2.14"

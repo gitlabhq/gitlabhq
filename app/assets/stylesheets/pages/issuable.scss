@@ -199,12 +199,15 @@
     .sidebar-contained-width,
     .issuable-sidebar-header {
       width: 100%;
-      border-bottom: 0;
     }
 
     .block {
       @include media-breakpoint-up(lg) {
-        padding: $gl-spacing-scale-5 0;
+        padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
+      }
+
+      &.participants {
+        border-bottom: 0;
       }
     }
   }
@@ -213,7 +216,8 @@
   .sidebar-contained-width,
   .issuable-sidebar-header {
     @include clearfix;
-    padding: $gl-padding 0;
+    padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
+    border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter-inner-width;
@@ -234,6 +238,13 @@
           }
         }
       }
+    }
+
+    &.time-tracking,
+    &.participants,
+    &.subscriptions,
+    &.with-sub-blocks {
+      padding-top: $gl-spacing-scale-5;
     }
   }
 

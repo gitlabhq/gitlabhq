@@ -311,7 +311,7 @@ describe('ReadyToMerge', () => {
         "the MR hasn't merged yet, and the backend-provided value expects to leave the branch",
         "the MR hasn't merged yet, and the backend-provided value is a non-boolean falsey value",
         "the MR hasn't merged yet, and the backend-provided value is a non-boolean truthy value",
-        'the MR has merged, and the backend reports that the branch has been removed',
+        'the MR has been merged, and the backend reports that the branch has been removed',
         'the MR has been merged, and the backend reports that the branch has not been removed',
         'the MR has been merged, and the backend reports a non-boolean falsey value',
         'the MR has been merged, and the backend reports a non-boolean truthy value',
