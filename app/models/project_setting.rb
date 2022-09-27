@@ -21,6 +21,7 @@ class ProjectSetting < ApplicationRecord
   validates :merge_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
   validates :squash_commit_template, length: { maximum: Project::MAX_COMMIT_TEMPLATE_LENGTH }
   validates :target_platforms, inclusion: { in: ALLOWED_TARGET_PLATFORMS }
+  validates :suggested_reviewers_enabled, inclusion: { in: [true, false] }
 
   validate :validates_mr_default_target_self
 

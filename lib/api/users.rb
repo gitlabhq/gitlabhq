@@ -51,6 +51,7 @@ module API
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
           optional :public_email, type: String, desc: 'The public email of the user'
+          optional :commit_email, type: String, desc: 'The commit email, _private for private commit email'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'

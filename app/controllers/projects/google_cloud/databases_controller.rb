@@ -50,16 +50,15 @@ module Projects
           track_event(:error_enable_cloudsql_services)
           flash[:error] = error_message(enable_response[:message])
         else
-          permitted_params = params.permit(:gcp_project, :ref, :database_version, :tier)
           create_response = ::GoogleCloud::CreateCloudsqlInstanceService
-                              .new(project, current_user, create_service_params(permitted_params))
+                              .new(project, current_user, create_service_params)
                               .execute
 
           if create_response[:status] == :error
             track_event(:error_create_cloudsql_instance)
             flash[:warning] = error_message(create_response[:message])
           else
-            track_event(:create_cloudsql_instance, permitted_params.to_s)
+            track_event(:create_cloudsql_instance, permitted_params_create.to_s)
             flash[:notice] = success_message
           end
         end
@@ -69,17 +68,25 @@ module Projects
 
       private
 
-      def enable_service_params
-        { google_oauth2_token: token_in_session }
+      def permitted_params_create
+        params.permit(:gcp_project, :ref, :database_version, :tier)
       end
 
-      def create_service_params(permitted_params)
+      def enable_service_params
         {
           google_oauth2_token: token_in_session,
-          gcp_project_id: permitted_params[:gcp_project],
-          environment_name: permitted_params[:ref],
-          database_version: permitted_params[:database_version],
-          tier: permitted_params[:tier]
+          gcp_project_id: permitted_params_create[:gcp_project],
+          environment_name: permitted_params_create[:ref]
+        }
+      end
+
+      def create_service_params
+        {
+          google_oauth2_token: token_in_session,
+          gcp_project_id: permitted_params_create[:gcp_project],
+          environment_name: permitted_params_create[:ref],
+          database_version: permitted_params_create[:database_version],
+          tier: permitted_params_create[:tier]
         }
       end
 

@@ -207,6 +207,16 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu do
 
         it_behaves_like 'the menu entry is available'
       end
+
+      context 'when config harbor registry setting is not activated' do
+        before do
+          harbor_integration.update!(active: false)
+        end
+
+        let(:harbor_registry_enabled) { true }
+
+        it_behaves_like 'the menu entry is not available'
+      end
     end
   end
 

@@ -16,3 +16,4 @@
       = f.submit _('Save changes'), class: "btn gl-button btn-confirm rspec-save-merge-request-changes", data: { qa_selector: 'save_merge_request_changes_button' }
 
 = render_if_exists 'projects/settings/merge_requests/merge_request_approvals_settings', expanded: true
+= render_if_exists 'projects/settings/merge_requests/suggested_reviewers_settings', expanded: true

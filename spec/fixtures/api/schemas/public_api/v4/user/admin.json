@@ -4,6 +4,7 @@
     "id",
     "username",
     "email",
+    "commit_email",
     "name",
     "state",
     "avatar_url",

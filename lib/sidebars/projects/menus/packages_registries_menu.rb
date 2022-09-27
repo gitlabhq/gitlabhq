@@ -9,7 +9,7 @@ module Sidebars
           add_item(packages_registry_menu_item)
           add_item(container_registry_menu_item)
           add_item(infrastructure_registry_menu_item)
-          add_item(harbor_registry__menu_item)
+          add_item(harbor_registry_menu_item)
           true
         end
 
@@ -65,8 +65,10 @@ module Sidebars
           )
         end
 
-        def harbor_registry__menu_item
-          if Feature.disabled?(:harbor_registry_integration, context.project) || context.project.harbor_integration.nil?
+        def harbor_registry_menu_item
+          if Feature.disabled?(:harbor_registry_integration, context.project) ||
+              context.project.harbor_integration.nil? ||
+              !context.project.harbor_integration.activated?
             return ::Sidebars::NilMenuItem.new(item_id: :harbor_registry)
           end
 

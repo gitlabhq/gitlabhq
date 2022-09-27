@@ -8,7 +8,7 @@ module Sidebars
         def configure_menu_items
           add_item(packages_registry_menu_item)
           add_item(container_registry_menu_item)
-          add_item(harbor_registry__menu_item)
+          add_item(harbor_registry_menu_item)
           add_item(dependency_proxy_menu_item)
           true
         end
@@ -49,8 +49,10 @@ module Sidebars
           )
         end
 
-        def harbor_registry__menu_item
-          if Feature.disabled?(:harbor_registry_integration) || context.group.harbor_integration.nil?
+        def harbor_registry_menu_item
+          if Feature.disabled?(:harbor_registry_integration) ||
+            context.group.harbor_integration.nil? ||
+            !context.group.harbor_integration.activated?
             return nil_menu_item(:harbor_registry)
           end
 

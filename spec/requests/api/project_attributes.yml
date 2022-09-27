@@ -161,6 +161,7 @@ project_setting:
     - target_platforms
     - selective_code_owner_removals
     - show_diff_preview_in_email
+    - suggested_reviewers_enabled
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

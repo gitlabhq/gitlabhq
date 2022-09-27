@@ -101,8 +101,19 @@ RSpec.describe ProjectAuthorization do
     end
 
     before do
-      stub_const("#{described_class.name}::BATCH_SIZE", per_batch_size)
+      # Configure as if a replica database is enabled
+      allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
       stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
+    end
+
+    shared_examples_for 'inserts the rows in batches, as per the `per_batch` size, without a delay between each batch' do
+      specify do
+        expect(described_class).not_to receive(:sleep)
+
+        described_class.insert_all_in_batches(attributes, per_batch_size)
+
+        expect(user.project_authorizations.pluck(:user_id, :project_id, :access_level)).to match_array(attributes.map(&:values))
+      end
     end
 
     context 'when the total number of records to be inserted is greater than the batch size' do
@@ -116,19 +127,21 @@ RSpec.describe ProjectAuthorization do
 
         expect(user.project_authorizations.pluck(:user_id, :project_id, :access_level)).to match_array(attributes.map(&:values))
       end
+
+      context 'when the GitLab installation does not have a replica database configured' do
+        before do
+          # Configure as if a replica database is not enabled
+          allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(true)
+        end
+
+        it_behaves_like 'inserts the rows in batches, as per the `per_batch` size, without a delay between each batch'
+      end
     end
 
     context 'when the total number of records to be inserted is less than the batch size' do
       let(:per_batch_size) { 5 }
 
-      it 'inserts the rows in batches, as per the `per_batch` size, without a delay between each batch' do
-        expect(described_class).to receive(:insert_all).once.and_call_original
-        expect(described_class).not_to receive(:sleep)
-
-        described_class.insert_all_in_batches(attributes, per_batch_size)
-
-        expect(user.project_authorizations.pluck(:user_id, :project_id, :access_level)).to match_array(attributes.map(&:values))
-      end
+      it_behaves_like 'inserts the rows in batches, as per the `per_batch` size, without a delay between each batch'
     end
   end
 
@@ -142,7 +155,8 @@ RSpec.describe ProjectAuthorization do
     let(:user_ids) { [user_1.id, user_2.id, user_3.id] }
 
     before do
-      stub_const("#{described_class.name}::BATCH_SIZE", per_batch_size)
+      # Configure as if a replica database is enabled
+      allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
       stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
@@ -151,6 +165,20 @@ RSpec.describe ProjectAuthorization do
       create(:project_authorization, user: user_2, project: project)
       create(:project_authorization, user: user_3, project: project)
       create(:project_authorization, user: user_4, project: project)
+    end
+
+    shared_examples_for 'removes the project authorizations of the specified users in the current project, without a delay between each batch' do
+      specify do
+        expect(described_class).not_to receive(:sleep)
+
+        described_class.delete_all_in_batches_for_project(
+          project: project,
+          user_ids: user_ids,
+          per_batch: per_batch_size
+        )
+
+        expect(project.project_authorizations.pluck(:user_id)).not_to include(*user_ids)
+      end
     end
 
     context 'when the total number of records to be removed is greater than the batch size' do
@@ -167,22 +195,21 @@ RSpec.describe ProjectAuthorization do
 
         expect(project.project_authorizations.pluck(:user_id)).not_to include(*user_ids)
       end
+
+      context 'when the GitLab installation does not have a replica database configured' do
+        before do
+          # Configure as if a replica database is not enabled
+          allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(true)
+        end
+
+        it_behaves_like 'removes the project authorizations of the specified users in the current project, without a delay between each batch'
+      end
     end
 
     context 'when the total number of records to be removed is less than the batch size' do
       let(:per_batch_size) { 5 }
 
-      it 'removes the project authorizations of the specified users in the current project, without a delay between each batch' do
-        expect(described_class).not_to receive(:sleep)
-
-        described_class.delete_all_in_batches_for_project(
-          project: project,
-          user_ids: user_ids,
-          per_batch: per_batch_size
-        )
-
-        expect(project.project_authorizations.pluck(:user_id)).not_to include(*user_ids)
-      end
+      it_behaves_like 'removes the project authorizations of the specified users in the current project, without a delay between each batch'
     end
   end
 
@@ -196,7 +223,8 @@ RSpec.describe ProjectAuthorization do
     let(:project_ids) { [project_1.id, project_2.id, project_3.id] }
 
     before do
-      stub_const("#{described_class.name}::BATCH_SIZE", per_batch_size)
+      # Configure as if a replica database is enabled
+      allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(false)
       stub_feature_flags(enable_minor_delay_during_project_authorizations_refresh: true)
     end
 
@@ -207,11 +235,9 @@ RSpec.describe ProjectAuthorization do
       create(:project_authorization, user: user, project: project_4)
     end
 
-    context 'when the total number of records to be removed is greater than the batch size' do
-      let(:per_batch_size) { 2 }
-
-      it 'removes the project authorizations of the specified users in the current project, with a delay between each batch' do
-        expect(described_class).to receive(:sleep).twice
+    shared_examples_for 'removes the project authorizations of the specified projects from the current user, without a delay between each batch' do
+      specify do
+        expect(described_class).not_to receive(:sleep)
 
         described_class.delete_all_in_batches_for_user(
           user: user,
@@ -223,11 +249,11 @@ RSpec.describe ProjectAuthorization do
       end
     end
 
-    context 'when the total number of records to be removed is less than the batch size' do
-      let(:per_batch_size) { 5 }
+    context 'when the total number of records to be removed is greater than the batch size' do
+      let(:per_batch_size) { 2 }
 
-      it 'removes the project authorizations of the specified users in the current project, without a delay between each batch' do
-        expect(described_class).not_to receive(:sleep)
+      it 'removes the project authorizations of the specified projects from the current user, with a delay between each batch' do
+        expect(described_class).to receive(:sleep).twice
 
         described_class.delete_all_in_batches_for_user(
           user: user,
@@ -237,6 +263,21 @@ RSpec.describe ProjectAuthorization do
 
         expect(user.project_authorizations.pluck(:project_id)).not_to include(*project_ids)
       end
+
+      context 'when the GitLab installation does not have a replica database configured' do
+        before do
+          # Configure as if a replica database is not enabled
+          allow(::Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(true)
+        end
+
+        it_behaves_like 'removes the project authorizations of the specified projects from the current user, without a delay between each batch'
+      end
+    end
+
+    context 'when the total number of records to be removed is less than the batch size' do
+      let(:per_batch_size) { 5 }
+
+      it_behaves_like 'removes the project authorizations of the specified projects from the current user, without a delay between each batch'
     end
   end
 end

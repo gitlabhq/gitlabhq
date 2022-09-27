@@ -147,6 +147,18 @@ RSpec.shared_examples 'User creates wiki page' do
       end
     end
 
+    it 'saves page content in local storage if the user navigates away', :js do
+      fill_in(:wiki_title, with: "Test title")
+      fill_in(:wiki_content, with: "This is a test")
+      fill_in(:wiki_message, with: "Test commit message")
+
+      refresh
+
+      expect(page).to have_field(:wiki_title, with: "Test title")
+      expect(page).to have_field(:wiki_content, with: "This is a test")
+      expect(page).to have_field(:wiki_message, with: "Test commit message")
+    end
+
     it 'creates a wiki page with Org markup', :aggregate_failures, :js do
       org_content = <<~ORG
         * Heading

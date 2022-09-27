@@ -169,6 +169,15 @@ describe('Release edit/new actions', () => {
       });
     });
 
+    describe('updateReleaseTagMessage', () => {
+      it(`commits ${types.UPDATE_RELEASE_TAG_MESSAGE} with the updated tag name`, () => {
+        const newMessage = 'updated-tag-message';
+        return testAction(actions.updateReleaseTagMessage, newMessage, state, [
+          { type: types.UPDATE_RELEASE_TAG_MESSAGE, payload: newMessage },
+        ]);
+      });
+    });
+
     describe('updateReleasedAt', () => {
       it(`commits ${types.UPDATE_RELEASED_AT} with the updated date`, () => {
         const newDate = new Date();

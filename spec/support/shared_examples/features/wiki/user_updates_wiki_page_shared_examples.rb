@@ -78,6 +78,18 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_content('My awesome wiki!')
     end
 
+    it 'saves page content in local storage if the user navigates away', :js do
+      fill_in(:wiki_title, with: "Test title")
+      fill_in(:wiki_content, with: "This is a test")
+      fill_in(:wiki_message, with: "Test commit message")
+
+      refresh
+
+      expect(page).to have_field(:wiki_title, with: "Test title")
+      expect(page).to have_field(:wiki_content, with: "This is a test")
+      expect(page).to have_field(:wiki_message, with: "Test commit message")
+    end
+
     it 'updates the commit message as the title is changed', :js do
       fill_in(:wiki_title, with: '& < > \ \ { } &')
 

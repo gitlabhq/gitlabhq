@@ -44,13 +44,6 @@ describe('WikiForm', () => {
     await nextTick();
   };
 
-  const dispatchBeforeUnload = () => {
-    const e = new Event('beforeunload');
-    jest.spyOn(e, 'preventDefault');
-    window.dispatchEvent(e);
-    return e;
-  };
-
   const pageInfoNew = {
     persisted: false,
     uploadsPath: '/project/path/-/wikis/attachments',
@@ -191,14 +184,6 @@ describe('WikiForm', () => {
     expect(wrapper.text()).toContain(text);
   });
 
-  it('starts with no unload warning', () => {
-    createWrapper();
-
-    const e = dispatchBeforeUnload();
-    expect(typeof e.returnValue).not.toBe('string');
-    expect(e.preventDefault).not.toHaveBeenCalled();
-  });
-
   it.each`
     persisted | titleHelpText                                                                                              | titleHelpLink
     ${true}   | ${'You can move this page by adding the path to the beginning of the title.'}                              | ${'/help/user/project/wiki/index#move-a-wiki-page'}
@@ -228,20 +213,9 @@ describe('WikiForm', () => {
       await findMarkdownEditor().vm.$emit('input', ' Lorem ipsum dolar sit! ');
     });
 
-    it('sets before unload warning', () => {
-      const e = dispatchBeforeUnload();
-
-      expect(e.preventDefault).toHaveBeenCalledTimes(1);
-    });
-
     describe('form submit', () => {
       beforeEach(async () => {
         await triggerFormSubmit();
-      });
-
-      it('when form submitted, unsets before unload warning', () => {
-        const e = dispatchBeforeUnload();
-        expect(e.preventDefault).not.toHaveBeenCalled();
       });
 
       it('triggers wiki format tracking event', () => {
@@ -339,11 +313,6 @@ describe('WikiForm', () => {
       beforeEach(async () => {
         findMarkdownEditor().vm.$emit('input', updatedMarkdown);
         await triggerFormSubmit();
-      });
-
-      it('unsets before unload warning on form submit', async () => {
-        const e = dispatchBeforeUnload();
-        expect(e.preventDefault).not.toHaveBeenCalled();
       });
 
       it('triggers tracking events on form submit', async () => {

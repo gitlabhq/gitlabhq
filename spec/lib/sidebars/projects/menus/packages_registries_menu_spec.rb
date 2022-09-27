@@ -166,6 +166,15 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
           is_expected.not_to be_nil
         end
       end
+
+      context 'when config harbor registry setting is not activated' do
+        it 'does not add the menu item to the list' do
+          stub_feature_flags(harbor_registry_integration: true)
+          project.harbor_integration.update!(active: false)
+
+          is_expected.to be_nil
+        end
+      end
     end
   end
 end

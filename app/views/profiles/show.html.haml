@@ -137,7 +137,7 @@
   .row.js-hide-when-nothing-matches-search
     .col-lg-12
       %hr
-      = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3 js-password-prompt-btn'
+      = f.submit s_("Profiles|Update profile settings"), class: 'gl-mr-3 js-password-prompt-btn', pajamas_button: true
       = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
 
 #password-prompt-modal

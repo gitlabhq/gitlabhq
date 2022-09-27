@@ -2668,6 +2668,7 @@ RSpec.describe Ci::Build do
           { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true },
           { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
+          { key: 'CI_JOB_NAME_SLUG', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI_BUILD_NAME', value: 'test', public: true, masked: false },

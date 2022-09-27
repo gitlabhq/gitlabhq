@@ -332,6 +332,7 @@ describe('Release edit/new getters', () => {
     it('returns all the data needed for the releaseCreate GraphQL query', () => {
       const state = {
         createFrom: 'main',
+        release: { tagMessage: 'hello' },
       };
 
       const otherGetters = {
@@ -352,6 +353,7 @@ describe('Release edit/new getters', () => {
       const expectedVariables = {
         input: {
           name: 'release.name',
+          tagMessage: 'hello',
           ref: 'main',
           assets: {
             links: [

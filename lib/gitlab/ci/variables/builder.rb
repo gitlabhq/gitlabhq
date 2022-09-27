@@ -118,6 +118,7 @@ module Gitlab
         def predefined_variables(job)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job.name)
+            variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job))
             variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job.trigger_request
@@ -143,6 +144,10 @@ module Gitlab
 
             Gitlab::Ci::Variables::Collection.new(variables)
           end
+        end
+
+        def job_name_slug(job)
+          job.name && Gitlab::Utils.slugify(job.name)
         end
 
         def ci_node_total_value(job)

@@ -379,6 +379,8 @@
   - 5
 - - process_commit
   - 3
+- - product_analytics_initialize_analytics
+  - 1
 - - project_cache
   - 1
 - - project_destroy

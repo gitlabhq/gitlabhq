@@ -6039,6 +6039,9 @@ msgstr ""
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
+msgid "Beta"
+msgstr ""
+
 msgid "Bi-weekly code coverage"
 msgstr ""
 
@@ -11160,6 +11163,12 @@ msgid "Create your group"
 msgstr ""
 
 msgid "Create, update, or delete a merge request."
+msgstr ""
+
+msgid "CreateGitTag|Add a message to the tag. Leaving this blank creates a %{linkStart}lightweight tag%{linkEnd}."
+msgstr ""
+
+msgid "CreateGitTag|Set tag message"
 msgstr ""
 
 msgid "CreateGroup|You don’t have permission to create a subgroup in this group."
@@ -31375,6 +31384,9 @@ msgstr ""
 msgid "ProjectSettings|Enable merged results pipelines"
 msgstr ""
 
+msgid "ProjectSettings|Enable suggested reviewers"
+msgstr ""
+
 msgid "ProjectSettings|Encourage"
 msgstr ""
 
@@ -38799,6 +38811,15 @@ msgid "SuggestedColors|Rose red"
 msgstr ""
 
 msgid "SuggestedColors|Titanium yellow"
+msgstr ""
+
+msgid "SuggestedReviewers|Get suggestions for reviewers based on GitLab's machine learning tool."
+msgstr ""
+
+msgid "SuggestedReviewers|Suggested reviewers"
+msgstr ""
+
+msgid "SuggestedReviewers|Suggestions appear in the Reviewer section of the right sidebar"
 msgstr ""
 
 msgid "Suggestion is not applicable as the suggestion was not found."

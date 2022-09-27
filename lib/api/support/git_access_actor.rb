@@ -57,3 +57,5 @@ module API
     end
   end
 end
+
+API::Support::GitAccessActor.prepend_mod_with('API::Support::GitAccessActor')

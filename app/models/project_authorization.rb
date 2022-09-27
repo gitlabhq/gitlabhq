@@ -2,6 +2,8 @@
 
 class ProjectAuthorization < ApplicationRecord
   BATCH_SIZE = 1000
+  SLEEP_DELAY = 0.1
+
   extend SuppressCompositePrimaryKeyWarning
   include FromUnion
 
@@ -55,12 +57,16 @@ class ProjectAuthorization < ApplicationRecord
   end
 
   private_class_method def self.add_delay_between_batches?(entire_size:, batch_size:)
+    # The reason for adding a delay is to give the replica database enough time to
+    # catch up with the primary when large batches of records are being added/removed.
+    # Hance, we add a delay only if the GitLab installation has a replica database configured.
     entire_size > batch_size &&
+      !::Gitlab::Database::LoadBalancing.primary_only? &&
       Feature.enabled?(:enable_minor_delay_during_project_authorizations_refresh)
   end
 
   private_class_method def self.perform_delay
-    sleep(0.1)
+    sleep(SLEEP_DELAY)
   end
 end
 

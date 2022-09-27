@@ -35,6 +35,34 @@ RSpec.shared_examples 'edits content using the content editor' do
     attach_file('content_editor_image', Rails.root.join('spec', 'fixtures', fixture_name), make_visible: true)
   end
 
+  def wait_until_hidden_field_is_updated(value)
+    expect(page).to have_field('wiki[content]', with: value, type: 'hidden')
+  end
+
+  it 'saves page content in local storage if the user navigates away' do
+    switch_to_content_editor
+
+    expect(page).to have_css(content_editor_testid)
+
+    type_in_content_editor ' Typing text in the content editor'
+
+    wait_until_hidden_field_is_updated /Typing text in the content editor/
+
+    refresh
+
+    expect(page).to have_text('Typing text in the content editor')
+
+    refresh # also retained after second refresh
+
+    expect(page).to have_text('Typing text in the content editor')
+
+    click_link 'Cancel' # draft is deleted on cancel
+
+    page.go_back
+
+    expect(page).not_to have_text('Typing text in the content editor')
+  end
+
   describe 'formatting bubble menu' do
     it 'shows a formatting bubble menu for a regular paragraph and headings' do
       switch_to_content_editor

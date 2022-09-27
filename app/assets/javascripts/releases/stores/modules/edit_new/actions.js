@@ -57,6 +57,9 @@ export const fetchRelease = async ({ commit, state }) => {
 export const updateReleaseTagName = ({ commit }, tagName) =>
   commit(types.UPDATE_RELEASE_TAG_NAME, tagName);
 
+export const updateReleaseTagMessage = ({ commit }, tagMessage) =>
+  commit(types.UPDATE_RELEASE_TAG_MESSAGE, tagMessage);
+
 export const updateCreateFrom = ({ commit }, createFrom) =>
   commit(types.UPDATE_CREATE_FROM, createFrom);
 

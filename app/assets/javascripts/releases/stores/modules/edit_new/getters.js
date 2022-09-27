@@ -145,6 +145,7 @@ export const releaseCreateMutatationVariables = (state, getters) => {
     input: {
       ...getters.releaseUpdateMutatationVariables.input,
       ref: state.createFrom,
+      tagMessage: state.release.tagMessage,
       assets: {
         links: getters.releaseLinksToCreate.map(({ name, url, linkType }) => ({
           name: name.trim(),

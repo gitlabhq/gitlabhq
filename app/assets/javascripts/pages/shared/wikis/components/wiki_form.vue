@@ -9,6 +9,7 @@ import {
   GlFormInput,
   GlFormSelect,
 } from '@gitlab/ui';
+import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
@@ -32,6 +33,29 @@ const MARKDOWN_LINK_TEXT = {
   asciidoc: 'link:page-slug[Link title]',
   org: '[[page-slug]]',
 };
+
+function getPagePath(pageInfo) {
+  return pageInfo.persisted ? pageInfo.path : pageInfo.createPath;
+}
+
+const autosaveKey = (pageInfo, field) => {
+  const path = pageInfo.persisted ? pageInfo.path : pageInfo.createPath;
+
+  return `${path}/${field}`;
+};
+
+const titleAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'title');
+const formatAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'format');
+const contentAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'content');
+const commitAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'commit');
+
+const getTitle = (pageInfo) => getDraft(titleAutosaveKey(pageInfo)) || pageInfo.title?.trim() || '';
+const getFormat = (pageInfo) =>
+  getDraft(formatAutosaveKey(pageInfo)) || pageInfo.format || 'markdown';
+const getContent = (pageInfo) => getDraft(contentAutosaveKey(pageInfo)) || pageInfo.content || '';
+const getCommitMessage = (pageInfo) =>
+  getDraft(commitAutosaveKey(pageInfo)) || pageInfo.commitMessage || '';
+const getIsFormDirty = (pageInfo) => Boolean(getDraft(titleAutosaveKey(pageInfo)));
 
 export default {
   i18n: {
@@ -87,13 +111,14 @@ export default {
   data() {
     return {
       editingMode: 'source',
-      title: this.pageInfo.title?.trim() || '',
-      format: this.pageInfo.format || 'markdown',
-      content: this.pageInfo.content || '',
-      commitMessage: '',
-      isDirty: false,
+      title: getTitle(this.pageInfo),
+      format: getFormat(this.pageInfo),
+      content: getContent(this.pageInfo),
+      commitMessage: getCommitMessage(this.pageInfo),
       contentEditorEmpty: false,
       isContentEditorActive: false,
+      switchEditingControlDisabled: false,
+      isFormDirty: getIsFormDirty(this.pageInfo),
     };
   },
   computed: {
@@ -104,7 +129,7 @@ export default {
       return csrf.token;
     },
     formAction() {
-      return this.pageInfo.persisted ? this.pageInfo.path : this.pageInfo.createPath;
+      return getPagePath(this.pageInfo);
     },
     helpPath() {
       return setUrlFragment(
@@ -151,7 +176,7 @@ export default {
     },
   },
   mounted() {
-    this.updateCommitMessage();
+    if (!this.commitMessage) this.updateCommitMessage();
 
     window.addEventListener('beforeunload', this.onPageUnload);
   },
@@ -160,6 +185,8 @@ export default {
   },
   methods: {
     async handleFormSubmit(e) {
+      this.isFormDirty = false;
+
       e.preventDefault();
 
       this.trackFormSubmit();
@@ -169,18 +196,33 @@ export default {
       await this.$nextTick();
 
       e.target.submit();
-
-      this.isDirty = false;
     },
 
-    onPageUnload(event) {
-      if (!this.isDirty) return undefined;
+    updateDrafts() {
+      updateDraft(titleAutosaveKey(this.pageInfo), this.title);
+      updateDraft(formatAutosaveKey(this.pageInfo), this.format);
+      updateDraft(contentAutosaveKey(this.pageInfo), this.content);
+      updateDraft(commitAutosaveKey(this.pageInfo), this.commitMessage);
+    },
 
-      event.preventDefault();
+    clearDrafts() {
+      clearDraft(titleAutosaveKey(this.pageInfo));
+      clearDraft(formatAutosaveKey(this.pageInfo));
+      clearDraft(contentAutosaveKey(this.pageInfo));
+      clearDraft(commitAutosaveKey(this.pageInfo));
+    },
 
-      // eslint-disable-next-line no-param-reassign
-      event.returnValue = '';
-      return '';
+    handleContentEditorChange({ empty, markdown }) {
+      this.contentEditorEmpty = empty;
+      this.content = markdown;
+    },
+
+    onPageUnload() {
+      if (this.isFormDirty) {
+        this.updateDrafts();
+      } else {
+        this.clearDrafts();
+      }
     },
 
     updateCommitMessage() {
@@ -222,10 +264,6 @@ export default {
     trackContentEditorLoaded() {
       this.track(CONTENT_EDITOR_LOADED_ACTION);
     },
-
-    checkDirty(markdown) {
-      this.isDirty = this.pageInfo.content !== markdown;
-    },
   },
 };
 </script>
@@ -236,6 +274,7 @@ export default {
     method="post"
     class="wiki-form common-note-form gl-mt-3 js-quick-submit"
     @submit="handleFormSubmit"
+    @input="isFormDirty = true"
   >
     <input :value="csrfToken" type="hidden" name="authenticity_token" />
     <input v-if="pageInfo.persisted" type="hidden" name="_method" value="put" />
@@ -306,7 +345,6 @@ export default {
             form-field-name="wiki[content]"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
-            @input="checkDirty"
           />
           <div class="form-text gl-text-gray-600">
             <gl-sprintf
@@ -358,9 +396,14 @@ export default {
         :disabled="disableSubmitButton"
         >{{ submitButtonText }}</gl-button
       >
-      <gl-button data-testid="wiki-cancel-button" :href="cancelFormPath" class="float-right">{{
-        $options.i18n.cancel
-      }}</gl-button>
+      <gl-button
+        data-testid="wiki-cancel-button"
+        :href="cancelFormPath"
+        class="float-right"
+        @click="isFormDirty = false"
+      >
+        {{ $options.i18n.cancel }}</gl-button
+      >
     </div>
   </gl-form>
 </template>

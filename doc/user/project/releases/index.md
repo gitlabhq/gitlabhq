@@ -77,12 +77,14 @@ To create a release in the Releases page:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases** and select **New release**.
-1. From the [**Tag name**](release_fields.md#tag-name) dropdown, either:
+1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
      results in a validation error.
    - Enter a new Git tag name.
-      1. From the **Create from** dropdown, select a branch or commit SHA to use when creating the
-         new tag.
+     1. From the **Create from** dropdown list, select a branch or commit SHA to use when
+        creating the new tag.
+     1. Optional. In the **Set tag message** text box, enter a message to create an
+        [annotated tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging#_annotated_tags).
 1. Optional. Enter additional information about the release, including:
    - [Title](release_fields.md#title).
    - [Milestones](#associate-milestones-with-a-release).
