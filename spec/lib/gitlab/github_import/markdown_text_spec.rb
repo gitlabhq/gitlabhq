@@ -70,7 +70,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText do
     let(:doc_extension) { described_class::DOC_TYPES.sample }
     let(:doc_attachment) do
       "[some-doc](https://github.com/nickname/public-test-repo/"\
-      "files/9020437/git-cheat-sheet.#{doc_extension})"
+      "files/9020437/sample.#{doc_extension})"
     end
 
     let(:text) do

@@ -358,6 +358,10 @@ analyzer to use the latest available schemas.
 After the deprecation period for a schema version, the file is removed from GitLab. Reports that
 declare removed versions are rejected, and an error message displays on the corresponding pipeline.
 
+If a report uses a `PATCH` version that doesn't match any vendored schema version, it is validated against
+the latest vendored `PATCH` version. For example, if a report version is 14.0.23 and the latest vendored
+version is 14.0.6, the report is validated against version 14.0.6.
+
 GitLab uses the
 [`json_schemer`](https://www.rubydoc.info/gems/json_schemer) gem to perform validation.
 

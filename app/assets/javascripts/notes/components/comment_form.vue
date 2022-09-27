@@ -5,7 +5,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { badgeState } from '~/issuable/components/status_box.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
@@ -276,7 +276,7 @@ export default {
         .then(() => badgeState.updateStatus && badgeState.updateStatus())
         .then(refreshUserMergeRequestCounts)
         .catch(() =>
-          createFlash({
+          createAlert({
             message: constants.toggleStateErrorMessage[this.noteableType][this.openState],
           }),
         );

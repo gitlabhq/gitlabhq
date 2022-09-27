@@ -1,10 +1,12 @@
-.yarn-install: &yarn-install
-  - source scripts/utils.sh
-  - run_timed_command "retry yarn install --frozen-lockfile"
+.yarn-install:
+  script:
+    - source scripts/utils.sh
+    - run_timed_command "retry yarn install --frozen-lockfile"
 
-.storybook-yarn-install: &storybook-yarn-install
-  - source scripts/utils.sh
-  - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
+.storybook-yarn-install:
+  script:
+    - source scripts/utils.sh
+    - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
 
 .compile-assets-base:
   extends:
@@ -21,8 +23,17 @@
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
   script:
-    - *yarn-install
-    - run_timed_command "bin/rake gitlab:assets:compile"
+    - !reference [.yarn-install, script]
+    - |
+      # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
+      if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
+        export GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum | tee assets-hash.txt)
+        source scripts/gitlab_component_helpers.sh
+        run_timed_command "download_and_extract_gitlab_assets" || true
+        run_timed_command "bin/rake gitlab:assets:compile_with_new_strategy"
+      else
+        run_timed_command "bin/rake gitlab:assets:compile"
+      fi
     - run_timed_command "scripts/clean-old-cached-assets"
 
 compile-production-assets:
@@ -42,8 +53,6 @@ compile-production-assets:
       - public/assets/
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
-  before_script:
-    - !reference [.default-before_script, before_script]
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
@@ -88,7 +97,7 @@ update-yarn-cache:
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - *yarn-install
+    - !reference [.yarn-install, script]
 
 update-storybook-yarn-cache:
   extends:
@@ -97,7 +106,7 @@ update-storybook-yarn-cache:
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - *storybook-yarn-install
+    - !reference [.storybook-yarn-install, script]
 
 .frontend-fixtures-base:
   extends:
@@ -180,7 +189,7 @@ graphql-schema-dump as-if-foss:
     SETUP_DB: "false"
   before_script:
     - !reference [.default-before_script, before_script]
-    - *yarn-install
+    - !reference [.yarn-install, script]
   stage: test
 
 .jest-base:
@@ -256,7 +265,7 @@ coverage-frontend:
       optional: true
   stage: post-test
   before_script:
-    - *yarn-install
+    - !reference [.yarn-install, script]
   script:
     - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
     # Removing the individual coverage results, as we just merged them.
@@ -282,7 +291,7 @@ coverage-frontend:
   stage: test
   dependencies: []
   script:
-    - *yarn-install
+    - !reference [.yarn-install, script]
     - run_timed_command "retry yarn run webpack-prod"
 
 qa-frontend-node:14:
@@ -310,7 +319,7 @@ webpack-dev-server:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"
   script:
-    - *yarn-install
+    - !reference [.yarn-install, script]
     - run_timed_command "retry yarn webpack-vendor"
     - run_timed_command "node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js"
   artifacts:
@@ -328,7 +337,7 @@ bundle-size-review:
   stage: test
   needs: []
   script:
-    - *yarn-install
+    - !reference [.yarn-install, script]
     - scripts/bundle_size_review
   artifacts:
     when: always
@@ -366,7 +375,7 @@ startup-css-check as-if-foss:
     - .frontend-test-base
     - .storybook-yarn-cache
   script:
-    - *storybook-yarn-install
+    - !reference [.storybook-yarn-install, script]
     - yarn run storybook:build
   needs: ["graphql-schema-dump"]
 

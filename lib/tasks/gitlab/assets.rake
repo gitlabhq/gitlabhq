@@ -5,28 +5,37 @@ require 'fileutils'
 module Tasks
   module Gitlab
     module Assets
-      FOSS_ASSET_FOLDERS = %w[app/assets fixtures/emojis vendor/assets/javascripts].freeze
+      FOSS_ASSET_FOLDERS = %w[app/assets fixtures/emojis vendor/assets].freeze
       EE_ASSET_FOLDERS = %w[ee/app/assets].freeze
       JH_ASSET_FOLDERS = %w[jh/app/assets].freeze
-      JS_ASSET_PATTERNS = %w[*.js config/**/*.js].freeze
-      JS_ASSET_FILES = %w[package.json yarn.lock].freeze
+      # In the new caching strategy, we check the assets hash sum *before* compiling
+      # the app/assets/javascripts/locale/**/app.js files. That means the hash sum
+      # must depend on locale/**/gitlab.po.
+      JS_ASSET_PATTERNS = %w[*.js config/**/*.js locale/**/gitlab.po].freeze
+      JS_ASSET_FILES = %w[
+        package.json
+        yarn.lock
+        babel.config.js
+        config/webpack.config.js
+      ].freeze
+      EXCLUDE_PATTERNS = %w[
+        app/assets/javascripts/locale/**/app.js
+      ].freeze
       MASTER_SHA256_HASH_FILE = 'master-assets-hash.txt'
       HEAD_SHA256_HASH_FILE = 'assets-hash.txt'
-      PUBLIC_ASSETS_WEBPACK_DIR = 'public/assets/webpack'
+      PUBLIC_ASSETS_DIR = 'public/assets'
 
-      def self.sha256_of_assets_impacting_webpack_compilation
+      def self.sha256_of_assets_impacting_compilation(verbose: true)
         start_time = Time.now
-        asset_files = assets_impacting_webpack_compilation
-        puts "Generating the SHA256 hash for #{assets_impacting_webpack_compilation.size} Webpack-related assets..."
+        asset_files = assets_impacting_compilation
+        puts "Generating the SHA256 hash for #{asset_files.size} Webpack-related assets..." if verbose
 
-        asset_file_sha256s = asset_files.map do |asset_file|
-          Digest::SHA256.file(asset_file).hexdigest
-        end
+        assets_sha256 = asset_files.map { |asset_file| Digest::SHA256.file(asset_file).hexdigest }.join
 
-        Digest::SHA256.hexdigest(asset_file_sha256s.join).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" }
+        Digest::SHA256.hexdigest(assets_sha256).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose }
       end
 
-      def self.assets_impacting_webpack_compilation
+      def self.assets_impacting_compilation
         assets_folders = FOSS_ASSET_FOLDERS
         assets_folders += EE_ASSET_FOLDERS if ::Gitlab.ee?
         assets_folders += JH_ASSET_FOLDERS if ::Gitlab.jh?
@@ -38,32 +47,35 @@ module Tasks
           asset_files.concat(Dir.glob(["#{folder}/**/*.*"]))
         end
 
-        asset_files
+        asset_files - Dir.glob(EXCLUDE_PATTERNS)
       end
-
-      private_class_method :assets_impacting_webpack_compilation
+      private_class_method :assets_impacting_compilation
     end
   end
 end
 
 namespace :gitlab do
   namespace :assets do
+    desc 'GitLab | Assets | Return the hash sum of all frontend assets'
+    task :hash_sum do
+      head_assets_sha256 = Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
+      puts head_assets_sha256
+    end
+
     desc 'GitLab | Assets | Compile all frontend assets'
     task :compile do
       require_dependency 'gitlab/task_helpers'
 
       %w[
-        yarn:check
-        gettext:po_to_json
-        rake:assets:precompile
-        gitlab:assets:compile_webpack_if_needed
+        gitlab:assets:compile_if_needed_with_old_strategy
         gitlab:assets:fix_urls
         gitlab:assets:check_page_bundle_mixins_css_for_sideeffects
       ].each(&::Gitlab::TaskHelpers.method(:invoke_and_time_task))
     end
 
-    desc 'GitLab | Assets | Compile all Webpack assets'
-    task :compile_webpack_if_needed do
+    desc 'GitLab | Assets | Compile all assets'
+    task :compile_if_needed_with_old_strategy do
+      # The hash file is stored as assets-hash.txt in the cache, so we rename it before generating the one for HEAD.
       FileUtils.mv(Tasks::Gitlab::Assets::HEAD_SHA256_HASH_FILE, Tasks::Gitlab::Assets::MASTER_SHA256_HASH_FILE, force: true)
 
       master_assets_sha256 =
@@ -73,17 +85,20 @@ namespace :gitlab do
           'missing!'
         end
 
-      head_assets_sha256 = Tasks::Gitlab::Assets.sha256_of_assets_impacting_webpack_compilation.tap do |sha256|
+      head_assets_sha256 = Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation.tap do |sha256|
         File.write(Tasks::Gitlab::Assets::HEAD_SHA256_HASH_FILE, sha256)
       end
 
-      puts "Webpack assets SHA256 for `master`: #{master_assets_sha256}"
-      puts "Webpack assets SHA256 for `HEAD`: #{head_assets_sha256}"
+      puts "Assets SHA256 for `master`: #{master_assets_sha256}"
+      puts "Assets SHA256 for `HEAD`: #{head_assets_sha256}"
 
-      public_assets_webpack_dir_exists = Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR)
+      public_assets_dir_exists = Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR)
 
-      if head_assets_sha256 != master_assets_sha256 || !public_assets_webpack_dir_exists
-        FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR) if public_assets_webpack_dir_exists
+      if head_assets_sha256 != master_assets_sha256 || !public_assets_dir_exists
+        FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR) if public_assets_dir_exists
+
+        Gitlab::TaskHelpers.invoke_and_time_task('gettext:po_to_json')
+        Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
 
@@ -96,6 +111,31 @@ namespace :gitlab do
 
         puts "Written webpack stdout log to #{log_path}" if log_path
         puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
+      end
+    end
+
+    # With this new strategy, we don't have to run `gettext:po_to_json` prior to check the assets hash sum
+    desc 'GitLab | Assets | Compile all frontend assets'
+    task :compile_with_new_strategy do
+      require_dependency 'gitlab/task_helpers'
+
+      %w[
+        gitlab:assets:compile_if_needed_with_new_strategy
+        gitlab:assets:check_page_bundle_mixins_css_for_sideeffects
+      ].each(&::Gitlab::TaskHelpers.method(:invoke_and_time_task))
+    end
+
+    desc 'GitLab | Assets | Compile all assets'
+    task :compile_if_needed_with_new_strategy do
+      unless Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR)
+        Gitlab::TaskHelpers.invoke_and_time_task('gettext:po_to_json')
+        Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
+
+        unless system('yarn webpack')
+          abort 'Error: Unable to compile webpack production bundle.'.color(:red)
+        end
+
+        Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
       end
     end
 

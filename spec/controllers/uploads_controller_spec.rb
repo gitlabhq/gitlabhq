@@ -216,7 +216,7 @@ RSpec.describe UploadsController do
       end
 
       context 'for PDF files' do
-        let(:filename) { 'git-cheat-sheet.pdf' }
+        let(:filename) { 'sample.pdf' }
         let(:expected_disposition) { 'inline;' }
         let(:note) { create(:note, :with_pdf_attachment, project: project) }
 

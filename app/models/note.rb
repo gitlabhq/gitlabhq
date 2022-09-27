@@ -693,7 +693,7 @@ class Note < ApplicationRecord
   # Method necesary while we transition into the new format for task system notes
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/369923
   def note
-    return super unless system? && for_issue? && super.match?(ISSUE_TASK_SYSTEM_NOTE_PATTERN)
+    return super unless system? && for_issue? && super&.match?(ISSUE_TASK_SYSTEM_NOTE_PATTERN)
 
     super.sub!('task', 'checklist item')
   end
@@ -701,7 +701,7 @@ class Note < ApplicationRecord
   # Method necesary while we transition into the new format for task system notes
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/369923
   def note_html
-    return super unless system? && for_issue? && super.match?(ISSUE_TASK_SYSTEM_NOTE_PATTERN)
+    return super unless system? && for_issue? && super&.match?(ISSUE_TASK_SYSTEM_NOTE_PATTERN)
 
     super.sub!('task', 'checklist item')
   end

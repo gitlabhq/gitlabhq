@@ -585,30 +585,30 @@
       }
     },
     "globalVariables": {
-      "markdownDescription": "Defines environment variables globally. Job level property overrides global variables. If a job sets `variables: {}`, all global variables are turned off. You can use the value and description keywords to define variables that are prefilled when running a pipeline manually. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
-      "anyOf": [
-        {"type": "object"},
-        {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      ],
-      "additionalProperties": {
-        "anyOf": [
-          {"type": ["string", "integer", "array"]},
-          {
-            "type": "object",
-            "properties": {
-              "value": { "type": "string" },
-              "description": {
-                "type": "string",
-                "description": "Explains what the variable is used for, what the acceptable values are."
-              }
+      "markdownDescription": "Defines default variables for all jobs. Job level property overrides global variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "oneOf": [
+            {
+              "type": ["string", "number"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "markdownDescription": "Explains what the variable is used for, what the acceptable values are. Variables with `description` are prefilled when running a pipeline manually. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variablesdescription)."
+                }
+              },
+              "additionalProperties": false
             }
-          }
-        ]
+          ]
+        },
+        "additionalProperties": false
       }
     },
     "if": {
@@ -652,21 +652,14 @@
       }
     },
     "variables": {
-      "markdownDescription": "Defines environment variables for specific jobs. Job level property overrides global variables. If a job sets `variables: {}`, all global variables are turned off. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesvariables).",
-      "anyOf": [
-        {
-          "type": "object",
-          "additionalProperties": {
-            "type": ["string", "integer", "array"]
-          }
+      "markdownDescription": "Defines environment variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": ["string", "number"]
         },
-        {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      ]
+        "additionalProperties": false
+      }
     },
     "timeout": {
       "type": "string",

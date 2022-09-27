@@ -114,6 +114,10 @@ class Packages::Package < ApplicationRecord
     )
   end
 
+  scope :with_case_insensitive_version, ->(version) do
+    where('LOWER(version) = ?', version.downcase)
+  end
+
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }

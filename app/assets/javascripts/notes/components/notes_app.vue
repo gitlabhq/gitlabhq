@@ -1,7 +1,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
@@ -221,7 +221,7 @@ export default {
         .catch(() => {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
-          createFlash({
+          createAlert({
             message: __('Something went wrong while fetching comments. Please try again.'),
           });
         });

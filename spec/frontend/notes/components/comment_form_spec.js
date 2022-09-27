@@ -7,7 +7,7 @@ import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import CommentForm from '~/notes/components/comment_form.vue';
 import CommentTypeDropdown from '~/notes/components/comment_type_dropdown.vue';
@@ -490,7 +490,7 @@ describe('issue_comment_form component', () => {
               await nextTick();
               await nextTick();
 
-              expect(createFlash).toHaveBeenCalledWith({
+              expect(createAlert).toHaveBeenCalledWith({
                 message: `Something went wrong while closing the ${type}. Please try again later.`,
               });
             });
@@ -526,7 +526,7 @@ describe('issue_comment_form component', () => {
             await nextTick();
             await nextTick();
 
-            expect(createFlash).toHaveBeenCalledWith({
+            expect(createAlert).toHaveBeenCalledWith({
               message: `Something went wrong while reopening the ${type}. Please try again later.`,
             });
           });

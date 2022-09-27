@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
 export default {
@@ -46,7 +46,7 @@ export default {
           this.isResolving = false;
 
           const msg = __('Something went wrong while resolving this discussion. Please try again.');
-          createFlash({
+          createAlert({
             message: msg,
             parent: this.$el,
           });

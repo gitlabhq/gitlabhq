@@ -1,0 +1,8 @@
+variables:
+  TEST_VAR: "hello world!"
+  123456: "123456"
+  FOO:
+    value: "BAR"
+    description: "A single value variable"
+  DEPLOY_ENVIRONMENT:
+    description: "A multi-value variable"

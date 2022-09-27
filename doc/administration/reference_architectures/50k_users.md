@@ -17,6 +17,7 @@ full list of reference architectures, see
 > - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
 >   - **Test requests per second (RPS) rates:** API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/50k)**
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
 
 | Service                                  | Nodes | Configuration           | GCP              | AWS           | Azure     |
 |------------------------------------------|-------|-------------------------|------------------|---------------|-----------|

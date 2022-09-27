@@ -29,12 +29,14 @@ import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
 import RulesYaml from './yaml_tests/positive_tests/rules.yml';
+import VariablesYaml from './yaml_tests/positive_tests/variables.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
 import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
+import VariablesNegativeYaml from './yaml_tests/negative_tests/variables.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -67,6 +69,7 @@ describe('positive tests', () => {
       FilterYaml,
       IncludeYaml,
       RulesYaml,
+      VariablesYaml,
     }),
   )('schema validates %s', (_, input) => {
     expect(input).toValidateJsonSchema(schema);
@@ -90,6 +93,7 @@ describe('negative tests', () => {
       CacheNegativeYaml,
       IncludeNegativeYaml,
       RulesNegativeYaml,
+      VariablesNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     expect(input).not.toValidateJsonSchema(schema);

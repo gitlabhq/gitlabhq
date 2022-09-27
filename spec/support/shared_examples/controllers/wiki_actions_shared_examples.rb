@@ -288,7 +288,7 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when page is a file' do
       include WikiHelpers
 
-      where(:file_name) { ['dk.png', 'unsanitized.svg', 'git-cheat-sheet.pdf'] }
+      where(:file_name) { ['dk.png', 'unsanitized.svg', 'sample.pdf'] }
 
       with_them do
         let(:id) { upload_file_to_wiki(wiki, user, file_name) }

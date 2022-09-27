@@ -904,6 +904,14 @@ RSpec.describe Packages::Package, type: :model do
       it { is_expected.to match_array([pypi_package]) }
     end
 
+    describe '.with_case_insensitive_version' do
+      let_it_be(:nuget_package) { create(:nuget_package, version: '1.0.0-ABC') }
+
+      subject { described_class.with_case_insensitive_version('1.0.0-abC') }
+
+      it { is_expected.to match_array([nuget_package]) }
+    end
+
     context 'status scopes' do
       let_it_be(:default_package) { create(:maven_package, :default) }
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }

@@ -5,7 +5,7 @@ import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -270,7 +270,7 @@ export default {
             this.isDeleting = false;
           })
           .catch(() => {
-            createFlash({
+            createAlert({
               message: __('Something went wrong while deleting your note. Please try again.'),
             });
             this.isDeleting = false;
@@ -349,7 +349,7 @@ export default {
     },
     handleUpdateError() {
       const msg = __('Something went wrong while editing your comment. Please try again.');
-      createFlash({
+      createAlert({
         message: msg,
         parent: this.$el,
       });

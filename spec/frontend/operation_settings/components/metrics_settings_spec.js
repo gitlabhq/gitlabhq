@@ -2,7 +2,7 @@ import { GlButton, GlLink, GlFormGroup, GlFormInput, GlFormSelect } from '@gitla
 import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import { timezones } from '~/monitoring/format_date';
@@ -52,7 +52,7 @@ describe('operation settings external dashboard component', () => {
     }
     axios.patch.mockReset();
     refreshCurrentPage.mockReset();
-    createFlash.mockReset();
+    createAlert.mockReset();
   });
 
   it('renders header text', () => {
@@ -208,7 +208,7 @@ describe('operation settings external dashboard component', () => {
 
         await nextTick();
         await jest.runAllTicks();
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: `There was an error saving your changes. ${message}`,
         });
       });

@@ -12,7 +12,7 @@ full list of reference architectures, see
 
 If you are serving up to 1,000 users and you don't have strict availability
 requirements, a single-node solution with
-[frequent backups](index.md#automated-backups) is appropriate for
+[frequent backups](index.md#backups) is appropriate for
 many organizations.
 
 > - **Supported users (approximate):** 1,000
@@ -24,6 +24,7 @@ many organizations.
 > - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
 >   - **Test requests per second (RPS) rates:** API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k)**
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
 
 | Users        | Configuration           | GCP            | AWS          | Azure    |
 |--------------|-------------------------|----------------|--------------|----------|

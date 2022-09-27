@@ -249,8 +249,21 @@
   - "babel.config.js"
   - "config/webpack.config.js"
   - "config/**/*.js"
-  - "vendor/assets/**/*"
   - "{,ee/,jh/}app/assets/**/*"
+  - "vendor/assets/**/*"
+
+# This list should match the list in Tasks::Gitlab::Assets.assets_impacting_compilation
+.assets-compilation-patterns: &assets-compilation-patterns
+  - "{package.json,yarn.lock}"
+  - ".browserslistrc"
+  - "babel.config.js"
+  - "config/webpack.config.js"
+  - "*.js"
+  - "config/**/*.js"
+  - "locale/**/gitlab.po"
+  - "{,ee/,jh/}app/assets/**/*"
+  - "fixtures/emojis/**/*"
+  - "vendor/assets/**/*"
 
 .frontend-patterns-for-as-if-foss: &frontend-patterns-for-as-if-foss
   - "{package.json,yarn.lock}"
@@ -652,6 +665,37 @@
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
 
+#################
+# Caching rules #
+#################
+.caching:rules:cache-workhorse:
+  rules:
+    - <<: *if-dot-com-ee-schedule
+    - <<: *if-dot-com-gitlab-org-default-branch
+      changes: ["workhorse/**/*"]
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - ".gitlab/ci/caching.gitlab-ci.yml"
+        - "scripts/gitlab_component_helpers.sh"
+      when: manual
+      allow_failure: true
+
+.caching:rules:cache-assets:
+  rules:
+    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
+    - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
+      when: never
+    - <<: *if-dot-com-ee-schedule
+    - <<: *if-dot-com-gitlab-org-default-branch
+      changes: *assets-compilation-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - ".gitlab/ci/caching.gitlab-ci.yml"
+        - "scripts/gitlab_component_helpers.sh"
+        - "lib/tasks/gitlab/assets.rake"
+      when: manual
+      allow_failure: true
+
 ######################
 # CI Templates Rules #
 ######################
@@ -969,16 +1013,6 @@
 ###############
 # Rails rules #
 ###############
-.rails:rules:build-components:
-  rules:
-    - <<: *if-dot-com-ee-schedule
-    - <<: *if-dot-com-gitlab-org-default-branch
-      changes:
-        - "workhorse/**/*"
-    - <<: *if-dot-com-gitlab-org-merge-request
-      when: manual
-      allow_failure: true
-
 .rails:rules:setup-test-env:
   rules:
     - changes: *setup-test-env-patterns

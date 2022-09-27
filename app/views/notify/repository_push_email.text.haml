@@ -13,7 +13,7 @@
     \- - - - -
   \
   \
-  #{pluralize @message.diffs_count, "changed file"}:
+  #{pluralize @message.diffs_count, 'changed file'}:
   \
   - @message.diffs.each do |diff_file|
     - if diff_file.deleted_file?

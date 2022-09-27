@@ -77,9 +77,9 @@ RSpec.shared_examples 'it uploads and commits a new pdf file' do |drop: false|
     end
 
     if drop
-      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'git-cheat-sheet.pdf'))
+      find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'sample.pdf'))
     else
-      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'git-cheat-sheet.pdf'), make_visible: true)
+      attach_file('upload_file', File.join(Rails.root, 'spec', 'fixtures', 'sample.pdf'), make_visible: true)
     end
 
     page.within('#modal-upload-blob') do
@@ -90,7 +90,7 @@ RSpec.shared_examples 'it uploads and commits a new pdf file' do |drop: false|
 
     wait_for_all_requests
 
-    visit(project_blob_path(project, 'upload_image/git-cheat-sheet.pdf'))
+    visit(project_blob_path(project, 'upload_image/sample.pdf'))
 
     expect(page).to have_css('.js-pdf-viewer')
   end

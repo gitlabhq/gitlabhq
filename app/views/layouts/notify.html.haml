@@ -24,7 +24,7 @@
           - if @reply_by_email
             = _('Reply to this email directly or %{view_it_on_gitlab}.').html_safe % { view_it_on_gitlab: link_to(_("view it on GitLab"), @target_url) }
           - else
-            #{link_to _("View it on GitLab"), @target_url}.
+            #{link_to _('View it on GitLab'), @target_url}.
           %br
           = notification_reason_text(reason: @reason, show_manage_notifications_link: !@labels_url, show_help_link: true, manage_label_subscriptions_url: @labels_url, unsubscribe_url: @unsubscribe_url, format: :html)
 

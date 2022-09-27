@@ -11,8 +11,6 @@ module Ci
         unlocked_pipeline_artifacts: 0
       }
 
-      unlock_pipeline_artifacts_enabled = ::Feature.enabled?(:ci_update_unlocked_pipeline_artifacts, ci_ref.project)
-
       if ::Feature.enabled?(:ci_update_unlocked_job_artifacts, ci_ref.project)
         loop do
           unlocked_pipelines = []
@@ -22,9 +20,7 @@ module Ci
             unlocked_pipelines = unlock_pipelines(ci_ref, before_pipeline)
             unlocked_job_artifacts = unlock_job_artifacts(unlocked_pipelines)
 
-            if unlock_pipeline_artifacts_enabled
-              results[:unlocked_pipeline_artifacts] += unlock_pipeline_artifacts(unlocked_pipelines)
-            end
+            results[:unlocked_pipeline_artifacts] += unlock_pipeline_artifacts(unlocked_pipelines)
           end
 
           break if unlocked_pipelines.empty?

@@ -1,0 +1,55 @@
+cache-workhorse:
+  extends:
+    - .default-retry
+    - .default-before_script
+    - .rails-cache
+    - .setup-test-env-cache
+    - .caching:rules:cache-workhorse
+  stage: prepare
+  variables:
+    SETUP_DB: "false"
+  script:
+    - source scripts/gitlab_component_helpers.sh
+    - 'gitlab_workhorse_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
+    - run_timed_command "scripts/setup-test-env"
+    - run_timed_command "select_gitlab_workhorse_essentials"
+    - run_timed_command "create_gitlab_workhorse_package"
+    - run_timed_command "upload_gitlab_workhorse_package"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
+
+.cache-assets-base:
+  extends:
+    - .compile-assets-base
+    - .caching:rules:cache-assets
+  stage: prepare
+  variables:
+    WEBPACK_REPORT: "false"
+  script:
+    - !reference [.yarn-install, script]
+    - export GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum | tee assets-hash.txt)
+    - source scripts/gitlab_component_helpers.sh
+    - 'gitlab_assets_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
+    # If we still use the legacy cache, we don't want to create a package from it as we don't check the sha sum in gitlab:assets:compile_with_new_strategy.
+    # This line can be removed once we stop downloading the legacy cache.
+    - rm -rf public/assets
+    - run_timed_command "bin/rake gitlab:assets:compile_with_new_strategy"
+    - run_timed_command "scripts/clean-old-cached-assets"
+    - run_timed_command "create_gitlab_assets_package"
+    - run_timed_command "upload_gitlab_assets_package"
+
+cache-assets:test:
+  extends: .cache-assets-base
+
+cache-assets:test as-if-foss:
+  extends:
+    - .cache-assets-base
+    - .as-if-foss
+
+cache-assets:production:
+  extends: .cache-assets-base
+  variables:
+    NODE_ENV: "production"
+    RAILS_ENV: "production"

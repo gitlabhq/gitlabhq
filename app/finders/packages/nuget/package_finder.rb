@@ -15,7 +15,7 @@ module Packages
         result = base.nuget
                      .has_version
                      .with_name_like(@params[:package_name])
-        result = result.with_version(@params[:package_version]) if @params[:package_version].present?
+        result = result.with_case_insensitive_version(@params[:package_version]) if @params[:package_version].present?
         result
       end
     end

@@ -27399,6 +27399,9 @@ msgstr ""
 msgid "Notify|You have been mentioned in merge request %{mr_link}"
 msgstr ""
 
+msgid "Notify|You have been unsubscribed from receiving GitLab administrator notifications."
+msgstr ""
+
 msgid "Notify|Your CSV import for project %{project_link} has been completed."
 msgstr ""
 
@@ -27645,6 +27648,9 @@ msgid "OnCallSchedules|Rotations"
 msgstr ""
 
 msgid "OnCallSchedules|Route alerts directly to specific members of your team"
+msgstr ""
+
+msgid "OnCallSchedules|Route alerts directly to specific members of your team. To access this feature, ask %{linkStart}a project Owner%{linkEnd} to grant you at least the Maintainer role."
 msgstr ""
 
 msgid "OnCallSchedules|Select participant"

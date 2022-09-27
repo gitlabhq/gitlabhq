@@ -1,5 +1,5 @@
 %div
-  = form_for [:profile, @gpg_key], html: { class: 'js-requires-input' } do |f|
+  = gitlab_ui_form_for [:profile, @gpg_key], html: { class: 'js-requires-input' } do |f|
     = form_errors(@gpg_key)
 
     .form-group
@@ -7,4 +7,4 @@
       = f.text_area :key, class: "form-control gl-form-input", rows: 8, required: true, placeholder: _("Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'.")
 
     .gl-mt-3
-      = f.submit s_('Profiles|Add key'), class: "gl-button btn btn-confirm"
+      = f.submit s_('Profiles|Add key'), pajamas_button: true

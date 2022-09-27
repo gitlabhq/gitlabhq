@@ -168,7 +168,7 @@ setup-test-env:
     SETUP_DB: "false"
   script:
     - echo $CI_MERGE_REQUEST_APPROVED
-    - source scripts/gitlab_workhorse_component_helpers.sh
+    - source scripts/gitlab_component_helpers.sh
     - run_timed_command "download_and_extract_gitlab_workhorse_package" || true
     - run_timed_command "scripts/setup-test-env"
     - run_timed_command "select_gitlab_workhorse_essentials"
@@ -196,22 +196,6 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/second_storage/
       - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
     when: always
-
-build-components:
-  extends:
-    - setup-test-env
-    - .rails:rules:build-components
-  script:
-    - source scripts/gitlab_workhorse_component_helpers.sh
-    - 'gitlab_workhorse_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
-    - run_timed_command "scripts/setup-test-env"
-    - run_timed_command "select_gitlab_workhorse_essentials"
-    - run_timed_command "create_gitlab_workhorse_package"
-    - run_timed_command "upload_gitlab_workhorse_package"
-  artifacts:
-    expire_in: 7d
-    paths:
-      - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
 
 update-setup-test-env-cache:
   extends:

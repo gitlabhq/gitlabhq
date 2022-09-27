@@ -79,10 +79,12 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-cache: &assets-cache
-  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v2"
+  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v3"
+  # This list should match GITLAB_ASSETS_PATHS_LIST from scripts/gitlab_component_helpers.sh
   paths:
     - assets-hash.txt
-    - public/assets/webpack/
+    - app/assets/javascripts/locale/**/app.js
+    - public/assets/
     - tmp/cache/assets/sprockets/
     - tmp/cache/babel-loader/
     - tmp/cache/vue-loader/
