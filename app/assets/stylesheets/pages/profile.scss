@@ -10,35 +10,6 @@
   }
 }
 
-.subkeys-list {
-  @include basic-list;
-
-  li {
-    padding: 3px 0;
-    border: 0;
-  }
-}
-
-.key-list-item {
-  .key-list-item-info {
-    @include media-breakpoint-up(sm) {
-      float: left;
-    }
-  }
-}
-
-.ssh-keys-list {
-  .last-used-at,
-  .expires,
-  .key-created-at {
-    line-height: 32px;
-  }
-}
-
-.key-created-at {
-  line-height: 42px;
-}
-
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;

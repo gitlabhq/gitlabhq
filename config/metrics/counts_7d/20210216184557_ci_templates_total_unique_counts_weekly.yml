@@ -46,6 +46,7 @@ options:
   - p_ci_templates_security_secret_detection
   - p_ci_templates_security_license_scanning
   - p_ci_templates_security_coverage_fuzzing
+  - p_ci_templates_security_coverage_fuzzing_latest
   - p_ci_templates_security_api_fuzzing_latest
   - p_ci_templates_security_secure_binaries
   - p_ci_templates_security_dast_api
@@ -160,6 +161,7 @@ options:
   - p_ci_templates_implicit_security_secret_detection
   - p_ci_templates_implicit_security_license_scanning
   - p_ci_templates_implicit_security_coverage_fuzzing
+  - p_ci_templates_implicit_security_coverage_fuzzing_latest
   - p_ci_templates_implicit_security_api_fuzzing_latest
   - p_ci_templates_implicit_security_secure_binaries
   - p_ci_templates_implicit_security_dast_api

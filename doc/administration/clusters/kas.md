@@ -28,9 +28,13 @@ Or, you can [use an external agent server](#use-an-external-installation).
 
 ### For Omnibus
 
-For [Omnibus](https://docs.gitlab.com/omnibus/) package installations:
+You can enable the agent server for [Omnibus](https://docs.gitlab.com/omnibus/) package installations on a single node, or on multiple nodes at once.
 
-1. To enable the agent server, edit `/etc/gitlab/gitlab.rb`:
+#### Enable on a single node
+
+To enable the agent server on a single node:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_kas['enable'] = true
@@ -40,6 +44,33 @@ For [Omnibus](https://docs.gitlab.com/omnibus/) package installations:
 
 For additional configuration options, see the **Enable GitLab KAS** section of the
 [`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-config-template/gitlab.rb.template).
+
+#### Enable on multiple nodes
+
+To enable the agent server on multiple nodes:
+
+1. For each agent server node, edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_kas['enable'] = true
+   gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
+   gitlab_kas['private_api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
+   gitlab_kas['private_api_listen_address'] = '0.0.0.0:8155'
+   gitlab_kas['env'] = {
+     'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
+     'OWN_PRIVATE_API_URL' => 'grpc://<ip_or_hostname_of_this_host>:8155'
+   }
+   ```
+
+   In this configuration:
+
+   - `gitlab_kas['private_api_listen_address']` is the address the agent server listens on. You can set it to `0.0.0.0` or an IP address reachable by other nodes in the cluster.
+   - `OWN_PRIVATE_API_URL` is the environment variable used by the KAS process for service discovery. You can set it to a hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster.
+   - `gitlab_kas['api_secret_key']` is the shared secret used for authentication between KAS and GitLab. This value must be Base64-encoded and exactly 32 bytes long.
+   - `gitlab_kas['private_api_secret_key']` is the shared secret used for authentication between different KAS instances. This value must be Base64-encoded and exactly 32 bytes long.
+
+1. For each application node, follow the steps in: [Use an external installation](../clusters/kas.md#use-an-external-installation).
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 ### For GitLab Helm Chart
 

@@ -252,3 +252,32 @@
 .twitter-icon {
   color: $twitter;
 }
+
+.key-created-at {
+  line-height: 42px;
+}
+
+.key-list-item {
+  .key-list-item-info {
+    @include media-breakpoint-up(sm) {
+      float: left;
+    }
+  }
+}
+
+.ssh-keys-list {
+  .last-used-at,
+  .expires,
+  .key-created-at {
+    line-height: 32px;
+  }
+}
+
+.subkeys-list {
+  @include basic-list;
+
+  li {
+    padding: 3px 0;
+    border: 0;
+  }
+}
