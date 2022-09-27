@@ -81,7 +81,7 @@ RSpec.describe AlertManagement::CreateAlertIssueService do
 
       it 'checks permissions' do
         execute
-        expect(user).to have_received(:can?).with(:create_issue, project)
+        expect(user).to have_received(:can?).with(:create_issue, project).exactly(2).times
       end
 
       context 'with alert severity' do

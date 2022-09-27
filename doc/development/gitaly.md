@@ -219,7 +219,7 @@ as a [CI/CD variable](../ci/variables/index.md).
 
 If you are making changes to the RPC client, such as adding a new endpoint or adding a new
 parameter to an existing endpoint, follow the guide for
-[Gitaly protobuf specifications](https://gitlab.com/gitlab-org/gitaly/blob/master/proto/README.md). After pushing
+[Gitaly protobuf specifications](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/protobuf.md). After pushing
 the branch with the changes (`new-feature-branch`, for example):
 
 1. Change the `gitaly` line in the Rails' `Gemfile` to:

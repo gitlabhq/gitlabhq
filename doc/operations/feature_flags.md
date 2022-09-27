@@ -4,21 +4,21 @@ group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Feature Flags **(FREE)**
+# Feature flags **(FREE)**
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
 
-With Feature Flags, you can deploy your application's new features to production in smaller batches.
+With feature flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
 Feature flags help reduce risk, allowing you to do controlled testing, and separate feature
 delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an example of feature flags in action, see [GitLab for Deploys, Feature Flags, and Error Tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
+For an example of feature flags in action, see [GitLab for deploys, feature flags, and error tracking](https://www.youtube.com/embed/5tw2p6lwXxo).
 
 NOTE:
-The Feature Flags GitLab offer as a feature (described in this document) is not the same method
-used for the [development of GitLab](../development/feature_flags/index.md).
+To contribute to the development of the GitLab product, view
+[this feature flag content](../development/feature_flags/index.md) instead.
 
 ## How it works
 
@@ -43,7 +43,7 @@ To create and enable a feature flag:
 1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
    or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
 1. Optional. Enter a description (255 characters maximum).
-1. Add Feature Flag [**Strategies**](#feature-flag-strategies) to define how the flag should be applied. For each strategy, include the **Type** (defaults to [**All users**](#all-users))
+1. Add feature flag [**Strategies**](#feature-flag-strategies) to define how the flag should be applied. For each strategy, include the **Type** (defaults to [**All users**](#all-users))
      and **Environments** (defaults to all environments).
 1. Select **Create feature flag**.
 
@@ -74,9 +74,9 @@ is 200. For GitLab SaaS, the maximum number is determined by [tier](https://abou
 You can apply a feature flag strategy across multiple environments, without defining
 the strategy multiple times.
 
-GitLab Feature Flags use [Unleash](https://docs.getunleash.io/) as the feature flag
+GitLab feature flags use [Unleash](https://docs.getunleash.io/) as the feature flag
 engine. In Unleash, there are [strategies](https://docs.getunleash.io/user_guide/activation_strategy)
-for granular feature flag controls. GitLab Feature Flags can have multiple strategies,
+for granular feature flag controls. GitLab feature flags can have multiple strategies,
 and the supported strategies are:
 
 - [All users](#all-users)
@@ -162,7 +162,7 @@ target users. See the [Ruby example](#ruby-application-example) below.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
 
-Enables the feature for lists of users created [in the Feature Flags UI](#create-a-user-list), or with the [Feature Flag User List API](../api/feature_flag_user_lists.md).
+Enables the feature for lists of users created [in the feature flags UI](#create-a-user-list), or with the [feature flag user list API](../api/feature_flag_user_lists.md).
 Similar to [User IDs](#user-ids), it uses the Unleash UsersIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/user_guide/activation_strategy#userids).
 
 It's not possible to *disable* a feature for members of a user list, but you can achieve the same
@@ -294,9 +294,9 @@ Unleash currently [offers many SDKs for various languages and frameworks](https:
 
 For API content, see:
 
-- [Feature Flags API](../api/feature_flags.md)
-- [Feature Flag Specs API](../api/feature_flag_specs.md) (Deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/213369) in GitLab 14.0.)
-- [Feature Flag User Lists API](../api/feature_flag_user_lists.md)
+- [Feature flags API](../api/feature_flags.md)
+- [Feature flag specs API](../api/feature_flag_specs.md) (Deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/213369) in GitLab 14.0.)
+- [Feature flag user lists API](../api/feature_flag_user_lists.md)
 
 ### Golang application example
 
@@ -395,13 +395,13 @@ docker run \
 | `UNLEASH_APP_NAME`    | The name of the environment the application runs in. For more details, read [Get access credentials](#get-access-credentials). |
 | `UNLEASH_API_TOKEN`   | Required to start the Unleash Proxy, but not used to connect to GitLab. Can be set to any value. |
 
-## Feature Flag Related Issues **(PREMIUM)**
+## Feature flag related issues **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.
 > - Showing related feature flags in issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220333) in GitLab 14.1.
 
-You can link related issues to a feature flag. In the Feature Flag **Linked issues** section,
+You can link related issues to a feature flag. In the feature flag **Linked issues** section,
 select the `+` button and input the issue reference number or the full URL of the issue.
 The issues then appear in the related feature flag and the other way round.
 
@@ -409,7 +409,7 @@ This feature is similar to the [linked issues](../user/project/issues/related_is
 
 ## Performance factors
 
-In general, GitLab Feature Flags can be used in any applications,
+In general, GitLab feature flags can be used in any applications,
 however, if it's a large application, it could require an additional configuration in advance.
 This section explains the performance factors to help your organization to identify
 what's needed to be done before using the feature.
@@ -418,7 +418,7 @@ Please read [How it works](#how-it-works) section before diving into the details
 ### Maximum supported clients in application nodes
 
 GitLab accepts client requests as much as possible until it hits the [rate limiting](../security/rate_limits.md).
-At the moment, the Feature Flag API falls into **Unauthenticated traffic (from a given IP address)**
+At the moment, the feature flag API falls into **Unauthenticated traffic (from a given IP address)**
 in the [GitLab.com specific limits](../user/gitlab_com/index.md),
 so it's **500 requests per minute**.
 

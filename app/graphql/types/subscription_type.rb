@@ -26,6 +26,11 @@ module Types
           subscription: Subscriptions::IssuableUpdated,
           null: true,
           description: 'Triggered when the reviewers of a merge request are updated.'
+
+    field :merge_request_merge_status_updated,
+          subscription: Subscriptions::IssuableUpdated,
+          null: true,
+          description: 'Triggered when the merge status of a merge request is updated.'
   end
 end
 

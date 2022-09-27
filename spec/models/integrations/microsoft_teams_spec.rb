@@ -85,6 +85,10 @@ RSpec.describe Integrations::MicrosoftTeams do
         service.hook_data(issue, 'open')
       end
 
+      before do
+        project.add_developer(user)
+      end
+
       it "calls Microsoft Teams API" do
         chat_integration.execute(issues_sample_data)
 

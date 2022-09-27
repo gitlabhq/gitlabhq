@@ -6,7 +6,7 @@ comments: false
 description: 'Internal usage of Feature Flags for GitLab development'
 ---
 
-# Usage of Feature Flags for GitLab development
+# Architectural discussion of feature flags
 
 Usage of feature flags become crucial for the development of GitLab. The
 feature flags are a convenient way to ship changes early, and safely rollout

@@ -170,6 +170,10 @@ RSpec.shared_examples "chat integration" do |integration_name|
         service.hook_data(issue, "open")
       end
 
+      before do
+        project.add_developer(user)
+      end
+
       it_behaves_like "triggered #{integration_name} integration"
     end
 

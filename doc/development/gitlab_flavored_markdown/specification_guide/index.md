@@ -76,7 +76,7 @@ to by the acronym GFM, and this document follows that convention as well.
 _GitLab_ Flavored Markdown is referred to as GLFM in this document,
 to distinguish it from GitHub Flavored Markdown.
 
-Unfortunately, this convention is not followed consistently in the rest
+Unfortunately, this convention is not yet followed consistently in the rest
 of the documentation or GitLab codebase. In many places, the GFM
 acronym is used to refer to _GitLab_ Flavored Markdown. An
 [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) exists to resolve
@@ -110,7 +110,7 @@ Here are the HTML-rendered versions of the specifications:
 
 NOTE:
 The creation of the
-[GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.html)
+[HTML-rendered version of the GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.html)
 file is still pending.
 
 However, GLFM has more complex parsing, rendering, and testing requirements than
@@ -167,7 +167,8 @@ Markdown for issues, pull requests, or merge requests within the editor or IDE.
 ### Markdown examples
 
 Everywhere in the context of the specification and this guide, the term
-_examples_ is specifically used to refer to the Markdown + HTML pairs used
+_examples_ is specifically used to refer to the convention of using
+backtick-delimited Markdown + HTML pairs
 to illustrate the canonical parsing (or rendering) behavior of various Markdown source
 strings in the standard
 [CommonMark specification format](https://spec.commonmark.org/0.30/#example-1).
@@ -175,6 +176,9 @@ strings in the standard
 In this context, it should not be confused with other similar or related meanings of
 _example_, such as
 [RSpec examples](https://relishapp.com/rspec/rspec-core/docs/example-groups/basic-structure-describe-it).
+
+See the section on the [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) file
+for more details on the backtick-delimited Markdown+HTML example syntax.
 
 ### Parsers and renderers
 
@@ -206,7 +210,13 @@ _Markdown conformance testing_ refers to the standard testing method used by
 all CommonMark Markdown dialects to verify that a specific implementation conforms
 to the CommonMark Markdown specification. It is enforced by running the standard
 CommonMark tool [`spec_tests.py`](https://github.com/github/cmark-gfm/blob/master/test/spec_tests.py)
-against a given `spec.txt` specification and the implementation.
+against a given `spec.txt` specification and the implementation, as
+[described in the specification itself](https://github.github.com/gfm/#about-this-document)
+
+Conformance testing is _only_ to be run against GLFM [official specification](#official-specifications)
+examples, and is _not_ to be run against [internal extension](#internal-extensions) examples.
+This is because the internal extension examples may have dependencies on the GitLab environment
+or metadata, but the standard CommonMark conformance testing tool does not support this.
 
 NOTE:
 `spec_tests.py` may eventually be re-implemented in Ruby, to not have a dependency on Python.
@@ -220,7 +230,14 @@ tests which use the fixture data. This fixture data is contained in YAML files. 
 are generated and updated based on the Markdown examples in the specification,
 and the existing GLFM parser and render implementations. They may also be
 manually updated as necessary to test-drive incomplete implementations.
-Regarding the terminology used here:
+
+Snapshot testing is intended to be comprehensive, so it is run against _all_ examples - both the GLFM
+[official specification](#official-specifications) and [internal extension](#internal-extensions) examples.
+This means that it uses configuration files to support providing GitLab-specific environment or metadata
+which is required by internal extension examples, such
+as [`glfm_example_metadata.yml`](#glfm_example_metadatayml).
+
+Regarding the terminology used for Markdown snapshot testing:
 
 <!-- vale gitlab.InclusionCultural = NO -->
 
@@ -303,13 +320,14 @@ implementations:
 ### Multiple versions of rendered HTML
 
 Both of these GLFM renderer implementations (static and WYSIWYG) produce
-HTML which differs from the canonical HTML examples from the specification.
-For every Markdown example in the GLFM specification, three
+HTML which may differ from the canonical HTML examples in the
+<abbr title="GitLab Flavored Markdown">GLFM</abbr> [official specification](#official-specifications).
+Therefore, for every Markdown example in the GLFM specification, three
 versions of HTML can potentially be rendered from the example:
 
-- Static HTML.
-- WYSIWYG HTML.
-- Canonical HTML.
+- Static HTML
+- WYSIWYG HTML
+- Canonical HTML
 
 #### Static HTML
 
@@ -319,22 +337,57 @@ added for dynamically creating an issue from a task list item.
 The GitLab [Markdown API](../../../api/markdown.md) generates HTML
 for a given Markdown string using this method.
 
+The Markdown specified in the [Markdown examples](#markdown-examples) is used to automatically generate HTML in
+[`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) via
+[`update-example-snapshots.rb`](#update-example-snapshotsrb-script). These examples are
+used when running [Markdown snapshot testing](#markdown-snapshot-testing).
+
 #### WYSIWYG HTML
 
 **WYSIWYG HTML** is HTML produced by the frontend (JavaScript) Content Editor,
 which includes parsing and rendering logic. It is used to present an editable document
 in the ProseMirror WYSIWYG editor.
 
+Just like static HTML,
+the Markdown specified in the [Markdown examples](#markdown-examples) is used to automatically generate HTML in
+[`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) via
+[`update-example-snapshots.rb`](#update-example-snapshotsrb-script). These examples are
+used when running [Markdown snapshot testing](#markdown-snapshot-testing).
+
 #### Canonical HTML
 
-**Canonical HTML** is the clean, basic version of HTML rendered from Markdown.
+**Canonical HTML** is the clean, basic version of HTML rendered from Markdown, with no
+unnecessary classes/elements related to styling or any other implementation-specific behavior.
 
-1. For the examples which come from the CommonMark specification and
+Its purpose is to support [Markdown conformance testing](#markdown-conformance-testing) against the
+GLFM [`spec.txt`](#spectxt).
+
+Always hardcoded and manually curated, the HTML is never automatically generated.
+The [Markdown examples](#markdown-examples) specifying it are contained
+in different files depending on which [Markdown specification](#various-markdown-specifications)
+a given example originally comes from.
+
+Canonical HTML is **_always specified_** for all [Markdown examples](#markdown-examples)
+in the CommonMark, <abbr title="GitHub Flavored Markdown">GFM</abbr>, and <abbr title="GitLab Flavored Markdown">GLFM</abbr>
+[official specifications](#official-specifications).
+
+However, it is **_never specified_** for GLFM [internal extensions](#internal-extensions) in the [Markdown examples](#markdown-examples).
+**This is because the internal extensions are never tested via [Markdown conformance testing](#markdown-conformance-testing).
+Therefore, canonical HTML for internal extension examples is never used by any scripts or automated testing.**
+
+Here are more details on the sources of canonical HTML examples:
+
+1. For the examples which are part of the CommonMark specification and
    GFM extensions specification, the canonical HTML is the exact identical HTML found in the
-   GFM `spec.txt` example blocks.
-1. For GLFM extensions to the <abbr title="GitHub Flavored Markdown">GFM</abbr> / CommonMark
-   specification, a `glfm_canonical_examples.txt` [input specification file](#input-specification-files)
-   contains the Markdown examples and corresponding canonical HTML examples.
+   [GFM `spec.txt`](https://github.com/github/cmark-gfm/blob/master/test/spec.txt) [Markdown example](#markdown-examples) blocks.
+   These examples are copied verbatim from the GFM `spec.txt` into the GLFM
+   version of [`spec.txt`](#spectxt).
+1. For the examples which are part of the GLFM [_official specification_](#official-specifications),
+   the canonical HTML is manually maintained and curated via the examples contained in the
+   [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) [input specification file](#input-specification-files).
+1. For the examples which are part of the GLFM [_internal extensions_](#internal-extensions),
+   the canonical HTML **is never specified**, and **must be left empty in all examples** contained in
+   the [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd) [input specification file](#input-specification-files).
 
 ### Canonicalization of HTML
 
@@ -342,7 +395,11 @@ The rendered [static HTML](#static-html) and [WYSIWYG HTML](#wysiwyg-html)
 from the backend (Ruby) and frontend (JavaScript) renderers usually contains extra styling
 or HTML elements, to support specific appearance and behavioral requirements.
 
-Neither the backend nor the frontend rendering logic can directly render the clean, basic canonical HTML.
+Neither the backend nor the frontend rendering logic can directly render the clean, basic HTML
+which is necessary to perform comparison to the [canonical HTML](#canonical-html)
+when running [Markdown conformance testing](#markdown-conformance-testing)
+for the [GLFM official specification examples](#glfm_official_specification_examplesmd).
+
 Nor should they be able to, because:
 
 - It's not a direct requirement to support any GitLab application feature.
@@ -351,16 +408,9 @@ Nor should they be able to, because:
 Instead, the rendered static or WYSIWYG HTML is converted to canonical HTML by a
 _canonicalization_ process. This process can strip all the extra styling and behavioral
 HTML from the static or WYSIWYG HTML, resulting in canonical HTML which exactly
-matches the Markdown + HTML examples in a standard `spec.txt` specification.
+matches the canonical HTML examples in a standard `spec.txt` specification.
 
 Use the [`canonicalize-html.rb` script](#canonicalize-htmlrb-script) for this process.
-More explanation about this canonicalization process in the sections below.
-
-NOTE:
-Some of the static or WYSIWYG HTML examples may not be representable as canonical
-HTML. (For example, when they are represented as an image.) In these cases, the Markdown
-conformance test for the example can be skipped by setting `skip_update_example_snapshots: true`
-for the example in `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml`.
 
 ### Normalization
 
@@ -449,7 +499,7 @@ of how the normalizations are specified.
 
 ## Goals
 
-Given the constraints above, we have a few goals related to the GLFM
+Given all the constraints above, we can summarize the various goals related to the GLFM
 specification and testing infrastructure:
 
 1. A canonical `spec.txt` exists, and represents the official specification for
@@ -458,17 +508,18 @@ specification and testing infrastructure:
       (GFM) specification, just as
       <abbr title="GitHub Flavored Markdown">GFM</abbr> is a strict superset
       [of the CommonMark specification](https://github.github.com/gfm/#what-is-github-flavored-markdown-).
-      Therefore, it contains the superset of all canonical Markdown + HTML examples
-      for CommonMark, GFM, and GLFM.
+   1. Therefore, it contains the superset of all [Markdown examples](#markdown-examples)
+      for CommonMark and GFM, as well as the GLFM
+      [official specification](#official-specifications) and [internal extensions](#internal-extensions).
    1. It contains a prose introduction section which is specific to GitLab and GLFM.
    1. It contains all other non-introduction sections verbatim from the
-      GFM
-      `spec.txt`.
-   1. It contains a new extra section for the GLFM GitLab-specific extensions,
-      with both prose and examples describing the extensions.
-   1. It should be in the standard format which can processed by the standard
-      CommonMark tools [`spec_tests.py`](https://github.com/github/cmark-gfm/blob/master/test/spec_tests.py),
-      which is a [script used to run the Markdown conformance tests](https://github.github.com/gfm/#about-this-document)
+      [GFM specification](#github-flavored-markdown-specification).
+   1. It contains new, extra sections for all the additional Markdown contained in the GLFM
+      [official specification](#official-specifications) and [internal extensions](#internal-extensions),
+      with [Markdown examples](#markdown-examples) and accompanying prose, just like the CommonMark and GFM examples.
+   1. All its headers and [Markdown examples](#markdown-examples) should be in the standard format which can be processed by the standard
+      CommonMark tool [`spec_tests.py`](https://github.com/github/cmark-gfm/blob/master/test/spec_tests.py) used to perform
+      [Markdown conformance testing](#markdown-conformance-testing)
       against all examples contained in a `spec.txt`.
 1. The GLFM parsers and HTML renderers for
    both the static backend (Ruby) and WYSIWYG frontend (JavaScript) implementations
@@ -478,9 +529,9 @@ specification and testing infrastructure:
    NOTE:
    Consistent does not mean that both of these implementations render
    to the identical HTML. They each have different implementation-specific additions
-   to the HTML they render, so therefore their rendered HTML is
-   ["canonicalized"](#canonicalization-of-html) to canonical HTML prior running
-   the Markdown conformance tests.
+   to the HTML they render, so their rendered HTML is
+   ["canonicalized"](#canonicalization-of-html) to canonical HTML prior to running
+   [Markdown conformance testing](#markdown-conformance-testing).
 1. For _both_ the static backend (Ruby) and WYSIWYG frontend (JavaScript) implementations,
    a set of example snapshots exists in the form of YAML files, which
    correspond to every Markdown example in the GLFM `spec.txt`. These example snapshots
@@ -552,7 +603,7 @@ them from the corresponding implementation class entry point files under
 
 #### `update-specification.rb` script
 
-The `scripts/glfm/update-specification.rb` script uses specification input files to
+The `scripts/glfm/update-specification.rb` script uses [input specification files](#input-specification-files) to
 generate and update `spec.txt` (Markdown) and `spec.html` (HTML). The `spec.html` is
 generated by passing the generated (or updated) `spec.txt` Markdown to the backend API
 for rendering to static HTML:
@@ -566,12 +617,13 @@ end
 subgraph input:<br/>input specification files
   C[ghfm_spec_v_0.29.txt] --> A
   D[glfm_intro.txt] --> A
-  E[glfm_canonical_examples.txt] --> A
+  E[glfm_official_specification_examples.md] --> A
+  F[glfm_internal_extension_examples.md] --> A
 end
 subgraph output:<br/>GLFM specification files
-  A --> F[spec.txt]
-  F --> B
-  B --> G[spec.html]
+  A --> G[spec.txt]
+  G --> B
+  B --> H[spec.html]
 end
 ```
 
@@ -723,13 +775,24 @@ is the GitLab-specific version of the prose in the introduction section of the G
 
 ##### `glfm_canonical_examples.txt`
 
-[`glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt)
-is the manually updated canonical Markdown+HTML examples for GLFM extensions.
+The `glfm_canonical_examples.txt` file is deprecated and no longer exists. It has been replaced by two files:
 
-- It contains examples in the [standard backtick-delimited `spec.txt` format](#various-markdown-specifications),
-  each of which contain a Markdown example and the corresponding canonical HTML.
+- [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd)
+  which contains the [GLFM official specification](#official-specifications) examples.
+- [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd)
+  which contains the [GLFM internal extension](#internal-extensions) examples.
+
+##### `glfm_official_specification_examples.md`
+
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md)
+consists of the manually updated Markdown+HTML examples for the
+[GLFM official specification](#official-specifications), and their associated documentation and descriptions.
+
+- It contains [Markdown examples](#markdown-examples) in the
+  [standard backtick-delimited `spec.txt` format](#various-markdown-specifications),
+  each of which contains Markdown and the corresponding canonical HTML that should be rendered.
 - For all GitLab examples, the "extension" annotation after the backticks should consist of only
-  `example gitlab`. It does not currently include any additional extension annotations describing
+  `example`. It does not currently include any additional extension annotations describing
   the specific Markdown, unlike the GitHub Flavored Markdown examples, which do include
   these additional annotations (such as `example strikethrough`).
 - The `update-specification.rb` script inserts it as new sections before the appendix
@@ -739,7 +802,7 @@ is the manually updated canonical Markdown+HTML examples for GLFM extensions.
 - `H3` header sections must be nested within `H2` header sections. They cannot be
    nested directly within `H1` header sections.
 
-`glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt` sample entries:
+`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md` sample entries:
 
 NOTE:
 All lines in this example are prefixed with a `|` character. This prefix helps avoid false
@@ -747,21 +810,21 @@ errors when this file is checked by `markdownlint`, and possible errors in other
 The actual file should not have these prefixed `|` characters.
 
 ```plaintext
-|# First GitLab-Specific Section with Examples
+|# Section with GLFM official specification examples
 |
-|## Strong but with two asterisks
+|## Strong
 |
-|```````````````````````````````` example gitlab
+|### Strong with two asterisks
+|
+|```````````````````````````````` example
 |**bold**
 |.
 |<p><strong>bold</strong></p>
 |````````````````````````````````
 |
-|# Second GitLab-Specific Section with Examples
+|### Strong with HTML
 |
-|## Strong but with HTML
-|
-|```````````````````````````````` example gitlab
+|```````````````````````````````` example
 |<strong>
 |bold
 |</strong>
@@ -769,6 +832,38 @@ The actual file should not have these prefixed `|` characters.
 |<p><strong>
 |bold
 |</strong></p>
+|````````````````````````````````
+```
+
+##### `glfm_internal_extension_examples.md`
+
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_internal_extension_examples.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_internal_extension_examples.md)
+consists of the manually updated Markdown examples for the
+[GLFM internal extensions](#internal-extensions), and their associated documentation and descriptions.
+
+Its general format is identical to [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd),
+consisting of `H1`, `H2`, or `H3` sections containing [Markdown examples](#markdown-examples) in the
+[standard backtick-delimited `spec.txt` format](#various-markdown-specifications).
+
+However, as described in the [canonical HTML section](#canonical-html), only the Markdown portion of each
+example is specified, and the HTML portion is left empty, because internal extension examples are
+never used for [Markdown conformance testing](#markdown-conformance-testing).
+
+`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md` sample entries:
+
+NOTE:
+All lines in this example are prefixed with a `|` character. This prefix helps avoid false
+errors when this file is checked by `markdownlint`, and possible errors in other Markdown editors.
+The actual file should not have these prefixed `|` characters.
+
+```plaintext
+|# Section with GLFM Internal Extension Examples
+|
+|## Video
+|
+|```````````````````````````````` example
+|![video](video.m4v "video title")
+|.
 |````````````````````````````````
 ```
 
@@ -834,8 +929,8 @@ The following optional entries are supported for each example. They all default 
 ##### `glfm_example_normalizations.yml`
 
 [`glfm_specification/input/gitlab_flavored_markdown/glfm_example_normalizations.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_example_normalizations.yml)
-controls the [normalization](#normalization) process. It allows one or more `regex`/`replacement` pairs
-to be specified for a Markdown example.
+is used to control the [fixture-based normalization](#fixture-based-normalization) process.
+It allows one or more `regex`/`replacement` pairs to be specified for a Markdown example.
 
 - It is manually updated.
 - It has a nested structure corresponding to the example and type of entry it refers to.
@@ -843,6 +938,11 @@ to be specified for a Markdown example.
   to avoid duplication of `regex`/`replacement` pairs and allow them to be shared across multiple examples.
 - The YAML anchors use a naming convention based on the index number of the example, to
   ensure unique anchor names and avoid naming conflicts.
+
+NOTE:
+Other approaches to [normalization](#normalization) such as [fixture-based normalization](#fixture-based-normalization)
+or [environment-variable-based normalization](#environment-variable-based-normalization) are always preferable to
+[fixture-based normalization](#fixture-based-normalization).
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_normalizations.yml` sample entries:
 
@@ -924,11 +1024,11 @@ allows control over other aspects of the snapshot example generation process.
 #### Output specification files
 
 The `glfm_specification/output` directory contains the CommonMark standard format
-`spec.txt` file which represents the canonical GLFM specification which is generated
+`spec.txt` file which represents the GLFM specification which is generated
 by the `update-specification.rb` script. It also contains the rendered `spec.html`
 which is generated based on the `spec.txt` as input.
 
-These output `spec.*` files, which represent the official, canonical GLFM specification,
+These output `spec.*` files, which represent the GLFM specification,
 are colocated under the same parent folder `glfm_specification` with the other
 `input` specification files. They're located here both for convenience, and because they are all
 a mix of manually edited and generated files.
@@ -942,11 +1042,15 @@ move or copy a hosted version of the rendered HTML `spec.html` version to anothe
 
 [`glfm_specification/output/spec.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.txt)
 is a Markdown specification file, in the standard format
-with prose and Markdown + canonical HTML examples. It is generated or updated by the
-`update-specification.rb` script.
+with prose and Markdown + canonical HTML examples.
 
 It also serves as input for other scripts such as `update-example-snapshots.rb`
 and `run-spec-tests.sh`.
+
+It is generated or updated by the `update-specification.rb` script, using the
+[input specification files](#input-specification-files) as input.
+See the [`update-specification.rb` script section](#update-specificationrb-script)
+for a diagram and more description on this process.
 
 ##### spec.html
 
@@ -978,14 +1082,14 @@ be manually edited as necessary to help drive the implementations.
 
 [`glfm_specification/example_snapshots/examples_index.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/examples_index.yml)
 is the main list of all
-CommonMark, GFM, and GLFM example names, each with a unique canonical name.
+CommonMark, GFM, and GLFM example names, each with a uniquely identifying name.
 
 - It is generated from the hierarchical sections and examples in the
   GFM `spec.txt` specification.
 - For CommonMark and GFM examples,
   these sections originally came from the GFM `spec.txt`.
-- For GLFM examples, it is generated from `glfm_canonical_examples.txt`, which is
-  the additional Section 7 in the GLFM `spec.txt`.
+- For GLFM examples, it is generated from
+  [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) and [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd).
 - It also contains extra metadata about each example, such as:
   1. `spec_txt_example_position` - The position of the example in the generated GLFM `spec.txt` file.
      - This value is the index order of each individual Markdown + HTML5 example in the file. It is _not_
@@ -1031,8 +1135,8 @@ for each entry in `glfm_specification/example_snapshots/examples_index.yml`
   it is generated (or updated) from the standard GFM
   `spec.txt` using the `update-example-snapshots.rb` script.
 - For GLFM, it is generated (or updated) from the
-  `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt`
-  input specification file.
+  [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) and [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd)
+  input specification files.
 
 `glfm_specification/example_snapshots/markdown.yml` sample entry:
 
@@ -1051,8 +1155,8 @@ Three types of entries exist, with different HTML for each:
 - **Canonical**
   - The ["Canonical"](#canonicalization-of-html) HTML.
   - For CommonMark and GFM examples, the HTML comes from the examples in `spec.txt`.
-  - For GLFM examples, it is generated/updated from
-    `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt`.
+  - For [GLFM official specification](#official-specifications) examples, it is generated/updated from
+    [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd).
 - **Static**
   - This is the static (backend (Ruby)-generated) HTML for each entry in
     `glfm_specification/example_snapshots/examples_index.yml`.
@@ -1133,7 +1237,8 @@ This section describes how the scripts can be used to manage the GLFM specificat
 ### Update the example snapshots and run snapshot tests
 
 1. If you are working on an in-progress feature or bug, make any necessary manual updates to the [input specification files](#input-specification-files). This may include:
-   1. Updating the canonical Markdown or HTML examples in `glfm_specification/input/gitlab_flavored_markdown/glfm_canonical_examples.txt`.
+   1. Updating the canonical Markdown or HTML examples in
+   [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) or [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd).
    1. Updating `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` to reflect the current status of the examples or tests.
 1. Run [`update-specification.rb`](#update-specificationrb-script) to update the `spec.txt` to reflect any changes which were made to the [input specification files](#input-specification-files).
 1. Visually inspect and confirm any resulting changes to the [output specification files](#output-specification-files).

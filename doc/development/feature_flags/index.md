@@ -8,18 +8,14 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 # Feature flags in the development of GitLab
 
 NOTE:
-The documentation below covers feature flags used by GitLab to deploy its own features, which **is not** the same
-as the [feature flags offered as part of the product](../../operations/feature_flags.md).
-
-This document provides guidelines on how to use feature flags
-for the development of GitLab to conditionally and/or incrementally enable features
-and test them in production/staging.
+This document explains how to contribute to the development of the GitLab product.
+If you want to use feature flags to show and hide functionality in your own applications,
+view [this feature flags information](../../operations/feature_flags.md) instead.
 
 WARNING:
 All newly-introduced feature flags should be [disabled by default](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
 
-NOTE:
-This document is the subject of continued work as part of an epic to [improve internal usage of Feature Flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
+This document is the subject of continued work as part of an epic to [improve internal usage of feature flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
 
 For an [overview of the feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle), or if you need help deciding [if you should use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) or not, please see the [feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) handbook page.
 

@@ -5,12 +5,15 @@ group: Development
 info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Feature flag controls
+# Use ChatOps to enable and disable feature flags
 
-## Access
+NOTE:
+This document explains how to contribute to the development of the GitLab product.
+If you want to use feature flags to show and hide functionality in your own applications,
+view [this feature flags information](../../operations/feature_flags.md) instead.
 
-To be able to turn on/off features behind feature flags in any of the
-GitLab Inc. provided environments such as staging and production, you need to
+To turn on/off features behind feature flags in any of the
+GitLab-provided environments, like staging and production, you need to
 have access to the [ChatOps](../chatops_on_gitlabcom.md) bot. The ChatOps bot
 is currently running on the ops instance, which is different from
 [GitLab.com](https://gitlab.com) or [`dev.gitlab.org`](https://dev.gitlab.org).
@@ -47,7 +50,7 @@ Note that all the examples in that file must be preceded by
 
 If you get an error "Whoops! This action is not allowed. This incident
 will be reported." that means your Slack account is not allowed to
-change feature flags or you do not [have access](#access).
+change feature flags or you do not have access.
 
 ### Enabling a feature for pre-production testing
 

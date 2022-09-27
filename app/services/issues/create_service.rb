@@ -21,6 +21,8 @@ module Issues
     end
 
     def execute(skip_system_notes: false)
+      return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, @project)
+
       @issue = @build_service.execute
 
       handle_move_between_ids(@issue)
@@ -93,6 +95,10 @@ module Issues
     end
 
     private
+
+    def authorization_action
+      :create_issue
+    end
 
     attr_reader :spam_params, :extra_params
 

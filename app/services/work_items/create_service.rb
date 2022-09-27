@@ -16,10 +16,6 @@ module WorkItems
     end
 
     def execute
-      unless @current_user.can?(:create_work_item, @project)
-        return error(_('Operation not allowed'), :forbidden)
-      end
-
       result = super
       return result if result.error?
 
@@ -44,6 +40,10 @@ module WorkItems
     end
 
     private
+
+    def authorization_action
+      :create_work_item
+    end
 
     def payload(work_item)
       { work_item: work_item }
