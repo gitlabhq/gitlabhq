@@ -19,6 +19,7 @@ RSpec.describe Integrations::Datadog do
   let(:dd_tags) { '' }
 
   let(:expected_hook_url) { default_url + "?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}" }
+  let(:hook_url) { default_url + "?dd-api-key={api_key}&env=#{dd_env}&service=#{dd_service}" }
 
   let(:instance) do
     described_class.new(
@@ -48,7 +49,7 @@ RSpec.describe Integrations::Datadog do
 
   it_behaves_like Integrations::HasWebHook do
     let(:integration) { instance }
-    let(:hook_url) { "#{described_class::URL_TEMPLATE % { datadog_domain: dd_site }}?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}" }
+    let(:hook_url) { "#{described_class::URL_TEMPLATE % { datadog_domain: dd_site }}?dd-api-key={api_key}&env=#{dd_env}&service=#{dd_service}" }
   end
 
   describe 'validations' do
@@ -132,18 +133,18 @@ RSpec.describe Integrations::Datadog do
     subject { instance.hook_url }
 
     context 'with standard site URL' do
-      it { is_expected.to eq(expected_hook_url) }
+      it { is_expected.to eq(hook_url) }
     end
 
     context 'with custom URL' do
       let(:api_url) { 'https://webhook-intake.datad0g.com/api/v2/webhook' }
 
-      it { is_expected.to eq(api_url + "?dd-api-key=#{api_key}&env=#{dd_env}&service=#{dd_service}") }
+      it { is_expected.to eq(api_url + "?dd-api-key={api_key}&env=#{dd_env}&service=#{dd_service}") }
 
       context 'blank' do
         let(:api_url) { '' }
 
-        it { is_expected.to eq(expected_hook_url) }
+        it { is_expected.to eq(hook_url) }
       end
     end
 
@@ -152,19 +153,19 @@ RSpec.describe Integrations::Datadog do
       let(:dd_env) { '' }
       let(:dd_tags) { '' }
 
-      it { is_expected.to eq(default_url + "?dd-api-key=#{api_key}") }
+      it { is_expected.to eq(default_url + "?dd-api-key={api_key}") }
     end
 
     context 'with custom tags' do
       let(:dd_tags) { "key:value\nkey2:value, 2" }
       let(:escaped_tags) { CGI.escape("key:value,\"key2:value, 2\"") }
 
-      it { is_expected.to eq(expected_hook_url + "&tags=#{escaped_tags}") }
+      it { is_expected.to eq(hook_url + "&tags=#{escaped_tags}") }
 
       context 'and empty lines' do
         let(:dd_tags) { "key:value\r\n\n\n\nkey2:value, 2\n" }
 
-        it { is_expected.to eq(expected_hook_url + "&tags=#{escaped_tags}") }
+        it { is_expected.to eq(hook_url + "&tags=#{escaped_tags}") }
       end
     end
   end
