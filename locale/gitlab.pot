@@ -1024,11 +1024,6 @@ msgstr ""
 msgid "%{start} to %{end}"
 msgstr ""
 
-msgid "%{strongOpen}%{errors}%{strongClose} point"
-msgid_plural "%{strongOpen}%{errors}%{strongClose} points"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
 msgstr ""
 
@@ -1062,6 +1057,11 @@ msgstr[1] ""
 
 msgid "%{strong_start}%{count} member%{strong_end} must approve to merge. Anyone with role Developer or higher can approve."
 msgid_plural "%{strong_start}%{count} members%{strong_end} must approve to merge. Anyone with role Developer or higher can approve."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{strong_start}%{errors}%{strong_end} point"
+msgid_plural "%{strong_start}%{errors}%{strong_end} points"
 msgstr[0] ""
 msgstr[1] ""
 

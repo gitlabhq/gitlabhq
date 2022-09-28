@@ -224,7 +224,7 @@ RSpec.describe API::Todos do
                project: project_1,
                target: create(:design, issue: issue),
                author: create(:user),
-               note: create(:note, project: project_1, note: "I am note, hear me roar"))
+               note: create(:note, :confidential, project: project_1, note: "I am note, hear me roar"))
       end
 
       def api_request
