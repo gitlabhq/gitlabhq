@@ -16,7 +16,7 @@ module ErrorTracking
 
         Gitlab::ErrorTracking::ErrorEvent.new(
           project_id: event['projectID'],
-          issue_id: event['groupID'],
+          issue_id: ensure_numeric!('issue_id', event['groupID']),
           date_received: event['dateReceived'],
           stack_trace_entries: stack_trace
         )
