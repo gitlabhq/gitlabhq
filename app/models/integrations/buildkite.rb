@@ -50,7 +50,11 @@ module Integrations
 
     override :hook_url
     def hook_url
-      "#{buildkite_endpoint('webhook')}/deliver/#{webhook_token}"
+      "#{buildkite_endpoint('webhook')}/deliver/{webhook_token}"
+    end
+
+    def url_variables
+      { 'webhook_token' => webhook_token }
     end
 
     def execute(data)
