@@ -69,6 +69,23 @@ RSpec.describe Issues::UpdateService, :mailer do
         }
       end
 
+      context 'when an unauthorized project_id is provided' do
+        let(:unauthorized_project) { create(:project) }
+
+        before do
+          opts[:project_id] = unauthorized_project.id
+        end
+
+        it 'ignores the project_id param and does not update the issue\'s project' do
+          expect do
+            update_issue(opts)
+            unauthorized_project.reload
+          end.to not_change { unauthorized_project.issues.count }
+
+          expect(issue.project).to eq(project)
+        end
+      end
+
       it 'updates the issue with the given params' do
         expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
 
