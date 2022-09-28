@@ -47,6 +47,19 @@ RSpec.describe Issues::CreateService do
           due_date: Date.tomorrow }
       end
 
+      context 'when an unauthorized project_id is provided' do
+        let(:unauthorized_project) { create(:project) }
+
+        before do
+          opts[:project_id] = unauthorized_project.id
+        end
+
+        it 'ignores the project_id param and creates issue in the given project' do
+          expect(issue.project).to eq(project)
+          expect(unauthorized_project.reload.issues.count).to eq(0)
+        end
+      end
+
       it 'works if base work item types were not created yet' do
         WorkItems::Type.delete_all
 
