@@ -194,6 +194,15 @@ References to pull requests and issues are preserved. Each imported repository m
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it
 defaults to the default project visibility.
 
+### Branch protection rules
+
+Supported GitHub branch protection rules are mapped to GitLab branch protection rules or project-wide GitLab settings when they are imported:
+
+- GitHub rule **Require conversation resolution before merging** for the project's default branch is mapped to the [**All threads must be resolved** GitLab setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) in GitLab 15.5.
+- Support for GitHub rule **Require a pull request before merging** is proposed in issue [370951](https://gitlab.com/gitlab-org/gitlab/-/issues/370951).
+- Support for GitHub rule **Require signed commits** is proposed in issue [370949](https://gitlab.com/gitlab-org/gitlab/-/issues/370949).
+- Support for GitHub rule **Require status checks to pass before merging** is proposed in issue [370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948).
+
 ## Alternative way to import notes and diff notes
 
 When GitHub Importer runs on extremely large projects not all notes & diff notes can be imported due to GitHub API `issues_comments` & `pull_requests_comments` endpoints limitation.

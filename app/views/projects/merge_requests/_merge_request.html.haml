@@ -1,9 +1,12 @@
 %li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
   - if @can_bulk_update
-    .issue-check.hidden
-      - checkbox_id = dom_id(merge_request, "selected")
-      %label.gl-sr-only{ for: checkbox_id }= merge_request.title
-      = check_box_tag checkbox_id, nil, false, 'data-id' => merge_request.id, class: "selected-issuable"
+    .issue-check.gl-mr-3.hidden
+      = render Pajamas::CheckboxTagComponent.new(name: dom_id(merge_request, "selected"),
+        value: nil,
+        checkbox_options: { 'data-id' => merge_request.id }) do |c|
+        = c.label do
+          %span.gl-sr-only
+            = merge_request.title
 
   .issuable-info-container
     .issuable-main-info

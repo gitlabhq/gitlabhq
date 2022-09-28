@@ -465,10 +465,18 @@ When using code block style:
 
 ## Lists
 
-- Always start list items with a capital letter, unless they're parameters or
-  commands that are in backticks, or similar.
-- Always leave a blank line before and after a list.
-- Begin a line with spaces (not tabs) to denote a [nested sub-item](#nesting-inside-a-list-item).
+- Use a period after every sentence, including those that complete an introductory phrase.
+  Do not use semicolons or commas.
+- Majority rules. Use either full sentences or all fragments. Avoid a mix.
+- Always start list items with a capital letter.
+- Separate the introductory phrase from explanatory text with a colon (`:`). For example:
+
+  ```markdown
+  You can:
+
+  - Do this thing.
+  - Do this other thing.
+  ```
 
 ### Choose between an ordered or unordered list
 
@@ -492,39 +500,26 @@ These things are imported:
 - Thing 3
 ```
 
-You can choose to introduce either list with a colon, but you do not have to.
-
-### Markup
+### List markup
 
 - Use dashes (`-`) for unordered lists instead of asterisks (`*`).
-- Prefix `1.` to every item in an ordered list. When rendered, the list items
-  display with sequential numbering.
-
-### Punctuation
-
-- Don't add commas (`,`) or semicolons (`;`) to the ends of list items.
-- If a list item is a complete sentence (with a subject and a verb), add a period at the end.
-- Majority rules. If the majority of items do not end in a period, do not end any of the items in a period.
-- Separate list items from explanatory text with a colon (`:`). For example:
-
-  ```markdown
-  The list is as follows:
-
-  - First item: this explains the first item.
-  - Second item: this explains the second item.
-  ```
+- Start every item in an ordered list with `1.`. When rendered, the list items
+  are sequential.
+- Leave a blank line before and after a list.
+- Begin a line with spaces (not tabs) to denote a [nested sub-item](#nesting-inside-a-list-item).
 
 ### Nesting inside a list item
 
-It's possible to nest items under a list item, so that they render with the same
-indentation as the list item. This can be done with:
+You can nest items under a list item, so they render with the same
+indentation as the list item. You can do this with:
 
 - [Code blocks](#code-blocks)
 - [Blockquotes](#blockquotes)
 - [Alert boxes](#alert-boxes)
 - [Images](#images)
+- [Tabs](#tabs)
 
-Items nested in lists should always align with the first character of the list
+Nested items should always align with the first character of the list
 item. For unordered lists (using `-`), use two spaces for each level of
 indentation:
 
@@ -555,26 +550,9 @@ For ordered lists, use three spaces for each level of indentation:
 1. Ordered list item 1
 
    A line nested using 3 spaces to align with the `O` above.
-
-1. Ordered list item 2
-
-   > A quote block that will nest
-   > inside list item 2.
-
-1. Ordered list item 3
-
-   ```plaintext
-   a code block that nests inside list item 3
-   ```
-
-1. Ordered list item 4
-
-   ![an image that will nest inside list item 4](image.png)
 ````
 
-You can nest full lists inside other lists using the same rules as above. If you
-want to mix types, that's also possible, if you don't mix items at the same
-level:
+You can nest lists in other lists.
 
 ```markdown
 1. Ordered list item one.

@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       searchTerm: '',
-      tzValue: this.value,
+      tzValue: this.initialTimezone(this.timezoneData, this.value),
     };
   },
   translations: {
@@ -71,12 +71,31 @@ export default {
     isSelected(timezone) {
       return this.tzValue === timezone.formattedTimezone;
     },
+    initialTimezone(timezones, value) {
+      if (!value) {
+        return undefined;
+      }
+
+      const initialTimezone = timezones.find((timezone) => timezone.identifier === value);
+
+      if (initialTimezone) {
+        return formatTimezone(initialTimezone);
+      }
+
+      return undefined;
+    },
   },
 };
 </script>
 <template>
   <div>
-    <input v-if="name" id="user_timezone" :name="name" :value="timezoneIdentifier" type="hidden" />
+    <input
+      v-if="name"
+      id="user_timezone"
+      :name="name"
+      :value="timezoneIdentifier || value"
+      type="hidden"
+    />
     <gl-dropdown :text="selectedTimezoneLabel" block lazy menu-class="gl-w-full!" v-bind="$attrs">
       <gl-search-box-by-type v-model.trim="searchTerm" v-autofocusonshow autofocus />
       <gl-dropdown-item

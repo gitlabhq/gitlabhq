@@ -8,4 +8,7 @@
 %h1.page-title.gl-font-size-h-display
   = _("Schedule a new pipeline")
 
-= render "form"
+- if Feature.enabled?(:pipeline_schedules_vue, @project)
+  #pipeline-schedules-form-new{ data: { full_path: @project.full_path } }
+- else
+  = render "form"

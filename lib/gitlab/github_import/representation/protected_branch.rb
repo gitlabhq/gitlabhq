@@ -9,7 +9,7 @@ module Gitlab
 
         attr_reader :attributes
 
-        expose_attribute :id, :allow_force_pushes
+        expose_attribute :id, :allow_force_pushes, :required_conversation_resolution
 
         # Builds a Branch Protection info from a GitHub API response.
         # Resource structure details:
@@ -20,7 +20,8 @@ module Gitlab
 
           hash = {
             id: branch_name,
-            allow_force_pushes: branch_protection.allow_force_pushes.enabled
+            allow_force_pushes: branch_protection.allow_force_pushes.enabled,
+            required_conversation_resolution: branch_protection.required_conversation_resolution.enabled
           }
 
           new(hash)

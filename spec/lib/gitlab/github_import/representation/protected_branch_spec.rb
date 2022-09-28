@@ -9,23 +9,30 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
     end
 
     context 'with ProtectedBranch' do
-      it 'includes the protected branch ID (name)' do
+      it 'includes the protected branch ID (name) attribute' do
         expect(protected_branch.id).to eq 'main'
       end
 
-      it 'includes the protected branch allow_force_pushes' do
+      it 'includes the protected branch allow_force_pushes attribute' do
         expect(protected_branch.allow_force_pushes).to eq true
+      end
+
+      it 'includes the protected branch required_conversation_resolution attribute' do
+        expect(protected_branch.required_conversation_resolution).to eq true
       end
     end
   end
 
   describe '.from_api_response' do
     let(:response) do
-      response = Struct.new(:url, :allow_force_pushes, keyword_init: true)
-      allow_force_pushes = Struct.new(:enabled, keyword_init: true)
+      response = Struct.new(:url, :allow_force_pushes, :required_conversation_resolution, keyword_init: true)
+      enabled_setting = Struct.new(:enabled, keyword_init: true)
       response.new(
         url: 'https://example.com/branches/main/protection',
-        allow_force_pushes: allow_force_pushes.new(
+        allow_force_pushes: enabled_setting.new(
+          enabled: true
+        ),
+        required_conversation_resolution: enabled_setting.new(
           enabled: true
         )
       )
@@ -41,7 +48,8 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
       let(:hash) do
         {
           'id' => 'main',
-          'allow_force_pushes' => true
+          'allow_force_pushes' => true,
+          'required_conversation_resolution' => true
         }
       end
 

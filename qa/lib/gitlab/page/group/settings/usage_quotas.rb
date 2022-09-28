@@ -5,7 +5,6 @@ module Gitlab
     module Group
       module Settings
         class UsageQuotas < Chemlab::Page
-          # TODO: Supplant with data-qa-selectors
           link :pipelines_tab
           link :storage_tab
           link :buy_ci_minutes

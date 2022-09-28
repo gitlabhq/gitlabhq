@@ -50,6 +50,7 @@ module API
           optional :provider, type: String, desc: 'The external provider'
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
+          optional :pronouns, type: String, desc: 'The pronouns of the user'
           optional :public_email, type: String, desc: 'The public email of the user'
           optional :commit_email, type: String, desc: 'The commit email, _private for private commit email'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'

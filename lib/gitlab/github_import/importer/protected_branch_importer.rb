@@ -22,6 +22,8 @@ module Gitlab
           ProtectedBranches::CreateService
             .new(project, project.creator, params)
             .execute(skip_authorization: true)
+
+          update_project_settings if default_branch?
         end
 
         private
@@ -41,6 +43,20 @@ module Gitlab
           else
             protected_branch.allow_force_pushes
           end
+        end
+
+        def default_branch?
+          protected_branch.id == project.default_branch
+        end
+
+        def update_project_settings
+          update_setting_for_only_allow_merge_if_all_discussions_are_resolved
+        end
+
+        def update_setting_for_only_allow_merge_if_all_discussions_are_resolved
+          return unless protected_branch.required_conversation_resolution
+
+          project.update(only_allow_merge_if_all_discussions_are_resolved: true)
         end
       end
     end

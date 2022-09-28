@@ -10,10 +10,10 @@
     = label_tag :password
     = password_field_tag :password, nil, { autocomplete: 'current-password', class: "form-control gl-form-input bottom", title: _("This field is required."), data: { qa_selector: 'password_field' }, required: true }
   - if !hide_remember_me && devise_mapping.rememberable?
-    .remember-me.gl-px-5
-      %label{ for: "remember_me" }
-        = check_box_tag :remember_me, '1', false, id: 'remember_me'
-        %span= _('Remember me')
+    .gl-px-5
+      = render Pajamas::CheckboxTagComponent.new(name: 'remember_me') do |c|
+        = c.label do
+          = _('Remember me')
 
   .submit-container.move-submit-down.gl-px-5.gl-pb-5
     = submit_tag submit_message, class: "gl-button btn btn-confirm", data: { qa_selector: 'sign_in_button' }

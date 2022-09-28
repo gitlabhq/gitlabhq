@@ -383,10 +383,12 @@ module Issuable
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
-      elsif %w(merged_at_desc merged_at_asc).include?(sort)
+      elsif %w(merged_at_desc merged_at_asc merged_at).include?(sort)
+        grouping_columns << MergeRequest::Metrics.arel_table[:id]
         grouping_columns << MergeRequest::Metrics.arel_table[:merged_at]
-      elsif %w(closed_at_desc closed_at_asc).include?(sort)
-        grouping_columns << MergeRequest::Metrics.arel_table[:closed_at]
+      elsif %w(closed_at_desc closed_at_asc closed_at).include?(sort)
+        grouping_columns << MergeRequest::Metrics.arel_table[:id]
+        grouping_columns << MergeRequest::Metrics.arel_table[:latest_closed_at]
       end
 
       grouping_columns

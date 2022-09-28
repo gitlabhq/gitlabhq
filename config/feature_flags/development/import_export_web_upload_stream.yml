@@ -1,8 +1,0 @@
----
-name: import_export_web_upload_stream
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93379
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370127
-milestone: '15.3'
-type: development
-group: group::import
-default_enabled: false

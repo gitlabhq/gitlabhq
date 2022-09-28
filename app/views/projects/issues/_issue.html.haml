@@ -1,10 +1,5 @@
 %li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id, qa_selector: 'issue_container', qa_issue_title: issue.title } }
   .issuable-info-container
-    - if @can_bulk_update
-      .issue-check.hidden
-        - checkbox_id = dom_id(issue, "selected")
-        %label.gl-sr-only{ for: checkbox_id }= issue.title
-        = check_box_tag checkbox_id, nil, false, 'data-id' => issue.id, class: "selected-issuable"
     .issuable-main-info
       .issue-title.title
         %span.issue-title-text.js-onboarding-issue-item{ dir: "auto" }

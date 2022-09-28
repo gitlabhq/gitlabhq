@@ -14,6 +14,7 @@ describe('Deploy freeze timezone dropdown', () => {
       propsData: {
         value: selectedTimezone,
         timezoneData: timezoneDataFixture,
+        name: 'user[timezone]',
       },
     });
 
@@ -24,8 +25,8 @@ describe('Deploy freeze timezone dropdown', () => {
 
   const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findDropdownItemByIndex = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findEmptyResultsItem = () => wrapper.findByTestId('noMatchingResults');
+  const findHiddenInput = () => wrapper.find('input');
 
   afterEach(() => {
     wrapper.destroy();
@@ -84,13 +85,27 @@ describe('Deploy freeze timezone dropdown', () => {
     });
   });
 
-  describe('Selected time zone', () => {
+  describe('Selected time zone not found', () => {
     beforeEach(() => {
-      createComponent('', 'Alaska');
+      createComponent('', 'Berlin');
+    });
+
+    it('renders empty selections', () => {
+      expect(wrapper.findComponent(GlDropdown).props().text).toBe('Select timezone');
+    });
+
+    it('preserves initial value in the associated input', () => {
+      expect(findHiddenInput().attributes('value')).toBe('Berlin');
+    });
+  });
+
+  describe('Selected time zone found', () => {
+    beforeEach(() => {
+      createComponent('', 'Europe/Berlin');
     });
 
     it('renders selected time zone as dropdown label', () => {
-      expect(findDropdown().vm.text).toBe('Alaska');
+      expect(wrapper.findComponent(GlDropdown).props().text).toBe('[UTC + 2] Berlin');
     });
   });
 });

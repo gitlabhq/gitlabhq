@@ -496,20 +496,15 @@ RSpec.describe MergeRequestsFinder do
       context 'filtering by approved by username' do
         let(:params) { { approved_by_usernames: user2.username } }
 
+        where(:sort) { [nil] + %w(milestone merged_at merged_at_desc closed_at closed_at_desc) }
+
         before do
           create(:approval, merge_request: merge_request3, user: user2)
         end
 
-        it 'returns merge requests approved by that user' do
-          merge_requests = described_class.new(user, params).execute
-
-          expect(merge_requests).to contain_exactly(merge_request3)
-        end
-
-        context 'with sorting by milestone' do
-          let(:params) { { approved_by_usernames: user2.username, sort: 'milestone' } }
-
+        with_them do
           it 'returns merge requests approved by that user' do
+            params = { approved_by_usernames: user2.username, sort: sort }
             merge_requests = described_class.new(user, params).execute
 
             expect(merge_requests).to contain_exactly(merge_request3)

@@ -13,6 +13,7 @@
     "is_admin",
     "bio",
     "location",
+    "pronouns",
     "skype",
     "linkedin",
     "twitter",

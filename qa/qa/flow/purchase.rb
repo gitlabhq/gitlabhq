@@ -45,7 +45,7 @@ module QA
         Page::Group::Menu.perform(&:go_to_usage_quotas)
         Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quota|
           usage_quota.storage_tab
-          usage_quota.buy_storage
+          usage_quota.purchase_more_storage
         end
 
         # Purchase checkout opens a new tab

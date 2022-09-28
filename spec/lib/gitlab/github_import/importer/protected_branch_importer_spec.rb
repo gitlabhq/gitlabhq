@@ -5,11 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
   subject(:importer) { described_class.new(github_protected_branch, project, client) }
 
+  let(:branch_name) { 'protection' }
   let(:allow_force_pushes_on_github) { true }
+  let(:required_conversation_resolution) { true }
   let(:github_protected_branch) do
     Gitlab::GithubImport::Representation::ProtectedBranch.new(
-      id: 'protection',
-      allow_force_pushes: allow_force_pushes_on_github
+      id: branch_name,
+      allow_force_pushes: allow_force_pushes_on_github,
+      required_conversation_resolution: required_conversation_resolution
     )
   end
 
@@ -44,6 +47,12 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
         expect { importer.execute }.to change(ProtectedBranch, :count).by(1)
           .and change(ProtectedBranch::PushAccessLevel, :count).by(1)
           .and change(ProtectedBranch::MergeAccessLevel, :count).by(1)
+      end
+    end
+
+    shared_examples 'does not change project attributes' do
+      it 'does not change only_allow_merge_if_all_discussions_are_resolved' do
+        expect { importer.execute }.not_to change(project, :only_allow_merge_if_all_discussions_are_resolved)
       end
     end
 
@@ -86,6 +95,40 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
       let(:expected_allow_force_push) { true }
 
       it_behaves_like 'create branch protection by the strictest ruleset'
+    end
+
+    context "when branch is default" do
+      before do
+        allow(project).to receive(:default_branch).and_return(branch_name)
+      end
+
+      context 'when required_conversation_resolution rule is enabled' do
+        let(:required_conversation_resolution) { true }
+
+        it 'changes project settings' do
+          expect { importer.execute }.to change(project, :only_allow_merge_if_all_discussions_are_resolved).to(true)
+        end
+      end
+
+      context 'when required_conversation_resolution rule is disabled' do
+        let(:required_conversation_resolution) { false }
+
+        it_behaves_like 'does not change project attributes'
+      end
+    end
+
+    context "when branch is not default" do
+      context 'when required_conversation_resolution rule is enabled' do
+        let(:required_conversation_resolution) { true }
+
+        it_behaves_like 'does not change project attributes'
+      end
+
+      context 'when required_conversation_resolution rule is disabled' do
+        let(:required_conversation_resolution) { false }
+
+        it_behaves_like 'does not change project attributes'
+      end
     end
   end
 end

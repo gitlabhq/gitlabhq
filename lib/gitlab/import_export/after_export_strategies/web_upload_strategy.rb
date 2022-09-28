@@ -26,10 +26,10 @@ module Gitlab
           log_info(message: "Started uploading project", export_size: export_size)
 
           upload_duration = Benchmark.realtime do
-            if Feature.enabled?(:import_export_web_upload_stream) && !project.export_file.file_storage?
-              upload_project_as_remote_stream
-            else
+            if project.export_file.file_storage?
               handle_response_error(send_file)
+            else
+              upload_project_as_remote_stream
             end
           end
 

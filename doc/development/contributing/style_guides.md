@@ -153,6 +153,22 @@ to add it to our [GitLab Styles](https://gitlab.com/gitlab-org/gitlab-styles) ge
 If the Cop targets rules that only apply to the main GitLab application,
 it should be added to [GitLab](https://gitlab.com/gitlab-org/gitlab) instead.
 
+### Cop grace period
+
+A cop is in a "grace period" if it is enabled and has `Details: grace period` defined in its TODO YAML configuration.
+
+On the default branch, all of the offenses from cops in the ["grace period"](../rake_tasks.md#run-rubocop-in-graceful-mode) will not fail the RuboCop CI job. The job will notify Slack in the `#f_rubocop` channel when offenses have been silenced in the scheduled pipeline. However, on merge request pipelines, the RuboCop job will fail.
+
+A grace period can safely be lifted as soon as there are no warnings for 2 weeks in the `#f_rubocop` channel on Slack.
+
+### Enabling a new cop
+
+1. Enable the new cop in `.rubocop.yml` (if not already done via [`gitlab-styles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles)).
+1. [Generate TODOs for the new cop](../rake_tasks.md#generate-initial-rubocop-todo-list).
+1. [Set the new cop to "grace period"](#cop-grace-period).
+1. Create an issue to fix TODOs and encourage Community contributions (via ~"good for new contributors" and/or ~"Seeking community contributions"). [See some examples](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=good%20for%20new%20contributors&label_name%5B%5D=static%20code%20analysis&first_page_size=20).
+1. Create an issue to remove "grace period" after 2 weeks silence in `#f_rubocop` Slack channel. ([See an example](https://gitlab.com/gitlab-org/gitlab/-/issues/374903).)
+
 #### RuboCop node pattern
 
 When creating [node patterns](https://docs.rubocop.org/rubocop-ast/node_pattern.html) to match
