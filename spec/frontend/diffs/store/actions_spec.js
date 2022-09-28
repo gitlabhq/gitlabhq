@@ -13,7 +13,7 @@ import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
 import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -54,7 +54,7 @@ describe('DiffsStoreActions', () => {
     ['requestAnimationFrame', 'requestIdleCallback'].forEach((method) => {
       global[method] = originalMethods[method];
     });
-    createFlash.mockClear();
+    createAlert.mockClear();
     mock.restore();
   });
 
@@ -254,8 +254,8 @@ describe('DiffsStoreActions', () => {
       mock.onGet(endpointCoverage).reply(400);
 
       await testAction(diffActions.fetchCoverageFiles, {}, { endpointCoverage }, [], []);
-      expect(createFlash).toHaveBeenCalledTimes(1);
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledWith({
         message: expect.stringMatching('Something went wrong'),
       });
     });

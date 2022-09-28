@@ -2,7 +2,7 @@
 import { debounce } from 'lodash';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
 import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IssuableType } from '~/issues/constants';
 
@@ -151,7 +151,7 @@ export default {
         return data.workspace?.issuable;
       },
       error() {
-        createFlash({ message: __('Error fetching labels.') });
+        createAlert({ message: __('Error fetching labels.') });
       },
       subscribeToMore: {
         document() {
@@ -275,7 +275,7 @@ export default {
           });
         })
         .catch((error) =>
-          createFlash({
+          createAlert({
             message: __('An error occurred while updating labels.'),
             captureError: true,
             error,

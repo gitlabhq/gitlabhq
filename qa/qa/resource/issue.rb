@@ -104,6 +104,33 @@ module QA
         api_post_to(api_comments_path, body: body, confidential: confidential)
       end
 
+      # Issue label events
+      #
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def label_events(auto_paginate: false, attempts: 0)
+        events("label", auto_paginate: auto_paginate, attempts: attempts)
+      end
+
+      # Issue state events
+      #
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def state_events(auto_paginate: false, attempts: 0)
+        events("state", auto_paginate: auto_paginate, attempts: attempts)
+      end
+
+      # Issue milestone events
+      #
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def milestone_events(auto_paginate: false, attempts: 0)
+        events("milestone", auto_paginate: auto_paginate, attempts: attempts)
+      end
+
       protected
 
       # Return subset of fields for comparing issues
@@ -132,6 +159,23 @@ module QA
           :task_completion_status,
           :closed_at,
           :created_at
+        )
+      end
+
+      private
+
+      # Issue events
+      #
+      # @param [String] name event name
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def events(name, auto_paginate:, attempts:)
+        return parse_body(api_get_from("#{api_get_path}/resource_#{name}_events")) unless auto_paginate
+
+        auto_paginated_response(
+          Runtime::API::Request.new(api_client, "#{api_get_path}/resource_#{name}_events", per_page: '100').url,
+          attempts: attempts
         )
       end
     end

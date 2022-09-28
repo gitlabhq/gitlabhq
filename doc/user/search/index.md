@@ -13,20 +13,40 @@ Both types of search are the same, except when you are searching through code.
 - When you use basic search to search code, your search includes one project at a time.
 - When you use [advanced search](advanced_search.md) to search code, your search includes all projects at once.
 
-## Basic search
+## Global search scopes **(FREE SELF)**
 
-Use basic search to find:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
 
-- Projects
-- Issues
-- Merge requests
-- Milestones
-- Users
-- Epics (when searching in a group only)
-- Code
-- Comments
-- Commits
-- Wiki
+To improve the performance of your instance's global search, a GitLab administrator
+can limit the search scope by disabling the following [`ops` feature flags](../../development/feature_flags/index.md#ops-type).
+
+| Scope | Feature flag | Description |
+|--|--|--|
+| Code | `global_search_code_tab` | When enabled, global search includes code. |
+| Commits | `global_search_commits_tab` | When enabled, global search includes commits. |
+| Issues | `global_search_issues_tab` | When enabled, global search includes issues. |
+| Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests. |
+| Users | `global_search_users_tab` | When enabled, global search includes users. |
+| Wiki | `global_search_wiki_tab` | When enabled, global search includes project wikis (not [group wikis](../project/wiki/group.md)). |
+
+All global search scopes are enabled by default on GitLab.com
+and self-managed instances.
+
+## Global search validation
+
+Global search ignores and logs as abusive any search with:
+
+- Fewer than 2 characters
+- A term longer than 100 characters (URL search terms must not exceed 200 characters)
+- A stop word only (for example, `the`, `and`, or `if`)
+- An unknown `scope`
+- `group_id` or `project_id` that is not completely numeric
+- `repository_ref` or `project_ref` with special characters not allowed by [Git refname](https://git-scm.com/docs/git-check-ref-format)
+
+Global search only flags with an error any search that includes more than:
+
+- 4096 characters
+- 64 terms
 
 ## Perform a search
 

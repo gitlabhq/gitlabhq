@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { workspaceLabelsQueries } from '~/sidebar/constants';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
 import createLabelMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/create_label.mutation.graphql';
@@ -202,7 +202,7 @@ describe('DropdownContentsCreateView', () => {
     });
   });
 
-  it('calls createFlash is mutation has a user-recoverable error', async () => {
+  it('calls createAlert is mutation has a user-recoverable error', async () => {
     createComponent({ mutationHandler: createLabelUserRecoverableErrorHandler });
     fillLabelAttributes();
     await nextTick();
@@ -210,10 +210,10 @@ describe('DropdownContentsCreateView', () => {
     findCreateButton().vm.$emit('click');
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
-  it('calls createFlash is mutation was rejected', async () => {
+  it('calls createAlert is mutation was rejected', async () => {
     createComponent({ mutationHandler: createLabelErrorHandler });
     fillLabelAttributes();
     await nextTick();
@@ -221,7 +221,7 @@ describe('DropdownContentsCreateView', () => {
     findCreateButton().vm.$emit('click');
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   it('displays error in alert if label title is already taken', async () => {

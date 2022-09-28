@@ -324,8 +324,11 @@ module QA
         result = parse_body(response)
 
         if result[:import_status] == "failed"
-          Runtime::Logger.error("Import failed: #{result[:import_error]}")
-          Runtime::Logger.error("Failed relations: #{result[:failed_relations]}")
+          Runtime::Logger.error(<<~ERR)
+            Import of project '#{full_path}' failed!
+              error: '#{result[:import_error]}'
+              failed relations: '#{result[:failed_relations]}'
+          ERR
         end
 
         result

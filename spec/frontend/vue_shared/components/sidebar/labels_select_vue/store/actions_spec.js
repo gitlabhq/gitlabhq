@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/vue_shared/components/sidebar/labels_select_vue/store/actions';
 import * as types from '~/vue_shared/components/sidebar/labels_select_vue/store/mutation_types';
@@ -102,7 +102,7 @@ describe('LabelsSelect Actions', () => {
     it('shows flash error', () => {
       actions.receiveLabelsFailure({ commit: () => {} });
 
-      expect(createFlash).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
+      expect(createAlert).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
     });
   });
 
@@ -186,7 +186,7 @@ describe('LabelsSelect Actions', () => {
     it('shows flash error', () => {
       actions.receiveCreateLabelFailure({ commit: () => {} });
 
-      expect(createFlash).toHaveBeenCalledWith({ message: 'Error creating label.' });
+      expect(createAlert).toHaveBeenCalledWith({ message: 'Error creating label.' });
     });
   });
 

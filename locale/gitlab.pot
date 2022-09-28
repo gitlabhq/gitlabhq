@@ -138,6 +138,11 @@ msgid_plural "%d additional committers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d additional user"
+msgid_plural "%d additional users"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d approver"
 msgid_plural "%d approvers"
 msgstr[0] ""
@@ -6785,6 +6790,9 @@ msgstr ""
 msgid "BranchRules|Create wildcard: %{searchTerm}"
 msgstr ""
 
+msgid "BranchRules|Groups"
+msgstr ""
+
 msgid "BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}"
 msgstr ""
 
@@ -6800,7 +6808,13 @@ msgstr ""
 msgid "BranchRules|Require approval from code owners."
 msgstr ""
 
+msgid "BranchRules|Roles"
+msgstr ""
+
 msgid "BranchRules|Target Branch"
+msgstr ""
+
+msgid "BranchRules|Users"
 msgstr ""
 
 msgid "BranchRules|default"

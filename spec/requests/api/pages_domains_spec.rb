@@ -259,7 +259,15 @@ RSpec.describe API::PagesDomains do
 
     shared_examples_for 'post pages domains' do
       it 'creates a new pages domain' do
-        post api(route, user), params: params
+        expect { post api(route, user), params: params }
+          .to publish_event(PagesDomains::PagesDomainCreatedEvent)
+          .with(
+            project_id: project.id,
+            namespace_id: project.namespace.id,
+            root_namespace_id: project.root_namespace.id,
+            domain: params[:domain]
+          )
+
         pages_domain = PagesDomain.find_by(domain: json_response['domain'])
 
         expect(response).to have_gitlab_http_status(:created)
@@ -541,7 +549,15 @@ RSpec.describe API::PagesDomains do
   describe 'DELETE /projects/:project_id/pages/domains/:domain' do
     shared_examples_for 'delete pages domain' do
       it 'deletes a pages domain' do
-        delete api(route_domain, user)
+        expect { delete api(route_domain, user) }
+          .to change(PagesDomain, :count).by(-1)
+          .and publish_event(PagesDomains::PagesDomainDeletedEvent)
+          .with(
+            project_id: project.id,
+            namespace_id: project.namespace.id,
+            root_namespace_id: project.root_namespace.id,
+            domain: pages_domain.domain
+          )
 
         expect(response).to have_gitlab_http_status(:no_content)
       end

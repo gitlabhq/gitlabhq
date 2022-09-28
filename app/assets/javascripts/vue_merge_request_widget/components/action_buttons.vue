@@ -74,7 +74,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-display-flex">
     <gl-dropdown
       v-if="tertiaryButtons.length"
       :text="dropdownLabel"

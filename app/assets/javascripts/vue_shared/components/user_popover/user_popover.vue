@@ -10,7 +10,7 @@ import {
   GlAvatarLabeled,
 } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';
@@ -141,7 +141,7 @@ export default {
         await followUser(this.user.id);
         this.$emit('follow');
       } catch (error) {
-        createFlash({
+        createAlert({
           message: I18N_ERROR_FOLLOW,
           error,
           captureError: true,
@@ -161,7 +161,7 @@ export default {
         await unfollowUser(this.user.id);
         this.$emit('unfollow');
       } catch (error) {
-        createFlash({
+        createAlert({
           message: I18N_ERROR_UNFOLLOW,
           error,
           captureError: true,

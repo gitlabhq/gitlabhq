@@ -4,6 +4,7 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import eventHub from '../../event_hub';
 import MRWidgetService from '../../services/mr_widget_service';
 import {
   MANUAL_DEPLOY,
@@ -134,6 +135,7 @@ export default {
             });
           })
           .finally(() => {
+            eventHub.$emit('FetchDeployments');
             this.actionInProgress = null;
           });
       }

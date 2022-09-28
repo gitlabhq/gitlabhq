@@ -12,7 +12,7 @@ import {
 } from '~/editor/constants';
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 import SourceEditor from '~/editor/source_editor';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import syntaxHighlight from '~/syntax_highlight';
 import { spyOnApi } from './helpers';
@@ -279,7 +279,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       mockAxios.onPost().reply(500);
 
       await fetchPreview();
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 

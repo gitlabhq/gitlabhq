@@ -10,7 +10,7 @@ import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DiffContent from 'jh_else_ce/diffs/components/diff_content.vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
@@ -309,7 +309,7 @@ export default {
         })
         .catch(() => {
           idState.isLoadingCollapsedDiff = false;
-          createFlash({
+          createAlert({
             message: this.$options.i18n.genericError,
           });
         });

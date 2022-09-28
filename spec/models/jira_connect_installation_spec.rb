@@ -95,4 +95,46 @@ RSpec.describe JiraConnectInstallation do
       end
     end
   end
+
+  describe 'audience_url' do
+    let_it_be(:installation) { create(:jira_connect_installation) }
+
+    subject(:audience) { installation.audience_url }
+
+    it { is_expected.to eq(nil) }
+
+    context 'when proxy installation' do
+      let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://example.com') }
+
+      it { is_expected.to eq('https://example.com/-/jira_connect') }
+    end
+  end
+
+  describe 'audience_installed_event_url' do
+    let_it_be(:installation) { create(:jira_connect_installation) }
+
+    subject(:audience) { installation.audience_installed_event_url }
+
+    it { is_expected.to eq(nil) }
+
+    context 'when proxy installation' do
+      let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://example.com') }
+
+      it { is_expected.to eq('https://example.com/-/jira_connect/events/installed') }
+    end
+  end
+
+  describe 'proxy?' do
+    let_it_be(:installation) { create(:jira_connect_installation) }
+
+    subject { installation.proxy? }
+
+    it { is_expected.to eq(false) }
+
+    context 'when instance_url is present' do
+      let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://example.com') }
+
+      it { is_expected.to eq(true) }
+    end
+  end
 end

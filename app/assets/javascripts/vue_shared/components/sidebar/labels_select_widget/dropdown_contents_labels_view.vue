@@ -1,7 +1,7 @@
 <script>
 import { GlDropdownForm, GlDropdownItem, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '~/sidebar/constants';
@@ -62,7 +62,7 @@ export default {
       },
       update: (data) => data.workspace?.labels?.nodes || [],
       error() {
-        createFlash({ message: __('Error fetching labels.') });
+        createAlert({ message: __('Error fetching labels.') });
       },
     },
   },

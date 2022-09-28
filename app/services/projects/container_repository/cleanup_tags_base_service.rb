@@ -60,23 +60,6 @@ module Projects
         service.execute(container_repository)
       end
 
-      def can_destroy?
-        return true if container_expiration_policy
-
-        can?(current_user, :destroy_container_image, project)
-      end
-
-      def valid_regex?
-        %w[name_regex_delete name_regex name_regex_keep].each do |param_name|
-          regex = params[param_name]
-          ::Gitlab::UntrustedRegexp.new(regex) unless regex.blank?
-        end
-        true
-      rescue RegexpError => e
-        ::Gitlab::ErrorTracking.log_exception(e, project_id: project.id)
-        false
-      end
-
       def older_than
         params['older_than']
       end

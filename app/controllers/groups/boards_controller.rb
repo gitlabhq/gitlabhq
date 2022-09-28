@@ -20,16 +20,6 @@ class Groups::BoardsController < Groups::ApplicationController
 
   private
 
-  def board_klass
-    Board
-  end
-
-  def boards_finder
-    strong_memoize :boards_finder do
-      Boards::BoardsFinder.new(parent, current_user)
-    end
-  end
-
   def board_finder
     strong_memoize :board_finder do
       Boards::BoardsFinder.new(parent, current_user, board_id: params[:id])

@@ -1,53 +1,5 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'handling invalid params' do |service_response_extra: {}, supports_caching: false|
-  context 'when no params are specified' do
-    let(:params) { {} }
-
-    it_behaves_like 'not removing anything',
-                    service_response_extra: service_response_extra,
-                    supports_caching: supports_caching
-  end
-
-  context 'with invalid regular expressions' do
-    shared_examples 'handling an invalid regex' do
-      it 'keeps all tags' do
-        expect(Projects::ContainerRepository::DeleteTagsService)
-          .not_to receive(:new)
-        expect_no_caching unless supports_caching
-
-        subject
-      end
-
-      it { is_expected.to eq(status: :error, message: 'invalid regex') }
-
-      it 'calls error tracking service' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
-
-        subject
-      end
-    end
-
-    context 'when name_regex_delete is invalid' do
-      let(:params) { { 'name_regex_delete' => '*test*' } }
-
-      it_behaves_like 'handling an invalid regex'
-    end
-
-    context 'when name_regex is invalid' do
-      let(:params) { { 'name_regex' => '*test*' } }
-
-      it_behaves_like 'handling an invalid regex'
-    end
-
-    context 'when name_regex_keep is invalid' do
-      let(:params) { { 'name_regex_keep' => '*test*' } }
-
-      it_behaves_like 'handling an invalid regex'
-    end
-  end
-end
-
 RSpec.shared_examples 'when regex matching everything is specified' do
   |service_response_extra: {}, supports_caching: false, delete_expectations:|
   let(:params) do
@@ -225,20 +177,6 @@ RSpec.shared_examples 'when running a container_expiration_policy' do
       expect_no_caching unless supports_caching
 
       is_expected.to eq(expected_service_response(deleted: delete_expectations.flatten).merge(service_response_extra))
-    end
-  end
-
-  context 'without container_expiration_policy param' do
-    let(:params) do
-      {
-        'name_regex_delete' => '.*',
-        'keep_n' => 1,
-        'older_than' => '1 day'
-      }
-    end
-
-    it 'fails' do
-      is_expected.to eq(status: :error, message: 'access denied')
     end
   end
 end

@@ -223,11 +223,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :boards, only: [:index, :show, :create, :update, :destroy], constraints: { id: /\d+/ } do
-          collection do
-            get :recent
-          end
-        end
+        resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
 
         get 'releases/permalink/latest(/)(*suffix_path)', to: 'releases#latest_permalink', as: :latest_release_permalink, format: false
 

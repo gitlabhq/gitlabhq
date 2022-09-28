@@ -368,12 +368,13 @@ describe('MrWidgetOptions', () => {
 
       describe('bindEventHubListeners', () => {
         it.each`
-          event                        | method                   | methodArgs
-          ${'MRWidgetUpdateRequested'} | ${'checkStatus'}         | ${(x) => [x]}
-          ${'MRWidgetRebaseSuccess'}   | ${'checkStatus'}         | ${(x) => [x, true]}
-          ${'FetchActionsContent'}     | ${'fetchActionsContent'} | ${() => []}
-          ${'EnablePolling'}           | ${'resumePolling'}       | ${() => []}
-          ${'DisablePolling'}          | ${'stopPolling'}         | ${() => []}
+          event                        | method                        | methodArgs
+          ${'MRWidgetUpdateRequested'} | ${'checkStatus'}              | ${(x) => [x]}
+          ${'MRWidgetRebaseSuccess'}   | ${'checkStatus'}              | ${(x) => [x, true]}
+          ${'FetchActionsContent'}     | ${'fetchActionsContent'}      | ${() => []}
+          ${'EnablePolling'}           | ${'resumePolling'}            | ${() => []}
+          ${'DisablePolling'}          | ${'stopPolling'}              | ${() => []}
+          ${'FetchDeployments'}        | ${'fetchPreMergeDeployments'} | ${() => []}
         `('should bind to $event', ({ event, method, methodArgs }) => {
           jest.spyOn(wrapper.vm, method).mockImplementation();
 

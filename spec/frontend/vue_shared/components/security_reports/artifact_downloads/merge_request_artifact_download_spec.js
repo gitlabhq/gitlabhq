@@ -6,7 +6,7 @@ import {
   expectedDownloadDropdownPropsWithTitle,
   securityReportMergeRequestDownloadPathsQueryResponse,
 } from 'jest/vue_shared/security_reports/mock_data';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Component from '~/vue_shared/security_reports/components/artifact_downloads/merge_request_artifact_download.vue';
 import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
 import {
@@ -93,8 +93,8 @@ describe('Merge request artifact Download', () => {
       });
     });
 
-    it('calls createFlash correctly', () => {
-      expect(createFlash).toHaveBeenCalledWith({
+    it('calls createAlert correctly', () => {
+      expect(createAlert).toHaveBeenCalledWith({
         message: Component.i18n.apiError,
         captureError: true,
         error: expect.any(Error),

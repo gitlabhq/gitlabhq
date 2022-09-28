@@ -1,7 +1,7 @@
 import { KeyMod, KeyCode } from 'monaco-editor';
 import { debounce } from 'lodash';
 import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import syntaxHighlight from '~/syntax_highlight';
@@ -152,7 +152,7 @@ export class EditorMarkdownPreviewExtension {
         syntaxHighlight(previewEl.querySelectorAll('.js-syntax-highlight'));
         previewEl.style.display = 'block';
       })
-      .catch(() => createFlash(BLOB_PREVIEW_ERROR));
+      .catch(() => createAlert(BLOB_PREVIEW_ERROR));
   }
 
   setupPreviewAction(instance) {

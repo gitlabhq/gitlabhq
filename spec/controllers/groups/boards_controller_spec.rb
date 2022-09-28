@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Groups::BoardsController do
-  let(:group) { create(:group) }
-  let(:user)  { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user)  { create(:user) }
+
+  before_all do
+    group.add_maintainer(user)
+  end
 
   before do
-    group.add_maintainer(user)
     sign_in(user)
   end
 
@@ -57,46 +60,17 @@ RSpec.describe Groups::BoardsController do
       end
     end
 
-    context 'when format is JSON' do
-      it 'return an array with one group board' do
-        create(:board, group: group)
-
-        expect(Boards::VisitsFinder).not_to receive(:new)
-
-        list_boards format: :json
-
-        expect(response).to match_response_schema('boards')
-        expect(json_response.length).to eq 1
-      end
-
-      context 'with unauthorized user' do
-        before do
-          expect(Ability).to receive(:allowed?).with(user, :log_in, :global).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_issue_board, group).and_return(false)
-        end
-
-        it 'returns a not found 404 response' do
-          list_boards format: :json
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(response.media_type).to eq 'application/json'
-        end
-      end
-    end
-
     it_behaves_like 'disabled when using an external authorization service' do
       subject { list_boards }
     end
 
-    def list_boards(format: :html)
-      get :index, params: { group_id: group }, format: format
+    def list_boards
+      get :index, params: { group_id: group }
     end
   end
 
   describe 'GET show' do
-    let!(:board) { create(:board, group: group) }
+    let_it_be(:board) { create(:board, group: group) }
 
     context 'when format is HTML' do
       it 'renders template' do
@@ -123,41 +97,15 @@ RSpec.describe Groups::BoardsController do
       end
 
       context 'when user is signed out' do
-        let(:group) { create(:group, :public) }
+        let(:public_board) { create(:board, group: create(:group, :public)) }
 
         it 'does not save visit' do
           sign_out(user)
 
-          expect { read_board board: board }.to change(BoardGroupRecentVisit, :count).by(0)
+          expect { read_board board: public_board }.to change(BoardGroupRecentVisit, :count).by(0)
 
           expect(response).to render_template :show
           expect(response.media_type).to eq 'text/html'
-        end
-      end
-    end
-
-    context 'when format is JSON' do
-      it 'returns project board' do
-        expect(Boards::Visits::CreateService).not_to receive(:new)
-
-        read_board board: board, format: :json
-
-        expect(response).to match_response_schema('board')
-      end
-
-      context 'with unauthorized user' do
-        before do
-          expect(Ability).to receive(:allowed?).with(user, :log_in, :global).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(true)
-          allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(false)
-        end
-
-        it 'returns a not found 404 response' do
-          read_board board: board, format: :json
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(response.media_type).to eq 'application/json'
         end
       end
     end
@@ -166,7 +114,7 @@ RSpec.describe Groups::BoardsController do
       it 'returns a not found 404 response' do
         another_board = create(:board)
 
-        read_board board: another_board
+        get :show, params: { group_id: group, id: another_board.to_param }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -176,12 +124,8 @@ RSpec.describe Groups::BoardsController do
       subject { read_board board: board }
     end
 
-    def read_board(board:, format: :html)
-      get :show, params: {
-                   group_id: group,
-                   id: board.to_param
-                 },
-                 format: format
+    def read_board(board:)
+      get :show, params: { group_id: board.group, id: board.to_param }
     end
   end
 end

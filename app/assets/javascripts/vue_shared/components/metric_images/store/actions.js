@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import * as types from './mutation_types';
 
@@ -11,7 +11,7 @@ export const fetchImagesFactory = (service) => async ({ state, commit }) => {
     commit(types.RECEIVE_METRIC_IMAGES_SUCCESS, response);
   } catch (error) {
     commit(types.RECEIVE_METRIC_IMAGES_ERROR);
-    createFlash({ message: s__('MetricImages|There was an issue loading metric images.') });
+    createAlert({ message: s__('MetricImages|There was an issue loading metric images.') });
   }
 };
 
@@ -34,7 +34,7 @@ export const uploadImageFactory = (service) => async (
     commit(types.RECEIVE_METRIC_UPLOAD_SUCCESS, response);
   } catch (error) {
     commit(types.RECEIVE_METRIC_UPLOAD_ERROR);
-    createFlash({ message: s__('MetricImages|There was an issue uploading your image.') });
+    createAlert({ message: s__('MetricImages|There was an issue uploading your image.') });
   }
 };
 
@@ -57,7 +57,7 @@ export const updateImageFactory = (service) => async (
     commit(types.RECEIVE_METRIC_UPDATE_SUCCESS, response);
   } catch (error) {
     commit(types.RECEIVE_METRIC_UPLOAD_ERROR);
-    createFlash({ message: s__('MetricImages|There was an issue updating your image.') });
+    createAlert({ message: s__('MetricImages|There was an issue updating your image.') });
   }
 };
 
@@ -68,7 +68,7 @@ export const deleteImageFactory = (service) => async ({ state, commit }, imageId
     await service.deleteMetricImage({ imageId, id: projectId, modelIid });
     commit(types.RECEIVE_METRIC_DELETE_SUCCESS, imageId);
   } catch (error) {
-    createFlash({ message: s__('MetricImages|There was an issue deleting the image.') });
+    createAlert({ message: s__('MetricImages|There was an issue deleting the image.') });
   }
 };
 

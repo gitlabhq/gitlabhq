@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import EditEnvironment from '~/environments/components/edit_environment.vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 
@@ -85,7 +85,7 @@ describe('~/environments/components/edit.vue', () => {
 
     await submitForm(expected, [400, { message: ['uh oh!'] }]);
 
-    expect(createFlash).toHaveBeenCalledWith({ message: 'uh oh!' });
+    expect(createAlert).toHaveBeenCalledWith({ message: 'uh oh!' });
     expect(showsLoading()).toBe(false);
   });
 

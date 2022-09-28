@@ -506,6 +506,13 @@ export default {
       eventHub.$on('DisablePolling', () => {
         this.stopPolling();
       });
+
+      eventHub.$on('FetchDeployments', () => {
+        this.fetchPreMergeDeployments();
+        if (this.shouldRenderMergedPipeline) {
+          this.fetchPostMergeDeployments();
+        }
+      });
     },
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;

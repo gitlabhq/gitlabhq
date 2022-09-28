@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective, GlSafeHtmlDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mapActions } from 'vuex';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import { UNFOLD_COUNT, INLINE_DIFF_LINES_KEY } from '../constants';
 import * as utils from '../store/utils';
@@ -92,7 +92,7 @@ export default {
     ) {
       this.loadMoreLines({ endpoint, params, lineNumbers, fileHash, isExpandDown, nextLineNumbers })
         .catch(() => {
-          createFlash({
+          createAlert({
             message: s__('Diffs|Something went wrong while fetching diff lines.'),
           });
         })

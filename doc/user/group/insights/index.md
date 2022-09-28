@@ -35,7 +35,7 @@ You can also create custom Insights charts that are more relevant for your group
 
 To customize your Insights:
 
-1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md#writing-your-gitlabinsightsyml)
+1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md#configure-project-insights)
 in a project that belongs to your group.
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.

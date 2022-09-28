@@ -63,9 +63,15 @@ RSpec.describe Projects::PagesDomainsController do
 
   describe 'POST create' do
     it "creates a new pages domain" do
-      expect do
-        post(:create, params: request_params.merge(pages_domain: pages_domain_params))
-      end.to change { PagesDomain.count }.by(1)
+      expect { post(:create, params: request_params.merge(pages_domain: pages_domain_params)) }
+        .to change { PagesDomain.count }.by(1)
+        .and publish_event(PagesDomains::PagesDomainCreatedEvent)
+          .with(
+            project_id: project.id,
+            namespace_id: project.namespace.id,
+            root_namespace_id: project.root_namespace.id,
+            domain: pages_domain_params[:domain]
+          )
 
       created_domain = PagesDomain.reorder(:id).last
 
@@ -213,9 +219,15 @@ RSpec.describe Projects::PagesDomainsController do
 
   describe 'DELETE destroy' do
     it "deletes the pages domain" do
-      expect do
-        delete(:destroy, params: request_params.merge(id: pages_domain.domain))
-      end.to change { PagesDomain.count }.by(-1)
+      expect { delete(:destroy, params: request_params.merge(id: pages_domain.domain)) }
+        .to change(PagesDomain, :count).by(-1)
+        .and publish_event(PagesDomains::PagesDomainDeletedEvent)
+        .with(
+          project_id: project.id,
+          namespace_id: project.namespace.id,
+          root_namespace_id: project.root_namespace.id,
+          domain: pages_domain.domain
+        )
 
       expect(response).to redirect_to(project_pages_path(project))
     end

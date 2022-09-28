@@ -14,7 +14,7 @@ import {
   sastDiffSuccessMock,
   secretDetectionDiffSuccessMock,
 } from 'jest/vue_shared/security_reports/mock_data';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import HelpIcon from '~/vue_shared/security_reports/components/help_icon.vue';
 import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
@@ -135,8 +135,8 @@ describe('Security reports app', () => {
       });
     });
 
-    it('calls createFlash correctly', () => {
-      expect(createFlash).toHaveBeenCalledWith({
+    it('calls createAlert correctly', () => {
+      expect(createAlert).toHaveBeenCalledWith({
         message: SecurityReportsApp.i18n.apiError,
         captureError: true,
         error: expect.any(Error),

@@ -4,7 +4,7 @@ import actionsFactory from '~/vue_shared/components/metric_images/store/actions'
 import * as types from '~/vue_shared/components/metric_images/store/mutation_types';
 import createStore from '~/vue_shared/components/metric_images/store';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { fileList, initialData } from '../mock_data';
 
@@ -35,7 +35,7 @@ describe('Metrics tab store actions', () => {
   });
 
   afterEach(() => {
-    createFlash.mockClear();
+    createAlert.mockClear();
   });
 
   describe('fetching metric images', () => {
@@ -61,7 +61,7 @@ describe('Metrics tab store actions', () => {
         [{ type: types.REQUEST_METRIC_IMAGES }, { type: types.RECEIVE_METRIC_IMAGES_ERROR }],
         [],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 
@@ -98,7 +98,7 @@ describe('Metrics tab store actions', () => {
         [{ type: types.REQUEST_METRIC_UPLOAD }, { type: types.RECEIVE_METRIC_UPLOAD_ERROR }],
         [],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 
@@ -129,7 +129,7 @@ describe('Metrics tab store actions', () => {
         [{ type: types.REQUEST_METRIC_UPLOAD }, { type: types.RECEIVE_METRIC_UPLOAD_ERROR }],
         [],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 

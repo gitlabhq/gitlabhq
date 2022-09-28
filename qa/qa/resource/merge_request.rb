@@ -186,6 +186,33 @@ module QA
         api_post_to(api_comments_path, body: body)
       end
 
+      # Merge request label events
+      #
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def label_events(auto_paginate: false, attempts: 0)
+        events("label", auto_paginate: auto_paginate, attempts: attempts)
+      end
+
+      # Merge request state events
+      #
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def state_events(auto_paginate: false, attempts: 0)
+        events("state", auto_paginate: auto_paginate, attempts: attempts)
+      end
+
+      # Merge request milestone events
+      #
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def milestone_events(auto_paginate: false, attempts: 0)
+        events("milestone", auto_paginate: auto_paginate, attempts: attempts)
+      end
+
       # Return subset of fields for comparing merge requests
       #
       # @return [Hash]
@@ -238,6 +265,21 @@ module QA
       # @return [Boolean]
       def create_target?
         !(project.initialize_with_readme && target_branch == project.default_branch) && target_new_branch
+      end
+
+      # Merge request events
+      #
+      # @param [String] name event name
+      # @param [Boolean] auto_paginate
+      # @param [Integer] attempts
+      # @return [Array<Hash>]
+      def events(name, auto_paginate:, attempts:)
+        return parse_body(api_get_from("#{api_get_path}/resource_#{name}_events")) unless auto_paginate
+
+        auto_paginated_response(
+          Runtime::API::Request.new(api_client, "#{api_get_path}/resource_#{name}_events", per_page: '100').url,
+          attempts: attempts
+        )
       end
     end
   end

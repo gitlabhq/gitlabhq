@@ -11,6 +11,7 @@ import {
   REDEPLOYING,
   STOPPING,
 } from '~/vue_merge_request_widget/components/deployment/constants';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 import DeploymentActions from '~/vue_merge_request_widget/components/deployment/deployment_actions.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import {
@@ -192,6 +193,7 @@ describe('DeploymentAction component', () => {
               describe('it should call the executeAction method', () => {
                 beforeEach(async () => {
                   jest.spyOn(wrapper.vm, 'executeAction').mockImplementation();
+                  jest.spyOn(eventHub, '$emit');
 
                   await waitForPromises();
 
@@ -206,11 +208,16 @@ describe('DeploymentAction component', () => {
                     actionButtonMocks[configConst],
                   );
                 });
+
+                it('emits the FetchDeployments event', () => {
+                  expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+                });
               });
 
               describe('when executeInlineAction errors', () => {
                 beforeEach(async () => {
                   executeActionSpy.mockRejectedValueOnce();
+                  jest.spyOn(eventHub, '$emit');
 
                   await waitForPromises();
 
@@ -223,6 +230,10 @@ describe('DeploymentAction component', () => {
                   expect(createFlash).toHaveBeenCalledWith({
                     message: actionButtonMocks[configConst].errorMessage,
                   });
+                });
+
+                it('emits the FetchDeployments event', () => {
+                  expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
                 });
               });
             });

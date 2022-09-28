@@ -33,4 +33,20 @@ class JiraConnectInstallation < ApplicationRecord
 
     instance_url
   end
+
+  def audience_url
+    return unless proxy?
+
+    Gitlab::Utils.append_path(instance_url, '/-/jira_connect')
+  end
+
+  def audience_installed_event_url
+    return unless proxy?
+
+    Gitlab::Utils.append_path(instance_url, '/-/jira_connect/events/installed')
+  end
+
+  def proxy?
+    instance_url.present?
+  end
 end

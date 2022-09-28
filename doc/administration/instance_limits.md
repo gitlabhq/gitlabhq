@@ -165,7 +165,7 @@ This setting limits global search requests as follows:
 | Authenticated user      | 30 |
 | Unauthenticated user    | 10 |
 
-Depending on the number of enabled [scopes](../user/search/advanced_search.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Global search requests that exceed the search rate limit per minute return the following error:
+Depending on the number of enabled [scopes](../user/search/index.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Global search requests that exceed the search rate limit per minute return the following error:
 
 ```plaintext
 This endpoint has been requested too many times. Try again later.

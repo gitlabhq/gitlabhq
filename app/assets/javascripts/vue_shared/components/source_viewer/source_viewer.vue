@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     splitContent() {
-      return this.content.split('\n');
+      return this.content.split(/\r?\n/);
     },
     lineNumbers() {
       return this.splitContent.length;

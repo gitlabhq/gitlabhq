@@ -11,7 +11,7 @@ import {
   I18N_USER_UNFOLLOW,
 } from '~/vue_shared/components/user_popover/constants';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { followUser, unfollowUser } from '~/api/user_api';
 import { mockTracking } from 'helpers/tracking_helper';
 
@@ -388,7 +388,7 @@ describe('User Popover Component', () => {
         it('shows an error message', async () => {
           await axios.waitForAll();
 
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: 'An error occurred while trying to follow this user, please try again.',
             error: {},
             captureError: true,
@@ -437,7 +437,7 @@ describe('User Popover Component', () => {
         });
 
         it('shows an error message', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: 'An error occurred while trying to unfollow this user, please try again.',
             error: {},
             captureError: true,

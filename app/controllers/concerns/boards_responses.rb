@@ -60,35 +60,6 @@ module BoardsResponses
   def authorize_action_for!(resource, ability)
     return render_403 unless can?(current_user, ability, resource)
   end
-
-  def respond_with_boards
-    respond_with(@boards) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  end
-
-  def respond_with_board
-    # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    return render_404 unless @board
-
-    respond_with(@board)
-    # rubocop:enable Gitlab/ModuleWithInstanceVariables
-  end
-
-  def serialize_as_json(resource)
-    serializer.represent(resource).as_json
-  end
-
-  def respond_with(resource)
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: serialize_as_json(resource)
-      end
-    end
-  end
-
-  def serializer
-    BoardSerializer.new
-  end
 end
 
 BoardsResponses.prepend_mod_with('BoardsResponses')

@@ -2,372 +2,142 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_redis_cache do
-  using RSpec::Parameterized::TableSyntax
+RSpec.describe Projects::ContainerRepository::CleanupTagsService do
+  let_it_be_with_reload(:container_repository) { create(:container_repository) }
+  let_it_be(:user) { container_repository.project.owner }
 
-  include_context 'for a cleanup tags service'
-
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :private) }
-
-  let(:repository) { create(:container_repository, :root, project: project) }
-  let(:service) { described_class.new(container_repository: repository, current_user: user, params: params) }
-  let(:tags) { %w[latest A Ba Bb C D E] }
+  let(:params) { {} }
+  let(:extra_params) { {} }
+  let(:service) { described_class.new(container_repository: container_repository, current_user: user, params: params.merge(extra_params)) }
 
   before do
-    project.add_maintainer(user) if user
-
     stub_container_registry_config(enabled: true)
-
-    stub_container_registry_tags(
-      repository: repository.path,
-      tags: tags
-    )
-
-    stub_tag_digest('latest', 'sha256:configA')
-    stub_tag_digest('A', 'sha256:configA')
-    stub_tag_digest('Ba', 'sha256:configB')
-    stub_tag_digest('Bb', 'sha256:configB')
-    stub_tag_digest('C', 'sha256:configC')
-    stub_tag_digest('D', 'sha256:configD')
-    stub_tag_digest('E', nil)
-
-    stub_digest_config('sha256:configA', 1.hour.ago)
-    stub_digest_config('sha256:configB', 5.days.ago)
-    stub_digest_config('sha256:configC', 1.month.ago)
-    stub_digest_config('sha256:configD', nil)
   end
 
   describe '#execute' do
     subject { service.execute }
 
-    it_behaves_like 'handling invalid params',
-                    service_response_extra: {
-                      before_truncate_size: 0,
-                      after_truncate_size: 0,
-                      before_delete_size: 0,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+    shared_examples 'returning error message' do |message|
+      it "returns error #{message}" do
+        expect(::Projects::ContainerRepository::Gitlab::CleanupTagsService).not_to receive(:new)
+        expect(::Projects::ContainerRepository::ThirdParty::CleanupTagsService).not_to receive(:new)
+        expect(service).not_to receive(:log_info)
 
-    it_behaves_like 'when regex matching everything is specified',
-                    delete_expectations: [%w(A Ba Bb C D E)],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 6,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when delete regex matching specific tags is used',
-                    service_response_extra: {
-                      before_truncate_size: 2,
-                      after_truncate_size: 2,
-                      before_delete_size: 2,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex',
-                    service_response_extra: {
-                      before_truncate_size: 1,
-                      after_truncate_size: 1,
-                      before_delete_size: 1,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'with allow regex value',
-                    delete_expectations: [%w(A C D E)],
-                    service_response_extra: {
-                      before_truncate_size: 4,
-                      after_truncate_size: 4,
-                      before_delete_size: 4,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when keeping only N tags',
-                    delete_expectations: [%w(Bb Ba C)],
-                    service_response_extra: {
-                      before_truncate_size: 4,
-                      after_truncate_size: 4,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when not keeping N tags',
-                    delete_expectations: [%w(A Ba Bb C)],
-                    service_response_extra: {
-                      before_truncate_size: 4,
-                      after_truncate_size: 4,
-                      before_delete_size: 4,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when removing keeping only 3',
-                    delete_expectations: [%w(Bb Ba C)],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when removing older than 1 day',
-                    delete_expectations: [%w(Ba Bb C)],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when combining all parameters',
-                    delete_expectations: [%w(Bb Ba C)],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    it_behaves_like 'when running a container_expiration_policy',
-                    delete_expectations: [%w(Bb Ba C)],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
-
-    context 'when running a container_expiration_policy with caching' do
-      let(:user) { nil }
-      let(:params) do
-        {
-          'name_regex_delete' => '.*',
-          'keep_n' => 1,
-          'older_than' => '1 day',
-          'container_expiration_policy' => true
-        }
+        expect(subject).to eq(status: :error, message: message)
       end
+    end
 
-      it 'expects caching to be used' do
-        expect_delete(%w(Bb Ba C), container_expiration_policy: true)
-        expect_caching
+    shared_examples 'handling invalid regular expressions' do
+      shared_examples 'handling invalid regex' do
+        it_behaves_like 'returning error message', 'invalid regex'
 
-        subject
-      end
-
-      context 'when setting set to false' do
-        before do
-          stub_application_setting(container_registry_expiration_policies_caching: false)
-        end
-
-        it 'does not use caching' do
-          expect_delete(%w(Bb Ba C), container_expiration_policy: true)
-          expect_no_caching
+        it 'calls error tracking service' do
+          expect(::Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
 
           subject
         end
       end
-    end
 
-    context 'truncating the tags list' do
-      let(:params) do
-        {
-          'name_regex_delete' => '.*',
-          'keep_n' => 1
-        }
+      context 'when name_regex_delete is invalid' do
+        let(:extra_params) { { 'name_regex_delete' => '*test*' } }
+
+        it_behaves_like 'handling invalid regex'
       end
 
-      shared_examples 'returning the response' do |status:, original_size:, before_truncate_size:, after_truncate_size:, before_delete_size:|
-        it 'returns the response' do
-          expect_no_caching
+      context 'when name_regex is invalid' do
+        let(:extra_params) { { 'name_regex' => '*test*' } }
 
-          result = subject
-
-          service_response = expected_service_response(
-            status: status,
-            original_size: original_size,
-            deleted: nil
-          ).merge(
-            before_truncate_size: before_truncate_size,
-            after_truncate_size: after_truncate_size,
-            before_delete_size: before_delete_size,
-            cached_tags_count: 0
-          )
-
-          expect(result).to eq(service_response)
-        end
+        it_behaves_like 'handling invalid regex'
       end
 
-      where(:max_list_size, :delete_tags_service_status, :expected_status, :expected_truncated) do
-        10 | :success | :success | false
-        10 | :error   | :error   | false
-        3  | :success | :error   | true
-        3  | :error   | :error   | true
-        0  | :success | :success | false
-        0  | :error   | :error   | false
-      end
+      context 'when name_regex_keep is invalid' do
+        let(:extra_params) { { 'name_regex_keep' => '*test*' } }
 
-      with_them do
-        before do
-          stub_application_setting(container_registry_cleanup_tags_service_max_list_size: max_list_size)
-          allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |service|
-            expect(service).to receive(:execute).and_return(status: delete_tags_service_status)
-          end
-        end
-
-        original_size = 7
-        keep_n = 1
-
-        it_behaves_like(
-          'returning the response',
-          status: params[:expected_status],
-          original_size: original_size,
-          before_truncate_size: original_size - keep_n,
-          after_truncate_size: params[:expected_truncated] ? params[:max_list_size] + keep_n : original_size - keep_n,
-          before_delete_size: params[:expected_truncated] ? params[:max_list_size] : original_size - keep_n - 1 # one tag is filtered out with older_than filter
-        )
+        it_behaves_like 'handling invalid regex'
       end
     end
 
-    context 'caching', :freeze_time do
-      let(:params) do
-        {
-          'name_regex_delete' => '.*',
-          'keep_n' => 1,
-          'older_than' => '1 day',
-          'container_expiration_policy' => true
-        }
+    shared_examples 'handling all types of container repositories' do
+      shared_examples 'calling service' do |service_class, extra_log_data: {}|
+        let(:service_double) { instance_double(service_class.to_s) }
+
+        it "uses cleanup tags service #{service_class}" do
+          expect(service_class).to receive(:new).with(container_repository: container_repository, current_user: user, params: params).and_return(service_double)
+          expect(service_double).to receive(:execute).and_return('return value')
+          expect(service).to receive(:log_info)
+                               .with(
+                                 {
+                                   container_repository_id: container_repository.id,
+                                   container_repository_path: container_repository.path,
+                                   project_id: container_repository.project.id
+                                 }.merge(extra_log_data))
+          expect(subject).to eq('return value')
+        end
       end
 
-      let(:tags_and_created_ats) do
-        {
-          'A' => 1.hour.ago,
-          'Ba' => 5.days.ago,
-          'Bb' => 5.days.ago,
-          'C' => 1.month.ago,
-          'D' => nil,
-          'E' => nil
-        }
-      end
-
-      let(:cacheable_tags) { tags_and_created_ats.reject { |_, value| value.nil? } }
-
-      before do
-        expect_delete(%w(Bb Ba C), container_expiration_policy: true)
-        # We froze time so we need to set the created_at stubs again
-        stub_digest_config('sha256:configA', 1.hour.ago)
-        stub_digest_config('sha256:configB', 5.days.ago)
-        stub_digest_config('sha256:configC', 1.month.ago)
-      end
-
-      it 'caches the created_at values' do
-        expect_mget(tags_and_created_ats.keys)
-        expect_set(cacheable_tags)
-
-        expect(subject).to include(cached_tags_count: 0)
-      end
-
-      context 'with cached values' do
+      context 'with a migrated repository' do
         before do
-          ::Gitlab::Redis::Cache.with do |redis|
-            redis.set(cache_key('C'), rfc3339(1.month.ago))
+          container_repository.update_column(:migration_state, :import_done)
+        end
+
+        context 'supporting the gitlab api' do
+          before do
+            allow(container_repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
           end
-        end
 
-        it 'uses them' do
-          expect_mget(tags_and_created_ats.keys)
+          it_behaves_like 'calling service', ::Projects::ContainerRepository::Gitlab::CleanupTagsService, extra_log_data: { gitlab_cleanup_tags_service: true }
 
-          # because C is already in cache, it should not be cached again
-          expect_set(cacheable_tags.except('C'))
-
-          # We will ping the container registry for all tags *except* for C because it's cached
-          expect(ContainerRegistry::Blob).to receive(:new).with(repository, { "digest" => "sha256:configA" }).and_call_original
-          expect(ContainerRegistry::Blob).to receive(:new).with(repository, { "digest" => "sha256:configB" }).twice.and_call_original
-          expect(ContainerRegistry::Blob).not_to receive(:new).with(repository, { "digest" => "sha256:configC" })
-          expect(ContainerRegistry::Blob).to receive(:new).with(repository, { "digest" => "sha256:configD" }).and_call_original
-
-          expect(subject).to include(cached_tags_count: 1)
-        end
-      end
-
-      def expect_mget(keys)
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis).to receive(:mget).with(keys.map(&method(:cache_key))).and_call_original
-        end
-      end
-
-      def expect_set(tags)
-        selected_tags = tags.map do |tag_name, created_at|
-          ex = 1.day.seconds - (Time.zone.now - created_at).seconds
-          [tag_name, created_at, ex.to_i] if ex.positive?
-        end.compact
-
-        return if selected_tags.count.zero?
-
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis).to receive(:pipelined).and_call_original
-
-          expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
-            selected_tags.each do |tag_name, created_at, ex|
-              expect(pipeline).to receive(:set).with(cache_key(tag_name), rfc3339(created_at), ex: ex)
+          context 'with container_registry_new_cleanup_service disabled' do
+            before do
+              stub_feature_flags(container_registry_new_cleanup_service: false)
             end
+
+            it_behaves_like 'calling service', ::Projects::ContainerRepository::ThirdParty::CleanupTagsService, extra_log_data: { third_party_cleanup_tags_service: true }
           end
+        end
+
+        context 'not supporting the gitlab api' do
+          before do
+            allow(container_repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
+          end
+
+          it_behaves_like 'calling service', ::Projects::ContainerRepository::ThirdParty::CleanupTagsService, extra_log_data: { third_party_cleanup_tags_service: true }
         end
       end
 
-      def cache_key(tag_name)
-        "container_repository:{#{repository.id}}:tag:#{tag_name}:created_at"
-      end
+      context 'with a non migrated repository' do
+        before do
+          container_repository.update_column(:migration_state, :default)
+          container_repository.update!(created_at: ContainerRepository::MIGRATION_PHASE_1_ENDED_AT - 1.week)
+        end
 
-      def rfc3339(date_time)
-        # DateTime rfc3339 is different ActiveSupport::TimeWithZone rfc3339
-        # The caching will use DateTime rfc3339
-        DateTime.rfc3339(date_time.rfc3339).rfc3339
+        it_behaves_like 'calling service', ::Projects::ContainerRepository::ThirdParty::CleanupTagsService, extra_log_data: { third_party_cleanup_tags_service: true }
       end
     end
-  end
 
-  private
-
-  def stub_tag_digest(tag, digest)
-    allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:repository_tag_digest)
-      .with(repository.path, tag) { digest }
-
-    allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:repository_manifest)
-      .with(repository.path, tag) do
-      { 'config' => { 'digest' => digest } } if digest
+    context 'with valid user' do
+      it_behaves_like 'handling invalid regular expressions'
+      it_behaves_like 'handling all types of container repositories'
     end
-  end
 
-  def stub_digest_config(digest, created_at)
-    allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:blob)
-      .with(repository.path, digest, nil) do
-      { 'created' => created_at.to_datetime.rfc3339 }.to_json if created_at
+    context 'for container expiration policy' do
+      let(:user) { nil }
+      let(:params) { { 'container_expiration_policy' => true } }
+
+      it_behaves_like 'handling invalid regular expressions'
+      it_behaves_like 'handling all types of container repositories'
     end
-  end
 
-  def expect_caching
-    ::Gitlab::Redis::Cache.with do |redis|
-      expect(redis).to receive(:mget).and_call_original
-      expect(redis).to receive(:pipelined).and_call_original
+    context 'with not allowed user' do
+      let_it_be(:user) { create(:user) }
 
-      expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
-        expect(pipeline).to receive(:set).and_call_original
-      end
+      it_behaves_like 'returning error message', 'access denied'
+    end
+
+    context 'with no user' do
+      let(:user) { nil }
+
+      it_behaves_like 'returning error message', 'access denied'
     end
   end
 end

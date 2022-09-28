@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::BoardsController < Projects::ApplicationController
-  include MultipleBoardsActions
+  include BoardsActions
   include IssuableCollections
 
   before_action :check_issues_available!
@@ -19,16 +19,6 @@ class Projects::BoardsController < Projects::ApplicationController
   urgency :low
 
   private
-
-  def board_klass
-    Board
-  end
-
-  def boards_finder
-    strong_memoize :boards_finder do
-      Boards::BoardsFinder.new(parent, current_user)
-    end
-  end
 
   def board_finder
     strong_memoize :board_finder do

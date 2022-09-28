@@ -189,14 +189,4 @@ RSpec.describe BoardsHelper do
       end
     end
   end
-
-  describe '#current_board_json' do
-    let(:board_json) { helper.current_board_json }
-
-    it 'can serialise with a basic set of attributes' do
-      assign(:board, project_board)
-
-      expect(board_json).to match_schema('current-board')
-    end
-  end
 end

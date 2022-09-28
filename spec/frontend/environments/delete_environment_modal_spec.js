@@ -6,7 +6,7 @@ import { s__, sprintf } from '~/locale';
 import DeleteEnvironmentModal from '~/environments/components/delete_environment_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { resolvedEnvironment } from './graphql/mock_data';
 
 jest.mock('~/flash');
@@ -57,7 +57,7 @@ describe('~/environments/components/delete_environment_modal.vue', () => {
 
     await nextTick();
 
-    expect(createFlash).not.toHaveBeenCalled();
+    expect(createAlert).not.toHaveBeenCalled();
 
     expect(deleteResolver).toHaveBeenCalledWith(
       expect.anything(),
@@ -76,7 +76,7 @@ describe('~/environments/components/delete_environment_modal.vue', () => {
 
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith(
+    expect(createAlert).toHaveBeenCalledWith(
       expect.objectContaining({
         message: s__(
           'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',

@@ -4,61 +4,65 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Insights **(ULTIMATE)**
+# Insights for projects **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
+Configure project insights to explore data such as:
 
-Configure the Insights that matter for your projects to explore data such as
-triage hygiene, issues created/closed per a given period, average time for merge
-requests to be merged and much more.
+- Issues created and closed during a specified period.
+- Average time for merge requests to be merged.
+- Triage hygiene.
 
-![Insights example bar chart](img/project_insights.png)
+Insights are also available for [groups](../../group/insights/index.md).
 
-NOTE:
-This feature is [also available at the group level](../../group/insights/index.md).
+## View project insights
 
-## View your project's Insights
+Prerequisites:
 
-You can access your project's Insights by clicking the **Analytics > Insights**
-link in the left sidebar.
+- You must have:
+  - Access to a project to view information about its merge requests and issues.
+  - Permission to view confidential merge requests and issues in the project.
 
-## Configure your Insights
+To view project insights:
 
-Insights are configured using a YAML file called `.gitlab/insights.yml` within
-a project. That file is used in the project's Insights page.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Analytics > Insights**.
+1. To view a report, select the **Select page** dropdown list.
 
-See [Writing your `.gitlab/insights.yml`](#writing-your-gitlabinsightsyml) below
-for details about the content of this file.
+## Configure project insights
 
-NOTE:
-After the configuration file is created, you can also
-[use it for your project's group](../../group/insights/index.md#configure-your-insights).
+Prerequisites:
 
-NOTE:
-If the project doesn't have any configuration file, it attempts to use
-the group configuration if possible. If the group doesn't have any
-configuration, the default configuration is used.
+- Depending on your project configuration, you must have at least the Developer role.
 
-## Permissions
+Project insights are configured with the [`.gitlab/insights.yml`](#insights-configuration-file) file in the project. If a project doesn't have a configuration file, it uses the [group configuration](../../group/insights/index.md#configure-your-insights).
 
-If you have access to view a project, then you have access to view their
-Insights.
+The `.gitlab/insights.yml` file is a YAML file where you define:
 
-NOTE:
-Issues or merge requests that you don't have access to (because you don't have
-access to the project they belong to, or because they are confidential) are
-filtered out of the Insights charts.
+- The structure and order of charts in a report.
+- The style of charts displayed in the report of your project or group.
 
-You may also consult the [group permissions table](../../permissions.md#group-members-permissions).
+To configure project insights, either:
 
-## Writing your `.gitlab/insights.yml`
+- Create a `.gitlab/insights.yml` file locally in the root directory of your project, and push your changes.
+- Create a `.gitlab/insights.yml` file in the UI:
+  1. On the top bar, select **Main menu > Projects** and find your project.
+  1. Above the file list, select the branch you want to commit to, select the plus icon, then select **New file**.
+  1. In the **File name** text box, enter `.gitlab/insights.yml`.
+  1. In the large text box, update the file contents.
+  1. Select **Commit changes**.
 
-The `.gitlab/insights.yml` file defines the structure and order of the Insights
-charts displayed in each Insights page of your project or group.
+After you create the configuration file, you can also
+[use it for the project's group](../../group/insights/index.md#configure-your-insights).
 
-Each page has a unique key and a collection of charts to fetch and display.
+## Insights configuration file
 
-For example, here's a single definition for Insights that displays one page with one chart:
+In the `.gitlab/insights.yml` file:
+
+- [Configuration parameters](#insights-configuration-parameters) define the chart behavior.
+- Each report has a unique key and a collection of charts to fetch and display.
+- Each chart definition is made up of a hash composed of key-value pairs.
+
+The following example shows a single definition that displays one report with one chart.
 
 ```yaml
 bugsCharts:
@@ -78,30 +82,9 @@ bugsCharts:
           period_limit: 24
 ```
 
-Each chart definition is made up of a hash composed of key-value pairs.
+## Insights configuration parameters
 
-For example, here's single chart definition:
-
-```yaml
-- title: "Monthly bugs created"
-  description: "Open bugs created per month"
-  type: bar
-  query:
-    data_source: issuables
-    params:
-      issuable_type: issue
-      issuable_state: opened
-      filter_labels:
-        - bug
-      group_by: month
-      period_limit: 24
-```
-
-## Configuration parameters
-
-A chart is defined as a list of parameters that define the chart's behavior.
-
-The following table lists available parameters for charts:
+The following table lists the chart parameters:
 
 | Keyword                                            | Description |
 |:---------------------------------------------------|:------------|
@@ -109,11 +92,6 @@ The following table lists available parameters for charts:
 | [`description`](#description)                      | A description for the individual chart. This displays above the relevant chart. |
 | [`type`](#type)                                    | The type of chart: `bar`, `line` or `stacked-bar`. |
 | [`query`](#query)                                  | A hash that defines the data source and filtering conditions for the chart. |
-
-## Parameter details
-
-The following are detailed explanations for parameters used to configure
-Insights charts.
 
 ### `title`
 
@@ -404,8 +382,6 @@ Define how far the metrics are queried in the past (default: 15). Maximum lookba
 An array of environments to include into the calculation (default: production). Available options: `production`, `staging`, `testing`, `development`, `other`.
 
 ### `projects`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10904) in GitLab 12.4.
 
 You can limit where the "issuables" can be queried from:
 

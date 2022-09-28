@@ -14,6 +14,7 @@ namespace :jira_connect do
 
   resources :subscriptions, only: [:index, :create, :destroy]
   resources :branches, only: [:new]
+  resources :public_keys, only: :show
 
   resources :installations, only: [:index] do
     collection do

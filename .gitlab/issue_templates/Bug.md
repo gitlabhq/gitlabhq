@@ -39,7 +39,10 @@ will also determine whether the bug is fixed in a more recent version. -->
 
 ### Output of checks
 
-<!-- If you are reporting a bug on GitLab.com, write: This bug happens on GitLab.com -->
+<!-- If you are reporting a bug on GitLab.com, uncomment below -->
+
+<!-- This bug happens on GitLab.com -->
+<!-- /label ~"reproduced on GitLab.com" -->
 
 #### Results of GitLab environment info
 

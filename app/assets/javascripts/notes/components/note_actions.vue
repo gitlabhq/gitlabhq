@@ -281,6 +281,7 @@ export default {
     >
       {{ __('Contributor') }}
     </user-access-role-badge>
+    <span class="note-actions__mobile-spacer"></span>
     <gl-button
       v-if="canResolve"
       ref="resolveButton"

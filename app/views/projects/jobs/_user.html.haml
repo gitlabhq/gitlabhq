@@ -1,7 +1,7 @@
 by
 %a{ href: user_path(@build.user) }
   %span.d-none.d-sm-inline
-    = image_tag avatar_icon_for_user(@build.user, 24), class: "avatar s24"
+    = render Pajamas::AvatarComponent.new(@build.user, size: 24, alt: "")
     %strong{ data: { toggle: 'tooltip', placement: 'top', title: @build.user.to_reference } }
       = @build.user.name
   %strong.d-inline.d-sm-none= @build.user.to_reference

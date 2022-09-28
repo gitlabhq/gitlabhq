@@ -14,9 +14,6 @@ module Projects
         end
 
         def execute
-          return error('access denied') unless can_destroy?
-          return error('invalid regex') unless valid_regex?
-
           with_timeout do |start_time, result|
             container_repository.each_tags_page(page_size: TAGS_PAGE_SIZE) do |tags|
               execute_for_tags(tags, result)

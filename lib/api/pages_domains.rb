@@ -106,7 +106,9 @@ module API
 
         pages_domain_params = declared(params, include_parent_namespaces: false)
 
-        pages_domain = user_project.pages_domains.create(pages_domain_params)
+        pages_domain = ::PagesDomains::CreateService
+          .new(user_project, current_user, pages_domain_params)
+          .execute
 
         if pages_domain.persisted?
           present pages_domain, with: Entities::PagesDomain
@@ -152,7 +154,9 @@ module API
       delete ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 
-        pages_domain.destroy
+        ::PagesDomains::DeleteService
+          .new(user_project, current_user)
+          .execute(pages_domain)
 
         no_content!
       end

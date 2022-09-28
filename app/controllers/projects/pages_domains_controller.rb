@@ -41,9 +41,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def create
-    @domain = @project.pages_domains.create(create_params)
+    @domain = PagesDomains::CreateService.new(@project, current_user, create_params).execute
 
-    if @domain.valid?
+    if @domain&.persisted?
       redirect_to project_pages_domain_path(@project, @domain)
     else
       render 'new'
@@ -63,7 +63,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def destroy
-    @domain.destroy
+    PagesDomains::DeleteService
+      .new(@project, current_user)
+      .execute(@domain)
 
     respond_to do |format|
       format.html do

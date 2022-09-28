@@ -2,7 +2,7 @@
 
 module BoardsHelper
   def board
-    @board ||= @board || @boards.first
+    @board
   end
 
   def board_data
@@ -124,14 +124,6 @@ module BoardsHelper
 
   def can_admin_issue?
     can?(current_user, :admin_issue, current_board_parent)
-  end
-
-  def serializer
-    CurrentBoardSerializer.new
-  end
-
-  def current_board_json
-    serializer.represent(board).as_json
   end
 end
 

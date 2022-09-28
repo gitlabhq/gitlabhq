@@ -1,5 +1,5 @@
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import EnvironmentForm from './environment_form.vue';
@@ -32,7 +32,7 @@ export default {
         .then(({ data: { path } }) => visitUrl(path))
         .catch((error) => {
           const message = error.response.data.message[0];
-          createFlash({ message });
+          createAlert({ message });
           this.loading = false;
         });
     },
