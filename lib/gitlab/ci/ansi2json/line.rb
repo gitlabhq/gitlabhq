@@ -80,7 +80,8 @@ module Gitlab
         end
 
         def set_section_duration(duration_in_seconds)
-          duration = ActiveSupport::Duration.build(duration_in_seconds.to_i)
+          normalized_duration_in_seconds = duration_in_seconds.to_i.clamp(0, 1.year)
+          duration = ActiveSupport::Duration.build(normalized_duration_in_seconds)
           hours = duration.in_hours.floor
           hours = hours > 0 ? "%02d" % hours : nil
           minutes = "%02d" % duration.parts[:minutes].to_i
