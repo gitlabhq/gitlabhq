@@ -26,7 +26,7 @@ RSpec.describe Gitlab::HookData::GroupMemberBuilder do
           expect(data[:group_id]).to eq(group.id)
           expect(data[:user_username]).to eq(group_member.user.username)
           expect(data[:user_name]).to eq(group_member.user.name)
-          expect(data[:user_email]).to eq(group_member.user.email)
+          expect(data[:user_email]).to eq(group_member.user.webhook_email)
           expect(data[:user_id]).to eq(group_member.user.id)
           expect(data[:group_access]).to eq('Developer')
           expect(data[:created_at]).to eq(group_member.created_at&.xmlschema)
