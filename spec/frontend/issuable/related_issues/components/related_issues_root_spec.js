@@ -7,7 +7,7 @@ import {
   issuable1,
   issuable2,
 } from 'jest/issuable/components/related_issuable_mock_data';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { linkedIssueTypesMap } from '~/related_issues/constants';
 import RelatedIssuesBlock from '~/related_issues/components/related_issues_block.vue';
@@ -136,7 +136,7 @@ describe('RelatedIssuesRoot', () => {
         await createComponent();
         jest.spyOn(wrapper.vm, 'processAllReferences');
         jest.spyOn(wrapper.vm.service, 'addRelatedIssues');
-        createFlash.mockClear();
+        createAlert.mockClear();
       });
 
       it('processes references before submitting', () => {
@@ -207,12 +207,12 @@ describe('RelatedIssuesRoot', () => {
         mock.onPost(defaultProps.endpoint).reply(409, { message });
         wrapper.vm.store.setPendingReferences([issuable1.reference, issuable2.reference]);
 
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
 
         findRelatedIssuesBlock().vm.$emit('addIssuableFormSubmit', input);
         await waitForPromises();
 
-        expect(createFlash).toHaveBeenCalledWith({ message });
+        expect(createAlert).toHaveBeenCalledWith({ message });
       });
     });
 

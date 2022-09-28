@@ -12,7 +12,7 @@ import {
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__, __, n__, sprintf } from '~/locale';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -342,7 +342,7 @@ export default {
           variables: { importRequests },
         });
       } catch (error) {
-        createFlash({
+        createAlert({
           message: i18n.ERROR_IMPORT,
           captureError: true,
           error,

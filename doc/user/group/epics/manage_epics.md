@@ -488,6 +488,8 @@ When you add an epic that's already linked to a parent epic, the link to its cur
 
 Epics can contain multiple nested child epics, up to a total of seven levels deep.
 
+Maximum number of direct child epics is 100.
+
 ### Add a child epic to an epic
 
 Prerequisites:

@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import InputValidator from '~/validators/input_validator';
@@ -51,7 +51,7 @@ export default class UsernameValidator extends InputValidator {
           );
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('An error occurred while validating username'),
           }),
         );

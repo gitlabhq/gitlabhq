@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/error_tracking/store/details/actions';
 import * as types from '~/error_tracking/store/details/mutation_types';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 
@@ -19,7 +19,7 @@ describe('Sentry error details store actions', () => {
 
   afterEach(() => {
     mockedAdapter.restore();
-    createFlash.mockClear();
+    createAlert.mockClear();
     if (mockedRestart) {
       mockedRestart.mockRestore();
       mockedRestart = null;
@@ -53,7 +53,7 @@ describe('Sentry error details store actions', () => {
         [{ type: types.SET_LOADING_STACKTRACE, payload: false }],
         [],
       );
-      expect(createFlash).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledTimes(1);
     });
 
     it('should not restart polling when receiving an empty 204 response', async () => {

@@ -6,7 +6,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BranchRules, { i18n } from '~/projects/settings/repository/branch_rules/app.vue';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import branchRulesQuery from '~/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { branchRulesMockResponse, propsDataMock } from './mock_data';
 
 jest.mock('~/flash');
@@ -39,7 +39,7 @@ describe('Branch rules app', () => {
 
   it('displays an error if branch rules query fails', async () => {
     await createComponent({ queryHandler: jest.fn().mockRejectedValue() });
-    expect(createFlash).toHaveBeenCalledWith({ message: i18n.queryError });
+    expect(createAlert).toHaveBeenCalledWith({ message: i18n.queryError });
   });
 
   it('displays an empty state if no branch rules are present', async () => {

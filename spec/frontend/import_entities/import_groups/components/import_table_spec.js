@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
@@ -246,7 +246,7 @@ describe('import table', () => {
     await findImportButtons()[0].trigger('click');
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith(
+    expect(createAlert).toHaveBeenCalledWith(
       expect.objectContaining({
         message: i18n.ERROR_IMPORT,
       }),

@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 import service from '../../services';
@@ -26,7 +26,7 @@ export function startPollingStacktrace({ commit }, endpoint) {
     },
     errorCallback: () => {
       commit(types.SET_LOADING_STACKTRACE, false);
-      createFlash({
+      createAlert({
         message: __('Failed to load stacktrace.'),
       });
     },

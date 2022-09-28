@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
 import actionsFactory from '~/import_entities/import_projects/store/actions';
 import { getImportTarget } from '~/import_entities/import_projects/store/getters';
@@ -155,7 +155,7 @@ describe('import_projects store actions', () => {
           [],
         );
 
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'Provider rate limit exceeded. Try again later',
         });
       });
@@ -234,7 +234,7 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Importing the project failed',
       });
     });
@@ -257,7 +257,7 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: `Importing the project failed: ${ERROR_MESSAGE}`,
       });
     });
@@ -358,7 +358,7 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Requesting namespaces failed',
       });
     });

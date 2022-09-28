@@ -11,7 +11,7 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
 
 ## Atlassian application registration
 
-1. Go to <https://developer.atlassian.com/console/myapps/> and sign-in with the Atlassian
+1. Go to the [Atlassian developer console](https://developer.atlassian.com/console/myapps/) and sign-in with the Atlassian
    account to administer the application.
 1. Select **Create a new app**.
 1. Choose an App Name, such as 'GitLab', and select **Create**.
@@ -51,8 +51,8 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
      {
        name: "atlassian_oauth2",
        # label: "Provider name", # optional label for login button, defaults to "Atlassian"
-       app_id: "YOUR_CLIENT_ID",
-       app_secret: "YOUR_CLIENT_SECRET",
+       app_id: "<your_client_id>",
+       app_secret: "<your_client_secret>",
        args: { scope: "offline_access read:jira-user read:jira-work", prompt: "consent" }
      }
    ]
@@ -63,13 +63,13 @@ To enable the Atlassian OmniAuth provider for passwordless authentication you mu
    ```yaml
    - { name: "atlassian_oauth2",
        # label: "Provider name", # optional label for login button, defaults to "Atlassian"
-       app_id: "YOUR_CLIENT_ID",
-       app_secret: "YOUR_CLIENT_SECRET",
+       app_id: "<your_client_id>",
+       app_secret: "<your_client_secret>",
        args: { scope: "offline_access read:jira-user read:jira-work", prompt: "consent" }
     }
    ```
 
-1. Change `YOUR_CLIENT_ID` and `YOUR_CLIENT_SECRET` to the Client credentials you received in [application registration](#atlassian-application-registration) steps.
+1. Change `<your_client_id>` and `<your_client_secret>` to the Client credentials you received during [application registration](#atlassian-application-registration).
 1. Save the configuration file.
 
 1. For the changes to take effect:

@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { __, s__, sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -57,7 +57,7 @@ export default {
         group: 'notfound',
       };
       this.isLoading = false;
-      createFlash({
+      createAlert({
         message: __('Something went wrong on our end'),
       });
     },

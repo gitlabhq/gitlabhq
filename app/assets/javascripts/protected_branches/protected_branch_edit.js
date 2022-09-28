@@ -1,5 +1,5 @@
 import { find } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import AccessDropdown from '~/projects/settings/access_dropdown';
@@ -74,7 +74,7 @@ export default class ProtectedBranchEdit {
       })
       .then(callback)
       .catch(() => {
-        createFlash({ message: __('Failed to update branch!') });
+        createAlert({ message: __('Failed to update branch!') });
       });
   }
 
@@ -141,7 +141,7 @@ export default class ProtectedBranchEdit {
       .catch(() => {
         this.$allowedToMergeDropdown.enable();
         this.$allowedToPushDropdown.enable();
-        createFlash({ message: __('Failed to update branch!') });
+        createAlert({ message: __('Failed to update branch!') });
       });
   }
 

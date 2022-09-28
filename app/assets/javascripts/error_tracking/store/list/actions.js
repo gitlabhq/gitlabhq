@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 import Service from '../../services';
@@ -33,7 +33,7 @@ export function startPolling({ state, commit, dispatch }) {
     },
     errorCallback: () => {
       commit(types.SET_LOADING, false);
-      createFlash({
+      createAlert({
         message: __('Failed to load errors from Sentry.'),
       });
     },

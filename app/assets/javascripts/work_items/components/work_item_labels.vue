@@ -102,9 +102,6 @@ export default {
     allowScopedLabels() {
       return this.labelsWidget.allowScopedLabels;
     },
-    listEmpty() {
-      return this.labels.length === 0;
-    },
     containerClass() {
       return !this.isEditing ? 'gl-shadow-none!' : '';
     },

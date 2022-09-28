@@ -160,7 +160,9 @@ describe('WorkItemAssignees component', () => {
   it('has a label', () => {
     createComponent();
 
-    expect(findTokenSelector().props('ariaLabelledby')).toContain('assignees-title-');
+    expect(findTokenSelector().props('ariaLabelledby')).toEqual(
+      findAssigneesTitle().attributes('id'),
+    );
   });
 
   describe('when clicking outside the token selector', () => {

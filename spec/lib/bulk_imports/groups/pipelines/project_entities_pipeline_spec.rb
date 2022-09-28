@@ -19,6 +19,7 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline do
 
   let(:extracted_data) do
     BulkImports::Pipeline::ExtractedData.new(data: {
+      'id' => 'gid://gitlab/Project/1234567',
       'name' => 'project',
       'full_path' => 'group/project'
     })
@@ -44,6 +45,7 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline do
       expect(project_entity.source_full_path).to eq('group/project')
       expect(project_entity.destination_name).to eq('project')
       expect(project_entity.destination_namespace).to eq(destination_group.full_path)
+      expect(project_entity.source_xid).to eq(1234567)
     end
   end
 

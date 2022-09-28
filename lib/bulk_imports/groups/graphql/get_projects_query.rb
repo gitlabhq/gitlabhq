@@ -20,6 +20,7 @@ module BulkImports
                   has_next_page: hasNextPage
                 }
                 nodes {
+                  id
                   name
                   full_path: fullPath
                 }

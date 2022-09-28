@@ -14,9 +14,9 @@ module BulkImports
           <<-'GRAPHQL'
           query($full_path: ID!) {
             group(fullPath: $full_path) {
+              id
               name
               path
-              full_path: fullPath
               description
               visibility
               emails_disabled: emailsDisabled

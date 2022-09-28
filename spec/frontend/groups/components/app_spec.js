@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -115,7 +115,7 @@ describe('AppComponent', () => {
         return vm.fetchGroups({}).then(() => {
           expect(vm.isLoading).toBe(false);
           expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: 'An error occurred. Please try again.',
           });
         });
@@ -326,7 +326,7 @@ describe('AppComponent', () => {
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
-          expect(createFlash).toHaveBeenCalledWith({ message });
+          expect(createAlert).toHaveBeenCalledWith({ message });
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
         });
       });
@@ -341,7 +341,7 @@ describe('AppComponent', () => {
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
-          expect(createFlash).toHaveBeenCalledWith({ message });
+          expect(createAlert).toHaveBeenCalledWith({ message });
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
         });
       });

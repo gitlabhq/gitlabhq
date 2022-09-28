@@ -10,6 +10,7 @@ module BulkImports
           <<-'GRAPHQL'
           query($full_path: ID!) {
             project(fullPath: $full_path) {
+              id
               visibility
               created_at: createdAt
             }

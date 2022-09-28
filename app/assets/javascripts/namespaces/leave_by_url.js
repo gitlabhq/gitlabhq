@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { initRails } from '~/lib/utils/rails_ujs';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
@@ -18,7 +18,7 @@ export default function leaveByUrl(namespaceType) {
   if (leaveLink) {
     leaveLink.click();
   } else {
-    createFlash({
+    createAlert({
       message: sprintf(__('You do not have permission to leave this %{namespaceType}.'), {
         namespaceType,
       }),

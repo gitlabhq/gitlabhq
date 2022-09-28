@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import CreateItemDropdown from '~/create_item_dropdown';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -130,7 +130,7 @@ export default class ProtectedBranchCreate {
         window.location.reload();
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Failed to protect the branch'),
         }),
       );

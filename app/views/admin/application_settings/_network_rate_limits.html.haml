@@ -30,4 +30,4 @@
       = f.label :"throttle_authenticated_#{setting_fragment}_period_in_seconds", _('Authenticated API rate limit period in seconds'), class: 'label-bold'
       = f.number_field :"throttle_authenticated_#{setting_fragment}_period_in_seconds", class: 'form-control gl-form-input'
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }

@@ -9,7 +9,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, s__, n__ } from '~/locale';
 import { getUsers, getGroups, getDeployKeys } from '../api/access_dropdown_api';
 import { LEVEL_TYPES, ACCESS_LEVELS } from '../constants';
@@ -163,7 +163,7 @@ export default {
             this.setSelected({ initial });
           })
           .catch(() =>
-            createFlash({ message: __('Failed to load groups, users and deploy keys.') }),
+            createAlert({ message: __('Failed to load groups, users and deploy keys.') }),
           )
           .finally(() => {
             this.initialLoading = false;
@@ -175,7 +175,7 @@ export default {
             this.consolidateData(deployKeysResponse.data);
             this.setSelected({ initial });
           })
-          .catch(() => createFlash({ message: __('Failed to load deploy keys.') }))
+          .catch(() => createAlert({ message: __('Failed to load deploy keys.') }))
           .finally(() => {
             this.initialLoading = false;
             this.loading = false;

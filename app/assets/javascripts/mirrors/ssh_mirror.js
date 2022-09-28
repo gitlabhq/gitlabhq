@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
@@ -115,7 +115,7 @@ export default class SSHMirror {
         const failureMessage = response.data
           ? response.data.message
           : __('An error occurred while detecting host keys');
-        createFlash({
+        createAlert({
           message: failureMessage,
         });
 

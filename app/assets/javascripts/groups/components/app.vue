@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
@@ -132,7 +132,7 @@ export default {
           this.isLoading = false;
           window.scrollTo({ top: 0, behavior: 'smooth' });
 
-          createFlash({ message: COMMON_STR.FAILURE });
+          createAlert({ message: COMMON_STR.FAILURE });
         });
     },
     fetchAllGroups() {
@@ -218,7 +218,7 @@ export default {
           if (err.status === 403) {
             message = COMMON_STR.LEAVE_FORBIDDEN;
           }
-          createFlash({ message });
+          createAlert({ message });
           this.targetGroup.isBeingRemoved = false;
         });
     },

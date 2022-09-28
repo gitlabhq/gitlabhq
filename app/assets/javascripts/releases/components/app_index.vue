@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
@@ -71,7 +71,7 @@ export default {
       error(error) {
         this.fullRequestError = true;
 
-        createFlash({
+        createAlert({
           message: this.$options.i18n.errorMessage,
           captureError: true,
           error,

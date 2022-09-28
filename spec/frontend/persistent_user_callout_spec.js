@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import PersistentUserCallout from '~/persistent_user_callout';
 
@@ -108,7 +108,7 @@ describe('PersistentUserCallout', () => {
       await waitForPromises();
 
       expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while dismissing the alert. Refresh the page and try again.',
       });
     });
@@ -214,7 +214,7 @@ describe('PersistentUserCallout', () => {
       await waitForPromises();
 
       expect(window.location.assign).not.toHaveBeenCalled();
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message:
           'An error occurred while acknowledging the notification. Refresh the page and try again.',
       });

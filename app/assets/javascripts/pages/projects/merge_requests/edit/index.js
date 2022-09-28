@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -33,7 +33,7 @@ function initTargetBranchSelector() {
             callback(data);
           })
           .catch(() =>
-            createFlash({
+            createAlert({
               message: __('Error fetching branches'),
             }),
           );

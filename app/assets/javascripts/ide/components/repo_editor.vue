@@ -11,7 +11,7 @@ import {
 import { SourceEditorExtension } from '~/editor/extensions/source_editor_extension_base';
 import { EditorWebIdeExtension } from '~/editor/extensions/source_editor_webide_ext';
 import SourceEditor from '~/editor/source_editor';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import ModelManager from '~/ide/lib/common/model_manager';
 import { defaultDiffEditorOptions, defaultEditorOptions } from '~/ide/lib/editor_options';
 import { __ } from '~/locale';
@@ -239,7 +239,7 @@ export default {
           this.createEditorInstance();
         })
         .catch((err) => {
-          createFlash({
+          createAlert({
             message: __('Error setting up editor. Please try again.'),
             fadeTransition: false,
             addBodyClass: true,
@@ -331,7 +331,7 @@ export default {
               useLivePreviewExtension();
             })
             .catch((e) =>
-              createFlash({
+              createAlert({
                 message: e,
               }),
             );

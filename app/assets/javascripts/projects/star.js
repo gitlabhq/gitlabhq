@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
@@ -34,7 +34,7 @@ export default class Star {
           }
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Star toggle failed. Try again later.'),
           }),
         );

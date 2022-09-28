@@ -181,6 +181,8 @@ RSpec.configure do |config|
   config.include RSpec::Benchmark::Matchers, type: :benchmark
   config.include DetailedErrorHelpers
 
+  config.include_context 'when rendered has no HTML escapes', type: :view
+
   include StubFeatureFlags
   include StubSnowplow
   include StubMember

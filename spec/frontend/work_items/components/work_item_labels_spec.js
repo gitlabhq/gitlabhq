@@ -21,8 +21,8 @@ describe('WorkItemLabels component', () => {
 
   const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-
   const findEmptyState = () => wrapper.findByTestId('empty-state');
+  const findLabelsTitle = () => wrapper.findByTestId('labels-title');
 
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
@@ -63,7 +63,7 @@ describe('WorkItemLabels component', () => {
   it('has a label', () => {
     createComponent();
 
-    expect(findTokenSelector().props('ariaLabelledby')).toContain('labels-title-');
+    expect(findTokenSelector().props('ariaLabelledby')).toEqual(findLabelsTitle().attributes('id'));
   });
 
   it('focuses token selector on token selector input event', async () => {

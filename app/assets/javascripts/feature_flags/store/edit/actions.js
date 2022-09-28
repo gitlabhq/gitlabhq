@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -49,7 +49,7 @@ export const receiveFeatureFlagSuccess = ({ commit }, response) =>
   commit(types.RECEIVE_FEATURE_FLAG_SUCCESS, response);
 export const receiveFeatureFlagError = ({ commit }) => {
   commit(types.RECEIVE_FEATURE_FLAG_ERROR);
-  createFlash({
+  createAlert({
     message: __('Something went wrong on our end. Please try again!'),
   });
 };

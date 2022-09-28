@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -10,7 +10,7 @@ export function dismiss(endpoint, highlightId) {
       feature_name: highlightId,
     })
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __(
           'An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again.',
         ),

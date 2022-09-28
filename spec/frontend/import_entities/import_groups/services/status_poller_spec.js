@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import Visibility from 'visibilityjs';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
 import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
 import axios from '~/lib/utils/axios_utils';
@@ -83,7 +83,7 @@ describe('Bulk import status poller', () => {
   it('when error occurs shows flash with error', () => {
     const [[pollConfig]] = Poll.mock.calls;
     pollConfig.errorCallback();
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   it('when success response arrives updates relevant group status', () => {

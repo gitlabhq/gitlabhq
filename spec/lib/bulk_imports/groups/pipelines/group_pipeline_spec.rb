@@ -13,7 +13,7 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
         :bulk_import_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_name: 'My Destination Group',
+        destination_slug: 'my-destination-group',
         destination_namespace: parent.full_path
       )
     end

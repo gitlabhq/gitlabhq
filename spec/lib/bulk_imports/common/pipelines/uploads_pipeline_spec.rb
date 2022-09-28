@@ -152,14 +152,14 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
 
   context 'when importing to group' do
     let(:portable) { group }
-    let(:entity) { create(:bulk_import_entity, :group_entity, group: group, source_full_path: 'test') }
+    let(:entity) { create(:bulk_import_entity, :group_entity, group: group, source_full_path: 'test', source_xid: nil) }
 
     include_examples 'uploads import'
   end
 
   context 'when importing to project' do
     let(:portable) { project }
-    let(:entity) { create(:bulk_import_entity, :project_entity, project: project, source_full_path: 'test') }
+    let(:entity) { create(:bulk_import_entity, :project_entity, project: project, source_full_path: 'test', source_xid: nil) }
 
     include_examples 'uploads import'
   end

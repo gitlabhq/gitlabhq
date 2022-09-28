@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import Ajax from './droplab/plugins/ajax';
 import Filter from './droplab/plugins/filter';
@@ -17,7 +17,7 @@ export default class DropdownNonUser extends FilteredSearchDropdown {
         loadingTemplate: this.loadingTemplate,
         preprocessing,
         onError() {
-          createFlash({
+          createAlert({
             message: __('An error occurred fetching the dropdown data.'),
           });
         },

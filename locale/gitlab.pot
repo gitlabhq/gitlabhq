@@ -45788,6 +45788,9 @@ msgstr ""
 msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 
+msgid "You cannot add any more epics. This epic already has maximum number of child epics."
+msgstr ""
+
 msgid "You cannot approve your own deployment."
 msgstr ""
 

@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import Ajax from './droplab/plugins/ajax';
 import Filter from './droplab/plugins/filter';
@@ -14,7 +14,7 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
         method: 'setData',
         loadingTemplate: this.loadingTemplate,
         onError() {
-          createFlash({
+          createAlert({
             message: __('An error occurred fetching the dropdown data.'),
           });
         },

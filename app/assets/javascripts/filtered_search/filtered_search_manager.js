@@ -1,7 +1,7 @@
 import { last } from 'lodash';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import {
   ENTER_KEY_CODE,
   BACKSPACE_KEY_CODE,
@@ -91,7 +91,7 @@ export default class FilteredSearchManager {
       .fetch()
       .catch((error) => {
         if (error.name === 'RecentSearchesServiceError') return undefined;
-        createFlash({
+        createAlert({
           message: __('An error occurred while parsing recent searches'),
         });
         // Gracefully fail to empty array

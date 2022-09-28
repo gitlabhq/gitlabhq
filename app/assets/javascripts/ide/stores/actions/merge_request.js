@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import { leftSidebarViews, PERMISSION_READ_MR, MAX_MR_FILES_AUTO_OPEN } from '../../constants';
 import service from '../../services';
@@ -34,7 +34,7 @@ export const getMergeRequestsForBranch = (
       }
     })
     .catch((e) => {
-      createFlash({
+      createAlert({
         message: __(`Error fetching merge requests for ${branchId}`),
         fadeTransition: false,
         addBodyClass: true,
@@ -233,7 +233,7 @@ export const openMergeRequest = async (
 
     await dispatch('openMergeRequestChanges', changes);
   } catch (e) {
-    createFlash({ message: __('Error while loading the merge request. Please try again.') });
+    createAlert({ message: __('Error while loading the merge request. Please try again.') });
     throw e;
   }
 };

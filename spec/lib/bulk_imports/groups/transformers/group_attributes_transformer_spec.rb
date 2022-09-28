@@ -24,59 +24,67 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer do
     let(:data) do
       {
         'name' => 'Source Group Name',
+        'description' => 'Source Group Description',
         'path' => 'source-group-path',
         'full_path' => 'source/full/path',
         'visibility' => 'private',
         'project_creation_level' => 'developer',
-        'subgroup_creation_level' => 'maintainer'
+        'subgroup_creation_level' => 'maintainer',
+        'emails_disabled' => true,
+        'lfs_enabled' => false,
+        'mentions_disabled' => true,
+        'share_with_group_lock' => false,
+        'require_two_factor_authentication' => false,
+        'two_factor_grace_period' => 100,
+        'request_access_enabled' => false
       }
     end
 
     subject { described_class.new }
 
     it 'returns original data with some keys transformed' do
-      transformed_data = subject.transform(context, { 'name' => 'Name', 'description' => 'Description' })
+      transformed_data = subject.transform(context, data)
 
       expect(transformed_data).to eq({
-        'name' => 'Name',
-        'description' => 'Description',
+        'name' => 'Source Group Name',
+        'description' => 'Source Group Description',
         'parent_id' => parent.id,
-        'path' => 'destination-slug-path'
+        'path' => entity.destination_slug,
+        'visibility_level' => Gitlab::VisibilityLevel.string_options[data['visibility']],
+        'project_creation_level' => Gitlab::Access.project_creation_string_options[data['project_creation_level']],
+        'subgroup_creation_level' => Gitlab::Access.subgroup_creation_string_options[data['subgroup_creation_level']],
+        'emails_disabled' => true,
+        'lfs_enabled' => false,
+        'mentions_disabled' => true,
+        'share_with_group_lock' => false,
+        'require_two_factor_authentication' => false,
+        'two_factor_grace_period' => 100,
+        'request_access_enabled' => false
       })
     end
 
-    it 'transforms path from destination_slug' do
-      transformed_data = subject.transform(context, data)
+    context 'when some fields are not present' do
+      it 'does not include those fields' do
+        data = {
+          'name' => 'Source Group Name',
+          'description' => 'Source Group Description',
+          'path' => 'source-group-path',
+          'full_path' => 'source/full/path'
+        }
 
-      expect(transformed_data['path']).to eq(entity.destination_slug)
-    end
+        transformed_data = subject.transform(context, data)
 
-    it 'removes full path' do
-      transformed_data = subject.transform(context, data)
-
-      expect(transformed_data).not_to have_key('full_path')
-    end
-
-    it 'transforms visibility level' do
-      visibility = data['visibility']
-      transformed_data = subject.transform(context, data)
-
-      expect(transformed_data).not_to have_key('visibility')
-      expect(transformed_data['visibility_level']).to eq(Gitlab::VisibilityLevel.string_options[visibility])
-    end
-
-    it 'transforms project creation level' do
-      level = data['project_creation_level']
-      transformed_data = subject.transform(context, data)
-
-      expect(transformed_data['project_creation_level']).to eq(Gitlab::Access.project_creation_string_options[level])
-    end
-
-    it 'transforms subgroup creation level' do
-      level = data['subgroup_creation_level']
-      transformed_data = subject.transform(context, data)
-
-      expect(transformed_data['subgroup_creation_level']).to eq(Gitlab::Access.subgroup_creation_string_options[level])
+        expect(transformed_data).to eq({
+          'name' => 'Source Group Name',
+          'path' => 'destination-slug-path',
+          'description' => 'Source Group Description',
+          'parent_id' => parent.id,
+          'share_with_group_lock' => nil,
+          'emails_disabled' => nil,
+          'lfs_enabled' => nil,
+          'mentions_disabled' => nil
+        })
+      end
     end
 
     describe 'parent group transformation' do

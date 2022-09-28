@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import { dismiss } from '~/feature_highlight/feature_highlight_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 
@@ -32,7 +32,7 @@ describe('feature highlight helper', () => {
 
       await dismiss(endpoint, highlightId);
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message:
           'An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again.',
       });

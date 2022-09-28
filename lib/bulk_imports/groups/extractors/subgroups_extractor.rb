@@ -5,10 +5,8 @@ module BulkImports
     module Extractors
       class SubgroupsExtractor
         def extract(context)
-          encoded_parent_path = ERB::Util.url_encode(context.entity.source_full_path)
-
           response = http_client(context.configuration)
-            .each_page(:get, "groups/#{encoded_parent_path}/subgroups")
+            .each_page(:get, "#{context.entity.base_resource_path}/subgroups")
             .flat_map(&:itself)
 
           BulkImports::Pipeline::ExtractedData.new(data: response)

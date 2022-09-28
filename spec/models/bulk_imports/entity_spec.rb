@@ -236,7 +236,7 @@ RSpec.describe BulkImports::Entity, type: :model do
       it 'returns group export relations url' do
         entity = build(:bulk_import_entity, :group_entity)
 
-        expect(entity.export_relations_url_path).to eq("/groups/#{entity.encoded_source_full_path}/export_relations")
+        expect(entity.export_relations_url_path).to eq("/groups/#{entity.source_xid}/export_relations")
       end
     end
 
@@ -244,7 +244,7 @@ RSpec.describe BulkImports::Entity, type: :model do
       it 'returns project export relations url' do
         entity = build(:bulk_import_entity, :project_entity)
 
-        expect(entity.export_relations_url_path).to eq("/projects/#{entity.encoded_source_full_path}/export_relations")
+        expect(entity.export_relations_url_path).to eq("/projects/#{entity.source_xid}/export_relations")
       end
     end
   end
@@ -254,7 +254,7 @@ RSpec.describe BulkImports::Entity, type: :model do
       entity = build(:bulk_import_entity)
 
       expect(entity.relation_download_url_path('test'))
-        .to eq("/groups/#{entity.encoded_source_full_path}/export_relations/download?relation=test")
+        .to eq("/groups/#{entity.source_xid}/export_relations/download?relation=test")
     end
   end
 
@@ -290,15 +290,15 @@ RSpec.describe BulkImports::Entity, type: :model do
 
   describe '#base_resource_url_path' do
     it 'returns base entity url path' do
-      entity = build(:bulk_import_entity)
+      entity = build(:bulk_import_entity, source_xid: nil)
 
-      expect(entity.base_resource_url_path).to eq("/groups/#{entity.encoded_source_full_path}")
+      expect(entity.base_resource_path).to eq("/groups/#{entity.encoded_source_full_path}")
     end
   end
 
   describe '#wiki_url_path' do
     it 'returns entity wiki url path' do
-      entity = build(:bulk_import_entity)
+      entity = build(:bulk_import_entity, source_xid: nil)
 
       expect(entity.wikis_url_path).to eq("/groups/#{entity.encoded_source_full_path}/wikis")
     end

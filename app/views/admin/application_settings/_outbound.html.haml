@@ -22,4 +22,4 @@
           s_('OutboundRequests|Enforce DNS rebinding attack protection'),
           help_text: _('OutboundRequests|Resolve IP addresses once and uses them to submit requests.')
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }

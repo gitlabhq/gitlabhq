@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import ProtectedBranchEdit from '~/protected_branches/protected_branch_edit';
 
@@ -136,7 +136,7 @@ describe('ProtectedBranchEdit', () => {
 
         expect(toggle).not.toHaveClass(IS_DISABLED_CLASS);
         expect(toggle.querySelector(IS_LOADING_SELECTOR)).toBe(null);
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
 
@@ -149,7 +149,7 @@ describe('ProtectedBranchEdit', () => {
       it('flashes error', async () => {
         await axios.waitForAll();
 
-        expect(createFlash).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalled();
       });
     });
   });

@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Visibility from 'visibilityjs';
 import { nextTick } from 'vue';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Poll from '~/lib/utils/poll';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -170,7 +170,7 @@ describe('Commit pipeline status component', () => {
       });
 
       it('displays flash error message', () => {
-        expect(createFlash).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalled();
       });
     });
   });

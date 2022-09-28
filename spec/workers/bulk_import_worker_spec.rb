@@ -87,7 +87,6 @@ RSpec.describe BulkImportWorker do
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
 
           expect(described_class).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
-          expect(BulkImports::EntityWorker).to receive(:perform_async).twice
           expect(BulkImports::ExportRequestWorker).to receive(:perform_async).twice
 
           subject.perform(bulk_import.id)
@@ -111,7 +110,7 @@ RSpec.describe BulkImportWorker do
           bulk_import = create(:bulk_import, :created)
           create(:bulk_import_entity, :created, bulk_import: bulk_import)
 
-          allow(BulkImports::EntityWorker).to receive(:perform_async).and_raise(StandardError)
+          allow(BulkImports::ExportRequestWorker).to receive(:perform_async).and_raise(StandardError)
 
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(kind_of(StandardError), bulk_import_id: bulk_import.id)
 

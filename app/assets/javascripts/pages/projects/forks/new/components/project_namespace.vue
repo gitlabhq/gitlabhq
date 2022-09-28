@@ -9,7 +9,7 @@ import {
   GlSearchBoxByType,
   GlTruncate,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -41,7 +41,7 @@ export default {
         return length > 0 && length < MINIMUM_SEARCH_LENGTH;
       },
       error(error) {
-        createFlash({
+        createAlert({
           message: s__(
             'ForkProject|Something went wrong while loading data. Please refresh the page to try again.',
           ),

@@ -1,6 +1,6 @@
 import { GlButton, GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Modal from '~/ide/components/new_dropdown/modal.vue';
 import { createStore } from '~/ide/stores';
 import { stubComponent } from 'helpers/stub_component';
@@ -341,7 +341,7 @@ describe('new file modal component', () => {
         });
 
         it('does not trigger flash', () => {
-          expect(createFlash).not.toHaveBeenCalled();
+          expect(createAlert).not.toHaveBeenCalled();
         });
       });
 
@@ -360,7 +360,7 @@ describe('new file modal component', () => {
         });
 
         it('does not trigger flash', () => {
-          expect(createFlash).not.toHaveBeenCalled();
+          expect(createAlert).not.toHaveBeenCalled();
         });
       });
     });
@@ -380,7 +380,7 @@ describe('new file modal component', () => {
     });
 
     it('creates flash', () => {
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'The name "src" is already taken in this directory.',
         fadeTransition: false,
         addBodyClass: true,
@@ -405,7 +405,7 @@ describe('new file modal component', () => {
     });
 
     it('does not create flash', () => {
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
     it('dispatches event', () => {

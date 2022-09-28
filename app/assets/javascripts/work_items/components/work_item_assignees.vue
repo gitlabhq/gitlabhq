@@ -142,9 +142,6 @@ export default {
         property: `type_${this.workItemType}`,
       };
     },
-    assigneeListEmpty() {
-      return this.assignees.length === 0;
-    },
     containerClass() {
       return !this.isEditing ? 'gl-shadow-none!' : '';
     },

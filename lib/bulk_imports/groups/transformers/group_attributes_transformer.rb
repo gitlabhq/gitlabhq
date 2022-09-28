@@ -4,6 +4,7 @@ module BulkImports
   module Groups
     module Transformers
       class GroupAttributesTransformer
+        # rubocop: disable Style/IfUnlessModifier
         def transform(context, data)
           import_entity = context.entity
 
@@ -11,19 +12,53 @@ module BulkImports
             namespace = Namespace.find_by_full_path(import_entity.destination_namespace)
           end
 
-          data
-            .then { |data| transform_name(import_entity, namespace, data) }
-            .then { |data| transform_path(import_entity, data) }
-            .then { |data| transform_full_path(data) }
-            .then { |data| transform_parent(context, import_entity, namespace, data) }
-            .then { |data| transform_visibility_level(data) }
-            .then { |data| transform_project_creation_level(data) }
-            .then { |data| transform_subgroup_creation_level(data) }
+          params = {
+            'name' => group_name(namespace, data),
+            'path' => import_entity.destination_slug.parameterize,
+            'description' => data['description'],
+            'lfs_enabled' => data['lfs_enabled'],
+            'emails_disabled' => data['emails_disabled'],
+            'mentions_disabled' => data['mentions_disabled'],
+            'share_with_group_lock' => data['share_with_group_lock']
+          }
+
+          if namespace.present?
+            params['parent_id'] = namespace.id
+          end
+
+          if data.has_key?('two_factor_grace_period')
+            params['two_factor_grace_period'] = data['two_factor_grace_period']
+          end
+
+          if data.has_key?('request_access_enabled')
+            params['request_access_enabled'] = data['request_access_enabled']
+          end
+
+          if data.has_key?('require_two_factor_authentication')
+            params['require_two_factor_authentication'] = data['require_two_factor_authentication']
+          end
+
+          if data.has_key?('project_creation_level')
+            params['project_creation_level'] =
+              Gitlab::Access.project_creation_string_options[data['project_creation_level']]
+          end
+
+          if data.has_key?('subgroup_creation_level')
+            params['subgroup_creation_level'] =
+              Gitlab::Access.subgroup_creation_string_options[data['subgroup_creation_level']]
+          end
+
+          if data.has_key?('visibility')
+            params['visibility_level'] = Gitlab::VisibilityLevel.string_options[data['visibility']]
+          end
+
+          params
         end
+        # rubocop: enable Style/IfUnlessModifier
 
         private
 
-        def transform_name(import_entity, namespace, data)
+        def group_name(namespace, data)
           if namespace.present?
             namespace_children_names = namespace.children.pluck(:name) # rubocop: disable CodeReuse/ActiveRecord
 
@@ -34,51 +69,7 @@ module BulkImports
             end
           end
 
-          data
-        end
-
-        def transform_path(import_entity, data)
-          data['path'] = import_entity.destination_slug.parameterize
-          data
-        end
-
-        def transform_full_path(data)
-          data.delete('full_path')
-          data
-        end
-
-        def transform_parent(context, import_entity, namespace, data)
-          data['parent_id'] = namespace.id if namespace.present?
-
-          data
-        end
-
-        def transform_visibility_level(data)
-          visibility = data['visibility']
-
-          return data unless visibility.present?
-
-          data['visibility_level'] = Gitlab::VisibilityLevel.string_options[visibility]
-          data.delete('visibility')
-          data
-        end
-
-        def transform_project_creation_level(data)
-          project_creation_level = data['project_creation_level']
-
-          return data unless project_creation_level.present?
-
-          data['project_creation_level'] = Gitlab::Access.project_creation_string_options[project_creation_level]
-          data
-        end
-
-        def transform_subgroup_creation_level(data)
-          subgroup_creation_level = data['subgroup_creation_level']
-
-          return data unless subgroup_creation_level.present?
-
-          data['subgroup_creation_level'] = Gitlab::Access.subgroup_creation_string_options[subgroup_creation_level]
-          data
+          data['name']
         end
       end
     end

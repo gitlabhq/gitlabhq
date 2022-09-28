@@ -1,5 +1,5 @@
 import { getTag } from '~/rest_api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
@@ -48,7 +48,7 @@ export const fetchRelease = async ({ commit, state }) => {
     commit(types.RECEIVE_RELEASE_SUCCESS, release);
   } catch (error) {
     commit(types.RECEIVE_RELEASE_ERROR, error);
-    createFlash({
+    createAlert({
       message: s__('Release|Something went wrong while getting the release details.'),
     });
   }
@@ -136,11 +136,11 @@ export const createRelease = async ({ commit, dispatch, getters }) => {
   } catch (error) {
     commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
     if (error instanceof GraphQLError) {
-      createFlash({
+      createAlert({
         message: error.message,
       });
     } else {
-      createFlash({
+      createAlert({
         message: s__('Release|Something went wrong while creating a new release.'),
       });
     }
@@ -222,7 +222,7 @@ export const updateRelease = async ({ commit, dispatch, state, getters }) => {
     dispatch('receiveSaveReleaseSuccess', state.release._links.self);
   } catch (error) {
     commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
-    createFlash({
+    createAlert({
       message: s__('Release|Something went wrong while saving the release details.'),
     });
   }
@@ -236,7 +236,7 @@ export const fetchTagNotes = ({ commit, state }, tagName) => {
       commit(types.RECEIVE_TAG_NOTES_SUCCESS, data);
     })
     .catch((error) => {
-      createFlash({
+      createAlert({
         message: s__('Release|Unable to fetch the tag notes.'),
       });
 
@@ -269,7 +269,7 @@ export const deleteRelease = ({ commit, getters, dispatch, state }) => {
     })
     .catch((error) => {
       commit(types.RECEIVE_SAVE_RELEASE_ERROR, error);
-      createFlash({
+      createAlert({
         message: s__('Release|Something went wrong while deleting the release.'),
       });
     });

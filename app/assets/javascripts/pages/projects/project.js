@@ -4,7 +4,7 @@ import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
 import initClonePanel from '~/clone_panel';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { serializeForm } from '~/lib/utils/forms';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -80,7 +80,7 @@ export default class Project {
             })
             .then(({ data }) => callback(data))
             .catch(() =>
-              createFlash({
+              createAlert({
                 message: __('An error occurred while getting projects'),
               }),
             );
