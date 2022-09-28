@@ -6866,6 +6866,25 @@ RSpec.describe User do
     end
   end
 
+  describe '#webhook_email' do
+    let(:user) { build(:user, public_email: nil) }
+
+    context 'when public email is present' do
+      before do
+        user.public_email = "hello@hello.com"
+      end
+      it 'returns public email' do
+        expect(user.webhook_email).to eq(user.public_email)
+      end
+    end
+
+    context 'when public email is nil' do
+      it 'returns [REDACTED]' do
+        expect(user.webhook_email).to eq(_('[REDACTED]'))
+      end
+    end
+  end
+
   describe 'user credit card validation' do
     context 'when user is initialized' do
       let(:user) { build(:user) }
