@@ -5,7 +5,7 @@ import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vu
 import DeployFreezeSettings from '~/deploy_freeze/components/deploy_freeze_settings.vue';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
-import { timezoneDataFixture } from '../helpers';
+import { timezoneDataFixture } from '../../vue_shared/components/timezone_dropdown/helpers';
 
 Vue.use(Vuex);
 

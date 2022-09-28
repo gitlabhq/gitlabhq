@@ -1,23 +1,15 @@
 import { GlDropdownItem, GlDropdown } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-import Vuex from 'vuex';
-import createStore from '~/deploy_freeze/store';
-import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
-import { findTzByName, formatTz, timezoneDataFixture } from '../helpers';
-
-Vue.use(Vuex);
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
+import { formatTimezone } from '~/lib/utils/datetime_utility';
+import { findTzByName, timezoneDataFixture } from './helpers';
 
 describe('Deploy freeze timezone dropdown', () => {
   let wrapper;
   let store;
 
   const createComponent = (searchTerm, selectedTimezone) => {
-    store = createStore({
-      projectId: '8',
-      timezoneData: timezoneDataFixture,
-    });
-    wrapper = shallowMount(TimezoneDropdown, {
+    wrapper = shallowMountExtended(TimezoneDropdown, {
       store,
       propsData: {
         value: selectedTimezone,
@@ -32,6 +24,8 @@ describe('Deploy freeze timezone dropdown', () => {
 
   const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findDropdownItemByIndex = (index) => wrapper.findAllComponents(GlDropdownItem).at(index);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findEmptyResultsItem = () => wrapper.findByTestId('noMatchingResults');
 
   afterEach(() => {
     wrapper.destroy();
@@ -66,11 +60,11 @@ describe('Deploy freeze timezone dropdown', () => {
     it('renders only the time zone searched for', () => {
       const selectedTz = findTzByName('Alaska');
       expect(findAllDropdownItems()).toHaveLength(1);
-      expect(findDropdownItemByIndex(0).text()).toBe(formatTz(selectedTz));
+      expect(findDropdownItemByIndex(0).text()).toBe(formatTimezone(selectedTz));
     });
 
     it('should not display empty results message', () => {
-      expect(wrapper.find('[data-testid="noMatchingResults"]').exists()).toBe(false);
+      expect(findEmptyResultsItem().exists()).toBe(false);
     });
 
     describe('Custom events', () => {
@@ -81,7 +75,7 @@ describe('Deploy freeze timezone dropdown', () => {
         expect(wrapper.emitted('input')).toEqual([
           [
             {
-              formattedTimezone: formatTz(selectedTz),
+              formattedTimezone: formatTimezone(selectedTz),
               identifier: selectedTz.identifier,
             },
           ],
@@ -96,7 +90,7 @@ describe('Deploy freeze timezone dropdown', () => {
     });
 
     it('renders selected time zone as dropdown label', () => {
-      expect(wrapper.findComponent(GlDropdown).vm.text).toBe('Alaska');
+      expect(findDropdown().vm.text).toBe('Alaska');
     });
   });
 });

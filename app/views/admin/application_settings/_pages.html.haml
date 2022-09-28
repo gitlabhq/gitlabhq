@@ -46,4 +46,4 @@
         = f.gitlab_ui_checkbox_component :lets_encrypt_terms_of_service_accepted,
           s_("AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF).").html_safe % { link_start: terms_of_service_link_start, link_end: '</a>'.html_safe }
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

@@ -23,7 +23,7 @@ RSpec.describe 'Milestone' do
         fill_in "milestone_due_date", with: '2016-12-16'
       end
 
-      find('input[name="commit"]').click
+      click_button 'Create milestone'
 
       expect(find('[data-testid="no-issues-alert"]')).to have_content('Assign some issues to this milestone.')
       expect(page).to have_content('Nov 16, 2016–Dec 16, 2016')
@@ -49,7 +49,7 @@ RSpec.describe 'Milestone' do
       page.within '.milestone-form' do
         fill_in "milestone_title", with: milestone.title
       end
-      find('input[name="commit"]').click
+      click_button 'Create milestone'
 
       expect(find('.gl-alert-danger')).to have_content('already being used for another group or project milestone.')
     end
@@ -62,7 +62,7 @@ RSpec.describe 'Milestone' do
       page.within '.milestone-form' do
         fill_in "milestone_title", with: milestone.title
       end
-      find('input[name="commit"]').click
+      click_button 'Create milestone'
 
       expect(find('.gl-alert-danger')).to have_content('already being used for another group or project milestone.')
     end

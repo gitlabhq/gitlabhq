@@ -5,7 +5,8 @@ import Vuex from 'vuex';
 import DeployFreezeTable from '~/deploy_freeze/components/deploy_freeze_table.vue';
 import createStore from '~/deploy_freeze/store';
 import { RECEIVE_FREEZE_PERIODS_SUCCESS } from '~/deploy_freeze/store/mutation_types';
-import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
+import { freezePeriodsFixture } from '../helpers';
+import { timezoneDataFixture } from '../../vue_shared/components/timezone_dropdown/helpers';
 
 Vue.use(Vuex);
 

@@ -1,8 +1,6 @@
 import Vue from 'vue';
-import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
-import { formatUtcOffset } from '~/lib/utils/datetime_utility';
-
-const formatTimezone = (item) => `[UTC ${formatUtcOffset(item.offset)}] ${item.name}`;
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
+import { formatTimezone } from '~/lib/utils/datetime_utility';
 
 export const initTimezoneDropdown = () => {
   const el = document.querySelector('.js-timezone-dropdown');

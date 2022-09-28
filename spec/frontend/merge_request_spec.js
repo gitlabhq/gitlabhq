@@ -3,8 +3,11 @@ import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequest from '~/merge_request';
+
+jest.mock('~/flash');
 
 describe('MergeRequest', () => {
   const test = {};
@@ -95,8 +98,11 @@ describe('MergeRequest', () => {
 
         await waitForPromises();
 
-        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-          'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
+        expect(createAlert).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message:
+              'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
+          }),
         );
       });
     });

@@ -1,8 +1,8 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
-import { formatUtcOffset } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
+import { formatTimezone } from '~/lib/utils/datetime_utility';
 
 export default {
   name: 'TimezoneDropdown',
@@ -43,7 +43,7 @@ export default {
   computed: {
     timezones() {
       return this.timezoneData.map((timezone) => ({
-        formattedTimezone: this.formatTimezone(timezone),
+        formattedTimezone: formatTimezone(timezone),
         identifier: timezone.identifier,
       }));
     },
@@ -70,9 +70,6 @@ export default {
     },
     isSelected(timezone) {
       return this.tzValue === timezone.formattedTimezone;
-    },
-    formatTimezone(item) {
-      return `[UTC ${formatUtcOffset(item.offset)}] ${item.name}`;
     },
   },
 };

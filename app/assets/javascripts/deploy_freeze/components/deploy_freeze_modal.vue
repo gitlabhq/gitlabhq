@@ -3,7 +3,7 @@ import { GlFormGroup, GlFormInput, GlModal, GlSprintf, GlLink } from '@gitlab/ui
 import { isValidCron } from 'cron-validator';
 import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
-import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import { mapComputed } from '~/vuex_shared/bindings';
 
 export default {

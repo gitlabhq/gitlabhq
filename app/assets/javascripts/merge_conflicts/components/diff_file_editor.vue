@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { mapActions } from 'vuex';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { INTERACTIVE_RESOLVE_MODE } from '../constants';
@@ -75,7 +75,7 @@ export default {
           },
         )
         .catch(() => {
-          createFlash({
+          createAlert({
             message: __('An error occurred while loading the file'),
           });
         });

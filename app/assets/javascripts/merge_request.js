@@ -1,7 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, consistent-return */
 
 import $ from 'jquery';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -44,7 +44,7 @@ function MergeRequest(opts) {
         }
       },
       onError: () => {
-        createFlash({
+        createAlert({
           message: __(
             'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
           ),
@@ -98,7 +98,7 @@ MergeRequest.prototype.initMRBtnListeners = function () {
             MergeRequest.toggleDraftStatus(data.title, wipEvent === 'ready');
           })
           .catch(() => {
-            createFlash({
+            createAlert({
               message: __('Something went wrong. Please try again.'),
             });
           })

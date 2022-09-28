@@ -104,7 +104,7 @@
           = f.gitlab_ui_checkbox_component :web_ide_clientside_preview_enabled,
               s_('IDE|Live Preview'),
               help_text: s_('Preview JavaScript projects in the Web IDE with CodeSandbox Live Preview. %{link_start}Learn more.%{link_end} ').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
-      = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+      = f.submit _('Save changes'), pajamas_button: true
 
 = render_if_exists 'admin/application_settings/maintenance_mode_settings_form'
 = render 'admin/application_settings/gitpod'

@@ -406,3 +406,29 @@ export const durationTimeFormatted = (duration) => {
 
   return `${hh}:${mm}:${ss}`;
 };
+
+/**
+ * Converts a numeric utc offset in seconds to +/- hours
+ * ie -32400 => -9 hours
+ * ie -12600 => -3.5 hours
+ *
+ * @param {Number} offset UTC offset in seconds as a integer
+ *
+ * @return {String} the + or - offset in hours, e.g. `- 10`, `0`, `+ 4`
+ */
+export const formatUtcOffset = (offset) => {
+  const parsed = parseInt(offset, 10);
+  if (Number.isNaN(parsed) || parsed === 0) {
+    return `0`;
+  }
+  const prefix = offset > 0 ? '+' : '-';
+  return `${prefix} ${Math.abs(offset / 3600)}`;
+};
+
+/**
+ * Returns formatted timezone
+ *
+ * @param {Object} timezone item with offset and name
+ * @returns {String} the UTC timezone with the offset, e.g. `[UTC + 2] Berlin`
+ */
+export const formatTimezone = ({ offset, name }) => `[UTC ${formatUtcOffset(offset)}] ${name}`;

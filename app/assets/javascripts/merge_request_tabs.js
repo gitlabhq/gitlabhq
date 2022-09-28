@@ -1,12 +1,12 @@
 /* eslint-disable no-new, class-methods-use-this */
 import $ from 'jquery';
 import Vue from 'vue';
+import { createAlert } from '~/flash';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
 import { parseUrlPathname } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
-import createFlash from './flash';
 import { initDiffStatsDropdown } from './init_diff_stats_dropdown';
 import axios from './lib/utils/axios_utils';
 
@@ -447,7 +447,7 @@ export default class MergeRequestTabs {
       .then((m) => m.default())
       .catch(() => {
         toggleLoader(false);
-        createFlash({
+        createAlert({
           message: __('An error occurred while fetching this tab.'),
         });
       });
@@ -480,7 +480,7 @@ export default class MergeRequestTabs {
         this.diffsLoaded = true;
       })
       .catch(() => {
-        createFlash({
+        createAlert({
           message: __('An error occurred while fetching this tab.'),
         });
       })

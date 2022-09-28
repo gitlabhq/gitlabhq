@@ -1,8 +1,7 @@
 import $ from 'jquery';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { formatUtcOffset, formatTimezone } from '~/lib/utils/datetime_utility';
 import TimezoneDropdown, {
-  formatUtcOffset,
-  formatTimezone,
   findTimezoneByIdentifier,
 } from '~/pages/projects/pipeline_schedules/shared/components/timezone_dropdown';
 

@@ -1,4 +1,5 @@
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
+import { formatTimezone } from '~/lib/utils/datetime_utility';
 
 const defaultTimezone = { identifier: 'Etc/UTC', name: 'UTC', offset: 0 };
 const defaults = {
@@ -16,8 +17,6 @@ export const formatUtcOffset = (offset) => {
   const prefix = offset > 0 ? '+' : '-';
   return `${prefix} ${Math.abs(offset / 3600)}`;
 };
-
-export const formatTimezone = (item) => `[UTC ${formatUtcOffset(item.offset)}] ${item.name}`;
 
 export const findTimezoneByIdentifier = (tzList = [], identifier = null) => {
   if (tzList && tzList.length && identifier && identifier.length) {
