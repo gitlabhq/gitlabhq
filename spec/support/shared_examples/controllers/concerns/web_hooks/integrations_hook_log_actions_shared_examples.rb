@@ -26,7 +26,7 @@ RSpec.shared_examples WebHooks::HookLogActions do
 
   describe 'POST #retry' do
     it 'executes the hook and redirects to the service form' do
-      stub_request(:post, web_hook.url)
+      stub_request(:post, web_hook.interpolated_url)
 
       expect_next_found_instance_of(web_hook.class) do |hook|
         expect(hook).to receive(:execute).and_call_original

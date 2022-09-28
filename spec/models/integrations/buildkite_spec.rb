@@ -19,7 +19,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
   end
 
   it_behaves_like Integrations::HasWebHook do
-    let(:hook_url) { 'https://webhook.buildkite.com/deliver/secret-sauce-webhook-token' }
+    let(:hook_url) { 'https://webhook.buildkite.com/deliver/{webhook_token}' }
   end
 
   describe 'Validations' do
@@ -68,7 +68,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
     describe '#hook_url' do
       it 'returns the webhook url' do
         expect(integration.hook_url).to eq(
-          'https://webhook.buildkite.com/deliver/secret-sauce-webhook-token'
+          'https://webhook.buildkite.com/deliver/{webhook_token}'
         )
       end
     end
