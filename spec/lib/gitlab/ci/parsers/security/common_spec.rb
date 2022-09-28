@@ -404,11 +404,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             {
             'type' => 'source',
             'items' => [
-            'signatures' => [
-            { 'algorithm' => 'hash', 'value' => 'hash_value' },
-            { 'algorithm' => 'location', 'value' => 'location_value' },
-            { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
-            ]
+              'signatures' => [
+                { 'algorithm' => 'hash', 'value' => 'hash_value' },
+                { 'algorithm' => 'location', 'value' => 'location_value' },
+                { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
+              ]
             ]
             }
           end
@@ -426,11 +426,11 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
               {
               'type' => 'source',
               'items' => [
-              'signatures' => [
-              { 'algorithm' => 'hash', 'value' => 'hash_value' },
-              { 'algorithm' => 'location', 'value' => 'location_value' },
-              { 'algorithm' => 'INVALID', 'value' => 'scope_offset_value' }
-              ]
+                'signatures' => [
+                  { 'algorithm' => 'hash', 'value' => 'hash_value' },
+                  { 'algorithm' => 'location', 'value' => 'location_value' },
+                  { 'algorithm' => 'INVALID', 'value' => 'scope_offset_value' }
+                ]
               ]
               }
             end

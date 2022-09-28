@@ -94,6 +94,18 @@ module Emails
       end
     end
 
+    def access_token_revoked_email(user, token_name)
+      return unless user&.active?
+
+      @user = user
+      @token_name = token_name
+      @target_url = profile_personal_access_tokens_url
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("A personal access token has been revoked")))
+      end
+    end
+
     def ssh_key_expired_email(user, fingerprints)
       return unless user&.active?
 

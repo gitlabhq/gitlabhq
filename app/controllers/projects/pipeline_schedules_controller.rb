@@ -10,7 +10,6 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_update_pipeline_schedule!, only: [:edit, :update]
   before_action :authorize_take_ownership_pipeline_schedule!, only: [:take_ownership]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
-  before_action :push_schedule_feature_flag, only: [:index, :new, :edit]
 
   feature_category :continuous_integration
   urgency :low
@@ -115,9 +114,5 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def authorize_admin_pipeline_schedule!
     return access_denied! unless can?(current_user, :admin_pipeline_schedule, schedule)
-  end
-
-  def push_schedule_feature_flag
-    push_frontend_feature_flag(:pipeline_schedules_vue, @project)
   end
 end

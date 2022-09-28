@@ -39,11 +39,6 @@ module SelectsHelper
     select2_tag(id, opts)
   end
 
-  def namespace_select_tag(id, opts = {})
-    opts[:class] = [*opts[:class], 'ajax-namespace-select'].join(' ')
-    select2_tag(id, opts)
-  end
-
   def project_select_tag(id, opts = {})
     opts[:class] = [*opts[:class], 'ajax-project-select'].join(' ')
 

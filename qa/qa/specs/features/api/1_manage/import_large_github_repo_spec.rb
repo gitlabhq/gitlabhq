@@ -64,6 +64,7 @@ module QA
           "subscribed",
           "unsubscribed",
           "transferred",
+          "locked",
           # mentions are supported but they can be reported differently on gitlab's side
           # for example mention of issue creation in pr will be reported in the issue on gitlab side
           # or referenced in github will still create a 'mentioned in' comment in gitlab
@@ -251,11 +252,11 @@ module QA
       ) do
         start = Time.now
 
-        # fetch all objects right after import has started
-        fetch_github_objects
-
         # import the project and log gitlab path
         logger.info("== Importing project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
+
+        # fetch all objects right after import has started
+        fetch_github_objects
 
         import_status = lambda do
           imported_project.project_import_status.yield_self do |status|
@@ -597,7 +598,7 @@ module QA
       # @param [String] url
       # @return [Integer]
       def id_from_url(url)
-        url.match(%r{(?<type>issues|pull)/(?<id>\d+)})&.named_captures&.fetch(:id, nil).to_i
+        url.match(%r{(?<type>issues|pull)/(?<id>\d+)})&.named_captures&.fetch("id", nil).to_i
       end
     end
   end

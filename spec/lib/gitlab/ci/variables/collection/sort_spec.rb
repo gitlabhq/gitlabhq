@@ -192,13 +192,14 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Sort do
       end
 
       it 'preserves relative order of overridden variables' do
-        is_expected.to eq([
-          { 'TOP_LEVEL_GROUP_NAME' => 'top-level-group' },
-          { 'SUBGROUP_VAR'         => '$TOP_LEVEL_GROUP_NAME' },
-          { 'SUB_GROUP_NAME'       => 'vars-in-vars-subgroup' },
-          { 'SUBGROUP_VAR'         => '$SUB_GROUP_NAME' },
-          { 'PROJECT_VAR'          => '$SUBGROUP_VAR' }
-        ])
+        is_expected.to eq(
+          [
+            { 'TOP_LEVEL_GROUP_NAME' => 'top-level-group' },
+            { 'SUBGROUP_VAR'         => '$TOP_LEVEL_GROUP_NAME' },
+            { 'SUB_GROUP_NAME'       => 'vars-in-vars-subgroup' },
+            { 'SUBGROUP_VAR'         => '$SUB_GROUP_NAME' },
+            { 'PROJECT_VAR'          => '$SUBGROUP_VAR' }
+          ])
       end
     end
   end

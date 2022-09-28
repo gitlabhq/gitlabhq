@@ -116,8 +116,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
        - `jwks_uri` is the URL to the endpoint where the Token signer publishes its keys.
 
 1. Save the configuration file.
-1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../restart_gitlab.md#installations-from-source)
-   for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
+1. For changes to take effect, [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) if you installed GitLab with Omnibus, or [restart GitLab](../restart_gitlab.md#installations-from-source) if you installed GitLab from the source.
 
 On the sign in page, there should now be an OpenID Connect icon below the regular sign in form.
 Select the icon to begin the authentication process. The OpenID Connect provider asks the user to
@@ -277,7 +276,7 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
    https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/
    ```
 
-   The policy name is lowercased in the URL. For example, `B2C_1A_signup_signin`
+   The policy name is lowercase in the URL. For example, `B2C_1A_signup_signin`
    policy appears as `b2c_1a_signup_sigin`.
 
 The trailing forward slash is required.
@@ -416,7 +415,7 @@ To use symmetric key encryption:
 
 1. Convert `value` to standard base64. As [discussed in the post](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9),
    `value` is encoded in ["Base 64 Encoding with URL and Filename Safe Alphabet" in RFC 4648](https://datatracker.ietf.org/doc/html/rfc4648#section-5).
-   This needs to be converted to [standard base64 as defined in RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045).
+   This must be converted to [standard base64 as defined in RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045).
    The following Ruby script does this:
 
    ```ruby
@@ -538,5 +537,5 @@ If you're having trouble, here are some tips:
    OAuth2 access token if `client_auth_method` is not defined or if set to `basic`.
    If you are seeing 401 errors upon retrieving the `userinfo` endpoint, you may
    want to check your OpenID Web server configuration. For example, for
-   [`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php), you
-   may need to [add a configuration parameter to Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).
+   [`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php), you may need to
+   [add a configuration parameter to Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).

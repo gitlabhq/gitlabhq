@@ -860,8 +860,6 @@ RSpec.describe 'Pipeline', :js do
         end
 
         it 'displays the PipelineSchedule in an inactive state' do
-          stub_feature_flags(pipeline_schedules_vue: false)
-
           visit project_pipeline_schedules_path(project)
           page.click_link('Inactive')
 

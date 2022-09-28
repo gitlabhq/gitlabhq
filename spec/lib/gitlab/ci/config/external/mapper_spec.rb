@@ -207,9 +207,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context "when duplicate 'include's are defined" do
       let(:values) do
         { include: [
-          { 'local' => local_file },
-          { 'local' => local_file }
-        ],
+            { 'local' => local_file },
+            { 'local' => local_file }
+          ],
           image: 'image:1.0' }
       end
 
@@ -226,9 +226,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context 'when passing max number of files' do
       let(:values) do
         { include: [
-          { 'local' => local_file },
-          { 'remote' => remote_url }
-        ],
+            { 'local' => local_file },
+            { 'remote' => remote_url }
+          ],
           image: 'image:1.0' }
       end
 
@@ -242,9 +242,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context "when too many 'includes' are defined" do
       let(:values) do
         { include: [
-          { 'local' => local_file },
-          { 'remote' => remote_url }
-        ],
+            { 'local' => local_file },
+            { 'remote' => remote_url }
+          ],
           image: 'image:1.0' }
       end
 
@@ -425,9 +425,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
       let(:values) do
         { include: [
-          { 'local' => 'hello/secret-file1.yml' },
-          { 'local' => 'hello/secret-file2.yml' }
-        ],
+            { 'local' => 'hello/secret-file1.yml' },
+            { 'local' => 'hello/secret-file2.yml' }
+          ],
           image: 'ruby:2.7' }
       end
 

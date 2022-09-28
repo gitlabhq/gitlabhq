@@ -264,10 +264,11 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
     end
 
     it 'includes #deployment_variables and merges the KUBECONFIG values', :aggregate_failures do
-      expect(builder).to receive(:deployment_variables).and_return([
-        { key: 'KUBECONFIG', value: 'deployment-kubeconfig' },
-        { key: 'OTHER', value: 'some value' }
-      ])
+      expect(builder).to receive(:deployment_variables).and_return(
+        [
+          { key: 'KUBECONFIG', value: 'deployment-kubeconfig' },
+          { key: 'OTHER', value: 'some value' }
+        ])
       expect(template).to receive(:merge_yaml).with('deployment-kubeconfig')
       expect(subject['KUBECONFIG'].value).to eq('example-kubeconfig')
       expect(subject['OTHER'].value).to eq('some value')

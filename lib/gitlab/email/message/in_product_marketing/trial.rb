@@ -42,11 +42,11 @@ module Gitlab
               [
                 s_("InProductMarketing|GitLab's premium tiers are designed to make you, your team and your application more efficient and more secure with features including but not limited to:"),
                 list([
-                  s_('InProductMarketing|%{strong_start}Company wide portfolio management%{strong_end} — including multi-level epics, scoped labels').html_safe % strong_options,
-                  s_('InProductMarketing|%{strong_start}Multiple approval roles%{strong_end} — including code owners and required merge approvals').html_safe % strong_options,
-                  s_('InProductMarketing|%{strong_start}Advanced application security%{strong_end} — including SAST, DAST scanning, FUZZ testing, dependency scanning, license compliance, secrete detection').html_safe % strong_options,
-                  s_('InProductMarketing|%{strong_start}Executive level insights%{strong_end} — including reporting on productivity, tasks by type, days to completion, value stream').html_safe % strong_options
-                ])
+                       s_('InProductMarketing|%{strong_start}Company wide portfolio management%{strong_end} — including multi-level epics, scoped labels').html_safe % strong_options,
+                       s_('InProductMarketing|%{strong_start}Multiple approval roles%{strong_end} — including code owners and required merge approvals').html_safe % strong_options,
+                       s_('InProductMarketing|%{strong_start}Advanced application security%{strong_end} — including SAST, DAST scanning, FUZZ testing, dependency scanning, license compliance, secrete detection').html_safe % strong_options,
+                       s_('InProductMarketing|%{strong_start}Executive level insights%{strong_end} — including reporting on productivity, tasks by type, days to completion, value stream').html_safe % strong_options
+                     ])
               ].join("\n"),
               s_('InProductMarketing|GitLab provides static application security testing (SAST), dynamic application security testing (DAST), container scanning, and dependency scanning to help you deliver secure applications along with license compliance.'),
               s_('InProductMarketing|By enabling code owners and required merge approvals the right person will review the right MR. This is a win-win: cleaner code and a more efficient review process.')

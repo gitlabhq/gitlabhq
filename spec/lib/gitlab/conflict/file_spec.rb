@@ -141,19 +141,20 @@ RSpec.describe Gitlab::Conflict::File do
       let(:raw_conflict_content) { index.merge_file('files/ruby/popen.rb')[:data] }
 
       it 'assign conflict types and adds match line to the end of the section' do
-        expect(diff_line_types).to eq([
-          'match',
-          nil, nil, nil,
-          "conflict_marker_our",
-          "conflict_our",
-          "conflict_marker",
-          "conflict_their",
-          "conflict_their",
-          "conflict_their",
-          "conflict_marker_their",
-          nil, nil, nil,
-          "match"
-        ])
+        expect(diff_line_types).to eq(
+          [
+            'match',
+            nil, nil, nil,
+            "conflict_marker_our",
+            "conflict_our",
+            "conflict_marker",
+            "conflict_their",
+            "conflict_their",
+            "conflict_their",
+            "conflict_marker_their",
+            nil, nil, nil,
+            "match"
+          ])
       end
     end
   end

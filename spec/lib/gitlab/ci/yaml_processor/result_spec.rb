@@ -71,10 +71,11 @@ module Gitlab
           subject(:yaml_variables_for) { result.yaml_variables_for(job_name) }
 
           it 'returns calculated variables with root and job variables' do
-            is_expected.to match_array([
-              { key: 'VAR1', value: 'value 11' },
-              { key: 'VAR2', value: 'value 2' }
-            ])
+            is_expected.to match_array(
+              [
+                { key: 'VAR1', value: 'value 11' },
+                { key: 'VAR2', value: 'value 2' }
+              ])
           end
 
           context 'when an absent job is sent' do

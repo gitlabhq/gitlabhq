@@ -542,6 +542,16 @@ To list the batched background migrations in the system, run this command:
 
 `/chatops run batched_background_migrations list`
 
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database.
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
+
 Output example:
 
 ![List command](img/list_v15_4.png)
@@ -554,6 +564,16 @@ ChatOps returns 20 batched background migrations order by `created_at` (DESC).
 To see the status and progress of a specific batched background migration, run this command:
 
 `/chatops run batched_background_migrations status MIGRATION_ID`
+
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database.
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
 
 Output example:
 
@@ -577,6 +597,16 @@ If you want to pause a batched background migration, you need to run the followi
 
 `/chatops run batched_background_migrations pause MIGRATION_ID`
 
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database.
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
+
 Output example:
 
 ![Pause command](img/pause_v15_4.png)
@@ -589,6 +619,16 @@ You can pause only `active` batched background migrations.
 If you want to resume a batched background migration, you need to run the following command:
 
 `/chatops run batched_background_migrations resume MIGRATION_ID`
+
+This command supports the following options:
+
+- Database selection:
+  - `--database DATABASE_NAME`: Connects to the given database.
+- Environment selection:
+  - `--dev`: Uses the `dev` environment.
+  - `--staging`: Uses the `staging` environment.
+  - `--staging_ref`: Uses the `staging_ref` environment.
+  - `--production` : Uses the `production` environment (default).
 
 Output example:
 

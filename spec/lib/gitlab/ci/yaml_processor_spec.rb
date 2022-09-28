@@ -1524,13 +1524,14 @@ module Gitlab
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq([
-            paths: ["logs/", "binaries/"],
-            untracked: true,
-            key: 'key',
-            policy: 'pull-push',
-            when: 'on_success'
-          ])
+          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+            [
+              paths: ["logs/", "binaries/"],
+              untracked: true,
+              key: 'key',
+              policy: 'pull-push',
+              when: 'on_success'
+            ])
         end
 
         it "returns cache when defined in default context" do
@@ -1547,25 +1548,27 @@ module Gitlab
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq([
-            paths: ["logs/", "binaries/"],
-            untracked: true,
-            key: { files: ['file'] },
-            policy: 'pull-push',
-            when: 'on_success'
-          ])
+          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+            [
+              paths: ["logs/", "binaries/"],
+              untracked: true,
+              key: { files: ['file'] },
+              policy: 'pull-push',
+              when: 'on_success'
+            ])
         end
 
         it 'returns cache key/s when defined in a job' do
-          config = YAML.dump({
-                              rspec: {
-                                cache: [
-                                  { paths: ['binaries/'], untracked: true, key: 'keya' },
-                                  { paths: ['logs/', 'binaries/'], untracked: true, key: 'key' }
-                                  ],
-                                script: 'rspec'
-                              }
-                            })
+          config = YAML.dump(
+            {
+              rspec: {
+                cache: [
+                  { paths: ['binaries/'], untracked: true, key: 'keya' },
+                  { paths: ['logs/', 'binaries/'], untracked: true, key: 'key' }
+                ],
+                script: 'rspec'
+              }
+            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
@@ -1605,13 +1608,14 @@ module Gitlab
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
-          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq([
-            paths: ['binaries/'],
-            untracked: true,
-            key: { files: ['file'] },
-            policy: 'pull-push',
-            when: 'on_success'
-          ])
+          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+            [
+              paths: ['binaries/'],
+              untracked: true,
+              key: { files: ['file'] },
+              policy: 'pull-push',
+              when: 'on_success'
+            ])
         end
 
         it 'returns cache files with prefix' do
@@ -1629,54 +1633,58 @@ module Gitlab
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes('test').size).to eq(1)
-          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq([
-            paths: ['logs/', 'binaries/'],
-            untracked: true,
-            key: { files: ['file'], prefix: 'prefix' },
-            policy: 'pull-push',
-            when: 'on_success'
-          ])
+          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+            [
+              paths: ['logs/', 'binaries/'],
+              untracked: true,
+              key: { files: ['file'], prefix: 'prefix' },
+              policy: 'pull-push',
+              when: 'on_success'
+            ])
         end
 
         it "overwrite cache when defined for a job and globally" do
-          config = YAML.dump({
-                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
-                              rspec: {
-                                script: "rspec",
-                                cache: { paths: ["test/"], untracked: false, key: 'local' }
-                              }
-                            })
+          config = YAML.dump(
+            {
+              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
+              rspec: {
+                script: "rspec",
+                cache: { paths: ["test/"], untracked: false, key: 'local' }
+              }
+            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq([
-            paths: ["test/"],
-            untracked: false,
-            key: 'local',
-            policy: 'pull-push',
-            when: 'on_success'
-          ])
+          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+            [
+              paths: ["test/"],
+              untracked: false,
+              key: 'local',
+              policy: 'pull-push',
+              when: 'on_success'
+            ])
         end
       end
 
       describe "Artifacts" do
         it "returns artifacts when defined" do
-          config = YAML.dump({
-                               image: "image:1.0",
-                               services: ["mysql"],
-                               before_script: ["pwd"],
-                               rspec: {
-                                 artifacts: {
-                                   paths: ["logs/", "binaries/"],
-                                   expose_as: "Exposed artifacts",
-                                   untracked: true,
-                                   name: "custom_name",
-                                   expire_in: "7d"
-                                 },
-                                 script: "rspec"
-                               }
-                             })
+          config = YAML.dump(
+            {
+              image: "image:1.0",
+              services: ["mysql"],
+              before_script: ["pwd"],
+              rspec: {
+                artifacts: {
+                  paths: ["logs/", "binaries/"],
+                  expose_as: "Exposed artifacts",
+                  untracked: true,
+                  name: "custom_name",
+                  expire_in: "7d"
+                },
+                script: "rspec"
+              }
+            })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
 

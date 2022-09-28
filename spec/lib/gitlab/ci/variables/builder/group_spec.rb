@@ -132,11 +132,12 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group do
       end
 
       it 'orders the variables from least to most matched' do
-        variables_collection = Gitlab::Ci::Variables::Collection.new([
-          variable,
-          partially_matched_variable,
-          perfectly_matched_variable
-        ]).to_runner_variables
+        variables_collection = Gitlab::Ci::Variables::Collection.new(
+          [
+            variable,
+            partially_matched_variable,
+            perfectly_matched_variable
+          ]).to_runner_variables
 
         expect(subject.to_runner_variables).to eq(variables_collection)
       end

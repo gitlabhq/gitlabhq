@@ -7,7 +7,4 @@
   = _("Edit Pipeline Schedule")
 %hr
 
-- if Feature.enabled?(:pipeline_schedules_vue, @project)
-  #pipeline-schedules-form-edit{ data: { full_path: @project.full_path } }
-- else
-  = render "form"
+= render "form"

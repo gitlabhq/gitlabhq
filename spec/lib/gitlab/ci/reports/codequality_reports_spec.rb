@@ -103,15 +103,16 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
     end
 
     it 'sorts degradations based on severity' do
-      expect(codequality_report.degradations.values).to eq([
-        blocker,
-        critical,
-        major,
-        major_2,
-        minor,
-        info,
-        unknown
-      ])
+      expect(codequality_report.degradations.values).to eq(
+        [
+          blocker,
+          critical,
+          major,
+          major_2,
+          minor,
+          info,
+          unknown
+        ])
     end
 
     context 'with non-existence and uppercase severities' do
@@ -126,12 +127,13 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
       end
 
       it 'sorts unknown last' do
-        expect(other_report.degradations.values).to eq([
-          blocker,
-          uppercase_major,
-          minor,
-          non_existent
-        ])
+        expect(other_report.degradations.values).to eq(
+          [
+            blocker,
+            uppercase_major,
+            minor,
+            non_existent
+          ])
       end
     end
   end

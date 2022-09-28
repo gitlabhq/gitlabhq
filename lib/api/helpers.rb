@@ -742,13 +742,7 @@ module API
     end
 
     def secret_token
-      if Feature.enabled?(:gitlab_shell_jwt_token)
-        strong_memoize(:secret_token) do
-          File.read(Gitlab.config.gitlab_shell.secret_file)
-        end
-      else
-        Gitlab::Shell.secret_token
-      end
+      Gitlab::Shell.secret_token
     end
 
     def authenticate_non_public?
