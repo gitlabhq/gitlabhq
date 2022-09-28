@@ -47,6 +47,8 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def create
+    return render json: { success: false }, status: :unprocessable_entity unless valid_create_params?
+
     responses = create_params.map do |entry|
       if entry[:destination_name]
         entry[:destination_slug] ||= entry[:destination_name]
@@ -100,6 +102,10 @@ class Import::BulkImportsController < ApplicationController
 
   def create_params
     params.permit(bulk_import: bulk_import_params)[:bulk_import]
+  end
+
+  def valid_create_params?
+    create_params.all? { _1[:source_type] == 'group_entity' }
   end
 
   def bulk_import_params

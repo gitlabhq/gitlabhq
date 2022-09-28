@@ -7103,6 +7103,9 @@ msgstr ""
 msgid "BulkImport|expected an associated Project but has an associated Group"
 msgstr ""
 
+msgid "BulkImport|invalid entity source type"
+msgstr ""
+
 msgid "BulkImport|must be a group"
 msgstr ""
 

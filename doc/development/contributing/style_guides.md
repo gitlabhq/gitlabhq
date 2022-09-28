@@ -41,13 +41,13 @@ We were using Overcommit prior to Lefthook, so you may want to uninstall it firs
    bundle exec lefthook install
    ```
 
-1. Test Lefthook is working by running the Lefthook `prepare-commit-msg` Git hook:
+1. Test Lefthook is working by running the Lefthook `pre-push` Git hook:
 
    ```shell
-   bundle exec lefthook run prepare-commit-msg
+   bundle exec lefthook run pre-push
    ```
 
-This should return a fully qualified path command with no other output.
+This should return the lefthook version and the list of executable commands with output.
 
 ### Lefthook configuration
 
