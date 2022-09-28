@@ -58,3 +58,19 @@ RSpec.shared_examples 'maps Sentry exceptions' do |http_method|
     end
   end
 end
+
+RSpec.shared_examples 'non-numeric input handling in Sentry response' do |field|
+  context 'with non-numeric error id' do
+    where(:id_input) do
+      ['string', '-1', '1\n2']
+    end
+
+    with_them do
+      it 'raises exception' do
+        message = %(Sentry API response contains invalid value for field "#{field}": #{id_input.inspect} is not numeric)
+
+        expect { subject }.to raise_error(ErrorTracking::SentryClient::InvalidFieldValueError, message)
+      end
+    end
+  end
+end
