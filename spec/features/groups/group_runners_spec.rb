@@ -123,7 +123,7 @@ RSpec.describe "Group Runners" do
         visit group_runners_path(group)
 
         within_runner_row(runner.id) do
-          expect(page).to have_button 'Delete runner', disabled: true
+          expect(page).not_to have_button 'Delete runner'
         end
       end
     end

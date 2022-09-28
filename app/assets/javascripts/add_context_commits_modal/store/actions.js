@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import * as types from './mutation_types';
@@ -71,7 +71,7 @@ export const createContextCommits = ({ state }, { commits, forceReload = false }
     })
     .catch(() => {
       if (forceReload) {
-        createFlash({
+        createAlert({
           message: s__('ContextCommits|Failed to create context commits. Please try again.'),
         });
       }
@@ -113,7 +113,7 @@ export const removeContextCommits = ({ state }, forceReload = false) =>
     })
     .catch(() => {
       if (forceReload) {
-        createFlash({
+        createAlert({
           message: s__('ContextCommits|Failed to delete context commits. Please try again.'),
         });
       }

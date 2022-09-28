@@ -34532,9 +34532,6 @@ msgstr ""
 msgid "Runners|Members of the %{type} can register runners"
 msgstr ""
 
-msgid "Runners|Multi-project runners cannot be deleted"
-msgstr ""
-
 msgid "Runners|Name"
 msgstr ""
 
@@ -34646,9 +34643,6 @@ msgid "Runners|Runner authentication token expiration"
 msgstr ""
 
 msgid "Runners|Runner authentication tokens will expire based on a set interval. They will automatically rotate once expired."
-msgstr ""
-
-msgid "Runners|Runner cannot be deleted, please contact your administrator"
 msgstr ""
 
 msgid "Runners|Runner has contacted GitLab within the last %{elapsedTime}"

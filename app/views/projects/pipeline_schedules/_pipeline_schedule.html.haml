@@ -24,7 +24,7 @@
         = s_("PipelineSchedules|Inactive")
     %td
       - if pipeline_schedule.owner
-        = image_tag avatar_icon_for_user(pipeline_schedule.owner, 20), class: "avatar s20"
+        = render Pajamas::AvatarComponent.new(pipeline_schedule.owner, size: 24, class: "gl-mr-2")
         = link_to user_path(pipeline_schedule.owner) do
           = pipeline_schedule.owner&.name
     %td

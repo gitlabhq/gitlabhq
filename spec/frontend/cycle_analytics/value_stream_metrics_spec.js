@@ -8,7 +8,7 @@ import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
 import { VSA_METRICS_GROUPS, METRICS_POPOVER_CONTENT } from '~/analytics/shared/constants';
 import { prepareTimeMetricsData } from '~/analytics/shared/utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { group } from './mock_data';
 
 jest.mock('~/flash');
@@ -177,7 +177,7 @@ describe('ValueStreamMetrics', () => {
     });
 
     it('should render an error message', () => {
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: `There was an error while fetching value stream analytics ${fakeReqName} data.`,
       });
     });

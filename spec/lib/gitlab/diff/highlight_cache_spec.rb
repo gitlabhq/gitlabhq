@@ -109,58 +109,36 @@ RSpec.describe Gitlab::Diff::HighlightCache, :clean_gitlab_redis_cache do
   end
 
   shared_examples 'caches missing entries' do
-    where(:expiration_period, :renewable_expiration_ff, :short_renewable_expiration_ff) do
-      [
-        [1.day, false, true],
-        [1.day, false, false],
-        [1.hour, true, true],
-        [8.hours, true, false]
-      ]
+    it 'filters the key/value list of entries to be caches for each invocation' do
+      expect(cache).to receive(:write_to_redis_hash)
+        .with(hash_including(*paths))
+        .once
+        .and_call_original
+
+      2.times { cache.write_if_empty }
     end
 
-    with_them do
-      before do
-        stub_feature_flags(
-          highlight_diffs_renewable_expiration: renewable_expiration_ff,
-          highlight_diffs_short_renewable_expiration: short_renewable_expiration_ff
-        )
-      end
+    it 'reads from cache once' do
+      expect(cache).to receive(:read_cache).once.and_call_original
 
-      it 'filters the key/value list of entries to be caches for each invocation' do
-        expect(cache).to receive(:write_to_redis_hash)
-          .with(hash_including(*paths))
-          .once
-          .and_call_original
+      cache.write_if_empty
+    end
 
-        2.times { cache.write_if_empty }
-      end
+    it 'refreshes TTL of the key on read' do
+      cache.write_if_empty
 
-      it 'reads from cache once' do
-        expect(cache).to receive(:read_cache).once.and_call_original
+      time_until_expire = 30.minutes
 
-        cache.write_if_empty
-      end
+      Gitlab::Redis::Cache.with do |redis|
+        # Emulate that a key is going to expire soon
+        redis.expire(cache.key, time_until_expire)
 
-      it 'refreshes TTL of the key on read' do
-        cache.write_if_empty
+        expect(redis.ttl(cache.key)).to be <= time_until_expire
 
-        time_until_expire = 30.minutes
+        cache.send(:read_cache)
 
-        Gitlab::Redis::Cache.with do |redis|
-          # Emulate that a key is going to expire soon
-          redis.expire(cache.key, time_until_expire)
-
-          expect(redis.ttl(cache.key)).to be <= time_until_expire
-
-          cache.send(:read_cache)
-
-          if renewable_expiration_ff
-            expect(redis.ttl(cache.key)).to be > time_until_expire
-            expect(redis.ttl(cache.key)).to be_within(1.minute).of(expiration_period)
-          else
-            expect(redis.ttl(cache.key)).to be <= time_until_expire
-          end
-        end
+        expect(redis.ttl(cache.key)).to be > time_until_expire
+        expect(redis.ttl(cache.key)).to be_within(1.minute).of(described_class::EXPIRATION)
       end
     end
   end

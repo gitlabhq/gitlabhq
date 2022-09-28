@@ -13,7 +13,7 @@ RSpec.describe 'shared/projects/_project.html.haml' do
   it 'renders creator avatar if project has a creator' do
     render 'shared/projects/project', use_creator_avatar: true, project: project
 
-    expect(rendered).to have_selector('img.avatar')
+    expect(rendered).to have_selector('img.gl-avatar')
   end
 
   it 'renders a generic avatar if project does not have a creator' do

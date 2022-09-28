@@ -8,13 +8,15 @@
   font-size: 95%;
 }
 
-.gfm-project_member {
+.gfm-project_member,
+.md a.gfm-project_member {
   padding: 0 2px;
   background-color: $blue-100;
   border-radius: $border-radius-default;
+  color: $blue-700;
 
   &.current-user {
-    background-color: $orange-50;
+    background-color: $orange-100;
   }
 }
 

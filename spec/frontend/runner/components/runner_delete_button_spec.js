@@ -9,11 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/flash';
-import {
-  I18N_DELETE_RUNNER,
-  I18N_DELETE_DISABLED_MANY_PROJECTS,
-  I18N_DELETE_DISABLED_UNKNOWN_REASON,
-} from '~/runner/constants';
+import { I18N_DELETE_RUNNER } from '~/runner/constants';
 
 import RunnerDeleteButton from '~/runner/components/runner_delete_button.vue';
 import RunnerDeleteModal from '~/runner/components/runner_delete_modal.vue';
@@ -265,31 +261,6 @@ describe('RunnerDeleteButton', () => {
       it('The stale tooltip is removed', async () => {
         expect(getTooltip()).toBe('');
       });
-    });
-  });
-
-  describe.each`
-    reason                                     | runner                 | tooltip
-    ${'runner belongs to more than 1 project'} | ${{ projectCount: 2 }} | ${I18N_DELETE_DISABLED_MANY_PROJECTS}
-    ${'unknown reason'}                        | ${{}}                  | ${I18N_DELETE_DISABLED_UNKNOWN_REASON}
-  `('When button is disabled because $reason', ({ runner, tooltip }) => {
-    beforeEach(() => {
-      createComponent({
-        props: {
-          disabled: true,
-          runner,
-        },
-      });
-    });
-
-    it('Displays a disabled delete button', () => {
-      expect(findBtn().props('disabled')).toBe(true);
-    });
-
-    it(`Tooltip "${tooltip}" is shown`, () => {
-      // tabindex is required for a11y
-      expect(wrapper.attributes('tabindex')).toBe('0');
-      expect(getTooltip()).toBe(tooltip);
     });
   });
 });

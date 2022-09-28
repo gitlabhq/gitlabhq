@@ -110,6 +110,9 @@ in your cluster. You can either:
 
 If you do not know which one to choose, we recommend starting with Helm.
 
+NOTE:
+To connect to multiple clusters, you must configure, register, and install an agent in each cluster. Make sure to give each agent a unique name.
+
 #### Install the agent with Helm
 
 To install the agent on your cluster using Helm:

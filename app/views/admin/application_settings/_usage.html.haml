@@ -50,4 +50,4 @@
           %li
             = s_('AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}.').html_safe % { link_start: restrict_ip_link, link_end: link_end }
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader, GlTable } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { convertNodeIdsFromGraphQLIds } from '~/graphql_shared/utils';
 import { thWidthPercent } from '~/lib/utils/table_utility';
 import { s__, __ } from '~/locale';
@@ -50,7 +50,7 @@ export default {
         }, {});
       },
       error(error) {
-        createFlash({
+        createAlert({
           message: this.$options.i18n.groupCountFetchError,
           captureError: true,
           error,

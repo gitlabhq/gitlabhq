@@ -1,8 +1,0 @@
----
-name: highlight_diffs_short_renewable_expiration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95356
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370728
-milestone: '15.3'
-type: development
-group: group::source code
-default_enabled: false

@@ -5,7 +5,7 @@ import { __ } from '~/locale';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import csrf from '~/lib/utils/csrf';
 
 export default {
@@ -151,7 +151,7 @@ export default {
           }),
         );
       } catch (error) {
-        createFlash({
+        createAlert({
           message: this.$options.i18n.apiErrorMessage,
           captureError: true,
           error,
