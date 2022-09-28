@@ -20,8 +20,9 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline do
     )
   end
 
-  let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-  let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+  let_it_be_with_reload(:tracker) { create(:bulk_import_tracker, entity: entity) }
+
+  let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
   let(:extracted_data) { BulkImports::Pipeline::ExtractedData.new(data: project_data) }
 
@@ -61,13 +62,25 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline do
     context 'blocked local networks' do
       let(:project_data) { { 'httpUrlToRepo' => 'http://localhost/foo.git' } }
 
-      it 'imports new repository into destination project' do
+      it 'prevents import' do
         allow(Gitlab.config.gitlab).to receive(:host).and_return('notlocalhost.gitlab.com')
         allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(false)
 
         pipeline.run
 
         expect(context.entity.failed?).to eq(true)
+      end
+    end
+
+    context 'when scheme is blocked' do
+      let(:project_data) { { 'httpUrlToRepo' => 'file://example/tmp/foo.git' } }
+
+      it 'prevents import' do
+        pipeline.run
+
+        expect(context.entity.failed?).to eq(true)
+        expect(context.entity.failures.first).to be_present
+        expect(context.entity.failures.first.exception_message).to eq('Only allowed schemes are http, https')
       end
     end
   end
