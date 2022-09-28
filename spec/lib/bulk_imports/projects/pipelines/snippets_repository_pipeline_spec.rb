@@ -135,9 +135,25 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline do
       end
 
       context 'when url is invalid' do
-        let(:http_url_to_repo) { 'http://0.0.0.0' }
+        context 'when not a real URL' do
+          let(:http_url_to_repo) { 'http://0.0.0.0' }
 
-        it_behaves_like 'skippable snippet'
+          it_behaves_like 'skippable snippet'
+        end
+
+        context 'when scheme is blocked' do
+          let(:http_url_to_repo) { 'file://example.com/foo/bar/snippets/42.git' }
+
+          it_behaves_like 'skippable snippet'
+
+          it 'logs the failure' do
+            pipeline.run
+
+            expect(tracker.failed?).to eq(true)
+            expect(tracker.entity.failures.first).to be_present
+            expect(tracker.entity.failures.first.exception_message).to eq('Only allowed schemes are http, https')
+          end
+        end
       end
 
       context 'when snippet is invalid' do
