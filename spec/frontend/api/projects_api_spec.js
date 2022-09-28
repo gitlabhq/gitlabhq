@@ -1,5 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
+import getTransferLocationsResponse from 'test_fixtures/api/projects/transfer_locations_page_1.json';
 import * as projectsApi from '~/api/projects_api';
+import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
 
 describe('~/api/projects_api.js', () => {
@@ -56,6 +58,27 @@ describe('~/api/projects_api.js', () => {
       return projectsApi.importProjectMembers(projectId, targetId).then(({ data }) => {
         expect(axios.post).toHaveBeenCalledWith(expectedUrl);
         expect(data).toEqual(expectedMessage);
+      });
+    });
+  });
+
+  describe('getTransferLocations', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'get');
+    });
+
+    it('retrieves transfer locations from the correct URL and returns them in the response data', async () => {
+      const params = { page: 1 };
+      const expectedUrl = '/api/v7/projects/1/transfer_locations';
+
+      mock.onGet(expectedUrl).replyOnce(200, { data: getTransferLocationsResponse });
+
+      await expect(projectsApi.getTransferLocations(projectId, params)).resolves.toMatchObject({
+        data: { data: getTransferLocationsResponse },
+      });
+
+      expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
+        params: { ...params, per_page: DEFAULT_PER_PAGE },
       });
     });
   });

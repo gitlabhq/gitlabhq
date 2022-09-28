@@ -11,28 +11,22 @@ application.
 
 1. Sign in to the [Auth0 Console](https://auth0.com/auth/login). You can also
    create an account using the same link.
-
 1. Select **New App/API**.
-
-1. Provide the Application Name ('GitLab' works fine).
-
-1. After creating, you should see the **Quick Start** options. Disregard them and
-   select **Settings** above the **Quick Start** options.
-
+1. Enter the **Application Name**. For example, 'GitLab'.
+1. After creating the application, you should see the **Quick Start** options.
+   Disregard these options and select **Settings** instead.
 1. At the top of the Settings screen, you should see your **Domain**, **Client ID**, and
-   **Client Secret**. These values are needed in the configuration file. For example:
+   **Client Secret** in the Auth0 Console. Note these settings to complete the configuration
+   file later. For example:
    - Domain: `test1234.auth0.com`
    - Client ID: `t6X8L2465bNePWLOvt9yi41i`
    - Client Secret: `KbveM3nqfjwCbrhaUy_gDu2dss8TIlHIdzlyf33pB7dEK5u_NyQdp65O_o02hXs2`
-
 1. Fill in the **Allowed Callback URLs**:
-   - `http://YOUR_GITLAB_URL/users/auth/auth0/callback` (or)
-   - `https://YOUR_GITLAB_URL/users/auth/auth0/callback`
-
+   - `http://<your_gitlab_url>/users/auth/auth0/callback` (or)
+   - `https://<your_gitlab_url>/users/auth/auth0/callback`
 1. Fill in the **Allowed Origins (CORS)**:
-   - `http://YOUR_GITLAB_URL` (or)
-   - `https://YOUR_GITLAB_URL`
-
+   - `http://<your_gitlab_url>` (or)
+   - `https://<your_gitlab_url>`
 1. On your GitLab server, open the configuration file.
 
    For Omnibus GitLab:
@@ -61,9 +55,9 @@ application.
        name: "auth0",
        # label: "Provider name", # optional label for login button, defaults to "Auth0"
        args: {
-         client_id: "YOUR_AUTH0_CLIENT_ID",
-         client_secret: "YOUR_AUTH0_CLIENT_SECRET",
-         domain: "YOUR_AUTH0_DOMAIN",
+         client_id: "<your_auth0_client_id>",
+         client_secret: "<your_auth0_client_secret>",
+         domain: "<your_auth0_domain>",
          scope: "openid profile email"
        }
      }
@@ -76,21 +70,17 @@ application.
    - { name: 'auth0',
        # label: 'Provider name', # optional label for login button, defaults to "Auth0"
        args: {
-         client_id: 'YOUR_AUTH0_CLIENT_ID',
-         client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-         domain: 'YOUR_AUTH0_DOMAIN',
+         client_id: '<your_auth0_client_id>',
+         client_secret: '<your_auth0_client_secret>',
+         domain: '<your_auth0_domain>',
          scope: 'openid profile email' }
      }
    ```
 
-1. Change `YOUR_AUTH0_CLIENT_ID` to the client ID from the Auth0 Console page
-   from step 5.
-
-1. Change `YOUR_AUTH0_CLIENT_SECRET` to the client secret from the Auth0 Console
-   page from step 5.
-
+1. Replace `<your_auth0_client_id>` with the client ID from the Auth0 Console page.
+1. Replace `<your_auth0_client_secret>` with the client secret from the Auth0 Console page.
+1. Replace `<your_auth0_client_secret>` with the domain from the Auth0 Console page.
 1. Reconfigure or restart GitLab, depending on your installation method:
-
    - *If you installed from Omnibus GitLab,*
      [Reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) GitLab.
    - *If you installed from source,*

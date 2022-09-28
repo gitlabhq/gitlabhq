@@ -51,7 +51,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def update
-    if @domain.update(update_params)
+    service = ::PagesDomains::UpdateService.new(@project, current_user, update_params)
+
+    if service.execute(@domain)
       redirect_to project_pages_path(@project),
         status: :found,
         notice: 'Domain was updated'
@@ -74,9 +76,10 @@ class Projects::PagesDomainsController < Projects::ApplicationController
   end
 
   def clean_certificate
-    unless @domain.update(user_provided_certificate: nil, user_provided_key: nil)
-      flash[:alert] = @domain.errors.full_messages.join(', ')
-    end
+    update_params = { user_provided_certificate: nil, user_provided_key: nil }
+    service = ::PagesDomains::UpdateService.new(@project, current_user, update_params)
+
+    flash[:alert] = @domain.errors.full_messages.join(', ') unless service.execute(@domain)
 
     redirect_to project_pages_domain_path(@project, @domain)
   end

@@ -53,7 +53,7 @@ describe('DiffContent', () => {
           namespaced: true,
           getters: {
             draftsForFile: () => () => true,
-            draftForLine: () => () => true,
+            draftsForLine: () => () => true,
             shouldRenderDraftRow: () => () => true,
             hasParallelDraftLeft: () => () => true,
             hasParallelDraftRight: () => () => true,

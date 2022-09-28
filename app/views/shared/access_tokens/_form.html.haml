@@ -46,4 +46,4 @@
     = render 'shared/tokens/scopes_form', prefix: prefix, token: token, scopes: scopes, f: f
 
   .gl-mt-3
-    = f.submit _('Create %{type}') % { type: type }, class: 'gl-button btn btn-confirm', data: { qa_selector: 'create_token_button' }
+    = f.submit _('Create %{type}') % { type: type }, data: { qa_selector: 'create_token_button' }, pajamas_button: true

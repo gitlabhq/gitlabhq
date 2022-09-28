@@ -22,7 +22,11 @@ export const draftsPerFileHashAndLine = (state) =>
         acc[draft.file_hash] = {};
       }
 
-      acc[draft.file_hash][draft.line_code] = draft;
+      if (!acc[draft.file_hash][draft.line_code]) {
+        acc[draft.file_hash][draft.line_code] = [];
+      }
+
+      acc[draft.file_hash][draft.line_code].push(draft);
     }
 
     return acc;
@@ -61,18 +65,15 @@ export const shouldRenderDraftRowInDiscussion = (state, getters) => (discussionI
 export const draftForDiscussion = (state, getters) => (discussionId) =>
   getters.draftsPerDiscussionId[discussionId] || {};
 
-export const draftForLine = (state, getters) => (diffFileSha, line, side = null) => {
+export const draftsForLine = (state, getters) => (diffFileSha, line, side = null) => {
   const draftsForFile = getters.draftsPerFileHashAndLine[diffFileSha];
-
   const key = side !== null ? parallelLineKey(line, side) : line.line_code;
+  const showDraftsForThisSide = showDraftOnSide(line, side);
 
-  if (draftsForFile) {
-    const draft = draftsForFile[key];
-    if (draft && showDraftOnSide(line, side)) {
-      return draft;
-    }
+  if (showDraftsForThisSide && draftsForFile?.[key]) {
+    return draftsForFile[key];
   }
-  return {};
+  return [];
 };
 
 export const draftsForFile = (state) => (diffFileSha) =>

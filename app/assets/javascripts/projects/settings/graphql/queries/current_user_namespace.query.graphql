@@ -1,0 +1,9 @@
+query currentUserNamespace {
+  currentUser {
+    id
+    namespace {
+      id
+      fullName
+    }
+  }
+}

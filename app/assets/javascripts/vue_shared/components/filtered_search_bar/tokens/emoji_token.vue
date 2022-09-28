@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { DEFAULT_NONE_ANY } from '../constants';
@@ -48,7 +48,7 @@ export default {
           this.emojis = Array.isArray(response) ? response : response.data;
         })
         .catch(() => {
-          createFlash({ message: __('There was a problem fetching emojis.') });
+          createAlert({ message: __('There was a problem fetching emojis.') });
         })
         .finally(() => {
           this.loading = false;

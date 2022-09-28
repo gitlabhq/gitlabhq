@@ -207,9 +207,9 @@ describe('Namespace Select', () => {
       expect(wrapper.emitted('load-more-groups')).toEqual([[]]);
     });
 
-    describe('when `isLoadingMoreGroups` prop is `true`', () => {
+    describe('when `isLoading` prop is `true`', () => {
       it('renders a loading icon', () => {
-        wrapper = createComponent({ hasNextPageOfGroups: true, isLoadingMoreGroups: true });
+        wrapper = createComponent({ hasNextPageOfGroups: true, isLoading: true });
 
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       });
@@ -221,6 +221,16 @@ describe('Namespace Select', () => {
       wrapper = createComponent({ isSearchLoading: true });
 
       expect(wrapper.findComponent(GlSearchBoxByType).props('isLoading')).toBe(true);
+    });
+  });
+
+  describe('when dropdown is opened', () => {
+    it('emits `show` event', () => {
+      wrapper = createComponent();
+
+      findDropdown().vm.$emit('show');
+
+      expect(wrapper.emitted('show')).toEqual([[]]);
     });
   });
 });

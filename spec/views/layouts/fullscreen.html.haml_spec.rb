@@ -16,6 +16,13 @@ RSpec.describe 'layouts/fullscreen' do
     expect(rendered).to have_selector(".gl--flex-full.gl-w-full")
   end
 
+  it 'renders flash container' do
+    render
+
+    expect(view).to render_template("layouts/_flash")
+    expect(rendered).to have_selector(".flash-container.flash-container-no-margin")
+  end
+
   it_behaves_like 'a layout which reflects the application theme setting'
 
   describe 'sidebar' do

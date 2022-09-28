@@ -79,6 +79,19 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
   .gl-alert {
     @include gl-my-4;
   }
+
+  &.flash-container-no-margin {
+    .gl-alert {
+      @include gl-my-0;
+    }
+
+    .flash-alert,
+    .flash-notice,
+    .flash-success,
+    .flash-warning {
+      @include gl-mt-0;
+    }
+  }
 }
 
 @include media-breakpoint-down(sm) {

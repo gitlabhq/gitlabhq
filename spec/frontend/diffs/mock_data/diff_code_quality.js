@@ -36,7 +36,7 @@ export const diffCodeQuality = {
         old_line: 1,
         new_line: null,
         codequality: [],
-        lineDraft: {},
+        lineDrafts: [],
       },
     },
     {
@@ -45,7 +45,7 @@ export const diffCodeQuality = {
         old_line: 2,
         new_line: 1,
         codequality: [],
-        lineDraft: {},
+        lineDrafts: [],
       },
     },
     {
@@ -55,7 +55,7 @@ export const diffCodeQuality = {
         new_line: 2,
 
         codequality: [multipleFindingsArr[0]],
-        lineDraft: {},
+        lineDrafts: [],
       },
     },
   ],

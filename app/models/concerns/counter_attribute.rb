@@ -95,7 +95,7 @@ module CounterAttribute
       next if increment_value == 0
 
       transaction do
-        unsafe_update_counters(id, attribute => increment_value)
+        update_counters_with_lease({ attribute => increment_value })
         redis_state { |redis| redis.del(flushed_key) }
         new_db_value = reset.read_attribute(attribute)
       end
@@ -130,9 +130,18 @@ module CounterAttribute
     end
   end
 
-  def clear_counter!(attribute)
+  def update_counters_with_lease(increments)
+    detect_race_on_record(log_fields: increments.merge({ caller: __method__ })) do
+      self.class.update_counters(id, increments)
+    end
+  end
+
+  def reset_counter!(attribute)
     if counter_attribute_enabled?(attribute)
-      redis_state { |redis| redis.del(counter_key(attribute)) }
+      detect_race_on_record(log_fields: { caller: __method__ }) do
+        update!(attribute => 0)
+        clear_counter!(attribute)
+      end
 
       log_clear_counter(attribute)
     end
@@ -164,14 +173,20 @@ module CounterAttribute
 
   private
 
+  def database_lock_key
+    "project:{#{project_id}}:#{self.class}:#{id}"
+  end
+
   def steal_increments(increment_key, flushed_key)
     redis_state do |redis|
       redis.eval(LUA_STEAL_INCREMENT_SCRIPT, keys: [increment_key, flushed_key])
     end
   end
 
-  def unsafe_update_counters(id, increments)
-    self.class.update_counters(id, increments)
+  def clear_counter!(attribute)
+    redis_state do |redis|
+      redis.del(counter_key(attribute))
+    end
   end
 
   def execute_after_flush_callbacks
@@ -190,6 +205,32 @@ module CounterAttribute
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     # a worker is already updating the counters
+  end
+
+  # detect_race_on_record uses a lease to monitor access
+  # to the project statistics row. This is needed to detect
+  # concurrent attempts to increment columns, which could result in a
+  # race condition.
+  #
+  # As the purpose is to detect and warn concurrent attempts,
+  # it falls back to direct update on the row if it fails to obtain the lease.
+  #
+  # It does not guarantee that there will not be any concurrent updates.
+  def detect_race_on_record(log_fields: {})
+    return yield unless Feature.enabled?(:counter_attribute_db_lease_for_update, project)
+
+    in_lock(database_lock_key, retries: 2) do
+      yield
+    end
+  rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+    Gitlab::AppLogger.warn(
+      message: 'Concurrent update to project statistics detected',
+      project_statistics_id: id,
+      **log_fields,
+      **Gitlab::ApplicationContext.current
+    )
+
+    yield
   end
 
   def log_increment_counter(attribute, increment, new_value)

@@ -1108,6 +1108,13 @@ version number).
 
 ## Troubleshooting
 
+### Increase log verbosity
+
+When a [job log](../../../ci/jobs/index.md#expand-and-collapse-job-log-sections)
+doesn't contain enough information about a dependency-scanning failure,
+[set `SECURE_LOG_LEVEL` to `debug`](#configuring-dependency-scanning)
+and check the resulting, more verbose log.
+
 ### Working around missing support for certain languages or package managers
 
 As noted in the ["Supported languages" section](#supported-languages-and-package-managers)

@@ -92,8 +92,8 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
     it 'obtains an exclusive lease during processing' do
       expect(model)
         .to receive(:in_lock)
-        .with(model.counter_lock_key(incremented_attribute), ttl: described_class::WORKER_LOCK_TTL)
-        .and_call_original
+              .with(model.counter_lock_key(incremented_attribute), ttl: described_class::WORKER_LOCK_TTL)
+              .and_call_original
 
       subject
     end
@@ -186,31 +186,88 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
     end
   end
 
-  describe '#clear_counter!' do
+  describe '#reset_counter!' do
     let(:attribute) { counter_attributes.first }
 
     before do
+      model.update!(attribute => 123)
       model.increment_counter(attribute, 10)
     end
 
-    it 'deletes the counter key for the given attribute and logs it' do
-      expect(Gitlab::AppLogger).to receive(:info).with(
-        hash_including(
-          message: 'Clear counter attribute',
-          attribute: attribute,
-          project_id: model.project_id,
-          'correlation_id' => an_instance_of(String),
-          'meta.feature_category' => 'test',
-          'meta.caller_id' => 'caller'
-        )
-      )
+    subject { model.reset_counter!(attribute) }
 
-      model.clear_counter!(attribute)
+    it 'resets the attribute value to 0 and clears existing counter', :aggregate_failures do
+      expect { subject }.to change { model.reload.send(attribute) }.from(123).to(0)
 
       Gitlab::Redis::SharedState.with do |redis|
         key_exists = redis.exists?(model.counter_key(attribute))
         expect(key_exists).to be_falsey
       end
+    end
+
+    it_behaves_like 'obtaining lease to update database' do
+      context 'when the execution raises error' do
+        before do
+          allow(model).to receive(:update!).and_raise(StandardError, 'Something went wrong')
+        end
+
+        it 'reraises error' do
+          expect { subject }.to raise_error(StandardError, 'Something went wrong')
+        end
+      end
+    end
+  end
+
+  describe '#update_counters_with_lease' do
+    let(:increments) { { build_artifacts_size: 1, packages_size: 2 } }
+
+    subject { model.update_counters_with_lease(increments) }
+
+    it 'updates counters of the record' do
+      expect { subject }
+        .to change { model.reload.build_artifacts_size }.by(1)
+        .and change { model.reload.packages_size }.by(2)
+    end
+
+    it_behaves_like 'obtaining lease to update database' do
+      context 'when the execution raises error' do
+        before do
+          allow(model.class).to receive(:update_counters).and_raise(StandardError, 'Something went wrong')
+        end
+
+        it 'reraises error' do
+          expect { subject }.to raise_error(StandardError, 'Something went wrong')
+        end
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'obtaining lease to update database' do
+  context 'when it is unable to obtain lock' do
+    before do
+      allow(model).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+    end
+
+    it 'logs a warning' do
+      allow(model).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+
+      expect(Gitlab::AppLogger).to receive(:warn).once
+
+      expect { subject }.not_to raise_error
+    end
+  end
+
+  context 'when feature flag counter_attribute_db_lease_for_update is disabled' do
+    before do
+      stub_feature_flags(counter_attribute_db_lease_for_update: false)
+      allow(model).to receive(:in_lock).and_call_original
+    end
+
+    it 'does not attempt to get a lock' do
+      expect(model).not_to receive(:in_lock)
+
+      subject
     end
   end
 end

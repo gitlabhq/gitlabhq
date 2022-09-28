@@ -49,7 +49,9 @@ class ProjectStatistics < ApplicationRecord
       schedule_namespace_aggregation_worker
     end
 
-    save!
+    detect_race_on_record(log_fields: { caller: __method__ }) do
+      save!
+    end
   end
 
   def update_commit_count
@@ -110,8 +112,10 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def refresh_storage_size!
-    update_storage_size
-    save!
+    detect_race_on_record(log_fields: { caller: __method__ }) do
+      update_storage_size
+      save!
+    end
   end
 
   # Since this incremental update method does not call update_storage_size above through before_save,
@@ -129,35 +133,33 @@ class ProjectStatistics < ApplicationRecord
       if counter_attribute_enabled?(key)
         project_statistics.delayed_increment_counter(key, amount)
       else
-        legacy_increment_statistic(project, key, amount)
+        project_statistics.legacy_increment_statistic(key, amount)
       end
     end
-  end
-
-  def self.legacy_increment_statistic(project, key, amount)
-    where(project_id: project.id).columns_to_increment(key, amount)
-
-    Namespaces::ScheduleAggregationWorker.perform_async( # rubocop: disable CodeReuse/Worker
-      project.namespace_id)
-  end
-
-  def self.columns_to_increment(key, amount)
-    updates = ["#{key} = COALESCE(#{key}, 0) + (#{amount})"]
-
-    if (additional = INCREMENTABLE_COLUMNS[key])
-      additional.each do |column|
-        updates << "#{column} = COALESCE(#{column}, 0) + (#{amount})"
-      end
-    end
-
-    update_all(updates.join(', '))
   end
 
   def self.incrementable_attribute?(key)
     INCREMENTABLE_COLUMNS.key?(key) || counter_attribute_enabled?(key)
   end
 
+  def legacy_increment_statistic(key, amount)
+    increment_columns!(key, amount)
+
+    Namespaces::ScheduleAggregationWorker.perform_async( # rubocop: disable CodeReuse/Worker
+      project.namespace_id)
+  end
+
   private
+
+  def increment_columns!(key, amount)
+    increments = { key => amount }
+    additional = INCREMENTABLE_COLUMNS.fetch(key, [])
+    additional.each do |column|
+      increments[column] = amount
+    end
+
+    update_counters_with_lease(increments)
+  end
 
   def schedule_namespace_aggregation_worker
     run_after_commit do

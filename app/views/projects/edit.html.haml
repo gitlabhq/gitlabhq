@@ -28,7 +28,7 @@
       %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
       .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
 
-- if show_merge_request_settings_callout?
+- if show_merge_request_settings_callout?(@project)
   %section.settings.expanded
     = render Pajamas::AlertComponent.new(variant: :info,
         title: _('Merge requests and approvals settings have moved.'),

@@ -378,6 +378,17 @@ RSpec.describe API::PagesDomains do
         expect(pages_domain_secure.auto_ssl_enabled).to be false
       end
 
+      it 'publishes PagesDomainUpdatedEvent event' do
+        expect { put api(route_secure_domain, user), params: { certificate: nil, key: nil } }
+          .to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .with(
+            project_id: project.id,
+            namespace_id: project.namespace.id,
+            root_namespace_id: project.root_namespace.id,
+            domain: pages_domain_secure.domain
+          )
+      end
+
       it 'updates pages domain adding certificate' do
         put api(route_domain, user), params: params_secure
         pages_domain.reload
@@ -446,22 +457,29 @@ RSpec.describe API::PagesDomains do
         end.to change { pages_domain.reload.certificate_source }.from('gitlab_provided').to('user_provided')
       end
 
-      it 'fails to update pages domain adding certificate without key' do
-        put api(route_domain, user), params: params_secure_nokey
+      context 'with invalid params' do
+        it 'fails to update pages domain adding certificate without key' do
+          put api(route_domain, user), params: params_secure_nokey
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
 
-      it 'fails to update pages domain adding certificate with missing chain' do
-        put api(route_domain, user), params: pages_domain_secure_missing_chain_params.slice(:certificate)
+        it 'does not publish PagesDomainUpdatedEvent event' do
+          expect { put api(route_domain, user), params: params_secure_nokey }
+            .not_to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+        end
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
+        it 'fails to update pages domain adding certificate with missing chain' do
+          put api(route_domain, user), params: pages_domain_secure_missing_chain_params.slice(:certificate)
 
-      it 'fails to update pages domain with key missmatch' do
-        put api(route_secure_domain, user), params: pages_domain_secure_key_missmatch_params.slice(:certificate, :key)
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        it 'fails to update pages domain with key missmatch' do
+          put api(route_secure_domain, user), params: pages_domain_secure_key_missmatch_params.slice(:certificate, :key)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
       end
     end
 

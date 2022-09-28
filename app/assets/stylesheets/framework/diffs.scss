@@ -619,6 +619,10 @@ table.code {
   .diff-grid-drafts {
     display: grid;
     grid-template-columns: 1fr 1fr;
+
+    .content + .content {
+      @include gl-border-t;
+    }
   }
 
   &.inline-diff-view {

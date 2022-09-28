@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
@@ -65,7 +65,7 @@ export default {
           }
         })
         .catch(() => {
-          createFlash({ message: __('There was a problem fetching milestones.') });
+          createAlert({ message: __('There was a problem fetching milestones.') });
         })
         .finally(() => {
           this.loading = false;

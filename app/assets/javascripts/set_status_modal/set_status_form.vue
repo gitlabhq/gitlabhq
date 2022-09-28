@@ -131,9 +131,9 @@ export default {
   i18n: {
     statusMessagePlaceholder: s__(`SetStatusModal|What's your status?`),
     clearStatusButtonLabel: s__('SetStatusModal|Clear status'),
-    availabilityCheckboxLabel: s__('SetStatusModal|Busy'),
+    availabilityCheckboxLabel: s__('SetStatusModal|Set yourself as busy'),
     availabilityCheckboxHelpText: s__(
-      'SetStatusModal|An indicator appears next to your name and avatar',
+      'SetStatusModal|Displays that you are busy or not able to respond',
     ),
     clearStatusAfterDropdownLabel: s__('SetStatusModal|Clear status after'),
     clearStatusAfterMessage: s__('SetStatusModal|Your status resets on %{date}.'),

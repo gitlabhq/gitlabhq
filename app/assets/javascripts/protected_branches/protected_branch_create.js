@@ -74,7 +74,7 @@ export default class ProtectedBranchCreate {
       $allowedToPush.length
     );
 
-    this.$form.find('input[type="submit"]').attr('disabled', toggle);
+    this.$form.find('button[type="submit"]').attr('disabled', toggle);
   }
 
   static getProtectedBranches(term, callback) {

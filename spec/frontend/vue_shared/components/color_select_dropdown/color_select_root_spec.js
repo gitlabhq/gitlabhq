@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/vue_shared/components/color_select_dropdown/dropdown_contents.vue';
 import DropdownValue from '~/vue_shared/components/color_select_dropdown/dropdown_value.vue';
@@ -146,7 +146,7 @@ describe('LabelsSelectRoot', () => {
     });
 
     it('creates flash with error message', () => {
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
         message: 'Error fetching epic color.',
       });
@@ -186,7 +186,7 @@ describe('LabelsSelectRoot', () => {
       findDropdownContents().vm.$emit('setColor', color);
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
         error: expect.anything(),
         message: 'An error occurred while updating color.',

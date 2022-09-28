@@ -1,7 +1,7 @@
 <script>
 import { GlAvatar, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { compact } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
 import { DEFAULT_NONE_ANY } from '../constants';
@@ -65,7 +65,7 @@ export default {
           this.authors = Array.isArray(res) ? compact(res) : compact(res.data);
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('There was a problem fetching users.'),
           }),
         )

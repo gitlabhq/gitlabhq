@@ -11,7 +11,7 @@ import {
   mockRegularLabel,
   mockLabels,
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -116,13 +116,13 @@ describe('LabelToken', () => {
         });
       });
 
-      it('calls `createFlash` with flash error message when request fails', () => {
+      it('calls `createAlert` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchLabels').mockRejectedValue({});
 
         wrapper.vm.fetchLabels('foo');
 
         return waitForPromises().then(() => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching labels.',
           });
         });

@@ -2,6 +2,8 @@
 
 module ExclusiveLeaseHelpers
   def stub_exclusive_lease(key = nil, uuid = 'uuid', renew: false, timeout: nil)
+    prepare_exclusive_lease_stub
+
     key     ||= instance_of(String)
     timeout ||= instance_of(Integer)
 
@@ -36,5 +38,22 @@ module ExclusiveLeaseHelpers
     expect(Gitlab::ExclusiveLease)
       .to receive(:cancel)
       .with(key, uuid)
+  end
+
+  private
+
+  # This prepares the stub to be able to stub specific lease keys
+  # while allowing unstubbed lease keys to behave as original.
+  #
+  # allow(Gitlab::ExclusiveLease).to receive(:new).and_call_original
+  # can only be called once to prevent resetting stubs when
+  # `stub_exclusive_lease` is called multiple times.
+  def prepare_exclusive_lease_stub
+    return if @exclusive_lease_allowed_to_call_original
+
+    allow(Gitlab::ExclusiveLease)
+      .to receive(:new).and_call_original
+
+    @exclusive_lease_allowed_to_call_original = true
   end
 end

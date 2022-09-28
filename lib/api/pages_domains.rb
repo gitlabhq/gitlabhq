@@ -136,7 +136,9 @@ module API
           pages_domain_params.delete(:user_provided_key)
         end
 
-        if pages_domain.update(pages_domain_params)
+        service = ::PagesDomains::UpdateService.new(user_project, current_user, pages_domain_params)
+
+        if service.execute(pages_domain)
           present pages_domain, with: Entities::PagesDomain
         else
           render_validation_error!(pages_domain)

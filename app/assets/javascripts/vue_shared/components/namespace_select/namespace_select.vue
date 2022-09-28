@@ -78,7 +78,7 @@ export default {
       required: false,
       default: false,
     },
-    isLoadingMoreGroups: {
+    isLoading: {
       type: Boolean,
       required: false,
       default: false,
@@ -152,7 +152,12 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown :text="selectedNamespaceText" :block="fullWidth" data-qa-selector="namespaces_list">
+  <gl-dropdown
+    :text="selectedNamespaceText"
+    :block="fullWidth"
+    data-qa-selector="namespaces_list"
+    @show="$emit('show')"
+  >
     <template #header>
       <gl-search-box-by-type
         v-model.trim="searchTerm"
@@ -201,8 +206,7 @@ export default {
         >{{ item.humanName }}</gl-dropdown-item
       >
     </div>
-    <gl-intersection-observer v-if="hasNextPageOfGroups" @appear="$emit('load-more-groups')">
-      <gl-loading-icon v-if="isLoadingMoreGroups" class="gl-mb-3" size="sm" />
-    </gl-intersection-observer>
+    <gl-loading-icon v-if="isLoading" class="gl-mb-3" size="sm" />
+    <gl-intersection-observer v-if="hasNextPageOfGroups" @appear="$emit('load-more-groups')" />
   </gl-dropdown>
 </template>

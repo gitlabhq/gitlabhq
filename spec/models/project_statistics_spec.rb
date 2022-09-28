@@ -98,6 +98,8 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#refresh!' do
+    subject { statistics.refresh! }
+
     before do
       allow(statistics).to receive(:update_commit_count)
       allow(statistics).to receive(:update_repository_size)
@@ -111,7 +113,7 @@ RSpec.describe ProjectStatistics do
 
     context "without arguments" do
       before do
-        statistics.refresh!
+        subject
       end
 
       it "sums all counters" do
@@ -146,7 +148,7 @@ RSpec.describe ProjectStatistics do
         expect(project.repository.exists?).to be_falsey
         expect(project.wiki.repository.exists?).to be_falsey
 
-        statistics.refresh!
+        subject
 
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
@@ -174,7 +176,7 @@ RSpec.describe ProjectStatistics do
       end
 
       it 'does not crash' do
-        statistics.refresh!
+        subject
 
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
@@ -209,7 +211,7 @@ RSpec.describe ProjectStatistics do
           expect(Namespaces::ScheduleAggregationWorker)
             .to receive(:perform_async)
 
-          statistics.refresh!
+          subject
         end
       end
     end
@@ -238,8 +240,12 @@ RSpec.describe ProjectStatistics do
         expect(Namespaces::ScheduleAggregationWorker)
           .not_to receive(:perform_async)
 
-        statistics.refresh!
+        subject
       end
+    end
+
+    it_behaves_like 'obtaining lease to update database' do
+      let(:model) { statistics }
     end
   end
 
@@ -408,6 +414,8 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#refresh_storage_size!' do
+    subject { statistics.refresh_storage_size! }
+
     it 'recalculates storage size from its components and save it' do
       statistics.update_columns(
         repository_size: 2,
@@ -422,7 +430,11 @@ RSpec.describe ProjectStatistics do
         storage_size: 0
       )
 
-      expect { statistics.refresh_storage_size! }.to change { statistics.storage_size }.from(0).to(28)
+      expect { subject }.to change { statistics.storage_size }.from(0).to(28)
+    end
+
+    it_behaves_like 'obtaining lease to update database' do
+      let(:model) { statistics }
     end
   end
 
