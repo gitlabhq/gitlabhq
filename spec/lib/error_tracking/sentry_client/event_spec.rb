@@ -72,5 +72,13 @@ RSpec.describe ErrorTracking::SentryClient do
         end
       end
     end
+
+    it_behaves_like 'non-numeric input handling in Sentry response', 'issue_id' do
+      let(:sentry_api_response) do
+        sample_response.tap do |event|
+          event[:groupID] = id_input
+        end
+      end
+    end
   end
 end

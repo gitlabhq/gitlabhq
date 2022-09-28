@@ -10,6 +10,7 @@ module ErrorTracking
 
     Error = Class.new(StandardError)
     MissingKeysError = Class.new(StandardError)
+    InvalidFieldValueError = Class.new(StandardError)
     ResponseInvalidSizeError = Class.new(StandardError)
 
     RESPONSE_SIZE_LIMIT = 1.megabyte
@@ -109,6 +110,16 @@ module ErrorTracking
 
     def raise_error(message)
       raise SentryClient::Error, message
+    end
+
+    def ensure_numeric!(field, value)
+      return value if /\A\d+\z/.match?(value)
+
+      raise_invalid_field_value!(field, "#{value.inspect} is not numeric")
+    end
+
+    def raise_invalid_field_value!(field, message)
+      raise InvalidFieldValueError, %(Sentry API response contains invalid value for field "#{field}": #{message})
     end
   end
 end
