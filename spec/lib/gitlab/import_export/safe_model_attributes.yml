@@ -332,6 +332,11 @@ Ci::Pipeline:
 - iid
 - merge_request_id
 - external_pull_request_id
+Ci::PipelineMetadata:
+- id
+- project_id
+- pipeline_id
+- title
 Ci::Stage:
 - id
 - name

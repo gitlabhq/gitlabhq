@@ -98,6 +98,7 @@ tree:
         - :statuses
       - :external_pull_request
       - :merge_request
+      - :pipeline_metadata
     - :auto_devops
     - :pipeline_schedules
     - :container_expiration_policy
@@ -582,6 +583,9 @@ included_attributes:
     - :iid
     - :source_sha
     - :target_sha
+  pipeline_metadata:
+    - :project_id
+    - :title
   stages:
     - :name
     - :status
@@ -971,6 +975,8 @@ excluded_attributes:
     - :external_pull_request_id
     - :ci_ref_id
     - :locked
+  pipeline_metadata:
+    - :pipeline_id
   stages:
     - :pipeline_id
   merge_access_levels:

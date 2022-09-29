@@ -98,7 +98,7 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#refresh!' do
-    subject { statistics.refresh! }
+    subject(:refresh_statistics) { statistics.refresh! }
 
     before do
       allow(statistics).to receive(:update_commit_count)
@@ -113,7 +113,7 @@ RSpec.describe ProjectStatistics do
 
     context "without arguments" do
       before do
-        subject
+        refresh_statistics
       end
 
       it "sums all counters" do
@@ -148,7 +148,7 @@ RSpec.describe ProjectStatistics do
         expect(project.repository.exists?).to be_falsey
         expect(project.wiki.repository.exists?).to be_falsey
 
-        subject
+        refresh_statistics
 
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
@@ -176,7 +176,7 @@ RSpec.describe ProjectStatistics do
       end
 
       it 'does not crash' do
-        subject
+        refresh_statistics
 
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
@@ -211,7 +211,7 @@ RSpec.describe ProjectStatistics do
           expect(Namespaces::ScheduleAggregationWorker)
             .to receive(:perform_async)
 
-          subject
+          refresh_statistics
         end
       end
     end
@@ -240,7 +240,7 @@ RSpec.describe ProjectStatistics do
         expect(Namespaces::ScheduleAggregationWorker)
           .not_to receive(:perform_async)
 
-        subject
+        refresh_statistics
       end
     end
 
@@ -414,7 +414,7 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#refresh_storage_size!' do
-    subject { statistics.refresh_storage_size! }
+    subject(:refresh_storage_size) { statistics.refresh_storage_size! }
 
     it 'recalculates storage size from its components and save it' do
       statistics.update_columns(
@@ -430,7 +430,7 @@ RSpec.describe ProjectStatistics do
         storage_size: 0
       )
 
-      expect { subject }.to change { statistics.reload.storage_size }.from(0).to(28)
+      expect { refresh_storage_size }.to change { statistics.reload.storage_size }.from(0).to(28)
     end
 
     context 'when nullable columns are nil' do
@@ -443,11 +443,11 @@ RSpec.describe ProjectStatistics do
       end
 
       it 'does not raise any error' do
-        expect { subject }.not_to raise_error
+        expect { refresh_storage_size }.not_to raise_error
       end
 
       it 'recalculates storage size from its components' do
-        expect { subject }.to change { statistics.reload.storage_size }.from(0).to(2)
+        expect { refresh_storage_size }.to change { statistics.reload.storage_size }.from(0).to(2)
       end
     end
 

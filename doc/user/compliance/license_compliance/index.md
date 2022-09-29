@@ -556,8 +556,8 @@ license_scanning:
 #### Using private NuGet registries
 
 If you have a private NuGet registry you can add it as a source
-by adding it to the [`packageSources`](https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections)
-section of a [`nuget.config`](https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file) file.
+by adding it to the [`packageSources`](https://learn.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections)
+section of a [`nuget.config`](https://learn.microsoft.com/en-us/nuget/reference/nuget-config-file) file.
 
 For example:
 

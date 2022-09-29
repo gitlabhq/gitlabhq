@@ -12,7 +12,7 @@ module QA
       let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION']&.to_i || 7200 }
       let(:logger) { Runtime::Logger.logger }
       let(:differ) { RSpec::Support::Differ.new(color: true) }
-      let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address }
+      let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }
       let(:dummy_url) { "https://example.com" }
       let(:api_request_params) { { auto_paginate: true, attempts: 2 } }
 
@@ -56,6 +56,10 @@ module QA
           "head_ref_deleted",
           "head_ref_force_pushed",
           "head_ref_restored",
+          "base_ref_force_pushed",
+          "base_ref_changed",
+          "review_request_removed",
+          "review_dismissed",
           "auto_squash_enabled",
           "auto_merge_disabled",
           "comment_deleted",
@@ -65,6 +69,7 @@ module QA
           "unsubscribed",
           "transferred",
           "locked",
+          "unlocked",
           # mentions are supported but they can be reported differently on gitlab's side
           # for example mention of issue creation in pr will be reported in the issue on gitlab side
           # or referenced in github will still create a 'mentioned in' comment in gitlab
@@ -197,6 +202,10 @@ module QA
         end
       end
 
+      before do
+        Runtime::Feature.enable(:github_importer_single_endpoint_issue_events_import)
+      end
+
       after do |example|
         next unless defined?(@import_time)
 
@@ -219,8 +228,10 @@ module QA
                 milestones: gh_milestones.length,
                 mrs: gh_prs.length,
                 mr_comments: gh_prs.sum { |_k, v| v[:comments].length },
+                mr_events: gh_prs.sum { |_k, v| v[:events].length },
                 issues: gh_issues.length,
-                issue_comments: gh_issues.sum { |_k, v| v[:comments].length }
+                issue_comments: gh_issues.sum { |_k, v| v[:comments].length },
+                issue_events: gh_issues.sum { |_k, v| v[:events].length }
               }
             },
             target: {
@@ -234,8 +245,10 @@ module QA
                 milestones: gl_milestones.length,
                 mrs: mrs.length,
                 mr_comments: mrs.sum { |_k, v| v[:comments].length },
+                mr_events: mrs.sum { |_k, v| v[:events].length },
                 issues: gl_issues.length,
-                issue_comments: gl_issues.sum { |_k, v| v[:comments].length }
+                issue_comments: gl_issues.sum { |_k, v| v[:comments].length },
+                issue_events: gl_issues.sum { |_k, v| v[:events].length }
               }
             },
             not_imported: {
@@ -252,8 +265,8 @@ module QA
       ) do
         start = Time.now
 
-        # import the project and log gitlab path
-        logger.info("== Importing project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
+        # trigger import and log project paths
+        logger.info("== Triggering import of project '#{github_repo}' in to '#{imported_project.reload!.full_path}' ==")
 
         # fetch all objects right after import has started
         fetch_github_objects
@@ -357,22 +370,23 @@ module QA
         count_msg = "Expected to contain same amount of #{type}s. Gitlab: #{expected.length}, Github: #{actual.length}"
         expect(expected.length).to eq(actual.length), count_msg
 
-        missing_comments = verify_comments(type, actual, expected)
+        missing_objects = (actual.keys - expected.keys).map { |it| actual[it].slice(:title, :url) }
+        missing_content = verify_comments_and_events(type, actual, expected)
 
         {
-          "#{type}s": (actual.keys - expected.keys).map { |it| actual[it].slice(:title, :url) },
-          "#{type}_comments": missing_comments
-        }
+          "#{type}s": missing_objects.empty? ? nil : missing_objects,
+          "#{type}_content": missing_content.empty? ? nil : missing_content
+        }.compact
       end
 
-      # Verify imported comments
+      # Verify imported comments and events
       #
       # @param [String] type verification object, 'mrs' or 'issues'
       # @param [Hash] actual
       # @param [Hash] expected
       # @return [Hash]
-      def verify_comments(type, actual, expected)
-        actual.each_with_object([]) do |(key, actual_item), missing_comments|
+      def verify_comments_and_events(type, actual, expected)
+        actual.each_with_object([]) do |(key, actual_item), missing_content|
           expected_item = expected[key]
           title = actual_item[:title]
           msg = "expected #{type} with iid '#{key}' to have"
@@ -409,17 +423,19 @@ module QA
           expect(expected_events.length).to eq(actual_events.length), event_count_msg
           expect(expected_events).to match_array(actual_events)
 
-          # Save missing comments
+          # Save missing comments and events
           #
           comment_diff = actual_comments - expected_comments
-          next if comment_diff.empty?
+          event_diff = actual_events - expected_events
+          next if comment_diff.empty? && event_diff.empty?
 
-          missing_comments << {
+          missing_content << {
             title: title,
             github_url: actual_item[:url],
             gitlab_url: expected_item[:url],
-            missing_comments: comment_diff
-          }
+            missing_comments: comment_diff.empty? ? nil : comment_diff,
+            missing_events: event_diff.empty? ? nil : event_diff
+          }.compact
         end
       end
 

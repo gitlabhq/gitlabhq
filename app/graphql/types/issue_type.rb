@@ -58,15 +58,20 @@ module Types
                                             description: 'Indicates the issue is hidden because the author has been banned. ' \
           'Will always return `null` if `ban_user_feature_flag` feature flag is disabled.'
 
-    field :downvotes, GraphQL::Types::Int, null: false,
-                                           description: 'Number of downvotes the issue has received.'
+    field :downvotes, GraphQL::Types::Int,
+          null: false,
+          description: 'Number of downvotes the issue has received.',
+          resolver: Resolvers::DownVotesCountResolver
     field :merge_requests_count, GraphQL::Types::Int, null: false,
                                                       description: 'Number of merge requests that close the issue on merge.',
                                                       resolver: Resolvers::MergeRequestsCountResolver
     field :relative_position, GraphQL::Types::Int, null: true,
                                                    description: 'Relative position of the issue (used for positioning in epic tree and issue boards).'
-    field :upvotes, GraphQL::Types::Int, null: false,
-                                         description: 'Number of upvotes the issue has received.'
+    field :upvotes, GraphQL::Types::Int,
+          null: false,
+          description: 'Number of upvotes the issue has received.',
+          resolver: Resolvers::UpVotesCountResolver
+
     field :user_discussions_count, GraphQL::Types::Int, null: false,
                                                         description: 'Number of user discussions in the issue.',
                                                         resolver: Resolvers::UserDiscussionsCountResolver

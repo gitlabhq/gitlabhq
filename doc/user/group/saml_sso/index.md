@@ -166,7 +166,7 @@ If you have any questions on configuring the SAML app, please contact your provi
 
 ### Azure setup notes
 
-Follow the Azure documentation on [configuring single sign-on to applications](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) with the notes below for consideration.
+Follow the Azure documentation on [configuring single sign-on to applications](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) with the notes below for consideration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the Azure SAML setup including SCIM, see [SCIM Provisioning on Azure Using SAML SSO for Groups Demo](https://youtu.be/24-ZxmTeEBU).

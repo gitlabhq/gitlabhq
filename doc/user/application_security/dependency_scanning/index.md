@@ -237,7 +237,7 @@ table.supported-languages ul {
       <td>.NET</td>
       <td rowspan="2">All versions</td>
       <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
-      <td rowspan="2"><a href="https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
+      <td rowspan="2"><a href="https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#enabling-lock-file"><code>packages.lock.json</code></a></td>
       <td rowspan="2">Y</td>
     </tr>
     <tr>

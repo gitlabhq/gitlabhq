@@ -112,6 +112,7 @@ class Issue < ApplicationRecord
   enum issue_type: WorkItems::Type.base_types
 
   alias_method :issuing_parent, :project
+  alias_attribute :issuing_parent_id, :project_id
 
   alias_attribute :external_author, :service_desk_reply_to
 

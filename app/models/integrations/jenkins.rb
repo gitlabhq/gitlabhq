@@ -69,6 +69,10 @@ module Integrations
       url.to_s
     end
 
+    def url_variables
+      {}
+    end
+
     def self.supported_events
       %w(push merge_request tag_push)
     end

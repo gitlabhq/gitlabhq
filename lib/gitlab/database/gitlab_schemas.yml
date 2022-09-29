@@ -99,6 +99,7 @@ ci_pipeline_messages: :gitlab_ci
 ci_pipeline_schedules: :gitlab_ci
 ci_pipeline_schedule_variables: :gitlab_ci
 ci_pipelines_config: :gitlab_ci
+ci_pipeline_metadata: :gitlab_ci
 ci_pipelines: :gitlab_ci
 ci_pipeline_variables: :gitlab_ci
 ci_platform_metrics: :gitlab_ci

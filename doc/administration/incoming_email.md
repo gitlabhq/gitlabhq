@@ -775,7 +775,7 @@ mailboxes.
 To configure GitLab for Microsoft Graph, you will need to register an
 OAuth2 application in your Azure Active Directory that has the
 `Mail.ReadWrite` permission for all mailboxes. See the [MailRoom step-by-step guide](https://github.com/tpitale/mail_room/#microsoft-graph-configuration)
-and [Microsoft instructions](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+and [Microsoft instructions](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
 for more details.
 
 Record the following when you configure your OAuth2 application:
@@ -792,7 +792,7 @@ to read/write mail in *all* mailboxes.
 
 To mitigate security concerns, we recommend configuring an application access
 policy which limits the mailbox access for all accounts, as described in
-[Microsoft documentation](https://docs.microsoft.com/en-us/graph/auth-limit-mailbox-access).
+[Microsoft documentation](https://learn.microsoft.com/en-us/graph/auth-limit-mailbox-access).
 
 This example for Omnibus GitLab assumes you're using the following mailbox: `incoming@example.onmicrosoft.com`:
 
@@ -822,7 +822,7 @@ gitlab_rails['incoming_email_inbox_options'] = {
 }
 ```
 
-For Microsoft Cloud for US Government or [other Azure deployments](https://docs.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
 
 - Example for Microsoft Cloud for US Government:
 

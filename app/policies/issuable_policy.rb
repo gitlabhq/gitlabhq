@@ -22,6 +22,12 @@ class IssuablePolicy < BasePolicy
     enable :reopen_issue
   end
 
+  # This rule replicates permissions in NotePolicy#can_read_confidential and it's used in
+  # TodoPolicy for performance reasons
+  rule { can?(:reporter_access) | assignee_or_author | admin }.policy do
+    enable :read_confidential_notes
+  end
+
   rule { can?(:read_merge_request) & assignee_or_author }.policy do
     enable :update_merge_request
     enable :reopen_merge_request

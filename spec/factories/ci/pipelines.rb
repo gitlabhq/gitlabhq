@@ -18,6 +18,8 @@ FactoryBot.define do
     transient { child_of { nil } }
     transient { upstream_of { nil } }
 
+    transient { title { nil } }
+
     after(:build) do |pipeline, evaluator|
       if evaluator.child_of
         pipeline.project = evaluator.child_of.project
@@ -25,6 +27,10 @@ FactoryBot.define do
       end
 
       pipeline.ensure_project_iid!
+
+      if evaluator.title
+        pipeline.pipeline_metadata = build(:ci_pipeline_metadata, title: evaluator.title, project: pipeline.project, pipeline: pipeline)
+      end
     end
 
     after(:create) do |pipeline, evaluator|

@@ -158,14 +158,14 @@ gitlab_rails['omniauth_providers'] = [
 
 ### Microsoft Azure
 
-The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
+The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
 To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app, you need the
 following information:
 
 - A tenant ID. You may already have one. For more information, review the
-  [Microsoft Azure Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
-  [Microsoft Quickstart Register an Application](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
+  [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
 Example Omnibus configuration block:
@@ -193,26 +193,26 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-Microsoft has documented how its platform works with [the OIDC protocol](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc).
+Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc).
 
 ### Microsoft Azure Active Directory B2C
 
-While GitLab works with [Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/overview), it requires special
+While GitLab works with [Azure Active Directory B2C](https://learn.microsoft.com/en-us/azure/active-directory-b2c/overview), it requires special
 configuration to work. To get started, sign in to the [Azure Portal](https://portal.azure.com).
 For your app, you need the following information from Azure:
 
 - A tenant ID. You may already have one. For more information, review the
-  [Microsoft Azure Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
-  [Microsoft tutorial](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga) documentation to obtain the
+  [Microsoft tutorial](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga) documentation to obtain the
   client ID and client secret for your app.
-- The user flow or policy name. Follow the instructions in the [Microsoft tutorial](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-user-flow).
+- The user flow or policy name. Follow the instructions in the [Microsoft tutorial](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-user-flow).
 
 If your GitLab domain is `gitlab.example.com`, ensure the app has the following `Redirect URI`:
 
 `https://gitlab.example.com/users/auth/openid_connect/callback`
 
-In addition, ensure that [ID tokens are enabled](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga#enable-id-token-implicit-grant).
+In addition, ensure that [ID tokens are enabled](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga#enable-id-token-implicit-grant).
 
 Add the following API permissions to the app:
 
@@ -221,10 +221,10 @@ Add the following API permissions to the app:
 
 #### Configure custom policies
 
-Azure B2C [offers two ways of defining the business logic for logging in a user](https://docs.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview):
+Azure B2C [offers two ways of defining the business logic for logging in a user](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview):
 
-- [User flows](https://docs.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#user-flows)
-- [Custom policies](https://docs.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#custom-policies)
+- [User flows](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#user-flows)
+- [Custom policies](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#custom-policies)
 
 While cumbersome to configure, custom policies are required because
 standard Azure B2C user flows [do not send the OpenID `email` claim](https://github.com/MicrosoftDocs/azure-docs/issues/16566). In
@@ -232,10 +232,10 @@ other words, they do not work with the [`allow_single_sign_on` or `auto_link_use
 With a standard Azure B2C policy, GitLab cannot create a new account or
 link to an existing one with an email address.
 
-Carefully follow the instructions for [creating a custom policy](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
+Carefully follow the instructions for [creating a custom policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
 
-The Microsoft instructions use `SocialAndLocalAccounts` in the [custom policy starter pack](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#custom-policy-starter-pack),
-but `LocalAccounts` works for authenticating against local, Active Directory accounts. Before you follow the instructions to [upload the polices](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies), do the following:
+The Microsoft instructions use `SocialAndLocalAccounts` in the [custom policy starter pack](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#custom-policy-starter-pack),
+but `LocalAccounts` works for authenticating against local, Active Directory accounts. Before you follow the instructions to [upload the polices](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies), do the following:
 
 1. To export the `email` claim, modify the `SignUpOrSignin.xml`. Replace the following line:
 
@@ -251,7 +251,7 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
 
 1. For OIDC discovery to work with B2C, the policy must be configured with an issuer compatible with the
   [OIDC specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
-   See the [token compatibility settings](https://docs.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
+   See the [token compatibility settings](https://learn.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
    In `TrustFrameworkBase.xml` under `JwtIssuer`, set `IssuanceClaimPattern` to `AuthorityWithTfp`:
 
    ```xml
@@ -267,7 +267,7 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
            ...
    ```
 
-1. Now [upload the policy](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies). Overwrite
+1. Now [upload the policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies). Overwrite
    the existing files if you are updating an existing policy.
 
 1. Determine the issuer URL using the sign-in policy. The issuer URL is in the form:
@@ -326,10 +326,10 @@ The trailing forward slash is required.
 
 - Ensure all occurrences of `yourtenant.onmicrosoft.com`, `ProxyIdentityExperienceFrameworkAppId`, and `IdentityExperienceFrameworkAppId` match your B2C tenant hostname and
   the respective client IDs in the XML policy files.
-- Add `https://jwt.ms` as a redirect URI to the app, and use the [custom policy tester](https://docs.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#test-the-custom-policy).
+- Add `https://jwt.ms` as a redirect URI to the app, and use the [custom policy tester](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#test-the-custom-policy).
   Make sure the payload includes `email` that matches the user's email access.
 - After you enable the custom policy, users might see "Invalid username or password" after they try to sign in. This might be a configuration
-  issue with the `IdentityExperienceFramework` app. See [this Microsoft comment](https://docs.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370)
+  issue with the `IdentityExperienceFramework` app. See [this Microsoft comment](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370)
   that suggests checking that the app manifest contains these settings:
 
   - `"accessTokenAcceptedVersion": null`

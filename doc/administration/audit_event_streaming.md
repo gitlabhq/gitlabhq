@@ -831,3 +831,49 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
   "event_type": "project_group_link_destroy"
 }
 ```
+
+## Audit event streaming on invalid merge request approver state
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374566) in GitLab 15.5.
+
+Stream audit events that relate to invalid merge request approver states within a project.
+
+### Headers
+
+Headers are formatted as follows:
+
+```plaintext
+POST /logs HTTP/1.1
+Host: <DESTINATION_HOST>
+Content-Type: application/x-www-form-urlencoded
+X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
+X-Gitlab-Audit-Event-Type: audit_operation
+```
+
+### Example payload
+
+```json
+{
+  "id": 1,
+  "author_id": 1,
+  "entity_id": 6,
+  "entity_type": "Project",
+  "details": {
+    "author_name": "example_username",
+    "target_id": 20,
+    "target_type": "MergeRequest",
+    "target_details": { title: "Merge request title", iid: "Merge request iid", id: "Merge request id" },
+    "custom_message": "Invalid merge request approver rules",
+    "ip_address": "127.0.0.1",
+    "entity_path": "example-group/example-project"
+  },
+  "ip_address": "127.0.0.1",
+  "author_name": "example_username",
+  "entity_path": "example-group/example-project",
+  "target_details": "merge request title",
+  "created_at": "2022-03-09T06:53:11.181Z",
+  "target_type": "MergeRequest",
+  "target_id": 20,
+  "event_type": "audit_operation"
+}
+```

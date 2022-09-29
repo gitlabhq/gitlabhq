@@ -445,6 +445,7 @@ class MergeRequest < ApplicationRecord
   # we'd eventually rename the column for avoiding confusions, but in the mean time
   # please use `auto_merge_enabled` alias instead of `merge_when_pipeline_succeeds`.
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
+  alias_attribute :issuing_parent_id, :target_project_id
   alias_method :issuing_parent, :target_project
 
   delegate :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true

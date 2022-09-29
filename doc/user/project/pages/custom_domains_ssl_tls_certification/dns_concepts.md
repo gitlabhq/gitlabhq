@@ -44,7 +44,7 @@ for the most popular hosting services:
 - [Hostgator](https://www.hostgator.com/help/article/changing-dns-records)
 - [Inmotion hosting](https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries)
 - [Media Temple](https://mediatemple.net/community/products/dv/204403794/how-can-i-change-the-dns-records-for-my-domain)
-- [Microsoft](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb727018(v=technet.10))
+- [Microsoft](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb727018(v=technet.10))
 - [Namecheap](https://www.namecheap.com/support/knowledgebase/subcategory/2237/host-records-setup/)
 
 <!-- vale gitlab.Spelling = YES -->

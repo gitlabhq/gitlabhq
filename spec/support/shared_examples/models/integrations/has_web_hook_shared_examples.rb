@@ -37,6 +37,12 @@ RSpec.shared_examples Integrations::HasWebHook do
     end
   end
 
+  describe '#url_variables' do
+    it 'returns a string' do
+      expect(integration.url_variables).to be_a(Hash)
+    end
+  end
+
   describe '#hook_ssl_verification' do
     it 'returns a boolean' do
       expect(integration.hook_ssl_verification).to be_in([true, false])

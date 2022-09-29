@@ -156,6 +156,15 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           end
         end
 
+        it 'restores pipeline metadata' do
+          pipeline = Ci::Pipeline.find_by_sha('sha-notes')
+          pipeline_metadata = pipeline.pipeline_metadata
+
+          expect(pipeline_metadata.title).to eq('Build pipeline')
+          expect(pipeline_metadata.pipeline_id).to eq(pipeline.id)
+          expect(pipeline_metadata.project_id).to eq(pipeline.project_id)
+        end
+
         it 'preserves updated_at on issues' do
           issue = Issue.find_by(description: 'Aliquam enim illo et possimus.')
 

@@ -9,7 +9,7 @@ type: concepts
 
 Team Foundation Server (TFS), renamed [Azure DevOps Server](https://azure.microsoft.com/en-us/services/devops/server/)
 in 2019, is a set of tools developed by Microsoft which also includes
-[Team Foundation Version Control](https://docs.microsoft.com/en-us/azure/devops/repos/tfvc/what-is-tfvc?view=azure-devops)
+[Team Foundation Version Control](https://learn.microsoft.com/en-us/azure/devops/repos/tfvc/what-is-tfvc?view=azure-devops)
 (TFVC), a centralized version control system similar to Git.
 
 In this document, we focus on the TFVC to Git migration.
@@ -28,7 +28,7 @@ The main differences between TFVC and Git are:
 
 For more information, see:
 
-- Microsoft's [comparison of Git and TFVC](https://docs.microsoft.com/en-us/azure/devops/repos/tfvc/comparison-git-tfvc?view=azure-devops).
+- Microsoft's [comparison of Git and TFVC](https://learn.microsoft.com/en-us/azure/devops/repos/tfvc/comparison-git-tfvc?view=azure-devops).
 - The Wikipedia [comparison of version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software).
 
 ## Why migrate

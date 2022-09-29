@@ -43,12 +43,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_one(:triggered_by_pipeline) }
   it { is_expected.to have_one(:source_job) }
   it { is_expected.to have_one(:pipeline_config) }
+  it { is_expected.to have_one(:pipeline_metadata) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :git_author_full_text }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
+  it { is_expected.to delegate_method(:title).to(:pipeline_metadata).allow_nil }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:sha) }

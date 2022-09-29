@@ -17,7 +17,7 @@ recommends these word choices. In addition:
 
 For guidance not on this page, we defer to these style guides:
 
-- [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
+- [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 
 <!-- vale off -->
@@ -125,7 +125,7 @@ Instead of:
 - This feature enables users to add files to their repository.
 
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
-[View details in the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
+[View details in the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
 ## Alpha
 
@@ -141,7 +141,7 @@ Instead of **and/or**, use **or** or rewrite the sentence to spell out both opti
 ## and so on
 
 Do not use **and so on**. Instead, be more specific. For details, see
-[the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
+[the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
 
 ## area
 
@@ -316,7 +316,7 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 
 ## disable
 
-See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
+See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## disallow
@@ -365,7 +365,7 @@ Do not use **e-mail** with a hyphen. When plural, use **emails** or **email mess
 
 ## enable
 
-See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
+See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## enter
@@ -818,7 +818,7 @@ Use lowercase for **personal access token**.
 
 ## please
 
-Do not use **please**. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+Do not use **please**. For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
 ## press
 

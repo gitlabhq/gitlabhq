@@ -50,7 +50,7 @@ Prerequisites:
 - [GitLab is configured](#configure-gitlab).
 
 The SAML application created during [single sign-on](index.md) set up for
-[Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal)
+[Azure Active Directory](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
 To configure Azure Active Directory for SCIM:

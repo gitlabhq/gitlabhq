@@ -61,7 +61,7 @@ The first items you need to configure are the basic settings of the underlying v
 1. Enter a name for the VM, for example `GitLab`.
 1. Select a region.
 1. In **Availability options**, select **Availability zone** and set it to `1`.
-   Read more about the [availability zones](https://docs.microsoft.com/en-us/azure/virtual-machines/availability).
+   Read more about the [availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/availability).
 1. Ensure the selected image is set to **GitLab - Gen1**.
 1. Select the VM size based on the [hardware requirements](../requirements.md#hardware-requirements).
    Because the minimum system requirements to run a GitLab environment for up to 500 users
@@ -83,7 +83,7 @@ For the disks:
 1. For the OS disk type, select **Premium SSD**.
 1. Select the default encryption.
 
-[Read more about the types of disks](https://docs.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview) that Azure provides.
+[Read more about the types of disks](https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview) that Azure provides.
 
 Review your settings, and then proceed to the Networking tab.
 
@@ -159,7 +159,7 @@ to assign a descriptive DNS name to the VM:
 
 Eventually, most users want to use their own domain name. For you to do this, you need to add a DNS `A` record
 with your domain registrar that points to the public IP address of your Azure VM.
-You can use [Azure's DNS](https://docs.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns)
+You can use [Azure's DNS](https://learn.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns)
 or some [other registrar](https://docs.gitlab.com/omnibus/settings/dns.html).
 
 ### Change the GitLab external URL
@@ -185,7 +185,7 @@ To set up the GitLab external URL:
 
    NOTE:
    If you need to reset your credentials, read
-   [how to reset SSH credentials for a user on an Azure VM](https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
+   [how to reset SSH credentials for a user on an Azure VM](https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
 
 1. Open `/etc/gitlab/gitlab.rb` with your editor.
 1. Find `external_url` and replace it with your own domain name. For the sake

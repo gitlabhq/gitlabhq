@@ -28,7 +28,7 @@ documentation for some popular browsers.
 - [Network Monitor - Firefox Developer Tools](https://developer.mozilla.org/en-US/docs/Tools/Network_Monitor)
 - [Inspect Network Activity In Chrome DevTools](https://developer.chrome.com/docs/devtools/network/)
 - [Safari Web Development Tools](https://developer.apple.com/safari/tools/)
-- [Microsoft Edge Network panel](https://docs.microsoft.com/en-us/microsoft-edge/devtools-guide-chromium/network/)
+- [Microsoft Edge Network panel](https://learn.microsoft.com/en-us/microsoft-edge/devtools-guide-chromium/network/)
 
 To locate a relevant request and view its correlation ID:
 

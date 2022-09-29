@@ -60,6 +60,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['inactive_projects_delete_after_months']).to eq(2)
       expect(json_response['inactive_projects_min_size_mb']).to eq(0)
       expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(1)
+      expect(json_response['can_create_group']).to eq(true)
     end
   end
 
@@ -156,7 +157,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             delete_inactive_projects: true,
             inactive_projects_delete_after_months: 24,
             inactive_projects_min_size_mb: 10,
-            inactive_projects_send_warning_email_after_months: 12
+            inactive_projects_send_warning_email_after_months: 12,
+            can_create_group: false
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -217,6 +219,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['inactive_projects_delete_after_months']).to eq(24)
         expect(json_response['inactive_projects_min_size_mb']).to eq(10)
         expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(12)
+        expect(json_response['can_create_group']).to eq(false)
       end
     end
 

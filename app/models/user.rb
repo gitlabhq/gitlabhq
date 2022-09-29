@@ -60,7 +60,7 @@ class User < ApplicationRecord
 
   default_value_for :admin, false
   default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
-  default_value_for :can_create_group, gitlab_config.default_can_create_group
+  default_value_for(:can_create_group) { Gitlab::CurrentSettings.can_create_group }
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
@@ -2153,6 +2153,10 @@ class User < ApplicationRecord
     (Date.current - created_at.to_date).to_i
   end
 
+  def webhook_email
+    public_email.presence || _('[REDACTED]')
+  end
+
   protected
 
   # override, from Devise::Validatable
@@ -2288,7 +2292,7 @@ class User < ApplicationRecord
       self.projects_limit   = 0
     else
       # Only revert these back to the default if they weren't specifically changed in this update.
-      self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
+      self.can_create_group = Gitlab::CurrentSettings.can_create_group unless can_create_group_changed?
       self.projects_limit = Gitlab::CurrentSettings.default_projects_limit unless projects_limit_changed?
     end
   end

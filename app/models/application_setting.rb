@@ -406,7 +406,7 @@ class ApplicationSetting < ApplicationRecord
   validates :invisible_captcha_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
-  validates :invitation_flow_enforcement,
+  validates :invitation_flow_enforcement, :can_create_group,
             allow_nil: false,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
@@ -790,6 +790,10 @@ class ApplicationSetting < ApplicationRecord
     return kroki_formats_blockdiag if ::Gitlab::Kroki::BLOCKDIAG_FORMATS.include?(diagram_type)
 
     ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES.include?(diagram_type)
+  end
+
+  def personal_access_tokens_disabled?
+    false
   end
 
   private

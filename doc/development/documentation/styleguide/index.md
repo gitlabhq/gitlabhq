@@ -19,7 +19,7 @@ In addition to this page, the following resources can help you craft and contrib
 - [Doc style and consistency testing](../testing.md)
 - [Guidelines for UI error messages](https://design.gitlab.com/content/error-messages/)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
-- [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
+- [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 - [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
 
@@ -333,7 +333,7 @@ When possible, try to avoid acronyms in headings.
 
 ### Numbers
 
-When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/numbers).
+When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/numbers).
 
 ## Text
 

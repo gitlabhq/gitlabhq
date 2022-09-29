@@ -2015,7 +2015,6 @@
 - './ee/spec/models/milestone_spec.rb'
 - './ee/spec/models/namespace_limit_spec.rb'
 - './ee/spec/models/namespace_setting_spec.rb'
-- './ee/spec/models/namespaces/free_user_cap/preview_spec.rb'
 - './ee/spec/models/namespaces/free_user_cap_spec.rb'
 - './ee/spec/models/namespaces/free_user_cap/standard_spec.rb'
 - './ee/spec/models/namespaces/storage/root_excess_size_spec.rb'

@@ -214,6 +214,8 @@ RSpec.describe Integrations::Jira do
       'EXT_EXT-1234'       | 'EXT_EXT-1234'
       'EXT3_EXT-1234'      | 'EXT3_EXT-1234'
       '3EXT_EXT-1234'      | ''
+      'CVE-2022-123'       | ''
+      'CVE-123'            | 'CVE-123'
     end
 
     with_them do

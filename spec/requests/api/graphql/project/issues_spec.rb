@@ -662,6 +662,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       include_examples 'N+1 query check'
     end
+
     context 'when requesting `closed_as_duplicate_of`' do
       let(:requested_fields) { 'closedAsDuplicateOf { id }' }
       let(:issue_a_dup) { create(:issue, project: project) }
@@ -670,6 +671,17 @@ RSpec.describe 'getting an issue list for a project' do
       before do
         issue_a.update!(duplicated_to_id: issue_a_dup)
         issue_b.update!(duplicated_to_id: issue_a_dup)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when award emoji votes' do
+      let(:requested_fields) { [:upvotes, :downvotes] }
+
+      before do
+        create_list(:award_emoji, 2, name: 'thumbsup', awardable: issue_a)
+        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: issue_b)
       end
 
       include_examples 'N+1 query check'

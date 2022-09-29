@@ -296,6 +296,10 @@ ci_pipelines:
 - package_build_infos
 - package_file_build_infos
 - build_trace_chunks
+- pipeline_metadata
+pipeline_metadata:
+- project
+- pipeline
 ci_refs:
 - project
 - ci_pipelines
@@ -632,6 +636,7 @@ project:
 - vulnerability_reads
 - build_artifacts_size_refresh
 - project_callouts
+- pipeline_metadata
 award_emoji:
 - awardable
 - user
