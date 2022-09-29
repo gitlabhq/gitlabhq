@@ -741,19 +741,31 @@ end
 ### Specification files
 
 These files represent the GLFM specification itself. They are all
-located under the root `glfm_specification`, and are further divided into two
-subfolders:
+located under the root `glfm_specification` and are further divided into
+subcategories based on their usage and purpose:
 
-- `input`: Contains files which are imported or manually edited.
-- `output`: Contains files which are automatically generated.
+- `glfm_specification`
+  - `input`: Contains files that are downloaded or manually edited.
+    These are the original input to drive all other automated GLFM
+    specification scripts, processes, or tests.
+    - `github_flavored_markdown`: Contains only the downloaded and committed
+      [`ghfm_spec_v_0.29.txt`](#github-flavored-markdown-specification) specification.
+    - `gitlab_flavored_markdown`: Contains all `glfm_*` files.
+      - `*.md` [input specification files](#input-specification-files),
+        which represent the GLFM specification itself.
+      - `*.yml` [input specification configuration files](#input-specification-configuration-files),
+        which control various aspects of the automated GLFM scripts and processes.
+  - `output`: Contains [output specification files](#output-specification-files),
+    which are automatically generated from the
+    input files by running the [`update-specification.rb`](#update-specificationrb-script) script.
 
 #### Input specification files
 
-The `glfm_specification/input` directory contains files which are the original
-input to drive all other automated GLFM specification scripts/processes/tests.
-They are either downloaded, as in the case of the
-GFM `spec.txt` file, or manually
-updated, as in the case of all GFM files.
+Input specification files are manually curated Markdown files that represent the specification itself.
+They are located at `glfm_specification/input/github_flavored_markdown/*.md` and
+`glfm_specification/input/gitlab_flavored_markdown/*.md`.
+
+See the main [specification files](#specification-files) section for more context and details.
 
 ##### GitHub Flavored Markdown specification
 
@@ -764,7 +776,7 @@ is the official latest [GFM `spec.txt`](https://github.com/github/cmark-gfm/blob
 - When it is downloaded, the version number is added to the filename.
 
 NOTE:
-This file uses the `ghfm` acronym instead of `gfm`, as
+For extra clarity, this file uses the `ghfm` acronym in its name instead of `gfm`, as
 explained in the [Acronyms section](#acronyms-glfm-ghfm-gfm-commonmark).
 
 ##### `glfm_intro.txt`
@@ -868,6 +880,14 @@ The actual file should not have these prefixed `|` characters.
 |.
 |````````````````````````````````
 ```
+
+#### Input specification configuration files
+
+Input specification configuration files are manually curated YAML files that control various
+aspects of the automated GLFM scripts and processes. They are located at
+`glfm_specification/input/gitlab_flavored_markdown/*.yml`.
+
+See the main [specification files](#specification-files) section for more context and details.
 
 ##### `glfm_example_status.yml`
 

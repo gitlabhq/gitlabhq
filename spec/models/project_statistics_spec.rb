@@ -430,7 +430,25 @@ RSpec.describe ProjectStatistics do
         storage_size: 0
       )
 
-      expect { subject }.to change { statistics.storage_size }.from(0).to(28)
+      expect { subject }.to change { statistics.reload.storage_size }.from(0).to(28)
+    end
+
+    context 'when nullable columns are nil' do
+      before do
+        statistics.update_columns(
+          repository_size: 2,
+          wiki_size: nil,
+          storage_size: 0
+        )
+      end
+
+      it 'does not raise any error' do
+        expect { subject }.not_to raise_error
+      end
+
+      it 'recalculates storage size from its components' do
+        expect { subject }.to change { statistics.reload.storage_size }.from(0).to(2)
+      end
     end
 
     it_behaves_like 'obtaining lease to update database' do

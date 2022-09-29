@@ -27,6 +27,17 @@ class ProjectStatistics < ApplicationRecord
     snippets_size: %i[storage_size]
   }.freeze
   NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size, :container_registry_size].freeze
+  STORAGE_SIZE_COMPONENTS = [
+    :repository_size,
+    :wiki_size,
+    :lfs_objects_size,
+    :build_artifacts_size,
+    :packages_size,
+    :snippets_size,
+    :pipeline_artifacts_size,
+    :uploads_size
+  ].freeze
+  STORAGE_SIZE_SUM = STORAGE_SIZE_COMPONENTS.map { |component| "COALESCE (#{component}, 0)" }.join(' + ').freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
@@ -99,22 +110,12 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_storage_size
-    storage_size = repository_size +
-                   wiki_size +
-                   lfs_objects_size +
-                   build_artifacts_size +
-                   packages_size +
-                   snippets_size +
-                   pipeline_artifacts_size +
-                   uploads_size
-
-    self.storage_size = storage_size
+    self.storage_size = STORAGE_SIZE_COMPONENTS.sum { |component| method(component).call }
   end
 
   def refresh_storage_size!
     detect_race_on_record(log_fields: { caller: __method__ }) do
-      update_storage_size
-      save!
+      update!(storage_size: STORAGE_SIZE_SUM)
     end
   end
 
