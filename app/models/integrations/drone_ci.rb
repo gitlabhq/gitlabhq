@@ -106,7 +106,11 @@ module Integrations
 
     override :hook_url
     def hook_url
-      [drone_url, "/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join
+      [drone_url, "/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token={token}"].join
+    end
+
+    def url_variables
+      { 'token' => token }
     end
 
     override :update_web_hook!

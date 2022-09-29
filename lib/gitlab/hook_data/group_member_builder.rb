@@ -39,7 +39,7 @@ module Gitlab
           group_id: group_member.group.id,
           user_username: group_member.user.username,
           user_name: group_member.user.name,
-          user_email: group_member.user.email,
+          user_email: group_member.user.webhook_email,
           user_id: group_member.user.id,
           group_access: group_member.human_access,
           expires_at: group_member.expires_at&.xmlschema

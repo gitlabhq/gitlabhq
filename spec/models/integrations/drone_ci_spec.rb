@@ -116,7 +116,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
     include_context :drone_ci_integration
 
     let(:integration) { drone }
-    let(:hook_url) { "#{drone_url}/hook?owner=#{project.namespace.full_path}&name=#{project.path}&access_token=#{token}" }
+    let(:hook_url) { "#{drone_url}/hook?owner=#{project.namespace.full_path}&name=#{project.path}&access_token={token}" }
 
     it 'does not create a hook if project is not present' do
       integration.project = nil

@@ -35,6 +35,9 @@ const textStyleTags = {
   [getStartTag('small')]: '<span class="gl-font-sm gl-text-gray-700">',
 };
 
+const escapeText = (text) =>
+  document.createElement('div').appendChild(document.createTextNode(text)).parentNode.innerHTML;
+
 const createText = (text) => {
   return text
     .replace(
@@ -61,7 +64,7 @@ const createText = (text) => {
 
 export const generateText = (text) => {
   if (typeof text === 'string') {
-    return createText(text);
+    return createText(escapeText(text));
   } else if (
     typeof text === 'object' &&
     typeof text.text === 'string' &&
@@ -69,8 +72,8 @@ export const generateText = (text) => {
   ) {
     return createText(
       `${
-        text.prependText ? `${text.prependText} ` : ''
-      }<a class="gl-text-decoration-underline" href="${text.href}">${text.text}</a>`,
+        text.prependText ? `${escapeText(text.prependText)} ` : ''
+      }<a class="gl-text-decoration-underline" href="${text.href}">${escapeText(text.text)}</a>`,
     );
   }
 

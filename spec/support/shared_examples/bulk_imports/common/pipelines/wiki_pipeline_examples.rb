@@ -4,8 +4,9 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
   describe '#run' do
     let_it_be(:bulk_import_configuration) { create(:bulk_import_configuration, bulk_import: bulk_import) }
 
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be_with_reload(:tracker) { create(:bulk_import_tracker, entity: entity) }
+
+    let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
     let(:extracted_data) { BulkImports::Pipeline::ExtractedData.new(data: {}) }
 
@@ -38,6 +39,22 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
         expect(parent.wiki.repository).not_to receive(:ensure_repository)
 
         expect { subject.run }.not_to raise_error
+      end
+    end
+
+    context 'when scheme is blocked' do
+      it 'prevents import' do
+        # Force bulk_import_configuration to have a file:// URL
+        bulk_import_configuration.url = 'file://example.com'
+        bulk_import_configuration.save!(validate: false)
+
+        expect(subject).to receive(:source_wiki_exists?).and_return(true)
+
+        subject.run
+
+        expect(tracker.failed?).to eq(true)
+        expect(tracker.entity.failures.first).to be_present
+        expect(tracker.entity.failures.first.exception_message).to eq('Only allowed schemes are http, https')
       end
     end
   end

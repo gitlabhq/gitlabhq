@@ -19,25 +19,23 @@ export default {
       if (errorSummary.errored >= 1 && errorSummary.resolved >= 1) {
         const improvements = sprintf(
           n__(
-            '%{strongOpen}%{errors}%{strongClose} point',
-            '%{strongOpen}%{errors}%{strongClose} points',
+            '%{strong_start}%{errors}%{strong_end} point',
+            '%{strong_start}%{errors}%{strong_end} points',
             resolvedErrors.length,
           ),
           {
             errors: resolvedErrors.length,
-            strongOpen: '<strong>',
-            strongClose: '</strong>',
           },
           false,
         );
 
         const degradations = sprintf(
           n__(
-            '%{strongOpen}%{errors}%{strongClose} point',
-            '%{strongOpen}%{errors}%{strongClose} points',
+            '%{strong_start}%{errors}%{strong_end} point',
+            '%{strong_start}%{errors}%{strong_end} points',
             newErrors.length,
           ),
-          { errors: newErrors.length, strongOpen: '<strong>', strongClose: '</strong>' },
+          { errors: newErrors.length },
           false,
         );
         return sprintf(
@@ -96,14 +94,11 @@ export default {
       this.collapsedData.resolvedErrors.map((e) => {
         return fullData.push({
           text: `${capitalizeFirstCharacter(e.severity)} - ${e.description}`,
-          subtext: sprintf(
-            s__(`ciReport|in %{open_link}${e.file_path}:${e.line}%{close_link}`),
-            {
-              open_link: `<a class="gl-text-decoration-underline" href="${e.urlPath}">`,
-              close_link: '</a>',
-            },
-            false,
-          ),
+          subtext: {
+            prependText: s__(`ciReport|in`),
+            text: `${e.file_path}:${e.line}`,
+            href: e.urlPath,
+          },
           icon: {
             name: SEVERITY_ICONS_EXTENSION[e.severity],
           },
