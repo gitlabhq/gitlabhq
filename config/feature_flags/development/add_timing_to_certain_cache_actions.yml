@@ -1,8 +1,0 @@
----
-name: add_timing_to_certain_cache_actions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94966
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371657
-milestone: '15.4'
-type: development
-group: group::code review
-default_enabled: false
