@@ -17,6 +17,7 @@ RSpec.describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', t
 
   before do
     sign_in(user)
+    stub_feature_flags(pipeline_schedules_vue: false)
   end
 
   it 'pipeline_schedules/edit.html' do

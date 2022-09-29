@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import initPipelineSchedulesApp from '~/pipeline_schedules/mount_pipeline_schedules_app';
 import PipelineSchedulesTakeOwnershipModal from '~/pipeline_schedules/components/take_ownership_modal.vue';
 import PipelineSchedulesCallout from '../shared/components/pipeline_schedules_callout.vue';
 
-function initPipelineSchedules() {
+function initPipelineSchedulesCallout() {
   const el = document.getElementById('pipeline-schedules-callout');
 
   if (!el) {
@@ -15,6 +16,7 @@ function initPipelineSchedules() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'PipelineSchedulesCalloutRoot',
     provide: {
       docsUrl,
       illustrationUrl,
@@ -25,6 +27,8 @@ function initPipelineSchedules() {
   });
 }
 
+// TODO: move take ownership feature into new Vue app
+// located in directory app/assets/javascripts/pipeline_schedules/components
 function initTakeownershipModal() {
   const modalId = 'pipeline-take-ownership-modal';
   const buttonSelector = 'js-take-ownership-button';
@@ -63,5 +67,10 @@ function initTakeownershipModal() {
   });
 }
 
-initPipelineSchedules();
-initTakeownershipModal();
+initPipelineSchedulesCallout();
+
+if (gon.features?.pipelineSchedulesVue) {
+  initPipelineSchedulesApp();
+} else {
+  initTakeownershipModal();
+}

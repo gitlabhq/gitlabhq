@@ -5,8 +5,6 @@ module Integrations
     extend ActiveSupport::Concern
 
     included do
-      # TODO: Once we rename the tables we can't rely on `table_name` anymore.
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/331953
       belongs_to :integration, inverse_of: self.table_name.to_sym, foreign_key: :integration_id
 
       validates :integration, presence: true

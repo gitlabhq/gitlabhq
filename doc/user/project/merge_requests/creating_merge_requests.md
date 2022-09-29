@@ -10,6 +10,9 @@ disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.h
 
 There are many different ways to create a merge request.
 
+NOTE:
+Use [branch naming patterns](../repository/branches/index.md#naming) to streamline merge request creation.
+
 ## From the merge request list
 
 You can create a merge request from the list of merge requests.

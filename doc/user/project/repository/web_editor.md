@@ -115,6 +115,9 @@ the target branch. Select **Create directory** to finish.
 
 There are multiple ways to create a branch from the GitLab web interface.
 
+NOTE:
+Use [branch naming patterns](branches/index.md#naming) to streamline merge request creation.
+
 ### Create a new branch from an issue
 
 > The **Create merge request** button [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) to open the merge request creation form in GitLab 14.8.

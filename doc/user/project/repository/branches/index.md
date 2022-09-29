@@ -13,9 +13,10 @@ other.
 
 After pushing your changes to a new branch, you can:
 
-- Create a [merge request](../../merge_requests/index.md)
-- Perform inline code review
-- [Discuss](../../../discussions/index.md) your implementation with your team
+- Create a [merge request](../../merge_requests/index.md). You can streamline this process
+  by following [branch naming patterns](#naming).
+- Perform inline code review.
+- [Discuss](../../../discussions/index.md) your implementation with your team.
 - Preview changes submitted to a new branch with [Review Apps](../../../../ci/review_apps/index.md).
 
 You can also request [approval](../../merge_requests/approvals/index.md)
@@ -41,6 +42,18 @@ See also:
 - [Branches API](../../../../api/branches.md), for information on operating on repository branches using the GitLab API.
 - [GitLab Flow](../../../../topics/gitlab_flow.md) documentation.
 - [Getting started with Git](../../../../topics/git/index.md) and GitLab.
+
+## Naming
+
+Prefix a branch name with an issue number to streamline merge request creation.
+When you create a merge request for a branch with a name beginning with an issue
+number, GitLab:
+
+- Marks the issue as related. If your project is configured with a
+  [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
+  merging this merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
+  the related issue.
+- Copies label and milestone metadata from the issue.
 
 ## Compare
 
