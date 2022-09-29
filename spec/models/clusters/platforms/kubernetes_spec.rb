@@ -601,19 +601,27 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
       it 'creates a matching RolloutStatus' do
         expect(rollout_status).to be_kind_of(::Gitlab::Kubernetes::RolloutStatus)
-        expect(rollout_status.deployments.map(&:annotations)).to eq([
-          { 'app.gitlab.com/app' => project.full_path_slug, 'app.gitlab.com/env' => 'env-000000' }
-        ])
-        expect(rollout_status.instances).to eq([{ pod_name: "kube-pod",
-                                                  stable: true,
-                                                  status: "pending",
-                                                  tooltip: "kube-pod (Pending)",
-                                                  track: "stable" },
-                                                { pod_name: "Not provided",
-                                                  stable: true,
-                                                  status: "pending",
-                                                  tooltip: "Not provided (Pending)",
-                                                  track: "stable" }])
+        expect(rollout_status.deployments.map(&:annotations)).to eq(
+          [
+            { 'app.gitlab.com/app' => project.full_path_slug, 'app.gitlab.com/env' => 'env-000000' }
+          ])
+        expect(rollout_status.instances).to eq(
+          [
+            {
+              pod_name: "kube-pod",
+              stable: true,
+              status: "pending",
+              tooltip: "kube-pod (Pending)",
+              track: "stable"
+            },
+            {
+              pod_name: "Not provided",
+              stable: true,
+              status: "pending",
+              tooltip: "Not provided (Pending)",
+              track: "stable"
+            }
+          ])
       end
 
       context 'with canary ingress' do
@@ -720,11 +728,12 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       end
 
       it 'returns a pending pod for each missing replica' do
-        expect(rollout_status.instances.map { |p| p.slice(:pod_name, :status) }).to eq([
-          { pod_name: 'pod-a-1', status: 'running' },
-          { pod_name: 'Not provided', status: 'pending' },
-          { pod_name: 'Not provided', status: 'pending' }
-        ])
+        expect(rollout_status.instances.map { |p| p.slice(:pod_name, :status) }).to eq(
+          [
+            { pod_name: 'pod-a-1', status: 'running' },
+            { pod_name: 'Not provided', status: 'pending' },
+            { pod_name: 'Not provided', status: 'pending' }
+          ])
       end
     end
 
@@ -743,12 +752,13 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       end
 
       it 'returns the correct track for the pending pods' do
-        expect(rollout_status.instances.map { |p| p.slice(:pod_name, :status, :track) }).to eq([
-          { pod_name: 'pod-a-1', status: 'running', track: 'canary' },
-          { pod_name: 'Not provided', status: 'pending', track: 'canary' },
-          { pod_name: 'Not provided', status: 'pending', track: 'stable' },
-          { pod_name: 'Not provided', status: 'pending', track: 'stable' }
-        ])
+        expect(rollout_status.instances.map { |p| p.slice(:pod_name, :status, :track) }).to eq(
+          [
+            { pod_name: 'pod-a-1', status: 'running', track: 'canary' },
+            { pod_name: 'Not provided', status: 'pending', track: 'canary' },
+            { pod_name: 'Not provided', status: 'pending', track: 'stable' },
+            { pod_name: 'Not provided', status: 'pending', track: 'stable' }
+          ])
       end
     end
 
@@ -765,10 +775,11 @@ RSpec.describe Clusters::Platforms::Kubernetes do
       end
 
       it 'returns the correct number of pending pods' do
-        expect(rollout_status.instances.map { |p| p.slice(:pod_name, :status, :track) }).to eq([
-          { pod_name: 'Not provided', status: 'pending', track: 'mytrack' },
-          { pod_name: 'Not provided', status: 'pending', track: 'mytrack' }
-        ])
+        expect(rollout_status.instances.map { |p| p.slice(:pod_name, :status, :track) }).to eq(
+          [
+            { pod_name: 'Not provided', status: 'pending', track: 'mytrack' },
+            { pod_name: 'Not provided', status: 'pending', track: 'mytrack' }
+          ])
       end
     end
 

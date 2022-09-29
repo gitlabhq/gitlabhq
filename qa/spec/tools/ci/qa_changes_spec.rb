@@ -35,7 +35,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
   context "with framework changes" do
     let(:mr_diff) { [{ path: "qa/qa.rb" }] }
 
-    it ".qa_tests do not return specifix specs" do
+    it ".qa_tests do not return specific specs" do
       expect(qa_changes.qa_tests).to be_nil
     end
 
@@ -82,6 +82,16 @@ RSpec.describe QA::Tools::Ci::QaChanges do
 
     it ".quarantine_changes? return true" do
       expect(qa_changes.quarantine_changes?).to eq(true)
+    end
+  end
+
+  %w[GITALY_SERVER_VERSION Gemfile.lock yarn.lock Dockerfile.assets].each do |dependency_file|
+    context "when #{dependency_file} change" do
+      let(:mr_diff) { [{ path: dependency_file }] }
+
+      it ".qa_tests do not return specific specs" do
+        expect(qa_changes.qa_tests).to be_nil
+      end
     end
   end
 end

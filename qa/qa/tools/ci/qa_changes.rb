@@ -11,6 +11,12 @@ module QA
 
         QA_PATTERN = %r{^qa/}.freeze
         SPEC_PATTERN = %r{^qa/qa/specs/features/}.freeze
+        DEPENDENCY_PATTERN = Regexp.union(
+          /_VERSION/,
+          /Gemfile\.lock/,
+          /yarn\.lock/,
+          /Dockerfile\.assets/
+        )
 
         def initialize(mr_diff, mr_labels)
           @mr_diff = mr_diff
@@ -21,7 +27,8 @@ module QA
         #
         # @return [String]
         def qa_tests
-          return if mr_diff.empty?
+          return if mr_diff.empty? || dependency_changes
+
           # make paths relative to qa directory
           return changed_files&.map { |path| path.delete_prefix("qa/") }&.join(" ") if only_spec_changes?
           return qa_spec_directories_for_devops_stage&.join(" ") if non_qa_changes? && mr_labels.any?
@@ -102,6 +109,13 @@ module QA
           return unless devops_stage
 
           Dir.glob("qa/specs/**/*/").select { |dir| dir =~ %r{\d+_#{devops_stage}/$} }
+        end
+
+        # Changes to gitlab dependencies
+        #
+        # @return [Boolean]
+        def dependency_changes
+          changed_files.any? { |file| file.match?(DEPENDENCY_PATTERN) }
         end
 
         # Change files in merge request

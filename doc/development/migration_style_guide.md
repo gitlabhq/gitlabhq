@@ -982,6 +982,43 @@ NOTE:
 `add_sequence` should be avoided for columns with foreign keys.
 Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
 
+## Swapping primary key
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.
+
+Swapping the primary key is required to partition a table as the **partition key must be included in the primary key**.
+
+You can use the `swap_primary_key` method provided by the database team.
+
+Under the hood, it works like this:
+
+- Drop the primary key constraint.
+- Add the primary key using the index defined beforehand.
+
+```ruby
+class SwapPrimaryKey < Gitlab::Database::Migration[2.0]
+  TABLE_NAME = :table_name
+  PRIMARY_KEY = :table_name_pkey
+  OLD_INDEX_NAME = :old_index_name
+  NEW_INDEX_NAME = :new_index_name
+
+  def up
+    swap_primary_key(TABLE_NAME, PRIMARY_KEY, NEW_INDEX_NAME)
+  end
+
+  def down
+    add_concurrent_index(TABLE_NAME, :id, unique: true, name: OLD_INDEX_NAME)
+    add_concurrent_index(TABLE_NAME, [:id, :partition_id], unique: true, name: NEW_INDEX_NAME)
+
+    unswap_primary_key(TABLE_NAME, PRIMARY_KEY, OLD_INDEX_NAME)
+  end
+end
+```
+
+NOTE:
+Make sure to introduce the new index beforehand in a separate migration in order
+to swap the primary key.
+
 ## Integer column type
 
 By default, an integer column can hold up to a 4-byte (32-bit) number. That is

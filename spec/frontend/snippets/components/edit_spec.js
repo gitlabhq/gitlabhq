@@ -9,7 +9,7 @@ import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GetSnippetQuery from 'shared_queries/snippet/snippet.query.graphql';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import * as urlUtils from '~/lib/utils/url_utility';
 import SnippetEditApp from '~/snippets/components/edit.vue';
 import SnippetBlobActionsEdit from '~/snippets/components/snippet_blob_actions_edit.vue';
@@ -361,7 +361,7 @@ describe('Snippet Edit app', () => {
           await waitForPromises();
 
           expect(urlUtils.redirectTo).not.toHaveBeenCalled();
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: `Can't create snippet: ${TEST_MUTATION_ERROR}`,
           });
         });
@@ -385,7 +385,7 @@ describe('Snippet Edit app', () => {
             });
 
             expect(urlUtils.redirectTo).not.toHaveBeenCalled();
-            expect(createFlash).toHaveBeenCalledWith({
+            expect(createAlert).toHaveBeenCalledWith({
               message: `Can't update snippet: ${TEST_MUTATION_ERROR}`,
             });
           },
@@ -407,7 +407,7 @@ describe('Snippet Edit app', () => {
 
         it('should flash', () => {
           // Apollo automatically wraps the resolver's error in a NetworkError
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: `Can't update snippet: ${TEST_API_ERROR.message}`,
           });
         });

@@ -3359,6 +3359,73 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#drop_constraint' do
+    it "executes the statement to drop the constraint" do
+      expect(model).to receive(:execute).with("ALTER TABLE \"test_table\" DROP CONSTRAINT \"constraint_name\" CASCADE\n")
+
+      model.drop_constraint(:test_table, :constraint_name, cascade: true)
+    end
+
+    context 'when cascade option is false' do
+      it "executes the statement to drop the constraint without cascade" do
+        expect(model).to receive(:execute).with("ALTER TABLE \"test_table\" DROP CONSTRAINT \"constraint_name\" \n")
+
+        model.drop_constraint(:test_table, :constraint_name, cascade: false)
+      end
+    end
+  end
+
+  describe '#add_primary_key_using_index' do
+    it "executes the statement to add the primary key" do
+      expect(model).to receive(:execute).with /ALTER TABLE "test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
+
+      model.add_primary_key_using_index(:test_table, :old_name, :new_name)
+    end
+  end
+
+  context 'when changing the primary key of a given table' do
+    before do
+      model.create_table(:test_table, primary_key: :id) do |t|
+        t.integer :partition_number, default: 1
+      end
+
+      model.add_index(:test_table, :id, unique: true, name: :old_index_name)
+      model.add_index(:test_table, [:id, :partition_number], unique: true, name: :new_index_name)
+    end
+
+    describe '#swap_primary_key' do
+      it 'executes statements to swap primary key', :aggregate_failures do
+        expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "new_index_name"/).and_call_original
+
+        model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+      end
+
+      context 'when new index does not exist' do
+        before do
+          model.remove_index(:test_table, column: [:id, :partition_number])
+        end
+
+        it 'raises ActiveRecord::StatementInvalid' do
+          expect do
+            model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+          end.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
+    end
+
+    describe '#unswap_primary_key' do
+      it 'executes statements to unswap primary key' do
+        expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).ordered.and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "old_index_name"/).ordered.and_call_original
+
+        model.unswap_primary_key(:test_table, :test_table_pkey, :old_index_name)
+      end
+    end
+  end
+
   describe '#drop_sequence' do
     it "executes the statement to drop the sequence" do
       expect(model).to receive(:execute).with /ALTER TABLE "test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "test_table_id_seq"/

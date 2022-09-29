@@ -43,18 +43,19 @@ RSpec.describe Ci::UnitTest do
 
       result = described_class.find_or_create_by_batch(project, attrs)
 
-      expect(result).to match_array([
-        have_attributes(
-          key_hash: existing_test.key_hash,
-          suite_name: 'rspec',
-          name: 'Math#sum adds numbers'
-        ),
-        have_attributes(
-          key_hash: new_key,
-          suite_name: 'jest',
-          name: 'Component works'
-        )
-      ])
+      expect(result).to match_array(
+        [
+          have_attributes(
+            key_hash: existing_test.key_hash,
+            suite_name: 'rspec',
+            name: 'Math#sum adds numbers'
+          ),
+          have_attributes(
+            key_hash: new_key,
+            suite_name: 'jest',
+            name: 'Component works'
+          )
+        ])
 
       expect(result).to all(be_persisted)
     end
@@ -77,13 +78,14 @@ RSpec.describe Ci::UnitTest do
 
         result = described_class.find_or_create_by_batch(project, attrs)
 
-        expect(result).to match_array([
-          have_attributes(
-            key_hash: new_key,
-            suite_name: 'abc...',
-            name: 'abc...'
-          )
-        ])
+        expect(result).to match_array(
+          [
+            have_attributes(
+              key_hash: new_key,
+              suite_name: 'abc...',
+              name: 'abc...'
+            )
+          ])
 
         expect(result).to all(be_persisted)
       end

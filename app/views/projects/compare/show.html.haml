@@ -5,7 +5,7 @@
   .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
     #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
-- if @commits.present?
+- if @commits.present? || @diffs.present?
   -# Only show commit list in the first page
   - hide_commit_list = params[:page].present? && params[:page] != '1'
   = render "projects/commits/commit_list" unless hide_commit_list

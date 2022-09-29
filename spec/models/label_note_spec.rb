@@ -18,9 +18,10 @@ RSpec.describe LabelNote do
     it_behaves_like 'label note created from events'
 
     it 'includes a link to the list of issues filtered by the label' do
-      note = described_class.from_events([
-        create(:resource_label_event, label: label, issue: resource)
-      ])
+      note = described_class.from_events(
+        [
+          create(:resource_label_event, label: label, issue: resource)
+        ])
 
       expect(note.note_html).to include(project_issues_path(project, label_name: label.title))
     end
@@ -32,9 +33,10 @@ RSpec.describe LabelNote do
     it_behaves_like 'label note created from events'
 
     it 'includes a link to the list of merge requests filtered by the label' do
-      note = described_class.from_events([
-        create(:resource_label_event, label: label, merge_request: resource)
-      ])
+      note = described_class.from_events(
+        [
+          create(:resource_label_event, label: label, merge_request: resource)
+        ])
 
       expect(note.note_html).to include(project_merge_requests_path(project, label_name: label.title))
     end

@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
 import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
 
 import destroyPackageMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package.mutation.graphql';
@@ -104,22 +104,22 @@ describe('DeletePackage', () => {
       expect(wrapper.emitted('end')).toEqual([[]]);
     });
 
-    it('does not call createFlash', async () => {
+    it('does not call createAlert', async () => {
       createComponent();
 
       await clickOnButtonAndWait(eventPayload);
 
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
-    it('calls createFlash with the success message when showSuccessAlert is true', async () => {
+    it('calls createAlert with the success message when showSuccessAlert is true', async () => {
       createComponent({ showSuccessAlert: true });
 
       await clickOnButtonAndWait(eventPayload);
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: DeletePackage.i18n.successMessage,
-        type: 'success',
+        variant: VARIANT_SUCCESS,
       });
     });
   });
@@ -141,14 +141,14 @@ describe('DeletePackage', () => {
       expect(wrapper.emitted('end')).toEqual([[]]);
     });
 
-    it('calls createFlash with the error message', async () => {
+    it('calls createAlert with the error message', async () => {
       createComponent({ showSuccessAlert: true });
 
       await clickOnButtonAndWait(eventPayload);
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: DeletePackage.i18n.errorMessage,
-        type: 'warning',
+        variant: VARIANT_WARNING,
         captureError: true,
         error: expect.any(Error),
       });

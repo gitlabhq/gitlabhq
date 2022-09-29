@@ -127,13 +127,14 @@ RSpec.describe Compare do
       end
 
       it 'returns affected file paths, without duplication' do
-        expect(subject.modified_paths).to contain_exactly(*%w{
-          foo/for_move.txt
-          foo/bar/for_move.txt
-          foo/for_create.txt
-          foo/for_delete.txt
-          foo/for_edit.txt
-        })
+        expect(subject.modified_paths).to contain_exactly(
+          *%w{
+            foo/for_move.txt
+            foo/bar/for_move.txt
+            foo/for_create.txt
+            foo/for_delete.txt
+            foo/for_edit.txt
+          })
       end
     end
 

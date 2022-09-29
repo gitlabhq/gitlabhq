@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 
 import AdditionalMetadata from '~/packages_and_registries/package_registry/components/details/additional_metadata.vue';
 import PackagesApp from '~/packages_and_registries/package_registry/pages/details.vue';
@@ -149,7 +149,7 @@ describe('PackagesApp', () => {
 
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith(
+    expect(createAlert).toHaveBeenCalledWith(
       expect.objectContaining({
         message: FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
       }),
@@ -383,7 +383,7 @@ describe('PackagesApp', () => {
 
         await doDeleteFile();
 
-        expect(createFlash).toHaveBeenCalledWith(
+        expect(createAlert).toHaveBeenCalledWith(
           expect.objectContaining({
             message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
           }),
@@ -399,7 +399,7 @@ describe('PackagesApp', () => {
 
           await doDeleteFile();
 
-          expect(createFlash).toHaveBeenCalledWith(
+          expect(createAlert).toHaveBeenCalledWith(
             expect.objectContaining({
               message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
             }),
@@ -416,7 +416,7 @@ describe('PackagesApp', () => {
 
           await doDeleteFile();
 
-          expect(createFlash).toHaveBeenCalledWith(
+          expect(createAlert).toHaveBeenCalledWith(
             expect.objectContaining({
               message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
             }),
@@ -468,7 +468,7 @@ describe('PackagesApp', () => {
 
         await doDeleteFiles();
 
-        expect(createFlash).toHaveBeenCalledWith(
+        expect(createAlert).toHaveBeenCalledWith(
           expect.objectContaining({
             message: DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
           }),
@@ -484,7 +484,7 @@ describe('PackagesApp', () => {
 
           await doDeleteFiles();
 
-          expect(createFlash).toHaveBeenCalledWith(
+          expect(createAlert).toHaveBeenCalledWith(
             expect.objectContaining({
               message: DELETE_PACKAGE_FILES_ERROR_MESSAGE,
             }),
@@ -501,7 +501,7 @@ describe('PackagesApp', () => {
 
           await doDeleteFiles();
 
-          expect(createFlash).toHaveBeenCalledWith(
+          expect(createAlert).toHaveBeenCalledWith(
             expect.objectContaining({
               message: DELETE_PACKAGE_FILES_ERROR_MESSAGE,
             }),

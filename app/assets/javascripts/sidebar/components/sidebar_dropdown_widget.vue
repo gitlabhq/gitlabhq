@@ -13,7 +13,7 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
@@ -125,7 +125,7 @@ export default {
         return data?.workspace?.issuable.attribute;
       },
       error(error) {
-        createFlash({
+        createAlert({
           message: this.i18n.currentFetchError,
           captureError: true,
           error,
@@ -179,7 +179,7 @@ export default {
         return [];
       },
       error(error) {
-        createFlash({ message: this.i18n.listFetchError, captureError: true, error });
+        createAlert({ message: this.i18n.listFetchError, captureError: true, error });
       },
     },
   },
@@ -280,7 +280,7 @@ export default {
         })
         .then(({ data }) => {
           if (data.issuableSetAttribute?.errors?.length) {
-            createFlash({
+            createAlert({
               message: data.issuableSetAttribute.errors[0],
               captureError: true,
               error: data.issuableSetAttribute.errors[0],
@@ -290,7 +290,7 @@ export default {
           }
         })
         .catch((error) => {
-          createFlash({ message: this.i18n.updateError, captureError: true, error });
+          createAlert({ message: this.i18n.updateError, captureError: true, error });
         })
         .finally(() => {
           this.updating = false;

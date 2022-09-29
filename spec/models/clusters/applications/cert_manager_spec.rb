@@ -49,13 +49,15 @@ RSpec.describe Clusters::Applications::CertManager do
       expect(subject.version).to eq('v0.10.1')
       expect(subject).to be_rbac
       expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
-      expect(subject.preinstall).to eq([
-        'kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.10/deploy/manifests/00-crds.yaml',
-        'kubectl label --overwrite namespace gitlab-managed-apps certmanager.k8s.io/disable-validation=true'
-      ])
-      expect(subject.postinstall).to eq([
-        "for i in $(seq 1 90); do kubectl apply -f /data/helm/certmanager/config/cluster_issuer.yaml && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)"
-      ])
+      expect(subject.preinstall).to eq(
+        [
+          'kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.10/deploy/manifests/00-crds.yaml',
+          'kubectl label --overwrite namespace gitlab-managed-apps certmanager.k8s.io/disable-validation=true'
+        ])
+      expect(subject.postinstall).to eq(
+        [
+          "for i in $(seq 1 90); do kubectl apply -f /data/helm/certmanager/config/cluster_issuer.yaml && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)"
+        ])
     end
 
     context 'for a specific user' do
@@ -99,15 +101,16 @@ RSpec.describe Clusters::Applications::CertManager do
     end
 
     it 'specifies a post delete command to remove custom resource definitions' do
-      expect(subject.postdelete).to eq([
-        'kubectl delete secret -n gitlab-managed-apps letsencrypt-prod --ignore-not-found',
-        'kubectl delete crd certificates.certmanager.k8s.io --ignore-not-found',
-        'kubectl delete crd certificaterequests.certmanager.k8s.io --ignore-not-found',
-        'kubectl delete crd challenges.certmanager.k8s.io --ignore-not-found',
-        'kubectl delete crd clusterissuers.certmanager.k8s.io --ignore-not-found',
-        'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found',
-        'kubectl delete crd orders.certmanager.k8s.io --ignore-not-found'
-      ])
+      expect(subject.postdelete).to eq(
+        [
+          'kubectl delete secret -n gitlab-managed-apps letsencrypt-prod --ignore-not-found',
+          'kubectl delete crd certificates.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd certificaterequests.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd challenges.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd clusterissuers.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd orders.certmanager.k8s.io --ignore-not-found'
+        ])
     end
 
     context 'secret key name is not found' do
@@ -119,14 +122,15 @@ RSpec.describe Clusters::Applications::CertManager do
       end
 
       it 'does not try and delete the secret' do
-        expect(subject.postdelete).to eq([
-          'kubectl delete crd certificates.certmanager.k8s.io --ignore-not-found',
-          'kubectl delete crd certificaterequests.certmanager.k8s.io --ignore-not-found',
-          'kubectl delete crd challenges.certmanager.k8s.io --ignore-not-found',
-          'kubectl delete crd clusterissuers.certmanager.k8s.io --ignore-not-found',
-          'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found',
-          'kubectl delete crd orders.certmanager.k8s.io --ignore-not-found'
-        ])
+        expect(subject.postdelete).to eq(
+          [
+            'kubectl delete crd certificates.certmanager.k8s.io --ignore-not-found',
+            'kubectl delete crd certificaterequests.certmanager.k8s.io --ignore-not-found',
+            'kubectl delete crd challenges.certmanager.k8s.io --ignore-not-found',
+            'kubectl delete crd clusterissuers.certmanager.k8s.io --ignore-not-found',
+            'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found',
+            'kubectl delete crd orders.certmanager.k8s.io --ignore-not-found'
+          ])
       end
     end
   end

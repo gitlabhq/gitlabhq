@@ -57,7 +57,7 @@ export default Node.create({
       'a',
       {
         class: node.attrs.className,
-        href: node.attrs.href,
+        href: '#',
         'data-reference-type': node.attrs.referenceType,
         'data-original': node.attrs.originalText,
       },

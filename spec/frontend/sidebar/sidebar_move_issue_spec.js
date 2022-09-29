@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import SidebarMoveIssue from '~/sidebar/lib/sidebar_move_issue';
 import SidebarService from '~/sidebar/services/sidebar_service';
@@ -115,7 +115,7 @@ describe('SidebarMoveIssue', () => {
       // Wait for the move issue request to fail
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
       expect(test.$confirmButton.prop('disabled')).toBe(false);
       expect(test.$confirmButton.hasClass('is-loading')).toBe(false);
     });

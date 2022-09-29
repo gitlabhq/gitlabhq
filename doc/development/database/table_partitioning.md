@@ -321,26 +321,14 @@ class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.0]
   NEW_INDEX_NAME = :new_index_name
 
   def up
-    with_lock_retries(raise_on_exhaustion: true) do
-      execute("ALTER TABLE #{TABLE_NAME} DROP CONSTRAINT #{PRIMARY_KEY} CASCADE")
-
-      rename_index(TABLE_NAME, NEW_INDEX_NAME, PRIMARY_KEY)
-
-      execute("ALTER TABLE #{TABLE_NAME} ADD CONSTRAINT #{PRIMARY_KEY} PRIMARY KEY USING INDEX #{PRIMARY_KEY}")
-    end
+    swap_primary_key(TABLE_NAME, PRIMARY_KEY, NEW_INDEX_NAME)
   end
 
   def down
     add_concurrent_index(TABLE_NAME, :id, unique: true, name: OLD_INDEX_NAME)
     add_concurrent_index(TABLE_NAME, [:id, :partition_id], unique: true, name: NEW_INDEX_NAME)
 
-    with_lock_retries(raise_on_exhaustion: true) do
-      execute("ALTER TABLE #{TABLE_NAME} DROP CONSTRAINT #{PRIMARY_KEY} CASCADE")
-
-      rename_index(TABLE_NAME, OLD_INDEX_NAME, PRIMARY_KEY)
-
-      execute("ALTER TABLE #{TABLE_NAME} ADD CONSTRAINT #{PRIMARY_KEY} PRIMARY KEY USING INDEX #{PRIMARY_KEY}")
-    end
+    unswap_primary_key(TABLE_NAME, PRIMARY_KEY, OLD_INDEX_NAME)
   end
 end
 ```

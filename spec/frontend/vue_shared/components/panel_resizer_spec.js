@@ -1,12 +1,10 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import panelResizer from '~/vue_shared/components/panel_resizer.vue';
+import { mount } from '@vue/test-utils';
+import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 
 describe('Panel Resizer component', () => {
-  let vm;
-  let PanelResizer;
+  let wrapper;
 
-  const triggerEvent = (eventName, el = vm.$el, clientX = 0) => {
+  const triggerEvent = (eventName, el = wrapper.element, clientX = 0) => {
     const event = document.createEvent('MouseEvents');
     event.initMouseEvent(
       eventName,
@@ -29,57 +27,64 @@ describe('Panel Resizer component', () => {
     el.dispatchEvent(event);
   };
 
-  beforeEach(() => {
-    PanelResizer = Vue.extend(panelResizer);
-  });
-
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render a div element with the correct classes and styles', () => {
-    vm = mountComponent(PanelResizer, {
-      startSize: 100,
-      side: 'left',
+    wrapper = mount(PanelResizer, {
+      propsData: {
+        startSize: 100,
+        side: 'left',
+      },
     });
 
-    expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.getAttribute('class')).toBe(
-      'position-absolute position-top-0 position-bottom-0 drag-handle position-left-0',
-    );
+    expect(wrapper.element.tagName).toEqual('DIV');
+    expect(wrapper.classes().sort()).toStrictEqual([
+      'drag-handle',
+      'position-absolute',
+      'position-bottom-0',
+      'position-left-0',
+      'position-top-0',
+    ]);
 
-    expect(vm.$el.getAttribute('style')).toBe('cursor: ew-resize;');
+    expect(wrapper.element.getAttribute('style')).toBe('cursor: ew-resize;');
   });
 
   it('should render a div element with the correct classes for a right side panel', () => {
-    vm = mountComponent(PanelResizer, {
-      startSize: 100,
-      side: 'right',
+    wrapper = mount(PanelResizer, {
+      propsData: {
+        startSize: 100,
+        side: 'right',
+      },
     });
 
-    expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.getAttribute('class')).toBe(
-      'position-absolute position-top-0 position-bottom-0 drag-handle position-right-0',
-    );
+    expect(wrapper.element.tagName).toEqual('DIV');
+    expect(wrapper.classes().sort()).toStrictEqual([
+      'drag-handle',
+      'position-absolute',
+      'position-bottom-0',
+      'position-right-0',
+      'position-top-0',
+    ]);
   });
 
   it('drag the resizer', () => {
-    vm = mountComponent(PanelResizer, {
-      startSize: 100,
-      side: 'left',
+    wrapper = mount(PanelResizer, {
+      propsData: {
+        startSize: 100,
+        side: 'left',
+      },
     });
 
-    jest.spyOn(vm, '$emit').mockImplementation(() => {});
-    triggerEvent('mousedown', vm.$el);
+    triggerEvent('mousedown');
     triggerEvent('mousemove', document);
     triggerEvent('mouseup', document);
 
-    expect(vm.$emit.mock.calls).toEqual([
-      ['resize-start', 100],
-      ['update:size', 100],
-      ['resize-end', 100],
-    ]);
-
-    expect(vm.size).toBe(100);
+    expect(wrapper.emitted()).toEqual({
+      'resize-start': [[100]],
+      'update:size': [[100]],
+      'resize-end': [[100]],
+    });
   });
 });

@@ -46,6 +46,7 @@ import ReferenceDefinition from '../extensions/reference_definition';
 import Sourcemap from '../extensions/sourcemap';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
+import Suggestions from '../extensions/suggestions';
 import Superscript from '../extensions/superscript';
 import Table from '../extensions/table';
 import TableCell from '../extensions/table_cell';
@@ -133,6 +134,7 @@ export const createContentEditor = ({
     Sourcemap,
     Strike,
     Subscript,
+    Suggestions,
     Superscript,
     TableCell,
     TableHeader,

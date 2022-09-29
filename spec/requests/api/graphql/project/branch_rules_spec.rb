@@ -21,27 +21,24 @@ RSpec.describe 'getting list of branch rules for a project' do
 
   let(:branch_rules_data) { graphql_data_at('project', 'branchRules', 'edges') }
   let(:variables) { { path: project.full_path } }
-
-  let(:fields) do
-    <<~QUERY
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      cursor
-      node {
-        #{all_graphql_fields_for('branch_rules'.classify)}
-      }
-    }
-    QUERY
-  end
+  let(:fields) { all_graphql_fields_for('BranchRule', max_depth: 2) }
 
   let(:query) do
     <<~GQL
     query($path: ID!, $n: Int, $cursor: String) {
       project(fullPath: $path) {
-        branchRules(first: $n, after: $cursor) { #{fields} }
+        branchRules(first: $n, after: $cursor) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+          }
+          edges {
+            cursor
+            node {
+              #{fields}
+            }
+          }
+        }
       }
     }
     GQL
@@ -64,15 +61,12 @@ RSpec.describe 'getting list of branch rules for a project' do
       post_graphql(query, current_user: current_user, variables: variables)
     end
 
-    it_behaves_like 'a working graphql query'
-
-    it 'includes a name' do
-      expect(branch_rules_data.dig(0, 'node', 'name')).to be_present
-    end
-
-    it 'includes created_at and updated_at' do
-      expect(branch_rules_data.dig(0, 'node', 'createdAt')).to be_present
-      expect(branch_rules_data.dig(1, 'node', 'updatedAt')).to be_present
+    it_behaves_like 'a working graphql query' do
+      it 'includes all fields', :aggregate_failures do
+        expect(branch_rules_data.dig(0, 'node', 'name')).to be_present
+        expect(branch_rules_data.dig(0, 'node', 'createdAt')).to be_present
+        expect(branch_rules_data.dig(0, 'node', 'updatedAt')).to be_present
+      end
     end
 
     context 'when limiting the number of results' do

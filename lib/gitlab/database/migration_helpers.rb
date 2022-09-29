@@ -1503,6 +1503,26 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
       end
 
+      def drop_constraint(table_name, constraint_name, cascade: false)
+        execute <<~SQL
+          ALTER TABLE #{quote_table_name(table_name)} DROP CONSTRAINT #{quote_column_name(constraint_name)} #{cascade_statement(cascade)}
+        SQL
+      end
+
+      def add_primary_key_using_index(table_name, pk_name, index_to_use)
+        execute <<~SQL
+          ALTER TABLE #{quote_table_name(table_name)} ADD CONSTRAINT #{quote_table_name(pk_name)} PRIMARY KEY USING INDEX #{quote_table_name(index_to_use)}
+        SQL
+      end
+
+      def swap_primary_key(table_name, primary_key_name, index_to_use)
+        with_lock_retries(raise_on_exhaustion: true) do
+          drop_constraint(table_name, primary_key_name, cascade: true)
+          add_primary_key_using_index(table_name, primary_key_name, index_to_use)
+        end
+      end
+      alias_method :unswap_primary_key, :swap_primary_key
+
       def drop_sequence(table_name, column_name, sequence_name)
         execute <<~SQL
           ALTER TABLE #{quote_table_name(table_name)} ALTER COLUMN #{quote_column_name(column_name)} DROP DEFAULT;
@@ -1518,6 +1538,10 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       private
+
+      def cascade_statement(cascade)
+        cascade ? 'CASCADE' : ''
+      end
 
       def create_temporary_columns_and_triggers(table, columns, primary_key: :id, data_type: :bigint)
         unless table_exists?(table)

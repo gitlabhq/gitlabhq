@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import Tracking from '~/tracking';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
@@ -100,7 +100,7 @@ export default {
         this.containerRepositoriesCount = data[this.graphqlResource]?.containerRepositoriesCount;
       },
       error() {
-        createFlash({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
+        createAlert({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
       },
     },
     additionalDetails: {
@@ -115,7 +115,7 @@ export default {
         return data[this.graphqlResource]?.containerRepositories.nodes;
       },
       error() {
-        createFlash({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
+        createAlert({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
       },
     },
   },

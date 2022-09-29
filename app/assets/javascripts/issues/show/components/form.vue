@@ -1,7 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import $ from 'jquery';
-import Autosave from '~/autosave';
+import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';
 import { IssuableType } from '~/issues/constants';
 import eventHub from '../event_hub';
 import EditActions from './edit_actions.vue';
@@ -76,10 +75,17 @@ export default {
     },
   },
   data() {
+    const autosaveKey = [document.location.pathname, document.location.search];
+    const descriptionAutosaveKey = [...autosaveKey, 'description'];
+    const titleAutosaveKey = [...autosaveKey, 'title'];
+
     return {
+      titleAutosaveKey,
+      descriptionAutosaveKey,
+      autosaveReset: false,
       formData: {
-        title: this.formState.title,
-        description: this.formState.description,
+        title: getDraft(titleAutosaveKey) || this.formState.title,
+        description: getDraft(descriptionAutosaveKey) || this.formState.description,
       },
       showOutdatedDescriptionWarning: false,
     };
@@ -118,57 +124,39 @@ export default {
   },
   methods: {
     initAutosave() {
-      const {
-        description: {
-          $refs: { textarea },
-        },
-        title: {
-          $refs: { input },
-        },
-      } = this.$refs;
-
-      this.autosaveDescription = new Autosave(
-        $(textarea),
-        [document.location.pathname, document.location.search, 'description'],
-        null,
-        this.formState.lock_version,
-      );
-
-      const savedLockVersion = this.autosaveDescription.getSavedLockVersion();
+      const savedLockVersion = getLockVersion(this.descriptionAutosaveKey);
 
       this.showOutdatedDescriptionWarning =
         savedLockVersion && String(this.formState.lock_version) !== savedLockVersion;
-
-      this.autosaveTitle = new Autosave($(input), [
-        document.location.pathname,
-        document.location.search,
-        'title',
-      ]);
     },
     resetAutosave() {
-      this.autosaveDescription.reset();
-      this.autosaveTitle.reset();
+      this.autosaveReset = true;
+      clearDraft(this.descriptionAutosaveKey);
+      clearDraft(this.titleAutosaveKey);
     },
     keepAutosave() {
-      const {
-        description: {
-          $refs: { textarea },
-        },
-      } = this.$refs;
-
-      textarea.focus();
+      this.$refs.description.focus();
       this.showOutdatedDescriptionWarning = false;
     },
     discardAutosave() {
-      const {
-        description: {
-          $refs: { textarea },
-        },
-      } = this.$refs;
-
-      textarea.value = this.initialDescriptionText;
-      textarea.focus();
+      this.formData.description = this.initialDescriptionText;
+      clearDraft(this.descriptionAutosaveKey);
+      this.$refs.description.focus();
       this.showOutdatedDescriptionWarning = false;
+    },
+    updateTitleDraft(title) {
+      updateDraft(this.titleAutosaveKey, title);
+    },
+    updateDescriptionDraft(description) {
+      /*
+       * This conditional statement prevents a race-condition
+       * between clearing the draft and submitting a new draft
+       * update while the user is typing. It happens when saving
+       * using the cmd + enter keyboard shortcut.
+       */
+      if (!this.autosaveReset) {
+        updateDraft(this.descriptionAutosaveKey, description, this.formState.lock_version);
+      }
     },
   },
 };
@@ -194,7 +182,7 @@ export default {
     >
     <div class="row gl-mb-3">
       <div class="col-12">
-        <issuable-title-field ref="title" v-model="formData.title" />
+        <issuable-title-field ref="title" v-model="formData.title" @input="updateTitleDraft" />
       </div>
     </div>
     <div class="row">
@@ -220,6 +208,7 @@ export default {
       :markdown-docs-path="markdownDocsPath"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
+      @input="updateDescriptionDraft"
     />
 
     <edit-actions :endpoint="endpoint" :form-state="formState" :issuable-type="issuableType" />

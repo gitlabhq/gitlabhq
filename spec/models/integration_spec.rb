@@ -971,11 +971,12 @@ RSpec.describe Integration do
 
   describe '#secret_fields' do
     it 'returns all fields with type `password`' do
-      allow(subject).to receive(:fields).and_return([
-        { name: 'password', type: 'password' },
-        { name: 'secret', type: 'password' },
-        { name: 'public', type: 'text' }
-      ])
+      allow(subject).to receive(:fields).and_return(
+        [
+          { name: 'password', type: 'password' },
+          { name: 'secret', type: 'password' },
+          { name: 'public', type: 'text' }
+        ])
 
       expect(subject.secret_fields).to match_array(%w[password secret])
     end

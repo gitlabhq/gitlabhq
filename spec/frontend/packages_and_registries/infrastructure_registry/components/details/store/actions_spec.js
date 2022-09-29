@@ -1,6 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
 import { FETCH_PACKAGE_VERSIONS_ERROR } from '~/packages_and_registries/infrastructure_registry/details/constants';
 import {
   fetchPackageVersions,
@@ -67,9 +67,9 @@ describe('Actions Package details store', () => {
         [],
       );
       expect(Api.projectPackage).toHaveBeenCalledWith(packageEntity.project_id, packageEntity.id);
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: FETCH_PACKAGE_VERSIONS_ERROR,
-        type: 'warning',
+        variant: VARIANT_WARNING,
       });
     });
   });
@@ -87,9 +87,9 @@ describe('Actions Package details store', () => {
       Api.deleteProjectPackage = jest.fn().mockRejectedValue();
 
       await testAction(deletePackage, undefined, { packageEntity }, [], []);
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: DELETE_PACKAGE_ERROR_MESSAGE,
-        type: 'warning',
+        variant: VARIANT_WARNING,
       });
     });
   });
@@ -112,18 +112,18 @@ describe('Actions Package details store', () => {
         packageEntity.id,
         fileId,
       );
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
-        type: 'success',
+        variant: VARIANT_SUCCESS,
       });
     });
 
     it('should create flash on API error', async () => {
       Api.deleteProjectPackageFile = jest.fn().mockRejectedValue();
       await testAction(deletePackageFile, fileId, { packageEntity }, [], []);
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: DELETE_PACKAGE_FILE_ERROR_MESSAGE,
-        type: 'warning',
+        variant: VARIANT_WARNING,
       });
     });
   });

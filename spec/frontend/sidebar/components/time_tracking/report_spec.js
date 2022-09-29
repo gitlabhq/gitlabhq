@@ -6,7 +6,7 @@ import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Report from '~/sidebar/components/time_tracking/report.vue';
 import getIssueTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_issue_timelogs.query.graphql';
 import getMrTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_mr_timelogs.query.graphql';
@@ -65,7 +65,7 @@ describe('Issuable Time Tracking Report', () => {
     mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   describe('for issue', () => {
@@ -153,7 +153,7 @@ describe('Issuable Time Tracking Report', () => {
       await findDeleteButton().trigger('click');
       await waitForPromises();
 
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
       expect(mutateSpy).toHaveBeenCalledWith({
         mutation: deleteTimelogMutation,
         variables: {
@@ -164,7 +164,7 @@ describe('Issuable Time Tracking Report', () => {
       });
     });
 
-    it('calls `createFlash` with errorMessage and does not remove the row on promise reject', async () => {
+    it('calls `createAlert` with errorMessage and does not remove the row on promise reject', async () => {
       const mutateSpy = jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({});
 
       await waitForPromises();
@@ -180,7 +180,7 @@ describe('Issuable Time Tracking Report', () => {
         },
       });
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while removing the timelog.',
         captureError: true,
         error: expect.any(Object),

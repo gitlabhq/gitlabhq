@@ -1,32 +1,42 @@
-import { clearDraft, getDraft, updateDraft } from '~/lib/utils/autosave';
+import { clearDraft, getDraft, updateDraft, getLockVersion } from '~/lib/utils/autosave';
 
 describe('autosave utils', () => {
   const autosaveKey = 'dummy-autosave-key';
   const text = 'some dummy text';
+  const lockVersion = '2';
+  const normalizedAutosaveKey = `autosave/${autosaveKey}`;
+  const lockVersionKey = `autosave/${autosaveKey}/lockVersion`;
 
   describe('clearDraft', () => {
     beforeEach(() => {
-      localStorage.setItem(`autosave/${autosaveKey}`, text);
+      localStorage.setItem(normalizedAutosaveKey, text);
+      localStorage.setItem(lockVersionKey, lockVersion);
     });
 
     afterEach(() => {
-      localStorage.removeItem(`autosave/${autosaveKey}`);
+      localStorage.removeItem(normalizedAutosaveKey);
     });
 
     it('removes the draft from localStorage', () => {
       clearDraft(autosaveKey);
 
-      expect(localStorage.getItem(`autosave/${autosaveKey}`)).toBe(null);
+      expect(localStorage.getItem(normalizedAutosaveKey)).toBe(null);
+    });
+
+    it('removes the lockVersion from localStorage', () => {
+      clearDraft(autosaveKey);
+
+      expect(localStorage.getItem(lockVersionKey)).toBe(null);
     });
   });
 
   describe('getDraft', () => {
     beforeEach(() => {
-      localStorage.setItem(`autosave/${autosaveKey}`, text);
+      localStorage.setItem(normalizedAutosaveKey, text);
     });
 
     afterEach(() => {
-      localStorage.removeItem(`autosave/${autosaveKey}`);
+      localStorage.removeItem(normalizedAutosaveKey);
     });
 
     it('returns the draft from localStorage', () => {
@@ -36,7 +46,7 @@ describe('autosave utils', () => {
     });
 
     it('returns null if no entry exists in localStorage', () => {
-      localStorage.removeItem(`autosave/${autosaveKey}`);
+      localStorage.removeItem(normalizedAutosaveKey);
 
       const result = getDraft(autosaveKey);
 
@@ -46,19 +56,44 @@ describe('autosave utils', () => {
 
   describe('updateDraft', () => {
     beforeEach(() => {
-      localStorage.setItem(`autosave/${autosaveKey}`, text);
+      localStorage.setItem(normalizedAutosaveKey, text);
     });
 
     afterEach(() => {
-      localStorage.removeItem(`autosave/${autosaveKey}`);
+      localStorage.removeItem(normalizedAutosaveKey);
     });
 
-    it('removes the draft from localStorage', () => {
+    it('updates the stored draft', () => {
       const newText = 'new text';
 
       updateDraft(autosaveKey, newText);
 
-      expect(localStorage.getItem(`autosave/${autosaveKey}`)).toBe(newText);
+      expect(localStorage.getItem(normalizedAutosaveKey)).toBe(newText);
+    });
+
+    describe('when lockVersion is provided', () => {
+      it('updates the stored lockVersion', () => {
+        const newText = 'new text';
+        const newLockVersion = '2';
+
+        updateDraft(autosaveKey, newText, lockVersion);
+
+        expect(localStorage.getItem(lockVersionKey)).toBe(newLockVersion);
+      });
+    });
+  });
+
+  describe('getLockVersion', () => {
+    beforeEach(() => {
+      localStorage.setItem(lockVersionKey, lockVersion);
+    });
+
+    afterEach(() => {
+      localStorage.removeItem(lockVersionKey);
+    });
+
+    it('returns the lockVersion from localStorage', () => {
+      expect(getLockVersion(autosaveKey)).toBe(lockVersion);
     });
   });
 });

@@ -10,7 +10,7 @@ import {
   GlTabs,
   GlSprintf,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
@@ -101,7 +101,7 @@ export default {
         return data.package || {};
       },
       error(error) {
-        createFlash({
+        createAlert({
           message: FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
           captureError: true,
           error,
@@ -205,20 +205,20 @@ export default {
         if (data?.destroyPackageFiles?.errors[0]) {
           throw data.destroyPackageFiles.errors[0];
         }
-        createFlash({
+        createAlert({
           message:
             ids.length === 1
               ? DELETE_PACKAGE_FILE_SUCCESS_MESSAGE
               : DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
-          type: 'success',
+          variant: VARIANT_SUCCESS,
         });
       } catch (error) {
-        createFlash({
+        createAlert({
           message:
             ids.length === 1
               ? DELETE_PACKAGE_FILE_ERROR_MESSAGE
               : DELETE_PACKAGE_FILES_ERROR_MESSAGE,
-          type: 'warning',
+          variant: VARIANT_WARNING,
           captureError: true,
           error,
         });

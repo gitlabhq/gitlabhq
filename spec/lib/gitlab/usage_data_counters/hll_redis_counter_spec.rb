@@ -99,7 +99,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'incident_management_oncall',
         'testing',
         'issues_edit',
-        'ci_secrets_management',
         'snippets',
         'code_review',
         'terraform',

@@ -39,7 +39,7 @@ namespace :tw do
       CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
       CodeOwnerRule.new('Ecosystem', '@kpaizee'),
-      CodeOwnerRule.new('Editor', '@aqualls'),
+      CodeOwnerRule.new('Editor', '@ashrafkhamis'),
       CodeOwnerRule.new('Foundations', '@rdickenson'),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),

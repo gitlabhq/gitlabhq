@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
 function isValidProjectId(id) {
@@ -44,7 +44,7 @@ class SidebarMoveIssue {
           .fetchAutocompleteProjects(searchTerm)
           .then(callback)
           .catch(() =>
-            createFlash({
+            createAlert({
               message: __('An error occurred while fetching projects autocomplete.'),
             }),
           );
@@ -79,7 +79,7 @@ class SidebarMoveIssue {
       this.$confirmButton.disable().addClass('is-loading');
 
       this.mediator.moveIssue().catch(() => {
-        createFlash({ message: __('An error occurred while moving the issue.') });
+        createAlert({ message: __('An error occurred while moving the issue.') });
         this.$confirmButton.enable().removeClass('is-loading');
       });
     }

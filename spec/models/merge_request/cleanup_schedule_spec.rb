@@ -111,12 +111,13 @@ RSpec.describe MergeRequest::CleanupSchedule do
     let!(:cleanup_schedule_7) { create(:merge_request_cleanup_schedule, :failed, scheduled_at: 5.days.ago) }
 
     it 'returns records that are scheduled before or on current time and unstarted (ordered by scheduled first)' do
-      expect(described_class.scheduled_and_unstarted).to eq([
-        cleanup_schedule_2,
-        cleanup_schedule_1,
-        cleanup_schedule_5,
-        cleanup_schedule_4
-      ])
+      expect(described_class.scheduled_and_unstarted).to eq(
+        [
+          cleanup_schedule_2,
+          cleanup_schedule_1,
+          cleanup_schedule_5,
+          cleanup_schedule_4
+        ])
     end
   end
 

@@ -71,12 +71,13 @@ RSpec.describe Integrations::ChatMessage::WikiPageMessage do
         end
 
         it 'returns the commit message for a new wiki page' do
-          expect(subject.attachments).to eq([
-            {
-              text: commit_message,
-              color: color
-            }
-          ])
+          expect(subject.attachments).to eq(
+            [
+              {
+                text: commit_message,
+                color: color
+              }
+            ])
         end
       end
 
@@ -86,12 +87,13 @@ RSpec.describe Integrations::ChatMessage::WikiPageMessage do
         end
 
         it 'returns the commit message for an updated wiki page' do
-          expect(subject.attachments).to eq([
-            {
-              text: commit_message,
-              color: color
-            }
-          ])
+          expect(subject.attachments).to eq(
+            [
+              {
+                text: commit_message,
+                color: color
+              }
+            ])
         end
       end
     end

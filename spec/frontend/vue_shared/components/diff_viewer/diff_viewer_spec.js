@@ -1,8 +1,6 @@
-import Vue, { nextTick } from 'vue';
-
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
-import diffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 
 describe('DiffViewer', () => {
   const requiredProps = {
@@ -14,37 +12,28 @@ describe('DiffViewer', () => {
     oldPath: RED_BOX_IMAGE_URL,
     oldSha: 'DEF',
   };
-  let vm;
+  let wrapper;
 
-  function createComponent(props) {
-    const DiffViewer = Vue.extend(diffViewer);
-
-    vm = mountComponent(DiffViewer, props);
+  function createComponent(propsData) {
+    wrapper = mount(DiffViewer, { propsData });
   }
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  it('renders image diff', async () => {
+  it('renders image diff', () => {
     window.gon = {
       relative_url_root: '',
     };
 
     createComponent({ ...requiredProps, projectPath: '' });
 
-    await nextTick();
-
-    expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(
-      `//-/raw/DEF/${RED_BOX_IMAGE_URL}`,
-    );
-
-    expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(
-      `//-/raw/ABC/${GREEN_BOX_IMAGE_URL}`,
-    );
+    expect(wrapper.find('.deleted img').attributes('src')).toBe(`//-/raw/DEF/${RED_BOX_IMAGE_URL}`);
+    expect(wrapper.find('.added img').attributes('src')).toBe(`//-/raw/ABC/${GREEN_BOX_IMAGE_URL}`);
   });
 
-  it('renders fallback download diff display', async () => {
+  it('renders fallback download diff display', () => {
     createComponent({
       ...requiredProps,
       diffViewerMode: 'added',
@@ -52,18 +41,10 @@ describe('DiffViewer', () => {
       oldPath: 'testold.abc',
     });
 
-    await nextTick();
-
-    expect(vm.$el.querySelector('.deleted .file-info').textContent.trim()).toContain('testold.abc');
-
-    expect(vm.$el.querySelector('.deleted .btn.btn-default').textContent.trim()).toContain(
-      'Download',
-    );
-
-    expect(vm.$el.querySelector('.added .file-info').textContent.trim()).toContain('test.abc');
-    expect(vm.$el.querySelector('.added .btn.btn-default').textContent.trim()).toContain(
-      'Download',
-    );
+    expect(wrapper.find('.deleted .file-info').text()).toContain('testold.abc');
+    expect(wrapper.find('.deleted .btn.btn-default').text()).toContain('Download');
+    expect(wrapper.find('.added .file-info').text()).toContain('test.abc');
+    expect(wrapper.find('.added .btn.btn-default').text()).toContain('Download');
   });
 
   describe('renamed file', () => {
@@ -85,7 +66,7 @@ describe('DiffViewer', () => {
         oldPath: 'testold.abc',
       });
 
-      expect(vm.$el.textContent).toContain('File renamed with no changes.');
+      expect(wrapper.text()).toContain('File renamed with no changes.');
     });
   });
 
@@ -99,6 +80,6 @@ describe('DiffViewer', () => {
       bMode: '321',
     });
 
-    expect(vm.$el.textContent).toContain('File mode changed from 123 to 321');
+    expect(wrapper.text()).toContain('File mode changed from 123 to 321');
   });
 });

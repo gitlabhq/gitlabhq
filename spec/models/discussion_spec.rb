@@ -37,10 +37,11 @@ RSpec.describe Discussion do
   describe '.build_collection' do
     it 'returns an array of discussions of the right type' do
       discussions = described_class.build_collection([first_note, second_note, third_note], merge_request)
-      expect(discussions).to eq([
-        DiffDiscussion.new([first_note, second_note], merge_request),
-        DiffDiscussion.new([third_note], merge_request)
-      ])
+      expect(discussions).to eq(
+        [
+          DiffDiscussion.new([first_note, second_note], merge_request),
+          DiffDiscussion.new([third_note], merge_request)
+        ])
     end
   end
 

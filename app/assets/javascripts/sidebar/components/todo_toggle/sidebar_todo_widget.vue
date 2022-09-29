@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { produce } from 'immer';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, sprintf } from '~/locale';
 import { todoQueries, TodoMutationTypes, todoMutations } from '~/sidebar/constants';
 import { todoLabel } from '~/vue_shared/components/sidebar/todo_toggle//utils';
@@ -73,7 +73,7 @@ export default {
         this.$emit('todoUpdated', currentUserTodos.length > 0);
       },
       error() {
-        createFlash({
+        createAlert({
           message: sprintf(__('Something went wrong while setting %{issuableType} to-do item.'), {
             issuableType: this.issuableType,
           }),
@@ -155,7 +155,7 @@ export default {
             },
           }) => {
             if (errors.length) {
-              createFlash({
+              createAlert({
                 message: errors[0],
               });
             }
@@ -166,7 +166,7 @@ export default {
           },
         )
         .catch(() => {
-          createFlash({
+          createAlert({
             message: sprintf(__('Something went wrong while setting %{issuableType} to-do item.'), {
               issuableType: this.issuableType,
             }),

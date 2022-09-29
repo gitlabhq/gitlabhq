@@ -2293,10 +2293,11 @@ RSpec.describe Group do
         it 'clears both self and descendant cache when the parent value is updated' do
           expect(Rails.cache).to receive(:delete_multi)
             .with(
-              match_array([
-                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{parent.id}"),
-                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{group.id}")
-              ])
+              match_array(
+                [
+                  start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{parent.id}"),
+                  start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{group.id}")
+                ])
             )
 
           parent.update!(auto_devops_enabled: true)

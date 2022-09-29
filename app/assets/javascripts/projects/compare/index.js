@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import CompareApp from './components/app.vue';
 
 export default function init() {
@@ -9,6 +10,7 @@ export default function init() {
     targetProjectRefsPath,
     paramsFrom,
     paramsTo,
+    straight,
     projectCompareIndexPath,
     projectMergeRequestPath,
     createMrPath,
@@ -29,6 +31,7 @@ export default function init() {
           targetProjectRefsPath,
           paramsFrom,
           paramsTo,
+          straight: parseBoolean(straight),
           projectCompareIndexPath,
           projectMergeRequestPath,
           createMrPath,

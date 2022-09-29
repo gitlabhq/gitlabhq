@@ -130,14 +130,15 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
       context 'when the strategy name is flexibleRollout' do
         valid_parameters = { rollout: '40', groupId: 'mygroup', stickiness: 'default' }
-        where(invalid_parameters: [
-          nil,
-          {},
-          *valid_parameters.to_a.combination(1).to_a.map { |p| p.to_h },
-          *valid_parameters.to_a.combination(2).to_a.map { |p| p.to_h },
-          { **valid_parameters, userIds: '4' },
-          { **valid_parameters, extra: nil }
-        ])
+        where(
+          invalid_parameters: [
+            nil,
+            {},
+            *valid_parameters.to_a.combination(1).to_a.map { |p| p.to_h },
+            *valid_parameters.to_a.combination(2).to_a.map { |p| p.to_h },
+            { **valid_parameters, userIds: '4' },
+            { **valid_parameters, extra: nil }
+          ])
         with_them do
           it 'must have valid parameters for the strategy' do
             strategy = build(:operations_strategy,
@@ -180,9 +181,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
               expect(strategy).to be_invalid
 
-              expect(strategy.errors[:parameters]).to eq([
-                'rollout must be a string between 0 and 100 inclusive'
-              ])
+              expect(strategy.errors[:parameters]).to eq(['rollout must be a string between 0 and 100 inclusive'])
             end
           end
 
@@ -243,9 +242,8 @@ RSpec.describe Operations::FeatureFlags::Strategy do
 
               expect(strategy).to be_invalid
 
-              expect(strategy.errors[:parameters]).to eq([
-                'stickiness parameter must be default, userId, sessionId, or random'
-              ])
+              expect(strategy.errors[:parameters]).to eq(
+                ['stickiness parameter must be default, userId, sessionId, or random'])
             end
           end
 

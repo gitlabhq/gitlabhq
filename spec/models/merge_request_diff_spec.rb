@@ -466,19 +466,20 @@ RSpec.describe MergeRequestDiff do
           diff_with_commits.update!(sorted: false) # Mark as unsorted so it'll re-order
 
           # There will be 11 returned, as we have to take into account for new and old paths
-          expect(diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options).diff_paths).to eq([
-            'bar/branch-test.txt',
-            'custom-highlighting/test.gitlab-custom',
-            'encoding/iso8859.txt',
-            'files/images/wm.svg',
-            'files/js/commit.js.coffee',
-            'files/js/commit.coffee',
-            'files/lfs/lfs_object.iso',
-            'files/ruby/popen.rb',
-            'files/ruby/regex.rb',
-            'files/.DS_Store',
-            'files/whitespace'
-          ])
+          expect(diff_with_commits.diffs_in_batch(0, 10, diff_options: diff_options).diff_paths).to eq(
+            [
+              'bar/branch-test.txt',
+              'custom-highlighting/test.gitlab-custom',
+              'encoding/iso8859.txt',
+              'files/images/wm.svg',
+              'files/js/commit.js.coffee',
+              'files/js/commit.coffee',
+              'files/lfs/lfs_object.iso',
+              'files/ruby/popen.rb',
+              'files/ruby/regex.rb',
+              'files/.DS_Store',
+              'files/whitespace'
+            ])
         end
 
         context 'when diff_options include ignore_whitespace_change' do
@@ -555,29 +556,30 @@ RSpec.describe MergeRequestDiff do
         it 'sorts diff files directory first' do
           diff_with_commits.update!(sorted: false) # Mark as unsorted so it'll re-order
 
-          expect(diff_with_commits.diffs(diff_options).diff_paths).to eq([
-            'bar/branch-test.txt',
-            'custom-highlighting/test.gitlab-custom',
-            'encoding/iso8859.txt',
-            'files/images/wm.svg',
-            'files/js/commit.js.coffee',
-            'files/js/commit.coffee',
-            'files/lfs/lfs_object.iso',
-            'files/ruby/popen.rb',
-            'files/ruby/regex.rb',
-            'files/.DS_Store',
-            'files/whitespace',
-            'foo/bar/.gitkeep',
-            'with space/README.md',
-            '.DS_Store',
-            '.gitattributes',
-            '.gitignore',
-            '.gitmodules',
-            'CHANGELOG',
-            'README',
-            'gitlab-grack',
-            'gitlab-shell'
-          ])
+          expect(diff_with_commits.diffs(diff_options).diff_paths).to eq(
+            [
+              'bar/branch-test.txt',
+              'custom-highlighting/test.gitlab-custom',
+              'encoding/iso8859.txt',
+              'files/images/wm.svg',
+              'files/js/commit.js.coffee',
+              'files/js/commit.coffee',
+              'files/lfs/lfs_object.iso',
+              'files/ruby/popen.rb',
+              'files/ruby/regex.rb',
+              'files/.DS_Store',
+              'files/whitespace',
+              'foo/bar/.gitkeep',
+              'with space/README.md',
+              '.DS_Store',
+              '.gitattributes',
+              '.gitignore',
+              '.gitmodules',
+              'CHANGELOG',
+              'README',
+              'gitlab-grack',
+              'gitlab-shell'
+            ])
         end
       end
     end
@@ -661,28 +663,29 @@ RSpec.describe MergeRequestDiff do
         mr_diff = create(:merge_request).merge_request_diff
         diff_files_paths = mr_diff.merge_request_diff_files.map { |file| file.new_path.presence || file.old_path }
 
-        expect(diff_files_paths).to eq([
-          'bar/branch-test.txt',
-          'custom-highlighting/test.gitlab-custom',
-          'encoding/iso8859.txt',
-          'files/images/wm.svg',
-          'files/js/commit.coffee',
-          'files/lfs/lfs_object.iso',
-          'files/ruby/popen.rb',
-          'files/ruby/regex.rb',
-          'files/.DS_Store',
-          'files/whitespace',
-          'foo/bar/.gitkeep',
-          'with space/README.md',
-          '.DS_Store',
-          '.gitattributes',
-          '.gitignore',
-          '.gitmodules',
-          'CHANGELOG',
-          'README',
-          'gitlab-grack',
-          'gitlab-shell'
-        ])
+        expect(diff_files_paths).to eq(
+          [
+            'bar/branch-test.txt',
+            'custom-highlighting/test.gitlab-custom',
+            'encoding/iso8859.txt',
+            'files/images/wm.svg',
+            'files/js/commit.coffee',
+            'files/lfs/lfs_object.iso',
+            'files/ruby/popen.rb',
+            'files/ruby/regex.rb',
+            'files/.DS_Store',
+            'files/whitespace',
+            'foo/bar/.gitkeep',
+            'with space/README.md',
+            '.DS_Store',
+            '.gitattributes',
+            '.gitignore',
+            '.gitmodules',
+            'CHANGELOG',
+            'README',
+            'gitlab-grack',
+            'gitlab-shell'
+          ])
       end
 
       it 'expands collapsed diffs before saving' do

@@ -47,7 +47,8 @@ class Projects::CompareController < Projects::ApplicationController
     from_to_vars = {
       from: compare_params[:from].presence,
       to: compare_params[:to].presence,
-      from_project_id: compare_params[:from_project_id].presence
+      from_project_id: compare_params[:from_project_id].presence,
+      straight: compare_params[:straight].presence
     }
 
     if from_to_vars[:from].blank? || from_to_vars[:to].blank?
@@ -112,7 +113,11 @@ class Projects::CompareController < Projects::ApplicationController
   def compare
     return @compare if defined?(@compare)
 
-    @compare = CompareService.new(source_project, head_ref).execute(target_project, start_ref)
+    @compare = CompareService.new(source_project, head_ref).execute(target_project, start_ref, straight: straight)
+  end
+
+  def straight
+    compare_params[:straight] == "true"
   end
 
   def start_ref
@@ -160,6 +165,6 @@ class Projects::CompareController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def compare_params
-    @compare_params ||= params.permit(:from, :to, :from_project_id)
+    @compare_params ||= params.permit(:from, :to, :from_project_id, :straight)
   end
 end

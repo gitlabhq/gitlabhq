@@ -1,5 +1,5 @@
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
 import {
   DELETE_PACKAGE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
@@ -20,7 +20,7 @@ export const fetchPackageVersions = ({ commit, state }) => {
       }
     })
     .catch(() => {
-      createFlash({ message: FETCH_PACKAGE_VERSIONS_ERROR, type: 'warning' });
+      createAlert({ message: FETCH_PACKAGE_VERSIONS_ERROR, variant: VARIANT_WARNING });
     })
     .finally(() => {
       commit(types.SET_LOADING, false);
@@ -33,7 +33,7 @@ export const deletePackage = ({
   },
 }) => {
   return Api.deleteProjectPackage(project_id, id).catch(() => {
-    createFlash({ message: DELETE_PACKAGE_ERROR_MESSAGE, type: 'warning' });
+    createAlert({ message: DELETE_PACKAGE_ERROR_MESSAGE, variant: VARIANT_WARNING });
   });
 };
 
@@ -51,9 +51,9 @@ export const deletePackageFile = (
     .then(() => {
       const filtered = packageFiles.filter((f) => f.id !== fileId);
       commit(types.UPDATE_PACKAGE_FILES, filtered);
-      createFlash({ message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE, type: 'success' });
+      createAlert({ message: DELETE_PACKAGE_FILE_SUCCESS_MESSAGE, variant: VARIANT_SUCCESS });
     })
     .catch(() => {
-      createFlash({ message: DELETE_PACKAGE_FILE_ERROR_MESSAGE, type: 'warning' });
+      createAlert({ message: DELETE_PACKAGE_FILE_ERROR_MESSAGE, variant: VARIANT_WARNING });
     });
 };

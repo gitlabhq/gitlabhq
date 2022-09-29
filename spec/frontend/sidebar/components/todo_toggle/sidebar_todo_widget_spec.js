@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import epicTodoQuery from '~/sidebar/queries/epic_todo.query.graphql';
 import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
@@ -83,7 +83,7 @@ describe('Sidebar Todo Widget', () => {
     });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   describe('collapsed', () => {
