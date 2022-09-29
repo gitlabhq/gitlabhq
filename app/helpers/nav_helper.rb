@@ -49,7 +49,7 @@ module NavHelper
   end
 
   def page_has_markdown?
-    current_path?('merge_requests#show') ||
+    current_path?('projects/merge_requests#show') ||
       current_path?('projects/merge_requests/conflicts#show') ||
       current_path?('issues#show') ||
       current_path?('milestones#show') ||

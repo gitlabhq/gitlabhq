@@ -117,23 +117,24 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:order) do
       # NULLS LAST ordering requires custom Order object for keyset pagination:
       # https://docs.gitlab.com/ee/development/database/keyset_pagination.html#complex-order-configuration
-      Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :relative_position,
-          column_expression: Issue.arel_table[:relative_position],
-          order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
-          reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
-          order_direction: :desc,
-          nullable: :nulls_last,
-          distinct: false
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :id,
-          order_expression: Issue.arel_table[:id].desc,
-          nullable: :not_nullable,
-          distinct: true
-        )
-      ])
+      Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :relative_position,
+            column_expression: Issue.arel_table[:relative_position],
+            order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
+            reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
+            order_direction: :desc,
+            nullable: :nulls_last,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Issue.arel_table[:id].desc,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
     end
 
     let(:in_operator_optimization_options) do
@@ -279,17 +280,18 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
   context 'when ordering by SQL expression' do
     let(:order) do
       # ORDER BY (id * 10), id
-      Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'id_multiplied_by_ten',
-          order_expression: Arel.sql('(id * 10)').asc,
-          sql_type: 'integer'
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :id,
-          order_expression: Issue.arel_table[:id].asc
-        )
-      ])
+      Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id_multiplied_by_ten',
+            order_expression: Arel.sql('(id * 10)').asc,
+            sql_type: 'integer'
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Issue.arel_table[:id].asc
+          )
+        ])
     end
 
     let(:scope) { Issue.reorder(order) }

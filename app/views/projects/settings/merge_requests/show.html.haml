@@ -4,7 +4,7 @@
 
 %section.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings.expanded{ class: [('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)], data: { qa_selector: 'merge_request_settings_content' } }
   .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Merge requests')
+    %h4= _('Merge requests')
     = render_if_exists 'projects/merge_request_settings_description_text'
 
   .settings-content

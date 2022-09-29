@@ -27248,6 +27248,9 @@ msgstr ""
 msgid "Notify|%{name} requested a new review on %{mr_link}."
 msgstr ""
 
+msgid "Notify|%{p_start}To update the remote url in your local repository run (for ssh):%{p_end} %{ssh_url_to_repo} %{p_start}or for http(s):%{p_end} %{http_url_to_repo}"
+msgstr ""
+
 msgid "Notify|%{paragraph_start}Hi %{name}!%{paragraph_end} %{paragraph_start}A new public key was added to your account:%{paragraph_end} %{paragraph_start}title: %{key_title}%{paragraph_end} %{paragraph_start}If this key was added in error, you can remove it under %{removal_link}%{paragraph_end}"
 msgstr ""
 
@@ -27383,6 +27386,9 @@ msgstr ""
 msgid "Notify|Pipeline has been fixed and #%{pipeline_id} has passed!"
 msgstr ""
 
+msgid "Notify|Project %{old_path_with_namespace} was moved to another location."
+msgstr ""
+
 msgid "Notify|Project %{project_name} was exported successfully."
 msgstr ""
 
@@ -27402,6 +27408,9 @@ msgid "Notify|The diff was not included because it is too large."
 msgstr ""
 
 msgid "Notify|The download link will expire in 24 hours."
+msgstr ""
+
+msgid "Notify|The project is now located under %{project_full_name_link_start}%{project_full_name}%{link_end}."
 msgstr ""
 
 msgid "Notify|The push did not contain any new commits, but force pushed to delete the commits and changes below."

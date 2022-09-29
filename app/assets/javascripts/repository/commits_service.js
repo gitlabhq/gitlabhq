@@ -1,7 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { COMMIT_BATCH_SIZE, I18N_COMMIT_DATA_FETCH_ERROR } from './constants';
 
 let requestedOffsets = [];
@@ -43,7 +43,7 @@ const fetchData = (projectPath, path, ref, offset) => {
   return axios
     .get(url, { params: { format: 'json', offset } })
     .then(({ data }) => normalizeData(data, path))
-    .catch(() => createFlash({ message: I18N_COMMIT_DATA_FETCH_ERROR }));
+    .catch(() => createAlert({ message: I18N_COMMIT_DATA_FETCH_ERROR }));
 };
 
 export const loadCommits = async (projectPath, path, ref, offset) => {

@@ -300,12 +300,13 @@ RSpec.describe Gitlab::PrometheusClient do
       it 'returns data from the API call' do
         req_stub = stub_prometheus_request(query_url, body: prometheus_values_body('matrix'))
 
-        expect(subject.query_range(prometheus_query)).to eq([
-          {
-            "metric" => {},
-            "values" => [[1488758662.506, "0.00002996364761904785"], [1488758722.506, "0.00003090239047619091"]]
-          }
-        ])
+        expect(subject.query_range(prometheus_query)).to eq(
+          [
+            {
+              "metric" => {},
+              "values" => [[1488758662.506, "0.00002996364761904785"], [1488758722.506, "0.00003090239047619091"]]
+            }
+          ])
         expect(req_stub).to have_been_requested
       end
     end

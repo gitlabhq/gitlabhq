@@ -295,11 +295,12 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
       end
 
       it 'imports data in parallel batches with delays' do
-        expect(worker_class).to receive(:bulk_perform_in).with(1.second, [
-          [project.id, { title: 'Foo' }, an_instance_of(String)],
-          [project.id, { title: 'Foo' }, an_instance_of(String)],
-          [project.id, { title: 'Foo' }, an_instance_of(String)]
-        ], batch_size: batch_size, batch_delay: batch_delay)
+        expect(worker_class).to receive(:bulk_perform_in)
+          .with(1.second, [
+                  [project.id, { title: 'Foo' }, an_instance_of(String)],
+                  [project.id, { title: 'Foo' }, an_instance_of(String)],
+                  [project.id, { title: 'Foo' }, an_instance_of(String)]
+                ], batch_size: batch_size, batch_delay: batch_delay)
 
         importer.parallel_import
       end

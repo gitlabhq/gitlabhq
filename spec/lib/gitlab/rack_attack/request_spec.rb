@@ -217,10 +217,11 @@ RSpec.describe Gitlab::RackAttack::Request do
     subject { request.protected_path? }
 
     before do
-      stub_application_setting(protected_paths: [
-        '/protected',
-        '/secure'
-      ])
+      stub_application_setting(
+        protected_paths: [
+          '/protected',
+          '/secure'
+        ])
     end
 
     where(:path, :expected) do

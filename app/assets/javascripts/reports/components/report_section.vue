@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import api from '~/api';
-import { __ } from '~/locale';
 import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -115,9 +114,6 @@ export default {
   },
 
   computed: {
-    collapseText() {
-      return this.isCollapsed ? __('Expand') : __('Collapse');
-    },
     isLoading() {
       return this.status === status.LOADING;
     },
@@ -172,6 +168,11 @@ export default {
   },
   methods: {
     toggleCollapsed() {
+      // Because the top-level div is always clickable, we need to check if we can collapse.
+      if (!this.isCollapsible) {
+        return;
+      }
+
       if (this.trackAction) {
         api.trackRedisHllUserEvent(this.trackAction);
       }
@@ -186,9 +187,9 @@ export default {
 </script>
 <template>
   <section class="media-section">
-    <div class="media">
+    <div class="media" :class="{ 'gl-cursor-pointer': isCollapsible }" @click="toggleCollapsed">
       <status-icon :status="statusIconName" :size="24" class="align-self-center" />
-      <div class="media-body d-flex flex-align-self-center align-items-center">
+      <div class="media-body gl-display-flex gl-align-items-flex-start gl-flex-direction-row!">
         <div data-testid="report-section-code-text" class="js-code-text code-text">
           <div class="gl-display-flex gl-align-items-center">
             <p class="gl-line-height-normal gl-m-0">{{ headerText }}</p>
@@ -204,14 +205,19 @@ export default {
 
         <slot name="action-buttons" :is-collapsible="isCollapsible"></slot>
 
-        <gl-button
+        <div
           v-if="isCollapsible"
-          data-testid="report-section-expand-button"
-          data-qa-selector="expand_report_button"
-          @click="toggleCollapsed"
+          class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3"
         >
-          {{ collapseText }}
-        </gl-button>
+          <gl-button
+            data-testid="report-section-expand-button"
+            data-qa-selector="expand_report_button"
+            category="tertiary"
+            size="small"
+            :icon="isExpanded ? 'chevron-lg-up' : 'chevron-lg-down'"
+            @click.stop="toggleCollapsed"
+          />
+        </div>
       </div>
     </div>
 

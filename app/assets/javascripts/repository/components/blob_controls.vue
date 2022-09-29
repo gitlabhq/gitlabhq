@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import getRefMixin from '~/repository/mixins/get_ref';
 import initSourcegraph from '~/sourcegraph';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
@@ -36,7 +36,7 @@ export default {
         return !this.filePath;
       },
       error() {
-        createFlash({ message: this.$options.i18n.errorMessage });
+        createAlert({ message: this.$options.i18n.errorMessage });
       },
     },
   },

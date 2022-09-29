@@ -4,7 +4,7 @@ module Types
   module BranchProtections
     class MergeAccessLevelType < BaseAccessLevelType # rubocop:disable Graphql/AuthorizeTypes
       graphql_name 'MergeAccessLevel'
-      description 'Defines which user roles, users, or groups can merge into a protected branch.'
+      description 'Represents the merge access level of a branch protection.'
       accepts ::ProtectedBranch::MergeAccessLevel
     end
   end

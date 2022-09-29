@@ -140,13 +140,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
 
         it 'restores pipelines based on ascending id order' do
           expected_ordered_shas = %w[
-          2ea1f3dec713d940208fb5ce4a38765ecb5d3f73
-          ce84140e8b878ce6e7c4d298c7202ff38170e3ac
-          048721d90c449b244b7b4c53a9186b04330174ec
-          sha-notes
-          5f923865dde3436854e9ceb9cdb7815618d4e849
-          d2d430676773caa88cdaf7c55944073b2fd5561a
-          2ea1f3dec713d940208fb5ce4a38765ecb5d3f73
+            2ea1f3dec713d940208fb5ce4a38765ecb5d3f73
+            ce84140e8b878ce6e7c4d298c7202ff38170e3ac
+            048721d90c449b244b7b4c53a9186b04330174ec
+            sha-notes
+            5f923865dde3436854e9ceb9cdb7815618d4e849
+            d2d430676773caa88cdaf7c55944073b2fd5561a
+            2ea1f3dec713d940208fb5ce4a38765ecb5d3f73
           ]
 
           project = Project.find_by_path('project')

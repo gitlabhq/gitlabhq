@@ -15,21 +15,22 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
   let(:nulls_position) { :nulls_last }
   let(:reverse_nulls_position) { ::Gitlab::Pagination::Keyset::ColumnOrderDefinition::REVERSED_NULL_POSITIONS[nulls_position] }
   let(:custom_reorder) do
-    Gitlab::Pagination::Keyset::Order.build([
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: column,
-        column_expression: klass.arel_table[column],
-        order_expression: klass.arel_table[column].public_send(direction).public_send(nulls_position), # rubocop:disable GitlabSecurity/PublicSend
-        reversed_order_expression: klass.arel_table[column].public_send(reverse_direction).public_send(reverse_nulls_position), # rubocop:disable GitlabSecurity/PublicSend
-        order_direction: direction,
-        nullable: nulls_position,
-        distinct: false
-      ),
-      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-        attribute_name: 'id',
-        order_expression: klass.arel_table[:id].send(direction)
-      )
-    ])
+    Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: column,
+          column_expression: klass.arel_table[column],
+          order_expression: klass.arel_table[column].public_send(direction).public_send(nulls_position), # rubocop:disable GitlabSecurity/PublicSend
+          reversed_order_expression: klass.arel_table[column].public_send(reverse_direction).public_send(reverse_nulls_position), # rubocop:disable GitlabSecurity/PublicSend
+          order_direction: direction,
+          nullable: nulls_position,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: klass.arel_table[:id].send(direction)
+        )
+      ])
   end
 
   let(:iterator_params) { nil }

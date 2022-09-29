@@ -57,6 +57,16 @@ RSpec.describe 'Group merge requests page' do
       expect(find('#js-dropdown-assignee .filter-dropdown')).to have_content(user.name)
       expect(find('#js-dropdown-assignee .filter-dropdown')).not_to have_content(user2.name)
     end
+
+    it 'will still show the navbar with no results' do
+      search_term = 'some-search-term-that-produces-zero-results'
+
+      filtered_search.set(search_term)
+      filtered_search.send_keys(:enter)
+
+      expect(page).to have_content('filter produced no results')
+      expect(page).to have_link('Open', href: "/groups/#{group.name}/-/merge_requests?scope=all&search=#{search_term}&state=opened")
+    end
   end
 
   describe 'new merge request dropdown' do

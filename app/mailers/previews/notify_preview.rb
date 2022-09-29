@@ -225,6 +225,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.request_review_merge_request_email(user.id, merge_request.id, user.id).message
   end
 
+  def project_was_moved_email
+    Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab").message
+  end
+
   private
 
   def project

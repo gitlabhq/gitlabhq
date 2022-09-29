@@ -116,15 +116,15 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer do
 
       shared_examples 'excluded attributes' do
         excluded_attributes = %w[
-        id
-        parent_id
-        owner_id
-        created_at
-        updated_at
-        runners_token
-        runners_token_encrypted
-        saml_discovery_token
-      ]
+          id
+          parent_id
+          owner_id
+          created_at
+          updated_at
+          runners_token
+          runners_token_encrypted
+          saml_discovery_token
+        ]
 
         before do
           group.add_owner(importer_user)

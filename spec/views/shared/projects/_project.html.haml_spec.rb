@@ -21,6 +21,6 @@ RSpec.describe 'shared/projects/_project.html.haml' do
 
     render 'shared/projects/project', use_creator_avatar: true, project: project
 
-    expect(rendered).to have_selector('.project-avatar')
+    expect(rendered).to have_selector('.gl-avatar-identicon')
   end
 end

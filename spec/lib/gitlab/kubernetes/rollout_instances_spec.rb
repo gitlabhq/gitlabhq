@@ -51,13 +51,14 @@ RSpec.describe Gitlab::Kubernetes::RolloutInstances do
     end
 
     it 'returns instances when there are two stable deployments' do
-      deployments, pods = setup([
-        kube_deployment(name: 'one', track: 'stable', replicas: 1),
-        kube_deployment(name: 'two', track: 'stable', replicas: 1)
-      ], [
-        kube_pod(name: 'one', status: 'Running', track: 'stable'),
-        kube_pod(name: 'two', status: 'Running', track: 'stable')
-      ])
+      deployments, pods = setup(
+        [
+          kube_deployment(name: 'one', track: 'stable', replicas: 1),
+          kube_deployment(name: 'two', track: 'stable', replicas: 1)
+        ], [
+          kube_pod(name: 'one', status: 'Running', track: 'stable'),
+          kube_pod(name: 'two', status: 'Running', track: 'stable')
+        ])
       rollout_instances = described_class.new(deployments, pods)
 
       expect(rollout_instances.pod_instances).to eq([{
@@ -76,13 +77,14 @@ RSpec.describe Gitlab::Kubernetes::RolloutInstances do
     end
 
     it 'returns instances for two deployments with different tracks' do
-      deployments, pods = setup([
-        kube_deployment(name: 'one', track: 'mytrack', replicas: 1),
-        kube_deployment(name: 'two', track: 'othertrack', replicas: 1)
-      ], [
-        kube_pod(name: 'one', status: 'Running', track: 'mytrack'),
-        kube_pod(name: 'two', status: 'Running', track: 'othertrack')
-      ])
+      deployments, pods = setup(
+        [
+          kube_deployment(name: 'one', track: 'mytrack', replicas: 1),
+          kube_deployment(name: 'two', track: 'othertrack', replicas: 1)
+        ], [
+          kube_pod(name: 'one', status: 'Running', track: 'mytrack'),
+          kube_pod(name: 'two', status: 'Running', track: 'othertrack')
+        ])
       rollout_instances = described_class.new(deployments, pods)
 
       expect(rollout_instances.pod_instances).to eq([{
@@ -101,13 +103,14 @@ RSpec.describe Gitlab::Kubernetes::RolloutInstances do
     end
 
     it 'sorts stable tracks after canary tracks' do
-      deployments, pods = setup([
-        kube_deployment(name: 'one', track: 'stable', replicas: 1),
-        kube_deployment(name: 'two', track: 'canary', replicas: 1)
-      ], [
-        kube_pod(name: 'one', status: 'Running', track: 'stable'),
-        kube_pod(name: 'two', status: 'Running', track: 'canary')
-      ])
+      deployments, pods = setup(
+        [
+          kube_deployment(name: 'one', track: 'stable', replicas: 1),
+          kube_deployment(name: 'two', track: 'canary', replicas: 1)
+        ], [
+          kube_pod(name: 'one', status: 'Running', track: 'stable'),
+          kube_pod(name: 'two', status: 'Running', track: 'canary')
+        ])
       rollout_instances = described_class.new(deployments, pods)
 
       expect(rollout_instances.pod_instances).to eq([{

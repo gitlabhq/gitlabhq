@@ -6,13 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Epics **(PREMIUM)**
 
-> Single-level epics were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
+When [issues](../../project/issues/index.md) share a theme across projects and
+milestones, you can manage them by using epics.
 
-When [issues](../../project/issues/index.md) share a theme across projects and milestones,
-you can manage them by using epics.
-
-You can also create child epics, and assign start and end dates,
-which creates a visual roadmap for you to view progress.
+You can also create child epics and assign start and end dates, which creates
+a visual roadmap for you to view progress.
 
 Use epics:
 

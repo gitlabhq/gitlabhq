@@ -21,16 +21,16 @@ RSpec.describe Gitlab::Search::AbuseDetection do
 
   describe 'abusive character matching' do
     refs = %w(
-        main
-        тест
-        maiñ
-        main123
-        main-v123
-        main-v12.3
-        feature/it_works
-        really_important!
-        测试
-      )
+      main
+      тест
+      maiñ
+      main123
+      main-v123
+      main-v12.3
+      feature/it_works
+      really_important!
+      测试
+    )
 
     refs.each do |ref|
       it "does match refs permitted by git refname: #{ref}" do

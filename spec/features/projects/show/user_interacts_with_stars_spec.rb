@@ -13,6 +13,14 @@ RSpec.describe 'Projects > Show > User interacts with project stars' do
       visit(project_path(project))
     end
 
+    it 'retains the star count even after a page reload' do
+      star_project
+
+      reload_page
+
+      expect(page).to have_css('.star-count', text: 1)
+    end
+
     it 'toggles the star' do
       star_project
 
@@ -62,6 +70,10 @@ RSpec.describe 'Projects > Show > User interacts with project stars' do
 end
 
 private
+
+def reload_page
+  visit current_path
+end
 
 def star_project
   click_button(_('Star'))

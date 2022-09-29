@@ -118,17 +118,28 @@ RSpec.describe 'Project fork' do
     end
   end
 
+  shared_examples "increments the fork counter on the source project's page" do
+    specify :sidekiq_might_not_need_inline do
+      create_forks
+
+      visit project_path(project)
+
+      expect(page).to have_css('.fork-count', text: 2)
+    end
+  end
+
   it_behaves_like 'fork button on project page'
   it_behaves_like 'create fork page', 'Fork project'
 
   context 'fork form', :js do
     let(:group) { create(:group) }
+    let(:group2) { create(:group) }
     let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
-    def submit_form
+    def submit_form(group_obj = group)
       find('[data-testid="select_namespace_dropdown"]').click
-      find('[data-testid="select_namespace_dropdown_search_field"]').fill_in(with: group.name)
-      click_button group.name
+      find('[data-testid="select_namespace_dropdown_search_field"]').fill_in(with: group_obj.name)
+      click_button group_obj.name
 
       click_button 'Fork project'
     end
@@ -166,5 +177,41 @@ RSpec.describe 'Project fork' do
         expect(page).to have_content("#{group.name} / #{fork_name}")
       end
     end
+
+    context 'with cache_home_panel feature flag' do
+      before do
+        create(:group_member, :maintainer, user: user, group: group2 )
+      end
+
+      context 'when caching is enabled' do
+        before do
+          stub_feature_flags(cache_home_panel: project)
+        end
+
+        it_behaves_like "increments the fork counter on the source project's page"
+      end
+
+      context 'when caching is disabled' do
+        before do
+          stub_feature_flags(cache_home_panel: false)
+        end
+
+        it_behaves_like "increments the fork counter on the source project's page"
+      end
+    end
   end
+end
+
+private
+
+def create_fork(group_obj = group)
+  visit project_path(project)
+  find('.fork-btn').click
+  submit_form(group_obj)
+  wait_for_requests
+end
+
+def create_forks
+  create_fork
+  create_fork(group2)
 end

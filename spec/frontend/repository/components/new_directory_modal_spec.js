@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
@@ -194,7 +194,7 @@ describe('NewDirectoryModal', () => {
         await fillForm({ dirName: 'foo', branchName: 'master', commitMessage: 'foo' });
         await submitForm();
 
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: NewDirectoryModal.i18n.ERROR_MESSAGE,
         });
       });

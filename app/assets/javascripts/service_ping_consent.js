@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import createFlash, { hideFlash } from './flash';
+import { createAlert, hideFlash } from './flash';
 import axios from './lib/utils/axios_utils';
 import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
@@ -27,7 +27,7 @@ export default () => {
       })
       .catch(() => {
         hideConsentMessage();
-        createFlash({
+        createAlert({
           message: __('Something went wrong. Try again later.'),
         });
       });
