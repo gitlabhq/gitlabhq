@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { isEqual } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/flash';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -267,14 +267,14 @@ export default {
         .postAction(endpoint)
         .then(() => {
           this.isResetCacheButtonLoading = false;
-          createFlash({
+          createAlert({
             message: s__('Pipelines|Project cache successfully reset.'),
-            type: 'notice',
+            variant: VARIANT_INFO,
           });
         })
         .catch(() => {
           this.isResetCacheButtonLoading = false;
-          createFlash({
+          createAlert({
             message: s__('Pipelines|Something went wrong while cleaning runners cache.'),
           });
         });
@@ -301,9 +301,9 @@ export default {
         }
 
         if (!filter.type) {
-          createFlash({
+          createAlert({
             message: RAW_TEXT_WARNING,
-            type: 'warning',
+            variant: VARIANT_WARNING,
           });
         }
       });

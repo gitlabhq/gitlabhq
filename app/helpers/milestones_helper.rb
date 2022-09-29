@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+module MilestonesHelper
+  def milestone_header_class(primary, issuables)
+    header_color = milestone_header_color(primary: primary)
+    header_border = milestone_header_border(issuables)
+
+    "#{header_color} #{header_border} gl-display-flex"
+  end
+
+  def milestone_counter_class(primary)
+    primary ? 'gl-text-white' : 'gl-text-gray-500'
+  end
+
+  private
+
+  def milestone_header_color(primary: false)
+    return '' unless primary
+
+    'gl-bg-blue-500 gl-text-white'
+  end
+
+  def milestone_header_border(issuables)
+    issuables.empty? ? 'gl-border-bottom-0 gl-rounded-base' : ''
+  end
+end

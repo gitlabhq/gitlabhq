@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
 import createDagApp from './pipeline_details_dag';
 import { createPipelinesDetailApp } from './pipeline_details_graph';
@@ -24,7 +24,7 @@ export default async function initPipelineDetailsBundle() {
   try {
     createPipelineHeaderApp(SELECTORS.PIPELINE_HEADER, apolloProvider, dataset.graphqlResourceEtag);
   } catch {
-    createFlash({
+    createAlert({
       message: __('An error occurred while loading a section of this page.'),
     });
   }
@@ -37,7 +37,7 @@ export default async function initPipelineDetailsBundle() {
       const appOptions = createAppOptions(SELECTORS.PIPELINE_TABS, apolloProvider);
       createPipelineTabs(appOptions);
     } catch {
-      createFlash({
+      createAlert({
         message: __('An error occurred while loading a section of this page.'),
       });
     }
@@ -45,7 +45,7 @@ export default async function initPipelineDetailsBundle() {
     try {
       createPipelinesDetailApp(SELECTORS.PIPELINE_GRAPH, apolloProvider, dataset);
     } catch {
-      createFlash({
+      createAlert({
         message: __('An error occurred while loading the pipeline.'),
       });
     }
@@ -53,7 +53,7 @@ export default async function initPipelineDetailsBundle() {
     try {
       createDagApp(apolloProvider);
     } catch {
-      createFlash({
+      createAlert({
         message: __('An error occurred while loading the Needs tab.'),
       });
     }
@@ -61,7 +61,7 @@ export default async function initPipelineDetailsBundle() {
     try {
       createTestDetails(SELECTORS.PIPELINE_TESTS);
     } catch {
-      createFlash({
+      createAlert({
         message: __('An error occurred while loading the Test Reports tab.'),
       });
     }
@@ -69,7 +69,7 @@ export default async function initPipelineDetailsBundle() {
     try {
       createPipelineJobsApp(SELECTORS.PIPELINE_JOBS);
     } catch {
-      createFlash({
+      createAlert({
         message: __('An error occurred while loading the Jobs tab.'),
       });
     }
@@ -77,7 +77,7 @@ export default async function initPipelineDetailsBundle() {
     try {
       createPipelineFailedJobsApp(SELECTORS.PIPELINE_FAILED_JOBS);
     } catch {
-      createFlash({
+      createAlert({
         message: s__('Jobs|An error occurred while loading the Failed Jobs tab.'),
       });
     }

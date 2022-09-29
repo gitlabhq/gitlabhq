@@ -1996,6 +1996,10 @@ class MergeRequest < ApplicationRecord
     # rubocop: enable CodeReuse/ServiceClass
   end
 
+  def can_suggest_reviewers?
+    false # overridden in EE
+  end
+
   private
 
   attr_accessor :skip_fetch_ref

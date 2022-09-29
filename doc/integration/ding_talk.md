@@ -19,7 +19,7 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
 
 1. Fill in the application details:
 
-   - **Application Name**: This can be anything. Consider something like `<Organization>'s GitLab`, or `<Your Name>'s GitLab`, or something else descriptive.
+   - **Application Name**: This can be anything. Consider something like `<Organization>'s GitLab`, `<Your Name>'s GitLab`, or something else descriptive.
    - **Application Description**: Create a description.
    - **Application icon**: Upload qualified icons if needed.
 
@@ -31,7 +31,7 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
 
    ![DingTalk your application](img/ding_talk_your_application.png)
 
-1. Under the **Application Credentials** section, there should be an AppKey and AppSecret (see the screenshot). Keep this page open as you continue the configuration.
+1. In the **Application Credentials** section, note the **AppKey** and **AppSecret** as you use these values later.
 
    ![DingTalk credentials](img/ding_talk_credentials.png)
 
@@ -62,8 +62,8 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
        {
          name: "dingtalk",
          # label: "Provider name", # optional label for login button, defaults to "Ding Talk"
-         app_id: "YOUR_APP_ID",
-         app_secret: "YOUR_APP_SECRET"
+         app_id: "<your_appkey>",
+         app_secret: "<your_appsecret>"
        }
      ]
    ```
@@ -73,16 +73,16 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
    ```yaml
    - { name: 'dingtalk',
        # label: 'Provider name', # optional label for login button, defaults to "Ding Talk"
-       app_id: 'YOUR_APP_ID',
-       app_secret: 'YOUR_APP_SECRET' }
+       app_id: '<your_appkey>',
+       app_secret: '<your_appsecret>' }
    ```
 
-1. Change `YOUR_APP_ID` to the AppKey from the application information page in step 6.
+1. Replace `<your_appkey>` with the AppKey from the  **Application Credentials** in step 6.
 
-1. Change `YOUR_APP_SECRET` to the AppSecret from the application information page in step 6.
+1. Replace `<your_appsecret>` with the AppSecret from the **Application Credentials** in step 6.
 
 1. Save the configuration file.
 
-1. For the changes to take effect:
-   - If you installed via Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
-   - If you installed from source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+1. For the changes to take effect, if you installed:
+   - Using Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - From source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).

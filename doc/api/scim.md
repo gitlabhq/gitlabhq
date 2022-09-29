@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
 
-The SCIM API implements the [RFC7644 protocol](https://tools.ietf.org/html/rfc7644). As this API is for
+The SCIM API implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). As this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
@@ -34,7 +34,7 @@ Parameters:
 | `count` | integer | no    | Desired maximum number of query results. |
 
 NOTE:
-Pagination follows the [SCIM spec](https://tools.ietf.org/html/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
+Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
 
 Example request:
 
@@ -226,7 +226,7 @@ Returns an empty response with a `204` status code if successful.
 
 ## Available filters
 
-They match an expression as specified in [the RFC7644 filtering section](https://tools.ietf.org/html/rfc7644#section-3.4.2.2).
+They match an expression as specified in [the RFC7644 filtering section](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.2).
 
 | Filter | Description |
 | ----- | ----------- |
@@ -240,7 +240,7 @@ id eq a-b-c-d
 
 ## Available operations
 
-They perform an operation as specified in [the RFC7644 update section](https://tools.ietf.org/html/rfc7644#section-3.5.2).
+They perform an operation as specified in [the RFC7644 update section](https://www.rfc-editor.org/rfc/rfc7644#section-3.5.2).
 
 | Operator | Description |
 | ----- | ----------- |

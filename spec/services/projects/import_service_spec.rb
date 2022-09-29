@@ -276,6 +276,15 @@ RSpec.describe Projects::ImportService do
         expect(result[:status]).to eq :error
         expect(result[:message]).to include('Only allowed ports are 80, 443')
       end
+
+      it 'fails with file scheme' do
+        project.import_url = "file:///tmp/dir.git"
+
+        result = subject.execute
+
+        expect(result[:status]).to eq :error
+        expect(result[:message]).to include('Only allowed schemes are http, https')
+      end
     end
 
     it_behaves_like 'measurable service' do

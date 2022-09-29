@@ -3,8 +3,12 @@
 module QA
   RSpec.describe 'Manage', :requires_admin, :skip_live_env do
     describe '2FA' do
+      let(:admin_api_client) { Runtime::API::Client.as_admin }
+      let(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner_user) }
+
       let!(:owner_user) do
         Resource::User.fabricate_via_api! do |usr|
+          usr.username = "owner_user_#{SecureRandom.hex(4)}"
           usr.api_client = admin_api_client
         end
       end
@@ -26,6 +30,7 @@ module QA
 
       let(:developer_user) do
         Resource::User.fabricate_via_api! do |resource|
+          resource.username = "developer_user_#{SecureRandom.hex(4)}"
           resource.api_client = admin_api_client
         end
       end
@@ -38,8 +43,7 @@ module QA
 
       it(
         'allows enforcing 2FA via UI and logging in with 2FA',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
-        quarantine: { type: :flaky, issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/369516' }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'
       ) do
         enforce_two_factor_authentication_on_group(group)
 
@@ -70,14 +74,6 @@ module QA
         developer_user.remove_via_api!
       end
 
-      def admin_api_client
-        @admin_api_client ||= Runtime::API::Client.as_admin
-      end
-
-      def owner_api_client
-        @owner_api_client ||= Runtime::API::Client.new(:gitlab, user: owner_user)
-      end
-
       # We are intentionally using the UI to enforce 2FA to exercise the flow with UI.
       # Any future tests should use the API for this purpose.
       def enforce_two_factor_authentication_on_group(group)
@@ -87,7 +83,9 @@ module QA
           Page::Group::Menu.perform(&:click_group_general_settings_item)
           Page::Group::Settings::General.perform(&:set_require_2fa_enabled)
 
-          expect(page).to have_text(two_fa_expected_text)
+          QA::Support::Retrier.retry_on_exception(reload_page: page) do
+            expect(page).to have_text(two_fa_expected_text)
+          end
 
           Page::Profile::TwoFactorAuth.perform(&:click_configure_it_later_button)
 

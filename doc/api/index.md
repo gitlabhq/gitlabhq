@@ -29,7 +29,7 @@ For an introduction and basic steps, see
 ## SCIM API **(PREMIUM SAAS)**
 
 GitLab provides a [SCIM API](scim.md) that both implements
-[the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides the
+[the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644) and provides the
 `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
 
 ## GraphQL API

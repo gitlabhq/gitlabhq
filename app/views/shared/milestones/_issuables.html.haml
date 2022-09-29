@@ -1,22 +1,20 @@
 - show_counter = local_assigns.fetch(:show_counter, false)
 - primary = local_assigns.fetch(:primary, false)
-- panel_class = primary ? 'bg-primary text-white' : ''
 
-.card
-  .card-header{ class: panel_class }
-    .header.gl-mb-2
-      .title
-        = title
-    .issuable-count-weight.gl-ml-3
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }, header_options: { class: milestone_header_class(primary, issuables) }) do |c|
+  - c.header do
+    .gl-flex-grow-2
+      = title
+    .gl-ml-3.gl-flex-shrink-0.gl-font-weight-bold.gl-white-space-nowrap{ class: milestone_counter_class(primary) }
       - if show_counter
-        %span.counter
+        %span
           = sprite_icon('issues', css_class: 'gl-vertical-align-text-bottom')
           = number_with_delimiter(issuables.length)
       = render_if_exists "shared/milestones/issuables_weight", issuables: issuables
-
-  - class_prefix = dom_class(issuables).pluralize
-  %ul{ class: "content-list milestone-#{class_prefix}-list", id: "#{class_prefix}-list-#{id}" }
-    = render partial: 'shared/milestones/issuable',
-             collection: issuables,
-             as: :issuable,
-             locals: { show_project_name: show_project_name }
+  = c.body do
+    - class_prefix = dom_class(issuables).pluralize
+    %ul{ class: "content-list milestone-#{class_prefix}-list", id: "#{class_prefix}-list-#{id}" }
+      = render partial: 'shared/milestones/issuable',
+              collection: issuables,
+              as: :issuable,
+              locals: { show_project_name: show_project_name }

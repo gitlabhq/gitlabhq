@@ -135,7 +135,7 @@ Methods for creating a release using a CI/CD job include:
 You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority,
 which is used to verify the peer when the `release-cli` creates a release through the API using HTTPS with custom certificates.
 The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the
-[text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1)
+[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
 or the `path/to/file` containing the certificate authority.
 For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
 

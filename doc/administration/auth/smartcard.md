@@ -101,7 +101,7 @@ Certificate:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7693) in GitLab 11.8 as an experimental feature. Smartcard authentication against an LDAP server may change or be removed completely in the future.
 
 GitLab implements a standard way of certificate matching following
-[RFC4523](https://tools.ietf.org/html/rfc4523). It uses the
+[RFC4523](https://www.rfc-editor.org/rfc/rfc4523). It uses the
 `certificateExactMatch` certificate matching rule against the `userCertificate`
 attribute. As a prerequisite, you must use an LDAP server that:
 

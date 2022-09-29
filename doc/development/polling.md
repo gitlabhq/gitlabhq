@@ -61,5 +61,5 @@ route matching easier.
 For more information see:
 
 - [`Poll-Interval` header](fe_guide/performance.md#real-time-components)
-- [RFC 7232](https://tools.ietf.org/html/rfc7232)
+- [RFC 7232](https://www.rfc-editor.org/rfc/rfc7232)
 - [ETag proposal](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26926)

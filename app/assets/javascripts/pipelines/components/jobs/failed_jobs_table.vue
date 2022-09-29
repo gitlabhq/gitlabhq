@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLink, GlSafeHtmlDirective, GlTableLite } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import RetryFailedJobMutation from '../../graphql/mutations/retry_failed_job.mutation.graphql';
@@ -49,7 +49,7 @@ export default {
       return job.retryable && job.userPermissions.updateBuild;
     },
     showErrorMessage() {
-      createFlash({ message: s__('Job|There was a problem retrying the failed job.') });
+      createAlert({ message: s__('Job|There was a problem retrying the failed job.') });
     },
   },
 };

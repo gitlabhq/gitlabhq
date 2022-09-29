@@ -396,7 +396,7 @@ of CA certificates that you trust. Do this either in the `.gitlab-ci.yml` file, 
 variable, or as a CI/CD variable.
 
 - In the `.gitlab-ci.yml` file, the `ADDITIONAL_CA_CERT_BUNDLE` value must contain the
-  [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1).
+  [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1).
 
   For example:
 

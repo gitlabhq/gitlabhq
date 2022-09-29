@@ -5174,6 +5174,16 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
+  describe '#can_suggest_reviewers?' do
+    let_it_be(:merge_request) { build(:merge_request, :opened, project: project) }
+
+    subject(:can_suggest_reviewers) { merge_request.can_suggest_reviewers? }
+
+    it 'returns false' do
+      expect(can_suggest_reviewers).to be(false)
+    end
+  end
+
   describe '#suggested_reviewer_users' do
     let_it_be(:merge_request) { build(:merge_request, project: project) }
 

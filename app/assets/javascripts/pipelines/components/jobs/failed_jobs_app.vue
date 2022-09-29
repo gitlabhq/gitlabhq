@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import GetFailedJobsQuery from '../../graphql/queries/get_failed_jobs.query.graphql';
 import { prepareFailedJobs } from './utils';
@@ -47,7 +47,7 @@ export default {
         this.preparedFailedJobs = prepareFailedJobs(this.failedJobs, this.failedJobsSummary);
       },
       error() {
-        createFlash({ message: s__('Jobs|There was a problem fetching the failed jobs.') });
+        createAlert({ message: s__('Jobs|There was a problem fetching the failed jobs.') });
       },
     },
   },

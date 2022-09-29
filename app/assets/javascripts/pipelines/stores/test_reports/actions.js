@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import * as types from './mutation_types';
@@ -12,7 +12,7 @@ export const fetchSummary = ({ state, commit, dispatch }) => {
       commit(types.SET_SUMMARY, data);
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: s__('TestReports|There was an error fetching the summary.'),
       });
     })

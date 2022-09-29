@@ -11,7 +11,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
 import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
@@ -361,8 +361,11 @@ describe('Pipelines', () => {
         });
 
         it('displays a warning message if raw text search is used', () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-          expect(createFlash).toHaveBeenCalledWith({ message: RAW_TEXT_WARNING, type: 'warning' });
+          expect(createAlert).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledWith({
+            message: RAW_TEXT_WARNING,
+            variant: VARIANT_WARNING,
+          });
         });
 
         it('should update browser bar', () => {
