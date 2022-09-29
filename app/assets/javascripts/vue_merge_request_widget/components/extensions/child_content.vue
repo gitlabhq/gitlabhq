@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlLink, GlSafeHtmlDirective, GlModalDirective } from '@gitlab/ui';
+import { isArray } from 'lodash';
 import Actions from '../action_buttons.vue';
 import StatusIcon from './status_icon.vue';
 import { generateText } from './utils';
@@ -33,6 +34,20 @@ export default {
     level: {
       type: Number,
       required: true,
+    },
+  },
+  computed: {
+    subtext() {
+      const { subtext } = this.data;
+      if (subtext) {
+        if (isArray(subtext)) {
+          return subtext.map((t) => generateText(t)).join('<br />');
+        }
+
+        return generateText(subtext);
+      }
+
+      return null;
     },
   },
   methods: {
@@ -93,11 +108,7 @@ export default {
             @clickedAction="onClickedAction"
           />
         </div>
-        <p
-          v-if="data.subtext"
-          v-safe-html="generateText(data.subtext)"
-          class="gl-m-0 gl-font-sm"
-        ></p>
+        <p v-if="subtext" v-safe-html="subtext" class="gl-m-0 gl-font-sm"></p>
       </div>
     </div>
     <template v-if="data.children && level === 2">

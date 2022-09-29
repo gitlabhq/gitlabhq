@@ -21,7 +21,7 @@ module BulkImports
           url = url.sub("://", "://oauth2:#{context.configuration.access_token}@")
           project = context.portable
 
-          Gitlab::UrlBlocker.validate!(url, allow_local_network: allow_local_requests?, allow_localhost: allow_local_requests?)
+          Gitlab::UrlBlocker.validate!(url, schemes: %w[http https], allow_local_network: allow_local_requests?, allow_localhost: allow_local_requests?)
 
           project.ensure_repository
           project.repository.fetch_as_mirror(url)

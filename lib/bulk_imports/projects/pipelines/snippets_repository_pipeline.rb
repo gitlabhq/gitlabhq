@@ -55,7 +55,9 @@ module BulkImports
           Gitlab::UrlBlocker.validate!(
             url,
             allow_local_network: allow_local_requests?,
-            allow_localhost: allow_local_requests?)
+            allow_localhost: allow_local_requests?,
+            schemes: %w[http https]
+          )
         end
 
         def cleanup_snippet_repository(snippet)

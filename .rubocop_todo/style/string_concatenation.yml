@@ -265,6 +265,7 @@ Style/StringConcatenation:
     - 'spec/models/integrations/campfire_spec.rb'
     - 'spec/models/integrations/chat_message/pipeline_message_spec.rb'
     - 'spec/models/integrations/chat_message/push_message_spec.rb'
+    - 'spec/models/integrations/datadog_spec.rb'
     - 'spec/models/integrations/jenkins_spec.rb'
     - 'spec/models/merge_request_diff_spec.rb'
     - 'spec/models/merge_request_spec.rb'

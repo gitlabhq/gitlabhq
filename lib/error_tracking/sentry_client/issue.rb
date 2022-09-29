@@ -114,8 +114,10 @@ module ErrorTracking
       end
 
       def map_to_error(issue)
+        id = ensure_numeric!('id', issue.fetch('id'))
+
         Gitlab::ErrorTracking::Error.new(
-          id: issue.fetch('id'),
+          id: id,
           first_seen: issue.fetch('firstSeen', nil),
           last_seen: issue.fetch('lastSeen', nil),
           title: issue.fetch('title', nil),
@@ -124,7 +126,7 @@ module ErrorTracking
           count: issue.fetch('count', nil),
           message: issue.dig('metadata', 'value'),
           culprit: issue.fetch('culprit', nil),
-          external_url: issue_url(issue.fetch('id')),
+          external_url: issue_url(id),
           short_id: issue.fetch('shortId', nil),
           status: issue.fetch('status', nil),
           frequency: issue.dig('stats', '24h'),
@@ -135,8 +137,10 @@ module ErrorTracking
       end
 
       def map_to_detailed_error(issue)
+        id = ensure_numeric!('id', issue.fetch('id'))
+
         Gitlab::ErrorTracking::DetailedError.new(
-          id: issue.fetch('id'),
+          id: id,
           first_seen: issue.fetch('firstSeen', nil),
           last_seen: issue.fetch('lastSeen', nil),
           tags: extract_tags(issue),
@@ -146,7 +150,7 @@ module ErrorTracking
           count: issue.fetch('count', nil),
           message: issue.dig('metadata', 'value'),
           culprit: issue.fetch('culprit', nil),
-          external_url: issue_url(issue.fetch('id')),
+          external_url: issue_url(id),
           external_base_url: project_url,
           short_id: issue.fetch('shortId', nil),
           status: issue.fetch('status', nil),

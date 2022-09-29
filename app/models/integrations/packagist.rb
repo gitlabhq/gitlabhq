@@ -66,7 +66,11 @@ module Integrations
     override :hook_url
     def hook_url
       base_url = server.presence || 'https://packagist.org'
-      "#{base_url}/api/update-package?username=#{username}&apiToken=#{token}"
+      "#{base_url}/api/update-package?username={username}&apiToken={token}"
+    end
+
+    def url_variables
+      { 'username' => username, 'token' => token }
     end
   end
 end

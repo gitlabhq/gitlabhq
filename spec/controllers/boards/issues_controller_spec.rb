@@ -427,6 +427,22 @@ RSpec.describe Boards::IssuesController do
   end
 
   describe 'POST create' do
+    context 'when trying to create issue on an unauthorized project' do
+      let(:unauthorized_project) { create(:project, :private) }
+      let(:issue_params) { { project_id: unauthorized_project.id } }
+
+      it 'creates the issue on the board\'s project' do
+        expect do
+          create_issue user: user, board: board, list: list1, title: 'New issue', additional_issue_params: issue_params
+        end.to change(Issue, :count).by(1)
+
+        created_issue = Issue.last
+
+        expect(created_issue.project).to eq(project)
+        expect(unauthorized_project.reload.issues.count).to eq(0)
+      end
+    end
+
     context 'with valid params' do
       before do
         create_issue user: user, board: board, list: list1, title: 'New issue'
@@ -500,13 +516,13 @@ RSpec.describe Boards::IssuesController do
       end
     end
 
-    def create_issue(user:, board:, list:, title:)
+    def create_issue(user:, board:, list:, title:, additional_issue_params: {})
       sign_in(user)
 
       post :create, params: {
                       board_id: board.to_param,
                       list_id: list.to_param,
-                      issue: { title: title, project_id: project.id }
+                      issue: { title: title, project_id: project.id }.merge(additional_issue_params)
                     },
                     format: :json
     end

@@ -60,7 +60,7 @@ export const reportSubTextBuilder = ({ suite_errors: suiteErrors, summary }) => 
     if (suiteErrors?.base) {
       errors.push(`${i18n.baseReportParsingError} ${suiteErrors.base}`);
     }
-    return errors.join('<br />');
+    return errors;
   }
   return recentFailuresTextBuilder(summary);
 };

@@ -199,6 +199,15 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
       it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
       it_behaves_like 'issues have correct length', 3
     end
+
+    it_behaves_like 'non-numeric input handling in Sentry response', 'id' do
+      let(:sentry_api_response) do
+        issues_sample_response.first(1).map do |issue|
+          issue[:id] = id_input
+          issue
+        end
+      end
+    end
   end
 
   describe '#issue_details' do
@@ -208,8 +217,8 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
       )
     end
 
-    let(:sentry_request_url) { "#{sentry_url}/issues/#{issue_id}/" }
     let(:sentry_api_response) { issue_sample_response }
+    let(:sentry_request_url) { "#{sentry_url}/issues/#{issue_id}/" }
     let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response) }
 
     subject { client.issue_details(issue_id: issue_id) }
@@ -296,6 +305,14 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
 
       it 'has the correct tags' do
         expect(subject.tags).to eq({ level: issue_sample_response['level'], logger: issue_sample_response['logger'] })
+      end
+    end
+
+    it_behaves_like 'non-numeric input handling in Sentry response', 'id' do
+      let(:sentry_api_response) do
+        issue_sample_response.tap do |issue|
+          issue[:id] = id_input
+        end
       end
     end
   end

@@ -14,6 +14,11 @@ module Integrations
       raise NotImplementedError
     end
 
+    # Return the url variables to be used for the webhook.
+    def url_variables
+      raise NotImplementedError
+    end
+
     # Return whether the webhook should use SSL verification.
     def hook_ssl_verification
       if respond_to?(:enable_ssl_verification)
@@ -26,7 +31,11 @@ module Integrations
     # Create or update the webhook, raising an exception if it cannot be saved.
     def update_web_hook!
       hook = service_hook || build_service_hook
-      hook.url = hook_url if hook.url != hook_url # avoid reencryption
+
+      # Avoid reencryption
+      hook.url = hook_url if hook.url != hook_url
+      hook.url_variables = url_variables if hook.url_variables != url_variables
+
       hook.enable_ssl_verification = hook_ssl_verification
       hook.save! if hook.changed?
       hook

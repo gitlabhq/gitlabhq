@@ -314,6 +314,43 @@ describe('ErrorTrackingList', () => {
     });
   });
 
+  describe('when the resolve button is clicked with non numberic error id', () => {
+    beforeEach(() => {
+      store.state.list.loading = false;
+      store.state.list.errors = [
+        {
+          id: 'abc',
+          title: 'PG::ConnectionBad: FATAL',
+          type: 'error',
+          userCount: 0,
+          count: '53',
+          firstSeen: '2019-05-30T07:21:46Z',
+          lastSeen: '2019-11-06T03:21:39Z',
+          status: 'unresolved',
+        },
+      ];
+
+      mountComponent({
+        stubs: {
+          GlTable: false,
+          GlLink: false,
+        },
+      });
+    });
+
+    it('should show about:blank link', () => {
+      findErrorActions().vm.$emit('update-issue-status', {
+        errorId: 'abc',
+        status: 'resolved',
+      });
+
+      expect(actions.updateStatus).toHaveBeenCalledWith(expect.anything(), {
+        endpoint: 'about:blank',
+        status: 'resolved',
+      });
+    });
+  });
+
   describe('When error tracking is disabled and user is not allowed to enable it', () => {
     beforeEach(() => {
       mountComponent({
