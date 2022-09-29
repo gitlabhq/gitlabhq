@@ -20,6 +20,7 @@ class NotePolicy < BasePolicy
 
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
+  # If this condition changes IssuablePolicy#read_confidential_notes should be updated too
   condition(:can_read_confidential) do
     access_level >= Gitlab::Access::REPORTER || @subject.noteable_assignee_or_author?(@user) || admin?
   end

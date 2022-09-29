@@ -31,6 +31,10 @@ RSpec.describe IssuablePolicy, models: true do
         expect(policies).to be_allowed(:resolve_note)
       end
 
+      it 'allows reading confidential notes' do
+        expect(policies).to be_allowed(:read_confidential_notes)
+      end
+
       context 'when user is able to read project' do
         it 'enables user to read and update issuables' do
           expect(policies).to be_allowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request, :reopen_merge_request)
@@ -83,6 +87,15 @@ RSpec.describe IssuablePolicy, models: true do
             expect(permissions(developer, issue)).to be_allowed(:admin_incident_management_timeline_event)
           end
         end
+      end
+    end
+
+    context 'when user is assignee of issuable' do
+      let(:issue) { create(:issue, project: project, assignees: [user]) }
+      let(:policies) { described_class.new(user, issue) }
+
+      it 'allows reading confidential notes' do
+        expect(policies).to be_allowed(:read_confidential_notes)
       end
     end
 

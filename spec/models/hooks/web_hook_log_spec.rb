@@ -44,26 +44,49 @@ RSpec.describe WebHookLog do
       end
     end
 
-    context 'with author email' do
+    context "with users' emails" do
       let(:author) { create(:user) }
+      let(:user) { create(:user) }
       let(:web_hook_log) { create(:web_hook_log, request_data: data) }
       let(:data) do
         {
-          commit: {
-            author: {
-              name: author.name,
-              email: author.email
+          user: {
+            name: user.name,
+            email: user.email
+          },
+          commits: [
+            {
+              user: {
+                name: author.name,
+                email: author.email
+              }
+            },
+            {
+              user: {
+                name: user.name,
+                email: user.email
+              }
             }
-          }
+          ]
         }.deep_stringify_keys
       end
 
-      it "redacts author's email" do
-        expect(web_hook_log.request_data['commit']).to match a_hash_including(
-          'author' => {
-            'name' => author.name,
-            'email' => _('[REDACTED]')
-          }
+      it "redacts users' emails" do
+        expect(web_hook_log.request_data['user']).to match a_hash_including(
+          'name' => user.name,
+          'email' => _('[REDACTED]')
+        )
+        expect(web_hook_log.request_data['commits'].pluck('user')).to match_array(
+          [
+            {
+              'name' => author.name,
+              'email' => _('[REDACTED]')
+            },
+            {
+              'name' => user.name,
+              'email' => _('[REDACTED]')
+            }
+          ]
         )
       end
     end

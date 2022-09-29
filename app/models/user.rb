@@ -2160,6 +2160,10 @@ class User < ApplicationRecord
     Feature.enabled?(:mr_attention_requests, self)
   end
 
+  def webhook_email
+    public_email.presence || _('[REDACTED]')
+  end
+
   protected
 
   # override, from Devise::Validatable

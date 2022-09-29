@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.2.5 (2022-09-29)
+
+### Security (16 changes)
+
+- [Geo: Do not delete object stored files when not GitLab managed](gitlab-org/security/gitlab@340554d933823b0424e16318673ccd6a82e87d35) ([merge request](gitlab-org/security/gitlab!2775))
+- [Redact user's private email in group member event webhook](gitlab-org/security/gitlab@dcc5fd6bcef40109c92e0faa34bf52b568465e80) ([merge request](gitlab-org/security/gitlab!2795))
+- [Redact secrets from WebHookLogs](gitlab-org/security/gitlab@e53429f776d06b9881f20a000d1a2b40e2f13a2c) ([merge request](gitlab-org/security/gitlab!2657))
+- [Forbid creating a tag using default branch name](gitlab-org/security/gitlab@ff172ca5d5550d3ff263efaef9ce18b6b78cbfbb) ([merge request](gitlab-org/security/gitlab!2800))
+- [Sanitize Url and check for valid numerical errorId in error tracking](gitlab-org/security/gitlab@2d983dc2b99f387c1e30312cb452cf21a4aa6f27) ([merge request](gitlab-org/security/gitlab!2786))
+- [Add security protection for Github](gitlab-org/security/gitlab@9f6d284039431f1376c4be03f5d364e12090fbc7) ([merge request](gitlab-org/security/gitlab!2804))
+- [Fix leaking emails in WebHookLogs](gitlab-org/security/gitlab@7e0e629f7559ad1ad7375a4ab94748febe5fd1ef) ([merge request](gitlab-org/security/gitlab!2808))
+- [Restrict max duration to 1 year for trace display](gitlab-org/security/gitlab@2df0b5b9978b09bbc95efbea5f227e3afaa220c7) ([merge request](gitlab-org/security/gitlab!2816))
+- [Use UntrustedRegexp for upload rewriter](gitlab-org/security/gitlab@c0bd5867a091ed7d04e19a6598c2e112daca4861) ([merge request](gitlab-org/security/gitlab!2792))
+- [Validate httpUrlToRepo to be http or https only](gitlab-org/security/gitlab@98ee48505898f3b5535587c0081292d82b94009e) ([merge request](gitlab-org/security/gitlab!2761))
+- [Respect instance level rule for editing approval rules](gitlab-org/security/gitlab@7157ddbaf6be664a708b24f59be541d7e16fbbd6) ([merge request](gitlab-org/security/gitlab!2783))
+- [Prevent users creating issues in ay project via board/issues controller](gitlab-org/security/gitlab@55b2ba96fa53b2aa3e8de889bc05671339f7aa76) ([merge request](gitlab-org/security/gitlab!2779))
+- [Prevent serialization of sensible attributes from JsonCache](gitlab-org/security/gitlab@809aff4805a2916425f7ec0cd995101140f663f8) ([merge request](gitlab-org/security/gitlab!2772))
+- [Update TodoPolicy to handle confidential notes](gitlab-org/security/gitlab@b95b1bc4ea7b5d69ff02283789c68f821ec54cee) ([merge request](gitlab-org/security/gitlab!2749))
+- [Enforce group IP restriction on Dependency Proxy](gitlab-org/security/gitlab@4342542081be434e013110f9dd456b5caf286464) ([merge request](gitlab-org/security/gitlab!2765))
+- [Fixes XSS in widget extensions](gitlab-org/security/gitlab@e3d4d46967e72f12645d08ef1879223a1ec2d398) ([merge request](gitlab-org/security/gitlab!2675))
+
 ## 15.2.4 (2022-08-30)
 
 ### Security (18 changes)

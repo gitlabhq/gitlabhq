@@ -81,6 +81,14 @@ RSpec.describe Gitlab::Checks::TagCheck do
           it 'allows tag creation' do
             expect { subject.validate! }.not_to raise_error
           end
+
+          context 'when tag name is the same as default branch' do
+            let(:ref) { "refs/tags/#{project.default_branch}" }
+
+            it 'is prevented' do
+              expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /cannot use default branch name to create a tag/)
+            end
+          end
         end
       end
     end

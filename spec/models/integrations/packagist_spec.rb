@@ -26,7 +26,7 @@ RSpec.describe Integrations::Packagist do
 
   it_behaves_like Integrations::HasWebHook do
     let(:integration) { described_class.new(packagist_params) }
-    let(:hook_url) { "#{packagist_server}/api/update-package?username=#{packagist_username}&apiToken=#{packagist_token}" }
+    let(:hook_url) { "#{packagist_server}/api/update-package?username={username}&apiToken={token}" }
   end
 
   it_behaves_like Integrations::ResetSecretFields do
