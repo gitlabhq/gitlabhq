@@ -26,6 +26,7 @@ RSpec.describe GitlabSchema.types['WorkItem'] do
       created_at
       updated_at
       closed_at
+      web_url
     ]
 
     expect(described_class).to have_graphql_fields(*fields)

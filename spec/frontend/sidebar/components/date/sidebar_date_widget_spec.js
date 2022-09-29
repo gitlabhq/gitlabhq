@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
 import SidebarFormattedDate from '~/sidebar/components/date/sidebar_formatted_date.vue';
 import SidebarInheritDate from '~/sidebar/components/date/sidebar_inherit_date.vue';
@@ -165,7 +165,7 @@ describe('Sidebar date Widget', () => {
     });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   it.each`

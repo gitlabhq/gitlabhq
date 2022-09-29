@@ -12,6 +12,7 @@ RSpec.describe API::Todos do
   let_it_be(:author_2) { create(:user) }
   let_it_be(:john_doe) { create(:user, username: 'john_doe') }
   let_it_be(:issue) { create(:issue, project: project_1) }
+  let_it_be(:work_item) { create(:work_item, :task, project: project_1) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project_1) }
   let_it_be(:alert) { create(:alert_management_alert, project: project_1) }
   let_it_be(:alert_todo) { create(:todo, project: project_1, author: john_doe, user: john_doe, target: alert) }
@@ -20,6 +21,7 @@ RSpec.describe API::Todos do
   let_it_be(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe, target: issue) }
   let_it_be(:pending_3) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe) }
   let_it_be(:pending_4) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe, commit_id: 'invalid_id') }
+  let_it_be(:pending_5) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe, target: work_item, target_type: WorkItem.name) }
   let_it_be(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe, target: issue) }
   let_it_be(:award_emoji_1) { create(:award_emoji, awardable: merge_request, user: author_1, name: 'thumbsup') }
   let_it_be(:award_emoji_2) { create(:award_emoji, awardable: pending_1.target, user: author_1, name: 'thumbsup') }
@@ -69,38 +71,62 @@ RSpec.describe API::Todos do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(5)
-        expect(json_response[0]['id']).to eq(pending_3.id)
-        expect(json_response[0]['project']).to be_a Hash
-        expect(json_response[0]['author']).to be_a Hash
-        expect(json_response[0]['target_type']).to be_present
-        expect(json_response[0]['target']).to be_a Hash
-        expect(json_response[0]['target_url']).to be_present
-        expect(json_response[0]['body']).to be_present
-        expect(json_response[0]['state']).to eq('pending')
-        expect(json_response[0]['action_name']).to eq('assigned')
-        expect(json_response[0]['created_at']).to be_present
-        expect(json_response[0]['target_type']).to eq('Commit')
+        expect(json_response.length).to eq(6)
 
-        expect(json_response[1]['target_type']).to eq('Issue')
-        expect(json_response[1]['target']['upvotes']).to eq(1)
-        expect(json_response[1]['target']['downvotes']).to eq(1)
-        expect(json_response[1]['target']['merge_requests_count']).to eq(0)
+        expect(json_response[0]).to include(
+          'id' => pending_5.id,
+          'target_type' => 'WorkItem',
+          'target' => hash_including('type' => 'TASK')
+        )
 
-        expect(json_response[2]['target_type']).to eq('Issue')
-        expect(json_response[2]['target']['upvotes']).to eq(1)
-        expect(json_response[2]['target']['downvotes']).to eq(1)
-        expect(json_response[2]['target']['merge_requests_count']).to eq(0)
+        expect(json_response[1]).to include(
+          'id' => pending_3.id,
+          'project' => instance_of(Hash),
+          'author' => instance_of(Hash),
+          'target' => instance_of(Hash),
+          'state' => 'pending',
+          'action_name' => 'assigned',
+          'target_type' => 'Commit',
+          'target_url' => be_present,
+          'body' => be_present,
+          'created_at' => be_present
+        )
 
-        expect(json_response[3]['target_type']).to eq('MergeRequest')
+        expect(json_response[2]).to include(
+          'target_type' => 'Issue',
+          'target' => hash_including(
+            'upvotes' => 1,
+            'downvotes' => 1,
+            'merge_requests_count' => 0
+          )
+        )
+
+        expect(json_response[3]).to include(
+          'target_type' => 'Issue',
+          'target' => hash_including(
+            'upvotes' => 1,
+            'downvotes' => 1,
+            'merge_requests_count' => 0
+          )
+        )
+
         # Only issues get a merge request count at the moment
-        expect(json_response[3]['target']['merge_requests_count']).to be_nil
-        expect(json_response[3]['target']['upvotes']).to eq(1)
-        expect(json_response[3]['target']['downvotes']).to eq(0)
+        expect(json_response[4].dig('target', 'merge_requests_count')).to be_nil
+        expect(json_response[4]).to include(
+          'target_type' => 'MergeRequest',
+          'target' => hash_including(
+            'upvotes' => 1,
+            'downvotes' => 0
+          )
+        )
 
-        expect(json_response[4]['target_type']).to eq('AlertManagement::Alert')
-        expect(json_response[4]['target']['iid']).to eq(alert.iid)
-        expect(json_response[4]['target']['title']).to eq(alert.title)
+        expect(json_response[5]).to include(
+          'target_type' => 'AlertManagement::Alert',
+          'target' => hash_including(
+            'iid' => alert.iid,
+            'title' => alert.title
+          )
+        )
       end
 
       context "when current user does not have access to one of the TODO's target" do
@@ -111,7 +137,7 @@ RSpec.describe API::Todos do
 
           get api('/todos', john_doe)
 
-          expect(json_response.count).to eq(5)
+          expect(json_response.count).to eq(6)
           expect(json_response.map { |t| t['id'] }).not_to include(no_access_todo.id, pending_4.id)
         end
       end
@@ -169,7 +195,7 @@ RSpec.describe API::Todos do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(4)
+          expect(json_response.length).to eq(5)
         end
       end
 
@@ -180,7 +206,7 @@ RSpec.describe API::Todos do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(1)
+          expect(json_response.length).to eq(2)
         end
       end
     end
@@ -188,6 +214,10 @@ RSpec.describe API::Todos do
     it 'avoids N+1 queries', :request_store do
       create_issue_todo_for(john_doe)
       create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request)
+
+      # Destroying to preserve behavior prior to fixing todo's target as WorkItem
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/375293 remove when N + 1 are fixed
+      pending_5.destroy!
 
       get api('/todos', john_doe)
 

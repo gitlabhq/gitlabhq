@@ -17,7 +17,7 @@ import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/state
 import createFlash from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
-import { __, s__ } from '~/locale';
+import { __, s__, n__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -337,6 +337,9 @@ export default {
         ? __('Deleted the source branch.')
         : __('Did not delete the source branch.');
     },
+    sourceHasDivergedFromTarget() {
+      return this.mr.divergedCommitsCount > 0;
+    },
     showMergeDetailsHeader() {
       return ['readyToMerge'].indexOf(this.mr.state) >= 0;
     },
@@ -509,6 +512,8 @@ export default {
     mergeAndSquashCommitTemplatesHintText: s__(
       'mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more.%{linkEnd}',
     ),
+    sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch'),
+    divergedCommits: (count) => n__('%d commit behind', '%d commits behind', count),
   },
 };
 </script>
@@ -663,7 +668,7 @@ export default {
                 {{ __('Merge details') }}
               </p>
               <ul class="gl-pl-4 gl-mb-0 gl-ml-3 gl-text-gray-600">
-                <li v-if="mr.divergedCommitsCount > 0" class="gl-line-height-normal">
+                <li v-if="sourceHasDivergedFromTarget" class="gl-line-height-normal">
                   <gl-sprintf
                     :message="s__('mrWidget|The source branch is %{link} the target branch')"
                   >
@@ -703,6 +708,16 @@ export default {
               :class="{ 'gl-mb-5': shouldShowMergeControls }"
               class="gl-w-full gl-order-n1 gl-text-gray-500"
             >
+              <p v-if="sourceHasDivergedFromTarget" class="gl-display-inline gl-m-0">
+                <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                  <template #link>
+                    <gl-link :href="mr.targetBranchPath">{{
+                      $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                    }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </p>
+              <template v-if="sourceHasDivergedFromTarget"> &middot; </template>
               <added-commit-message
                 :is-squash-enabled="squashBeforeMerge"
                 :is-fast-forward-enabled="!shouldShowMergeEdit"
@@ -715,8 +730,6 @@ export default {
                   :state="mr.state"
                   :related-links="mr.relatedLinks"
                   :show-assign-to-me="false"
-                  :diverged-commits-count="mr.divergedCommitsCount"
-                  :target-branch-path="mr.targetBranchPath"
                   class="mr-ready-merge-related-links gl-display-inline"
                 />
               </template>

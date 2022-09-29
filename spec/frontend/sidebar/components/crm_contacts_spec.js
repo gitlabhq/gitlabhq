@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import CrmContacts from '~/sidebar/components/crm_contacts/crm_contacts.vue';
 import getIssueCrmContactsQuery from '~/sidebar/components/crm_contacts/queries/get_issue_crm_contacts.query.graphql';
 import issueCrmContactsSubscription from '~/sidebar/components/crm_contacts/queries/issue_crm_contacts.subscription.graphql';
@@ -47,7 +47,7 @@ describe('Issue crm contacts component', () => {
     mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   it('calls the query with correct variables', () => {

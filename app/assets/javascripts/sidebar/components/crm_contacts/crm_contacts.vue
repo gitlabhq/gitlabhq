@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/graphql_shared/constants';
 import getIssueCrmContactsQuery from './queries/get_issue_crm_contacts.query.graphql';
@@ -41,7 +41,7 @@ export default {
         return data?.issue?.customerRelationsContacts?.nodes;
       },
       error(error) {
-        createFlash({
+        createAlert({
           message: __('Something went wrong trying to load issue contacts.'),
           error,
           captureError: true,

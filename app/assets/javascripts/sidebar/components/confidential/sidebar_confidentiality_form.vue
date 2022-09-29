@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlButton } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { confidentialityQueries } from '~/sidebar/constants';
@@ -92,7 +92,7 @@ export default {
             },
           }) => {
             if (errors.length) {
-              createFlash({
+              createAlert({
                 message: errors[0],
               });
             } else {
@@ -101,7 +101,7 @@ export default {
           },
         )
         .catch(() => {
-          createFlash({
+          createAlert({
             message: sprintf(
               __('Something went wrong while setting %{issuableType} confidentiality.'),
               {

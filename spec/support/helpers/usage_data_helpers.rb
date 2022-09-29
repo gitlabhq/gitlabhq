@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 module UsageDataHelpers
-  SMAU_KEYS = %i(
-      snippet_comment
-      merge_request_comment
-      commit_comment
-    ).freeze
-
   COUNTS_KEYS = %i(
       assignee_lists
       ci_builds
@@ -109,7 +103,7 @@ module UsageDataHelpers
       uploads
       web_hooks
       user_preferences_user_gitpod_enabled
-    ).push(*SMAU_KEYS)
+    ).freeze
 
   USAGE_DATA_KEYS = %i(
       active_user_count

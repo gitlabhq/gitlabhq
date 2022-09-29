@@ -51,16 +51,12 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
   bin/rails generate migration CreateCoolWidgetRegistry --database geo
   ```
 
-Geo should continue using `Gitlab::Database::Migration[1.0]` until the `gitlab_geo` schema is supported, and is for the time being exempt from being validated by `Gitlab::Database::Migration[2.0]`. This requires a developer to manually amend the migration file to change from `[2.0]` to `[1.0]` due to the migration defaults being 2.0.
-
-For more information, see the [Enable Geo migrations to use Migration[2.0]](https://gitlab.com/gitlab-org/gitlab/-/issues/363491) issue.
-
 - [ ] Replace the contents of the migration file with the following. Note that we cannot add a foreign key constraint on `cool_widget_id` because the `cool_widgets` table is in a different database. The application code must handle logic such as propagating deletions.
 
   ```ruby
   # frozen_string_literal: true
 
-  class CreateCoolWidgetRegistry < Gitlab::Database::Migration[1.0]
+  class CreateCoolWidgetRegistry < Gitlab::Database::Migration[2.0]
     disable_ddl_transaction!
 
     def up
@@ -105,6 +101,13 @@ For more information, see the [Enable Geo migrations to use Migration[2.0]](http
   ```
 
 - [ ] If deviating from the above example, then be sure to order columns according to [our guidelines](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ordering_table_columns.md).
+
+- [ ] Add the new table to the GitLab Schema defined in [`ee/lib/ee/gitlab/database/gitlab_schemas.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/database/gitlab_schemas.yml).
+
+   ```yaml
+   cool_widget_registry: :gitlab_geo
+   ```
+
 - [ ] Run Geo tracking database migrations:
 
   ```shell
@@ -141,7 +144,7 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
         t.datetime_with_timezone :verification_started_at
         t.datetime_with_timezone :verification_retry_at
         t.datetime_with_timezone :verified_at
-        t.references :cool_widget, primary_key: true, null: false, foreign_key: { on_delete: :cascade }
+        t.references :cool_widget, primary_key: true, default: nil, index: false, foreign_key: { on_delete: :cascade }
         t.integer :verification_state, default: 0, limit: 2, null: false
         t.integer :verification_retry_count, limit: 2
         t.binary :verification_checksum, using: 'verification_checksum::bytea'
@@ -161,6 +164,12 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
   ```
 
 - [ ] If deviating from the above example, then be sure to order columns according to [our guidelines](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ordering_table_columns.md).
+
+- [ ] Add the new table to the GitLab Schema defined in [`lib/gitlab/database/gitlab_schemas.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/gitlab_schemas.yml) with the databases they need to be added to.
+
+   ```yaml
+   cool_widget_states: :gitlab_main
+   ```
 
 - [ ] Run database migrations:
 

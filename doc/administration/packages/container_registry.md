@@ -968,7 +968,7 @@ provided by `gitlab-ctl`.
 Prerequisites:
 
 - You must have installed GitLab by using an Omnibus package or the
-  [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
+  [GitLab Helm chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
 - You must set the Registry to [read-only mode](#performing-garbage-collection-without-downtime).
   Running garbage collection causes downtime for the Container Registry. When you run this command
   on an instance in an environment where another instance is still writing to the Registry storage,

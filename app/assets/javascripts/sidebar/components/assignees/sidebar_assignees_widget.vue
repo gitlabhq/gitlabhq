@@ -1,7 +1,7 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
@@ -111,7 +111,7 @@ export default {
         }
       },
       error() {
-        createFlash({ message: __('An error occurred while fetching participants.') });
+        createAlert({ message: __('An error occurred while fetching participants.') });
       },
     },
   },
@@ -191,7 +191,7 @@ export default {
           return data;
         })
         .catch(() => {
-          createFlash({ message: __('An error occurred while updating assignees.') });
+          createAlert({ message: __('An error occurred while updating assignees.') });
         })
         .finally(() => {
           this.isSettingAssignees = false;
@@ -220,7 +220,7 @@ export default {
       this.$refs.userSelect.showDropdown();
     },
     showError() {
-      createFlash({ message: __('An error occurred while fetching participants.') });
+      createAlert({ message: __('An error occurred while fetching participants.') });
     },
     setDirtyState() {
       this.isDirty = true;

@@ -38,6 +38,7 @@ module Resolvers
     def preloads
       {
         work_item_type: :work_item_type,
+        web_url: { project: { namespace: :route } },
         widgets: :work_item_type
       }
     end

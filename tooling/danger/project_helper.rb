@@ -152,7 +152,7 @@ module Tooling
         %r{\A((ee|jh)/)?spec/migrations} => :database,
         %r{\A((ee|jh)/)?spec/} => :backend,
         %r{\A((ee|jh)/)?vendor/} => :backend,
-        %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
+        %r{\A(Gemfile.*|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
         %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
         %r{\A\.rubocop_todo/.*\.yml\z} => :backend,

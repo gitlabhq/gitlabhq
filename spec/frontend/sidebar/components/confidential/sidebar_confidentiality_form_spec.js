@@ -2,7 +2,7 @@ import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import SidebarConfidentialityForm from '~/sidebar/components/confidential/sidebar_confidentiality_form.vue';
 import { confidentialityQueries } from '~/sidebar/constants';
 
@@ -63,7 +63,7 @@ describe('Sidebar Confidentiality Form', () => {
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith({
+    expect(createAlert).toHaveBeenCalledWith({
       message: 'Something went wrong while setting issue confidentiality.',
     });
   });
@@ -77,7 +77,7 @@ describe('Sidebar Confidentiality Form', () => {
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith({
+    expect(createAlert).toHaveBeenCalledWith({
       message: 'Houston, we have a problem!',
     });
   });

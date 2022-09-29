@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use Harbor as the container registry for your GitLab project.
 
-[Harbor](https://goharbor.io/) is an open source registry that can help you manage artifacts across cloud native compute platforms, like Kubernetes and Docker.
+[Harbor](https://goharbor.io/) is an open source registry that can help you manage artifacts across cloud-native compute platforms, like Kubernetes and Docker.
 
 This integration can help you if you need GitLab CI/CD and a container image repository.
 

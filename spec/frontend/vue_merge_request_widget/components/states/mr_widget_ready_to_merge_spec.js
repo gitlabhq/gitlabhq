@@ -105,6 +105,7 @@ const createComponent = (
     },
     stubs: {
       CommitEdit,
+      GlSprintf,
     },
     apolloProvider: createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]),
   });
@@ -772,6 +773,34 @@ describe('ReadyToMerge', () => {
       await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
       expect(findTipLink().exists()).toBe(true);
+    });
+  });
+
+  describe('source and target branches diverged', () => {
+    describe('when the MR is showing the Merge button', () => {
+      it('does not display the diverged commits message if the source branch is not behind the target', () => {
+        createComponent({ mr: { divergedCommitsCount: 0 } });
+
+        const textBody = wrapper.text();
+
+        expect(textBody).toEqual(
+          expect.not.stringContaining('The source branch is 0 commits behind the target branch'),
+        );
+        expect(textBody).toEqual(
+          expect.not.stringContaining('The source branch is 0 commit behind the target branch'),
+        );
+        expect(textBody).toEqual(
+          expect.not.stringContaining('The source branch is behind the target branch'),
+        );
+      });
+
+      it('shows the diverged commits text when the source branch is behind the target', () => {
+        createComponent({ mr: { divergedCommitsCount: 9001 } });
+
+        expect(wrapper.text()).toEqual(
+          expect.stringContaining('The source branch is 9001 commits behind the target branch'),
+        );
+      });
     });
   });
 

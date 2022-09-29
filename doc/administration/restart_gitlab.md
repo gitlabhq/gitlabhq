@@ -119,7 +119,7 @@ This should restart Puma, Sidekiq, GitLab Workhorse, and [Mailroom](reply_by_ema
 ## Helm chart installations
 
 There is no single command to restart the entire GitLab application installed via
-the [cloud native Helm Chart](https://docs.gitlab.com/charts/). Usually, it should be
+the [cloud-native Helm chart](https://docs.gitlab.com/charts/). Usually, it should be
 enough to restart a specific component separately (for example, `gitaly`, `puma`,
 `workhorse`, or `gitlab-shell`) by deleting all the pods related to it:
 

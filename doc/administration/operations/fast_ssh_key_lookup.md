@@ -157,7 +157,7 @@ The capabilities of GitLab Shell are not limited to Git operations.
 If you are considering switching from OpenSSH to `gitlab-sshd`, consider these concerns:
 
 - The `gitlab-sshd` component is only available for
-  [Cloud Native Helm Charts](https://docs.gitlab.com/charts/) deployments.
+  [GitLab Helm chart](https://docs.gitlab.com/charts/) deployments.
 - `gitlab-sshd` supports the PROXY protocol. It can run behind proxy servers that rely
   on it, such as HAProxy. The PROXY protocol not enabled by default, but can be enabled with a Helm chart setting.
 - By default, `gitlab-sshd` binds to port 22, but you can configure a different port in the Helm chart.
