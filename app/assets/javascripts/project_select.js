@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 
 import $ from 'jquery';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Api from './api';
 import { loadCSSFile } from './lib/utils/css_utils';
 import { s__ } from './locale';
@@ -67,7 +67,7 @@ const projectSelect = async () => {
             },
             projectsCallback,
           ).catch(() => {
-            createFlash({
+            createAlert({
               message: s__('ProjectSelect|Something went wrong while fetching projects'),
             });
           });

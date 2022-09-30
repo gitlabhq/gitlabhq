@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import {
   getQueryHeaders,
@@ -59,7 +59,7 @@ export default {
         return project?.pipeline;
       },
       error() {
-        createFlash({ message: this.$options.i18n.linkedPipelinesFetchError });
+        createAlert({ message: this.$options.i18n.linkedPipelinesFetchError });
       },
     },
     pipelineStages: {
@@ -78,7 +78,7 @@ export default {
         return project?.pipeline?.stages?.nodes || [];
       },
       error() {
-        createFlash({ message: this.$options.i18n.stagesFetchError });
+        createAlert({ message: this.$options.i18n.stagesFetchError });
       },
     },
   },
@@ -108,7 +108,7 @@ export default {
       try {
         this.formattedStages = formatStages(this.pipelineStages, this.stages);
       } catch (error) {
-        createFlash({
+        createAlert({
           message: this.$options.i18n.stageConversionError,
           captureError: true,
           error,

@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlLink } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
@@ -44,7 +44,7 @@ export default {
         return project?.pipeline?.detailedStatus || {};
       },
       error() {
-        createFlash({ message: this.$options.PIPELINE_STATUS_FETCH_ERROR });
+        createAlert({ message: this.$options.PIPELINE_STATUS_FETCH_ERROR });
       },
     },
   },

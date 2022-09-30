@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { PROJECT_BRANCHES_ERROR } from '~/projects/commit/constants';
 import * as actions from '~/projects/commit/store/actions';
@@ -68,7 +68,7 @@ describe('Commit form modal store actions', () => {
 
       await testAction(actions.fetchBranches, {}, state, [], [{ type: 'requestBranches' }]);
 
-      expect(createFlash).toHaveBeenCalledWith({ message: PROJECT_BRANCHES_ERROR });
+      expect(createAlert).toHaveBeenCalledWith({ message: PROJECT_BRANCHES_ERROR });
     });
   });
 

@@ -2,7 +2,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown_legacy.vue';
 
@@ -79,7 +79,7 @@ describe('RevisionDropdown component', () => {
     axiosMock.onGet('some/invalid/path').replyOnce(404);
 
     await wrapper.vm.fetchBranchesAndTags();
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   describe('GlDropdown component', () => {

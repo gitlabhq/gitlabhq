@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/flash';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
 import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
 import { i18n } from '~/profile/preferences/constants';
@@ -149,7 +149,10 @@ describe('ProfilePreferences component', () => {
       const successEvent = new CustomEvent('ajax:success');
       form.dispatchEvent(successEvent);
 
-      expect(createFlash).toHaveBeenCalledWith({ message: i18n.defaultSuccess, type: 'notice' });
+      expect(createAlert).toHaveBeenCalledWith({
+        message: i18n.defaultSuccess,
+        variant: VARIANT_INFO,
+      });
     });
 
     it('displays the custom success message', () => {
@@ -157,14 +160,17 @@ describe('ProfilePreferences component', () => {
       const successEvent = new CustomEvent('ajax:success', { detail: [{ message }] });
       form.dispatchEvent(successEvent);
 
-      expect(createFlash).toHaveBeenCalledWith({ message, type: 'notice' });
+      expect(createAlert).toHaveBeenCalledWith({ message, variant: VARIANT_INFO });
     });
 
     it('displays the default error message', () => {
       const errorEvent = new CustomEvent('ajax:error');
       form.dispatchEvent(errorEvent);
 
-      expect(createFlash).toHaveBeenCalledWith({ message: i18n.defaultError, type: 'alert' });
+      expect(createAlert).toHaveBeenCalledWith({
+        message: i18n.defaultError,
+        variant: VARIANT_DANGER,
+      });
     });
 
     it('displays the custom error message', () => {
@@ -172,7 +178,7 @@ describe('ProfilePreferences component', () => {
       const errorEvent = new CustomEvent('ajax:error', { detail: [{ message }] });
       form.dispatchEvent(errorEvent);
 
-      expect(createFlash).toHaveBeenCalledWith({ message, type: 'alert' });
+      expect(createAlert).toHaveBeenCalledWith({ message, variant: VARIANT_DANGER });
     });
   });
 

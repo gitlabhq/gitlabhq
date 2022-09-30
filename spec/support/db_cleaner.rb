@@ -79,21 +79,18 @@ module DbCleaner
   end
 
   def force_disconnect_all_connections!
-    all_connection_classes.each do |connection_class|
-      # We use `connection_pool` to avoid going through
-      # Load Balancer since it does retry ops
-      pool = connection_class.connection_pool
+    cmd = <<~SQL
+      SELECT pg_terminate_backend(pg_stat_activity.pid)
+      FROM pg_stat_activity
+      WHERE datname = current_database()
+        AND pid <> pg_backend_pid();
+    SQL
 
-      # Force disconnect https://www.cybertec-postgresql.com/en/terminating-database-connections-in-postgresql/
-      pool.connection.execute(<<-SQL)
-        SELECT pg_terminate_backend(pid)
-          FROM pg_stat_activity
-          WHERE datname = #{pool.connection.quote(pool.db_config.database)}
-            AND pid != pg_backend_pid();
-      SQL
-
-      connection_class.connection_pool.disconnect!
+    Gitlab::Database::EachDatabase.each_database_connection(include_shared: false) do |connection|
+      connection.execute(cmd)
     end
+
+    ActiveRecord::Base.clear_all_connections! # rubocop:disable Database/MultipleDatabases
   end
 end
 

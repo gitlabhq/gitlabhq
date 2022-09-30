@@ -1,6 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlDropdownSectionHeader } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 
@@ -74,7 +74,7 @@ export default {
           this.tags = data.Tags || [];
         })
         .catch(() => {
-          createFlash({
+          createAlert({
             message: `${s__(
               'CompareRevisions|There was an error while updating the branch/tag list. Please try again.',
             )}`,

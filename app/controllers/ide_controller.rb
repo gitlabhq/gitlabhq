@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class IdeController < ApplicationController
-  layout 'fullscreen'
-
   include ClientsidePreviewCSP
   include StaticObjectExternalStorageCSP
   include Gitlab::Utils::StrongMemoize
@@ -28,6 +26,8 @@ class IdeController < ApplicationController
       Gitlab::Tracking.event(self.class.to_s, 'web_ide_views',
         namespace: project&.namespace, user: current_user)
     end
+
+    render layout: 'fullscreen', locals: { minimal: Feature.enabled?(:vscode_web_ide, current_user) }
   end
 
   private

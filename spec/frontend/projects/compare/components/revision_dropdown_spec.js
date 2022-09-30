@@ -2,7 +2,7 @@ import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
 import { revisionDropdownDefaultProps as defaultProps } from './mock_data';
@@ -67,7 +67,7 @@ describe('RevisionDropdown component', () => {
     createComponent();
 
     await wrapper.vm.fetchBranchesAndTags();
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   it('makes a new request when refsProjectPath is changed', async () => {
@@ -93,7 +93,7 @@ describe('RevisionDropdown component', () => {
       createComponent();
 
       await wrapper.vm.searchBranchesAndTags();
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
 
     it('makes request with search param', async () => {

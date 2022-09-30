@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitBoxPipelineStatus from '~/projects/commit_box/info/components/commit_box_pipeline_status.vue';
 import {
@@ -78,7 +78,7 @@ describe('Commit box pipeline status', () => {
       expect(findStatusIcon().exists()).toBe(true);
 
       expect(findLoadingIcon().exists()).toBe(false);
-      expect(createFlash).toHaveBeenCalledTimes(0);
+      expect(createAlert).toHaveBeenCalledTimes(0);
     });
 
     it('should link to the latest pipeline', () => {
@@ -97,12 +97,12 @@ describe('Commit box pipeline status', () => {
   });
 
   describe('error state', () => {
-    it('createFlash should show if there is an error fetching the pipeline status', async () => {
+    it('createAlert should show if there is an error fetching the pipeline status', async () => {
       createComponent(failedHandler);
 
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: PIPELINE_STATUS_FETCH_ERROR,
       });
     });

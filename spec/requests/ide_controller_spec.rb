@@ -14,6 +14,8 @@ RSpec.describe IdeController do
   let_it_be(:creator) { project.creator }
   let_it_be(:other_user) { create(:user) }
 
+  let_it_be(:top_nav_partial) { 'layouts/header/_default' }
+
   let(:user) { creator }
   let(:branch) { '' }
 
@@ -231,6 +233,25 @@ RSpec.describe IdeController do
 
             expect_no_snowplow_event
           end
+        end
+      end
+
+      # This indirectly tests that `minimal: true` was passed to the fullscreen layout
+      it 'does not render top nav' do
+        subject
+
+        expect(response).not_to render_template(top_nav_partial)
+      end
+
+      context 'without vscode_web_ide feature flag' do
+        before do
+          stub_feature_flags(vscode_web_ide: false)
+        end
+
+        it 'renders top nav' do
+          subject
+
+          expect(response).to render_template(top_nav_partial)
         end
       end
     end

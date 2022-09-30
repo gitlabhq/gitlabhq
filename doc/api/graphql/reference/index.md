@@ -5647,6 +5647,10 @@ Input type: `VulnerabilityExternalIssueLinkDestroyInput`
 
 ### `Mutation.vulnerabilityFindingDismiss`
 
+WARNING:
+**Deprecated** in 15.5.
+Use VulnerabilityDismiss for vulnerabilities or SecurityFindingDismiss for pipeline findings.
+
 Input type: `VulnerabilityFindingDismissInput`
 
 #### Arguments

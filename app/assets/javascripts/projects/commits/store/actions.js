@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -13,7 +13,7 @@ export default {
     commit(types.COMMITS_AUTHORS, authors);
   },
   receiveAuthorsError() {
-    createFlash({
+    createAlert({
       message: __('An error occurred fetching the project authors.'),
     });
   },

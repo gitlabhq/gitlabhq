@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import UpdateUsername from '~/profile/account/components/update_username.vue';
@@ -149,7 +149,7 @@ describe('UpdateUsername component', () => {
 
       await expect(wrapper.vm.onConfirm()).rejects.toThrow();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Invalid username',
       });
     });
@@ -161,7 +161,7 @@ describe('UpdateUsername component', () => {
 
       await expect(wrapper.vm.onConfirm()).rejects.toThrow();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while updating your username, please try again.',
       });
     });
