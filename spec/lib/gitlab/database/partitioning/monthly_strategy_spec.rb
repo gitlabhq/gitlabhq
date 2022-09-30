@@ -29,10 +29,11 @@ RSpec.describe Gitlab::Database::Partitioning::MonthlyStrategy do
     end
 
     it 'detects both partitions' do
-      expect(subject).to eq([
-        Gitlab::Database::Partitioning::TimePartition.new(table_name, nil, '2020-05-01', partition_name: '_test_partitioned_test_000000'),
-        Gitlab::Database::Partitioning::TimePartition.new(table_name, '2020-05-01', '2020-06-01', partition_name: '_test_partitioned_test_202005')
-    ])
+      expect(subject).to eq(
+        [
+          Gitlab::Database::Partitioning::TimePartition.new(table_name, nil, '2020-05-01', partition_name: '_test_partitioned_test_000000'),
+          Gitlab::Database::Partitioning::TimePartition.new(table_name, '2020-05-01', '2020-06-01', partition_name: '_test_partitioned_test_202005')
+        ])
     end
   end
 

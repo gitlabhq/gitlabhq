@@ -41,10 +41,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
       sticking.stick_or_unstick_request(env, :user, 42)
       sticking.stick_or_unstick_request(env, :runner, '123456789')
 
-      expect(env[Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].to_a).to eq([
-        [sticking, :user, 42],
-        [sticking, :runner, '123456789']
-      ])
+      expect(env[Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].to_a).to eq(
+        [
+          [sticking, :user, 42],
+          [sticking, :runner,
+           '123456789']
+        ])
     end
   end
 

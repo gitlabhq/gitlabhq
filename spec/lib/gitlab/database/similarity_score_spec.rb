@@ -78,10 +78,11 @@ RSpec.describe Gitlab::Database::SimilarityScore do
 
   describe 'score multiplier' do
     let(:order_expression) do
-      Gitlab::Database::SimilarityScore.build_expression(search: search, rules: [
-        { column: Arel.sql('path'), multiplier: 1 },
-        { column: Arel.sql('name'), multiplier: 0.8 }
-      ]).to_sql
+      Gitlab::Database::SimilarityScore.build_expression(search: search, rules:
+        [
+          { column: Arel.sql('path'), multiplier: 1 },
+          { column: Arel.sql('name'), multiplier: 0.8 }
+        ]).to_sql
     end
 
     let(:search) { 'different' }
@@ -93,10 +94,11 @@ RSpec.describe Gitlab::Database::SimilarityScore do
 
   describe 'annotation' do
     it 'annotates the generated SQL expression' do
-      expression = Gitlab::Database::SimilarityScore.build_expression(search: 'test', rules: [
-        { column: Arel.sql('path'), multiplier: 1 },
-        { column: Arel.sql('name'), multiplier: 0.8 }
-      ])
+      expression = Gitlab::Database::SimilarityScore.build_expression(search: 'test', rules:
+        [
+          { column: Arel.sql('path'), multiplier: 1 },
+          { column: Arel.sql('name'), multiplier: 0.8 }
+        ])
 
       expect(Gitlab::Database::SimilarityScore).to be_order_by_similarity(expression)
     end

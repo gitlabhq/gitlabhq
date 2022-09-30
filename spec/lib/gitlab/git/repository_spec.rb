@@ -1769,12 +1769,13 @@ RSpec.describe Gitlab::Git::Repository do
     it 'returns exactly the expected results' do
       languages = repository.languages(TestEnv::BRANCH_SHA['master'])
 
-      expect(languages).to match_array([
-        { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516" },
-        { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-        { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-        { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776" }
-      ])
+      expect(languages).to match_array(
+        [
+          { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516" },
+          { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+          { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+          { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+        ])
     end
 
     it "uses the repository's HEAD when no ref is passed" do

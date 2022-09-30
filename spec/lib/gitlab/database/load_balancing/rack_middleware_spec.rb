@@ -9,10 +9,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   let(:single_sticking_object) { Set.new([[ActiveRecord::Base.sticking, :user, 42]]) }
   let(:multiple_sticking_objects) do
     Set.new([
-      [ActiveRecord::Base.sticking, :user, 42],
-      [ActiveRecord::Base.sticking, :runner, '123456789'],
-      [ActiveRecord::Base.sticking, :runner, '1234']
-    ])
+              [ActiveRecord::Base.sticking, :user, 42],
+              [ActiveRecord::Base.sticking, :runner, '123456789'],
+              [ActiveRecord::Base.sticking, :runner, '1234']
+            ])
   end
 
   after do
@@ -182,11 +182,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
       it 'returns the sticking object' do
         env = { described_class::STICK_OBJECT => multiple_sticking_objects }
 
-        expect(middleware.sticking_namespaces(env)).to eq([
-          [ActiveRecord::Base.sticking, :user, 42],
-          [ActiveRecord::Base.sticking, :runner, '123456789'],
-          [ActiveRecord::Base.sticking, :runner, '1234']
-        ])
+        expect(middleware.sticking_namespaces(env)).to eq(
+          [
+            [ActiveRecord::Base.sticking, :user, 42],
+            [ActiveRecord::Base.sticking, :runner, '123456789'],
+            [ActiveRecord::Base.sticking, :runner, '1234']
+          ])
       end
     end
 

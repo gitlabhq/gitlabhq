@@ -28,7 +28,7 @@ RSpec.describe 'layouts/_flash' do
       let(:flash) { { flash_type => 'This is a closable flash message' } }
 
       it 'shows a close button' do
-        expect(rendered).to include('js-close-icon')
+        expect(rendered).to include('js-close')
       end
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe 'layouts/_flash' do
       let(:flash) { { flash_type => 'This is a non closable flash message' } }
 
       it 'does not show a close button' do
-        expect(rendered).not_to include('js-close-icon')
+        expect(rendered).not_to include('js-close')
       end
     end
   end

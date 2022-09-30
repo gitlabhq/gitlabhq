@@ -313,11 +313,6 @@
   category: geo
   redis_slot: geo
   aggregation: daily
-# Growth
-- name: users_clicking_registration_features_offer
-  category: growth
-  redis_slot: users
-  aggregation: weekly
 # Manage
 - name: unique_active_user
   category: manage

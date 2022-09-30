@@ -53,15 +53,16 @@ RSpec.describe Gitlab::Database::ObsoleteIgnoredColumns do
   describe '#execute' do
     it 'returns a list of class names and columns pairs' do
       travel_to(REMOVE_DATE) do
-        expect(subject.execute).to eq([
-          ['Testing::A', {
-            'unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0'),
-            'also_unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-02-01'), '12.1')
-          }],
-          ['Testing::B', {
-            'other' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0')
-          }]
-        ])
+        expect(subject.execute).to eq(
+          [
+            ['Testing::A', {
+              'unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0'),
+              'also_unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-02-01'), '12.1')
+            }],
+            ['Testing::B', {
+              'other' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0')
+            }]
+          ])
       end
     end
   end

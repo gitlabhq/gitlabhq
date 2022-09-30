@@ -134,7 +134,7 @@
 {"name":"email_reply_trimmer","version":"0.1.6","platform":"ruby","checksum":"9fede222ce660993e4e2e3dad282535ceb7914e246eb8302c19aa9e021f7326e"},
 {"name":"email_spec","version":"2.2.0","platform":"ruby","checksum":"60b7980580a835e7f676db60667f17a2d60e8e0e39c26d81cfc231805c544d79"},
 {"name":"encryptor","version":"3.0.0","platform":"ruby","checksum":"abf23f94ab4d864b8cea85b43f3432044a60001982cda7c33c1cd90da8db1969"},
-{"name":"erubi","version":"1.9.0","platform":"ruby","checksum":"7d84d6037396418c4ba30bc40ed7a0aec9beb567ce55bcecb12e8c0cb1ed9fdb"},
+{"name":"erubi","version":"1.11.0","platform":"ruby","checksum":"fda72d577feaf3bdcd646d33fa630be5f92f48e179a9278e4175a9cec20e7f85"},
 {"name":"escape_utils","version":"1.2.1","platform":"ruby","checksum":"e5292fe8d7e12a9bcb4502d99e28fb602e4e1514690d98a1c4957f6f77b4b162"},
 {"name":"et-orbi","version":"1.2.7","platform":"ruby","checksum":"3b693d47f94a4060ccc07e60adda488759b1e8b9228a633ebbad842dfc245fb4"},
 {"name":"ethon","version":"0.15.0","platform":"ruby","checksum":"0809805a035bc10f54162ca99f15ded49e428e0488bcfe1c08c821e18261a74d"},

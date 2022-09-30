@@ -3,21 +3,6 @@
 Layout/FirstArrayElementIndentation:
   Details: grace period
   Exclude:
-    - 'spec/lib/gitlab/database/each_database_spec.rb'
-    - 'spec/lib/gitlab/database/load_balancing/rack_middleware_spec.rb'
-    - 'spec/lib/gitlab/database/load_balancing/sticking_spec.rb'
-    - 'spec/lib/gitlab/database/obsolete_ignored_columns_spec.rb'
-    - 'spec/lib/gitlab/database/partitioning/monthly_strategy_spec.rb'
-    - 'spec/lib/gitlab/database/partitioning/sliding_list_strategy_spec.rb'
-    - 'spec/lib/gitlab/database/partitioning/time_partition_spec.rb'
-    - 'spec/lib/gitlab/database/partitioning_spec.rb'
-    - 'spec/lib/gitlab/database/similarity_score_spec.rb'
-    - 'spec/lib/gitlab/diff/char_diff_spec.rb'
-    - 'spec/lib/gitlab/diff/file_collection_sorter_spec.rb'
-    - 'spec/lib/gitlab/error_tracking/stack_trace_highlight_decorator_spec.rb'
-    - 'spec/lib/gitlab/git/repository_spec.rb'
-    - 'spec/lib/gitlab/gitaly_client/blob_service_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/diff_notes_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/issues_importer_spec.rb'
     - 'spec/lib/gitlab/search/found_blob_spec.rb'
     - 'spec/lib/gitlab/serializer/ci/variables_spec.rb'

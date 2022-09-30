@@ -13,8 +13,12 @@ end
 module Gitlab
   module Patch
     module SidekiqCronPoller
+      def enqueue
+        super if poll_interval_average > 0
+      end
+
       def poll_interval_average
-        Sidekiq.options[:poll_interval] || Sidekiq::Cron::POLL_INTERVAL
+        Sidekiq.options[:cron_poll_interval]
       end
     end
   end

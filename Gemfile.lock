@@ -413,7 +413,7 @@ GEM
       launchy (~> 2.1)
       mail (~> 2.7)
     encryptor (3.0.0)
-    erubi (1.9.0)
+    erubi (1.11.0)
     escape_utils (1.2.1)
     et-orbi (1.2.7)
       tzinfo
@@ -1586,7 +1586,6 @@ DEPENDENCIES
   email_reply_trimmer (~> 0.1)
   email_spec (~> 2.2.0)
   error_tracking_open_api!
-  erubi (~> 1.9.0)
   escape_utils (~> 1.1)
   factory_bot_rails (~> 6.2.0)
   faraday (~> 1.0)

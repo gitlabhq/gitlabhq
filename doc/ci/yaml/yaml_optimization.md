@@ -220,7 +220,7 @@ multiple jobs. It is similar to [YAML anchors](#anchors), but simpler and you ca
 [use `extends` with `includes`](#use-extends-and-include-together).
 
 `extends` supports multi-level inheritance. You should avoid using more than three levels,
-but you can use as many as eleven. The following example has two levels of inheritance:
+due to the additional complexity, but you can use as many as eleven. The following example has two levels of inheritance:
 
 ```yaml
 .tests:
