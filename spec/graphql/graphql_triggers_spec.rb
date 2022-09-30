@@ -75,4 +75,18 @@ RSpec.describe GraphqlTriggers do
       GraphqlTriggers.issuable_dates_updated(work_item)
     end
   end
+
+  describe '.merge_request_reviewers_updated' do
+    it 'triggers the mergeRequestReviewersUpdated subscription' do
+      merge_request = build_stubbed(:merge_request)
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        'mergeRequestReviewersUpdated',
+        { issuable_id: merge_request.to_gid },
+        merge_request
+      ).and_call_original
+
+      GraphqlTriggers.merge_request_reviewers_updated(merge_request)
+    end
+  end
 end

@@ -1101,9 +1101,6 @@ msgstr ""
 msgid "%{text} is available"
 msgstr ""
 
-msgid "%{timebox_name} should belong either to a project or a group."
-msgstr ""
-
 msgid "%{timebox_type} does not support burnup charts"
 msgstr ""
 
@@ -7578,7 +7575,7 @@ msgstr ""
 msgid "Cannot promote issue due to insufficient permissions."
 msgstr ""
 
-msgid "Cannot refer to a group %{timebox_type} by an internal id!"
+msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
@@ -47595,9 +47592,6 @@ msgstr ""
 msgid "is not allowed. Please use your regular email address."
 msgstr ""
 
-msgid "is not allowed. We do not currently support project-level iterations"
-msgstr ""
-
 msgid "is not in the group enforcing Group Managed Account"
 msgstr ""
 
@@ -47728,6 +47722,9 @@ msgid "mergedCommitsAdded| (commits were squashed)"
 msgstr ""
 
 msgid "metric_id must be unique across a project"
+msgstr ""
+
+msgid "milestone should belong either to a project or a group."
 msgstr ""
 
 msgid "missing"

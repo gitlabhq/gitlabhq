@@ -5,9 +5,35 @@ require 'spec_helper'
 RSpec.describe Milestone do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:issue) { create(:issue, project: project) }
 
+  describe 'modules' do
+    context 'with a project' do
+      it_behaves_like 'AtomicInternalId' do
+        let(:internal_id_attribute) { :iid }
+        let(:instance) { build(:milestone, project: create(:project), group: nil) }
+        let(:scope) { :project }
+        let(:scope_attrs) { { project: instance.project } }
+        let(:usage) { :milestones }
+      end
+    end
+
+    context 'with a group' do
+      it_behaves_like 'AtomicInternalId' do
+        let(:internal_id_attribute) { :iid }
+        let(:instance) { build(:milestone, project: nil, group: create(:group)) }
+        let(:scope) { :group }
+        let(:scope_attrs) { { namespace: instance.group } }
+        let(:usage) { :milestones }
+      end
+    end
+  end
+
   it_behaves_like 'a timebox', :milestone do
+    let(:project) { create(:project, :public) }
+    let(:timebox) { create(:milestone, project: project) }
+
     describe "#uniqueness_of_title" do
       context "per project" do
         it "does not accept the same title in a project twice" do
@@ -25,7 +51,7 @@ RSpec.describe Milestone do
       end
 
       context "per group" do
-        let(:timebox) { create(:milestone, *timebox_args, group: group) }
+        let(:timebox) { create(:milestone, group: group) }
 
         before do
           project.update!(group: group)
@@ -96,9 +122,22 @@ RSpec.describe Milestone do
         end
       end
     end
+
+    describe '#parent_type_check' do
+      let(:milestone) { build(:milestone, group: group) }
+
+      it 'is invalid if it has both project_id and group_id' do
+        milestone.project = project
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:project_id]).to include("milestone should belong either to a project or a group.")
+      end
+    end
   end
 
   describe "Associations" do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:group) }
     it { is_expected.to have_many(:releases) }
     it { is_expected.to have_many(:milestone_releases) }
   end
@@ -562,6 +601,57 @@ RSpec.describe Milestone do
     it { is_expected.not_to match("gitlab-org/gitlab-ce/milestones/123") }
   end
 
+  describe '#merge_requests_enabled?' do
+    context "per project" do
+      it "is true for projects with MRs enabled" do
+        project = create(:project, :merge_requests_enabled)
+        milestone = build(:milestone, project: project)
+
+        expect(milestone.merge_requests_enabled?).to be_truthy
+      end
+
+      it "is false for projects with MRs disabled" do
+        project = create(:project, :repository_enabled, :merge_requests_disabled)
+        milestone = build(:milestone, project: project)
+
+        expect(milestone.merge_requests_enabled?).to be_falsey
+      end
+
+      it "is false for projects with repository disabled" do
+        project = create(:project, :repository_disabled)
+        milestone = build(:milestone, project: project)
+
+        expect(milestone.merge_requests_enabled?).to be_falsey
+      end
+    end
+
+    context "per group" do
+      let(:milestone) { build(:milestone, group: group) }
+
+      it "is always true for groups, for performance reasons" do
+        expect(milestone.merge_requests_enabled?).to be_truthy
+      end
+    end
+  end
+
+  describe '#resource_parent' do
+    context 'when group is present' do
+      let(:milestone) { build(:milestone, group: group) }
+
+      it 'returns the group' do
+        expect(milestone.resource_parent).to eq(group)
+      end
+    end
+
+    context 'when project is present' do
+      let(:milestone) { build(:milestone, project: project) }
+
+      it 'returns the project' do
+        expect(milestone.resource_parent).to eq(project)
+      end
+    end
+  end
+
   describe '#parent' do
     context 'with group' do
       it 'returns the expected parent' do
@@ -595,6 +685,42 @@ RSpec.describe Milestone do
         group = create(:group)
 
         expect(build(:milestone, group: group).subgroup_milestone?).to eq(false)
+      end
+    end
+  end
+
+  describe '#project_milestone?' do
+    context 'when project_id is present' do
+      let(:milestone) { build(:milestone, project: project) }
+
+      it 'returns true' do
+        expect(milestone.project_milestone?).to be_truthy
+      end
+    end
+
+    context 'when project_id is not present' do
+      let(:milestone) { build(:milestone, group: group) }
+
+      it 'returns false' do
+        expect(milestone.project_milestone?).to be_falsey
+      end
+    end
+  end
+
+  describe '#group_milestone?' do
+    context 'when group_id is present' do
+      let(:milestone) { build(:milestone, group: group) }
+
+      it 'returns true' do
+        expect(milestone.group_milestone?).to be_truthy
+      end
+    end
+
+    context 'when group_id is not present' do
+      let(:milestone) { build(:milestone, project: project) }
+
+      it 'returns false' do
+        expect(milestone.group_milestone?).to be_falsey
       end
     end
   end

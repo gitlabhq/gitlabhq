@@ -24,6 +24,14 @@ module GraphqlTriggers
   def self.issuable_dates_updated(issuable)
     GitlabSchema.subscriptions.trigger('issuableDatesUpdated', { issuable_id: issuable.to_gid }, issuable)
   end
+
+  def self.merge_request_reviewers_updated(merge_request)
+    GitlabSchema.subscriptions.trigger(
+      'mergeRequestReviewersUpdated',
+      { issuable_id: merge_request.to_gid },
+      merge_request
+    )
+  end
 end
 
 GraphqlTriggers.prepend_mod

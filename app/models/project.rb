@@ -263,7 +263,6 @@ class Project < ApplicationRecord
   has_many :integrations
   has_many :events
   has_many :milestones
-  has_many :iterations
 
   # Projects with a very large number of notes may time out destroying them
   # through the foreign key. Additionally, the deprecated attachment uploader

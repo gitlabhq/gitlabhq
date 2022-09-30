@@ -125,12 +125,15 @@ GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_valu
 
 ## List a group's subgroups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15142) in GitLab 10.3.
-
 Get a list of visible direct subgroups in this group.
-When accessed without authentication, only public groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+
+If you request this list as:
+
+- An unauthenticated user, the response returns only public groups.
+- An authenticated user, the response returns only the groups you're
+a member of and does not include public groups.
 
 Parameters:
 

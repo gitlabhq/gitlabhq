@@ -98,8 +98,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/services/personal_access_tokens/groups/update_lifetime_service_spec.rb'
     - 'ee/spec/services/sbom/ingestion/occurrence_map_spec.rb'
     - 'ee/spec/services/security/report_summary_service_spec.rb'
-    - 'ee/spec/services/vulnerabilities/create_from_security_finding_service_spec.rb'
-    - 'ee/spec/services/vulnerabilities/findings/create_from_security_finding_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/security_finding/create_issue_service_spec.rb'
     - 'ee/spec/views/subscriptions/groups/edit.html.haml_spec.rb'
     - 'ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb'

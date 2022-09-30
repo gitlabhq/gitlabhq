@@ -99,8 +99,6 @@ RSpec/PredicateMatcher:
     - 'ee/spec/services/jira/requests/issues/list_service_spec.rb'
     - 'ee/spec/services/milestones/promote_service_spec.rb'
     - 'ee/spec/services/protected_environments/create_service_spec.rb'
-    - 'ee/spec/services/vulnerabilities/create_from_security_finding_service_spec.rb'
-    - 'ee/spec/services/vulnerabilities/findings/create_from_security_finding_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/manually_create_service_spec.rb'
     - 'ee/spec/services/vulnerability_exports/export_service_spec.rb'
     - 'ee/spec/support/shared_examples/graphql/mutations/dast_on_demand_scans_shared_examples.rb'

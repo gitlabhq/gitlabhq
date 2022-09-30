@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a timebox' do |timebox_type|
-  let(:project) { create(:project, :public) }
-  let(:group) { create(:group) }
   let(:timebox_args) { [] }
-  let(:timebox) { create(timebox_type, *timebox_args, project: project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
   let(:timebox_table_name) { timebox_type.to_s.pluralize.to_sym }
@@ -13,28 +10,6 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
   let(:mid_point) { Time.now.utc.to_date }
   let(:open_on_left) { nil }
   let(:open_on_right) { nil }
-
-  describe 'modules' do
-    context 'with a project' do
-      it_behaves_like 'AtomicInternalId' do
-        let(:internal_id_attribute) { :iid }
-        let(:instance) { build(timebox_type, *timebox_args, project: create(:project), group: nil) }
-        let(:scope) { :project }
-        let(:scope_attrs) { { project: instance.project } }
-        let(:usage) { timebox_table_name }
-      end
-    end
-
-    context 'with a group' do
-      it_behaves_like 'AtomicInternalId' do
-        let(:internal_id_attribute) { :iid }
-        let(:instance) { build(timebox_type, *timebox_args, project: nil, group: create(:group)) }
-        let(:scope) { :group }
-        let(:scope_attrs) { { namespace: instance.group } }
-        let(:usage) { timebox_table_name }
-      end
-    end
-  end
 
   describe "Validation" do
     before do
@@ -65,21 +40,9 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
         expect(timebox.errors[:due_date]).to include("date must not be after 9999-12-31")
       end
     end
-
-    describe '#timebox_type_check' do
-      it 'is invalid if it has both project_id and group_id' do
-        timebox = build(timebox_type, *timebox_args, group: group)
-        timebox.project = project
-
-        expect(timebox).not_to be_valid
-        expect(timebox.errors[:project_id]).to include("#{timebox_type} should belong either to a project or a group.")
-      end
-    end
   end
 
   describe "Associations" do
-    it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:group) }
     it { is_expected.to have_many(:issues) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:labels).through(:issues) }
@@ -91,38 +54,6 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     end
   end
 
-  describe '#project_timebox?' do
-    context 'when project_id is present' do
-      it 'returns true' do
-        expect(timebox.project_timebox?).to be_truthy
-      end
-    end
-
-    context 'when project_id is not present' do
-      let(:timebox) { build(timebox_type, *timebox_args, group: group) }
-
-      it 'returns false' do
-        expect(timebox.project_timebox?).to be_falsey
-      end
-    end
-  end
-
-  describe '#group_timebox?' do
-    context 'when group_id is present' do
-      let(:timebox) { build(timebox_type, *timebox_args, group: group) }
-
-      it 'returns true' do
-        expect(timebox.group_timebox?).to be_truthy
-      end
-    end
-
-    context 'when group_id is not present' do
-      it 'returns false' do
-        expect(timebox.group_timebox?).to be_falsey
-      end
-    end
-  end
-
   describe '#safe_title' do
     let(:timebox) { create(timebox_type, *timebox_args, title: "<b>foo & bar -> 2.2</b>") }
 
@@ -131,60 +62,11 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
     end
   end
 
-  describe '#resource_parent' do
-    context 'when group is present' do
-      let(:timebox) { build(timebox_type, *timebox_args, group: group) }
-
-      it 'returns the group' do
-        expect(timebox.resource_parent).to eq(group)
-      end
-    end
-
-    context 'when project is present' do
-      it 'returns the project' do
-        expect(timebox.resource_parent).to eq(project)
-      end
-    end
-  end
-
   describe "#title" do
     let(:timebox) { create(timebox_type, *timebox_args, title: "<b>foo & bar -> 2.2</b>") }
 
     it "sanitizes title" do
       expect(timebox.title).to eq("foo & bar -> 2.2")
-    end
-  end
-
-  describe '#merge_requests_enabled?' do
-    context "per project" do
-      it "is true for projects with MRs enabled" do
-        project = create(:project, :merge_requests_enabled)
-        timebox = create(timebox_type, *timebox_args, project: project)
-
-        expect(timebox.merge_requests_enabled?).to be_truthy
-      end
-
-      it "is false for projects with MRs disabled" do
-        project = create(:project, :repository_enabled, :merge_requests_disabled)
-        timebox = create(timebox_type, *timebox_args, project: project)
-
-        expect(timebox.merge_requests_enabled?).to be_falsey
-      end
-
-      it "is false for projects with repository disabled" do
-        project = create(:project, :repository_disabled)
-        timebox = create(timebox_type, *timebox_args, project: project)
-
-        expect(timebox.merge_requests_enabled?).to be_falsey
-      end
-    end
-
-    context "per group" do
-      let(:timebox) { create(timebox_type, *timebox_args, group: group) }
-
-      it "is always true for groups, for performance reasons" do
-        expect(timebox.merge_requests_enabled?).to be_truthy
-      end
     end
   end
 

@@ -5,13 +5,16 @@ require 'spec_helper'
 RSpec.describe 'CI Lint', :js do
   include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
 
   let(:content_selector) { '.content .view-lines' }
 
-  before do
+  before_all do
     project.add_developer(user)
+  end
+
+  before do
     sign_in(user)
 
     visit project_ci_lint_path(project)
