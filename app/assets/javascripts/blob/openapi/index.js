@@ -1,5 +1,5 @@
 import { SwaggerUIBundle } from 'swagger-ui-dist';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
 export default () => {
@@ -15,7 +15,7 @@ export default () => {
       });
     })
     .catch((error) => {
-      createFlash({
+      createAlert({
         message: __('Something went wrong while initializing the OpenAPI viewer'),
       });
       throw error;

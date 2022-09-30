@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'fast_spec_helper'
+require 'spec_helper'
 require 'sawyer'
 
 require_relative '../../config/initializers/sawyer_patch'
@@ -64,6 +64,28 @@ RSpec.describe 'sawyer_patch' do
     expect(sawyer_resource.count_total).to eq(1)
     expect(sawyer_resource.count_total?).to eq(true)
     expect(sawyer_resource.count_total + 1).to eq(2)
+    sawyer_resource.count_total = 3
+    expect(sawyer_resource.count_total).to eq(3)
     expect(sawyer_resource.user.name).to eq('User name')
+  end
+
+  it 'logs when a sawyer resource dynamic method is called' do
+    sawyer_resource = Sawyer::Resource.new(
+      Sawyer::Agent.new(''),
+      {
+        count_total: 1,
+        user: { name: 'User name' }
+      }
+    )
+    expected_attributes = []
+    allow(Gitlab::Import::Logger).to receive(:warn) do |params|
+      expected_attributes.push(params[:attribute])
+    end
+
+    sawyer_resource.count_total
+    sawyer_resource.user
+    sawyer_resource.user.name
+
+    expect(expected_attributes).to match_array(%i[count_total user user name])
   end
 end

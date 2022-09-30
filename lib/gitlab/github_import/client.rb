@@ -69,7 +69,7 @@ module Gitlab
       #
       # username - The username of the user.
       def user(username)
-        with_rate_limit { octokit.user(username) }
+        with_rate_limit { octokit.user(username).to_h }
       end
 
       def pull_request_reviews(repo_name, iid)
@@ -88,7 +88,7 @@ module Gitlab
       end
 
       def pull_request(repo_name, iid)
-        with_rate_limit { octokit.pull_request(repo_name, iid) }
+        with_rate_limit { octokit.pull_request(repo_name, iid).to_h }
       end
 
       def labels(*args)
@@ -150,7 +150,7 @@ module Gitlab
 
         each_page(method, *args) do |page|
           page.objects.each do |object|
-            yield object
+            yield object.to_h
           end
         end
       end

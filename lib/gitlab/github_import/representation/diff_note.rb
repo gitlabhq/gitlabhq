@@ -19,7 +19,7 @@ module Gitlab
 
         # Builds a diff note from a GitHub API response.
         #
-        # note - An instance of `Sawyer::Resource` containing the note details.
+        # note - An instance of `Hash` containing the note details.
         def self.from_api_response(note, additional_data = {})
           matches = note[:html_url].match(NOTEABLE_ID_REGEX)
 

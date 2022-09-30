@@ -39,7 +39,7 @@ module Gitlab
       #
       # If the object has no author ID we'll use the ID of the GitLab ghost
       # user.
-      # object - An instance of `Sawyer::Resource` or a `Github::Representer`
+      # object - An instance of `Hash` or a `Github::Representer`
       def author_id_for(object, author_key: :author)
         user_info = case author_key
                     when :actor
@@ -70,7 +70,7 @@ module Gitlab
 
       # Returns the GitLab user ID for a GitHub user.
       #
-      # user - An instance of `Gitlab::GithubImport::Representation::User` or `Sawyer::Resource`.
+      # user - An instance of `Gitlab::GithubImport::Representation::User` or `Hash`.
       def user_id_for(user)
         find(user[:id], user[:login]) if user.present?
       end

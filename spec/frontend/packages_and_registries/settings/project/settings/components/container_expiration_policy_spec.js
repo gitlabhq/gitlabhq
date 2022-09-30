@@ -16,7 +16,11 @@ import {
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
-import { expirationPolicyPayload, emptyExpirationPolicyPayload } from '../mock_data';
+import {
+  expirationPolicyPayload,
+  emptyExpirationPolicyPayload,
+  nullExpirationPolicyPayload,
+} from '../mock_data';
 
 describe('Container expiration policy project settings', () => {
   let wrapper;
@@ -78,15 +82,30 @@ describe('Container expiration policy project settings', () => {
     expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
   });
 
+  it('when loading does not render form or alert components', () => {
+    mountComponentWithApollo({
+      resolver: jest.fn().mockResolvedValue(),
+    });
+
+    expect(findFormComponent().exists()).toBe(false);
+    expect(findAlert().exists()).toBe(false);
+  });
+
   describe('the form is disabled', () => {
-    it('the form is hidden', () => {
-      mountComponent();
+    it('hides the form', async () => {
+      mountComponentWithApollo({
+        resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+      });
+      await waitForPromises();
 
       expect(findFormComponent().exists()).toBe(false);
     });
 
-    it('shows an alert', () => {
-      mountComponent();
+    it('shows an alert', async () => {
+      mountComponentWithApollo({
+        resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+      });
+      await waitForPromises();
 
       const text = findAlert().text();
       expect(text).toContain(UNAVAILABLE_FEATURE_INTRO_TEXT);
@@ -94,8 +113,12 @@ describe('Container expiration policy project settings', () => {
     });
 
     describe('an admin is visiting the page', () => {
-      it('shows the admin part of the alert message', () => {
-        mountComponent({ ...defaultProvidedValues, isAdmin: true });
+      it('shows the admin part of the alert message', async () => {
+        mountComponentWithApollo({
+          provide: { ...defaultProvidedValues, isAdmin: true },
+          resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+        });
+        await waitForPromises();
 
         const sprintf = findAlert().findComponent(GlSprintf);
         expect(sprintf.text()).toBe('administration settings');

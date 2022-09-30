@@ -90,7 +90,7 @@ RSpec.describe 'Merge Request Discussion Lock', :js do
       end
 
       it 'the user can lock the merge_request' do
-        click_button 'Toggle dropdown'
+        click_button 'Merge request actions'
 
         expect(page).to have_content('Lock merge request')
       end
@@ -103,7 +103,7 @@ RSpec.describe 'Merge Request Discussion Lock', :js do
       end
 
       it 'the user can unlock the merge_request' do
-        click_button 'Toggle dropdown'
+        click_button 'Merge request actions'
 
         expect(page).to have_content('Unlock merge request')
       end

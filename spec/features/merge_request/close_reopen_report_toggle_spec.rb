@@ -24,14 +24,14 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
 
       context 'close/reopen/report toggle' do
         it 'opens a dropdown when toggle is clicked' do
-          click_button 'Toggle dropdown'
+          click_button 'Merge request actions'
 
           expect(container).to have_link("Close merge request")
           expect(container).to have_link('Report abuse')
         end
 
         it 'links to Report Abuse' do
-          click_button 'Toggle dropdown'
+          click_button 'Merge request actions'
           click_link 'Report abuse'
 
           expect(page).to have_content('Report abuse to admin')
@@ -42,7 +42,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
         let(:issuable) { create(:merge_request, :opened, source_project: project) }
 
         it 'shows the `Edit` and `Mark as draft` buttons' do
-          click_button 'Toggle dropdown'
+          click_button 'Merge request actions'
 
           expect(container).to have_link('Edit')
           expect(container).to have_link('Mark as draft')
@@ -56,7 +56,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
         let(:issuable) { create(:merge_request, :closed, source_project: project) }
 
         it 'shows both the `Edit` and `Reopen` button' do
-          click_button 'Toggle dropdown'
+          click_button 'Merge request actions'
 
           expect(container).to have_link('Edit')
           expect(container).to have_link('Report abuse')
@@ -68,7 +68,7 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle' do
           let(:issuable) { create(:merge_request, :closed, source_project: project, author: user) }
 
           it 'shows both the `Edit` and `Reopen` button' do
-            click_button 'Toggle dropdown'
+            click_button 'Merge request actions'
 
             expect(container).to have_link('Edit')
             expect(container).to have_link('Reopen merge request')

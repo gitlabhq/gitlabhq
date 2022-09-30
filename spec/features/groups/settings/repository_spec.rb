@@ -2,14 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Repository settings' do
+RSpec.describe 'Group Repository settings', :js do
   include WaitForRequests
 
-  let(:user) { create(:user) }
-  let(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group, reload: true) { create(:group) }
+
+  before_all do
+    group.add_owner(user)
+  end
 
   before do
-    group.add_owner(user)
     sign_in(user)
   end
 
@@ -20,9 +23,26 @@ RSpec.describe 'Group Repository settings' do
       stub_container_registry_config(enabled: true)
     end
 
-    it_behaves_like 'a deploy token in settings' do
-      let(:entity_type) { 'group' }
-      let(:page_path) { group_settings_repository_path(group) }
+    context 'when ajax deploy tokens is enabled' do
+      before do
+        stub_feature_flags(ajax_new_deploy_token: true)
+      end
+
+      it_behaves_like 'a deploy token in settings' do
+        let(:entity_type) { 'group' }
+        let(:page_path) { group_settings_repository_path(group) }
+      end
+    end
+
+    context 'when ajax deploy tokens is disabled' do
+      before do
+        stub_feature_flags(ajax_new_deploy_token: false)
+      end
+
+      it_behaves_like 'a deploy token in settings' do
+        let(:entity_type) { 'group' }
+        let(:page_path) { group_settings_repository_path(group) }
+      end
     end
   end
 

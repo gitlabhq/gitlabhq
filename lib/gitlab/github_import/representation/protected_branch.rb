@@ -16,12 +16,12 @@ module Gitlab
         # https://docs.github.com/en/rest/branches/branch-protection#get-branch-protection
         # branch_protection - An instance of `Sawyer::Resource` containing the protection details.
         def self.from_api_response(branch_protection, _additional_object_data = {})
-          branch_name = branch_protection.url.match(%r{/branches/(\S{1,255})/protection$})[1]
+          branch_name = branch_protection[:url].match(%r{/branches/(\S{1,255})/protection$})[1]
 
           hash = {
             id: branch_name,
-            allow_force_pushes: branch_protection.allow_force_pushes.enabled,
-            required_conversation_resolution: branch_protection.required_conversation_resolution.enabled
+            allow_force_pushes: branch_protection.dig(:allow_force_pushes, :enabled),
+            required_conversation_resolution: branch_protection.dig(:required_conversation_resolution, :enabled)
           }
 
           new(hash)

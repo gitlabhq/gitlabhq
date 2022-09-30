@@ -309,7 +309,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
 
   describe '#each_object_to_import' do
     let(:importer) { importer_class.new(project, client) }
-    let(:object) { double(:object) }
+    let(:object) { {} }
 
     before do
       expect(importer)

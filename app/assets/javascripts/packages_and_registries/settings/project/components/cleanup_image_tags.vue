@@ -57,6 +57,9 @@ export default {
     isEnabled() {
       return this.containerExpirationPolicy || this.enableHistoricEntries;
     },
+    isLoading() {
+      return this.$apollo.queries.containerExpirationPolicy.loading;
+    },
     showDisabledFormMessage() {
       return !this.isEnabled && !this.fetchSettingsError;
     },
@@ -86,10 +89,10 @@ export default {
     <container-expiration-policy-form
       v-if="isEnabled"
       v-model="workingCopy"
-      :is-loading="$apollo.queries.containerExpirationPolicy.loading"
+      :is-loading="isLoading"
       :is-edited="isEdited"
     />
-    <template v-else>
+    <template v-if="!isLoading">
       <gl-alert
         v-if="showDisabledFormMessage"
         :dismissible="false"

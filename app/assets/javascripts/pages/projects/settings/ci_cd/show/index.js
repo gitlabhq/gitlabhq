@@ -10,6 +10,7 @@ import initSharedRunnersToggle from '~/projects/settings/mount_shared_runners_to
 import initSettingsPanels from '~/settings_panels';
 import { initTokenAccess } from '~/token_access';
 import { initCiSecureFiles } from '~/ci_secure_files';
+import initDeployTokens from '~/deploy_tokens';
 
 // Initialize expandable settings panels
 initSettingsPanels();
@@ -34,6 +35,7 @@ document.querySelector('.js-toggle-extra-settings').addEventListener('click', (e
 });
 
 registrySettingsApp();
+initDeployTokens();
 initDeployFreeze();
 
 initSettingsPipelinesTriggers();

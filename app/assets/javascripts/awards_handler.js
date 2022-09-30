@@ -7,7 +7,7 @@ import { getEmojiScoreWithIntent } from '~/emoji/utils';
 import { getCookie, setCookie, scrollToElement } from '~/lib/utils/common_utils';
 import * as Emoji from '~/emoji';
 import { dispose, fixTitle } from '~/tooltips';
-import createFlash from './flash';
+import { createAlert } from '~/flash';
 import axios from './lib/utils/axios_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { __ } from './locale';
@@ -491,7 +491,7 @@ export class AwardsHandler {
         }
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Something went wrong on our end.'),
         }),
       );

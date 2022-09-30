@@ -152,6 +152,22 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
   end
 
+  describe '#each_object' do
+    it 'converts each object into a hash' do
+      client = described_class.new('foo')
+
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:get, 'https://api.github.com/repos/foo/bar/releases?per_page=100')
+        .to_return(status: 200, body: [{ id: 1 }].to_json, headers: { 'Content-Type' => 'application/json' })
+
+      client.each_object(:releases, 'foo/bar') do |release|
+        expect(release).to eq({ id: 1 })
+      end
+    end
+  end
+
   describe '#each_page' do
     let(:client) { described_class.new('foo') }
     let(:object1) { double(:object1) }

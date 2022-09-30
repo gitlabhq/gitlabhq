@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../../../constants';
@@ -18,7 +18,7 @@ export const addDraftToDiscussion = ({ commit }, { endpoint, data }) =>
       return res;
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: __('An error occurred adding a draft to the thread.'),
       });
     });
@@ -32,7 +32,7 @@ export const createNewDraft = ({ commit }, { endpoint, data }) =>
       return res;
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: __('An error occurred adding a new draft.'),
       });
     });
@@ -44,7 +44,7 @@ export const deleteDraft = ({ commit, getters }, draft) =>
       commit(types.DELETE_DRAFT, draft.id);
     })
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __('An error occurred while deleting the comment'),
       }),
     );
@@ -62,7 +62,7 @@ export const fetchDrafts = ({ commit, getters, state, dispatch }) =>
       });
     })
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __('An error occurred while fetching pending comments'),
       }),
     );
@@ -122,7 +122,7 @@ export const updateDraft = (
     .then((data) => commit(types.RECEIVE_DRAFT_UPDATE_SUCCESS, data))
     .then(callback)
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __('An error occurred while updating the comment'),
       }),
     );

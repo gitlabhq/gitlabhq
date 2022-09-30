@@ -13130,6 +13130,9 @@ msgstr ""
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr ""
 
+msgid "DeployTokens|Allows read and write access to registry images."
+msgstr ""
+
 msgid "DeployTokens|Allows read and write access to the package registry."
 msgstr ""
 
@@ -13175,6 +13178,9 @@ msgstr ""
 msgid "DeployTokens|Enter an expiration date for your token. Defaults to never expire."
 msgstr ""
 
+msgid "DeployTokens|Expiration date (optional)"
+msgstr ""
+
 msgid "DeployTokens|Expires"
 msgstr ""
 
@@ -13196,6 +13202,9 @@ msgstr ""
 msgid "DeployTokens|Scopes"
 msgstr ""
 
+msgid "DeployTokens|Scopes (select at least one)"
+msgstr ""
+
 msgid "DeployTokens|This %{entity_type} has no active Deploy Tokens."
 msgstr ""
 
@@ -13209,6 +13218,12 @@ msgid "DeployTokens|Use this token as a password. Save it. This password can %{i
 msgstr ""
 
 msgid "DeployTokens|Username"
+msgstr ""
+
+msgid "DeployTokens|Username (optional)"
+msgstr ""
+
+msgid "DeployTokens|Your New Deploy Token"
 msgstr ""
 
 msgid "DeployTokens|Your new Deploy Token username"
@@ -41346,6 +41361,9 @@ msgstr ""
 msgid "This will remove the fork relationship between this project and other projects in the fork network."
 msgstr ""
 
+msgid "Thread options"
+msgstr ""
+
 msgid "Thread to reply to cannot be found"
 msgstr ""
 
@@ -41944,9 +41962,6 @@ msgstr ""
 msgid "Toggle commit list"
 msgstr ""
 
-msgid "Toggle dropdown"
-msgstr ""
-
 msgid "Toggle emoji award"
 msgstr ""
 
@@ -42211,9 +42226,6 @@ msgstr ""
 msgid "Trials|Go back to GitLab"
 msgstr ""
 
-msgid "Trials|Hey there"
-msgstr ""
-
 msgid "Trials|Skip Trial"
 msgstr ""
 
@@ -42228,6 +42240,11 @@ msgstr ""
 
 msgid "Trials|You won't get a free trial right now but you can always resume this process by selecting your avatar and choosing 'Start an Ultimate trial'"
 msgstr ""
+
+msgid "Trials|You've got %{daysRemaining} day remaining on GitLab %{planName}!"
+msgid_plural "Trials|You've got %{daysRemaining} days remaining on GitLab %{planName}!"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
 msgstr ""

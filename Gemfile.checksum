@@ -79,7 +79,7 @@
 {"name":"claide-plugins","version":"0.9.2","platform":"ruby","checksum":"c7ea78bc067ab23bce8515497cdcdcb8f01c86dadfbe13c44644e382922c1c2e"},
 {"name":"coderay","version":"1.1.3","platform":"ruby","checksum":"dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b"},
 {"name":"colored2","version":"3.1.2","platform":"ruby","checksum":"b13c2bd7eeae2cf7356a62501d398e72fde78780bd26aec6a979578293c28b4a"},
-{"name":"commonmarker","version":"0.23.4","platform":"ruby","checksum":"95d9cb050576376374a66d71a4feab3562e0955aab9d80a3e8606a5cf5e9c7ce"},
+{"name":"commonmarker","version":"0.23.6","platform":"ruby","checksum":"c8aeaaaff4ba497bf180f762db63a0069794fafb6eff221224c9c8199d337b38"},
 {"name":"concurrent-ruby","version":"1.1.10","platform":"ruby","checksum":"244cb1ca0d91ec2c15ca2209507c39fb163336994428e16fbd3f465c87bd8e68"},
 {"name":"connection_pool","version":"2.2.5","platform":"ruby","checksum":"13a8fc3921ce4df8e04fb65f1037251decb08d74757b41163688bd1c1feccd39"},
 {"name":"contracts","version":"0.11.0","platform":"ruby","checksum":"df6e438efa89c31dd3095851c3f7a25dfdae36b35ff1d4547f1d92941b3c7286"},

@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
 import BlobFileDropzone from '../blob/blob_file_dropzone';
@@ -79,7 +79,7 @@ export default () => {
         initPopovers();
       })
       .catch((e) =>
-        createFlash({
+        createAlert({
           message: e,
         }),
       );

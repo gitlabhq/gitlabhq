@@ -13,7 +13,7 @@ module Gitlab
 
         # Builds a PullRequestReview from a GitHub API response.
         #
-        # review - An instance of `Sawyer::Resource` containing the note details.
+        # review - An instance of `Hash` containing the note details.
         def self.from_api_response(review, additional_data = {})
           user = Representation::User.from_api_response(review[:user]) if review[:user]
 

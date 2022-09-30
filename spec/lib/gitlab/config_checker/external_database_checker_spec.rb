@@ -11,7 +11,7 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
     let(:new_database) { instance_double(Gitlab::Database::Reflection) }
 
     before do
-      allow(Gitlab::Database::Reflection).to receive(:new).and_call_original
+      allow(Gitlab::Database::Reflection).to receive(:new).and_return(new_database)
       allow(old_database).to receive(:postgresql_minimum_supported_version?).and_return(false)
       allow(old_database).to receive(:version).and_return(old_database_version)
       allow(new_database).to receive(:postgresql_minimum_supported_version?).and_return(true)

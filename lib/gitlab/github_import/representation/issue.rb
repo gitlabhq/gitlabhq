@@ -15,7 +15,7 @@ module Gitlab
 
         # Builds an issue from a GitHub API response.
         #
-        # issue - An instance of `Sawyer::Resource` containing the issue
+        # issue - An instance of `Hash` containing the issue
         #         details.
         def self.from_api_response(issue, additional_data = {})
           user =

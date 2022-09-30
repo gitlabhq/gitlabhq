@@ -229,12 +229,12 @@ To set the busy status indicator, either:
 - Set it directly:
   1. On the top bar, in the top-right corner, select your avatar.
   1. Select **Set status** or, if you have already set a status, **Edit status**.
-  1. Select the **Busy** checkbox.
+  1. Select the **Set yourself as busy** checkbox.
 
 - Set it on your profile:
   1. On the top bar, in the top-right corner, select your avatar.
   1. Select **Edit profile**.
-  1. In the **Current status** section, select the **Busy** checkbox.
+  1. In the **Current status** section, select the **Set yourself as busy** checkbox.
 
   The busy status is displayed in the user interface.
 

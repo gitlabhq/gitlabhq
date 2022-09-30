@@ -25,7 +25,7 @@ RSpec.describe 'Projects > Settings > Repository settings' do
   context 'for maintainer' do
     let(:role) { :maintainer }
 
-    context 'Deploy tokens' do
+    context 'Deploy tokens', :js do
       let!(:deploy_token) { create(:deploy_token, projects: [project]) }
 
       before do

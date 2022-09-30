@@ -48,6 +48,8 @@ module Gitlab
         def each_object_to_import(&block)
           each_review_page do |page, merge_request|
             page.objects.each do |review|
+              review = review.to_h
+
               next if already_imported?(review)
 
               Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)

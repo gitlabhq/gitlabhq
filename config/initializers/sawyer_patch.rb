@@ -24,6 +24,16 @@ module SawyerClassPatch
           end
         else
           define_method attribute do
+            Gitlab::Import::Logger.warn(
+              Gitlab::ApplicationContext.current.merge(
+                {
+                  message: 'Sawyer attribute called',
+                  attribute: attribute,
+                  caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
+                }
+              )
+            )
+
             @attrs[attribute.to_sym]
           end
 

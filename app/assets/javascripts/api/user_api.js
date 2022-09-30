@@ -1,5 +1,5 @@
 import { DEFAULT_PER_PAGE } from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
@@ -55,7 +55,7 @@ export function getUserProjects(userId, query, options, callback) {
     })
     .then(({ data }) => callback(data))
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __('Something went wrong while fetching projects'),
       }),
     );

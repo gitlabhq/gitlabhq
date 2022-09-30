@@ -168,15 +168,13 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
     end
   end
 
-  describe 'unclosed image links' do
-    it 'detects a significat number of unclosed image links' do
-      markdown = '![a ' * 30
-      msg = <<~TEXT
-        Unable to render markdown - too many unclosed markdown image links detected.
-      TEXT
-      output = described_class.to_html(markdown, project: nil)
+  describe 'cmark-gfm and autlolinks' do
+    it 'does not hang with significant number of unclosed image links' do
+      markdown = '![a ' * 300000
 
-      expect(output).to include(msg.strip)
+      expect do
+        Timeout.timeout(2.seconds) { described_class.to_html(markdown, project: nil) }
+      end.not_to raise_error
     end
   end
 end
