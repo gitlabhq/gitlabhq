@@ -1,6 +1,6 @@
 # microsoft_graph_mailer
 
-This gem allows delivery of emails using [Microsoft Graph API](https://docs.microsoft.com/en-us/graph/api/user-sendmail) with [OAuth 2.0 client credentials flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow).
+This gem allows delivery of emails using [Microsoft Graph API](https://learn.microsoft.com/en-us/graph/api/user-sendmail) with [OAuth 2.0 client credentials flow](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow).
 
 ## The reason for this gem
 
@@ -30,7 +30,7 @@ gem install microsoft_graph_mailer
 
 To use the Microsoft Graph API to send mails, you will
 need to create an application in the Azure Active Directory. See the
-[Microsoft instructions](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) for more details:
+[Microsoft instructions](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) for more details:
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
 1. Search for and select `Azure Active Directory`.

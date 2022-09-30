@@ -70,12 +70,12 @@ export default {
   },
   computed: {
     mdTable() {
+      const header = 'header';
       return [
-        // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-        '| header | header |', // eslint-disable-line @gitlab/require-i18n-strings
+        `| ${header} | ${header} |`,
         '| ------ | ------ |',
-        '| cell | cell |', // eslint-disable-line @gitlab/require-i18n-strings
-        '| cell | cell |', // eslint-disable-line @gitlab/require-i18n-strings
+        '|        |        |',
+        '|        |        |',
       ].join('\n');
     },
     mdSuggestion() {

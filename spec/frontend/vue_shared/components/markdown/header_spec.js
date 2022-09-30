@@ -142,7 +142,7 @@ describe('Markdown field header component', () => {
     const tableButton = findToolbarButtonByProp('icon', 'table');
 
     expect(tableButton.props('tag')).toEqual(
-      '| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |',
+      '| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |',
     );
   });
 
