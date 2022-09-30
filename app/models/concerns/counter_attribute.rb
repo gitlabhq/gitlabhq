@@ -131,14 +131,14 @@ module CounterAttribute
   end
 
   def update_counters_with_lease(increments)
-    detect_race_on_record(log_fields: increments.merge({ caller: __method__ })) do
+    detect_race_on_record(log_fields: { caller: __method__, attributes: increments.keys }) do
       self.class.update_counters(id, increments)
     end
   end
 
   def reset_counter!(attribute)
     if counter_attribute_enabled?(attribute)
-      detect_race_on_record(log_fields: { caller: __method__ }) do
+      detect_race_on_record(log_fields: { caller: __method__, attributes: attribute }) do
         update!(attribute => 0)
         clear_counter!(attribute)
       end
@@ -219,13 +219,25 @@ module CounterAttribute
   def detect_race_on_record(log_fields: {})
     return yield unless Feature.enabled?(:counter_attribute_db_lease_for_update, project)
 
-    in_lock(database_lock_key, retries: 2) do
+    # Ensure attributes is always an array before we log
+    log_fields[:attributes] = Array(log_fields[:attributes])
+
+    Gitlab::AppLogger.info(
+      message: 'Acquiring lease for project statistics update',
+      project_statistics_id: id,
+      project_id: project.id,
+      **log_fields,
+      **Gitlab::ApplicationContext.current
+    )
+
+    in_lock(database_lock_key, retries: 0) do
       yield
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     Gitlab::AppLogger.warn(
-      message: 'Concurrent update to project statistics detected',
+      message: 'Concurrent project statistics update detected',
       project_statistics_id: id,
+      project_id: project.id,
       **log_fields,
       **Gitlab::ApplicationContext.current
     )

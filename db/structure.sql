@@ -12833,7 +12833,8 @@ CREATE TABLE ci_job_token_project_scope_links (
     source_project_id bigint NOT NULL,
     target_project_id bigint NOT NULL,
     added_by_id bigint,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    direction smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE ci_job_token_project_scope_links_id_seq

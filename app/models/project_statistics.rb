@@ -50,17 +50,16 @@ class ProjectStatistics < ApplicationRecord
   def refresh!(only: [])
     return if Gitlab::Database.read_only?
 
-    COLUMNS_TO_REFRESH.each do |column, generator|
-      if only.empty? || only.include?(column)
-        public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
-      end
+    columns_to_update = only.empty? ? COLUMNS_TO_REFRESH : COLUMNS_TO_REFRESH & only
+    columns_to_update.each do |column|
+      public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
     end
 
     if only.empty? || only.any? { |column| NAMESPACE_RELATABLE_COLUMNS.include?(column) }
       schedule_namespace_aggregation_worker
     end
 
-    detect_race_on_record(log_fields: { caller: __method__ }) do
+    detect_race_on_record(log_fields: { caller: __method__, attributes: columns_to_update }) do
       save!
     end
   end
@@ -114,7 +113,7 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def refresh_storage_size!
-    detect_race_on_record(log_fields: { caller: __method__ }) do
+    detect_race_on_record(log_fields: { caller: __method__, attributes: :storage_size }) do
       update!(storage_size: STORAGE_SIZE_SUM)
     end
   end

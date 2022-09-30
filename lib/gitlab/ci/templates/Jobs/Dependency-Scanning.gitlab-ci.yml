@@ -50,6 +50,8 @@ dependency_scanning:
   artifacts:
     paths:
       - "**/gl-sbom-*.cdx.json"
+    reports:
+      cyclonedx: "**/gl-sbom-*.cdx.json"
 
 .gemnasium-shared-rule:
   exists:

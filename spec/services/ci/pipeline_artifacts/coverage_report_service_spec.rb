@@ -35,6 +35,7 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportService do
         end
 
         it 'logs relevant information' do
+          allow(Gitlab::AppLogger).to receive(:info).and_call_original
           expect(Gitlab::AppLogger).to receive(:info).with({
                                                              project_id: project.id,
                                                              pipeline_id: pipeline.id,

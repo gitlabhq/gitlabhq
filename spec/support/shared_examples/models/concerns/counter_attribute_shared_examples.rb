@@ -104,7 +104,14 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
         model.delayed_increment_counter(incremented_attribute, -3)
       end
 
-      it 'updates the record and logs it' do
+      it 'updates the record and logs it', :aggregate_failures do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'Acquiring lease for project statistics update',
+            attributes: [incremented_attribute]
+          )
+        )
+
         expect(Gitlab::AppLogger).to receive(:info).with(
           hash_including(
             message: 'Flush counter attribute to database',
