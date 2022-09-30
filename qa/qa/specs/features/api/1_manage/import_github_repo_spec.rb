@@ -41,6 +41,7 @@ module QA
         aggregate_failures do
           verify_status_data
           verify_repository_import
+          verify_protected_branches_import
           verify_commits_import
           verify_labels_import
           verify_issues_import
@@ -67,6 +68,21 @@ module QA
       def verify_repository_import
         expect(imported_project.reload!.description).to eq('Project for github import test')
         expect(imported_project.api_response[:import_error]).to be_nil
+      end
+
+      def verify_protected_branches_import
+        branches = imported_project.protected_branches.map do |branch|
+          branch.slice(:name, :allow_force_push, :code_owner_approval_required)
+        end
+        expect(branches.first).to include(
+          {
+            name: 'main'
+            # TODO: Add validation once https://gitlab.com/groups/gitlab-org/-/epics/8585 is closed
+            # At the moment both options are always set to false regardless of state in github
+            # allow_force_push: true,
+            # code_owner_approval_required: true
+          }
+        )
       end
 
       def verify_commits_import
@@ -122,7 +138,7 @@ module QA
           mr.iid = merge_requests.first[:iid]
           mr.api_client = api_client
         end.reload!
-        mr_comments = merge_request.comments.map { |comment| comment[:body] } # rubocop:disable Rails/Pluck
+        mr_comments = merge_request.comments.map { |comment| comment[:body] }
 
         expect(merge_requests.length).to eq(1)
         expect(merge_request.api_resource).to include(

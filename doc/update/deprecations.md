@@ -809,6 +809,29 @@ To align with this change, API calls to list external status checks will also re
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### GraphQL API Runner will not accept `status` filter values of `active` or `paused`
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The GitLab Runner GraphQL endpoints will stop accepting `paused` or `active` as a status value in GitLab 16.0.
+
+A runner's status will only relate to runner contact status, such as: `online`, `offline`.
+Status values `paused` or `active` will no longer be accepted and will be replaced by the `paused` query parameter.
+
+When checking for paused runners, API users are advised to specify `paused: true` as the query parameter.
+When checking for active runners, specify `paused: false`.
+
+The REST API endpoints will follow in the same direction in a future REST v5 API, however the new `paused`
+status value can be used in place of `active` since GitLab 14.8.
+
+</div>
+
 <div class="deprecation removal-150 breaking-change">
 
 ### GraphQL ID and GlobalID compatibility
@@ -968,40 +991,6 @@ The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTren
 
 <div class="deprecation removal-160 breaking-change">
 
-### REST API Runner will not accept `status` filter values of `active` or `paused`
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The GitLab Runner REST endpoints will stop accepting `paused` or `active` as a status value in GitLab 16.0.
-
-A runner's status will only relate to runner contact status, such as: `online`, `offline`.
-Status values `paused` or `active` will no longer be accepted and will be replaced by the `paused` query parameter.
-
-When checking for paused runners, API users are advised to specify `paused=true` as the query parameter.
-When checking for active runners, specify `paused=false`.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### REST API endpoint to list group runners no longer accepts `project_type` value for `type` argument
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The `GET /groups/:id/runners?type=project_type` endpoint will be removed in GitLab 16.0. The endpoint always returned an empty collection.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
 ### REST and GraphQL API Runner usage of `active` replaced by `paused`
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
@@ -1010,15 +999,16 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-Occurrences of the `active` identifier in the GitLab Runner REST and GraphQL API endpoints will be
-renamed to `paused` in GitLab 16.0, namely:
+Occurrences of the `active` identifier in the GitLab Runner GraphQL API endpoints will be
+renamed to `paused` in GitLab 16.0.
 
-- GraphQL API:
-  - the `CiRunner` property;
-  - the `RunnerUpdateInput` input type for the `runnerUpdate` mutation;
-  - the `runners` and `Group.runners` queries.
-- REST API:
-  - endpoints taking or returning `active` properties, such as:
+- For the GraphQL API, this change affects:
+  - the `CiRunner` property
+  - the `RunnerUpdateInput` input type for the `runnerUpdate` mutation
+  - the `runners` and `Group.runners` queries
+- In v4 of the REST API, starting in GitLab 14.8, you can use the `paused` property in place of `active`
+- In v5 of the REST API, this change will affect:
+  - endpoints taking or returning `active` property, such as:
     - `GET /runners`
     - `GET /runners/all`
     - `GET /runners/:id` / `PUT /runners/:id`
@@ -1026,9 +1016,7 @@ renamed to `paused` in GitLab 16.0, namely:
     - `GET /projects/:id/runners` / `POST /projects/:id/runners`
     - `GET /groups/:id/runners`
 
-The 16.0 release of the GitLab Runner will start using the `paused` property when registering runners, and therefore
-will only be compatible with GitLab 16.0 and later. Until 16.0, GitLab will accept the deprecated `active` flag from
-existing runners.
+The 16.0 release of GitLab Runner will start using the `paused` property when registering runners.
 
 </div>
 
@@ -1788,6 +1776,27 @@ Administrators who need to add runners for multiple projects can register a runn
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### GraphQL API Runner status will not return `paused`
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The GitLab Runner GraphQL API endpoints will not return `paused` or `active` as a status in GitLab 16.0.
+In a future v5 of the REST API, the endpoints for GitLab Runner will also not return `paused` or `active`.
+
+A runner's status will only relate to runner contact status, such as:
+`online`, `offline`, or `not_connected`. Status `paused` or `active` will no longer appear.
+
+When checking if a runner is `paused`, API users are advised to check the boolean attribute
+`paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
+
+</div>
+
 <div class="deprecation removal-150 breaking-change">
 
 ### Known host required for GitLab Runner SSH executor
@@ -1817,26 +1826,6 @@ Review the details carefully before upgrading.
 A request to the API for `/api/v4/projects/:id/packages` returns a paginated result of packages. Each package lists all of its pipelines in this response. This is a performance concern, as it's possible for a package to have hundreds or thousands of associated pipelines.
 
 In milestone 16.0, we will remove the `pipelines` attribute from the API response.
-
-</div>
-
-<div class="deprecation removal-160 breaking-change">
-
-### REST and GraphQL API Runner status will not return `paused`
-
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
-
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-The GitLab Runner REST and GraphQL API endpoints will not return `paused` or `active` as a status in GitLab 16.0.
-
-A runner's status will only relate to runner contact status, such as:
-`online`, `offline`, or `not_connected`. Status `paused` or `active` will no longer appear.
-
-When checking if a runner is `paused`, API users are advised to check the boolean attribute
-`paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
 
 </div>
 

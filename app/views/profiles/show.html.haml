@@ -26,7 +26,7 @@
     .col-lg-8
       .avatar-image
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon_for_user(@user, 96), alt: '', class: 'avatar s96'
+          = render Pajamas::AvatarComponent.new(@user, size: 96, alt: "", class: 'gl-float-left gl-mr-5')
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
       .gl-display-flex.gl-align-items-center.gl-my-3
         = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-user-avatar-button' }) do

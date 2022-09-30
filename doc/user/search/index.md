@@ -98,6 +98,10 @@ and gives you the option to return to the search results page.
 
 ## Searching for specific terms
 
+> - [Removed support for partial matches in issue searches](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
+> - Feature flag [`issues_full_text_search` enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.10.
+> - Feature flag [`issues_full_text_search` enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 15.2.
+
 You can filter issues and merge requests by specific terms included in titles or descriptions.
 
 - Syntax
@@ -108,6 +112,9 @@ You can filter issues and merge requests by specific terms included in titles or
   - For performance reasons, terms shorter than 3 chars are ignored. For example: searching
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
+  - When searching issues, partial matches are not allowed. For example: searching for `play` will
+    not return issues that have the word `display`. But variations of words will still match, so searching
+    for `displays` also returns issues that have the word `display`.
 
 ## Retrieve search results as feed
 

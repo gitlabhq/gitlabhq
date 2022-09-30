@@ -182,7 +182,7 @@ To do this:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
-1. Under **Dormant users**, check **Deactivate dormant users after 90 days of inactivity**.
+1. Under **Dormant users**, check **Deactivate dormant users after a period of inactivity**.
 1. Under  **Period of inactivity (days)**, enter a period of time before deactivation.
 1. Select **Save changes**.
 

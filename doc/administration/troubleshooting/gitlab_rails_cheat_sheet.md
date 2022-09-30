@@ -982,14 +982,6 @@ Find this content in the [Container Registry troubleshooting documentation](../p
 
 This content has been moved to [Troubleshooting Sidekiq](sidekiq.md).
 
-## Redis
-
-### Connect to Redis (omnibus)
-
-```shell
-/opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
-```
-
 ## LFS
 
 ### Get information about LFS objects and associated project

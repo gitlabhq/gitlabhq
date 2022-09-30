@@ -3,7 +3,7 @@
 .col-lg-3.col-md-4.col-sm-12
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
     = c.body do
-      = image_tag avatar_icon_for_user(user, 40), class: "avatar s40", alt: ''
+      = render Pajamas::AvatarComponent.new(user, size: 48, alt: "", class: 'gl-float-left gl-mr-3')
 
       .user-info
         .block-truncated

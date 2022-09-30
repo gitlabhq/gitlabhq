@@ -1147,7 +1147,7 @@ RSpec.describe API::Ci::Runners do
           ])
         end
 
-        # TODO: Remove in %15.0 (https://gitlab.com/gitlab-org/gitlab/-/issues/351466)
+        # TODO: Remove when REST API v5 is implemented (https://gitlab.com/gitlab-org/gitlab/-/issues/351466)
         it 'returns empty result when type does not match' do
           get api("/groups/#{group.id}/runners?type=project_type", user)
 

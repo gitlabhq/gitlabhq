@@ -2,11 +2,11 @@
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
 # As described in https://docs.gitlab.com/ee/user/project/code_owners.html
 
-* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @kwiebers @nolith @jacobvosmaer-gitlab
+* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @kwiebers @nolith @jacobvosmaer-gitlab @gitlab-org/tw-leadership
 
-CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @susantacker @dianalogan @kpaizee @sselhorn
-docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @susantacker @dianalogan @kpaizee @sselhorn
-.gitlab/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @susantacker @dianalogan @kpaizee @sselhorn
+CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @gitlab-org/tw-leadership
+docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @gitlab-org/tw-leadership
+.gitlab/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @gitlab-org/tw-leadership
 
 ## Allows release tooling to update the Gitaly Version
 GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
@@ -19,6 +19,14 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /doc/**/*.png
 /data/deprecations/*.yml
 /data/removals/*.yml
+
+## Technical writing files that do need approval
+/data/deprecations/templates/ @marcel.amirault @gitlab-org/tw-leadership @sarahgerman
+/data/removals/templates/ @marcel.amirault @gitlab-org/tw-leadership @sarahgerman
+.markdownlint.yml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+/doc/.markdownlint/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+/doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+/lib/tasks/gitlab/tw/codeowners.rake @aqualls @gitlab-org/tw-leadership
 
 ^[Backend]
 *.rb @gitlab-org/maintainers/rails-backend
@@ -333,10 +341,9 @@ ee/lib/ee/gitlab/checks/** @proglottis @toon @zj-gitlab
 lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 
 ^[Documentation Directories]
-.markdownlint.yml @marcel.amirault @eread @aqualls @dianalogan @kpaizee
 /doc/ @gl-docsteam
-/doc/.markdownlint/ @marcel.amirault @eread @aqualls @dianalogan @kpaizee
-/doc/.vale/ @marcel.amirault @eread @aqualls @dianalogan @kpaizee
+/data/deprecations/ @gl-docsteam
+/data/removals/ @gl-docsteam
 
 ^[Documentation Pages]
 /doc/administration/application_settings_cache.md @sselhorn

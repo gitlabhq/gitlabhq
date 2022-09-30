@@ -2,7 +2,7 @@
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
 %li.snippet-row.py-3{ data: { qa_selector: 'snippet_link', qa_snippet_title: snippet.title } }
-  = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
+  = render Pajamas::AvatarComponent.new(snippet.author, size: 48, alt: "", class: 'gl-display-none gl-sm-display-block gl-float-left gl-mr-3')
 
   = link_to gitlab_snippet_path(snippet), class: "title" do
     = snippet.title

@@ -36,7 +36,10 @@ issue list with a search query, including labels or the test case's title.
 
 Prerequisite:
 
-- You must have at least the Guest role.
+Whether you can view an test case depends on the [project visibility level](../../user/public_access.md):
+
+- Public project: You don't have to be a member of the project.
+- Private project: You must have at least the Guest role for the project.
 
 To view a test case:
 

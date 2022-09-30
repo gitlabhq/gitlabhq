@@ -165,6 +165,7 @@ import { loadCSSFile } from '../lib/utils/css_utils';
     setPreview() {
       const filename = this.fileInput.val().replace(FILENAMEREGEX, '');
       this.previewImage.attr('src', this.dataURL);
+      this.previewImage.attr('srcset', this.dataURL);
       return this.filename.text(filename);
     }
 

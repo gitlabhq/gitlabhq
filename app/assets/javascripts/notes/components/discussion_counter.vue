@@ -81,18 +81,16 @@ export default {
       :class="{
         'gl-bg-orange-50': blocksMerge && !allResolved,
         'gl-bg-gray-50': !blocksMerge || allResolved,
+        'gl-pr-2': !allResolved,
       }"
       data-testid="discussions-counter-text"
     >
       <template v-if="allResolved">
         {{ __('All threads resolved!') }}
         <gl-dropdown
-          v-gl-tooltip:discussionCounter.hover.bottom
           size="small"
           category="tertiary"
           right
-          :title="__('Thread options')"
-          :aria-label="__('Thread options')"
           toggle-class="btn-icon"
           class="gl-pt-0! gl-px-2 gl-h-full gl-ml-2"
         >
@@ -135,12 +133,9 @@ export default {
             @click="jumpNext"
           />
           <gl-dropdown
-            v-gl-tooltip:discussionCounter.hover.bottom
             size="small"
             category="tertiary"
             right
-            :title="__('Thread options')"
-            :aria-label="__('Thread options')"
             toggle-class="btn-icon"
             class="gl-pt-0! gl-px-2"
           >

@@ -19,7 +19,7 @@ export default class Profile {
   initAvatarGlCrop() {
     const cropOpts = {
       filename: '.js-avatar-filename',
-      previewImage: '.avatar-image .avatar',
+      previewImage: '.avatar-image .gl-avatar',
       modalCrop: '.modal-profile-crop',
       pickImageEl: '.js-choose-user-avatar-button',
       uploadImageBtn: '.js-upload-user-avatar',

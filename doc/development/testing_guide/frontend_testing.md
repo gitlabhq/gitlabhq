@@ -200,7 +200,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper'
 
 const wrapper = shallowMountExtended(ExampleComponent);
 
-// In this example, `wrapper` is a `@vue/test-utils` wrapper returned from `mount` or `shallowMount`.
 it('exists', () => {
   // Best (especially for integration tests)
   wrapper.findByRole('link', { name: /Click Me/i })

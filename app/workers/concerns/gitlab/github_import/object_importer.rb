@@ -44,20 +44,9 @@ module Gitlab
         # This exception will be more useful in development when a new
         # Representation is created but the developer forgot to add a
         # `:github_identifiers` field.
-        Gitlab::Import::ImportFailureService.track(
-          project_id: project.id,
-          error_source: importer_class.name,
-          exception: e,
-          fail_import: true
-        )
-
-        raise(e)
+        track_and_raise_exception(project, e, fail_import: true)
       rescue StandardError => e
-        Gitlab::Import::ImportFailureService.track(
-          project_id: project.id,
-          error_source: importer_class.name,
-          exception: e
-        )
+        track_and_raise_exception(project, e)
       end
 
       def object_type
@@ -89,6 +78,17 @@ module Gitlab
           importer: importer_class.name,
           github_identifiers: github_identifiers
         )
+      end
+
+      def track_and_raise_exception(project, exception, fail_import: false)
+        Gitlab::Import::ImportFailureService.track(
+          project_id: project.id,
+          error_source: importer_class.name,
+          exception: exception,
+          fail_import: fail_import
+        )
+
+        raise(exception)
       end
     end
   end

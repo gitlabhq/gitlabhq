@@ -2,8 +2,8 @@
 
 .col-lg-3.col-md-4.col-sm-12
   .card
-    .card-body
-      = image_tag avatar_icon_for_user(starrer.user, 40), class: "avatar s40", alt: ''
+    .card-body.gl-display-flex
+      = render Pajamas::AvatarComponent.new(starrer.user, size: 48, alt: "", class: 'gl-mr-3')
 
       .user-info
         .block-truncated

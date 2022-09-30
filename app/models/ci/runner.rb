@@ -215,7 +215,7 @@ module Ci
 
     validates :maintenance_note, length: { maximum: 1024 }
 
-    alias_attribute :maintenance_note, :maintainer_note
+    alias_attribute :maintenance_note, :maintainer_note # NOTE: Need to keep until REST v5 is implemented
 
     # Searches for runners matching the given query.
     #
@@ -345,7 +345,7 @@ module Ci
     end
 
     # DEPRECATED
-    # TODO Remove in %16.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+    # TODO Remove in v5 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
     def deprecated_rest_status
       return :stale if stale?
 

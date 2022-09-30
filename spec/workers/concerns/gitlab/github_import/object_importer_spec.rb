@@ -159,11 +159,13 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
         .with(
           project_id: project.id,
           exception: exception,
-          error_source: 'klass_name'
+          error_source: 'klass_name',
+          fail_import: false
         )
         .and_call_original
 
-      worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
+      expect { worker.import(project, client, { 'number' => 10, 'github_id' => 1 }) }
+        .to raise_error(exception)
 
       expect(project.import_state.reload.status).to eq('started')
 
