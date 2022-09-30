@@ -5,7 +5,7 @@ import * as actions from '~/ci_variable_list/store/actions';
 import * as types from '~/ci_variable_list/store/mutation_types';
 import getInitialState from '~/ci_variable_list/store/state';
 import { prepareDataForDisplay, prepareEnvironments } from '~/ci_variable_list/store/utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import mockData from '../services/mock_data';
 
@@ -118,7 +118,7 @@ describe('CI variable list store actions', () => {
           },
         ],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 
@@ -155,7 +155,7 @@ describe('CI variable list store actions', () => {
           },
         ],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 
@@ -192,7 +192,7 @@ describe('CI variable list store actions', () => {
           },
         ],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 
@@ -219,7 +219,7 @@ describe('CI variable list store actions', () => {
       mock.onGet(state.endpoint).reply(500);
 
       await testAction(actions.fetchVariables, {}, state, [], [{ type: 'requestVariables' }]);
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'There was an error fetching the variables.',
       });
     });
@@ -249,7 +249,7 @@ describe('CI variable list store actions', () => {
 
       await testAction(actions.fetchEnvironments, {}, state, [], [{ type: 'requestEnvironments' }]);
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'There was an error fetching the environments information.',
       });
     });

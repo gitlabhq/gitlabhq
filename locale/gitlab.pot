@@ -17055,6 +17055,33 @@ msgid_plural "Free groups are limited to %{free_user_limit} members and the rema
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "FreeUserCap|Alternatively you can upgrade to GitLab Premium or GitLab Ultimate:"
+msgstr ""
+
+msgid "FreeUserCap|Explore paid plans"
+msgstr ""
+
+msgid "FreeUserCap|Explore paid plans:"
+msgstr ""
+
+msgid "FreeUserCap|Looks like you've reached your limit of %{free_user_limit} members for \"%{namespace_name}\". You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members."
+msgstr ""
+
+msgid "FreeUserCap|Manage members"
+msgstr ""
+
+msgid "FreeUserCap|Manage members:"
+msgstr ""
+
+msgid "FreeUserCap|To get more members %{trial_link_start}start a trial %{trial_link_end} or %{upgrade_link_start}upgrade%{upgrade_link_end} to GitLab Premium or GitLab Ultimate."
+msgstr ""
+
+msgid "FreeUserCap|To get more members start a trial:"
+msgstr ""
+
+msgid "FreeUserCap|You've reached your member limit!"
+msgstr ""
+
 msgid "Freeze end"
 msgstr ""
 

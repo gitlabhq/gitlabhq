@@ -1,5 +1,5 @@
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import { reportMessageToSentry } from '../utils';
 import getAdminVariables from '../graphql/queries/variables.query.graphql';
@@ -51,14 +51,14 @@ export default {
           this.fetchMoreVariables();
           this.loadingCounter += 1;
         } else {
-          createFlash({ message: this.$options.tooManyCallsError });
+          createAlert({ message: this.$options.tooManyCallsError });
           reportMessageToSentry(this.$options.componentName, this.$options.tooManyCallsError, {});
         }
       },
       error() {
         this.isLoadingMoreItems = false;
         this.hasNextPage = false;
-        createFlash({ message: variableFetchErrorText });
+        createAlert({ message: variableFetchErrorText });
       },
       watchLoading(flag) {
         if (!flag) {
@@ -107,7 +107,7 @@ export default {
 
         if (data[currentMutation.name]?.errors?.length) {
           const { errors } = data[currentMutation.name];
-          createFlash({ message: errors[0] });
+          createAlert({ message: errors[0] });
         } else {
           // The writing to cache for admin variable is not working
           // because there is no ID in the cache at the top level.
@@ -115,7 +115,7 @@ export default {
           this.$apollo.queries.adminVariables.refetch();
         }
       } catch {
-        createFlash({ message: genericMutationErrorText });
+        createAlert({ message: genericMutationErrorText });
       }
     },
   },

@@ -4,7 +4,7 @@ import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { resolvers } from '~/ci_variable_list/graphql/settings';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
@@ -95,8 +95,8 @@ describe('Ci Group Variable list', () => {
         );
       });
 
-      it('createFlash was not called', () => {
-        expect(createFlash).not.toHaveBeenCalled();
+      it('createAlert was not called', () => {
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
 
@@ -107,8 +107,8 @@ describe('Ci Group Variable list', () => {
         await createComponentWithApollo();
       });
 
-      it('calls createFlash with the expected error message', () => {
-        expect(createFlash).toHaveBeenCalledWith({ message: variableFetchErrorText });
+      it('calls createAlert with the expected error message', () => {
+        expect(createAlert).toHaveBeenCalledWith({ message: variableFetchErrorText });
       });
     });
   });
@@ -158,7 +158,7 @@ describe('Ci Group Variable list', () => {
         await nextTick();
 
         expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledWith({ message: graphQLErrorMessage });
+        expect(createAlert).toHaveBeenCalledWith({ message: graphQLErrorMessage });
       },
     );
 
@@ -176,7 +176,7 @@ describe('Ci Group Variable list', () => {
         await findCiSettings().vm.$emit(event, newVariable);
 
         expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledWith({ message: genericMutationErrorText });
+        expect(createAlert).toHaveBeenCalledWith({ message: genericMutationErrorText });
       },
     );
   });

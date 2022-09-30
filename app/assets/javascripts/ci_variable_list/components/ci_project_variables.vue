@@ -1,5 +1,5 @@
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import getProjectEnvironments from '../graphql/queries/project_environments.query.graphql';
@@ -46,7 +46,7 @@ export default {
         return mapEnvironmentNames(data?.project?.environments?.nodes);
       },
       error() {
-        createFlash({ message: environmentFetchErrorText });
+        createAlert({ message: environmentFetchErrorText });
       },
     },
     projectVariables: {
@@ -74,14 +74,14 @@ export default {
           this.fetchMoreVariables();
           this.loadingCounter += 1;
         } else {
-          createFlash({ message: this.$options.tooManyCallsError });
+          createAlert({ message: this.$options.tooManyCallsError });
           reportMessageToSentry(this.$options.componentName, this.$options.tooManyCallsError, {});
         }
       },
       error() {
         this.isLoadingMoreItems = false;
         this.hasNextPage = false;
-        createFlash({ message: variableFetchErrorText });
+        createAlert({ message: variableFetchErrorText });
       },
     },
   },
@@ -128,10 +128,10 @@ export default {
         });
         if (data[currentMutation.name]?.errors?.length) {
           const { errors } = data[currentMutation.name];
-          createFlash({ message: errors[0] });
+          createAlert({ message: errors[0] });
         }
       } catch {
-        createFlash({ message: genericMutationErrorText });
+        createAlert({ message: genericMutationErrorText });
       }
     },
   },

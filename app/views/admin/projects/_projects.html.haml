@@ -4,8 +4,9 @@
       - @projects.each do |project|
         %li.project-row{ class: ('no-description' if project.description.blank?) }
           .controls
-            = link_to _('Edit'), edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button btn-default"
-            %button.delete-project-button.gl-button.btn.btn-danger{ data: { delete_project_url: admin_project_path(project), project_name: project.name } }
+            = render Pajamas::ButtonComponent.new(href: edit_project_path(project), button_options: { id: "edit_#{dom_id(project)}" }) do
+              = s_('Edit')
+            = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { class: 'delete-project-button', data: { delete_project_url: admin_project_path(project), project_name: project.name } } ) do
               = s_('AdminProjects|Delete')
 
           .stats
