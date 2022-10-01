@@ -302,6 +302,10 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_uploads_verification_total`   | Gauge   | 14.6 | Number of uploads verifications tried on secondary | `url` |
 | `geo_uploads_verified`             | Gauge   | 14.6 | Number of uploads verified on secondary | `url` |
 | `geo_uploads_verification_failed`  | Gauge   | 14.6 | Number of uploads verifications failed on secondary | `url` |
+| `geo_container_repositories`           | Gauge   | 15.4  | Number of container repositories on primary | `url` |
+| `geo_container_repositories_synced`    | Gauge   | 15.4  | Number of container repositories synced on secondary | `url` |
+| `geo_container_repositories_failed`    | Gauge   | 15.4  | Number of syncable container repositories failed to sync on secondary | `url` |
+| `geo_container_repositories_registry`  | Gauge   | 15.4  | Number of container repositories in the registry | `url` |
 | `gitlab_sli:rails_request_apdex:total` | Counter | 14.4 | The number of request-apdex measurements, [more information the development documentation](../../../development/application_slis/rails_request_apdex.md) | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli:rails_request_apdex:success_total` | Counter | 14.4 | The number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli:rails_requests_apdex:total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
 | `geo_ci_secure_files`                            | Gauge   | 15.3  | Number of secure files on primary | `url` |

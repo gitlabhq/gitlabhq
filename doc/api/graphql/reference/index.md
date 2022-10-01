@@ -6816,6 +6816,29 @@ The edge type for [`ContainerRepository`](#containerrepository).
 | <a id="containerrepositoryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerrepositoryedgenode"></a>`node` | [`ContainerRepository`](#containerrepository) | The item at the end of the edge. |
 
+#### `ContainerRepositoryRegistryConnection`
+
+The connection type for [`ContainerRepositoryRegistry`](#containerrepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositoryregistryconnectionedges"></a>`edges` | [`[ContainerRepositoryRegistryEdge]`](#containerrepositoryregistryedge) | A list of edges. |
+| <a id="containerrepositoryregistryconnectionnodes"></a>`nodes` | [`[ContainerRepositoryRegistry]`](#containerrepositoryregistry) | A list of nodes. |
+| <a id="containerrepositoryregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ContainerRepositoryRegistryEdge`
+
+The edge type for [`ContainerRepositoryRegistry`](#containerrepositoryregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositoryregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerrepositoryregistryedgenode"></a>`node` | [`ContainerRepositoryRegistry`](#containerrepositoryregistry) | The item at the end of the edge. |
+
 #### `ContainerRepositoryTagConnection`
 
 The connection type for [`ContainerRepositoryTag`](#containerrepositorytag).
@@ -10991,6 +11014,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="containerrepositorydetailstagsname"></a>`name` | [`String`](#string) | Search by tag name. |
 | <a id="containerrepositorydetailstagssort"></a>`sort` | [`ContainerRepositoryTagSort`](#containerrepositorytagsort) | Sort tags by these criteria. |
 
+### `ContainerRepositoryRegistry`
+
+Represents the Geo replication and verification state of an Container Repository.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositoryregistrycontainerrepositoryid"></a>`containerRepositoryId` | [`ID!`](#id) | ID of the ContainerRepository. |
+| <a id="containerrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ContainerRepositoryRegistry was created. |
+| <a id="containerrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ContainerRepositoryRegistry is resynced. |
+| <a id="containerrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ContainerRepositoryRegistry is reverified. |
+| <a id="containerrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ContainerRepositoryRegistry. |
+
 ### `ContainerRepositoryTag`
 
 A tag from a container repository.
@@ -12367,6 +12409,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodecisecurefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 | <a id="geonodecisecurefileregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodecisecurefileregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
+##### `GeoNode.containerRepositoryRegistries`
+
+Find Container Repository registries on this Geo node. Ignored if `geo_container_repository_replication` feature flag is disabled.
+
+WARNING:
+**Introduced** in 15.5.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`ContainerRepositoryRegistryConnection`](#containerrepositoryregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodecontainerrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodecontainerrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonodecontainerrepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
 ##### `GeoNode.groupWikiRepositoryRegistries`
 

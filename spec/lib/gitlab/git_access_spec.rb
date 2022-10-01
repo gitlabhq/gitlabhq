@@ -31,17 +31,6 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
     end
   end
 
-  shared_examples 'logs userless ci' do
-    it 'logs' do
-      expect(Gitlab::AppJsonLogger).to receive(:info).with(
-        message: 'Actor was :ci',
-        project_id: project.id
-      ).once
-
-      pull_access_check
-    end
-  end
-
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
       allow(Gitlab::ProtocolAccess).to receive(:allowed?).with(protocol, project: project).and_return(false)
@@ -149,7 +138,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
           end
         end
 
-        # For backwards compatibility
+        # legacy behavior that is blocked/deprecated
         context 'when actor is :ci' do
           let(:actor) { :ci }
           let(:authentication_abilities) { build_authentication_abilities }
@@ -160,22 +149,6 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
 
           it 'does not block pushes with "not found"' do
             expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
-          end
-
-          context 'when ci_remove_userless_ci is disabled' do
-            before do
-              stub_feature_flags(ci_remove_userless_ci: false)
-            end
-
-            it 'allows pull access' do
-              expect { pull_access_check }.not_to raise_error
-            end
-
-            it 'does not block pushes with "not found"' do
-              expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
-            end
-
-            it_behaves_like 'logs userless ci'
           end
         end
 
@@ -759,16 +732,6 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
         let(:actor) { :ci }
 
         specify { expect { pull_access_check }.to raise_error Gitlab::GitAccess::NotFoundError }
-
-        context 'when ci_remove_userless_ci disabled' do
-          before do
-            stub_feature_flags(ci_remove_userless_ci: false)
-          end
-
-          specify { expect { pull_access_check }.not_to raise_error }
-
-          it_behaves_like 'logs userless ci'
-        end
       end
     end
   end

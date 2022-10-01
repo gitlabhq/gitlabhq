@@ -10168,6 +10168,9 @@ msgstr ""
 msgid "Container Registry"
 msgstr ""
 
+msgid "Container Repository"
+msgstr ""
+
 msgid "Container Scanning"
 msgstr ""
 
