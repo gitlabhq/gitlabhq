@@ -1,5 +1,13 @@
 <script>
-import { GlTable, GlButton, GlBadge, GlTooltipDirective, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlAvatar,
+  GlAvatarLink,
+  GlBadge,
+  GlButton,
+  GlTable,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -15,14 +23,15 @@ export default {
     ),
   },
   components: {
-    GlTable,
-    GlButton,
-    GlBadge,
     ClipboardButton,
-    TooltipOnTruncate,
-    GlAvatarLink,
+    GlAlert,
     GlAvatar,
+    GlAvatarLink,
+    GlBadge,
+    GlButton,
+    GlTable,
     TimeAgoTooltip,
+    TooltipOnTruncate,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -138,13 +147,15 @@ export default {
         />
       </template>
     </gl-table>
-    <div
+    <gl-alert
       v-else
+      variant="warning"
+      :dismissible="false"
+      :show-icon="false"
       data-testid="no_triggers_content"
       data-qa-selector="no_triggers_content"
-      class="settings-message gl-text-center gl-mb-3"
     >
       {{ s__('Pipelines|No triggers have been created yet. Add one using the form above.') }}
-    </div>
+    </gl-alert>
   </div>
 </template>
