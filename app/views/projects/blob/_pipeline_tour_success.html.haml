@@ -2,5 +2,5 @@
   'go-to-pipelines-path': project_pipelines_path(@project),
   'project-merge-requests-path': project_merge_requests_path(@project),
   'example-link': help_page_path('ci/examples/index.md', anchor: 'gitlab-cicd-examples'),
-  'code-quality-link': help_page_path('user/project/merge_requests/code_quality'),
+  'code-quality-link': help_page_path('ci/testing/code_quality'),
   'human-access': @project.team.human_max_access(current_user&.id) } }

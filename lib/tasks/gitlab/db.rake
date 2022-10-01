@@ -304,14 +304,30 @@ namespace :gitlab do
     end
 
     namespace :migration_testing do
-      desc 'Run migrations with instrumentation'
+      # Not possible to import Gitlab::Database::DATABASE_NAMES here
+      # Specs verify that a task exists for each entry in that array.
+      all_databases = %i[main ci]
+
       task up: :environment do
-        Gitlab::Database::Migrations::Runner.up.run
+        Gitlab::Database::Migrations::Runner.up(database: 'main', legacy_mode: true).run
       end
 
-      desc 'Run down migrations in current branch with instrumentation'
-      task down: :environment do
-        Gitlab::Database::Migrations::Runner.down.run
+      namespace :up do
+        all_databases.each do |db|
+          desc "Run migrations on #{db} with instrumentation"
+          task db => :environment do
+            Gitlab::Database::Migrations::Runner.up(database: db).run
+          end
+        end
+      end
+
+      namespace :down do
+        all_databases.each do |db|
+          desc "Run down migrations on #{db} in current branch with instrumentation"
+          task db => :environment do
+            Gitlab::Database::Migrations::Runner.down(database: db).run
+          end
+        end
       end
 
       desc 'Sample traditional background migrations with instrumentation'
@@ -321,12 +337,24 @@ namespace :gitlab do
         Gitlab::Database::Migrations::Runner.background_migrations.run_jobs(for_duration: duration)
       end
 
-      desc 'Sample batched background migrations with instrumentation'
+      namespace :sample_batched_background_migrations do
+        all_databases.each do |db|
+          desc "Sample batched background migrations on #{db} with instrumentation"
+          task db, [:duration_s] => [:environment] do |_t, args|
+            duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
+
+            Gitlab::Database::Migrations::Runner.batched_background_migrations(for_database: db)
+                                                .run_jobs(for_duration: duration)
+          end
+        end
+      end
+
+      desc "Sample batched background migrations with instrumentation (legacy)"
       task :sample_batched_background_migrations, [:database, :duration_s] => [:environment] do |_t, args|
-        database_name = args[:database] || 'main'
         duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
 
-        Gitlab::Database::Migrations::Runner.batched_background_migrations(for_database: database_name)
+        database = args[:database] || 'main'
+        Gitlab::Database::Migrations::Runner.batched_background_migrations(for_database: database, legacy_mode: true)
                                             .run_jobs(for_duration: duration)
       end
     end
