@@ -66,7 +66,13 @@ module RuboCop
       end
 
       channel = 'f_rubocop'
-      message = ":warning: `#{job_name}` passed :green: but contained silenced offenses. See #{job_url}"
+      message = format(
+        ':warning: `%{job_name}` passed :green: but contained <%{job_url}|silenced offenses>. ' \
+        'See <%{docs_link}|docs>.',
+        docs_link: 'https://docs.gitlab.com/ee/development/contributing/style_guides.html#silenced-offenses',
+        job_name: job_name,
+        job_url: job_url)
+
       emoji = 'rubocop'
       user_name = 'GitLab Bot'
 

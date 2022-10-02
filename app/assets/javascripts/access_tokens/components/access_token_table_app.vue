@@ -45,6 +45,7 @@ export default {
     'initialActiveAccessTokens',
     'noActiveTokensMessage',
     'showRole',
+    'information',
   ],
   data() {
     return {
@@ -99,6 +100,10 @@ export default {
     <div>
       <hr />
       <h5>{{ header }}</h5>
+
+      <p v-if="information" data-testid="information-section">
+        {{ information }}
+      </p>
 
       <gl-table
         data-testid="active-tokens"

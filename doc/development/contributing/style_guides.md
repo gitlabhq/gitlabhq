@@ -169,6 +169,16 @@ A grace period can safely be lifted as soon as there are no warnings for 2 weeks
 1. Create an issue to fix TODOs and encourage Community contributions (via ~"good for new contributors" and/or ~"Seeking community contributions"). [See some examples](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=good%20for%20new%20contributors&label_name%5B%5D=static%20code%20analysis&first_page_size=20).
 1. Create an issue to remove "grace period" after 2 weeks silence in `#f_rubocop` Slack channel. ([See an example](https://gitlab.com/gitlab-org/gitlab/-/issues/374903).)
 
+### Silenced offenses
+
+When offenses are silenced for cops in ["grace period"](#cop-grace-period),
+the `#f_rubocop` Slack channel receives a notification message every two hours.
+
+To fix this issue:
+
+1. Find cops with silenced offenses in the linked CI job.
+1. [Generate TODOs](../rake_tasks.md#generate-initial-rubocop-todo-list) for these cops.
+
 #### RuboCop node pattern
 
 When creating [node patterns](https://docs.rubocop.org/rubocop-ast/node_pattern.html) to match

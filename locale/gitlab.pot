@@ -1676,9 +1676,6 @@ msgstr ""
 msgid "A new email address has been added to your GitLab account: %{email}"
 msgstr ""
 
-msgid "A new impersonation token has been created."
-msgstr ""
-
 msgid "A new personal access token has been created"
 msgstr ""
 

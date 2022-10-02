@@ -9,15 +9,11 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
   let!(:user) { create(:user) }
 
   def active_impersonation_tokens
-    find(".table.active-tokens")
-  end
-
-  def no_personal_access_tokens_message
-    find(".settings-message")
+    find("[data-testid='active-tokens']")
   end
 
   def created_impersonation_token
-    find("#created-personal-access-token").value
+    find_field('new-access-token').value
   end
 
   before do
@@ -80,8 +76,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
 
       accept_gl_confirm(button_text: 'Revoke') { click_on "Revoke" }
 
-      expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active impersonation tokens.")
+      expect(active_impersonation_tokens).to have_text("This user has no active impersonation tokens.")
     end
 
     it "removes expired tokens from 'active' section" do
@@ -89,8 +84,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      expect(page).to have_selector(".settings-message")
-      expect(no_personal_access_tokens_message).to have_text("This user has no active impersonation tokens.")
+      expect(active_impersonation_tokens).to have_text("This user has no active impersonation tokens.")
     end
   end
 

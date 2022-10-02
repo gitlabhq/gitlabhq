@@ -35,6 +35,10 @@ RSpec.describe Profiles::PersonalAccessTokensController do
       expect(created_token).not_to be_nil
       expect(created_token.expires_at).to eq(expires_at)
     end
+
+    it_behaves_like "#create access token" do
+      let(:url) { :create }
+    end
   end
 
   describe '#index' do

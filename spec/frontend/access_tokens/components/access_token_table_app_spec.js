@@ -1,6 +1,6 @@
 import { GlButton, GlPagination, GlTable } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
 import { EVENT_SUCCESS, PAGE_SIZE } from '~/access_tokens/components/constants';
 import { __, s__, sprintf } from '~/locale';
@@ -11,6 +11,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
   const accessTokenType = 'personal access token';
   const accessTokenTypePlural = 'personal access tokens';
+  const information = undefined;
   const initialActiveAccessTokens = [];
   const noActiveTokensMessage = 'This user has no active personal access tokens.';
   const showRole = false;
@@ -43,10 +44,11 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   ];
 
   const createComponent = (props = {}) => {
-    wrapper = mount(AccessTokenTableApp, {
+    wrapper = mountExtended(AccessTokenTableApp, {
       provide: {
         accessTokenType,
         accessTokenTypePlural,
+        information,
         initialActiveAccessTokens,
         noActiveTokensMessage,
         showRole,
@@ -99,6 +101,13 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         totalAccessTokens: initialActiveAccessTokens.length,
       }),
     );
+  });
+
+  it('should render information section', () => {
+    const info = 'This is my information';
+    createComponent({ information: info });
+
+    expect(wrapper.findByTestId('information-section').text()).toBe(info);
   });
 
   it('should render the `GlTable` component with default 6 column headers', () => {

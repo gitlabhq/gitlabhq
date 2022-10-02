@@ -35,4 +35,10 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode do
       expect(response).to have_gitlab_http_status(:not_found)
     end
   end
+
+  describe "#create" do
+    it_behaves_like "#create access token" do
+      let(:url) { admin_user_impersonation_tokens_path(user_id: user.username) }
+    end
+  end
 end
