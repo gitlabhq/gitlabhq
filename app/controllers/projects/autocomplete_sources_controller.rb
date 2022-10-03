@@ -51,9 +51,12 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def target
+    # type_id is not required in general
+    target_type = params.require(:type)
+
     QuickActions::TargetService
       .new(project, current_user)
-      .execute(params[:type], params[:type_id])
+      .execute(target_type, params[:type_id])
   end
 
   def authorize_read_crm_contact!

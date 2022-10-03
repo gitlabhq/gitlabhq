@@ -31,8 +31,8 @@ RSpec.describe IssuablePolicy, models: true do
         expect(policies).to be_allowed(:resolve_note)
       end
 
-      it 'allows reading confidential notes' do
-        expect(policies).to be_allowed(:read_confidential_notes)
+      it 'allows reading internal notes' do
+        expect(policies).to be_allowed(:read_internal_note)
       end
 
       context 'when user is able to read project' do
@@ -94,8 +94,8 @@ RSpec.describe IssuablePolicy, models: true do
       let(:issue) { create(:issue, project: project, assignees: [user]) }
       let(:policies) { described_class.new(user, issue) }
 
-      it 'allows reading confidential notes' do
-        expect(policies).to be_allowed(:read_confidential_notes)
+      it 'allows reading internal notes' do
+        expect(policies).to be_allowed(:read_internal_note)
       end
     end
 
@@ -145,6 +145,10 @@ RSpec.describe IssuablePolicy, models: true do
       it 'does not allow timelogs creation' do
         expect(policies).to be_disallowed(:create_timelog)
       end
+
+      it 'does not allow reading internal notes' do
+        expect(permissions(guest, issue)).to be_disallowed(:read_internal_note)
+      end
     end
 
     context 'when user is a guest member of the project' do
@@ -170,8 +174,8 @@ RSpec.describe IssuablePolicy, models: true do
         expect(permissions(reporter, issue)).to be_allowed(:create_timelog)
       end
 
-      it 'allows reading confidential notes' do
-        expect(permissions(reporter, issue)).to be_allowed(:read_confidential_notes)
+      it 'allows reading internal notes' do
+        expect(permissions(reporter, issue)).to be_allowed(:read_internal_note)
       end
     end
 
@@ -188,6 +192,7 @@ RSpec.describe IssuablePolicy, models: true do
 
         it 'does not allow :read_issuable' do
           expect(policy).not_to be_allowed(:read_issuable)
+          expect(policy).not_to be_allowed(:read_issuable_participables)
         end
       end
 
@@ -196,6 +201,7 @@ RSpec.describe IssuablePolicy, models: true do
 
         it 'allows :read_issuable' do
           expect(policy).to be_allowed(:read_issuable)
+          expect(policy).to be_allowed(:read_issuable_participables)
         end
       end
     end
@@ -213,6 +219,7 @@ RSpec.describe IssuablePolicy, models: true do
 
         it 'does not allow :read_issuable' do
           expect(policy).not_to be_allowed(:read_issuable)
+          expect(policy).not_to be_allowed(:read_issuable_participables)
         end
       end
 
@@ -221,6 +228,7 @@ RSpec.describe IssuablePolicy, models: true do
 
         it 'allows :read_issuable' do
           expect(policy).to be_allowed(:read_issuable)
+          expect(policy).to be_allowed(:read_issuable_participables)
         end
       end
     end

@@ -32,6 +32,8 @@ module Users
     end
 
     def groups
+      return [] unless current_user
+
       current_user.authorized_groups.with_route.sort_by(&:path)
     end
 

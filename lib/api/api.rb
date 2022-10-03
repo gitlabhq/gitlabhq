@@ -316,7 +316,6 @@ module API
       mount ::API::UsageDataQueries
       mount ::API::UserCounts
       mount ::API::Users
-      mount ::API::Version
       mount ::API::Wikis
       mount ::API::Ml::Mlflow
     end

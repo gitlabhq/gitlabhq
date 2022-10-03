@@ -24,7 +24,7 @@ module Projects
     end
 
     def commands(noteable, type)
-      return [] unless noteable
+      return [] unless noteable && current_user
 
       QuickActions::InterpretService.new(project, current_user).available_commands(noteable)
     end

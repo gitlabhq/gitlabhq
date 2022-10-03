@@ -38,6 +38,25 @@ module API
           present resource_group, with: Entities::Ci::ResourceGroup
         end
 
+        desc 'List upcoming jobs of a resource group' do
+          success Entities::Ci::JobBasic
+        end
+        params do
+          requires :key, type: String, desc: 'The key of the resource group'
+
+          use :pagination
+        end
+        get ':id/resource_groups/:key/upcoming_jobs' do
+          authorize! :read_resource_group, resource_group
+          authorize! :read_build, user_project
+
+          upcoming_processables = resource_group
+            .upcoming_processables
+            .preload(:user, pipeline: :project) # rubocop:disable CodeReuse/ActiveRecord
+
+          present paginate(upcoming_processables), with: Entities::Ci::JobBasic
+        end
+
         desc 'Edit a resource group' do
           success Entities::Ci::ResourceGroup
         end

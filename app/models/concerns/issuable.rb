@@ -231,7 +231,7 @@ module Issuable
 
   class_methods do
     def participant_includes
-      [:assignees, :author, { notes: [:author, :award_emoji] }]
+      [:author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] }]
     end
 
     # Searches for records with a matching title.
@@ -640,6 +640,14 @@ module Issuable
   #
   def draftless_title_changed(old_title)
     old_title != title
+  end
+
+  def read_ability_for(participable_source)
+    return super if participable_source == self
+
+    name =  participable_source.try(:issuable_ability_name) || :read_issuable_participables
+
+    { name: name, subject: self }
   end
 end
 

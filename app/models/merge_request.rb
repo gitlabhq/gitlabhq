@@ -610,7 +610,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.participant_includes
-    [:reviewers, :award_emoji] + super
+    [:assignees, :reviewers] + super
   end
 
   def committers

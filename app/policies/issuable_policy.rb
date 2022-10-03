@@ -58,6 +58,12 @@ class IssuablePolicy < BasePolicy
 
   rule { can_read_issuable }.policy do
     enable :read_issuable
+    enable :read_issuable_participables
+  end
+
+  # This rule replicates permissions in NotePolicy#can_read_confidential
+  rule { can?(:reporter_access) | assignee_or_author | admin }.policy do
+    enable :read_internal_note
   end
 end
 

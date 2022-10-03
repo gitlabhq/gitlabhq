@@ -56,7 +56,7 @@ module ContainerRegistry
 
     def repository_tags(name, page_size: DEFAULT_TAGS_PAGE_SIZE)
       response = faraday.get("/v2/#{name}/tags/list") do |req|
-        req.params['n'] = page_size if Feature.enabled?(:container_registry_tags_list_default_page_size)
+        req.params['n'] = page_size
       end
       response_body(response)
     end

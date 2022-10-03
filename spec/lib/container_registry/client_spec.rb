@@ -437,18 +437,6 @@ RSpec.describe ContainerRegistry::Client do
 
       expect(subject).to eq('tags' => %w[t1 t2])
     end
-
-    context 'with container_registry_tags_list_default_page_size disabled' do
-      before do
-        stub_feature_flags(container_registry_tags_list_default_page_size: false)
-      end
-
-      it 'returns a successful response' do
-        stub_registry_tags_list(tags: %w[t1 t2])
-
-        expect(subject).to eq('tags' => %w[t1 t2])
-      end
-    end
   end
 
   describe '.registry_info' do

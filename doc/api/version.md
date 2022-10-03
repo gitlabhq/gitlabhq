@@ -9,8 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 NOTE:
 We recommend you use the [Metadata API](metadata.md) instead of the Version API.
 It contains additional information and is aligned with the GraphQL metadata endpoint.
+As of GitLab 15.5, the Version API is a mirror of the Metadata API.
 
-Retrieve version information for this GitLab instance. Responds `200 OK` for
+Retrieves version information for the GitLab instance. Responds with `200 OK` for
 authenticated users.
 
 ```plaintext
@@ -21,7 +22,13 @@ GET /version
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/version"
 ```
 
-Example response:
+## Example responses
+
+### GitLab 15.5 and later
+
+See [Metadata API](metadata.md) for the response.
+
+### GitLab 15.4 and earlier
 
 ```json
 {

@@ -686,6 +686,30 @@ RSpec.describe 'getting an issue list for a project' do
 
       include_examples 'N+1 query check'
     end
+
+    context 'when requesting participants' do
+      let_it_be(:issue_c) { create(:issue, project: project) }
+
+      let(:search_params) { { iids: [issue_a.iid.to_s, issue_c.iid.to_s] } }
+      let(:requested_fields) { 'participants { nodes { name } }' }
+
+      before do
+        create(:award_emoji, :upvote, awardable: issue_a)
+        create(:award_emoji, :upvote, awardable: issue_b)
+        create(:award_emoji, :upvote, awardable: issue_c)
+
+        note_with_emoji_a = create(:note_on_issue, noteable: issue_a, project: project)
+        note_with_emoji_b = create(:note_on_issue, noteable: issue_b, project: project)
+        note_with_emoji_c = create(:note_on_issue, noteable: issue_c, project: project)
+
+        create(:award_emoji, :upvote, awardable: note_with_emoji_a)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_b)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_c)
+      end
+
+      # Executes 3 extra queries to fetch participant_attrs
+      include_examples 'N+1 query check', 3
+    end
   end
 
   def issues_ids

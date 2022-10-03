@@ -276,6 +276,10 @@ class Issue < ApplicationRecord
     end
   end
 
+  def self.participant_includes
+    [:assignees] + super
+  end
+
   def next_object_by_relative_position(ignoring: nil, order: :asc)
     array_mapping_scope = -> (id_expression) do
       relation = Issue.where(Issue.arel_table[:project_id].eq(id_expression))

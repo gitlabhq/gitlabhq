@@ -152,7 +152,9 @@ module Participable
   end
 
   def source_visible_to_user?(source, user)
-    Ability.allowed?(user, "read_#{source.model_name.element}".to_sym, source)
+    ability = read_ability_for(source)
+
+    Ability.allowed?(user, ability[:name], ability[:subject])
   end
 
   def filter_by_ability(participants)
@@ -171,6 +173,14 @@ module Participable
     else
       participant.can?(:read_project, project)
     end
+  end
+
+  # Returns Hash containing ability name and subject needed to read a specific participable.
+  # Should be overridden if a different ability is required.
+  def read_ability_for(participable_source)
+    name =  participable_source.try(:to_ability_name) || participable_source.model_name.element
+
+    { name: "read_#{name}".to_sym, subject: participable_source }
   end
 end
 

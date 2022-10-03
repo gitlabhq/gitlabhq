@@ -73,4 +73,8 @@ class AwardEmoji < ApplicationRecord
     awardable.expire_etag_cache if awardable.is_a?(Note)
     awardable.try(:update_upvotes_count) if upvote?
   end
+
+  def to_ability_name
+    'emoji'
+  end
 end

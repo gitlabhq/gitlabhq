@@ -338,6 +338,27 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
       include_examples 'N+1 query check'
     end
+
+    context 'when requesting participants' do
+      let(:requested_fields) { 'participants { nodes { name } }' }
+
+      before do
+        create(:award_emoji, :upvote, awardable: merge_request_a)
+        create(:award_emoji, :upvote, awardable: merge_request_b)
+        create(:award_emoji, :upvote, awardable: merge_request_c)
+
+        note_with_emoji_a = create(:note_on_merge_request, noteable: merge_request_a, project: project)
+        note_with_emoji_b = create(:note_on_merge_request, noteable: merge_request_b, project: project)
+        note_with_emoji_c = create(:note_on_merge_request, noteable: merge_request_c, project: project)
+
+        create(:award_emoji, :upvote, awardable: note_with_emoji_a)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_b)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_c)
+      end
+
+      # Executes 3 extra queries to fetch participant_attrs
+      include_examples 'N+1 query check', 3
+    end
   end
 
   describe 'performance' do
