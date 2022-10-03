@@ -72,4 +72,3 @@ Style/NumericLiteralPrefix:
     - 'spec/support/import_export/export_file_helper.rb'
     - 'spec/support/shared_examples/requests/api/nuget_packages_shared_examples.rb'
     - 'spec/support/shared_examples/services/packages/debian/generate_distribution_shared_examples.rb'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'

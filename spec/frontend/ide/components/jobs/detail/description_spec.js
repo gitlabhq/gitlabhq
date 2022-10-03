@@ -1,44 +1,43 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import Description from '~/ide/components/jobs/detail/description.vue';
 import { jobs } from '../../../mock_data';
 
 describe('IDE job description', () => {
-  const Component = Vue.extend(Description);
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    vm = mountComponent(Component, {
-      job: jobs[0],
+    wrapper = mount(Description, {
+      propsData: {
+        job: jobs[0],
+      },
     });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders job details', () => {
-    expect(vm.$el.textContent).toContain('#1');
-    expect(vm.$el.textContent).toContain('test');
+    expect(wrapper.text()).toContain('#1');
+    expect(wrapper.text()).toContain('test');
   });
 
   it('renders CI icon', () => {
-    expect(
-      vm.$el.querySelector('.ci-status-icon [data-testid="status_success_borderless-icon"]'),
-    ).not.toBe(null);
+    expect(wrapper.find('.ci-status-icon').findComponent(GlIcon).exists()).toBe(true);
   });
 
   it('renders a borderless CI icon', () => {
-    expect(
-      vm.$el.querySelector('.borderless [data-testid="status_success_borderless-icon"]'),
-    ).not.toBe(null);
+    expect(wrapper.find('.borderless').findComponent(GlIcon).exists()).toBe(true);
   });
 
   it('renders bridge job details without the job link', () => {
-    vm = mountComponent(Component, {
-      job: { ...jobs[0], path: undefined },
+    wrapper = mount(Description, {
+      propsData: {
+        job: { ...jobs[0], path: undefined },
+      },
     });
 
-    expect(vm.$el.querySelector('[data-testid="description-detail-link"]')).toBe(null);
+    expect(wrapper.find('[data-testid="description-detail-link"]').exists()).toBe(false);
   });
 });

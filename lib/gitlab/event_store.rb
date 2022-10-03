@@ -47,6 +47,7 @@ module Gitlab
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Groups::GroupPathChangedEvent
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Groups::GroupDeletedEvent
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::PagesDomains::PagesDomainDeletedEvent
+      store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::PagesDomains::PagesDomainUpdatedEvent
 
       store.subscribe ::MergeRequests::CreateApprovalEventWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::MergeRequests::CreateApprovalNoteWorker, to: ::MergeRequests::ApprovedEvent

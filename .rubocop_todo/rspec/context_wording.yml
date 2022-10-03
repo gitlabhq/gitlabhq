@@ -3370,7 +3370,6 @@ RSpec/ContextWording:
     - 'spec/tasks/cache/clear/redis_spec.rb'
     - 'spec/tasks/dev_rake_spec.rb'
     - 'spec/tasks/gettext_rake_spec.rb'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'
     - 'spec/tasks/gitlab/db/lock_writes_rake_spec.rb'
     - 'spec/tasks/gitlab/db/validate_config_rake_spec.rb'

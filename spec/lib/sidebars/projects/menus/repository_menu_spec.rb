@@ -34,5 +34,29 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu do
         end
       end
     end
+
+    context 'for menu items' do
+      subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
+
+      describe 'Contributors' do
+        let_it_be(:item_id) { :contributors }
+
+        context 'when analytics is disabled' do
+          before do
+            project.project_feature.update!(analytics_access_level: ProjectFeature::DISABLED)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when analytics is enabled' do
+          before do
+            project.project_feature.update!(analytics_access_level: ProjectFeature::ENABLED)
+          end
+
+          it { is_expected.not_to be_nil }
+        end
+      end
+    end
   end
 end

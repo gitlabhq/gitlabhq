@@ -1,7 +1,6 @@
-import { joinPaths } from '~/lib/utils/url_utility';
-import { GEM_URL } from '../../constants';
 import { createLink, generateHLJSOpenTag } from './dependency_linker_util';
 
+const GEM_URL = 'https://rubygems.org/gems/';
 const methodRegex = '.*add_dependency.*|.*add_runtime_dependency.*|.*add_development_dependency.*';
 const openTagRegex = generateHLJSOpenTag('string', '(&.*;)');
 const closeTagRegex = '&.*</span>';
@@ -24,7 +23,7 @@ const DEPENDENCY_REGEX = new RegExp(
 const handleReplace = (method, delimiter, packageName, closeTag, rest) => {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   const openTag = generateHLJSOpenTag('string linked', delimiter);
-  const href = joinPaths(GEM_URL, packageName);
+  const href = `${GEM_URL}${packageName}`;
   const packageLink = createLink(href, packageName);
 
   return `${method}${openTag}${packageLink}${closeTag}${rest}`;

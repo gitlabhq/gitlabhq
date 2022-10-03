@@ -631,7 +631,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/support_specs/graphql/arguments_spec.rb'
     - 'spec/support_specs/graphql/field_selection_spec.rb'
     - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'
     - 'spec/tooling/danger/datateam_spec.rb'
     - 'spec/tooling/lib/tooling/kubernetes_client_spec.rb'
     - 'spec/views/projects/issues/_issue.html.haml_spec.rb'

@@ -86,6 +86,16 @@ RSpec.describe Groups::ImportExport::ImportService do
 
         service.execute
       end
+
+      it 'tracks the event' do
+        service.execute
+
+        expect_snowplow_event(
+          category: 'Groups::ImportExport::ImportService',
+          action: 'create',
+          label: 'import_group_from_file'
+        )
+      end
     end
 
     context 'with a ndjson file' do
@@ -105,12 +115,11 @@ RSpec.describe Groups::ImportExport::ImportService do
     context 'when importing a ndjson export' do
       let(:user) { create(:user) }
       let(:group) { create(:group) }
-      let(:service) { described_class.new(group: group, user: user) }
       let(:import_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
 
       let(:import_logger) { instance_double(Gitlab::Import::Logger) }
 
-      subject { service.execute }
+      subject(:service) { described_class.new(group: group, user: user) }
 
       before do
         ImportExportUpload.create!(group: group, import_file: import_file)
@@ -128,11 +137,21 @@ RSpec.describe Groups::ImportExport::ImportService do
         end
 
         it 'imports group structure successfully' do
-          expect(subject).to be_truthy
+          expect(service.execute).to be_truthy
+        end
+
+        it 'tracks the event' do
+          service.execute
+
+          expect_snowplow_event(
+            category: 'Groups::ImportExport::ImportService',
+            action: 'create',
+            label: 'import_group_from_file'
+          )
         end
 
         it 'removes import file' do
-          subject
+          service.execute
 
           expect(group.import_export_upload.import_file.file).to be_nil
         end
@@ -141,7 +160,7 @@ RSpec.describe Groups::ImportExport::ImportService do
           shared = Gitlab::ImportExport::Shared.new(group)
           allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
 
-          subject
+          service.execute
 
           expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
           expect(Dir.exist?(shared.base_path)).to eq(false)
@@ -154,7 +173,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: 'Group Import/Export: Import succeeded'
           ).once
 
-          subject
+          service.execute
         end
       end
 
@@ -166,7 +185,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: a_string_including('Errors occurred')
           )
 
-          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
 
         it 'tracks the error' do
@@ -177,7 +196,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             expect(param.message).to include 'does not have required permissions for'
           end
 
-          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
       end
 
@@ -191,7 +210,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: a_string_including('Errors occurred')
           ).once
 
-          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
       end
 
@@ -203,7 +222,7 @@ RSpec.describe Groups::ImportExport::ImportService do
         end
 
         it 'successfully imports the group' do
-          expect(subject).to be_truthy
+          expect(service.execute).to be_truthy
         end
 
         it 'logs the import success' do
@@ -215,7 +234,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: 'Group Import/Export: Import succeeded'
           )
 
-          subject
+          service.execute
         end
       end
     end
@@ -223,12 +242,11 @@ RSpec.describe Groups::ImportExport::ImportService do
     context 'when importing a json export' do
       let(:user) { create(:user) }
       let(:group) { create(:group) }
-      let(:service) { described_class.new(group: group, user: user) }
       let(:import_file) { fixture_file_upload('spec/fixtures/legacy_group_export.tar.gz') }
 
       let(:import_logger) { instance_double(Gitlab::Import::Logger) }
 
-      subject { service.execute }
+      subject(:service) { described_class.new(group: group, user: user) }
 
       before do
         ImportExportUpload.create!(group: group, import_file: import_file)
@@ -246,11 +264,21 @@ RSpec.describe Groups::ImportExport::ImportService do
         end
 
         it 'imports group structure successfully' do
-          expect(subject).to be_truthy
+          expect(service.execute).to be_truthy
+        end
+
+        it 'tracks the event' do
+          service.execute
+
+          expect_snowplow_event(
+            category: 'Groups::ImportExport::ImportService',
+            action: 'create',
+            label: 'import_group_from_file'
+          )
         end
 
         it 'removes import file' do
-          subject
+          service.execute
 
           expect(group.import_export_upload.import_file.file).to be_nil
         end
@@ -259,7 +287,7 @@ RSpec.describe Groups::ImportExport::ImportService do
           shared = Gitlab::ImportExport::Shared.new(group)
           allow(Gitlab::ImportExport::Shared).to receive(:new).and_return(shared)
 
-          subject
+          service.execute
 
           expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
           expect(Dir.exist?(shared.base_path)).to eq(false)
@@ -272,7 +300,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: 'Group Import/Export: Import succeeded'
           ).once
 
-          subject
+          service.execute
         end
       end
 
@@ -284,7 +312,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: a_string_including('Errors occurred')
           )
 
-          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
 
         it 'tracks the error' do
@@ -295,7 +323,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             expect(param.message).to include 'does not have required permissions for'
           end
 
-          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
       end
 
@@ -309,7 +337,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: a_string_including('Errors occurred')
           ).once
 
-          expect { subject }.to raise_error(Gitlab::ImportExport::Error)
+          expect { service.execute }.to raise_error(Gitlab::ImportExport::Error)
         end
       end
 
@@ -321,7 +349,7 @@ RSpec.describe Groups::ImportExport::ImportService do
         end
 
         it 'successfully imports the group' do
-          expect(subject).to be_truthy
+          expect(service.execute).to be_truthy
         end
 
         it 'logs the import success' do
@@ -333,7 +361,7 @@ RSpec.describe Groups::ImportExport::ImportService do
             message: 'Group Import/Export: Import succeeded'
           )
 
-          subject
+          service.execute
         end
       end
     end

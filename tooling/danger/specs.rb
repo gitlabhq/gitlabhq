@@ -6,12 +6,47 @@ module Tooling
       SPEC_FILES_REGEX = 'spec/'
       EE_PREFIX = 'ee/'
       MATCH_WITH_ARRAY_REGEX = /(?<to>to\(?\s*)(?<matcher>match|eq)(?<expectation>[( ]?\[[^\]]+)/.freeze
-      SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
+      MATCH_WITH_ARRAY_REPLACEMENT = '\k<to>match_array\k<expectation>'
+
+      PROJECT_FACTORIES = %w[
+        :project
+        :project_empty_repo
+        :project_broken_repo
+        :forked_project_with_submodules
+        :redmine_project
+        :jira_project
+        :prometheus_project
+        :project_with_design
+      ].freeze
+
+      PROJECT_FACTORY_REGEX = /
+        ^\+?                                 # Start of the line, which may or may not have a `+`
+        (?<head>\s*)                         # 0-many leading whitespace captured in a group named head
+        let!?                                # Literal `let` which may or may not end in `!`
+        (?<tail>                             # capture group named tail
+          \([^)]+\)                          # Two parenthesis with any non-parenthesis characters between them
+          \s*\{\s*                           # Opening curly brace surrounded by 0-many whitespace characters
+          create\(                           # literal
+          (?:#{PROJECT_FACTORIES.join('|')}) # Any of the project factory names
+          \W                                 # Non-word character, avoid matching factories like :project_authorization
+        )                                    # end capture group named tail
+      /x.freeze
+
+      PROJECT_FACTORY_REPLACEMENT = '\k<head>let_it_be\k<tail>'
+      SUGGESTION_MARKDOWN = <<~SUGGESTION_MARKDOWN
       ```suggestion
       %<suggested_line>s
       ```
+      SUGGESTION_MARKDOWN
 
+      MATCH_WITH_ARRAY_SUGGESTION = <<~SUGGEST_COMMENT
       If order of the result is not important, please consider using `match_array` to avoid flakiness.
+      SUGGEST_COMMENT
+
+      PROJECT_FACTORY_SUGGESTION = <<~SUGGEST_COMMENT
+      Project creations are very slow. Use `let_it_be`, `build` or `build_stubbed` if possible.
+      See [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#optimize-factory-usage)
+      for background information and alternative options.
       SUGGEST_COMMENT
 
       def changed_specs_files(ee: :include)
@@ -30,29 +65,58 @@ module Tooling
       end
 
       def add_suggestions_for_match_with_array(filename)
-        added_lines = added_line_matching_match_with_array(filename)
+        add_suggestion(
+          filename,
+          MATCH_WITH_ARRAY_REGEX,
+          MATCH_WITH_ARRAY_REPLACEMENT,
+          MATCH_WITH_ARRAY_SUGGESTION
+        )
+      end
+
+      def add_suggestions_for_project_factory_usage(filename)
+        add_suggestion(
+          filename,
+          PROJECT_FACTORY_REGEX,
+          PROJECT_FACTORY_REPLACEMENT,
+          PROJECT_FACTORY_SUGGESTION
+        )
+      end
+
+      private
+
+      def added_lines_matching(filename, regex)
+        helper.changed_lines(filename).grep(/\A\+ /).grep(regex)
+      end
+
+      def add_suggestion(filename, regex, replacement, comment_text)
+        added_lines = added_lines_matching(filename, regex)
         return if added_lines.empty?
 
         spec_file_lines = project_helper.file_lines(filename)
 
         added_lines.each_with_object([]) do |added_line, processed_line_numbers|
           line_number = find_line_number(spec_file_lines, added_line.delete_prefix('+'), exclude_indexes: processed_line_numbers)
+          next unless line_number
+
           processed_line_numbers << line_number
-          markdown(format(SUGGEST_MR_COMMENT, suggested_line: spec_file_lines[line_number].gsub(MATCH_WITH_ARRAY_REGEX, '\k<to>match_array\k<expectation>')), file: filename, line: line_number.succ)
+          text = format(comment(comment_text), suggested_line: spec_file_lines[line_number].gsub(regex, replacement))
+          markdown(text, file: filename, line: line_number.succ)
         end
       end
 
-      def added_line_matching_match_with_array(filename)
-        helper.changed_lines(filename).grep(/\A\+ /).grep(MATCH_WITH_ARRAY_REGEX)
+      def comment(comment_text)
+        <<~COMMENT_BODY.chomp
+        #{SUGGESTION_MARKDOWN}
+        #{comment_text}
+        COMMENT_BODY
       end
-
-      private
 
       def find_line_number(file_lines, searched_line, exclude_indexes: [])
-        file_lines.each_with_index do |file_line, index|
-          next if exclude_indexes.include?(index)
-          break index if file_line == searched_line
+        _, index = file_lines.each_with_index.find do |file_line, index|
+          file_line == searched_line && !exclude_indexes.include?(index)
         end
+
+        index
       end
     end
   end

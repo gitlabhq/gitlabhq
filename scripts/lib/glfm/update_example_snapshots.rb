@@ -5,6 +5,7 @@ require 'yaml'
 require 'psych'
 require 'tempfile'
 require 'open3'
+require 'active_support/core_ext/enumerable'
 require_relative 'constants'
 require_relative 'shared'
 require_relative 'parse_examples'
@@ -115,10 +116,12 @@ module Glfm
 
     def write_snapshot_example_files(all_examples, skip_static_and_wysiwyg:)
       output("Reading #{GLFM_EXAMPLE_STATUS_YML_PATH}...")
-      glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH), symbolize_names: true)
+      glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH), symbolize_names: true) || {}
       validate_glfm_example_status_yml(glfm_examples_statuses)
 
       write_examples_index_yml(all_examples)
+
+      validate_glfm_config_file_example_names(all_examples)
 
       write_markdown_yml(all_examples)
 
@@ -148,6 +151,50 @@ module Glfm
 
         raise "Error: '#{example_name}' must not have any 'skip_update_example_snapshot_*' values specified " \
                 "if 'skip_update_example_snapshots' is truthy"
+      end
+    end
+
+    def validate_glfm_config_file_example_names(all_examples)
+      valid_example_names = all_examples.pluck(:name).map(&:to_sym) # rubocop:disable CodeReuse/ActiveRecord
+
+      # We are re-reading GLFM_EXAMPLE_STATUS_YML_PATH here, but that's OK, it's a small file, and rereading it
+      # allows us to handle it in the same loop as the other manually-curated config files.
+      [
+        GLFM_EXAMPLE_STATUS_YML_PATH,
+        GLFM_EXAMPLE_METADATA_YML_PATH,
+        GLFM_EXAMPLE_NORMALIZATIONS_YML_PATH
+      ].each do |path|
+        output("Reading #{path}...")
+        io = File.open(path)
+        config_file_examples = YAML.safe_load(io, symbolize_names: true, aliases: true)
+
+        # Skip validation if the config file is empty
+        next unless config_file_examples
+
+        config_file_example_names = config_file_examples.keys
+
+        # Validate that all example names exist in the config file refer to an existing example in `examples_index.yml`,
+        # unless it starts with the special prefix `00_`, which is preserved for usage as YAML anchors.
+        invalid_name = config_file_example_names.detect do |name|
+          !name.start_with?('00_') && valid_example_names.exclude?(name)
+        end
+        next unless invalid_name
+
+        # NOTE: The extra spaces before punctuation in the error message allows for easier copy/pasting of the paths.
+        err_msg =
+          <<~TXT
+
+            Error in input specification config file #{path} :
+
+              Config file entry named #{invalid_name}
+              does not have a corresponding example entry in
+              #{ES_EXAMPLES_INDEX_YML_PATH} .
+
+              Please delete or rename this config file entry.
+
+              If this entry is being used as a YAML anchor, please rename it to start with '00_'.
+          TXT
+        raise err_msg
       end
     end
 
@@ -244,7 +291,7 @@ module Glfm
       wysiwyg_html_and_json_tempfile_path = Dir::Tmpname.create(WYSIWYG_HTML_AND_JSON_TEMPFILE_BASENAME) {}
       ENV['OUTPUT_WYSIWYG_HTML_AND_JSON_TEMPFILE_PATH'] = wysiwyg_html_and_json_tempfile_path
 
-      cmd = %(yarn jest --testMatch '**/render_wysiwyg_html_and_json.js' #{__dir__}/render_wysiwyg_html_and_json.js)
+      cmd = "yarn jest --testMatch '**/render_wysiwyg_html_and_json.js' #{__dir__}/render_wysiwyg_html_and_json.js"
       run_external_cmd(cmd)
 
       output("Reading generated WYSIWYG HTML and prosemirror JSON from tempfile " \

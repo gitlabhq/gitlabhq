@@ -418,7 +418,6 @@ Layout/SpaceInsideParens:
     - 'spec/support/shared_examples/requests/api/composer_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/releases_shared_examples.rb'
     - 'spec/support/shared_examples/serializers/environment_serializer_shared_examples.rb'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'
     - 'spec/tasks/gitlab/db_rake_spec.rb'
     - 'spec/validators/devise_email_validator_spec.rb'
     - 'spec/views/shared/runners/_runner_details.html.haml_spec.rb'

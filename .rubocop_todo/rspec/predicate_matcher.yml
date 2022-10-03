@@ -496,7 +496,6 @@ RSpec/PredicateMatcher:
     - 'spec/support/shared_examples/requests/api/hooks_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/object_storage_shared_examples.rb'
     - 'spec/support/shared_examples/workers/batched_background_migration_worker_shared_examples.rb'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
     - 'spec/validators/any_field_validator_spec.rb'

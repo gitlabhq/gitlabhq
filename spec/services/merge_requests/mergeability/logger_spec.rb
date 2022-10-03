@@ -94,25 +94,6 @@ RSpec.describe MergeRequests::Mergeability::Logger, :request_store do
       end
     end
 
-    context 'when disabled' do
-      before do
-        stub_feature_flags(mergeability_checks_logger: false)
-      end
-
-      it "returns the block's value" do
-        expect(logger.instrument(mergeability_name: :expensive_operation) { 123 }).to eq(123)
-      end
-
-      it 'does not call the logger' do
-        expect(Gitlab::AppJsonLogger).not_to receive(:new)
-
-        expect(logger.instrument(mergeability_name: :expensive_operation) { Project.count + MergeRequest.count })
-          .to eq(2)
-
-        logger.commit
-      end
-    end
-
     it 'raises an error when block is not provided' do
       expect { logger.instrument(mergeability_name: :expensive_operation) }
         .to raise_error(ArgumentError, 'block not given')

@@ -393,7 +393,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def captcha_enabled?
-    Gitlab::Recaptcha.enabled? && Feature.enabled?(:recaptcha_on_top_level_group_creation, type: :ops)
+    helpers.recaptcha_enabled? && Feature.enabled?(:recaptcha_on_top_level_group_creation, type: :ops)
   end
 
   def captcha_required?

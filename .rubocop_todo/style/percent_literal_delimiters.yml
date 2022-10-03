@@ -1191,7 +1191,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/support_specs/graphql/arguments_spec.rb'
     - 'spec/support_specs/helpers/active_record/query_recorder_spec.rb'
     - 'spec/support_specs/matchers/exceed_query_limit_helpers_spec.rb'
-    - 'spec/tasks/gitlab/backup_rake_spec.rb'
     - 'spec/tasks/gitlab/db_rake_spec.rb'
     - 'spec/tasks/gitlab/task_helpers_spec.rb'
     - 'spec/tasks/gitlab/uploads/migrate_rake_spec.rb'

@@ -34,7 +34,7 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
 
   it 'can create a project dependency graph using factories' do
     markdown_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_MARKDOWN_YML_PATH')), symbolize_names: true)
-    metadata_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_METADATA_YML_PATH')), symbolize_names: true)
+    metadata_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_METADATA_YML_PATH')), symbolize_names: true) || {}
 
     # NOTE: We cannot parallelize this loop like the Javascript WYSIWYG example generation does,
     # because the rspec `post` API cannot be parallized (it is not thread-safe, it can't find
@@ -66,8 +66,7 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
   private
 
   def write_output_file(static_html_hash)
-    tmpfile = File.open(ENV.fetch('OUTPUT_STATIC_HTML_TEMPFILE_PATH'), 'w')
     yaml_string = dump_yaml_with_formatting(static_html_hash)
-    write_file(tmpfile, yaml_string)
+    write_file(ENV.fetch('OUTPUT_STATIC_HTML_TEMPFILE_PATH'), yaml_string)
   end
 end

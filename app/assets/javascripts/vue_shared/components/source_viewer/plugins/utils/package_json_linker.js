@@ -1,8 +1,7 @@
 import { unescape } from 'lodash';
-import { joinPaths } from '~/lib/utils/url_utility';
-import { NPM_URL } from '../../constants';
 import { createLink, generateHLJSOpenTag } from './dependency_linker_util';
 
+const NPM_URL = 'https://npmjs.com/package/';
 const attrOpenTag = generateHLJSOpenTag('attr');
 const stringOpenTag = generateHLJSOpenTag('string');
 const closeTag = '&quot;</span>';
@@ -20,7 +19,7 @@ const DEPENDENCY_REGEX = new RegExp(
 const handleReplace = (original, packageName, version, dependenciesToLink) => {
   const unescapedPackageName = unescape(packageName);
   const unescapedVersion = unescape(version);
-  const href = joinPaths(NPM_URL, unescapedPackageName);
+  const href = `${NPM_URL}${unescapedPackageName}`;
   const packageLink = createLink(href, unescapedPackageName);
   const versionLink = createLink(href, unescapedVersion);
   const closeAndOpenTag = `${closeTag}: ${attrOpenTag}`;

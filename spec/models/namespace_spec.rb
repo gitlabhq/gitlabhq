@@ -1962,7 +1962,7 @@ RSpec.describe Namespace do
     it 'returns the virual domain' do
       expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
       expect(virtual_domain.lookup_paths).not_to be_empty
-      expect(virtual_domain.cache_key).to eq("pages_domain_for_namespace_#{namespace.root_ancestor.id}")
+      expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{namespace.root_ancestor.id}_/)
     end
 
     context 'when :cache_pages_domain_api is disabled' do

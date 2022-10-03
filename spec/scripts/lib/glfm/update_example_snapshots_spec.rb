@@ -27,6 +27,7 @@ require_relative '../../../../scripts/lib/glfm/update_example_snapshots'
 #
 # Also, the textual content of the individual fixture file entries is also crafted to help
 # indicate which scenarios which they are covering.
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   subject { described_class.new }
 
@@ -34,9 +35,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   let(:glfm_spec_txt_path) { described_class::GLFM_SPEC_TXT_PATH }
   let(:glfm_spec_txt_local_io) { StringIO.new(glfm_spec_txt_contents) }
   let(:glfm_example_status_yml_path) { described_class::GLFM_EXAMPLE_STATUS_YML_PATH }
-  let(:glfm_example_status_yml_io) { StringIO.new(glfm_example_status_yml_contents) }
   let(:glfm_example_metadata_yml_path) { described_class::GLFM_EXAMPLE_METADATA_YML_PATH }
-  let(:glfm_example_metadata_yml_io) { StringIO.new(glfm_example_metadata_yml_contents) }
+  let(:glfm_example_normalizations_yml_path) { described_class::GLFM_EXAMPLE_NORMALIZATIONS_YML_PATH }
 
   # Example Snapshot (ES) output files
   let(:es_examples_index_yml_path) { described_class::ES_EXAMPLES_INDEX_YML_PATH }
@@ -285,10 +285,25 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     YAML
   end
 
+  let(:test1) { '\1\2URI_PREFIX\4' }
+
+  let(:glfm_example_normalizations_yml_contents) do
+    # NOTE: This heredoc identifier must be quoted because we are using control characters in the heredoc body.
+    #       See https://stackoverflow.com/a/73831037/25192
+    <<~'YAML'
+      ---
+      # If a config file entry starts with `00_`, it will be skipped for validation that it exists in `examples_index.yml`
+      00_shared:
+        00_uri: &00_uri
+          - regex: '(href|data-src)(=")(.*?)(test-file\.(png|zip)")'
+            replacement: '\1\2URI_PREFIX\4'
+    YAML
+  end
+
   let(:es_html_yml_io_existing_contents) do
     <<~YAML
       ---
-      00_00_00__obsolete_entry_to_be_deleted__001:
+      01_00_00__obsolete_entry_to_be_deleted__001:
         canonical: |
           This entry is no longer exists in the spec.txt, so it will be deleted.
         static: |-
@@ -315,7 +330,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   let(:es_prosemirror_json_yml_io_existing_contents) do
     <<~YAML
       ---
-      00_00_00__obsolete_entry_to_be_deleted__001: |-
+      01_00_00__obsolete_entry_to_be_deleted__001: |-
         {
           "obsolete": "This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted."
         }
@@ -356,9 +371,14 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
 
     # input files
     allow(File).to receive(:open).with(glfm_spec_txt_path) { glfm_spec_txt_local_io }
-    allow(File).to receive(:open).with(glfm_example_status_yml_path) { glfm_example_status_yml_io }
+    allow(File).to receive(:open).with(glfm_example_status_yml_path) do
+      StringIO.new(glfm_example_status_yml_contents)
+    end
     allow(File).to receive(:open).with(glfm_example_metadata_yml_path) do
-      glfm_example_metadata_yml_io
+      StringIO.new(glfm_example_metadata_yml_contents)
+    end
+    allow(File).to receive(:open).with(glfm_example_normalizations_yml_path) do
+      StringIO.new(glfm_example_normalizations_yml_contents)
     end
 
     # output files
@@ -525,353 +545,404 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     end
   end
 
-  # rubocop:disable RSpec/MultipleMemoizedHelpers
-  describe 'writing html.yml and prosemirror_json.yml' do
-    let(:es_html_yml_contents) { reread_io(es_html_yml_io) }
-    let(:es_prosemirror_json_yml_contents) { reread_io(es_prosemirror_json_yml_io) }
+  describe 'error handling when manually-curated input specification config files contain invalid example names:' do
+    let(:err_msg) do
+      /#{config_file}.*01_00_00__invalid__001.*does not have.*entry in.*#{described_class::ES_EXAMPLES_INDEX_YML_PATH}/m
+    end
 
-    # NOTE: This example_status.yml is crafted in conjunction with expected_html_yml_contents
-    # to test the behavior of the `skip_update_*` flags
-    let(:glfm_example_status_yml_contents) do
+    let(:invalid_example_name_file_contents) do
       <<~YAML
         ---
-        02_01_00__inlines__strong__002:
-          # NOTE: 02_01_00__inlines__strong__002: is omitted from the existing prosemirror_json.yml file, and is also
-          # skipped here, to show that an example does not need to exist in order to be skipped.
-          # TODO: This should be changed to raise an error instead, to enforce that there cannot be orphaned
-          #       entries in glfm_example_status.yml. This task is captured in
-          #       https://gitlab.com/gitlab-org/gitlab/-/issues/361241#other-cleanup-tasks
-          skip_update_example_snapshot_prosemirror_json: "skipping because JSON isn't cool enough"
-        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
-          skip_update_example_snapshot_html_static: "skipping because there's too much static"
-        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
-          skip_update_example_snapshot_html_wysiwyg: 'skipping because what you see is NOT what you get'
-          skip_update_example_snapshot_prosemirror_json: "skipping because JSON still isn't cool enough"
-        05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
-          skip_update_example_snapshots: 'skipping this example because it is very bad'
-        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
-          skip_update_example_snapshots: 'skipping this example because we have manually modified it'
+        01_00_00__invalid__001:
+          a: 1
       YAML
     end
 
-    let(:expected_html_yml_contents) do
-      <<~YAML
-        ---
-        02_01_00__inlines__strong__001:
-          canonical: |
-            <p><strong>bold</strong></p>
-          static: |-
-            <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
-          wysiwyg: |-
-            <p><strong>bold</strong></p>
-        02_01_00__inlines__strong__002:
-          canonical: |
-            <p><strong>bold with more text</strong></p>
-          static: |-
-            <p data-sourcepos="1:1-1:23" dir="auto"><strong>bold with more text</strong></p>
-          wysiwyg: |-
-            <p><strong>bold with more text</strong></p>
-        02_03_00__inlines__strikethrough_extension__001:
-          canonical: |
-            <p><del>Hi</del> Hello, world!</p>
-          static: |-
-            <p data-sourcepos="1:1-1:20" dir="auto"><del>Hi</del> Hello, world!</p>
-          wysiwyg: |-
-            <p><s>Hi</s> Hello, world!</p>
-        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
-          canonical: |
-            <p><strong>bold</strong></p>
-          wysiwyg: |-
-            <p><strong>bold</strong></p>
-        03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001:
-          canonical: |
-            <p>Example in an H3</p>
-          static: |-
-            <p data-sourcepos="1:1-1:16" dir="auto">Example in an H3</p>
-          wysiwyg: |-
-            <p>Example in an H3</p>
-        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
-          canonical: |
-            <p><strong>
-            bold
-            </strong></p>
-          static: |-
-            <strong>
-            bold
-            </strong>
-        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
-          canonical: |
-            <p><strong>This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved</strong></p>
-          static: |-
-            <p>This is the manually modified static HTML which will be preserved</p>
-          wysiwyg: |-
-            <p>This is the manually modified WYSIWYG HTML which will be preserved</p>
-        06_01_00__api_request_overrides__group_upload_link__001:
-          canonical: |
-            <p><a href="groups-test-file">groups-test-file</a></p>
-          static: |-
-            <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
-          wysiwyg: |-
-            <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
-        06_02_00__api_request_overrides__project_repo_link__001:
-          canonical: |
-            <p><a href="projects-test-file">projects-test-file</a></p>
-          static: |-
-            <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file">projects-test-file</a></p>
-          wysiwyg: |-
-            <p><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
-        06_03_00__api_request_overrides__project_snippet_ref__001:
-          canonical: |
-            <p>This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888">$88888</a>
-          static: |-
-            <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
-          wysiwyg: |-
-            <p>This project snippet ID reference IS filtered: $88888</p>
-        06_04_00__api_request_overrides__personal_snippet_ref__001:
-          canonical: |
-            <p>This personal snippet ID reference is NOT filtered: $99999</p>
-          static: |-
-            <p data-sourcepos="1:1-1:58" dir="auto">This personal snippet ID reference is NOT filtered: $99999</p>
-          wysiwyg: |-
-            <p>This personal snippet ID reference is NOT filtered: $99999</p>
-        06_05_00__api_request_overrides__project_wiki_link__001:
-          canonical: |
-            <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
-          static: |-
-            <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
-          wysiwyg: |-
-            <p><a target="_blank" rel="noopener noreferrer nofollow" href="project-wikis-test-file">project-wikis-test-file</a></p>
-      YAML
+    context 'for glfm_example_status.yml' do
+      let(:config_file) { described_class::GLFM_EXAMPLE_STATUS_YML_PATH }
+      let(:glfm_example_status_yml_contents) { invalid_example_name_file_contents }
+
+      it 'raises error' do
+        expect { subject.process(skip_static_and_wysiwyg: true) }.to raise_error(err_msg)
+      end
     end
 
-    let(:expected_prosemirror_json_contents) do
-      <<~YAML
-        ---
-        02_01_00__inlines__strong__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "marks": [
-                      {
-                        "type": "bold"
-                      }
-                    ],
-                    "text": "bold"
-                  }
-                ]
-              }
-            ]
-          }
-        02_03_00__inlines__strikethrough_extension__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "marks": [
-                      {
-                        "type": "strike"
-                      }
-                    ],
-                    "text": "Hi"
-                  },
-                  {
-                    "type": "text",
-                    "text": " Hello, world!"
-                  }
-                ]
-              }
-            ]
-          }
-        03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "marks": [
-                      {
-                        "type": "bold"
-                      }
-                    ],
-                    "text": "bold"
-                  }
-                ]
-              }
-            ]
-          }
-        03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "Example in an H3"
-                  }
-                ]
-              }
-            ]
-          }
-        04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
-          {
-            "existing": "This entry is manually modified and preserved because skip_update_example_snapshot_prosemirror_json will be truthy"
-          }
-        05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |-
-          {
-            "existing": "This entry is manually modified and preserved because skip_update_example_snapshots will be truthy"
-          }
-        06_01_00__api_request_overrides__group_upload_link__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "marks": [
-                      {
-                        "type": "link",
-                        "attrs": {
-                          "href": "/uploads/groups-test-file",
-                          "target": "_blank",
-                          "class": null,
-                          "title": null,
-                          "canonicalSrc": "/uploads/groups-test-file",
-                          "isReference": false
-                        }
-                      }
-                    ],
-                    "text": "groups-test-file"
-                  }
-                ]
-              }
-            ]
-          }
-        06_02_00__api_request_overrides__project_repo_link__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "marks": [
-                      {
-                        "type": "link",
-                        "attrs": {
-                          "href": "projects-test-file",
-                          "target": "_blank",
-                          "class": null,
-                          "title": null,
-                          "canonicalSrc": "projects-test-file",
-                          "isReference": false
-                        }
-                      }
-                    ],
-                    "text": "projects-test-file"
-                  }
-                ]
-              }
-            ]
-          }
-        06_03_00__api_request_overrides__project_snippet_ref__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "This project snippet ID reference IS filtered: $88888"
-                  }
-                ]
-              }
-            ]
-          }
-        06_04_00__api_request_overrides__personal_snippet_ref__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "text": "This personal snippet ID reference is NOT filtered: $99999"
-                  }
-                ]
-              }
-            ]
-          }
-        06_05_00__api_request_overrides__project_wiki_link__001: |-
-          {
-            "type": "doc",
-            "content": [
-              {
-                "type": "paragraph",
-                "content": [
-                  {
-                    "type": "text",
-                    "marks": [
-                      {
-                        "type": "link",
-                        "attrs": {
-                          "href": "project-wikis-test-file",
-                          "target": "_blank",
-                          "class": null,
-                          "title": null,
-                          "canonicalSrc": "project-wikis-test-file",
-                          "isReference": false
-                        }
-                      }
-                    ],
-                    "text": "project-wikis-test-file"
-                  }
-                ]
-              }
-            ]
-          }
-      YAML
+    context 'for glfm_example_metadata.yml' do
+      let(:config_file) { described_class::GLFM_EXAMPLE_METADATA_YML_PATH }
+      let(:glfm_example_metadata_yml_contents) { invalid_example_name_file_contents }
+
+      it 'raises error' do
+        expect { subject.process(skip_static_and_wysiwyg: true) }.to raise_error(err_msg)
+      end
     end
 
-    before do
-      # NOTE: This is a necessary to avoid an `error Couldn't find an integrity file` error
-      #   when invoking `yarn jest ...` on CI from within an RSpec job. It could be solved by
-      #   adding `.yarn-install` to be included in the RSpec CI job, but that would be a performance
-      #   hit to all RSpec jobs. We could also make a dedicate job just for this spec. However,
-      #   since this is just a single script, those options may not be justified.
-      described_class.new.run_external_cmd('yarn install') if ENV['CI']
+    context 'for glfm_example_normalizations.yml' do
+      let(:config_file) { described_class::GLFM_EXAMPLE_NORMALIZATIONS_YML_PATH }
+      let(:glfm_example_normalizations_yml_contents) { invalid_example_name_file_contents }
+
+      it 'raises error' do
+        expect { subject.process(skip_static_and_wysiwyg: true) }.to raise_error(err_msg)
+      end
+    end
+  end
+
+  context 'with full processing of static and WYSIWYG HTML' do
+    before(:all) do
+      # NOTE: It is a necessary to do a `yarn install` in order to ensure that
+      #   `scripts/lib/glfm/render_wysiwyg_html_and_json.js` can be invoked successfully
+      #   on the CI job (which will not be set up for frontend specs since this is
+      #   an RSpec spec), or if the current yarn dependencies are not installed locally.
+      described_class.new.run_external_cmd('yarn install --frozen-lockfile')
     end
 
-    # NOTE: Both `html.yml` and `prosemirror_json.yml` generation are tested in a single example, to
-    # avoid slower tests, because generating the static HTML is slow due to the need to invoke
-    # the rails environment. We could have separate sections, but this would require an extra flag
-    # to the `process` method to independently skip static vs. WYSIWYG, which is not worth the effort.
-    it 'writes the correct content', :unlimited_max_formatted_output_length do
-      # expectation that skipping message is only output once per example
-      expect(subject).to receive(:output).once.with(/reason.*skipping this example because it is very bad/i)
+    describe 'manually-curated input specification config files' do
+      let(:glfm_example_status_yml_contents) { '' }
+      let(:glfm_example_metadata_yml_contents) { '' }
+      let(:glfm_example_normalizations_yml_contents) { '' }
 
-      subject.process
+      it 'can be empty' do
+        expect { subject.process }.not_to raise_error
+      end
+    end
 
-      expect(es_html_yml_contents).to eq(expected_html_yml_contents)
-      expect(es_prosemirror_json_yml_contents).to eq(expected_prosemirror_json_contents)
+    describe 'writing html.yml and prosemirror_json.yml' do
+      let(:es_html_yml_contents) { reread_io(es_html_yml_io) }
+      let(:es_prosemirror_json_yml_contents) { reread_io(es_prosemirror_json_yml_io) }
+
+      # NOTE: This example_status.yml is crafted in conjunction with expected_html_yml_contents
+      # to test the behavior of the `skip_update_*` flags
+      let(:glfm_example_status_yml_contents) do
+        <<~YAML
+          ---
+          02_01_00__inlines__strong__002:
+            # NOTE: 02_01_00__inlines__strong__002: is omitted from the existing prosemirror_json.yml file, and is also
+            # skipped here, to show that an example does not need to exist in order to be skipped.
+            # TODO: This should be changed to raise an error instead, to enforce that there cannot be orphaned
+            #       entries in glfm_example_status.yml. This task is captured in
+            #       https://gitlab.com/gitlab-org/gitlab/-/issues/361241#other-cleanup-tasks
+            skip_update_example_snapshot_prosemirror_json: "skipping because JSON isn't cool enough"
+          03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
+            skip_update_example_snapshot_html_static: "skipping because there's too much static"
+          04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
+            skip_update_example_snapshot_html_wysiwyg: 'skipping because what you see is NOT what you get'
+            skip_update_example_snapshot_prosemirror_json: "skipping because JSON still isn't cool enough"
+          05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
+            skip_update_example_snapshots: 'skipping this example because it is very bad'
+          05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+            skip_update_example_snapshots: 'skipping this example because we have manually modified it'
+        YAML
+      end
+
+      let(:expected_html_yml_contents) do
+        <<~YAML
+          ---
+          02_01_00__inlines__strong__001:
+            canonical: |
+              <p><strong>bold</strong></p>
+            static: |-
+              <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
+            wysiwyg: |-
+              <p><strong>bold</strong></p>
+          02_01_00__inlines__strong__002:
+            canonical: |
+              <p><strong>bold with more text</strong></p>
+            static: |-
+              <p data-sourcepos="1:1-1:23" dir="auto"><strong>bold with more text</strong></p>
+            wysiwyg: |-
+              <p><strong>bold with more text</strong></p>
+          02_03_00__inlines__strikethrough_extension__001:
+            canonical: |
+              <p><del>Hi</del> Hello, world!</p>
+            static: |-
+              <p data-sourcepos="1:1-1:20" dir="auto"><del>Hi</del> Hello, world!</p>
+            wysiwyg: |-
+              <p><s>Hi</s> Hello, world!</p>
+          03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
+            canonical: |
+              <p><strong>bold</strong></p>
+            wysiwyg: |-
+              <p><strong>bold</strong></p>
+          03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001:
+            canonical: |
+              <p>Example in an H3</p>
+            static: |-
+              <p data-sourcepos="1:1-1:16" dir="auto">Example in an H3</p>
+            wysiwyg: |-
+              <p>Example in an H3</p>
+          04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
+            canonical: |
+              <p><strong>
+              bold
+              </strong></p>
+            static: |-
+              <strong>
+              bold
+              </strong>
+          05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
+            canonical: |
+              <p><strong>This example will have its manually modified static HTML, WYSIWYG HTML, and ProseMirror JSON preserved</strong></p>
+            static: |-
+              <p>This is the manually modified static HTML which will be preserved</p>
+            wysiwyg: |-
+              <p>This is the manually modified WYSIWYG HTML which will be preserved</p>
+          06_01_00__api_request_overrides__group_upload_link__001:
+            canonical: |
+              <p><a href="groups-test-file">groups-test-file</a></p>
+            static: |-
+              <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+            wysiwyg: |-
+              <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
+          06_02_00__api_request_overrides__project_repo_link__001:
+            canonical: |
+              <p><a href="projects-test-file">projects-test-file</a></p>
+            static: |-
+              <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file">projects-test-file</a></p>
+            wysiwyg: |-
+              <p><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
+          06_03_00__api_request_overrides__project_snippet_ref__001:
+            canonical: |
+              <p>This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888">$88888</a>
+            static: |-
+              <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
+            wysiwyg: |-
+              <p>This project snippet ID reference IS filtered: $88888</p>
+          06_04_00__api_request_overrides__personal_snippet_ref__001:
+            canonical: |
+              <p>This personal snippet ID reference is NOT filtered: $99999</p>
+            static: |-
+              <p data-sourcepos="1:1-1:58" dir="auto">This personal snippet ID reference is NOT filtered: $99999</p>
+            wysiwyg: |-
+              <p>This personal snippet ID reference is NOT filtered: $99999</p>
+          06_05_00__api_request_overrides__project_wiki_link__001:
+            canonical: |
+              <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
+            static: |-
+              <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
+            wysiwyg: |-
+              <p><a target="_blank" rel="noopener noreferrer nofollow" href="project-wikis-test-file">project-wikis-test-file</a></p>
+        YAML
+      end
+
+      let(:expected_prosemirror_json_contents) do
+        <<~YAML
+          ---
+          02_01_00__inlines__strong__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "bold"
+                        }
+                      ],
+                      "text": "bold"
+                    }
+                  ]
+                }
+              ]
+            }
+          02_03_00__inlines__strikethrough_extension__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "strike"
+                        }
+                      ],
+                      "text": "Hi"
+                    },
+                    {
+                      "type": "text",
+                      "text": " Hello, world!"
+                    }
+                  ]
+                }
+              ]
+            }
+          03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "bold"
+                        }
+                      ],
+                      "text": "bold"
+                    }
+                  ]
+                }
+              ]
+            }
+          03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Example in an H3"
+                    }
+                  ]
+                }
+              ]
+            }
+          04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001: |-
+            {
+              "existing": "This entry is manually modified and preserved because skip_update_example_snapshot_prosemirror_json will be truthy"
+            }
+          05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001: |-
+            {
+              "existing": "This entry is manually modified and preserved because skip_update_example_snapshots will be truthy"
+            }
+          06_01_00__api_request_overrides__group_upload_link__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "link",
+                          "attrs": {
+                            "href": "/uploads/groups-test-file",
+                            "target": "_blank",
+                            "class": null,
+                            "title": null,
+                            "canonicalSrc": "/uploads/groups-test-file",
+                            "isReference": false
+                          }
+                        }
+                      ],
+                      "text": "groups-test-file"
+                    }
+                  ]
+                }
+              ]
+            }
+          06_02_00__api_request_overrides__project_repo_link__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "link",
+                          "attrs": {
+                            "href": "projects-test-file",
+                            "target": "_blank",
+                            "class": null,
+                            "title": null,
+                            "canonicalSrc": "projects-test-file",
+                            "isReference": false
+                          }
+                        }
+                      ],
+                      "text": "projects-test-file"
+                    }
+                  ]
+                }
+              ]
+            }
+          06_03_00__api_request_overrides__project_snippet_ref__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "This project snippet ID reference IS filtered: $88888"
+                    }
+                  ]
+                }
+              ]
+            }
+          06_04_00__api_request_overrides__personal_snippet_ref__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "This personal snippet ID reference is NOT filtered: $99999"
+                    }
+                  ]
+                }
+              ]
+            }
+          06_05_00__api_request_overrides__project_wiki_link__001: |-
+            {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "link",
+                          "attrs": {
+                            "href": "project-wikis-test-file",
+                            "target": "_blank",
+                            "class": null,
+                            "title": null,
+                            "canonicalSrc": "project-wikis-test-file",
+                            "isReference": false
+                          }
+                        }
+                      ],
+                      "text": "project-wikis-test-file"
+                    }
+                  ]
+                }
+              ]
+            }
+        YAML
+      end
+
+      # NOTE: Both `html.yml` and `prosemirror_json.yml` generation are tested in a single example, to
+      # avoid slower tests, because generating the static HTML is slow due to the need to invoke
+      # the rails environment. We could have separate sections, but this would require an extra flag
+      # to the `process` method to independently skip static vs. WYSIWYG, which is not worth the effort.
+      it 'writes the correct content', :unlimited_max_formatted_output_length do
+        # expectation that skipping message is only output once per example
+        expect(subject).to receive(:output).once.with(/reason.*skipping this example because it is very bad/i)
+
+        subject.process
+
+        expect(es_html_yml_contents).to eq(expected_html_yml_contents)
+        expect(es_prosemirror_json_yml_contents).to eq(expected_prosemirror_json_contents)
+      end
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers

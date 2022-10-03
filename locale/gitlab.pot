@@ -44588,6 +44588,9 @@ msgstr ""
 msgid "Vulnerability|Tool"
 msgstr ""
 
+msgid "Vulnerability|Tool:"
+msgstr ""
+
 msgid "Vulnerability|Training"
 msgstr ""
 
@@ -47078,6 +47081,9 @@ msgid "ciReport|Found %{issuesWithCount}"
 msgstr ""
 
 msgid "ciReport|Full Report"
+msgstr ""
+
+msgid "ciReport|Generic Report"
 msgstr ""
 
 msgid "ciReport|IaC Scanning"

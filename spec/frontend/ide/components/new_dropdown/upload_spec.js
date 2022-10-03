@@ -1,39 +1,34 @@
-import Vue from 'vue';
-import createComponent from 'helpers/vue_mount_component_helper';
-import upload from '~/ide/components/new_dropdown/upload.vue';
+import { mount } from '@vue/test-utils';
+import Upload from '~/ide/components/new_dropdown/upload.vue';
 
 describe('new dropdown upload', () => {
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    const Component = Vue.extend(upload);
-
-    vm = createComponent(Component, {
-      path: '',
+    wrapper = mount(Upload, {
+      propsData: {
+        path: '',
+      },
     });
-
-    vm.entryName = 'testing';
-
-    jest.spyOn(vm, '$emit');
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('openFile', () => {
     it('calls for each file', () => {
       const files = ['test', 'test2', 'test3'];
 
-      jest.spyOn(vm, 'readFile').mockImplementation(() => {});
-      jest.spyOn(vm.$refs.fileUpload, 'files', 'get').mockReturnValue(files);
+      jest.spyOn(wrapper.vm, 'readFile').mockImplementation(() => {});
+      jest.spyOn(wrapper.vm.$refs.fileUpload, 'files', 'get').mockReturnValue(files);
 
-      vm.openFile();
+      wrapper.vm.openFile();
 
-      expect(vm.readFile.mock.calls.length).toBe(3);
+      expect(wrapper.vm.readFile.mock.calls.length).toBe(3);
 
       files.forEach((file, i) => {
-        expect(vm.readFile.mock.calls[i]).toEqual([file]);
+        expect(wrapper.vm.readFile.mock.calls[i]).toEqual([file]);
       });
     });
   });
@@ -48,7 +43,7 @@ describe('new dropdown upload', () => {
         type: 'images/png',
       };
 
-      vm.readFile(file);
+      wrapper.vm.readFile(file);
 
       expect(FileReader.prototype.readAsDataURL).toHaveBeenCalledWith(file);
     });
@@ -71,35 +66,39 @@ describe('new dropdown upload', () => {
 
     it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', async () => {
       const waitForCreate = new Promise((resolve) => {
-        vm.$on('create', resolve);
+        wrapper.vm.$on('create', resolve);
       });
 
-      vm.createFile(textTarget, textFile);
+      wrapper.vm.createFile(textTarget, textFile);
 
       expect(FileReader.prototype.readAsText).toHaveBeenCalledWith(textFile);
 
       await waitForCreate;
-      expect(vm.$emit).toHaveBeenCalledWith('create', {
-        name: textFile.name,
-        type: 'blob',
-        content: 'plain text',
-        rawPath: '',
-        mimeType: 'test/mime-text',
-      });
+      expect(wrapper.emitted('create')[0]).toStrictEqual([
+        {
+          name: textFile.name,
+          type: 'blob',
+          content: 'plain text',
+          rawPath: '',
+          mimeType: 'test/mime-text',
+        },
+      ]);
     });
 
     it('creates a blob URL for the content if binary', () => {
-      vm.createFile(binaryTarget, binaryFile);
+      wrapper.vm.createFile(binaryTarget, binaryFile);
 
       expect(FileReader.prototype.readAsText).not.toHaveBeenCalled();
 
-      expect(vm.$emit).toHaveBeenCalledWith('create', {
-        name: binaryFile.name,
-        type: 'blob',
-        content: 'ðððð',
-        rawPath: 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b',
-        mimeType: 'test/mime-binary',
-      });
+      expect(wrapper.emitted('create')[0]).toStrictEqual([
+        {
+          name: binaryFile.name,
+          type: 'blob',
+          content: 'ðððð',
+          rawPath: 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b',
+          mimeType: 'test/mime-binary',
+        },
+      ]);
     });
   });
 });
