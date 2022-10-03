@@ -7,8 +7,8 @@ RSpec.describe 'Editing file blob', :js do
   include TreeHelper
   include BlobSpecHelpers
 
-  let(:project) { create(:project, :public, :repository) }
-  let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master') }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master') }
   let(:branch) { 'master' }
   let(:file_path) { project.repository.ls_files(project.repository.root_ref)[1] }
   let(:readme_file_path) { 'README.md' }
@@ -184,11 +184,14 @@ RSpec.describe 'Editing file blob', :js do
     end
 
     context 'as developer' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
       let(:protected_branch) { 'protected-branch' }
 
-      before do
+      before_all do
         project.add_developer(user)
+      end
+
+      before do
         project.repository.add_branch(user, protected_branch, 'master')
         create(:protected_branch, project: project, name: protected_branch)
         sign_in(user)
