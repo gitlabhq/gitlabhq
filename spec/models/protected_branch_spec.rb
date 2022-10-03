@@ -435,4 +435,28 @@ RSpec.describe ProtectedBranch do
       expect(described_class.downcase_humanized_name).to eq 'protected branch'
     end
   end
+
+  describe '.default_branch?' do
+    before do
+      allow(subject.project).to receive(:default_branch).and_return(branch)
+    end
+
+    context 'when the name matches the default branch' do
+      let(:branch) { subject.name }
+
+      it { is_expected.to be_default_branch }
+    end
+
+    context 'when the name does not match the default branch' do
+      let(:branch) { "#{subject.name}qwerty" }
+
+      it { is_expected.not_to be_default_branch }
+    end
+
+    context 'when a wildcard name matches the default branch' do
+      let(:branch) { "#{subject.name}*" }
+
+      it { is_expected.not_to be_default_branch }
+    end
+  end
 end

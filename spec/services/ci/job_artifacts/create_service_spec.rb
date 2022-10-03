@@ -182,7 +182,8 @@ RSpec.describe Ci::JobArtifacts::CreateService do
     end
 
     context 'with job partitioning' do
-      let(:job) { create(:ci_build, project: project, partition_id: 123) }
+      let(:pipeline) { create(:ci_pipeline, project: project, partition_id: 123) }
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'sets partition_id on artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }

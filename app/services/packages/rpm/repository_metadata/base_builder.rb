@@ -11,7 +11,7 @@ module Packages
 
         def build_empty_structure
           Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-            xml.public_send(self.class::ROOT_TAG, self.class::ROOT_ATTRIBUTES) # rubocop:disable GitlabSecurity/PublicSend
+            xml.method_missing(self.class::ROOT_TAG, self.class::ROOT_ATTRIBUTES)
           end.to_xml
         end
       end

@@ -72,7 +72,7 @@ The following is a list of violations that are either:
 When you select a row, a drawer is shown that provides further details about the merge
 request:
 
-- Project name and [compliance framework label](../../project/settings/index.md#compliance-frameworks),
+- Project name and [compliance framework label](../../project/settings/index.md#add-a-compliance-framework-to-a-project),
   if the project has one assigned.
 - Link to the merge request.
 - The merge request's branch path in the format `[source] into [target]`.

@@ -18,9 +18,10 @@ module QA
           /Dockerfile\.assets/
         )
 
-        def initialize(mr_diff, mr_labels)
+        def initialize(mr_diff, mr_labels, additional_group_spec_list)
           @mr_diff = mr_diff
           @mr_labels = mr_labels
+          @additional_group_spec_list = additional_group_spec_list
         end
 
         # Specific specs to run
@@ -80,6 +81,9 @@ module QA
         # @return [Array]
         attr_reader :mr_labels
 
+        # @return [Hash<String, Array<String>>]
+        attr_reader :additional_group_spec_list
+
         # Are the changed files only qa specs?
         #
         # @return [Boolean] whether the changes files are only qa specs
@@ -101,6 +105,13 @@ module QA
           mr_labels.find { |label| label =~ /^devops::/ }&.delete_prefix('devops::')
         end
 
+        # Extract group name from MR labels
+        #
+        # @return [String] a group name
+        def group_name_from_mr_labels
+          mr_labels.find { |label| label =~ /^group::/ }&.delete_prefix('group::')
+        end
+
         # Get qa spec directories for devops stage
         #
         # @return [Array] qa spec directories
@@ -108,7 +119,15 @@ module QA
           devops_stage = devops_stage_from_mr_labels
           return unless devops_stage
 
-          Dir.glob("qa/specs/**/*/").select { |dir| dir =~ %r{\d+_#{devops_stage}/$} }
+          spec_dirs = stage_specs(devops_stage)
+
+          grp_name = group_name_from_mr_labels
+          return spec_dirs if grp_name.nil?
+
+          additional_grp_specs = additional_group_spec_list[grp_name]
+          return spec_dirs if additional_grp_specs.nil?
+
+          spec_dirs + stage_specs(*additional_grp_specs)
         end
 
         # Changes to gitlab dependencies
@@ -122,7 +141,15 @@ module QA
         #
         # @return [Array<String>]
         def changed_files
-          @changed_files ||= mr_diff.map { |change| change[:path] } # rubocop:disable Rails/Pluck
+          @changed_files ||= mr_diff.map { |change| change[:path] }
+        end
+
+        # Devops stage specs
+        #
+        # @param [Array<String>] devops_stages
+        # @return [Array]
+        def stage_specs(*devops_stages)
+          Dir.glob("qa/specs/**/*/").select { |dir| dir =~ %r{\d+_(#{devops_stages.join('|')})/$} }
         end
       end
     end

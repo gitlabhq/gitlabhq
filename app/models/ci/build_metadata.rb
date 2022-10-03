@@ -6,12 +6,14 @@ module Ci
   class BuildMetadata < Ci::ApplicationRecord
     BuildTimeout = Struct.new(:value, :source)
 
+    include Ci::Partitionable
     include Presentable
     include ChronicDurationAttribute
     include Gitlab::Utils::StrongMemoize
 
     self.table_name = 'ci_builds_metadata'
     self.primary_key = 'id'
+    partitionable scope: :build
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project

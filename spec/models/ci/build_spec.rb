@@ -320,10 +320,10 @@ RSpec.describe Ci::Build do
 
     let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
 
-    let!(:build_1) { create(:ci_build, :artifacts) }
-    let!(:build_2) { create(:ci_build, :codequality_reports) }
-    let!(:build_3) { create(:ci_build, :test_reports) }
-    let!(:build_4) { create(:ci_build, :artifacts) }
+    let!(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let!(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
+    let!(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
+    let!(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     it 'returns artifacts matching the given scope' do
       expect(builds).to contain_exactly(build_1, build_4)

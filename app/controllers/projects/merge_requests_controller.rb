@@ -451,15 +451,16 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :failed
     end
 
+    squashing = params.fetch(:squash, false)
     merge_service = ::MergeRequests::MergeService.new(project: @project, current_user: current_user, params: merge_params)
 
-    unless merge_service.hooks_validation_pass?(@merge_request)
+    unless merge_service.hooks_validation_pass?(@merge_request, validate_squash_message: squashing)
       return :hook_validation_error
     end
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
-    @merge_request.update(merge_error: nil, squash: params.fetch(:squash, false))
+    @merge_request.update(merge_error: nil, squash: squashing)
 
     if auto_merge_requested?
       if merge_request.auto_merge_enabled?

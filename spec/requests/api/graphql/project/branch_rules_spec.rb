@@ -21,27 +21,24 @@ RSpec.describe 'getting list of branch rules for a project' do
 
   let(:branch_rules_data) { graphql_data_at('project', 'branchRules', 'edges') }
   let(:variables) { { path: project.full_path } }
-
-  let(:fields) do
-    <<~QUERY
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-    }
-    edges {
-      cursor
-      node {
-        #{all_graphql_fields_for('branch_rules'.classify)}
-      }
-    }
-    QUERY
-  end
-
+  # fields must use let as the all_graphql_fields_for also configures some spies
+  let(:fields) { all_graphql_fields_for('BranchRule') }
   let(:query) do
     <<~GQL
     query($path: ID!, $n: Int, $cursor: String) {
       project(fullPath: $path) {
-        branchRules(first: $n, after: $cursor) { #{fields} }
+        branchRules(first: $n, after: $cursor) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+          }
+          edges {
+            cursor
+            node {
+              #{fields}
+            }
+          }
+        }
       }
     }
     GQL
@@ -55,7 +52,9 @@ RSpec.describe 'getting list of branch rules for a project' do
 
     it_behaves_like 'a working graphql query'
 
-    it { expect(branch_rules_data).to be_empty }
+    it 'hides branch rules data' do
+      expect(branch_rules_data).to be_empty
+    end
   end
 
   context 'when the user does have read_protected_branch abilities' do
@@ -66,12 +65,17 @@ RSpec.describe 'getting list of branch rules for a project' do
 
     it_behaves_like 'a working graphql query'
 
-    it 'includes a name' do
+    it 'returns branch rules data' do
       expect(branch_rules_data.dig(0, 'node', 'name')).to be_present
-    end
-
-    it 'includes created_at and updated_at' do
+      expect(branch_rules_data.dig(0, 'node', 'isDefault')).to be(true).or be(false)
+      expect(branch_rules_data.dig(0, 'node', 'branchProtection')).to be_present
       expect(branch_rules_data.dig(0, 'node', 'createdAt')).to be_present
+      expect(branch_rules_data.dig(0, 'node', 'updatedAt')).to be_present
+
+      expect(branch_rules_data.dig(1, 'node', 'name')).to be_present
+      expect(branch_rules_data.dig(1, 'node', 'isDefault')).to be(true).or be(false)
+      expect(branch_rules_data.dig(1, 'node', 'branchProtection')).to be_present
+      expect(branch_rules_data.dig(1, 'node', 'createdAt')).to be_present
       expect(branch_rules_data.dig(1, 'node', 'updatedAt')).to be_present
     end
 
@@ -82,16 +86,16 @@ RSpec.describe 'getting list of branch rules for a project' do
         { path: project.full_path, n: branch_rule_limit, cursor: last_cursor }
       end
 
-      it_behaves_like 'a working graphql query' do
-        it 'only returns N branch_rules' do
-          expect(branch_rules_data.size).to eq(branch_rule_limit)
-          expect(has_next_page).to be_truthy
-          expect(has_prev_page).to be_falsey
-          post_graphql(query, current_user: current_user, variables: next_variables)
-          expect(branch_rules_data.size).to eq(branch_rule_limit)
-          expect(has_next_page).to be_falsey
-          expect(has_prev_page).to be_truthy
-        end
+      it_behaves_like 'a working graphql query'
+
+      it 'returns pagination information' do
+        expect(branch_rules_data.size).to eq(branch_rule_limit)
+        expect(has_next_page).to be_truthy
+        expect(has_prev_page).to be_falsey
+        post_graphql(query, current_user: current_user, variables: next_variables)
+        expect(branch_rules_data.size).to eq(branch_rule_limit)
+        expect(has_next_page).to be_falsey
+        expect(has_prev_page).to be_truthy
       end
 
       context 'when no limit is provided' do

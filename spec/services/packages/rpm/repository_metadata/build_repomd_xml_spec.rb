@@ -62,5 +62,25 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXml do
         end
       end
     end
+
+    context 'when data values has unexpected keys' do
+      let(:data) do
+        {
+          filelists: described_class::ALLOWED_DATA_VALUE_KEYS.each_with_object({}) do |key, result|
+            result[:"#{key}-wrong"] = { value: 'value' }
+          end
+        }
+      end
+
+      it 'ignores wrong keys' do
+        result = Nokogiri::XML::Document.parse(subject).remove_namespaces!
+
+        data.each do |tag_name, tag_attributes|
+          tag_attributes.each_key do |key|
+            expect(result.at("//repomd/data[@type=\"#{tag_name}\"]/#{key}")).to be_nil
+          end
+        end
+      end
+    end
   end
 end

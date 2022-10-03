@@ -9,6 +9,7 @@ module Packages
           xmlns: 'http://linux.duke.edu/metadata/repo',
           'xmlns:rpm': 'http://linux.duke.edu/metadata/rpm'
         }.freeze
+        ALLOWED_DATA_VALUE_KEYS = %i[checksum open-checksum location timestamp size open-size].freeze
 
         # Expected `data` structure
         #
@@ -48,9 +49,9 @@ module Packages
         end
 
         def build_file_info(info, xml)
-          info.each do |key, attributes|
+          info.slice(*ALLOWED_DATA_VALUE_KEYS).each do |key, attributes|
             value = attributes.delete(:value)
-            xml.public_send(key, value, attributes) # rubocop:disable GitlabSecurity/PublicSend
+            xml.method_missing(key, value, attributes)
           end
         end
       end

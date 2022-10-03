@@ -26,30 +26,32 @@ Storage types that add to the total namespace storage are:
 - Wiki
 - Snippets
 
-If your total namespace storage exceeds the available namespace storage quota, all projects under the namespace are locked. A locked project will not be able to push to the repository, run pipelines and jobs, or build and push packages.
+If your total namespace storage exceeds the available namespace storage quota, all projects under the namespace are locked.
+A locked project cannot push to the repository, run pipelines and jobs, or build and push packages.
 
 To prevent exceeding the namespace storage quota, you can:
 
-1. Reduce storage consumption by following the suggestions in the [Manage Your Storage Usage](#manage-your-storage-usage) section of this page.
-1. Apply for [GitLab for Education](https://about.gitlab.com/solutions/education/join/), [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/), or [GitLab for Startups](https://about.gitlab.com/solutions/startups/) if you meet the eligibility requirements.
-1. Consider using a [self-managed instance](../subscriptions/self_managed/index.md) of GitLab which does not have these limits on the free tier.
-1. [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10GB of storage.
-1. [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
-1. [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) to learn more about your options and ask questions.
+- Reduce storage consumption by following the suggestions in the [Manage Your Storage Usage](#manage-your-storage-usage) section of this page.
+- Apply for [GitLab for Education](https://about.gitlab.com/solutions/education/join/), [GitLab for Open Source](https://about.gitlab.com/solutions/open-source/join/), or [GitLab for Startups](https://about.gitlab.com/solutions/startups/) if you meet the eligibility requirements.
+- Consider using a [self-managed instance](../subscriptions/self_managed/index.md) of GitLab which does not have these limits on the free tier.
+- [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10GB of storage.
+- [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
+- [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) to learn more about your options and ask questions.
 
 ### Namespace storage limit enforcement schedule
 
 Storage limits for GitLab SaaS Free tier namespaces will not be enforced prior to 2022-10-19. Storage limits for GitLab SaaS Paid tier namespaces will not be enforced for prior to 2023-02-15. Enforcement will not occur until all storage types are accurately measured, including deduplication of forks for [Git](https://gitlab.com/gitlab-org/gitlab/-/issues/371671) and [LFS](https://gitlab.com/gitlab-org/gitlab/-/issues/370242).
 
-Impacted users are notified via email and in-app notifications at least 60 days prior to enforcement.
+Impacted users are notified by email and through in-app notifications at least 60 days prior to enforcement.
 
 ### Project storage limit
 
 Projects on GitLab SaaS have a 10GB storage limit on their Git repository and LFS storage.
-Once namespace-level storage limits are enforced, the project limit will be removed. A namespace has either a namespace-level storage limit or a project-level storage limit, but not both.
+After namespace-level storage limits are enforced, the project limit is removed. A namespace has either a namespace-level storage limit or a project-level storage limit, but not both.
 
-When a project's repository and LFS reaches the quota, the project is locked. You cannot push changes to a locked project. To monitor the size of each
-repository in a namespace, including a breakdown for each project, you can
+When a project's repository and LFS reaches the quota, the project is locked.
+You cannot push changes to a locked project. To monitor the size of each
+repository in a namespace, including a breakdown for each project,
 [view storage usage](#view-storage-usage). To allow a project's repository and LFS to exceed the free quota
 you must purchase additional storage. For more details, see [Excess storage usage](#excess-storage-usage).
 
@@ -66,7 +68,7 @@ Prerequisites:
 1. From the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Storage** tab.
 
-The statistics are displayed. Select any title to view details. The information on this page
+Select any title to view details. The information on this page
 is updated every 90 minutes.
 
 If your namespace shows `'Not applicable.'`, push a commit to any project in the

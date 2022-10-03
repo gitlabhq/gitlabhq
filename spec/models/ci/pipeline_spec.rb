@@ -5488,7 +5488,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe 'partitioning' do
-    let(:pipeline) { build(:ci_pipeline) }
+    let(:pipeline) { build(:ci_pipeline, partition_id: nil) }
 
     before do
       allow(described_class).to receive(:current_partition_value) { 123 }

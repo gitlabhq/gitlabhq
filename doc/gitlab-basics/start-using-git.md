@@ -147,10 +147,14 @@ between your computer and GitLab.
    git clone https://gitlab.com/gitlab-tests/sample-project.git
    ```
 
-1. GitLab requests your username and password:
-   - If you have 2FA enabled for your account, you must [clone using a token](#clone-using-a-token)
-     with `read_repository` or `write_repository` permissions instead of your account's password.
-   - If you don't have 2FA enabled, use your account's password.
+1. GitLab requests your username and password.
+
+   If you have enabled two-factor authentication (2FA) on your account, you cannot use your account password. Instead, you can do one of the following: 
+
+   - [Clone using a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
+   - Install [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager).
+
+   If you have not enabled 2FA, use your account password.
 
 1. To view the files, go to the new directory:
 

@@ -10,6 +10,7 @@ RSpec.describe GitlabSchema.types['BranchRule'] do
   let(:fields) do
     %i[
       name
+      isDefault
       branch_protection
       created_at
       updated_at

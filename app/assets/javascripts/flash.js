@@ -158,7 +158,7 @@ const createAlert = function createAlert({
           onDismiss();
         }
         this.$destroy();
-        this.$el.parentNode.removeChild(this.$el);
+        this.$el.parentNode?.removeChild(this.$el);
       },
     },
     render(h) {

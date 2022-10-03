@@ -834,6 +834,10 @@ $tabs-holder-z-index: 250;
     @include gl-ml-auto;
     @include gl-rounded-pill;
     @include gl-w-9;
+
+    &.is-checked:hover {
+      background-color: $blue-500;
+    }
   }
 }
 

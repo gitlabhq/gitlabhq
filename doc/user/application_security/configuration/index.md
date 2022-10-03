@@ -19,10 +19,17 @@ The Security Configuration page lists the following for the security testing and
 - Whether or not it is available.
 - A configuration button or a link to its configuration guide.
 
-The status of each security control is determined by the project's latest default branch
-[CI pipeline](../../../ci/pipelines/index.md).
-If a job with the expected security report artifact exists in the pipeline, the feature's status is
-_enabled_.
+The status of each security control is determined by the following process:
+
+1. Check for a [CI pipeline](../../../ci/pipelines/index.md) in the most recent commit on the default branch. 
+1. If no CI pipelines exist, then consider all security scanners disabled. Show the **Not enabled** status.
+1. If a pipeline is found, then inspect the CI YAML for each job in the CI/CD pipeline. If a
+   job in the pipeline defines an [`artifacts:reports` keyword](../../../ci/yaml/artifacts_reports.md)
+   for a security scanner, then consider the security scanner enabled. Show the **Enabled** status.
+
+Failed pipelines and jobs are included in this process. If a scanner is configured but the job fails,
+that scanner is still considered enabled. This process also determines the scanners and statuses
+returned through [our API](../../../api/graphql/reference/index.md#securityscanners).
 
 If the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
 all security features are configured by default.

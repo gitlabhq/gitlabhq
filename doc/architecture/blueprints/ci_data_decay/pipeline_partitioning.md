@@ -359,13 +359,24 @@ We first create a unique index including the `(id, partition_id)`.
 Then, we drop the primary key constraint and use the new index created to set
 the new primary key constraint.
 
-We must set the primary key explicitly as `ActiveRecord` does not support composite primary keys.
+`ActiveRecord` [does not support](https://github.com/rails/rails/blob/6-1-stable/activerecord/lib/active_record/attribute_methods/primary_key.rb#L126)
+composite primary keys, so we must force it to treat the `id` column as a primary key:
 
 ```ruby
-class Model
+class Model < ApplicationRecord
   self.primary_key = 'id'
 end
 ```
+
+The application layer is now ignorant of the database structure and all of the
+existing queries from `ActiveRecord` continue to use the `id` column to access
+the data. There is some risk to this approach because it is possible to
+construct application code that results in duplicate models with the same `id`
+value, but on a different `partition_id`. To mitigate this risk we must ensure
+that all inserts use the database sequence to populate the `id` since they are
+[guaranteed](https://www.postgresql.org/docs/12/sql-createsequence.html#id-1.9.3.81.7)
+to allocate distinct values and rewrite the access patterns to include the
+`partition_id` value. Manually assigning the ids during inserts must be avoided.
 
 ### Foreign keys
 

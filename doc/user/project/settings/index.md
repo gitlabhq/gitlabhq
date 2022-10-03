@@ -43,187 +43,21 @@ To assign topics to a project:
 If you're an instance administrator, you can administer all project topics from the
 [Admin Area's Topics page](../../admin_area/index.md#administering-topics).
 
-## Compliance frameworks **(PREMIUM)**
+## Add a compliance framework to a project **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.12.
+[Compliance frameworks](../../group/manage.md#compliance-frameworks) can be assigned to projects within group that has a
+compliance framework using either:
 
-You can create a compliance framework label to identify that your project has certain compliance
-requirements or needs additional oversight. The label can optionally apply
-[compliance pipeline configuration](#compliance-pipeline-configuration).
-
-Group owners can create, edit, and delete compliance frameworks:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
-1. Expand the **Compliance frameworks** section.
-
-Compliance frameworks created can then be assigned to projects within the group using:
-
-- The GitLab UI, using the project settings page.
+- The GitLab UI:
+  1. On the top bar, select **Main menu > Projects > View all projects** and find your project.
+  1. On the left sidebar, select **Settings** > **General**.
+  1. Expand the **Compliance frameworks** section.
+  1. Select a compliance framework.
+  1. Select **Save changes**.
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
-  [GraphQL API](../../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework).
-
-NOTE:
-Creating compliance frameworks on subgroups with GraphQL causes the framework to be
-created on the root ancestor if the user has the correct permissions. The GitLab UI presents a
-read-only view to discourage this behavior.
-
-### Compliance pipeline configuration **(ULTIMATE)**
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../../administration/feature_flags.md).
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
-
-Compliance framework pipelines allow group owners to define
-a compliance pipeline in a separate repository that gets
-executed in place of the local project's `.gitlab-ci.yml` file. As part of this pipeline, an
-`include` statement can reference the local project's `.gitlab-ci.yml` file. This way, the compliance
-pipeline jobs can run alongside the project-specific jobs any time the pipeline runs.
-Jobs and variables defined in the compliance
-pipeline can't be changed by variables in the local project's `.gitlab-ci.yml` file.
-
-When you set up the compliance framework, use the **Compliance pipeline configuration** box to link
-the compliance framework to specific CI/CD configuration. Use the
-`path/file.y[a]ml@group-name/project-name` format. For example:
-
-- `.compliance-ci.yml@gitlab-org/gitlab`.
-- `.compliance-ci.yaml@gitlab-org/gitlab`.
-
-This configuration is inherited by projects where the compliance framework label is applied. The
-result forces projects with the label to run the compliance CI/CD configuration in addition to
-the project's own CI/CD configuration. When a project with a compliance framework label executes a
-pipeline, it evaluates configuration in the following order:
-
-1. Compliance pipeline configuration.
-1. Project-specific pipeline configuration.
-
-The user running the pipeline in the project must at least have the Reporter role on the compliance
-project.
-
-Example `.compliance-gitlab-ci.yml`:
-
-```yaml
-# Allows compliance team to control the ordering and interweaving of stages/jobs.
-# Stages without jobs defined will remain hidden.
-stages:
-  - pre-compliance
-  - build
-  - test
-  - pre-deploy-compliance
-  - deploy
-  - post-compliance
-
-variables:  # Can be overridden by setting a job-specific variable in project's local .gitlab-ci.yml
-  FOO: sast
-
-sast:  # None of these attributes can be overridden by a project's local .gitlab-ci.yml
-  variables:
-    FOO: sast
-  image: ruby:2.6
-  stage: pre-compliance
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - when: always  # or when: on_success
-  allow_failure: false
-  before_script:
-    - "# No before scripts."
-  script:
-    - echo "running $FOO"
-  after_script:
-    - "# No after scripts."
-
-sanity check:
-  image: ruby:2.6
-  stage: pre-deploy-compliance
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - when: always  # or when: on_success
-  allow_failure: false
-  before_script:
-    - "# No before scripts."
-  script:
-    - echo "running $FOO"
-  after_script:
-    - "# No after scripts."
-
-audit trail:
-  image: ruby:2.6
-  stage: post-compliance
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - when: always  # or when: on_success
-  allow_failure: false
-  before_script:
-    - "# No before scripts."
-  script:
-    - echo "running $FOO"
-  after_script:
-    - "# No after scripts."
-
-include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
-  project: '$CI_PROJECT_PATH'
-  file: '$CI_CONFIG_PATH'
-  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
-```
-
-When used to enforce scan execution, this feature has some overlap with [scan execution policies](../../application_security/policies/scan-execution-policies.md),
-as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
-For details on the similarities and differences between these features, see
-[Enforce scan execution](../../application_security/index.md#enforce-scan-execution).
-
-### Ensure compliance jobs are always run
-
-Compliance pipelines use GitLab CI/CD to give you an incredible amount of flexibility
-for defining any sort of compliance jobs you like. Depending on your goals, these jobs
-can be configured to be:
-
-- Modified by users.
-- Non-modifiable.
-
-At a high-level, if a value in a compliance job:
-
-- Is set, it cannot be changed or overridden by project-level configurations.
-- Is not set, a project-level configuration may set.
-
-Either might be wanted or not depending on your use case.
-
-There are a few best practices for ensuring that these jobs are always run exactly
-as you define them and that downstream, project-level pipeline configurations
-cannot change them:
-
-- Add a `rules:when:always` block to each of your compliance jobs. This ensures they are
-  non-modifiable and are always run.
-- Explicitly set any variables the job references. This:
-  - Ensures that project-level pipeline configurations do not set them and alter their
-    behavior.
-  - Includes any jobs that drive the logic of your job.
-- Explicitly set the container image file to run the job in. This ensures that your script
-  steps execute in the correct environment.
-- Explicitly set any relevant GitLab pre-defined [job keywords](../../../ci/yaml/index.md#job-keywords).
-  This ensures that your job uses the settings you intend and that they are not overridden by
-  project-level pipelines.
-
-### Avoid parent and child pipelines in GitLab 14.7 and earlier
-
-NOTE:
-This advice does not apply to GitLab 14.8 and later because [a fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78878) added
-compatibility for combining compliance pipelines, and parent and child pipelines.
-
-Compliance pipelines start on the run of _every_ pipeline in a relevant project. This means that if a pipeline in the relevant project
-triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
-
-Therefore, in projects with compliance frameworks, we recommend replacing
-[parent-child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) with the following:
-
-- Direct [`include`](../../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
-- Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/index.md) rather than the parent-child
-  pipeline feature.
-
-This alternative ensures the compliance pipeline does not re-start the parent pipeline.
+  [GraphQL API](../../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework). If you create
+  compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user has the
+  correct permissions. The GitLab UI presents a read-only view to discourage this behavior.
 
 ## Configure project visibility, features, and permissions
 

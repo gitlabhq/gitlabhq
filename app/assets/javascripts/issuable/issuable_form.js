@@ -2,10 +2,7 @@ import $ from 'jquery';
 import Pikaday from 'pikaday';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import Autosave from '~/autosave';
-import AutoWidthDropdownSelect from '~/issuable/auto_width_dropdown_select';
-import { loadCSSFile } from '~/lib/utils/css_utils';
 import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility';
-import { select2AxiosTransport } from '~/lib/utils/select2_utils';
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import ZenMode from '~/zen_mode';
@@ -118,12 +115,6 @@ export default class IssuableForm {
       });
       calendar.setDate(parsePikadayDate($issuableDueDate.val()));
     }
-
-    this.$targetBranchSelect = $('.js-target-branch-select', this.form);
-
-    if (this.$targetBranchSelect.length) {
-      this.initTargetBranchDropdown();
-    }
   }
 
   initAutosave() {
@@ -213,48 +204,5 @@ export default class IssuableForm {
 
   addWip() {
     this.titleField.val(`Draft: ${this.titleField.val()}`);
-  }
-
-  initTargetBranchDropdown() {
-    import(/* webpackChunkName: 'select2' */ 'select2/select2')
-      .then(() => {
-        // eslint-disable-next-line promise/no-nesting
-        loadCSSFile(gon.select2_css_path)
-          .then(() => {
-            this.$targetBranchSelect.select2({
-              ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
-              ajax: {
-                url: this.$targetBranchSelect.data('endpoint'),
-                dataType: 'JSON',
-                quietMillis: 250,
-                data(search) {
-                  return {
-                    search,
-                  };
-                },
-                results({ results }) {
-                  return {
-                    // `data` keys are translated so we can't just access them with a string based key
-                    results: results[Object.keys(results)[0]].map((name) => ({
-                      id: name,
-                      text: name,
-                    })),
-                  };
-                },
-                transport: select2AxiosTransport,
-              },
-              initSelection(el, callback) {
-                const val = el.val();
-
-                callback({
-                  id: val,
-                  text: val,
-                });
-              },
-            });
-          })
-          .catch(() => {});
-      })
-      .catch(() => {});
   }
 }

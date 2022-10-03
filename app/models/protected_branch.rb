@@ -95,6 +95,10 @@ class ProtectedBranch < ApplicationRecord
   def self.downcase_humanized_name
     name.underscore.humanize.downcase
   end
+
+  def default_branch?
+    name == project.default_branch
+  end
 end
 
 ProtectedBranch.prepend_mod_with('ProtectedBranch')
