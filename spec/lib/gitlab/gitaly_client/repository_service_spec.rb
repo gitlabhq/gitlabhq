@@ -308,7 +308,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
   end
 
   describe '#replicate' do
-    let(:source_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '', 'group/project') }
+    let(:source_repository) { Gitlab::Git::Repository.new('default', 'repo/path', '', 'group/project') }
 
     it 'sends a replicate_repository message' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

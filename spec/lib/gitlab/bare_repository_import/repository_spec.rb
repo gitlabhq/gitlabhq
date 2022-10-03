@@ -55,7 +55,7 @@ RSpec.describe ::Gitlab::BareRepositoryImport::Repository do
 
   context 'hashed storage' do
     let(:hashed_path) { "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b" }
-    let(:root_path) { TestEnv.repos_path }
+    let(:root_path) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { TestEnv.repos_path } }
     let(:repo_path) { File.join(root_path, "#{hashed_path}.git") }
     let(:wiki_path) { File.join(root_path, "#{hashed_path}.wiki.git") }
     let(:raw_repository) { Gitlab::Git::Repository.new('default', "#{hashed_path}.git", nil, nil) }

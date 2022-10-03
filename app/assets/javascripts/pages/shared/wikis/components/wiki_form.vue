@@ -264,12 +264,17 @@ export default {
     trackContentEditorLoaded() {
       this.track(CONTENT_EDITOR_LOADED_ACTION);
     },
+
+    submitFormWithShortcut() {
+      this.$refs.form.submit();
+    },
   },
 };
 </script>
 
 <template>
   <gl-form
+    ref="form"
     :action="formAction"
     method="post"
     class="wiki-form common-note-form gl-mt-3 js-quick-submit"
@@ -345,6 +350,8 @@ export default {
             form-field-name="wiki[content]"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
+            @keydown.ctrl.enter="submitFormShortcut"
+            @keydown.meta.enter="submitFormShortcut"
           />
           <div class="form-text gl-text-gray-600">
             <gl-sprintf

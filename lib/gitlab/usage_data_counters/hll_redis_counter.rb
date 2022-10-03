@@ -26,7 +26,6 @@ module Gitlab
         ide_edit
         incident_management
         pipeline_authoring
-        quickactions
       ].freeze
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
@@ -41,6 +40,7 @@ module Gitlab
         issues_edit
         kubernetes_agent
         pipeline_authoring
+        quickactions
         search
         secure
         snippets

@@ -147,6 +147,14 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       });
     });
 
+    it('bubbles up keydown event', async () => {
+      buildWrapper();
+
+      await findTextarea().trigger('keydown');
+
+      expect(wrapper.emitted('keydown')).toHaveLength(1);
+    });
+
     describe(`when segmented control triggers input event with ${EDITING_MODE_CONTENT_EDITOR} value`, () => {
       beforeEach(() => {
         buildWrapper();
@@ -210,6 +218,14 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       await findContentEditor().vm.$emit('change', { markdown: newValue });
 
       expect(wrapper.emitted('input')).toEqual([[newValue]]);
+    });
+
+    it('bubbles up keydown event', () => {
+      const event = new Event('keydown');
+
+      findContentEditor().vm.$emit('keydown', event);
+
+      expect(wrapper.emitted('keydown')).toEqual([[event]]);
     });
 
     describe(`when segmented control triggers input event with ${EDITING_MODE_MARKDOWN_FIELD} value`, () => {

@@ -862,7 +862,7 @@ RSpec.shared_examples 'wiki model' do
   end
 
   describe '#create_wiki_repository' do
-    let(:head_path) { Rails.root.join(TestEnv.repos_path, "#{wiki.disk_path}.git", 'HEAD') }
+    let(:head_path) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { Rails.root.join(TestEnv.repos_path, "#{wiki.disk_path}.git", 'HEAD') } }
     let(:default_branch) { 'foo' }
 
     before do

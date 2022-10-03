@@ -13,6 +13,7 @@ import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubb
 import TopToolbar from '~/content_editor/components/top_toolbar.vue';
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import { KEYDOWN_EVENT } from '~/content_editor/constants';
 
 jest.mock('~/emoji');
 
@@ -219,6 +220,17 @@ describe('ContentEditor', () => {
           },
         ],
       ]);
+    });
+  });
+
+  describe('when editorStateObserver emits keydown event', () => {
+    it('bubbles up event', () => {
+      const event = new Event('keydown');
+
+      createWrapper();
+
+      findEditorStateObserver().vm.$emit(KEYDOWN_EVENT, event);
+      expect(wrapper.emitted(KEYDOWN_EVENT)).toEqual([[event]]);
     });
   });
 

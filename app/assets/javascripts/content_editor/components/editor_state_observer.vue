@@ -1,6 +1,6 @@
 <script>
 import { debounce } from 'lodash';
-import { ALERT_EVENT } from '../constants';
+import { ALERT_EVENT, KEYDOWN_EVENT } from '../constants';
 
 export const tiptapToComponentMap = {
   update: 'docUpdate',
@@ -10,7 +10,7 @@ export const tiptapToComponentMap = {
   blur: 'blur',
 };
 
-export const eventHubEvents = [ALERT_EVENT];
+export const eventHubEvents = [ALERT_EVENT, KEYDOWN_EVENT];
 
 const getComponentEventName = (tiptapEventName) => tiptapToComponentMap[tiptapEventName];
 

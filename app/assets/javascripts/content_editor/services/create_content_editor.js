@@ -18,6 +18,7 @@ import Diagram from '../extensions/diagram';
 import Document from '../extensions/document';
 import Dropcursor from '../extensions/dropcursor';
 import Emoji from '../extensions/emoji';
+import ExternalKeydownHandler from '../extensions/external_keydown_handler';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
 import FootnoteDefinition from '../extensions/footnote_definition';
@@ -122,6 +123,7 @@ export const createContentEditor = ({
     Image,
     InlineDiff,
     Italic,
+    ExternalKeydownHandler.configure({ eventHub }),
     Link,
     ListItem,
     Loading,

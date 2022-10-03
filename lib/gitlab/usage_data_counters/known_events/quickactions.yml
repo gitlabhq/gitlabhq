@@ -1,4 +1,8 @@
 ---
+- name: i_quickactions_assign_multiple
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
 - name: i_quickactions_approve
   category: quickactions
   redis_slot: quickactions
@@ -8,10 +12,6 @@
   redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_assign_single
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_assign_multiple
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
@@ -28,18 +28,6 @@
   redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_board_move
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_child_epic
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_clear_weight
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_clear_health_status
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
@@ -83,15 +71,7 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-- name: i_quickactions_epic
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
 - name: i_quickactions_estimate
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_iteration
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
@@ -115,27 +95,11 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-- name: i_quickactions_parent_epic
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_promote
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
 - name: i_quickactions_promote_to_incident
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_timeline
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_page
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_publish
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
@@ -163,15 +127,7 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-- name: i_quickactions_remove_child_epic
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
 - name: i_quickactions_remove_due_date
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_remove_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
@@ -179,15 +135,7 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
-- name: i_quickactions_remove_iteration
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
 - name: i_quickactions_remove_milestone
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_remove_parent_epic
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
@@ -272,14 +220,6 @@
   redis_slot: quickactions
   aggregation: weekly
 - name: i_quickactions_unsubscribe
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_weight
-  category: quickactions
-  redis_slot: quickactions
-  aggregation: weekly
-- name: i_quickactions_health_status
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly

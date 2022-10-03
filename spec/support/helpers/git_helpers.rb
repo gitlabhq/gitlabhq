@@ -2,7 +2,9 @@
 
 module GitHelpers
   def rugged_repo(repository)
-    path = File.join(TestEnv.repos_path, repository.disk_path + '.git')
+    path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      File.join(TestEnv.repos_path, repository.disk_path + '.git')
+    end
 
     Rugged::Repository.new(path)
   end

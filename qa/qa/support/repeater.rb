@@ -52,12 +52,13 @@ module QA
             sleep_and_reload_if_needed(sleep_interval, reload_page)
             attempts += 1
           end
-        rescue StandardError, RSpec::Expectations::ExpectationNotMetError
+        rescue StandardError, RSpec::Expectations::ExpectationNotMetError => e
           raise unless retry_on_exception
 
           attempts += 1
           raise unless remaining_attempts?(attempts, max_attempts) && remaining_time?(start, max_duration)
 
+          QA::Runtime::Logger.debug("Retry block rescued following error: #{e}, trying again...")
           sleep_and_reload_if_needed(sleep_interval, reload_page)
           retry
         end

@@ -82,6 +82,7 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
 
 ### Preparation before global rollout
 
+- [ ] Set a milestone to the rollout issue to signal for enabling and removing the feature flag when it is stable.
 - [ ] Check if the feature flag change needs to be accompanied with a
   [change management issue](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
   Cross link the issue here if it does.
@@ -167,5 +168,11 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 /chatops run feature set <feature-flag-name> false
 ```
 
-/label ~"feature flag" ~"type::feature" ~"feature::addition"
+<!-- A feature flag can also be used for rolling out a bug fix or a maintenance work.
+In this scenario, labels must be related to it, for example; ~"type::feature", ~"type::bug" or ~"type::maintenance".
+Please use /copy_metadata to copy the labels from the issue you're rolling out. -->
+
 /label ~group::
+/label ~"feature flag"
+/assign me
+/due in 1 month

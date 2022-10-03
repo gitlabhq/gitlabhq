@@ -150,7 +150,12 @@ export default {
 <template>
   <content-editor-provider :content-editor="contentEditor">
     <div>
-      <editor-state-observer @docUpdate="notifyChange" @focus="focus" @blur="blur" />
+      <editor-state-observer
+        @docUpdate="notifyChange"
+        @focus="focus"
+        @blur="blur"
+        @keydown="$emit('keydown', $event)"
+      />
       <content-editor-alert />
       <div
         data-testid="content-editor"

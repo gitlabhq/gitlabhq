@@ -1154,7 +1154,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/support/helpers/login_helpers.rb'
     - 'spec/support/helpers/prometheus_helpers.rb'
     - 'spec/support/helpers/repo_helpers.rb'
-    - 'spec/support/helpers/seed_helper.rb'
     - 'spec/support/helpers/seed_repo.rb'
     - 'spec/support/helpers/test_env.rb'
     - 'spec/support/helpers/usage_data_helpers.rb'

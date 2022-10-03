@@ -348,6 +348,14 @@ module TestEnv
     Capybara.current_session.visit '/'
   end
 
+  def factory_repo_path
+    @factory_repo_path ||= Rails.root.join('tmp', 'tests', factory_repo_name)
+  end
+
+  def forked_repo_path
+    @forked_repo_path ||= Rails.root.join('tmp', 'tests', forked_repo_name)
+  end
+
   def factory_repo_bundle_path
     "#{factory_repo_path}.bundle"
   end
@@ -377,16 +385,8 @@ module TestEnv
     ]
   end
 
-  def factory_repo_path
-    @factory_repo_path ||= Rails.root.join('tmp', 'tests', factory_repo_name)
-  end
-
   def factory_repo_name
     'gitlab-test'
-  end
-
-  def forked_repo_path
-    @forked_repo_path ||= Rails.root.join('tmp', 'tests', forked_repo_name)
   end
 
   def forked_repo_name

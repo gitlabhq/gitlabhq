@@ -390,6 +390,7 @@ packages_nuget_dependency_link_metadata: :gitlab_main
 packages_nuget_metadata: :gitlab_main
 packages_package_file_build_infos: :gitlab_main
 packages_package_files: :gitlab_main
+packages_rpm_repository_files: :gitlab_main
 packages_packages: :gitlab_main
 packages_pypi_metadata: :gitlab_main
 packages_rubygems_metadata: :gitlab_main

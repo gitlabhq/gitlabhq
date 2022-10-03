@@ -81,6 +81,12 @@ module StubObjectStorage
                                  **params)
   end
 
+  def stub_rpm_repository_file_object_storage(**params)
+    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
+                                 uploader: ::Packages::Rpm::RepositoryFileUploader,
+                                 **params)
+  end
+
   def stub_composer_cache_object_storage(**params)
     stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
                                  uploader: ::Packages::Composer::CacheUploader,

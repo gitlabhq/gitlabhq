@@ -18947,6 +18947,32 @@ CREATE TABLE packages_rpm_metadata (
     CONSTRAINT check_c3e2fc2e89 CHECK ((char_length(release) <= 128))
 );
 
+CREATE TABLE packages_rpm_repository_files (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    file_store integer DEFAULT 1,
+    status smallint DEFAULT 0 NOT NULL,
+    size integer,
+    file_md5 bytea,
+    file_sha1 bytea,
+    file_sha256 bytea,
+    file text NOT NULL,
+    file_name text NOT NULL,
+    CONSTRAINT check_a9fef187f5 CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_b6b721b275 CHECK ((char_length(file_name) <= 255))
+);
+
+CREATE SEQUENCE packages_rpm_repository_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_rpm_repository_files_id_seq OWNED BY packages_rpm_repository_files.id;
+
 CREATE TABLE packages_rubygems_metadata (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -23862,6 +23888,8 @@ ALTER TABLE ONLY packages_package_files ALTER COLUMN id SET DEFAULT nextval('pac
 
 ALTER TABLE ONLY packages_packages ALTER COLUMN id SET DEFAULT nextval('packages_packages_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_rpm_repository_files ALTER COLUMN id SET DEFAULT nextval('packages_rpm_repository_files_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_tags ALTER COLUMN id SET DEFAULT nextval('packages_tags_id_seq'::regclass);
 
 ALTER TABLE ONLY pages_deployment_states ALTER COLUMN pages_deployment_id SET DEFAULT nextval('pages_deployment_states_pages_deployment_id_seq'::regclass);
@@ -25997,6 +26025,9 @@ ALTER TABLE ONLY packages_pypi_metadata
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT packages_rpm_metadata_pkey PRIMARY KEY (package_id);
+
+ALTER TABLE ONLY packages_rpm_repository_files
+    ADD CONSTRAINT packages_rpm_repository_files_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_rubygems_metadata
     ADD CONSTRAINT packages_rubygems_metadata_pkey PRIMARY KEY (package_id);
@@ -29705,6 +29736,8 @@ CREATE INDEX index_packages_packages_on_project_id_and_version ON packages_packa
 CREATE INDEX index_packages_project_id_name_partial_for_nuget ON packages_packages USING btree (project_id, name) WHERE (((name)::text <> 'NuGet.Temporary.Package'::text) AND (version IS NOT NULL) AND (package_type = 4));
 
 CREATE INDEX index_packages_rpm_metadata_on_package_id ON packages_rpm_metadata USING btree (package_id);
+
+CREATE INDEX index_packages_rpm_repository_files_on_project_id ON packages_rpm_repository_files USING btree (project_id);
 
 CREATE INDEX index_packages_tags_on_package_id ON packages_tags USING btree (package_id);
 
@@ -34581,6 +34614,9 @@ ALTER TABLE ONLY geo_hashed_storage_attachments_events
 
 ALTER TABLE ONLY ml_candidate_params
     ADD CONSTRAINT fk_rails_d4a51d1185 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id);
+
+ALTER TABLE ONLY packages_rpm_repository_files
+    ADD CONSTRAINT fk_rails_d545cfaed2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

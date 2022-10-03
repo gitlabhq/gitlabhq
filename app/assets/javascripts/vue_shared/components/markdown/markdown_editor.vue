@@ -176,6 +176,7 @@ export default {
           :aria-label="formFieldAriaLabel"
           :placeholder="formFieldPlaceholder"
           @input="updateMarkdownFromMarkdownField"
+          @keydown="$emit('keydown', $event)"
         >
         </textarea>
       </template>
@@ -190,6 +191,7 @@ export default {
         @loading="disableSwitchEditingControl"
         @loadingSuccess="enableSwitchEditingControl"
         @loadingError="enableSwitchEditingControl"
+        @keydown="$emit('keydown', $event)"
       />
       <input
         :id="formFieldId"

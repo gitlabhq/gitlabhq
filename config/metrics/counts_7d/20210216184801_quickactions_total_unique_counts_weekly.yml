@@ -43,6 +43,7 @@ options:
   - i_quickactions_parent_epic
   - i_quickactions_promote
   - i_quickactions_publish
+  - i_quickactions_ready
   - i_quickactions_reassign
   - i_quickactions_reassign_reviewer
   - i_quickactions_rebase

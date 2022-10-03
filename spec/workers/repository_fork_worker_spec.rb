@@ -115,7 +115,9 @@ RSpec.describe RepositoryForkWorker do
 
     context 'project ID, storage and repo paths passed' do
       def perform!
-        subject.perform(forked_project.id, TestEnv.repos_path, project.disk_path)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          subject.perform(forked_project.id, TestEnv.repos_path, project.disk_path)
+        end
       end
 
       it_behaves_like 'RepositoryForkWorker performing'

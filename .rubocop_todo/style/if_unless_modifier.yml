@@ -1176,7 +1176,6 @@ Style/IfUnlessModifier:
     - 'spec/support/helpers/lets_encrypt_helpers.rb'
     - 'spec/support/helpers/live_debugger.rb'
     - 'spec/support/helpers/modal_helpers.rb'
-    - 'spec/support/helpers/seed_helper.rb'
     - 'spec/support/helpers/stub_gitlab_calls.rb'
     - 'spec/support/helpers/stubbed_feature.rb'
     - 'spec/support/helpers/test_env.rb'

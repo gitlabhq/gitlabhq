@@ -1036,7 +1036,9 @@ RSpec.describe Namespace do
         let(:pages_dir) { File.join(TestEnv.pages_path) }
 
         def expect_project_directories_at(namespace_path, with_pages: true)
-          expected_repository_path = File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
+          expected_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
+          end
           expected_upload_path = File.join(uploads_dir, namespace_path, 'the-project')
           expected_pages_path = File.join(pages_dir, namespace_path, 'the-project')
 
@@ -1046,15 +1048,19 @@ RSpec.describe Namespace do
         end
 
         before do
-          FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project.full_path}.git"))
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project.full_path}.git"))
+          end
           FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
           FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
         end
 
         after do
-          FileUtils.remove_entry(File.join(TestEnv.repos_path, parent.full_path), true)
-          FileUtils.remove_entry(File.join(TestEnv.repos_path, new_parent.full_path), true)
-          FileUtils.remove_entry(File.join(TestEnv.repos_path, child.full_path), true)
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            FileUtils.remove_entry(File.join(TestEnv.repos_path, parent.full_path), true)
+            FileUtils.remove_entry(File.join(TestEnv.repos_path, new_parent.full_path), true)
+            FileUtils.remove_entry(File.join(TestEnv.repos_path, child.full_path), true)
+          end
           FileUtils.remove_entry(File.join(uploads_dir, project.full_path), true)
           FileUtils.remove_entry(pages_dir, true)
         end

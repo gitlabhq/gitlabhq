@@ -213,7 +213,8 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged do
   end
 
   def create_gitaly_metadata_file
-    File.open(File.join(SEED_STORAGE_PATH, '.gitaly-metadata'), 'w+') do |f|
+    metadata_filename = File.join(TestEnv.repos_path, '.gitaly-metadata')
+    File.open(metadata_filename, 'w+') do |f|
       gitaly_metadata = {
         "gitaly_filesystem_id" => SecureRandom.uuid
       }

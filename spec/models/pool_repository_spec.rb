@@ -26,8 +26,13 @@ RSpec.describe PoolRepository do
 
   describe '#unlink_repository' do
     let(:pool) { create(:pool_repository, :ready) }
-    let(:repository_path) { File.join(TestEnv.repos_path, pool.source_project.repository.relative_path) }
     let(:alternates_file) { File.join(repository_path, 'objects', 'info', 'alternates') }
+
+    let(:repository_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, pool.source_project.repository.relative_path)
+      end
+    end
 
     before do
       pool.link_repository(pool.source_project.repository)

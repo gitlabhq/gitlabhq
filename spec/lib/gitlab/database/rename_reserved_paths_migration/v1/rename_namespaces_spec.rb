@@ -98,7 +98,9 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespa
 
     it 'moves a project for a namespace' do
       create(:project, :repository, :legacy_storage, namespace: namespace, path: 'hello-project')
-      expected_path = File.join(TestEnv.repos_path, 'bye-group', 'hello-project.git')
+      expected_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, 'bye-group', 'hello-project.git')
+      end
 
       subject.move_repositories(namespace, 'hello-group', 'bye-group')
 
@@ -109,7 +111,9 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespa
       child_namespace = create(:group, name: 'sub-group', parent: namespace)
       create(:project, :repository, :legacy_storage, namespace: child_namespace, path: 'hello-project')
 
-      expected_path = File.join(TestEnv.repos_path, 'hello-group', 'renamed-sub-group', 'hello-project.git')
+      expected_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, 'hello-group', 'renamed-sub-group', 'hello-project.git')
+      end
 
       subject.move_repositories(child_namespace, 'hello-group/sub-group', 'hello-group/renamed-sub-group')
 
@@ -119,7 +123,9 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespa
     it 'moves a parent namespace with subdirectories' do
       child_namespace = create(:group, name: 'sub-group', parent: namespace)
       create(:project, :repository, :legacy_storage, namespace: child_namespace, path: 'hello-project')
-      expected_path = File.join(TestEnv.repos_path, 'renamed-group', 'sub-group', 'hello-project.git')
+      expected_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, 'renamed-group', 'sub-group', 'hello-project.git')
+      end
 
       subject.move_repositories(child_namespace, 'hello-group', 'renamed-group')
 
@@ -170,7 +176,9 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespa
   describe '#rename_namespace_dependencies' do
     it "moves the repository for a project in the namespace" do
       create(:project, :repository, :legacy_storage, namespace: namespace, path: "the-path-project")
-      expected_repo = File.join(TestEnv.repos_path, "the-path0", "the-path-project.git")
+      expected_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, "the-path0", "the-path-project.git")
+      end
 
       subject.rename_namespace_dependencies(namespace, 'the-path', 'the-path0')
 
@@ -268,7 +276,9 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespa
       project.create_repository
       subject.rename_namespace(namespace)
 
-      expected_path = File.join(TestEnv.repos_path, 'the-path', 'a-project.git')
+      expected_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, 'the-path', 'a-project.git')
+      end
 
       expect(subject).to receive(:rename_namespace_dependencies)
                            .with(

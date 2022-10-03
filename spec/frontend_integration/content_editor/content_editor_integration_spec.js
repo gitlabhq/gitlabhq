@@ -12,12 +12,15 @@ describe('content_editor', () => {
   let wrapper;
   let renderMarkdown;
 
-  const buildWrapper = ({ markdown = '' } = {}) => {
+  const buildWrapper = ({ markdown = '', listeners = {} } = {}) => {
     wrapper = mountExtended(ContentEditor, {
       propsData: {
         renderMarkdown,
         uploadsPath: '/',
         markdown,
+      },
+      listeners: {
+        ...listeners,
       },
     });
   };
@@ -33,6 +36,10 @@ describe('content_editor', () => {
 
   beforeEach(() => {
     renderMarkdown = jest.fn();
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   describe('when loading initial content', () => {
@@ -168,5 +175,17 @@ This reference tag is a mix of letters and numbers [^footnote].
         expect(wrapper.find('[contenteditable]').html()).toContain(processedMarkdown);
       });
     });
+  });
+
+  it('bubbles up the keydown event captured by ProseMirror', async () => {
+    const keydownHandler = jest.fn();
+
+    buildWrapper({ listeners: { keydown: keydownHandler } });
+
+    await waitUntilContentIsLoaded();
+
+    wrapper.find('[contenteditable]').trigger('keydown', {});
+
+    expect(wrapper.emitted('keydown')).toHaveLength(1);
   });
 });

@@ -329,7 +329,6 @@ Style/StringConcatenation:
     - 'spec/support/shared_examples/models/wiki_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/hooks_shared_examples.rb'
     - 'spec/support/shared_examples/requests/snippet_shared_examples.rb'
-    - 'spec/support/unpack-gitlab-git-test'
     - 'spec/tooling/lib/tooling/kubernetes_client_spec.rb'
     - 'spec/uploaders/job_artifact_uploader_spec.rb'
     - 'spec/validators/addressable_url_validator_spec.rb'
