@@ -12,7 +12,12 @@ export default {
       required: true,
     },
 
-    referenceProps: {
+    nodeType: {
+      type: String,
+      required: true,
+    },
+
+    nodeProps: {
       type: Object,
       required: true,
     },
@@ -35,20 +40,28 @@ export default {
   },
 
   computed: {
+    isReference() {
+      return this.nodeType === 'reference';
+    },
+
     isUser() {
-      return this.referenceProps.referenceType === 'user';
+      return this.isReference && this.nodeProps.referenceType === 'user';
     },
 
     isIssue() {
-      return this.referenceProps.referenceType === 'issue';
+      return this.isReference && this.nodeProps.referenceType === 'issue';
     },
 
     isMergeRequest() {
-      return this.referenceProps.referenceType === 'merge_request';
+      return this.isReference && this.nodeProps.referenceType === 'merge_request';
     },
 
     isMilestone() {
-      return this.referenceProps.referenceType === 'milestone';
+      return this.isReference && this.nodeProps.referenceType === 'milestone';
+    },
+
+    isEmoji() {
+      return this.nodeType === 'emoji';
     },
   },
 
@@ -59,8 +72,10 @@ export default {
   },
 
   methods: {
-    getReferenceText(item) {
-      switch (this.referenceProps.referenceType) {
+    getText(item) {
+      if (this.isEmoji) return item.e;
+
+      switch (this.nodeType === 'reference' && this.nodeProps.referenceType) {
         case 'user':
           return `${this.char}${item.username}`;
         case 'issue':
@@ -71,6 +86,20 @@ export default {
         default:
           return '';
       }
+    },
+
+    getProps(item) {
+      if (this.isEmoji) {
+        return {
+          name: item.name,
+          unicodeVersion: item.u,
+          title: item.d,
+          moji: item.e,
+          ...this.nodeProps,
+        };
+      }
+
+      return this.nodeProps;
     },
 
     onKeyDown({ event }) {
@@ -109,9 +138,9 @@ export default {
 
       if (item) {
         this.command({
-          text: this.getReferenceText(item),
+          text: this.getText(item),
           href: '#',
-          ...this.referenceProps,
+          ...this.getProps(item),
         });
       }
     },
@@ -122,8 +151,8 @@ export default {
 <template>
   <ul
     :class="{ show: items.length > 0 }"
-    class="gl-new-dropdown dropdown-men"
-    data-testid="content-editor-reference-dropdown"
+    class="gl-new-dropdown dropdown-menu"
+    data-testid="content-editor-suggestions-dropdown"
   >
     <div class="gl-new-dropdown-inner gl-overflow-y-auto">
       <gl-dropdown-item
@@ -140,6 +169,12 @@ export default {
           <small>{{ item.iid }}</small>
           {{ item.title }}
         </span>
+        <div v-if="isEmoji" class="gl-display-flex gl-flex gl-align-items-center">
+          <div class="gl-pr-4 gl-font-lg">{{ item.e }}</div>
+          <div class="gl-flex-grow-1">
+            {{ item.name }}<br /><small>{{ item.d }}</small>
+          </div>
+        </div>
       </gl-dropdown-item>
     </div>
   </ul>

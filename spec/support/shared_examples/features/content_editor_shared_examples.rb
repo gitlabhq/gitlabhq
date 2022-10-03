@@ -219,7 +219,7 @@ RSpec.shared_examples 'edits content using the content editor' do
   end
 
   describe 'autocomplete suggestions' do
-    let(:reference_dropdown) { '[data-testid="content-editor-reference-dropdown"]' }
+    let(:suggestions_dropdown) { '[data-testid="content-editor-suggestions-dropdown"]' }
 
     before do
       if defined?(project)
@@ -248,56 +248,69 @@ RSpec.shared_examples 'edits content using the content editor' do
     it 'shows suggestions for members' do
       type_in_content_editor '@a'
 
-      expect(find(reference_dropdown)).to have_text('abc123')
-      expect(find(reference_dropdown)).to have_text('all')
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+      expect(find(suggestions_dropdown)).to have_text('all')
 
       send_keys [:arrow_down, :enter]
 
-      expect(page).not_to have_css(reference_dropdown)
+      expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('@abc123')
     end
 
     it 'shows suggestions for merge requests' do
       type_in_content_editor '!'
 
-      expect(find(reference_dropdown)).to have_text('My Cool Merge Request')
+      expect(find(suggestions_dropdown)).to have_text('My Cool Merge Request')
 
       send_keys :enter
 
-      expect(page).not_to have_css(reference_dropdown)
+      expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('!1')
     end
 
     it 'shows suggestions for issues' do
       type_in_content_editor '#'
 
-      expect(find(reference_dropdown)).to have_text('My Cool Linked Issue')
+      expect(find(suggestions_dropdown)).to have_text('My Cool Linked Issue')
 
       send_keys :enter
 
-      expect(page).not_to have_css(reference_dropdown)
+      expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('#1')
     end
 
     it 'shows suggestions for milestones' do
       type_in_content_editor '%'
 
-      expect(find(reference_dropdown)).to have_text('My Cool Milestone')
+      expect(find(suggestions_dropdown)).to have_text('My Cool Milestone')
 
       send_keys :enter
 
-      expect(page).not_to have_css(reference_dropdown)
+      expect(page).not_to have_css(suggestions_dropdown)
       expect(page).to have_text('%My Cool Milestone')
+    end
+
+    it 'shows suggestions for emojis' do
+      type_in_content_editor ':smile'
+
+      expect(find(suggestions_dropdown)).to have_text('🙂 slight_smile')
+      expect(find(suggestions_dropdown)).to have_text('😸 smile_cat')
+
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+
+      expect(page).to have_text('🙂')
     end
 
     it 'doesn\'t show suggestions dropdown if there are no suggestions to show' do
       type_in_content_editor '%'
 
-      expect(find(reference_dropdown)).to have_text('My Cool Milestone')
+      expect(find(suggestions_dropdown)).to have_text('My Cool Milestone')
 
       type_in_content_editor 'x'
 
-      expect(page).not_to have_css(reference_dropdown)
+      expect(page).not_to have_css(suggestions_dropdown)
     end
   end
 end

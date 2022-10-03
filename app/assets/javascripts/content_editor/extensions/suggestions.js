@@ -3,20 +3,34 @@ import { VueRenderer } from '@tiptap/vue-2';
 import tippy from 'tippy.js';
 import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from 'prosemirror-state';
-import { isFunction } from 'lodash';
+import { isFunction, uniqueId } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
-import Reference from '../components/reference_dropdown.vue';
+import { initEmojiMap, getAllEmoji } from '~/emoji';
+import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
 
-function createSuggestionPlugin({ editor, char, dataSource, search, referenceProps }) {
+function find(haystack, needle) {
+  return String(haystack).toLocaleLowerCase().includes(String(needle).toLocaleLowerCase());
+}
+
+function createSuggestionPlugin({
+  editor,
+  char,
+  dataSource,
+  search,
+  limit = Infinity,
+  nodeType,
+  nodeProps = {},
+}) {
   return Suggestion({
     editor,
     char,
-    pluginKey: new PluginKey(`reference_${referenceProps.referenceType}`),
+    pluginKey: new PluginKey(uniqueId('suggestions')),
+
     command: ({ editor: tiptapEditor, range, props }) => {
       tiptapEditor
         .chain()
         .focus()
-        .insertContentAt(range, [{ type: 'reference', attrs: props }])
+        .insertContentAt(range, [{ type: nodeType, attrs: props }])
         .run();
     },
 
@@ -24,8 +38,11 @@ function createSuggestionPlugin({ editor, char, dataSource, search, referencePro
       if (!dataSource) return [];
 
       try {
-        const items = await (isFunction(dataSource) ? dataSource() : axios.get(dataSource));
-        return items.data.filter(search(query));
+        const items = isFunction(dataSource)
+          ? await dataSource()
+          : (await axios.get(dataSource)).data;
+
+        return items.filter(search(query)).slice(0, limit);
       } catch {
         return [];
       }
@@ -37,11 +54,12 @@ function createSuggestionPlugin({ editor, char, dataSource, search, referencePro
 
       return {
         onStart: (props) => {
-          component = new VueRenderer(Reference, {
+          component = new VueRenderer(SuggestionsDropdown, {
             propsData: {
               ...props,
               char,
-              referenceProps,
+              nodeType,
+              nodeProps,
             },
             editor: props.editor,
           });
@@ -101,50 +119,58 @@ export default Node.create({
         editor: this.editor,
         char: '@',
         dataSource: gl.GfmAutoComplete?.dataSources.members,
-        referenceProps: {
+        nodeType: 'reference',
+        nodeProps: {
           className: 'gfm gfm-project_member',
           referenceType: 'user',
         },
-        search: (query) => ({ name, username }) =>
-          name.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
-          username.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+        search: (query) => ({ name, username }) => find(name, query) || find(username, query),
       }),
       createSuggestionPlugin({
         editor: this.editor,
         char: '#',
         dataSource: gl.GfmAutoComplete?.dataSources.issues,
-        referenceProps: {
+        nodeType: 'reference',
+        nodeProps: {
           className: 'gfm gfm-issue',
           referenceType: 'issue',
         },
-        search: (query) => ({ iid, title }) =>
-          String(iid).toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
-          title.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
       }),
       createSuggestionPlugin({
         editor: this.editor,
         char: '!',
         dataSource: gl.GfmAutoComplete?.dataSources.mergeRequests,
-        referenceProps: {
+        nodeType: 'reference',
+        nodeProps: {
           className: 'gfm gfm-issue',
           referenceType: 'merge_request',
         },
-        search: (query) => ({ iid, title }) =>
-          String(iid).toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
-          title.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
       }),
       createSuggestionPlugin({
         editor: this.editor,
         char: '%',
         dataSource: gl.GfmAutoComplete?.dataSources.milestones,
-        referenceProps: {
+        nodeType: 'reference',
+        nodeProps: {
           className: 'gfm gfm-milestone',
           referenceType: 'milestone',
         },
-        search: (query) => ({ iid, title }) =>
-          String(iid).toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
-          title.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
+      }),
+      createSuggestionPlugin({
+        editor: this.editor,
+        char: ':',
+        dataSource: () => Object.values(getAllEmoji()),
+        nodeType: 'emoji',
+        search: (query) => ({ d, name }) => find(d, query) || find(name, query),
+        limit: 10,
       }),
     ];
+  },
+
+  onCreate() {
+    initEmojiMap();
   },
 });
