@@ -66,7 +66,7 @@ For more details, see
 [Dependency Scanning compared to Container Scanning](dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning).
 
 Additionally, dependencies in operational container images can be analyzed for vulnerabilities
-on a regular schedule or cadence. For more details, see [Cluster Image Scanning](cluster_image_scanning/index.md).
+on a regular schedule or cadence. For more details, see [Cluster Image Scanning](../clusters/agent/vulnerabilities.md).
 
 ### Infrastructure analysis
 

@@ -15,7 +15,7 @@ traffic until the system is ready or restart the container as needed.
 ## IP allowlist
 
 To access monitoring resources, the requesting client IP needs to be included in the allowlist.
-For details, see [how to add IPs to the allowlist for the monitoring endpoints](../../../administration/monitoring/ip_whitelist.md).
+For details, see [how to add IPs to the allowlist for the monitoring endpoints](../../../administration/monitoring/ip_allowlist.md).
 
 ## Using the endpoints locally
 

@@ -205,7 +205,7 @@ To use an external Prometheus server:
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
-1. Add the Prometheus server IP address to the [monitoring IP allowlist](../ip_whitelist.md). For example:
+1. Add the Prometheus server IP address to the [monitoring IP allowlist](../ip_allowlist.md). For example:
 
    ```ruby
    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
@@ -381,7 +381,7 @@ memory, disk, and CPU utilization.
 The web exporter is a dedicated metrics server that allows splitting end-user and Prometheus traffic
 into two separate applications to improve performance and availability.
 
-[Read more about the web exporter](puma_exporter.md).
+[Read more about the web exporter](web_exporter.md).
 
 ### Redis exporter
 

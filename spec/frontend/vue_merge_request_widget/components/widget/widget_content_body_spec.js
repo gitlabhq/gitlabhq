@@ -1,14 +1,14 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import WidgetContentSection from '~/vue_merge_request_widget/components/widget/widget_content_section.vue';
-import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
+import WidgetContentBody from '~/vue_merge_request_widget/components/widget/widget_content_body.vue';
+import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 
-describe('~/vue_merge_request_widget/components/widget/widget_content_section.vue', () => {
+describe('~/vue_merge_request_widget/components/widget/widget_content_body.vue', () => {
   let wrapper;
 
   const findStatusIcon = () => wrapper.findComponent(StatusIcon);
 
   const createComponent = ({ propsData, slots } = {}) => {
-    wrapper = shallowMountExtended(WidgetContentSection, {
+    wrapper = shallowMountExtended(WidgetContentBody, {
       propsData: {
         widgetName: 'MyWidget',
         ...propsData,

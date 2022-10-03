@@ -1,6 +1,6 @@
 <script>
 import { EXTENSION_ICONS } from '../../constants';
-import StatusIcon from '../extensions/status_icon.vue';
+import StatusIcon from './status_icon.vue';
 
 export default {
   components: {
@@ -21,15 +21,8 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-px-7">
-    <div class="gl-pl-4 gl-display-flex">
-      <status-icon
-        v-if="statusIconName"
-        :level="2"
-        :name="widgetName"
-        :icon-name="statusIconName"
-      />
-      <slot name="default"></slot>
-    </div>
+  <div class="gl-display-flex gl-align-items-baseline gl-w-full">
+    <status-icon v-if="statusIconName" :level="2" :name="widgetName" :icon-name="statusIconName" />
+    <slot name="default"></slot>
   </div>
 </template>

@@ -1,7 +1,10 @@
 ---
 # Cop supports --auto-correct.
 Lint/RedundantCopDisableDirective:
-  Details: grace period
+  # Used to be enabled in "grace period" and is now disabled due to too many
+  # silenced offenses.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/376133
+  Enabled: false
   Exclude:
     - 'app/controllers/concerns/enforces_two_factor_authentication.rb'
     - 'app/controllers/concerns/web_hooks/hook_log_actions.rb'

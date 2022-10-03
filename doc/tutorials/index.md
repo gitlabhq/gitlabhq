@@ -67,7 +67,7 @@ configure the infrastructure for your application.
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Use GitOps with GitLab](https://about.gitlab.com/blog/2022/04/07/the-ultimate-guide-to-gitops-with-gitlab/)  |  Learn how to provision and manage a base infrastructure, connect to a Kubernetes cluster, deploy third-party applications, and carry out other infrastructure automation tasks. | |
-| [Use Auto DevOps to deploy an application](../topics/autodevops/quick_start_guide.md)  | Deploy an application to Google Kubernetes Engine (GKE). | |
+| [Use Auto DevOps to deploy an application](../topics/autodevops/cloud_deployments/auto_devops_with_gke.md)  | Deploy an application to Google Kubernetes Engine (GKE). | |
 
 ## Publish a static website
 

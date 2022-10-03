@@ -768,7 +768,7 @@ for [deployment jobs](../environments/index.md).
 For example, the [Kubernetes integration](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
 defines deployment variables that you can use with the integration.
 
-The [documentation for each integration](../../user/project/integrations/overview.md)
+The [documentation for each integration](../../user/project/integrations/index.md)
 explains if the integration has any deployment variables available.
 
 ## Auto DevOps environment variables

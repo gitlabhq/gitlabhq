@@ -401,4 +401,4 @@ The output in `/tmp/puma.txt` may help diagnose the root cause.
 
 ## Related topics
 
-- [Use a dedicated metrics server to export web metrics](../monitoring/prometheus/puma_exporter.md)
+- [Use a dedicated metrics server to export web metrics](../monitoring/prometheus/web_exporter.md)

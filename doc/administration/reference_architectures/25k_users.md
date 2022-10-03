@@ -302,7 +302,7 @@ for details on managing SSL certificates and configuring NGINX.
 
 Ensure the external load balancer only routes to working services with built
 in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
-all require [additional configuration](../monitoring/ip_whitelist.md)
+all require [additional configuration](../monitoring/ip_allowlist.md)
 on the nodes being checked, otherwise, the external load balancer will not be able to
 connect.
 

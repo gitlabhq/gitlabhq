@@ -1,3 +1,6 @@
+default:
+  interruptible: true
+
 stages:
   - prepare
   - deploy
@@ -16,6 +19,13 @@ include:
   - source ./scripts/utils.sh
   - source ./scripts/review_apps/review-apps.sh
   - apt-get update && apt-get install -y jq
+
+dont-interrupt-me:
+  extends: .rules:dont-interrupt
+  stage: prepare
+  interruptible: false
+  script:
+    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
 
 review-build-cng-env:
   extends:

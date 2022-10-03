@@ -11,7 +11,7 @@ GitLab provides Docker images with the libraries and tools you need to deploy
 to AWS. You can reference these images in your CI/CD pipeline.
 
 If you're using GitLab.com and deploying to the [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (ECS),
-read about [deploying to ECS](ecs/quick_start_guide.md).
+read about [deploying to ECS](ecs/deploy_to_aws_ecs.md).
 
 ## Authenticate GitLab with AWS
 

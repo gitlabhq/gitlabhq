@@ -424,7 +424,7 @@ export default {
       </gl-sprintf>
     </div>
 
-    <div v-if="isMRDiffView" class="gl-float-left gl-mt-2">
+    <div v-if="isMRDiffView" class="timeline-avatar gl-float-left gl-pt-2">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"

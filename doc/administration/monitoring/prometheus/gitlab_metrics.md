@@ -20,7 +20,7 @@ For installations from source you must configure it yourself.
 
 GitLab monitors its own internal service metrics, and makes them available at the
 `/-/metrics` endpoint. Unlike other [Prometheus](https://prometheus.io) exporters, to access
-the metrics, the client IP address must be [explicitly allowed](../ip_whitelist.md).
+the metrics, the client IP address must be [explicitly allowed](../ip_allowlist.md).
 
 These metrics are enabled and collected for [Omnibus GitLab](https://docs.gitlab.com/omnibus/)
 and Chart installations. For source installations, these metrics must be enabled

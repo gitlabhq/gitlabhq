@@ -41,6 +41,14 @@
   rules:
     - when: always
 
+.rules:dont-interrupt:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      allow_failure: true
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+
 # ------------------------------------------
 # Test
 # ------------------------------------------

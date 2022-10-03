@@ -5,8 +5,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
+import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 
-describe('MR Widget', () => {
+describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   let wrapper;
 
   const findStatusIcon = () => wrapper.findComponent(StatusIcon);
@@ -27,6 +28,10 @@ describe('MR Widget', () => {
         ...propsData,
       },
       slots,
+      stubs: {
+        StatusIcon,
+        ContentRow: WidgetContentRow,
+      },
     });
   };
 

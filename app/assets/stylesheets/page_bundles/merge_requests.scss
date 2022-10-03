@@ -850,3 +850,7 @@ $tabs-holder-z-index: 250;
 .dropdown-menu li button.gl-toggle:not(.is-checked) {
   background: $gray-400;
 }
+
+.mr-widget-content-row:first-child {
+  border-top: 0;
+}

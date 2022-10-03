@@ -4,10 +4,11 @@ import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
-import StatusIcon from '../extensions/status_icon.vue';
 import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
-import ContentSection from './widget_content_section.vue';
+import ContentRow from './widget_content_row.vue';
+import DynamicContent from './dynamic_content.vue';
+import StatusIcon from './status_icon.vue';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
 const FETCH_TYPE_EXPANDED = 'expanded';
@@ -18,7 +19,8 @@ export default {
     StatusIcon,
     GlButton,
     GlLoadingIcon,
-    ContentSection,
+    ContentRow,
+    DynamicContent,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,7 +61,7 @@ export default {
     },
     // If the content slot is not used, this value will be used as a fallback.
     content: {
-      type: Object,
+      type: Array,
       required: false,
       default: undefined,
     },
@@ -227,23 +229,34 @@ export default {
     </div>
     <div
       v-if="!isCollapsed || contentError"
-      class="mr-widget-grouped-section gl-relative"
+      class="gl-relative gl-bg-gray-10"
       data-testid="widget-extension-collapsed-section"
     >
       <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
-        <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
+        <gl-loading-icon size="sm" inline /> {{ loadingText }}
       </div>
-      <content-section
-        v-else-if="contentError"
-        class="report-block-container"
-        :status-icon-name="$options.failedStatusIcon"
-        :widget-name="widgetName"
-      >
-        {{ contentError }}
-      </content-section>
-      <slot v-else name="content">
-        {{ content }}
-      </slot>
+      <div v-else class="gl-px-5 gl-display-flex">
+        <content-row
+          v-if="contentError"
+          :level="2"
+          :status-icon-name="$options.failedStatusIcon"
+          :widget-name="widgetName"
+        >
+          <template #body>
+            {{ contentError }}
+          </template>
+        </content-row>
+        <slot v-else name="content">
+          <div class="gl-w-full">
+            <dynamic-content
+              v-for="(data, index) in content"
+              :key="data.id || index"
+              :data="data"
+              :widget-name="widgetName"
+            />
+          </div>
+        </slot>
+      </div>
     </div>
   </section>
 </template>

@@ -43,7 +43,7 @@ your Prometheus integration depends on where your apps are running:
 - **For a cluster integrated Prometheus** - GitLab can query
   [an in-cluster Prometheus](../../user/clusters/integrations.md#prometheus-cluster-integration).
   You must also complete a code deployment to your cluster for the **Monitor > Metrics**
-  page to contain data. You can do this using [Auto DevOps](../../topics/autodevops/quick_start_guide.md).
+  page to contain data. You can do this using [Auto DevOps](../../topics/autodevops/cloud_deployments/auto_devops_with_gke.md).
 
 ![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_3.png)
 
