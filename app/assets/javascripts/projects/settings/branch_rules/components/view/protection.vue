@@ -58,7 +58,7 @@ export default {
     <template #header>
       <div class="gl-display-flex gl-justify-content-space-between">
         <strong>{{ header }}</strong>
-        <gl-link :href="headerLinkHref" target="_blank">{{ headerLinkTitle }}</gl-link>
+        <gl-link :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
       </div>
     </template>
 

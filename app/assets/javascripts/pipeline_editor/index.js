@@ -2,6 +2,7 @@ import Vue from 'vue';
 
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { EDITOR_APP_STATUS_LOADING } from './constants';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
 import getCurrentBranch from './graphql/queries/client/current_branch.query.graphql';
@@ -42,6 +43,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     projectNamespace,
     simulatePipelineHelpPagePath,
     totalBranches,
+    usesExternalConfig,
     validateTabIllustrationPath,
     ymlHelpPagePath,
   } = el.dataset;
@@ -133,6 +135,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
       projectNamespace,
       simulatePipelineHelpPagePath,
       totalBranches: parseInt(totalBranches, 10),
+      usesExternalConfig: parseBoolean(usesExternalConfig),
       validateTabIllustrationPath,
       ymlHelpPagePath,
     },

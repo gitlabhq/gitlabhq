@@ -1038,7 +1038,7 @@ ensure that it can reach your private repository. Here is an example configurati
 1. Fetch the certificate from your repository URL and add it to the project:
 
    ```shell
-   echo -n | openssl s_client -connect pypi.example.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
+   printf "\n" | openssl s_client -connect pypi.example.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
    ```
 
 1. Point `setup.py` at the newly downloaded certificate:

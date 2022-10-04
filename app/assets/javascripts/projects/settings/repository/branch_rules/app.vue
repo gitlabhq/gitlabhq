@@ -35,10 +35,9 @@ export default {
       },
     },
   },
-  props: {
+  inject: {
     projectPath: {
-      type: String,
-      required: true,
+      default: '',
     },
   },
   data() {

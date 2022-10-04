@@ -2,26 +2,24 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BranchRule, {
   i18n,
 } from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
-
-const defaultProps = {
-  name: 'main',
-  isDefault: true,
-  isProtected: true,
-  approvalDetails: ['requires approval from TEST', '2 status checks'],
-};
+import { branchRuleProvideMock, branchRulePropsMock } from '../mock_data';
 
 describe('Branch rule', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMountExtended(BranchRule, { propsData: { ...defaultProps, ...props } });
+    wrapper = shallowMountExtended(BranchRule, {
+      provide: branchRuleProvideMock,
+      propsData: { ...branchRulePropsMock, ...props },
+    });
   };
 
   const findDefaultBadge = () => wrapper.findByText(i18n.defaultLabel);
   const findProtectedBadge = () => wrapper.findByText(i18n.protectedLabel);
-  const findBranchName = () => wrapper.findByText(defaultProps.name);
+  const findBranchName = () => wrapper.findByText(branchRulePropsMock.name);
   const findProtectionDetailsList = () => wrapper.findByRole('list');
   const findProtectionDetailsListItems = () => wrapper.findAllByRole('listitem');
+  const findDetailsButton = () => wrapper.findByText(i18n.detailsButtonLabel);
 
   beforeEach(() => createComponent());
 
@@ -52,7 +50,17 @@ describe('Branch rule', () => {
   });
 
   it('renders the protection details list items', () => {
-    expect(findProtectionDetailsListItems().at(0).text()).toBe(defaultProps.approvalDetails[0]);
-    expect(findProtectionDetailsListItems().at(1).text()).toBe(defaultProps.approvalDetails[1]);
+    expect(findProtectionDetailsListItems().at(0).text()).toBe(
+      branchRulePropsMock.approvalDetails[0],
+    );
+    expect(findProtectionDetailsListItems().at(1).text()).toBe(
+      branchRulePropsMock.approvalDetails[1],
+    );
+  });
+
+  it('renders a detail button with the correct href', () => {
+    expect(findDetailsButton().attributes('href')).toBe(
+      `${branchRuleProvideMock.branchRulesPath}?branch=${branchRulePropsMock.name}`,
+    );
   });
 });

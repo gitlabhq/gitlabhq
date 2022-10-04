@@ -6766,7 +6766,16 @@ msgstr ""
 msgid "Branch rules"
 msgstr ""
 
+msgid "BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/ are supported"
+msgstr ""
+
 msgid "BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/* are supported."
+msgstr ""
+
+msgid "BranchRules|All branches"
+msgstr ""
+
+msgid "BranchRules|All users with push access are allowed to force push."
 msgstr ""
 
 msgid "BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}."
@@ -6775,13 +6784,25 @@ msgstr ""
 msgid "BranchRules|Allowed to merge"
 msgstr ""
 
+msgid "BranchRules|Allowed to merge (%{total})"
+msgstr ""
+
 msgid "BranchRules|Allowed to push"
+msgstr ""
+
+msgid "BranchRules|Allowed to push (%{total})"
 msgstr ""
 
 msgid "BranchRules|An error occurred while fetching branches."
 msgstr ""
 
+msgid "BranchRules|Approvals"
+msgstr ""
+
 msgid "BranchRules|Branch"
+msgstr ""
+
+msgid "BranchRules|Branch name or pattern"
 msgstr ""
 
 msgid "BranchRules|Branch rules details"
@@ -6790,13 +6811,31 @@ msgstr ""
 msgid "BranchRules|Create wildcard: %{searchTerm}"
 msgstr ""
 
+msgid "BranchRules|Details"
+msgstr ""
+
+msgid "BranchRules|Force push"
+msgstr ""
+
+msgid "BranchRules|Force push is not allowed."
+msgstr ""
+
 msgid "BranchRules|Groups"
 msgstr ""
 
 msgid "BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}"
 msgstr ""
 
+msgid "BranchRules|Manage in Protected Branches"
+msgstr ""
+
+msgid "BranchRules|No data to display"
+msgstr ""
+
 msgid "BranchRules|No matching results"
+msgstr ""
+
+msgid "BranchRules|Protect branch"
 msgstr ""
 
 msgid "BranchRules|Protections"
@@ -6809,6 +6848,9 @@ msgid "BranchRules|Require approval from code owners."
 msgstr ""
 
 msgid "BranchRules|Roles"
+msgstr ""
+
+msgid "BranchRules|Status checks"
 msgstr ""
 
 msgid "BranchRules|Target Branch"
@@ -41268,6 +41310,9 @@ msgstr ""
 msgid "This project will be deleted on %{date} since its parent group '%{parent_group_name}' has been scheduled for deletion."
 msgstr ""
 
+msgid "This project's pipeline configuration is located outside this repository"
+msgstr ""
+
 msgid "This release was created with a date in the past. Evidence collection at the moment of the release is unavailable."
 msgstr ""
 
@@ -41735,6 +41780,9 @@ msgid "To continue, you need to select the link in the confirmation email we sen
 msgstr ""
 
 msgid "To define internal users, first enable new users set to external"
+msgstr ""
+
+msgid "To edit the pipeline configuration, you must go to the project or external site that hosts the file."
 msgstr ""
 
 msgid "To enable Registration Features, first enable Service Ping."
@@ -46767,6 +46815,9 @@ msgid "by"
 msgstr ""
 
 msgid "cURL:"
+msgstr ""
+
+msgid "can contain only digits"
 msgstr ""
 
 msgid "can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'"

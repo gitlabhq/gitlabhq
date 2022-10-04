@@ -52,3 +52,80 @@ export const protectionRowPropsMock = {
   users: usersMock,
   accessLevels: accessLevelsMock,
 };
+
+export const accessLevelsMockResponse = [
+  {
+    __typename: 'PushAccessLevelEdge',
+    node: {
+      __typename: 'PushAccessLevel',
+      accessLevel: 40,
+      accessLevelDescription: 'Jona Langworth',
+      group: null,
+      user: {
+        __typename: 'UserCore',
+        id: '123',
+        webUrl: 'test.com',
+        name: 'peter',
+        avatarUrl: 'test.com/user.png',
+      },
+    },
+  },
+  {
+    __typename: 'PushAccessLevelEdge',
+    node: {
+      __typename: 'PushAccessLevel',
+      accessLevel: 40,
+      accessLevelDescription: 'Maintainers',
+      group: null,
+      user: null,
+    },
+  },
+];
+
+export const branchProtectionsMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/6',
+      __typename: 'Project',
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes: [
+          {
+            __typename: 'BranchRule',
+            name: 'main',
+            branchProtection: {
+              __typename: 'BranchProtection',
+              allowForcePush: true,
+              codeOwnerApprovalRequired: true,
+              mergeAccessLevels: {
+                __typename: 'MergeAccessLevelConnection',
+                edges: accessLevelsMockResponse,
+              },
+              pushAccessLevels: {
+                __typename: 'PushAccessLevelConnection',
+                edges: accessLevelsMockResponse,
+              },
+            },
+          },
+          {
+            __typename: 'BranchRule',
+            name: '*',
+            branchProtection: {
+              __typename: 'BranchProtection',
+              allowForcePush: true,
+              codeOwnerApprovalRequired: true,
+              mergeAccessLevels: {
+                __typename: 'MergeAccessLevelConnection',
+                edges: [],
+              },
+              pushAccessLevels: {
+                __typename: 'PushAccessLevelConnection',
+                edges: [],
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
+};

@@ -477,6 +477,7 @@ class Project < ApplicationRecord
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :forward_deployment_enabled, :forward_deployment_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
+  delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
   delegate :opt_in_jwt, :opt_in_jwt=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
@@ -2720,6 +2721,7 @@ class Project < ApplicationRecord
     ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
   end
 
+  # DO NOT USE. This method will be deprecated soon
   def uses_external_project_ci_config?
     !!(ci_config_path =~ %r{@.+/.+})
   end
@@ -2844,6 +2846,7 @@ class Project < ApplicationRecord
     repository.gitlab_ci_yml_for(sha, ci_config_path_or_default)
   end
 
+  # DO NOT USE. This method will be deprecated soon
   def ci_config_external_project
     Project.find_by_full_path(ci_config_path.split('@', 2).last)
   end
@@ -2890,6 +2893,12 @@ class Project < ApplicationRecord
     return false unless ci_cd_settings
 
     ci_cd_settings.job_token_scope_enabled?
+  end
+
+  def ci_inbound_job_token_scope_enabled?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.inbound_job_token_scope_enabled?
   end
 
   def restrict_user_defined_variables?

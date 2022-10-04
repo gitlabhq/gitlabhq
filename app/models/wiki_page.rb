@@ -138,7 +138,7 @@ class WikiPage
     default_per_page = Kaminari.config.default_per_page
     offset = [options[:page].to_i - 1, 0].max * options.fetch(:per_page, default_per_page)
 
-    wiki.repository.commits('HEAD',
+    wiki.repository.commits(wiki.default_branch,
                             path: page.path,
                             limit: options.fetch(:limit, default_per_page),
                             offset: offset)
@@ -147,7 +147,7 @@ class WikiPage
   def count_versions
     return [] unless persisted?
 
-    wiki.wiki.count_page_versions(page.path)
+    wiki.repository.count_commits(ref: wiki.default_branch, path: page.path)
   end
 
   def last_version

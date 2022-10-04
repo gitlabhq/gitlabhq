@@ -11,7 +11,6 @@ module Ci
     def js_pipeline_editor_data(project)
       initial_branch = params[:branch_name]
       latest_commit = project.repository.commit(initial_branch) || project.commit
-      commit_sha = latest_commit ? latest_commit.sha : ''
       total_branches = project.repository_exists? ? project.repository.branch_count : 0
 
       {
@@ -27,16 +26,25 @@ module Ci
         "lint-unavailable-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'configuration-validation-currently-not-available-message'),
         "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
         "new-merge-request-path" => namespace_project_new_merge_request_path,
-        "pipeline_etag" => latest_commit ? graphql_etag_pipeline_sha_path(commit_sha) : '',
+        "pipeline_etag" => latest_commit ? graphql_etag_pipeline_sha_path(latest_commit.sha) : '',
         "pipeline-page-path" => project_pipelines_path(project),
         "project-path" => project.path,
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,
         "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
         "total-branches" => total_branches,
+        "uses-external-config" => uses_external_config?(project) ? 'true' : 'false',
         "validate-tab-illustration-path" => image_path('illustrations/project-run-CICD-pipelines-sm.svg'),
         "yml-help-page-path" => help_page_path('ci/yaml/index')
       }
+    end
+
+    private
+
+    def uses_external_config?(project)
+      ci_config_source = Gitlab::Ci::ProjectConfig.new(project: project, sha: nil).source
+
+      [:external_project_source, :remote_source].include?(ci_config_source)
     end
   end
 end

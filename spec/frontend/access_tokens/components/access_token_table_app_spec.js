@@ -199,16 +199,39 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(button.props('category')).toBe('tertiary');
   });
 
-  describe('revoke path', () => {
+  describe('when revoke_path is', () => {
     beforeEach(() => {
       createComponent({ showRole: true });
     });
 
-    it.each([{ revoke_path: null }, { revoke_path: undefined }])(
-      'with %p, does not show revoke button',
-      async (input) => {
-        await triggerSuccess(defaultActiveAccessTokens.map((data) => ({ ...data, ...input })));
+    describe('absent in all tokens', () => {
+      it('should not include `Action` column', async () => {
+        await triggerSuccess(defaultActiveAccessTokens.map(({ revoke_path, ...rest }) => rest));
 
+        const headers = findHeaders();
+        expect(headers).toHaveLength(6);
+        [
+          __('Token name'),
+          __('Scopes'),
+          s__('AccessTokens|Created'),
+          __('Last Used'),
+          __('Expires'),
+          __('Role'),
+        ].forEach((text, index) => {
+          expect(headers.at(index).text()).toBe(text);
+        });
+      });
+    });
+
+    it.each([{ revoke_path: null }, { revoke_path: undefined }])(
+      '%p in some tokens, does not show revoke button',
+      async (input) => {
+        await triggerSuccess([
+          defaultActiveAccessTokens.map((data) => ({ ...data, ...input }))[0],
+          defaultActiveAccessTokens[1],
+        ]);
+
+        expect(findHeaders().at(6).text()).toBe(__('Action'));
         expect(findCells().at(6).findComponent(GlButton).exists()).toBe(false);
       },
     );

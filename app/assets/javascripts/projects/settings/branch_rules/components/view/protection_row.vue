@@ -45,6 +45,9 @@ export default {
         this.users.length - this.$options.MAX_VISIBLE_AVATARS,
       );
     },
+    commaSeparateList() {
+      return this.accessLevels.length > 1;
+    },
   },
 };
 </script>
@@ -80,6 +83,7 @@ export default {
     </gl-avatars-inline>
 
     <div v-for="(item, index) in accessLevels" :key="index" data-testid="access-level">
+      <span v-if="commaSeparateList && index > 0" data-testid="comma-separator">,</span>
       {{ item.accessLevelDescription }}
     </div>
   </div>

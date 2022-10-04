@@ -7,7 +7,7 @@ import BranchRules, { i18n } from '~/projects/settings/repository/branch_rules/a
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import branchRulesQuery from '~/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import { createAlert } from '~/flash';
-import { branchRulesMockResponse, propsDataMock } from './mock_data';
+import { branchRulesMockResponse, appProvideMock } from './mock_data';
 
 jest.mock('~/flash');
 
@@ -24,9 +24,7 @@ describe('Branch rules app', () => {
 
     wrapper = mountExtended(BranchRules, {
       apolloProvider: fakeApollo,
-      propsData: {
-        ...propsDataMock,
-      },
+      provide: appProvideMock,
     });
 
     await waitForPromises();
@@ -49,7 +47,11 @@ describe('Branch rules app', () => {
 
   it('renders branch rules', () => {
     const { nodes } = branchRulesMockResponse.data.project.branchRules;
-    expect(findAllBranchRules().at(0).text()).toBe(nodes[0].name);
-    expect(findAllBranchRules().at(1).text()).toBe(nodes[1].name);
+
+    expect(findAllBranchRules().length).toBe(nodes.length);
+
+    expect(findAllBranchRules().at(0).props('name')).toBe(nodes[0].name);
+
+    expect(findAllBranchRules().at(1).props('name')).toBe(nodes[1].name);
   });
 });

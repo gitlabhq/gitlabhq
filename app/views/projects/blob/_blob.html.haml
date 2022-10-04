@@ -10,7 +10,7 @@
     %ul.blob-commit-info
       = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
 
-  = render_if_exists 'projects/blob/owners', blob: blob
+  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref } }
   = render "projects/blob/auxiliary_viewer", blob: blob
 
 #blob-content-holder.blob-content-holder

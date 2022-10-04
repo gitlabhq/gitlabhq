@@ -26,11 +26,6 @@ Throughout this guide you will see references to CE and EE for abbreviation.
 To get an overview of GitLab community membership, including those that would review or merge
 your contributions, visit [the community roles page](community_roles.md).
 
-If you want to know how the GitLab [core team](https://about.gitlab.com/community/core-team/)
-operates, see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab/-/blob/master/PROCESS.md).
-
-GitLab Inc engineers should refer to the [engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/).
-
 ## Security vulnerability disclosure
 
 Report suspected security vulnerabilities by following the

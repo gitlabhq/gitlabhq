@@ -55,7 +55,22 @@ export default {
   },
   computed: {
     filteredFields() {
-      return this.showRole ? FIELDS : FIELDS.filter((field) => field.key !== 'role');
+      const ignoredFields = [];
+
+      // Show 'action' column only when there are no active tokens or when some of them have a revokePath
+      const showAction =
+        this.activeAccessTokens.length === 0 ||
+        this.activeAccessTokens.some((token) => token.revokePath);
+
+      if (!showAction) {
+        ignoredFields.push('action');
+      }
+
+      if (!this.showRole) {
+        ignoredFields.push('role');
+      }
+
+      return FIELDS.filter(({ key }) => !ignoredFields.includes(key));
     },
     header() {
       return sprintf(this.$options.i18n.header, {

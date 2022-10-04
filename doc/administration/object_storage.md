@@ -277,9 +277,12 @@ Here are the valid connection parameters for GCS:
 |------------------------------|-------------------|---------|
 | `provider`                   | Provider name.    | `Google` |
 | `google_project`             | GCP project name. | `gcp-project-12345` |
-| `google_client_email`        | Email address of the service account. | `foo@gcp-project-12345.iam.gserviceaccount.com` |
 | `google_json_key_location`   | JSON key path.    | `/path/to/gcp-project-12345-abcde.json` |
+| `google_json_key_string`     | JSON key string.  | `{ "type": "service_account", "project_id": "example-project-382839", ... }` |
 | `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. | |
+
+GitLab reads the value of `google_json_key_location`, then `google_json_key_string`, and finally, `google_application_default`.
+It uses the first of these settings that has a value.
 
 The service account must have permission to access the bucket. Learn more
 in Google's
@@ -296,7 +299,6 @@ For Omnibus installations, this is an example of the `connection` setting:
 gitlab_rails['object_store']['connection'] = {
   'provider' => 'Google',
   'google_project' => '<GOOGLE PROJECT>',
-  'google_client_email' => '<GOOGLE CLIENT EMAIL>',
   'google_json_key_location' => '<FILENAME>'
 }
 ```

@@ -56,7 +56,9 @@ describe('Branch rule protection row', () => {
     expect(findAccessLevels().at(0).text()).toBe(
       protectionRowPropsMock.accessLevels[0].accessLevelDescription,
     );
-    expect(findAccessLevels().at(1).text()).toBe(
+    expect(findAccessLevels().at(1).text()).toContain(',');
+
+    expect(findAccessLevels().at(1).text()).toContain(
       protectionRowPropsMock.accessLevels[1].accessLevelDescription,
     );
   });

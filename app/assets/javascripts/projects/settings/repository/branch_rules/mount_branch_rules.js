@@ -12,17 +12,17 @@ const apolloProvider = new VueApollo({
 export default function mountBranchRules(el) {
   if (!el) return null;
 
-  const { projectPath } = el.dataset;
+  const { projectPath, branchRulesPath } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider,
+    provide: {
+      projectPath,
+      branchRulesPath,
+    },
     render(createElement) {
-      return createElement(BranchRulesApp, {
-        props: {
-          projectPath,
-        },
-      });
+      return createElement(BranchRulesApp);
     },
   });
 }

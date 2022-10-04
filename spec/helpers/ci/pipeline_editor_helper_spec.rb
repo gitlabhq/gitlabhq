@@ -25,6 +25,30 @@ RSpec.describe Ci::PipelineEditorHelper do
 
   describe '#js_pipeline_editor_data' do
     let(:project) { create(:project, :repository) }
+    let(:default_helper_data) do
+      {
+        "ci-config-path": project.ci_config_path_or_default,
+        "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
+        "ci-help-page-path" => help_page_path('ci/index'),
+        "ci-lint-path" => project_ci_lint_path(project),
+        "default-branch" => project.default_branch_or_main,
+        "empty-state-illustration-path" => 'illustrations/empty.svg',
+        "initial-branch-name" => nil,
+        "includes-help-page-path" => help_page_path('ci/yaml/includes'),
+        "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
+        "lint-unavailable-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'configuration-validation-currently-not-available-message'),
+        "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
+        "new-merge-request-path" => '/mock/project/-/merge_requests/new',
+        "pipeline-page-path" => project_pipelines_path(project),
+        "project-path" => project.path,
+        "project-full-path" => project.full_path,
+        "project-namespace" => project.namespace.full_path,
+        "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
+        "uses-external-config" => 'false',
+        "validate-tab-illustration-path" => 'illustrations/validate.svg',
+        "yml-help-page-path" => help_page_path('ci/yaml/index')
+      }
+    end
 
     before do
       allow(helper)
@@ -46,29 +70,10 @@ RSpec.describe Ci::PipelineEditorHelper do
 
     context 'with a project with commits' do
       it 'returns pipeline editor data' do
-        expect(pipeline_editor_data).to eq({
-          "ci-config-path": project.ci_config_path_or_default,
-          "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
-          "ci-help-page-path" => help_page_path('ci/index'),
-          "ci-lint-path" => project_ci_lint_path(project),
-          "default-branch" => project.default_branch_or_main,
-          "empty-state-illustration-path" => 'illustrations/empty.svg',
-          "initial-branch-name" => nil,
-          "includes-help-page-path" => help_page_path('ci/yaml/includes'),
-          "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
-          "lint-unavailable-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'configuration-validation-currently-not-available-message'),
-          "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
-          "new-merge-request-path" => '/mock/project/-/merge_requests/new',
+        expect(pipeline_editor_data).to eq(default_helper_data.merge({
           "pipeline_etag" => graphql_etag_pipeline_sha_path(project.commit.sha),
-          "pipeline-page-path" => project_pipelines_path(project),
-          "project-path" => project.path,
-          "project-full-path" => project.full_path,
-          "project-namespace" => project.namespace.full_path,
-          "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
-          "total-branches" => project.repository.branches.length,
-          "validate-tab-illustration-path" => 'illustrations/validate.svg',
-          "yml-help-page-path" => help_page_path('ci/yaml/index')
-        })
+          "total-branches" => project.repository.branches.length
+        }))
       end
     end
 
@@ -76,29 +81,10 @@ RSpec.describe Ci::PipelineEditorHelper do
       let(:project) { create(:project, :empty_repo) }
 
       it 'returns pipeline editor data' do
-        expect(pipeline_editor_data).to eq({
-          "ci-config-path": project.ci_config_path_or_default,
-          "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
-          "ci-help-page-path" => help_page_path('ci/index'),
-          "ci-lint-path" => project_ci_lint_path(project),
-          "default-branch" => project.default_branch_or_main,
-          "empty-state-illustration-path" => 'illustrations/empty.svg',
-          "initial-branch-name" => nil,
-          "includes-help-page-path" => help_page_path('ci/yaml/includes'),
-          "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),
-          "lint-unavailable-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'configuration-validation-currently-not-available-message'),
-          "needs-help-page-path" => help_page_path('ci/yaml/index', anchor: 'needs'),
-          "new-merge-request-path" => '/mock/project/-/merge_requests/new',
+        expect(pipeline_editor_data).to eq(default_helper_data.merge({
           "pipeline_etag" => '',
-          "pipeline-page-path" => project_pipelines_path(project),
-          "project-path" => project.path,
-          "project-full-path" => project.full_path,
-          "project-namespace" => project.namespace.full_path,
-          "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
-          "total-branches" => 0,
-          "validate-tab-illustration-path" => 'illustrations/validate.svg',
-          "yml-help-page-path" => help_page_path('ci/yaml/index')
-        })
+          "total-branches" => 0
+        }))
       end
     end
 
@@ -110,6 +96,28 @@ RSpec.describe Ci::PipelineEditorHelper do
           "pipeline_etag" => '',
           "total-branches" => 0
         })
+      end
+    end
+
+    context 'with a remote CI config' do
+      before do
+        create(:commit, project: project)
+        project.ci_config_path = 'http://example.com/path/to/ci/config.yml'
+      end
+
+      it 'returns true for uses-external-config in pipeline editor data' do
+        expect(pipeline_editor_data['uses-external-config']).to eq('true')
+      end
+    end
+
+    context 'with a CI config from an external project' do
+      before do
+        create(:commit, project: project)
+        project.ci_config_path = '.gitlab-ci.yml@group/project'
+      end
+
+      it 'returns true for uses-external-config in pipeline editor data' do
+        expect(pipeline_editor_data['uses-external-config']).to eq('true')
       end
     end
 

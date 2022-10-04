@@ -68,6 +68,26 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
         expect(subject.use_cdn?(public_ip)).to be false
       end
     end
+
+    context 'when URL is a domain' do
+      before do
+        options[:url] = 'cdn.gitlab.example.com'
+      end
+
+      it 'returns false' do
+        expect(subject.use_cdn?(public_ip)).to be false
+      end
+    end
+
+    context 'when URL uses HTTP' do
+      before do
+        options[:url] = 'http://cdn.gitlab.example.com'
+      end
+
+      it 'returns false' do
+        expect(subject.use_cdn?(public_ip)).to be false
+      end
+    end
   end
 
   describe '#signed_url' do

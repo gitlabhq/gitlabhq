@@ -87,10 +87,6 @@ module Gitlab
         end
       end
 
-      def count_page_versions(page_path)
-        @repository.count_commits(ref: 'HEAD', path: page_path)
-      end
-
       def preview_slug(title, format)
         GollumSlug.generate(title, format)
       end

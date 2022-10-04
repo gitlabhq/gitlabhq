@@ -229,7 +229,7 @@ class Wiki
     find_page(SIDEBAR, version)
   end
 
-  def find_file(name, version = 'HEAD', load_content: true)
+  def find_file(name, version = default_branch, load_content: true)
     data_limit = load_content ? -1 : 0
     blobs = repository.blobs_at([[version, name]], blob_size_limit: data_limit)
 
@@ -423,7 +423,7 @@ class Wiki
     escaped_title = Regexp.escape(sluggified_title(title))
     regex = Regexp.new("^#{escaped_title}\.#{ALLOWED_EXTENSIONS_REGEX}$", 'i')
 
-    repository.ls_files('HEAD').any? { |s| s =~ regex }
+    repository.ls_files(default_branch).any? { |s| s =~ regex }
   end
 
   def raise_duplicate_page_error!
@@ -473,11 +473,11 @@ class Wiki
   end
 
   def check_page_historical(path, commit)
-    repository.last_commit_for_path('HEAD', path).id != commit.id
+    repository.last_commit_for_path(default_branch, path)&.id != commit&.id
   end
 
   def find_page_with_repository_rpcs(title, version, load_content: true)
-    version = version.presence || 'HEAD'
+    version = version.presence || default_branch
     path = find_matched_file(title, version)
     return if path.blank?
 
@@ -493,7 +493,7 @@ class Wiki
       path: sluggified_title(path),
       raw_data: blob.data,
       name: canonicalize_filename(path),
-      historical: version == 'HEAD' ? false : check_page_historical(path, commit),
+      historical: version == default_branch ? false : check_page_historical(path, commit),
       version: Gitlab::Git::WikiPageVersion.new(commit, format)
     )
     WikiPage.new(self, page)

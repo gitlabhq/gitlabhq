@@ -107,8 +107,7 @@ In some cases, however, we may need to backport *a bug fix* to more than one sta
 release, depending on the severity of the bug.
 
 The decision on whether backporting a change is performed is done at the discretion of the
-[current release managers](https://about.gitlab.com/community/release-managers/), similar to what is
-described in the [managing bugs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/PROCESS.md#managing-bugs) process,
+[current release managers](https://about.gitlab.com/community/release-managers/),
 based on *all* of the following:
 
 1. Estimated [severity](../development/contributing/issue_workflow.md#severity-labels) of the bug:

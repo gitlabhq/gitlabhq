@@ -338,6 +338,41 @@ RSpec.shared_examples 'wiki model' do
         end
       end
 
+      context "wiki repository's default branch is updated" do
+        before do
+          old_default_branch = wiki.default_branch
+          subject.create_page('page in updated default branch', 'content')
+          subject.repository.add_branch(user, 'another_branch', old_default_branch)
+          subject.repository.rm_branch(user, old_default_branch)
+          subject.repository.expire_status_cache
+        end
+
+        it 'returns the page in the updated default branch' do
+          wiki = described_class.new(wiki_container, user)
+          page = wiki.find_page('page in updated default branch')
+
+          expect(wiki.default_branch).to eql('another_branch')
+          expect(page.title).to eq('page in updated default branch')
+        end
+      end
+
+      context "wiki repository's HEAD is updated" do
+        before do
+          subject.create_page('page in updated HEAD', 'content')
+          subject.repository.add_branch(user, 'another_branch', subject.default_branch)
+          subject.repository.change_head('another_branch')
+          subject.repository.expire_status_cache
+        end
+
+        it 'returns the page in the new HEAD' do
+          wiki = described_class.new(wiki_container, user)
+          page = subject.find_page('page in updated HEAD')
+
+          expect(wiki.default_branch).to eql('another_branch')
+          expect(page.title).to eq('page in updated HEAD')
+        end
+      end
+
       context 'pages with different file extensions' do
         where(:extension, :path, :title) do
           [
@@ -454,6 +489,22 @@ RSpec.shared_examples 'wiki model' do
         file = subject.find_file('image.png', load_content: false)
 
         expect(file.raw_data).to be_empty
+      end
+    end
+
+    context "wiki repository's default branch is updated" do
+      before do
+        old_default_branch = wiki.default_branch
+        subject.repository.add_branch(user, 'another_branch', old_default_branch)
+        subject.repository.rm_branch(user, old_default_branch)
+        subject.repository.expire_status_cache
+      end
+
+      it 'returns the page in the updated default branch' do
+        wiki = described_class.new(wiki_container, user)
+        file = wiki.find_file('image.png')
+
+        expect(file.mime_type).to eq('image/png')
       end
     end
   end

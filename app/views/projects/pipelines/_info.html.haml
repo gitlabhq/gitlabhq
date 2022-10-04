@@ -22,6 +22,8 @@
     .well-segment.qa-pipeline-badges
       .icon-container
         = sprite_icon('flag', css_class: 'gl-top-0!')
+      - if @pipeline.schedule?
+        = gl_badge_tag _('Scheduled'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-scheduled', title: _('This pipeline was triggered by a schedule.') }
       - if @pipeline.child?
         - text = sprintf(s_('Pipelines|Child pipeline (%{link_start}parent%{link_end})'), { link_start: "<a href='#{pipeline_path(@pipeline.triggered_by_pipeline)}' class='text-underline'>", link_end: "</a>"}).html_safe
         = gl_badge_tag text, { variant: :info, size: :sm }, { class: 'js-pipeline-child has-tooltip', title: s_("Pipelines|This is a child pipeline within the parent pipeline") }

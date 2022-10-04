@@ -1,6 +1,6 @@
 - add_to_breadcrumbs _('Repository Settings'), project_settings_repository_path(@project)
 - page_title s_('BranchRules|Branch rules details')
 
-%h3= s_('BranchRules|Branch rules details')
+%h3.gl-mb-5= s_('BranchRules|Branch rules details')
 
-#js-branch-rules{ data: { project_path: @project.full_path } }
+#js-branch-rules{ data: { project_path: @project.full_path, protected_branches_path: project_settings_repository_path(@project, anchor: 'js-protected-branches-settings') } }

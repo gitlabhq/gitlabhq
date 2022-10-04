@@ -20,6 +20,17 @@ export const branchRulesMockResponse = {
   },
 };
 
-export const propsDataMock = {
+export const appProvideMock = {
   projectPath: 'some/project/path',
+};
+
+export const branchRuleProvideMock = {
+  branchRulesPath: 'settings/repository/branch_rules',
+};
+
+export const branchRulePropsMock = {
+  name: 'main',
+  isDefault: true,
+  isProtected: true,
+  approvalDetails: ['requires approval from TEST', '2 status checks'],
 };

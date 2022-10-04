@@ -13,6 +13,7 @@ module Banzai
           Filter::ColorFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
+          Filter::WikiLinkFilter,
           Filter::AsciiDocPostProcessingFilter
         ]
       end

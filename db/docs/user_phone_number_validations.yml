@@ -1,0 +1,9 @@
+---
+table_name: user_phone_number_validations
+classes:
+- Users::PhoneNumberValidation
+feature_categories:
+- onboarding
+description: Stores whether the user has verified their phone number
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97762
+milestone: '15.5'

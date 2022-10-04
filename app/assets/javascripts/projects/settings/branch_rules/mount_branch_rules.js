@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import RuleEdit from './components/edit/index.vue';
+import View from './components/view/index.vue';
 
 export default function mountBranchRules(el) {
   if (!el) {
@@ -14,13 +14,17 @@ export default function mountBranchRules(el) {
     defaultClient: createDefaultClient(),
   });
 
-  const { projectPath } = el.dataset;
+  const { projectPath, protectedBranchesPath } = el.dataset;
 
   return new Vue({
     el,
     apolloProvider,
+    provide: {
+      projectPath,
+      protectedBranchesPath,
+    },
     render(h) {
-      return h(RuleEdit, { props: { projectPath } });
+      return h(View);
     },
   });
 }

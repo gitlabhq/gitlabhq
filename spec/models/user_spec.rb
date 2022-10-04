@@ -101,6 +101,7 @@ RSpec.describe User do
     it { is_expected.to have_one(:atlassian_identity) }
     it { is_expected.to have_one(:user_highest_role) }
     it { is_expected.to have_one(:credit_card_validation) }
+    it { is_expected.to have_one(:phone_number_validation) }
     it { is_expected.to have_one(:banned_user) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }

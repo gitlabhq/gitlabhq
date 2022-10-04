@@ -40,7 +40,7 @@ export default {
     PipelineEditorHome,
     PipelineEditorMessages,
   },
-  inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath'],
+  inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath', 'usesExternalConfig'],
   data() {
     return {
       ciConfigData: {},
@@ -397,7 +397,7 @@ export default {
   <div class="gl-mt-4 gl-relative" data-qa-selector="pipeline_editor_app">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
     <pipeline-editor-empty-state
-      v-else-if="showStartScreen"
+      v-else-if="showStartScreen || usesExternalConfig"
       @createEmptyConfigFile="setNewEmptyCiConfigFile"
       @refetchContent="refetchContent"
     />
