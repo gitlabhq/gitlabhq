@@ -52,9 +52,10 @@
 # ------------------------------------------
 # Test
 # ------------------------------------------
-.rules:test:quarantine:
+.rules:test:manual:
   rules:
     - when: manual
+      allow_failure: true
       variables:
         QA_TESTS: ""
 
@@ -86,7 +87,10 @@
   rules:
     - *qa-framework-changes
     - <<: *specific-specs
-      when: never
+      when: manual
+      allow_failure: true
+      variables:
+        QA_TESTS: ""
     - *feature-flags-set-manual
 
 # general qa job rule for jobs without the need to run in parallel

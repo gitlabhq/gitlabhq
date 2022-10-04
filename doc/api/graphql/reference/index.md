@@ -20664,7 +20664,8 @@ Iteration sort values.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="iterationsortcadence_and_due_date_asc"></a>`CADENCE_AND_DUE_DATE_ASC` | Sort by cadence id and due date in ascending order. |
+| <a id="iterationsortcadence_and_due_date_asc"></a>`CADENCE_AND_DUE_DATE_ASC` | Sort by cadence id in ascending and due date in ascending order. |
+| <a id="iterationsortcadence_and_due_date_desc"></a>`CADENCE_AND_DUE_DATE_DESC` | Sort by cadence id in ascending and due date in descending order. |
 
 ### `IterationState`
 

@@ -164,11 +164,10 @@ cache-gems:
 _ee:quarantine:
   extends:
     - .qa
-    - .rules:test:quarantine
+    - .rules:test:manual
   needs:
     - trigger-omnibus
   stage: test
-  allow_failure: true
   variables:
     QA_RSPEC_TAGS: --tag quarantine
 
@@ -344,6 +343,7 @@ ee:update-minor:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
+    - !reference [.rules:test:manual, rules]
 
 ee:update-major:
   extends:
@@ -355,6 +355,7 @@ ee:update-major:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
+    - !reference [.rules:test:manual, rules]
 
 ee:gitaly-cluster:
   extends: .qa
@@ -363,6 +364,7 @@ ee:gitaly-cluster:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
+    - !reference [.rules:test:manual, rules]
 
 ee:group-saml:
   extends: .qa
@@ -371,6 +373,7 @@ ee:group-saml:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
+    - !reference [.rules:test:manual, rules]
 
 ee:instance-saml:
   extends: .qa
@@ -379,6 +382,7 @@ ee:instance-saml:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::InstanceSAML/
+    - !reference [.rules:test:manual, rules]
 
 ee:jira:
   extends: .qa
@@ -389,6 +393,7 @@ ee:jira:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Jira/
+    - !reference [.rules:test:manual, rules]
 
 ee:ldap-no-server:
   extends: .qa
@@ -397,6 +402,7 @@ ee:ldap-no-server:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
+    - !reference [.rules:test:manual, rules]
 
 ee:ldap-tls:
   extends: .qa
@@ -405,6 +411,7 @@ ee:ldap-tls:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
+    - !reference [.rules:test:manual, rules]
 
 ee:ldap-no-tls:
   extends: .qa
@@ -413,6 +420,7 @@ ee:ldap-no-tls:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
+    - !reference [.rules:test:manual, rules]
 
 ee:mtls:
   extends: .qa
@@ -421,6 +429,7 @@ ee:mtls:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::MTLS/
+    - !reference [.rules:test:manual, rules]
 
 ee:mattermost:
   extends: .qa
@@ -429,6 +438,7 @@ ee:mattermost:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mattermost/
+    - !reference [.rules:test:manual, rules]
 
 ee:registry:
   extends: .qa
@@ -437,6 +447,7 @@ ee:registry:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Registry/
+    - !reference [.rules:test:manual, rules]
 
 ee:registry-with-cdn:
   extends: .qa
@@ -453,6 +464,7 @@ ee:registry-with-cdn:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::RegistryWithCDN/
+    - !reference [.rules:test:manual, rules]
 
 ee:repository-storage:
   extends: .qa
@@ -461,6 +473,7 @@ ee:repository-storage:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
+    - !reference [.rules:test:manual, rules]
 
 ee:service-ping-disabled:
   extends: .qa
@@ -469,6 +482,7 @@ ee:service-ping-disabled:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::ServicePingDisabled/
+    - !reference [.rules:test:manual, rules]
 
 ee:smtp:
   extends: .qa
@@ -477,6 +491,7 @@ ee:smtp:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::SMTP/
+    - !reference [.rules:test:manual, rules]
 
 ee:cloud-activation:
   extends: .qa
@@ -486,6 +501,7 @@ ee:cloud-activation:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::CloudActivation/
+    - !reference [.rules:test:manual, rules]
 
 ee:large-setup:
   extends: .qa
@@ -495,6 +511,7 @@ ee:large-setup:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::LargeSetup/
+    - !reference [.rules:test:manual, rules]
 
 ee:metrics:
   extends: .qa
@@ -503,6 +520,7 @@ ee:metrics:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::Metrics/
+    - !reference [.rules:test:manual, rules]
 
 ee:elasticsearch:
   extends: .qa
@@ -514,6 +532,7 @@ ee:elasticsearch:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Elasticsearch/
+    - !reference [.rules:test:manual, rules]
 
 ee:registry-object-storage-tls:
   extends: ee:object-storage-aws

@@ -19,6 +19,12 @@
 .qa-framework-changes: &qa-framework-changes
   if: $QA_FRAMEWORK_CHANGES == "true"
 
+.qa-manual: &qa-manual
+  when: manual
+  allow_failure: true
+  variables:
+    QA_TESTS: ""
+
 .never-when-qa-framework-changes-or-no-specific-specs:
   - <<: *qa-framework-changes
     when: never
@@ -27,7 +33,10 @@
 
 .never-when-specific-specs-always-when-qa-framework-changes:
   - <<: *specific-specs
-    when: never
+    when: manual
+    allow_failure: true
+    variables:
+      QA_TESTS: ""
   - *qa-framework-changes
 
 # ------------------------------------------
@@ -52,6 +61,7 @@
         QA_TESTS: "" # unset QA_TESTS even if specific tests were inferred from stage label
     - *qa-framework-changes
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
+    - *qa-manual
 
 .rules:qa-blocking:
   rules:
@@ -81,12 +91,6 @@
 # ------------------------------------------
 # Prepare/Report
 # ------------------------------------------
-# if no rules for test execution are matched, pipeline will not have e2e test jobs
-# so we need to skip knapsack, allure and test resource deletion jobs as well
-.rules:app-or-qa-framework-changes-or-review-scenarios:
+.rules:prepare-report:
   rules:
-    - *app-changes
-    - *qa-framework-changes
-    - if: $QA_SUITES =~ /Test::Instance::Smoke/
-    - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
-    - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
+    - when: always

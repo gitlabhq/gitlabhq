@@ -43,6 +43,14 @@ dont-interrupt-me:
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
 
+gitlab_git_test:
+  extends:
+    - .minimal-job
+    - .setup:rules:gitlab_git_test
+  stage: test
+  script:
+    - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
+
 no-ee-check:
   extends:
     - .minimal-job

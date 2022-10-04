@@ -1839,6 +1839,11 @@
     - when: manual
       allow_failure: true
 
+.setup:rules:gitlab_git_test:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
 .setup:rules:no-ee-check:
   rules:
     - <<: *if-not-foss
