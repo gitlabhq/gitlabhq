@@ -9,8 +9,6 @@ import {
 import { mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
@@ -21,13 +19,11 @@ export default {
     GlIcon,
     GlBadge,
     GlLoadingIcon,
-    UserNameWithStatus,
   },
   directives: {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     author: {
       type: Object,
@@ -74,12 +70,15 @@ export default {
       required: false,
       default: false,
     },
+    isSystemNote: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       isUsernameLinkHovered: false,
-      emojiTitle: '',
-      authorStatusHasTooltip: false,
     };
   },
   computed: {
@@ -100,29 +99,12 @@ export default {
         'js-user-link': true,
       };
     },
-    authorStatus() {
-      if (this.author?.show_status) {
-        return this.author.status_tooltip_html;
-      }
-      return false;
-    },
-    emojiElement() {
-      return this.$refs?.authorStatus?.querySelector('gl-emoji');
-    },
     authorName() {
       return this.author.name;
     },
     internalNoteTooltip() {
       return s__('Notes|This internal note will always remain confidential');
     },
-  },
-  mounted() {
-    this.emojiTitle = this.emojiElement ? this.emojiElement.getAttribute('title') : '';
-
-    const authorStatusTitle = this.$refs?.authorStatus
-      ?.querySelector('.user-status-emoji')
-      ?.getAttribute('title');
-    this.authorStatusHasTooltip = authorStatusTitle && authorStatusTitle !== '';
   },
   methods: {
     ...mapActions(['setTargetNoteHash']),
@@ -134,12 +116,6 @@ export default {
         this.setTargetNoteHash(this.noteTimestampLink);
       }
     },
-    removeEmojiTitle() {
-      this.emojiElement.removeAttribute('title');
-    },
-    addEmojiTitle() {
-      this.emojiElement.setAttribute('title', this.emojiTitle);
-    },
     handleUsernameMouseEnter() {
       this.$refs.authorNameLink.dispatchEvent(new Event('mouseenter'));
       this.isUsernameLinkHovered = true;
@@ -147,9 +123,6 @@ export default {
     handleUsernameMouseLeave() {
       this.$refs.authorNameLink.dispatchEvent(new Event('mouseleave'));
       this.isUsernameLinkHovered = false;
-    },
-    userAvailability(selectedAuthor) {
-      return selectedAuthor?.availability || '';
     },
   },
   i18n: {
@@ -185,35 +158,11 @@ export default {
         :data-user-id="author.id"
         :data-username="author.username"
       >
-        <span
-          v-if="glFeatures.removeUserAttributesProjects || glFeatures.removeUserAttributesGroups"
-          class="note-header-author-name gl-font-weight-bold"
-        >
+        <span class="note-header-author-name gl-font-weight-bold">
           {{ authorName }}
         </span>
-        <user-name-with-status
-          v-else
-          :name="authorName"
-          :availability="userAvailability(author)"
-          container-classes="note-header-author-name gl-font-weight-bold"
-        />
       </a>
-      <span
-        v-if="
-          authorStatus &&
-          !glFeatures.removeUserAttributesProjects &&
-          !glFeatures.removeUserAttributesGroups
-        "
-        ref="authorStatus"
-        v-safe-html:[$options.safeHtmlConfig]="authorStatus"
-        v-on="
-          authorStatusHasTooltip ? { mouseenter: removeEmojiTitle, mouseleave: addEmojiTitle } : {}
-        "
-      ></span>
-      <span
-        v-if="!glFeatures.removeUserAttributesProjects && !glFeatures.removeUserAttributesGroups"
-        class="text-nowrap author-username"
-      >
+      <span v-if="!isSystemNote" class="text-nowrap author-username">
         <a
           ref="authorUsernameLink"
           class="author-username-link"

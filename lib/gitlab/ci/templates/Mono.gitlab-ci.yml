@@ -49,3 +49,8 @@ debug:
     - msbuild /p:Configuration="Debug" /p:Platform="Any CPU"
       /p:OutputPath="./../../build/debug/" "MyProject.sln"
     - mono packages/NUnit.ConsoleRunner.3.6.0/tools/nunit3-console.exe build/debug/MyProject.Test.dll
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

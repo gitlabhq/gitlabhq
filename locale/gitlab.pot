@@ -33083,9 +33083,6 @@ msgstr ""
 msgid "Register WebAuthn Device"
 msgstr ""
 
-msgid "Register as many runners as you want. You can register runners as separate users, on separate servers, and on your local machine. Runners are either:"
-msgstr ""
-
 msgid "Register device"
 msgstr ""
 
@@ -34609,6 +34606,9 @@ msgstr ""
 msgid "Runners|Group"
 msgstr ""
 
+msgid "Runners|How do runners pick up jobs?"
+msgstr ""
+
 msgid "Runners|How do we upgrade GitLab runner?"
 msgstr ""
 
@@ -34722,6 +34722,9 @@ msgstr ""
 msgid "Runners|Register an instance runner"
 msgstr ""
 
+msgid "Runners|Register as many runners as you want. You can register runners as separate users, on separate servers, and on your local machine."
+msgstr ""
+
 msgid "Runners|Registration token"
 msgstr ""
 
@@ -34803,6 +34806,9 @@ msgstr ""
 msgid "Runners|Runners"
 msgstr ""
 
+msgid "Runners|Runners are either:"
+msgstr ""
+
 msgid "Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."
 msgstr ""
 
@@ -34846,6 +34852,9 @@ msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
 msgid "Runners|Tags"
+msgstr ""
+
+msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure shared runners only handle the jobs they are equipped to run."
 msgstr ""
 
 msgid "Runners|Take me there!"

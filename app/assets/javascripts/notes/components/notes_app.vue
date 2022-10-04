@@ -19,10 +19,12 @@ import DiscussionFilterNote from './discussion_filter_note.vue';
 import NoteableDiscussion from './noteable_discussion.vue';
 import NoteableNote from './noteable_note.vue';
 import SidebarSubscription from './sidebar_subscription.vue';
+import NotesActivityHeader from './notes_activity_header.vue';
 
 export default {
   name: 'NotesApp',
   components: {
+    NotesActivityHeader,
     NoteableNote,
     NoteableDiscussion,
     SystemNote,
@@ -45,6 +47,15 @@ export default {
     notesData: {
       type: Object,
       required: true,
+    },
+    notesFilters: {
+      type: Array,
+      required: true,
+    },
+    notesFilterValue: {
+      type: Number,
+      default: undefined,
+      required: false,
     },
     userData: {
       type: Object,
@@ -281,6 +292,7 @@ export default {
 <template>
   <div v-show="shouldShow" id="notes">
     <sidebar-subscription :iid="noteableData.iid" :noteable-data="noteableData" />
+    <notes-activity-header :notes-filters="notesFilters" :notes-filter-value="notesFilterValue" />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <comment-form

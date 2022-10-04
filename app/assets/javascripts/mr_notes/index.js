@@ -6,7 +6,6 @@ import initDiffsApp from '../diffs';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 import MergeRequest from '../merge_request';
 import DiscussionCounter from '../notes/components/discussion_counter.vue';
-import initDiscussionFilters from '../notes/discussion_filters';
 import initNotesApp from './init_notes';
 
 export default function initMrNotes() {
@@ -49,7 +48,5 @@ export default function initMrNotes() {
         },
       });
     }
-
-    initDiscussionFilters(store);
   });
 }

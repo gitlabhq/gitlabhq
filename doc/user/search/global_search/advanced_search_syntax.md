@@ -47,5 +47,6 @@ Advanced Search searches default project branches only.
 | [`rails -filename:gemfile.lock`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=rails+-filename%3Agemfile.lock&snippets=)              | Show _rails_ in all files except the _`gemfile.lock`_ file.          |
 | [`RSpec.describe Resolvers -*builder`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=RSpec.describe+Resolvers+-*builder)                              | Show all _RSpec.describe Resolvers_ that don't start with _builder_. |
 | [<code>bug &#124; (display +banner)</code>](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+%28display+%2Bbanner%29&group_id=9970&project_id=278964)  | Show _bug_ **or** _display_ **and** _banner_.                        |
+| [<code>helper -extension:yml -extension:js</code>](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=helper+-extension%3Ayml+-extension%3Ajs&snippets=)  | Show _helper_ in all files, except for files with _`.yml`_ **or** _`.js`_ extensions.                        |
 
 <!-- markdownlint-enable -->

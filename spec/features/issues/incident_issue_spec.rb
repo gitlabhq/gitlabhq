@@ -52,8 +52,8 @@ RSpec.describe 'Incident Detail', :js do
         aggregate_failures 'when on summary tab (default tab)' do
           hidden_items = find_all('.js-issue-widgets')
 
-          # Linked Issues/MRs and comment box
-          expect(hidden_items.count).to eq(2)
+          # Linked Issues/MRs and comment box and emoji block
+          expect(hidden_items.count).to eq(3)
           expect(hidden_items).to all(be_visible)
 
           edit_button = find_all('[aria-label="Edit title and description"]')

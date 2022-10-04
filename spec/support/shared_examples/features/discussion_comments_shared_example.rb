@@ -209,7 +209,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
       wait_for_all_requests
 
       expect(page).to have_content(comment)
-      expect(page).to have_content "@#{user.username} closed"
+      expect(page).to have_content "#{user.name} closed"
 
       new_comment = all(comments_selector).last
 
@@ -334,7 +334,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
           click_button 'Start thread & close issue'
 
           expect(page).to have_content(comment)
-          expect(page).to have_content "@#{user.username} closed"
+          expect(page).to have_content "#{user.name} closed"
 
           new_discussion = all(comments_selector)[-2]
 

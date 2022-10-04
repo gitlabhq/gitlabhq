@@ -481,14 +481,14 @@ RSpec.describe 'Admin::Users' do
     end
 
     it 'lists groups' do
-      within(:css, '.gl-mb-3 + .card') do
+      within(:css, '.gl-mb-3 + .gl-card') do
         expect(page).to have_content 'Groups'
         expect(page).to have_link group.name, href: admin_group_path(group)
       end
     end
 
     it 'allows navigation to the group details' do
-      within(:css, '.gl-mb-3 + .card') do
+      within(:css, '.gl-mb-3 + .gl-card') do
         click_link group.name
       end
       expect(page).to have_content "Group: #{group.name}"
@@ -496,7 +496,7 @@ RSpec.describe 'Admin::Users' do
     end
 
     it 'shows the group access level' do
-      within(:css, '.gl-mb-3 + .card') do
+      within(:css, '.gl-mb-3 + .gl-card') do
         expect(page).to have_content 'Developer'
       end
     end

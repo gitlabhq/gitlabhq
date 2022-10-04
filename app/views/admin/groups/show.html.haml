@@ -13,90 +13,93 @@
 %hr
 .row
   .col-md-6
-    .card
-      .card-header
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
+      - c.header do
         = _('Group info:')
-      %ul.content-list
-        %li
-          .avatar-container.rect-avatar.s60
-            = group_icon(@group, class: "avatar s60")
-        %li
-          %span.light= _('Name:')
-          %strong
-            = link_to @group.name, group_path(@group)
-        %li
-          %span.light= _('Path:')
-          %strong
-            = @group.path
+      - c.body do
+        %ul.content-list.content-list-items-padding
+          %li
+            .avatar-container.rect-avatar.s60
+              = group_icon(@group, class: "avatar s60")
+          %li
+            %span.light= _('Name:')
+            %strong
+              = link_to @group.name, group_path(@group)
+          %li
+            %span.light= _('Path:')
+            %strong
+              = @group.path
 
-        %li
-          %span.light= _('Description:')
-          %strong
-            = @group.description
+          %li
+            %span.light= _('Description:')
+            %strong
+              = @group.description
 
-        %li
-          %span.light= _('Visibility level:')
-          %strong
-            = visibility_level_label(@group.visibility_level)
+          %li
+            %span.light= _('Visibility level:')
+            %strong
+              = visibility_level_label(@group.visibility_level)
 
-        %li
-          %span.light= _('Created on:')
-          %strong
-            = @group.created_at.to_s(:medium)
+          %li
+            %span.light= _('Created on:')
+            %strong
+              = @group.created_at.to_s(:medium)
 
-        %li
-          %span.light= _('ID:')
-          %strong
-            = @group.id
+          %li
+            %span.light= _('ID:')
+            %strong
+              = @group.id
 
-        = render_if_exists 'admin/namespace_plan_info', namespace: @group
+          = render_if_exists 'admin/namespace_plan_info', namespace: @group
 
-        %li
-          = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
+          %li
+            = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
 
-        %li
-          %span.light= _('Group Git LFS status:')
-          %strong
-            = group_lfs_status(@group)
-            = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
+          %li
+            %span.light= _('Group Git LFS status:')
+            %strong
+              = group_lfs_status(@group)
+              = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
 
-        = render_if_exists 'namespaces/shared_runner_status', namespace: @group
-        = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
+          = render_if_exists 'namespaces/shared_runner_status', namespace: @group
+          = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
 
     = render 'shared/custom_attributes', custom_attributes: @group.custom_attributes
 
     = render_if_exists 'ldap_group_links/ldap_group_links_show', group: @group
 
-    .card
-      .card-header
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
+      - c.header do
         = _('Projects')
         = gl_badge_tag @group.projects.count
-      %ul.content-list
-        - @projects.each do |project|
-          %li
-            %strong
-              = link_to project.full_name, [:admin, project]
-              = gl_badge_tag storage_counter(project.statistics.storage_size)
-            %span.float-right.light
-              %span.monospace= project.full_path + '.git'
-      - unless @projects.size < Kaminari.config.default_per_page
-        .card-footer
-          = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
-
-    - shared_projects = @group.shared_projects.sort_by(&:name)
-    - unless shared_projects.empty?
-      .card
-        .card-header
-          = _('Projects shared with %{group_name}') % { group_name: @group.name }
-          = gl_badge_tag shared_projects.size
-        %ul.content-list
-          - shared_projects.each do |project|
+      - c.body do
+        %ul.content-list.content-list-items-padding
+          - @projects.each do |project|
             %li
               %strong
                 = link_to project.full_name, [:admin, project]
                 = gl_badge_tag storage_counter(project.statistics.storage_size)
               %span.float-right.light
                 %span.monospace= project.full_path + '.git'
+        - unless @projects.size < Kaminari.config.default_per_page
+          - c.footer do
+            = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
+
+    - shared_projects = @group.shared_projects.sort_by(&:name)
+    - unless shared_projects.empty?
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
+        - c.header do
+          = _('Projects shared with %{group_name}') % { group_name: @group.name }
+          = gl_badge_tag shared_projects.size
+        - c.body do
+          %ul.content-list.content-list-items-padding
+            - shared_projects.each do |project|
+              %li
+                %strong
+                  = link_to project.full_name, [:admin, project]
+                  = gl_badge_tag storage_counter(project.statistics.storage_size)
+                %span.float-right.light
+                  %span.monospace= project.full_path + '.git'
 
   .col-md-6
     = render 'shared/admin/admin_note'
@@ -104,17 +107,18 @@
     - if can?(current_user, :admin_group_member, @group)
       = render 'shared/members/requests', membership_source: @group, group: @group, requesters: @requesters, force_mobile_view: true
 
-    .card
-      .card-header
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
+      - c.header do
         = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
         = gl_badge_tag @group.users_count
         = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
-      %ul.content-list.group-users-list.content-list.members-list
-        = render partial: 'shared/members/member',
-                 collection: @members, as: :member,
-                 locals: { membership_source: @group,
-                           group: @group,
-                           current_user_is_group_owner: current_user_is_group_owner }
+      - c.body do
+        %ul.content-list.group-users-list.members-list
+          = render partial: 'shared/members/member',
+                  collection: @members, as: :member,
+                  locals: { membership_source: @group,
+                            group: @group,
+                            current_user_is_group_owner: current_user_is_group_owner }
       - unless @members.size < Kaminari.config.default_per_page
-        .card-footer
+        - c.footer do
           = paginate @members, param_name: 'members_page', theme: 'gitlab'

@@ -24,17 +24,15 @@
   stage: prepare
   script:
     - !reference [.yarn-install, script]
+    - export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
+    - 'echo "CACHE_ASSETS_AS_PACKAGE: ${CACHE_ASSETS_AS_PACKAGE}"'
+    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
     - |
-      # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
       if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
-        export GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum | tee assets-hash.txt)
         source scripts/gitlab_component_helpers.sh
-        run_timed_command "download_and_extract_gitlab_assets" || true
-        run_timed_command "bin/rake gitlab:assets:compile_with_new_strategy"
-      else
-        run_timed_command "bin/rake gitlab:assets:compile"
+        gitlab_assets_archive_doesnt_exist || run_timed_command "download_and_extract_gitlab_assets"
       fi
-    - run_timed_command "scripts/clean-old-cached-assets"
+    - run_timed_command "bin/rake gitlab:assets:compile"
 
 compile-production-assets:
   extends:
@@ -80,6 +78,9 @@ update-assets-compile-production-cache:
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
+  script:
+    - !reference [compile-production-assets, script]
+    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-assets-compile-test-cache:
@@ -88,8 +89,12 @@ update-assets-compile-test-cache:
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
+  script:
+    - !reference [compile-test-assets, script]
+    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
+# TODO: Remove this as it's duplicating update-assets-compile-*-cache
 update-yarn-cache:
   extends:
     - .default-retry

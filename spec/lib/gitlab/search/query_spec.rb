@@ -64,4 +64,38 @@ RSpec.describe Gitlab::Search::Query do
       expect(subject.filters[0]).to include(name: :name, negated: false, value: "MY TEST.TXT")
     end
   end
+
+  context 'with mutliple filename filters' do
+    let(:query) { 'something filename:myfile.txt -filename:ANOTHERFILE.yml filename:somethingelse.txt' }
+    let(:subject) do
+      described_class.new(query) do
+        filter :filename
+      end
+    end
+
+    it 'creates a filter for each filename in query' do
+      expect(subject.filters.count).to eq(3)
+      expect(subject.filters[0]).to include(name: :filename, negated: false, value: 'myfile.txt')
+      expect(subject.filters[1]).to include(name: :filename, negated: true, value: 'anotherfile.yml')
+      expect(subject.filters[2]).to include(name: :filename, negated: false, value: 'somethingelse.txt')
+    end
+
+    context 'when multiple extension filters are added' do
+      let(:query) { 'something filename:myfile.txt -extension:yml -filename:ANOTHERFILE.yml extension:txt' }
+      let(:subject) do
+        described_class.new(query) do
+          filter :filename
+          filter :extension
+        end
+      end
+
+      it 'creates a filter for each filename and extension in query' do
+        expect(subject.filters.count).to eq(4)
+        expect(subject.filters[0]).to include(name: :filename, negated: false, value: 'myfile.txt')
+        expect(subject.filters[1]).to include(name: :filename, negated: true, value: 'anotherfile.yml')
+        expect(subject.filters[2]).to include(name: :extension, negated: true, value: 'yml')
+        expect(subject.filters[3]).to include(name: :extension, negated: false, value: 'txt')
+      end
+    end
+  end
 end

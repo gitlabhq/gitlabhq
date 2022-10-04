@@ -81,3 +81,8 @@ pages:
 # description page.
 #
 # [3]: https://hub.docker.com/_/julia/
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

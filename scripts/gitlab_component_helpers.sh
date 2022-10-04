@@ -39,7 +39,7 @@ export GITLAB_WORKHORSE_PACKAGE="workhorse-${GITLAB_WORKHORSE_TREE}.tar.gz"
 export GITLAB_WORKHORSE_PACKAGE_URL="${API_PACKAGES_BASE_URL}/${GITLAB_WORKHORSE_FOLDER}/${GITLAB_WORKHORSE_TREE}/${GITLAB_WORKHORSE_PACKAGE}"
 
 # Assets constants
-export GITLAB_ASSETS_PATHS_LIST="assets-hash.txt app/assets/javascripts/locale/**/app.js public/assets/ tmp/cache/assets/sprockets/ tmp/cache/babel-loader/ tmp/cache/vue-loader/"
+export GITLAB_ASSETS_PATHS_LIST="cached-assets-hash.txt app/assets/javascripts/locale/**/app.js public/assets/ tmp/cache/assets/sprockets/ tmp/cache/babel-loader/ tmp/cache/vue-loader/"
 
 export GITLAB_EDITION="ee"
 if [[ "${FOSS_ONLY:-no}" = "1" ]] || [[ "${CI_PROJECT_NAME}" = "gitlab-foss" ]]; then

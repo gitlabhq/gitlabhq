@@ -634,24 +634,6 @@ pre.light-well {
   }
 }
 
-.clearable-input {
-  position: relative;
-
-  .clear-icon {
-    display: none;
-    position: absolute;
-    right: 9px;
-    top: 9px;
-  }
-
-  &.has-value {
-    .clear-icon {
-      cursor: pointer;
-      display: block;
-    }
-  }
-}
-
 .project-path {
   .form-control {
     min-width: 100px;
@@ -808,12 +790,5 @@ pre.light-well {
     .filtered-search-dropdown {
       width: 100%;
     }
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .fork-filtered-search {
-    width: 100%;
-    margin: $gl-spacing-scale-2 0;
   }
 }

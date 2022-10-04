@@ -129,7 +129,12 @@ export default {
     <div v-safe-html:[$options.safeHtmlConfig]="iconHtml" class="timeline-icon"></div>
     <div class="timeline-content">
       <div class="note-header">
-        <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">
+        <note-header
+          :author="note.author"
+          :created-at="note.created_at"
+          :note-id="note.id"
+          :is-system-note="true"
+        >
           <span ref="gfm-content" v-safe-html="actionTextHtml"></span>
           <template
             v-if="canSeeDescriptionVersion || note.outdated_line_change_path"

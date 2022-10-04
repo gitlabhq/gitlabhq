@@ -23,20 +23,17 @@ cache-workhorse:
 .cache-assets-base:
   extends:
     - .compile-assets-base
+    - .ruby-node-cache
     - .caching:rules:cache-assets
   stage: prepare
   variables:
     WEBPACK_REPORT: "false"
   script:
     - !reference [.yarn-install, script]
-    - export GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum | tee assets-hash.txt)
+    - export GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum | tee cached-assets-hash.txt)
     - source scripts/gitlab_component_helpers.sh
     - 'gitlab_assets_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
-    # If we still use the legacy cache, we don't want to create a package from it as we don't check the sha sum in gitlab:assets:compile_with_new_strategy.
-    # This line can be removed once we stop downloading the legacy cache.
-    - rm -rf public/assets
-    - run_timed_command "bin/rake gitlab:assets:compile_with_new_strategy"
-    - run_timed_command "scripts/clean-old-cached-assets"
+    - run_timed_command "bin/rake gitlab:assets:compile"
     - run_timed_command "create_gitlab_assets_package"
     - run_timed_command "upload_gitlab_assets_package"
 

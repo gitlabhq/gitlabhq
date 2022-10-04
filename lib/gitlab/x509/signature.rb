@@ -37,7 +37,7 @@ module Gitlab
           !verified_signature ||
           user.nil?
 
-        if user.verified_emails.include?(@email) && certificate_email == @email
+        if user.verified_emails.include?(@email.downcase) && certificate_email.casecmp?(@email)
           :verified
         else
           :unverified

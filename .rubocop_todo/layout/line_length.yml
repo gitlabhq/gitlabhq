@@ -3986,7 +3986,6 @@ Layout/LineLength:
     - 'spec/features/merge_request/user_squashes_merge_request_spec.rb'
     - 'spec/features/merge_request/user_suggests_changes_on_diff_spec.rb'
     - 'spec/features/merge_request/user_toggles_whitespace_changes_spec.rb'
-    - 'spec/features/merge_request/user_views_user_status_on_merge_request_spec.rb'
     - 'spec/features/merge_requests/filters_generic_behavior_spec.rb'
     - 'spec/features/merge_requests/user_exports_as_csv_spec.rb'
     - 'spec/features/merge_requests/user_filters_by_approvals_spec.rb'

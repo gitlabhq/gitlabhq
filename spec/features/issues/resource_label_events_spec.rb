@@ -14,7 +14,6 @@ RSpec.describe 'List issue resource label events', :js do
     let!(:event)    { create(:resource_label_event, user: user, issue: issue, label: label) }
 
     before do
-      stub_feature_flags(remove_user_attributes_projects: false)
       visit project_issue_path(project, issue)
       wait_for_requests
     end
@@ -23,12 +22,6 @@ RSpec.describe 'List issue resource label events', :js do
       page.within('#notes') do
         expect(find("#note_#{note.id}")).to have_content 'some note'
         expect(find("#note_#{event.reload.discussion_id}")).to have_content 'added foo label'
-      end
-    end
-
-    it 'shows the user status on the system note for the label' do
-      page.within("#note_#{event.reload.discussion_id}") do
-        expect(page).to show_user_status user_status
       end
     end
   end

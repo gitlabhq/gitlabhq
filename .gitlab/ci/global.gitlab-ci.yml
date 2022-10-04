@@ -79,10 +79,10 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-cache: &assets-cache
-  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v3"
+  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v4"
   # This list should match GITLAB_ASSETS_PATHS_LIST from scripts/gitlab_component_helpers.sh
   paths:
-    - assets-hash.txt
+    - cached-assets-hash.txt
     - app/assets/javascripts/locale/**/app.js
     - public/assets/
     - tmp/cache/assets/sprockets/
@@ -176,7 +176,7 @@
   cache:
     - *ruby-gems-cache
 
-.danger-review-cache:
+.ruby-node-cache:
   cache:
     - *ruby-gems-cache
     - *node-modules-cache
@@ -201,6 +201,7 @@
   cache:
     - *node-modules-cache
 
+# TODO: Remove this as it's duplicating .assets-compile-cache-push
 .yarn-cache-push:
   cache:
     - *node-modules-cache-push

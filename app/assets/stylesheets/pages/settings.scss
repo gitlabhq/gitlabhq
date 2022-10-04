@@ -188,31 +188,6 @@
   }
 }
 
-.nested-settings {
-  padding-left: 20px;
-}
-
-.input-btn-group {
-  display: flex;
-
-  .input-large {
-    flex: 1;
-  }
-
-  .btn {
-    margin-left: 10px;
-  }
-}
-
-.content-list > .settings-flex-row {
-  display: flex;
-  align-items: center;
-
-  .float-right {
-    margin-left: auto;
-  }
-}
-
 .prometheus-metrics-monitoring {
   .card {
     .card-toggle {

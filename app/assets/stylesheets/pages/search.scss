@@ -268,16 +268,6 @@ input[type='checkbox']:hover {
     }
   }
 
-  .search-clear {
-    position: absolute;
-    right: 10px;
-    top: 9px;
-    padding: 0;
-    line-height: 0;
-    background: none;
-    border: 0;
-  }
-
   .search-icon {
     position: absolute;
     left: 10px;
@@ -324,15 +314,6 @@ input[type='checkbox']:hover {
       width: 180px;
       margin-top: 0;
     }
-  }
-}
-
-.search-clear {
-  color: $gray-darkest;
-
-  &:hover,
-  &:focus {
-    color: $blue-600;
   }
 }
 

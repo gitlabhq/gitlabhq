@@ -11,6 +11,11 @@ module IssuesHelper
     classes.join(' ')
   end
 
+  def show_timeline_view_toggle?(issue)
+    # Overridden in EE
+    false
+  end
+
   def issue_manual_ordering_class
     is_sorting_by_relative_position = @sort == 'relative_position'
 

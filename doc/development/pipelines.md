@@ -733,7 +733,7 @@ This works well for the following reasons:
    - `.static-analysis-cache`
    - `.rubocop-cache`
    - `.coverage-cache`
-   - `.danger-review-cache`
+   - `.ruby-node-cache`
    - `.qa-cache`
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
@@ -800,7 +800,7 @@ needed in the GitLab test suite (under `app/assets/javascripts/locale/**/app.js`
 and `tmp/cache/vue-loader/`).
 
 - If the package URL returns a 404:
-   1. It runs `bin/rake gitlab:assets:compile_with_new_strategy`, so that the GitLab assets are compiled.
+   1. It runs `bin/rake gitlab:assets:compile`, so that the GitLab assets are compiled.
    1. It then creates an archive which contains the assets and upload it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
 - Otherwise, if the package already exists, it exits the job successfully.
 
@@ -809,7 +809,7 @@ and `compile-production-assets` jobs to:
 
 1. First download the GitLab assets generic package build and uploaded by `cache-assets:*`.
 1. If the package is retrieved successfully, assets aren't compiled.
-1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab assets are compiled as part of `bin/rake gitlab:assets:compile_with_new_strategy`.
+1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab assets are compiled as part of `bin/rake gitlab:assets:compile`.
 
 NOTE:
 The version of the package is the assets folders hash sum.

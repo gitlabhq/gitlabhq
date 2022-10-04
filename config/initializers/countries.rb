@@ -4,8 +4,9 @@ ISO3166.configure do |config|
   config.locales = [:en]
 end
 
-# GitLab permits users to sign up in Ukraine except the Crimean Region: https://about.gitlab.com/handbook/people-operations/code-of-conduct/#trade-compliance-exportimport-control
-# This overrides the display name for Ukraine to Ukraine (except Crimean Region)
+# GitLab permits users to sign up in Ukraine except for the regions: Crimea, Donetsk, and Luhansk: https://about.gitlab.com/handbook/people-operations/code-of-conduct/#trade-compliance-exportimport-control
+# This overrides the display name for Ukraine to 'Ukraine (except the Crimea, Donetsk, and Luhansk regions)'
+# See: https://gitlab.com/gitlab-org/gitlab/-/issues/374946
 # To be removed after https://gitlab.com/gitlab-org/gitlab/issues/14784 is implemented
 # Data fetched is based on https://github.com/hexorx/countries/blob/master/lib/countries/data/countries/UA.yaml
 ISO3166::Data.register(
@@ -22,7 +23,7 @@ ISO3166::Data.register(
   international_prefix: '810',
   ioc: "UKR",
   gec: "UP",
-  name: "Ukraine (except Crimean Region)",
+  name: "Ukraine (except the Crimea, Donetsk, and Luhansk regions)",
   national_destination_code_lengths: [2],
   national_number_lengths: [8, 9],
   national_prefix: '8',

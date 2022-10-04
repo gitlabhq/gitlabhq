@@ -72,7 +72,7 @@ review-app-test-results:
 danger-review:
   extends:
     - .default-retry
-    - .danger-review-cache
+    - .ruby-node-cache
     - .review:rules:danger
   stage: test
   needs: []
