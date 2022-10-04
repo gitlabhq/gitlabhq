@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.4.2 (2022-10-04)
+
+### Fixed (1 change)
+
+- [Ensure that stage name and record are in sync for page deployments](gitlab-org/gitlab@ce58ec2ef959bd35ddbc6992560a163c8fc4f145) ([merge request](gitlab-org/gitlab!100037))
+
 ## 15.4.1 (2022-09-29)
 
 ### Security (15 changes)
