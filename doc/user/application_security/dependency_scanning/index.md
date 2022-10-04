@@ -896,7 +896,7 @@ include:
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
   image:
-    name: cyclonedx/cyclonedx-cli:0.22.0
+    name: cyclonedx/cyclonedx-cli:0.24.0
     entrypoint: [""]
   script:
     - find . -name "gl-sbom-*.cdx.json" -exec /cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +

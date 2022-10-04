@@ -15,8 +15,10 @@ module Gitlab
         end
       end
 
-      describe '#build_attributes' do
-        subject { described_class.new(config, user: nil).execute.build_attributes(:rspec) }
+      describe '#builds' do
+        subject(:builds) { described_class.new(config, user: nil).execute.builds }
+
+        let(:rspec_build) { builds.find { |build| build[:name] == 'rspec' } }
 
         describe 'attributes list' do
           let(:config) do
@@ -30,7 +32,7 @@ module Gitlab
           end
 
           it 'returns valid build attributes' do
-            expect(subject).to eq({
+            expect(builds).to eq([{
               stage: "test",
               stage_idx: 2,
               name: "rspec",
@@ -45,7 +47,7 @@ module Gitlab
               job_variables: [],
               root_variables_inheritance: true,
               scheduling_type: :stage
-            })
+            }])
           end
         end
 
@@ -63,7 +65,7 @@ module Gitlab
           end
 
           it 'returns valid build attributes' do
-            expect(subject).to eq({
+            expect(builds).to eq([{
               stage: 'test',
               stage_idx: 2,
               name: 'rspec',
@@ -77,7 +79,7 @@ module Gitlab
               job_variables: [],
               root_variables_inheritance: true,
               scheduling_type: :stage
-            })
+            }])
           end
         end
 
@@ -89,21 +91,22 @@ module Gitlab
             end
 
             it 'includes coverage regexp in build attributes' do
-              expect(subject)
+              expect(rspec_build)
                 .to include(coverage_regex: 'Code coverage: \d+\.\d+')
             end
           end
         end
 
         describe 'tags entry with default values' do
+          let(:config) do
+            YAML.dump(
+              default: { tags: %w[A B] },
+              rspec: { script: "rspec" }
+            )
+          end
+
           it 'applies default values' do
-            config = YAML.dump({ default: { tags: %w[A B] },
-                                 rspec: { script: "rspec" } })
-
-            config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
-
-            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-            expect(config_processor.stage_builds_attributes("test").first).to eq({
+            expect(rspec_build).to eq({
               stage: "test",
               stage_idx: 2,
               name: "rspec",
@@ -125,7 +128,7 @@ module Gitlab
               YAML.dump(rspec: { script: 'rspec', interruptible: true })
             end
 
-            it { expect(subject[:interruptible]).to be_truthy }
+            it { expect(rspec_build[:interruptible]).to be_truthy }
           end
 
           describe 'interruptible job with default value' do
@@ -133,7 +136,7 @@ module Gitlab
               YAML.dump(rspec: { script: 'rspec' })
             end
 
-            it { expect(subject).not_to have_key(:interruptible) }
+            it { expect(rspec_build).not_to have_key(:interruptible) }
           end
 
           describe 'uninterruptible job' do
@@ -141,7 +144,7 @@ module Gitlab
               YAML.dump(rspec: { script: 'rspec', interruptible: false })
             end
 
-            it { expect(subject[:interruptible]).to be_falsy }
+            it { expect(rspec_build[:interruptible]).to be_falsy }
           end
 
           it "returns interruptible when overridden for job" do
@@ -149,9 +152,10 @@ module Gitlab
                                  rspec: { script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            builds = config_processor.builds.select { |b| b[:stage] == "test" }
 
-            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-            expect(config_processor.stage_builds_attributes("test").first).to eq({
+            expect(builds.size).to eq(1)
+            expect(builds.first).to eq({
               stage: "test",
               stage_idx: 2,
               name: "rspec",
@@ -174,7 +178,7 @@ module Gitlab
             end
 
             it 'includes retry count in build options attribute' do
-              expect(subject[:options]).to include(retry: { max: 1 })
+              expect(rspec_build[:options]).to include(retry: { max: 1 })
             end
           end
 
@@ -184,7 +188,7 @@ module Gitlab
             end
 
             it 'does not persist retry count in the database' do
-              expect(subject[:options]).not_to have_key(:retry)
+              expect(rspec_build[:options]).not_to have_key(:retry)
             end
           end
 
@@ -195,7 +199,7 @@ module Gitlab
             end
 
             it 'does use the default value' do
-              expect(subject[:options]).to include(retry: { max: 1 })
+              expect(rspec_build[:options]).to include(retry: { max: 1 })
             end
           end
 
@@ -206,7 +210,7 @@ module Gitlab
             end
 
             it 'does use the job value' do
-              expect(subject[:options]).to include(retry: { max: 2 })
+              expect(rspec_build[:options]).to include(retry: { max: 2 })
             end
           end
         end
@@ -221,7 +225,7 @@ module Gitlab
               end
 
               it 'is not allowed to fail' do
-                expect(subject[:allow_failure]).to be false
+                expect(rspec_build[:allow_failure]).to be false
               end
             end
 
@@ -232,7 +236,7 @@ module Gitlab
               end
 
               it 'is allowed to fail' do
-                expect(subject[:allow_failure]).to be true
+                expect(rspec_build[:allow_failure]).to be true
               end
             end
 
@@ -244,11 +248,11 @@ module Gitlab
               end
 
               it 'is not allowed to fail' do
-                expect(subject[:allow_failure]).to be false
+                expect(rspec_build[:allow_failure]).to be false
               end
 
               it 'saves allow_failure_criteria into options' do
-                expect(subject[:options]).to match(
+                expect(rspec_build[:options]).to match(
                   a_hash_including(allow_failure_criteria: { exit_codes: [1] }))
               end
             end
@@ -262,7 +266,7 @@ module Gitlab
               end
 
               it 'is not allowed to fail' do
-                expect(subject[:allow_failure]).to be false
+                expect(rspec_build[:allow_failure]).to be false
               end
             end
 
@@ -272,7 +276,7 @@ module Gitlab
               end
 
               it 'is not allowed to fail' do
-                expect(subject[:allow_failure]).to be false
+                expect(rspec_build[:allow_failure]).to be false
               end
             end
 
@@ -283,11 +287,11 @@ module Gitlab
               end
 
               it 'is not allowed to fail' do
-                expect(subject[:allow_failure]).to be false
+                expect(rspec_build[:allow_failure]).to be false
               end
 
               it 'saves allow_failure_criteria into options' do
-                expect(subject[:options]).to match(
+                expect(rspec_build[:options]).to match(
                   a_hash_including(allow_failure_criteria: { exit_codes: [1] }))
               end
             end
@@ -305,8 +309,8 @@ module Gitlab
             end
 
             it 'has the attributes' do
-              expect(subject[:when]).to eq 'delayed'
-              expect(subject[:options][:start_in]).to eq '1 day'
+              expect(rspec_build[:when]).to eq 'delayed'
+              expect(rspec_build[:options][:start_in]).to eq '1 day'
             end
           end
         end
@@ -321,7 +325,7 @@ module Gitlab
             end
 
             it 'has the attributes' do
-              expect(subject[:resource_group_key]).to eq 'iOS'
+              expect(rspec_build[:resource_group_key]).to eq 'iOS'
             end
           end
         end
@@ -337,7 +341,7 @@ module Gitlab
           end
 
           it 'has the attributes' do
-            expect(subject[:options]).to eq(
+            expect(rspec_build[:options]).to eq(
               trigger: { project: 'namespace/project', branch: 'main' }
             )
           end
@@ -353,7 +357,7 @@ module Gitlab
             end
 
             it 'has the attributes' do
-              expect(subject[:options]).to eq(
+              expect(rspec_build[:options]).to eq(
                 trigger: { project: 'namespace/project', forward: { pipeline_variables: true } }
               )
             end
@@ -682,7 +686,7 @@ module Gitlab
         let(:config_data) { YAML.dump(config) }
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config_data).execute }
 
-        subject { config_processor.stage_builds_attributes('test').first }
+        subject(:test_build) { config_processor.builds.find { |build| build[:name] == 'test' } }
 
         describe "before_script" do
           context "in global context" do
@@ -850,9 +854,9 @@ module Gitlab
                                  rspec: { script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-            expect(config_processor.stage_builds_attributes("test").first).to eq({
+            expect(rspec_build).to eq({
               stage: "test",
               stage_idx: 2,
               name: "rspec",
@@ -884,9 +888,9 @@ module Gitlab
                                           script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-            expect(config_processor.stage_builds_attributes("test").first).to eq({
+            expect(rspec_build).to eq({
               stage: "test",
               stage_idx: 2,
               name: "rspec",
@@ -916,9 +920,9 @@ module Gitlab
                                  rspec: { script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-            expect(config_processor.stage_builds_attributes("test").first).to eq({
+            expect(rspec_build).to eq({
               stage: "test",
               stage_idx: 2,
               name: "rspec",
@@ -944,9 +948,9 @@ module Gitlab
                                  rspec: { image: "image:1.0", services: ["postgresql", "docker:dind"], script: "rspec" } })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+            rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-            expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-            expect(config_processor.stage_builds_attributes("test").first).to eq({
+            expect(rspec_build).to eq({
               stage: "test",
               stage_idx: 2,
               name: "rspec",
@@ -981,7 +985,7 @@ module Gitlab
           it { is_expected.to be_valid }
 
           it "returns with image" do
-            expect(processor.stage_builds_attributes("test")).to contain_exactly({
+            expect(processor.builds).to contain_exactly({
               stage: "test",
               stage_idx: 2,
               name: "test",
@@ -1014,7 +1018,7 @@ module Gitlab
           it { is_expected.to be_valid }
 
           it "returns with service" do
-            expect(processor.stage_builds_attributes("test")).to contain_exactly({
+            expect(processor.builds).to contain_exactly({
               stage: "test",
               stage_idx: 2,
               name: "test",
@@ -1362,7 +1366,7 @@ module Gitlab
             })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
-            builds = config_processor.stage_builds_attributes("test")
+            builds = config_processor.builds
 
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
@@ -1378,7 +1382,7 @@ module Gitlab
             end
 
             it 'creates one build and sets when:' do
-              builds = subject.stage_builds_attributes("test")
+              builds = processor.builds
 
               expect(builds.size).to eq(1)
               expect(builds.first[:when]).to eq('delayed')
@@ -1406,7 +1410,7 @@ module Gitlab
         end
 
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
-        let(:builds) { config_processor.stage_builds_attributes('test') }
+        let(:builds) { config_processor.builds }
 
         context 'when job is parallelized' do
           let(:parallel) { 5 }
@@ -1522,9 +1526,9 @@ module Gitlab
                             })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+          expect(rspec_build[:cache]).to eq(
             [
               paths: ["logs/", "binaries/"],
               untracked: true,
@@ -1546,9 +1550,9 @@ module Gitlab
             })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+          expect(rspec_build[:cache]).to eq(
             [
               paths: ["logs/", "binaries/"],
               untracked: true,
@@ -1571,9 +1575,9 @@ module Gitlab
             })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-          expect(config_processor.stage_builds_attributes('test').size).to eq(1)
-          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+          expect(rspec_build[:cache]).to eq(
             [
               {
                 paths: ['binaries/'],
@@ -1606,9 +1610,9 @@ module Gitlab
           )
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-          expect(config_processor.stage_builds_attributes('test').size).to eq(1)
-          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+          expect(rspec_build[:cache]).to eq(
             [
               paths: ['binaries/'],
               untracked: true,
@@ -1631,9 +1635,9 @@ module Gitlab
           )
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-          expect(config_processor.stage_builds_attributes('test').size).to eq(1)
-          expect(config_processor.stage_builds_attributes('test').first[:cache]).to eq(
+          expect(rspec_build[:cache]).to eq(
             [
               paths: ['logs/', 'binaries/'],
               untracked: true,
@@ -1654,9 +1658,9 @@ module Gitlab
             })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first[:cache]).to eq(
+          expect(rspec_build[:cache]).to eq(
             [
               paths: ["test/"],
               untracked: false,
@@ -1687,9 +1691,9 @@ module Gitlab
             })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
 
-          expect(config_processor.stage_builds_attributes("test").size).to eq(1)
-          expect(config_processor.stage_builds_attributes("test").first).to eq({
+          expect(rspec_build).to eq({
             stage: "test",
             stage_idx: 2,
             name: "rspec",
@@ -1724,7 +1728,7 @@ module Gitlab
                               })
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
-          builds = config_processor.stage_builds_attributes("test")
+          builds = config_processor.builds
 
           expect(builds.size).to eq(1)
           expect(builds.first[:options][:artifacts][:expire_in]).to eq('never')
@@ -1740,7 +1744,7 @@ module Gitlab
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config).execute
-            builds = config_processor.stage_builds_attributes("test")
+            builds = config_processor.builds
 
             expect(builds.size).to eq(1)
             expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
@@ -1773,7 +1777,7 @@ module Gitlab
                   - my/test/something
           YAML
 
-          attributes = Gitlab::Ci::YamlProcessor.new(config).execute.build_attributes('test')
+          attributes = Gitlab::Ci::YamlProcessor.new(config).execute.builds.find { |build| build[:name] == 'test' }
 
           expect(attributes.dig(*%i[options artifacts exclude])).to eq(%w[my/test/something])
         end
@@ -1814,7 +1818,7 @@ module Gitlab
         end
 
         it "returns release info" do
-          expect(processor.stage_builds_attributes('release').first[:options])
+          expect(processor.builds.first[:options])
             .to eq(config[:release].except(:stage, :only))
         end
       end
@@ -1828,7 +1832,7 @@ module Gitlab
 
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
-        let(:builds) { subject.stage_builds_attributes('deploy') }
+        let(:builds) { subject.builds }
 
         context 'when a production environment is specified' do
           let(:environment) { 'production' }
@@ -1938,7 +1942,7 @@ module Gitlab
 
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)).execute }
 
-        let(:builds) { subject.stage_builds_attributes('deploy') }
+        let(:builds) { subject.builds }
 
         context 'when no timeout was provided' do
           it 'does not include job_timeout' do
@@ -2365,8 +2369,8 @@ module Gitlab
           it 'returns a valid configuration and sets artifacts: true by default' do
             expect(subject).to be_valid
 
-            rspec = subject.build_attributes(:rspec)
-            expect(rspec.dig(:options, :cross_dependencies)).to eq(
+            rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
+            expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
               [{ pipeline: '$THE_PIPELINE_ID', job: 'dependency-job', artifacts: true }]
             )
           end
@@ -2386,8 +2390,8 @@ module Gitlab
             it 'returns a valid configuration and sets artifacts: true by default' do
               expect(subject).to be_valid
 
-              rspec = subject.build_attributes(:rspec)
-              expect(rspec.dig(:options, :cross_dependencies)).to eq(
+              rspec_build = subject.builds.find { |build| build[:name] == 'rspec' }
+              expect(rspec_build.dig(:options, :cross_dependencies)).to eq(
                 [{ pipeline: '123', job: 'dependency-job', artifacts: true }]
               )
             end
@@ -2417,7 +2421,7 @@ module Gitlab
       describe "Hidden jobs" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
 
-        subject { config_processor.stage_builds_attributes("test") }
+        subject { config_processor.builds }
 
         shared_examples 'hidden_job_handling' do
           it "doesn't create jobs that start with dot" do
@@ -2465,7 +2469,7 @@ module Gitlab
       describe "YAML Alias/Anchor" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config).execute }
 
-        subject { config_processor.stage_builds_attributes("build") }
+        subject { config_processor.builds }
 
         shared_examples 'job_templates_handling' do
           it "is correctly supported for jobs" do

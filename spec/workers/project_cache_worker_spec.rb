@@ -39,7 +39,7 @@ RSpec.describe ProjectCacheWorker do
     context 'with an existing project' do
       before do
         lease_key = "namespace:namespaces_root_statistics:#{project.namespace_id}"
-        stub_exclusive_lease_taken(lease_key, timeout: Namespace::AggregationSchedule::DEFAULT_LEASE_TIMEOUT)
+        stub_exclusive_lease_taken(lease_key, timeout: Namespace::AggregationSchedule.default_lease_timeout)
       end
 
       it 'refreshes the method caches' do
