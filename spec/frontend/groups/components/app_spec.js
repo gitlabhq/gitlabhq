@@ -440,6 +440,10 @@ describe('AppComponent', () => {
       expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
       expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', expect.any(Function));
       expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', expect.any(Function));
+      expect(eventHub.$on).toHaveBeenCalledWith(
+        'fetchFilteredAndSortedGroups',
+        expect.any(Function),
+      );
     });
 
     it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', async () => {
@@ -468,6 +472,46 @@ describe('AppComponent', () => {
       expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
       expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', expect.any(Function));
       expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', expect.any(Function));
+      expect(eventHub.$off).toHaveBeenCalledWith(
+        'fetchFilteredAndSortedGroups',
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe('when `fetchFilteredAndSortedGroups` event is emitted', () => {
+    const search = 'Foo bar';
+    const sort = 'created_asc';
+    const emitFetchFilteredAndSortedGroups = () => {
+      eventHub.$emit('fetchFilteredAndSortedGroups', {
+        filterGroupsBy: search,
+        sortBy: sort,
+      });
+    };
+    let setPaginationInfoSpy;
+
+    beforeEach(() => {
+      setPaginationInfoSpy = jest.spyOn(GroupsStore.prototype, 'setPaginationInfo');
+      createShallowComponent();
+    });
+
+    it('renders loading icon', async () => {
+      emitFetchFilteredAndSortedGroups();
+      await nextTick();
+
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    });
+
+    it('calls API with expected params', () => {
+      emitFetchFilteredAndSortedGroups();
+
+      expect(getGroupsSpy).toHaveBeenCalledWith(undefined, undefined, search, sort, undefined);
+    });
+
+    it('updates pagination', () => {
+      emitFetchFilteredAndSortedGroups();
+
+      expect(setPaginationInfoSpy).toHaveBeenCalled();
     });
   });
 

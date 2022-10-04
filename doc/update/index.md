@@ -392,6 +392,8 @@ The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
 Additional steps between the mentioned versions are possible. We list the minimally necessary steps only.
 
+For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/). The Upgrade Path tool is maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). Share feedback and help improve the tool by raising an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
+
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |

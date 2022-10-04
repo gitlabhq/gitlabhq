@@ -397,7 +397,6 @@ export default {
           :img-size="avatarSize"
           class="js-no-trigger user-avatar-link"
           tooltip-placement="bottom"
-          :enforce-gl-avatar="true"
         >
           <span class="js-assignee-tooltip">
             <span class="gl-font-weight-bold gl-display-block">{{ __('Assignee') }}</span>

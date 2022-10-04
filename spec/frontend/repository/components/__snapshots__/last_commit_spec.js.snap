@@ -7,7 +7,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
   <user-avatar-link-stub
     class="gl-my-2 gl-mr-4"
     imgalt=""
-    imgcssclasses="gl-mr-0!"
+    imgcssclasses=""
     imgsize="32"
     imgsrc="https://test.com"
     linkhref="/test"

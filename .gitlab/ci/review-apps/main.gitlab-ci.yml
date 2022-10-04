@@ -14,6 +14,7 @@ include:
   - local: .gitlab/ci/review-apps/rules.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
   - local: .gitlab/ci/review-apps/dast.gitlab-ci.yml
+  - local: .gitlab/ci/review-apps/dast-api.gitlab-ci.yml
 
 .base-before_script: &base-before_script
   - source ./scripts/utils.sh

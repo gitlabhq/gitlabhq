@@ -25,7 +25,6 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
   before do
     project.add_maintainer(user)
     sign_in user
-    stub_feature_flags(gl_avatar_for_all_user_avatars: false)
 
     set_cookie('sidebar_collapsed', 'true')
   end

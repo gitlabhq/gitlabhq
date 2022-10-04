@@ -177,7 +177,8 @@ module GroupsHelper
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
       archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
-      current_group_visibility: group.visibility
+      current_group_visibility: group.visibility,
+      initial_sort: project_list_sort_by
     }.merge(subgroups_and_projects_list_app_data(group))
   end
 

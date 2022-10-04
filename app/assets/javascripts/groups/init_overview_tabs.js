@@ -51,6 +51,7 @@ export const initGroupOverviewTabs = () => {
     subgroupsAndProjectsEndpoint,
     sharedProjectsEndpoint,
     archivedProjectsEndpoint,
+    initialSort,
   } = el.dataset;
 
   return new Vue({
@@ -70,6 +71,7 @@ export const initGroupOverviewTabs = () => {
         [ACTIVE_TAB_SHARED]: sharedProjectsEndpoint,
         [ACTIVE_TAB_ARCHIVED]: archivedProjectsEndpoint,
       },
+      initialSort,
     },
     render(createElement) {
       return createElement(OverviewTabs);

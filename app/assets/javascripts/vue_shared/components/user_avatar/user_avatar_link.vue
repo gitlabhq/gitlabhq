@@ -9,7 +9,7 @@
     :link-href="userProfileUrl"
     :img-src="userAvatarSrc"
     :img-alt="tooltipText"
-    :img-size="20"
+    :img-size="32"
     :tooltip-text="tooltipText"
     :tooltip-placement="top"
     :username="username"
@@ -17,17 +17,18 @@
 
 */
 
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import UserAvatarLinkNew from './user_avatar_link_new.vue';
-import UserAvatarLinkOld from './user_avatar_link_old.vue';
+import { GlAvatarLink, GlTooltipDirective } from '@gitlab/ui';
+import UserAvatarImage from './user_avatar_image.vue';
 
 export default {
-  name: 'UserAvatarLink',
+  name: 'UserAvatarLinkNew',
   components: {
-    UserAvatarLinkNew,
-    UserAvatarLinkOld,
+    UserAvatarImage,
+    GlAvatarLink,
   },
-  mixins: [glFeatureFlagMixin()],
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     lazy: {
       type: Boolean,
@@ -56,8 +57,7 @@ export default {
     },
     imgSize: {
       type: [Number, Object],
-      required: false,
-      default: 20,
+      required: true,
     },
     tooltipText: {
       type: String,
@@ -74,29 +74,43 @@ export default {
       required: false,
       default: '',
     },
-    enforceGlAvatar: {
-      type: Boolean,
-      required: false,
+  },
+  computed: {
+    shouldShowUsername() {
+      return this.username.length > 0;
+    },
+    avatarTooltipText() {
+      return this.shouldShowUsername ? '' : this.tooltipText;
     },
   },
 };
 </script>
 
 <template>
-  <user-avatar-link-new
-    v-if="glFeatures.glAvatarForAllUserAvatars || enforceGlAvatar"
-    v-bind="$props"
-  >
-    <slot></slot>
-    <template #avatar-badge>
-      <slot name="avatar-badge"></slot>
-    </template>
-  </user-avatar-link-new>
+  <gl-avatar-link :href="linkHref" class="user-avatar-link">
+    <user-avatar-image
+      :img-src="imgSrc"
+      :img-alt="imgAlt"
+      :css-classes="imgCssClasses"
+      :size="imgSize"
+      :tooltip-text="avatarTooltipText"
+      :tooltip-placement="tooltipPlacement"
+      :lazy="lazy"
+    >
+      <slot></slot>
+    </user-avatar-image>
 
-  <user-avatar-link-old v-else v-bind="$props">
-    <slot></slot>
-    <template #avatar-badge>
-      <slot name="avatar-badge"></slot>
-    </template>
-  </user-avatar-link-old>
+    <span
+      v-if="shouldShowUsername"
+      v-gl-tooltip
+      :title="tooltipText"
+      :tooltip-placement="tooltipPlacement"
+      class="gl-ml-3"
+      data-testid="user-avatar-link-username"
+    >
+      {{ username }}
+    </span>
+
+    <slot name="avatar-badge"></slot>
+  </gl-avatar-link>
 </template>

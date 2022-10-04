@@ -61,7 +61,7 @@ GET /projects
 | `repository_storage`                       | string   | **{dotted-circle}** No | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
 | `search_namespaces`                        | boolean  | **{dotted-circle}** No | Include ancestor namespaces when matching search criteria. Default is `false`. |
 | `search`                                   | string   | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                                     | string   | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
@@ -336,7 +336,7 @@ GET /users/:user_id/projects
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
@@ -591,7 +591,7 @@ GET /users/:user_id/starred_projects
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
@@ -1476,7 +1476,7 @@ GET /projects/:id/forks
 | `order_by`                    | string         | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean        | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string         | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean        | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                      | boolean        | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string         | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean        | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                  | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |

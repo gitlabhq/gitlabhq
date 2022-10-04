@@ -5,29 +5,29 @@
 
       Sample configuration:
 
-      <user-avatar-image
+      <user-avatar
         lazy
         :img-src="userAvatarSrc"
         :img-alt="tooltipText"
         :tooltip-text="tooltipText"
         tooltip-placement="top"
+        :size="24"
       />
 
     */
 
+import { GlTooltip, GlAvatar } from '@gitlab/ui';
+import { isObject } from 'lodash';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import UserAvatarImageNew from './user_avatar_image_new.vue';
-import UserAvatarImageOld from './user_avatar_image_old.vue';
+import { placeholderImage } from '~/lazy_loader';
 
 export default {
   name: 'UserAvatarImage',
   components: {
-    UserAvatarImageNew,
-    UserAvatarImageOld,
+    GlTooltip,
+    GlAvatar,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     lazy: {
       type: Boolean,
@@ -51,8 +51,7 @@ export default {
     },
     size: {
       type: [Number, Object],
-      required: false,
-      default: 20,
+      required: true,
     },
     tooltipText: {
       type: String,
@@ -64,22 +63,52 @@ export default {
       required: false,
       default: 'top',
     },
-    enforceGlAvatar: {
-      type: Boolean,
-      required: false,
+  },
+  computed: {
+    // API response sends null when gravatar is disabled and
+    // we provide an empty string when we use it inside user avatar link.
+    // In both cases we should render the defaultAvatarUrl
+    sanitizedSource() {
+      let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+      // Only adds the width to the URL if its not a base64 data image
+      if (!(baseSrc.indexOf('data:') === 0) && !baseSrc.includes('?'))
+        baseSrc += `?width=${this.maximumSize}`;
+      return baseSrc;
+    },
+    maximumSize() {
+      if (isObject(this.size)) {
+        return Math.max(...Object.values(this.size));
+      }
+
+      return this.size;
+    },
+    resultantSrcAttribute() {
+      return this.lazy ? placeholderImage : this.sanitizedSource;
     },
   },
 };
 </script>
 
 <template>
-  <user-avatar-image-new
-    v-if="glFeatures.glAvatarForAllUserAvatars || enforceGlAvatar"
-    v-bind="$props"
-  >
-    <slot></slot>
-  </user-avatar-image-new>
-  <user-avatar-image-old v-else v-bind="$props">
-    <slot></slot>
-  </user-avatar-image-old>
+  <span ref="userAvatar">
+    <gl-avatar
+      :class="{
+        lazy: lazy,
+        [cssClasses]: true,
+      }"
+      :src="resultantSrcAttribute"
+      :data-src="sanitizedSource"
+      :size="size"
+      :alt="imgAlt"
+    />
+
+    <gl-tooltip
+      v-if="tooltipText || $scopedSlots.default"
+      :target="() => $refs.userAvatar"
+      :placement="tooltipPlacement"
+      boundary="window"
+    >
+      <slot>{{ tooltipText }}</slot>
+    </gl-tooltip>
+  </span>
 </template>

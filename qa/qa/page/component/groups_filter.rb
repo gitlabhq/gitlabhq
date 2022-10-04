@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/views/shared/groups/_search_form.html.haml' do
+          base.view 'app/assets/javascripts/groups/components/overview_tabs.vue' do
             element :groups_filter_field
           end
 

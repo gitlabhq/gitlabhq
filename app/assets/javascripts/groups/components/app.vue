@@ -97,6 +97,7 @@ export default {
     eventHub.$on(`${this.action}showLeaveGroupModal`, this.showLeaveGroupModal);
     eventHub.$on(`${this.action}updatePagination`, this.updatePagination);
     eventHub.$on(`${this.action}updateGroups`, this.updateGroups);
+    eventHub.$on(`${this.action}fetchFilteredAndSortedGroups`, this.fetchFilteredAndSortedGroups);
   },
   mounted() {
     this.fetchAllGroups();
@@ -111,6 +112,7 @@ export default {
     eventHub.$off(`${this.action}showLeaveGroupModal`, this.showLeaveGroupModal);
     eventHub.$off(`${this.action}updatePagination`, this.updatePagination);
     eventHub.$off(`${this.action}updateGroups`, this.updateGroups);
+    eventHub.$off(`${this.action}fetchFilteredAndSortedGroups`, this.fetchFilteredAndSortedGroups);
   },
   methods: {
     hideModal() {
@@ -151,6 +153,18 @@ export default {
       }).then((res) => {
         this.isLoading = false;
         this.updateGroups(res, Boolean(this.filterGroupsBy));
+      });
+    },
+    fetchFilteredAndSortedGroups({ filterGroupsBy, sortBy }) {
+      this.isLoading = true;
+
+      return this.fetchGroups({
+        filterGroupsBy,
+        sortBy,
+        updatePagination: true,
+      }).then((res) => {
+        this.isLoading = false;
+        this.updateGroups(res, Boolean(filterGroupsBy));
       });
     },
     fetchPage({ page, filterGroupsBy, sortBy, archived }) {

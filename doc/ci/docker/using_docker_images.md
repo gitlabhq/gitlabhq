@@ -282,8 +282,8 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
   configuration JSON manually. Open a terminal and execute the following command:
 
   ```shell
-  # The use of "-n" - prevents encoding a newline in the password.
-  echo -n "my_username:my_password" | base64
+  # The use of printf (as opposed to echo) prevents encoding a newline in the password.
+  printf "my_username:my_password" | openssl base64 -A
 
   # Example output to copy
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=

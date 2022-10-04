@@ -62,3 +62,26 @@ export const VISIBILITY_TYPE_ICON = {
   [VISIBILITY_LEVEL_INTERNAL_STRING]: 'shield',
   [VISIBILITY_LEVEL_PRIVATE_STRING]: 'lock',
 };
+
+export const OVERVIEW_TABS_SORTING_ITEMS = [
+  {
+    label: __('Name'),
+    asc: 'name_asc',
+    desc: 'name_desc',
+  },
+  {
+    label: __('Created'),
+    asc: 'created_asc',
+    desc: 'created_desc',
+  },
+  {
+    label: __('Updated'),
+    asc: 'latest_activity_asc',
+    desc: 'latest_activity_desc',
+  },
+  {
+    label: __('Stars'),
+    asc: 'stars_asc',
+    desc: 'stars_desc',
+  },
+];

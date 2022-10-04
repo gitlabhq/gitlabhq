@@ -180,8 +180,9 @@ Prerequisites:
 To promote a project milestone:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > Milestones**. 
 1. Either:
-   - Select **Promote to Group Milestone** (**{level-up}**).
+   - Select **Promote to Group Milestone** (**{level-up}**) next to the milestone you want to promote.
    - Select the milestone title, and then select **Promote**.
 1. Select **Promote Milestone**.
 

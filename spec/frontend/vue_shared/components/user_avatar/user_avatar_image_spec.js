@@ -1,7 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlAvatar, GlTooltip } from '@gitlab/ui';
+import defaultAvatarUrl from 'images/no_avatar.png';
+import { placeholderImage } from '~/lazy_loader';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-import UserAvatarImageNew from '~/vue_shared/components/user_avatar/user_avatar_image_new.vue';
-import UserAvatarImageOld from '~/vue_shared/components/user_avatar/user_avatar_image_old.vue';
+
+jest.mock('images/no_avatar.png', () => 'default-avatar-url');
 
 const PROVIDED_PROPS = {
   size: 32,
@@ -15,37 +18,117 @@ const PROVIDED_PROPS = {
 describe('User Avatar Image Component', () => {
   let wrapper;
 
-  const createWrapper = (props = {}, { glAvatarForAllUserAvatars } = {}) => {
-    wrapper = shallowMount(UserAvatarImage, {
-      propsData: {
-        ...PROVIDED_PROPS,
-        ...props,
-      },
-      provide: {
-        glFeatures: {
-          glAvatarForAllUserAvatars,
-        },
-      },
-    });
-  };
+  const findAvatar = () => wrapper.findComponent(GlAvatar);
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe.each([
-    [false, true, true],
-    [true, false, true],
-    [true, true, true],
-    [false, false, false],
-  ])(
-    'when glAvatarForAllUserAvatars=%s and enforceGlAvatar=%s',
-    (glAvatarForAllUserAvatars, enforceGlAvatar, isUsingNewVersion) => {
-      it(`will render ${isUsingNewVersion ? 'new' : 'old'} version`, () => {
-        createWrapper({ enforceGlAvatar }, { glAvatarForAllUserAvatars });
-        expect(wrapper.findComponent(UserAvatarImageNew).exists()).toBe(isUsingNewVersion);
-        expect(wrapper.findComponent(UserAvatarImageOld).exists()).toBe(!isUsingNewVersion);
+  describe('Initialization', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: {
+          ...PROVIDED_PROPS,
+        },
       });
-    },
-  );
+    });
+
+    it('should render `GlAvatar` and provide correct properties to it', () => {
+      expect(findAvatar().attributes('data-src')).toBe(
+        `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+      );
+      expect(findAvatar().props()).toMatchObject({
+        src: `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        alt: PROVIDED_PROPS.imgAlt,
+        size: PROVIDED_PROPS.size,
+      });
+    });
+
+    it('should add correct CSS classes', () => {
+      const classes = wrapper.findComponent(GlAvatar).classes();
+      expect(classes).toContain(PROVIDED_PROPS.cssClasses);
+      expect(classes).not.toContain('lazy');
+    });
+  });
+
+  describe('Initialization when lazy', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: {
+          ...PROVIDED_PROPS,
+          lazy: true,
+        },
+      });
+    });
+
+    it('should add lazy attributes', () => {
+      expect(findAvatar().classes()).toContain('lazy');
+      expect(findAvatar().attributes()).toMatchObject({
+        src: placeholderImage,
+        'data-src': `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+      });
+    });
+
+    it('should use maximum number when size is provided as an object', () => {
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: {
+          ...PROVIDED_PROPS,
+          size: { default: 16, md: 64, lg: 24 },
+          lazy: true,
+        },
+      });
+
+      expect(findAvatar().attributes('data-src')).toBe(`${PROVIDED_PROPS.imgSrc}?width=${64}`);
+    });
+  });
+
+  describe('Initialization without src', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: {
+          ...PROVIDED_PROPS,
+          imgSrc: null,
+        },
+      });
+    });
+
+    it('should have default avatar image', () => {
+      expect(findAvatar().props('src')).toBe(`${defaultAvatarUrl}?width=${PROVIDED_PROPS.size}`);
+    });
+  });
+
+  describe('Dynamic tooltip content', () => {
+    const slots = {
+      default: ['Action!'],
+    };
+
+    describe('when `tooltipText` is provided and no default slot', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: { ...PROVIDED_PROPS },
+        });
+      });
+
+      it('renders the tooltip with `tooltipText` as content', () => {
+        expect(wrapper.findComponent(GlTooltip).text()).toBe(PROVIDED_PROPS.tooltipText);
+      });
+    });
+
+    describe('when `tooltipText` and default slot is provided', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: { ...PROVIDED_PROPS },
+          slots,
+        });
+      });
+
+      it('does not render `tooltipText` inside the tooltip', () => {
+        expect(wrapper.findComponent(GlTooltip).text()).not.toBe(PROVIDED_PROPS.tooltipText);
+      });
+
+      it('renders the content provided via default slot', () => {
+        expect(wrapper.findComponent(GlTooltip).text()).toContain(slots.default[0]);
+      });
+    });
+  });
 });

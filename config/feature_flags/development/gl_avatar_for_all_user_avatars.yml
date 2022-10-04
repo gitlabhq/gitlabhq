@@ -1,8 +1,0 @@
----
-name: gl_avatar_for_all_user_avatars
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81437
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353477
-milestone: '14.9'
-type: development
-group: group::foundations
-default_enabled: false
