@@ -51,9 +51,10 @@ module Gitlab
 
       def refresh_state(phase)
         @phase = PHASE.fetch(phase)
-        @current_rss = get_rss
-        @soft_limit_rss = get_soft_limit_rss
-        @hard_limit_rss = get_hard_limit_rss
+        @current_rss = get_rss_kb
+        @soft_limit_rss = get_soft_limit_rss_kb
+        @hard_limit_rss = get_hard_limit_rss_kb
+        @memory_total = get_memory_total_kb
 
         # track the current state as prometheus gauges
         @metrics[:sidekiq_memory_killer_phase].set({}, @phase)
@@ -178,6 +179,7 @@ module Gitlab
           current_rss: @current_rss,
           soft_limit_rss: @soft_limit_rss,
           hard_limit_rss: @hard_limit_rss,
+          memory_total_kb: @memory_total,
           reason: reason,
           running_jobs: running_jobs)
 
@@ -214,18 +216,19 @@ module Gitlab
         end
       end
 
-      def get_rss
-        output, status = Gitlab::Popen.popen(%W(ps -o rss= -p #{pid}), Rails.root.to_s)
-        return 0 unless status&.zero?
-
-        output.to_i
+      def get_memory_total_kb
+        Gitlab::Metrics::System.memory_total / 1.kilobytes
       end
 
-      def get_soft_limit_rss
+      def get_rss_kb
+        Gitlab::Metrics::System.memory_usage_rss / 1.kilobytes
+      end
+
+      def get_soft_limit_rss_kb
         SOFT_LIMIT_RSS_KB + rss_increase_by_jobs
       end
 
-      def get_hard_limit_rss
+      def get_hard_limit_rss_kb
         HARD_LIMIT_RSS_KB
       end
 

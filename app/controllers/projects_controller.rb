@@ -435,14 +435,14 @@ class ProjectsController < Projects::ApplicationController
       analytics_access_level
       security_and_compliance_access_level
       container_registry_access_level
+      releases_access_level
     ] + operations_feature_attributes
   end
 
   def operations_feature_attributes
     if Feature.enabled?(:split_operations_visibility_permissions, project)
       %i[
-        environments_access_level feature_flags_access_level releases_access_level
-        monitor_access_level
+        environments_access_level feature_flags_access_level monitor_access_level
       ]
     else
       %i[operations_access_level]

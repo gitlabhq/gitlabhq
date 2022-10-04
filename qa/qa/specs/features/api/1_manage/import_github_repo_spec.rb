@@ -54,7 +54,7 @@ module QA
       def verify_status_data
         stats = imported_project.project_import_status.dig(:stats, :imported)
         expect(stats).to include(
-          # issue: 2,
+          issue: 1,
           label: 9,
           milestone: 1,
           note: 3,

@@ -40,11 +40,19 @@ RSpec.describe Repository do
   end
 
   describe '#branch_names_contains' do
-    subject { repository.branch_names_contains(sample_commit.id) }
+    subject { repository.branch_names_contains(sample_commit.id, **opts) }
+
+    let(:opts) { {} }
 
     it { is_expected.to include('master') }
     it { is_expected.not_to include('feature') }
     it { is_expected.not_to include('fix') }
+
+    context 'when limit is provided' do
+      let(:opts) { { limit: 1 } }
+
+      it { is_expected.to match_array(["'test'"]) }
+    end
 
     describe 'when storage is broken', :broken_storage do
       it 'raises a storage error' do
@@ -56,10 +64,18 @@ RSpec.describe Repository do
   end
 
   describe '#tag_names_contains' do
-    subject { repository.tag_names_contains(sample_commit.id) }
+    subject { repository.tag_names_contains(sample_commit.id, **opts) }
+
+    let(:opts) { {} }
 
     it { is_expected.to include('v1.1.0') }
     it { is_expected.not_to include('v1.0.0') }
+
+    context 'when limit is provided' do
+      let(:opts) { { limit: 1 } }
+
+      it { is_expected.to match_array(['v1.1.0']) }
+    end
   end
 
   describe '#tags_sorted_by' do

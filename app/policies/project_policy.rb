@@ -399,7 +399,7 @@ class ProjectPolicy < BasePolicy
     prevent(:admin_feature_flags_client)
   end
 
-  rule { split_operations_visibility_permissions & releases_disabled }.policy do
+  rule { releases_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:release))
   end
 

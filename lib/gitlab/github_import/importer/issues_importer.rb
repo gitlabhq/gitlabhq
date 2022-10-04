@@ -40,6 +40,10 @@ module Gitlab
           { state: 'all', sort: 'created', direction: 'asc' }
         end
 
+        def increment_object_counter?(object)
+          object[:pull_request].nil?
+        end
+
         private
 
         def additional_object_data

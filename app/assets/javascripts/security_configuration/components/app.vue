@@ -21,7 +21,9 @@ export const i18n = {
   ),
   description: s__(
     `SecurityConfiguration|Once you've enabled a scan for the default branch,
-     any subsequent feature branch you create will include the scan.`,
+     any subsequent feature branch you create will include the scan. An enabled
+     scanner will not be reflected as such until the pipeline has been
+     successfully executed and it has generated valid artifacts.`,
   ),
   securityConfiguration: __('Security Configuration'),
   vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),

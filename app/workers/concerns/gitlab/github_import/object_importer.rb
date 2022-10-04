@@ -37,7 +37,9 @@ module Gitlab
 
         importer_class.new(object, project, client).execute
 
-        Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
+        if increment_object_counter?(object)
+          Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
+        end
 
         info(project.id, message: 'importer finished')
       rescue NoMethodError => e
@@ -47,6 +49,10 @@ module Gitlab
         track_and_raise_exception(project, e, fail_import: true)
       rescue StandardError => e
         track_and_raise_exception(project, e)
+      end
+
+      def increment_object_counter?(_object)
+        true
       end
 
       def object_type

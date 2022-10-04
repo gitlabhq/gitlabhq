@@ -1,0 +1,47 @@
+{
+  "files": [
+    "/usr/bin/hello.sh"
+  ],
+  "changelogs": [
+    {
+      "changelogtext": "First build",
+      "changelogtime": 1662552000
+    }
+  ],
+  "requirements": [
+    {
+      "requirename": "bash",
+      "requireversion": "",
+      "requireflags": 0
+    },
+    {
+      "requirename": "rpmlib(CompressedFileNames)",
+      "requireversion": "3.0.4-1",
+      "requireflags": 16777226
+    }
+  ],
+  "provides": [
+    {
+      "providename": "hello",
+      "provideflags": 8,
+      "provideversion": "0.0.1-1.fc29"
+    },
+    {
+      "providename": "hello(x86-64)",
+      "provideflags": 8,
+      "provideversion": "0.0.1-1.fc29"
+    }
+  ],
+  "name": "hello",
+  "version": "0.0.1",
+  "release": "1.fc29",
+  "summary": "Simple RPM package",
+  "description": "Fake rpm package",
+  "arch": "x86_64",
+  "license": "MIT",
+  "sourcerpm": "hello-0.0.1-1.fc29.src.rpm",
+  "group": "Unspecified",
+  "buildhost": "localhost",
+  "packager": null,
+  "vendor": null
+}

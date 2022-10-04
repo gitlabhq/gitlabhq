@@ -47,7 +47,7 @@ module BulkImports
       return skip_tracker if pipeline_tracker.entity.failed?
 
       raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?
-      raise(Pipeline::FailedError, export_status.error) if export_failed?
+      raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
 
       return re_enqueue if export_empty? || export_started?
 

@@ -376,7 +376,7 @@ RSpec.describe BulkImports::PipelineWorker do
               hash_including(
                 'pipeline_name' => 'NdjsonPipeline',
                 'entity_id' => entity.id,
-                'message' => 'Error!'
+                'message' => 'Export from source instance failed: Error!'
               )
             )
         end

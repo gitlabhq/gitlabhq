@@ -92,7 +92,8 @@ Use the toggles to enable or disable features in the project.
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
 | **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
-| **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md). |
+| **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md).                                                                                                                                                                    |
+| **Releases**                     | ✓                         | Control access to [Releases](../releases/index.md).                                                                                                                                                                                      |
 
 When you disable a feature, the following additional features are also disabled:
 

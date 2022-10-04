@@ -150,11 +150,14 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "updated_at": "2021-06-24T10:40:46.590Z",
         "failures": [
             {
-                "pipeline_class": "BulkImports::Groups::Pipelines::GroupPipeline",
-                "pipeline_step": "extractor",
+                "relation": "group",
+                "step": "extractor",
+                "exception_message": "Error!",
                 "exception_class": "Exception",
                 "correlation_id_value": "dfcf583058ed4508e4c7c617bd7f0edd",
-                "created_at": "2021-06-24T10:40:46.495Z"
+                "created_at": "2021-06-24T10:40:46.495Z",
+                "pipeline_class": "BulkImports::Groups::Pipelines::GroupPipeline",
+                "pipeline_step": "extractor"
             }
         ]
     }

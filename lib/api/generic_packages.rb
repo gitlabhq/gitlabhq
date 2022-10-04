@@ -40,6 +40,8 @@ module API
           end
 
           put 'authorize' do
+            project = authorized_user_project
+
             authorize_workhorse!(subject: project, maximum_size: project.actual_limits.generic_packages_max_file_size)
           end
 
@@ -59,6 +61,8 @@ module API
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
 
           put do
+            project = authorized_user_project
+
             authorize_upload!(project)
             bad_request!('File is too large') if max_file_size_exceeded?
 
@@ -95,6 +99,8 @@ module API
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
 
           get do
+            project = authorized_user_project(action: :read_package)
+
             authorize_read_package!(project)
 
             package = ::Packages::Generic::PackageFinder.new(project).execute!(params[:package_name], params[:package_version])
@@ -112,12 +118,8 @@ module API
       include ::API::Helpers::PackagesHelpers
       include ::API::Helpers::Packages::BasicAuthHelpers
 
-      def project
-        authorized_user_project
-      end
-
       def max_file_size_exceeded?
-        project.actual_limits.exceeded?(:generic_packages_max_file_size, params[:file].size)
+        authorized_user_project.actual_limits.exceeded?(:generic_packages_max_file_size, params[:file].size)
       end
     end
   end

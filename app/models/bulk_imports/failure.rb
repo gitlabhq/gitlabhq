@@ -10,4 +10,24 @@ class BulkImports::Failure < ApplicationRecord
     optional: false
 
   validates :entity, presence: true
+
+  def relation
+    pipeline_relation || default_relation
+  end
+
+  private
+
+  def pipeline_relation
+    klass = pipeline_class.constantize
+
+    return unless klass.ancestors.include?(BulkImports::Pipeline)
+
+    klass.relation
+  rescue NameError
+    nil
+  end
+
+  def default_relation
+    pipeline_class.demodulize.chomp('Pipeline').underscore
+  end
 end

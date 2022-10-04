@@ -1,38 +1,34 @@
-import Vue, { nextTick } from 'vue';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import PublishButton from '~/batch_comments/components/publish_button.vue';
 import { createStore } from '~/batch_comments/stores';
 
 describe('Batch comments publish button component', () => {
-  let vm;
-  let Component;
-
-  beforeAll(() => {
-    Component = Vue.extend(PublishButton);
-  });
+  let wrapper;
+  let store;
 
   beforeEach(() => {
-    const store = createStore();
+    store = createStore();
 
-    vm = mountComponentWithStore(Component, { store, props: { shouldPublish: true } });
+    wrapper = mount(PublishButton, { store, propsData: { shouldPublish: true } });
 
-    jest.spyOn(vm.$store, 'dispatch').mockImplementation();
+    jest.spyOn(store, 'dispatch').mockImplementation();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  it('dispatches publishReview on click', () => {
-    vm.$el.click();
+  it('dispatches publishReview on click', async () => {
+    await wrapper.trigger('click');
 
-    expect(vm.$store.dispatch).toHaveBeenCalledWith('batchComments/publishReview', undefined);
+    expect(store.dispatch).toHaveBeenCalledWith('batchComments/publishReview', undefined);
   });
 
   it('sets loading when isPublishing is true', async () => {
-    vm.$store.state.batchComments.isPublishing = true;
+    store.state.batchComments.isPublishing = true;
 
     await nextTick();
-    expect(vm.$el.getAttribute('disabled')).toBe('disabled');
+    expect(wrapper.attributes('disabled')).toBe('disabled');
   });
 });

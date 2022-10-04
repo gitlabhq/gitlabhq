@@ -227,7 +227,7 @@ module Ci
            yaml_variables when environment coverage_regex
            description tag_list protected needs_attributes
            job_variables_attributes resource_group scheduling_type
-           ci_stage partition_id].freeze
+           ci_stage partition_id id_tokens].freeze
       end
     end
 
@@ -1204,6 +1204,14 @@ module Ci
     end
 
     def job_jwt_variables
+      if project.ci_cd_settings.opt_in_jwt?
+        id_tokens_variables
+      else
+        legacy_jwt_variables.concat(id_tokens_variables)
+      end
+    end
+
+    def legacy_jwt_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless Feature.enabled?(:ci_job_jwt, project)
 
@@ -1212,6 +1220,20 @@ module Ci
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
         variables.append(key: 'CI_JOB_JWT_V1', value: jwt, public: false, masked: true)
         variables.append(key: 'CI_JOB_JWT_V2', value: jwt_v2, public: false, masked: true)
+      rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
+        Gitlab::ErrorTracking.track_exception(e)
+      end
+    end
+
+    def id_tokens_variables
+      return [] unless id_tokens?
+
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        id_tokens.each do |var_name, token_data|
+          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['id_token']['aud'])
+
+          variables.append(key: var_name, value: token, public: false, masked: true)
+        end
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end

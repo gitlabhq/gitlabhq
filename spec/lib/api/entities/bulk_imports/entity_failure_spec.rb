@@ -9,8 +9,8 @@ RSpec.describe API::Entities::BulkImports::EntityFailure do
 
   it 'has the correct attributes' do
     expect(subject).to include(
-      :pipeline_class,
-      :pipeline_step,
+      :relation,
+      :step,
       :exception_class,
       :exception_message,
       :correlation_id_value,

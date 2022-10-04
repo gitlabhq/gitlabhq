@@ -789,8 +789,8 @@ class Repository
     Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
-  def branch_names_contains(sha)
-    raw_repository.branch_names_contains_sha(sha)
+  def branch_names_contains(sha, limit: 0)
+    raw_repository.branch_names_contains_sha(sha, limit: limit)
   end
 
   def tag_names_contains(sha, limit: 0)

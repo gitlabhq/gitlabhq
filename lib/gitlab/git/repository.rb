@@ -1027,8 +1027,8 @@ module Gitlab
         @praefect_info_client ||= Gitlab::GitalyClient::PraefectInfoService.new(self)
       end
 
-      def branch_names_contains_sha(sha)
-        gitaly_ref_client.branch_names_contains_sha(sha)
+      def branch_names_contains_sha(sha, limit: 0)
+        gitaly_ref_client.branch_names_contains_sha(sha, limit: limit)
       end
 
       def tag_names_contains_sha(sha, limit: 0)

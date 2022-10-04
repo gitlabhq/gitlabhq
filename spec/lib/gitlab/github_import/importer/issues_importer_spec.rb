@@ -109,4 +109,24 @@ RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter do
         .to eq(42)
     end
   end
+
+  describe '#increment_object_counter?' do
+    let(:importer) { described_class.new(project, client) }
+
+    context 'when issue is a pull request' do
+      let(:github_issue) { { pull_request: { url: 'some_url' } } }
+
+      it 'returns false' do
+        expect(importer).not_to be_increment_object_counter(github_issue)
+      end
+    end
+
+    context 'when issue is a regular issue' do
+      let(:github_issue) { {} }
+
+      it 'returns true' do
+        expect(importer).to be_increment_object_counter(github_issue)
+      end
+    end
+  end
 end

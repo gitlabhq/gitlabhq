@@ -310,6 +310,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
   describe '#each_object_to_import' do
     let(:importer) { importer_class.new(project, client) }
     let(:object) { {} }
+    let(:object_counter_class) { Gitlab::GithubImport::ObjectCounter }
 
     before do
       expect(importer)
@@ -334,6 +335,9 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         .to receive(:already_imported?)
         .with(object)
         .and_return(false)
+
+      expect(object_counter_class)
+        .to receive(:increment)
 
       expect(importer)
         .to receive(:mark_as_imported)
@@ -364,6 +368,9 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         .to receive(:already_imported?)
         .with(object)
         .and_return(false)
+
+      expect(object_counter_class)
+        .to receive(:increment)
 
       expect(importer)
         .to receive(:mark_as_imported)
@@ -407,6 +414,9 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         .to receive(:already_imported?)
         .with(object)
         .and_return(true)
+
+      expect(object_counter_class)
+        .not_to receive(:increment)
 
       expect(importer)
         .not_to receive(:mark_as_imported)
@@ -462,6 +472,15 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
         .and_call_original
 
       importer.mark_as_imported(object)
+    end
+  end
+
+  describe '#increment_object_counter?' do
+    let(:github_issue) { {} }
+    let(:importer) { importer_class.new(project, client) }
+
+    it 'returns true' do
+      expect(importer).to be_increment_object_counter(github_issue)
     end
   end
 end

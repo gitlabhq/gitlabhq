@@ -183,7 +183,11 @@ module BulkImports
       end
 
       def relation
-        class_attributes[:relation_name]
+        class_attributes[:relation_name] || default_relation
+      end
+
+      def default_relation
+        self.name.demodulize.chomp('Pipeline').underscore
       end
 
       private

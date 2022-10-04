@@ -602,6 +602,21 @@ RSpec.describe API::GenericPackages do
       end
     end
 
+    context 'with access to package registry for everyone' do
+      let_it_be(:user_role) { :anonymous }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it 'responds with success' do
+        download_file(auth_header)
+
+        expect(response).to have_gitlab_http_status(:success)
+      end
+    end
+
     context 'with package status' do
       where(:package_status, :expected_status) do
         :default      | :success

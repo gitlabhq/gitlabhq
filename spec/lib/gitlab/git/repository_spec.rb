@@ -483,6 +483,12 @@ RSpec.describe Gitlab::Git::Repository do
     it 'displays that branch' do
       expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
     end
+
+    context 'when limit is provided' do
+      it 'displays limited number of branches' do
+        expect(repository.branch_names_contains_sha(head_id, limit: 1)).to match_array(['2-mb-file'])
+      end
+    end
   end
 
   describe "#refs_hash" do

@@ -195,4 +195,12 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
       end
     end
   end
+
+  describe '#increment_object_counter?' do
+    let(:issue) { double(:issue, pull_request?: true) }
+
+    it 'returns true' do
+      expect(worker).to be_increment_object_counter(issue)
+    end
+  end
 end

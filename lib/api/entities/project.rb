@@ -80,6 +80,7 @@ module API
       expose(:analytics_access_level) { |project, options| project_feature_string_access_level(project, :analytics) }
       expose(:container_registry_access_level) { |project, options| project_feature_string_access_level(project, :container_registry) }
       expose(:security_and_compliance_access_level) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
+      expose(:releases_access_level) { |project, options| project_feature_string_access_level(project, :releases) }
 
       expose :emails_disabled
       expose :shared_runners_enabled

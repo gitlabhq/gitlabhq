@@ -20,16 +20,17 @@ RSpec.describe BulkImports::Pipeline do
       loader BulkImports::Loader, foo: :bar
     end
 
-    stub_const('BulkImports::MyPipeline', klass)
+    stub_const('BulkImports::TestWikiPipeline', klass)
   end
 
   describe 'pipeline attributes' do
     describe 'getters' do
       it 'retrieves class attributes' do
-        expect(BulkImports::MyPipeline.get_extractor).to eq({ klass: BulkImports::Extractor, options: { foo: :bar } })
-        expect(BulkImports::MyPipeline.transformers).to contain_exactly({ klass: BulkImports::Transformer, options: { foo: :bar } })
-        expect(BulkImports::MyPipeline.get_loader).to eq({ klass: BulkImports::Loader, options: { foo: :bar } })
-        expect(BulkImports::MyPipeline.abort_on_failure?).to eq(true)
+        expect(BulkImports::TestWikiPipeline.get_extractor).to eq({ klass: BulkImports::Extractor, options: { foo: :bar } })
+        expect(BulkImports::TestWikiPipeline.transformers).to contain_exactly({ klass: BulkImports::Transformer, options: { foo: :bar } })
+        expect(BulkImports::TestWikiPipeline.get_loader).to eq({ klass: BulkImports::Loader, options: { foo: :bar } })
+        expect(BulkImports::TestWikiPipeline.abort_on_failure?).to eq(true)
+        expect(BulkImports::TestWikiPipeline.relation).to eq('test_wiki')
       end
 
       context 'when extractor and loader are defined within the pipeline' do
@@ -59,23 +60,23 @@ RSpec.describe BulkImports::Pipeline do
         klass = Class.new
         options = { test: :test }
 
-        BulkImports::MyPipeline.extractor(klass, options)
-        BulkImports::MyPipeline.transformer(klass, options)
-        BulkImports::MyPipeline.loader(klass, options)
-        BulkImports::MyPipeline.abort_on_failure!
-        BulkImports::MyPipeline.file_extraction_pipeline!
+        BulkImports::TestWikiPipeline.extractor(klass, options)
+        BulkImports::TestWikiPipeline.transformer(klass, options)
+        BulkImports::TestWikiPipeline.loader(klass, options)
+        BulkImports::TestWikiPipeline.abort_on_failure!
+        BulkImports::TestWikiPipeline.file_extraction_pipeline!
 
-        expect(BulkImports::MyPipeline.get_extractor).to eq({ klass: klass, options: options })
+        expect(BulkImports::TestWikiPipeline.get_extractor).to eq({ klass: klass, options: options })
 
-        expect(BulkImports::MyPipeline.transformers)
+        expect(BulkImports::TestWikiPipeline.transformers)
           .to contain_exactly(
             { klass: BulkImports::Transformer, options: { foo: :bar } },
             { klass: klass, options: options })
 
-        expect(BulkImports::MyPipeline.get_loader).to eq({ klass: klass, options: options })
+        expect(BulkImports::TestWikiPipeline.get_loader).to eq({ klass: klass, options: options })
 
-        expect(BulkImports::MyPipeline.abort_on_failure?).to eq(true)
-        expect(BulkImports::MyPipeline.file_extraction_pipeline?).to eq(true)
+        expect(BulkImports::TestWikiPipeline.abort_on_failure?).to eq(true)
+        expect(BulkImports::TestWikiPipeline.file_extraction_pipeline?).to eq(true)
       end
     end
   end
@@ -87,7 +88,7 @@ RSpec.describe BulkImports::Pipeline do
         expect(BulkImports::Transformer).to receive(:new).with(foo: :bar)
         expect(BulkImports::Loader).to receive(:new).with(foo: :bar)
 
-        pipeline = BulkImports::MyPipeline.new(context)
+        pipeline = BulkImports::TestWikiPipeline.new(context)
 
         pipeline.send(:extractor)
         pipeline.send(:transformers)

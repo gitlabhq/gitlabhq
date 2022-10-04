@@ -130,9 +130,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     end
 
     it 'return true when everything is within limit', :aggregate_failures do
-      expect(memory_killer).to receive(:get_rss).and_return(100)
-      expect(memory_killer).to receive(:get_soft_limit_rss).and_return(200)
-      expect(memory_killer).to receive(:get_hard_limit_rss).and_return(300)
+      expect(memory_killer).to receive(:get_rss_kb).and_return(100)
+      expect(memory_killer).to receive(:get_soft_limit_rss_kb).and_return(200)
+      expect(memory_killer).to receive(:get_hard_limit_rss_kb).and_return(300)
+      expect(memory_killer).to receive(:get_memory_total_kb).and_return(3072)
 
       expect(memory_killer).to receive(:refresh_state)
         .with(:running)
@@ -145,9 +146,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     end
 
     it 'return false when rss exceeds hard_limit_rss', :aggregate_failures do
-      expect(memory_killer).to receive(:get_rss).at_least(:once).and_return(400)
-      expect(memory_killer).to receive(:get_soft_limit_rss).at_least(:once).and_return(200)
-      expect(memory_killer).to receive(:get_hard_limit_rss).at_least(:once).and_return(300)
+      expect(memory_killer).to receive(:get_rss_kb).at_least(:once).and_return(400)
+      expect(memory_killer).to receive(:get_soft_limit_rss_kb).at_least(:once).and_return(200)
+      expect(memory_killer).to receive(:get_hard_limit_rss_kb).at_least(:once).and_return(300)
+      expect(memory_killer).to receive(:get_memory_total_kb).at_least(:once).and_return(3072)
 
       expect(memory_killer).to receive(:refresh_state)
         .with(:running)
@@ -165,9 +167,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     end
 
     it 'return false when rss exceed hard_limit_rss after a while', :aggregate_failures do
-      expect(memory_killer).to receive(:get_rss).and_return(250, 400, 400)
-      expect(memory_killer).to receive(:get_soft_limit_rss).at_least(:once).and_return(200)
-      expect(memory_killer).to receive(:get_hard_limit_rss).at_least(:once).and_return(300)
+      expect(memory_killer).to receive(:get_rss_kb).and_return(250, 400, 400)
+      expect(memory_killer).to receive(:get_soft_limit_rss_kb).at_least(:once).and_return(200)
+      expect(memory_killer).to receive(:get_hard_limit_rss_kb).at_least(:once).and_return(300)
+      expect(memory_killer).to receive(:get_memory_total_kb).at_least(:once).and_return(3072)
 
       expect(memory_killer).to receive(:refresh_state)
         .with(:running)
@@ -187,9 +190,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     end
 
     it 'return true when rss below soft_limit_rss after a while within GRACE_BALLOON_SECONDS', :aggregate_failures do
-      expect(memory_killer).to receive(:get_rss).and_return(250, 100)
-      expect(memory_killer).to receive(:get_soft_limit_rss).and_return(200, 200)
-      expect(memory_killer).to receive(:get_hard_limit_rss).and_return(300, 300)
+      expect(memory_killer).to receive(:get_rss_kb).and_return(250, 100)
+      expect(memory_killer).to receive(:get_soft_limit_rss_kb).and_return(200, 200)
+      expect(memory_killer).to receive(:get_hard_limit_rss_kb).and_return(300, 300)
+      expect(memory_killer).to receive(:get_memory_total_kb).and_return(3072, 3072)
 
       expect(memory_killer).to receive(:refresh_state)
         .with(:running)
@@ -211,9 +215,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
       let(:grace_balloon_seconds) { 0 }
 
       it 'return false when rss exceed soft_limit_rss', :aggregate_failures do
-        allow(memory_killer).to receive(:get_rss).and_return(250)
-        allow(memory_killer).to receive(:get_soft_limit_rss).and_return(200)
-        allow(memory_killer).to receive(:get_hard_limit_rss).and_return(300)
+        allow(memory_killer).to receive(:get_rss_kb).and_return(250)
+        allow(memory_killer).to receive(:get_soft_limit_rss_kb).and_return(200)
+        allow(memory_killer).to receive(:get_hard_limit_rss_kb).and_return(300)
+        allow(memory_killer).to receive(:get_memory_total_kb).and_return(3072)
 
         expect(memory_killer).to receive(:refresh_state)
           .with(:running)
@@ -253,9 +258,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
         stub_const("#{described_class}::SHUTDOWN_TIMEOUT_SECONDS", shutdown_timeout_seconds)
         stub_feature_flags(sidekiq_memory_killer_read_only_mode: false)
         allow(Sidekiq).to receive(:options).and_return(timeout: 9)
-        allow(memory_killer).to receive(:get_rss).and_return(100)
-        allow(memory_killer).to receive(:get_soft_limit_rss).and_return(200)
-        allow(memory_killer).to receive(:get_hard_limit_rss).and_return(300)
+        allow(memory_killer).to receive(:get_rss_kb).and_return(100)
+        allow(memory_killer).to receive(:get_soft_limit_rss_kb).and_return(200)
+        allow(memory_killer).to receive(:get_hard_limit_rss_kb).and_return(300)
+        allow(memory_killer).to receive(:get_memory_total_kb).and_return(3072)
       end
 
       it 'send signal' do
@@ -367,6 +373,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     let(:current_rss) { 100 }
     let(:soft_limit_rss) { 200 }
     let(:hard_limit_rss) { 300 }
+    let(:memory_total) { 3072 }
     let(:jid) { 1 }
     let(:reason) { 'rss out of range reason description' }
     let(:queue) { 'default' }
@@ -385,9 +392,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     before do
       stub_const("DummyWorker", worker)
 
-      allow(memory_killer).to receive(:get_rss).and_return(*current_rss)
-      allow(memory_killer).to receive(:get_soft_limit_rss).and_return(soft_limit_rss)
-      allow(memory_killer).to receive(:get_hard_limit_rss).and_return(hard_limit_rss)
+      allow(memory_killer).to receive(:get_rss_kb).and_return(*current_rss)
+      allow(memory_killer).to receive(:get_soft_limit_rss_kb).and_return(soft_limit_rss)
+      allow(memory_killer).to receive(:get_hard_limit_rss_kb).and_return(hard_limit_rss)
+      allow(memory_killer).to receive(:get_memory_total_kb).and_return(memory_total)
 
       memory_killer.send(:refresh_state, :running)
     end
@@ -405,7 +413,8 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
           hard_limit_rss: hard_limit_rss,
           soft_limit_rss: soft_limit_rss,
           reason: reason,
-          running_jobs: running_jobs)
+          running_jobs: running_jobs,
+          memory_total_kb: memory_total)
 
       expect(metrics[:sidekiq_memory_killer_running_jobs]).to receive(:increment)
         .with({ worker_class: "DummyWorker", deadline_exceeded: true })
@@ -541,9 +550,10 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     subject { memory_killer.send(:refresh_state, :shutting_down) }
 
     it 'calls gitlab metrics gauge set methods' do
-      expect(memory_killer).to receive(:get_rss) { 1010 }
-      expect(memory_killer).to receive(:get_soft_limit_rss) { 1020 }
-      expect(memory_killer).to receive(:get_hard_limit_rss) { 1040 }
+      expect(memory_killer).to receive(:get_rss_kb) { 1010 }
+      expect(memory_killer).to receive(:get_soft_limit_rss_kb) { 1020 }
+      expect(memory_killer).to receive(:get_hard_limit_rss_kb) { 1040 }
+      expect(memory_killer).to receive(:get_memory_total_kb) { 3072 }
 
       expect(metrics[:sidekiq_memory_killer_phase]).to receive(:set)
         .with({}, described_class::PHASE[:shutting_down])

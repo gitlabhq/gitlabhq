@@ -280,6 +280,7 @@ export function renderTableRow(state, node) {
 }
 
 export function renderTable(state, node) {
+  state.flushClose();
   setIsInBlockTable(node, shouldRenderHTMLTable(node));
 
   if (isInBlockTable(node)) renderTagOpen(state, 'table');

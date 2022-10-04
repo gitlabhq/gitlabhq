@@ -2817,6 +2817,14 @@ RSpec.describe Ci::Build do
         end
       end
 
+      context 'when the opt_in_jwt project setting is true' do
+        it 'does not include the JWT variables' do
+          project.ci_cd_settings.update!(opt_in_jwt: true)
+
+          expect(subject.pluck(:key)).not_to include('CI_JOB_JWT', 'CI_JOB_JWT_V1', 'CI_JOB_JWT_V2')
+        end
+      end
+
       describe 'variables ordering' do
         context 'when variables hierarchy is stubbed' do
           let(:build_pre_var) { { key: 'build', value: 'value', public: true, masked: false } }
@@ -3526,6 +3534,49 @@ RSpec.describe Ci::Build do
       let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
 
       it { is_expected.to include(key: job_variable.key, value: job_variable.value, public: false, masked: false) }
+    end
+
+    context 'when ID tokens are defined on the build' do
+      before do
+        rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
+        stub_application_setting(ci_jwt_signing_key: rsa_key)
+        build.metadata.update!(id_tokens: {
+                                 'ID_TOKEN_1' => { id_token: { aud: 'developers' } },
+                                 'ID_TOKEN_2' => { id_token: { aud: 'maintainers' } }
+                               })
+      end
+
+      subject(:runner_vars) { build.variables.to_runner_variables }
+
+      it 'includes the ID token variables' do
+        expect(runner_vars).to include(
+          a_hash_including(key: 'ID_TOKEN_1', public: false, masked: true),
+          a_hash_including(key: 'ID_TOKEN_2', public: false, masked: true)
+        )
+
+        id_token_var_1 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_1' }
+        id_token_var_2 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_2' }
+        id_token_1 = JWT.decode(id_token_var_1[:value], nil, false).first
+        id_token_2 = JWT.decode(id_token_var_2[:value], nil, false).first
+        expect(id_token_1['aud']).to eq('developers')
+        expect(id_token_2['aud']).to eq('maintainers')
+      end
+
+      context 'when a NoSigningKeyError is raised' do
+        it 'does not include the ID token variables' do
+          allow(::Gitlab::Ci::JwtV2).to receive(:for_build).and_raise(::Gitlab::Ci::Jwt::NoSigningKeyError)
+
+          expect(runner_vars.map { |var| var[:key] }).not_to include('ID_TOKEN_1', 'ID_TOKEN_2')
+        end
+      end
+
+      context 'when a RSAError is raised' do
+        it 'does not include the ID token variables' do
+          allow(::Gitlab::Ci::JwtV2).to receive(:for_build).and_raise(::OpenSSL::PKey::RSAError)
+
+          expect(runner_vars.map { |var| var[:key] }).not_to include('ID_TOKEN_1', 'ID_TOKEN_2')
+        end
+      end
     end
   end
 
