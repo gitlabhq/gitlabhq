@@ -126,7 +126,7 @@ module Gitlab
         Gitlab::Redis::SidekiqStatus.with { |redis| yield redis }
       else
         # Keep the old behavior intact if neither feature flag is turned on
-        Sidekiq.redis { |redis| yield redis }
+        Sidekiq.redis { |redis| yield redis } # rubocop:disable Cop/SidekiqRedisCall
       end
     end
     private_class_method :with_redis

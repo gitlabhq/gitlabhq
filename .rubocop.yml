@@ -785,3 +785,21 @@ Gemspec/AvoidExecutingGit:
 Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - '{,ee/,qa/}spec/**/*_{spec,shared_examples,shared_context}.rb'
+
+Cop/SidekiqRedisCall:
+  Enabled: true
+  Exclude:
+    - '{,ee/,jh/}spec/**/*'
+    - 'lib/gitlab/database/migration_helpers.rb'
+    - 'lib/gitlab/sidekiq_migrate_jobs.rb'
+    - 'lib/gitlab/sidekiq_versioning.rb'
+
+Cop/RedisQueueUsage:
+  Enabled: true
+  Exclude:
+    - '{,ee/,jh/}spec/**/*'
+    - 'config/initializers/sidekiq.rb'
+    - 'lib/gitlab/instrumentation/redis.rb'
+    - 'lib/gitlab/redis.rb'
+    - 'lib/system_check/app/redis_version_check.rb'
+    - 'lib/gitlab/mail_room.rb'

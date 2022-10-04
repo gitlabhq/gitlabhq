@@ -143,7 +143,7 @@ We should likely position this as a push for GitLab workspaces and not talk abou
 
 What are other distinct advantages of workspaces that could be shipped?
 
-- Easier admin controls
+- Easier administrator controls
 - Better permission management
 - Instance-like UX
 

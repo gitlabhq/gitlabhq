@@ -357,7 +357,7 @@ hierarchy. Choosing a proper solution will require a thoughtful research.
 1. Build application limits API in a way that it can be easily extracted to a separate service.
 1. Build application limits definition in a way that is independent from the Rails application.
 1. Build tooling that produce consistent behavior and results across programming languages.
-1. Build the new framework in a way that we can extend to allow self-managed admins to customize limits.
+1. Build the new framework in a way that we can extend to allow self-managed administrators to customize limits.
 1. Maintain consistent features and behavior across SaaS and self-managed codebase.
 1. Be mindful about a cognitive load added by the hierarchical limits, aim to reduce it.
 

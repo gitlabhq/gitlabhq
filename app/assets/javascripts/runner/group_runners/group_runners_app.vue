@@ -10,6 +10,7 @@ import {
   fromSearchToVariables,
   isSearchFiltered,
 } from 'ee_else_ce/runner/runner_search_utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import groupRunnersQuery from 'ee_else_ce/runner/graphql/list/group_runners.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
@@ -22,6 +23,7 @@ import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
+import RunnerMembershipToggle from '../components/runner_membership_toggle.vue';
 
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
@@ -30,6 +32,7 @@ import {
   GROUP_TYPE,
   PROJECT_TYPE,
   I18N_FETCH_ERROR,
+  FILTER_CSS_CLASSES,
 } from '../constants';
 import { captureException } from '../sentry_utils';
 
@@ -43,11 +46,13 @@ export default {
     RunnerList,
     RunnerListEmptyState,
     RunnerName,
+    RunnerMembershipToggle,
     RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
   props: {
     registrationToken: {
@@ -135,6 +140,11 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
+    shouldRenderAllAvailableToggle() {
+      // Feature flag for `runners_finder_all_available`
+      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/374525
+      return this.glFeatures?.runnersFinderAllAvailable;
+    },
   },
   watch: {
     search: {
@@ -176,6 +186,7 @@ export default {
   },
   TABS_RUNNER_TYPES: [GROUP_TYPE, PROJECT_TYPE],
   GROUP_TYPE,
+  FILTER_CSS_CLASSES,
 };
 </script>
 
@@ -204,11 +215,22 @@ export default {
       />
     </div>
 
-    <runner-filtered-search-bar
-      v-model="search"
-      :tokens="searchTokens"
-      :namespace="filteredSearchNamespace"
-    />
+    <div
+      class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3"
+      :class="$options.FILTER_CSS_CLASSES"
+    >
+      <runner-filtered-search-bar
+        v-model="search"
+        :tokens="searchTokens"
+        :namespace="filteredSearchNamespace"
+        class="gl-flex-grow-1 gl-align-self-stretch"
+      />
+      <runner-membership-toggle
+        v-if="shouldRenderAllAvailableToggle"
+        v-model="search.membership"
+        class="gl-align-self-end gl-md-align-self-center"
+      />
+    </div>
 
     <runner-stats :scope="$options.GROUP_TYPE" :variables="countVariables" />
 

@@ -272,7 +272,7 @@ There are 4 users on local instance
 ### Use `mmctl` through a remote connection
 
 For remote connections or local connections where the socket cannot be used,
-create a non SSO user and give that user admin privileges. Those credentials
+create a non SSO user and give that user administrator privileges. Those credentials
 can then be used to authenticate `mmctl`:
 
 ```shell

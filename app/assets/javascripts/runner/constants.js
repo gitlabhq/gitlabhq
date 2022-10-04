@@ -11,6 +11,9 @@ export const RUNNER_DETAILS_JOBS_PAGE_SIZE = 30;
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
+export const FILTER_CSS_CLASSES =
+  'gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1 gl-border-b-1';
+
 // Type
 
 export const I18N_ALL_TYPES = s__('Runners|All');
@@ -85,6 +88,7 @@ export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
 export const I18N_VERSION_LABEL = s__('Runners|Version %{version}');
 export const I18N_LAST_CONTACT_LABEL = s__('Runners|Last contact: %{timeAgo}');
 export const I18N_CREATED_AT_LABEL = s__('Runners|Created %{timeAgo}');
+export const I18N_SHOW_ONLY_INHERITED = s__('Runners|Show only inherited');
 
 // Runner details
 
@@ -110,6 +114,7 @@ export const PARAM_KEY_PAUSED = 'paused';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';
 export const PARAM_KEY_TAG = 'tag';
 export const PARAM_KEY_SEARCH = 'search';
+export const PARAM_KEY_MEMBERSHIP = 'membership';
 
 export const PARAM_KEY_SORT = 'sort';
 export const PARAM_KEY_AFTER = 'after';
@@ -141,6 +146,13 @@ export const CONTACTED_DESC = 'CONTACTED_DESC';
 export const CONTACTED_ASC = 'CONTACTED_ASC';
 
 export const DEFAULT_SORT = CREATED_DESC;
+
+// CiRunnerMembershipFilter
+
+export const MEMBERSHIP_DESCENDANTS = 'DESCENDANTS';
+export const MEMBERSHIP_ALL_AVAILABLE = 'ALL_AVAILABLE';
+
+export const DEFAULT_MEMBERSHIP = MEMBERSHIP_DESCENDANTS;
 
 // Local storage namespaces
 

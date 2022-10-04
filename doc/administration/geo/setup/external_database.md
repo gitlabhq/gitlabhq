@@ -69,8 +69,7 @@ To set up an external database, you can either:
 
 Given you have a primary site set up on AWS EC2 that uses RDS.
 You can now just create a read-only replica in a different region and the
-replication process is managed by AWS. Make sure you've set Network ACL (Access Control List), Subnet, and
-Security Group according to your needs, so the secondary Rails node(s) can access the database.
+replication process is managed by AWS. Make sure you've set Network ACL (Access Control List), Subnet, and Security Group according to your needs, so the secondary Rails nodes can access the database.
 
 The following instructions detail how to create a read-only replica for common
 cloud providers:

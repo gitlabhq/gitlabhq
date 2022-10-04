@@ -102,21 +102,6 @@
     = render 'shared/admin/admin_note'
 
     - if can?(current_user, :admin_group_member, @group)
-      .card
-        .card-header
-          = _('Add user(s) to the group:')
-        .card-body.form-holder
-          %p.light
-            - help_link_open = '<strong><a href="%{help_url}">'.html_safe % { help_url: help_page_url("user/permissions") }
-            = html_escape(_('Read more about project permissions %{help_link_open}here%{help_link_close}')) % { help_link_open: help_link_open, help_link_close: '</a></strong>'.html_safe }
-
-          = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put do
-            %div
-              = users_select_tag(:user_id, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
-            .gl-mt-3
-              = select_tag :access_level, options_for_select(@group.access_level_roles), class: "project-access-select select2"
-            %hr
-            = button_tag _('Add users to group'), class: "gl-button btn btn-confirm"
       = render 'shared/members/requests', membership_source: @group, group: @group, requesters: @requesters, force_mobile_view: true
 
     .card

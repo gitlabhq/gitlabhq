@@ -26,7 +26,7 @@ you can use the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
 This workflow uses an agent to connect to your cluster. The agent:
 
 - Is not exposed to the internet.
-- Does not require full cluster-admin access to GitLab.
+- Does not require full [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) access to GitLab.
 
 NOTE:
 The certificate-based integration was used for popular GitLab features like

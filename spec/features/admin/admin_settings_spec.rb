@@ -7,7 +7,7 @@ RSpec.describe 'Admin updates settings' do
   include TermsHelper
   include UsageDataHelpers
 
-  let(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
   let(:dot_com?) { false }
 
   context 'application setting :admin_mode is enabled', :request_store do

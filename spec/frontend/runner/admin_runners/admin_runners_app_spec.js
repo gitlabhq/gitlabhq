@@ -45,6 +45,7 @@ import {
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
   STATUS_ONLINE,
+  DEFAULT_MEMBERSHIP,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import allRunnersQuery from 'ee_else_ce/runner/graphql/list/all_runners.query.graphql';
@@ -221,6 +222,7 @@ describe('AdminRunnersApp', () => {
     expect(mockRunnersHandler).toHaveBeenLastCalledWith({
       status: undefined,
       type: undefined,
+      membership: DEFAULT_MEMBERSHIP,
       sort: DEFAULT_SORT,
       first: RUNNER_PAGE_SIZE,
     });
@@ -290,6 +292,7 @@ describe('AdminRunnersApp', () => {
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
         runnerType: INSTANCE_TYPE,
+        membership: DEFAULT_MEMBERSHIP,
         filters: [
           { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
           { type: PARAM_KEY_PAUSED, value: { data: 'true', operator: '=' } },
@@ -303,6 +306,7 @@ describe('AdminRunnersApp', () => {
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
+        membership: DEFAULT_MEMBERSHIP,
         paused: true,
         sort: DEFAULT_SORT,
         first: RUNNER_PAGE_SIZE,
@@ -312,6 +316,7 @@ describe('AdminRunnersApp', () => {
     it('fetches count results for requested status', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledWith({
         type: INSTANCE_TYPE,
+        membership: DEFAULT_MEMBERSHIP,
         status: STATUS_ONLINE,
         paused: true,
       });
@@ -324,6 +329,7 @@ describe('AdminRunnersApp', () => {
 
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
+        membership: DEFAULT_MEMBERSHIP,
         filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
@@ -341,6 +347,7 @@ describe('AdminRunnersApp', () => {
     it('requests the runners with filters', () => {
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
+        membership: DEFAULT_MEMBERSHIP,
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });
@@ -349,6 +356,7 @@ describe('AdminRunnersApp', () => {
     it('fetches count results for requested status', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledWith({
         status: STATUS_ONLINE,
+        membership: DEFAULT_MEMBERSHIP,
       });
     });
   });
@@ -459,6 +467,7 @@ describe('AdminRunnersApp', () => {
       beforeEach(async () => {
         findRunnerFilteredSearchBar().vm.$emit('input', {
           runnerType: null,
+          membership: DEFAULT_MEMBERSHIP,
           filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
           sort: CREATED_ASC,
         });
@@ -506,6 +515,7 @@ describe('AdminRunnersApp', () => {
       await findRunnerPaginationNext().trigger('click');
 
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
+        membership: DEFAULT_MEMBERSHIP,
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
         after: pageInfo.endCursor,

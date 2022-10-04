@@ -30,7 +30,12 @@ import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
-import { ADMIN_FILTERED_SEARCH_NAMESPACE, INSTANCE_TYPE, I18N_FETCH_ERROR } from '../constants';
+import {
+  ADMIN_FILTERED_SEARCH_NAMESPACE,
+  INSTANCE_TYPE,
+  I18N_FETCH_ERROR,
+  FILTER_CSS_CLASSES,
+} from '../constants';
 import { captureException } from '../sentry_utils';
 
 export default {
@@ -167,6 +172,7 @@ export default {
   },
   filteredSearchNamespace: ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
+  FILTER_CSS_CLASSES,
 };
 </script>
 <template>
@@ -195,6 +201,7 @@ export default {
 
     <runner-filtered-search-bar
       v-model="search"
+      :class="$options.FILTER_CSS_CLASSES"
       :tokens="searchTokens"
       :namespace="$options.filteredSearchNamespace"
     />

@@ -207,31 +207,6 @@ RSpec.describe 'Admin Groups' do
   end
 
   describe 'add user into a group', :js do
-    shared_examples 'adds user into a group' do
-      it do
-        visit admin_group_path(group)
-
-        select2(user_selector, from: '#user_id', multiple: true)
-        page.within '#new_project_member' do
-          select2(Gitlab::Access::REPORTER, from: '#access_level')
-        end
-        click_button "Add users to group"
-
-        page.within ".group-users-list" do
-          expect(page).to have_content(user.name)
-          expect(page).to have_content('Reporter')
-        end
-      end
-    end
-
-    it_behaves_like 'adds user into a group' do
-      let(:user_selector) { user.id }
-    end
-
-    it_behaves_like 'adds user into a group' do
-      let(:user_selector) { user.email }
-    end
-
     context 'when membership is set to expire' do
       it 'renders relative time' do
         expire_time = Time.current + 2.days

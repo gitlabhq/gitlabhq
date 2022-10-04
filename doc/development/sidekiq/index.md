@@ -186,3 +186,9 @@ default weight, which is 1.
 
 Each Sidekiq worker must be tested using RSpec, just like any other class. These
 tests should be placed in `spec/workers`.
+
+## Interacting with Sidekiq Redis
+
+The application should minimise interaction with of any `Sidekiq.redis`. Directly interacting with `Sidekiq.redis` in generic logic should be abstracted to a [Sidekiq middleware](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/sidekiq_middleware) for re-use across teams. By decoupling application logic from Sidekiq's datastore, it allows for greater freedom when horizontally scaling the GitLab background processing setup.
+
+Some exceptions to this rule would be migration-related logic or administration operations.

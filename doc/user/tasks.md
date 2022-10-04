@@ -115,7 +115,7 @@ To change the assignee on a task:
 1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
    The task window opens.
 1. Next to **Assignees**, select **Add assignees**.
-1. From the dropdown list, select the user(s) to add as an assignee.
+1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
 
 ## Set a start and due date

@@ -19,7 +19,7 @@ actions performed across the application.
 While any events could trigger an Audit Event, not all events should. In general, events that are not good candidates for audit events are:
 
 - Not attributable to one specific user.
-- Not of specific interest to an admin or owner persona.
+- Not of specific interest to an administrator or owner persona.
 - Are tracking information for product feature adoption.
 - Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/manage/compliance/audit-events/#what-is-not-planned-right-now).
 

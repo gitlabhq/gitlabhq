@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Namespace storage limit
 
 Namespaces on GitLab SaaS have a storage limit. For more information, see our [pricing page](https://about.gitlab.com/pricing/).
-This limit is not visible on the Usage quotas page, but will be prior to [enforcement](#namespace-storage-limit-enforcement-schedule). Self-managed deployments are not affected.
+This limit is not visible on the Usage quotas page, but will be prior to the limit being [applied](#namespace-storage-limit-application-schedule). Self-managed deployments are not affected.
 
 Storage types that add to the total namespace storage are:
 
@@ -38,16 +38,14 @@ To prevent exceeding the namespace storage quota, you can:
 - [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) to learn more about your options and ask questions.
 
-### Namespace storage limit enforcement schedule
+### Namespace storage limit application schedule
 
-Storage limits for GitLab SaaS Free tier namespaces will not be enforced prior to 2022-10-19. Storage limits for GitLab SaaS Paid tier namespaces will not be enforced for prior to 2023-02-15. Enforcement will not occur until all storage types are accurately measured, including deduplication of forks for [Git](https://gitlab.com/gitlab-org/gitlab/-/issues/371671) and [LFS](https://gitlab.com/gitlab-org/gitlab/-/issues/370242).
+Information on when namespace-level storage limits will be applied is available on these FAQ pages for the [Free](https://about.gitlab.com/pricing/faq-efficient-free-tier/#storage-limits-on-gitlab-saas-free-tier) and [Paid](https://about.gitlab.com/pricing/faq-paid-storage-transfer/) tier.  
 
-Impacted users are notified by email and through in-app notifications at least 60 days prior to enforcement.
-
-### Project storage limit
+## Project storage limit
 
 Projects on GitLab SaaS have a 10GB storage limit on their Git repository and LFS storage.
-After namespace-level storage limits are enforced, the project limit is removed. A namespace has either a namespace-level storage limit or a project-level storage limit, but not both.
+After namespace-level storage limits are applied, the project limit will be removed. A namespace has either a namespace-level storage limit or a project-level storage limit, but not both.
 
 When a project's repository and LFS reaches the quota, the project is locked.
 You cannot push changes to a locked project. To monitor the size of each
@@ -102,7 +100,7 @@ Depending on your role, you can also use the following methods to manage or redu
 
 ## Excess storage usage
 
-Excess storage usage is the amount that a project's repository and LFS exceeds the free storage quota. If no
+Excess storage usage is the amount that a project's repository and LFS exceeds the [project storage limit](#project-storage-limit). If no
 purchased storage is available the project is locked. You cannot push changes to a locked project.
 To unlock a project you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer)
 for the namespace. When the purchase is completed, locked projects are automatically unlocked. The

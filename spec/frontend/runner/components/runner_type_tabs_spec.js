@@ -2,9 +2,21 @@ import { GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerCount from '~/runner/components/stat/runner_count.vue';
-import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
+import {
+  INSTANCE_TYPE,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  DEFAULT_MEMBERSHIP,
+  DEFAULT_SORT,
+} from '~/runner/constants';
 
-const mockSearch = { runnerType: null, filters: [], pagination: { page: 1 }, sort: 'CREATED_DESC' };
+const mockSearch = {
+  runnerType: null,
+  membership: DEFAULT_MEMBERSHIP,
+  filters: [],
+  pagination: { page: 1 },
+  sort: DEFAULT_SORT,
+};
 
 const mockCount = (type, multiplier = 1) => {
   let count;

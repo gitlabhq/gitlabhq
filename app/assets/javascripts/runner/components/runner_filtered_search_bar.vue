@@ -85,7 +85,6 @@ export default {
 </script>
 <template>
   <filtered-search
-    class="gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1 gl-border-b-1"
     v-bind="$attrs"
     :namespace="namespace"
     recent-searches-storage-key="runners-search"

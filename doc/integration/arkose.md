@@ -29,7 +29,7 @@ user doesn't need to take any additional action and can sign in as usual.
 ## How do we treat malicious sign-in attempts?
 
 Users are not denied access if Arkose Protect considers they are malicious. However,
-their risk score is exposed in the admin console so that we can make more informed decisions when it
+their risk score is exposed in the administrator console so that we can make more informed decisions when it
 comes to manually blocking users. When we decide to block a user, feedback is sent to ArkoseLabs to
 improve their risk prediction model.
 

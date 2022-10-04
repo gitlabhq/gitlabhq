@@ -121,7 +121,7 @@ export default class MilestoneSelect {
                   title: __('Started'),
                 });
               }
-              if (extraOptions.length) {
+              if (extraOptions.length && data.length) {
                 extraOptions.push({ type: 'divider' });
               }
 
