@@ -26,7 +26,6 @@
 {"name":"asciidoctor-plantuml","version":"0.0.16","platform":"ruby","checksum":"407e47cd1186ded5ccc75f0c812e5524c26c571d542247c5132abb8f47bd1793"},
 {"name":"ast","version":"2.4.2","platform":"ruby","checksum":"1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12"},
 {"name":"atlassian-jwt","version":"0.2.0","platform":"ruby","checksum":"52e653e9d6062d7a740c3675b0e79fa08367927c6fc17f5476d1b6b3798c6eb2"},
-{"name":"attr_encrypted","version":"3.1.0","platform":"ruby","checksum":"4f0682604714ed4599cf00771ad27e82f0b51b0ed8644af51a43d21fbe129b59"},
 {"name":"attr_required","version":"1.0.1","platform":"ruby","checksum":"024e10393bd30901e1adf6769bd756b873a5ef7da60f86f8f11066116b5742bc"},
 {"name":"autoprefixer-rails","version":"10.2.5.1","platform":"ruby","checksum":"3711d67f1112361c7628847ac192d8aa6f3b8abe47527aee8a69dc8985e798ee"},
 {"name":"awesome_print","version":"1.9.2","platform":"ruby","checksum":"e99b32b704acff16d768b3468680793ced40bfdc4537eb07e06a4be11133786e"},

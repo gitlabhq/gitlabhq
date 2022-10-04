@@ -1,103 +1,118 @@
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import { mount } from '@vue/test-utils';
+
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeListRow from '~/badges/components/badge_list_row.vue';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
-import store from '~/badges/store';
+
+import createState from '~/badges/store/state';
+import mutations from '~/badges/store/mutations';
+import actions from '~/badges/store/actions';
+
 import { createDummyBadge } from '../dummy_badge';
 
-describe('BadgeListRow component', () => {
-  const Component = Vue.extend(BadgeListRow);
-  let badge;
-  let vm;
+Vue.use(Vuex);
 
-  beforeEach(() => {
-    setHTMLFixture(`
-      <div id="delete-badge-modal" class="modal"></div>
-      <div id="dummy-element"></div>
-    `);
-    store.replaceState({
-      ...store.state,
-      kind: PROJECT_BADGE,
+describe('BadgeListRow component', () => {
+  let badge;
+  let wrapper;
+  let mockedActions;
+
+  const createComponent = (kind) => {
+    setHTMLFixture(`<div id="delete-badge-modal" class="modal"></div>`);
+
+    mockedActions = Object.fromEntries(Object.keys(actions).map((name) => [name, jest.fn()]));
+
+    const store = new Vuex.Store({
+      state: {
+        ...createState(),
+        kind: PROJECT_BADGE,
+      },
+      mutations,
+      actions: mockedActions,
     });
+
     badge = createDummyBadge();
-    vm = mountComponentWithStore(Component, {
-      el: '#dummy-element',
+    badge.kind = kind;
+    wrapper = mount(BadgeListRow, {
+      attachTo: document.body,
       store,
-      props: { badge },
+      propsData: { badge },
     });
-  });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
     resetHTMLFixture();
   });
 
-  it('renders the badge', () => {
-    const badgeElement = vm.$el.querySelector('.project-badge');
+  describe('for a project badge', () => {
+    beforeEach(() => {
+      createComponent(PROJECT_BADGE);
+    });
 
-    expect(badgeElement).not.toBeNull();
-    expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
-  });
+    it('renders the badge', () => {
+      const badgeImage = wrapper.find('.project-badge');
 
-  it('renders the badge name', () => {
-    expect(vm.$el.innerText).toMatch(badge.name);
-  });
+      expect(badgeImage.exists()).toBe(true);
+      expect(badgeImage.attributes('src')).toBe(badge.renderedImageUrl);
+    });
 
-  it('renders the badge link', () => {
-    expect(vm.$el.innerText).toMatch(badge.linkUrl);
-  });
+    it('renders the badge name', () => {
+      expect(wrapper.text()).toMatch(badge.name);
+    });
 
-  it('renders the badge kind', () => {
-    expect(vm.$el.innerText).toMatch('Project Badge');
-  });
-
-  it('shows edit and delete buttons', () => {
-    const buttons = vm.$el.querySelectorAll('.table-button-footer button');
-
-    expect(buttons).toHaveLength(2);
-    const buttonEditElement = buttons[0];
-
-    expect(buttonEditElement).toBeVisible();
-    expect(buttonEditElement).toHaveSpriteIcon('pencil');
-    const buttonDeleteElement = buttons[1];
-
-    expect(buttonDeleteElement).toBeVisible();
-    expect(buttonDeleteElement).toHaveSpriteIcon('remove');
-  });
-
-  it('calls editBadge when clicking then edit button', () => {
-    jest.spyOn(vm, 'editBadge').mockImplementation(() => {});
-
-    const editButton = vm.$el.querySelector('.table-button-footer button:first-of-type');
-    editButton.click();
-
-    expect(vm.editBadge).toHaveBeenCalled();
-  });
-
-  it('calls updateBadgeInModal and shows modal when clicking then delete button', async () => {
-    jest.spyOn(vm, 'updateBadgeInModal').mockImplementation(() => {});
-
-    const deleteButton = vm.$el.querySelector('.table-button-footer button:last-of-type');
-    deleteButton.click();
-
-    await nextTick();
-    expect(vm.updateBadgeInModal).toHaveBeenCalled();
-  });
-
-  describe('for a group badge', () => {
-    beforeEach(async () => {
-      badge.kind = GROUP_BADGE;
-
-      await nextTick();
+    it('renders the badge link', () => {
+      expect(wrapper.text()).toMatch(badge.linkUrl);
     });
 
     it('renders the badge kind', () => {
-      expect(vm.$el.innerText).toMatch('Group Badge');
+      expect(wrapper.text()).toMatch('Project Badge');
+    });
+
+    it('shows edit and delete buttons', () => {
+      const buttons = wrapper.findAll('.table-button-footer button');
+
+      expect(buttons).toHaveLength(2);
+      const editButton = buttons.at(0);
+
+      expect(editButton.isVisible()).toBe(true);
+      expect(editButton.element).toHaveSpriteIcon('pencil');
+
+      const deleteButton = buttons.at(1);
+      expect(deleteButton.isVisible()).toBe(true);
+      expect(deleteButton.element).toHaveSpriteIcon('remove');
+    });
+
+    it('calls editBadge when clicking then edit button', async () => {
+      const editButton = wrapper.find('.table-button-footer button:first-of-type');
+
+      await editButton.trigger('click');
+
+      expect(mockedActions.editBadge).toHaveBeenCalled();
+    });
+
+    it('calls updateBadgeInModal and shows modal when clicking then delete button', async () => {
+      const deleteButton = wrapper.find('.table-button-footer button:last-of-type');
+
+      await deleteButton.trigger('click');
+
+      expect(mockedActions.updateBadgeInModal).toHaveBeenCalled();
+    });
+  });
+
+  describe('for a group badge', () => {
+    beforeEach(() => {
+      createComponent(GROUP_BADGE);
+    });
+
+    it('renders the badge kind', () => {
+      expect(wrapper.text()).toMatch('Group Badge');
     });
 
     it('hides edit and delete buttons', () => {
-      const buttons = vm.$el.querySelectorAll('.table-button-footer button');
+      const buttons = wrapper.findAll('.table-button-footer button');
 
       expect(buttons).toHaveLength(0);
     });

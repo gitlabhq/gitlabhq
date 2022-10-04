@@ -10,6 +10,9 @@ end
 
 gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', require: false
 
+# NOTE: When incrementing the major or minor version here, also increment activerecord_version
+# in vendor/gems/attr_encrypted/attr_encrypted.gemspec until we resolve
+# https://gitlab.com/gitlab-org/gitlab/-/issues/375713
 gem 'rails', '~> 6.1.6.1'
 
 gem 'bootsnap', '~> 1.13.0', require: false
@@ -79,7 +82,7 @@ gem 'invisible_captcha', '~> 1.1.0'
 # Two-factor authentication
 gem 'devise-two-factor', '~> 4.0.2'
 gem 'rqrcode-rails3', '~> 0.1.7'
-gem 'attr_encrypted', '~> 3.1.0'
+gem 'attr_encrypted', '~> 3.2.4', path: 'vendor/gems/attr_encrypted'
 gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages

@@ -1095,8 +1095,7 @@ $system-note-svg-size: 1rem;
 // See https://gitlab.com/gitlab-org/gitlab-foss/issues/53918#note_117038785
 .unstyled-comments {
   .discussion-header {
-    padding: $gl-padding;
-    border-bottom: 1px solid $border-color;
+    padding: $gl-padding 0;
   }
 
   .discussion-form-container {

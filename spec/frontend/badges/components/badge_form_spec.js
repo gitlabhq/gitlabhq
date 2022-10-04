@@ -1,195 +1,183 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import { mount } from '@vue/test-utils';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'helpers/test_constants';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
 import BadgeForm from '~/badges/components/badge_form.vue';
 import createEmptyBadge from '~/badges/empty_badge';
-import store from '~/badges/store';
+
+import createState from '~/badges/store/state';
+import mutations from '~/badges/store/mutations';
+import actions from '~/badges/store/actions';
+
 import axios from '~/lib/utils/axios_utils';
 
-// avoid preview background process
-BadgeForm.methods.debouncedPreview = () => {};
+Vue.use(Vuex);
 
 describe('BadgeForm component', () => {
-  const Component = Vue.extend(BadgeForm);
   let axiosMock;
-  let vm;
+  let mockedActions;
+  let wrapper;
+
+  const createComponent = (propsData, customState = {}) => {
+    mockedActions = Object.fromEntries(Object.keys(actions).map((name) => [name, jest.fn()]));
+
+    const store = new Vuex.Store({
+      state: {
+        ...createState(),
+        ...customState,
+      },
+      mutations,
+      actions: mockedActions,
+    });
+
+    wrapper = mount(BadgeForm, {
+      store,
+      propsData,
+      attachTo: document.body,
+    });
+  };
 
   beforeEach(() => {
-    setHTMLFixture(`
-      <div id="dummy-element"></div>
-    `);
-
     axiosMock = new MockAdapter(axios);
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
     axiosMock.restore();
-    resetHTMLFixture();
   });
 
-  describe('methods', () => {
-    beforeEach(() => {
-      vm = mountComponentWithStore(Component, {
-        el: '#dummy-element',
-        store,
-        props: {
-          isEditing: false,
-        },
-      });
-    });
+  it('stops editing when cancel button is clicked', async () => {
+    createComponent({ isEditing: true });
 
-    describe('onCancel', () => {
-      it('calls stopEditing', () => {
-        jest.spyOn(vm, 'stopEditing').mockImplementation(() => {});
+    const cancelButton = wrapper.find('.row-content-block button');
 
-        vm.onCancel();
+    await cancelButton.trigger('click');
 
-        expect(vm.stopEditing).toHaveBeenCalled();
-      });
-    });
+    expect(mockedActions.stopEditing).toHaveBeenCalled();
   });
 
-  const sharedSubmitTests = (submitAction) => {
+  const sharedSubmitTests = (submitAction, props) => {
     const nameSelector = '#badge-name';
     const imageUrlSelector = '#badge-image-url';
-    const findImageUrlElement = () => vm.$el.querySelector(imageUrlSelector);
+    const findImageUrl = () => wrapper.find(imageUrlSelector);
     const linkUrlSelector = '#badge-link-url';
-    const findLinkUrlElement = () => vm.$el.querySelector(linkUrlSelector);
+    const findLinkUrl = () => wrapper.find(linkUrlSelector);
     const setValue = (inputElementSelector, value) => {
-      const inputElement = vm.$el.querySelector(inputElementSelector);
-      inputElement.value = value;
-      inputElement.dispatchEvent(new Event('input'));
+      const input = wrapper.find(inputElementSelector);
+      return input.setValue(value);
     };
     const submitForm = () => {
-      const submitButton = vm.$el.querySelector('button[type="submit"]');
-      submitButton.click();
+      const submitButton = wrapper.find('button[type="submit"]');
+      return submitButton.trigger('click');
     };
     const expectInvalidInput = (inputElementSelector) => {
-      const inputElement = vm.$el.querySelector(inputElementSelector);
+      const input = wrapper.find(inputElementSelector);
 
-      expect(inputElement.checkValidity()).toBe(false);
-      const feedbackElement = vm.$el.querySelector(`${inputElementSelector} + .invalid-feedback`);
+      expect(input.element.checkValidity()).toBe(false);
+      const feedbackElement = wrapper.find(`${inputElementSelector} + .invalid-feedback`);
 
-      expect(feedbackElement).toBeVisible();
+      expect(feedbackElement.isVisible()).toBe(true);
     };
 
-    beforeEach(async () => {
-      jest.spyOn(vm, submitAction).mockReturnValue(Promise.resolve());
-      store.replaceState({
-        ...store.state,
+    beforeEach(() => {
+      createComponent(props, {
         badgeInAddForm: createEmptyBadge(),
         badgeInEditForm: createEmptyBadge(),
         isSaving: false,
       });
 
-      await nextTick();
       setValue(nameSelector, 'TestBadge');
       setValue(linkUrlSelector, `${TEST_HOST}/link/url`);
       setValue(imageUrlSelector, `${window.location.origin}${DUMMY_IMAGE_URL}`);
     });
 
-    it('returns immediately if imageUrl is empty', () => {
-      setValue(imageUrlSelector, '');
+    it('returns immediately if imageUrl is empty', async () => {
+      await setValue(imageUrlSelector, '');
 
-      submitForm();
-
-      expectInvalidInput(imageUrlSelector);
-
-      expect(vm[submitAction]).not.toHaveBeenCalled();
-    });
-
-    it('returns immediately if imageUrl is malformed', () => {
-      setValue(imageUrlSelector, 'not-a-url');
-
-      submitForm();
+      await submitForm();
 
       expectInvalidInput(imageUrlSelector);
 
-      expect(vm[submitAction]).not.toHaveBeenCalled();
+      expect(mockedActions[submitAction]).not.toHaveBeenCalled();
     });
 
-    it('returns immediately if linkUrl is empty', () => {
-      setValue(linkUrlSelector, '');
+    it('returns immediately if imageUrl is malformed', async () => {
+      await setValue(imageUrlSelector, 'not-a-url');
 
-      submitForm();
+      await submitForm();
+
+      expectInvalidInput(imageUrlSelector);
+
+      expect(mockedActions[submitAction]).not.toHaveBeenCalled();
+    });
+
+    it('returns immediately if linkUrl is empty', async () => {
+      await setValue(linkUrlSelector, '');
+
+      await submitForm();
 
       expectInvalidInput(linkUrlSelector);
 
-      expect(vm[submitAction]).not.toHaveBeenCalled();
+      expect(mockedActions[submitAction]).not.toHaveBeenCalled();
     });
 
-    it('returns immediately if linkUrl is malformed', () => {
-      setValue(linkUrlSelector, 'not-a-url');
+    it('returns immediately if linkUrl is malformed', async () => {
+      await setValue(linkUrlSelector, 'not-a-url');
 
-      submitForm();
+      await submitForm();
 
       expectInvalidInput(linkUrlSelector);
 
-      expect(vm[submitAction]).not.toHaveBeenCalled();
+      expect(mockedActions[submitAction]).not.toHaveBeenCalled();
     });
 
-    it(`calls ${submitAction}`, () => {
-      submitForm();
+    it(`calls ${submitAction}`, async () => {
+      await submitForm();
 
-      expect(findImageUrlElement().checkValidity()).toBe(true);
-      expect(findLinkUrlElement().checkValidity()).toBe(true);
-      expect(vm[submitAction]).toHaveBeenCalled();
+      expect(findImageUrl().element.checkValidity()).toBe(true);
+      expect(findLinkUrl().element.checkValidity()).toBe(true);
+      expect(mockedActions[submitAction]).toHaveBeenCalled();
     });
   };
 
   describe('if isEditing is false', () => {
-    beforeEach(() => {
-      vm = mountComponentWithStore(Component, {
-        el: '#dummy-element',
-        store,
-        props: {
-          isEditing: false,
-        },
-      });
-    });
+    const props = { isEditing: false };
 
     it('renders one button', () => {
-      expect(vm.$el.querySelector('.row-content-block')).toBeNull();
-      const buttons = vm.$el.querySelectorAll('.form-group:last-of-type button');
+      createComponent(props);
 
-      expect(buttons.length).toBe(1);
-      const buttonAddElement = buttons[0];
+      expect(wrapper.find('.row-content-block').exists()).toBe(false);
+      const buttons = wrapper.findAll('.form-group:last-of-type button');
 
-      expect(buttonAddElement).toBeVisible();
-      expect(buttonAddElement).toHaveText('Add badge');
+      expect(buttons).toHaveLength(1);
+      const buttonAddWrapper = buttons.at(0);
+
+      expect(buttonAddWrapper.isVisible()).toBe(true);
+      expect(buttonAddWrapper.text()).toBe('Add badge');
     });
 
-    sharedSubmitTests('addBadge');
+    sharedSubmitTests('addBadge', props);
   });
 
   describe('if isEditing is true', () => {
-    beforeEach(() => {
-      vm = mountComponentWithStore(Component, {
-        el: '#dummy-element',
-        store,
-        props: {
-          isEditing: true,
-        },
-      });
-    });
+    const props = { isEditing: true };
 
     it('renders two buttons', () => {
-      const buttons = vm.$el.querySelectorAll('.row-content-block button');
+      createComponent(props);
+      const buttons = wrapper.findAll('.row-content-block button');
 
-      expect(buttons.length).toBe(2);
-      const buttonSaveElement = buttons[1];
+      expect(buttons).toHaveLength(2);
 
-      expect(buttonSaveElement).toBeVisible();
-      expect(buttonSaveElement).toHaveText('Save changes');
-      const buttonCancelElement = buttons[0];
+      const saveButton = buttons.at(1);
+      expect(saveButton.isVisible()).toBe(true);
+      expect(saveButton.text()).toBe('Save changes');
 
-      expect(buttonCancelElement).toBeVisible();
-      expect(buttonCancelElement).toHaveText('Cancel');
+      const cancelButton = buttons.at(0);
+      expect(cancelButton.isVisible()).toBe(true);
+      expect(cancelButton.text()).toBe('Cancel');
     });
 
-    sharedSubmitTests('saveBadge');
+    sharedSubmitTests('saveBadge', props);
   });
 });

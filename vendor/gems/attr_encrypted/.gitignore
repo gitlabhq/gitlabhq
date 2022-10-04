@@ -1,0 +1,5 @@
+.bundle
+.DS_Store
+.ruby-version
+pkg
+coverage
