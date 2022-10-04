@@ -21,6 +21,26 @@ You can review merge requests from the GitLab interface. If you install the
 [GitLab Workflow VS Code extension](../../repository/vscode.md), you can also
 review merge requests in Visual Studio Code.
 
+## Suggested reviewers **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4.
+
+GitLab can recommend reviewers with Suggested Reviewers. Using the changes in a merge request and a project's contribution graph, machine learning powered suggestions appear in the reviewer section of the right merge request sidebar. 
+
+![Suggested Reviewers](img/suggested_reviewers_v15_4.png)
+
+This feature is currently in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta) behind a [feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/368356).
+
+Learn more about [how suggested reviewers works and data privacy](data_usage.md). 
+
+### Enable suggested reviewers
+
+Project Maintainers or Owners can enable suggested reviewers by visiting the [project settings](../../settings/index.md). 
+
+Enabling suggested reviewers will trigger GitLab to create an ML model for your project that will be used to generate reviewers. The larger your project, the longer this can take, but usually, the model will be ready to generate suggestions within a few hours.
+
+No action is required once the feature is enabled. Once the model is ready, recommendations will populate the Reviewer dropdown in the right-hand sidebar of a merge request with new commits. 
+
 ## Review a merge request
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab 11.4.

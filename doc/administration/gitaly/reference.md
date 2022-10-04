@@ -129,6 +129,7 @@ The following values can be set in the `[git]` section of the configuration file
 | ---- | ---- | -------- | ----------- |
 | `bin_path` | string | no | Path to Git binary. If not set, is resolved using `PATH`. |
 | `catfile_cache_size` | integer | no | Maximum number of cached [cat-file processes](#cat-file-cache). Default is `100`. |
+| `signing_key` | string | no | Path to [GPG signing key](configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits). If not set, Gitaly doesn't sign commits made using the UI. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4. |
 
 #### `cat-file` cache
 

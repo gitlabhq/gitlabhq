@@ -19,22 +19,34 @@ RSpec.describe Projects::UpdatePagesService do
 
   subject { described_class.new(project, build) }
 
-  context 'when a deploy stage already exists' do
+  context 'when a deploy stage already exists', :aggregate_failures do
     let!(:stage) { create(:ci_stage, name: 'deploy', pipeline: pipeline) }
 
     it 'assigns the deploy stage' do
-      subject.execute
+      expect { subject.execute }
+        .to change(GenericCommitStatus, :count).by(1)
+        .and change(Ci::Stage.where(name: 'deploy'), :count).by(0)
 
-      expect(GenericCommitStatus.last.ci_stage).to eq(stage)
-      expect(GenericCommitStatus.last.ci_stage.name).to eq('deploy')
+      status = GenericCommitStatus.last
+
+      expect(status.ci_stage).to eq(stage)
+      expect(status.ci_stage.name).to eq('deploy')
+      expect(status.stage_name).to eq('deploy')
+      expect(status.stage).to eq('deploy')
     end
   end
 
   context 'when a deploy stage does not exists' do
     it 'assigns the deploy stage' do
-      subject.execute
+      expect { subject.execute }
+        .to change(GenericCommitStatus, :count).by(1)
+        .and change(Ci::Stage.where(name: 'deploy'), :count).by(1)
 
-      expect(GenericCommitStatus.last.ci_stage.name).to eq('deploy')
+      status = GenericCommitStatus.last
+
+      expect(status.ci_stage.name).to eq('deploy')
+      expect(status.stage_name).to eq('deploy')
+      expect(status.stage).to eq('deploy')
     end
   end
 

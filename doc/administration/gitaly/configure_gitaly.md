@@ -1340,3 +1340,53 @@ value = "ignore"
 key = "receive.fsck.hasDotgit"
 value = "ignore"
 ```
+
+## Configure commit signing for GitLab UI commits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
+
+By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
+
+- Web editor.
+- Web IDE.
+- Merge requests.
+
+You can configure Gitaly to sign commits made using GitLab UI. The commits show as unverified and signed by an unknown user. Support for improvements is
+proposed in issue [19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
+
+**For Omnibus GitLab**
+
+1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
+   and export it. For optimal performance, consider using an EdDSA key.
+
+   ```shell
+   gpg --export-secret-keys <ID> > signing_key.gpg
+   ```
+
+1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/`.
+1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['gpg_signing_key_path']`:
+
+   ```ruby
+   gitaly['gpg_signing_key_path'] = "/etc/gitlab/gitaly/signing_key.gpg"
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+**For installations from source**
+
+1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
+   and export it. For optimal performance, consider using an EdDSA key.
+
+   ```shell
+   gpg --export-secret-keys <ID> > signing_key.gpg
+   ```
+
+1. On the Gitaly nodes, copy the key into `/etc/gitlab`.
+1. Edit `/home/git/gitaly/config.toml` and configure `signing_key`:
+
+   ```toml
+   [git]
+   signing_key = "/etc/gitlab/gitaly/signing_key.gpg"
+   ```
+
+1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
