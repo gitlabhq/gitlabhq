@@ -4199,6 +4199,45 @@ RSpec.describe MergeRequest, factory_default: :keep do
   context 'state machine transitions' do
     let(:project) { create(:project, :repository) }
 
+    shared_examples_for 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription' do
+      specify do
+        expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated)
+
+        transition!
+      end
+    end
+
+    shared_examples_for 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription' do
+      specify do
+        expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(subject).and_call_original
+
+        transition!
+      end
+
+      context 'when trigger_mr_subscription_on_merge_status_change is disabled' do
+        before do
+          stub_feature_flags(trigger_mr_subscription_on_merge_status_change: false)
+        end
+
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+    end
+
+    shared_examples 'for an invalid state transition' do
+      specify 'is not a valid state transition' do
+        expect { transition! }.to raise_error(StateMachines::InvalidTransition)
+      end
+    end
+
+    shared_examples 'for a valid state transition' do
+      it 'is a valid state transition' do
+        expect { transition! }
+          .to change { subject.merge_status }
+          .from(merge_status.to_s)
+          .to(expected_merge_status)
+      end
+    end
+
     describe '#unlock_mr' do
       subject { create(:merge_request, state: 'locked', source_project: project, merge_jid: 123) }
 
@@ -4213,22 +4252,58 @@ RSpec.describe MergeRequest, factory_default: :keep do
       end
     end
 
+    describe '#mark_as_preparing' do
+      subject { create(:merge_request, source_project: project, merge_status: merge_status) }
+
+      let(:expected_merge_status) { 'preparing' }
+
+      def transition!
+        subject.mark_as_preparing!
+      end
+
+      context 'when the status is unchecked' do
+        let(:merge_status) { :unchecked }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is checking' do
+        let(:merge_status) { :checking }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is can_be_merged' do
+        let(:merge_status) { :can_be_merged }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_recheck' do
+        let(:merge_status) { :cannot_be_merged_recheck }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged' do
+        let(:merge_status) { :cannot_be_merged }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_rechecking' do
+        let(:merge_status) { :cannot_be_merged_rechecking }
+
+        include_examples 'for an invalid state transition'
+      end
+    end
+
     describe '#mark_as_unchecked' do
       subject { create(:merge_request, source_project: project, merge_status: merge_status) }
 
-      shared_examples 'for an invalid state transition' do
-        it 'is not a valid state transition' do
-          expect { subject.mark_as_unchecked! }.to raise_error(StateMachines::InvalidTransition)
-        end
-      end
-
-      shared_examples 'for an valid state transition' do
-        it 'is a valid state transition' do
-          expect { subject.mark_as_unchecked! }
-            .to change { subject.merge_status }
-            .from(merge_status.to_s)
-            .to(expected_merge_status)
-        end
+      def transition!
+        subject.mark_as_unchecked!
       end
 
       context 'when the status is unchecked' do
@@ -4241,14 +4316,16 @@ RSpec.describe MergeRequest, factory_default: :keep do
         let(:merge_status) { :checking }
         let(:expected_merge_status) { 'unchecked' }
 
-        include_examples 'for an valid state transition'
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is can_be_merged' do
         let(:merge_status) { :can_be_merged }
         let(:expected_merge_status) { 'unchecked' }
 
-        include_examples 'for an valid state transition'
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is cannot_be_merged_recheck' do
@@ -4261,14 +4338,164 @@ RSpec.describe MergeRequest, factory_default: :keep do
         let(:merge_status) { :cannot_be_merged }
         let(:expected_merge_status) { 'cannot_be_merged_recheck' }
 
-        include_examples 'for an valid state transition'
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is cannot_be_merged_rechecking' do
+        let(:merge_status) { :cannot_be_merged_rechecking }
+        let(:expected_merge_status) { 'cannot_be_merged_recheck' }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+    end
+
+    describe '#mark_as_checking' do
+      subject { create(:merge_request, source_project: project, merge_status: merge_status) }
+
+      def transition!
+        subject.mark_as_checking!
+      end
+
+      context 'when the status is unchecked' do
+        let(:merge_status) { :unchecked }
+        let(:expected_merge_status) { 'checking' }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is checking' do
+        let(:merge_status) { :checking }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is can_be_merged' do
+        let(:merge_status) { :can_be_merged }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_recheck' do
+        let(:merge_status) { :cannot_be_merged_recheck }
+        let(:expected_merge_status) { 'cannot_be_merged_rechecking' }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is cannot_be_merged' do
         let(:merge_status) { :cannot_be_merged }
-        let(:expected_merge_status) { 'cannot_be_merged_recheck' }
 
-        include_examples 'for an valid state transition'
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_rechecking' do
+        let(:merge_status) { :cannot_be_merged_rechecking }
+
+        include_examples 'for an invalid state transition'
+      end
+    end
+
+    describe '#mark_as_mergeable' do
+      subject { create(:merge_request, source_project: project, merge_status: merge_status) }
+
+      let(:expected_merge_status) { 'can_be_merged' }
+
+      def transition!
+        subject.mark_as_mergeable!
+      end
+
+      context 'when the status is unchecked' do
+        let(:merge_status) { :unchecked }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is checking' do
+        let(:merge_status) { :checking }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is can_be_merged' do
+        let(:merge_status) { :can_be_merged }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_recheck' do
+        let(:merge_status) { :cannot_be_merged_recheck }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is cannot_be_merged' do
+        let(:merge_status) { :cannot_be_merged }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_rechecking' do
+        let(:merge_status) { :cannot_be_merged_rechecking }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+    end
+
+    describe '#mark_as_unmergeable' do
+      subject { create(:merge_request, source_project: project, merge_status: merge_status) }
+
+      let(:expected_merge_status) { 'cannot_be_merged' }
+
+      def transition!
+        subject.mark_as_unmergeable!
+      end
+
+      context 'when the status is unchecked' do
+        let(:merge_status) { :unchecked }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is checking' do
+        let(:merge_status) { :checking }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is can_be_merged' do
+        let(:merge_status) { :can_be_merged }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_recheck' do
+        let(:merge_status) { :cannot_be_merged_recheck }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+      end
+
+      context 'when the status is cannot_be_merged' do
+        let(:merge_status) { :cannot_be_merged }
+
+        include_examples 'for an invalid state transition'
+      end
+
+      context 'when the status is cannot_be_merged_rechecking' do
+        let(:merge_status) { :cannot_be_merged_rechecking }
+
+        include_examples 'for a valid state transition'
+        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
     end
 

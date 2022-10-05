@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis, :delete do
+  include StubENV
   let(:model) { ApplicationRecord }
   let(:db_host) { model.connection_pool.db_config.host }
 
@@ -19,6 +20,10 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
     model.connection.execute(<<~SQL)
       CREATE TABLE IF NOT EXISTS #{test_table_name} (id SERIAL PRIMARY KEY, value INTEGER)
     SQL
+
+    # The load balancer sleeps between attempts to retry a query.
+    # Mocking the sleep call significantly reduces the runtime of this spec file.
+    allow(model.connection.load_balancer).to receive(:sleep)
   end
 
   after do
@@ -46,36 +51,62 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
     conn.execute("INSERT INTO #{test_table_name} (value) VALUES (2)")
   end
 
-  it 'logs a warning when violating transaction semantics with writes' do
-    conn = model.connection
+  context 'with the PREVENT_LOAD_BALANCER_RETRIES_IN_TRANSACTION environment variable not set' do
+    it 'logs a warning when violating transaction semantics with writes' do
+      conn = model.connection
 
-    expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :transaction_leak))
+      expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :transaction_leak))
 
-    conn.transaction do
-      expect(conn).to be_transaction_open
+      conn.transaction do
+        expect(conn).to be_transaction_open
+
+        execute(conn)
+
+        expect(conn).not_to be_transaction_open
+      end
+
+      values = conn.execute("SELECT value FROM #{test_table_name}").to_a.map { |row| row['value'] }
+      expect(values).to contain_exactly(2) # Does not include 1 because the transaction was aborted and leaked
+    end
+
+    it 'does not log a warning when no transaction is open to be leaked' do
+      conn = model.connection
+
+      expect(::Gitlab::Database::LoadBalancing::Logger)
+        .not_to receive(:warn).with(hash_including(event: :transaction_leak))
+
+      expect(conn).not_to be_transaction_open
 
       execute(conn)
 
       expect(conn).not_to be_transaction_open
-    end
 
-    values = conn.execute("SELECT value FROM #{test_table_name}").to_a.map { |row| row['value'] }
-    expect(values).to contain_exactly(2) # Does not include 1 because the transaction was aborted and leaked
+      values = conn.execute("SELECT value FROM #{test_table_name}").to_a.map { |row| row['value'] }
+      expect(values).to contain_exactly(1, 2) # Includes both rows because there was no transaction to roll back
+    end
   end
 
-  it 'does not log a warning when no transaction is open to be leaked' do
-    conn = model.connection
+  context 'with the PREVENT_LOAD_BALANCER_RETRIES_IN_TRANSACTION environment variable set' do
+    before do
+      stub_env('PREVENT_LOAD_BALANCER_RETRIES_IN_TRANSACTION' => '1')
+    end
 
-    expect(::Gitlab::Database::LoadBalancing::Logger)
-      .not_to receive(:warn).with(hash_including(event: :transaction_leak))
+    it 'raises an exception when a retry would occur during a transaction' do
+      expect(::Gitlab::Database::LoadBalancing::Logger)
+        .not_to receive(:warn).with(hash_including(event: :transaction_leak))
 
-    expect(conn).not_to be_transaction_open
+      expect do
+        model.transaction do
+          execute(model.connection)
+        end
+      end.to raise_error(ActiveRecord::StatementInvalid) { |e| expect(e.cause).to be_a(PG::ConnectionBad) }
+    end
 
-    execute(conn)
+    it 'retries when not in a transaction' do
+      expect(::Gitlab::Database::LoadBalancing::Logger)
+        .not_to receive(:warn).with(hash_including(event: :transaction_leak))
 
-    expect(conn).not_to be_transaction_open
-
-    values = conn.execute("SELECT value FROM #{test_table_name}").to_a.map { |row| row['value'] }
-    expect(values).to contain_exactly(1, 2) # Includes both rows because there was no transaction to roll back
+      expect { execute(model.connection) }.not_to raise_error
+    end
   end
 end

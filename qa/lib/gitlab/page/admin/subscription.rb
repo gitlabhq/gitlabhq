@@ -23,7 +23,7 @@ module Gitlab
         h2 :users_over_subscription
         table :subscription_history
 
-        span :no_valid_license_alert, text: /no longer has a valid license/
+        div :no_valid_license_alert, text: /no longer has a valid license/
         h3 :no_active_subscription_title, text: /do not have an active subscription/
 
         def accept_terms

@@ -267,7 +267,7 @@ class IssuableBaseService < ::BaseProjectService
   end
 
   def after_update(issuable)
-    handle_description_updated(issuable) if Feature.enabled?(:broadcast_issuable_description_updated)
+    handle_description_updated(issuable)
   end
 
   def handle_description_updated(issuable)

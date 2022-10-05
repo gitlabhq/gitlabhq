@@ -236,12 +236,7 @@ For more information about supported events for Webhooks, go to [Webhook events]
 
 ## Delivery headers
 
-> `X-Gitlab-Instance` header introduced in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `webhooks_gitlab_instance_header`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `webhooks_gitlab_instance_header`.
-The feature is not ready for production use.
+> `X-Gitlab-Instance` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31333) in GitLab 15.5.
 
 Webhook requests to your endpoint include the following headers:
 

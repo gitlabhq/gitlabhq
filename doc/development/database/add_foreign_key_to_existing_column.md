@@ -126,7 +126,7 @@ Validating the foreign key scans the whole table and makes sure that each relati
 Fortunately, this does not lock the source table (`users`) while running.
 
 NOTE:
-When using [background migrations](background_migrations.md), foreign key validation should happen in the next GitLab release.
+When using [batched background migrations](batched_background_migrations.md), foreign key validation should happen in the next GitLab release.
 
 Migration file for validating the foreign key:
 

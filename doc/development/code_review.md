@@ -662,9 +662,10 @@ Enterprise Edition instance. This has some implications:
       - Regular migrations run before the new code is running on the instance.
       - [Post-deployment migrations](database/post_deployment_migrations.md) run _after_
         the new code is deployed, when the instance is configured to do that.
-      - [Background migrations](database/background_migrations.md) run in Sidekiq, and
-        should only be done for migrations that would take an extreme amount of
-        time at GitLab.com scale.
+      - [Batched background migrations](database/batched_background_migrations.md) run in Sidekiq, and
+        should be used for migrations that
+        [exceed the post-deployment migration time limit](migration_style_guide.md#how-long-a-migration-should-take)
+        GitLab.com scale.
 1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq/compatibility_across_updates.md):
    1. Sidekiq queues are not drained before a deploy happens, so there are
       workers in the queue from the previous version of GitLab.

@@ -39,6 +39,7 @@ module Gitlab
         incident_management_alerts
         issues_edit
         kubernetes_agent
+        manage
         pipeline_authoring
         quickactions
         search

@@ -4,7 +4,7 @@ import $ from 'jquery';
 import { getGroups } from '~/api/groups_api';
 import { getProjects } from '~/api/projects_api';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
@@ -119,7 +119,7 @@ export default class Todos {
       })
       .catch(() => {
         this.updateRowState(target, true);
-        return createFlash({
+        return createAlert({
           message: __('Error updating status of to-do item.'),
         });
       });
@@ -168,7 +168,7 @@ export default class Todos {
         this.updateBadges(data);
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Error updating status for all to-do items.'),
         }),
       );

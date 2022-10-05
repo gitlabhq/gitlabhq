@@ -518,18 +518,6 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         update_issue(description: 'Changed description')
       end
-
-      context 'when broadcast_issuable_description_updated is disabled' do
-        before do
-          stub_feature_flags(broadcast_issuable_description_updated: false)
-        end
-
-        it 'does not trigger GraphQL description updated subscription' do
-          expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
-
-          update_issue(title: 'Changed title')
-        end
-      end
     end
 
     context 'when decription is not changed' do

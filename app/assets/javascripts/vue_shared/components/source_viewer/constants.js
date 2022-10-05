@@ -1,5 +1,3 @@
-import { __ } from '~/locale';
-
 // Language map from Rouge::Lexer to highlight.js
 // Rouge::Lexer - We use it on the BE to determine the language of a source file (https://github.com/rouge-ruby/rouge/blob/master/docs/Languages.md).
 // Highlight.js - We use it on the FE to highlight the syntax of a source file (https://github.com/highlightjs/highlight.js/tree/main/src/languages).
@@ -139,9 +137,7 @@ export const BIDI_CHARS = [
 
 export const BIDI_CHARS_CLASS_LIST = 'unicode-bidi has-tooltip';
 
-export const BIDI_CHAR_TOOLTIP = __(
-  'Potentially unwanted character detected: Unicode BiDi Control',
-);
+export const BIDI_CHAR_TOOLTIP = 'Potentially unwanted character detected: Unicode BiDi Control';
 
 export const HLJS_COMMENT_SELECTOR = 'hljs-comment';
 

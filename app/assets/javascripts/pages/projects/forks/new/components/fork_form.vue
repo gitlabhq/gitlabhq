@@ -12,7 +12,7 @@ import {
 } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { buildApiUrl } from '~/api/api_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -220,7 +220,7 @@ export default {
         redirectTo(data.web_url);
         return;
       } catch (error) {
-        createFlash({
+        createAlert({
           message: s__(
             'ForkProject|An error occurred while forking the project. Please try again.',
           ),

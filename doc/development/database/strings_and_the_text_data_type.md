@@ -196,7 +196,7 @@ to add a background migration for the 13.0 milestone (current),
 `db/post_migrate/20200501000002_schedule_cap_title_length_on_issues.rb`:
 
 ```ruby
-class ScheduleCapTitleLengthOnIssues < Gitlab::Database::Migration[1.0]
+class ScheduleCapTitleLengthOnIssues < Gitlab::Database::Migration[2.0]
   # Info on how many records will be affected on GitLab.com
   # time each batch needs to run on average, etc ...
   BATCH_SIZE = 5000
@@ -207,30 +207,25 @@ class ScheduleCapTitleLengthOnIssues < Gitlab::Database::Migration[1.0]
 
   disable_ddl_transaction!
 
-  class Issue < ::ApplicationRecord
-    include EachBatch
-
-    self.table_name = 'issues'
-  end
-
   def up
-    queue_background_migration_jobs_by_range_at_intervals(
-      Issue.where('char_length(title_html) > 1024'),
-      ISSUES_MIGRATION,
-      DELAY_INTERVAL,
+    queue_batched_background_migration(
+      ISSUES_BACKGROUND_MIGRATION,
+      :issues,
+      :id,
+      job_interval: DELAY_INTERVAL,
       batch_size: BATCH_SIZE
     )
   end
 
   def down
-    # no-op : the part of the title_html after the limit is lost forever
+    delete_batched_background_migration(ISSUES_BACKGROUND_MIGRATION, :issues, :id, [])
   end
 end
 ```
 
 To keep this guide short, we skipped the definition of the background migration and only
 provided a high level example of the post-deployment migration that is used to schedule the batches.
-You can find more information on the guide about [background migrations](background_migrations.md)
+You can find more information on the guide about [batched background migrations](batched_background_migrations.md)
 
 #### Validate the text limit (next release)
 
@@ -278,7 +273,7 @@ end
 
 If you have to clean up a text column for a really [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
 (for example, the `artifacts` in `ci_builds`), your background migration goes on for a while and
-it needs an additional [background migration cleaning up](background_migrations.md#cleaning-up)
+it needs an additional [batched background migration cleaning up](batched_background_migrations.md#cleaning-up)
 in the release after adding the data migration.
 
 In that rare case you need 3 releases end-to-end:

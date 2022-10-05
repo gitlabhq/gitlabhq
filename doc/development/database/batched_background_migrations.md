@@ -670,3 +670,8 @@ You can view failures in two ways:
       ON transition_logs.batched_background_migration_job_id = jobs.id
       WHERE transition_logs.next_status = '2' AND migration.job_class_name = "CLASS_NAME";
      ```
+
+## Legacy background migrations
+
+Batched background migrations replaced the [legacy background migrations framework](background_migrations.md).
+Check that documentation in reference to any changes involving that framework.

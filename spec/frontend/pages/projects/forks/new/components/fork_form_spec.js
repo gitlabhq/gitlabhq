@@ -6,7 +6,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import { kebabCase } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import * as urlUtility from '~/lib/utils/url_utility';
 import ForkForm from '~/pages/projects/forks/new/components/fork_form.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -449,7 +449,7 @@ describe('ForkForm component', () => {
         await submitForm();
 
         expect(urlUtility.redirectTo).not.toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred while forking the project. Please try again.',
         });
       });

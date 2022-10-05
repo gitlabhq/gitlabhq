@@ -275,7 +275,7 @@ in that limit. Singular query timings should fit within the [standard limit](dat
 In case you need to insert, update, or delete a significant amount of data, you:
 
 - Must disable the single transaction with `disable_ddl_transaction!`.
-- Should consider doing it in a [Background Migration](database/background_migrations.md).
+- Should consider doing it in a [batched background migration](database/batched_background_migrations.md).
 
 ## Migration helpers and versioning
 
@@ -1266,7 +1266,7 @@ by an integer. For example: `users` would turn into `users0`
 ## Using models in migrations (discouraged)
 
 The use of models in migrations is generally discouraged. As such models are
-[contraindicated for background migrations](database/background_migrations.md#isolation),
+[contraindicated for batched background migrations](database/batched_background_migrations.md#isolation),
 the model needs to be declared in the migration.
 
 If using a model in the migrations, you should first

@@ -29421,7 +29421,19 @@ msgstr ""
 msgid "PipelineSchedules|All"
 msgstr ""
 
+msgid "PipelineSchedules|Delete pipeline schedule"
+msgstr ""
+
+msgid "PipelineSchedules|Description"
+msgstr ""
+
+msgid "PipelineSchedules|Edit pipeline schedule"
+msgstr ""
+
 msgid "PipelineSchedules|Inactive"
+msgstr ""
+
+msgid "PipelineSchedules|Last Pipeline"
 msgstr ""
 
 msgid "PipelineSchedules|Next Run"
@@ -29433,10 +29445,19 @@ msgstr ""
 msgid "PipelineSchedules|Only the owner of a pipeline schedule can make changes to it. Do you want to take ownership of this schedule?"
 msgstr ""
 
+msgid "PipelineSchedules|Owner"
+msgstr ""
+
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|Run pipeline schedule"
+msgstr ""
+
 msgid "PipelineSchedules|Take ownership"
+msgstr ""
+
+msgid "PipelineSchedules|Take ownership of pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
@@ -36417,9 +36438,6 @@ msgstr ""
 msgid "Select Git revision"
 msgstr ""
 
-msgid "Select Page"
-msgstr ""
-
 msgid "Select Profile"
 msgstr ""
 
@@ -36535,6 +36553,9 @@ msgid "Select project to create issue"
 msgstr ""
 
 msgid "Select projects"
+msgstr ""
+
+msgid "Select report"
 msgstr ""
 
 msgid "Select reviewer(s)"

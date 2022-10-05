@@ -89,4 +89,18 @@ RSpec.describe GraphqlTriggers do
       GraphqlTriggers.merge_request_reviewers_updated(merge_request)
     end
   end
+
+  describe '.merge_request_merge_status_updated' do
+    it 'triggers the mergeRequestMergeStatusUpdated subscription' do
+      merge_request = build_stubbed(:merge_request)
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        'mergeRequestMergeStatusUpdated',
+        { issuable_id: merge_request.to_gid },
+        merge_request
+      ).and_call_original
+
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+    end
+  end
 end

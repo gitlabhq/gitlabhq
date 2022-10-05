@@ -210,9 +210,24 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     it 'uses a retry with exponential backoffs' do
-      expect(lb).to receive(:retry_with_backoff).and_yield
+      expect(lb).to receive(:retry_with_backoff).and_yield(0)
 
       lb.read_write { 10 }
+    end
+
+    it 'does not raise NoMethodError error when primary_only?' do
+      connection = ActiveRecord::Base.connection_pool.connection
+      expected_error = Gitlab::Database::LoadBalancing::CONNECTION_ERRORS.first
+
+      allow(lb).to receive(:primary_only?).and_return(true)
+
+      expect do
+        lb.read_write do
+          connection.transaction do
+            raise expected_error
+          end
+        end
+      end.to raise_error(expected_error)
     end
   end
 
@@ -329,6 +344,19 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       expect(lb).not_to receive(:sleep)
 
       expect { lb.retry_with_backoff { raise } }.to raise_error(RuntimeError)
+    end
+
+    it 'yields the current retry iteration' do
+      allow(lb).to receive(:connection_error?).and_return(true)
+      expect(lb).to receive(:release_primary_connection).exactly(3).times
+      iterations = []
+
+      # time: 0 so that we don't sleep and slow down the test
+      # rubocop: disable Style/Semicolon
+      expect { lb.retry_with_backoff(attempts: 3, time: 0) { |i| iterations << i; raise } }.to raise_error(RuntimeError)
+      # rubocop: enable Style/Semicolon
+
+      expect(iterations).to eq([1, 2, 3])
     end
   end
 

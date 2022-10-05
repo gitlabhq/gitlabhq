@@ -26,7 +26,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Different types of migrations](../migration_style_guide.md#choose-an-appropriate-migration-type)
 - [Create a regular migration](../migration_style_guide.md#create-a-regular-schema-migration), including creating new models
 - [Post-deployment migrations guidelines](post_deployment_migrations.md) and [how to create one](post_deployment_migrations.md#creating-migrations)
-- [Background migrations guidelines](background_migrations.md)
+- [Legacy Background migrations guidelines](background_migrations.md)
 - [Batched background migrations guidelines](batched_background_migrations.md)
 - [Deleting migrations](deleting_migrations.md)
 - [Running database migrations](database_debugging.md#migration-wrangling)
@@ -36,7 +36,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations
 - [Testing Rails migrations](../testing_guide/testing_migrations_guide.md) guide
 - [Post deployment migrations](post_deployment_migrations.md)
-- [Background migrations](background_migrations.md)
 - [Swapping tables](swapping_tables.md)
 - [Deleting migrations](deleting_migrations.md)
 - [SQL guidelines](../sql.md) for working with SQL queries

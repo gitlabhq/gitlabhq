@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
@@ -30,7 +30,7 @@ export default () => {
         $jsBroadcastMessagePreview.html(data);
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('An error occurred while rendering preview broadcast message'),
         }),
       );
