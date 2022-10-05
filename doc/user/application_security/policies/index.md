@@ -135,7 +135,7 @@ See [Scan result policies](scan-result-policies.md).
 
 ## Roadmap
 
-See the [Category Direction page](https://about.gitlab.com/direction/protect/security_orchestration/)
+See the [Category Direction page](https://about.gitlab.com/direction/govern/security_policies/security_policy_management/)
 for more information on the product direction of security policies within GitLab.
 
 ## Troubleshooting

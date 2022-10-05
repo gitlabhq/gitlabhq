@@ -6,8 +6,8 @@ product_stage: ''
 product_group: ''
 product_category: ''
 value_type: number
-status: active
-milestone: "14.4"
+status: removed
+milestone: '14.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71157
 time_frame: 28d
 data_source: redis_hll
@@ -22,4 +22,6 @@ tier:
 - ultimate
 options:
   events:
-    - p_ci_templates_implicit_jobs_deploy_latest
+  - p_ci_templates_implicit_jobs_deploy_latest
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90163
+milestone_removed: '15.5'

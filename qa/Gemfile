@@ -24,7 +24,7 @@ gem 'rainbow', '~> 3.0.0'
 gem 'rspec-parameterized', '~> 0.4.2'
 gem 'octokit', '~> 5.6.1'
 gem "faraday-retry", "~> 2.0"
-gem 'webdrivers', '~> 5.0'
+gem 'webdrivers', '~> 5.2'
 gem 'zeitwerk', '~> 2.4'
 gem 'influxdb-client', '~> 1.17'
 gem 'terminal-table', '~> 3.0.0', require: false

@@ -160,8 +160,6 @@ module AuthenticatesWithTwoFactor
   end
 
   def send_two_factor_otp_attempt_failed_email(user)
-    return if Feature.disabled?(:email_for_two_factor_otp_failure)
-
     user.notification_service.two_factor_otp_attempt_failed(user, request.remote_ip)
   end
 

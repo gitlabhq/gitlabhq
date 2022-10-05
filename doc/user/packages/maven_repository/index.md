@@ -168,7 +168,7 @@ published to the GitLab Package Registry.
    Enter selection (default: Groovy) [1..2]
    ```
 
-1. Enter `1` to create a new Java Library project that is described in Groovy DSL. The output should be:
+1. Enter `1` to create a new Java Library project that is described in Groovy DSL, or `2` to create one that is described in Kotlin DSL. The output should be:
 
    ```plaintext
    Select test framework:
@@ -286,7 +286,7 @@ To authenticate to the Package Registry, you need either a personal access token
 In [your `GRADLE_USER_HOME` directory](https://docs.gradle.org/current/userguide/directory_layout.html#dir:gradle_user_home),
 create a file `gradle.properties` with the following content:
 
-```groovy
+```properties
 gitLabPrivateToken=REPLACE_WITH_YOUR_PERSONAL_ACCESS_TOKEN
 ```
 
@@ -305,6 +305,24 @@ repositories {
         }
         authentication {
             header(HttpHeaderAuthentication)
+        }
+    }
+}
+```
+
+Or add it to your `build.gradle.kts` file if you are using Kotlin DSL:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://gitlab.example.com/api/v4/groups/<group>/-/packages/maven")
+        name = "GitLab"
+        credentials(HttpHeaderCredentials::class) {
+            name = "Private-Token"
+            value = findProperty("gitLabPrivateToken") as String?
+        }
+        authentication {
+            create("header", HttpHeaderAuthentication::class)
         }
     }
 }
@@ -332,6 +350,24 @@ repositories {
 }
 ```
 
+Or add it to your `build.gradle.kts` file if you are using Kotlin DSL:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://gitlab.example.com/api/v4/groups/<group>/-/packages/maven")
+        name = "GitLab"
+        credentials(HttpHeaderCredentials::class) {
+            name = "Deploy-Token"
+            value = "<deploy-token>"
+        }
+        authentication {
+            create("header", HttpHeaderAuthentication::class)
+        }
+    }
+}
+```
+
 ### Authenticate with a CI job token in Gradle
 
 To authenticate with a CI job token, add a `repositories` section to your
@@ -349,6 +385,24 @@ repositories {
         }
         authentication {
             header(HttpHeaderAuthentication)
+        }
+    }
+}
+```
+
+Or add it to your `build.gradle.kts` file if you are using Kotlin DSL:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("$CI_API_V4_URL/groups/<group>/-/packages/maven")
+        name = "GitLab"
+        credentials(HttpHeaderCredentials::class) {
+            name = "Job-Token"
+            value = System.getenv("CI_JOB_TOKEN")
+        }
+        authentication {
+            create("header", HttpHeaderAuthentication::class)
         }
     }
 }
@@ -397,13 +451,24 @@ in Maven should look like this:
 </distributionManagement>
 ```
 
-The corresponding section in Gradle would be:
+The corresponding section in Gradle Groovy DSL would be:
 
 ```groovy
 repositories {
     maven {
         url "https://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven"
         name "GitLab"
+    }
+}
+```
+
+In Kotlin DSL:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven")
+        name = "GitLab"
     }
 }
 ```
@@ -454,13 +519,24 @@ the `distributionManagement` section:
 </distributionManagement>
 ```
 
-For Gradle, the corresponding `repositories` section would look like:
+For Gradle, the corresponding `repositories` section in Groovy DSL would look like:
 
 ```groovy
 repositories {
     maven {
         url "https://gitlab.example.com/api/v4/groups/GROUP_ID/-/packages/maven"
         name "GitLab"
+    }
+}
+```
+
+In Kotlin DSL:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://gitlab.example.com/api/v4/groups/GROUP_ID/-/packages/maven")
+        name = "GitLab"
     }
 }
 ```
@@ -513,13 +589,24 @@ You still need a project-specific URL in the `distributionManagement` section.
 </distributionManagement>
 ```
 
-The corresponding repositories section in Gradle would look like:
+The corresponding repositories section in Gradle Groovy DSL would look like:
 
 ```groovy
 repositories {
     maven {
         url "https://gitlab.example.com/api/v4/packages/maven"
         name "GitLab"
+    }
+}
+```
+
+In Kotlin DSL:
+
+```kotlin
+repositories {
+    maven {
+        url = uri("https://gitlab.example.com/api/v4/packages/maven")
+        name = "GitLab"
     }
 }
 ```
@@ -566,6 +653,8 @@ To publish a package by using Gradle:
 
 1. Add the Gradle plugin [`maven-publish`](https://docs.gradle.org/current/userguide/publishing_maven.html) to the plugins section:
 
+   In Groovy DSL:
+
    ```groovy
    plugins {
        id 'java'
@@ -573,7 +662,18 @@ To publish a package by using Gradle:
    }
    ```
 
+   In Kotlin DSL:
+
+   ```kotlin
+   plugins {
+       java
+       `maven-publish`
+   }
+   ```
+
 1. Add a `publishing` section:
+
+   In Groovy DSL:
 
    ```groovy
    publishing {
@@ -591,6 +691,31 @@ To publish a package by using Gradle:
                }
                authentication {
                    header(HttpHeaderAuthentication)
+               }
+           }
+       }
+   }
+   ```
+
+   In Kotlin DSL:
+
+   ```kotlin
+   publishing {
+       publications {
+           create<MavenPublication>("library") {
+               from(components["java"])
+           }
+       }
+       repositories {
+           maven {
+               url = uri("https://gitlab.example.com/api/v4/projects/<PROJECT_ID>/packages/maven")
+               credentials(HttpHeaderCredentials::class) {
+                   name = "Private-Token"
+                   value =
+                       findProperty("gitLabPrivateToken") as String? // the variable resides in $GRADLE_USER_HOME/gradle.properties
+               }
+               authentication {
+                   create("header", HttpHeaderAuthentication::class)
                }
            }
        }
@@ -700,6 +825,14 @@ Add a [dependency](https://docs.gradle.org/current/userguide/declaring_dependenc
 ```groovy
 dependencies {
     implementation 'com.mycompany.mydepartment:my-project:1.0-SNAPSHOT'
+}
+```
+
+Or to `build.gradle.kts` if you are using Kotlin DSL:
+
+```kotlin
+dependencies {
+    implementation("com.mycompany.mydepartment:my-project:1.0-SNAPSHOT")
 }
 ```
 

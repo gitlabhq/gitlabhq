@@ -283,7 +283,6 @@ export const epicParticipantsResponse = () => ({
               name: 'Jacki Kub',
               username: 'francina.skiles',
               webUrl: '/franc',
-              status: null,
             },
           ],
         },

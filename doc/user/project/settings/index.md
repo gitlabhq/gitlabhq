@@ -210,7 +210,7 @@ where GitLab is installed.
 
 Prerequisites:
 
-You must be a project maintainer or administrator to rename a repository.
+You must be a project maintainer, owner, or administrator to rename a repository.
 
 NOTE:
 When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see

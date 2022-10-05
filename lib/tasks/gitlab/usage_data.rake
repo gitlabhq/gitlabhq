@@ -43,17 +43,10 @@ namespace :gitlab do
           # Do not edit it manually!
       BANNER
 
-      repository_includes = ci_template_includes_hash(:repository_source)
-      auto_devops_jobs_includes = ci_template_includes_hash(:auto_devops_source, 'Jobs')
-      auto_devops_security_includes = ci_template_includes_hash(:auto_devops_source, 'Security')
-      all_includes = [
-        *repository_includes,
-        ci_template_event('p_ci_templates_implicit_auto_devops'),
-        *auto_devops_jobs_includes,
-        *auto_devops_security_includes
-      ]
+      all_includes = explicit_template_includes + implicit_auto_devops_includes
+      yaml = banner + YAML.dump(all_includes).gsub(/ *$/m, '')
 
-      File.write(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH, banner + YAML.dump(all_includes).gsub(/ *$/m, ''))
+      File.write(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH, yaml)
     end
 
     desc 'GitLab | UsageDataMetrics | Generate raw SQL metrics queries for RSpec'
@@ -69,10 +62,20 @@ namespace :gitlab do
       File.write('sql_metrics_queries.json', Gitlab::Json.pretty_generate(queries))
     end
 
-    def ci_template_includes_hash(source, template_directory = nil)
-      Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/#{template_directory}").map do |template|
-        expanded_template_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.expand_template_name("#{template_directory}/#{template}")
-        event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, source)
+    # Events for templates included via YAML-less Auto-DevOps
+    def implicit_auto_devops_includes
+      Gitlab::UsageDataCounters::CiTemplateUniqueCounter
+        .all_included_templates('Auto-DevOps.gitlab-ci.yml')
+        .map { |template| implicit_auto_devops_event(template) }
+        .uniq
+        .sort_by { _1['name'] }
+    end
+
+    # Events for templates included in a .gitlab-ci.yml using include:template
+    def explicit_template_includes
+      Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/").map do |template|
+        expanded_template_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.expand_template_name(template)
+        event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, :repository_source)
 
         ci_template_event(event_name)
       end
@@ -85,6 +88,11 @@ namespace :gitlab do
         'redis_slot' => Gitlab::UsageDataCounters::CiTemplateUniqueCounter::REDIS_SLOT,
         'aggregation' => 'weekly'
       }
+    end
+
+    def implicit_auto_devops_event(expanded_template_name)
+      event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, :auto_devops_source)
+      ci_template_event(event_name)
     end
   end
 end

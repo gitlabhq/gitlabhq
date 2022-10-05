@@ -6,7 +6,7 @@ product_stage: ''
 product_group: ''
 product_category: ''
 value_type: number
-status: active
+status: removed
 milestone: '14.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69204
 time_frame: 7d
@@ -23,3 +23,5 @@ tier:
 options:
   events:
   - p_ci_templates_implicit_security_dast_latest
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90163
+milestone_removed: '15.5'

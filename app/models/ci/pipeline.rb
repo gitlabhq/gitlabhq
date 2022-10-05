@@ -995,8 +995,8 @@ module Ci
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       expanded_environment_names =
         builds_in_self_and_project_descendants.joins(:metadata)
-                                      .where.not('ci_builds_metadata.expanded_environment_name' => nil)
-                                      .distinct('ci_builds_metadata.expanded_environment_name')
+                                      .where.not(Ci::BuildMetadata.table_name => { expanded_environment_name: nil })
+                                      .distinct("#{Ci::BuildMetadata.quoted_table_name}.expanded_environment_name")
                                       .limit(100)
                                       .pluck(:expanded_environment_name)
 

@@ -17,6 +17,15 @@ gem 'rails', '~> 6.1.6.1'
 
 gem 'bootsnap', '~> 1.13.0', require: false
 
+# Pin openssl to match the version bundled with our supported Rubies.
+# See https://stdgems.org/openssl/#gem-version.
+gem 'openssl', '2.2.1'
+# This gem was originally bundled with Ruby 2.7, but is unbundled as of Ruby 3.
+# Since the latest version caused problems with GitLab, we pin this to an older
+# version for now.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/376417
+gem 'ipaddr', '1.2.2'
+
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0'
 

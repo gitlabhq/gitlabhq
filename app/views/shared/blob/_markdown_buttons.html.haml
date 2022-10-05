@@ -37,8 +37,6 @@
                               title: _("Add a collapsible section") })
   = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: _("Add a table") })
   - if supports_file_upload
-    = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button', data: { testid: 'button-attach-file', container: 'body' } }) do
-      = _("Attach a file or image")
+    = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button', data: { testid: 'button-attach-file', container: 'body' } })
   - if show_fullscreen_button
-    = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter', data: { container: 'body' } }) do
-      = _("Go full screen")
+    = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter', data: { container: 'body' } })

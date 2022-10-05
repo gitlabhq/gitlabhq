@@ -176,11 +176,18 @@ This works because for every path that is present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
 This also applies to views.
 
-#### Testing EE-only features
+#### Testing EE-only backend features
 
 To test an EE class that doesn't exist in CE, create the spec file as you normally
 would in the `ee/spec` directory, but without the second `ee/` subdirectory.
 For example, a class `ee/app/models/vulnerability.rb` would have its tests in `ee/spec/models/vulnerability_spec.rb`.
+
+By default, licensed features are disabled while specs are running. To effectively test your feature
+you must explicitly enable the feature using the `stub_licensed_features` helper, for example:
+
+```ruby
+  stub_licensed_features(my_awesome_feature_name: true)
+```
 
 ### Extend CE features with EE backend code
 
@@ -1047,7 +1054,7 @@ FactoryBot.define do
 end
 ```
 
-## Separate of EE code in the frontend
+## Separation of EE code in the frontend
 
 To separate EE-specific JS-files, move the files into an `ee` folder.
 
@@ -1089,9 +1096,12 @@ ee/app/assets/javascripts/ee_only_feature/index.js
 Feature guarding `licensed_feature_available?` and `License.feature_available?` typical
 occurs in the controller, as described in the [backend guide](#ee-only-features).
 
-#### Test EE-only features
+#### Testing EE-only frontend features
 
 Add your EE tests to `ee/spec/frontend/` following the same directory structure you use for CE.
+
+Check the note under [Testing EE-only backend features](#testing-ee-only-backend-features) regarding
+enabling licensed features.
 
 ### Extend CE features with EE frontend code
 

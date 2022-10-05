@@ -293,7 +293,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
               pipeline_on_previous_commit
                 .builds
                 .joins(:metadata)
-                .pluck(:name, 'ci_builds_metadata.interruptible')
+                .pluck(:name, "#{Ci::BuildMetadata.quoted_table_name}.interruptible")
 
             expect(interruptible_status).to contain_exactly(
               ['build_1_1', true],

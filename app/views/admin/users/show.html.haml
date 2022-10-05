@@ -11,7 +11,7 @@
       - c.body do
         %ul.content-list
           %li
-            = image_tag avatar_icon_for_user(@user, 60, current_user: current_user), class: "avatar s60"
+            = render Pajamas::AvatarComponent.new(@user, size: 64, class: 'gl-mr-3')
           %li
             %span.light= _('Profile page:')
             %strong

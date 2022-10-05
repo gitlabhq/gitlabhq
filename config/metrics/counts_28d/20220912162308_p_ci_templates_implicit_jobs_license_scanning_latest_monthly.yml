@@ -1,14 +1,15 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_jobs_license_scanning_latest_monthly
-description: Monthly counts for implicit License Scanning CI Latest template (Jobs folder)
+description: Monthly counts for implicit License Scanning CI Latest template (Jobs
+  folder)
 product_section: sec
 product_stage: secure
 product_group: composition_analysis
 product_category: license_scanning
 value_type: number
-status: active
-milestone: "15.4"
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97323'
+status: removed
+milestone: '15.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97323
 time_frame: 28d
 data_source: redis_hll
 data_category: optional
@@ -23,3 +24,5 @@ tier:
 options:
   events:
   - p_ci_templates_implicit_jobs_license_scanning_latest
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90163
+milestone_removed: '15.5'

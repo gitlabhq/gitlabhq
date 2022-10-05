@@ -1,5 +1,4 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
-#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query epicParticipants($fullPath: ID!, $iid: ID) {
   workspace: group(fullPath: $fullPath) {
@@ -9,7 +8,6 @@ query epicParticipants($fullPath: ID!, $iid: ID) {
       participants {
         nodes {
           ...User
-          ...UserAvailability
         }
       }
     }

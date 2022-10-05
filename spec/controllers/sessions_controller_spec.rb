@@ -416,7 +416,6 @@ RSpec.describe SessionsController do
 
               it 'sends an email to the user informing about the attempt to sign in with a wrong OTP code' do
                 controller.request.remote_addr = '1.2.3.4'
-                stub_feature_flags(email_for_two_factor_otp_failure: true)
 
                 expect_next_instance_of(NotificationService) do |instance|
                   expect(instance).to receive(:two_factor_otp_attempt_failed).with(user, '1.2.3.4')
