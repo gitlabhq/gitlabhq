@@ -29,6 +29,7 @@ export default {
     GlLoadingIcon,
     RefResultsSection,
   },
+  inheritAttrs: false,
   props: {
     enabledRefTypes: {
       type: Array,
@@ -69,6 +70,15 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+
+    /* Underlying form field name for scenarios where ref_selector
+     * is used as part of submitting an HTML form
+     */
+    name: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -213,89 +223,103 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
-    :header-text="i18n.dropdownHeader"
-    :toggle-class="toggleButtonClass"
-    :text="buttonText"
-    class="ref-selector"
-    v-bind="$attrs"
-    v-on="$listeners"
-    @shown="focusSearchBox"
-  >
-    <template #header>
-      <gl-search-box-by-type
-        ref="searchBox"
-        v-model.trim="query"
-        :placeholder="i18n.searchPlaceholder"
-        autocomplete="off"
-        @input="onSearchBoxInput"
-        @keydown.enter.prevent="onSearchBoxEnter"
-      />
-    </template>
+  <div>
+    <gl-dropdown
+      :header-text="i18n.dropdownHeader"
+      :toggle-class="toggleButtonClass"
+      :text="buttonText"
+      class="ref-selector gl-w-full"
+      v-bind="$attrs"
+      v-on="$listeners"
+      @shown="focusSearchBox"
+    >
+      <template #header>
+        <gl-search-box-by-type
+          ref="searchBox"
+          v-model.trim="query"
+          :placeholder="i18n.searchPlaceholder"
+          autocomplete="off"
+          data-qa-selector="ref_selector_searchbox"
+          @input="onSearchBoxInput"
+          @keydown.enter.prevent="onSearchBoxEnter"
+        />
+      </template>
 
-    <gl-loading-icon v-if="isLoading" size="lg" class="gl-my-3" />
+      <gl-loading-icon v-if="isLoading" size="lg" class="gl-my-3" />
 
-    <div v-else-if="showNoResults" class="gl-text-center gl-mx-3 gl-py-3" data-testid="no-results">
-      <gl-sprintf v-if="lastQuery" :message="i18n.noResultsWithQuery">
-        <template #query>
-          <b class="gl-word-break-all">{{ lastQuery }}</b>
+      <div
+        v-else-if="showNoResults"
+        class="gl-text-center gl-mx-3 gl-py-3"
+        data-testid="no-results"
+      >
+        <gl-sprintf v-if="lastQuery" :message="i18n.noResultsWithQuery">
+          <template #query>
+            <b class="gl-word-break-all">{{ lastQuery }}</b>
+          </template>
+        </gl-sprintf>
+
+        <span v-else>{{ i18n.noResults }}</span>
+      </div>
+
+      <template v-else>
+        <template v-if="showBranchesSection">
+          <ref-results-section
+            :section-title="i18n.branches"
+            :total-count="matches.branches.totalCount"
+            :items="matches.branches.list"
+            :selected-ref="selectedRef"
+            :error="matches.branches.error"
+            :error-message="i18n.branchesErrorMessage"
+            :show-header="showSectionHeaders"
+            data-testid="branches-section"
+            data-qa-selector="branches_section"
+            @selected="selectRef($event)"
+          />
+
+          <gl-dropdown-divider v-if="showTagsSection || showCommitsSection" />
         </template>
-      </gl-sprintf>
 
-      <span v-else>{{ i18n.noResults }}</span>
-    </div>
+        <template v-if="showTagsSection">
+          <ref-results-section
+            :section-title="i18n.tags"
+            :total-count="matches.tags.totalCount"
+            :items="matches.tags.list"
+            :selected-ref="selectedRef"
+            :error="matches.tags.error"
+            :error-message="i18n.tagsErrorMessage"
+            :show-header="showSectionHeaders"
+            data-testid="tags-section"
+            @selected="selectRef($event)"
+          />
 
-    <template v-else>
-      <template v-if="showBranchesSection">
-        <ref-results-section
-          :section-title="i18n.branches"
-          :total-count="matches.branches.totalCount"
-          :items="matches.branches.list"
-          :selected-ref="selectedRef"
-          :error="matches.branches.error"
-          :error-message="i18n.branchesErrorMessage"
-          :show-header="showSectionHeaders"
-          data-testid="branches-section"
-          data-qa-selector="branches_section"
-          @selected="selectRef($event)"
-        />
+          <gl-dropdown-divider v-if="showCommitsSection" />
+        </template>
 
-        <gl-dropdown-divider v-if="showTagsSection || showCommitsSection" />
+        <template v-if="showCommitsSection">
+          <ref-results-section
+            :section-title="i18n.commits"
+            :total-count="matches.commits.totalCount"
+            :items="matches.commits.list"
+            :selected-ref="selectedRef"
+            :error="matches.commits.error"
+            :error-message="i18n.commitsErrorMessage"
+            :show-header="showSectionHeaders"
+            data-testid="commits-section"
+            @selected="selectRef($event)"
+          />
+        </template>
       </template>
 
-      <template v-if="showTagsSection">
-        <ref-results-section
-          :section-title="i18n.tags"
-          :total-count="matches.tags.totalCount"
-          :items="matches.tags.list"
-          :selected-ref="selectedRef"
-          :error="matches.tags.error"
-          :error-message="i18n.tagsErrorMessage"
-          :show-header="showSectionHeaders"
-          data-testid="tags-section"
-          @selected="selectRef($event)"
-        />
-
-        <gl-dropdown-divider v-if="showCommitsSection" />
+      <template #footer>
+        <slot name="footer" v-bind="footerSlotProps"></slot>
       </template>
-
-      <template v-if="showCommitsSection">
-        <ref-results-section
-          :section-title="i18n.commits"
-          :total-count="matches.commits.totalCount"
-          :items="matches.commits.list"
-          :selected-ref="selectedRef"
-          :error="matches.commits.error"
-          :error-message="i18n.commitsErrorMessage"
-          :show-header="showSectionHeaders"
-          data-testid="commits-section"
-          @selected="selectRef($event)"
-        />
-      </template>
-    </template>
-
-    <template #footer>
-      <slot name="footer" v-bind="footerSlotProps"></slot>
-    </template>
-  </gl-dropdown>
+    </gl-dropdown>
+    <input
+      v-if="name"
+      data-testid="selected-ref-form-field"
+      type="hidden"
+      :value="selectedRef"
+      :name="name"
+    />
+  </div>
 </template>

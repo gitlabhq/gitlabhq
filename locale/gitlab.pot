@@ -35291,6 +35291,9 @@ msgstr ""
 msgid "Search authors"
 msgstr ""
 
+msgid "Search branch"
+msgstr ""
+
 msgid "Search branches"
 msgstr ""
 
@@ -36523,6 +36526,9 @@ msgid "Select branch or create wildcard"
 msgstr ""
 
 msgid "Select branches"
+msgstr ""
+
+msgid "Select default branch"
 msgstr ""
 
 msgid "Select due date"

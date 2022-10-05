@@ -545,7 +545,9 @@ To list the batched background migrations in the system, run this command:
 This command supports the following options:
 
 - Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database.
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default).
+    - `ci`: Uses the CI database.
 - Environment selection:
   - `--dev`: Uses the `dev` environment.
   - `--staging`: Uses the `staging` environment.
@@ -568,7 +570,9 @@ To see the status and progress of a specific batched background migration, run t
 This command supports the following options:
 
 - Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database.
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default)
+    - `ci`: Uses the CI database
 - Environment selection:
   - `--dev`: Uses the `dev` environment.
   - `--staging`: Uses the `staging` environment.
@@ -600,7 +604,9 @@ If you want to pause a batched background migration, you need to run the followi
 This command supports the following options:
 
 - Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database.
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default).
+    - `ci`: Uses the CI database.
 - Environment selection:
   - `--dev`: Uses the `dev` environment.
   - `--staging`: Uses the `staging` environment.
@@ -623,7 +629,9 @@ If you want to resume a batched background migration, you need to run the follow
 This command supports the following options:
 
 - Database selection:
-  - `--database DATABASE_NAME`: Connects to the given database.
+  - `--database DATABASE_NAME`: Connects to the given database:
+    - `main`: Uses the main database (default).
+    - `ci`: Uses the CI database.
 - Environment selection:
   - `--dev`: Uses the `dev` environment.
   - `--staging`: Uses the `staging` environment.
