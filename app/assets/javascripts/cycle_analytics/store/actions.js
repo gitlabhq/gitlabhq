@@ -6,7 +6,7 @@ import {
   getValueStreamStageCounts,
 } from '~/api/analytics_api';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import { DEFAULT_VALUE_STREAM, I18N_VSA_ERROR_STAGE_MEDIAN } from '../constants';
 import * as types from './mutation_types';
@@ -97,7 +97,7 @@ export const fetchStageMedians = ({
     .then((data) => commit(types.RECEIVE_STAGE_MEDIANS_SUCCESS, data))
     .catch((error) => {
       commit(types.RECEIVE_STAGE_MEDIANS_ERROR, error);
-      createFlash({ message: I18N_VSA_ERROR_STAGE_MEDIAN });
+      createAlert({ message: I18N_VSA_ERROR_STAGE_MEDIAN });
     });
 };
 
@@ -126,7 +126,7 @@ export const fetchStageCountValues = ({
     .then((data) => commit(types.RECEIVE_STAGE_COUNTS_SUCCESS, data))
     .catch((error) => {
       commit(types.RECEIVE_STAGE_COUNTS_ERROR, error);
-      createFlash({
+      createAlert({
         message: __('There was an error fetching stage total counts'),
       });
     });

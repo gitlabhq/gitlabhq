@@ -218,7 +218,7 @@ RSpec.describe Import::GithubController do
 
         it 'makes request to github search api' do
           expect_next_instance_of(Octokit::Client) do |client|
-            expect(client).to receive(:user).and_return(double(login: user_login))
+            expect(client).to receive(:user).and_return({ login: user_login })
             expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
           end
 
@@ -234,7 +234,7 @@ RSpec.describe Import::GithubController do
           context 'when no page is specified' do
             it 'requests first page' do
               expect_next_instance_of(Octokit::Client) do |client|
-                expect(client).to receive(:user).and_return(double(login: user_login))
+                expect(client).to receive(:user).and_return({ login: user_login })
                 expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
               end
 
@@ -250,7 +250,7 @@ RSpec.describe Import::GithubController do
           context 'when page is specified' do
             it 'requests repos with specified page' do
               expect_next_instance_of(Octokit::Client) do |client|
-                expect(client).to receive(:user).and_return(double(login: user_login))
+                expect(client).to receive(:user).and_return({ login: user_login })
                 expect(client).to receive(:search_repositories).with(search_query, { page: 2, per_page: 25 }).and_return({ items: [].to_enum })
               end
 

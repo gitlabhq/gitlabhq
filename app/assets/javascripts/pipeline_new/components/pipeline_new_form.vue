@@ -401,7 +401,7 @@ export default {
       <div
         v-for="(variable, index) in variables"
         :key="variable.uniqueId"
-        class="gl-mb-3 gl-ml-n3 gl-pb-2"
+        class="gl-mb-3 gl-pb-2"
         data-testid="ci-variable-row"
         data-qa-selector="ci_variable_row_container"
       >

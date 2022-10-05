@@ -23,7 +23,7 @@ import {
   DESIGN_SNOWPLOW_EVENT_TYPES,
   DESIGN_SERVICE_PING_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import mockAllVersions from '../../mock_data/all_versions';
 import design from '../../mock_data/design';
 import mockResponseWithDesigns from '../../mock_data/designs';
@@ -301,8 +301,8 @@ describe('Design management design index page', () => {
 
         wrapper.vm.onDesignQueryResult({ data: mockResponseNoDesigns, loading: false });
         await nextTick();
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith({ message: DESIGN_NOT_FOUND_ERROR });
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({ message: DESIGN_NOT_FOUND_ERROR });
         expect(router.push).toHaveBeenCalledTimes(1);
         expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
       });
@@ -323,8 +323,8 @@ describe('Design management design index page', () => {
 
         wrapper.vm.onDesignQueryResult({ data: mockResponseWithDesigns, loading: false });
         await nextTick();
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith({ message: DESIGN_VERSION_NOT_EXIST_ERROR });
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({ message: DESIGN_VERSION_NOT_EXIST_ERROR });
         expect(router.push).toHaveBeenCalledTimes(1);
         expect(router.push).toHaveBeenCalledWith({ name: DESIGNS_ROUTE_NAME });
       });

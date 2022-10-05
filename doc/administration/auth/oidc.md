@@ -7,9 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # OpenID Connect OmniAuth provider **(FREE SELF)**
 
-GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) as an OmniAuth provider.
+GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
+as an OmniAuth provider.
 
-To enable the OpenID Connect OmniAuth provider, you must register your application with an OpenID Connect provider.
+To enable the OpenID Connect OmniAuth provider, you must register your application
+with an OpenID Connect provider.
 The OpenID Connect provides you with a client's details and secret for you to use.
 
 1. On your GitLab server, open the configuration file.
@@ -27,7 +29,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    sudo -u git -H editor config/gitlab.yml
    ```
 
-   See [Configure initial settings](../../integration/omniauth.md#configure-initial-settings) for initial settings.
+1. [Configure initial settings](../../integration/omniauth.md#configure-initial-settings).
 
 1. Add the provider configuration.
 
@@ -83,32 +85,49 @@ The OpenID Connect provides you with a client's details and secret for you to us
    ```
 
    NOTE:
-   For more information on each configuration option refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/m0n9oose/omniauth_openid_connect#usage)
-   and the [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+   For more information on each configuration option, refer to the:
 
-1. For the configuration above, change the values for the provider to match your OpenID Connect client setup. Use the following as a guide:
+   - [OmniAuth OpenID Connect usage documentation](https://github.com/m0n9oose/omniauth_openid_connect#usage).
+   - [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+
+1. For the provider configuration, change the values for the provider to match your
+   OpenID Connect client setup. Use the following as a guide:
+
    - `<your_oidc_label>` is the label that appears on the login page.
-   - `<custom_provider_icon>` (optional) is the icon that appears on the login page. Icons for the major social login platforms are built-in into GitLab,
-     but can be overridden by specifying this parameter. Both local paths and absolute URLs are accepted.
-   - `<your_oidc_url>` (optional) is the URL that points to the OpenID Connect provider. For example, `https://example.com/auth/realms/your-realm`.
-     If this value is not provided, the URL is constructed from the `client_options` in the following format: `<client_options.scheme>://<client_options.host>:<client_options.port>`.
-   - If `discovery` is set to `true`, the OpenID Connect provider attempts to auto discover the client options using `<your_oidc_url>/.well-known/openid-configuration`. Defaults to `false`.
-   - `client_auth_method` (optional) specifies the method used for authenticating the client with the OpenID Connect provider.
+   - `<custom_provider_icon>` (optional) is the icon that appears on the login page.
+     Icons for the major social login platforms are built into GitLab,
+     but you can override these icons by specifying this parameter. GitLab accepts both
+     local paths and absolute URLs.
+   - `<your_oidc_url>` (optional) is the URL that points to the OpenID Connect
+     provider (for example, `https://example.com/auth/realms/your-realm`).
+     If this value is not provided, the URL is constructed from `client_options`
+     in the following format: `<client_options.scheme>://<client_options.host>:<client_options.port>`.
+   - If `discovery` is set to `true`, the OpenID Connect provider attempts to automatically
+     discover the client options using `<your_oidc_url>/.well-known/openid-configuration`.
+     Defaults to `false`.
+   - `client_auth_method` (optional) specifies the method used for authenticating
+     the client with the OpenID Connect provider.
      - Supported values are:
-       - `basic` - HTTP Basic Authentication
-       - `jwt_bearer` - JWT based authentication (private key and client secret signing)
-       - `mtls` - Mutual TLS or X.509 certificate validation
-       - Any other value POSTs the client ID and secret in the request body
-     - If not specified, defaults to `basic`.
-   - `<uid_field>` (optional) is the field name from the `user_info.raw_attributes` that defines the value for `uid`. For example, `preferred_username`.
-     If this value is not provided or the field with the configured value is missing from the `user_info.raw_attributes` details, the `uid` uses the `sub` field.
-   - `send_scope_to_token_endpoint` is `true` by default. In other words, the `scope` parameter is normally included in requests to the token endpoint.
-     However, if your OpenID Connect provider does not accept the `scope` parameter in such requests, set this to `false`.
+       - `basic` - HTTP Basic Authentication.
+       - `jwt_bearer` - JWT-based authentication (private key and client secret signing).
+       - `mtls` - Mutual TLS or X.509 certificate validation.
+       - Any other value posts the client ID and secret in the request body.
+     - If not specified, this value defaults to `basic`.
+   - `<uid_field>` (optional) is the field name from `user_info.raw_attributes`
+     that defines the value for `uid` (for example, `preferred_username`).
+     If you do not provide this value, or the field with the configured value is missing
+     from the `user_info.raw_attributes` details, `uid` uses the `sub` field.
+   - `send_scope_to_token_endpoint` is `true` by default, so the `scope` parameter
+     is normally included in requests to the token endpoint.
+     However, if your OpenID Connect provider does not accept the `scope` parameter
+     in such requests, set this to `false`.
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider.
-     - `redirect_uri` is the GitLab URL to redirect the user to after successful login. For example, `http://example.com/users/auth/openid_connect/callback`.
-     - `end_session_endpoint` (optional) is the URL to the endpoint that end the session (logout). Can be provided if auto-discovery disabled or unsuccessful.
+     - `redirect_uri` is the GitLab URL to redirect the user to after successful login
+       (for example, `http://example.com/users/auth/openid_connect/callback`).
+     - `end_session_endpoint` (optional) is the URL to the endpoint that ends the
+       session. You can provide this URL if auto-discovery is disabled or unsuccessful.
      - The following `client_options` are optional unless auto-discovery is disabled or unsuccessful:
        - `authorization_endpoint` is the URL to the endpoint that authorizes the end user.
        - `token_endpoint` is the URL to the endpoint that provides Access Token.
@@ -116,19 +135,22 @@ The OpenID Connect provides you with a client's details and secret for you to us
        - `jwks_uri` is the URL to the endpoint where the Token signer publishes its keys.
 
 1. Save the configuration file.
-1. For changes to take effect, [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) if you installed GitLab with Omnibus, or [restart GitLab](../restart_gitlab.md#installations-from-source) if you installed GitLab from the source.
+1. For changes to take effect, if you installed GitLab:
 
-On the sign in page, there should now be an OpenID Connect icon below the regular sign in form.
-Select the icon to begin the authentication process. The OpenID Connect provider asks the user to
-sign in and authorize the GitLab application (if confirmation required by the client). If everything goes well, the user
-is redirected to GitLab and signed in.
+   - With Omnibus, [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - From source, [restart GitLab](../restart_gitlab.md#installations-from-source).
+
+On the sign in page, you have an OpenID Connect option below the regular sign in form.
+Select this option to begin the authentication process. The OpenID Connect provider
+asks you to sign in and authorize the GitLab application if confirmation is required
+by the client. You are redirected to GitLab and signed in.
 
 ## Example configurations
 
 The following configurations illustrate how to set up OpenID with
 different providers with Omnibus GitLab.
 
-### Google
+### Configure Google
 
 See the [Google documentation](https://developers.google.com/identity/protocols/oauth2/openid-connect)
 for more details:
@@ -156,13 +178,13 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-### Microsoft Azure
+### Configure Microsoft Azure
 
 The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
-To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app, you need the
-following information:
+To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app,
+you need the following information:
 
-- A tenant ID. You may already have one. For more information, review the
+- A tenant ID. You may already have one. For more information, see the
   [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
   [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
@@ -195,10 +217,10 @@ gitlab_rails['omniauth_providers'] = [
 
 Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc).
 
-### Microsoft Azure Active Directory B2C
+### Configure Microsoft Azure Active Directory B2C
 
-While GitLab works with [Azure Active Directory B2C](https://learn.microsoft.com/en-us/azure/active-directory-b2c/overview), it requires special
-configuration to work. To get started, sign in to the [Azure Portal](https://portal.azure.com).
+GitLab requires special
+configuration to work with [Azure Active Directory B2C](https://learn.microsoft.com/en-us/azure/active-directory-b2c/overview). To get started, sign in to the [Azure Portal](https://portal.azure.com).
 For your app, you need the following information from Azure:
 
 - A tenant ID. You may already have one. For more information, review the
@@ -208,16 +230,17 @@ For your app, you need the following information from Azure:
   client ID and client secret for your app.
 - The user flow or policy name. Follow the instructions in the [Microsoft tutorial](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-user-flow).
 
-If your GitLab domain is `gitlab.example.com`, ensure the app has the following `Redirect URI`:
+Configure the app:
 
-`https://gitlab.example.com/users/auth/openid_connect/callback`
+1. Set the app `Redirect URI`. For example, If your GitLab domain is `gitlab.example.com`,
+   set the app `Redirect URI` to `https://gitlab.example.com/users/auth/openid_connect/callback`.
 
-In addition, ensure that [ID tokens are enabled](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga#enable-id-token-implicit-grant).
+1. [Enable the ID tokens](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga#enable-id-token-implicit-grant).
 
-Add the following API permissions to the app:
+1. Add the following API permissions to the app:
 
-- `openid`
-- `offline_access`
+   - `openid`
+   - `offline_access`
 
 #### Configure custom policies
 
@@ -226,16 +249,17 @@ Azure B2C [offers two ways of defining the business logic for logging in a user]
 - [User flows](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#user-flows)
 - [Custom policies](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#custom-policies)
 
-While cumbersome to configure, custom policies are required because
-standard Azure B2C user flows [do not send the OpenID `email` claim](https://github.com/MicrosoftDocs/azure-docs/issues/16566). In
-other words, they do not work with the [`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#configure-initial-settings).
+Custom policies are required because standard Azure B2C user flows
+[do not send the OpenID `email` claim](https://github.com/MicrosoftDocs/azure-docs/issues/16566).
+Therefore, the standard user flows do not work with the
+[`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#configure-initial-settings).
 With a standard Azure B2C policy, GitLab cannot create a new account or
-link to an existing one with an email address.
+link to an existing account with an email address.
 
-Carefully follow the instructions for [creating a custom policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
+First, [create a custom policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
 
 The Microsoft instructions use `SocialAndLocalAccounts` in the [custom policy starter pack](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#custom-policy-starter-pack),
-but `LocalAccounts` works for authenticating against local, Active Directory accounts. Before you follow the instructions to [upload the polices](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies), do the following:
+but `LocalAccounts` authenticates against local Active Directory accounts. Before you [upload the polices](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies), do the following:
 
 1. To export the `email` claim, modify the `SignUpOrSignin.xml`. Replace the following line:
 
@@ -249,7 +273,7 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
    <OutputClaim ClaimTypeReferenceId="signInNames.emailAddress" PartnerClaimType="email" />
    ```
 
-1. For OIDC discovery to work with B2C, the policy must be configured with an issuer compatible with the
+1. For OIDC discovery to work with B2C, configure the policy with an issuer compatible with the
   [OIDC specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
    See the [token compatibility settings](https://learn.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
    In `TrustFrameworkBase.xml` under `JwtIssuer`, set `IssuanceClaimPattern` to `AuthorityWithTfp`:
@@ -267,10 +291,10 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
            ...
    ```
 
-1. Now [upload the policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies). Overwrite
+1. [Upload the policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#upload-the-policies). Overwrite
    the existing files if you are updating an existing policy.
 
-1. Determine the issuer URL using the sign-in policy. The issuer URL is in the form:
+1. To determine the issuer URL, use the sign-in policy. The issuer URL is in the form:
 
    ```markdown
    https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/
@@ -279,10 +303,10 @@ but `LocalAccounts` works for authenticating against local, Active Directory acc
    The policy name is lowercase in the URL. For example, `B2C_1A_signup_signin`
    policy appears as `b2c_1a_signup_sigin`.
 
-The trailing forward slash is required.
+   Ensure you include the trailing forward slash.
 
-1. Verify the operation of the OIDC discovery URL and issuer URL, append `.well-known/openid-configuration`
-   to the issuer URL:
+1. Verify the operation of the OIDC discovery URL and issuer URL and append
+   `.well-known/openid-configuration` to the issuer URL:
 
    ```markdown
    https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/<YOUR-SIGN-IN-POLICY-NAME>/v2.0/.well-known/openid-configuration
@@ -327,32 +351,34 @@ The trailing forward slash is required.
 - Ensure all occurrences of `yourtenant.onmicrosoft.com`, `ProxyIdentityExperienceFrameworkAppId`, and `IdentityExperienceFrameworkAppId` match your B2C tenant hostname and
   the respective client IDs in the XML policy files.
 - Add `https://jwt.ms` as a redirect URI to the app, and use the [custom policy tester](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#test-the-custom-policy).
-  Make sure the payload includes `email` that matches the user's email access.
-- After you enable the custom policy, users might see "Invalid username or password" after they try to sign in. This might be a configuration
-  issue with the `IdentityExperienceFramework` app. See [this Microsoft comment](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370)
-  that suggests checking that the app manifest contains these settings:
+  Ensure the payload includes `email` that matches the user's email access.
+- After you enable the custom policy, users might see `Invalid username or password`
+  after they try to sign in. This might be a configuration issue with the `IdentityExperienceFramework`
+  app. See [this Microsoft comment](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy.html?childToView=122370#comment-122370) that suggests you check that the app manifest
+  contains these settings:
 
   - `"accessTokenAcceptedVersion": null`
   - `"signInAudience": "AzureADMyOrg"`
 
 This configuration corresponds with the `Supported account types` setting used when
-  creating the `IdentityExperienceFramework` app.
+creating the `IdentityExperienceFramework` app.
 
-### Keycloak
+### Configure Keycloak
 
-GitLab works with OpenID providers that use HTTPS. Although a Keycloak
-server can be set up using HTTP, GitLab can only communicate
-with a Keycloak server that uses HTTPS.
+GitLab works with OpenID providers that use HTTPS. Although you can set up a
+Keycloak server that uses HTTP, GitLab can only communicate with a Keycloak server
+that uses HTTPS.
 
-We highly recommend configuring Keycloak to use public key encryption algorithms (for example,
-RSA256, RSA512, and so on) instead of symmetric key encryption algorithms (for example, HS256 or HS358) to
-sign tokens. Public key encryption algorithms are:
+Configure Keycloak to use public key encryption algorithms (for example,
+RSA256 or RSA512) instead of symmetric key encryption algorithms (for example,
+HS256 or HS358) to sign tokens. Public key encryption algorithms are:
 
 - Easier to configure.
 - More secure because leaking the private key has severe security consequences.
 
-The signature algorithm can be configured in the Keycloak administration console under
-**Realm Settings > Tokens > Default Signature Algorithm**.
+1. Open the Keycloak administration console.
+1. Select **Realm Settings > Tokens > Default Signature Algorithm**.
+1. Configure the signature algorithm.
 
 Example Omnibus configuration block:
 
@@ -384,37 +410,39 @@ gitlab_rails['omniauth_providers'] = [
 > Introduced in GitLab 14.2.
 
 WARNING:
-The instructions below are included for completeness, but symmetric key
-encryption should only be used when absolutely necessary.
+The following instructions are included for completeness, but only use symmetric key
+encryption if absolutely necessary.
 
 To use symmetric key encryption:
 
-1. Extract the secret key from the Keycloak database. Keycloak doesn't expose this value in the Web
-   interface. The client secret seen in the Web interface is the OAuth2 client secret, which is
-   different from the secret used to sign JSON Web Tokens.
+1. Extract the secret key from the Keycloak database. Keycloak does not expose this
+   value in the web interface. The client secret seen in the web interface is the
+   OAuth 2.0 client secret, which is different from the secret used to sign JSON Web Tokens.
 
-   For example, if you're using PostgreSQL as the backend database for Keycloak, log in to the
-   database console and extract the key via this SQL query:
+   For example, if you use PostgreSQL as the backend database for Keycloak:
 
-   ```sql
-   $ psql -U keycloak
-   psql (13.3 (Debian 13.3-1.pgdg100+1))
-   Type "help" for help.
+   - Sign into the database console.
+   - Run the following SQL query to extract the key:
 
-   keycloak=# SELECT c.name, value FROM component_config CC INNER JOIN component C ON(CC.component_id = C.id) WHERE C.realm_id = 'master' and provider_id = 'hmac-generated' AND CC.name = 'secret';
-   -[ RECORD 1 ]---------------------------------------------------------------------------------
-   name  | hmac-generated
-   value | lo6cqjD6Ika8pk7qc3fpFx9ysrhf7E62-sqGc8drp3XW-wr93zru8PFsQokHZZuJJbaUXvmiOftCZM3C4KW3-g
-   -[ RECORD 2 ]---------------------------------------------------------------------------------
-   name  | fallback-HS384
-   value | UfVqmIs--U61UYsRH-NYBH3_mlluLONpg_zN7CXEwkJcO9xdRNlzZfmfDLPtf2xSTMvqu08R2VhLr-8G-oZ47A
-   ```
+     ```sql
+     $ psql -U keycloak
+     psql (13.3 (Debian 13.3-1.pgdg100+1))
+     Type "help" for help.
 
-   In this example, there are two private keys: one for HS256 (`hmac-generated`), and another for
-   HS384 (`fallback-HS384`). We use the first `value` to configure GitLab.
+     keycloak=# SELECT c.name, value FROM component_config CC INNER JOIN component C ON(CC.component_id = C.id) WHERE C.realm_id = 'master' and provider_id = 'hmac-generated' AND CC.name = 'secret';
+     -[ RECORD 1 ]---------------------------------------------------------------------------------
+     name  | hmac-generated
+     value | lo6cqjD6Ika8pk7qc3fpFx9ysrhf7E62-sqGc8drp3XW-wr93zru8PFsQokHZZuJJbaUXvmiOftCZM3C4KW3-g
+     -[ RECORD 2 ]---------------------------------------------------------------------------------
+     name  | fallback-HS384
+     value | UfVqmIs--U61UYsRH-NYBH3_mlluLONpg_zN7CXEwkJcO9xdRNlzZfmfDLPtf2xSTMvqu08R2VhLr-8G-oZ47A
+     ```
 
-1. Convert `value` to standard base64. As [discussed in the post](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9),
-   `value` is encoded in ["Base 64 Encoding with URL and Filename Safe Alphabet" in RFC 4648](https://datatracker.ietf.org/doc/html/rfc4648#section-5).
+     In this example, there are two private keys: one for HS256 (`hmac-generated`)
+     and another for HS384 (`fallback-HS384`). We use the first `value` to configure GitLab.
+
+1. Convert `value` to standard base64. As discussed in the [**Invalid signature with HS256 token** post](https://keycloak.discourse.group/t/invalid-signature-with-hs256-token/3228/9),
+   `value` is encoded in the [**Base 64 Encoding with URL and Filename Safe Alphabet** section](https://datatracker.ietf.org/doc/html/rfc4648#section-5) of RFC 4648.
    This must be converted to [standard base64 as defined in RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045).
    The following Ruby script does this:
 
@@ -457,17 +485,19 @@ To use symmetric key encryption:
    ]
    ```
 
-If after reconfiguring, you see the error `JSON::JWS::VerificationFailed` error message, this means
-the incorrect secret was specified.
+If you see a `JSON::JWS::VerificationFailed` error,
+you have specified the wrong secret.
 
 ### Casdoor
 
-GitLab works with OpenID providers that use HTTPS. To connect to GitLab using OpenID with Casdoor, use HTTPS instead of HTTP.
+GitLab works with OpenID providers that use HTTPS. Use HTTPS to connect to GitLab
+through OpenID with Casdoor.
 
 For your app, complete the following steps on Casdoor:
 
 1. Get a client ID and a client secret.
-1. Add your GitLab redirect URL. For example, if your GitLab domain is `gitlab.example.com`, ensure the Casdoor app has the following
+1. Add your GitLab redirect URL. For example, if your GitLab domain is `gitlab.example.com`,
+   ensure the Casdoor app has the following
    `Redirect URI`: `https://gitlab.example.com/users/auth/openid_connect/callback`.
 
 See the [Casdoor documentation](https://casdoor.org/docs/integration/gitlab) for more details.
@@ -519,23 +549,21 @@ Example installations from source configuration (file path: `config/gitlab.yml`)
     }
 ```
 
-## General troubleshooting
+## Troubleshooting
 
-If you're having trouble, here are some tips:
-
-1. Ensure `discovery` is set to `true`. Setting it to `false` requires
-   specifying all the URLs and keys required to make OpenID work.
+1. Ensure `discovery` is set to `true`. If you set it to `false`, you must
+   specify all the URLs and keys required to make OpenID work.
 
 1. Check your system clock to ensure the time is synchronized properly.
 
-1. As mentioned in [the documentation](https://github.com/m0n9oose/omniauth_openid_connect),
+1. As mentioned in [the OmniAuth OpenID Connect documentation](https://github.com/m0n9oose/omniauth_openid_connect),
    make sure `issuer` corresponds to the base URL of the Discovery URL. For
    example, `https://accounts.google.com` is used for the URL
    `https://accounts.google.com/.well-known/openid-configuration`.
 
 1. The OpenID Connect client uses HTTP Basic Authentication to send the
-   OAuth2 access token if `client_auth_method` is not defined or if set to `basic`.
-   If you are seeing 401 errors upon retrieving the `userinfo` endpoint, you may
-   want to check your OpenID Web server configuration. For example, for
-   [`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php), you may need to
+   OAuth 2.0 access token if `client_auth_method` is not defined or if set to `basic`.
+   If you see 401 errors when retrieving the `userinfo` endpoint, check
+   your OpenID web server configuration. For example, for
+   [`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php), you may have to
    [add a configuration parameter to Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).

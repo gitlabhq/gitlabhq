@@ -4,7 +4,7 @@ import { isNull } from 'lodash';
 import Mousetrap from 'mousetrap';
 import { ApolloMutation } from 'vue-apollo';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -250,7 +250,7 @@ export default {
     onQueryError(message) {
       // because we redirect user to /designs (the issue page),
       // we want to create these flashes on the issue page
-      createFlash({ message });
+      createAlert({ message });
       this.$router.push({ name: this.$options.DESIGNS_ROUTE_NAME });
     },
     onError(message, e) {

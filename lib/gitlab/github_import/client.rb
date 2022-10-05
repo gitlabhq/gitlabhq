@@ -183,7 +183,7 @@ module Gitlab
       end
 
       def search_query(str:, type:, include_collaborations: true, include_orgs: true)
-        query = "#{str} in:#{type} is:public,private user:#{octokit.user.login}"
+        query = "#{str} in:#{type} is:public,private user:#{octokit.user.to_h[:login]}"
 
         query = [query, collaborations_subquery].join(' ') if include_collaborations
         query = [query, organizations_subquery].join(' ') if include_orgs
@@ -274,13 +274,13 @@ module Gitlab
 
       def collaborations_subquery
         each_object(:repos, nil, { affiliation: 'collaborator' })
-          .map { |repo| "repo:#{repo.full_name}" }
+          .map { |repo| "repo:#{repo[:full_name]}" }
           .join(' ')
       end
 
       def organizations_subquery
         each_object(:organizations)
-          .map { |org| "org:#{org.login}" }
+          .map { |org| "org:#{org[:login]}" }
           .join(' ')
       end
 

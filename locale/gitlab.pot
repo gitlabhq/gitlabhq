@@ -3458,7 +3458,19 @@ msgstr ""
 msgid "AdvancedSearch|Elasticsearch version not compatible"
 msgstr ""
 
+msgid "AdvancedSearch|Introduced in GitLab 13.1, before using %{reindexing_link_start}zero-downtime reindexing%{link_end} and %{migrations_link_start}Advanced Search migrations%{link_end}, you need to %{recreate_link_start}recreate your index%{link_end}."
+msgstr ""
+
+msgid "AdvancedSearch|Pause indexing and upgrade Elasticsearch to a supported version."
+msgstr ""
+
+msgid "AdvancedSearch|Reindex recommended"
+msgstr ""
+
 msgid "AdvancedSearch|Reindex required"
+msgstr ""
+
+msgid "AdvancedSearch|You are using outdated code search mappings. To improve code search quality, we recommend you use %{reindexing_link_start}zero-downtime reindexing%{link_end} or %{recreate_link_start}re-create your index%{link_end}."
 msgstr ""
 
 msgid "After a successful password update you will be redirected to login screen."
@@ -19470,7 +19482,7 @@ msgstr ""
 msgid "Harbor Registry"
 msgstr ""
 
-msgid "HarborIntegration|After the Harbor integration is activated, global variables $HARBOR_USERNAME, $HARBOR_HOST, $HARBOR_OCI, $HARBOR_PASSWORD, $HARBOR_URL and $HARBOR_PROJECT will be created for CI/CD use."
+msgid "HarborIntegration|After the Harbor integration is activated, global variables `$HARBOR_USERNAME`, `$HARBOR_HOST`, `$HARBOR_OCI`, `$HARBOR_PASSWORD`, `$HARBOR_URL` and `$HARBOR_PROJECT` will be created for CI/CD use."
 msgstr ""
 
 msgid "HarborIntegration|Base URL of the Harbor instance."
@@ -21836,9 +21848,6 @@ msgid "Interval"
 msgstr ""
 
 msgid "Interval Pattern"
-msgstr ""
-
-msgid "Introduced in GitLab 13.1, before using %{reindexing_link_start}zero-downtime reindexing%{link_end} and %{migrations_link_start}Advanced Search migrations%{link_end}, you need to %{recreate_link_start}recreate your index%{link_end}."
 msgstr ""
 
 msgid "Introducing Your DevOps Reports"
@@ -29023,9 +29032,6 @@ msgid "Paths to protect with rate limiting"
 msgstr ""
 
 msgid "Pause"
-msgstr ""
-
-msgid "Pause indexing and upgrade Elasticsearch to a supported version."
 msgstr ""
 
 msgid "Pause time (ms)"

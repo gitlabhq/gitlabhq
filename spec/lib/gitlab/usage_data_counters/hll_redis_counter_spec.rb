@@ -105,7 +105,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'ci_templates',
         'quickactions',
         'pipeline_authoring',
-        'epics_usage',
         'secure',
         'importer',
         'geo',

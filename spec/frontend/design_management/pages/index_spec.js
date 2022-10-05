@@ -29,7 +29,7 @@ import {
   DESIGN_TRACKING_PAGE_NAME,
   DESIGN_SNOWPLOW_EVENT_TYPES,
 } from '~/design_management/utils/tracking';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
   designListQueryResponse,
@@ -808,7 +808,7 @@ describe('Design management index page', () => {
       await moveDesigns(wrapper);
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({ message: 'Houston, we have a problem' });
+      expect(createAlert).toHaveBeenCalledWith({ message: 'Houston, we have a problem' });
     });
 
     it('displays alert if mutation had a non-recoverable error', async () => {

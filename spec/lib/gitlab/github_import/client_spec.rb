@@ -591,11 +591,11 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe 'search' do
     let(:client) { described_class.new('foo') }
-    let(:user) { double(:user, login: 'user') }
-    let(:org1) { double(:org, login: 'org1') }
-    let(:org2) { double(:org, login: 'org2') }
-    let(:repo1) { double(:repo, full_name: 'repo1') }
-    let(:repo2) { double(:repo, full_name: 'repo2') }
+    let(:user) { { login: 'user' } }
+    let(:org1) { { login: 'org1' } }
+    let(:org2) { { login: 'org2' } }
+    let(:repo1) { { full_name: 'repo1' } }
+    let(:repo2) { { full_name: 'repo2' } }
 
     before do
       allow(client)

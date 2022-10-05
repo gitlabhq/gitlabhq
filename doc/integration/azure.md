@@ -13,7 +13,7 @@ or the provider that uses the v2.0 endpoint.
 
 NOTE:
 For new projects, Microsoft suggests you use the
-[OpenID Connect protocol](../administration/auth/oidc.md#microsoft-azure),
+[OpenID Connect protocol](../administration/auth/oidc.md#configure-microsoft-azure),
 which uses the Microsoft identity platform (v2.0) endpoint.
 
 ## Register an Azure application

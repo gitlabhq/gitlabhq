@@ -182,6 +182,7 @@
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
+  - "spec/support/gitlab-git-test.git/**/*"
 
 .yaml-lint-patterns: &yaml-lint-patterns
   - "*.yml"

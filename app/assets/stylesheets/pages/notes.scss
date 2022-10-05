@@ -551,6 +551,11 @@ $system-note-svg-size: 1rem;
       .timeline-icon {
         margin-top: -2px;
       }
+
+      .timeline-entry-inner .timeline-icon {
+        margin-top: $grid-size;
+        margin-left: 14px;
+      }
     }
   }
 

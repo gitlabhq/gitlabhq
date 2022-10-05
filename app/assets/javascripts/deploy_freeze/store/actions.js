@@ -1,5 +1,5 @@
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
@@ -27,7 +27,7 @@ const receiveFreezePeriod = (store, request) => {
       dispatch('fetchFreezePeriods');
     })
     .catch((error) => {
-      createFlash({
+      createAlert({
         message: __('Error: Unable to create deploy freeze'),
       });
       dispatch('receiveFreezePeriodError', error);
@@ -59,7 +59,7 @@ export const deleteFreezePeriod = ({ state, commit }, { id }) => {
   return Api.deleteFreezePeriod(state.projectId, id)
     .then(() => commit(types.RECEIVE_DELETE_FREEZE_PERIOD_SUCCESS, id))
     .catch((e) => {
-      createFlash({
+      createAlert({
         message: __('Error: Unable to delete deploy freeze'),
       });
       commit(types.RECEIVE_DELETE_FREEZE_PERIOD_ERROR, id);
@@ -76,7 +76,7 @@ export const fetchFreezePeriods = ({ commit, state }) => {
       commit(types.RECEIVE_FREEZE_PERIODS_SUCCESS, data);
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: __('There was an error fetching the deploy freezes.'),
       });
     });
