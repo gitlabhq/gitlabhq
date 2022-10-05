@@ -4,12 +4,17 @@ module BulkImports
   class NetworkError < Error
     COUNTER_KEY = 'bulk_imports/%{entity_id}/%{stage}/%{tracker_id}/network_error/%{error}'
 
-    RETRIABLE_EXCEPTIONS = Gitlab::HTTP::HTTP_TIMEOUT_ERRORS
+    RETRIABLE_EXCEPTIONS = Gitlab::HTTP::HTTP_TIMEOUT_ERRORS + [
+      EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
+      Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH
+    ].freeze
     RETRIABLE_HTTP_CODES = [429].freeze
 
     DEFAULT_RETRY_DELAY_SECONDS = 30
 
     MAX_RETRIABLE_COUNT = 10
+
+    attr_reader :response
 
     def initialize(message = nil, response: nil)
       raise ArgumentError, 'message or response required' if message.blank? && response.blank?
@@ -36,8 +41,6 @@ module BulkImports
     end
 
     private
-
-    attr_reader :response
 
     def retriable_exception?
       RETRIABLE_EXCEPTIONS.include?(cause&.class)

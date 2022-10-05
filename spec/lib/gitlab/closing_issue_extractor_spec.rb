@@ -298,7 +298,7 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
 
       context 'with an external issue tracker reference' do
         it 'extracts the referenced issue' do
-          jira_project = create(:jira_project, name: 'JIRA_EXT1')
+          jira_project = create(:project, :with_jira_integration, name: 'JIRA_EXT1')
           jira_project.add_maintainer(jira_project.creator)
           jira_issue = ExternalIssue.new("#{jira_project.name}-1", project: jira_project)
           closing_issue_extractor = described_class.new(jira_project, jira_project.creator)

@@ -8,7 +8,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
   include PrometheusHelpers
   include ReactiveCachingHelpers
 
-  let_it_be_with_reload(:project) { create(:prometheus_project) }
+  let_it_be_with_reload(:project) { create(:project, :with_prometheus_integration) }
 
   let(:integration) { project.prometheus_integration }
 
@@ -318,7 +318,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       context 'cluster belongs to projects group' do
         let_it_be(:group) { create(:group) }
 
-        let(:project) { create(:prometheus_project, group: group) }
+        let(:project) { create(:project, :with_prometheus_integration, group: group) }
         let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
         it 'returns true' do

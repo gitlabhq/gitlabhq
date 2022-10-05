@@ -17083,6 +17083,9 @@ msgstr ""
 msgid "Framework successfully deleted"
 msgstr ""
 
+msgid "Free"
+msgstr ""
+
 msgid "Free Trial of GitLab.com Ultimate"
 msgstr ""
 
@@ -17722,6 +17725,9 @@ msgid "Geo|There was an error saving this Geo Site"
 msgstr ""
 
 msgid "Geo|There was an error updating the Geo Settings"
+msgstr ""
+
+msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tier. Geo is only available for users who have at least a Premium subscription."
 msgstr ""
 
 msgid "Geo|This will resync all %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
@@ -24481,10 +24487,10 @@ msgstr ""
 msgid "Manage two-factor authentication"
 msgstr ""
 
-msgid "Manage your license"
+msgid "Manage your project's triggers"
 msgstr ""
 
-msgid "Manage your project's triggers"
+msgid "Manage your subscription"
 msgstr ""
 
 msgid "Managed Account"
@@ -40833,9 +40839,6 @@ msgstr ""
 msgid "This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area."
 msgstr ""
 
-msgid "This GitLab instance is licensed at the %{insufficient_license} tier. Geo is only available for users who have at least a Premium license."
-msgstr ""
-
 msgid "This PDF is too large to display. Please download to view."
 msgstr ""
 
@@ -44121,6 +44124,9 @@ msgid "View blame"
 msgstr ""
 
 msgid "View blame prior to this change"
+msgstr ""
+
+msgid "View card matches"
 msgstr ""
 
 msgid "View chart"
@@ -48268,9 +48274,6 @@ msgid "or"
 msgstr ""
 
 msgid "organizations can only be added to root groups"
-msgstr ""
-
-msgid "other card matches"
 msgstr ""
 
 msgid "out of %d total test"

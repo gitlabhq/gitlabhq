@@ -44,6 +44,11 @@ module BulkImports
           wikis = client.get(context.entity.wikis_url_path).parsed_response
 
           wikis.any?
+        rescue BulkImports::NetworkError => e
+          # 403 is returned when wiki is disabled in settings
+          return if e.response&.forbidden? || e.response&.not_found?
+
+          raise
         end
 
         def client

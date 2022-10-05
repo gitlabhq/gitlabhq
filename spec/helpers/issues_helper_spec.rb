@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe IssuesHelper do
   let(:project) { create(:project) }
-  let(:issue) { create :issue, project: project }
-  let(:ext_project) { create :redmine_project }
+  let(:issue) { create(:issue, project: project) }
+  let(:ext_project) { create(:project, :with_redmine_integration) }
 
   describe '#work_item_type_icon' do
     it 'returns icon of all standard base types' do

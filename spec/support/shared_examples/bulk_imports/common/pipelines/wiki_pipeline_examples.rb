@@ -57,5 +57,53 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
         expect(tracker.entity.failures.first.exception_message).to eq('Only allowed schemes are http, https')
       end
     end
+
+    context 'when wiki is disabled' do
+      before do
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          allow(client)
+            .to receive(:get)
+            .and_raise(
+              BulkImports::NetworkError.new(
+                'Unsuccessful response 403 from ...',
+                response: response_double
+              )
+            )
+        end
+      end
+
+      describe 'unsuccessful response' do
+        shared_examples 'does not raise an error' do
+          it 'does not raise an error' do
+            expect(parent.wiki).not_to receive(:ensure_repository)
+            expect(parent.wiki.repository).not_to receive(:ensure_repository)
+
+            expect { subject.run }.not_to raise_error
+          end
+        end
+
+        context 'when response is forbidden' do
+          let(:response_double) { instance_double(HTTParty::Response, forbidden?: true, code: 403) }
+
+          include_examples 'does not raise an error'
+        end
+
+        context 'when response is not found' do
+          let(:response_double) { instance_double(HTTParty::Response, forbidden?: false, not_found?: true) }
+
+          include_examples 'does not raise an error'
+        end
+
+        context 'when response is not 403' do
+          let(:response_double) { instance_double(HTTParty::Response, forbidden?: false, not_found?: false, code: 301) }
+
+          it 'marks tracker as failed' do
+            subject.run
+
+            expect(tracker.failed?).to eq(true)
+          end
+        end
+      end
+    end
   end
 end

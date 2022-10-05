@@ -6,7 +6,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
   include MergeRequestDiffHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:merge_request) { create(:merge_request) }
+  let_it_be(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }
   let(:comment_button_class) { '.add-diff-note' }

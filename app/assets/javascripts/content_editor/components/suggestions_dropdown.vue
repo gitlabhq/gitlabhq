@@ -1,9 +1,10 @@
 <script>
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlAvatarLabeled } from '@gitlab/ui';
 
 export default {
   components: {
     GlDropdownItem,
+    GlAvatarLabeled,
   },
 
   props: {
@@ -144,6 +145,10 @@ export default {
         });
       }
     },
+
+    avatarSubLabel(item) {
+      return item.count ? `${item.name} (${item.count})` : item.name;
+    },
   },
 };
 </script>
@@ -161,18 +166,27 @@ export default {
         :class="{ 'gl-bg-gray-50': index === selectedIndex }"
         @click="selectItem(index)"
       >
-        <span v-if="isUser">
-          {{ item.username }}
-          <small>{{ item.name }}</small>
-        </span>
-        <span v-if="isIssue || isMergeRequest || isMilestone">
+        <gl-avatar-labeled
+          v-if="isUser"
+          :label="item.username"
+          :sub-label="avatarSubLabel(item)"
+          :src="item.avatar_url"
+          :entity-name="item.username"
+          :shape="item.type === 'Group' ? 'rect' : 'circle'"
+          :size="32"
+        />
+        <span v-if="isIssue || isMergeRequest">
           <small>{{ item.iid }}</small>
+          {{ item.title }}
+        </span>
+        <span v-if="isMilestone">
           {{ item.title }}
         </span>
         <div v-if="isEmoji" class="gl-display-flex gl-flex gl-align-items-center">
           <div class="gl-pr-4 gl-font-lg">{{ item.e }}</div>
           <div class="gl-flex-grow-1">
-            {{ item.name }}<br /><small>{{ item.d }}</small>
+            {{ item.name }}<br />
+            <small>{{ item.d }}</small>
           </div>
         </div>
       </gl-dropdown-item>

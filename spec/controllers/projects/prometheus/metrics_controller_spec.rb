@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Prometheus::MetricsController do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:prometheus_project) }
+  let_it_be(:project) { create(:project, :with_prometheus_integration) }
 
   let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 

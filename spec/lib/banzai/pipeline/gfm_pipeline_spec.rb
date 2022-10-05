@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Banzai::Pipeline::GfmPipeline do
   describe 'integration between parsing regular and external issue references' do
-    let(:project) { create(:redmine_project, :public) }
+    let(:project) { create(:project, :with_redmine_integration, :public) }
 
     context 'when internal issue tracker is enabled' do
       context 'when shorthand pattern #ISSUE_ID is used' do

@@ -3315,7 +3315,7 @@ RSpec.describe API::MergeRequests do
     end
 
     it 'handles external issues' do
-      jira_project = create(:jira_project, :public, :repository, name: 'JIR_EXT1')
+      jira_project = create(:project, :with_jira_integration, :public, :repository, name: 'JIR_EXT1')
       ext_issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
       issue = create(:issue, project: jira_project)
       description = "Closes #{ext_issue.to_reference(jira_project)}\ncloses #{issue.to_reference}"

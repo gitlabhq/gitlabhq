@@ -188,6 +188,25 @@ You must have the Owner role for the group.
 
 From this page, you can edit, pause, and remove runners from the group, its subgroups, and projects.
 
+#### Filter group runners to show only inherited
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337838/) in GitLab 15.5, [with a flag](../../administration/feature_flags.md) named `runners_finder_all_available`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `runners_finder_all_available`. On GitLab.com, this feature is not available.
+
+You can choose to show all runners in the list, or show only
+those that are inherited from the instance or other groups.
+
+By default, only those that are inherited are shown.
+
+To show all runners available in the instance, including shared runners and
+those in other groups:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. Above the list, turn off the **Show only inherited** toggle.
+
 ### Pause or remove a group runner
 
 You can pause or remove a group runner for your self-managed GitLab instance or for GitLab.com.

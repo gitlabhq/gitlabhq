@@ -151,6 +151,18 @@ RSpec.describe BulkImports::Entity, type: :model do
         expect(entity).to be_valid
       end
     end
+
+    context 'when bulk_import_projects feature flag is enabled on root ancestor level and source_type is a project_entity' do
+      it 'is valid' do
+        top_level_namespace = create(:group)
+
+        stub_feature_flags(bulk_import_projects: top_level_namespace)
+
+        entity = build(:bulk_import_entity, :project_entity, destination_namespace: top_level_namespace.full_path)
+
+        expect(entity).to be_valid
+      end
+    end
   end
 
   describe '#encoded_source_full_path' do

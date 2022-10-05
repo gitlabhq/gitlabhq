@@ -1415,7 +1415,7 @@ RSpec.describe Project, factory_default: :keep do
 
     it "is false if used other tracker" do
       # NOTE: The current nature of this factory requires persistence
-      project = create(:redmine_project)
+      project = create(:project, :with_redmine_integration)
 
       expect(project.default_issues_tracker?).to be_falsey
     end
@@ -1460,7 +1460,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '#external_issue_tracker' do
     it 'sets Project#has_external_issue_tracker when it is nil' do
       project_with_no_tracker = create(:project, has_external_issue_tracker: nil)
-      project_with_tracker = create(:redmine_project, has_external_issue_tracker: nil)
+      project_with_tracker = create(:project, :with_redmine_integration, has_external_issue_tracker: nil)
 
       expect do
         project_with_no_tracker.external_issue_tracker
@@ -1479,7 +1479,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
-      project = create(:redmine_project)
+      project = create(:project, :with_redmine_integration)
 
       expect(project).to receive(:integrations).once.and_call_original
       2.times { expect(project.external_issue_tracker).to be_a_kind_of(Integrations::Redmine) }
@@ -5750,40 +5750,40 @@ RSpec.describe Project, factory_default: :keep do
   describe '#has_active_hooks?' do
     let_it_be_with_refind(:project) { create(:project) }
 
-    it { expect(project.has_active_hooks?).to be_falsey }
+    it { expect(project.has_active_hooks?).to eq(false) }
 
     it 'returns true when a matching push hook exists' do
       create(:project_hook, push_events: true, project: project)
 
-      expect(project.has_active_hooks?(:merge_request_events)).to be_falsey
-      expect(project.has_active_hooks?).to be_truthy
+      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(false)
+      expect(project.has_active_hooks?).to eq(true)
     end
 
     it 'returns true when a matching system hook exists' do
       create(:system_hook, push_events: true)
 
-      expect(project.has_active_hooks?(:merge_request_events)).to be_falsey
-      expect(project.has_active_hooks?).to be_truthy
+      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(false)
+      expect(project.has_active_hooks?).to eq(true)
     end
 
     it 'returns true when a plugin exists' do
       expect(Gitlab::FileHook).to receive(:any?).twice.and_return(true)
 
-      expect(project.has_active_hooks?(:merge_request_events)).to be_truthy
-      expect(project.has_active_hooks?).to be_truthy
+      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(true)
+      expect(project.has_active_hooks?).to eq(true)
     end
   end
 
   describe '#has_active_integrations?' do
     let_it_be(:project) { create(:project) }
 
-    it { expect(project.has_active_integrations?).to be_falsey }
+    it { expect(project.has_active_integrations?).to eq(false) }
 
     it 'returns true when a matching service exists' do
       create(:custom_issue_tracker_integration, push_events: true, merge_requests_events: false, project: project)
 
-      expect(project.has_active_integrations?(:merge_request_hooks)).to be_falsey
-      expect(project.has_active_integrations?).to be_truthy
+      expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
+      expect(project.has_active_integrations?).to eq(true)
     end
   end
 

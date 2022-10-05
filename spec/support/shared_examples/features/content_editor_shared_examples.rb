@@ -245,11 +245,12 @@ RSpec.shared_examples 'edits content using the content editor' do
       type_in_content_editor :enter
     end
 
-    it 'shows suggestions for members' do
+    it 'shows suggestions for members with descriptions' do
       type_in_content_editor '@a'
 
       expect(find(suggestions_dropdown)).to have_text('abc123')
       expect(find(suggestions_dropdown)).to have_text('all')
+      expect(find(suggestions_dropdown)).to have_text('Group Members (2)')
 
       send_keys [:arrow_down, :enter]
 

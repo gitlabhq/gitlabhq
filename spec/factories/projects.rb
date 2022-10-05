@@ -429,6 +429,24 @@ FactoryBot.define do
     error_tracking_setting { association :project_error_tracking_setting }
   end
 
+  trait :with_redmine_integration do
+    has_external_issue_tracker { true }
+
+    redmine_integration
+  end
+
+  trait :with_jira_integration do
+    has_external_issue_tracker { true }
+
+    jira_integration
+  end
+
+  trait :with_prometheus_integration do
+    after :create do |project|
+      create(:prometheus_integration, project: project)
+    end
+  end
+
   # Project with empty repository
   #
   # This is a case when you just created a project
@@ -453,42 +471,6 @@ FactoryBot.define do
       repo = Gitlab::GlRepository::PROJECT.repository_for(project).raw
       repo.create_from_bundle(TestEnv.forked_repo_bundle_path)
     end
-  end
-
-  factory :redmine_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    redmine_integration
-  end
-
-  factory :youtrack_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    youtrack_integration
-  end
-
-  factory :jira_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    jira_integration
-  end
-
-  factory :prometheus_project, parent: :project do
-    after :create do |project|
-      project.create_prometheus_integration(
-        active: true,
-        properties: {
-          api_url: 'https://prometheus.example.com/',
-          manual_configuration: true
-        }
-      )
-    end
-  end
-
-  factory :ewm_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    ewm_integration
   end
 
   factory :project_with_design, parent: :project do

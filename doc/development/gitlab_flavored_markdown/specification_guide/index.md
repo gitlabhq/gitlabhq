@@ -889,6 +889,22 @@ aspects of the automated GLFM scripts and processes. They are located at
 
 See the main [specification files](#specification-files) section for more context and details.
 
+##### Configuration file validation
+
+All of the manually curated example names in the configuration files must correspond to
+an existing [Markdown example](#markdown-examples) name found in
+[`example_snapshots/examples_index.yml`](#glfm_specificationexample_snapshotsexamples_indexyml),
+which is automatically generated based on the [input specification files](#input-specification-files).
+
+If there is an invalid reference to an example name that does not exist, the
+[`scripts/glfm/update-example-snapshots.rb`](#update-example-snapshotsrb-script)
+script fails with a descriptive error.
+
+The only exceptions to this validation are example names beginning with `00_`, which are reserved
+for [YAML aliases](https://yaml.org/spec/1.2.2/#692-node-anchors).
+See the section on [`glfm_example_normalizations.yml`](#glfm_example_normalizationsyml)
+for more details and examples.
+
 ##### `glfm_example_status.yml`
 
 [`glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml)

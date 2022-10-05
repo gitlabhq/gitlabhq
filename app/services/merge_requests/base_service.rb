@@ -58,7 +58,7 @@ module MergeRequests
       new_reviewers = merge_request.reviewers - old_reviewers
       merge_request_activity_counter.track_users_review_requested(users: new_reviewers)
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
-      GraphqlTriggers.merge_request_reviewers_updated(merge_request)
+      trigger_merge_request_reviewers_updated(merge_request)
     end
 
     def cleanup_environments(merge_request)
@@ -244,6 +244,10 @@ module MergeRequests
       return unless milestone
 
       Milestones::MergeRequestsCountService.new(milestone).delete_cache
+    end
+
+    def trigger_merge_request_reviewers_updated(merge_request)
+      GraphqlTriggers.merge_request_reviewers_updated(merge_request)
     end
   end
 end
