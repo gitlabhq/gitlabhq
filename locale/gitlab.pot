@@ -13518,25 +13518,22 @@ msgstr ""
 msgid "DesignManagement|Are you sure you want to archive the selected designs?"
 msgstr ""
 
-msgid "DesignManagement|Are you sure you want to cancel changes to this comment?"
-msgstr ""
-
 msgid "DesignManagement|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
-msgid "DesignManagement|Cancel changes"
-msgstr ""
-
-msgid "DesignManagement|Cancel comment confirmation"
-msgstr ""
-
-msgid "DesignManagement|Cancel comment update confirmation"
+msgid "DesignManagement|Are you sure you want to cancel editing this comment?"
 msgstr ""
 
 msgid "DesignManagement|Click the image where you'd like to start a new discussion"
 msgstr ""
 
 msgid "DesignManagement|Comment"
+msgstr ""
+
+msgid "DesignManagement|Continue creating"
+msgstr ""
+
+msgid "DesignManagement|Continue editing"
 msgstr ""
 
 msgid "DesignManagement|Could not add a new comment. Please try again."
@@ -13557,7 +13554,7 @@ msgstr ""
 msgid "DesignManagement|Designs"
 msgstr ""
 
-msgid "DesignManagement|Discard comment"
+msgid "DesignManagement|Discard changes"
 msgstr ""
 
 msgid "DesignManagement|Discussion"
@@ -13576,12 +13573,6 @@ msgid "DesignManagement|Go to next design"
 msgstr ""
 
 msgid "DesignManagement|Go to previous design"
-msgstr ""
-
-msgid "DesignManagement|Keep changes"
-msgstr ""
-
-msgid "DesignManagement|Keep comment"
 msgstr ""
 
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"

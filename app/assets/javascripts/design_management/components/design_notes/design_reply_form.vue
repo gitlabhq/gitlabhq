@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModal } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import $ from 'jquery';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
@@ -7,13 +7,23 @@ import Autosave from '~/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 
 export default {
   name: 'DesignReplyForm',
+  i18n: {
+    primaryBtn: s__('DesignManagement|Discard changes'),
+    cancelBtnCreate: s__('DesignManagement|Continue creating'),
+    cancelBtnUpdate: s__('DesignManagement|Continue editing'),
+    cancelCreate: s__('DesignManagement|Are you sure you want to cancel creating this comment?'),
+    cancelUpdate: s__('DesignManagement|Are you sure you want to cancel editing this comment?'),
+    newCommentButton: s__('DesignManagement|Comment'),
+    updateCommentButton: s__('DesignManagement|Save comment'),
+  },
+  markdownDocsPath: helpPagePath('user/markdown'),
   components: {
     MarkdownField,
     GlButton,
-    GlModal,
   },
   props: {
     markdownPreviewPath: {
@@ -54,29 +64,10 @@ export default {
     hasValue() {
       return this.value.trim().length > 0;
     },
-    modalSettings() {
-      if (this.isNewComment) {
-        return {
-          title: s__('DesignManagement|Cancel comment confirmation'),
-          okTitle: s__('DesignManagement|Discard comment'),
-          cancelTitle: s__('DesignManagement|Keep comment'),
-          content: s__('DesignManagement|Are you sure you want to cancel creating this comment?'),
-        };
-      }
-      return {
-        title: s__('DesignManagement|Cancel comment update confirmation'),
-        okTitle: s__('DesignManagement|Cancel changes'),
-        cancelTitle: s__('DesignManagement|Keep changes'),
-        content: s__('DesignManagement|Are you sure you want to cancel changes to this comment?'),
-      };
-    },
     buttonText() {
       return this.isNewComment
-        ? s__('DesignManagement|Comment')
-        : s__('DesignManagement|Save comment');
-    },
-    markdownDocsPath() {
-      return helpPagePath('user/markdown');
+        ? this.$options.i18n.newCommentButton
+        : this.$options.i18n.updateCommentButton;
     },
     shortDiscussionId() {
       return isGid(this.discussionId) ? getIdFromGraphQLId(this.discussionId) : this.discussionId;
@@ -94,12 +85,30 @@ export default {
     },
     cancelComment() {
       if (this.hasValue && this.formText !== this.value) {
-        this.$refs.cancelCommentModal.show();
+        this.confirmCancelCommentModal();
       } else {
         this.$emit('cancel-form');
       }
     },
-    confirmCancelCommentModal() {
+    async confirmCancelCommentModal() {
+      const msg = this.isNewComment
+        ? this.$options.i18n.cancelCreate
+        : this.$options.i18n.cancelUpdate;
+
+      const cancelBtn = this.isNewComment
+        ? this.$options.i18n.cancelBtnCreate
+        : this.$options.i18n.cancelBtnUpdate;
+
+      const confirmed = await confirmAction(msg, {
+        primaryBtnText: this.$options.i18n.primaryBtn,
+        cancelBtnText: cancelBtn,
+        primaryBtnVariant: 'danger',
+      });
+
+      if (!confirmed) {
+        return;
+      }
+
       this.$emit('cancel-form');
       this.autosaveDiscussion.reset();
     },
@@ -126,7 +135,7 @@ export default {
       :markdown-preview-path="markdownPreviewPath"
       :enable-autocomplete="true"
       :textarea-value="value"
-      :markdown-docs-path="markdownDocsPath"
+      :markdown-docs-path="$options.markdownDocsPath"
       class="bordered-box"
     >
       <template #textarea>
@@ -171,15 +180,5 @@ export default {
         >{{ __('Cancel') }}</gl-button
       >
     </div>
-    <gl-modal
-      ref="cancelCommentModal"
-      ok-variant="danger"
-      :title="modalSettings.title"
-      :ok-title="modalSettings.okTitle"
-      :cancel-title="modalSettings.cancelTitle"
-      modal-id="cancel-comment-modal"
-      @ok="confirmCancelCommentModal"
-      >{{ modalSettings.content }}
-    </gl-modal>
   </form>
 </template>

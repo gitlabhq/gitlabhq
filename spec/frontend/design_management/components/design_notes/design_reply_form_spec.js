@@ -1,16 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Autosave from '~/autosave';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 
-const showModal = jest.fn();
-
-const GlModal = {
-  template: '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-ok"></slot></div>',
-  methods: {
-    show: showModal,
-  },
-};
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 describe('Design reply form component', () => {
   let wrapper;
@@ -19,7 +13,6 @@ describe('Design reply form component', () => {
   const findTextarea = () => wrapper.find('textarea');
   const findSubmitButton = () => wrapper.findComponent({ ref: 'submitButton' });
   const findCancelButton = () => wrapper.findComponent({ ref: 'cancelButton' });
-  const findModal = () => wrapper.findComponent({ ref: 'cancelCommentModal' });
 
   function createComponent(props = {}, mountOptions = {}) {
     wrapper = mount(DesignReplyForm, {
@@ -29,7 +22,6 @@ describe('Design reply form component', () => {
         noteableId: 'gid://gitlab/DesignManagement::Design/6',
         ...props,
       },
-      stubs: { GlModal },
       ...mountOptions,
     });
   }
@@ -42,6 +34,7 @@ describe('Design reply form component', () => {
   afterEach(() => {
     wrapper.destroy();
     window.gon = originalGon;
+    confirmAction.mockReset();
   });
 
   it('textarea has focus after component mount', () => {
@@ -199,7 +192,7 @@ describe('Design reply form component', () => {
 
       await nextTick();
       findTextarea().trigger('keyup.esc');
-      expect(showModal).toHaveBeenCalled();
+      expect(confirmAction).toHaveBeenCalled();
     });
 
     it('emits cancelForm event on Cancel button click if text was not changed', () => {
@@ -213,17 +206,41 @@ describe('Design reply form component', () => {
 
       await nextTick();
       findCancelButton().trigger('click');
-      expect(showModal).toHaveBeenCalled();
+      expect(confirmAction).toHaveBeenCalled();
     });
 
-    it('emits cancelForm event on modal Ok button click', () => {
+    it('emits cancelForm event when confirmed', async () => {
+      confirmAction.mockResolvedValueOnce(true);
       const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
 
-      findTextarea().trigger('keyup.esc');
-      findModal().vm.$emit('ok');
+      wrapper.setProps({ value: 'test3' });
+      await nextTick();
 
-      expect(wrapper.emitted('cancel-form')).toHaveLength(2);
+      findTextarea().trigger('keyup.esc');
+      await nextTick();
+
+      expect(confirmAction).toHaveBeenCalled();
+      await nextTick();
+
+      expect(wrapper.emitted('cancel-form')).toHaveLength(1);
       expect(autosaveResetSpy).toHaveBeenCalled();
+    });
+
+    it("doesn't emit cancelForm event when not confirmed", async () => {
+      confirmAction.mockResolvedValueOnce(false);
+      const autosaveResetSpy = jest.spyOn(wrapper.vm.autosaveDiscussion, 'reset');
+
+      wrapper.setProps({ value: 'test3' });
+      await nextTick();
+
+      findTextarea().trigger('keyup.esc');
+      await nextTick();
+
+      expect(confirmAction).toHaveBeenCalled();
+      await nextTick();
+
+      expect(wrapper.emitted('cancel-form')).toBeUndefined();
+      expect(autosaveResetSpy).not.toHaveBeenCalled();
     });
   });
 });

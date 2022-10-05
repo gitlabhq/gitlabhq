@@ -136,6 +136,9 @@ We use the following categories to classify a metric:
 - `subscription`: Data related to licensing.
 - `standard`: Standard set of identifiers that are included when collecting data.
 
+An aggregate metric is a metric that is the sum of two or more child metrics. Service Ping uses the data category of
+the aggregate metric to determine whether or not the data is included in the reported Service Ping payload.
+
 ### Metric name suggestion examples
 
 #### Metric with `data_source: database`

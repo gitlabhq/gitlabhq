@@ -35,9 +35,9 @@ module BulkImports
     def export_status
       strong_memoize(:export_status) do
         fetch_export_status&.find { |item| item['relation'] == relation }
+      rescue StandardError => e
+        { 'status' => Export::FAILED, 'error' => e.message }
       end
-    rescue StandardError => e
-      { 'status' => Export::FAILED, 'error' => e.message }
     end
 
     def fetch_export_status

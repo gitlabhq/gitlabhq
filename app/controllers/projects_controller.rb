@@ -311,8 +311,6 @@ class ProjectsController < Projects::ApplicationController
     find_tags = true
     find_commits = true
 
-    use_gitaly_pagination = Feature.enabled?(:use_gitaly_pagination_for_refs, @project)
-
     unless find_refs.nil?
       find_branches = find_refs.include?('branches')
       find_tags = find_refs.include?('tags')
@@ -323,7 +321,7 @@ class ProjectsController < Projects::ApplicationController
 
     if find_branches
       branches = BranchesFinder.new(@repository, refs_params.merge(per_page: REFS_LIMIT))
-                   .execute(gitaly_pagination: use_gitaly_pagination)
+                   .execute(gitaly_pagination: true)
                    .take(REFS_LIMIT)
                    .map(&:name)
 
@@ -332,7 +330,7 @@ class ProjectsController < Projects::ApplicationController
 
     if find_tags && @repository.tag_count.nonzero?
       tags = TagsFinder.new(@repository, refs_params.merge(per_page: REFS_LIMIT))
-               .execute(gitaly_pagination: use_gitaly_pagination)
+               .execute(gitaly_pagination: true)
                .take(REFS_LIMIT)
                .map(&:name)
 

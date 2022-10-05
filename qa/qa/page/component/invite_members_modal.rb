@@ -62,13 +62,9 @@ module QA
 
             Support::Waiter.wait_until { has_element?(:group_select_dropdown_item) }
 
-            # Workaround for race condition with concurrent group API calls while searching
-            # Remove Retrier after https://gitlab.com/gitlab-org/gitlab/-/issues/349379 is resolved
-            Support::Retrier.retry_on_exception do
-              fill_element :group_select_dropdown_search_field, group_name
-              Support::WaitForRequests.wait_for_requests
-              click_button group_name
-            end
+            fill_element :group_select_dropdown_search_field, group_name
+            Support::WaitForRequests.wait_for_requests
+            click_button group_name
 
             set_access_level(access_level)
           end

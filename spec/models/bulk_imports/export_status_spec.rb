@@ -157,12 +157,20 @@ RSpec.describe BulkImports::ExportStatus do
     end
 
     context 'when something goes wrong during export status fetch' do
-      it 'returns exception class as error' do
+      it 'returns exception class as error and memoizes return value' do
         allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
           allow(client).to receive(:get).and_raise(StandardError, 'Error!')
         end
 
         expect(subject.error).to eq('Error!')
+        expect(subject.failed?).to eq(true)
+
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          allow(client).to receive(:get).and_return({ 'relation' => relation, 'status' => 'finished' })
+        end
+
+        expect(subject.error).to eq('Error!')
+        expect(subject.failed?).to eq(true)
       end
     end
   end
