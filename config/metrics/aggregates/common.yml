@@ -17,15 +17,6 @@
 #                Corresponding feature flag should have `default_enabled` attribute set to `false`.
 #                This attribute is OPTIONAL and can be omitted, when `feature_flag` is missing no feature flag will be checked.
 ---
-- name: incident_management_alerts_total_unique_counts
-  operator: OR
-  source: redis
-  time_frame: [7d, 28d]
-  events:
-    - 'incident_management_alert_status_changed'
-    - 'incident_management_alert_assigned'
-    - 'incident_management_alert_todo'
-    - 'incident_management_alert_create_incident'
 - name: incident_management_incidents_total_unique_counts
   operator: OR
   source: redis

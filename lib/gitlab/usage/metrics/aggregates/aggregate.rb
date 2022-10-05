@@ -24,19 +24,6 @@ module Gitlab
             aggregated_metrics_data(Gitlab::Usage::TimeFrame::SEVEN_DAYS_TIME_FRAME_NAME)
           end
 
-          private
-
-          attr_accessor :aggregated_metrics, :recorded_at
-
-          def aggregated_metrics_data(time_frame)
-            aggregated_metrics.each_with_object({}) do |aggregation, data|
-              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], type: :development)
-              next unless aggregation[:time_frame].include?(time_frame)
-
-              data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, time_frame: time_frame)
-            end
-          end
-
           def calculate_count_for_aggregation(aggregation:, time_frame:)
             with_validate_configuration(aggregation, time_frame) do
               source = SOURCES[aggregation[:source]]
@@ -49,6 +36,19 @@ module Gitlab
             end
           rescue Gitlab::UsageDataCounters::HLLRedisCounter::EventError, AggregatedMetricError => error
             failure(error)
+          end
+
+          private
+
+          attr_accessor :aggregated_metrics, :recorded_at
+
+          def aggregated_metrics_data(time_frame)
+            aggregated_metrics.each_with_object({}) do |aggregation, data|
+              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], type: :development)
+              next unless aggregation[:time_frame].include?(time_frame)
+
+              data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, time_frame: time_frame)
+            end
           end
 
           def with_validate_configuration(aggregation, time_frame)

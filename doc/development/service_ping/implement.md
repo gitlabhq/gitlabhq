@@ -839,6 +839,22 @@ However, it has the following limitations:
 WARNING:
 This feature is intended solely for internal GitLab use.
 
+The aggregated metrics feature provides insight into the data attributes in a collection of Service Ping metrics.
+This aggregation allows you to count data attributes in events without counting each occurrence of the same data attribute in multiple events.
+For example, you can aggregate the number of users who perform several actions, such as creating a new issue and opening a new merge request.
+You can then count each user that performed any combination of these actions.
+
+### Defining aggregated metric via metric YAML definition
+
+To add data for aggregated metrics to the Service Ping payload,
+create metric YAML definition file following [Aggregated metric instrumentation guide](metrics_instrumentation.md#aggregated-metrics).
+
+### (DEPRECATED) Defining aggregated metric via aggregated metric YAML config file
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98206) in GitLab 15.5
+and is planned for removal in 15.5. Use [metrics definition YAMLs](https://gitlab.com/gitlab-org/gitlab/-/issues/370963) instead.
+
 To add data for aggregated metrics to the Service Ping payload, add a corresponding definition to:
 
 - [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/) for metrics available in the Community Edition.

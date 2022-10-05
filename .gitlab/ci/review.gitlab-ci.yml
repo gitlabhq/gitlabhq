@@ -79,7 +79,7 @@ danger-review:
   before_script:
     - source scripts/utils.sh
     - bundle_install_script "--with danger"
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn_install_script
   script:
     # ${DANGER_DANGERFILE} is used by Jihulab for customizing danger support: https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml
     - >

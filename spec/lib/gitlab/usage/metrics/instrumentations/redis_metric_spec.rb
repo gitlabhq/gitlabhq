@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
     end
 
     it_behaves_like 'a correct instrumented metric value', {
-      options: { event: 'all_searches_count', prefix: nil, include_usage_prefix: false }
+      options: { event: 'all_searches_count', prefix: nil, include_usage_prefix: false }, time_frame: 'all'
     }
   end
 end

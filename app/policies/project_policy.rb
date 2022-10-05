@@ -574,6 +574,7 @@ class ProjectPolicy < BasePolicy
   rule { issues_disabled & merge_requests_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:label))
     prevent(*create_read_update_admin_destroy(:milestone))
+    prevent(:read_cycle_analytics)
   end
 
   rule { snippets_disabled }.policy do

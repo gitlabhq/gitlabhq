@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be(:guest) do
     create(:user).tap { |u| project.add_guest(u) }
   end
@@ -122,6 +122,34 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
 
       describe 'when the user does not have access' do
         let(:current_user) { nil }
+
+        specify { is_expected.to be_nil }
+      end
+
+      describe 'when issues are disabled' do
+        before do
+          project.issues_enabled = false
+          project.save!
+        end
+
+        specify { is_expected.not_to be_nil }
+      end
+
+      describe 'when merge requests are disabled' do
+        before do
+          project.merge_requests_enabled = false
+          project.save!
+        end
+
+        specify { is_expected.not_to be_nil }
+      end
+
+      describe 'when the issues and merge requests are disabled' do
+        before do
+          project.issues_enabled = false
+          project.merge_requests_enabled = false
+          project.save!
+        end
 
         specify { is_expected.to be_nil }
       end

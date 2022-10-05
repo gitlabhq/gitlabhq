@@ -103,6 +103,20 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'when both issues and merge requests are disabled' do
+    let(:current_user) { owner }
+
+    before do
+      project.issues_enabled = false
+      project.merge_requests_enabled = false
+      project.save!
+    end
+
+    it 'does not include the issues permissions' do
+      expect_disallowed :read_cycle_analytics
+    end
+  end
+
   context 'creating_merge_request_in' do
     context 'when the current_user can download_code' do
       before do

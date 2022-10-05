@@ -95,7 +95,6 @@ Depending on your role, you can also use the following methods to manage or redu
 - [Reduce dependency proxy storage](packages/dependency_proxy/reduce_dependency_proxy_storage.md).
 - [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md).
 - [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md).
-- [Reduce container registry data transfers](packages/container_registry/reduce_container_registry_data_transfer.md).
 - [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size).
 
 ## Excess storage usage
@@ -141,3 +140,9 @@ available decreases. All projects remain unlocked because 40 GB purchased storag
 | Green      | 11 GB        | 1 GB           | 10 GB   | Not locked        |
 | Yellow     | 5 GB         | 0 GB           | 10 GB   | Not locked        |
 | **Totals** | **45 GB**    | **10 GB**      | -       | -                 |
+
+## Manage your transfer usage
+
+Depending on your role, you can use the following methods to manage or reduce your transfer:
+
+- [Reduce Container Registry data transfers](packages/container_registry/reduce_container_registry_data_transfer.md).

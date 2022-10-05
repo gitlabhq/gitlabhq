@@ -10,7 +10,7 @@ import { file } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {
   let wrapper;
-  let f;
+  let testFile;
   let findPathEl;
   let store;
   let router;
@@ -21,15 +21,15 @@ describe('Multi-file editor commit sidebar list item', () => {
 
     router = createRouter(store);
 
-    f = file('test-file');
+    testFile = file('test-file');
 
-    store.state.entries[f.path] = f;
+    store.state.entries[testFile.path] = testFile;
 
     wrapper = mount(ListItem, {
       store,
       propsData: {
-        file: f,
-        activeFileKey: `staged-${f.key}`,
+        file: testFile,
+        activeFileKey: `staged-${testFile.key}`,
       },
     });
 
@@ -43,21 +43,21 @@ describe('Multi-file editor commit sidebar list item', () => {
   const findPathText = () => trimText(findPathEl.text());
 
   it('renders file path', () => {
-    expect(findPathText()).toContain(f.path);
+    expect(findPathText()).toContain(testFile.path);
   });
 
   it('correctly renders renamed entries', async () => {
-    Vue.set(f, 'prevName', 'Old name');
+    Vue.set(testFile, 'prevName', 'Old name');
     await nextTick();
 
-    expect(findPathText()).toEqual(`Old name → ${f.name}`);
+    expect(findPathText()).toEqual(`Old name → ${testFile.name}`);
   });
 
   it('correctly renders entry, the name of which did not change after rename (as within a folder)', async () => {
-    Vue.set(f, 'prevName', f.name);
+    Vue.set(testFile, 'prevName', testFile.name);
     await nextTick();
 
-    expect(findPathText()).toEqual(f.name);
+    expect(findPathText()).toEqual(testFile.name);
   });
 
   it('opens a closed file in the editor when clicking the file path', async () => {
@@ -86,14 +86,14 @@ describe('Multi-file editor commit sidebar list item', () => {
     });
 
     it('is addition when is a tempFile', async () => {
-      f.tempFile = true;
+      testFile.tempFile = true;
       await nextTick();
 
       expect(getIconName()).toBe('file-addition');
     });
 
     it('is deletion when is deleted', async () => {
-      f.deleted = true;
+      testFile.deleted = true;
       await nextTick();
 
       expect(getIconName()).toBe('file-deletion');
@@ -108,14 +108,14 @@ describe('Multi-file editor commit sidebar list item', () => {
     });
 
     it('is addition when is a tempFile', async () => {
-      f.tempFile = true;
+      testFile.tempFile = true;
       await nextTick();
 
       expect(getIconClass()).toContain('ide-file-addition');
     });
 
     it('returns deletion when is deleted', async () => {
-      f.deleted = true;
+      testFile.deleted = true;
       await nextTick();
 
       expect(getIconClass()).toContain('ide-file-deletion');

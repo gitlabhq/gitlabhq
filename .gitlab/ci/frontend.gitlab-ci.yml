@@ -1,7 +1,7 @@
 .yarn-install:
   script:
     - source scripts/utils.sh
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn_install_script
 
 .storybook-yarn-install:
   script:
@@ -23,7 +23,7 @@
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
   script:
-    - !reference [.yarn-install, script]
+    - yarn_install_script
     - export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
     - 'echo "CACHE_ASSETS_AS_PACKAGE: ${CACHE_ASSETS_AS_PACKAGE}"'
     # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
@@ -32,7 +32,7 @@
         source scripts/gitlab_component_helpers.sh
         gitlab_assets_archive_doesnt_exist || run_timed_command "download_and_extract_gitlab_assets"
       fi
-    - run_timed_command "bin/rake gitlab:assets:compile"
+    - assets_compile_script
 
 compile-production-assets:
   extends:
@@ -294,7 +294,7 @@ coverage-frontend:
     - .yarn-cache
     - .frontend:rules:qa-frontend-node
   stage: test
-  dependencies: []
+  needs: []
   script:
     - !reference [.yarn-install, script]
     - run_timed_command "retry yarn run webpack-prod"

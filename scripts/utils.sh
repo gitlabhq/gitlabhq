@@ -62,6 +62,22 @@ function bundle_install_script() {
   echo -e "section_end:`date +%s`:bundle-install\r\e[0K"
 }
 
+function yarn_install_script() {
+  echo -e "section_start:`date +%s`:yarn-install[collapsed=true]\r\e[0KInstalling Yarn packages"
+
+  retry yarn install --frozen-lockfile
+
+  echo -e "section_end:`date +%s`:yarn-install\r\e[0K"
+}
+
+function assets_compile_script() {
+  echo -e "section_start:`date +%s`:assets-compile[collapsed=true]\r\e[0KCompiling frontend assets"
+
+  bin/rake gitlab:assets:compile
+
+  echo -e "section_end:`date +%s`:assets-compile\r\e[0K"
+}
+
 function setup_db_user_only() {
   source scripts/create_postgres_user.sh
 }
