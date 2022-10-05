@@ -37,11 +37,8 @@
                               title: _("Add a collapsible section") })
   = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |", "md-prepend" => true }, title: _("Add a table") })
   - if supports_file_upload
-    %button.gl-button.btn.btn-default-tertiary.btn-icon.has-tooltip.js-attach-file-button{ type: 'button',
-      title: _("Attach a file or image"),
-      aria: { label: _("Attach a file or image") },
-      data: { testid: 'button-attach-file', container: 'body' } }
-      = sprite_icon('paperclip')
+    = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button', data: { testid: 'button-attach-file', container: 'body' } }) do
+      = _("Attach a file or image")
   - if show_fullscreen_button
-    %button.gl-button.btn.btn-default-tertiary.btn-icon.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: _("Go full screen"), data: { container: "body" } }
-      = sprite_icon("maximize")
+    = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter', data: { container: 'body' } }) do
+      = _("Go full screen")

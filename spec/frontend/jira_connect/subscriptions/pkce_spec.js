@@ -1,10 +1,6 @@
 import crypto from 'crypto';
-import { TextEncoder, TextDecoder } from 'util';
 
 import { createCodeVerifier, createCodeChallenge } from '~/jira_connect/subscriptions/pkce';
-
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
 
 describe('pkce', () => {
   beforeAll(() => {

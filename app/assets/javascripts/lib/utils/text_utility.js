@@ -1,5 +1,5 @@
 import { isString, memoize } from 'lodash';
-
+import { base64ToBuffer, bufferToBase64 } from '~/authentication/webauthn/util';
 import {
   TRUNCATE_WIDTH_DEFAULT_WIDTH,
   TRUNCATE_WIDTH_DEFAULT_FONT_SIZE,
@@ -513,3 +513,15 @@ export const limitedCounterWithDelimiter = (count) => {
 
   return count > limit ? '1,000+' : count;
 };
+
+// Encoding UTF8 ⇢ base64
+export function base64EncodeUnicode(str) {
+  const encoder = new TextEncoder('utf8');
+  return bufferToBase64(encoder.encode(str));
+}
+
+// Decoding base64 ⇢ UTF8
+export function base64DecodeUnicode(str) {
+  const decoder = new TextDecoder('utf8');
+  return decoder.decode(base64ToBuffer(str));
+}

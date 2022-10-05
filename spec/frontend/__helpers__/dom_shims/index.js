@@ -11,3 +11,4 @@ import './window_scroll_to';
 import './scroll_by';
 import './size_properties';
 import './image_element_properties';
+import './text_encoder';

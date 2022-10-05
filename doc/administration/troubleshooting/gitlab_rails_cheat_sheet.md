@@ -77,12 +77,6 @@ irb(#<Project>)> web_url
 # => "https://gitlab-example/root/discard"
 ```
 
-## View all keys in cache
-
-```ruby
-Rails.cache.instance_variable_get(:@data).keys
-```
-
 ## Profile a page
 
 ```ruby

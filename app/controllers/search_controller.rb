@@ -242,6 +242,11 @@ class SearchController < ApplicationController
   def search_type
     'basic'
   end
+
+  before_action do
+    # Prefer to scope it per project or user e.g.
+    push_frontend_feature_flag(:search_page_vertical_nav, current_user)
+  end
 end
 
 SearchController.prepend_mod_with('SearchController')

@@ -1,5 +1,6 @@
 import { lowlight } from 'lowlight/lib/core';
 import { textblockTypeInputRule } from '@tiptap/core';
+import { base64DecodeUnicode } from '~/lib/utils/text_utility';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 import languageLoader from '../services/code_block_language_loader';
 import CodeBlockHighlight from './code_block_highlight';
@@ -45,7 +46,9 @@ export default CodeBlockHighlight.extend({
         priority: PARSE_HTML_PRIORITY_HIGHEST,
         tag: '[data-diagram]',
         getContent(element, schema) {
-          const source = atob(element.dataset.diagramSrc.replace('data:text/plain;base64,', ''));
+          const source = base64DecodeUnicode(
+            element.dataset.diagramSrc.replace('data:text/plain;base64,', ''),
+          );
           const node = schema.node('paragraph', {}, [schema.text(source)]);
           return node.content;
         },
