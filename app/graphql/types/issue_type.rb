@@ -43,8 +43,10 @@ module Types
     field :updated_by, Types::UserType, null: true,
                                         description: 'User that last updated the issue.'
 
-    field :labels, Types::LabelType.connection_type, null: true,
-                                                     description: 'Labels of the issue.'
+    field :labels, Types::LabelType.connection_type,
+          null: true,
+          description: 'Labels of the issue.',
+          resolver: Resolvers::BulkLabelsResolver
     field :milestone, Types::MilestoneType, null: true,
                                             description: 'Milestone of the issue.'
 

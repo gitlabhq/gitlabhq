@@ -12,16 +12,16 @@ module Glfm
 
     def process
       output('Updating specification...')
-      ghfm_spec_txt_lines = load_ghfm_spec_txt
-      glfm_spec_txt_string = build_glfm_spec_txt(ghfm_spec_txt_lines)
+      ghfm_spec_lines = load_ghfm_spec
+      glfm_spec_txt_string = build_glfm_spec_txt(ghfm_spec_lines)
       write_glfm_spec_txt(glfm_spec_txt_string)
     end
 
     private
 
-    def load_ghfm_spec_txt
+    def load_ghfm_spec
       # We only re-download the GitHub Flavored Markdown specification if the
-      # UPDATE_GHFM_SPEC_TXT environment variable is set to true, which should only
+      # UPDATE_GHFM_SPEC_MD environment variable is set to true, which should only
       # ever be done manually and locally, never in CI. This provides some security
       # protection against a possible injection attack vector, if the GitHub-hosted
       # version of the spec is ever temporarily compromised with an injection attack.
@@ -29,40 +29,40 @@ module Glfm
       # This also avoids doing external network access to download the file
       # in CI jobs, which can avoid potentially flaky builds if the GitHub-hosted
       # version of the file is temporarily unavailable.
-      if ENV['UPDATE_GHFM_SPEC_TXT'] == 'true'
-        download_and_write_ghfm_spec_txt
+      if ENV['UPDATE_GHFM_SPEC_MD'] == 'true'
+        update_ghfm_spec_md
       else
-        read_existing_ghfm_spec_txt
+        read_existing_ghfm_spec_md
       end
     end
 
-    def read_existing_ghfm_spec_txt
-      output("Reading existing #{GHFM_SPEC_TXT_PATH}...")
-      File.open(GHFM_SPEC_TXT_PATH).readlines
+    def read_existing_ghfm_spec_md
+      output("Reading existing #{GHFM_SPEC_MD_PATH}...")
+      File.open(GHFM_SPEC_MD_PATH).readlines
     end
 
-    def download_and_write_ghfm_spec_txt
+    def update_ghfm_spec_md
       output("Downloading #{GHFM_SPEC_TXT_URI}...")
       ghfm_spec_txt_uri_io = URI.open(GHFM_SPEC_TXT_URI)
 
       # Read IO stream into an array of lines for easy processing later
-      ghfm_spec_txt_lines = ghfm_spec_txt_uri_io.readlines
-      raise "Unable to read lines from #{GHFM_SPEC_TXT_URI}" if ghfm_spec_txt_lines.empty?
+      ghfm_spec_lines = ghfm_spec_txt_uri_io.readlines
+      raise "Unable to read lines from #{GHFM_SPEC_TXT_URI}" if ghfm_spec_lines.empty?
 
       # Make sure the GHFM spec version has not changed
-      validate_expected_spec_version!(ghfm_spec_txt_lines[2])
+      validate_expected_spec_version!(ghfm_spec_lines[2])
 
       # Reset IO stream and re-read into a single string for easy writing
       # noinspection RubyNilAnalysis
       ghfm_spec_txt_uri_io.seek(0)
-      ghfm_spec_txt_string = ghfm_spec_txt_uri_io.read
-      raise "Unable to read string from #{GHFM_SPEC_TXT_URI}" unless ghfm_spec_txt_string
+      ghfm_spec_string = ghfm_spec_txt_uri_io.read
+      raise "Unable to read string from #{GHFM_SPEC_TXT_URI}" unless ghfm_spec_string
 
-      output("Writing #{GHFM_SPEC_TXT_PATH}...")
-      GHFM_SPEC_TXT_PATH.dirname.mkpath
-      write_file(GHFM_SPEC_TXT_PATH, ghfm_spec_txt_string)
+      output("Writing #{GHFM_SPEC_MD_PATH}...")
+      GHFM_SPEC_MD_PATH.dirname.mkpath
+      write_file(GHFM_SPEC_MD_PATH, ghfm_spec_string)
 
-      ghfm_spec_txt_lines
+      ghfm_spec_lines
     end
 
     def validate_expected_spec_version!(version_line)
@@ -85,13 +85,13 @@ module Glfm
     end
 
     def replace_intro_section(spec_txt_lines)
-      glfm_intro_txt_lines = File.open(GLFM_INTRO_TXT_PATH).readlines
-      raise "Unable to read lines from #{GLFM_INTRO_TXT_PATH}" if glfm_intro_txt_lines.empty?
+      glfm_intro_md_lines = File.open(GLFM_INTRO_MD_PATH).readlines
+      raise "Unable to read lines from #{GLFM_INTRO_MD_PATH}" if glfm_intro_md_lines.empty?
 
       ghfm_intro_header_begin_index = spec_txt_lines.index do |line|
         line =~ INTRODUCTION_HEADER_LINE_TEXT
       end
-      raise "Unable to locate introduction header line in #{GHFM_SPEC_TXT_PATH}" if ghfm_intro_header_begin_index.nil?
+      raise "Unable to locate introduction header line in #{GHFM_SPEC_MD_PATH}" if ghfm_intro_header_begin_index.nil?
 
       # Find the index of the next header after the introduction header, starting from the index
       # of the introduction header this is the length of the intro section
@@ -100,7 +100,7 @@ module Glfm
       end
 
       # Replace the intro section with the GitLab flavored Markdown intro section
-      spec_txt_lines[ghfm_intro_header_begin_index, ghfm_intro_section_length] = glfm_intro_txt_lines
+      spec_txt_lines[ghfm_intro_header_begin_index, ghfm_intro_section_length] = glfm_intro_md_lines
     end
 
     def insert_examples_txt(spec_txt_lines)
@@ -110,7 +110,7 @@ module Glfm
       ghfm_end_tests_comment_index = spec_txt_lines.index do |line|
         line =~ END_TESTS_COMMENT_LINE_TEXT
       end
-      raise "Unable to locate 'END TESTS' comment line in #{GHFM_SPEC_TXT_PATH}" if ghfm_end_tests_comment_index.nil?
+      raise "Unable to locate 'END TESTS' comment line in #{GHFM_SPEC_MD_PATH}" if ghfm_end_tests_comment_index.nil?
 
       # Insert the GLFM examples before the 'END TESTS' comment line
       spec_txt_lines[ghfm_end_tests_comment_index - 1] = ["\n", glfm_examples_txt_lines, "\n"].flatten

@@ -935,6 +935,7 @@ class User < ApplicationRecord
   # that the password is the user's password
   def valid_password?(password)
     return false unless password_allowed?(password)
+    return false if password_automatically_set?
     return super if Feature.enabled?(:pbkdf2_password_encryption)
 
     Devise::Encryptor.compare(self.class, encrypted_password, password)

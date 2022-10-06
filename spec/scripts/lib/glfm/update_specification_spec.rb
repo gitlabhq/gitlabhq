@@ -7,11 +7,11 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
   let(:ghfm_spec_txt_uri) { described_class::GHFM_SPEC_TXT_URI }
   let(:ghfm_spec_txt_uri_io) { StringIO.new(ghfm_spec_txt_contents) }
-  let(:ghfm_spec_txt_path) { described_class::GHFM_SPEC_TXT_PATH }
+  let(:ghfm_spec_md_path) { described_class::GHFM_SPEC_MD_PATH }
   let(:ghfm_spec_txt_local_io) { StringIO.new(ghfm_spec_txt_contents) }
 
-  let(:glfm_intro_txt_path) { described_class::GLFM_INTRO_TXT_PATH }
-  let(:glfm_intro_txt_io) { StringIO.new(glfm_intro_txt_contents) }
+  let(:glfm_intro_md_path) { described_class::GLFM_INTRO_MD_PATH }
+  let(:glfm_intro_md_io) { StringIO.new(glfm_intro_md_contents) }
   let(:glfm_examples_txt_path) { described_class::GLFM_EXAMPLES_TXT_PATH }
   let(:glfm_examples_txt_io) { StringIO.new(glfm_examples_txt_contents) }
   let(:glfm_spec_txt_path) { described_class::GLFM_SPEC_TXT_PATH }
@@ -52,7 +52,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     MARKDOWN
   end
 
-  let(:glfm_intro_txt_contents) do
+  let(:glfm_intro_md_contents) do
     # language=Markdown
     <<~MARKDOWN
       # Introduction
@@ -73,15 +73,15 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
   before do
     # Mock default ENV var values
-    allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_TXT').and_return(nil)
+    allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_MD').and_return(nil)
     allow(ENV).to receive(:[]).and_call_original
 
     # We mock out the URI and local file IO objects with real StringIO, instead of just mock
     # objects. This gives better and more realistic coverage, while still avoiding
     # actual network and filesystem I/O during the spec run.
     allow(URI).to receive(:open).with(ghfm_spec_txt_uri) { ghfm_spec_txt_uri_io }
-    allow(File).to receive(:open).with(ghfm_spec_txt_path) { ghfm_spec_txt_local_io }
-    allow(File).to receive(:open).with(glfm_intro_txt_path) { glfm_intro_txt_io }
+    allow(File).to receive(:open).with(ghfm_spec_md_path) { ghfm_spec_txt_local_io }
+    allow(File).to receive(:open).with(glfm_intro_md_path) { glfm_intro_md_io }
     allow(File).to receive(:open).with(glfm_examples_txt_path) { glfm_examples_txt_io }
     allow(File).to receive(:open).with(glfm_spec_txt_path, 'w') { glfm_spec_txt_io }
 
@@ -90,7 +90,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   end
 
   describe 'retrieving latest GHFM spec.txt' do
-    context 'when UPDATE_GHFM_SPEC_TXT is not true (default)' do
+    context 'when UPDATE_GHFM_SPEC_MD is not true (default)' do
       it 'does not download' do
         expect(URI).not_to receive(:open).with(ghfm_spec_txt_uri)
 
@@ -100,12 +100,12 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       end
     end
 
-    context 'when UPDATE_GHFM_SPEC_TXT is true' do
+    context 'when UPDATE_GHFM_SPEC_MD is true' do
       let(:ghfm_spec_txt_local_io) { StringIO.new }
 
       before do
-        allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_TXT').and_return('true')
-        allow(File).to receive(:open).with(ghfm_spec_txt_path, 'w') { ghfm_spec_txt_local_io }
+        allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_MD').and_return('true')
+        allow(File).to receive(:open).with(ghfm_spec_md_path, 'w') { ghfm_spec_txt_local_io }
       end
 
       context 'with success' do
@@ -170,7 +170,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
     it 'replaces the intro section with the GitLab version' do
       expect(glfm_contents).not_to match(/What is GitHub Flavored Markdown/m)
-      expect(glfm_contents).to match(/#{Regexp.escape(glfm_intro_txt_contents)}/m)
+      expect(glfm_contents).to match(/#{Regexp.escape(glfm_intro_md_contents)}/m)
     end
 
     it 'inserts the GitLab examples sections before the appendix section' do

@@ -42,6 +42,7 @@ class Label < ApplicationRecord
   scope :order_name_asc, -> { reorder(title: :asc) }
   scope :order_name_desc, -> { reorder(title: :desc) }
   scope :subscribed_by, ->(user_id) { joins(:subscriptions).where(subscriptions: { user_id: user_id, subscribed: true }) }
+  scope :with_preloaded_container, -> { preload(parent_container: :route) }
 
   scope :top_labels_by_target, -> (target_relation) {
     label_id_column = arel_table[:id]
@@ -58,6 +59,14 @@ class Label < ApplicationRecord
       .reorder(count_by_id: :desc)
       .distinct
   }
+
+  scope :for_targets, ->(target_ids, targets_type) do
+    joins(:label_links)
+      .where(label_links: { target_id: target_ids })
+      .where(label_links: { target_type: targets_type })
+      .select("labels.*, target_id")
+      .with_preloaded_container
+  end
 
   def self.prioritized(project)
     joins(:priorities)

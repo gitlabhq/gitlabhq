@@ -8,34 +8,74 @@
       "type": "string",
       "format": "uri"
     },
-    "image": { "$ref": "#/definitions/image" },
-    "services": { "$ref": "#/definitions/services" },
-    "before_script": { "$ref": "#/definitions/before_script" },
-    "after_script": { "$ref": "#/definitions/after_script" },
-    "variables": { "$ref": "#/definitions/globalVariables" },
-    "cache": { "$ref": "#/definitions/cache" },
-    "!reference": {"$ref" : "#/definitions/!reference"},
+    "image": {
+      "$ref": "#/definitions/image"
+    },
+    "services": {
+      "$ref": "#/definitions/services"
+    },
+    "before_script": {
+      "$ref": "#/definitions/before_script"
+    },
+    "after_script": {
+      "$ref": "#/definitions/after_script"
+    },
+    "variables": {
+      "$ref": "#/definitions/globalVariables"
+    },
+    "cache": {
+      "$ref": "#/definitions/cache"
+    },
+    "!reference": {
+      "$ref": "#/definitions/!reference"
+    },
     "default": {
       "type": "object",
       "properties": {
-        "after_script": { "$ref": "#/definitions/after_script" },
-        "artifacts": { "$ref": "#/definitions/artifacts" },
-        "before_script": { "$ref": "#/definitions/before_script" },
-        "cache": { "$ref": "#/definitions/cache" },
-        "image": { "$ref": "#/definitions/image" },
-        "interruptible": { "$ref": "#/definitions/interruptible" },
-        "retry": { "$ref": "#/definitions/retry" },
-        "services": { "$ref": "#/definitions/services" },
-        "tags": { "$ref": "#/definitions/tags" },
-        "timeout": { "$ref": "#/definitions/timeout" },
-        "!reference": {"$ref" : "#/definitions/!reference"}
+        "after_script": {
+          "$ref": "#/definitions/after_script"
+        },
+        "artifacts": {
+          "$ref": "#/definitions/artifacts"
+        },
+        "before_script": {
+          "$ref": "#/definitions/before_script"
+        },
+        "cache": {
+          "$ref": "#/definitions/cache"
+        },
+        "image": {
+          "$ref": "#/definitions/image"
+        },
+        "interruptible": {
+          "$ref": "#/definitions/interruptible"
+        },
+        "retry": {
+          "$ref": "#/definitions/retry"
+        },
+        "services": {
+          "$ref": "#/definitions/services"
+        },
+        "tags": {
+          "$ref": "#/definitions/tags"
+        },
+        "timeout": {
+          "$ref": "#/definitions/timeout"
+        },
+        "!reference": {
+          "$ref": "#/definitions/!reference"
+        }
       },
       "additionalProperties": false
     },
     "stages": {
       "type": "array",
       "markdownDescription": "Groups jobs into stages. All jobs in one stage must complete before next stage is executed. Defaults to ['build', 'test', 'deploy']. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#stages).",
-      "default": ["build", "test", "deploy"],
+      "default": [
+        "build",
+        "test",
+        "deploy"
+      ],
       "items": {
         "type": "string"
       },
@@ -45,10 +85,14 @@
     "include": {
       "markdownDescription": "Can be `IncludeItem` or `IncludeItem[]`. Each `IncludeItem` will be a string, or an object with properties for the method if including external YAML file. The external content will be fetched, included and evaluated along the `.gitlab-ci.yml`. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#include).",
       "oneOf": [
-        { "$ref": "#/definitions/include_item" },
+        {
+          "$ref": "#/definitions/include_item"
+        },
         {
           "type": "array",
-          "items": { "$ref": "#/definitions/include_item" }
+          "items": {
+            "$ref": "#/definitions/include_item"
+          }
         }
       ]
     },
@@ -63,17 +107,36 @@
           "type": "array",
           "items": {
             "anyOf": [
-              {"type": "object"},
-              {"type": "array", "minLength": 1, "items": { "type": "string" }}
+              {
+                "type": "object"
+              },
+              {
+                "type": "array",
+                "minLength": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
             ],
             "properties": {
-              "if": { "$ref": "#/definitions/if" },
-              "changes": { "$ref": "#/definitions/changes" },
-              "exists": { "$ref": "#/definitions/exists" },
-              "variables": { "$ref": "#/definitions/variables" },
+              "if": {
+                "$ref": "#/definitions/if"
+              },
+              "changes": {
+                "$ref": "#/definitions/changes"
+              },
+              "exists": {
+                "$ref": "#/definitions/exists"
+              },
+              "variables": {
+                "$ref": "#/definitions/variables"
+              },
               "when": {
                 "type": "string",
-                "enum": ["always", "never"]
+                "enum": [
+                  "always",
+                  "never"
+                ]
               }
             },
             "additionalProperties": false
@@ -86,8 +149,12 @@
     "^[.]": {
       "description": "Hidden keys.",
       "anyOf": [
-        { "$ref": "#/definitions/job_template" },
-        { "description": "Arbitrary YAML anchor." }
+        {
+          "$ref": "#/definitions/job_template"
+        },
+        {
+          "description": "Arbitrary YAML anchor."
+        }
       ]
     }
   },
@@ -134,15 +201,21 @@
           "default": "on_success",
           "oneOf": [
             {
-              "enum": ["on_success"],
+              "enum": [
+                "on_success"
+              ],
               "description": "Upload artifacts only when the job succeeds (this is the default)."
             },
             {
-              "enum": ["on_failure"],
+              "enum": [
+                "on_failure"
+              ],
               "description": "Upload artifacts only when the job fails."
             },
             {
-              "enum": ["always"],
+              "enum": [
+                "always"
+              ],
               "description": "Upload artifacts regardless of job status."
             }
           ]
@@ -180,7 +253,9 @@
               "properties": {
                 "coverage_format": {
                   "description": "Code coverage format used by the test framework.",
-                  "enum": ["cobertura"]
+                  "enum": [
+                    "cobertura"
+                  ]
                 },
                 "path": {
                   "description": "Path to the coverage report file that should be parsed.",
@@ -284,9 +359,13 @@
               "format": "uri-reference",
               "pattern": "\\.ya?ml$"
             },
-            "rules": { "$ref": "#/definitions/rules" }
+            "rules": {
+              "$ref": "#/definitions/rules"
+            }
           },
-          "required": ["local"]
+          "required": [
+            "local"
+          ]
         },
         {
           "type": "object",
@@ -319,7 +398,10 @@
               ]
             }
           },
-          "required": ["project", "file"]
+          "required": [
+            "project",
+            "file"
+          ]
         },
         {
           "type": "object",
@@ -332,7 +414,9 @@
               "pattern": "\\.ya?ml$"
             }
           },
-          "required": ["template"]
+          "required": [
+            "template"
+          ]
         },
         {
           "type": "object",
@@ -345,7 +429,9 @@
               "pattern": "^https?://.+\\.ya?ml$"
             }
           },
-          "required": ["remote"]
+          "required": [
+            "remote"
+          ]
         }
       ]
     },
@@ -406,7 +492,9 @@
               ]
             }
           },
-          "required": ["name"]
+          "required": [
+            "name"
+          ]
         },
         {
           "type": "array",
@@ -487,7 +575,9 @@
                 "minLength": 1
               }
             },
-            "required": ["name"]
+            "required": [
+              "name"
+            ]
           }
         ]
       }
@@ -511,20 +601,37 @@
                   "engine": {
                     "type": "object",
                     "properties": {
-                      "name": { "type": "string" },
-                      "path": { "type": "string" }
+                      "name": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      }
                     },
-                    "required": ["name", "path"]
+                    "required": [
+                      "name",
+                      "path"
+                    ]
                   },
-                  "path": { "type": "string" },
-                  "field": { "type": "string" }
+                  "path": {
+                    "type": "string"
+                  },
+                  "field": {
+                    "type": "string"
+                  }
                 },
-                "required": ["engine", "path", "field"]
+                "required": [
+                  "engine",
+                  "path",
+                  "field"
+                ]
               }
             ]
           }
         },
-        "required": ["vault"]
+        "required": [
+          "vault"
+        ]
       }
     },
     "before_script": {
@@ -570,17 +677,40 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "if": { "$ref": "#/definitions/if" },
-              "changes": { "$ref": "#/definitions/changes" },
-              "exists": { "$ref": "#/definitions/exists" },
-              "variables": { "$ref": "#/definitions/variables" },
-              "when": { "$ref": "#/definitions/when" },
-              "start_in": { "$ref": "#/definitions/start_in" },
-              "allow_failure": { "$ref": "#/definitions/allow_failure" }
+              "if": {
+                "$ref": "#/definitions/if"
+              },
+              "changes": {
+                "$ref": "#/definitions/changes"
+              },
+              "exists": {
+                "$ref": "#/definitions/exists"
+              },
+              "variables": {
+                "$ref": "#/definitions/variables"
+              },
+              "when": {
+                "$ref": "#/definitions/when"
+              },
+              "start_in": {
+                "$ref": "#/definitions/start_in"
+              },
+              "allow_failure": {
+                "$ref": "#/definitions/allow_failure"
+              }
             }
           },
-          {"type": "string", "minLength": 1},
-          {"type": "array", "minLength": 1, "items": { "type": "string" }}
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "array",
+            "minLength": 1,
+            "items": {
+              "type": "string"
+            }
+          }
         ]
       }
     },
@@ -591,7 +721,10 @@
         ".*": {
           "oneOf": [
             {
-              "type": ["string", "number"]
+              "type": [
+                "string",
+                "number"
+              ]
             },
             {
               "type": "object",
@@ -621,7 +754,9 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["paths"],
+          "required": [
+            "paths"
+          ],
           "properties": {
             "paths": {
               "type": "array",
@@ -656,7 +791,10 @@
       "type": "object",
       "patternProperties": {
         ".*": {
-          "type": ["string", "number"]
+          "type": [
+            "string",
+            "number"
+          ]
         },
         "additionalProperties": false
       }
@@ -683,7 +821,9 @@
           "description": "Exit code that are not considered failure. The job fails for any other exit code.",
           "type": "object",
           "additionalProperties": false,
-          "required": ["exit_codes"],
+          "required": [
+            "exit_codes"
+          ],
           "properties": {
             "exit_codes": {
               "type": "integer"
@@ -694,7 +834,9 @@
           "description": "You can list which exit codes are not considered failures. The job fails for any other exit code.",
           "type": "object",
           "additionalProperties": false,
-          "required": ["exit_codes"],
+          "required": [
+            "exit_codes"
+          ],
           "properties": {
             "exit_codes": {
               "type": "array",
@@ -713,27 +855,39 @@
       "default": "on_success",
       "oneOf": [
         {
-          "enum": ["on_success"],
+          "enum": [
+            "on_success"
+          ],
           "description": "Execute job only when all jobs from prior stages succeed."
         },
         {
-          "enum": ["on_failure"],
+          "enum": [
+            "on_failure"
+          ],
           "description": "Execute job when at least one job from prior stages fails."
         },
         {
-          "enum": ["always"],
+          "enum": [
+            "always"
+          ],
           "description": "Execute job regardless of the status from prior stages."
         },
         {
-          "enum": ["manual"],
+          "enum": [
+            "manual"
+          ],
           "markdownDescription": "Execute the job manually from Gitlab UI or API. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when)."
         },
         {
-          "enum": ["delayed"],
+          "enum": [
+            "delayed"
+          ],
           "markdownDescription": "Execute a job after the time limit in 'start_in' expires. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when)."
         },
         {
-          "enum": ["never"],
+          "enum": [
+            "never"
+          ],
           "description": "Never execute the job."
         }
       ]
@@ -745,15 +899,21 @@
           "default": "on_success",
           "oneOf": [
             {
-              "enum": ["on_success"],
+              "enum": [
+                "on_success"
+              ],
               "description": "Save the cache only when the job succeeds."
             },
             {
-              "enum": ["on_failure"],
+              "enum": [
+                "on_failure"
+              ],
               "description": "Save the cache only when the job fails. "
             },
             {
-              "enum": ["always"],
+              "enum": [
+                "always"
+              ],
               "description": "Always save the cache. "
             }
           ]
@@ -805,15 +965,21 @@
           "default": "pull-push",
           "oneOf": [
             {
-              "enum": ["pull"],
+              "enum": [
+                "pull"
+              ],
               "description": "Pull will download cache but skip uploading after job completes."
             },
             {
-              "enum": ["push"],
+              "enum": [
+                "push"
+              ],
               "description": "Push will skip downloading cache and always recreate cache after job completes."
             },
             {
-              "enum": ["pull-push"],
+              "enum": [
+                "pull-push"
+              ],
               "description": "Pull-push will both download cache at job start and upload cache on job success."
             }
           ]
@@ -828,39 +994,57 @@
           {
             "oneOf": [
               {
-                "enum": ["branches"],
+                "enum": [
+                  "branches"
+                ],
                 "description": "When a branch is pushed."
               },
               {
-                "enum": ["tags"],
+                "enum": [
+                  "tags"
+                ],
                 "description": "When a tag is pushed."
               },
               {
-                "enum": ["api"],
+                "enum": [
+                  "api"
+                ],
                 "description": "When a pipeline has been triggered by a second pipelines API (not triggers API)."
               },
               {
-                "enum": ["external"],
+                "enum": [
+                  "external"
+                ],
                 "description": "When using CI services other than Gitlab"
               },
               {
-                "enum": ["pipelines"],
+                "enum": [
+                  "pipelines"
+                ],
                 "description": "For multi-project triggers, created using the API with 'CI_JOB_TOKEN'."
               },
               {
-                "enum": ["pushes"],
+                "enum": [
+                  "pushes"
+                ],
                 "description": "Pipeline is triggered by a `git push` by the user"
               },
               {
-                "enum": ["schedules"],
+                "enum": [
+                  "schedules"
+                ],
                 "description": "For scheduled pipelines."
               },
               {
-                "enum": ["triggers"],
+                "enum": [
+                  "triggers"
+                ],
                 "description": "For pipelines created using a trigger token."
               },
               {
-                "enum": ["web"],
+                "enum": [
+                  "web"
+                ],
                 "description": "For pipelines created using *Run pipeline* button in Gitlab UI (under your project's *Pipelines*)."
               }
             ]
@@ -888,7 +1072,9 @@
               "$ref": "#/definitions/filter_refs"
             },
             "kubernetes": {
-              "enum": ["active"],
+              "enum": [
+                "active"
+              ],
               "description": "Filter job based on if Kubernetes integration is active."
             },
             "variables": {
@@ -912,16 +1098,22 @@
     "retry": {
       "markdownDescription": "Retry a job if it fails. Can be a simple integer or object definition. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#retry).",
       "oneOf": [
-        { "$ref": "#/definitions/retry_max" },
+        {
+          "$ref": "#/definitions/retry_max"
+        },
         {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "max": { "$ref": "#/definitions/retry_max" },
+            "max": {
+              "$ref": "#/definitions/retry_max"
+            },
             "when": {
               "markdownDescription": "Either a single or array of error types to trigger job retry. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#retrywhen).",
               "oneOf": [
-                { "$ref": "#/definitions/retry_errors" },
+                {
+                  "$ref": "#/definitions/retry_errors"
+                },
                 {
                   "type": "array",
                   "items": {
@@ -1004,21 +1196,39 @@
     },
     "job": {
       "allOf": [
-        { "$ref": "#/definitions/job_template" }
+        {
+          "$ref": "#/definitions/job_template"
+        }
       ]
     },
     "job_template": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "image": { "$ref": "#/definitions/image" },
-        "services": { "$ref": "#/definitions/services" },
-        "before_script": { "$ref": "#/definitions/before_script" },
-        "after_script": { "$ref": "#/definitions/after_script" },
-        "rules": { "$ref": "#/definitions/rules" },
-        "variables": { "$ref": "#/definitions/variables" },
-        "cache": { "$ref": "#/definitions/cache" },
-        "secrets": { "$ref": "#/definitions/secrets" },
+        "image": {
+          "$ref": "#/definitions/image"
+        },
+        "services": {
+          "$ref": "#/definitions/services"
+        },
+        "before_script": {
+          "$ref": "#/definitions/before_script"
+        },
+        "after_script": {
+          "$ref": "#/definitions/after_script"
+        },
+        "rules": {
+          "$ref": "#/definitions/rules"
+        },
+        "variables": {
+          "$ref": "#/definitions/variables"
+        },
+        "cache": {
+          "$ref": "#/definitions/cache"
+        },
+        "secrets": {
+          "$ref": "#/definitions/secrets"
+        },
         "script": {
           "markdownDescription": "Shell scripts executed by the Runner. The only required property of jobs. Be careful with special characters (e.g. `:`, `{`, `}`, `&`) and use single or double quotes to avoid issues. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#script)",
           "oneOf": [
@@ -1060,7 +1270,7 @@
               }
             }
           ]
-          },
+        },
         "only": {
           "$ref": "#/definitions/filter",
           "description": "Job will run *only* when these filtering options match."
@@ -1102,7 +1312,9 @@
                     "type": "boolean"
                   }
                 },
-                "required": ["job"]
+                "required": [
+                  "job"
+                ]
               },
               {
                 "type": "object",
@@ -1118,7 +1330,10 @@
                     "type": "boolean"
                   }
                 },
-                "required": ["job", "pipeline"]
+                "required": [
+                  "job",
+                  "pipeline"
+                ]
               },
               {
                 "type": "object",
@@ -1137,7 +1352,11 @@
                     "type": "boolean"
                   }
                 },
-                "required": ["job", "project", "ref"]
+                "required": [
+                  "job",
+                  "project",
+                  "ref"
+                ]
               }
             ]
           }
@@ -1174,7 +1393,9 @@
         "environment": {
           "description": "Used to associate environment metadata with a deploy. Environment can have a name and URL attached to it, and will be displayed under /environments under the project.",
           "oneOf": [
-            { "type": "string" },
+            {
+              "type": "string"
+            },
             {
               "type": "object",
               "additionalProperties": false,
@@ -1195,7 +1416,13 @@
                   "description": "The name of a job to execute when the environment is about to be stopped."
                 },
                 "action": {
-                  "enum": ["start", "prepare", "stop", "verify", "access"],
+                  "enum": [
+                    "start",
+                    "prepare",
+                    "stop",
+                    "verify",
+                    "access"
+                  ],
                   "description": "Specifies what this job will do. 'start' (default) indicates the job will start the deployment. 'prepare'/'verify'/'access' indicates this will not affect the deployment. 'stop' indicates this will stop the deployment.",
                   "default": "start"
                 },
@@ -1226,7 +1453,9 @@
                   ]
                 }
               },
-              "required": ["name"]
+              "required": [
+                "name"
+              ]
             }
           ]
         },
@@ -1306,15 +1535,23 @@
                         ]
                       }
                     },
-                    "required": ["name", "url"]
+                    "required": [
+                      "name",
+                      "url"
+                    ]
                   },
                   "minItems": 1
                 }
               },
-              "required": ["links"]
+              "required": [
+                "links"
+              ]
             }
           },
-          "required": ["tag_name", "description"]
+          "required": [
+            "tag_name",
+            "description"
+          ]
         },
         "coverage": {
           "type": "string",
@@ -1345,14 +1582,20 @@
                     "type": "object",
                     "description": "Defines environment variables for specific job.",
                     "additionalProperties": {
-                      "type": ["string", "number", "array"]
+                      "type": [
+                        "string",
+                        "number",
+                        "array"
+                      ]
                     }
                   },
                   "maxItems": 50
                 }
               },
               "additionalProperties": false,
-              "required": ["matrix"]
+              "required": [
+                "matrix"
+              ]
             }
           ]
         },
@@ -1383,7 +1626,9 @@
                 "strategy": {
                   "description": "You can mirror the pipeline status from the triggered pipeline to the source bridge job by using strategy: depend",
                   "type": "string",
-                  "enum": ["depend"]
+                  "enum": [
+                    "depend"
+                  ]
                 },
                 "forward": {
                   "description": "Specify what to forward to the downstream pipeline.",
@@ -1403,9 +1648,13 @@
                   }
                 }
               },
-              "required": ["project"],
+              "required": [
+                "project"
+              ],
               "dependencies": {
-                "branch": ["project"]
+                "branch": [
+                  "project"
+                ]
               }
             },
             {
@@ -1466,7 +1715,10 @@
                                 "type": "string"
                               }
                             },
-                            "required": ["artifact", "job"]
+                            "required": [
+                              "artifact",
+                              "job"
+                            ]
                           },
                           {
                             "type": "object",
@@ -1489,7 +1741,10 @@
                                 "pattern": "\\.ya?ml$"
                               }
                             },
-                            "required": ["project", "file"]
+                            "required": [
+                              "project",
+                              "file"
+                            ]
                           }
                         ]
                       }
@@ -1499,7 +1754,9 @@
                 "strategy": {
                   "description": "You can mirror the pipeline status from the triggered pipeline to the source bridge job by using strategy: depend",
                   "type": "string",
-                  "enum": ["depend"]
+                  "enum": [
+                    "depend"
+                  ]
                 },
                 "forward": {
                   "description": "Specify what to forward to the downstream pipeline.",
@@ -1560,7 +1817,9 @@
             "variables": {
               "markdownDescription": "Whether to inherit all globally-defined variables or not. Or subset of inherited variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#inheritvariables).",
               "oneOf": [
-                { "type": "boolean" },
+                {
+                  "type": "boolean"
+                },
                 {
                   "type": "array",
                   "items": {
@@ -1576,15 +1835,24 @@
       "oneOf": [
         {
           "properties": {
-            "when": { "enum": ["delayed"] }
+            "when": {
+              "enum": [
+                "delayed"
+              ]
+            }
           },
-          "required": ["when", "start_in"]
+          "required": [
+            "when",
+            "start_in"
+          ]
         },
         {
           "properties": {
             "when": {
               "not": {
-                "enum": ["delayed"]
+                "enum": [
+                  "delayed"
+                ]
               }
             }
           }

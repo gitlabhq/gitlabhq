@@ -2181,6 +2181,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_parse_secure_file_metadata
+  :worker_name: Ci::ParseSecureFileMetadataWorker
+  :feature_category: :mobile_signing_deployment
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_runners_process_runner_version_update
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
   :feature_category: :runner_fleet

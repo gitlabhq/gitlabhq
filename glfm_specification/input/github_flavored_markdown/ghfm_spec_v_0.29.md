@@ -2077,7 +2077,7 @@ followed by one of the strings (case-insensitive) `address`,
 `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `head`, `header`, `hr`,
 `html`, `iframe`, `legend`, `li`, `link`, `main`, `menu`, `menuitem`,
 `nav`, `noframes`, `ol`, `optgroup`, `option`, `p`, `param`,
-`section`, `source`, `summary`, `table`, `tbody`, `td`,
+`section`, `summary`, `table`, `tbody`, `td`,
 `tfoot`, `th`, `thead`, `title`, `tr`, `track`, `ul`, followed
 by [whitespace], the end of the line, the string `>`, or
 the string `/>`.\
@@ -10224,4 +10224,3 @@ closers:
 
 After we're done, we remove all delimiters above `stack_bottom` from the
 delimiter stack.
-

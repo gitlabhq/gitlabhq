@@ -38,19 +38,11 @@ RSpec.describe PagesDomains::CreateAcmeOrderService do
     expect(challenge).to have_received(:request_validation).ordered
   end
 
-  it 'generates and saves private key: rsa' do
-    stub_feature_flags(pages_lets_encrypt_ecdsa: false)
+  it 'generates and saves private key' do
     service.execute
 
     saved_order = PagesDomainAcmeOrder.last
     expect { OpenSSL::PKey::RSA.new(saved_order.private_key) }.not_to raise_error
-  end
-
-  it 'generates and saves private key: ec' do
-    service.execute
-
-    saved_order = PagesDomainAcmeOrder.last
-    expect { OpenSSL::PKey::EC.new(saved_order.private_key) }.not_to raise_error
   end
 
   it 'properly saves order attributes' do

@@ -9,7 +9,7 @@ module Labels
       return unless project.group &&
           label.is_a?(ProjectLabel)
 
-      Label.transaction do
+      ProjectLabel.transaction do
         # use the existing group label if it exists
         group_label = find_or_create_group_label(label)
 
@@ -50,7 +50,7 @@ module Labels
         .new(current_user, title: group_label.title, group_id: project.group.id)
         .execute(skip_authorization: true)
         .where.not(id: group_label)
-        .select(:id) # Can't use pluck() to avoid object-creation because of the batching
+        .select(:id, :project_id, :group_id, :type) # Can't use pluck() to avoid object-creation because of the batching
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

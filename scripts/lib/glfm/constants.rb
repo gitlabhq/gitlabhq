@@ -10,12 +10,12 @@ module Glfm
     # GitHub Flavored Markdown specification file
     GHFM_SPEC_TXT_URI = 'https://raw.githubusercontent.com/github/cmark-gfm/master/test/spec.txt'
     GHFM_SPEC_VERSION = '0.29'
-    GHFM_SPEC_TXT_FILENAME = "ghfm_spec_v_#{GHFM_SPEC_VERSION}.txt"
-    GHFM_SPEC_TXT_PATH = specification_path.join('input/github_flavored_markdown', GHFM_SPEC_TXT_FILENAME)
+    GHFM_SPEC_MD_FILENAME = "ghfm_spec_v_#{GHFM_SPEC_VERSION}.md"
+    GHFM_SPEC_MD_PATH = specification_path.join('input/github_flavored_markdown', GHFM_SPEC_MD_FILENAME)
 
     # GitLab Flavored Markdown specification files
     specification_input_glfm_path = specification_path.join('input/gitlab_flavored_markdown')
-    GLFM_INTRO_TXT_PATH = specification_input_glfm_path.join('glfm_intro.txt')
+    GLFM_INTRO_MD_PATH = specification_input_glfm_path.join('glfm_intro.md')
     GLFM_EXAMPLES_TXT_PATH = specification_input_glfm_path.join('glfm_canonical_examples.txt')
     GLFM_EXAMPLE_STATUS_YML_PATH = specification_input_glfm_path.join('glfm_example_status.yml')
     GLFM_EXAMPLE_METADATA_YML_PATH =

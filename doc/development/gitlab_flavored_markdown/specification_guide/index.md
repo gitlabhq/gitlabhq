@@ -86,7 +86,7 @@ Some places in the code refer to both the GitLab and GitHub specifications
 simultaneous in the same areas of logic. In these situations,
 _GitHub_ Flavored Markdown may be referred to with variable or constant names like
 `ghfm_` to avoid confusion. For example, we use the `ghfm` acronym for the
-[`ghfm_spec_v_0.29.txt` GitHub Flavored Markdown specification file](#github-flavored-markdown-specification)
+[`ghfm_spec_v_0.29.md` GitHub Flavored Markdown specification file](#github-flavored-markdown-specification),
 which is committed to the `gitlab` repository and used as input to the
 [`update_specification.rb` script](#update-specificationrb-script).
 
@@ -618,8 +618,8 @@ subgraph script:
   A --> B{Backend Markdown API}
 end
 subgraph input:<br/>input specification files
-  C[ghfm_spec_v_0.29.txt] --> A
-  D[glfm_intro.txt] --> A
+  C[ghfm_spec_v_0.29.md] --> A
+  D[glfm_intro.md] --> A
   E[glfm_official_specification_examples.md] --> A
   F[glfm_internal_extension_examples.md] --> A
 end
@@ -749,7 +749,7 @@ subcategories based on their usage and purpose:
     These are the original input to drive all other automated GLFM
     specification scripts, processes, or tests.
     - `github_flavored_markdown`: Contains only the downloaded and committed
-      [`ghfm_spec_v_0.29.txt`](#github-flavored-markdown-specification) specification.
+      [`ghfm_spec_v_0.29.md`](#github-flavored-markdown-specification) specification.
     - `gitlab_flavored_markdown`: Contains all `glfm_*` files.
       - `*.md` [input specification files](#input-specification-files),
         which represent the GLFM specification itself.
@@ -769,19 +769,20 @@ See the main [specification files](#specification-files) section for more contex
 
 ##### GitHub Flavored Markdown specification
 
-[`glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.txt)
-is the official latest [GFM `spec.txt`](https://github.com/github/cmark-gfm/blob/master/test/spec.txt).
+[`glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/github_flavored_markdown/ghfm_spec_v_0.29.md)
+is a copy of the official latest [GFM `spec.txt`](https://github.com/github/cmark-gfm/blob/master/test/spec.txt).
 
-- It is automatically downloaded and updated by `update-specification.rb` script.
+- It is automatically downloaded and updated by the `update-specification.rb` script.
 - When it is downloaded, the version number is added to the filename.
+- The extension is changed from `*.txt` to `*.md` so that it can be handled better by Markdown editors.
 
 NOTE:
 For extra clarity, this file uses the `ghfm` acronym in its name instead of `gfm`, as
 explained in the [Acronyms section](#acronyms-glfm-ghfm-gfm-commonmark).
 
-##### `glfm_intro.txt`
+##### `glfm_intro.md`
 
-[`glfm_specification/input/gitlab_flavored_markdown/glfm_intro.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_intro.txt)
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_intro.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_intro.md)
 is the GitLab-specific version of the prose in the introduction section of the GLFM specification.
 
 - It is manually updated.

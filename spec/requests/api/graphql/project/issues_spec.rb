@@ -708,7 +708,21 @@ RSpec.describe 'getting an issue list for a project' do
       end
 
       # Executes 3 extra queries to fetch participant_attrs
-      include_examples 'N+1 query check', 3
+      include_examples 'N+1 query check', threshold: 3
+    end
+
+    context 'when requesting labels' do
+      let(:requested_fields) { ['labels { nodes { id } }'] }
+
+      before do
+        project_labels = create_list(:label, 2, project: project)
+        group_labels = create_list(:group_label, 2, group: group)
+
+        issue_a.update!(labels: [project_labels.first, group_labels.first].flatten)
+        issue_b.update!(labels: [project_labels, group_labels].flatten)
+      end
+
+      include_examples 'N+1 query check', skip_cached: false
     end
   end
 

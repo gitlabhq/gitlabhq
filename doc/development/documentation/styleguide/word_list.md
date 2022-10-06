@@ -218,7 +218,7 @@ Instead of:
 
 ## cannot, can not
 
-Use **cannot** instead of **can not**. You can also use **can't**.
+Use **cannot** instead of **can not**.
 
 See also [contractions](index.md#contractions).
 

@@ -7,6 +7,7 @@ module Ci
 
     FILE_SIZE_LIMIT = 5.megabytes.freeze
     CHECKSUM_ALGORITHM = 'sha256'
+    PARSABLE_EXTENSIONS = ['cer'].freeze
 
     self.limit_scope = :project
     self.limit_name = 'project_ci_secure_files'
@@ -32,6 +33,37 @@ module Ci
 
     def checksum_algorithm
       CHECKSUM_ALGORITHM
+    end
+
+    def file_extension
+      File.extname(name).delete_prefix('.')
+    end
+
+    def metadata_parsable?
+      PARSABLE_EXTENSIONS.include?(file_extension)
+    end
+
+    def metadata_parser
+      return unless metadata_parsable?
+
+      case file_extension
+      when 'cer'
+        Gitlab::Ci::SecureFiles::Cer.new(file.read)
+      end
+    end
+
+    def update_metadata!
+      return unless metadata_parser
+
+      begin
+        parser = metadata_parser
+        self.metadata = parser.metadata
+        self.expires_at = parser.expires_at if parser.respond_to?(:expires_at)
+        save!
+      rescue StandardError => err
+        Gitlab::AppLogger.error("Secure File Parser Failure (#{id}): #{err.message} - #{parser.error}.")
+        nil
+      end
     end
 
     private

@@ -435,8 +435,8 @@ $system-note-svg-size: 1rem;
 
   .discussion-filter-note {
     .timeline-icon {
-      width: $system-note-icon-size + 6;
-      height: $system-note-icon-size + 6;
+      width: $system-note-icon-size;
+      height: $system-note-icon-size;
       margin-top: -8px;
     }
   }

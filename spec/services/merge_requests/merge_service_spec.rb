@@ -95,6 +95,42 @@ RSpec.describe MergeRequests::MergeService do
       end
     end
 
+    context 'running the service once' do
+      let(:ref) { merge_request.to_reference(full: true) }
+      let(:jid) { SecureRandom.hex }
+
+      let(:messages) do
+        [
+          /#{ref} - Git merge started on JID #{jid}/,
+          /#{ref} - Git merge finished on JID #{jid}/,
+          /#{ref} - Post merge started on JID #{jid}/,
+          /#{ref} - Post merge finished on JID #{jid}/,
+          /#{ref} - Merge process finished on JID #{jid}/
+        ]
+      end
+
+      before do
+        merge_request.update!(merge_jid: jid)
+        ::Gitlab::ApplicationContext.push(caller_id: 'MergeWorker')
+      end
+
+      it 'logs status messages' do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
+        messages.each do |message|
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            hash_including(
+              'meta.caller_id' => 'MergeWorker',
+              message: message,
+              merge_request_info: ref
+            )
+          ).and_call_original
+        end
+
+        service.execute(merge_request)
+      end
+    end
+
     context 'running the service multiple time' do
       it 'is idempotent' do
         2.times { service.execute(merge_request) }
@@ -315,7 +351,9 @@ RSpec.describe MergeRequests::MergeService do
           service.execute(merge_request)
 
           expect(merge_request.merge_error).to eq(error_message)
-          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+          expect(Gitlab::AppLogger).to have_received(:error)
+            .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                                 message: a_string_matching(error_message)))
         end
       end
 
@@ -328,7 +366,9 @@ RSpec.describe MergeRequests::MergeService do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to eq(described_class::GENERIC_ERROR_MESSAGE)
-        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error)
+          .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                               message: a_string_matching(error_message)))
       end
 
       it 'logs and saves error if user is not authorized' do
@@ -354,7 +394,9 @@ RSpec.describe MergeRequests::MergeService do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to include('Something went wrong during merge pre-receive hook')
-        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error)
+          .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                               message: a_string_matching(error_message)))
       end
 
       it 'logs and saves error if commit is not created' do
@@ -366,7 +408,9 @@ RSpec.describe MergeRequests::MergeService do
         expect(merge_request).to be_open
         expect(merge_request.merge_commit_sha).to be_nil
         expect(merge_request.merge_error).to include(described_class::GENERIC_ERROR_MESSAGE)
-        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(described_class::GENERIC_ERROR_MESSAGE))
+        expect(Gitlab::AppLogger).to have_received(:error)
+          .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                               message: a_string_matching(described_class::GENERIC_ERROR_MESSAGE)))
       end
 
       context 'when squashing is required' do
@@ -385,7 +429,9 @@ RSpec.describe MergeRequests::MergeService do
           expect(merge_request.merge_commit_sha).to be_nil
           expect(merge_request.squash_commit_sha).to be_nil
           expect(merge_request.merge_error).to include(error_message)
-          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+          expect(Gitlab::AppLogger).to have_received(:error)
+            .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                                 message: a_string_matching(error_message)))
         end
       end
 
@@ -406,7 +452,9 @@ RSpec.describe MergeRequests::MergeService do
           expect(merge_request.merge_commit_sha).to be_nil
           expect(merge_request.squash_commit_sha).to be_nil
           expect(merge_request.merge_error).to include(error_message)
-          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+          expect(Gitlab::AppLogger).to have_received(:error)
+            .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                                 message: a_string_matching(error_message)))
         end
 
         it 'logs and saves error if there is an PreReceiveError exception' do
@@ -422,7 +470,9 @@ RSpec.describe MergeRequests::MergeService do
           expect(merge_request.merge_commit_sha).to be_nil
           expect(merge_request.squash_commit_sha).to be_nil
           expect(merge_request.merge_error).to include('Something went wrong during merge pre-receive hook')
-          expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+          expect(Gitlab::AppLogger).to have_received(:error)
+            .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                                 message: a_string_matching(error_message)))
         end
 
         context 'when fast-forward merge is not allowed' do
@@ -444,7 +494,9 @@ RSpec.describe MergeRequests::MergeService do
               expect(merge_request.merge_commit_sha).to be_nil
               expect(merge_request.squash_commit_sha).to be_nil
               expect(merge_request.merge_error).to include(error_message)
-              expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+              expect(Gitlab::AppLogger).to have_received(:error)
+                .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                                     message: a_string_matching(error_message)))
             end
           end
         end
@@ -461,7 +513,9 @@ RSpec.describe MergeRequests::MergeService do
           it 'logs and saves error' do
             service.execute(merge_request)
 
-            expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+            expect(Gitlab::AppLogger).to have_received(:error)
+              .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                                   message: a_string_matching(error_message)))
           end
         end
 
@@ -473,7 +527,9 @@ RSpec.describe MergeRequests::MergeService do
           it 'logs and saves error' do
             service.execute(merge_request)
 
-            expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+            expect(Gitlab::AppLogger).to have_received(:error)
+              .with(hash_including(merge_request_info: merge_request.to_reference(full: true),
+                                   message: a_string_matching(error_message)))
           end
 
           context 'when passing `skip_discussions_check: true` as `options` parameter' do

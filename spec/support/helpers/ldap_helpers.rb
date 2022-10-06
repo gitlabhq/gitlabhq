@@ -69,6 +69,32 @@ module LdapHelpers
     allow_any_instance_of(Gitlab::Auth::Ldap::Adapter)
       .to receive(:ldap_search).and_raise(Gitlab::Auth::Ldap::LdapConnectionError)
   end
+
+  def stub_ldap_access(user, provider, provider_label)
+    ldap_server_config =
+      {
+        'label' => provider_label,
+        'provider_name' => provider,
+        'attributes' => {},
+        'encryption' => 'plain',
+        'uid' => 'uid',
+        'base' => 'dc=example,dc=com'
+      }
+    uid = 'my-uid'
+    allow(::Gitlab::Auth::Ldap::Config).to receive_messages(enabled: true, servers: [ldap_server_config])
+    allow(Gitlab::Auth::OAuth::Provider).to receive_messages(providers: [provider.to_sym])
+
+    Ldap::OmniauthCallbacksController.define_providers!
+    Rails.application.reload_routes!
+
+    mock_auth_hash(provider, uid, user.email)
+    allow(Gitlab::Auth::Ldap::Access).to receive(:allowed?).with(user).and_return(true)
+
+    allow_next_instance_of(ActionDispatch::Routing::RoutesProxy) do |instance|
+      allow(instance).to receive(:"user_#{provider}_omniauth_callback_path")
+              .and_return("/users/auth/#{provider}/callback")
+    end
+  end
 end
 
 LdapHelpers.include_mod_with('LdapHelpers')

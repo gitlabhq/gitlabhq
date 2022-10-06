@@ -38,3 +38,8 @@ archive_project:
     - ios_11-3
     - xcode_9-3
     - macos_10-13
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

@@ -230,10 +230,8 @@ export default {
       @change="setOverride"
     />
 
-    <div v-if="!hasSections" class="row">
-      <div class="col-lg-4"></div>
-
-      <div class="col-lg-8">
+    <section v-if="!hasSections" class="gl-lg-display-flex gl-justify-content-end">
+      <div class="gl-flex-basis-two-thirds">
         <!-- helpHtml is trusted input -->
         <div v-if="helpHtml" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
 
@@ -249,7 +247,7 @@ export default {
           :type="propsSource.type"
         />
       </div>
-    </div>
+    </section>
 
     <template v-if="hasSections">
       <div
@@ -258,8 +256,8 @@ export default {
         :class="{ 'gl-border-b gl-pb-3 gl-mb-6': index !== customState.sections.length - 1 }"
         data-testid="integration-section"
       >
-        <div class="row">
-          <div class="col-lg-4">
+        <section class="gl-lg-display-flex">
+          <div class="gl-flex-basis-third">
             <h4 class="gl-mt-0">
               {{ section.title
               }}<gl-badge
@@ -277,7 +275,7 @@ export default {
             <p v-safe-html="section.description"></p>
           </div>
 
-          <div class="col-lg-8">
+          <div class="gl-flex-basis-two-thirds">
             <component
               :is="$options.integrationFormSectionComponents[section.type]"
               :fields="fieldsForSection(section)"
@@ -286,14 +284,12 @@ export default {
               @request-jira-issue-types="onRequestJiraIssueTypes"
             />
           </div>
-        </div>
+        </section>
       </div>
     </template>
 
-    <div v-if="hasFieldsWithoutSection" class="row">
-      <div class="col-lg-4"></div>
-
-      <div class="col-lg-8">
+    <section v-if="hasFieldsWithoutSection" class="gl-lg-display-flex gl-justify-content-end">
+      <div class="gl-flex-basis-two-thirds">
         <dynamic-field
           v-for="field in fieldsWithoutSection"
           :key="`${currentKey}-${field.name}`"
@@ -302,12 +298,12 @@ export default {
           :data-qa-selector="`${field.name}_div`"
         />
       </div>
-    </div>
+    </section>
 
-    <div v-if="isEditable" class="row">
-      <div :class="hasSections ? 'col' : 'col-lg-8 offset-lg-4'">
+    <section v-if="isEditable" :class="!hasSections && 'gl-lg-display-flex gl-justify-content-end'">
+      <div :class="!hasSections && 'gl-flex-basis-two-thirds'">
         <div
-          class="footer-block row-content-block gl-display-flex gl-justify-content-space-between"
+          class="footer-block row-content-block gl-lg-display-flex gl-justify-content-space-between"
         >
           <div>
             <template v-if="isInstanceOrGroupLevel">
@@ -369,6 +365,6 @@ export default {
           </template>
         </div>
       </div>
-    </div>
+    </section>
   </gl-form>
 </template>

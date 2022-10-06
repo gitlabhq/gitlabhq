@@ -521,6 +521,7 @@ Style/ClassAndModuleChildren:
     - 'ee/db/fixtures/development/21_dast_profiles.rb'
     - 'ee/db/fixtures/development/30_customizable_cycle_analytics.rb'
     - 'ee/db/fixtures/development/32_compliance_report_violations.rb'
+    - 'ee/db/fixtures/development/35_merge_request_predictions.rb'
     - 'ee/db/fixtures/development/90_productivity_analytics.rb'
     - 'ee/lib/ee/gitlab/analytics/cycle_analytics/aggregated/base_query_builder.rb'
     - 'ee/lib/ee/gitlab/analytics/cycle_analytics/base_query_builder.rb'

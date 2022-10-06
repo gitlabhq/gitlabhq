@@ -158,8 +158,11 @@ module Types
                                                         description: 'Human-readable time estimate of the merge request.'
     field :human_total_time_spent, GraphQL::Types::String, null: true,
                                                            description: 'Human-readable total time reported as spent on the merge request.'
-    field :labels, Types::LabelType.connection_type, null: true, complexity: 5,
-                                                     description: 'Labels of the merge request.'
+    field :labels, Types::LabelType.connection_type,
+          null: true, complexity: 5,
+          description: 'Labels of the merge request.',
+          resolver: Resolvers::BulkLabelsResolver
+
     field :milestone, Types::MilestoneType, null: true,
                                             description: 'Milestone of the merge request.'
     field :participants, Types::MergeRequests::ParticipantType.connection_type, null: true, complexity: 15,

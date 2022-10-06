@@ -81,4 +81,60 @@ RSpec.describe Ci::SecureFile do
       expect(Base64.encode64(subject.file.read)).to eq(Base64.encode64(sample_file))
     end
   end
+
+  describe '#file_extension' do
+    it 'returns the extension for the file name' do
+      file = build(:ci_secure_file, name: 'file1.cer')
+      expect(file.file_extension).to eq('cer')
+    end
+
+    it 'returns only the last part of the extension for the file name' do
+      file = build(:ci_secure_file, name: 'file1.tar.gz')
+      expect(file.file_extension).to eq('gz')
+    end
+  end
+
+  describe '#metadata_parsable?' do
+    it 'returns true when the file extension has a supported parser' do
+      file = build(:ci_secure_file, name: 'file1.cer')
+      expect(file.metadata_parsable?).to be true
+    end
+
+    it 'returns false when the file extension does not have a supported parser' do
+      file = build(:ci_secure_file, name: 'file1.foo')
+      expect(file.metadata_parsable?).to be false
+    end
+  end
+
+  describe '#metadata_parser' do
+    it 'returns an instance of Gitlab::Ci::SecureFiles::Cer when a .cer file is supplied' do
+      file = build(:ci_secure_file, name: 'file1.cer')
+      expect(file.metadata_parser).to be_an_instance_of(Gitlab::Ci::SecureFiles::Cer)
+    end
+
+    it 'returns nil when the file type is not supported by any parsers' do
+      file = build(:ci_secure_file, name: 'file1.foo')
+      expect(file.metadata_parser).to be nil
+    end
+  end
+
+  describe '#update_metadata!' do
+    it 'assigns the expected metadata when a parsable file is supplied' do
+      file = create(:ci_secure_file, name: 'file1.cer',
+                                     file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.cer') ))
+      file.update_metadata!
+
+      expect(file.expires_at).to eq(DateTime.parse('2022-04-26 19:20:40'))
+      expect(file.metadata['id']).to eq('33669367788748363528491290218354043267')
+      expect(file.metadata['issuer']['CN']).to eq('Apple Worldwide Developer Relations Certification Authority')
+      expect(file.metadata['subject']['OU']).to eq('N7SYAN8PX8')
+    end
+
+    it 'logs an error when something goes wrong with the file parsing' do
+      corrupt_file = create(:ci_secure_file, name: 'file1.cer', file: CarrierWaveStringFile.new('11111111'))
+      message = 'Validation failed: Metadata must be a valid json schema - not enough data.'
+      expect(Gitlab::AppLogger).to receive(:error).with("Secure File Parser Failure (#{corrupt_file.id}): #{message}")
+      corrupt_file.update_metadata!
+    end
+  end
 end

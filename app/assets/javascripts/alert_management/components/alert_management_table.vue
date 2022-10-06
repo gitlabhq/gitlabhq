@@ -216,8 +216,11 @@ export default {
       this.pagination = initialPaginationState;
       this.sort = sortObjectToString({ sortBy, sortDesc });
     },
+    showAlertLink({ iid }) {
+      return joinPaths(window.location.pathname, iid, 'details');
+    },
     navigateToAlertDetails({ iid }, index, { metaKey }) {
-      return visitUrl(joinPaths(window.location.pathname, iid, 'details'), metaKey);
+      return visitUrl(this.showAlertLink({ iid }), metaKey);
     },
     hasAssignees(assignees) {
       return Boolean(assignees.nodes?.length);
@@ -357,7 +360,7 @@ export default {
               :title="`${item.iid} - ${item.title}`"
               data-testid="idField"
             >
-              #{{ item.iid }} {{ item.title }}
+              <gl-link :href="showAlertLink(item)"> #{{ item.iid }} {{ item.title }} </gl-link>
             </div>
           </template>
 

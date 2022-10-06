@@ -1759,8 +1759,7 @@ RSpec.describe 'Git HTTP requests' do
   end
 
   describe "User with LDAP identity" do
-    let(:user) { create(:omniauth_user, extern_uid: dn) }
-    let(:dn) { 'uid=john,ou=people,dc=example,dc=com' }
+    let(:user) { create(:omniauth_user, :ldap) }
     let(:path) { 'doesnt/exist.git' }
 
     before do

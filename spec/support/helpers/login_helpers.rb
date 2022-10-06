@@ -119,6 +119,16 @@ module LoginHelpers
     click_button "oauth-login-#{provider}"
   end
 
+  def sign_in_using_ldap!(user, ldap_tab, ldap_name)
+    visit new_user_session_path
+    click_link ldap_tab
+    fill_in 'username', with: user.username
+    fill_in 'password', with: user.password
+    within("##{ldap_name}") do
+      click_button 'Sign in'
+    end
+  end
+
   def register_via(provider, uid, email, additional_info: {})
     mock_auth_hash(provider, uid, email, additional_info: additional_info)
     visit new_user_registration_path

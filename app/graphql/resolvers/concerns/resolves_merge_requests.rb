@@ -42,7 +42,6 @@ module ResolvesMergeRequests
       assignees: [:assignees],
       reviewers: [:reviewers],
       participants: MergeRequest.participant_includes,
-      labels: [:labels],
       author: [:author],
       merged_at: [:metrics],
       commit_count: [:metrics],
