@@ -19,7 +19,7 @@ module ObjectStorage
 
         ip = IPAddr.new(request_ip)
 
-        return false if ip.private?
+        return false if ip.private? || ip.link_local? || ip.loopback?
 
         !GoogleIpCache.google_ip?(request_ip)
       end

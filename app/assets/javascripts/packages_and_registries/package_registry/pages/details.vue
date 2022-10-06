@@ -263,7 +263,7 @@ export default {
   },
   modal: {
     packageDeletePrimaryAction: {
-      text: __('Delete'),
+      text: s__('PackageRegistry|Permanently delete'),
       attributes: [
         { variant: 'danger' },
         { category: 'primary' },

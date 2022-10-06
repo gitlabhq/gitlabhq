@@ -81,10 +81,9 @@ export default {
     },
   },
   i18n: {
-    deleteModalContent: s__(
-      'PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?',
-    ),
-    modalAction: s__('PackageRegistry|Delete package'),
+    deleteModalContent: s__('PackageRegistry|You are about to delete %{name}, are you sure?'),
+    modalTitle: s__('PackageRegistry|Delete package'),
+    modalAction: s__('PackageRegistry|Permanently delete'),
   },
 };
 </script>
@@ -120,13 +119,13 @@ export default {
       <gl-modal
         ref="packageListDeleteModal"
         size="sm"
-        modal-id="confirm-delete-pacakge"
+        modal-id="confirm-delete-package"
         :action-primary="deleteModalActionPrimaryProps"
         :action-cancel="deleteModalActionCancelProps"
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"
       >
-        <template #modal-title>{{ $options.i18n.modalAction }}</template>
+        <template #modal-title>{{ $options.i18n.modalTitle }}</template>
         <gl-sprintf :message="$options.i18n.deleteModalContent">
           <template #name>
             <strong>{{ deletePackageName }}</strong>

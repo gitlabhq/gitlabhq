@@ -7,7 +7,7 @@ type: index, concepts, howto
 
 # Development guide for GitLab CI/CD templates **(FREE)**
 
-This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md).
+This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md#cicd-templates).
 
 ## Requirements for CI/CD templates
 

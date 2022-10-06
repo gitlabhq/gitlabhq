@@ -142,6 +142,7 @@ Style/FormatString:
     - 'app/presenters/ci/pipeline_presenter.rb'
     - 'app/presenters/merge_request_presenter.rb'
     - 'app/presenters/project_presenter.rb'
+    - 'app/presenters/key_presenter.rb'
     - 'app/serializers/build_details_entity.rb'
     - 'app/services/alert_management/alerts/update_service.rb'
     - 'app/services/boards/lists/base_create_service.rb'

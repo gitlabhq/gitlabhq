@@ -13,11 +13,6 @@ To access the dashboard, on the top bar, select **Main menu > Operations**.
 
 ## Adding a project to the dashboard
 
-NOTE:
-For GitLab.com, you can add your project to the Operations Dashboard for free if
-your project is public. If your project is private, the group it belongs to must
-have a [GitLab Premium](https://about.gitlab.com/pricing/) plan.
-
 To add a project to the dashboard:
 
 1. Ensure your alerts populate the `gitlab_environment_name` label on the alerts you set up in Prometheus.

@@ -1134,6 +1134,9 @@ msgstr ""
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
 
+msgid "%{type} must be a %{help_link}"
+msgstr ""
+
 msgid "%{type} only supports %{name} name"
 msgstr ""
 
@@ -4511,6 +4514,9 @@ msgid "An unknown error occurred."
 msgstr ""
 
 msgid "Analytics"
+msgstr ""
+
+msgid "AnalyticsDashboards|Dashboards"
 msgstr ""
 
 msgid "Analyze your dependencies for known vulnerabilities."
@@ -28705,6 +28711,9 @@ msgstr[1] ""
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
 msgstr ""
 
+msgid "PackageRegistry|Permanently delete"
+msgstr ""
+
 msgid "PackageRegistry|Permanently delete assets"
 msgstr ""
 
@@ -28816,7 +28825,7 @@ msgstr ""
 msgid "PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?"
 msgstr ""
 
-msgid "PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?"
+msgid "PackageRegistry|You are about to delete %{name}, are you sure?"
 msgstr ""
 
 msgid "PackageRegistry|You are about to delete 1 asset. This operation is irreversible."
@@ -48577,6 +48586,9 @@ msgid "suggestPipeline|The template is ready! You can now commit it to create yo
 msgstr ""
 
 msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box."
+msgstr ""
+
+msgid "supported SSH public key."
 msgstr ""
 
 msgid "tag name"

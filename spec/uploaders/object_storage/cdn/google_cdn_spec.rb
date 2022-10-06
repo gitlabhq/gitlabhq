@@ -30,6 +30,8 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
       '2600:1900:4180:0000:0000:0000:0000:0000' | false
       '10.10.1.5'                               | false
       'fc00:0000:0000:0000:0000:0000:0000:0000' | false
+      '127.0.0.1'                               | false
+      '169.254.0.0'                             | false
     end
 
     with_them do
