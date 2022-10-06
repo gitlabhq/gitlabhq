@@ -104,12 +104,12 @@ RSpec.describe Git::TagHooksService, :service do
               id: commit.id,
               message: commit.safe_message,
               url: [
-               Gitlab.config.gitlab.url,
-               project.namespace.to_param,
-               project.to_param,
-               '-',
-               'commit',
-               commit.id
+                Gitlab.config.gitlab.url,
+                project.namespace.to_param,
+                project.to_param,
+                '-',
+                'commit',
+                commit.id
               ].join('/')
             )
           end

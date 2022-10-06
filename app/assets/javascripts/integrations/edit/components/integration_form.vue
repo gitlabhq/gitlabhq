@@ -108,6 +108,9 @@ export default {
         ? this.propsSource.fields.filter((field) => !field.section)
         : this.propsSource.fields;
     },
+    hasFieldsWithoutSection() {
+      return this.fieldsWithoutSection.length;
+    },
   },
   methods: {
     ...mapActions(['setOverride', 'requestJiraIssueTypes']),
@@ -227,6 +230,27 @@ export default {
       @change="setOverride"
     />
 
+    <div v-if="!hasSections" class="row">
+      <div class="col-lg-4"></div>
+
+      <div class="col-lg-8">
+        <!-- helpHtml is trusted input -->
+        <div v-if="helpHtml" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
+
+        <active-checkbox
+          v-if="propsSource.showActive"
+          :key="`${currentKey}-active-checkbox`"
+          @toggle-integration-active="onToggleIntegrationState"
+        />
+        <trigger-fields
+          v-if="propsSource.triggerEvents.length"
+          :key="`${currentKey}-trigger-fields`"
+          :events="propsSource.triggerEvents"
+          :type="propsSource.type"
+        />
+      </div>
+    </div>
+
     <template v-if="hasSections">
       <div
         v-for="(section, index) in customState.sections"
@@ -266,24 +290,10 @@ export default {
       </div>
     </template>
 
-    <div class="row">
+    <div v-if="hasFieldsWithoutSection" class="row">
       <div class="col-lg-4"></div>
 
       <div class="col-lg-8">
-        <!-- helpHtml is trusted input -->
-        <div v-if="helpHtml && !hasSections" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
-
-        <active-checkbox
-          v-if="propsSource.showActive && !hasSections"
-          :key="`${currentKey}-active-checkbox`"
-          @toggle-integration-active="onToggleIntegrationState"
-        />
-        <trigger-fields
-          v-if="propsSource.triggerEvents.length && !hasSections"
-          :key="`${currentKey}-trigger-fields`"
-          :events="propsSource.triggerEvents"
-          :type="propsSource.type"
-        />
         <dynamic-field
           v-for="field in fieldsWithoutSection"
           :key="`${currentKey}-${field.name}`"

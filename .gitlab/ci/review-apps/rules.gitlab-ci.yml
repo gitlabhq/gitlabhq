@@ -19,6 +19,9 @@
 .qa-framework-changes: &qa-framework-changes
   if: $QA_FRAMEWORK_CHANGES == "true"
 
+.default-branch: &default-branch
+  if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
 .qa-manual: &qa-manual
   when: manual
   allow_failure: true
@@ -94,3 +97,8 @@
 .rules:prepare-report:
   rules:
     - when: always
+
+.rules:notify-slack:
+  rules:
+    - <<: *default-branch
+      when: on_failure

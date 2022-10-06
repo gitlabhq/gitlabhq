@@ -799,23 +799,24 @@ RSpec.describe MergeRequests::RefreshService do
       it 'does not mark as draft based on commits that do not belong to an MR' do
         allow(refresh_service).to receive(:find_new_commits)
 
-        refresh_service.instance_variable_set("@commits", [
-          double(
-            id: 'aaaaaaa',
-            sha: 'aaaaaaa',
-            short_id: 'aaaaaaa',
-            title: 'Fix issue',
-            draft?: false
-          ),
-          double(
-            id: 'bbbbbbb',
-            sha: 'bbbbbbbb',
-            short_id: 'bbbbbbb',
-            title: 'fixup! Fix issue',
-            draft?: true,
-            to_reference: 'bbbbbbb'
-          )
-        ])
+        refresh_service.instance_variable_set("@commits",
+          [
+            double(
+              id: 'aaaaaaa',
+              sha: 'aaaaaaa',
+              short_id: 'aaaaaaa',
+              title: 'Fix issue',
+              draft?: false
+            ),
+            double(
+              id: 'bbbbbbb',
+              sha: 'bbbbbbbb',
+              short_id: 'bbbbbbb',
+              title: 'fixup! Fix issue',
+              draft?: true,
+              to_reference: 'bbbbbbb'
+            )
+          ])
 
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs

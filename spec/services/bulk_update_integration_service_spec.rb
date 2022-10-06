@@ -11,8 +11,8 @@ RSpec.describe BulkUpdateIntegrationService do
 
   let(:excluded_attributes) do
     %w[
-       id project_id group_id inherit_from_id instance template
-       created_at updated_at encrypted_properties encrypted_properties_iv
+      id project_id group_id inherit_from_id instance template
+      created_at updated_at encrypted_properties encrypted_properties_iv
     ]
   end
 

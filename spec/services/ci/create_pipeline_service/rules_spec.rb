@@ -540,9 +540,10 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             let(:compare_to) { 'invalid-branch' }
 
             it 'returns an error' do
-              expect(pipeline.errors.full_messages).to eq([
-                'Failed to parse rule for job1: rules:changes:compare_to is not a valid ref'
-              ])
+              expect(pipeline.errors.full_messages).to eq(
+                [
+                  'Failed to parse rule for job1: rules:changes:compare_to is not a valid ref'
+                ])
             end
           end
 

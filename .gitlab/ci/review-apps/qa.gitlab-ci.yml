@@ -1,7 +1,8 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.2.2
+    ref: 1.3.0
     file:
+      - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
       - /ci/knapsack-report.yml
 
@@ -172,3 +173,21 @@ delete-test-resources:
     - bundle exec rake "test_resources:delete[$QA_TEST_RESOURCES_FILE_PATTERN]"
   allow_failure: true
   when: always
+
+notify-slack:
+  extends:
+    - .notify-slack-qa
+    - .qa-cache
+    - .rules:notify-slack
+  stage: post-qa
+  variables:
+    RUN_WITH_BUNDLE: "true"
+    QA_PATH: qa
+    ALLURE_JOB_NAME: e2e-review-qa
+    SLACK_ICON_EMOJI: ci_failing
+    STATUS_SYM: ☠️
+    STATUS: failed
+    TYPE: (review-app)
+  script:
+    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml" # generate summary
+    - !reference [.notify-slack-qa, script]

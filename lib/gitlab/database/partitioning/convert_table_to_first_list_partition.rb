@@ -6,8 +6,6 @@ module Gitlab
       class ConvertTableToFirstListPartition
         UnableToPartition = Class.new(StandardError)
 
-        include Gitlab::Database::MigrationHelpers
-
         SQL_STATEMENT_SEPARATOR = ";\n\n"
 
         attr_reader :partitioning_column, :table_name, :parent_table_name, :zero_partition_value

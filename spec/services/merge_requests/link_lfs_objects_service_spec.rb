@@ -52,10 +52,11 @@ RSpec.describe MergeRequests::LinkLfsObjectsService, :sidekiq_inline do
 
           it 'calls Projects::LfsPointers::LfsLinkService#execute with OIDs of LFS objects in merge request' do
             expect_next_instance_of(Projects::LfsPointers::LfsLinkService) do |service|
-              expect(service).to receive(:execute).with(%w[
-                8b12507783d5becacbf2ebe5b01a60024d8728a8f86dcc818bce699e8b3320bc
-                94a72c074cfe574742c9e99e863322f73feff82981d065ff65a0308f44f19f62
-              ])
+              expect(service).to receive(:execute).with(
+                %w[
+                  8b12507783d5becacbf2ebe5b01a60024d8728a8f86dcc818bce699e8b3320bc
+                  94a72c074cfe574742c9e99e863322f73feff82981d065ff65a0308f44f19f62
+                ])
             end
 
             execute

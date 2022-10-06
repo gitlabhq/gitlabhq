@@ -46,10 +46,11 @@ RSpec.describe JiraConnect::SyncService do
 
     context 'when a request returns an error' do
       it 'logs the response as an error' do
-        expect_next(client).to store_info([
-          { 'errorMessages' => ['some error message'] },
-          { 'errorMessages' => ['x'] }
-        ])
+        expect_next(client).to store_info(
+          [
+            { 'errorMessages' => ['some error message'] },
+            { 'errorMessages' => ['x'] }
+          ])
 
         expect_log(:error, { 'errorMessages' => ['some error message'] })
         expect_log(:error, { 'errorMessages' => ['x'] })

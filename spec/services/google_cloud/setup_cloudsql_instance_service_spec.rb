@@ -8,17 +8,19 @@ RSpec.describe GoogleCloud::SetupCloudsqlInstanceService do
   let(:list_databases_empty) { Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(items: []) }
   let(:list_users_empty) { Google::Apis::SqladminV1beta4::ListUsersResponse.new(items: []) }
   let(:list_databases) do
-    Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(items: [
-      Google::Apis::SqladminV1beta4::Database.new(name: 'postgres'),
-      Google::Apis::SqladminV1beta4::Database.new(name: 'main_db')
-    ])
+    Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(
+      items: [
+        Google::Apis::SqladminV1beta4::Database.new(name: 'postgres'),
+        Google::Apis::SqladminV1beta4::Database.new(name: 'main_db')
+      ])
   end
 
   let(:list_users) do
-    Google::Apis::SqladminV1beta4::ListUsersResponse.new(items: [
-      Google::Apis::SqladminV1beta4::User.new(name: 'postgres'),
-      Google::Apis::SqladminV1beta4::User.new(name: 'main_user')
-    ])
+    Google::Apis::SqladminV1beta4::ListUsersResponse.new(
+      items: [
+        Google::Apis::SqladminV1beta4::User.new(name: 'postgres'),
+        Google::Apis::SqladminV1beta4::User.new(name: 'main_user')
+      ])
   end
 
   context 'when unauthorized user triggers worker' do

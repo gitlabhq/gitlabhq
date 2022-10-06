@@ -22579,7 +22579,8 @@ CREATE TABLE vulnerability_feedback (
     comment text,
     comment_timestamp timestamp with time zone,
     finding_uuid uuid,
-    dismissal_reason smallint
+    dismissal_reason smallint,
+    migrated_to_state_transition boolean DEFAULT false
 );
 
 CREATE SEQUENCE vulnerability_feedback_id_seq
@@ -30963,6 +30964,8 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
+
+CREATE INDEX tmp_idx_vulnerabilities_on_id_where_report_type_7_99 ON vulnerabilities USING btree (id) WHERE (report_type = ANY (ARRAY[7, 99]));
 
 CREATE INDEX tmp_index_approval_merge_request_rules_on_report_type_equal_one ON approval_merge_request_rules USING btree (id, report_type) WHERE (report_type = 1);
 
