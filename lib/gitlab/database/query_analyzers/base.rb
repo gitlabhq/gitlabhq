@@ -8,7 +8,7 @@ module Gitlab
         QueryAnalyzerError = Class.new(Exception) # rubocop:disable Lint/InheritException
 
         def self.suppressed?
-          Thread.current[self.suppress_key]
+          Thread.current[self.suppress_key] || @suppress_in_rspec
         end
 
         def self.requires_tracking?(parsed)
@@ -17,6 +17,20 @@ module Gitlab
 
         def self.suppress=(value)
           Thread.current[self.suppress_key] = value
+        end
+
+        # The other suppress= method stores the
+        # value in Thread.current because it is
+        # meant to work in a multi-threaded puma
+        # environment but this does not work
+        # correctly in capybara tests where we
+        # suppress in the rspec runner context but
+        # this does not take effect in the puma
+        # thread. As such we just suppress
+        # globally in RSpec since we don't run
+        # different tests concurrently.
+        class << self
+          attr_writer :suppress_in_rspec
         end
 
         def self.with_suppressed(value = true, &blk)

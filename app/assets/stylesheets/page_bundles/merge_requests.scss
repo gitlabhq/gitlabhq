@@ -9,6 +9,124 @@ $tabs-holder-z-index: 250;
   min-width: 0;
 }
 
+.diff-comment-avatar-holders {
+  position: absolute;
+  margin-left: -$gl-padding;
+  z-index: 100;
+  @include code-icon-size();
+
+  &:hover {
+    .diff-comment-avatar,
+    .diff-comments-more-count {
+      @for $i from 1 through 4 {
+        $x-pos: 14px;
+
+        &:nth-child(#{$i}) {
+          @if $i == 4 {
+            $x-pos: 14.5px;
+          }
+
+          transform: translateX((($i * $x-pos) - $x-pos));
+
+          &:hover {
+            transform: translateX((($i * $x-pos) - $x-pos));
+          }
+        }
+      }
+    }
+
+    .diff-comments-more-count {
+      padding-left: 2px;
+      padding-right: 2px;
+      width: auto;
+    }
+  }
+}
+
+.diff-comment-avatar,
+.diff-comments-more-count {
+  position: absolute;
+  left: 0;
+  margin-right: 0;
+  border-color: var(--white, $white);
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  @include code-icon-size();
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      z-index: (4 - $i);
+    }
+  }
+
+  .avatar {
+    @include code-icon-size();
+  }
+}
+
+.diff-comments-more-count {
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+  @include code-icon-size();
+}
+
+.diff-file-changes {
+  max-width: 560px;
+  width: 100%;
+  z-index: 150;
+  min-height: $dropdown-min-height;
+  max-height: $dropdown-max-height;
+  overflow-y: auto;
+  margin-bottom: 0;
+
+  @include media-breakpoint-up(sm) {
+    left: $gl-padding;
+  }
+
+  .dropdown-input .dropdown-input-search {
+    pointer-events: all;
+  }
+
+  .diff-changed-file {
+    display: flex;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    min-width: 0;
+  }
+
+  .diff-file-changed-icon {
+    margin-top: 2px;
+  }
+
+  .diff-changed-file-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .diff-changed-file-name,
+  .diff-changed-blank-file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .diff-changed-blank-file-name {
+    color: var(--gray-400, $gray-400);
+    font-style: italic;
+  }
+
+  .diff-changed-file-path {
+    color: var(--gray-400, $gray-400);
+  }
+
+  .diff-changed-stats {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+}
+
 .diff-files-holder {
   flex: 1;
   min-width: 0;
@@ -16,6 +134,111 @@ $tabs-holder-z-index: 250;
 
   .vue-recycle-scroller__item-wrapper {
     overflow: visible;
+  }
+}
+
+.diff-grid {
+  .diff-td {
+    // By default min-width is auto with 1fr which causes some overflow problems
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/296222
+    min-width: 0;
+  }
+
+  .diff-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    &.diff-grid-row-full {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .diff-grid-left,
+  .diff-grid-right {
+    display: grid;
+    // Zero width column is a placeholder for the EE inline code quality diff
+    // see ee/.../diffs.scss for more details
+    grid-template-columns: 50px 8px 0 1fr;
+  }
+
+  .diff-grid-2-col {
+    grid-template-columns: 100px 1fr !important;
+
+    &.parallel {
+      grid-template-columns: 50px 1fr !important;
+    }
+  }
+
+  .diff-grid-comments {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .diff-grid-drafts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .content + .content {
+      @include gl-border-t;
+    }
+  }
+
+  &.inline-diff-view {
+    .diff-grid-comments {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .diff-grid-drafts {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .diff-grid-row {
+      grid-template-columns: 1fr;
+    }
+
+    .diff-grid-left,
+    .diff-grid-right {
+      // Zero width column is a placeholder for the EE inline code quality diff
+      // see ee/../diffs.scss for more details
+      grid-template-columns: 50px 50px 8px 0 1fr;
+    }
+  }
+}
+
+.diff-line-expand-button {
+  &:hover,
+  &:focus {
+    background-color: var(--gray-200, $gray-200);
+  }
+}
+
+.diff-table.code .diff-tr.line_holder .diff-td.line_content.parallel {
+  width: unset;
+}
+
+.diff-tr {
+  .timeline-discussion-body {
+    clear: left;
+
+    .note-body {
+      padding: 0 0 $gl-padding-8;
+    }
+  }
+
+  .timeline-entry img.avatar {
+    margin-top: -2px;
+    margin-right: $gl-padding-8;
+  }
+
+  // tiny adjustment to vertical align with the note header text
+  .discussion-collapsible {
+    margin-left: 1rem;
+
+    .timeline-icon {
+      padding-top: 2px;
+    }
   }
 }
 
@@ -857,4 +1080,81 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-content-row:first-child {
   border-top: 0;
+}
+
+.memory-graph-container {
+  background: var(--white, $white);
+  border: 1px solid var(--gray-100, $gray-100);
+}
+
+.review-bar-component {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: $zindex-dropdown-menu;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: $toggle-sidebar-height;
+  padding-left: $contextual-sidebar-width;
+  padding-right: $gutter_collapsed_width;
+  background: var(--white, $white);
+  border-top: 1px solid var(--border-color, $border-color);
+  transition: padding $gl-transition-duration-medium;
+
+  .page-with-icon-sidebar & {
+    padding-left: $contextual-sidebar-collapsed-width;
+  }
+
+  .right-sidebar-expanded & {
+    padding-right: $gutter_width;
+  }
+
+  @media (max-width: map-get($grid-breakpoints, sm)-1) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .dropdown {
+    margin-left: $grid-size;
+  }
+}
+
+.review-bar-content {
+  max-width: $limited-layout-width;
+  padding: 0 $gl-padding;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.review-preview-item-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 4px;
+
+  > .bold {
+    display: flex;
+    min-width: 0;
+    line-height: 16px;
+  }
+}
+
+.review-preview-item-footer {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.review-preview-item-content {
+  width: 100%;
+
+  p {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0;
+  }
 }

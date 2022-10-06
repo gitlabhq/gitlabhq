@@ -151,7 +151,7 @@ export default class ActivityCalendar {
       .select(container)
       .append('svg')
       .attr('width', width)
-      .attr('height', 167)
+      .attr('height', 169)
       .attr('class', 'contrib-calendar');
   }
 

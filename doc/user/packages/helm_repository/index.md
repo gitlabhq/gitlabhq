@@ -100,7 +100,7 @@ upload:
 ## Install a package
 
 NOTE:
-When requesting a package, GitLab considers only the 300 most recent packages created.
+When requesting a package, GitLab considers only the 1000 most recent packages created.
 For each package, only the most recent package file is returned.
 
 To install the latest version of a chart, use the following command:

@@ -623,7 +623,7 @@ notify-slack:
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed
-    TYPE: (package-and-test)
+    TYPE: "(package-and-test) "
   when: on_failure
   script:
     - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.xml" # generate summary

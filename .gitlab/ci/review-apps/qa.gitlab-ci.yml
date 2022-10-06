@@ -187,7 +187,7 @@ notify-slack:
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed
-    TYPE: (review-app)
+    TYPE: "(review-app) "
   script:
     - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml" # generate summary
     - !reference [.notify-slack-qa, script]

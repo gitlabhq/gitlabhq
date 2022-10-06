@@ -25,7 +25,7 @@ RSpec.describe Tooling::Danger::ConfigFiles do
     let(:file_lines) do
       [
         "---",
-        "name: about_your_company_registration_flow",
+        "name: about_some_new_flow",
         "introduced_by_url: #{url}",
         "rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355909",
         "milestone: '14.10'"

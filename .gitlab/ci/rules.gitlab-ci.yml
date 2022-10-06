@@ -73,9 +73,6 @@
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
-.if-merge-request-labels-community-contribution: &if-merge-request-labels-community-contribution
-  if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
-
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
   if: '$CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
@@ -1814,14 +1811,6 @@
   rules:
     - <<: *if-merge-request
       changes: *danger-patterns
-
-.review:rules:reviewers-recommender:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-merge-request-labels-community-contribution
-      when: never
-    - <<: *if-merge-request
 
 ###############
 # Setup rules #
