@@ -106,12 +106,12 @@ Best practices for a webhook receiver:
 
 ### Failing webhooks
 
-> - Introduced in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 14.9.
+> Introduced in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`.
+On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
 If a webhook fails repeatedly, it may be disabled automatically.
@@ -309,6 +309,15 @@ If that is not the case, consider using [SSL Checker](https://www.sslshopper.com
 Missing intermediate certificates are common causes of verification failure.
 
 ### Re-enable disabled webhooks
+
+> - Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`. Disabled by default.
+> - The [`web_hooks_disable_failed` flag](#failing-webhooks) must also be enabled for this feature to work. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flags](../../../administration/feature_flags.md) named `webhooks_failed_callout` and `web_hooks_disable_failed`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
 
 If a webhook is failing, a banner displays at the top of the edit page explaining
 why it is disabled, and when it will be automatically re-enabled. For example:

@@ -211,19 +211,6 @@ namespace = Namespace.find_by_full_path("<new_namespace>")
 ::Projects::TransferService.new(p, current_user).execute(namespace)
 ```
 
-### Bulk update service integration password for _all_ projects
-
-For example, change the Jira user's password for all projects that have the Jira
-integration active:
-
-```ruby
-p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'JiraService' AND s.active = true")
-
-p.each do |project|
-  project.jira_integration.update_attribute(:password, '<your-new-password>')
-end
-```
-
 ### Bulk update push rules for _all_ projects
 
 For example, enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes, and create a filter for allowing commits from a specific email domain only:
@@ -239,40 +226,6 @@ Project.find_each do |p|
   pr.author_email_regex = '@domain\.com$'
   pr.save!
 end
-```
-
-### Bulk update to change all the Jira integrations to Jira instance-level values
-
-To change all Jira project to use the instance-level integration settings:
-
-1. In a Rails console:
-
-   ```ruby
-   jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
-   Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
-     integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
-   end
-   ```
-
-1. Modify and save again the instance-level integration from the UI to propagate the changes to all the group-level and project-level integrations.
-
-### Check if Jira Cloud is linked to a namespace
-
-```ruby
-JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
-```
-
-### Check if Jira Cloud is linked to a project
-
-```ruby
-Project.find_by_full_path('path/to/project').jira_subscription_exists?
-```
-
-### Check if Jira Cloud URL is linked to any namespace
-
-```ruby
-installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
-installation.subscriptions
 ```
 
 ### Bulk update to disable the Slack Notification service
