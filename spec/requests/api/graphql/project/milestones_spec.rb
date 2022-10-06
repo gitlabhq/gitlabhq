@@ -25,9 +25,10 @@ RSpec.describe 'getting milestone listings nested in a project' do
     graphql_query_for(
       :project,
       { full_path: project.full_path },
-      query_graphql_field(:milestones, search_params, [
-        query_graphql_field(:nodes, nil, %i[id title])
-      ])
+      query_graphql_field(:milestones, search_params,
+        [
+          query_graphql_field(:nodes, nil, %i[id title])
+        ])
     )
   end
 

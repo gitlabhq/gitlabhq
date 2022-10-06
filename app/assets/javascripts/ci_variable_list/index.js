@@ -81,6 +81,7 @@ const mountLegacyCiVariableListApp = (containerEl) => {
     endpoint,
     projectId,
     isGroup,
+    isProject,
     maskableRegex,
     protectedByDefault,
     awsLogoSvgPath,
@@ -92,6 +93,8 @@ const mountLegacyCiVariableListApp = (containerEl) => {
     maskedEnvironmentVariablesLink,
     environmentScopeLink,
   } = containerEl.dataset;
+
+  const parsedIsProject = parseBoolean(isProject);
   const parsedIsGroup = parseBoolean(isGroup);
   const isProtectedByDefault = parseBoolean(protectedByDefault);
 
@@ -99,6 +102,7 @@ const mountLegacyCiVariableListApp = (containerEl) => {
     endpoint,
     projectId,
     isGroup: parsedIsGroup,
+    isProject: parsedIsProject,
     maskableRegex,
     isProtectedByDefault,
     awsLogoSvgPath,

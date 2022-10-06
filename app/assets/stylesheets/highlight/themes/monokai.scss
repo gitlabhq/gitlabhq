@@ -168,6 +168,8 @@ $monokai-gh: #75715e;
     }
 
     &.diff-grid-row {
+      --diff-expansion-background-color: #{$gray-600};
+
       @include dark-diff-expansion-line;
     }
 

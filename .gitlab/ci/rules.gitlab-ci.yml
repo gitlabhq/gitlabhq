@@ -1692,7 +1692,7 @@
   rules:
     - if: '$LICENSE_MANAGEMENT_DISABLED || $GITLAB_FEATURES !~ /\blicense_scanning\b/'
       when: never
-    - changes: *code-backstage-qa-patterns
+    - changes: *dependency-patterns
 
 ################
 # Review rules #

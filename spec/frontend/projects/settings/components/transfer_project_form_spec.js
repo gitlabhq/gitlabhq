@@ -8,7 +8,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TransferProjectForm from '~/projects/settings/components/transfer_project_form.vue';
-import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select.vue';
+import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select_deprecated.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import currentUserNamespaceQuery from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';
 import { getTransferLocations } from '~/api/projects_api';

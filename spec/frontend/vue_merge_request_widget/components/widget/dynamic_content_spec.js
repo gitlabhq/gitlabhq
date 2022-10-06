@@ -1,8 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 import DynamicContent from '~/vue_merge_request_widget/components/widget/dynamic_content.vue';
-import ContentHeader from '~/vue_merge_request_widget/components/widget/widget_content_header.vue';
-import ContentBody from '~/vue_merge_request_widget/components/widget/widget_content_body.vue';
 
 describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () => {
   let wrapper;
@@ -14,8 +12,6 @@ describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () 
         ...propsData,
       },
       stubs: {
-        ContentHeader,
-        ContentBody,
         DynamicContent,
       },
     });

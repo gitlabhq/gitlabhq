@@ -220,7 +220,7 @@ gem 'acts-as-taggable-on', '~> 9.0'
 
 # Background jobs
 gem 'sidekiq', '~> 6.4.0'
-gem 'sidekiq-cron', '~> 1.4.0'
+gem 'sidekiq-cron', '~> 1.8.0'
 gem 'redis-namespace', '~> 1.9.0'
 gem 'gitlab-sidekiq-fetcher', '0.8.0', require: 'sidekiq-reliable-fetch'
 

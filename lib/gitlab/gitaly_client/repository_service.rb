@@ -286,7 +286,7 @@ module Gitlab
       def find_license
         request = Gitaly::FindLicenseRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
+        GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.medium_timeout)
       end
 
       def calculate_checksum

@@ -11,10 +11,27 @@ RSpec.describe Projects::UpdateService do
     create(:project, creator: user, namespace: user.namespace)
   end
 
+  shared_examples 'publishing Projects::ProjectAttributesChangedEvent' do |params:, attributes:|
+    it "publishes Projects::ProjectAttributesChangedEvent" do
+      expect { update_project(project, user, params) }
+        .to publish_event(Projects::ProjectAttributesChangedEvent)
+        .with(
+          project_id: project.id,
+          namespace_id: project.namespace_id,
+          root_namespace_id: project.root_namespace.id,
+          attributes: attributes
+        )
+    end
+  end
+
   describe '#execute' do
     let(:admin) { create(:admin) }
 
     context 'when changing visibility level' do
+      it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
+        params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL },
+        attributes: %w[updated_at visibility_level]
+
       context 'when visibility_level changes to INTERNAL' do
         it 'updates the project to internal' do
           expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
@@ -349,6 +366,10 @@ RSpec.describe Projects::UpdateService do
     end
 
     context 'when archiving a project' do
+      it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
+        params: { archived: true },
+        attributes: %w[updated_at archived]
+
       it 'publishes a ProjectTransferedEvent' do
         expect { update_project(project, user, archived: true) }
           .to publish_event(Projects::ProjectArchivedEvent)

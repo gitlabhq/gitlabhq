@@ -247,7 +247,12 @@ function rspec_paralellized_job() {
 
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
-  export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
+  export KNAPSACK_TEST_FILE_PATTERN="spec/{,**/}*_spec.rb"
+
+  if [[ "${test_level}" != "foss-impact" ]]; then
+    export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
+  fi
+
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
   export SKIPPED_FLAKY_TESTS_REPORT_PATH="${rspec_flaky_folder_path}skipped_flaky_tests_${report_name}_report.txt"
@@ -268,8 +273,8 @@ function rspec_paralellized_job() {
 
   debug_rspec_variables
 
-  if [[ -n $RSPEC_TESTS_MAPPING_ENABLED ]]; then
-    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_MATCHING_TESTS_PATH}" || rspec_run_status=$?
+  if [[ -n "${RSPEC_TESTS_MAPPING_ENABLED}" ]]; then
+    tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" --filter "${RSPEC_TESTS_FILTER_FILE}" || rspec_run_status=$?
   else
     tooling/bin/parallel_rspec --rspec_args "$(rspec_args "${rspec_opts}")" || rspec_run_status=$?
   fi
@@ -357,41 +362,12 @@ function rspec_fail_fast() {
   fi
 }
 
-function rspec_matched_foss_tests() {
-  local test_file_count_threshold=40
-  local matching_tests_file=${1}
-  local foss_matching_tests_file="${matching_tests_file}-foss"
+function filter_rspec_matched_foss_tests() {
+  local matching_tests_file="${1}"
+  local foss_matching_tests_file="${2}"
 
   # Keep only files that exists (i.e. exclude EE speficic files)
-  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| File.exist?(f) && f.include?("spec/") }.join(" ")' > "${foss_matching_tests_file}"
-
-  echo "Matching tests file:"
-  cat ${matching_tests_file}
-  echo -e "\n\n"
-
-  echo "FOSS matching tests file:"
-  cat ${foss_matching_tests_file}
-  echo -e "\n\n"
-
-  local rspec_opts=${2}
-  local test_files="$(cat ${foss_matching_tests_file})"
-  local test_file_count=$(wc -w "${foss_matching_tests_file}" | awk {'print $1'})
-
-  if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
-    echo "This job is intentionally failed because there are more than ${test_file_count_threshold} FOSS test files matched,"
-    echo "which would take too long to run in this job."
-    echo "To reduce the likelihood of breaking FOSS pipelines,"
-    echo "please add ~\"pipeline:run-as-if-foss\" label to the merge request and trigger a new pipeline."
-    echo "This would run all as-if-foss jobs in this merge request"
-    echo "and remove this failing job from the pipeline."
-    exit 1
-  fi
-
-  if [[ -n $test_files ]]; then
-    rspec_simple_job "${rspec_opts} ${test_files}"
-  else
-    echo "No impacted FOSS rspec tests to run"
-  fi
+  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| f.start_with?("spec/") && File.exist?(f) }.join(" ")' > "${foss_matching_tests_file}"
 }
 
 function generate_frontend_fixtures_mapping() {

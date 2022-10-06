@@ -26,7 +26,7 @@ To view project insights:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Insights**.
-1. To view a report, select the **Select page** dropdown list.
+1. To view a report, select the **Select report** dropdown list.
 
 ## Configure project insights
 

@@ -17,11 +17,15 @@ with additions and improvements.
 
 ## Merge request reviews
 
-As a merge request (MR) author, you must include _Before_ and _After_
+As a merge request (MR) author, you must:
+
+- Include _Before_ and _After_
 screenshots (or videos) of your changes in the description, as explained in our
 [MR workflow](merge_request_workflow.md). These screenshots/videos are very helpful
 for all reviewers and can speed up the review process, especially if the changes
 are small.
+- Attach the ~UX label to any merge request that impacts the user experience. This will enable Product Designers to [review](https://about.gitlab.com/handbook/engineering/ux/product-designer/mr-reviews/#stage-group-mrs/) any user facing changes.  
+- Assign the Product Designer suggested by Reviewer Roulette as the reviewer of your merge request. The reviewer does not have to be the domain expert unless this is a community contribution.
 
 ## Checklist
 

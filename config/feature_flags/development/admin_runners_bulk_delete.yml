@@ -1,8 +1,0 @@
----
-name: admin_runners_bulk_delete
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81894
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353981
-milestone: '14.9'
-type: development
-group: group::runner
-default_enabled: false

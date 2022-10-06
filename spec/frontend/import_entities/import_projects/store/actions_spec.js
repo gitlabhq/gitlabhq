@@ -198,7 +198,7 @@ describe('import_projects store actions', () => {
 
       return testAction(
         fetchImport,
-        importRepoId,
+        { repoId: importRepoId, optionalStages: {} },
         localState,
         [
           {
@@ -222,7 +222,7 @@ describe('import_projects store actions', () => {
 
       await testAction(
         fetchImport,
-        importRepoId,
+        { repoId: importRepoId, optionalStages: {} },
         localState,
         [
           {
@@ -245,7 +245,7 @@ describe('import_projects store actions', () => {
 
       await testAction(
         fetchImport,
-        importRepoId,
+        { repoId: importRepoId, optionalStages: {} },
         localState,
         [
           {
@@ -366,14 +366,22 @@ describe('import_projects store actions', () => {
 
   describe('importAll', () => {
     it('dispatches multiple fetchImport actions', async () => {
+      const OPTIONAL_STAGES = { stage1: true, stage2: false };
+
       await testAction(
         importAll,
-        null,
+        { optionalStages: OPTIONAL_STAGES },
         localState,
         [],
         [
-          { type: 'fetchImport', payload: importRepoId },
-          { type: 'fetchImport', payload: otherImportRepoId },
+          {
+            type: 'fetchImport',
+            payload: { repoId: importRepoId, optionalStages: OPTIONAL_STAGES },
+          },
+          {
+            type: 'fetchImport',
+            payload: { repoId: otherImportRepoId, optionalStages: OPTIONAL_STAGES },
+          },
         ],
       );
     });

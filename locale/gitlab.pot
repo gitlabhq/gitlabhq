@@ -20418,6 +20418,9 @@ msgstr ""
 msgid "ImportProjects|%{provider} rate limit exceeded. Try again later"
 msgstr ""
 
+msgid "ImportProjects|Advanced import settings"
+msgstr ""
+
 msgid "ImportProjects|Blocked import URL: %{message}"
 msgstr ""
 
@@ -20440,6 +20443,9 @@ msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
+msgstr ""
+
+msgid "ImportProjects|The more information you select, the longer it will take to import"
 msgstr ""
 
 msgid "ImportProjects|The remote data could not be imported."
@@ -29482,6 +29488,9 @@ msgid "PipelineSchedules|Take ownership of pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "PipelineSchedules|There was a problem fetching pipeline schedules."
 msgstr ""
 
 msgid "PipelineSchedules|Variables"

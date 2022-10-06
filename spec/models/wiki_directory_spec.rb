@@ -24,31 +24,32 @@ RSpec.describe WikiDirectory do
         [toplevel1, toplevel2, toplevel3, child1, child2, child3, grandchild1, grandchild2].sort_by(&:title)
       )
 
-      expect(entries).to match([
-        toplevel1,
-        a_kind_of(WikiDirectory).and(
-          having_attributes(
-            slug: 'parent1', entries: [
-              child1,
-              child2,
-              a_kind_of(WikiDirectory).and(
-                having_attributes(
-                  slug: 'parent1/subparent',
-                  entries: [grandchild1, grandchild2]
+      expect(entries).to match(
+        [
+          toplevel1,
+          a_kind_of(WikiDirectory).and(
+            having_attributes(
+              slug: 'parent1', entries: [
+                child1,
+                child2,
+                a_kind_of(WikiDirectory).and(
+                  having_attributes(
+                    slug: 'parent1/subparent',
+                    entries: [grandchild1, grandchild2]
+                  )
                 )
-              )
-            ]
-          )
-        ),
-        a_kind_of(WikiDirectory).and(
-          having_attributes(
-            slug: 'parent2',
-            entries: [child3]
-          )
-        ),
-        toplevel2,
-        toplevel3
-      ])
+              ]
+            )
+          ),
+          a_kind_of(WikiDirectory).and(
+            having_attributes(
+              slug: 'parent2',
+              entries: [child3]
+            )
+          ),
+          toplevel2,
+          toplevel3
+        ])
     end
   end
 

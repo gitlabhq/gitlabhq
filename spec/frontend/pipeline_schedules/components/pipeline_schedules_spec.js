@@ -1,3 +1,4 @@
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -14,6 +15,7 @@ describe('Pipeline schedules app', () => {
   let wrapper;
 
   const successHandler = jest.fn().mockResolvedValue(mockGetPipelineSchedulesGraphQLResponse);
+  const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const createMockApolloProvider = (handler) => {
     const requestHandlers = [[getPipelineSchedulesQuery, handler]];
@@ -31,24 +33,47 @@ describe('Pipeline schedules app', () => {
   };
 
   const findTable = () => wrapper.findComponent(PipelineSchedulesTable);
-
-  beforeEach(() => {
-    createComponent();
-  });
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('displays table', () => {
+  it('displays table', async () => {
+    createComponent();
+
+    await waitForPromises();
+
     expect(findTable().exists()).toBe(true);
+    expect(findAlert().exists()).toBe(false);
   });
 
   it('fetches query and passes an array of pipeline schedules', async () => {
+    createComponent();
+
     expect(successHandler).toHaveBeenCalled();
 
     await waitForPromises();
 
     expect(findTable().props('schedules')).toEqual(mockPipelineScheduleNodes);
+  });
+
+  it('handles loading state', async () => {
+    createComponent();
+
+    expect(findLoadingIcon().exists()).toBe(true);
+
+    await waitForPromises();
+
+    expect(findLoadingIcon().exists()).toBe(false);
+  });
+
+  it('shows error alert', async () => {
+    createComponent(failedHandler);
+
+    await waitForPromises();
+
+    expect(findAlert().exists()).toBe(true);
   });
 });

@@ -383,10 +383,10 @@ RSpec.describe Ci::BuildRunnerPresenter do
 
       it 'returns expanded and sorted variables' do
         is_expected.to eq [
-                            { key: 'C', value: 'value', public: false, masked: false },
-                            { key: 'B', value: 'refB-value-$D', public: false, masked: false },
-                            { key: 'A', value: 'refA-refB-value-$D', public: false, masked: false }
-                          ]
+          { key: 'C', value: 'value', public: false, masked: false },
+          { key: 'B', value: 'refB-value-$D', public: false, masked: false },
+          { key: 'A', value: 'refA-refB-value-$D', public: false, masked: false }
+        ]
       end
     end
   end

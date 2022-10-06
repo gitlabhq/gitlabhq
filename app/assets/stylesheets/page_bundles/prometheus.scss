@@ -1,5 +1,11 @@
 @import 'mixins_and_variables_and_functions';
 
+.date-time-picker {
+  .date-time-picker-menu {
+    width: 400px;
+  }
+}
+
 .prometheus-graphs {
   .dropdown-buttons {
     > div {

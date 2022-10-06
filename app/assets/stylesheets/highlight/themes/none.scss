@@ -76,6 +76,10 @@
       @include match-line;
     }
 
+    &.diff-grid-row {
+      --diff-expansion-background-color: #{$gray-100};
+    }
+
     .line-coverage {
       @include line-coverage-border-color($green-500, $orange-500);
     }

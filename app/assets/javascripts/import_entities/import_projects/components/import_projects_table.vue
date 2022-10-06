@@ -9,10 +9,12 @@ import {
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { n__, __, sprintf } from '~/locale';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
+import AdvancedSettings from './advanced_settings.vue';
 
 export default {
   name: 'ImportProjectsTable',
   components: {
+    AdvancedSettings,
     ProviderRepoTableRow,
     GlLoadingIcon,
     GlButton,
@@ -35,6 +37,24 @@ export default {
       required: false,
       default: false,
     },
+    optionalStages: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    isAdvancedSettingsPanelInitiallyExpanded: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+
+  data() {
+    return {
+      optionalStagesSelection: Object.fromEntries(
+        this.optionalStages.map(({ name }) => [name, false]),
+      ),
+    };
   },
 
   computed: {
@@ -127,7 +147,7 @@ export default {
         modal-id="import-all-modal"
         :title="s__('ImportProjects|Import repositories')"
         :ok-title="__('Import')"
-        @ok="importAll"
+        @ok="importAll({ optionalStages: optionalStagesSelection })"
       >
         {{
           n__(
@@ -150,6 +170,13 @@ export default {
         />
       </form>
     </div>
+    <advanced-settings
+      v-if="optionalStages && optionalStages.length"
+      v-model="optionalStagesSelection"
+      :stages="optionalStages"
+      :is-initially-expanded="isAdvancedSettingsPanelInitiallyExpanded"
+      class="gl-mb-5"
+    />
     <div v-if="repositories.length" class="gl-w-full">
       <table>
         <thead class="gl-border-0 gl-border-solid gl-border-t-1 gl-border-gray-100">
@@ -171,6 +198,7 @@ export default {
               :repo="repo"
               :available-namespaces="namespaces"
               :user-namespace="defaultTargetNamespace"
+              :optional-stages="optionalStagesSelection"
             />
           </template>
         </tbody>

@@ -918,10 +918,11 @@ RSpec.describe API::Ci::Runners do
         create(:ci_build, :failed, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
 
         expect_next_instance_of(Repository) do |repo|
-          expect(repo).to receive(:commits_by).with(oids: %w[
-            1a0b36b3cdad1d2ee32457c102a8c0b7056fa863
-            c1c67abbaf91f624347bb3ae96eabe3a1b742478
-          ]).once.and_call_original
+          expect(repo).to receive(:commits_by).with(oids:
+            %w[
+              1a0b36b3cdad1d2ee32457c102a8c0b7056fa863
+              c1c67abbaf91f624347bb3ae96eabe3a1b742478
+            ]).once.and_call_original
         end
 
         get api("/runners/#{shared_runner.id}/jobs", admin), params: { per_page: 2, order_by: 'id', sort: 'desc' }
@@ -1124,27 +1125,24 @@ RSpec.describe API::Ci::Runners do
       it 'returns all runners' do
         get api("/groups/#{group.id}/runners", user)
 
-        expect(json_response).to match_array([
-          a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false),
-          a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
-        ])
+        expect(json_response).to match_array(
+          [
+            a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false),
+            a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
+          ])
       end
 
       context 'filter by type' do
         it 'returns record when valid and present' do
           get api("/groups/#{group.id}/runners?type=group_type", user)
 
-          expect(json_response).to match_array([
-            a_hash_including('description' => 'Group runner A')
-          ])
+          expect(json_response).to match_array([a_hash_including('description' => 'Group runner A')])
         end
 
         it 'returns instance runners when instance_type is specified' do
           get api("/groups/#{group.id}/runners?type=instance_type", user)
 
-          expect(json_response).to match_array([
-            a_hash_including('description' => 'Shared runner')
-          ])
+          expect(json_response).to match_array([a_hash_including('description' => 'Shared runner')])
         end
 
         # TODO: Remove when REST API v5 is implemented (https://gitlab.com/gitlab-org/gitlab/-/issues/351466)
@@ -1167,18 +1165,14 @@ RSpec.describe API::Ci::Runners do
         it 'returns runners by paused state' do
           get api("/groups/#{group.id}/runners?paused=true", user)
 
-          expect(json_response).to match_array([
-            a_hash_including('description' => 'Inactive group runner')
-          ])
+          expect(json_response).to match_array([a_hash_including('description' => 'Inactive group runner')])
         end
 
         context 'filter runners by status' do
           it 'returns runners by valid status' do
             get api("/groups/#{group.id}/runners?status=paused", user)
 
-            expect(json_response).to match_array([
-              a_hash_including('description' => 'Inactive group runner')
-            ])
+            expect(json_response).to match_array([a_hash_including('description' => 'Inactive group runner')])
           end
 
           it 'does not filter by invalid status' do
@@ -1195,9 +1189,7 @@ RSpec.describe API::Ci::Runners do
 
         get api("/groups/#{group.id}/runners?tag_list=tag1,tag2", user)
 
-        expect(json_response).to match_array([
-          a_hash_including('description' => 'Runner tagged with tag1 and tag2')
-        ])
+        expect(json_response).to match_array([a_hash_including('description' => 'Runner tagged with tag1 and tag2')])
       end
     end
 

@@ -30,10 +30,8 @@ RSpec.describe MergeRequests::RequestReviewService do
         expect(result[:status]).to eq :error
       end
 
-      it 'does not trigger graphql subscription mergeRequestReviewersUpdated' do
-        expect(GraphqlTriggers).not_to receive(:merge_request_reviewers_updated)
-
-        result
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { result }
       end
     end
 
@@ -73,10 +71,8 @@ RSpec.describe MergeRequests::RequestReviewService do
         service.execute(merge_request, user)
       end
 
-      it 'triggers graphql subscription mergeRequestReviewersUpdated' do
-        expect(GraphqlTriggers).to receive(:merge_request_reviewers_updated).with(merge_request)
-
-        result
+      it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { result }
       end
     end
   end

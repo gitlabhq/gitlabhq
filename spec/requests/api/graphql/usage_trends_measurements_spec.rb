@@ -17,19 +17,25 @@ RSpec.describe 'UsageTrendsMeasurements' do
   end
 
   it 'returns measurement objects' do
-    expect(graphql_data.dig('usageTrendsMeasurements', 'nodes')).to eq([
-      { "count" => 10, 'identifier' => 'PROJECTS' },
-      { "count" => 5, 'identifier' => 'PROJECTS' }
-    ])
+    expect(graphql_data.dig('usageTrendsMeasurements', 'nodes')).to eq(
+      [
+        { "count" => 10, 'identifier' => 'PROJECTS' },
+        { "count" => 5, 'identifier' => 'PROJECTS' }
+      ])
   end
 
   context 'with recorded_at filters' do
-    let(:arguments) { %(identifier: PROJECTS, recordedAfter: "#{15.days.ago.to_date}", recordedBefore: "#{5.days.ago.to_date}") }
+    let(:arguments) do
+      %(identifier: PROJECTS,
+        recordedAfter: "#{15.days.ago.to_date}",
+        recordedBefore: "#{5.days.ago.to_date}")
+    end
 
     it 'returns filtered measurement objects' do
-      expect(graphql_data.dig('usageTrendsMeasurements', 'nodes')).to eq([
-        { "count" => 10, 'identifier' => 'PROJECTS' }
-      ])
+      expect(graphql_data.dig('usageTrendsMeasurements', 'nodes')).to eq(
+        [
+          { "count" => 10, 'identifier' => 'PROJECTS' }
+        ])
     end
   end
 end

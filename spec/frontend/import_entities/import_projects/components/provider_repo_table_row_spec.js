@@ -44,7 +44,7 @@ describe('ProviderRepoTableRow', () => {
 
     wrapper = shallowMount(ProviderRepoTableRow, {
       store,
-      propsData: { availableNamespaces, userNamespace, ...props },
+      propsData: { availableNamespaces, userNamespace, optionalStages: {}, ...props },
     });
   }
 
@@ -92,10 +92,24 @@ describe('ProviderRepoTableRow', () => {
 
       await nextTick();
 
-      const { calls } = fetchImport.mock;
+      expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
+        repoId: repo.importSource.id,
+        optionalStages: {},
+      });
+    });
 
-      expect(calls).toHaveLength(1);
-      expect(calls[0][1]).toBe(repo.importSource.id);
+    it('includes optionalStages to import', async () => {
+      const OPTIONAL_STAGES = { stage1: true, stage2: false };
+      await wrapper.setProps({ optionalStages: OPTIONAL_STAGES });
+
+      findImportButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
+        repoId: repo.importSource.id,
+        optionalStages: OPTIONAL_STAGES,
+      });
     });
   });
 

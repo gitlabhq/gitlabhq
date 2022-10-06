@@ -367,15 +367,10 @@ describe('AdminRunnersApp', () => {
     expect(findRunnerPagination().attributes('disabled')).toBe('true');
   });
 
-  describe('when bulk delete is enabled', () => {
+  describe('Bulk delete', () => {
     describe('Before runners are deleted', () => {
       beforeEach(async () => {
-        await createComponent({
-          mountFn: mountExtended,
-          provide: {
-            glFeatures: { adminRunnersBulkDelete: true },
-          },
-        });
+        await createComponent({ mountFn: mountExtended });
       });
 
       it('runner bulk delete is available', () => {
@@ -414,12 +409,7 @@ describe('AdminRunnersApp', () => {
 
     describe('When runners are deleted', () => {
       beforeEach(async () => {
-        await createComponent({
-          mountFn: mountExtended,
-          provide: {
-            glFeatures: { adminRunnersBulkDelete: true },
-          },
-        });
+        await createComponent({ mountFn: mountExtended });
       });
 
       it('count data is refetched', async () => {

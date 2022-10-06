@@ -119,11 +119,6 @@ export default {
         upgradeStatusTokenConfig,
       ];
     },
-    isBulkDeleteEnabled() {
-      // Feature flag: admin_runners_bulk_delete
-      // Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/353981
-      return this.glFeatures.adminRunnersBulkDelete;
-    },
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
@@ -216,18 +211,14 @@ export default {
       :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
-      <runner-bulk-delete
-        v-if="isBulkDeleteEnabled"
-        :runners="runners.items"
-        @deleted="onDeleted"
-      />
+      <runner-bulk-delete :runners="runners.items" @deleted="onDeleted" />
       <runner-list
         :runners="runners.items"
         :loading="runnersLoading"
-        :checkable="isBulkDeleteEnabled"
+        :checkable="true"
         @checked="onChecked"
       >
-        <template v-if="isBulkDeleteEnabled" #head-checkbox>
+        <template #head-checkbox>
           <runner-bulk-delete-checkbox :runners="runners.items" />
         </template>
         <template #runner-name="{ runner }">

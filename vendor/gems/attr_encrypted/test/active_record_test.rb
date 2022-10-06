@@ -80,6 +80,10 @@ class PersonWithProcMode < Person
   attr_encrypted :credentials, key: SECRET_KEY, mode: Proc.new { :single_iv_and_salt }, insecure_mode: true
 end
 
+class PersonWithInstanceAttribute < Person
+  attr_encrypted :age
+end
+
 class Account < ActiveRecord::Base
   ACCOUNT_ENCRYPTION_KEY = SecureRandom.urlsafe_base64(24)
   attr_encrypted :password, key: :password_encryption_key
@@ -342,5 +346,23 @@ class ActiveRecordTest < Minitest::Test
     address.reload
     refute_equal address.encrypted_zipcode, zipcode
     assert_equal address.zipcode, zipcode
+  end
+
+  # See https://github.com/attr-encrypted/attr_encrypted/issues/332
+  def test_attribute_instance_methods_as_symbols_available_returns_false
+    assert_equal false, ActiveRecord::Base.__send__(:attribute_instance_methods_as_symbols_available?)
+  end
+
+  # See https://github.com/attr-encrypted/attr_encrypted/issues/332
+  def test_does_not_define_virtual_attributes
+    instance = Person.new
+
+    %w[
+      encrypted_age encrypted_age=
+      encrypted_age_iv encrypted_age_iv=
+      encrypted_age_salt encrypted_age_salt=
+    ].each do |method_name|
+      assert_equal false, instance.respond_to?(method_name), "should not define #{method_name}"
+    end
   end
 end

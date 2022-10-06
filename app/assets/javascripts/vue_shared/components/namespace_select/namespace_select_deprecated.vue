@@ -27,7 +27,7 @@ const filterByName = (data, searchTerm = '') => {
 };
 
 export default {
-  name: 'NamespaceSelect',
+  name: 'NamespaceSelectDeprecated',
   components: {
     GlDropdown,
     GlDropdownDivider,

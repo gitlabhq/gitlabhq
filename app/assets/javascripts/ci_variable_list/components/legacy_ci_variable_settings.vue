@@ -9,10 +9,10 @@ export default {
     LegacyCiVariableTable,
   },
   computed: {
-    ...mapState(['isGroup']),
+    ...mapState(['isGroup', 'isProject']),
   },
   mounted() {
-    if (!this.isGroup) {
+    if (this.isProject) {
       this.fetchEnvironments();
     }
   },

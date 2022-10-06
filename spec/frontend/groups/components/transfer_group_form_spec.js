@@ -2,7 +2,7 @@ import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Component from '~/groups/components/transfer_group_form.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
-import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select.vue';
+import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select_deprecated.vue';
 
 describe('Transfer group form', () => {
   let wrapper;

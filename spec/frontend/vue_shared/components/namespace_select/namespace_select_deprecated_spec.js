@@ -11,14 +11,14 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NamespaceSelect, {
   i18n,
   EMPTY_NAMESPACE_ID,
-} from '~/vue_shared/components/namespace_select/namespace_select.vue';
+} from '~/vue_shared/components/namespace_select/namespace_select_deprecated.vue';
 import { userNamespaces, groupNamespaces } from './mock_data';
 
 const FLAT_NAMESPACES = [...userNamespaces, ...groupNamespaces];
 const EMPTY_NAMESPACE_TITLE = 'Empty namespace TEST';
 const EMPTY_NAMESPACE_ITEM = { id: EMPTY_NAMESPACE_ID, humanName: EMPTY_NAMESPACE_TITLE };
 
-describe('Namespace Select', () => {
+describe('NamespaceSelectDeprecated', () => {
   let wrapper;
 
   const createComponent = (props = {}) =>

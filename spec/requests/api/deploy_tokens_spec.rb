@@ -44,14 +44,15 @@ RSpec.describe API::DeployTokens do
         token_ids = json_response.map { |token| token['id'] }
         expect(response).to include_pagination_headers
         expect(response).to match_response_schema('public_api/v4/deploy_tokens')
-        expect(token_ids).to match_array([
-          deploy_token.id,
-          revoked_deploy_token.id,
-          expired_deploy_token.id,
-          group_deploy_token.id,
-          revoked_group_deploy_token.id,
-          expired_group_deploy_token.id
-        ])
+        expect(token_ids).to match_array(
+          [
+            deploy_token.id,
+            revoked_deploy_token.id,
+            expired_deploy_token.id,
+            group_deploy_token.id,
+            revoked_group_deploy_token.id,
+            expired_group_deploy_token.id
+          ])
       end
 
       context 'and active=true' do
@@ -61,10 +62,11 @@ RSpec.describe API::DeployTokens do
           token_ids = json_response.map { |token| token['id'] }
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
-          expect(token_ids).to match_array([
-            deploy_token.id,
-            group_deploy_token.id
-          ])
+          expect(token_ids).to match_array(
+            [
+              deploy_token.id,
+              group_deploy_token.id
+            ])
         end
       end
     end
@@ -110,11 +112,12 @@ RSpec.describe API::DeployTokens do
         subject
 
         token_ids = json_response.map { |token| token['id'] }
-        expect(token_ids).to match_array([
-          deploy_token.id,
-          expired_deploy_token.id,
-          revoked_deploy_token.id
-        ])
+        expect(token_ids).to match_array(
+          [
+            deploy_token.id,
+            expired_deploy_token.id,
+            revoked_deploy_token.id
+          ])
       end
 
       context 'and active=true' do

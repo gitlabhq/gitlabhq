@@ -47,10 +47,11 @@ RSpec.describe 'Delete an upload' do
 
           expect(response).to have_gitlab_http_status(:success)
           expect(mutation_response['upload']).to be_nil
-          expect(mutation_response['errors']).to match_array([
-            "The resource that you are attempting to access does not "\
-            "exist or you don't have permission to perform this action."
-          ])
+          expect(mutation_response['errors']).to match_array(
+            [
+              "The resource that you are attempting to access does not "\
+              "exist or you don't have permission to perform this action."
+            ])
         end
       end
     end

@@ -61,11 +61,12 @@ RSpec.describe 'Project.cluster_agents' do
 
       tokens = graphql_data_at(:project, :cluster_agents, :nodes, :tokens, :nodes)
 
-      expect(tokens).to match([
-        a_graphql_entity_for(token_3),
-        a_graphql_entity_for(token_2),
-        a_graphql_entity_for(token_1)
-      ])
+      expect(tokens).to match(
+        [
+          a_graphql_entity_for(token_3),
+          a_graphql_entity_for(token_2),
+          a_graphql_entity_for(token_1)
+        ])
     end
 
     it 'does not suffer from N+1 performance issues' do

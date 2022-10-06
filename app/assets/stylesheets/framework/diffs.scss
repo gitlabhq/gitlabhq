@@ -1209,3 +1209,16 @@ table.code {
     @include gl-bg-gray-200;
   }
 }
+
+.diff-grid-row.expansion.match {
+  border-top: 1px solid var(--diff-expansion-background-color);
+  border-bottom: 1px solid var(--diff-expansion-background-color);
+
+  &:first-child {
+    border-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}

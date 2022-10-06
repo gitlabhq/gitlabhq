@@ -2,7 +2,6 @@
 import { GlBadge, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import Actions from '../action_buttons.vue';
 import { generateText } from '../extensions/utils';
-import ContentHeader from './widget_content_header.vue';
 import ContentRow from './widget_content_row.vue';
 
 export default {
@@ -12,7 +11,6 @@ export default {
     GlLink,
     Actions,
     ContentRow,
-    ContentHeader,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -55,10 +53,12 @@ export default {
 </script>
 
 <template>
-  <content-row :level="level" :status-icon-name="statusIcon" :widget-name="widgetName">
-    <template #header>
-      <content-header v-if="data.header" :header="data.header" />
-    </template>
+  <content-row
+    :level="level"
+    :status-icon-name="statusIcon"
+    :widget-name="widgetName"
+    :header="data.header"
+  >
     <template #body>
       <div class="gl-display-flex gl-flex-direction-column">
         <div>

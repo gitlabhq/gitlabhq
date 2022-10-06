@@ -1,10 +1,15 @@
 <script>
+import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { EXTENSION_ICONS } from '../../constants';
-import ContentBody from './widget_content_body.vue';
+import { generateText } from '../extensions/utils';
+import StatusIcon from './status_icon.vue';
 
 export default {
   components: {
-    ContentBody,
+    StatusIcon,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     level: {
@@ -22,6 +27,19 @@ export default {
       type: String,
       required: true,
     },
+    header: {
+      type: [String, Array],
+      default: '',
+      required: false,
+    },
+  },
+  computed: {
+    generatedHeader() {
+      return generateText(Array.isArray(this.header) ? this.header[0] : this.header);
+    },
+    generatedSubheader() {
+      return Array.isArray(this.header) && this.header[1] ? generateText(this.header[1]) : '';
+    },
   },
 };
 </script>
@@ -30,9 +48,22 @@ export default {
     class="gl-w-full mr-widget-content-row"
     :class="{ 'gl-border-t gl-py-3 gl-pl-7': level === 2 }"
   >
-    <slot name="header"></slot>
-    <content-body :status-icon-name="statusIconName" :widget-name="widgetName">
+    <div v-if="header" class="gl-mb-2">
+      <strong v-safe-html="generatedHeader" class="gl-display-block"></strong
+      ><span
+        v-if="generatedSubheader"
+        v-safe-html="generatedSubheader"
+        class="gl-display-block"
+      ></span>
+    </div>
+    <div class="gl-display-flex gl-align-items-baseline gl-w-full">
+      <status-icon
+        v-if="statusIconName"
+        :level="2"
+        :name="widgetName"
+        :icon-name="statusIconName"
+      />
       <slot name="body"></slot>
-    </content-body>
+    </div>
   </div>
 </template>

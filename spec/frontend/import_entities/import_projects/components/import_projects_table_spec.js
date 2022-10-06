@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import { STATUSES } from '~/import_entities/constants';
 import ImportProjectsTable from '~/import_entities/import_projects/components/import_projects_table.vue';
 import ProviderRepoTableRow from '~/import_entities/import_projects/components/provider_repo_table_row.vue';
+import AdvancedSettingsPanel from '~/import_entities/import_projects/components/advanced_settings.vue';
 import * as getters from '~/import_entities/import_projects/store/getters';
 import state from '~/import_entities/import_projects/store/state';
 
@@ -45,6 +46,7 @@ describe('ImportProjectsTable', () => {
     slots,
     filterable,
     paginatable,
+    optionalStages,
   } = {}) {
     Vue.use(Vuex);
 
@@ -71,6 +73,7 @@ describe('ImportProjectsTable', () => {
         providerTitle,
         filterable,
         paginatable,
+        optionalStages,
       },
       slots,
       stubs: {
@@ -271,4 +274,23 @@ describe('ImportProjectsTable', () => {
       expect(wrapper.text().includes(INCOMPATIBLE_TEXT)).toBe(shouldRenderSlot);
     },
   );
+
+  it('should not render advanced settings panel when no optional steps are passed', () => {
+    createComponent({ state: { providerRepos: [providerRepo] } });
+
+    expect(wrapper.findComponent(AdvancedSettingsPanel).exists()).toBe(false);
+  });
+
+  it('should render advanced settings panel when no optional steps are passed', () => {
+    const OPTIONAL_STAGES = [{ name: 'step1', label: 'Step 1' }];
+    createComponent({ state: { providerRepos: [providerRepo] }, optionalStages: OPTIONAL_STAGES });
+
+    expect(wrapper.findComponent(AdvancedSettingsPanel).exists()).toBe(true);
+    expect(wrapper.findComponent(AdvancedSettingsPanel).props('stages')).toStrictEqual(
+      OPTIONAL_STAGES,
+    );
+    expect(wrapper.findComponent(AdvancedSettingsPanel).props('value')).toStrictEqual({
+      step1: false,
+    });
+  });
 });

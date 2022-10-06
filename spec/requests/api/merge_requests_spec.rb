@@ -119,10 +119,13 @@ RSpec.describe API::MergeRequests do
         it 'returns an array of all merge_requests' do
           get api(endpoint_path, user)
 
-          expect_paginated_array_response([
-            merge_request_merged.id, merge_request_locked.id,
-            merge_request_closed.id, merge_request.id
-          ])
+          expect_paginated_array_response(
+            [
+              merge_request_merged.id,
+              merge_request_locked.id,
+              merge_request_closed.id,
+              merge_request.id
+            ])
 
           expect(json_response.last['title']).to eq(merge_request.title)
           expect(json_response.last).to have_key('web_url')
@@ -172,10 +175,13 @@ RSpec.describe API::MergeRequests do
 
         get api(path, user)
 
-        expect_paginated_array_response([
-          merge_request_merged.id, merge_request_locked.id,
-          merge_request_closed.id, merge_request.id
-        ])
+        expect_paginated_array_response(
+          [
+            merge_request_merged.id,
+            merge_request_locked.id,
+            merge_request_closed.id,
+            merge_request.id
+          ])
         expect(json_response.last.keys).to match_array(%w(id iid title web_url created_at description project_id state updated_at))
         expect(json_response.last['iid']).to eq(merge_request.iid)
         expect(json_response.last['title']).to eq(merge_request.title)
@@ -190,10 +196,13 @@ RSpec.describe API::MergeRequests do
 
         get api(path, user)
 
-        expect_paginated_array_response([
-          merge_request_merged.id, merge_request_locked.id,
-          merge_request_closed.id, merge_request.id
-        ])
+        expect_paginated_array_response(
+          [
+            merge_request_merged.id,
+            merge_request_locked.id,
+            merge_request_closed.id,
+            merge_request.id
+          ])
         expect(json_response.last['title']).to eq(merge_request.title)
       end
 
@@ -354,10 +363,13 @@ RSpec.describe API::MergeRequests do
 
           get api(path, user)
 
-          expect_paginated_array_response([
-            merge_request.id, merge_request_closed.id,
-            merge_request_locked.id, merge_request_merged.id
-          ])
+          expect_paginated_array_response(
+            [
+              merge_request.id,
+              merge_request_closed.id,
+              merge_request_locked.id,
+              merge_request_merged.id
+            ])
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end
@@ -367,10 +379,13 @@ RSpec.describe API::MergeRequests do
 
           get api(path, user)
 
-          expect_paginated_array_response([
-            merge_request_merged.id, merge_request_locked.id,
-            merge_request_closed.id, merge_request.id
-          ])
+          expect_paginated_array_response(
+            [
+              merge_request_merged.id,
+              merge_request_locked.id,
+              merge_request_closed.id,
+              merge_request.id
+            ])
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
@@ -398,10 +413,13 @@ RSpec.describe API::MergeRequests do
 
           get api(path, user)
 
-          expect_paginated_array_response([
-            merge_request.id, merge_request_locked.id,
-            merge_request_merged.id, merge_request_closed.id
-          ])
+          expect_paginated_array_response(
+            [
+              merge_request.id,
+              merge_request_locked.id,
+              merge_request_merged.id,
+              merge_request_closed.id
+            ])
           response_dates = json_response.map { |merge_request| merge_request['updated_at'] }
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
@@ -411,10 +429,13 @@ RSpec.describe API::MergeRequests do
 
           get api(path, user)
 
-          expect_paginated_array_response([
-            merge_request.id, merge_request_closed.id,
-            merge_request_locked.id, merge_request_merged.id
-          ])
+          expect_paginated_array_response(
+            [
+              merge_request.id,
+              merge_request_closed.id,
+              merge_request_locked.id,
+              merge_request_merged.id
+            ])
           response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end

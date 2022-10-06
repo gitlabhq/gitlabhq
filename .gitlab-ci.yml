@@ -98,7 +98,9 @@ variables:
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
   RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_MATCHING_TESTS_PATH: rspec/matching_tests.txt
+  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
+  RSPEC_FOSS_IMPACT_PIPELINE_YML: rspec-foss-impact-pipeline.yml
   JUNIT_RESULT_FILE: rspec/junit_rspec.xml
   JUNIT_RETRY_FILE: rspec/junit_rspec-retry.xml
 

@@ -220,14 +220,15 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['image']).to eq(
               { 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [], 'pull_policy' => nil }
             )
-            expect(json_response['services']).to eq([
-              { 'name' => 'postgres', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
-                'variables' => nil, 'pull_policy' => nil },
-              { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh', 'alias' => 'docker', 'command' => 'sleep 30',
-                'ports' => [], 'variables' => [], 'pull_policy' => nil },
-              { 'name' => 'mysql:latest', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
-                'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }], 'pull_policy' => nil }
-            ])
+            expect(json_response['services']).to eq(
+              [
+                { 'name' => 'postgres', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
+                  'variables' => nil, 'pull_policy' => nil },
+                { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh', 'alias' => 'docker', 'command' => 'sleep 30',
+                  'ports' => [], 'variables' => [], 'pull_policy' => nil },
+                { 'name' => 'mysql:latest', 'entrypoint' => nil, 'alias' => nil, 'command' => nil, 'ports' => [],
+                  'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }], 'pull_policy' => nil }
+              ])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to match(expected_cache)
@@ -383,23 +384,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-                expect(json_response['steps']).to eq([
-                  {
-                    "name" => "script",
-                    "script" => ["make changelog | tee release_changelog.txt"],
-                    "timeout" => 3600,
-                    "when" => "on_success",
-                    "allow_failure" => false
-                  },
-                  {
-                    "name" => "release",
-                    "script" =>
-                    ["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" --assets-link \"{\\\"url\\\":\\\"https://example.com/assets/1\\\",\\\"name\\\":\\\"asset1\\\"}\""],
-                    "timeout" => 3600,
-                    "when" => "on_success",
-                    "allow_failure" => false
-                  }
-                ])
+                expect(json_response['steps']).to eq(
+                  [
+                    {
+                      "name" => "script",
+                      "script" => ["make changelog | tee release_changelog.txt"],
+                      "timeout" => 3600,
+                      "when" => "on_success",
+                      "allow_failure" => false
+                    },
+                    {
+                      "name" => "release",
+                      "script" =>
+                      ["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" --assets-link \"{\\\"url\\\":\\\"https://example.com/assets/1\\\",\\\"name\\\":\\\"asset1\\\"}\""],
+                      "timeout" => 3600,
+                      "when" => "on_success",
+                      "allow_failure" => false
+                    }
+                  ])
               end
             end
 

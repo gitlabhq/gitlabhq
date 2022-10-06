@@ -2,7 +2,7 @@
 import { GlFormGroup } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
-import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select.vue';
+import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select_deprecated.vue';
 
 export const i18n = {
   confirmationMessage: __(

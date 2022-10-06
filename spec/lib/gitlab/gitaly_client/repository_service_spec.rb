@@ -343,4 +343,18 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
       expect(client.full_path).to eq(path)
     end
   end
+
+  describe "#find_license" do
+    it 'sends a find_license request with medium timeout' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:find_license) do |_service, _request, headers|
+        expect(headers[:deadline]).to be_between(
+          Gitlab::GitalyClient.fast_timeout.seconds.from_now.to_f,
+          Gitlab::GitalyClient.medium_timeout.seconds.from_now.to_f
+        )
+      end
+
+      client.find_license
+    end
+  end
 end

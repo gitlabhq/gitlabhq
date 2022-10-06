@@ -43,11 +43,14 @@ const restartJobsPolling = () => {
 const setImportTarget = ({ commit }, { repoId, importTarget }) =>
   commit(types.SET_IMPORT_TARGET, { repoId, importTarget });
 
-const importAll = ({ state, dispatch }) => {
+const importAll = ({ state, dispatch }, config = {}) => {
   return Promise.all(
-    state.repositories
-      .filter(isProjectImportable)
-      .map((r) => dispatch('fetchImport', r.importSource.id)),
+    state.repositories.filter(isProjectImportable).map((r) =>
+      dispatch('fetchImport', {
+        repoId: r.importSource.id,
+        optionalStages: config?.optionalStages,
+      }),
+    ),
   );
 };
 
@@ -92,7 +95,10 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
     });
 };
 
-const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, getters }, repoId) => {
+const fetchImportFactory = (importPath = isRequired()) => (
+  { state, commit, getters },
+  { repoId, optionalStages },
+) => {
   const { ciCdOnly } = state;
   const importTarget = getters.getImportTarget(repoId);
 
@@ -105,6 +111,7 @@ const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, gett
       ci_cd_only: ciCdOnly,
       new_name: newName,
       target_namespace: targetNamespace,
+      ...(Object.keys(optionalStages).length ? { optional_stages: optionalStages } : {}),
     })
     .then(({ data }) => {
       commit(types.RECEIVE_IMPORT_SUCCESS, {

@@ -54,7 +54,8 @@ module Resolvers
       {
         last_edited_by: :last_edited_by,
         assignees: :assignees,
-        parent: :work_item_parent
+        parent: :work_item_parent,
+        labels: :labels
       }
     end
 

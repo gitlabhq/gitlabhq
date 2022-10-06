@@ -20,10 +20,6 @@ import typeDefs from './typedefs.graphql';
  * localMutations.setRunnerChecked( ... )
  * ```
  *
- * Note: Currently only in use behind a feature flag:
- * admin_runners_bulk_delete for the admin list, rollout issue:
- * https://gitlab.com/gitlab-org/gitlab/-/issues/353981
- *
  * @returns {Object} An object to configure an Apollo client:
  * contains cacheConfig, typeDefs, localMutations.
  */
