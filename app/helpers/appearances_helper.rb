@@ -14,7 +14,13 @@ module AppearancesHelper
   end
 
   def brand_image
-    image_tag(current_appearance.logo_path) if current_appearance&.logo?
+    image_tag(brand_image_path, alt: brand_title, class: 'gl-w-10')
+  end
+
+  def brand_image_path
+    return current_appearance.logo_path if current_appearance&.logo?
+
+    image_path('logo.svg')
   end
 
   def brand_text

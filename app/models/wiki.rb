@@ -173,7 +173,7 @@ class Wiki
   end
 
   def empty?
-    !repository_exists? || list_pages(limit: 1).empty?
+    !repository_exists? || list_page_paths.empty?
   end
 
   def exists?
@@ -191,13 +191,11 @@ class Wiki
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
   def list_pages(limit: 0, sort: nil, direction: DIRECTION_ASC, load_content: false)
-    wiki.list_pages(
-      limit: limit,
-      sort: sort,
-      direction_desc: direction == DIRECTION_DESC,
-      load_content: load_content
-    ).map do |page|
-      WikiPage.new(self, page)
+    if list_pages_with_repository_rpcs?
+      create_wiki_repository unless repository_exists?
+      list_pages_with_repository_rpcs(limit: limit, sort: sort, direction: direction, load_content: load_content)
+    else
+      list_pages_with_legacy_wiki_service(limit: limit, sort: sort, direction: direction, load_content: load_content)
     end
   end
 
@@ -383,6 +381,10 @@ class Wiki
     false
   end
 
+  def disable_sorting?
+    list_pages_with_repository_rpcs?
+  end
+
   private
 
   def multi_commit_options(action, message = nil, title = nil)
@@ -452,14 +454,7 @@ class Wiki
 
   def find_matched_file(title, version)
     escaped_path = RE2::Regexp.escape(sluggified_title(title))
-    # We could not use ALLOWED_EXTENSIONS_REGEX constant or similar regexp with
-    # Regexp.union. The result combination complicated modifiers:
-    # /(?i-mx:md|mkdn?|mdown|markdown)|(?i-mx:rdoc).../
-    # Regexp used by Gitaly is Go's Regexp package. It does not support those
-    # features. So, we have to compose another more-friendly regexp to pass to
-    # Gitaly side.
-    extension_regexp = Wiki::MARKUPS.map { |_, format| format[:extension_regex].source }.join("|")
-    path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{extension_regexp})$")
+    path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{file_extension_regexp})$")
 
     matched_files = repository.search_files_by_regexp(path_regexp, version)
     return if matched_files.blank?
@@ -487,7 +482,7 @@ class Wiki
     format = find_page_format(path)
 
     page = Gitlab::Git::WikiPage.new(
-      url_path: sluggified_title(path.sub(/\.[^.]+\z/, "")),
+      url_path: sluggified_title(strip_extension(path)),
       title: canonicalize_filename(path),
       format: format,
       path: sluggified_title(path),
@@ -508,6 +503,93 @@ class Wiki
       end
 
     Feature.enabled?(:wiki_find_page_with_normal_repository_rpcs, group, type: :development)
+  end
+
+  def file_extension_regexp
+    # We could not use ALLOWED_EXTENSIONS_REGEX constant or similar regexp with
+    # Regexp.union. The result combination complicated modifiers:
+    # /(?i-mx:md|mkdn?|mdown|markdown)|(?i-mx:rdoc).../
+    # Regexp used by Gitaly is Go's Regexp package. It does not support those
+    # features. So, we have to compose another more-friendly regexp to pass to
+    # Gitaly side.
+    Wiki::MARKUPS.map { |_, format| format[:extension_regex].source }.join("|")
+  end
+
+  def strip_extension(path)
+    path.sub(/\.[^.]+\z/, "")
+  end
+
+  def list_pages_with_repository_rpcs?
+    group =
+      if container.is_a?(::Group)
+        container
+      else
+        container.group
+      end
+
+    Feature.enabled?(:wiki_list_pages_with_normal_repository_rpcs, group, type: :development)
+  end
+
+  def list_page_paths
+    return [] if repository.empty?
+
+    path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)\\.(#{file_extension_regexp})$")
+    repository.search_files_by_regexp(path_regexp, default_branch)
+  end
+
+  def list_pages_with_repository_rpcs(limit:, sort:, direction:, load_content:)
+    paths = list_page_paths
+    return [] if paths.empty?
+
+    pages = paths.map do |path|
+      page = Gitlab::Git::WikiPage.new(
+        url_path: sluggified_title(strip_extension(path)),
+        title: canonicalize_filename(path),
+        format: find_page_format(path),
+        path: sluggified_title(path),
+        raw_data: '',
+        name: canonicalize_filename(path),
+        historical: false
+      )
+      WikiPage.new(self, page)
+    end
+    sort_pages!(pages, sort, direction)
+    pages = pages.take(limit) if limit > 0
+    fetch_pages_content!(pages) if load_content
+
+    pages
+  end
+
+  def list_pages_with_legacy_wiki_service(limit:, sort:, direction:, load_content:)
+    wiki.list_pages(
+      limit: limit,
+      sort: sort,
+      direction_desc: direction == DIRECTION_DESC,
+      load_content: load_content
+    ).map do |page|
+      WikiPage.new(self, page)
+    end
+  end
+
+  # After migrating to normal repository RPCs, it's very expensive to sort the
+  # pages by created_at. We have to either ListLastCommitsForTree RPC call or
+  # N+1 LastCommitForPath. Either are efficient for a large repository.
+  # Therefore, we decide to sort the title only.
+  def sort_pages!(pages, _sort, direction)
+    # Sort by path to ensure the files inside a sub-folder are grouped and sorted together
+    pages.sort_by!(&:path)
+    pages.reverse! if direction == DIRECTION_DESC
+  end
+
+  def fetch_pages_content!(pages)
+    blobs =
+      repository
+      .blobs_at(pages.map { |page| [default_branch, page.path] } )
+      .to_h { |blob| [blob.path, blob.data] }
+
+    pages.each do |page|
+      page.raw_content = blobs[page.path]
+    end
   end
 end
 

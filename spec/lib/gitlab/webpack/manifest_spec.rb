@@ -66,10 +66,11 @@ RSpec.describe Gitlab::Webpack::Manifest do
       describe "webpack errors" do
         context "when webpack has 'Module build failed' errors in its manifest" do
           it "errors" do
-            error_manifest = Gitlab::Json.parse(manifest).merge("errors" => [
-              "somethingModule build failed something",
-              "I am an error"
-            ]).to_json
+            error_manifest = Gitlab::Json.parse(manifest).merge("errors" =>
+              [
+                "somethingModule build failed something",
+                "I am an error"
+              ]).to_json
             stub_request(:get, "http://hostname:2000/public_path/my_manifest.json").to_return(body: error_manifest, status: 200)
 
             expect { Gitlab::Webpack::Manifest.asset_paths("entry1") }.to raise_error(Gitlab::Webpack::Manifest::WebpackError)

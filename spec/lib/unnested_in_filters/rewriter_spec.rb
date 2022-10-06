@@ -41,14 +41,15 @@ RSpec.describe UnnestedInFilters::Rewriter do
 
           context 'when the order is a Keyset order' do
             let(:order) do
-              Gitlab::Pagination::Keyset::Order.build([
-                Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                  attribute_name: 'user_type',
-                  order_expression: User.arel_table['user_type'].desc,
-                  nullable: :not_nullable,
-                  distinct: false
-                )
-              ])
+              Gitlab::Pagination::Keyset::Order.build(
+                [
+                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                    attribute_name: 'user_type',
+                    order_expression: User.arel_table['user_type'].desc,
+                    nullable: :not_nullable,
+                    distinct: false
+                  )
+                ])
             end
 
             it { is_expected.to be_truthy }
@@ -152,14 +153,15 @@ RSpec.describe UnnestedInFilters::Rewriter do
 
       context 'when the order is a Keyset order' do
         let(:order) do
-          Gitlab::Pagination::Keyset::Order.build([
-            Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-              attribute_name: 'user_type',
-              order_expression: User.arel_table['user_type'].desc,
-              nullable: :not_nullable,
-              distinct: false
-            )
-          ])
+          Gitlab::Pagination::Keyset::Order.build(
+            [
+              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                attribute_name: 'user_type',
+                order_expression: User.arel_table['user_type'].desc,
+                nullable: :not_nullable,
+                distinct: false
+              )
+            ])
         end
 
         it 'changes the query' do

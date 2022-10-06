@@ -5275,10 +5275,11 @@ RSpec.describe Ci::Build do
       it { expect(matchers.size).to eq(2) }
 
       it 'groups build ids' do
-        expect(matchers.map(&:build_ids)).to match_array([
-          [build_without_tags.id],
-          match_array([build_with_tags.id, other_build_with_tags.id])
-        ])
+        expect(matchers.map(&:build_ids)).to match_array(
+          [
+            [build_without_tags.id],
+            match_array([build_with_tags.id, other_build_with_tags.id])
+          ])
       end
 
       it { expect(matchers.map(&:tag_list)).to match_array([[], %w[tag1 tag2]]) }
@@ -5475,10 +5476,11 @@ RSpec.describe Ci::Build do
           create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
           create(:ci_job_variable, job: build, key: 'OLD_KEY', value: 'i will not live for long')
 
-          new_build = build.clone(current_user: user, new_job_variables_attributes: [
-            { key: 'TEST_KEY', value: 'new value' },
-            { key: 'NEW_KEY', value: 'exciting new value' }
-          ])
+          new_build = build.clone(current_user: user, new_job_variables_attributes:
+            [
+              { key: 'TEST_KEY', value: 'new value' },
+              { key: 'NEW_KEY', value: 'exciting new value' }
+            ])
           new_build.save!
 
           expect(new_build.job_variables.count).to be(2)
@@ -5492,9 +5494,10 @@ RSpec.describe Ci::Build do
           build = create(:ci_build)
           create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
 
-          new_build = build.clone(current_user: user, new_job_variables_attributes: [
-            { key: 'TEST_KEY', value: 'new value' }
-          ])
+          new_build = build.clone(
+            current_user: user,
+            new_job_variables_attributes: [{ key: 'TEST_KEY', value: 'new value' }]
+          )
           new_build.save!
 
           expect(new_build.job_variables.count).to be(1)

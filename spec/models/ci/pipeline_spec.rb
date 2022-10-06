@@ -4531,10 +4531,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns accessibility report with collected data' do
-        expect(subject.urls.keys).to match_array([
-          "https://pa11y.org/",
-          "https://about.gitlab.com/"
-        ])
+        expect(subject.urls.keys).to match_array(
+          [
+            "https://pa11y.org/",
+            "https://about.gitlab.com/"
+          ])
       end
 
       context 'when builds are retried' do

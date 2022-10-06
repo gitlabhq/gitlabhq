@@ -13,9 +13,10 @@ RSpec.describe Gitlab::Serializer::Ci::Variables do
   end
 
   it 'converts keys into strings and symbolizes hash' do
-    is_expected.to eq([
-      { key: 'key', value: 'value', public: true },
-      { key: 'wee', value: 1, public: false }
-    ])
+    is_expected.to eq(
+      [
+        { key: 'key', value: 'value', public: true },
+        { key: 'wee', value: 1, public: false }
+      ])
   end
 end

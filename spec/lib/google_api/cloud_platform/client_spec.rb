@@ -17,17 +17,19 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
   let(:tier) { 'mock-tier' }
 
   let(:database_list) do
-    Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(items: [
-      Google::Apis::SqladminV1beta4::Database.new(name: 'db_01', instance: database_instance),
-      Google::Apis::SqladminV1beta4::Database.new(name: 'db_02', instance: database_instance)
-    ])
+    Google::Apis::SqladminV1beta4::ListDatabasesResponse.new(
+      items: [
+        Google::Apis::SqladminV1beta4::Database.new(name: 'db_01', instance: database_instance),
+        Google::Apis::SqladminV1beta4::Database.new(name: 'db_02', instance: database_instance)
+      ])
   end
 
   let(:user_list) do
-    Google::Apis::SqladminV1beta4::ListUsersResponse.new(items: [
-      Google::Apis::SqladminV1beta4::User.new(name: 'user_01', instance: database_instance),
-      Google::Apis::SqladminV1beta4::User.new(name: 'user_02', instance: database_instance)
-    ])
+    Google::Apis::SqladminV1beta4::ListUsersResponse.new(
+      items: [
+        Google::Apis::SqladminV1beta4::User.new(name: 'user_01', instance: database_instance),
+        Google::Apis::SqladminV1beta4::User.new(name: 'user_02', instance: database_instance)
+      ])
   end
 
   describe '.session_key_for_redirect_uri' do

@@ -28,9 +28,10 @@ RSpec.describe Ci::BuildTrace do
   it_behaves_like 'delegates methods'
 
   it 'returns formatted trace' do
-    expect(subject.lines).to eq([
-      { offset: 0, content: [{ text: 'the-stream' }] }
-    ])
+    expect(subject.lines).to eq(
+      [
+        { offset: 0, content: [{ text: 'the-stream' }] }
+      ])
   end
 
   context 'with invalid UTF-8 data' do

@@ -26,6 +26,17 @@ module WorkItems
 
     private
 
+    def prepare_update_params(work_item)
+      execute_widgets(
+        work_item: work_item,
+        callback: :prepare_update_params,
+        widget_params: @widget_params,
+        service_params: params
+      )
+
+      super
+    end
+
     def before_update(work_item, skip_spam_check: false)
       execute_widgets(work_item: work_item, callback: :before_update_callback, widget_params: @widget_params)
 

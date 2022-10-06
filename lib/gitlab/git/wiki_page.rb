@@ -41,6 +41,11 @@ module Gitlab
 
         @text_data = @raw_data && Gitlab::EncodingHelper.encode!(@raw_data.dup)
       end
+
+      def raw_data=(data)
+        @raw_data = data
+        @text_data = @raw_data && Gitlab::EncodingHelper.encode!(@raw_data.dup)
+      end
     end
   end
 end

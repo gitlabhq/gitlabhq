@@ -144,6 +144,78 @@ RSpec.describe 'Update a work item' do
       end
     end
 
+    context 'with labels widget input' do
+      shared_examples 'mutation updating work item labels' do
+        it 'updates labels' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to change { work_item.labels.count }.to(expected_labels.count)
+
+          expect(work_item.labels).to match_array(expected_labels)
+          expect(mutation_response['workItem']['widgets']).to include(
+            'labels' => {
+              'nodes' => match_array(expected_labels.map { |l| { 'id' => l.to_gid.to_s } })
+            },
+            'type' => 'LABELS'
+          )
+        end
+      end
+
+      let_it_be(:existing_label) { create(:label, project: project) }
+      let_it_be(:label1) { create(:label, project: project) }
+      let_it_be(:label2) { create(:label, project: project) }
+
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetLabels {
+                labels {
+                  nodes { id }
+                }
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      let(:input) do
+        { 'labelsWidget' => { 'addLabelIds' => add_label_ids, 'removeLabelIds' => remove_label_ids } }
+      end
+
+      let(:add_label_ids) { [] }
+      let(:remove_label_ids) { [] }
+
+      before_all do
+        work_item.update!(labels: [existing_label])
+      end
+
+      context 'when only removing labels' do
+        let(:remove_label_ids) { [existing_label.to_gid.to_s] }
+        let(:expected_labels) { [] }
+
+        it_behaves_like 'mutation updating work item labels'
+      end
+
+      context 'when only adding labels' do
+        let(:add_label_ids) { [label1.to_gid.to_s, label2.to_gid.to_s] }
+        let(:expected_labels) { [label1, label2, existing_label] }
+
+        it_behaves_like 'mutation updating work item labels'
+      end
+
+      context 'when adding and removing labels' do
+        let(:remove_label_ids) { [existing_label.to_gid.to_s] }
+        let(:add_label_ids) { [label1.to_gid.to_s, label2.to_gid.to_s] }
+        let(:expected_labels) { [label1, label2] }
+
+        it_behaves_like 'mutation updating work item labels'
+      end
+    end
+
     context 'with due and start date widget input' do
       let(:start_date) { Date.today }
       let(:due_date) { 1.week.from_now.to_date }

@@ -180,70 +180,71 @@ RSpec.shared_examples 'wiki model' do
         it 'returns false' do
           expect(subject.empty?).to be(false)
         end
-
-        it 'only instantiates a Wiki page once' do
-          expect(WikiPage).to receive(:new).once.and_call_original
-
-          subject.empty?
-        end
       end
     end
   end
 
   describe '#list_pages' do
-    let(:wiki_pages) { subject.list_pages }
+    shared_examples 'wiki model #list_pages' do
+      let(:wiki_pages) { subject.list_pages }
 
-    before do
-      subject.create_page('index', 'This is an index')
-      subject.create_page('index2', 'This is an index2')
-      subject.create_page('an index3', 'This is an index3')
-    end
+      before do
+        subject.create_page('index', 'This is an index')
+        subject.create_page('index2', 'This is an index2')
+        subject.create_page('an index3', 'This is an index3')
+      end
 
-    it 'returns an array of WikiPage instances' do
-      expect(wiki_pages).to be_present
-      expect(wiki_pages).to all(be_a(WikiPage))
-    end
+      it 'returns an array of WikiPage instances' do
+        expect(wiki_pages).to be_present
+        expect(wiki_pages).to all(be_a(WikiPage))
+      end
 
-    it 'does not load WikiPage content by default' do
-      wiki_pages.each do |page|
-        expect(page.content).to be_empty
+      it 'does not load WikiPage content by default' do
+        wiki_pages.each do |page|
+          expect(page.content).to be_empty
+        end
+      end
+
+      it 'returns all pages by default' do
+        expect(wiki_pages.count).to eq(3)
+      end
+
+      context 'with limit option' do
+        it 'returns limited set of pages' do
+          expect(subject.list_pages(limit: 1).count).to eq(1)
+        end
+      end
+
+      context 'with sorting options' do
+        it 'returns pages sorted by title by default' do
+          pages = ['an index3', 'index', 'index2']
+
+          expect(subject.list_pages.map(&:title)).to eq(pages)
+          expect(subject.list_pages(direction: 'desc').map(&:title)).to eq(pages.reverse)
+        end
+      end
+
+      context 'with load_content option' do
+        let(:pages) { subject.list_pages(load_content: true) }
+
+        it 'loads WikiPage content' do
+          expect(pages.first.content).to eq('This is an index3')
+          expect(pages.second.content).to eq('This is an index')
+          expect(pages.third.content).to eq('This is an index2')
+        end
       end
     end
 
-    it 'returns all pages by default' do
-      expect(wiki_pages.count).to eq(3)
+    context 'list pages with legacy wiki rpcs' do
+      before do
+        stub_feature_flags(wiki_list_page_with_normal_repository_rpcs: false)
+      end
+
+      it_behaves_like 'wiki model #list_pages'
     end
 
-    context 'with limit option' do
-      it 'returns limited set of pages' do
-        expect(subject.list_pages(limit: 1).count).to eq(1)
-      end
-    end
-
-    context 'with sorting options' do
-      it 'returns pages sorted by title by default' do
-        pages = ['an index3', 'index', 'index2']
-
-        expect(subject.list_pages.map(&:title)).to eq(pages)
-        expect(subject.list_pages(direction: 'desc').map(&:title)).to eq(pages.reverse)
-      end
-
-      it 'returns pages sorted by created_at' do
-        pages = ['index', 'index2', 'an index3']
-
-        expect(subject.list_pages(sort: 'created_at').map(&:title)).to eq(pages)
-        expect(subject.list_pages(sort: 'created_at', direction: 'desc').map(&:title)).to eq(pages.reverse)
-      end
-    end
-
-    context 'with load_content option' do
-      let(:pages) { subject.list_pages(load_content: true) }
-
-      it 'loads WikiPage content' do
-        expect(pages.first.content).to eq('This is an index3')
-        expect(pages.second.content).to eq('This is an index')
-        expect(pages.third.content).to eq('This is an index2')
-      end
+    context 'list pages with normal repository rpcs' do
+      it_behaves_like 'wiki model #list_pages'
     end
   end
 
@@ -531,7 +532,7 @@ RSpec.shared_examples 'wiki model' do
       it 'sets the correct commit message' do
         subject.create_page('test page', 'some content', :markdown, 'commit message')
 
-        expect(subject.list_pages.first.page.version.message).to eq('commit message')
+        expect(subject.list_pages.first.version.message).to eq('commit message')
       end
 
       it 'sets the correct commit email' do

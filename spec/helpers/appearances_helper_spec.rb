@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe AppearancesHelper do
+  let_it_be(:gitlab_logo) { ActionController::Base.helpers.image_path('logo.svg') }
+
   before do
     user = create(:user)
     allow(helper).to receive(:current_user).and_return(user)
@@ -59,23 +61,59 @@ RSpec.describe AppearancesHelper do
   end
 
   describe '#brand_image' do
-    let!(:appearance) { create(:appearance, :with_logo) }
-
     context 'when there is a logo' do
+      let!(:appearance) { create(:appearance, :with_logo) }
+
       it 'returns a path' do
-        expect(helper.brand_image).to match(%r(img data-src="/uploads/-/system/appearance/.*png))
+        expect(helper.brand_image).to match(%r(img .* data-src="/uploads/-/system/appearance/.*png))
+      end
+
+      context 'when there is no associated upload' do
+        before do
+          # Legacy attachments were not tracked in the uploads table
+          appearance.logo.upload.destroy!
+          appearance.reload
+        end
+
+        it 'falls back to using the original path' do
+          expect(helper.brand_image).to match(%r(img .* data-src="/uploads/-/system/appearance/.*png))
+        end
       end
     end
 
-    context 'when there is a logo but no associated upload' do
-      before do
-        # Legacy attachments were not tracked in the uploads table
-        appearance.logo.upload.destroy!
-        appearance.reload
+    context 'when there is no logo' do
+      it 'returns path of GitLab logo' do
+        expect(helper.brand_image).to match(%r(img .* data-src="#{gitlab_logo}))
       end
+    end
 
-      it 'falls back to using the original path' do
-        expect(helper.brand_image).to match(%r(img data-src="/uploads/-/system/appearance/.*png))
+    context 'when there is a title' do
+      let!(:appearance) { create(:appearance, title: 'My title') }
+
+      it 'returns the title' do
+        expect(helper.brand_image).to match(%r(img alt="My title"))
+      end
+    end
+
+    context 'when there is no title' do
+      it 'returns the default title' do
+        expect(helper.brand_image).to match(%r(img alt="GitLab))
+      end
+    end
+  end
+
+  describe '#brand_image_path' do
+    context 'with a custom logo' do
+      let!(:appearance) { create(:appearance, :with_logo) }
+
+      it 'returns path of custom logo' do
+        expect(helper.brand_image_path).to match(%r(/uploads/-/system/appearance/.*/dk.png))
+      end
+    end
+
+    context 'with no custom logo' do
+      it 'returns path of GitLab logo' do
+        expect(helper.brand_image_path).to eq(gitlab_logo)
       end
     end
   end

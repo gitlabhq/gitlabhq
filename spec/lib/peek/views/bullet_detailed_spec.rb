@@ -44,10 +44,11 @@ RSpec.describe Peek::Views::BulletDetailed do
         expect(subject.key).to eq('bullet')
         expect(subject.results[:calls]).to eq(2)
         expect(subject.results[:warnings]).to eq([Peek::Views::BulletDetailed::WARNING_MESSAGE])
-        expect(subject.results[:details]).to eq([
-          { notification: 'Title 1: Body 1', backtrace: "first\nsecond\n" },
-          { notification: 'Title 2: Body 2', backtrace: "first\nsecond\n" }
-        ])
+        expect(subject.results[:details]).to eq(
+          [
+            { notification: 'Title 1: Body 1', backtrace: "first\nsecond\n" },
+            { notification: 'Title 2: Body 2', backtrace: "first\nsecond\n" }
+          ])
       end
     end
   end

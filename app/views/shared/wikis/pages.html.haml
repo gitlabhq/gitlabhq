@@ -15,7 +15,8 @@
 
     .dropdown.inline.wiki-sort-dropdown
       .btn-group{ role: 'group' }
-        = gl_redirect_listbox_tag wiki_sort_options, params[:sort], data: { right: true }
+        - unless @wiki.disable_sorting?
+          = gl_redirect_listbox_tag wiki_sort_options, params[:sort], data: { right: true }
         = wiki_sort_controls(@wiki, params[:sort], params[:direction])
 
 %ul.wiki-pages-list.content-list

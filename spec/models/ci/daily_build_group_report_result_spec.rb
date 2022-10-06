@@ -41,24 +41,25 @@ RSpec.describe Ci::DailyBuildGroupReportResult do
     let!(:new_pipeline) { create(:ci_pipeline) }
 
     it 'creates or updates matching report results' do
-      described_class.upsert_reports([
-        {
-          project_id: rspec_coverage.project_id,
-          ref_path: rspec_coverage.ref_path,
-          last_pipeline_id: new_pipeline.id,
-          date: rspec_coverage.date,
-          group_name: 'rspec',
-          data: { 'coverage' => 81.0 }
-        },
-        {
-          project_id: rspec_coverage.project_id,
-          ref_path: rspec_coverage.ref_path,
-          last_pipeline_id: new_pipeline.id,
-          date: rspec_coverage.date,
-          group_name: 'karma',
-          data: { 'coverage' => 87.0 }
-        }
-      ])
+      described_class.upsert_reports(
+        [
+          {
+            project_id: rspec_coverage.project_id,
+            ref_path: rspec_coverage.ref_path,
+            last_pipeline_id: new_pipeline.id,
+            date: rspec_coverage.date,
+            group_name: 'rspec',
+            data: { 'coverage' => 81.0 }
+          },
+          {
+            project_id: rspec_coverage.project_id,
+            ref_path: rspec_coverage.ref_path,
+            last_pipeline_id: new_pipeline.id,
+            date: rspec_coverage.date,
+            group_name: 'karma',
+            data: { 'coverage' => 87.0 }
+          }
+        ])
 
       rspec_coverage.reload
 

@@ -193,9 +193,7 @@ RSpec.describe Gitlab::SidekiqConfig do
     it 'returns worker queue mappings that have queues in the current Sidekiq options' do
       queues = described_class.routing_queues
 
-      expect(queues).to match_array(%w[
-        default mailers high_urgency gitaly
-      ])
+      expect(queues).to match_array(%w[default mailers high_urgency gitaly])
       expect(queues).not_to include('not_exist')
     end
   end

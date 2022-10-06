@@ -266,6 +266,10 @@ class IssuableBaseService < ::BaseProjectService
     # To be overridden by subclasses
   end
 
+  def prepare_update_params(issuable)
+    # To be overridden by subclasses
+  end
+
   def after_update(issuable)
     handle_description_updated(issuable)
   end
@@ -277,6 +281,7 @@ class IssuableBaseService < ::BaseProjectService
   end
 
   def update(issuable)
+    prepare_update_params(issuable)
     handle_quick_actions(issuable)
     filter_params(issuable)
 

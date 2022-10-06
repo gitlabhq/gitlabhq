@@ -1050,12 +1050,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       before do
         allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
-        expect(prometheus_client).to receive(:query).with(/gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m/).and_return([
-          {
-            'metric' => {},
-            'value' => [1616016381.473, '0.95']
-          }
-        ])
+        expect(prometheus_client).to receive(:query)
+          .with(/gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m/)
+          .and_return(
+            [
+              { 'metric' => {},
+                'value' => [1616016381.473, '0.95'] }
+            ])
         expect(described_class).to receive(:with_prometheus_client).and_yield(prometheus_client)
       end
 

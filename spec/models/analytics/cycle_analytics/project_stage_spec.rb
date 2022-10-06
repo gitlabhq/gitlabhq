@@ -48,10 +48,11 @@ RSpec.describe Analytics::CycleAnalytics::ProjectStage do
     subject(:distinct_start_and_end_event_identifiers) { described_class.distinct_stages_within_hierarchy(top_level_group).to_a.pluck(:start_event_identifier, :end_event_identifier) }
 
     it 'returns distinct stages by start and end events (using stage_event_hash_id)' do
-      expect(distinct_start_and_end_event_identifiers).to match_array([
-        %w[issue_created issue_deployed_to_production],
-        %w[merge_request_created merge_request_merged]
-      ])
+      expect(distinct_start_and_end_event_identifiers).to match_array(
+        [
+          %w[issue_created issue_deployed_to_production],
+          %w[merge_request_created merge_request_merged]
+        ])
     end
   end
 end

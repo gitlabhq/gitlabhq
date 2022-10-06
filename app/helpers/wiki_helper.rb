@@ -65,7 +65,10 @@ module WikiHelper
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
 
-    link_to(wiki_path(wiki, action: :pages, sort: sort, direction: reversed_direction),
+    link_options = { action: :pages, direction: reversed_direction }
+    link_options[:sort] = sort unless wiki.disable_sorting?
+
+    link_to(wiki_path(wiki, **link_options),
       type: 'button', class: link_class, title: _('Sort direction')) do
       sprite_icon("sort-#{icon_class}")
     end

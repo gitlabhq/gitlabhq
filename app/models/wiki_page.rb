@@ -99,6 +99,13 @@ class WikiPage
     attributes[:content] ||= page&.text_data
   end
 
+  def raw_content=(content)
+    return if page.nil?
+
+    page.raw_data = content
+    attributes[:content] = page.text_data
+  end
+
   # The hierarchy of the directory this page is contained in.
   def directory
     wiki.page_title_and_dir(slug)&.last.to_s
@@ -118,7 +125,7 @@ class WikiPage
   def version
     return unless persisted?
 
-    @version ||= @page.version
+    @version ||= @page.version || last_version
   end
 
   def path
@@ -151,7 +158,7 @@ class WikiPage
   end
 
   def last_version
-    @last_version ||= versions(limit: 1).first
+    @last_version ||= wiki.repository.last_commit_for_path(wiki.default_branch, page.path) if page
   end
 
   def last_commit_sha

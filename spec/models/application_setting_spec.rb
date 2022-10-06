@@ -257,11 +257,12 @@ RSpec.describe ApplicationSetting do
           subject.grafana_url = ' ' + http
           expect(subject.save).to be false
 
-          expect(subject.errors[:grafana_url]).to eq([
-            'must be a valid relative or absolute URL. ' \
-            'Please check your Grafana URL setting in ' \
-            'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
-          ])
+          expect(subject.errors[:grafana_url]).to eq(
+            [
+              'must be a valid relative or absolute URL. ' \
+              'Please check your Grafana URL setting in ' \
+              'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+            ])
         end
       end
 
@@ -270,11 +271,12 @@ RSpec.describe ApplicationSetting do
           subject.grafana_url = javascript
           expect(subject.save).to be false
 
-          expect(subject.errors[:grafana_url]).to eq([
-            'is blocked: Only allowed schemes are http, https. Please check your ' \
-            'Grafana URL setting in ' \
-            'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
-          ])
+          expect(subject.errors[:grafana_url]).to eq(
+            [
+              'is blocked: Only allowed schemes are http, https. Please check your ' \
+              'Grafana URL setting in ' \
+              'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+            ])
         end
       end
     end

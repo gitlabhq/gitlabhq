@@ -582,11 +582,12 @@ RSpec.describe Gitlab::Utils do
       end
 
       it 'sorts items like the regular sort_by' do
-        expect(sorted_list).to eq([
-          { name: 'obj 2', priority: 1 },
-          { name: 'obj 1', priority: 2 },
-          { name: 'obj 3', priority: 3 }
-        ])
+        expect(sorted_list).to eq(
+          [
+            { name: 'obj 2', priority: 1 },
+            { name: 'obj 1', priority: 2 },
+            { name: 'obj 3', priority: 3 }
+          ])
       end
     end
   end
