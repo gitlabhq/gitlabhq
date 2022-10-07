@@ -22205,6 +22205,7 @@ CREATE TABLE user_preferences (
     markdown_surround_selection boolean DEFAULT true NOT NULL,
     diffs_deletion_color text,
     diffs_addition_color text,
+    markdown_automatic_lists boolean DEFAULT true NOT NULL,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );

@@ -37,7 +37,7 @@ gem 'view_component', '~> 2.71.0'
 gem 'default_value_for', '~> 3.4.0'
 
 # Supported DBs
-gem 'pg', '~> 1.4.0'
+gem 'pg', '~> 1.4.3'
 
 gem 'rugged', '~> 1.2'
 gem 'grape-path-helpers', '~> 1.7.1'
@@ -334,7 +334,7 @@ gem 'sentry-sidekiq', '~> 5.1.1'
 
 # PostgreSQL query parsing
 #
-gem 'pg_query', '~> 2.1.0'
+gem 'pg_query', '~> 2.1.4'
 
 gem 'premailer-rails', '~> 1.10.3'
 

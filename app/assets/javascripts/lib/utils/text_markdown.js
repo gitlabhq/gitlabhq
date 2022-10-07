@@ -518,6 +518,7 @@ function continueOlText(listLineMatch, nextLineMatch) {
 }
 
 function handleContinueList(e, textArea) {
+  if (!gon.markdown_automatic_lists) return;
   if (!(e.key === 'Enter')) return;
   if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
   if (textArea.selectionStart !== textArea.selectionEnd) return;

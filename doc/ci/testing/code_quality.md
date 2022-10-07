@@ -313,7 +313,7 @@ the nested architecture of container execution, the registry prefix must
 be specifically configured to be passed down into CodeClimate's subsequent
 `docker pull` commands for individual engines.
 
-The following two variables can address all of the required image pulls:
+The following variables can address all of the required image pulls:
 
 - `CODE_QUALITY_IMAGE`: A fully prefixed image name that can be located anywhere
   accessible from your job environment. GitLab Container Registry can be used here
@@ -322,6 +322,8 @@ The following two variables can address all of the required image pulls:
   is a configuration option supported by [CodeClimate CLI](https://github.com/codeclimate/codeclimate/pull/948). You must:
   - Include a trailing slash (`/`).
   - Not include a protocol prefix, such as `https://`.
+- `CODECLIMATE_REGISTRY_USERNAME`: An optional variable to specify the username for the registry domain parsed from `CODECLIMATE_PREFIX`.
+- `CODECLIMATE_REGISTRY_PASSWORD`: An optional variable to specify the password for the registry domain parsed from `CODECLIMATE_PREFIX`.
 
 ```yaml
 include:
@@ -333,12 +335,48 @@ code_quality:
     CODECLIMATE_PREFIX: "my-private-registry.local:12345/"
 ```
 
-The images in the private container image registry must be available without authentication.
-Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/355814) for more information.
-
 This example is specific to GitLab Code Quality. For more general
 instructions on how to configure DinD with a registry mirror, see the
 relevant [documentation](../docker/using_docker_build.md#enable-registry-mirror-for-dockerdind-service).
+
+#### Configure Code Quality to use the Dependency Proxy
+
+Prerequisite:
+
+- The project must be in a group where the [Dependency Proxy](../../user/packages/dependency_proxy/index.md) is enabled.
+
+Here is an example of how to configure Code Quality to use the Dependency Proxy:
+
+```yaml
+include:
+  - template: Jobs/Code-Quality.gitlab-ci.yml
+
+code_quality:
+  variables:
+    CODE_QUALITY_IMAGE: "$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/codequality:0.85.24"
+    ## You must add a trailing slash to `$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX`.
+    CODECLIMATE_PREFIX: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/
+    CODECLIMATE_REGISTRY_USERNAME: $CI_DEPENDENCY_PROXY_USER
+    CODECLIMATE_REGISTRY_PASSWORD: $CI_DEPENDENCY_PROXY_PASSWORD
+```
+
+#### Configure Code Quality to use Dockerhub with authentication
+
+Here is an example of how to configure Code Quality to use Dockerhub with authentication:
+
+```yaml
+include:
+  - template: Jobs/Code-Quality.gitlab-ci.yml
+
+code_quality:
+  variables:
+    CODECLIMATE_PREFIX: "registry-1.docker.io/"
+    CODECLIMATE_REGISTRY_USERNAME: $DOCKERHUB_USERNAME
+    CODECLIMATE_REGISTRY_PASSWORD: $DOCKERHUB_PASSWORD
+```
+
+You should add the username and password as [protected CI/CD variables](../variables/index.md#add-a-cicd-variable-to-a-project)
+in the project.
 
 ## Configuring jobs using variables
 

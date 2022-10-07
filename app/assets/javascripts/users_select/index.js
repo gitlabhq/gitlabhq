@@ -383,9 +383,7 @@ function UsersSelect(currentUser, els, options = {}) {
       },
       suggestedUsers(users) {
         const selected = getSelected().filter((i) => i !== 0);
-        const suggestedUsers = users
-          .filter((u) => u.suggested && selected.indexOf(u.id) === -1)
-          .sort((a, b) => a.name > b.name);
+        const suggestedUsers = users.filter((u) => u.suggested && selected.indexOf(u.id) === -1);
 
         if (!suggestedUsers.length) return [];
 

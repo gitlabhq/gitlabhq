@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for commits', :js do
-  include CycleAnalyticsHelpers
-
   let(:project) { create(:project, :repository) }
   let(:sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
   let(:user) { create(:user) }
@@ -34,7 +32,12 @@ RSpec.describe 'User searches for commits', :js do
 
   context 'when searching by message' do
     it 'finds a commit and holds on /search page' do
-      create_commit('Message referencing another sha: "deadbeef"', project, user, 'master')
+      project.repository.commit_files(
+        user,
+        message: 'Message referencing another sha: "deadbeef"',
+        branch_name: 'master',
+        actions: [{ action: :create, file_path: 'a/new.file', contents: 'new file' }]
+      )
 
       submit_search('deadbeef')
 

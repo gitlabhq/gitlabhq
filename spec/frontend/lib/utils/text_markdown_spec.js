@@ -198,6 +198,7 @@ describe('init markdown', () => {
           textArea.addEventListener('keydown', keypressNoteText);
           textArea.addEventListener('compositionstart', compositionStartNoteText);
           textArea.addEventListener('compositionend', compositionEndNoteText);
+          gon.markdown_automatic_lists = true;
         });
 
         it.each`
@@ -316,6 +317,18 @@ describe('init markdown', () => {
 
           expect(textArea.value).toEqual(expected);
           expect(textArea.selectionStart).toBe(expected.length);
+        });
+
+        it('does nothing if user preference disabled', () => {
+          const text = '- test';
+
+          gon.markdown_automatic_lists = false;
+
+          textArea.value = text;
+          textArea.setSelectionRange(text.length, text.length);
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(text);
         });
       });
     });
