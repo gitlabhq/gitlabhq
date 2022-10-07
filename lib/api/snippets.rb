@@ -124,7 +124,7 @@ module API
         use :update_file_params
         use :minimum_update_params
       end
-      put ':id' do
+      put ':id', urgency: :low do
         authenticate!
 
         snippet = snippets_for_current_user.find_by_id(params.delete(:id))

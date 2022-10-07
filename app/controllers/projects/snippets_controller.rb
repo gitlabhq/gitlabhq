@@ -14,7 +14,7 @@ class Projects::SnippetsController < Projects::Snippets::ApplicationController
   before_action :authorize_read_snippet!, except: [:new, :index]
   before_action :authorize_update_snippet!, only: :edit
 
-  urgency :low, [:index]
+  urgency :low, [:index, :show]
 
   def index
     @snippet_counts = ::Snippets::CountService
