@@ -9,19 +9,19 @@ module Gitlab
         {
           project: project,
           note: note,
-          commit_id: raw_data.commit_id,
+          commit_id: raw_data[:commit_id],
           line_code: line_code,
           author_id: author_id,
           type: type,
-          created_at: raw_data.created_at,
-          updated_at: raw_data.updated_at
+          created_at: raw_data[:created_at],
+          updated_at: raw_data[:updated_at]
         }
       end
 
       private
 
       def author
-        @author ||= UserFormatter.new(client, raw_data.user)
+        @author ||= UserFormatter.new(client, raw_data[:user])
       end
 
       def author_id
@@ -29,7 +29,7 @@ module Gitlab
       end
 
       def body
-        raw_data.body || ""
+        raw_data[:body] || ""
       end
 
       def line_code
@@ -48,11 +48,11 @@ module Gitlab
       end
 
       def diff_hunk
-        raw_data.diff_hunk
+        raw_data[:diff_hunk]
       end
 
       def file_path
-        raw_data.path
+        raw_data[:path]
       end
 
       def note

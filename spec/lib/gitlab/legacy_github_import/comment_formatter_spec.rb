@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter do
+  let_it_be(:project) { create(:project) }
   let(:client) { double }
-  let(:project) { create(:project) }
-  let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
+  let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:created_at) { DateTime.strptime('2013-04-10T20:09:31Z') }
   let(:updated_at) { DateTime.strptime('2014-03-03T18:58:10Z') }
   let(:base) do
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter do
 
   describe '#attributes' do
     context 'when do not reference a portion of the diff' do
-      let(:raw) { double(base) }
+      let(:raw) { base }
 
       it 'returns formatted attributes' do
         expected = {
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter do
         }
       end
 
-      let(:raw) { double(base.merge(diff)) }
+      let(:raw) { base.merge(diff) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -74,22 +74,22 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter do
     end
 
     context 'when author is a GitLab user' do
-      let(:raw) { double(base.merge(user: octocat)) }
+      let(:raw) { base.merge(user: octocat) }
 
       it 'returns GitLab user id associated with GitHub id as author_id' do
-        gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+        gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
 
         expect(comment.attributes.fetch(:author_id)).to eq gl_user.id
       end
 
       it 'returns GitLab user id associated with GitHub email as author_id' do
-        gl_user = create(:user, email: octocat.email)
+        gl_user = create(:user, email: octocat[:email])
 
         expect(comment.attributes.fetch(:author_id)).to eq gl_user.id
       end
 
       it 'returns note without created at tag line' do
-        create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+        create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
 
         expect(comment.attributes.fetch(:note)).to eq("I'm having a problem with this.")
       end

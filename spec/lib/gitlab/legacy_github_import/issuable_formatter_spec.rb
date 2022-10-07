@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::IssuableFormatter do
   let(:raw_data) do
-    double(number: 42)
+    { number: 42 }
   end
 
   let(:project) { double(import_type: 'github') }

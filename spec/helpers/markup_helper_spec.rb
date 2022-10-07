@@ -425,21 +425,21 @@ FooBar
     end
 
     it 'delegates to #markdown_unsafe when file name corresponds to Markdown' do
-      expect(helper).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
+      expect(Gitlab::MarkupHelper).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
       expect(helper).to receive(:markdown_unsafe).and_return('NOEL')
 
       expect(helper.markup('foo.md', content)).to eq('NOEL')
     end
 
     it 'delegates to #asciidoc_unsafe when file name corresponds to AsciiDoc' do
-      expect(helper).to receive(:asciidoc?).with('foo.adoc').and_return(true)
+      expect(Gitlab::MarkupHelper).to receive(:asciidoc?).with('foo.adoc').and_return(true)
       expect(helper).to receive(:asciidoc_unsafe).and_return('NOEL')
 
       expect(helper.markup('foo.adoc', content)).to eq('NOEL')
     end
 
     it 'uses passed in rendered content' do
-      expect(helper).not_to receive(:gitlab_markdown?)
+      expect(Gitlab::MarkupHelper).not_to receive(:gitlab_markdown?)
       expect(helper).not_to receive(:markdown_unsafe)
 
       expect(helper.markup('foo.md', content, rendered: '<p>NOEL</p>')).to eq('<p>NOEL</p>')

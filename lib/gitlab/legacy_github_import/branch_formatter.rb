@@ -3,7 +3,17 @@
 module Gitlab
   module LegacyGithubImport
     class BranchFormatter < BaseFormatter
-      delegate :repo, :sha, :ref, to: :raw_data
+      def repo
+        raw_data[:repo]
+      end
+
+      def sha
+        raw_data[:sha]
+      end
+
+      def ref
+        raw_data[:ref]
+      end
 
       def exists?
         branch_exists? && commit_exists?
@@ -14,7 +24,7 @@ module Gitlab
       end
 
       def user
-        raw_data.user&.login || 'unknown'
+        raw_data.dig(:user, :login) || 'unknown'
       end
 
       def short_sha

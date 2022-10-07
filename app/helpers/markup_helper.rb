@@ -12,22 +12,6 @@ module MarkupHelper
   # https://gitlab.com/gitlab-org/gitlab/-/issues/365358
   RENDER_TIMEOUT = 5.seconds
 
-  def plain?(filename)
-    Gitlab::MarkupHelper.plain?(filename)
-  end
-
-  def markup?(filename)
-    Gitlab::MarkupHelper.markup?(filename)
-  end
-
-  def gitlab_markdown?(filename)
-    Gitlab::MarkupHelper.gitlab_markdown?(filename)
-  end
-
-  def asciidoc?(filename)
-    Gitlab::MarkupHelper.asciidoc?(filename)
-  end
-
   # Use this in places where you would normally use link_to(gfm(...), ...).
   def link_to_markdown(body, url, html_options = {})
     return '' if body.blank?
@@ -146,11 +130,11 @@ module MarkupHelper
     return '' unless text.present?
 
     markup = proc do
-      if gitlab_markdown?(file_name)
+      if Gitlab::MarkupHelper.gitlab_markdown?(file_name)
         markdown_unsafe(text, context)
-      elsif asciidoc?(file_name)
+      elsif Gitlab::MarkupHelper.asciidoc?(file_name)
         asciidoc_unsafe(text, context)
-      elsif plain?(file_name)
+      elsif Gitlab::MarkupHelper.plain?(file_name)
         plain_unsafe(text)
       else
         other_markup_unsafe(file_name, text, context)

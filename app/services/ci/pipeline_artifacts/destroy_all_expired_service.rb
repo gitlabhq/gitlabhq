@@ -20,7 +20,7 @@ module Ci
 
       def execute
         in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
-          destroy_unlocked_pipeline_artifacts if ::Feature.enabled?(:ci_destroy_unlocked_pipeline_artifacts)
+          destroy_unlocked_pipeline_artifacts
 
           legacy_destroy_pipeline_artifacts
         end

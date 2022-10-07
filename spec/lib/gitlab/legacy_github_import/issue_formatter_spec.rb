@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
+  let_it_be(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
   let(:client) { double }
-  let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
-  let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
+  let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
 
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
 
   shared_examples 'Gitlab::LegacyGithubImport::IssueFormatter#attributes' do
     context 'when issue is open' do
-      let(:raw_data) { double(base_data.merge(state: 'open')) }
+      let(:raw_data) { base_data.merge(state: 'open') }
 
       it 'returns formatted attributes' do
         expected = {
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
     end
 
     context 'when issue is closed' do
-      let(:raw_data) { double(base_data.merge(state: 'closed')) }
+      let(:raw_data) { base_data.merge(state: 'closed') }
 
       it 'returns formatted attributes' do
         expected = {
@@ -76,28 +76,28 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
     end
 
     context 'when it is assigned to someone' do
-      let(:raw_data) { double(base_data.merge(assignee: octocat)) }
+      let(:raw_data) { base_data.merge(assignee: octocat) }
 
       it 'returns nil as assignee_id when is not a GitLab user' do
         expect(issue.attributes.fetch(:assignee_ids)).to be_empty
       end
 
       it 'returns GitLab user id associated with GitHub id as assignee_id' do
-        gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+        gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
 
         expect(issue.attributes.fetch(:assignee_ids)).to eq [gl_user.id]
       end
 
       it 'returns GitLab user id associated with GitHub email as assignee_id' do
-        gl_user = create(:user, email: octocat.email)
+        gl_user = create(:user, email: octocat[:email])
 
         expect(issue.attributes.fetch(:assignee_ids)).to eq [gl_user.id]
       end
     end
 
     context 'when it has a milestone' do
-      let(:milestone) { double(id: 42, number: 42) }
-      let(:raw_data) { double(base_data.merge(milestone: milestone)) }
+      let(:milestone) { { id: 42, number: 42 } }
+      let(:raw_data) { base_data.merge(milestone: milestone) }
 
       it 'returns nil when milestone does not exist' do
         expect(issue.attributes.fetch(:milestone)).to be_nil
@@ -111,26 +111,26 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
     end
 
     context 'when author is a GitLab user' do
-      let(:raw_data) { double(base_data.merge(user: octocat)) }
+      let(:raw_data) { base_data.merge(user: octocat) }
 
       it 'returns project creator_id as author_id when is not a GitLab user' do
         expect(issue.attributes.fetch(:author_id)).to eq project.creator_id
       end
 
       it 'returns GitLab user id associated with GitHub id as author_id' do
-        gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+        gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
 
         expect(issue.attributes.fetch(:author_id)).to eq gl_user.id
       end
 
       it 'returns GitLab user id associated with GitHub email as author_id' do
-        gl_user = create(:user, email: octocat.email)
+        gl_user = create(:user, email: octocat[:email])
 
         expect(issue.attributes.fetch(:author_id)).to eq gl_user.id
       end
 
       it 'returns description without created at tag line' do
-        create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+        create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
 
         expect(issue.attributes.fetch(:description)).to eq("I'm having a problem with this.")
       end
@@ -138,7 +138,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
   end
 
   shared_examples 'Gitlab::LegacyGithubImport::IssueFormatter#number' do
-    let(:raw_data) { double(base_data.merge(number: 1347)) }
+    let(:raw_data) { base_data.merge(number: 1347) }
 
     it 'returns issue number' do
       expect(issue.number).to eq 1347
@@ -161,7 +161,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
 
   describe '#has_comments?' do
     context 'when number of comments is greater than zero' do
-      let(:raw_data) { double(base_data.merge(comments: 1)) }
+      let(:raw_data) { base_data.merge(comments: 1) }
 
       it 'returns true' do
         expect(issue.has_comments?).to eq true
@@ -169,7 +169,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
     end
 
     context 'when number of comments is equal to zero' do
-      let(:raw_data) { double(base_data.merge(comments: 0)) }
+      let(:raw_data) { base_data.merge(comments: 0) }
 
       it 'returns false' do
         expect(issue.has_comments?).to eq false
@@ -179,7 +179,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
 
   describe '#pull_request?' do
     context 'when mention a pull request' do
-      let(:raw_data) { double(base_data.merge(pull_request: double)) }
+      let(:raw_data) { base_data.merge(pull_request: double) }
 
       it 'returns true' do
         expect(issue.pull_request?).to eq true
@@ -187,7 +187,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
     end
 
     context 'when does not mention a pull request' do
-      let(:raw_data) { double(base_data.merge(pull_request: nil)) }
+      let(:raw_data) { base_data.merge(pull_request: nil) }
 
       it 'returns false' do
         expect(issue.pull_request?).to eq false

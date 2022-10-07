@@ -96,7 +96,7 @@ module Gitlab
       def import_labels
         fetch_resources(:labels, repo, per_page: 100) do |labels|
           labels.each do |raw|
-            gh_label = LabelFormatter.new(project, raw)
+            gh_label = LabelFormatter.new(project, raw.to_h)
             gh_label.create!
           rescue StandardError => e
             errors << { type: :label, url: Gitlab::UrlSanitizer.sanitize(gh_label.url), errors: e.message }
@@ -109,7 +109,7 @@ module Gitlab
       def import_milestones
         fetch_resources(:milestones, repo, state: :all, per_page: 100) do |milestones|
           milestones.each do |raw|
-            gh_milestone = MilestoneFormatter.new(project, raw)
+            gh_milestone = MilestoneFormatter.new(project, raw.to_h)
             gh_milestone.create!
           rescue StandardError => e
             errors << { type: :milestone, url: Gitlab::UrlSanitizer.sanitize(gh_milestone.url), errors: e.message }
@@ -121,6 +121,7 @@ module Gitlab
       def import_issues
         fetch_resources(:issues, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |issues|
           issues.each do |raw|
+            raw = raw.to_h
             gh_issue = IssueFormatter.new(project, raw, client)
 
             begin
@@ -143,6 +144,7 @@ module Gitlab
       def import_pull_requests
         fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
           pull_requests.each do |raw|
+            raw = raw.to_h
             gh_pull_request = PullRequestFormatter.new(project, raw, client)
 
             next unless gh_pull_request.valid?
@@ -190,10 +192,12 @@ module Gitlab
       end
 
       def apply_labels(issuable, raw)
-        return unless raw.labels.count > 0
+        raw = raw.to_h
 
-        label_ids = raw.labels
-          .map { |attrs| @labels[attrs.name] }
+        return unless raw[:labels].count > 0
+
+        label_ids = raw[:labels]
+          .map { |attrs| @labels[attrs[:name]] }
           .compact
 
         issuable.update_attribute(:label_ids, label_ids)
@@ -226,10 +230,12 @@ module Gitlab
       def create_comments(comments)
         ActiveRecord::Base.no_touching do
           comments.each do |raw|
+            raw = raw.to_h
+
             comment = CommentFormatter.new(project, raw, client)
 
             # GH does not return info about comment's parent, so we guess it by checking its URL!
-            *_, parent, iid = URI(raw.html_url).path.split('/')
+            *_, parent, iid = URI(raw[:html_url]).path.split('/')
 
             issuable = if parent == 'issues'
                          Issue.find_by(project_id: project.id, iid: iid)
@@ -241,7 +247,7 @@ module Gitlab
 
             issuable.notes.create!(comment.attributes)
           rescue StandardError => e
-            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw[:url]), errors: e.message }
           end
         end
       end
@@ -251,7 +257,7 @@ module Gitlab
         last_note_attrs = nil
 
         cut_off_index = comments.find_index do |raw|
-          comment           = CommentFormatter.new(project, raw)
+          comment           = CommentFormatter.new(project, raw.to_h)
           comment_attrs     = comment.attributes
           last_note_attrs ||= last_note.slice(*comment_attrs.keys)
 
@@ -282,7 +288,7 @@ module Gitlab
       def import_releases
         fetch_resources(:releases, repo, per_page: 100) do |releases|
           releases.each do |raw|
-            gh_release = ReleaseFormatter.new(project, raw)
+            gh_release = ReleaseFormatter.new(project, raw.to_h)
             gh_release.create! if gh_release.valid?
           rescue StandardError => e
             errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(gh_release.url), errors: e.message }

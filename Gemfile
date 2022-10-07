@@ -76,7 +76,7 @@ gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'gitlab-omniauth-openid-connect', '~> 0.10.0', require: 'omniauth_openid_connect'
 gem 'omniauth-salesforce', '~> 1.0.5', path: 'vendor/gems/omniauth-salesforce' # See gem README.md
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0'
-gem 'rack-oauth2', '~> 1.21.2'
+gem 'rack-oauth2', '~> 1.21.3'
 gem 'jwt', '~> 2.1.0'
 
 # Kerberos authentication. EE-only
@@ -118,7 +118,7 @@ gem 'net-ldap', '~> 0.16.3'
 # API
 gem 'grape', '~> 1.5.2'
 gem 'grape-entity', '~> 0.10.0'
-gem 'rack-cors', '~> 1.1.0', require: 'rack/cors'
+gem 'rack-cors', '~> 1.1.1', require: 'rack/cors'
 
 # GraphQL API
 gem 'graphql', '~> 1.13.12'
@@ -166,7 +166,7 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.131.0'
+gem 'aws-sdk-core', '~> 3.156.0'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1.114.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
@@ -204,7 +204,7 @@ gem 'diff_match_patch', '~> 0.1.0'
 # Application server
 gem 'rack', '~> 2.2.4'
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
-gem 'rack-timeout', '~> 0.6.0', require: 'rack/timeout/base'
+gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base'
 
 group :puma do
   gem 'puma', '~> 5.6.5', require: false
@@ -309,7 +309,7 @@ gem 'fast_blank'
 gem 'gitlab-chronic', '~> 0.10.5'
 gem 'gitlab_chronic_duration', '~> 0.10.6.2'
 
-gem 'rack-proxy', '~> 0.7.2'
+gem 'rack-proxy', '~> 0.7.4'
 
 gem 'sassc-rails', '~> 2.1.0'
 gem 'autoprefixer-rails', '10.2.5.1'
@@ -324,7 +324,7 @@ gem 'base32', '~> 0.3.0'
 gem 'gitlab-license', '~> 2.2.1'
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 6.6.0'
+gem 'rack-attack', '~> 6.6.1'
 
 # Sentry integration
 gem 'sentry-raven', '~> 3.1'

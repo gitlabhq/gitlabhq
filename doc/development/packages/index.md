@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Development and Architectural documentation for the package registry
 
+- [Debian repository structure](debian_repository.md)
+- [Dependency proxy structure](dependency_proxy.md)
 - [Developing a new format](new_format_development.md)
 - [Settings](settings.md)
 - [Structure / Schema](structure.md)
