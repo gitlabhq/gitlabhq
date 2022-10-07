@@ -434,10 +434,29 @@ The value of the `category` field matches the report type:
 - `sast`
 - `dast`
 
-##### Scanner
+##### Scan
 
-The `scanner` field is an object that embeds a human-readable `name` and a technical `id`.
-The `id` should not collide with any other scanner another integrator would provide.
+The `scan` field is an object that embeds meta information about the scan itself: the `analyzer`
+and `scanner` that performed the scan, the `start_time` and `end_time` the scan executed,
+and `status` of the scan (either "success" or "failure").
+
+Both the `analyzer` and `scanner` fields are objects that embeds a human-readable `name` and a technical `id`.
+The `id` should not collide with any other analyzers or scanners another integrator would provide.
+
+##### Scan Primary Identifiers
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Disabled by default.
+
+The `scan.primary_identifiers` field is an optional field containing an array of
+[primary identifiers](../../user/application_security/terminology/index.md#primary-identifier)).
+This is an exhaustive list of all rulesets for which the analyzer performed the scan.
+
+Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may be empty, this optional field
+should contain the complete list of potential identifiers in order to inform the Rails application of which
+rules were executed.
+
+When populated, the Rails application will automatically resolve previously detected vulnerabilities as no
+longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description
 

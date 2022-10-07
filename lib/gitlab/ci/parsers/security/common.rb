@@ -200,7 +200,22 @@ module Gitlab
                 external_id: scanner_data['id'],
                 name: scanner_data['name'],
                 vendor: scanner_data.dig('vendor', 'name'),
-                version: scanner_data.dig('version')))
+                version: scanner_data.dig('version'),
+                primary_identifiers: create_scan_primary_identifiers))
+          end
+
+          # TODO: primary_identifiers should be initialized on the
+          # scan itself but we do not currently parse scans through `MergeReportsService`
+          def create_scan_primary_identifiers
+            return unless scan_data.is_a?(Hash) && scan_data.dig('primary_identifiers')
+
+            scan_data.dig('primary_identifiers').map do |identifier|
+              ::Gitlab::Ci::Reports::Security::Identifier.new(
+                external_type: identifier['type'],
+                external_id: identifier['value'],
+                name: identifier['name'],
+                url: identifier['url'])
+            end
           end
 
           def create_identifiers(identifiers)
