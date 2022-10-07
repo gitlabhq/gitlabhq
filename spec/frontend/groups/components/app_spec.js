@@ -396,7 +396,7 @@ describe('AppComponent', () => {
       `(
         'when `action` is $action, `groups` is $groups, `fromSearch` is $fromSearch, and `renderEmptyState` is $renderEmptyState',
         ({ action, groups, fromSearch, renderEmptyState, expected }) => {
-          it(expected ? 'renders empty state' : 'does not render empty state', async () => {
+          it(`${expected ? 'renders' : 'does not render'} empty state`, async () => {
             createShallowComponent({
               propsData: { action, renderEmptyState },
             });

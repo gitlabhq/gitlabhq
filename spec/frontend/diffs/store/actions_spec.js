@@ -175,31 +175,6 @@ describe('DiffsStoreActions', () => {
         [{ type: 'startRenderDiffsQueue' }, { type: 'startRenderDiffsQueue' }],
       );
     });
-
-    it.each`
-      viewStyle     | otherView
-      ${'inline'}   | ${'parallel'}
-      ${'parallel'} | ${'inline'}
-    `(
-      'should make a request with the view parameter "$viewStyle" when the batchEndpoint already contains "$otherView"',
-      ({ viewStyle, otherView }) => {
-        const endpointBatch = '/fetch/diffs_batch';
-
-        diffActions
-          .fetchDiffFilesBatch({
-            commit: () => {},
-            state: {
-              endpointBatch: `${endpointBatch}?view=${otherView}`,
-              diffViewType: viewStyle,
-            },
-          })
-          .then(() => {
-            expect(mock.history.get[0].url).toContain(`view=${viewStyle}`);
-            expect(mock.history.get[0].url).not.toContain(`view=${otherView}`);
-          })
-          .catch(() => {});
-      },
-    );
   });
 
   describe('fetchDiffFilesMeta', () => {

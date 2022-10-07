@@ -61,6 +61,7 @@ Object.assign(global, {
 beforeEach(() => {
   // make sure that each test actually tests something
   // see https://jestjs.io/docs/en/expect#expecthasassertions
+  // eslint-disable-next-line jest/no-standalone-expect
   expect.hasAssertions();
 
   // Reset the mocked window.location. This ensures tests don't interfere with

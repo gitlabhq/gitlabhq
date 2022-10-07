@@ -121,6 +121,7 @@ describe('diffs third party interoperability', () => {
 
       vm = startDiffsApp();
 
+      // eslint-disable-next-line jest/no-standalone-expect
       await waitFor(() => expect(hasLines(rowSelector)).toBe(true));
     });
 

@@ -317,7 +317,7 @@ describe('Release edit/new getters', () => {
       { milestones: ['release.milestone[0].title'] },
     ],
   ])('releaseUpdateMutatationVariables', (description, state, expectedVariables) => {
-    it(description, () => {
+    it(`${description}`, () => {
       const expectedVariablesObject = { input: expect.objectContaining(expectedVariables) };
 
       const actualVariables = getters.releaseUpdateMutatationVariables(state, {

@@ -62,7 +62,7 @@ describe('WorkItemDueDate component', () => {
             createComponent({ canUpdate: true, startDate });
           });
 
-          it(exists ? 'renders' : 'does not render', () => {
+          it(`${exists ? 'renders' : 'does not render'}`, () => {
             expect(findStartDateButton().exists()).toBe(exists);
           });
         });
@@ -172,7 +172,7 @@ describe('WorkItemDueDate component', () => {
             createComponent({ canUpdate: true, dueDate });
           });
 
-          it(exists ? 'renders' : 'does not render', () => {
+          it(`${exists ? 'renders' : 'does not render'}`, () => {
             expect(findDueDateButton().exists()).toBe(exists);
           });
         });

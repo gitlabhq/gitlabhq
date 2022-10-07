@@ -238,7 +238,7 @@ describe('NewBranchForm', () => {
         scenario                 | mutation                              | alertTitle                          | alertText
         ${'with errors-as-data'} | ${mockCreateBranchMutationWithErrors} | ${CREATE_BRANCH_ERROR_WITH_CONTEXT} | ${mockCreateBranchMutationResponseWithErrors.data.createBranch.errors[0]}
         ${'top-level error'}     | ${mockCreateBranchMutationFailed}     | ${''}                               | ${CREATE_BRANCH_ERROR_GENERIC}
-      `('', ({ mutation, alertTitle, alertText }) => {
+      `('given $scenario', ({ mutation, alertTitle, alertText }) => {
         beforeEach(async () => {
           createComponent({
             mockApollo: createMockApolloProvider({

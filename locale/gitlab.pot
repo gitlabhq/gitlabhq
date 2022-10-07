@@ -41034,6 +41034,27 @@ msgstr ""
 msgid "This epic already has the maximum number of child epics."
 msgstr ""
 
+msgid "This epic cannot be added. An epic cannot be added to itself."
+msgstr ""
+
+msgid "This epic cannot be added. An epic cannot belong to an ancestor group of its parent epic."
+msgstr ""
+
+msgid "This epic cannot be added. An epic must belong to the same group or subgroup as its parent epic."
+msgstr ""
+
+msgid "This epic cannot be added. It is already an ancestor of the parent epic."
+msgstr ""
+
+msgid "This epic cannot be added. It is already assigned to the parent epic."
+msgstr ""
+
+msgid "This epic cannot be added. One or more epics would exceed the maximum depth (%{max_depth}) from its most distant ancestor."
+msgstr ""
+
+msgid "This epic cannot be added. You don't have access to perform this action."
+msgstr ""
+
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 

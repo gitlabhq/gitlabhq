@@ -84,7 +84,7 @@ export const describeMarkdownProcessing = (description, markdownYamlPath) => {
         return;
       }
 
-      it(exampleName, async () => {
+      it(`${exampleName}`, async () => {
         await testSerializesHtmlToMarkdownForElement(example);
       });
     });

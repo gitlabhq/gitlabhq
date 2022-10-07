@@ -58,7 +58,7 @@ describe('Harbor tag list row', () => {
       expect(findByTestId('name').text()).toBe(harborTagsList[0].name);
     });
 
-    describe(' clipboard button', () => {
+    describe('clipboard button', () => {
       it('exists', () => {
         expect(findClipboardButton().exists()).toBe(true);
       });

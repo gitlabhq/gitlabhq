@@ -304,12 +304,12 @@ describe('AlertsSettingsForm', () => {
     });
 
     describe.each`
-      payload               | resetPayloadAndMappingConfirmed | disabled
-      ${validSamplePayload} | ${true}                         | ${undefined}
-      ${emptySamplePayload} | ${true}                         | ${undefined}
-      ${validSamplePayload} | ${false}                        | ${'disabled'}
-      ${emptySamplePayload} | ${false}                        | ${undefined}
-    `('', ({ payload, resetPayloadAndMappingConfirmed, disabled }) => {
+      context                                      | payload               | resetPayloadAndMappingConfirmed | disabled
+      ${'valid payload, confirmed and enabled'}    | ${validSamplePayload} | ${true}                         | ${undefined}
+      ${'empty payload, confirmed and enabled'}    | ${emptySamplePayload} | ${true}                         | ${undefined}
+      ${'valid payload, unconfirmed and disabled'} | ${validSamplePayload} | ${false}                        | ${'disabled'}
+      ${'empty payload, unconfirmed and enabled'}  | ${emptySamplePayload} | ${false}                        | ${undefined}
+    `('given $context', ({ payload, resetPayloadAndMappingConfirmed, disabled }) => {
       const payloadResetMsg = resetPayloadAndMappingConfirmed
         ? 'was confirmed'
         : 'was not confirmed';
@@ -333,12 +333,12 @@ describe('AlertsSettingsForm', () => {
 
     describe('action buttons for sample payload', () => {
       describe.each`
-        resetPayloadAndMappingConfirmed | payloadExample        | caption
-        ${false}                        | ${validSamplePayload} | ${'Edit payload'}
-        ${true}                         | ${emptySamplePayload} | ${'Parse payload fields'}
-        ${true}                         | ${validSamplePayload} | ${'Parse payload fields'}
-        ${false}                        | ${emptySamplePayload} | ${'Parse payload fields'}
-      `('', ({ resetPayloadAndMappingConfirmed, payloadExample, caption }) => {
+        context                         | resetPayloadAndMappingConfirmed | payloadExample        | caption
+        ${'valid payload, unconfirmed'} | ${false}                        | ${validSamplePayload} | ${'Edit payload'}
+        ${'empty payload, confirmed'}   | ${true}                         | ${emptySamplePayload} | ${'Parse payload fields'}
+        ${'valid payload, confirmed'}   | ${true}                         | ${validSamplePayload} | ${'Parse payload fields'}
+        ${'empty payload, unconfirmed'} | ${false}                        | ${emptySamplePayload} | ${'Parse payload fields'}
+      `('given $context', ({ resetPayloadAndMappingConfirmed, payloadExample, caption }) => {
         const samplePayloadMsg = payloadExample ? 'was provided' : 'was not provided';
         const payloadResetMsg = resetPayloadAndMappingConfirmed
           ? 'was confirmed'
@@ -402,24 +402,27 @@ describe('AlertsSettingsForm', () => {
       ${true}             | ${true}           | ${2}              | ${false}
       ${true}             | ${false}          | ${1}              | ${false}
       ${false}            | ${true}           | ${1}              | ${false}
-    `('', ({ alertFieldsProvided, multiIntegrations, integrationOption, visible }) => {
-      const visibleMsg = visible ? 'rendered' : 'not rendered';
-      const alertFieldsMsg = alertFieldsProvided ? 'provided' : 'not provided';
-      const integrationType = integrationOption === 1 ? typeSet.http : typeSet.prometheus;
-      const multiIntegrationsEnabled = multiIntegrations ? 'enabled' : 'not enabled';
+    `(
+      'given alertFieldsProvided: $alertFieldsProvided, multiIntegrations: $multiIntegrations, integrationOption: $integrationOption, visible: $visible',
+      ({ alertFieldsProvided, multiIntegrations, integrationOption, visible }) => {
+        const visibleMsg = visible ? 'rendered' : 'not rendered';
+        const alertFieldsMsg = alertFieldsProvided ? 'provided' : 'not provided';
+        const integrationType = integrationOption === 1 ? typeSet.http : typeSet.prometheus;
+        const multiIntegrationsEnabled = multiIntegrations ? 'enabled' : 'not enabled';
 
-      it(`is ${visibleMsg} when multiIntegrations are ${multiIntegrationsEnabled}, integration type is ${integrationType} and alert fields are ${alertFieldsMsg}`, async () => {
-        createComponent({
-          multiIntegrations,
-          props: {
-            alertFields: alertFieldsProvided ? alertFields : [],
-          },
+        it(`is ${visibleMsg} when multiIntegrations are ${multiIntegrationsEnabled}, integration type is ${integrationType} and alert fields are ${alertFieldsMsg}`, async () => {
+          createComponent({
+            multiIntegrations,
+            props: {
+              alertFields: alertFieldsProvided ? alertFields : [],
+            },
+          });
+          await selectOptionAtIndex(integrationOption);
+
+          expect(findMappingBuilder().exists()).toBe(visible);
         });
-        await selectOptionAtIndex(integrationOption);
-
-        expect(findMappingBuilder().exists()).toBe(visible);
-      });
-    });
+      },
+    );
   });
 
   describe('Form validation', () => {
