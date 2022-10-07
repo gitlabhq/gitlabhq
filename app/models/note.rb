@@ -22,6 +22,7 @@ class Note < ApplicationRecord
   include ThrottledTouch
   include FromUnion
   include Sortable
+  include EachBatch
 
   ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/.freeze
 

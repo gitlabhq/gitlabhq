@@ -28,7 +28,10 @@ module Gitlab
 
         # For future issue/mr/milestone/etc attachments importers
         def importers
-          [::Gitlab::GithubImport::Importer::ReleasesAttachmentsImporter]
+          [
+            ::Gitlab::GithubImport::Importer::Attachments::ReleasesImporter,
+            ::Gitlab::GithubImport::Importer::Attachments::NotesImporter
+          ]
         end
 
         def start_importer(project, importer, client)

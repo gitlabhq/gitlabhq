@@ -127,13 +127,15 @@ comments.
 
 ### 10. Stage::ImportAttachmentsWorker
 
-This worker imports release notes attachments that are linked inside Markdown.
-For every release of the project, we schedule a job of
-`Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every comment.
+This worker imports note attachments that are linked inside Markdown.
+For each entity with Markdown text in the project, we schedule a job of:
+
+- `Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every release.
+- `Gitlab::GithubImport::ImportNoteAttachmentsWorker` for every note.
 
 Each job:
 
-1. Iterates over all attachment links inside of a specific release note.
+1. Iterates over all attachment links inside of a specific record.
 1. Downloads the attachment.
 1. Replaces the old link with a newly-generated link to GitLab.
 

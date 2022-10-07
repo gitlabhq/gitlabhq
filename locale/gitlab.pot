@@ -45011,6 +45011,9 @@ msgstr ""
 msgid "Webhooks|Deployment events"
 msgstr ""
 
+msgid "Webhooks|Do not show sensitive data such as tokens in the UI."
+msgstr ""
+
 msgid "Webhooks|Enable SSL verification"
 msgstr ""
 
@@ -45026,10 +45029,16 @@ msgstr ""
 msgid "Webhooks|Go to webhooks"
 msgstr ""
 
+msgid "Webhooks|How it looks in the UI"
+msgstr ""
+
 msgid "Webhooks|Issues events"
 msgstr ""
 
 msgid "Webhooks|Job events"
+msgstr ""
+
+msgid "Webhooks|Mask portions of URL"
 msgstr ""
 
 msgid "Webhooks|Member events"
@@ -45056,6 +45065,12 @@ msgstr ""
 msgid "Webhooks|Secret token"
 msgstr ""
 
+msgid "Webhooks|Sensitive portion of URL"
+msgstr ""
+
+msgid "Webhooks|Show full URL"
+msgstr ""
+
 msgid "Webhooks|Subgroup events"
 msgstr ""
 
@@ -45078,6 +45093,9 @@ msgid "Webhooks|URL"
 msgstr ""
 
 msgid "Webhooks|URL must be percent-encoded if it contains one or more special characters."
+msgstr ""
+
+msgid "Webhooks|URL preview"
 msgstr ""
 
 msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token HTTP%{code_end} header."

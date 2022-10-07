@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker do
+RSpec.describe Gitlab::GithubImport::Attachments::ImportReleaseWorker do
   subject(:worker) { described_class.new }
 
   describe '#import' do
@@ -15,10 +15,11 @@ RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker do
     let(:client) { instance_double('Gitlab::GithubImport::Client') }
     let(:importer) { instance_double('Gitlab::GithubImport::Importer::NoteAttachmentsImporter') }
 
-    let(:release_hash) do
+    let(:note_hash) do
       {
-        'release_db_id' => rand(100),
-        'description' => <<-TEXT
+        'record_db_id' => rand(100),
+        'record_type' => 'Release',
+        'text' => <<-TEXT
           Some text...
 
           ![special-image](https://user-images.githubusercontent.com...)
@@ -26,7 +27,7 @@ RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker do
       }
     end
 
-    it 'imports an issue event' do
+    it 'imports an release attachments' do
       expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter)
         .to receive(:new)
         .with(
@@ -42,7 +43,7 @@ RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker do
         .to receive(:increment)
         .and_call_original
 
-      worker.import(project, client, release_hash)
+      worker.import(project, client, note_hash)
     end
   end
 end

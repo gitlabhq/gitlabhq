@@ -178,6 +178,11 @@ The following items of a project are imported:
 - Milestones.
 - Labels.
 - Release note descriptions.
+- Attachments for:
+  - Release notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4.
+  - Comments and notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+
+  NOTE: All attachment importers work under `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
 - Release note attachments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4 with `github_importer_attachments_import`
   [feature flag](../../../administration/feature_flags.md) disabled by default.
 - Pull request review comments.

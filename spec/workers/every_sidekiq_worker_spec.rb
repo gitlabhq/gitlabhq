@@ -258,6 +258,8 @@ RSpec.describe 'Every Sidekiq worker' do
         'GitGarbageCollectWorker' => false,
         'Gitlab::GithubImport::AdvanceStageWorker' => 3,
         'Gitlab::GithubImport::ImportReleaseAttachmentsWorker' => 5,
+        'Gitlab::GithubImport::Attachments::ImportReleaseWorker' => 5,
+        'Gitlab::GithubImport::Attachments::ImportNoteWorker' => 5,
         'Gitlab::GithubImport::ImportDiffNoteWorker' => 5,
         'Gitlab::GithubImport::ImportIssueWorker' => 5,
         'Gitlab::GithubImport::ImportIssueEventWorker' => 5,

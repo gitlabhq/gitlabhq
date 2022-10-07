@@ -160,6 +160,13 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
 
       expect(project.notes.take).to be_valid
     end
+
+    # rubocop:disable RSpec/AnyInstanceOf
+    it 'skips markdown field cache callback' do
+      expect_any_instance_of(Note).not_to receive(:refresh_markdown_cache)
+      importer.execute
+    end
+    # rubocop:enable RSpec/AnyInstanceOf
   end
 
   describe '#find_noteable_id' do

@@ -12,6 +12,9 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
+        # Note: if you're going to replace `legacy_bulk_insert` with something that triggers callback
+        # to generate HTML version - you also need to regenerate it in
+        # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
         def execute
           bulk_insert(Release, build_releases)
         end

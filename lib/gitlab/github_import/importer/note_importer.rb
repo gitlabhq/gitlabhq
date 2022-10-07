@@ -36,6 +36,9 @@ module Gitlab
           # We're using bulk_insert here so we can bypass any validations and
           # callbacks. Running these would result in a lot of unnecessary SQL
           # queries being executed when importing large projects.
+          # Note: if you're going to replace `legacy_bulk_insert` with something that trigger callback
+          # to generate HTML version - you also need to regenerate it in
+          # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
           ApplicationRecord.legacy_bulk_insert(Note.table_name, [attributes]) # rubocop:disable Gitlab/BulkInsert
         rescue ActiveRecord::InvalidForeignKey
           # It's possible the project and the issue have been deleted since
