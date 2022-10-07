@@ -97,8 +97,6 @@ class NotificationRecipient
   end
 
   def email_blocked?
-    return false if Feature.disabled?(:block_emails_with_failures)
-
     recipient_email = user.notification_email_for(@group)
 
     Gitlab::ApplicationRateLimiter.peek(:permanent_email_failure, scope: recipient_email) ||
