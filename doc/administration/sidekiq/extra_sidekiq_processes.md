@@ -75,6 +75,9 @@ To start multiple processes:
    ]
    ```
 
+   `*` which matches all workers. 
+   As a result, the wildcard query must stay at the end of the list or the rules after it are ignored.
+
    `*` cannot be combined with concrete queue names - `*, mailers`
    just handles the `mailers` queue.
 

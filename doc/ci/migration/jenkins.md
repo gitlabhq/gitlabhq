@@ -66,6 +66,9 @@ of transition, by letting you delay the migration of less urgent pipelines for a
 
 If you are interested in helping GitLab test the wrapper, join our [public testing issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215675) for instructions and to provide your feedback.
 
+NOTE:
+If you have a paid GitLab subscription, note that the JenkinsFile Wrapper is not packaged as part of GitLab, and falls outside of the scope of support. For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support.html).
+
 ## Important product differences
 
 There are some high level differences between the products worth mentioning:

@@ -122,7 +122,7 @@ to your instance and then upgrade it for any relevant features you're using.
   - [Convert from GitLab Community Edition to Enterprise Edition](package/convert_to_ee.md)
 - What version should you upgrade to:
   - [Determine what upgrade path](index.md#upgrade-paths) to follow.
-  - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions).
+  - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions) for both the current version and the destination version.
   - Account for any [version-specific changes](package/index.md#version-specific-changes).
   - Check the [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
 - Due to background migrations, plan to pause before any further upgrades.
