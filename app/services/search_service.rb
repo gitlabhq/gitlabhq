@@ -102,6 +102,16 @@ class SearchService
       end
   end
 
+  def show_elasticsearch_tabs?
+    # overridden in EE
+    false
+  end
+
+  def show_epics?
+    # overridden in EE
+    false
+  end
+
   private
 
   def page
