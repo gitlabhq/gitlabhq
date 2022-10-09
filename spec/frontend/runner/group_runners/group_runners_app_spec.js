@@ -37,6 +37,7 @@ import {
   GROUP_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
+  PARAM_KEY_TAG,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
@@ -268,6 +269,10 @@ describe('GroupRunnersApp', () => {
       expect.objectContaining({
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
+      }),
+      expect.objectContaining({
+        type: PARAM_KEY_TAG,
+        suggestionsDisabled: true,
       }),
       upgradeStatusTokenConfig,
     ]);

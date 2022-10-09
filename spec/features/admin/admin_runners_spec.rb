@@ -351,14 +351,15 @@ RSpec.describe "Admin Runners" do
       end
 
       describe 'filter by tag' do
-        before_all do
-          create(:ci_runner, :instance, description: 'runner-blue', tag_list: ['blue'])
-          create(:ci_runner, :instance, description: 'runner-red', tag_list: ['red'])
+        let_it_be(:runner_1) { create(:ci_runner, :instance, description: 'runner-blue', tag_list: ['blue']) }
+        let_it_be(:runner_2) { create(:ci_runner, :instance, description: 'runner-2-blue', tag_list: ['blue']) }
+        let_it_be(:runner_3) { create(:ci_runner, :instance, description: 'runner-red', tag_list: ['red']) }
+
+        before do
+          visit admin_runners_path
         end
 
         it 'shows tags suggestions' do
-          visit admin_runners_path
-
           open_filtered_search_suggestions('Tags')
 
           page.within(search_bar_selector) do
@@ -367,23 +368,25 @@ RSpec.describe "Admin Runners" do
           end
         end
 
-        it 'shows correct runner when tag matches' do
-          visit admin_runners_path
+        it_behaves_like 'filters by tag' do
+          let(:tag) { 'blue' }
+          let(:found_runner) { runner_1.description }
+          let(:missing_runner) { runner_3.description }
+        end
 
-          expect(page).to have_content 'runner-blue'
-          expect(page).to have_content 'runner-red'
+        context 'when tag does not match' do
+          before do
+            input_filtered_search_filter_is_only('Tags', 'green')
+          end
 
-          input_filtered_search_filter_is_only('Tags', 'blue')
+          it_behaves_like 'shows no runners found'
 
-          expect(page).to have_content 'runner-blue'
-          expect(page).not_to have_content 'runner-red'
+          it 'shows no runner' do
+            expect(page).not_to have_content 'runner-blue'
+          end
         end
 
         it 'shows correct runner when tag is selected and search term is entered' do
-          create(:ci_runner, :instance, description: 'runner-2-blue', tag_list: ['blue'])
-
-          visit admin_runners_path
-
           input_filtered_search_filter_is_only('Tags', 'blue')
 
           expect(page).to have_content 'runner-blue'
@@ -395,19 +398,6 @@ RSpec.describe "Admin Runners" do
           expect(page).to have_content 'runner-2-blue'
           expect(page).not_to have_content 'runner-blue'
           expect(page).not_to have_content 'runner-red'
-        end
-
-        context 'when tag does not match' do
-          before do
-            visit admin_runners_path
-            input_filtered_search_filter_is_only('Tags', 'green')
-          end
-
-          it_behaves_like 'shows no runners found'
-
-          it 'shows no runner' do
-            expect(page).not_to have_content 'runner-blue'
-          end
         end
       end
 

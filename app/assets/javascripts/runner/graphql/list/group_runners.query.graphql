@@ -10,6 +10,7 @@ query getGroupRunners(
   $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType
+  $tagList: [String!]
   $search: String
   $sort: CiRunnerSort
 ) {
@@ -24,6 +25,7 @@ query getGroupRunners(
       paused: $paused
       status: $status
       type: $type
+      tagList: $tagList
       search: $search
       sort: $sort
     ) {

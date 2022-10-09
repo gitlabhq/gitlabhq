@@ -77,7 +77,7 @@ describe('TagToken', () => {
   const findToken = () => wrapper.findComponent(GlToken);
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mock = new MockAdapter(axios);
 
     mock.onGet(TAG_SUGGESTIONS_PATH, { params: { search: '' } }).reply(200, mockTags);
@@ -86,9 +86,6 @@ describe('TagToken', () => {
       .reply(200, mockTagsFiltered);
 
     getRecentlyUsedSuggestions.mockReturnValue([]);
-
-    createComponent();
-    await waitForPromises();
   });
 
   afterEach(() => {
@@ -97,11 +94,17 @@ describe('TagToken', () => {
   });
 
   describe('when the tags token is displayed', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('requests tags suggestions', () => {
       expect(mock.history.get[0].params).toEqual({ search: '' });
     });
 
-    it('displays tags suggestions', () => {
+    it('displays tags suggestions', async () => {
+      await waitForPromises();
+
       mockTags.forEach(({ name }, i) => {
         expect(findGlFilteredSearchSuggestions().at(i).text()).toBe(name);
       });
@@ -132,13 +135,13 @@ describe('TagToken', () => {
   });
 
   describe('when the users filters suggestions', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
+      createComponent();
+
       findGlFilteredSearchToken().vm.$emit('input', { data: mockSearchTerm });
     });
 
-    it('requests filtered tags suggestions', async () => {
-      await waitForPromises();
-
+    it('requests filtered tags suggestions', () => {
       expect(mock.history.get[1].params).toEqual({ search: mockSearchTerm });
     });
 
@@ -166,7 +169,7 @@ describe('TagToken', () => {
       await waitForPromises();
     });
 
-    it('error is shown', async () => {
+    it('error is shown', () => {
       expect(createAlert).toHaveBeenCalledTimes(1);
       expect(createAlert).toHaveBeenCalledWith({ message: expect.any(String) });
     });
@@ -180,8 +183,26 @@ describe('TagToken', () => {
       await waitForPromises();
     });
 
-    it('selected tag is displayed', async () => {
+    it('selected tag is displayed', () => {
       expect(findToken().exists()).toBe(true);
+    });
+  });
+
+  describe('when suggestions are disabled', () => {
+    beforeEach(async () => {
+      createComponent({
+        config: {
+          ...mockTagTokenConfig,
+          suggestionsDisabled: true,
+        },
+      });
+
+      await waitForPromises();
+    });
+
+    it('displays no suggestions', () => {
+      expect(findGlFilteredSearchSuggestions()).toHaveLength(0);
+      expect(mock.history.get).toHaveLength(0);
     });
   });
 });

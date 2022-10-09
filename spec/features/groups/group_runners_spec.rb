@@ -189,6 +189,21 @@ RSpec.describe "Group Runners" do
         end
       end
     end
+
+    describe 'filter by tag' do
+      let!(:runner_1) { create(:ci_runner, :group, groups: [group], description: 'runner-blue', tag_list: ['blue']) }
+      let!(:runner_2) { create(:ci_runner, :group, groups: [group], description: 'runner-red', tag_list: ['red']) }
+
+      before do
+        visit group_runners_path(group)
+      end
+
+      it_behaves_like 'filters by tag' do
+        let(:tag) { 'blue' }
+        let(:found_runner) { runner_1.description }
+        let(:missing_runner) { runner_2.description }
+      end
+    end
   end
 
   describe "Group runner show page", :js do

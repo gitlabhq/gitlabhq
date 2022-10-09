@@ -27,6 +27,7 @@ import RunnerMembershipToggle from '../components/runner_membership_toggle.vue';
 
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
+import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import {
   GROUP_FILTERED_SEARCH_NAMESPACE,
   GROUP_TYPE,
@@ -131,11 +132,19 @@ export default {
     noRunnersFound() {
       return !this.runnersLoading && !this.runners.items.length;
     },
-    searchTokens() {
-      return [pausedTokenConfig, statusTokenConfig, upgradeStatusTokenConfig];
-    },
     filteredSearchNamespace() {
       return `${GROUP_FILTERED_SEARCH_NAMESPACE}/${this.groupFullPath}`;
+    },
+    searchTokens() {
+      return [
+        pausedTokenConfig,
+        statusTokenConfig,
+        {
+          ...tagTokenConfig,
+          suggestionsDisabled: true,
+        },
+        upgradeStatusTokenConfig,
+      ];
     },
     isSearchFiltered() {
       return isSearchFiltered(this.search);
