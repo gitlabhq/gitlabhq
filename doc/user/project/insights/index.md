@@ -34,7 +34,7 @@ Prerequisites:
 
 - Depending on your project configuration, you must have at least the Developer role.
 
-Project insights are configured with the [`.gitlab/insights.yml`](#insights-configuration-file) file in the project. If a project doesn't have a configuration file, it uses the [group configuration](../../group/insights/index.md#configure-your-insights).
+Project insights are configured with the [`.gitlab/insights.yml`](#insights-configuration-file) file in the project. If a project doesn't have a configuration file, it uses the [group configuration](../../group/insights/index.md#configure-group-insights).
 
 The `.gitlab/insights.yml` file is a YAML file where you define:
 
@@ -52,7 +52,7 @@ To configure project insights, either:
   1. Select **Commit changes**.
 
 After you create the configuration file, you can also
-[use it for the project's group](../../group/insights/index.md#configure-your-insights).
+[use it for the project's group](../../group/insights/index.md#configure-group-insights).
 
 ## Insights configuration file
 
@@ -396,7 +396,7 @@ Use `query.environment_tiers` to define an array of environments to include the 
 
 Use `projects` to limit where issuables are queried from:
 
-- If `.gitlab/insights.yml` is used for a [group's insights](../../group/insights/index.md#configure-your-insights), use `projects` to define the projects from which to query issuables. By default, all projects under the group are used.
+- If `.gitlab/insights.yml` is used for a [group's insights](../../group/insights/index.md#configure-group-insights), use `projects` to define the projects from which to query issuables. By default, all projects under the group are used.
 - If `.gitlab/insights.yml` is used for a project's insights, specifying other projects does not yield results. By default, the project is used.
 
 #### `projects.only`

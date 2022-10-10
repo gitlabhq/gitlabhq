@@ -148,7 +148,9 @@ RSpec.describe Gitlab::GithubImport::Client do
         .to receive(:branch_protection).with('org/repo', 'bar')
       expect(client).to receive(:with_rate_limit).and_yield
 
-      client.branch_protection('org/repo', 'bar')
+      branch_protection = client.branch_protection('org/repo', 'bar')
+
+      expect(branch_protection).to be_a(Hash)
     end
   end
 

@@ -31683,6 +31683,9 @@ msgstr ""
 msgid "ProjectSettings|Note: The container registry is always visible when a project is public and the container registry is set to '%{access_level_description}'"
 msgstr ""
 
+msgid "ProjectSettings|Only commits that include a %{code_block_start}Signed-off-by:%{code_block_end} element can be pushed to this repository."
+msgstr ""
+
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
 msgstr ""
 
@@ -32812,6 +32815,9 @@ msgid "PushRules|Prohibited file names"
 msgstr ""
 
 msgid "PushRules|Reject any files likely to contain secrets. %{secret_files_link_start}What secret files are rejected?%{secret_files_link_end}"
+msgstr ""
+
+msgid "PushRules|Reject commits that aren't DCO certified"
 msgstr ""
 
 msgid "PushRules|Reject expression in commit messages"

@@ -108,7 +108,7 @@ module Gitlab
       end
 
       def branch_protection(repo_name, branch_name)
-        with_rate_limit { octokit.branch_protection(repo_name, branch_name) }
+        with_rate_limit { octokit.branch_protection(repo_name, branch_name).to_h }
       end
 
       # Fetches data from the GitHub API and yields a Page object for every page

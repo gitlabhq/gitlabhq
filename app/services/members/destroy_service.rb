@@ -2,6 +2,8 @@
 
 module Members
   class DestroyService < Members::BaseService
+    include Gitlab::ExclusiveLeaseHelpers
+
     def execute(member, skip_authorization: false, skip_subresources: false, unassign_issuables: false, destroy_bot: false)
       unless skip_authorization
         raise Gitlab::Access::AccessDeniedError unless authorized?(member, destroy_bot)
@@ -11,13 +13,26 @@ module Members
       end
 
       @skip_auth = skip_authorization
+      last_owner = true
 
-      return member if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
+      in_lock("delete_members:#{member.source.class}:#{member.source.id}") do
+        break if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
-      member.destroy
+        last_owner = false
+        member.destroy
+        member.user&.invalidate_cache_counts
+      end
 
-      member.user&.invalidate_cache_counts
+      unless last_owner
+        delete_member_associations(member, skip_subresources, unassign_issuables)
+      end
 
+      member
+    end
+
+    private
+
+    def delete_member_associations(member, skip_subresources, unassign_issuables)
       if member.request? && member.user != current_user
         notification_service.decline_access_request(member)
       end
@@ -28,11 +43,7 @@ module Members
       enqueue_unassign_issuables(member) if unassign_issuables
 
       after_execute(member: member)
-
-      member
     end
-
-    private
 
     def authorized?(member, destroy_bot)
       return can_destroy_bot_member?(member) if destroy_bot

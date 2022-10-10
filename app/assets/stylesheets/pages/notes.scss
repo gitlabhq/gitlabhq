@@ -442,6 +442,18 @@ $system-note-svg-size: 1rem;
   }
 }
 
+.card .notes {
+  .system-note {
+    margin: 0;
+    padding: 0;
+  }
+
+  .timeline-icon {
+    margin: 8px 0 0 14px;
+  }
+}
+
+
 // Diff code in discussion view
 .discussion-body .diff-file {
   .file-title {
@@ -1082,6 +1094,16 @@ $system-note-svg-size: 1rem;
           border: 0;
         }
       }
+    }
+  }
+
+  .draft-note-component .draft-note.timeline-entry {
+    .timeline-content:not(.flash-container) {
+      padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+    }
+
+    .timeline-avatar {
+      margin: $gl-padding-8 0 0 $gl-padding;
     }
   }
 

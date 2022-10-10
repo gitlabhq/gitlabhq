@@ -78,6 +78,15 @@ Use these rules for your commit messages.
   the expression. To allow any commit message, leave empty.
   Uses multiline mode, which can be disabled by using `(?-m)`.
 
+## Reject commits that aren't DCO certified
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
+
+Commits signed with the [Developer Certificate of Origin](https://developercertificate.org/) (DCO)
+certify the contributor wrote, or has the right to submit, the code contributed in that commit.
+You can require all commits to your project to comply with the DCO. This push rule requires a
+`Signed-off-by:` trailer in every commit message, and rejects any commits that lack it.
+
 ## Validate branch names
 
 To validate your branch names, enter a regular expression for **Branch name**.
