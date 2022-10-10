@@ -9,6 +9,7 @@ module QA
           include QA::Page::Settings::Common
 
           view 'app/assets/javascripts/security_configuration/components/app.vue' do
+            element :security_configuration_container
             element :security_configuration_history_link
           end
 
@@ -17,6 +18,7 @@ module QA
             element :sast_status, "`${feature.type}_status`" # rubocop:disable QA/ElementWithPattern
             element :sast_enable_button, "`${feature.type}_enable_button`" # rubocop:disable QA/ElementWithPattern
             element :dependency_scanning_mr_button, "`${feature.type}_mr_button`" # rubocop:disable QA/ElementWithPattern
+            element :license_scanning_status, "`${feature.type}_status`" # rubocop:disable QA/ElementWithPattern
           end
 
           view 'app/assets/javascripts/security_configuration/components/auto_dev_ops_alert.vue' do
@@ -67,6 +69,18 @@ module QA
             end
           end
 
+          def has_license_compliance_status?(status_text)
+            within_element(:license_scanning_status) do
+              has_text?(status_text)
+            end
+          end
+
+          def has_no_license_compliance_status?(status_text)
+            within_element(:license_scanning_status) do
+              has_no_text?(status_text)
+            end
+          end
+
           def has_auto_devops_container?
             has_element?(:autodevops_container)
           end
@@ -78,6 +92,18 @@ module QA
           def has_auto_devops_container_description?
             within_element(:autodevops_container) do
               has_text?('Quickly enable all continuous testing and compliance tools by enabling Auto DevOps')
+            end
+          end
+
+          def go_to_compliance_tab
+            go_to_tab('Compliance')
+          end
+
+          private
+
+          def go_to_tab(name)
+            within_element(:security_configuration_container) do
+              find('.nav-item', text: name).click
             end
           end
         end

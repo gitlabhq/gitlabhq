@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create', :reliable do
-    context 'Content Editor' do
+    describe 'Testing project wiki file upload' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
       let(:page_title) { 'Content Editor Page' }
       let(:heading_text) { 'My New Heading' }
@@ -16,7 +16,8 @@ module QA
         initial_wiki.project.remove_via_api!
       end
 
-      it 'creates a formatted Wiki page with an image uploaded', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347640' do
+      it 'by creating a formatted page with an image uploaded',
+  testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347640' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_new_page)

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Wiki' do
+    describe 'Project Wiki' do
       let(:small_number_of_pages) { 5 }
       let(:large_number_of_pages) { 15 }
       let(:random_page) { "bulk_#{rand(0..4)}" }
@@ -14,8 +14,9 @@ module QA
         Flow::Login.sign_in
       end
 
-      context 'Sidebar' do
-        it 'has all expected links that work', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347814' do
+      context 'with Wiki Sidebar' do
+        it 'has all expected links that work',
+  testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347814' do
           small_wiki.visit!
 
           small_number_of_pages.times do |index|
@@ -34,8 +35,9 @@ module QA
         end
       end
 
-      context 'Page List' do
-        it 'has all expected links that work', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347813' do
+      context 'with Wiki Page List' do
+        it 'has all expected links that work',
+  testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347813' do
           large_wiki.visit!
 
           Page::Project::Wiki::Show.perform(&:click_view_all_pages)

@@ -60,6 +60,10 @@ module Gitlab
             work_item_type_id: issue.work_item_type_id
           }
 
+          Issue.with_project_iid_supply(project) do |supply|
+            attributes[:iid] = supply.next_value
+          end
+
           insert_and_return_id(attributes, project.issues)
         rescue ActiveRecord::InvalidForeignKey
           # It's possible the project has been deleted since scheduling this

@@ -170,6 +170,14 @@ describe('Design overlay component', () => {
     });
 
     it('should call an update active discussion mutation when clicking a note without moving it', async () => {
+      createComponent({
+        notes,
+        dimensions: {
+          width: 400,
+          height: 400,
+        },
+      });
+
       const note = notes[0];
       const { position } = note;
       const mutationVariables = {

@@ -211,7 +211,7 @@ describe('Pipeline Wizard - Commit Page', () => {
       }) => {
         let consoleSpy;
 
-        beforeAll(async () => {
+        beforeEach(async () => {
           createComponent(
             {
               filename,
@@ -246,7 +246,7 @@ describe('Pipeline Wizard - Commit Page', () => {
           await waitForPromises();
         });
 
-        afterAll(() => {
+        afterEach(() => {
           wrapper.destroy();
         });
 

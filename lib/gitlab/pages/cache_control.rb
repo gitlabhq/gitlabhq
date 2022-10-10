@@ -5,6 +5,10 @@ module Gitlab
     class CacheControl
       include Gitlab::Utils::StrongMemoize
 
+      EXPIRE = 12.hours
+      # To avoid delivering expired deployment URL in the cached payload,
+      # use a longer expiration time in the deployment URL
+      DEPLOYMENT_EXPIRATION = (EXPIRE + 12.hours)
       CACHE_KEY_FORMAT = 'pages_domain_for_%{type}_%{id}_%{settings}'
 
       class << self

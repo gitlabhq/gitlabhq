@@ -140,11 +140,12 @@ describe('Vue test utils helpers', () => {
       const text = 'foo bar';
       const options = { selector: 'div' };
       const mockDiv = document.createElement('div');
-      const mockVm = new Vue({ render: (h) => h('div') }).$mount();
+      let mockVm;
 
       let wrapper;
       beforeEach(() => {
         jest.spyOn(vtu, 'createWrapper');
+        mockVm = new Vue({ render: (h) => h('div') }).$mount();
 
         wrapper = extendedWrapper(
           shallowMount({

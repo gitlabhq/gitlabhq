@@ -32,7 +32,9 @@ module Pages
 
       {
         type: 'zip',
-        path: deployment.file.url_or_file_path(expire_at: 1.day.from_now),
+        path: deployment.file.url_or_file_path(
+          expire_at: ::Gitlab::Pages::CacheControl::DEPLOYMENT_EXPIRATION.from_now
+        ),
         global_id: global_id,
         sha256: deployment.file_sha256,
         file_size: deployment.size,

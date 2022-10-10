@@ -1,6 +1,7 @@
 /* Common setup for both unit and integration test environments */
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
+import { enableAutoDestroy } from '@vue/test-utils';
 import 'jquery';
 import Translate from '~/vue_shared/translate';
 import setWindowLocation from './set_window_location_helper';
@@ -11,6 +12,8 @@ import * as customMatchers from './matchers';
 import './dom_shims';
 import './jquery';
 import '~/commons/bootstrap';
+
+enableAutoDestroy(afterEach);
 
 // This module has some fairly decent visual test coverage in it's own repository.
 jest.mock('@gitlab/favicon-overlay');

@@ -1004,7 +1004,7 @@ describe('MrWidgetOptions', () => {
 
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(4);
+        expect(pollRequest).toHaveBeenCalledTimes(2);
       });
     });
 
@@ -1042,7 +1042,7 @@ describe('MrWidgetOptions', () => {
         registerExtension(pollingErrorExtension);
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(4);
+        expect(pollRequest).toHaveBeenCalledTimes(2);
       });
 
       it('captures sentry error and displays error when poll has failed', async () => {

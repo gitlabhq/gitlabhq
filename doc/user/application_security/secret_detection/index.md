@@ -306,6 +306,11 @@ To create a custom configuration, you can use passthrough chains. Passthroughs c
 to build more complex configurations. For more details, see
 [SAST Customize ruleset](../sast/customize_rulesets.md).
 
+Only the following passthrough types are supported by the `secrets` analyzer:
+
+- `file`
+- `raw`
+
 In the `secret-detection-ruleset.toml` file, do one of the following:
 
 - Define a custom ruleset, for example:
