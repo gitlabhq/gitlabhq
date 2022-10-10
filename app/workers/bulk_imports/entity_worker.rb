@@ -15,7 +15,7 @@ module BulkImports
       if stage_running?(entity_id, current_stage)
         logger.info(
           structured_payload(
-            entity_id: entity_id,
+            bulk_import_entity_id: entity_id,
             current_stage: current_stage,
             message: 'Stage running'
           )
@@ -26,7 +26,7 @@ module BulkImports
 
       logger.info(
         structured_payload(
-          entity_id: entity_id,
+          bulk_import_entity_id: entity_id,
           current_stage: current_stage,
           message: 'Stage starting'
         )
@@ -42,13 +42,13 @@ module BulkImports
     rescue StandardError => e
       logger.error(
         structured_payload(
-          entity_id: entity_id,
+          bulk_import_entity_id: entity_id,
           current_stage: current_stage,
           message: e.message
         )
       )
 
-      Gitlab::ErrorTracking.track_exception(e, entity_id: entity_id)
+      Gitlab::ErrorTracking.track_exception(e, bulk_import_entity_id: entity_id)
     end
 
     private

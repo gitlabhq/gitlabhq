@@ -233,8 +233,6 @@ by the `gitlab:artifacts:migrate` Rake task.
 
 To migrate back to local storage:
 
-1. Set both `direct_upload` and `background_upload` to `false` in `gitlab.rb`, under the artifacts object storage settings.
-1. [Reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
 1. Disable object_storage for artifacts in `gitlab.rb`:
    - Set `gitlab_rails['artifacts_object_store_enabled'] = false`.

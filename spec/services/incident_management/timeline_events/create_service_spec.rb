@@ -84,50 +84,6 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
 
         expect(result.action).to eq(IncidentManagement::TimelineEvents::DEFAULT_ACTION)
       end
-    end
-
-    context 'with non_default action' do
-      it_behaves_like 'success response'
-
-      it 'matches the action from arguments', :aggregate_failures do
-        result = execute.payload[:timeline_event]
-
-        expect(result.action).to eq(args[:action])
-      end
-    end
-
-    context 'with editable param' do
-      let(:args) do
-        {
-          note: 'note',
-          occurred_at: Time.current,
-          action: 'new comment',
-          promoted_from_note: comment,
-          editable: editable
-        }
-      end
-
-      context 'when editable is true' do
-        let(:editable) { true }
-
-        it_behaves_like 'success response'
-      end
-
-      context 'when editable is false' do
-        let(:editable) { false }
-
-        it_behaves_like 'success response'
-      end
-    end
-
-    it 'successfully creates a database record', :aggregate_failures do
-      expect { execute }.to change { ::IncidentManagement::TimelineEvent.count }.by(1)
-    end
-
-    context 'when incident_timeline feature flag is enabled' do
-      before do
-        stub_feature_flags(incident_timeline: project)
-      end
 
       it 'creates a system note' do
         expect { execute }.to change { incident.notes.reload.count }.by(1)
@@ -168,14 +124,42 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       end
     end
 
-    context 'when incident_timeline feature flag is disabled' do
-      before do
-        stub_feature_flags(incident_timeline: false)
+    context 'with non_default action' do
+      it_behaves_like 'success response'
+
+      it 'matches the action from arguments', :aggregate_failures do
+        result = execute.payload[:timeline_event]
+
+        expect(result.action).to eq(args[:action])
+      end
+    end
+
+    context 'with editable param' do
+      let(:args) do
+        {
+          note: 'note',
+          occurred_at: Time.current,
+          action: 'new comment',
+          promoted_from_note: comment,
+          editable: editable
+        }
       end
 
-      it 'does not create a system note' do
-        expect { execute }.not_to change { incident.notes.reload.count }
+      context 'when editable is true' do
+        let(:editable) { true }
+
+        it_behaves_like 'success response'
       end
+
+      context 'when editable is false' do
+        let(:editable) { false }
+
+        it_behaves_like 'success response'
+      end
+    end
+
+    it 'successfully creates a database record', :aggregate_failures do
+      expect { execute }.to change { ::IncidentManagement::TimelineEvent.count }.by(1)
     end
   end
 

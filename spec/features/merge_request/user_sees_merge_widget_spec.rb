@@ -22,8 +22,6 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     project_only_mwps.add_maintainer(user)
     sign_in(user)
 
-    stub_feature_flags(refactor_mr_widgets_extensions: false)
-    stub_feature_flags(refactor_mr_widgets_extensions_user: false)
     stub_feature_flags(refactor_mr_widget_test_summary: false)
   end
 

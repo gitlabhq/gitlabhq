@@ -43,7 +43,7 @@ module Glfm
 
     def update_ghfm_spec_md
       output("Downloading #{GHFM_SPEC_TXT_URI}...")
-      ghfm_spec_txt_uri_io = URI.open(GHFM_SPEC_TXT_URI)
+      ghfm_spec_txt_uri_io = URI.parse(GHFM_SPEC_TXT_URI).open
 
       # Read IO stream into an array of lines for easy processing later
       ghfm_spec_lines = ghfm_spec_txt_uri_io.readlines

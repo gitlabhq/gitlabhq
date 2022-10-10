@@ -1,9 +1,7 @@
 ---
 # Cop supports --auto-correct.
 Style/SingleArgumentDig:
-  # Offense count: 150
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/namespace_projects_resolver.rb'
     - 'app/models/ci/build.rb'
@@ -22,6 +20,7 @@ Style/SingleArgumentDig:
     - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/lib/gitlab/ci/parsers/security/dependency_list.rb'
     - 'ee/lib/gitlab/subscription_portal/clients/graphql.rb'
+    - 'ee/spec/elastic/migrate/20220119120500_populate_commit_permissions_in_main_index_spec.rb'
     - 'ee/spec/graphql/mutations/vulnerabilities/create_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/common_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb'
@@ -35,10 +34,11 @@ Style/SingleArgumentDig:
     - 'ee/spec/requests/api/graphql/project/dast_site_profiles_spec.rb'
     - 'ee/spec/requests/api/graphql/project/requirements_management/requirements_spec.rb'
     - 'ee/spec/requests/api/internal/upcoming_reconciliations_spec.rb'
+    - 'ee/spec/services/vulnerabilities/findings/find_or_create_from_security_finding_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/manually_create_service_spec.rb'
+    - 'lib/gitlab/auth/o_auth/auth_hash.rb'
     - 'lib/gitlab/ci/badge/coverage/template.rb'
-    - 'lib/gitlab/ci/badge/pipeline/template.rb'
-    - 'lib/gitlab/ci/badge/release/template.rb'
+    - 'lib/gitlab/ci/badge/template.rb'
     - 'lib/gitlab/ci/lint.rb'
     - 'lib/gitlab/ci/parsers/accessibility/pa11y.rb'
     - 'lib/gitlab/ci/parsers/security/common.rb'
@@ -51,11 +51,13 @@ Style/SingleArgumentDig:
     - 'lib/gitlab/database/transaction/observer.rb'
     - 'lib/gitlab/serverless/service.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb'
+    - 'qa/qa/vendor/mail_hog/api.rb'
     - 'spec/controllers/graphql_controller_spec.rb'
     - 'spec/graphql/types/release_links_type_spec.rb'
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_request_post_spec.rb'
+    - 'spec/requests/api/graphql/ci/instance_variables_spec.rb'
     - 'spec/requests/api/graphql/container_repository/container_repository_details_spec.rb'
     - 'spec/requests/api/graphql/project/container_repositories_spec.rb'
     - 'spec/requests/api/graphql/project/jira_import_spec.rb'

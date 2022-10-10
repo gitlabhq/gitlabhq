@@ -47,7 +47,7 @@ RSpec.describe 'admin/application_settings/_package_registry' do
     it 'does not display the plan name when there is only one plan' do
       subject
 
-      expect(page).not_to have_content('Default')
+      expect(page).not_to have_selector('a[data-action="plan0"]')
     end
   end
 

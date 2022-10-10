@@ -30,8 +30,6 @@ module IncidentManagement
       attr_reader :project, :timeline_event, :user, :incident
 
       def add_system_note(incident, user)
-        return unless Feature.enabled?(:incident_timeline, project)
-
         SystemNoteService.delete_timeline_event(incident, user)
       end
     end

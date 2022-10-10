@@ -37,7 +37,7 @@ RSpec.describe BulkImports::EntityWorker do
           .to receive(:info).twice
           .with(
             hash_including(
-              'entity_id' => entity.id,
+              'bulk_import_entity_id' => entity.id,
               'current_stage' => nil,
               'message' => 'Stage starting'
             )
@@ -67,7 +67,7 @@ RSpec.describe BulkImports::EntityWorker do
           .to receive(:info).twice
           .with(
             hash_including(
-              'entity_id' => entity.id,
+              'bulk_import_entity_id' => entity.id,
               'current_stage' => nil
             )
           )
@@ -76,7 +76,7 @@ RSpec.describe BulkImports::EntityWorker do
           .to receive(:error)
           .with(
             hash_including(
-              'entity_id' => entity.id,
+              'bulk_import_entity_id' => entity.id,
               'current_stage' => nil,
               'message' => 'Error!'
             )
@@ -85,7 +85,7 @@ RSpec.describe BulkImports::EntityWorker do
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
-              .with(exception, entity_id: entity.id)
+              .with(exception, bulk_import_entity_id: entity.id)
 
       subject
     end
@@ -99,7 +99,7 @@ RSpec.describe BulkImports::EntityWorker do
             .to receive(:info).twice
             .with(
               hash_including(
-                'entity_id' => entity.id,
+                'bulk_import_entity_id' => entity.id,
                 'current_stage' => 0,
                 'message' => 'Stage running'
               )
@@ -127,7 +127,7 @@ RSpec.describe BulkImports::EntityWorker do
             .to receive(:info).twice
             .with(
               hash_including(
-                'entity_id' => entity.id,
+                'bulk_import_entity_id' => entity.id,
                 'current_stage' => 0
               )
             )

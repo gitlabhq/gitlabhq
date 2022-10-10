@@ -1,4 +1,0 @@
----
-Security/Open:
-  Exclude:
-    - 'scripts/lib/glfm/update_specification.rb'

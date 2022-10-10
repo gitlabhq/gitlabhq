@@ -79,6 +79,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
             class="dropdown b-dropdown gl-new-dropdown gl-display-block gl-md-display-none! btn-group"
             lazy=""
             no-caret=""
+            title="Options"
           >
             <!---->
             <button
@@ -255,6 +256,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
             class="dropdown b-dropdown gl-new-dropdown gl-display-block gl-md-display-none! btn-group"
             lazy=""
             no-caret=""
+            title="Options"
           >
             <!---->
             <button

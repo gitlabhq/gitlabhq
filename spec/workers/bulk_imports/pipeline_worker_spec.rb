@@ -37,7 +37,7 @@ RSpec.describe BulkImports::PipelineWorker do
           .with(
             hash_including(
               'pipeline_name' => 'FakePipeline',
-              'entity_id' => entity.id
+              'bulk_import_entity_id' => entity.id
             )
           )
       end
@@ -83,7 +83,7 @@ RSpec.describe BulkImports::PipelineWorker do
           .with(
             hash_including(
               'pipeline_tracker_id' => pipeline_tracker.id,
-              'entity_id' => entity.id,
+              'bulk_import_entity_id' => entity.id,
               'message' => 'Unstarted pipeline not found'
             )
           )
@@ -120,7 +120,7 @@ RSpec.describe BulkImports::PipelineWorker do
           .with(
             hash_including(
               'pipeline_name' => 'FakePipeline',
-              'entity_id' => entity.id,
+              'bulk_import_entity_id' => entity.id,
               'message' => 'Error!'
             )
           )
@@ -130,7 +130,7 @@ RSpec.describe BulkImports::PipelineWorker do
         .to receive(:track_exception)
         .with(
           instance_of(StandardError),
-          entity_id: entity.id,
+          bulk_import_entity_id: entity.id,
           pipeline_name: pipeline_tracker.pipeline_name
         )
 
@@ -178,7 +178,7 @@ RSpec.describe BulkImports::PipelineWorker do
             .with(
               hash_including(
                 'pipeline_name' => 'FakePipeline',
-                'entity_id' => entity.id,
+                'bulk_import_entity_id' => entity.id,
                 'message' => 'Skipping pipeline due to failed entity'
               )
             )
@@ -225,7 +225,7 @@ RSpec.describe BulkImports::PipelineWorker do
             .with(
               hash_including(
                 'pipeline_name' => 'FakePipeline',
-                'entity_id' => entity.id
+                'bulk_import_entity_id' => entity.id
               )
             )
         end
@@ -348,7 +348,7 @@ RSpec.describe BulkImports::PipelineWorker do
             .with(
               hash_including(
                 'pipeline_name' => 'NdjsonPipeline',
-                'entity_id' => entity.id,
+                'bulk_import_entity_id' => entity.id,
                 'message' => 'Pipeline timeout'
               )
             )
@@ -375,7 +375,7 @@ RSpec.describe BulkImports::PipelineWorker do
             .with(
               hash_including(
                 'pipeline_name' => 'NdjsonPipeline',
-                'entity_id' => entity.id,
+                'bulk_import_entity_id' => entity.id,
                 'message' => 'Export from source instance failed: Error!'
               )
             )

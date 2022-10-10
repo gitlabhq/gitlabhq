@@ -795,7 +795,7 @@ describe('ReadyToMerge', () => {
       });
 
       it('shows the diverged commits text when the source branch is behind the target', () => {
-        createComponent({ mr: { divergedCommitsCount: 9001 } });
+        createComponent({ mr: { divergedCommitsCount: 9001, canMerge: false } });
 
         expect(wrapper.text()).toEqual(
           expect.stringContaining('The source branch is 9001 commits behind the target branch'),

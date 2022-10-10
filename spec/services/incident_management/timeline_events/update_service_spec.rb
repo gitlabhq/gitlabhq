@@ -12,10 +12,6 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
   let(:params) { { note: 'Updated note', occurred_at: occurred_at } }
   let(:current_user) { user }
 
-  before do
-    stub_feature_flags(incident_timeline: project)
-  end
-
   describe '#execute' do
     shared_examples 'successful response' do
       it 'responds with success', :aggregate_failures do
@@ -69,16 +65,6 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
       end
 
       it_behaves_like 'passing the correct was_changed value', :occurred_at_and_note
-
-      context 'when incident_timeline feature flag is disabled' do
-        before do
-          stub_feature_flags(incident_timeline: false)
-        end
-
-        it 'does not add a system note' do
-          expect { execute }.not_to change { incident.notes }
-        end
-      end
 
       context 'when note is nil' do
         let(:params) { { occurred_at: occurred_at } }

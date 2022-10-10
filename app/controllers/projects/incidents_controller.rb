@@ -7,7 +7,6 @@ class Projects::IncidentsController < Projects::ApplicationController
   before_action :authorize_read_issue!
   before_action :load_incident, only: [:show]
   before_action do
-    push_frontend_feature_flag(:incident_timeline, @project)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:work_items_hierarchy, @project)

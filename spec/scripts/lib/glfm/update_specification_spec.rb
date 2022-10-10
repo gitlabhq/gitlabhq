@@ -1,8 +1,12 @@
 # frozen_string_literal: true
+
 require 'fast_spec_helper'
 require_relative '../../../../scripts/lib/glfm/update_specification'
+require_relative '../../../support/helpers/next_instance_of'
 
 RSpec.describe Glfm::UpdateSpecification, '#process' do
+  include NextInstanceOf
+
   subject { described_class.new }
 
   let(:ghfm_spec_txt_uri) { described_class::GHFM_SPEC_TXT_URI }
@@ -79,7 +83,9 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     # We mock out the URI and local file IO objects with real StringIO, instead of just mock
     # objects. This gives better and more realistic coverage, while still avoiding
     # actual network and filesystem I/O during the spec run.
-    allow(URI).to receive(:open).with(ghfm_spec_txt_uri) { ghfm_spec_txt_uri_io }
+    allow_next_instance_of(URI::HTTP) do |instance|
+      allow(instance).to receive(:open).and_return(ghfm_spec_txt_uri_io)
+    end
     allow(File).to receive(:open).with(ghfm_spec_md_path) { ghfm_spec_txt_local_io }
     allow(File).to receive(:open).with(glfm_intro_md_path) { glfm_intro_md_io }
     allow(File).to receive(:open).with(glfm_examples_txt_path) { glfm_examples_txt_io }
@@ -92,7 +98,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   describe 'retrieving latest GHFM spec.txt' do
     context 'when UPDATE_GHFM_SPEC_MD is not true (default)' do
       it 'does not download' do
-        expect(URI).not_to receive(:open).with(ghfm_spec_txt_uri)
+        expect(URI).not_to receive(:parse).with(ghfm_spec_txt_uri)
 
         subject.process
 

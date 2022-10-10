@@ -12,7 +12,6 @@ RSpec.describe 'Incident timeline events', :js do
   end
 
   before do
-    stub_feature_flags(incident_timeline: true)
     sign_in(developer)
 
     visit project_issues_incident_path(project, incident)

@@ -19,7 +19,7 @@ module BulkImports
       if pipeline_tracker.present?
         logger.info(
           structured_payload(
-            entity_id: pipeline_tracker.entity.id,
+            bulk_import_entity_id: pipeline_tracker.entity.id,
             pipeline_name: pipeline_tracker.pipeline_name
           )
         )
@@ -28,7 +28,7 @@ module BulkImports
       else
         logger.error(
           structured_payload(
-            entity_id: entity_id,
+            bulk_import_entity_id: entity_id,
             pipeline_tracker_id: pipeline_tracker_id,
             message: 'Unstarted pipeline not found'
           )
@@ -65,7 +65,7 @@ module BulkImports
 
       logger.error(
         structured_payload(
-          entity_id: pipeline_tracker.entity.id,
+          bulk_import_entity_id: pipeline_tracker.entity.id,
           pipeline_name: pipeline_tracker.pipeline_name,
           message: exception.message
         )
@@ -73,7 +73,7 @@ module BulkImports
 
       Gitlab::ErrorTracking.track_exception(
         exception,
-        entity_id: pipeline_tracker.entity.id,
+        bulk_import_entity_id: pipeline_tracker.entity.id,
         pipeline_name: pipeline_tracker.pipeline_name
       )
 
@@ -139,7 +139,7 @@ module BulkImports
     def retry_tracker(exception)
       logger.error(
         structured_payload(
-          entity_id: pipeline_tracker.entity.id,
+          bulk_import_entity_id: pipeline_tracker.entity.id,
           pipeline_name: pipeline_tracker.pipeline_name,
           message: "Retrying error: #{exception.message}"
         )
@@ -153,7 +153,7 @@ module BulkImports
     def skip_tracker
       logger.info(
         structured_payload(
-          entity_id: pipeline_tracker.entity.id,
+          bulk_import_entity_id: pipeline_tracker.entity.id,
           pipeline_name: pipeline_tracker.pipeline_name,
           message: 'Skipping pipeline due to failed entity'
         )

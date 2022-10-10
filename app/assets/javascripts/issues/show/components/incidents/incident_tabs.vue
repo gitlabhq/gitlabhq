@@ -52,9 +52,6 @@ export default {
     loading() {
       return this.$apollo.queries.alert.loading;
     },
-    incidentTabEnabled() {
-      return this.glFeatures.incidentTimeline;
-    },
   },
   mounted() {
     this.trackPageViews();
@@ -112,7 +109,7 @@ export default {
       >
         <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
-      <timeline-tab v-if="incidentTabEnabled" />
+      <timeline-tab />
     </gl-tabs>
   </div>
 </template>

@@ -2,7 +2,9 @@
 
 module Capybara
   MESSAGE = <<~MSG
-    Timeout reached while running a waiting Capybara finder. Consider using a non-waiting finder.
+    Timeout (%{timeout}s) reached while running a waiting Capybara finder.
+    Consider using a non-waiting finder.
+
     See https://www.cloudbees.com/blog/faster-rails-tests
   MSG
 
@@ -19,7 +21,8 @@ module Capybara
 
           raise e unless seconds > 0 && Gitlab::Metrics::System.monotonic_time - start_time > seconds
 
-          raise e, "#{$!}#{MESSAGE}", e.backtrace
+          message = format(MESSAGE, timeout: seconds)
+          raise e, "#{$!}\n\n#{message}", e.backtrace
         end
       end
 

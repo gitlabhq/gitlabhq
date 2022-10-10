@@ -720,10 +720,6 @@ $tabs-holder-z-index: 250;
     }
 
     @include media-breakpoint-down(xs) {
-      p {
-        font-size: 13px;
-      }
-
       .btn-grouped {
         float: none;
         margin-right: 0;

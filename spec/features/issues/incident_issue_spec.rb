@@ -26,7 +26,6 @@ RSpec.describe 'Incident Detail', :js do
 
   context 'when user displays the incident' do
     before do
-      stub_feature_flags(incident_timeline: project)
       project.add_developer(user)
       sign_in(user)
 
@@ -95,21 +94,6 @@ RSpec.describe 'Incident Detail', :js do
           # Linked Issues/MRs and comment box are hidden on page
           expect(hidden_items.count).to eq(0)
         end
-      end
-    end
-
-    context 'when incident_timeline feature flag is disabled' do
-      before do
-        stub_feature_flags(incident_timeline: false)
-
-        visit project_issues_incident_path(project, incident)
-        wait_for_requests
-      end
-
-      it 'does not show Timeline tab' do
-        tabs = find('[data-testid="incident-tabs"]')
-
-        expect(tabs).not_to have_content('Timeline')
       end
     end
   end

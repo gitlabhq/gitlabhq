@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'capybara'
+require 'support/capybara_slow_finder'
 
 RSpec.describe Capybara::Node::Base::SlowFinder do # rubocop:disable RSpec/FilePath
   context 'without timeout' do
@@ -38,10 +40,12 @@ RSpec.describe Capybara::Node::Base::SlowFinder do # rubocop:disable RSpec/FileP
   end
 
   context 'with timeout' do
+    let(:timeout) { 0.01 }
+
     let(:slow_finder) do
       Class.new do
         def synchronize(seconds = nil, errors: nil)
-          sleep 0.1
+          sleep 0.02
 
           raise Capybara::ElementNotFound
         end
@@ -50,10 +54,24 @@ RSpec.describe Capybara::Node::Base::SlowFinder do # rubocop:disable RSpec/FileP
       end.new
     end
 
-    it 'raises a timeout error' do
-      expect { slow_finder.synchronize(0.01) }.to raise_error(
+    context 'with default timeout' do
+      it 'raises a timeout error' do
+        expect(Capybara).to receive(:default_max_wait_time).and_return(timeout)
+
+        expect { slow_finder.synchronize }.to raise_error_element_not_found
+      end
+    end
+
+    context 'when passed as paramater' do
+      it 'raises a timeout error' do
+        expect { slow_finder.synchronize(timeout) }.to raise_error_element_not_found
+      end
+    end
+
+    def raise_error_element_not_found
+      raise_error(
         Capybara::ElementNotFound,
-        /Timeout reached while running a waiting Capybara finder./
+        /\n\nTimeout \(#{timeout}s\) reached while running a waiting Capybara finder./
       )
     end
   end

@@ -53,7 +53,7 @@ module BulkImports
     def log_skipped_pipeline(pipeline, minimum_version, maximum_version)
       logger.info(
         message: 'Pipeline skipped as source instance version not compatible with pipeline',
-        entity_id: entity.id,
+        bulk_import_entity_id: entity.id,
         pipeline_name: pipeline[:pipeline],
         minimum_source_version: minimum_version,
         maximum_source_version: maximum_version,

@@ -86,9 +86,6 @@ export default {
       import('../reports/codequality_report/grouped_codequality_reports_app.vue'),
     GroupedTestReportsApp: () =>
       import('../reports/grouped_test_report/grouped_test_reports_app.vue'),
-    TerraformPlan: () => import('./components/terraform/mr_widget_terraform_container.vue'),
-    GroupedAccessibilityReportsApp: () =>
-      import('../reports/accessibility_report/grouped_accessibility_reports_app.vue'),
     MrWidgetApprovals,
     SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
@@ -217,12 +214,6 @@ export default {
     },
     hasAlerts() {
       return this.hasMergeError || this.showMergePipelineForkWarning;
-    },
-    shouldShowExtension() {
-      return (
-        window.gon?.features?.refactorMrWidgetsExtensions ||
-        window.gon?.features?.refactorMrWidgetsExtensionsUser
-      );
     },
     shouldShowSecurityExtension() {
       return window.gon?.features?.refactorSecurityExtension;
@@ -518,12 +509,12 @@ export default {
       this.mr.isDismissedSuggestPipeline = true;
     },
     registerTerraformPlans() {
-      if (this.shouldRenderTerraformPlans && this.shouldShowExtension) {
+      if (this.shouldRenderTerraformPlans) {
         registerExtension(terraformExtension);
       }
     },
     registerAccessibilityExtension() {
-      if (this.shouldShowAccessibilityReport && this.shouldShowExtension) {
+      if (this.shouldShowAccessibilityReport) {
         registerExtension(accessibilityExtension);
       }
     },
@@ -625,16 +616,6 @@ export default {
         :endpoint="mr.testResultsPath"
         :head-blob-path="mr.headBlobPath"
         :pipeline-path="mr.pipeline.path"
-      />
-
-      <terraform-plan
-        v-if="mr.terraformReportsPath && !shouldShowExtension"
-        :endpoint="mr.terraformReportsPath"
-      />
-
-      <grouped-accessibility-reports-app
-        v-if="shouldShowAccessibilityReport && !shouldShowExtension"
-        :endpoint="mr.accessibilityReportPath"
       />
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">

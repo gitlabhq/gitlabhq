@@ -128,7 +128,7 @@ export default {
             :img-src="authorAvatar"
             :img-alt="authorName"
             :img-size="32"
-            class="avatar-cell d-none d-sm-block"
+            class="avatar-cell d-none d-sm-block gl-my-2 gl-mr-4"
           />
         </div>
         <div

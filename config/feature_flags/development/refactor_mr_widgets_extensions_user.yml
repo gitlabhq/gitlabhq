@@ -1,8 +1,0 @@
----
-name: refactor_mr_widgets_extensions_user
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70993
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/341759
-milestone: '14.4'
-type: development
-group: group::code review
-default_enabled: false

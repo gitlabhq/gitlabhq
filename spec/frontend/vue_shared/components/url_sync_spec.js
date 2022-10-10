@@ -1,10 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { historyPushState } from '~/lib/utils/common_utils';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
-import UrlSyncComponent from '~/vue_shared/components/url_sync.vue';
+import { mergeUrlParams, setUrlParams } from '~/lib/utils/url_utility';
+import UrlSyncComponent, { URL_SET_PARAMS_STRATEGY } from '~/vue_shared/components/url_sync.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({
-  mergeUrlParams: jest.fn((query, url) => `urlParams: ${query} ${url}`),
+  mergeUrlParams: jest.fn((query, url) => `urlParams: ${JSON.stringify(query)} ${url}`),
+  setUrlParams: jest.fn((query, url) => `urlParams: ${JSON.stringify(query)} ${url}`),
 }));
 
 jest.mock('~/lib/utils/common_utils', () => ({
@@ -17,9 +18,14 @@ describe('url sync component', () => {
 
   const findButton = () => wrapper.find('button');
 
-  const createComponent = ({ query = mockQuery, scopedSlots, slots } = {}) => {
+  const createComponent = ({
+    query = mockQuery,
+    scopedSlots,
+    slots,
+    urlParamsUpdateStrategy,
+  } = {}) => {
     wrapper = shallowMount(UrlSyncComponent, {
-      propsData: { query },
+      propsData: { query, ...(urlParamsUpdateStrategy && { urlParamsUpdateStrategy }) },
       scopedSlots,
       slots,
     });
@@ -29,21 +35,39 @@ describe('url sync component', () => {
     wrapper.destroy();
   });
 
-  const expectUrlSync = (query, times, mergeUrlParamsReturnValue) => {
-    expect(mergeUrlParams).toHaveBeenCalledTimes(times);
-    expect(mergeUrlParams).toHaveBeenCalledWith(query, window.location.href, {
-      spreadArrays: true,
-    });
+  const expectUrlSyncFactory = (
+    query,
+    times,
+    urlParamsUpdateStrategy,
+    urlOptions,
+    urlReturnValue,
+  ) => {
+    expect(urlParamsUpdateStrategy).toHaveBeenCalledTimes(times);
+    expect(urlParamsUpdateStrategy).toHaveBeenCalledWith(query, window.location.href, urlOptions);
 
     expect(historyPushState).toHaveBeenCalledTimes(times);
-    expect(historyPushState).toHaveBeenCalledWith(mergeUrlParamsReturnValue);
+    expect(historyPushState).toHaveBeenCalledWith(urlReturnValue);
+  };
+
+  const expectUrlSyncWithMergeUrlParams = (query, times, mergeUrlParamsReturnValue) => {
+    expectUrlSyncFactory(
+      query,
+      times,
+      mergeUrlParams,
+      { spreadArrays: true },
+      mergeUrlParamsReturnValue,
+    );
+  };
+
+  const expectUrlSyncWithSetUrlParams = (query, times, setUrlParamsReturnValue) => {
+    expectUrlSyncFactory(query, times, setUrlParams, true, setUrlParamsReturnValue);
   };
 
   describe('with query as a props', () => {
     it('immediately syncs the query to the URL', () => {
       createComponent();
 
-      expectUrlSync(mockQuery, 1, mergeUrlParams.mock.results[0].value);
+      expectUrlSyncWithMergeUrlParams(mockQuery, 1, mergeUrlParams.mock.results[0].value);
     });
 
     describe('when the query is modified', () => {
@@ -54,8 +78,18 @@ describe('url sync component', () => {
         // using setProps to test the watcher
         await wrapper.setProps({ query: newQuery });
 
-        expectUrlSync(mockQuery, 2, mergeUrlParams.mock.results[1].value);
+        expectUrlSyncWithMergeUrlParams(mockQuery, 2, mergeUrlParams.mock.results[1].value);
       });
+    });
+  });
+
+  describe('with url-params-update-strategy equals to URL_SET_PARAMS_STRATEGY', () => {
+    it('uses setUrlParams to generate URL', () => {
+      createComponent({
+        urlParamsUpdateStrategy: URL_SET_PARAMS_STRATEGY,
+      });
+
+      expectUrlSyncWithSetUrlParams(mockQuery, 1, setUrlParams.mock.results[0].value);
     });
   });
 
@@ -77,7 +111,7 @@ describe('url sync component', () => {
 
       findButton().trigger('click');
 
-      expectUrlSync({ bar: 'baz' }, 1, mergeUrlParams.mock.results[0].value);
+      expectUrlSyncWithMergeUrlParams({ bar: 'baz' }, 1, mergeUrlParams.mock.results[0].value);
     });
   });
 
