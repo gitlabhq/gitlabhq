@@ -34490,6 +34490,9 @@ msgid_plural "Runners|%d selected runners deleted"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|%{link_start}These runners%{link_end} are available to all groups and projects."
+msgstr ""
+
 msgid "Runners|%{percentage} spot."
 msgstr ""
 
@@ -40795,9 +40798,6 @@ msgid "These existing issues have a similar title. It might be better to comment
 msgstr ""
 
 msgid "These runners are shared across projects in this group."
-msgstr ""
-
-msgid "These runners are shared across this GitLab instance."
 msgstr ""
 
 msgid "These runners are specific to this project."

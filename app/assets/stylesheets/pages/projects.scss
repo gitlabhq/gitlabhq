@@ -276,42 +276,24 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
+
+.project-row {
+  .description p {
+    margin-bottom: 0;
+    color: $gl-text-color-secondary;
+  }
+}
+
 .projects-list {
   @include basic-list;
   display: flex;
   flex-direction: column;
-
-  // Disable Flexbox for admin page
-  &.admin-projects,
-  &.group-settings-projects {
-    display: block;
-
-    .project-row {
-      display: block;
-
-      .description > p {
-        margin-bottom: 0;
-      }
-    }
-  }
 
   .project-row {
     @include basic-list-stats;
     display: flex;
     align-items: center;
     padding: $gl-padding-12 0;
-
-    &.no-description {
-      @include media-breakpoint-up(sm) {
-        .avatar-container {
-          align-self: center;
-        }
-
-        .metadata-info {
-          margin-bottom: 0;
-        }
-      }
-    }
   }
 
   h2 {

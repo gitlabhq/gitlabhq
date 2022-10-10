@@ -176,7 +176,7 @@ in the Helm Chart configuration rather than the `Gemfile`.
 
 #### Preserving backwards compatibility
 
-Removing the `Gemfile` would break incoming e-mail processing for source
+Removing the `Gemfile` would break incoming email processing for source
 installs. For now, source installs are advised to upgrade manually to
 the version specified in Omnibus and run `bin/mail_room` directly as
 done with Omnibus.

@@ -168,7 +168,7 @@ Only one namespace can be linked to a subscription.
 To change the password for this customers portal account:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **My account** drop-down and select **Account details**.
+1. Select the **My account** dropdown list and select **Account details**.
 1. Make the required changes to the **Your password** section.
 1. Select **Save changes**.
 

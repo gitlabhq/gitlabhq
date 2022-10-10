@@ -96,8 +96,8 @@ You can create a merge request from your fork to contribute back to the main pro
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. Select your fork of the repository.
 1. On the left menu, go to **Merge requests**, and select **New merge request**.
-1. In the **Source branch** drop-down list box, select the branch in your forked repository as the source branch.
-1. In the **Target branch** drop-down list box, select the branch from the upstream repository as the target branch.
+1. In the **Source branch** dropdown list box, select the branch in your forked repository as the source branch.
+1. In the **Target branch** dropdown list box, select the branch from the upstream repository as the target branch.
    You can set a [default target project](#set-the-default-target-project) to
    change the default target branch (which can be useful if you are working in a
    forked project).

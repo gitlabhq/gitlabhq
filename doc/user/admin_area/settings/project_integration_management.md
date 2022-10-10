@@ -122,7 +122,7 @@ Resetting a group-level default setting removes integrations that use default se
 
 1. Navigate to **Project > Settings > Integrations**.
 1. Choose the integration you want to enable or update.
-1. From the drop-down, select **Use default settings**.
+1. From the dropdown list, select **Use default settings**.
 1. Ensure the toggle is set to **Enable integration**.
 1. Select **Save changes**.
 
@@ -130,6 +130,6 @@ Resetting a group-level default setting removes integrations that use default se
 
 1. Navigate to project or group's **Settings > Integrations**.
 1. Choose the integration you want to enable or update.
-1. From the drop-down, select **Use custom settings**.
+1. From the dropdown list, select **Use custom settings**.
 1. Ensure the toggle is set to **Enable integration** and enter all required settings.
 1. Select **Save changes**.

@@ -169,36 +169,69 @@ describe('Blob Embeddable', () => {
     });
 
     describe('URLS with hash', () => {
-      beforeEach(() => {
-        window.location.hash = '#LC2';
-      });
-
       afterEach(() => {
         window.location.hash = '';
       });
 
-      it('renders simple viewer by default if URL contains hash', () => {
-        createComponent({
-          data: {},
+      describe('if hash starts with #LC', () => {
+        beforeEach(() => {
+          window.location.hash = '#LC2';
         });
 
-        expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
-        expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
-      });
+        it('renders simple viewer by default', () => {
+          createComponent({
+            data: {},
+          });
 
-      describe('switchViewer()', () => {
-        it('switches to the passed viewer', async () => {
-          createComponent();
-
-          wrapper.vm.switchViewer(RichViewerMock.type);
-
-          await nextTick();
-          expect(wrapper.vm.activeViewerType).toBe(RichViewerMock.type);
-          expect(wrapper.findComponent(RichViewer).exists()).toBe(true);
-
-          await wrapper.vm.switchViewer(SimpleViewerMock.type);
           expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
           expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
+        });
+
+        describe('switchViewer()', () => {
+          it('switches to the passed viewer', async () => {
+            createComponent();
+
+            wrapper.vm.switchViewer(RichViewerMock.type);
+
+            await nextTick();
+            expect(wrapper.vm.activeViewerType).toBe(RichViewerMock.type);
+            expect(wrapper.findComponent(RichViewer).exists()).toBe(true);
+
+            await wrapper.vm.switchViewer(SimpleViewerMock.type);
+            expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
+            expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
+          });
+        });
+      });
+
+      describe('if hash starts with anything else', () => {
+        beforeEach(() => {
+          window.location.hash = '#last-headline';
+        });
+
+        it('renders rich viewer by default', () => {
+          createComponent({
+            data: {},
+          });
+
+          expect(wrapper.vm.activeViewerType).toBe(RichViewerMock.type);
+          expect(wrapper.findComponent(RichViewer).exists()).toBe(true);
+        });
+
+        describe('switchViewer()', () => {
+          it('switches to the passed viewer', async () => {
+            createComponent();
+
+            wrapper.vm.switchViewer(SimpleViewerMock.type);
+
+            await nextTick();
+            expect(wrapper.vm.activeViewerType).toBe(SimpleViewerMock.type);
+            expect(wrapper.findComponent(SimpleViewer).exists()).toBe(true);
+
+            await wrapper.vm.switchViewer(RichViewerMock.type);
+            expect(wrapper.vm.activeViewerType).toBe(RichViewerMock.type);
+            expect(wrapper.findComponent(RichViewer).exists()).toBe(true);
+          });
         });
       });
     });

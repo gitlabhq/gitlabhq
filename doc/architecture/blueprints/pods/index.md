@@ -166,17 +166,17 @@ Introducing organizations allows GitLab to move towards a multi-tenant system th
 
 Organizations solve the following problems:
 
-1. We can group top-level namespaces by organization. This eliminates the difference between self-managed and GitLab.com. It is very similar to the initial concept of "instance groups". For example these two top-level namespaces would belong to the organization `GitLab`:
+1. We can group top-level namespaces by organization. It is very similar to the initial concept of "instance groups". For example these two top-level namespaces would belong to the organization `GitLab`:
     1. `https://gitlab.com/gitlab-org/`
     1. `https://gitlab.com/gitlab-com/`
 1. We can isolate organizations from each other. Top-level namespaces of the same organization can interact within organizations but are not allowed to interact with other namespaces in other organizations. This is useful for customers because it means an organization provides clear boundaries - similar to a self-managed instance. This means we don't have to aggregate user dashboards across everything and can locally scope them to organizations.
 1. We don't need to define hierarchies inside an organization. It is a container that could be filled with whatever hierarchy / entity set makes sense (workspaces, top-level namespaces etc.)
-1. Self-managed instances would set a default organization. One organization per instance.
-1. Organizations can control user-profiles in a central way. This could be achieved by having an organization specific user-profile. Such a profile makes it possible for the organization administrators to control the user role in a company, enforce user e-mails, or show a graphical indicator of a user being part of the organization. An example would be a "GitLab Employee stamp" on comments.
+1. Self-managed instances would set a default organization.
+1. Organizations can control user-profiles in a central way. This could be achieved by having an organization specific user-profile. Such a profile makes it possible for the organization administrators to control the user role in a company, enforce user emails, or show a graphical indicator of a user being part of the organization. An example would be a "GitLab Employee stamp" on comments.
 
 ![Move to Organizations](2022-10-05-Pods-Organizations-Iteration0.png)
 
-### Why would customers opt-in to Organizations?
+#### Why would customers opt-in to Organizations?
 
 By introducing organizations and Pods we can improve the reliability, performance and availability of our SaaS Platforms.
 
@@ -186,7 +186,7 @@ Future iterations would create additional value but are beyond the scope of this
 
 Organizations will likely be required in the future as well.
 
-### Initial user experience
+#### Initial user experience
 
 1. We create a default `GitLab.com public` organization and assign all public top-level namespaces to it. This allows existing users to access all the data on GitLab.com, exactly as it does now.
 1. Any user wanting to opt-in to the benefits of organizations will need to set a single default organization. Any attempts for these users to load a global page like `/dashboard` will end up redirecting to `/-/organizations/<DEFAULT_ORGANIZATION>/dashboard`.
