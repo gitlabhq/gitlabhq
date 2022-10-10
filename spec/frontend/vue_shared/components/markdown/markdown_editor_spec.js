@@ -18,6 +18,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   const value = 'test markdown';
   const renderMarkdownPath = '/api/markdown';
   const markdownDocsPath = '/help/markdown';
+  const quickActionsDocsPath = '/help/quickactions';
   const enableAutocomplete = true;
   const enablePreview = false;
   const formFieldId = 'markdown_field';
@@ -33,6 +34,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         value,
         renderMarkdownPath,
         markdownDocsPath,
+        quickActionsDocsPath,
         enableAutocomplete,
         enablePreview,
         formFieldId,
@@ -63,11 +65,12 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   it('displays markdown field by default', () => {
-    buildWrapper();
+    buildWrapper({ propsData: { supportsQuickActions: true } });
 
     expect(findMarkdownField().props()).toEqual(
       expect.objectContaining({
         markdownPreviewPath: renderMarkdownPath,
+        quickActionsDocsPath,
         canAttachFile: true,
         enableAutocomplete,
         textareaValue: value,

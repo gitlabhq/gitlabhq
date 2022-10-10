@@ -42,6 +42,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:incident_timeline, project)
+    push_frontend_feature_flag(:preserve_unchanged_markdown, project)
+    push_frontend_feature_flag(:content_editor_on_issues, project)
   end
 
   before_action only: [:index, :show] do

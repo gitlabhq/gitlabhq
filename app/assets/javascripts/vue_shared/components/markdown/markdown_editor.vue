@@ -29,6 +29,11 @@ export default {
       type: String,
       required: true,
     },
+    quickActionsDocsPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     uploadsPath: {
       type: String,
       required: false,
@@ -68,6 +73,11 @@ export default {
       default: '',
     },
     initOnAutofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    supportsQuickActions: {
       type: Boolean,
       required: false,
       default: false,
@@ -159,6 +169,7 @@ export default {
       :enable-autocomplete="enableAutocomplete"
       :textarea-value="value"
       :markdown-docs-path="markdownDocsPath"
+      :quick-actions-docs-path="quickActionsDocsPath"
       :uploads-path="uploadsPath"
       :enable-preview="enablePreview"
       class="bordered-box"
@@ -171,7 +182,7 @@ export default {
           :name="formFieldName"
           class="note-textarea js-gfm-input js-autosize markdown-area"
           dir="auto"
-          data-supports-quick-actions="false"
+          :data-supports-quick-actions="supportsQuickActions"
           data-qa-selector="markdown_editor_form_field"
           :aria-label="formFieldAriaLabel"
           :placeholder="formFieldPlaceholder"

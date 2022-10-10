@@ -60,6 +60,7 @@ export function initIncidentApp(issueData = {}) {
       projectId,
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
       uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
+      contentEditorOnIssues: gon.features.contentEditorOnIssues,
     },
     render(createElement) {
       return createElement(IssueApp, {
