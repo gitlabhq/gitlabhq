@@ -363,6 +363,10 @@ Do not use Latin abbreviations. Use **for example**, **such as**, **for instance
 
 Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
+## emojis
+
+Use **emojis** to refer to the plural form of **emoji**.
+
 ## enable
 
 See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.

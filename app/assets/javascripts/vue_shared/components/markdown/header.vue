@@ -70,12 +70,15 @@ export default {
   },
   computed: {
     mdTable() {
-      const header = 'header';
+      const header = s__('MarkdownEditor|header');
+      const divider = '-'.repeat(header.length);
+      const cell = ' '.repeat(header.length);
+
       return [
         `| ${header} | ${header} |`,
-        '| ------ | ------ |',
-        '|        |        |',
-        '|        |        |',
+        `| ${divider} | ${divider} |`,
+        `| ${cell} | ${cell} |`,
+        `| ${cell} | ${cell} |`,
       ].join('\n');
     },
     mdSuggestion() {
@@ -84,7 +87,8 @@ export default {
       );
     },
     mdCollapsibleSection() {
-      return ['<details><summary>Click to expand</summary>', `{text}`, '</details>'].join('\n');
+      const expandText = s__('MarkdownEditor|Click to expand');
+      return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
     },
     isMac() {
       // Accessing properties using ?. to allow tests to use

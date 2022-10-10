@@ -44,7 +44,7 @@ export default {
       :items="databases"
       right
       :toggle-text="selectedDatabase"
-      aria-labelledby="label"
+      toggle-aria-labelled-by="label"
       @select="selectDatabase"
     />
   </div>
