@@ -84,11 +84,6 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-- name: incident_management_incident_published
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_published
 - name: incident_management_incident_relate
   redis_slot: incident_management
   category: incident_management
@@ -114,28 +109,10 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-# Incident management linked resources
-- name: incident_management_issuable_resource_link_created
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
-- name: incident_management_issuable_resource_link_deleted
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
-- name: incident_management_issuable_resource_link_visited
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
 # Incident management alerts
 - name: incident_management_alert_create_incident
   redis_slot: incident_management
   category: incident_management_alerts
-  aggregation: weekly
-# Incident management on-call
-- name: i_incident_management_oncall_notification_sent
-  redis_slot: incident_management
-  category: incident_management_oncall
   aggregation: weekly
 # Testing category
 - name: i_testing_test_case_parsed

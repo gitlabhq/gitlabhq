@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GitAccessSnippet do
   include ProjectHelpers
+  include UserHelpers
   include TermsHelper
   include AdminModeHelper
   include_context 'ProjectPolicyTable context'

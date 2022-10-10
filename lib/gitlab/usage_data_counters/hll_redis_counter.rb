@@ -23,7 +23,6 @@ module Gitlab
         compliance
         error_tracking
         ide_edit
-        incident_management
         pipeline_authoring
       ].freeze
 
@@ -35,6 +34,7 @@ module Gitlab
         error_tracking
         ide_edit
         importer
+        incident_management
         incident_management_alerts
         issues_edit
         kubernetes_agent

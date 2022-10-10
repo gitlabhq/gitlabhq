@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::RefreshService do
   include ProjectForksHelper
-  include ProjectHelpers
+  include UserHelpers
 
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }

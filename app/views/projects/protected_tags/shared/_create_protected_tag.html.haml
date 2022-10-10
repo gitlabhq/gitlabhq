@@ -1,6 +1,6 @@
 = form_for [@project, @protected_tag], html: { class: 'new-protected-tag js-new-protected-tag' } do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-tags-settings' }
-  = render Pajamas::CardComponent.new do |c|
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
     - c.header do
       = _('Protect a tag')
     - c.body do

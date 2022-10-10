@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'model with wiki policies' do
-  include ProjectHelpers
+  include UserHelpers
   include AdminModeHelper
 
   let(:container) { raise NotImplementedError }

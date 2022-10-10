@@ -6,6 +6,7 @@ RSpec.describe IssuePolicy do
   include_context 'ProjectPolicyTable context'
   include ExternalAuthorizationServiceHelpers
   include ProjectHelpers
+  include UserHelpers
 
   let(:guest) { create(:user) }
   let(:author) { create(:user) }

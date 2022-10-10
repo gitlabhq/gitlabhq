@@ -49,7 +49,7 @@ RSpec.describe Gitlab::UserAccessSnippet do
   end
 
   describe '#can_push_to_branch?' do
-    include ProjectHelpers
+    include UserHelpers
 
     [:anonymous, :non_member, :guest, :reporter, :maintainer, :admin, :author].each do |membership|
       context membership.to_s do

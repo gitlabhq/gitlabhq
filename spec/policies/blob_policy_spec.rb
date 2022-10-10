@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe BlobPolicy do
   include_context 'ProjectPolicyTable context'
   include ProjectHelpers
+  include UserHelpers
 
   let_it_be_with_reload(:project) { create(:project, :repository) }
 

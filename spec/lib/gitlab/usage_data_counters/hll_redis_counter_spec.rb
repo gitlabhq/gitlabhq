@@ -96,7 +96,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'source_code',
         'incident_management',
         'incident_management_alerts',
-        'incident_management_oncall',
         'testing',
         'issues_edit',
         'snippets',
