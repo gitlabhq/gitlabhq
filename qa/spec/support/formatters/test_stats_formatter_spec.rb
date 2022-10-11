@@ -15,6 +15,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:ci_job_url) { 'url' }
   let(:ci_pipeline_url) { 'url' }
   let(:ci_pipeline_id) { '123' }
+  let(:ci_job_id) { '321' }
   let(:run_type) { 'staging-full' }
   let(:smoke) { 'false' }
   let(:reliable) { 'false' }
@@ -64,6 +65,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
         job_url: ci_job_url,
         pipeline_url: ci_pipeline_url,
         pipeline_id: ci_pipeline_id,
+        job_id: ci_job_id,
         merge_request_iid: nil
       }
     }
@@ -80,7 +82,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
 
   around do |example|
     RSpec::Core::Sandbox.sandboxed do |config|
-      config.formatter = QA::Support::Formatters::TestStatsFormatter
+      config.formatter = described_class
       config.before(:context) { RSpec.current_example = nil }
 
       example.run
@@ -125,6 +127,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       stub_env('CI_JOB_NAME', ci_job_name)
       stub_env('CI_PIPELINE_URL', ci_pipeline_url)
       stub_env('CI_PIPELINE_ID', ci_pipeline_id)
+      stub_env('CI_JOB_ID', ci_job_id)
       stub_env('CI_MERGE_REQUEST_IID', nil)
       stub_env('TOP_UPSTREAM_MERGE_REQUEST_IID', nil)
       stub_env('QA_RUN_TYPE', run_type)

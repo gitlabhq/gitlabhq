@@ -1565,6 +1565,9 @@ msgstr ""
 msgid "404|Make sure the address is correct and the page hasn't moved."
 msgstr ""
 
+msgid "404|Not found"
+msgstr ""
+
 msgid "404|Page Not Found"
 msgstr ""
 
@@ -45581,9 +45584,6 @@ msgstr ""
 msgid "WorkItem|Something went wrong when fetching tasks. Please refresh this page."
 msgstr ""
 
-msgid "WorkItem|Something went wrong when fetching the work item. Please try again."
-msgstr ""
-
 msgid "WorkItem|Something went wrong when fetching work item types. Please try again"
 msgstr ""
 
@@ -45614,6 +45614,9 @@ msgstr ""
 msgid "WorkItem|Test case"
 msgstr ""
 
+msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."
+msgstr ""
+
 msgid "WorkItem|Turn off confidentiality"
 msgstr ""
 
@@ -45630,6 +45633,9 @@ msgid "WorkItem|Work Items"
 msgstr ""
 
 msgid "WorkItem|Work item"
+msgstr ""
+
+msgid "WorkItem|Work item not found"
 msgstr ""
 
 msgid "Would you like to create a new branch?"

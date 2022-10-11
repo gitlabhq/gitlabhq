@@ -84,6 +84,7 @@ module QA
               job_url: QA::Runtime::Env.ci_job_url,
               pipeline_url: env('CI_PIPELINE_URL'),
               pipeline_id: env('CI_PIPELINE_ID'),
+              job_id: env('CI_JOB_ID'),
               merge_request_iid: merge_request_iid
             }
           }

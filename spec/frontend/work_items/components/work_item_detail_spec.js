@@ -1,4 +1,11 @@
-import { GlAlert, GlBadge, GlLoadingIcon, GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlLoadingIcon,
+  GlSkeletonLoader,
+  GlButton,
+  GlEmptyState,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -54,6 +61,7 @@ describe('WorkItemDetail component', () => {
   const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
@@ -390,13 +398,14 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('shows an error message when the work item query was unsuccessful', async () => {
+  it('shows empty state with an error message when the work item query was unsuccessful', async () => {
     const errorHandler = jest.fn().mockRejectedValue('Oops');
     createComponent({ handler: errorHandler });
     await waitForPromises();
 
     expect(errorHandler).toHaveBeenCalled();
-    expect(findAlert().text()).toBe(i18n.fetchError);
+    expect(findEmptyState().props('description')).toBe(i18n.fetchError);
+    expect(findWorkItemTitle().exists()).toBe(false);
   });
 
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {

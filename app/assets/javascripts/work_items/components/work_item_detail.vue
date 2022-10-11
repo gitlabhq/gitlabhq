@@ -7,7 +7,10 @@ import {
   GlBadge,
   GlButton,
   GlTooltipDirective,
+  GlEmptyState,
 } from '@gitlab/ui';
+import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
+import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -50,6 +53,7 @@ export default {
     GlLoadingIcon,
     GlSkeletonLoader,
     GlIcon,
+    GlEmptyState,
     WorkItemAssignees,
     WorkItemActions,
     WorkItemDescription,
@@ -83,6 +87,7 @@ export default {
   data() {
     return {
       error: undefined,
+      updateError: undefined,
       workItem: {},
       showInfoBanner: true,
       updateInProgress: false,
@@ -101,9 +106,10 @@ export default {
       },
       error() {
         this.error = this.$options.i18n.fetchError;
+        document.title = s__('404|Not found');
       },
       result() {
-        if (!this.isModal) {
+        if (!this.isModal && this.workItem.project) {
           const path = this.workItem.project?.fullPath
             ? ` · ${this.workItem.project.fullPath}`
             : '';
@@ -196,6 +202,9 @@ export default {
     workItemIconName() {
       return this.workItem?.workItemType?.iconName;
     },
+    noAccessSvgPath() {
+      return `data:image/svg+xml;utf8,${encodeURIComponent(noAccessSvg)}`;
+    },
   },
   beforeDestroy() {
     /** make sure that if the user has not even dismissed the alert ,
@@ -248,7 +257,7 @@ export default {
           },
         )
         .catch((error) => {
-          this.error = error.message;
+          this.updateError = error.message;
         })
         .finally(() => {
           this.updateInProgress = false;
@@ -261,8 +270,13 @@ export default {
 
 <template>
   <section class="gl-pt-5">
-    <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = undefined">
-      {{ error }}
+    <gl-alert
+      v-if="updateError"
+      class="gl-mb-3"
+      variant="danger"
+      @dismiss="updateError = undefined"
+    >
+      {{ updateError }}
     </gl-alert>
 
     <div v-if="workItemLoading" class="gl-max-w-26 gl-py-5">
@@ -301,7 +315,7 @@ export default {
           </li>
         </ul>
         <work-item-type-icon
-          v-else
+          v-else-if="!error"
           :work-item-icon-name="workItemIconName"
           :work-item-type="workItemType && workItemType.toUpperCase()"
           show-text
@@ -328,7 +342,7 @@ export default {
           :is-parent-confidential="parentWorkItemConfidentiality"
           @deleteWorkItem="$emit('deleteWorkItem', workItemType)"
           @toggleWorkItemConfidentiality="toggleConfidentiality"
-          @error="error = $event"
+          @error="updateError = $event"
         />
         <gl-button
           v-if="isModal"
@@ -344,24 +358,25 @@ export default {
         :storage-key="$options.WORK_ITEM_VIEWED_STORAGE_KEY"
       >
         <work-item-information
-          v-if="showInfoBanner"
+          v-if="showInfoBanner && !error"
           :show-info-banner="showInfoBanner"
           @work-item-banner-dismissed="dismissBanner"
         />
       </local-storage-sync>
       <work-item-title
+        v-if="workItem.title"
         :work-item-id="workItem.id"
         :work-item-title="workItem.title"
         :work-item-type="workItemType"
         :work-item-parent-id="workItemParentId"
         :can-update="canUpdate"
-        @error="error = $event"
+        @error="updateError = $event"
       />
       <work-item-state
         :work-item="workItem"
         :work-item-parent-id="workItemParentId"
         :can-update="canUpdate"
-        @error="error = $event"
+        @error="updateError = $event"
       />
       <work-item-assignees
         v-if="workItemAssignees"
@@ -372,7 +387,7 @@ export default {
         :work-item-type="workItemType"
         :can-invite-members="workItemAssignees.canInviteMembers"
         :full-path="fullPath"
-        @error="error = $event"
+        @error="updateError = $event"
       />
       <template v-if="workItemsMvc2Enabled">
         <work-item-labels
@@ -380,7 +395,7 @@ export default {
           :work-item-id="workItem.id"
           :can-update="canUpdate"
           :full-path="fullPath"
-          @error="error = $event"
+          @error="updateError = $event"
         />
         <work-item-due-date
           v-if="workItemDueDate"
@@ -389,7 +404,7 @@ export default {
           :start-date="workItemDueDate.startDate"
           :work-item-id="workItem.id"
           :work-item-type="workItemType"
-          @error="error = $event"
+          @error="updateError = $event"
         />
       </template>
       <work-item-weight
@@ -399,14 +414,20 @@ export default {
         :weight="workItemWeight.weight"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
-        @error="error = $event"
+        @error="updateError = $event"
       />
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"
         :full-path="fullPath"
         class="gl-pt-5"
-        @error="error = $event"
+        @error="updateError = $event"
+      />
+      <gl-empty-state
+        v-if="error"
+        :title="$options.i18n.fetchErrorTitle"
+        :description="error"
+        :svg-path="noAccessSvgPath"
       />
     </template>
   </section>
