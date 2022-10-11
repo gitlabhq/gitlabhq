@@ -1,0 +1,22 @@
+ <project>
+  <groupId><%= group_id %></groupId>
+  <artifactId><%= artifact_id %></artifactId>
+  <version><%= package_version %></version>
+  <modelVersion>4.0.0</modelVersion>
+  <repositories>
+    <repository>
+      <id><%= package_project.name %></id>
+      <url><%= gitlab_address_with_port %>/api/v4/groups/<%= package_project.group.id %>/-/packages/maven</url>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <repository>
+      <id><%= package_project.name %></id>
+      <url><%= gitlab_address_with_port %>/api/v4/projects/<%= package_project.id %>/packages/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id><%= package_project.name %></id>
+      <url><%= gitlab_address_with_port %>/api/v4/projects/<%= package_project.id %>/packages/maven</url>
+    </snapshotRepository>
+  </distributionManagement>
+</project>

@@ -84,8 +84,7 @@ which brings you to the new project page so you can review the change.
 ## Libravatar
 
 [Libravatar](https://www.libravatar.org) is supported by GitLab for avatar images, but you must
-[manually enable Libravatar support on the GitLab instance](../../administration/libravatar.md)
-in order to use the service.
+[manually enable Libravatar support on the GitLab instance](../../administration/libravatar.md) to use the service.
 
 <!-- ## Troubleshooting
 

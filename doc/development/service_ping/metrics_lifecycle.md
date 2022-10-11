@@ -120,7 +120,7 @@ To remove a metric:
    Do not remove the metric's YAML definition altogether. Some self-managed
    instances might not immediately update to the latest version of GitLab, and
    therefore continue to report the removed metric. The Product Intelligence team
-   requires a record of all removed metrics in order to identify and filter them.
+   requires a record of all removed metrics to identify and filter them.
 
    For example please take a look at this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60149/diffs#b01f429a54843feb22265100c0e4fec1b7da1240_10_10).
 

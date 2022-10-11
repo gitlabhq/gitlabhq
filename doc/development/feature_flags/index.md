@@ -52,7 +52,7 @@ When the feature implementation is delivered among multiple merge requests:
   1. When the feature is ready to be announced, create a merge request that adds
      documentation about the feature, including [documentation for the feature flag itself](../documentation/feature_flags.md),
      and a [changelog entry](#changelog). In the same merge request either flip the feature flag to
-     be **on by default** or remove it entirely in order to enable the new behavior.
+     be **on by default** or remove it entirely to enable the new behavior.
 
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature

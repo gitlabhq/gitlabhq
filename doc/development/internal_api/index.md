@@ -665,8 +665,7 @@ Example response:
 
 ## Subscriptions
 
-The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
-in order to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
+The subscriptions endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscriptions including trials, and add-on purchases, for personal namespaces or top-level groups within GitLab.com.
 
 ### Creating a subscription
 

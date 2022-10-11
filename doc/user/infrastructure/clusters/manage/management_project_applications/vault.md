@@ -88,7 +88,7 @@ server:
 After you have successfully installed Vault, you must
 [initialize the Vault](https://learn.hashicorp.com/tutorials/vault/getting-started-deploy#initializing-the-vault)
 and obtain the initial root token. You need access to your Kubernetes cluster that
-Vault has been deployed into in order to do this. To initialize the Vault, get a
+Vault has been deployed into to do this. To initialize the Vault, get a
 shell to one of the Vault pods running inside Kubernetes (typically this is done
 by using the `kubectl` command line tool). After you have a shell into the pod,
 run the `vault operator init` command:

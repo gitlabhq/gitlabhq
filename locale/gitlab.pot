@@ -20093,6 +20093,15 @@ msgstr ""
 msgid "IdentityVerification|Something went wrong. Please try again."
 msgstr ""
 
+msgid "IdentityVerification|Step %{stepNumber}: Verify a payment method"
+msgstr ""
+
+msgid "IdentityVerification|Step %{stepNumber}: Verify email address"
+msgstr ""
+
+msgid "IdentityVerification|Step %{stepNumber}: Verify phone number"
+msgstr ""
+
 msgid "IdentityVerification|Step 1: Verify phone number"
 msgstr ""
 

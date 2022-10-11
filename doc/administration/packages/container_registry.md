@@ -1225,7 +1225,7 @@ and signed with the private key.
 The Registry then verifies that the signature matches the registry certificate
 specified in its configuration and allows the operation.
 GitLab background jobs processing (through Sidekiq) also interacts with Registry.
-These jobs talk directly to Registry in order to handle image deletion.
+These jobs talk directly to Registry to handle image deletion.
 
 ## Troubleshooting
 

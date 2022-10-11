@@ -84,7 +84,7 @@ The short-term focus is on testing regular migrations (typically schema changes)
 
 In order to secure this process and meet compliance goals, the runner environment is treated as a *production* environment and similarly locked down, monitored and audited. Only Database Maintainers have access to the CI pipeline and its job output. Everyone else can only see the results and statistics posted back on the merge request.
 
-We implement a secured CI pipeline on <https://ops.gitlab.net> that adds the execution steps outlined above. The goal is to secure this pipeline in order to solve the following problem:
+We implement a secured CI pipeline on <https://ops.gitlab.net> that adds the execution steps outlined above. The goal is to secure this pipeline to solve the following problem:
 
 Make sure we strongly protect production data, even though we allow everyone (GitLab team/developers) to execute arbitrary code on the thin-clone which contains production data.
 

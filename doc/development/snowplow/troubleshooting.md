@@ -74,7 +74,7 @@ Enrichers are not scalling well for the amount of events we receive.
 
 See the [dashboard](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=SnowPlow).
 
-Could we get assistance in order to fix the delay?
+Could we get assistance to fix the delay?
 
 Thank you!
 ```

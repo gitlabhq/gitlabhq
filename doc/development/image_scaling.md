@@ -13,7 +13,7 @@ For a general introduction to the history of image scaling at GitLab, you might 
 
 ## Why image scaling?
 
-Since version 13.6, GitLab scales down images on demand in order to reduce the page data footprint.
+Since version 13.6, GitLab scales down images on demand to reduce the page data footprint.
 This both reduces the amount of data "on the wire", but also helps with rendering performance,
 since the browser has less work to do.
 

@@ -394,8 +394,7 @@ In general, pipelines for an MR fall into one of the following types (from short
 
 A "pipeline type" is an abstract term that mostly describes the "critical path" (for example, the chain of jobs for which the sum
 of individual duration equals the pipeline's duration).
-We use these "pipeline types" in [metrics dashboards](https://app.periscopedata.com/app/gitlab/858266/GitLab-Pipeline-Durations)
-in order to detect what types and jobs need to be optimized first.
+We use these "pipeline types" in [metrics dashboards](https://app.periscopedata.com/app/gitlab/858266/GitLab-Pipeline-Durations) to detect what types and jobs need to be optimized first.
 
 An MR that touches multiple areas would be associated with the longest type applicable. For instance, an MR that touches backend
 and frontend would fall into the "Frontend" pipeline type since this type takes longer to finish than the "Backend" pipeline type.
@@ -751,7 +750,7 @@ This works well for the following reasons:
 
 ### Artifacts strategy
 
-We limit the artifacts that are saved and retrieved by jobs to the minimum in order to reduce the upload/download time and costs, as well as the artifacts storage.
+We limit the artifacts that are saved and retrieved by jobs to the minimum to reduce the upload/download time and costs, as well as the artifacts storage.
 
 ### Components caching
 

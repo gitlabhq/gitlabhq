@@ -18,7 +18,7 @@ Some gems may not include their license information in their `gemspec` file, and
 
 ### License Finder commands
 
-There are a few basic commands License Finder provides that you need in order to manage license detection.
+There are a few basic commands License Finder provides that you need to manage license detection.
 
 To verify that the checks are passing, and/or to see what dependencies are causing the checks to fail:
 

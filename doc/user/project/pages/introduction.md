@@ -299,8 +299,7 @@ To fix this, verify that the user is a member of the project.
 
 ### Cannot play media content on Safari
 
-Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6)
-in order to play your media content. For GitLab Pages to serve
+Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6) to play your media content. For GitLab Pages to serve
 HTTP Range requests, you should use the following two variables in your `.gitlab-ci.yml` file:
 
 ```yaml

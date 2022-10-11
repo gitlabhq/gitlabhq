@@ -719,7 +719,7 @@ and through its [web interface](https://console.postgres.ai/gitlab/joe-instances
 
 With Joe Bot you can execute DDL statements (like creating indexes, tables, and columns) and get query plans for `SELECT`, `UPDATE`, and `DELETE` statements.
 
-For example, in order to test new index on a column that is not existing on production yet, you can do the following:
+For example, to test new index on a column that is not existing on production yet, you can do the following:
 
 Create the column:
 

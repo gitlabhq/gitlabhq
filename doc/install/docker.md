@@ -303,8 +303,7 @@ To receive emails from GitLab you have to configure the
 have an SMTP server installed. You may also be interested in
 [enabling HTTPS](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
-After you make all the changes you want, you will need to restart the container
-in order to reconfigure GitLab:
+After you make all the changes you want, you will need to restart the container to reconfigure GitLab:
 
 ```shell
 sudo docker restart gitlab

@@ -130,7 +130,7 @@ Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Deployments > Environments**.
 
 Deploy boards are visible by default. You can explicitly select
-the triangle next to their respective environment name in order to hide them.
+the triangle next to their respective environment name to hide them.
 
 ### Example manifest file
 

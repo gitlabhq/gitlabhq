@@ -53,7 +53,7 @@ Each time you implement a new feature/endpoint, whether it is at UI, API or Grap
 
 Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/doc/development/permissions.md#feature-specific-permissions)** and not only project access rights.
 
-The HTTP status code returned when an authorization check fails should generally be `404 Not Found` in order to avoid revealing information
+The HTTP status code returned when an authorization check fails should generally be `404 Not Found` to avoid revealing information
 about whether or not the requested resource exists. `403 Forbidden` may be appropriate if you need to display a specific message to the user
 about why they cannot access the resource. If you are displaying a generic message such as "access denied", consider returning `404 Not Found` instead.
 

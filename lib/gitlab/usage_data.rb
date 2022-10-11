@@ -346,7 +346,6 @@ module Gitlab
         start = minimum_id(Project)
         finish = maximum_id(Project)
 
-        results[:projects_with_expiration_policy_disabled] = distinct_count(::ContainerExpirationPolicy.where(enabled: false), :project_id, start: start, finish: finish)
         # rubocop: disable UsageData/LargeTable
         base = ::ContainerExpirationPolicy.active
         # rubocop: enable UsageData/LargeTable

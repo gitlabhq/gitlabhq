@@ -1333,7 +1333,7 @@ variables:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334578) in GitLab 14.8.
 
-By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `DAST_API_OVERRIDES_CMD_VERBOSE` to any value in order to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
+By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `DAST_API_OVERRIDES_CMD_VERBOSE` to any value to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
 
 It is also possible to write messages from your script to a log file that is collected when the job completes or fails. The log file must be created in a specific location and following a naming convention.
 

@@ -166,7 +166,7 @@ Configure a passthrough these parameters:
 | `type`       | One of `file`, `raw`, `git` or `url`. |
 | `target`     | The target file that contains the data written by the passthrough evaluation. If no value is provided, a random target file is generated. |
 | `mode`       | `overwrite`: if `target` exists, overwrites the file; `append`: append to file instead. The default is `overwrite`. |
-| `ref`        | This option only applies to the `git` passthrough type and contains the name of the branch or the SHA to be used. |
+| `ref`        | This option only applies to the `git` passthrough type and contains the name of the branch or the SHA to be used. When using a branch name, specify it in the form `refs/heads/<branch>`, not `refs/remotes/<remote_name>/<branch>`. |
 | `subdir`     | This option only applies to the `git` passthrough type and can be used to only consider a certain subdirectory of the source Git repository. |
 | `value`      | For the `file` `url` and `git` types, `value` defines the source location of the file/Git repository; for the `raw` type, `value` carries the raw content to be passed through. |
 | `validator`  | Can be used to explicitly invoke validators (`xml`, `yaml`, `json`, `toml`) on the target files after the application of a passthrough. Per default, no validator is set. |
@@ -237,7 +237,7 @@ target directory with a total `timeout` of 60 seconds.
 Several passthrouh types generate a configuration for the target analyzer:
 
 - Two `git` passthrough sections pull the head of branch
-  `refs/remotes/origin/test` from the `myrules` Git repository, and revision
+  `refs/heads/test` from the `myrules` Git repository, and revision
   `97f7686` from the `sast-rules` Git repository. From the `sast-rules` Git
   repository, only data from the `go` subdirectory is considered.
   - The `sast-rules` entry has a higher precedence because it appears later in
@@ -262,7 +262,7 @@ Afterwards, Semgrep is invoked with the final configuration located under
   [[semgrep.passthrough]]
     type  = "git"
     value = "https://gitlab.com/user/myrules.git"
-    ref = "refs/remotes/origin/test"
+    ref = "refs/heads/test"
 
   [[semgrep.passthrough]]
     type  = "git"
@@ -309,7 +309,7 @@ It does not explicitly store credentials in the configuration file. To reduce th
   [[semgrep.passthrough]]
     type  = "git"
     value = "$GITURL"
-    ref = "refs/remotes/origin/main"
+    ref = "refs/heads/main"
 ```
 
 ### Configure the append mode for passthroughs

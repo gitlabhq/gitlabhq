@@ -261,7 +261,7 @@ abstraction.
 1. Build an abstraction that serves our community well but allows us to ship it quickly.
 1. Invest in a flexible solution, avoid one-way-door decisions, foster iteration.
 1. When in doubts err on the side of making things more simple for the wider community.
-1. Limit coupling between concerns in order to make the system more simple and extensible.
+1. Limit coupling between concerns to make the system more simple and extensible.
 1. Concerns should live on one side of the plug or the other--not both, which
    duplicates effort and increases coupling.
 

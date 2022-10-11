@@ -3,6 +3,8 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable do
     describe 'Maven project level endpoint' do
+      include Runtime::Fixtures
+
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
@@ -51,54 +53,6 @@ module QA
         end
       end
 
-      let(:gitlab_ci_file) do
-        {
-          file_path: '.gitlab-ci.yml',
-          content:
-              <<~YAML
-                deploy-and-install:
-                  image: maven:3.6-jdk-11
-                  script:
-                    - 'mvn deploy -s settings.xml'
-                    - 'mvn install -s settings.xml'
-                  only:
-                    - "#{package_project.default_branch}"
-                  tags:
-                    - "runner-for-#{package_project.name}"
-              YAML
-        }
-      end
-
-      let(:pom_file) do
-        {
-          file_path: 'pom.xml',
-          content: <<~XML
-            <project>
-              <groupId>#{group_id}</groupId>
-              <artifactId>#{artifact_id}</artifactId>
-              <version>#{package_version}</version>
-              <modelVersion>4.0.0</modelVersion>
-              <repositories>
-                <repository>
-                  <id>#{package_project.name}</id>
-                  <url>#{gitlab_address_with_port}/api/v4/projects/#{package_project.id}/-/packages/maven</url>
-                </repository>
-              </repositories>
-              <distributionManagement>
-                <repository>
-                  <id>#{package_project.name}</id>
-                  <url>#{gitlab_address_with_port}/api/v4/projects/#{package_project.id}/packages/maven</url>
-                </repository>
-                <snapshotRepository>
-                  <id>#{package_project.name}</id>
-                  <url>#{gitlab_address_with_port}/api/v4/projects/#{package_project.id}/packages/maven</url>
-                </snapshotRepository>
-              </distributionManagement>
-            </project>
-          XML
-        }
-      end
-
       before do
         Flow::Login.sign_in_unless_signed_in
         runner
@@ -142,40 +96,23 @@ module QA
           end
         end
 
-        let(:settings_xml) do
-          {
-            file_path: 'settings.xml',
-            content: <<~XML
-              <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
-                <servers>
-                  <server>
-                    <id>#{package_project.name}</id>
-                    <configuration>
-                      <httpHeaders>
-                        <property>
-                          <name>#{maven_header_name}</name>
-                          <value>#{token}</value>
-                        </property>
-                      </httpHeaders>
-                    </configuration>
-                  </server>
-                </servers>
-              </settings>
-            XML
-          }
-        end
-
         it 'pushes and pulls a maven package via maven', testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
+              gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/project', 'gitlab_ci.yaml.erb'))
+                                        .result(binding)
+              pom_xml = ERB.new(read_fixture('package_managers/maven/project', 'pom.xml.erb'))
+                                        .result(binding)
+              settings_xml = ERB.new(read_fixture('package_managers/maven/project', 'settings.xml.erb'))
+                                        .result(binding)
+
               commit.project = package_project
-              commit.commit_message = 'Add .gitlab-ci.yml'
+              commit.commit_message = 'Add files'
               commit.add_files(
                 [
-                  gitlab_ci_file,
-                  pom_file,
-                  settings_xml
+                  { file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml },
+                  { file_path: 'pom.xml', content: pom_xml },
+                  { file_path: 'settings.xml', content: settings_xml }
                 ])
             end
           end
@@ -185,17 +122,7 @@ module QA
           Flow::Pipeline.visit_latest_pipeline
 
           Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('deploy')
-          end
-
-          Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 800)
-
-            job.click_element(:pipeline_path)
-          end
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job('install')
+            pipeline.click_job('deploy-and-install')
           end
 
           Page::Project::Job::Show.perform do |job|

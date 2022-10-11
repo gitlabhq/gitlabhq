@@ -1318,7 +1318,7 @@ automatically find and index the schema.
 
 #### Testing Apollo components
 
-If we use `ApolloQuery` or `ApolloMutation` in our components, in order to test their functionality we need to add a stub first:
+If we use `ApolloQuery` or `ApolloMutation` in our components, to test their functionality we need to add a stub first:
 
 ```javascript
 import { ApolloMutation } from 'vue-apollo';

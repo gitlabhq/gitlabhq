@@ -148,7 +148,7 @@ This limit is hardcoded and only applied on GitLab.
 Diff Viewers, which can be found on `models/diff_viewer/*` are classes used to map metadata about each type of Diff File. It has information
 whether it's a binary, which partial should be used to render it or which File extensions this class accounts for.
 
-`DiffViewer::Base` validates _blobs_ (old and new versions) content, extension and file type in order to check if it can be rendered.
+`DiffViewer::Base` validates _blobs_ (old and new versions) content, extension and file type to check if it can be rendered.
 
 ## Merge request diffs against the `HEAD` of the target branch
 
@@ -169,7 +169,7 @@ In order to display an up-to-date diff, in GitLab 12.9 we
 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27008) merge request
 diffs compared against `HEAD` of the target branch: the
 target branch is artificially merged into the source branch, then the resulting
-merge ref is compared to the source branch in order to calculate an accurate
+merge ref is compared to the source branch to calculate an accurate
 diff.
 
 Until we complete the epics ["use merge refs for diffs"](https://gitlab.com/groups/gitlab-org/-/epics/854)

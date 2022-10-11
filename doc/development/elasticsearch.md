@@ -64,7 +64,7 @@ Please see the `sha_tokenizer` explanation later below for an example.
 
 Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the filters: [`code`](#code), `lowercase`, and `asciifolding`
 
-The `whitespace` tokenizer was selected in order to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` in order to be properly searched.
+The `whitespace` tokenizer was selected to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` to be properly searched.
 
 Please see the `code` filter for an explanation on how tokens are split.
 
@@ -94,7 +94,7 @@ Example:
 
 #### `path_tokenizer`
 
-This is a custom tokenizer that uses the [`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html) with `reverse: true` in order to allow searches to find paths no matter how much or how little of the path is given as input.
+This is a custom tokenizer that uses the [`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html) with `reverse: true` to allow searches to find paths no matter how much or how little of the path is given as input.
 
 Example:
 

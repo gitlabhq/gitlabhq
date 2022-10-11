@@ -191,7 +191,7 @@ For self-managed, administrators can use the [users API](../../../api/users.md) 
 
 When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
-This can then be compared to the NameID being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match in order to identify users.
+This can then be compared to the NameID being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match to identify users.
 
 ### Stuck in a login "loop"
 

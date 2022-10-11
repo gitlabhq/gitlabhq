@@ -357,7 +357,7 @@ Support for more languages and analyzers is tracked in [this epic](https://gitla
 
 ### Using CI/CD variables to pass credentials for private repositories
 
-Some analyzers require downloading the project's dependencies in order to
+Some analyzers require downloading the project's dependencies to
 perform the analysis. In turn, such dependencies may live in private Git
 repositories and thus require credentials like username and password to download them.
 Depending on the analyzer, such credentials can be provided to

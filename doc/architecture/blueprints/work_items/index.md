@@ -74,10 +74,10 @@ Task is a special Work Item type. Tasks can be added to issues as child items an
 
 ## Motivation
 
-Work Items main goal is to enhance the planning toolset in order to become the most popular collaboration tool for knowledge workers in any industry. 
+Work Items main goal is to enhance the planning toolset to become the most popular collaboration tool for knowledge workers in any industry.
 
-- Puts all like-items (issues, incidents, epics, test cases etc.) on a standard platform in order to simplify maintenance and increase consistency in experience
-- Enables first-class support of common planning concepts in order to lower complexity and allow users to plan without learning GitLab-specific nuances.
+- Puts all like-items (issues, incidents, epics, test cases etc.) on a standard platform to simplify maintenance and increase consistency in experience
+- Enables first-class support of common planning concepts to lower complexity and allow users to plan without learning GitLab-specific nuances.
 
 ## Goals
 

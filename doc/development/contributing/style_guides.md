@@ -183,7 +183,7 @@ To fix this issue:
 
 When creating [node patterns](https://docs.rubocop.org/rubocop-ast/node_pattern.html) to match
 Ruby's AST, you can use [`scripts/rubocop-parse`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/rubocop-parse)
-to display the AST of a Ruby expression, in order to help you create the matcher.
+to display the AST of a Ruby expression, to help you create the matcher.
 See also [!97024](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97024).
 
 ### Resolving RuboCop exceptions

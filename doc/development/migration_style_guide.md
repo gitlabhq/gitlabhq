@@ -1281,7 +1281,7 @@ in a previous migration.
 
 ### Example: Add a column `my_column` to the users table
 
-It is important not to leave out the `User.reset_column_information` command, in order to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
+It is important not to leave out the `User.reset_column_information` command, to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
 
 ```ruby
 class AddAndSeedMyColumn < Gitlab::Database::Migration[2.0]

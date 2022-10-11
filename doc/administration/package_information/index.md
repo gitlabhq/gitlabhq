@@ -53,7 +53,7 @@ Documentation on package signatures can be found at [Signed Packages](signed_pac
 
 Configuration file in `/etc/gitlab/gitlab.rb` is created on initial installation
 of the Omnibus GitLab package. On subsequent package upgrades, the configuration
-file is not updated with new configuration. This is done in order to avoid
+file is not updated with new configuration. This is done to avoid
 accidental overwrite of user configuration provided in `/etc/gitlab/gitlab.rb`.
 
 New configuration options are noted in the
@@ -76,7 +76,7 @@ characters on each line.
 
 ## Init system detection
 
-Omnibus GitLab attempts to query the underlying system in order to
+Omnibus GitLab attempts to query the underlying system to
 check which init system it uses.
 This manifests itself as a `WARNING` during the `sudo gitlab-ctl reconfigure`
 run.

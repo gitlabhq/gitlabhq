@@ -452,7 +452,7 @@ The `scan.primary_identifiers` field is an optional field containing an array of
 This is an exhaustive list of all rulesets for which the analyzer performed the scan.
 
 Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may be empty, this optional field
-should contain the complete list of potential identifiers in order to inform the Rails application of which
+should contain the complete list of potential identifiers to inform the Rails application of which
 rules were executed.
 
 When populated, the Rails application will automatically resolve previously detected vulnerabilities as no

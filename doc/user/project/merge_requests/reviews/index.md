@@ -266,7 +266,7 @@ The merge request sidebar contains the branch reference for the source branch
 used to contribute changes for this merge request.
 
 To copy the branch reference into your clipboard, select the **Copy branch name** button
-(**{copy-to-clipboard}**) in the right sidebar. Use it to checkout the branch locally
+(**{copy-to-clipboard}**) in the right sidebar. Use it to check out the branch locally
 from the command line by running `git checkout <branch-name>`.
 
 ### Checkout merge requests locally through the `head` ref

@@ -34,8 +34,8 @@ module QA
         it 'pushes and pulls a maven package via gradle', testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
-              gradle_upload_yaml = ERB.new(read_fixture('package_managers/maven', 'gradle_upload_package.yaml.erb')).result(binding)
-              build_upload_gradle = ERB.new(read_fixture('package_managers/maven', 'build_upload.gradle.erb')).result(binding)
+              gradle_upload_yaml = ERB.new(read_fixture('package_managers/maven/gradle', 'gradle_upload_package.yaml.erb')).result(binding)
+              build_upload_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build_upload.gradle.erb')).result(binding)
 
               commit.project = package_project
               commit.commit_message = 'Add .gitlab-ci.yml'
@@ -73,8 +73,8 @@ module QA
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
-              gradle_install_yaml = ERB.new(read_fixture('package_managers/maven', 'gradle_install_package.yaml.erb')).result(binding)
-              build_install_gradle = ERB.new(read_fixture('package_managers/maven', 'build_install.gradle.erb')).result(binding)
+              gradle_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle', 'gradle_install_package.yaml.erb')).result(binding)
+              build_install_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build_install.gradle.erb')).result(binding)
 
               commit.project = client_project
               commit.commit_message = 'Add files'

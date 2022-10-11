@@ -32,7 +32,7 @@ If required, you can find [a glossary of common terms](../../../integration/saml
 1. Configure the SAML response to include a [NameID](#nameid) that uniquely identifies each user.
 1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
 1. While the default is enabled for most SAML providers, please ensure the app is set to have service provider
-   initiated calls in order to link existing GitLab accounts.
+   initiated calls to link existing GitLab accounts.
 1. Once the identity provider is set up, move on to [configuring GitLab](#configure-gitlab).
 
 ![Issuer and callback for configuring SAML identity provider with GitLab.com](img/group_saml_configuration_information.png)

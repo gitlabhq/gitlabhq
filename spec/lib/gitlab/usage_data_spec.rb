@@ -624,7 +624,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       it 'gathers usage data' do
         expect(subject[:projects_with_expiration_policy_enabled]).to eq 19
-        expect(subject[:projects_with_expiration_policy_disabled]).to eq 5
 
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_unset]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_1]).to eq 1

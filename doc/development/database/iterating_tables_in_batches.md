@@ -196,7 +196,7 @@ value is "excluded". The query looks at the index to get the location of the fiv
 rows on the disk and read the rows from the table. The returned array is processed in Ruby.
 
 The first iteration is done. For the next iteration, the last `id` value is reused from the
-previous iteration in order to find out the next end `id` value.
+previous iteration to find out the next end `id` value.
 
 ```sql
 SELECT "users"."id" FROM "users" WHERE "users"."id" >= 302 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5

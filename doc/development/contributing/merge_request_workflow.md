@@ -14,7 +14,7 @@ label, but you are free to contribute to any issue you want.
 
 If an issue is marked for the current milestone at any time, even
 when you are working on it, a GitLab Inc. team member may take over the merge request
-in order to ensure the work is finished before the release date.
+to ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled, it is best to first create
 an issue (if there isn't one already) and leave a comment asking for it

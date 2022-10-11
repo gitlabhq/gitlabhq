@@ -19,7 +19,7 @@ out using the instructions below.
 ## Reuse an existing WebSocket connection
 
 Features reusing an existing connection incur minimal risk. Feature flag rollout
-is recommended in order to give more control to self-hosting customers. However,
+is recommended to give more control to self-hosting customers. However,
 it is not necessary to roll out in percentages, or to estimate new connections for
 GitLab.com.
 

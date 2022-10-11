@@ -286,7 +286,7 @@ The following table lists these variables along with their default values.
 
 ([Source](https://github.com/ruby/ruby/blob/45b29754cfba8435bc4980a87cd0d32c648f8a2e/gc.c#L254-L308))
 
-GitLab may decide to change these settings in order to speed up application performance, lower memory requirements, or both.
+GitLab may decide to change these settings to speed up application performance, lower memory requirements, or both.
 
 You can see how each of these settings affect GC performance, memory use and application start-up time for an idle instance of
 GitLab by running the `scripts/perf/gc/collect_gc_stats.rb` script. It will output GC stats and general timing data to standard

@@ -20,7 +20,7 @@ company behind the project.
 This effort is described in more detail
 [in the infrastructure team handbook page](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
 
-GitLab Pages is tightly coupled with NFS and in order to unblock Kubernetes
+GitLab Pages is tightly coupled with NFS and to unblock Kubernetes
 migration a significant change to GitLab Pages' architecture is required. This
 is an ongoing work that we have started more than a year ago. This blueprint
 might be useful to understand why it is important, and what is the roadmap.

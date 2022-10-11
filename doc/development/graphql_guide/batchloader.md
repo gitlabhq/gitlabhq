@@ -146,7 +146,7 @@ def publisher
   ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Publisher, object.publisher_id).find
 end
 
-# Here we need the publisher in order to generate the catalog URL
+# Here we need the publisher to generate the catalog URL
 def catalog_url
   ::Gitlab::Graphql::Lazy.with_value(publisher) do |p|
     UrlHelpers.book_catalog_url(publisher, object.isbn)

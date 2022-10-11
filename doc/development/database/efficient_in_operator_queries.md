@@ -1052,6 +1052,6 @@ Performance comparison for the `gitlab-org` group:
 | Optimized `IN` query | 9783                          | 450ms                   | 22ms                  |
 
 NOTE:
-Before taking measurements, the group lookup query was executed separately in order to make
+Before taking measurements, the group lookup query was executed separately to make
 the group data available in the buffer cache. Since it's a frequently called query, it
 hits many shared buffers during the query execution in the production environment.
