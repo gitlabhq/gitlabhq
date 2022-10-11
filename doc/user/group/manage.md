@@ -158,6 +158,10 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 You can give a user access to all projects in a group.
 
+Prerequisite:
+
+- You must have the Owner role.
+
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Group information > Members**.
 1. Select **Invite members**.

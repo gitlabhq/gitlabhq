@@ -44,7 +44,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter do
 
       def mock_issue_serializer(count, raise_exception_on_even_mocks: false)
         serializer = instance_double(Gitlab::JiraImport::IssueSerializer, execute: { key: 'data' })
-        next_iid = project.issues.maximum(:iid).to_i
+        allow(Issue).to receive(:with_project_iid_supply).and_return('issue_iid')
 
         count.times do |i|
           if raise_exception_on_even_mocks && i.even?
@@ -53,16 +53,15 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter do
               jira_issues[i],
               current_user.id,
               default_issue_type_id,
-              { iid: next_iid + 1 }
+              { iid: 'issue_iid' }
             ).and_raise('Some error')
           else
-            next_iid += 1
             expect(Gitlab::JiraImport::IssueSerializer).to receive(:new).with(
               project,
               jira_issues[i],
               current_user.id,
               default_issue_type_id,
-              { iid: next_iid }
+              { iid: 'issue_iid' }
             ).and_return(serializer)
           end
         end

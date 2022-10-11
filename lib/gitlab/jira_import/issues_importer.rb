@@ -48,7 +48,7 @@ module Gitlab
       end
 
       def schedule_issue_import_workers(issues)
-        next_iid = project.issues.maximum(:iid).to_i + 1
+        next_iid = Issue.with_project_iid_supply(project, &:next_value)
 
         issues.each do |jira_issue|
           # Technically it's possible that the same work is performed multiple
@@ -70,7 +70,8 @@ module Gitlab
             Gitlab::JiraImport::ImportIssueWorker.perform_async(project.id, jira_issue.id, issue_attrs, job_waiter.key)
 
             job_waiter.jobs_remaining += 1
-            next_iid += 1
+
+            next_iid = Issue.with_project_iid_supply(project, &:next_value)
 
             # Mark the issue as imported immediately so we don't end up
             # importing it multiple times within same import.

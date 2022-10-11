@@ -26,7 +26,6 @@ module Gitlab
           RefreshImportJidWorker.perform_in_the_future(project.id, jid)
 
           info(project.id, message: "starting importer", importer: 'Importer::RepositoryImporter')
-
           importer = Importer::RepositoryImporter.new(project, client)
 
           importer.execute

@@ -141,7 +141,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
           .to receive(:insert_and_return_id)
           .with(
             {
-              iid: 1,
+              iid: 42,
               title: 'My Issue',
               author_id: user.id,
               project_id: project.id,
@@ -172,7 +172,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
           .to receive(:insert_and_return_id)
           .with(
             {
-              iid: 1,
+              iid: 42,
               title: 'My Issue',
               author_id: project.creator_id,
               project_id: project.id,

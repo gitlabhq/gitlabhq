@@ -1738,7 +1738,7 @@ class User < ApplicationRecord
   end
 
   def authorized_project_mirrors(level)
-    projects = Ci::ProjectMirror.by_project_id(ci_project_mirrors_for_project_members(level))
+    projects = Ci::ProjectMirror.by_project_id(ci_project_ids_for_project_members(level))
 
     namespace_projects = Ci::ProjectMirror.by_namespace_id(ci_namespace_mirrors_for_group_members(level).select(:namespace_id))
 
@@ -2210,7 +2210,7 @@ class User < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def ci_project_mirrors_for_project_members(level)
+  def ci_project_ids_for_project_members(level)
     project_members.where('access_level >= ?', level).pluck(:source_id)
   end
 
@@ -2364,7 +2364,7 @@ class User < ApplicationRecord
   end
 
   def ci_owned_project_runners_from_project_members
-    project_ids = ci_project_mirrors_for_project_members(Gitlab::Access::MAINTAINER)
+    project_ids = ci_project_ids_for_project_members(Gitlab::Access::MAINTAINER)
 
     Ci::Runner
       .joins(:runner_projects)

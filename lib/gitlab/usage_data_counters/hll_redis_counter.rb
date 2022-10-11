@@ -19,7 +19,6 @@ module Gitlab
       ALLOWED_AGGREGATIONS = %i(daily weekly).freeze
 
       CATEGORIES_FOR_TOTALS = %w[
-        analytics
         compliance
         error_tracking
         ide_edit
@@ -27,6 +26,7 @@ module Gitlab
       ].freeze
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
+        analytics
         ci_users
         deploy_token_packages
         code_review

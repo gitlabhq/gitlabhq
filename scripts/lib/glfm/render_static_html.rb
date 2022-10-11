@@ -20,7 +20,7 @@ require_relative 'shared'
 # Factorybot factory methods to create persisted model objects with stable
 # and consistent data values, to ensure consistent example snapshot HTML
 # across various machines and environments. RSpec also makes it easy to invoke
-# the API # and obtain the response.
+# the API and obtain the response.
 #
 # It is intended to be invoked as a helper subprocess from the `update_example_snapshots.rb`
 # script class. It's not intended to be run or used directly. This usage is also reinforced
@@ -32,7 +32,7 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
   # noinspection RailsParamDefResolve (RubyMine can't find the shared context from this file location)
   include_context 'with GLFM example snapshot fixtures'
 
-  it 'can create a project dependency graph using factories' do
+  it do
     markdown_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_MARKDOWN_YML_PATH')), symbolize_names: true)
     metadata_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_METADATA_YML_PATH')), symbolize_names: true) || {}
 
