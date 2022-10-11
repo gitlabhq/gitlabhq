@@ -65,7 +65,7 @@ Inc._
 - There is no way to automatically notify a user when they are approaching thresholds.
 - There is no single way to change limits for a namespace / project / user / customer.
 - There is no single way to monitor limits through real-time metrics.
-- There is no framework for hierarchical limit configuration (instance / namespace / sub-group / project).
+- There is no framework for hierarchical limit configuration (instance / namespace / subgroup / project).
 - We allow disabling rate-limiting for some marquee SaaS customers, but this
   increases a risk for those same customers. We should instead be able to set
   higher limits.

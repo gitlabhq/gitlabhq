@@ -43,7 +43,7 @@ Benefits of the aggregated VSA backend:
 - Simpler database queries (fewer JOINs).
 - Faster aggregations, only a single table is accessed.
 - Possibility to introduce further aggregations for improving the first page load time.
-- Better performance for large groups (with many sub-groups, projects, issues and, merge requests).
+- Better performance for large groups (with many subgroups, projects, issues and, merge requests).
 - Ready for database decomposition. The VSA related database tables could live in a separate
 database with a minimal development effort.
 - Ready for keyset pagination which can be useful for exporting the data.
@@ -165,7 +165,7 @@ Creation time always happens first, so this stage always reports negative durati
 
 The data collection scans and processes all issues and merge requests records in the group
 hierarchy, starting from the top-level group. This means that if a group only has one value stream
-in a sub-group, we nevertheless collect data of all issues and merge requests in the hierarchy of
+in a subgroup, we nevertheless collect data of all issues and merge requests in the hierarchy of
 this group. This aims to simplify the data collection mechanism. Moreover, data research shows
 that most group hierarchies have their stages configured on the top level.
 

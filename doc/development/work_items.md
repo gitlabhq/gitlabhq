@@ -88,8 +88,8 @@ so that in future we can allow users to define custom WITs, we will move the
 to `work_item_types` will involve creating the set of WITs for all root-level groups.
 
 NOTE:
-At first, defining a WIT will only be possible at the root-level group, which would then be inherited by sub-groups.
-We will investigate the possibility of defining new WITs at sub-group levels at a later iteration.
+At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
+We will investigate the possibility of defining new WITs at subgroup levels at a later iteration.
 
 ### Introducing work_item_types table
 

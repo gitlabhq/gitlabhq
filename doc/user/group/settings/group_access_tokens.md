@@ -147,7 +147,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 
 ## Enable or disable group access token creation
 
-To enable or disable group access token creation for all sub-groups in a top-level group:
+To enable or disable group access token creation for all subgroups in a top-level group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.

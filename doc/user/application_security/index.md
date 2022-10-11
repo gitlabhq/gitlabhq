@@ -32,6 +32,25 @@ schedule. Coverage includes:
 - Vulnerabilities in a running web application.
 - Infrastructure as code configuration.
 
+Each of the GitLab application security tools is relevant to specific stages of the feature development workflow.
+
+- Commit
+  - SAST
+  - Secret Detection
+  - IaC Scanning
+  - Dependency Scanning
+  - License Scanning
+  - Coverage-guided Fuzz Testing
+- Build
+  - Container Scanning
+- Test
+  - API Security
+  - DAST
+- Deploy
+  - Operational Container Scanning
+
+![CI/CD stages and matching GitLab application security tools](img/secure_tools_and_cicd_stages.png)
+
 ### Source code analysis
 
 Source code analysis occurs on every code commit. Details of vulnerabilities detected are provided
@@ -48,7 +67,7 @@ Analysis of the web application occurs on every code commit. As part of the CI/C
 application is built, deployed to a test environment, and subjected to the following tests:
 
 - Test for known application vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
-- Analysis of APIs for known attack vectors - [DAST API](dast_api/index.md).
+- Analysis of APIs for known attack vectors - [API Security](dast_api/index.md).
 - Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
 
 ### Dependency analysis
@@ -66,7 +85,7 @@ For more details, see
 [Dependency Scanning compared to Container Scanning](dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning).
 
 Additionally, dependencies in operational container images can be analyzed for vulnerabilities
-on a regular schedule or cadence. For more details, see [Cluster Image Scanning](../clusters/agent/vulnerabilities.md).
+on a regular schedule or cadence. For more details, see [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md).
 
 ### Infrastructure analysis
 
@@ -486,6 +505,7 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 <!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
 -->
+
 ### Secure job failing with exit code 1
 
 WARNING:

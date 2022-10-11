@@ -161,7 +161,7 @@ function mountAssigneesComponent() {
           fullPath,
           issuableType,
           issuableId: id,
-          allowMultipleAssignees: !el.dataset.maxAssignees,
+          allowMultipleAssignees: !el.dataset.maxAssignees || el.dataset.maxAssignees > 1,
           editable,
         },
         scopedSlots: {

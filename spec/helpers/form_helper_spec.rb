@@ -6,31 +6,81 @@ RSpec.describe FormHelper do
   include Devise::Test::ControllerHelpers
 
   describe '#dropdown_max_select' do
-    context "with the :limit_reviewer_and_assignee_size feature flag on" do
-      it 'correctly returns the max amount of reviewers or assignees to allow' do
-        max = MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+    let(:feature_flag) { :limit_reviewer_and_assignee_size }
 
-        expect(helper.dropdown_max_select({}))
+    context "with the :limit_reviewer_and_assignee_size feature flag on" do
+      before do
+        stub_feature_flags(feature_flag => true)
+      end
+
+      it 'correctly returns the max amount of reviewers or assignees to allow' do
+        max = Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+
+        expect(helper.dropdown_max_select({}, feature_flag))
           .to eq(max)
-        expect(helper.dropdown_max_select({ 'max-select'.to_sym => 5 }))
+        expect(helper.dropdown_max_select({ 'max-select'.to_sym => 5 }, feature_flag))
           .to eq(5)
-        expect(helper.dropdown_max_select({ 'max-select'.to_sym => max + 5 }))
+        expect(helper.dropdown_max_select({ 'max-select'.to_sym => max + 5 }, feature_flag))
           .to eq(max)
       end
     end
 
     context "with the :limit_reviewer_and_assignee_size feature flag off" do
       before do
-        stub_feature_flags(limit_reviewer_and_assignee_size: false)
+        stub_feature_flags(feature_flag => false)
       end
 
       it 'correctly returns the max amount of reviewers or assignees to allow' do
-        expect(helper.dropdown_max_select({}))
+        expect(helper.dropdown_max_select({}, feature_flag))
           .to eq(nil)
-        expect(helper.dropdown_max_select({ 'max-select'.to_sym => 5 }))
+        expect(helper.dropdown_max_select({ 'max-select'.to_sym => 5 }, feature_flag))
           .to eq(5)
-        expect(helper.dropdown_max_select({ 'max-select'.to_sym => 120 }))
+        expect(helper.dropdown_max_select({ 'max-select'.to_sym => 120 }, feature_flag))
           .to eq(120)
+      end
+    end
+  end
+
+  describe '#assignees_dropdown_options' do
+    let(:merge_request) { build(:merge_request) }
+
+    context "with the :limit_assignees_per_issuable feature flag on" do
+      context "with multiple assignees" do
+        it 'correctly returns the max amount of assignees to allow' do
+          allow(helper).to receive(:merge_request_supports_multiple_assignees?).and_return(true)
+
+          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
+            .to eq(Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS)
+        end
+      end
+
+      context "with only 1 assignee" do
+        it 'correctly returns the max amount of assignees to allow' do
+          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
+            .to eq(1)
+        end
+      end
+    end
+
+    context "with the :limit_assignees_per_issuable feature flag off" do
+      before do
+        stub_feature_flags(limit_assignees_per_issuable: false)
+      end
+
+      context "with multiple assignees" do
+        it 'correctly returns the max amount of assignees to allow' do
+          allow(helper).to receive(:merge_request_supports_multiple_assignees?).and_return(true)
+
+          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
+            .to eq(nil)
+        end
+      end
+
+      context "with only 1 assignee" do
+        it 'correctly returns the max amount of assignees to allow' do
+          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
+            .to eq(1)
+        end
       end
     end
   end
@@ -44,7 +94,7 @@ RSpec.describe FormHelper do
           allow(helper).to receive(:merge_request_supports_multiple_reviewers?).and_return(true)
 
           expect(helper.reviewers_dropdown_options(merge_request)[:data][:'max-select'])
-            .to eq(MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS)
+            .to eq(Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS)
         end
       end
 

@@ -75,6 +75,24 @@ RSpec.describe Issuable do
 
       it_behaves_like 'truncates the description to its allowed maximum length on import'
     end
+
+    describe '#validate_assignee_length' do
+      let(:assignee_1) { create(:user) }
+      let(:assignee_2) { create(:user) }
+      let(:assignee_3) { create(:user) }
+
+      subject { create(:merge_request) }
+
+      before do
+        stub_const("Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS", 2)
+      end
+
+      it 'will not exceed the assignee limit' do
+        expect do
+          subject.update!(assignees: [assignee_1, assignee_2, assignee_3])
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 
   describe "Scope" do

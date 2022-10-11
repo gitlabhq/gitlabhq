@@ -45,7 +45,7 @@ flowchart LR
 ### Scanning
 
 The scanning part is responsible for finding vulnerabilities in given resources, and exporting results.
-The scans are executed in CI/CD jobs via several small projects called [Analyzers](../../user/application_security/terminology/index.md#analyzer), which can be found in our [Analyzers sub-group](https://gitlab.com/gitlab-org/security-products/analyzers).
+The scans are executed in CI/CD jobs via several small projects called [Analyzers](../../user/application_security/terminology/index.md#analyzer), which can be found in our [Analyzers subgroup](https://gitlab.com/gitlab-org/security-products/analyzers).
 The Analyzers are wrappers around security tools called [Scanners](../../user/application_security/terminology/index.md#scanner), developed internally or externally, to integrate them into GitLab.
 The Analyzers are mainly written in Go.
 

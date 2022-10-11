@@ -109,7 +109,7 @@ Items that are migrated to the target instance include:
 - Namespace Settings
 - Releases
   - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.0).
-- Sub-Groups
+- Subgroups
 - Uploads
 
 Any other items are **not** migrated.

@@ -21,7 +21,7 @@ module QA
           click_element :namespaces_list
 
           within_element(:namespaces_list) do
-            find_element(:namespaces_list_search).fill_in(with: item)
+            fill_element(:namespaces_list_search, item)
 
             wait_for_requests
 

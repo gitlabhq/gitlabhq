@@ -26,7 +26,7 @@ Maintainer role.
 
 Prerequisites:
 
-- When granting the **Allowed to deploy** permission to a group or sub-group, the user configuring the protected environment must be a **direct member** of the group or sub-group to be added. Otherwise, the group or sub-group will not show up in the dropdown. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
+- When granting the **Allowed to deploy** permission to a group or subgroup, the user configuring the protected environment must be a **direct member** of the group or subgroup to be added. Otherwise, the group or subgroup will not show up in the dropdown. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
 
 To protect an environment:
 
@@ -214,8 +214,8 @@ configured:
   They do *not* have access to the CI/CD configurations in the
   top-level group, so operators can ensure that the critical configuration won't
   be accidentally changed by the developers.
-- For sub-groups and child projects:
-  - Regarding [sub-groups](../../user/group/subgroups/index.md), if a higher
+- For subgroups and child projects:
+  - Regarding [subgroups](../../user/group/subgroups/index.md), if a higher
     group has configured the group-level protected environment, the lower groups
     cannot override it.
   - [Project-level protected environments](#protecting-environments) can be

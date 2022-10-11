@@ -3040,6 +3040,11 @@ class Project < ApplicationRecord
   end
 
   # overridden in EE
+  def can_suggest_reviewers?
+    false
+  end
+
+  # overridden in EE
   def suggested_reviewers_available?
     false
   end

@@ -39,13 +39,13 @@ module FormHelper
     end
   end
 
-  def dropdown_max_select(data)
-    return data[:'max-select'] unless Feature.enabled?(:limit_reviewer_and_assignee_size)
+  def dropdown_max_select(data, feature_flag)
+    return data[:'max-select'] unless Feature.enabled?(feature_flag)
 
-    if data[:'max-select'] && data[:'max-select'] < MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+    if data[:'max-select'] && data[:'max-select'] < ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
       data[:'max-select']
     else
-      MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+      ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
     end
   end
 
@@ -162,7 +162,12 @@ module FormHelper
 
     new_options[:title] = _('Select assignee(s)')
     new_options[:data][:'dropdown-header'] = 'Assignee(s)'
-    new_options[:data].delete(:'max-select')
+
+    if Feature.enabled?(:limit_assignees_per_issuable)
+      new_options[:data][:'max-select'] = ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+    else
+      new_options[:data].delete(:'max-select')
+    end
 
     new_options
   end
@@ -174,7 +179,7 @@ module FormHelper
     new_options[:data][:'dropdown-header'] = _('Reviewer(s)')
 
     if Feature.enabled?(:limit_reviewer_and_assignee_size)
-      new_options[:data][:'max-select'] = MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+      new_options[:data][:'max-select'] = ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
     else
       new_options[:data].delete(:'max-select')
     end

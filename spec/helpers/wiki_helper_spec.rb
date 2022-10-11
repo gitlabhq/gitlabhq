@@ -79,14 +79,16 @@ RSpec.describe WikiHelper do
     let(:classes) { "gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort" }
 
     def expected_link(sort, direction, icon_class)
+      reversed_direction = direction == 'desc' ? 'asc' : 'desc'
       path =
         if sort
-          "/#{wiki.project.full_path}/-/wikis/pages?direction=#{direction}&sort=#{sort}"
+          "/#{wiki.project.full_path}/-/wikis/pages?direction=#{reversed_direction}&sort=#{sort}"
         else
-          "/#{wiki.project.full_path}/-/wikis/pages?direction=#{direction}"
+          "/#{wiki.project.full_path}/-/wikis/pages?direction=#{reversed_direction}"
         end
 
-      helper.link_to(path, type: 'button', class: classes, title: 'Sort direction') do
+      title = direction == 'desc' ? _('Sort direction: Descending') : _('Sort direction: Ascending')
+      helper.link_to(path, type: 'button', class: classes, title: title) do
         helper.sprite_icon("sort-#{icon_class}")
       end
     end
@@ -101,7 +103,7 @@ RSpec.describe WikiHelper do
         let(:direction) { nil }
 
         it 'renders with default values' do
-          expect(wiki_link).to eq(expected_link('title', 'desc', 'lowest'))
+          expect(wiki_link).to eq(expected_link('title', 'asc', 'lowest'))
         end
       end
 
@@ -110,7 +112,7 @@ RSpec.describe WikiHelper do
         let(:direction) { 'asc' }
 
         it 'renders a link with opposite direction' do
-          expect(wiki_link).to eq(expected_link('title', 'desc', 'lowest'))
+          expect(wiki_link).to eq(expected_link('title', 'aesc', 'lowest'))
         end
       end
 
@@ -119,7 +121,7 @@ RSpec.describe WikiHelper do
         let(:direction) { 'desc' }
 
         it 'renders a link with opposite direction' do
-          expect(wiki_link).to eq(expected_link('created_at', 'asc', 'highest'))
+          expect(wiki_link).to eq(expected_link('created_at', 'desc', 'highest'))
         end
       end
     end
@@ -134,7 +136,7 @@ RSpec.describe WikiHelper do
         let(:direction) { 'asc' }
 
         it 'ignores created_at and renders a link with opposite direction' do
-          expect(wiki_link).to eq(expected_link(nil, 'desc', 'lowest'))
+          expect(wiki_link).to eq(expected_link(nil, 'asc', 'lowest'))
         end
       end
 
@@ -143,7 +145,7 @@ RSpec.describe WikiHelper do
         let(:direction) { nil }
 
         it 'renders with default values' do
-          expect(wiki_link).to eq(expected_link(nil, 'desc', 'lowest'))
+          expect(wiki_link).to eq(expected_link(nil, 'asc', 'lowest'))
         end
       end
     end

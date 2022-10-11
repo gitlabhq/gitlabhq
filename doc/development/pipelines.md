@@ -358,6 +358,11 @@ with latest `master`, and then it triggers a regular branch pipeline for
 never be merged back to `master`. Any other Ruby 3 changes should go into
 `master` directly, which should be compatible with Ruby 2.7.
 
+Previously, `ruby3-sync` was using a project token stored in `RUBY3_SYNC_TOKEN`
+(now backed up in `RUBY3_SYNC_TOKEN_NOT_USED`), however due to various
+permissions issues, we ended up using an access token from `gitlab-bot` so now
+`RUBY3_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
+
 ### Long-term plan
 
 We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administration/package_information/postgresql_versions.md):

@@ -18,7 +18,8 @@ GitLab Dedicated enables you to offload the operational overhead of managing the
 
 ## Available features
 
-- Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#general-setup) in order for GitLab to communicate with your IdP. This is provided during onboarding. SAML [request signing](../../integration/saml.md#request-signing-optional) is supported.
+- Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#general-setup) in order for GitLab to communicate with your IdP. This is provided during onboarding.
+  - SAML [request signing](../../integration/saml.md#request-signing-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#saml-groups) are supported.
 - Networking:
   - Public connectivity with support for IP Allowlists. During onboarding, you can optionally specify a list of IP addresses that can access your Dedicated instance. Subsequently, when an IP not on the allowlist tries to access your instance the connection will be refused.
   - Optional. Private connectivity via [AWS PrivateLink](https://aws.amazon.com/privatelink/).
@@ -43,6 +44,7 @@ Features that are not available but we plan to support in the future:
 - FortiAuthenticator/FortiToken 2FA
 - Reply-by email
 - Service Desk
+- Any feature not listed [above](#available-features) which needs to be configured outside of the web interface.
 
 Features that we do not plan to offer at all:
 

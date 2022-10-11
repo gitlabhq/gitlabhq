@@ -18,7 +18,17 @@ module MergeRequests
       return merge_request if old_ids.to_set == new_ids.to_set # no-change
 
       attrs = update_attrs.merge(assignee_ids: new_ids)
-      merge_request.update!(**attrs)
+
+      # We now have assignees validation on merge request
+      # If we use an update with bang, it will explode,
+      # instead we need to check if its valid then return if its not valid.
+      if Feature.enabled?(:limit_assignees_per_issuable)
+        merge_request.update(**attrs)
+
+        return merge_request unless merge_request.valid?
+      else
+        merge_request.update!(**attrs)
+      end
 
       # Defer the more expensive operations (handle_assignee_changes) to the background
       MergeRequests::HandleAssigneesChangeService

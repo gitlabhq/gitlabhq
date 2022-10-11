@@ -30,8 +30,7 @@ module Projects
       end
 
       def use_gitlab_service?
-        Feature.enabled?(:container_registry_new_cleanup_service, project) &&
-          container_repository.migrated? &&
+        container_repository.migrated? &&
           container_repository.gitlab_api_client.supports_gitlab_api?
       end
 

@@ -14,7 +14,7 @@ The following steps will help you get the most from GitLab application security 
 1. Enable [Secret Detection](secret_detection/index.md) and [Dependency Scanning](dependency_scanning/index.md)
    to identify any leaked secrets and vulnerable packages in your codebase.
 
-   - For all security scanners, enable them by updating your `[.gitlab-ci.yml](../../ci/yaml/gitlab_ci_yaml.md)` directly on your `default` branch. This creates a baseline scan of your `default` branch, which is necessary for
+   - For all security scanners, enable them by updating your [`.gitlab-ci.yml`](../../ci/yaml/gitlab_ci_yaml.md) directly on your `default` branch. This creates a baseline scan of your `default` branch, which is necessary for
    feature branch scans to be compared against. This allows [merge requests](../project/merge_requests/index.md)
    to display only newly-introduced vulnerabilities. Otherwise, merge requests will display every
    vulnerability in the branch, regardless of whether it was introduced by a change in the branch.

@@ -108,6 +108,7 @@ module QA
 
         view 'app/assets/javascripts/vue_shared/components/markdown/header.vue' do
           element :suggestion_button
+          element :dismiss_suggestion_popover_button
         end
 
         view 'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue' do
@@ -191,8 +192,11 @@ module QA
           wait_until(sleep_interval: 5) do
             has_css?('a[data-linenumber="1"]')
           end
+
           all_elements(:new_diff_line_link, minimum: 1).first.hover
           click_element(:diff_comment_button)
+          click_element(:dismiss_suggestion_popover_button) if has_element?(:dismiss_suggestion_popover_button, wait: 1)
+
           fill_element(:reply_field, text)
         end
 
@@ -208,7 +212,6 @@ module QA
 
         def click_diffs_tab
           click_element(:diffs_tab)
-          click_element(:dismiss_popover_button) if has_element?(:dismiss_popover_button, wait: 1)
         end
 
         def click_pipeline_link

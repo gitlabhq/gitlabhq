@@ -243,6 +243,7 @@ export default {
                 variant="confirm"
                 category="primary"
                 size="small"
+                data-qa-selector="dismiss_suggestion_popover_button"
                 @click="handleSuggestDismissed"
               >
                 {{ __('Got it') }}

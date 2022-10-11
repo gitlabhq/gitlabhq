@@ -88,12 +88,14 @@ module Notes
       return if quick_actions_service.commands_executed_count.to_i == 0
 
       if update_params.present?
-        if check_for_reviewer_validity(message, update_params)
+        invalid_message = validate_commands(note, update_params)
+
+        if invalid_message
+          note.errors.add(:validation, invalid_message)
+          message = invalid_message
+        else
           quick_actions_service.apply_updates(update_params, note)
           note.commands_changes = update_params
-        else
-          message = "Reviewers #{MergeRequest.max_number_of_assignees_or_reviewers_message}"
-          note.errors.add(:validation, message)
         end
       end
 
@@ -114,16 +116,36 @@ module Notes
       }
     end
 
-    def check_for_reviewer_validity(message, update_params)
-      return true unless Feature.enabled?(:limit_reviewer_and_assignee_size)
+    def validate_commands(note, update_params)
+      if invalid_reviewers?(update_params)
+        "Reviewers #{note.noteable.class.max_number_of_assignees_or_reviewers_message}"
+      elsif invalid_assignees?(update_params)
+        "Assignees #{note.noteable.class.max_number_of_assignees_or_reviewers_message}"
+      end
+    end
+
+    def invalid_reviewers?(update_params)
+      return false unless Feature.enabled?(:limit_reviewer_and_assignee_size)
 
       if update_params.key?(:reviewer_ids)
         possible_reviewers = update_params[:reviewer_ids]&.uniq&.size
 
-        return false if possible_reviewers > MergeRequest::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+        possible_reviewers > ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+      else
+        false
       end
+    end
 
-      true
+    def invalid_assignees?(update_params)
+      return false unless Feature.enabled?(:limit_assignees_per_issuable)
+
+      if update_params.key?(:assignee_ids)
+        possible_assignees = update_params[:assignee_ids]&.uniq&.size
+
+        possible_assignees > ::Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+      else
+        false
+      end
     end
 
     def track_event(note, user)

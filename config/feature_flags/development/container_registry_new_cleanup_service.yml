@@ -1,8 +1,0 @@
----
-name: container_registry_new_cleanup_service
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98651
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375037
-milestone: '15.5'
-type: development
-group: group::package
-default_enabled: false

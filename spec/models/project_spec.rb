@@ -8336,6 +8336,22 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#can_suggest_reviewers?' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:can_suggest_reviewers) { project.can_suggest_reviewers? }
+
+    it { is_expected.to be(false) }
+  end
+
+  describe '#suggested_reviewers_available?' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:suggested_reviewers_available) { project.suggested_reviewers_available? }
+
+    it { is_expected.to be(false) }
+  end
+
   private
 
   def finish_job(export_job)

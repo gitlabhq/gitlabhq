@@ -26,7 +26,7 @@ everything you do as a GitLab administrator, including:
 Our goal is to reach feature parity between SaaS and self-managed installations, with all
 [Admin Area settings](/ee/user/admin_area/settings/index.md) moving to either:
 
-- Groups. Available in the Workspace, top-level group namespaces, and sub-groups.
+- Groups. Available in the Workspace, top-level group namespaces, and subgroups.
 - Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only
   applicable to self-managed installations. There is one Hardware Controls section per installation.
 

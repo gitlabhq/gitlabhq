@@ -9,7 +9,24 @@ product_category: incident_management
 value_type: number
 status: active
 time_frame: 28d
+instrumentation_class: AggregatedMetric
 data_source: redis_hll
+options:
+  aggregate:
+    operator: OR
+    attribute: user_id
+  events:
+    - 'incident_management_incident_created'
+    - 'incident_management_incident_reopened'
+    - 'incident_management_incident_closed'
+    - 'incident_management_incident_assigned'
+    - 'incident_management_incident_todo'
+    - 'incident_management_incident_comment'
+    - 'incident_management_incident_zoom_meeting'
+    - 'incident_management_incident_published'
+    - 'incident_management_incident_relate'
+    - 'incident_management_incident_unrelate'
+    - 'incident_management_incident_change_confidential'
 distribution:
 - ce
 - ee

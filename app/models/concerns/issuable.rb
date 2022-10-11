@@ -33,6 +33,7 @@ module Issuable
   DESCRIPTION_LENGTH_MAX = 1.megabyte
   DESCRIPTION_HTML_LENGTH_MAX = 5.megabytes
   SEARCHABLE_FIELDS = %w(title description).freeze
+  MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 200
 
   STATE_ID_MAP = {
     opened: 1,
@@ -95,6 +96,7 @@ module Issuable
     # to avoid breaking the existing Issuables which may have their descriptions longer
     validates :description, length: { maximum: DESCRIPTION_LENGTH_MAX }, allow_blank: true, on: :create
     validate :description_max_length_for_new_records_is_valid, on: :update
+    validate :validate_assignee_size_length, unless: :importing?
 
     before_validation :truncate_description_on_import!
 
@@ -166,6 +168,11 @@ module Issuable
       def locking_enabled?
         false
       end
+
+      def max_number_of_assignees_or_reviewers_message
+        # Assignees will be included in https://gitlab.com/gitlab-org/gitlab/-/issues/368936
+        format(_("total must be less than or equal to %{size}"), size: MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS)
+      end
     end
 
     # We want to use optimistic lock for cases when only title or description are involved
@@ -226,6 +233,14 @@ module Issuable
 
     def truncate_description_on_import!
       self.description = description&.slice(0, Issuable::DESCRIPTION_LENGTH_MAX) if importing?
+    end
+
+    def validate_assignee_size_length
+      return true unless Feature.enabled?(:limit_assignees_per_issuable)
+      return true unless assignees.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+
+      errors.add :assignees,
+        -> (_object, _data) { self.class.max_number_of_assignees_or_reviewers_message }
     end
   end
 

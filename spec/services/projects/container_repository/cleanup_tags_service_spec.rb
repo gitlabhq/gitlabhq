@@ -86,14 +86,6 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService do
           end
 
           it_behaves_like 'calling service', ::Projects::ContainerRepository::Gitlab::CleanupTagsService, extra_log_data: { gitlab_cleanup_tags_service: true }
-
-          context 'with container_registry_new_cleanup_service disabled' do
-            before do
-              stub_feature_flags(container_registry_new_cleanup_service: false)
-            end
-
-            it_behaves_like 'calling service', ::Projects::ContainerRepository::ThirdParty::CleanupTagsService, extra_log_data: { third_party_cleanup_tags_service: true }
-          end
         end
 
         context 'not supporting the gitlab api' do

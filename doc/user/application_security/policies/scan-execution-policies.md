@@ -9,11 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Group-level security policies were [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 > - Group-level security policies were [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
 
-Group, sub-group, or project owners can use scan execution policies to require that security scans run on a specified
-schedule or with the project (or multiple projects if the policy is defined at a group or sub-group level) pipeline. Required scans are injected into the CI pipeline as new jobs
+Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
+schedule or with the project (or multiple projects if the policy is defined at a group or subgroup level) pipeline. Required scans are injected into the CI pipeline as new jobs
 with a long, random job name. In the unlikely event of a job name collision, the security policy job overwrites
 any pre-existing job in the pipeline. If a policy is created at the group-level, it will apply to every child
-project or sub-group. A group-level policy cannot be edited from a child project or sub-group.
+project or subgroup. A group-level policy cannot be edited from a child project or subgroup.
 
 This feature has some overlap with [compliance framework pipelines](../../group/manage.md#configure-a-compliance-pipeline),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
@@ -29,7 +29,7 @@ an error appears that states `chosen stage does not exist`.
 ## Scan execution policy editor
 
 NOTE:
-Only group, sub-group, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
+Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
 Once your policy is complete, save it by selecting **Create via merge request**
