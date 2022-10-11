@@ -22,13 +22,15 @@ module Gitlab
         # To make it possible to identify issue in separated worker we need to patch
         # Sawyer instances here with issue number
         def each_associated(parent_record, associated)
+          associated = associated.to_h
+
           compose_associated_id!(parent_record, associated)
           return if already_imported?(associated)
 
           Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
           pull_request = parent_record.is_a? MergeRequest
-          associated[:issue] = { 'number' => parent_record.iid, 'pull_request' => pull_request }
+          associated[:issue] = { number: parent_record.iid, pull_request: pull_request }
           yield(associated)
 
           mark_as_imported(associated)

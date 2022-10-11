@@ -372,9 +372,9 @@
           "additionalProperties": false,
           "properties": {
             "project": {
-              "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project`.",
+              "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project` [Learn more](https://docs.gitlab.com/ee/ci/yaml/index.html#includefile).",
               "type": "string",
-              "pattern": "\\S/\\S|\\$(\\S+)"
+              "pattern": "(?:\\S/\\S|\\$\\S+)"
             },
             "ref": {
               "description": "Branch/Tag/Commit-hash for the target project.",
@@ -1617,7 +1617,7 @@
                 "project": {
                   "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project`.",
                   "type": "string",
-                  "pattern": "\\S/\\S"
+                  "pattern": "(?:\\S/\\S|\\$\\S+)"
                 },
                 "branch": {
                   "description": "The branch name that a downstream pipeline will use",
@@ -1727,7 +1727,7 @@
                               "project": {
                                 "description": "Path to another private project under the same GitLab instance, like `group/project` or `group/sub-group/project`.",
                                 "type": "string",
-                                "pattern": "\\S/\\S"
+                                "pattern": "(?:\\S/\\S|\\$\\S+)"
                               },
                               "ref": {
                                 "description": "Branch/Tag/Commit hash for the target project.",
@@ -1778,9 +1778,9 @@
               }
             },
             {
-              "markdownDescription": "Path to the project, e.g. `group/project`, or `group/sub-group/project`. [Learn More](https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#define-multi-project-pipelines-in-your-gitlab-ciyml-file).",
+              "markdownDescription": "Path to the project, e.g. `group/project`, or `group/sub-group/project`. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#trigger).",
               "type": "string",
-              "pattern": "\\S/\\S"
+              "pattern": "(?:\\S/\\S|\\$\\S+)"
             }
           ]
         },

@@ -76,6 +76,7 @@ RSpec.describe BulkImports::CreatePipelineTrackersService do
             expect(logger).to receive(:info).with({
               message: 'Pipeline skipped as source instance version not compatible with pipeline',
               bulk_import_entity_id: entity.id,
+              bulk_import_id: entity.bulk_import_id,
               pipeline_name: 'PipelineClass4',
               minimum_source_version: '15.1.0',
               maximum_source_version: nil,
@@ -85,6 +86,7 @@ RSpec.describe BulkImports::CreatePipelineTrackersService do
             expect(logger).to receive(:info).with({
               message: 'Pipeline skipped as source instance version not compatible with pipeline',
               bulk_import_entity_id: entity.id,
+              bulk_import_id: entity.bulk_import_id,
               pipeline_name: 'PipelineClass5',
               minimum_source_version: '16.0.0',
               maximum_source_version: nil,

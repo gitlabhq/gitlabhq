@@ -20,6 +20,7 @@ module BulkImports
         logger.info(
           structured_payload(
             bulk_import_entity_id: pipeline_tracker.entity.id,
+            bulk_import_id: pipeline_tracker.entity.bulk_import_id,
             pipeline_name: pipeline_tracker.pipeline_name
           )
         )
@@ -29,6 +30,7 @@ module BulkImports
         logger.error(
           structured_payload(
             bulk_import_entity_id: entity_id,
+            bulk_import_id: bulk_import_id(entity_id),
             pipeline_tracker_id: pipeline_tracker_id,
             message: 'Unstarted pipeline not found'
           )
@@ -60,12 +62,17 @@ module BulkImports
       fail_tracker(e)
     end
 
+    def bulk_import_id(entity_id)
+      @bulk_import_id ||= Entity.find(entity_id).bulk_import_id
+    end
+
     def fail_tracker(exception)
       pipeline_tracker.update!(status_event: 'fail_op', jid: jid)
 
       logger.error(
         structured_payload(
           bulk_import_entity_id: pipeline_tracker.entity.id,
+          bulk_import_id: pipeline_tracker.entity.bulk_import_id,
           pipeline_name: pipeline_tracker.pipeline_name,
           message: exception.message
         )
@@ -74,6 +81,7 @@ module BulkImports
       Gitlab::ErrorTracking.track_exception(
         exception,
         bulk_import_entity_id: pipeline_tracker.entity.id,
+        bulk_import_id: pipeline_tracker.entity.bulk_import_id,
         pipeline_name: pipeline_tracker.pipeline_name
       )
 
@@ -140,6 +148,7 @@ module BulkImports
       logger.error(
         structured_payload(
           bulk_import_entity_id: pipeline_tracker.entity.id,
+          bulk_import_id: pipeline_tracker.entity.bulk_import_id,
           pipeline_name: pipeline_tracker.pipeline_name,
           message: "Retrying error: #{exception.message}"
         )
@@ -154,6 +163,7 @@ module BulkImports
       logger.info(
         structured_payload(
           bulk_import_entity_id: pipeline_tracker.entity.id,
+          bulk_import_id: pipeline_tracker.entity.bulk_import_id,
           pipeline_name: pipeline_tracker.pipeline_name,
           message: 'Skipping pipeline due to failed entity'
         )

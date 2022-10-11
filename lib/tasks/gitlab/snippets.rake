@@ -60,7 +60,7 @@ namespace :gitlab do
     end
 
     def migration_running?
-      Sidekiq::ScheduledSet.new.any? { |r| r.klass == 'BackgroundMigrationWorker' && r.args[0] == 'BackfillSnippetRepositories' }
+      Sidekiq::ScheduledSet.new.any? { |r| r.klass == 'BackgroundMigrationWorker' && r.args[0] == 'BackfillSnippetRepositories' } # rubocop:disable Cop/SidekiqApiUsage
     end
 
     # @example

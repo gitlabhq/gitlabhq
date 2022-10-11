@@ -803,3 +803,17 @@ Cop/RedisQueueUsage:
     - 'lib/gitlab/redis.rb'
     - 'lib/system_check/app/redis_version_check.rb'
     - 'lib/gitlab/mail_room.rb'
+
+Cop/SidekiqApiUsage:
+  Enabled: true
+  Exclude:
+    - '{,ee/,jh/}spec/**/*'
+    - 'db/post_migrate/**/*'
+    - 'lib/gitlab/sidekiq_middleware/**/*'
+    - 'lib/gitlab/background_migration/**/*'
+    - 'lib/gitlab/hashed_storage/migrator.rb'
+    - 'lib/api/sidekiq_metrics.rb'
+    - 'lib/gitlab/sidekiq_config.rb'
+    - 'lib/gitlab/sidekiq_queue.rb'
+    - 'config/initializers/sidekiq.rb'
+    - 'config/initializers/forbid_sidekiq_in_transactions.rb'

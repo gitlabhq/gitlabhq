@@ -108,6 +108,7 @@ module BulkImports
         }
 
         error(
+          bulk_import_id: context.bulk_import_id,
           pipeline_step: step,
           exception_class: exception.class.to_s,
           exception_message: exception.message
@@ -130,7 +131,7 @@ module BulkImports
 
       def log_params(extra)
         defaults = {
-          bulk_import_id: context.bulk_import.id,
+          bulk_import_id: context.bulk_import_id,
           bulk_import_entity_id: context.entity.id,
           bulk_import_entity_type: context.entity.source_type,
           pipeline_class: pipeline,

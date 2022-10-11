@@ -191,12 +191,4 @@
   h5 {
     color: var(--gl-text-color, $gl-text-color);
   }
-
-  .light-well {
-    border-radius: 2px;
-
-    color: var(--gray-600, $well-light-text-color);
-    font-size: 13px;
-    line-height: 1.6em;
-  }
 }

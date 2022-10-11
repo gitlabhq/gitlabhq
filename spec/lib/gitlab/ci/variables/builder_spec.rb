@@ -174,6 +174,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
         allow(builder).to receive(:secret_project_variables) { [var('L', 12), var('M', 12)] }
         allow(pipeline).to receive(:variables) { [var('M', 13), var('N', 13)] }
         allow(pipeline).to receive(:pipeline_schedule) { double(job_variables: [var('N', 14), var('O', 14)]) }
+        allow(builder).to receive(:release_variables) { [var('P', 15), var('Q', 15)] }
       end
 
       it 'returns variables in order depending on resource hierarchy' do
@@ -190,7 +191,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
            var('K', 11), var('L', 11),
            var('L', 12), var('M', 12),
            var('M', 13), var('N', 13),
-           var('N', 14), var('O', 14)])
+           var('N', 14), var('O', 14),
+           var('P', 15), var('Q', 15)])
       end
 
       it 'overrides duplicate keys depending on resource hierarchy' do
@@ -202,7 +204,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
           'I' => '9', 'J' => '10',
           'K' => '11', 'L' => '12',
           'M' => '13', 'N' => '14',
-          'O' => '14')
+          'O' => '14', 'P' => '15',
+          'Q' => '15')
       end
     end
 
@@ -217,6 +220,27 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
       it 'includes schedule variables' do
         expect(subject.to_runner_variables)
           .to include(a_hash_including(key: schedule_variable.key, value: schedule_variable.value))
+      end
+    end
+
+    context 'with release variables' do
+      let(:release_description_key) { 'CI_RELEASE_DESCRIPTION' }
+
+      let_it_be(:tag) { project.repository.tags.first }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, tag: true, ref: tag.name) }
+      let_it_be(:release) { create(:release, tag: tag.name, project: project) }
+
+      it 'includes release variables' do
+        expect(subject.to_hash).to include(release_description_key => release.description)
+      end
+
+      context 'when there is no release' do
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project, tag: false, ref: 'master') }
+        let(:release) { nil }
+
+        it 'does not include release variables' do
+          expect(subject.to_hash).not_to have_key(release_description_key)
+        end
       end
     end
   end

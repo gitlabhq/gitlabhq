@@ -49,6 +49,12 @@
       when: manual
       allow_failure: true
 
+.rules:omnibus-build:
+  rules:
+    - if: $SKIP_OMNIBUS_TRIGGER == "true"
+      when: never
+    - when: always
+
 # ------------------------------------------
 # Test
 # ------------------------------------------
@@ -99,11 +105,21 @@
     - *qa-framework-changes
     - *feature-flags-set-manual
 
+.rules:test:update:
+  rules:
+    # skip upgrade jobs if gitlab version is not provided
+    # these jobs need gitlab version because we can't reliably detect it from just the image
+    - if: $GITLAB_VERSION == null
+      when: never
+    - !reference [.rules:test:qa, rules]
+
 # ------------------------------------------
 # Report
 # ------------------------------------------
 .rules:report:allure-report:
   rules:
+    - if: $SKIP_ALLURE_REPORT == "true"
+      when: never
     - when: always
 
 .rules:report:process-results:

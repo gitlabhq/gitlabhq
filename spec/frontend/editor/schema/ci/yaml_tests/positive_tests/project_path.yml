@@ -1,0 +1,101 @@
+# Covers https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95469
+# Test cases:
+#  - include file from project
+#  - trigger pipeline from project, 3 forms (see schema at ci.json)
+#
+# Sub-cases - forms of project path:
+#  - common case:        group/project
+#  - sub-group:          group/sub-group/project
+#  - variable:           $FOO
+#  - variable in string: group/$VAR/project
+#  - invalid variable:   $.
+#    (testing regex, that does not validate variable names)
+
+# BEGIN CASE: include yml from project
+include:
+  - project: 'group/project'
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: 'group/sub-group/project'
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: '$FOO'
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: 'group/$VAR/project'
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: '$.'
+    file: '/templates/.gitlab-ci-template.yml'
+# END CASE
+
+# BEGIN CASE: trigger minimal
+trigger-minimal:
+  trigger: 'group/project'
+
+trigger-minimal-sub-group:
+  trigger: 'group/sub-group/project'
+
+trigger-minimal-variable:
+  trigger: '$FOO'
+
+trigger-minimal-variable-in-string:
+  trigger: 'group/$VAR/project'
+
+trigger-minimal-invalid-variable:
+  trigger: '$.'
+# END CASE
+
+# BEGIN CASE: trigger project
+trigger-project:
+  trigger:
+    project: 'group/project'
+
+trigger-project-sub-group:
+  trigger:
+    project: 'group/sub-group/project'
+
+trigger-project-variable:
+  trigger:
+    project: '$FOO'
+
+trigger-project-variable-in-string:
+  trigger:
+    project: 'group/$VAR/project'
+
+trigger-project-invalid-variable:
+  trigger:
+    project: '$.'
+# END CASE
+
+# BEGIN CASE: trigger file
+trigger-include:
+  trigger:
+    include:
+      - project: 'group/project'
+        file: '/path/to/child-pipeline.yml'
+
+trigger-include-sub-group:
+  trigger:
+    include:
+      - project: 'group/sub-group/project'
+        file: '/path/to/child-pipeline.yml'
+
+trigger-include-variable:
+  trigger:
+    include:
+      - project: '$FOO'
+        file: '/path/to/child-pipeline.yml'
+
+trigger-include-variable-in-string:
+  trigger:
+    include:
+      - project: 'group/$VAR/project'
+        file: '/path/to/child-pipeline.yml'
+
+trigger-include-invalid-variable:
+  trigger:
+    include:
+      - project: '$.'
+        file: '/path/to/child-pipeline.yml'
+# END CASE

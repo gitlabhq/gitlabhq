@@ -13,7 +13,7 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher do
       expect(logger)
         .to receive(:info)
         .with(
-          bulk_import_id: entity.bulk_import.id,
+          bulk_import_id: entity.bulk_import_id,
           bulk_import_entity_id: entity.id,
           bulk_import_entity_type: entity.source_type,
           pipeline_class: described_class.name,

@@ -4,7 +4,6 @@ default:
   interruptible: true
 
 include:
-  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
@@ -30,13 +29,12 @@ stages:
 .ruby-image:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
 
-.bundle-install:
+.qa-install:
+  variables:
+    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+    BUNDLE_SILENCE_ROOT_WARNING: "true"
   extends:
     - .gitlab-qa-install
-    - .qa-cache
-  variables:
-    RUN_WITH_BUNDLE: "true" # installs and runs gitlab-qa via bundler
-    QA_PATH: qa
 
 .omnibus-env:
   variables:
@@ -63,14 +61,16 @@ stages:
 .qa:
   extends:
     - .qa-base
-    - .bundle-install
+    - .qa-install
     - .gitlab-qa-report
   stage: test
   tags:
     - e2e
   needs:
-    - trigger-omnibus
-    - download-knapsack-report
+    - job: trigger-omnibus
+      optional: true
+    - job: download-knapsack-report
+      artifacts: true
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
@@ -84,6 +84,18 @@ stages:
 # ==========================================
 # Prepare stage
 # ==========================================
+check-release-set:
+  extends: .rules:prepare
+  stage: .pre
+  script:
+    - |
+      if [ -z "$RELEASE" ]; then
+        echo "E2E test pipeline requires omnibus installation docker image to be set via $RELEASE environment variable"
+        exit 1
+      else
+        echo "Omnibus installation image is set to '$RELEASE'"
+      fi
+
 dont-interrupt-me:
   extends: .rules:dont-interrupt
   stage: .pre
@@ -94,11 +106,11 @@ dont-interrupt-me:
 trigger-omnibus-env:
   extends:
     - .omnibus-env
-    - .rules:prepare
+    - .rules:omnibus-build
   stage: .pre
 
 trigger-omnibus:
-  extends: .rules:prepare
+  extends: .rules:omnibus-build
   stage: .pre
   needs:
     - trigger-omnibus-env
@@ -127,30 +139,34 @@ trigger-omnibus:
 
 download-knapsack-report:
   extends:
-    - .bundle-install
-    - .ruby-image
+    - .gitlab-qa-image
     - .rules:prepare
   stage: .pre
+  variables:
+    KNAPSACK_DIR: ${CI_PROJECT_DIR}/qa/knapsack
+    GIT_STRATEGY: none
   script:
+    # when using qa-image, code runs in /home/gitlab/qa folder
     - bundle exec rake "knapsack:download[test]"
+    - mkdir -p "$KNAPSACK_DIR" && cp knapsack/*.json "${KNAPSACK_DIR}/"
   allow_failure: true
   artifacts:
     paths:
-      - qa/knapsack/ee-*.json
+      - qa/knapsack/*.json
     expire_in: 1 day
 
-# e2e test jobs run on separate runner which has separate cache setup
 cache-gems:
   extends:
-    - .bundle-install
+    - .qa-install
     - .ruby-image
-    - .qa-cache-push
     - .rules:prepare
   stage: .pre
   tags:
     - e2e
   script:
     - echo "Populated qa cache"
+  cache:
+    policy: pull-push
 
 # ==========================================
 # Test stage
@@ -168,7 +184,8 @@ _ee:quarantine:
     - .qa
     - .rules:test:manual
   needs:
-    - trigger-omnibus
+    - job: trigger-omnibus
+      optional: true
   stage: test
   variables:
     QA_RSPEC_TAGS: --tag quarantine
@@ -343,7 +360,7 @@ ee:update-minor:
     UPDATE_TYPE: minor
     QA_RSPEC_TAGS: --tag smoke
   rules:
-    - !reference [.rules:test:qa, rules]
+    - !reference [.rules:test:update, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
@@ -355,7 +372,7 @@ ee:update-major:
     UPDATE_TYPE: major
     QA_RSPEC_TAGS: --tag smoke
   rules:
-    - !reference [.rules:test:qa, rules]
+    - !reference [.rules:test:update, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
@@ -567,7 +584,7 @@ e2e-test-report:
 upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: report
@@ -575,7 +592,7 @@ upload-knapsack-report:
 
 relate-test-failures:
   extends:
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: report
@@ -593,7 +610,7 @@ relate-test-failures:
 
 generate-test-session:
   extends:
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: report
@@ -616,7 +633,7 @@ generate-test-session:
 notify-slack:
   extends:
     - .notify-slack-qa
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: notify

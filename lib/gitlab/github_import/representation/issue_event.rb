@@ -45,7 +45,7 @@ module Gitlab
               old_title: event.dig(:rename, :from),
               new_title: event.dig(:rename, :to),
               milestone_title: event.dig(:milestone, :title),
-              issue: event[:issue]&.symbolize_keys,
+              issue: event[:issue],
               source: event[:source],
               assignee: user_representation(event[:assignee]),
               requested_reviewer: user_representation(event[:requested_reviewer]),

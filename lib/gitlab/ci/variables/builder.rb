@@ -11,6 +11,7 @@ module Gitlab
           @instance_variables_builder = Builder::Instance.new
           @project_variables_builder = Builder::Project.new(project)
           @group_variables_builder = Builder::Group.new(project&.group)
+          @release_variables_builder = Builder::Release.new(release)
         end
 
         def scoped_variables(job, environment:, dependencies:)
@@ -28,6 +29,7 @@ module Gitlab
             variables.concat(secret_project_variables(environment: environment))
             variables.concat(pipeline.variables)
             variables.concat(pipeline_schedule_variables)
+            variables.concat(release_variables)
           end
         end
 
@@ -106,12 +108,19 @@ module Gitlab
           end
         end
 
+        def release_variables
+          strong_memoize(:release_variables) do
+            release_variables_builder.variables
+          end
+        end
+
         private
 
         attr_reader :pipeline
         attr_reader :instance_variables_builder
         attr_reader :project_variables_builder
         attr_reader :group_variables_builder
+        attr_reader :release_variables_builder
 
         delegate :project, to: :pipeline
 
@@ -170,6 +179,12 @@ module Gitlab
           else
             container[args] = yield
           end
+        end
+
+        def release
+          return unless @pipeline.tag?
+
+          project.releases.find_by_tag(@pipeline.ref)
         end
       end
     end

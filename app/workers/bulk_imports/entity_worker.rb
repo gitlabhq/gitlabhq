@@ -16,6 +16,7 @@ module BulkImports
         logger.info(
           structured_payload(
             bulk_import_entity_id: entity_id,
+            bulk_import_id: bulk_import_id(entity_id),
             current_stage: current_stage,
             message: 'Stage running'
           )
@@ -27,6 +28,7 @@ module BulkImports
       logger.info(
         structured_payload(
           bulk_import_entity_id: entity_id,
+          bulk_import_id: bulk_import_id(entity_id),
           current_stage: current_stage,
           message: 'Stage starting'
         )
@@ -43,12 +45,15 @@ module BulkImports
       logger.error(
         structured_payload(
           bulk_import_entity_id: entity_id,
+          bulk_import_id: bulk_import_id(entity_id),
           current_stage: current_stage,
           message: e.message
         )
       )
 
-      Gitlab::ErrorTracking.track_exception(e, bulk_import_entity_id: entity_id)
+      Gitlab::ErrorTracking.track_exception(
+        e, bulk_import_entity_id: entity_id, bulk_import_id: bulk_import_id(entity_id)
+      )
     end
 
     private
@@ -61,6 +66,10 @@ module BulkImports
 
     def next_pipeline_trackers_for(entity_id)
       BulkImports::Tracker.next_pipeline_trackers_for(entity_id).update(status_event: 'enqueue')
+    end
+
+    def bulk_import_id(entity_id)
+      @bulk_import_id ||= Entity.find(entity_id).bulk_import_id
     end
 
     def logger

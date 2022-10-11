@@ -17,6 +17,9 @@ module GraphqlHelpers
   # makes an underscored string look like a fieldname
   # "merge_request" => "mergeRequest"
   def self.fieldnamerize(underscored_field_name)
+    # Skip transformation for a field with leading underscore
+    return underscored_field_name.to_s if underscored_field_name.start_with?('_')
+
     underscored_field_name.to_s.camelize(:lower)
   end
 

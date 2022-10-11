@@ -2480,6 +2480,12 @@ msgstr ""
 msgid "Adds a Zoom meeting."
 msgstr ""
 
+msgid "Adds a resource link"
+msgstr ""
+
+msgid "Adds a resource link for this incident."
+msgstr ""
+
 msgid "Adds a timeline event to incident."
 msgstr ""
 
@@ -16174,6 +16180,9 @@ msgid "Failed on"
 msgstr ""
 
 msgid "Failed to add a Zoom meeting"
+msgstr ""
+
+msgid "Failed to add a resource link"
 msgstr ""
 
 msgid "Failed to apply commands."
@@ -34242,6 +34251,9 @@ msgid "Resolved by"
 msgstr ""
 
 msgid "Resolved by %{name}"
+msgstr ""
+
+msgid "Resource link added"
 msgstr ""
 
 msgid "Response"

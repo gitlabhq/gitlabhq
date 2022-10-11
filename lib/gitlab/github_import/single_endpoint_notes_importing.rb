@@ -54,6 +54,8 @@ module Gitlab
       # in Github API response object. For example:
       # lib/gitlab/github_import/importer/single_endpoint_issue_events_importer.rb:26
       def each_associated(_parent_record, associated)
+        associated = associated.to_h
+
         return if already_imported?(associated)
 
         Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)

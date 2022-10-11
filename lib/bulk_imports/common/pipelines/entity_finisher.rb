@@ -24,7 +24,7 @@ module BulkImports
           end
 
           logger.info(
-            bulk_import_id: context.bulk_import.id,
+            bulk_import_id: context.bulk_import_id,
             bulk_import_entity_id: context.entity.id,
             bulk_import_entity_type: context.entity.source_type,
             pipeline_class: self.class.name,

@@ -41,7 +41,7 @@ module BulkImports
       Gitlab::Import::Logger.error(
         structured_payload(
           log_attributes(exception, entity).merge(
-            bulk_import_id: entity.bulk_import.id,
+            bulk_import_id: entity.bulk_import_id,
             bulk_import_entity_type: entity.source_type
           )
         )
@@ -82,7 +82,7 @@ module BulkImports
         structured_payload(
           log_attributes(e, entity).merge(
             message: 'Failed to fetch source entity id',
-            bulk_import_id: entity.bulk_import.id,
+            bulk_import_id: entity.bulk_import_id,
             bulk_import_entity_type: entity.source_type
           )
         )

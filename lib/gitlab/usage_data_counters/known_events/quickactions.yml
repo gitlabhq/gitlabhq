@@ -231,6 +231,10 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_link
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
 - name: i_quickactions_invite_email_single
   category: quickactions
   redis_slot: quickactions

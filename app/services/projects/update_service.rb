@@ -215,6 +215,7 @@ module Projects
     def publish_events
       publish_project_archived_event
       publish_project_attributed_changed_event
+      publish_project_features_changed_event
     end
 
     def publish_project_archived_event
@@ -239,6 +240,21 @@ module Projects
         namespace_id: @project.namespace_id,
         root_namespace_id: @project.root_namespace.id,
         attributes: changes.keys
+      })
+
+      Gitlab::EventStore.publish(event)
+    end
+
+    def publish_project_features_changed_event
+      changes = @project.project_feature.previous_changes
+
+      return if changes.blank?
+
+      event = Projects::ProjectFeaturesChangedEvent.new(data: {
+        project_id: @project.id,
+        namespace_id: @project.namespace_id,
+        root_namespace_id: @project.root_namespace.id,
+        features: changes.keys
       })
 
       Gitlab::EventStore.publish(event)

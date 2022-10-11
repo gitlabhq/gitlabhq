@@ -4,9 +4,9 @@
 
 * @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @kwiebers @nolith @jacobvosmaer-gitlab @gitlab-org/tw-leadership
 
-CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @gitlab-org/tw-leadership
-docs/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @gitlab-org/tw-leadership
-.gitlab/CODEOWNERS @clefelhocz1 @timzallmann @cdu1 @wayne @dsatcher @sgoldstein @jeromezng @stanhu @gitlab-org/tw-leadership
+CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
+docs/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
+.gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
 ## Allows release tooling to update the Gitaly Version
 GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery

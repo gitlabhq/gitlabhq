@@ -32,6 +32,10 @@ module BulkImports
         @bulk_import ||= entity.bulk_import
       end
 
+      def bulk_import_id
+        @bulk_import_id ||= bulk_import.id
+      end
+
       def current_user
         @current_user ||= bulk_import.user
       end
