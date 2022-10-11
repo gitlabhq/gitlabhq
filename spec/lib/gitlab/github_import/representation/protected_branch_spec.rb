@@ -25,7 +25,10 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
 
   describe '.from_api_response' do
     let(:response) do
-      response = Struct.new(:url, :allow_force_pushes, :required_conversation_resolution, keyword_init: true)
+      response = Struct.new(
+        :url, :allow_force_pushes, :required_conversation_resolution, :required_signatures,
+        keyword_init: true
+      )
       enabled_setting = Struct.new(:enabled, keyword_init: true)
       response.new(
         url: 'https://example.com/branches/main/protection',
@@ -33,6 +36,9 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
           enabled: true
         ),
         required_conversation_resolution: enabled_setting.new(
+          enabled: true
+        ),
+        required_signatures: enabled_setting.new(
           enabled: true
         )
       )
@@ -49,7 +55,8 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
         {
           'id' => 'main',
           'allow_force_pushes' => true,
-          'required_conversation_resolution' => true
+          'required_conversation_resolution' => true,
+          'required_signatures' => true
         }
       end
 

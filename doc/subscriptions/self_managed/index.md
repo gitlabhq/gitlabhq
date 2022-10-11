@@ -300,7 +300,7 @@ then [renew your GitLab self-managed subscription](#renew-a-subscription).
 
 The [Customers Portal](https://customers.gitlab.com/customers/sign_in) is your
 tool for renewing and modifying your subscription. Before going ahead with renewal,
-log in and verify or update:
+sign in and verify or update:
 
 - The invoice contact details on the **Account details** page.
 - The credit card on file on the **Payment Methods** page.

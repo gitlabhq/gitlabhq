@@ -246,7 +246,7 @@ end
 ```
 
 The `before` block is essentially a `before(:each)` and is run before each example,
-ensuring we now log in at the beginning of each test.
+ensuring we now sign in at the beginning of each test.
 
 ## Test setup using resources and page objects
 

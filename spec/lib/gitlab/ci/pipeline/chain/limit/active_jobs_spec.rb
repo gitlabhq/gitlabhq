@@ -13,7 +13,6 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs do
       ::Gitlab::Ci::Pipeline::Chain::Command,
       project: project,
       current_user: user,
-      limit_active_jobs_early?: feature_flag_enabled,
       save_incompleted: true,
       pipeline_seed: pipeline_seed_double
     )
@@ -29,7 +28,6 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs do
 
   let(:existing_pipeline) { create(:ci_pipeline, project: project) }
   let(:step) { described_class.new(pipeline, command) }
-  let(:feature_flag_enabled) { true }
   let(:limit) { 10 }
 
   subject { step.perform! }

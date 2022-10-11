@@ -402,7 +402,7 @@ pulling from Docker Hub fails. Docker daemon tries to use the same credentials f
 > Introduced in GitLab Runner 12.0.
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
-image. This image is private and requires you to log in into a private container registry.
+image. This image is private and requires you to sign in to a private container registry.
 
 To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follow these steps:
 

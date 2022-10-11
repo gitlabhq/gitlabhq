@@ -42,7 +42,7 @@ to ensure the major components of GitLab are working:
    ```
 
 1. In GitLab UI, check that:
-   - Users can log in.
+   - Users can sign in.
    - The project list is visible.
    - Project issues and merge requests are accessible.
    - Users can clone repositories from GitLab.

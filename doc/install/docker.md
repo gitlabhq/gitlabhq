@@ -122,7 +122,7 @@ After starting a container you can visit `gitlab.example.com` (or
 `http://192.168.59.103` if you used boot2docker on macOS). It might take a while
 before the Docker container starts to respond to queries.
 
-Visit the GitLab URL, and log in with username `root`
+Visit the GitLab URL, and sign in with the username `root`
 and the password from the following command:
 
 ```shell

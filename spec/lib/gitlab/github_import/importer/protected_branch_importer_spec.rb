@@ -7,12 +7,14 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
 
   let(:branch_name) { 'protection' }
   let(:allow_force_pushes_on_github) { true }
-  let(:required_conversation_resolution) { true }
+  let(:required_conversation_resolution) { false }
+  let(:required_signatures) { false }
   let(:github_protected_branch) do
     Gitlab::GithubImport::Representation::ProtectedBranch.new(
       id: branch_name,
       allow_force_pushes: allow_force_pushes_on_github,
-      required_conversation_resolution: required_conversation_resolution
+      required_conversation_resolution: required_conversation_resolution,
+      required_signatures: required_signatures
     )
   end
 
@@ -53,6 +55,12 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
     shared_examples 'does not change project attributes' do
       it 'does not change only_allow_merge_if_all_discussions_are_resolved' do
         expect { importer.execute }.not_to change(project, :only_allow_merge_if_all_discussions_are_resolved)
+      end
+
+      it 'does not change push_rule for the project' do
+        expect(project).not_to receive(:push_rule)
+
+        importer.execute
       end
     end
 
@@ -115,6 +123,46 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
 
         it_behaves_like 'does not change project attributes'
       end
+
+      context 'when required_signatures rule is enabled' do
+        let(:required_signatures) { true }
+        let(:push_rules_feature_available?) { true }
+
+        before do
+          stub_licensed_features(push_rules: push_rules_feature_available?)
+        end
+
+        context 'when the push_rules feature is available', if: Gitlab.ee? do
+          context 'when project push_rules did previously exist' do
+            before do
+              create(:push_rule, project: project)
+            end
+
+            it 'updates push_rule reject_unsigned_commits attribute' do
+              expect { importer.execute }.to change { project.reload.push_rule.reject_unsigned_commits }.to(true)
+            end
+          end
+
+          context 'when project push_rules did not previously exist' do
+            it 'creates project push_rule with the enabled reject_unsigned_commits attribute' do
+              expect { importer.execute }.to change(project, :push_rule).from(nil)
+              expect(project.push_rule.reject_unsigned_commits).to be_truthy
+            end
+          end
+        end
+
+        context 'when the push_rules feature is not available' do
+          let(:push_rules_feature_available?) { false }
+
+          it_behaves_like 'does not change project attributes'
+        end
+      end
+
+      context 'when required_signatures rule is disabled' do
+        let(:required_signatures) { false }
+
+        it_behaves_like 'does not change project attributes'
+      end
     end
 
     context "when branch is not default" do
@@ -126,6 +174,18 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
 
       context 'when required_conversation_resolution rule is disabled' do
         let(:required_conversation_resolution) { false }
+
+        it_behaves_like 'does not change project attributes'
+      end
+
+      context 'when required_signatures rule is enabled' do
+        let(:required_signatures) { true }
+
+        it_behaves_like 'does not change project attributes'
+      end
+
+      context 'when required_signatures rule is disabled' do
+        let(:required_signatures) { false }
 
         it_behaves_like 'does not change project attributes'
       end

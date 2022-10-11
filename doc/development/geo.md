@@ -69,8 +69,8 @@ the lock, it switches to standby mode.
 Geo uses [streaming replication](#streaming-replication) to replicate
 the database from the **primary** to the **secondary** sites. This
 replication gives the **secondary** sites access to all the data saved
-in the database. So users can log in on the **secondary** and read all
-the issues, merge requests, and so on, on the **secondary** site.
+in the database, so users can sign in to the **secondary** site and read,
+for example, all the issues and merge requests.
 
 ### Repository replication
 

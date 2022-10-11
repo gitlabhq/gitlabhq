@@ -53,7 +53,7 @@ The following is an example of the **Abuse Reports** page:
 
 ### Blocking users
 
-A blocked user cannot log in or access any repositories, but all of their data
+A blocked user cannot sign in or access any repositories, but all of their data
 remains.
 
 Blocking a user:

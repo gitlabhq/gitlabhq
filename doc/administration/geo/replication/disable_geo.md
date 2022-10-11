@@ -63,7 +63,7 @@ Geo node in a PostgreSQL console (`sudo gitlab-psql`):
 
 ## Remove Geo-related configuration
 
-1. For each node on your primary Geo site, SSH into the node and log in as root:
+1. For each node on your primary Geo site, SSH into the node and sign in as root:
 
    ```shell
    sudo -i

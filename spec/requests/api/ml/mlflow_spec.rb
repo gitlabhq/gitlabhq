@@ -139,9 +139,9 @@ RSpec.describe API::Ml::Mlflow do
     end
   end
 
-  describe 'GET /projects/:id/ml/mflow/api/2.0/mlflow/experiments/get' do
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get' do
     let(:experiment_iid) { experiment.iid.to_s }
-    let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/experiments/get?experiment_id=#{experiment_iid}" }
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/get?experiment_id=#{experiment_iid}" }
 
     it 'returns the experiment', :aggregate_failures do
       expect(response).to have_gitlab_http_status(:ok)
@@ -165,7 +165,7 @@ RSpec.describe API::Ml::Mlflow do
         end
 
         context 'and experiment_id is not passed' do
-          let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/experiments/get" }
+          let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/get" }
 
           it_behaves_like 'Not Found - Resource Does Not Exist'
         end
@@ -176,10 +176,40 @@ RSpec.describe API::Ml::Mlflow do
     end
   end
 
-  describe 'GET /projects/:id/ml/mflow/api/2.0/mlflow/experiments/get-by-name' do
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/list' do
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/list" }
+
+    it 'returns the experiments' do
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to match_response_schema('ml/list_experiments')
+      expect(json_response).to include({
+                                         'experiments' => [
+                                           'experiment_id' => experiment.iid.to_s,
+                                           'name' => experiment.name,
+                                           'lifecycle_stage' => 'active',
+                                           'artifact_location' => 'not_implemented'
+                                         ]
+                                       })
+    end
+
+    context 'when there are no experiments' do
+      let(:project_id) { another_project.id }
+
+      it 'returns an empty list' do
+        expect(json_response).to include({ 'experiments' => [] })
+      end
+    end
+
+    describe 'Error States' do
+      it_behaves_like 'shared error cases'
+      it_behaves_like 'Requires read_api scope'
+    end
+  end
+
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get-by-name' do
     let(:experiment_name) { experiment.name }
     let(:route) do
-      "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/experiments/get-by-name?experiment_name=#{experiment_name}"
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/get-by-name?experiment_name=#{experiment_name}"
     end
 
     it 'returns the experiment', :aggregate_failures do
@@ -203,7 +233,7 @@ RSpec.describe API::Ml::Mlflow do
       end
 
       context 'when has access but experiment_name is not passed' do
-        let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/experiments/get-by-name" }
+        let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/get-by-name" }
 
         it_behaves_like 'Not Found - Resource Does Not Exist'
       end
@@ -213,16 +243,16 @@ RSpec.describe API::Ml::Mlflow do
     end
   end
 
-  describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/experiments/create' do
+  describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/create' do
     let(:route) do
-      "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/experiments/create"
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/create"
     end
 
     let(:params) { { name: 'new_experiment' } }
     let(:request) { post api(route), params: params, headers: headers }
 
     it 'creates the experiment', :aggregate_failures do
-      expect(response).to have_gitlab_http_status(:created)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to include('experiment_id' )
     end
 
@@ -244,7 +274,7 @@ RSpec.describe API::Ml::Mlflow do
       end
 
       context 'when project does not exist' do
-        let(:route) { "/projects/#{non_existing_record_id}/ml/mflow/api/2.0/mlflow/experiments/create" }
+        let(:route) { "/projects/#{non_existing_record_id}/ml/mlflow/api/2.0/mlflow/experiments/create" }
 
         it_behaves_like 'Not Found', '404 Project Not Found'
       end
@@ -255,8 +285,8 @@ RSpec.describe API::Ml::Mlflow do
   end
 
   describe 'Runs' do
-    describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/runs/create' do
-      let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/runs/create" }
+    describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/create' do
+      let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/create" }
       let(:params) { { experiment_id: experiment.iid.to_s, start_time: Time.now.to_i } }
       let(:request) { post api(route), params: params, headers: headers }
 
@@ -270,7 +300,7 @@ RSpec.describe API::Ml::Mlflow do
           'lifecycle_stage' => "active"
         }
 
-        expect(response).to have_gitlab_http_status(:created)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('ml/run')
         expect(json_response['run']).to include('info' => hash_including(**expected_properties),
                                                 'data' => { 'metrics' => [], 'params' => [] })
@@ -300,8 +330,8 @@ RSpec.describe API::Ml::Mlflow do
       end
     end
 
-    describe 'GET /projects/:id/ml/mflow/api/2.0/mlflow/runs/get' do
-      let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/runs/get" }
+    describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/runs/get' do
+      let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/get" }
       let(:default_params) { { 'run_id' => candidate.iid } }
 
       it 'gets the run', :aggregate_failures do
@@ -314,7 +344,7 @@ RSpec.describe API::Ml::Mlflow do
           'lifecycle_stage' => "active"
         }
 
-        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('ml/run')
         expect(json_response['run']).to include(
           'info' => hash_including(**expected_properties),
@@ -337,10 +367,10 @@ RSpec.describe API::Ml::Mlflow do
       end
     end
 
-    describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/runs/update' do
+    describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/update' do
       let(:default_params) { { run_id: candidate.iid.to_s, status: 'FAILED', end_time: Time.now.to_i } }
       let(:request) { post api(route), params: params, headers: headers }
-      let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/runs/update" }
+      let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/update" }
 
       it 'updates the run', :aggregate_failures do
         expected_properties = {
@@ -353,7 +383,7 @@ RSpec.describe API::Ml::Mlflow do
           'lifecycle_stage' => 'active'
         }
 
-        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('ml/update_run')
         expect(json_response).to include('run_info' => hash_including(**expected_properties))
       end
@@ -377,15 +407,15 @@ RSpec.describe API::Ml::Mlflow do
       end
     end
 
-    describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/runs/log-metric' do
-      let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/runs/log-metric" }
+    describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-metric' do
+      let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/log-metric" }
       let(:default_params) { { run_id: candidate.iid.to_s, key: 'some_key', value: 10.0, timestamp: Time.now.to_i } }
       let(:request) { post api(route), params: params, headers: headers }
 
       it 'logs the metric', :aggregate_failures do
         candidate.metrics.reload
 
-        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
         expect(candidate.metrics.length).to eq(3)
       end
@@ -398,32 +428,26 @@ RSpec.describe API::Ml::Mlflow do
       end
     end
 
-    describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/runs/log-parameter' do
-      let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/runs/log-parameter" }
+    describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-parameter' do
+      let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/log-parameter" }
       let(:default_params) { { run_id: candidate.iid.to_s, key: 'some_key', value: 'value' } }
       let(:request) { post api(route), params: params, headers: headers }
 
       it 'logs the parameter', :aggregate_failures do
         candidate.params.reload
 
-        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
         expect(candidate.params.length).to eq(3)
       end
 
-      context 'when parameter was already logged' do
-        let(:params) { default_params.tap { |p| p[:key] = candidate.params[0].name } }
-
-        it 'does not log', :aggregate_failures do
-          candidate.params.reload
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to be_empty
-          expect(candidate.params.length).to eq(2)
-        end
-      end
-
       describe 'Error Cases' do
+        context 'when parameter was already logged' do
+          let(:params) { default_params.tap { |p| p[:key] = candidate.params[0].name } }
+
+          it_behaves_like 'Bad Request'
+        end
+
         it_behaves_like 'shared error cases'
         it_behaves_like 'Requires api scope'
         it_behaves_like 'run_id param error cases'
@@ -431,12 +455,12 @@ RSpec.describe API::Ml::Mlflow do
       end
     end
 
-    describe 'POST /projects/:id/ml/mflow/api/2.0/mlflow/runs/log-batch' do
+    describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/log-batch' do
       let(:candidate2) do
         create(:ml_candidates, user: experiment.user, start_time: 1234, experiment: experiment)
       end
 
-      let(:route) { "/projects/#{project_id}/ml/mflow/api/2.0/mlflow/runs/log-batch" }
+      let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/log-batch" }
       let(:default_params) do
         {
           run_id: candidate2.iid.to_s,
@@ -451,7 +475,7 @@ RSpec.describe API::Ml::Mlflow do
       let(:request) { post api(route), params: params, headers: headers }
 
       it 'logs parameters and metrics', :aggregate_failures do
-        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
         expect(candidate2.params.size).to eq(1)
         expect(candidate2.metrics.size).to eq(2)
@@ -465,7 +489,7 @@ RSpec.describe API::Ml::Mlflow do
         it 'does not log', :aggregate_failures do
           candidate.params.reload
 
-          expect(response).to have_gitlab_http_status(:success)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(candidate2.params.size).to eq(1)
         end
       end

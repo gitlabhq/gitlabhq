@@ -165,6 +165,38 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       { type: :namespace, id: 3 }
     ]
 
+  context 'when project attributes change' do
+    Projects::ProjectAttributesChangedEvent::PAGES_RELATED_ATTRIBUTES.each do |attribute|
+      it_behaves_like 'clears caches with',
+        event_class: Projects::ProjectAttributesChangedEvent,
+        event_data: {
+          project_id: 1,
+          namespace_id: 2,
+          root_namespace_id: 3,
+          attributes: [attribute]
+        },
+        caches: [
+          { type: :project, id: 1 },
+          { type: :namespace, id: 3 }
+        ]
+    end
+
+    it 'does not clear the cache when the attributes is not pages related' do
+      event = Projects::ProjectAttributesChangedEvent.new(
+        data: {
+          project_id: 1,
+          namespace_id: 2,
+          root_namespace_id: 3,
+          attributes: ['unknown']
+        }
+      )
+
+      expect(described_class).not_to receive(:clear_cache)
+
+      ::Gitlab::EventStore.publish(event)
+    end
+  end
+
   context 'when namespace based cache keys are duplicated' do
     # de-dups namespace cache keys
     it_behaves_like 'clears caches with',

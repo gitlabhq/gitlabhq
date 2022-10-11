@@ -299,7 +299,7 @@ point of failure and so the screenshot would not be captured at the right moment
 
 ## Ensure tests do not leave the browser logged in
 
-All tests expect to be able to log in at the start of the test.
+All tests expect to be able to sign in at the start of the test.
 
 For an example see [issue #34736](https://gitlab.com/gitlab-org/gitlab/-/issues/34736).
 

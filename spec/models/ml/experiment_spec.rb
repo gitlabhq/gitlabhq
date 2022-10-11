@@ -3,16 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Experiment do
+  let_it_be(:exp) { create(:ml_experiments) }
+  let_it_be(:exp2) { create(:ml_experiments, project: exp.project) }
+
+  let(:iid) { exp.iid }
+  let(:exp_name) { exp.name }
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:candidates) }
   end
 
-  describe '#by_project_id_and_iid?' do
-    let(:exp) { create(:ml_experiments) }
-    let(:iid) { exp.iid }
-
+  describe '#by_project_id_and_iid' do
     subject { described_class.by_project_id_and_iid(exp.project_id, iid) }
 
     context 'if exists' do
@@ -26,10 +29,7 @@ RSpec.describe Ml::Experiment do
     end
   end
 
-  describe '#by_project_id_and_name?' do
-    let(:exp) { create(:ml_experiments) }
-    let(:exp_name) { exp.name }
-
+  describe '#by_project_id_and_name' do
     subject { described_class.by_project_id_and_name(exp.project_id, exp_name) }
 
     context 'if exists' do
@@ -43,20 +43,17 @@ RSpec.describe Ml::Experiment do
     end
   end
 
-  describe '#has_record?' do
-    let(:exp) { create(:ml_experiments) }
-    let(:exp_name) { exp.name }
+  describe '#by_project_id' do
+    let(:project_id) { exp.project_id }
 
-    subject { described_class.has_record?(exp.project_id, exp_name) }
+    subject { described_class.by_project_id(project_id) }
 
-    context 'if exists' do
-      it { is_expected.to be_truthy }
-    end
+    it { is_expected.to match_array([exp, exp2]) }
 
-    context 'if does not exist' do
-      let(:exp_name) { 'hello' }
+    context 'when project does not have experiment' do
+      let(:project_id) { non_existing_record_iid }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_empty }
     end
   end
 end

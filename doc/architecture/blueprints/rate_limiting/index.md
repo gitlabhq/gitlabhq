@@ -388,7 +388,7 @@ Proposal:
 | Author                       | Hayley Swimelar         |
 | Engineering Leader           | Sam Goldstein           |
 | Product Manager              |                         |
-| Architecture Evolution Coach |                         |
+| Architecture Evolution Coach | Andrew Newdigate        |
 | Recommender                  |                         |
 | Recommender                  |                         |
 | Recommender                  |                         |

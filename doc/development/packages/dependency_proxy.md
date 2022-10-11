@@ -75,7 +75,7 @@ application from the registry. For example, the GitLab container registry direct
 from `https://gitlab.com/jwt/auth`. This endpoint is part of the `gitlab-org/gitlab` project, also known as the
 rails project or web service.
 
-When a user tries to log into the dependency proxy with a Docker client, we must tell it where to get a JWT. We
+When a user tries to sign in to the dependency proxy with a Docker client, we must tell it where to get a JWT. We
 can use the same endpoint we use with the container registry: `https://gitlab.com/jwt/auth`. But in our case,
 we tell the Docker client to specify `service=dependency_proxy` in the parameters so can use a separate underlying
 service to generate the token.

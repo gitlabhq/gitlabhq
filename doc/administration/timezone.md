@@ -27,7 +27,7 @@ This Rake task does not list time zones in TZInfo format required by Omnibus Git
 
 GitLab defaults its time zone to UTC. It has a global time zone configuration parameter in `/etc/gitlab/gitlab.rb`.
 
-To obtain a list of time zones, log in to your GitLab application server and run a command that generates a list of time zones in TZInfo format for the server. For example, install `timedatectl` and run `timedatectl list-timezones`.
+To obtain a list of time zones, sign in to your GitLab application server and run a command that generates a list of time zones in TZInfo format for the server. For example, install `timedatectl` and run `timedatectl list-timezones`.
 
 To update, add the time zone that best applies to your location. For example:
 

@@ -121,11 +121,7 @@ module Gitlab
           end
 
           def observe_jobs_count_in_alive_pipelines
-            jobs_count = if limit_active_jobs_early?
-                           project.all_pipelines.jobs_count_in_alive_pipelines
-                         else
-                           project.all_pipelines.builds_count_in_alive_pipelines
-                         end
+            jobs_count = project.all_pipelines.jobs_count_in_alive_pipelines
 
             metrics.active_jobs_histogram
               .observe({ plan: project.actual_plan_name }, jobs_count)
@@ -134,12 +130,6 @@ module Gitlab
           def increment_pipeline_failure_reason_counter(reason)
             metrics.pipeline_failure_reason_counter
               .increment(reason: (reason || :unknown_failure).to_s)
-          end
-
-          def limit_active_jobs_early?
-            strong_memoize(:limit_active_jobs_early) do
-              Feature.enabled?(:ci_limit_active_jobs_early, project)
-            end
           end
 
           private

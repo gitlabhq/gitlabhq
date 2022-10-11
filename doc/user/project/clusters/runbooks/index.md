@@ -153,7 +153,7 @@ the components outlined above and the pre-loaded demo runbook.
    ```
 
 1. After JupyterHub has been installed successfully, open the **Jupyter Hostname**
-   in your browser. Select **Sign in with GitLab** button to log in to
+   in your browser. Select **Sign in with GitLab** button to sign in to
    JupyterHub and start the server. Authentication is enabled for any user of the
    GitLab instance with OAuth2. This button redirects you to a page at GitLab
    requesting authorization for JupyterHub to use your GitLab account.

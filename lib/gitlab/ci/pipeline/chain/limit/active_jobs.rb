@@ -13,7 +13,6 @@ module Gitlab
             MESSAGE = "Project exceeded the allowed number of jobs in active pipelines. Retry later."
 
             def perform!
-              return unless command.limit_active_jobs_early?
               return unless limits.exceeded?(LIMIT_NAME, count_jobs_in_alive_pipelines)
 
               error(MESSAGE, drop_reason: :job_activity_limit_exceeded)
@@ -26,8 +25,6 @@ module Gitlab
             end
 
             def break?
-              return unless command.limit_active_jobs_early?
-
               pipeline.errors.any?
             end
 

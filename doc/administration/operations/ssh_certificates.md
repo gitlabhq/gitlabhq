@@ -74,7 +74,7 @@ $ ssh-add -L | grep cert | ssh-keygen -L -f -
 ```
 
 Technically that's not strictly true, for example, it could be
-`prod-aearnfjord` if it's a SSH certificate you'd normally log in to
+`prod-aearnfjord` if it's a SSH certificate you'd normally sign in to
 servers as the `prod-aearnfjord` user, but then you must specify your
 own `AuthorizedPrincipalsCommand` to do that mapping instead of using
 our provided default.
@@ -108,7 +108,7 @@ Where `{KEY_ID}` is the `%i` argument passed to the script
 
 You need to customize the `sshUsers` part of that. It should be
 some principal that's guaranteed to be part of the key for all users
-who can log in to GitLab, or you must provide a list of principals,
+who can sign in to GitLab, or you must provide a list of principals,
 one of which is present for the user, for example:
 
 ```plaintext
@@ -123,7 +123,7 @@ into multiple lines of `authorized_keys` output, as described in the
 `AuthorizedPrincipalsFile` documentation in `sshd_config(5)`.
 
 Normally when using the `AuthorizedKeysCommand` with OpenSSH the
-principal is some "group" that's allowed to log into that
+principal is some "group" that's allowed to sign in to that
 server. However with GitLab it's only used to appease OpenSSH's
 requirement for it, we effectively only care about the "key ID" being
 correct. Once that's extracted GitLab enforces its own ACLs for

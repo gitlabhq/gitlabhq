@@ -84,7 +84,7 @@ the GitLab handbook information for the [shared 1Password account](https://about
 
 ### Enable a feature flag for my Review App
 
-1. Open your Review App and log in as documented above.
+1. Open your Review App and sign in as documented above.
 1. Create a personal access token.
 1. Enable the feature flag using the [Feature flag API](../../api/features.md).
 

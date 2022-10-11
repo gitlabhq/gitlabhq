@@ -44,7 +44,7 @@ export default {
       sandbox
       :srcdoc="rawCode"
       frameborder="0"
-      scrolling="no"
+      scrolling="auto"
       width="100%"
       class="gl-overflow-auto"
     ></iframe>

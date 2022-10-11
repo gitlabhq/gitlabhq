@@ -259,7 +259,7 @@ generated for the renewal and available for viewing or download on the
 #### Enable or disable automatic subscription renewal
 
 To view or change automatic subscription renewal (at the same tier as the
-previous period), log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
+previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
 - If a **Resume subscription** button is displayed, your subscription was canceled
   previously. Click it to resume automatic renewal.

@@ -83,7 +83,7 @@ by removing them in LDAP, or directly from the Admin Area. To do this:
 
 A blocked user:
 
-- Cannot log in.
+- Cannot sign in.
 - Cannot access Git repositories or the API.
 - Does not receive any notifications from GitLab.
 - Cannot use [slash commands](../../integration/slash_commands.md).

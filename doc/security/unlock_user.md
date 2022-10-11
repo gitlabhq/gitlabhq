@@ -56,7 +56,7 @@ To unlock a locked user:
 
 1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>
 
-The user should now be able to log in.
+The user should now be able to sign in.
 
 <!-- ## Troubleshooting
 

@@ -13,7 +13,7 @@ GitLab supports authentication using smartcards.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33669) in GitLab 12.6.
 
-By default, existing users can continue to log in with a username and password when smartcard
+By default, existing users can continue to sign in with a username and password when smartcard
 authentication is enabled.
 
 To force existing users to use only smartcard authentication,

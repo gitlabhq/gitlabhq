@@ -115,9 +115,9 @@ SSH key.
 You can generate the SSH key from the machine that GitLab Runner is installed
 on, and use that key for all projects that are run on this machine.
 
-1. First, log in to the server that runs your jobs.
+1. First, sign in to the server that runs your jobs.
 
-1. Then, from the terminal, log in as the `gitlab-runner` user:
+1. Then, from the terminal, sign in as the `gitlab-runner` user:
 
    ```shell
    sudo su - gitlab-runner

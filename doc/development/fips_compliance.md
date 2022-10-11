@@ -417,7 +417,7 @@ In this environment, OpenSSL refuses to perform cryptographic operations
 forbidden by the FIPS standards. This enables you to reproduce FIPS-related bugs,
 and validate fixes.
 
-You should be able to open a web browser inside the virtual machine and log in
+You should be able to open a web browser inside the virtual machine and sign in
 to the GitLab instance.
 
 You can disable FIPS mode again by running this command, then restarting the

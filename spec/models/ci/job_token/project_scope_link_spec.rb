@@ -7,6 +7,7 @@ RSpec.describe Ci::JobToken::ProjectScopeLink do
   it { is_expected.to belong_to(:target_project) }
   it { is_expected.to belong_to(:added_by) }
 
+  let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
 
   it_behaves_like 'cleanup by a loose foreign key' do
@@ -97,14 +98,14 @@ RSpec.describe Ci::JobToken::ProjectScopeLink do
 
   context 'loose foreign key on ci_job_token_project_scope_links.source_project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:project) }
+      let!(:parent) { create(:project, namespace: group) }
       let!(:model) { create(:ci_job_token_project_scope_link, source_project: parent) }
     end
   end
 
   context 'loose foreign key on ci_job_token_project_scope_links.target_project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:project) }
+      let!(:parent) { create(:project, namespace: group) }
       let!(:model) { create(:ci_job_token_project_scope_link, target_project: parent) }
     end
   end

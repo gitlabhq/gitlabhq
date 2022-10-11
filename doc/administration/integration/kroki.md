@@ -54,7 +54,7 @@ read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images
 ## Enable Kroki in GitLab
 
 You need to enable Kroki integration from Settings under Admin Area.
-To do that, log in with an administrator account and follow these steps:
+To do that, sign in with an administrator account and follow these steps:
 
 1. On the top bar, select **Main menu > Admin**.
 1. Go to **Settings > General**.

@@ -1,10 +1,10 @@
-- form_field_classes = local_assigns[:admin_view] || !Feature.enabled?(:project_list_filter_bar) ? 'input-short js-projects-list-filter' : ''
+- form_field_classes = local_assigns[:admin_view] || !Feature.enabled?(:project_list_filter_bar) ? 'input-short js-projects-list-filter' : 'gl-w-full! gl-pl-7 '
 - placeholder = local_assigns[:search_form_placeholder] ? search_form_placeholder : _('Filter by name')
 
 = form_tag filter_projects_path, method: :get, class: 'project-filter-form', data: { qa_selector: 'project_filter_form_container' }, id: 'project-filter-form' do |f|
   = search_field_tag :name, params[:name],
     placeholder: placeholder,
-    class: "project-filter-form-field form-control gl-w-full! gl-pl-7 #{form_field_classes}",
+    class: "project-filter-form-field form-control #{form_field_classes}",
     spellcheck: false,
     id: 'project-filter-form-field',
     autofocus: local_assigns[:autofocus]

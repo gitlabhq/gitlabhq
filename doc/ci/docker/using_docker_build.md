@@ -608,7 +608,7 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-To log in to Docker Hub, leave `$DOCKER_REGISTRY`
+To sign in to Docker Hub, leave `$DOCKER_REGISTRY`
 empty or remove it.
 
 ### Option 2: Mount `~/.docker/config.json` on each job

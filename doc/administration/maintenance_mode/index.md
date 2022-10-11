@@ -82,7 +82,7 @@ them to disable Maintenance Mode after it's been enabled.
 
 ### Authentication
 
-All users can log in and out of the GitLab instance but no new users can be created.
+All users can sign in and out of the GitLab instance but no new users can be created.
 
 If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#general-setup) fail.
 
@@ -113,9 +113,9 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 |:----:|:--------------------------------------:|:----:|
 | `POST` | `/admin/application_settings/general` | To allow updating application settings in the administrator UI |
 | `PUT`  | `/api/v4/application/settings` | To allow updating application settings with the API |
-| `POST` | `/users/sign_in` | To allow users to log in. |
-| `POST` | `/users/sign_out`| To allow users to log out. |
-| `POST` | `/oauth/token` | To allow users to log in to a Geo secondary for the first time. |
+| `POST` | `/users/sign_in` | To allow users to sign in. |
+| `POST` | `/users/sign_out`| To allow users to sign out. |
+| `POST` | `/oauth/token` | To allow users to sign in to a Geo secondary for the first time. |
 | `POST` | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
 | `POST` | Paths ending with `/compare`| Git revision routes. |
 | `POST` | `.git/git-upload-pack` | To allow Git pull/clone. |

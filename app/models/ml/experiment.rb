@@ -13,10 +13,6 @@ module Ml
 
     has_internal_id :iid, scope: :project
 
-    def artifact_location
-      'not_implemented'
-    end
-
     class << self
       def by_project_id_and_iid(project_id, iid)
         find_by(project_id: project_id, iid: iid)
@@ -26,8 +22,8 @@ module Ml
         find_by(project_id: project_id, name: name)
       end
 
-      def has_record?(project_id, name)
-        where(project_id: project_id, name: name).exists?
+      def by_project_id(project_id)
+        where(project_id: project_id)
       end
     end
   end
