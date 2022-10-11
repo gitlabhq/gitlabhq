@@ -96,7 +96,7 @@ This is just a sketch, but it shows the general idea: we would use whatever the
 ## End goal
 
 The guidelines in this document are meant to foster _better_ code reuse, by
-clearly defining what can be reused where, and what to do when you can not reuse
+clearly defining what can be reused where, and what to do when you cannot reuse
 something. Clearly separating abstractions makes it harder to use the wrong one,
 makes it easier to debug the code, and (hopefully) results in fewer performance
 problems.
@@ -265,7 +265,7 @@ For example: `:job_not_retriable`, `:duplicate_package`, `:merge_request_not_mer
 
 Everything in `app/finders`, typically used for retrieving data from a database.
 
-Finders can not reuse other finders in an attempt to better control the SQL
+Finders cannot reuse other finders in an attempt to better control the SQL
 queries they produce.
 
 Finders' `execute` method should return `ActiveRecord::Relation`. Exceptions

@@ -195,6 +195,8 @@ module Members
     end
 
     def publish_event!
+      return unless member_created_namespace_id
+
       Gitlab::EventStore.publish(
         Members::MembersAddedEvent.new(data: {
           source_id: source.id,

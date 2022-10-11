@@ -93,8 +93,8 @@ export default class SidebarMediator {
   fetch() {
     return this.service
       .get()
-      .then(([restResponse, graphQlResponse]) => {
-        this.processFetchedData(restResponse.data, graphQlResponse.data);
+      .then(({ data }) => {
+        this.processFetchedData(data);
       })
       .catch(() =>
         createAlert({

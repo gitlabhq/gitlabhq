@@ -44,7 +44,7 @@ into this category.
 
 ## Isolation
 
-Background migrations must be isolated and can not use application code (for example,
+Background migrations must be isolated and cannot use application code (for example,
 models defined in `app/models` except the `ApplicationRecord` classes). Since these migrations
 can take a long time to run it's possible for new versions to be deployed while they are still running.
 

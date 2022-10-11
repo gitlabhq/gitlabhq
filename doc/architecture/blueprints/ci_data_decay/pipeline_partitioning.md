@@ -317,7 +317,7 @@ with its `partition_id`, and we will be able to find the partition that the
 pipeline data is stored in.
 
 We will need to constrain access to searching through pipelines, builds,
-artifacts etc. Search can not be done through all partitions, as it would not
+artifacts etc. Search cannot be done through all partitions, as it would not
 be efficient enough, hence we will need to find a better way of searching
 through archived pipelines data. It will be necessary to have different access
 patterns to access archived data in the UI and API.
@@ -343,7 +343,7 @@ has_many :builds, -> (pipeline) { where(partition_id: pipeline.partition_id) }
 ```
 
 The problem with this approach is that it makes preloading much more difficult
-as instance dependent associations can not be used with preloads:
+as instance dependent associations cannot be used with preloads:
 
 ```plaintext
 ArgumentError: The association scope 'builds' is instance dependent (the

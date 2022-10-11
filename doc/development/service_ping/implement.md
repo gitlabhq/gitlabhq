@@ -179,7 +179,7 @@ As the HyperLogLog algorithm is probabilistic, the **results always include erro
 The highest encountered error rate is 4.9%.
 
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
-columns that contain non-unique values, which can not be assured by other counters.
+columns that contain non-unique values, which cannot be assured by other counters.
 
 ##### estimate_batch_distinct_count method
 

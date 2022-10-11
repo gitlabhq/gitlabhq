@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
-import SidebarService, { gqClient } from '~/sidebar/services/sidebar_service';
+import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import Mock from './mock_data';
@@ -42,22 +42,14 @@ describe('Sidebar mediator', () => {
     });
   });
 
-  it('fetches the data', () => {
+  it('fetches the data', async () => {
     const mockData = Mock.responseMap.GET[mediatorMockData.endpoint];
     mock.onGet(mediatorMockData.endpoint).reply(200, mockData);
-
-    const mockGraphQlData = Mock.graphQlResponseData;
-    const graphQlSpy = jest.spyOn(gqClient, 'query').mockReturnValue({
-      data: mockGraphQlData,
-    });
     const spy = jest.spyOn(mediator, 'processFetchedData').mockReturnValue(Promise.resolve());
+    await mediator.fetch();
 
-    return mediator.fetch().then(() => {
-      expect(spy).toHaveBeenCalledWith(mockData, mockGraphQlData);
-
-      spy.mockRestore();
-      graphQlSpy.mockRestore();
-    });
+    expect(spy).toHaveBeenCalledWith(mockData);
+    spy.mockRestore();
   });
 
   it('processes fetched data', () => {

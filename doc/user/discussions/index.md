@@ -177,7 +177,7 @@ You can add an internal note **to an issue or an epic**. It's then visible only 
 Keep in mind:
 
 - Replies to internal notes are also internal.
-- You can not turn an internal note into a regular comment.
+- You cannot turn an internal note into a regular comment.
 
 Prerequisites:
 

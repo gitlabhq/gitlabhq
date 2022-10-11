@@ -15,7 +15,7 @@ When adding new columns to store strings or other textual information:
 the `#text ... limit: 100` helper (see below) when creating a table, or by using the `add_text_limit`
 when altering an existing table.
 
-The standard Rails `text` column type can not be defined with a limit, but we extend `create_table` to
+The standard Rails `text` column type cannot be defined with a limit, but we extend `create_table` to
 add a `limit: 255` option. Outside of `create_table`, `add_text_limit` can be used to add a [check constraint](https://www.postgresql.org/docs/11/ddl-constraints.html)
 to an already existing column.
 
@@ -131,7 +131,7 @@ Issues is a pretty busy and large table with more than 25 million rows, so we do
 other processes that try to access it while running the update.
 
 Also, after checking our production database, we know that there are `issues` with more characters in
-their title than the 1024 character limit, so we can not add and validate the constraint in one step.
+their title than the 1024 character limit, so we cannot add and validate the constraint in one step.
 
 NOTE:
 Even if we did not have any record with a title larger than the provided limit, another

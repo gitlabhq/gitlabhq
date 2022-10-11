@@ -93,7 +93,7 @@ We only want to enforce the `NOT NULL` constraint without setting a default, as 
 that all epics should have a user-generated description.
 
 After checking our production database, we know that there are `epics` with `NULL` descriptions,
-so we can not add and validate the constraint in one step.
+so we cannot add and validate the constraint in one step.
 
 NOTE:
 Even if we did not have any epic with a `NULL` description, another instance of GitLab could have

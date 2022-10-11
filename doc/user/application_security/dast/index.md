@@ -480,7 +480,7 @@ When using `DAST_PATHS` and `DAST_PATHS_FILE`, note the following:
 
 - `DAST_WEBSITE` must be defined when using either `DAST_PATHS_FILE` or `DAST_PATHS`. The paths listed in either use `DAST_WEBSITE` to build the URLs to scan
 - Spidering is disabled when `DAST_PATHS` or `DAST_PATHS_FILE` are defined
-- `DAST_PATHS_FILE` and `DAST_PATHS` can not be used together
+- `DAST_PATHS_FILE` and `DAST_PATHS` cannot be used together
 - The `DAST_PATHS` variable has a limit of about 130kb. If you have a list or paths
   greater than this, use `DAST_PATHS_FILE`.
 

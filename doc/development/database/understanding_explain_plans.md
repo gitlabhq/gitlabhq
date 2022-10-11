@@ -546,7 +546,7 @@ improve this query, other than _not_ running it at all.
 What is important here is that while some may recommend to straight up add an
 index the moment you see a sequential scan, it is _much more important_ to first
 understand what your query does, how much data it retrieves, and so on. After
-all, you can not optimize something you do not understand.
+all, you cannot optimize something you do not understand.
 
 ### Cardinality and selectivity
 

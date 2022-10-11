@@ -382,6 +382,8 @@ $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: $white;
 $gl-text-color-secondary-inverted: rgba($white, 0.85);
 $gl-text-color-disabled: $gray-400;
+$link-color: $blue-500 !default;
+$link-hover-color: $blue-500 !default;
 $gl-grayish-blue: #7f8fa4;
 $gl-header-color: #4c4e54;
 $gl-font-size-12: 12px;

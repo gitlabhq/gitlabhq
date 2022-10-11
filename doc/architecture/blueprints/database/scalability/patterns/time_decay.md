@@ -27,7 +27,7 @@ application.
 Let's first consider entities with no inherent time-related bias for their data.
 
 A record for a user or a project may be equally important and frequently accessed, irrelevant to when
-it was created. We can not predict by using a user's `id` or `created_at` how often the related
+it was created. We cannot predict by using a user's `id` or `created_at` how often the related
 record is accessed or updated.
 
 On the other hand, a good example for datasets with extreme time-decay effects are logs and time
@@ -91,7 +91,7 @@ a maximum of a month of events, restricted to 6 months in the past.
 ### Immutability
 
 The third characteristic of time-decay data is that their **time-decay status does not change**.
-Once they are considered "old", they can not switch back to "new" or relevant again.
+Once they are considered "old", they cannot switch back to "new" or relevant again.
 
 This definition may sound trivial, but we have to be able to make operations over "old" data **more**
 expensive (for example, by archiving or moving them to less expensive storage) without having to worry about

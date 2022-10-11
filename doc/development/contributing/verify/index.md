@@ -52,7 +52,7 @@ and they serve us and our users well. Some examples of these principles are that
 
 - The feedback delivered by GitLab CI/CD and data produced by the platform should be accurate.
   If a job fails and we notify a user that it was successful, it can have severe negative consequences.
-- Feedback needs to be available when a user needs it and data can not disappear unexpectedly when engineers need it.
+- Feedback needs to be available when a user needs it and data cannot disappear unexpectedly when engineers need it.
 - It all doesn't matter if the platform is not secure and we
 are leaking credentials or secrets.
 - When a user provides a set of preconditions in a form of CI/CD configuration, the result should be deterministic each time a pipeline runs, because otherwise the platform might not be trustworthy.
@@ -62,7 +62,7 @@ are leaking credentials or secrets.
 
 ### Measure before you optimize, and make data-informed decisions
 
-It is very difficult to optimize something that you can not measure. How would you
+It is very difficult to optimize something that you cannot measure. How would you
 know if you succeeded, or how significant the success was? If you are working on
 a performance or reliability improvement, make sure that you measure things before
 you optimize them.

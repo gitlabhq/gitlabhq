@@ -306,7 +306,7 @@ end
 ### Remove Sidekiq jobs for given parameters (destructive)
 
 The general method to kill jobs conditionally is the following command, which
-removes jobs that are queued but not started. Running jobs can not be killed.
+removes jobs that are queued but not started. Running jobs cannot be killed.
 
 ```ruby
 queue = Sidekiq::Queue.new('<queue name>')

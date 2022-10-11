@@ -48,7 +48,7 @@ possible, we encourage you to use all of our security scanning tools:
   then performs a build to fetch upstream dependency information. In the case of
   containers, Dependency Scanning uses the compatible manifest and reports only these
   declared software dependencies (and those installed as a sub-dependency).
-  Dependency Scanning can not detect software dependencies that are pre-bundled
+  Dependency Scanning cannot detect software dependencies that are pre-bundled
   into the container's base image. To identify pre-bundled dependencies, enable
   [Container Scanning](../container_scanning/index.md) language scanning using the
   [`CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` variable](../container_scanning/index.md#report-language-specific-findings).

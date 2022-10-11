@@ -7,7 +7,7 @@ type: reference, api
 
 # Internal API **(FREE)**
 
-The internal API is used by different GitLab components, it can not be
+The internal API is used by different GitLab components, it cannot be
 used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 
@@ -21,7 +21,7 @@ Before adding a new internal endpoint, consider if the API would potentially be
 useful to the wider GitLab community and can be made externally accessible.
 
 One reason we might favor internal API endpoints sometimes is when using such an endpoint requires
-internal data that external actors can not have. For example, in the internal Pages API we might use
+internal data that external actors cannot have. For example, in the internal Pages API we might use
 a secret token that identifies a request as internal or sign a request with a public key that is
 not available to a wider community.
 

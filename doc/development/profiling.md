@@ -244,7 +244,7 @@ Example output:
 ```
 
 NOTE:
-This endpoint is only available for Rails web workers. Sidekiq workers can not be inspected this way.
+This endpoint is only available for Rails web workers. Sidekiq workers cannot be inspected this way.
 
 ## Settings that impact performance
 

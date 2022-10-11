@@ -41,7 +41,7 @@ into this category.
 
 ## Isolation
 
-Batched background migrations must be isolated and can not use application code (for example,
+Batched background migrations must be isolated and cannot use application code (for example,
 models defined in `app/models` except the `ApplicationRecord` classes).
 Because these migrations can take a long time to run, it's possible
 for new versions to deploy while the migrations are still running.

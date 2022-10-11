@@ -80,9 +80,9 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab 
 
 ## Upgrading to GitLab 14.0/14.1
 
-### Primary sites can not be removed from the UI
+### Primary sites cannot be removed from the UI
 
-We found an issue where [Primary sites can not be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
+We found an issue where [Primary sites cannot be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
 
 This bug only exists in the UI and does not block the removal of Primary sites using any other method.
 

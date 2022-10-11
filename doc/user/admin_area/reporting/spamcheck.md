@@ -61,7 +61,7 @@ token as the API key.
 
 ## Running Spamcheck over TLS
 
-Spamcheck service on its own can not communicate directly over TLS with GitLab.
+Spamcheck service on its own cannot communicate directly over TLS with GitLab.
 However, Spamcheck can be deployed behind a reverse proxy which performs TLS
 termination. In such a scenario, GitLab can be made to communicate with
 Spamcheck over TLS by specifying `tls://` scheme for the external Spamcheck URL

@@ -198,7 +198,7 @@ To make a runner pick untagged jobs:
 1. Select **Save changes** for the changes to take effect.
 
 NOTE:
-The runner tags list can not be empty when it's not allowed to pick untagged jobs.
+The runner tags list cannot be empty when it's not allowed to pick untagged jobs.
 
 Below are some example scenarios of different variations.
 
