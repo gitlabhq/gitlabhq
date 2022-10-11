@@ -249,10 +249,13 @@ The limit varies depending on your plan and the number of seats in your subscrip
 |----------------------|-------------------------|
 | Number of webhooks   | `100` per project, `50` per group |
 | Maximum payload size | 25 MB                   |
+| Timeout              | 10 seconds              |
 
-For self-managed instance limits, see
-[Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit)
-and [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
+For self-managed instance limits, see:
+
+- [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit).
+- [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
+- [Webhook timeout](../../administration/instance_limits.md#webhook-timeout).
 
 ## Runner SaaS
 

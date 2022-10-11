@@ -289,6 +289,29 @@ For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/index
 
 The maximum webhook payload size is 25 MB.
 
+### Webhook timeout
+
+The number of seconds GitLab waits for an HTTP response after sending a webhook.
+
+To change the webhook timeout value:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['webhook_timeout'] = 60
+   ```
+
+1. Save the file.
+1. Reconfigure and restart GitLab for the changes to
+   take effect:
+
+   ```shell
+   gitlab-ctl reconfigure
+   gitlab-ctl restart
+   ```
+
+See also [webhook limits for GitLab.com](../user/gitlab_com/index.md#other-limits).
+
 ### Recursive webhooks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.

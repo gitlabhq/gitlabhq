@@ -151,20 +151,22 @@ Through testing and real life usage, the Reference Architectures are validated a
 <tbody>
   <tr>
     <td>Omnibus</td>
-    <td>✅</td>
-    <td>✅</td>
-    <td>✅</td>
-    <td>✅</td>
+    <td>🟢</td>
+    <td>🟢</td>
+    <td>🟡<sup>1</sup></td>
+    <td>🟢</td>
   </tr>
   <tr>
     <td>Cloud Native Hybrid</td>
-    <td>✅</td>
-    <td>✅</td>
+    <td>🟢</td>
+    <td>🟢</td>
     <td></td>
     <td></td>
   </tr>
 </tbody>
 </table>
+
+1. We only recommend smaller setups (up to 2k) at this time on Azure due to performance issues at larger scales. See the [Recommendation Notes for Azure](#recommendation-notes-for-azure) section for more info.
 
 Additionally, the following cloud provider services are validated and supported for use as part of the Reference Architectures:
 
@@ -180,36 +182,47 @@ Additionally, the following cloud provider services are validated and supported 
 <tbody>
   <tr>
     <td>Object Storage</td>
-    <td>✅ &nbsp; <a href="https://cloud.google.com/storage" target="_blank">Cloud Storage</a></td>
-    <td>✅ &nbsp; <a href="https://aws.amazon.com/s3/" target="_blank">S3</a></td>
-    <td>✅ &nbsp; <a href="https://min.io/" target="_blank">MinIO</a></td>
+    <td>🟢 &nbsp; <a href="https://cloud.google.com/storage" target="_blank">Cloud Storage</a></td>
+    <td>🟢 &nbsp; <a href="https://aws.amazon.com/s3/" target="_blank">S3</a></td>
+    <td>🟢 &nbsp; <a href="https://min.io/" target="_blank">MinIO</a></td>
   </tr>
   <tr>
     <td>Database</td>
-    <td>✅ &nbsp; <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL</a></td>
-    <td>✅ &nbsp; <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
+    <td>🟢 &nbsp; <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL</a></td>
+    <td>🟢 &nbsp; <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
     <td></td>
   </tr>
   <tr>
     <td>Redis</td>
     <td></td>
-    <td>✅ &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
+    <td>🟢 &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
     <td></td>
   </tr>
 </tbody>
 </table>
 
-The following specific cloud provider services have been found to have issues in terms of either functionality or performance. As such, they either have caveats that should be considered or are not recommended:
+### Recommendation notes for the database services
 
+When selecting a database service, it should run a standard, performant, and [supported version](../../install/requirements.md#postgresql-requirements) of PostgreSQL with the following features:
+
+- Read Replicas for [Database Load Balancing](../postgresql/database_load_balancing.md).
+- Cross Region replication for [GitLab Geo](../geo/index.md).
+
+Several cloud provider services are known not to support the above or have been found to have other issues and aren't recommended:
+
+- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. See [14.4.0](../../update/index.md#1440) for more details.
+- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/services/postgresql/#overview) (Single / Flexible) is **strongly not recommended** for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
-- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible. See [14.4.0](../../update/index.md#1440) for more details.
-- [Azure Blob Storage](https://azure.microsoft.com/en-gb/services/storage/blobs/) has been found to have performance limits that can impact production use at certain times. For larger Reference Architectures the service may not be sufficient for production use and an alternative is recommended for use instead.
-- [Azure Database for PostgreSQL Server](https://azure.microsoft.com/en-gb/services/postgresql/#overview) (Single / Flexible) is not recommended for use due to notable performance issues or missing functionality.
 
-NOTE:
-As a general rule we unfortunately don't recommend Azure Services at this time.
-If required, we advise thorough testing is done at your intended scale
-over a sustained period to validate if the service is suitable.
+### Recommendation notes for Azure
+
+Due to performance issues that we found with several key Azure services, we only recommend smaller architectures (up to 2k) to be deployed to Azure. For larger architectures, we recommend using another cloud provider.
+
+In addition to the above, you should be aware of the additional specific guidance for Azure:
+
+- **We outright strongly do not recommend [Azure Database for PostgreSQL Single Server](https://learn.microsoft.com/en-us/azure/postgresql/single-server/overview-single-server)** specifically due to significant performance and stability issues found. **For GitLab 14.0 and higher the service is not supported** due to it only supporting up to PostgreSQL 11.
+  - A new service, [Azure Database for Postgres Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/) has been released but due to it missing some functionality we don't recommend it at this time.
+- [Azure Blob Storage](https://azure.microsoft.com/en-gb/services/storage/blobs/) has been found to have performance limits that can impact production use at certain times. However, this has only been seen in larger architectures.
 
 ## Validation and test results
 

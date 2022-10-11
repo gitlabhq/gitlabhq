@@ -84,11 +84,7 @@ Any "burstable" instance types are not recommended due to inconsistent performan
 
 As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP, Azure) and their services, or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section. However, this does not constitute a guarantee for every potential permutation.
 
-Be aware of the following specific call outs:
-
-- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible. See [14.4.0](../../update/index.md#1440) for more details.
-- [Azure Database for PostgreSQL](https://learn.microsoft.com/en-us/azure/postgresql/#:~:text=Azure%20Database%20for%20PostgreSQL%20is,high%20availability%2C%20and%20dynamic%20scalability.) is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to known performance issues or missing features.
-- [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/) is recommended to be configured with [Premium accounts](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium) to ensure consistent performance.
+See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 
 ### Swap
 

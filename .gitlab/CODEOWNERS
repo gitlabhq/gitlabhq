@@ -148,17 +148,18 @@ Dangerfile @gl-quality/eng-prod
 /ee/app/workers/clear_shared_runners_minutes_worker.rb @gitlab-org/maintainers/cicd-verify
 /ee/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
 /ee/lib/ee/api/entities/merge_train.rb @gitlab-org/maintainers/cicd-verify
-/**/javascripts/jobs/ @pburdette @jivanvl
-/**/javascripts/pipelines/ @pburdette @f_caplette @jivanvl @mfluharty @bsandlin @mgandres
-/app/assets/javascripts/pipeline_new/ @pburdette @f_caplette @jivanvl @mfluharty @bsandlin @mgandres
-/app/assets/javascripts/ci_lint/ @f_caplette @bsandlin @mgandres
-/app/assets/javascripts/ci_variable_list/ @pburdette @f_caplette @jivanvl @mfluharty @bsandlin @mgandres
-/app/assets/javascripts/pipeline_schedules/ @pburdette @jivanvl
-/app/assets/javascripts/pipeline_editor/ @f_caplette @bsandlin @mgandres
-/ee/app/assets/javascripts/ci_minutes_usage/ @pburdette @jivanvl
-/ee/app/assets/javascripts/usage_quotas/ci_minutes_usage/ @pburdette @jivanvl
-/ee/app/assets/javascripts/usage_quotas/pipelines/ @pburdette @jivanvl
-/ee/app/assets/javascripts/reports/ @mfluharty
+/**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/pipeline_new/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/ci_lint/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/ci_variable_list/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/pipeline_editor/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/runner/ @gitlab-org/ci-cd/verify/frontend
+/ee/app/assets/javascripts/ci_minutes_usage/ @gitlab-org/ci-cd/verify/frontend
+/ee/app/assets/javascripts/usage_quotas/ci_minutes_usage/ @gitlab-org/ci-cd/verify/frontend
+/ee/app/assets/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend
+/ee/app/assets/javascripts/reports/ @gitlab-org/ci-cd/verify/frontend
 
 ^[Templates]
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates

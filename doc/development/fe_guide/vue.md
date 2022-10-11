@@ -408,11 +408,11 @@ export function useCount(initialValue) {
   const count = ref(initialValue)
 
   function incrementCount() {
-    ref.value += 1
+    count.value += 1
   }
 
   function decrementCount() {
-    ref.value -= 1
+    count.value -= 1
   }
 
   return { count, incrementCount, decrementCount }
