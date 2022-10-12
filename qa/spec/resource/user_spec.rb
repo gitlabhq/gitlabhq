@@ -23,8 +23,8 @@ RSpec.describe QA::Resource::User do
   end
 
   describe '#password' do
-    it 'generates a random 16 character password by default' do
-      expect(subject.password).to match(/\w{16}/)
+    it 'generates a default password' do
+      expect(subject.password).to match('Pa$$w0rd')
     end
 
     it 'is possible to set the password' do

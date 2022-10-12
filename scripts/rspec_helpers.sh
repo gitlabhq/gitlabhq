@@ -297,6 +297,12 @@ function rspec_paralellized_job() {
 function retry_failed_rspec_examples() {
   local rspec_run_status=0
 
+  # Sometimes the file isn't created or is empty. In that case we exit(1) ourselves, otherwise, RSpec would
+  # not run any examples an exit successfully, actually hiding failed tests!
+  if [[ ! -f "${RSPEC_LAST_RUN_RESULTS_FILE}" ]] || [[ ! -s "${RSPEC_LAST_RUN_RESULTS_FILE}" ]]; then
+    exit 1
+  fi
+
   # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
   echo "${CI_JOB_URL}" > "${RETRIED_TESTS_REPORT_PATH}"

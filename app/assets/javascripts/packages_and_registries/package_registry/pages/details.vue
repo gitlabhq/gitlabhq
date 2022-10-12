@@ -44,6 +44,10 @@ import {
   DELETE_PACKAGE_FILES_ERROR_MESSAGE,
   DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
   DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
+  DELETE_MODAL_TITLE,
+  DELETE_MODAL_CONTENT,
+  DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
+  DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT,
 } from '~/packages_and_registries/package_registry/constants';
 
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
@@ -86,6 +90,7 @@ export default {
   },
   data() {
     return {
+      deletePackageModalContent: DELETE_MODAL_CONTENT,
       filesToDelete: [],
       mutationLoading: false,
       packageEntity: {},
@@ -206,18 +211,16 @@ export default {
           throw data.destroyPackageFiles.errors[0];
         }
         createAlert({
-          message:
-            ids.length === 1
-              ? DELETE_PACKAGE_FILE_SUCCESS_MESSAGE
-              : DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
+          message: this.isLastItem(ids)
+            ? DELETE_PACKAGE_FILE_SUCCESS_MESSAGE
+            : DELETE_PACKAGE_FILES_SUCCESS_MESSAGE,
           variant: VARIANT_SUCCESS,
         });
       } catch (error) {
         createAlert({
-          message:
-            ids.length === 1
-              ? DELETE_PACKAGE_FILE_ERROR_MESSAGE
-              : DELETE_PACKAGE_FILES_ERROR_MESSAGE,
+          message: this.isLastItem(ids)
+            ? DELETE_PACKAGE_FILE_ERROR_MESSAGE
+            : DELETE_PACKAGE_FILES_ERROR_MESSAGE,
           variant: VARIANT_WARNING,
           captureError: true,
           error,
@@ -231,18 +234,26 @@ export default {
         files.length === this.packageFiles.length &&
         !this.packageEntity.packageFiles?.pageInfo?.hasNextPage
       ) {
+        if (this.isLastItem(files)) {
+          this.deletePackageModalContent = DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT;
+        } else {
+          this.deletePackageModalContent = DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT;
+        }
         this.$refs.deleteModal.show();
       } else {
         this.filesToDelete = files;
-        if (files.length === 1) {
+        if (this.isLastItem(files)) {
           this.$refs.deleteFileModal.show();
         } else if (files.length > 1) {
           this.$refs.deleteFilesModal.show();
         }
       }
     },
+    isLastItem(items) {
+      return items.length === 1;
+    },
     confirmFilesDelete() {
-      if (this.filesToDelete.length === 1) {
+      if (this.isLastItem(this.filesToDelete)) {
         this.track(DELETE_PACKAGE_FILE_TRACKING_ACTION);
       } else {
         this.track(DELETE_PACKAGE_FILES_TRACKING_ACTION);
@@ -250,12 +261,12 @@ export default {
       this.deletePackageFiles(this.filesToDelete.map((file) => file.id));
       this.filesToDelete = [];
     },
+    resetDeleteModalContent() {
+      this.deletePackageModalContent = DELETE_MODAL_CONTENT;
+    },
   },
   i18n: {
-    deleteModalTitle: s__(`PackageRegistry|Delete Package Version`),
-    deleteModalContent: s__(
-      `PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?`,
-    ),
+    DELETE_MODAL_TITLE,
     deleteFileModalTitle: s__(`PackageRegistry|Delete package asset`),
     deleteFileModalContent: s__(
       `PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?`,
@@ -371,10 +382,11 @@ export default {
           :action-primary="$options.modal.packageDeletePrimaryAction"
           :action-cancel="$options.modal.cancelAction"
           @primary="deletePackage(packageEntity)"
+          @hidden="resetDeleteModalContent"
           @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
         >
-          <template #modal-title>{{ $options.i18n.deleteModalTitle }}</template>
-          <gl-sprintf :message="$options.i18n.deleteModalContent">
+          <template #modal-title>{{ $options.i18n.DELETE_MODAL_TITLE }}</template>
+          <gl-sprintf :message="deletePackageModalContent">
             <template #version>
               <strong>{{ packageEntity.version }}</strong>
             </template>
@@ -398,7 +410,7 @@ export default {
       @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE_FILE)"
     >
       <template #modal-title>{{ $options.i18n.deleteFileModalTitle }}</template>
-      <gl-sprintf v-if="filesToDelete.length === 1" :message="$options.i18n.deleteFileModalContent">
+      <gl-sprintf v-if="isLastItem(filesToDelete)" :message="$options.i18n.deleteFileModalContent">
         <template #filename>
           <strong>{{ filesToDelete[0].fileName }}</strong>
         </template>

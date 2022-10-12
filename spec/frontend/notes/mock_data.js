@@ -36,6 +36,7 @@ export const noteableDataMock = {
     can_create_note: true,
     can_update: true,
     can_award_emoji: true,
+    can_create_confidential_note: true,
   },
   description: '',
   due_date: null,

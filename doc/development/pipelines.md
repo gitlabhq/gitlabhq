@@ -800,8 +800,7 @@ and `cache-assets:production` jobs that:
 
 This job tries to download a generic package that contains GitLab compiled assets
 needed in the GitLab test suite (under `app/assets/javascripts/locale/**/app.js`,
-`public/assets`, `tmp/cache/assets/sprockets/`, `tmp/cache/babel-loader/`,
-and `tmp/cache/vue-loader/`).
+and `public/assets`).
 
 - If the package URL returns a 404:
    1. It runs `bin/rake gitlab:assets:compile`, so that the GitLab assets are compiled.

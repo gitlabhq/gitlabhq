@@ -27165,7 +27165,7 @@ msgstr ""
 msgid "Notes|Expand replies"
 msgstr ""
 
-msgid "Notes|Internal notes are only visible to the author, assignees, and members with the role of Reporter or higher"
+msgid "Notes|Internal notes are only visible to members with the role of Reporter or higher"
 msgstr ""
 
 msgid "Notes|Last reply by %{name}"
@@ -28622,10 +28622,19 @@ msgstr ""
 msgid "PackageRegistry|Delete package asset"
 msgstr ""
 
+msgid "PackageRegistry|Delete package version"
+msgstr ""
+
 msgid "PackageRegistry|Delete selected"
 msgstr ""
 
 msgid "PackageRegistry|Delete this package"
+msgstr ""
+
+msgid "PackageRegistry|Deleting all package assets will remove version %{version} of %{name}. Are you sure?"
+msgstr ""
+
+msgid "PackageRegistry|Deleting the last package asset will remove version %{version} of %{name}. Are you sure?"
 msgstr ""
 
 msgid "PackageRegistry|Duplicate packages"
@@ -34894,6 +34903,9 @@ msgstr ""
 msgid "Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner."
 msgstr ""
 
+msgid "Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator."
+msgstr ""
+
 msgid "Runners|Runs untagged jobs"
 msgstr ""
 
@@ -39460,6 +39472,9 @@ msgstr ""
 msgid "TagsPage|Deleting the %{strongStart}%{tagName}%{strongEnd} tag cannot be undone. Are you sure?"
 msgstr ""
 
+msgid "TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}New release page%{link_end}."
+msgstr ""
+
 msgid "TagsPage|Edit release"
 msgstr ""
 
@@ -39481,13 +39496,7 @@ msgstr ""
 msgid "TagsPage|Optionally, add a message to the tag. Leaving this blank creates a %{link_start}lightweight tag.%{link_end}"
 msgstr ""
 
-msgid "TagsPage|Optionally, create a public Release of your project, based on this tag. Release notes are displayed on the %{releases_page_link_start}Releases%{link_end} page. %{docs_link_start}More information%{link_end}"
-msgstr ""
-
 msgid "TagsPage|Please type the following to confirm:"
-msgstr ""
-
-msgid "TagsPage|Release notes"
 msgstr ""
 
 msgid "TagsPage|Repository has no tags yet."
@@ -39509,9 +39518,6 @@ msgid "TagsPage|Unable to load tags"
 msgstr ""
 
 msgid "TagsPage|Use git tag command to add a new one:"
-msgstr ""
-
-msgid "TagsPage|Write your release notes or drag files here…"
 msgstr ""
 
 msgid "TagsPage|Yes, delete protected tag"

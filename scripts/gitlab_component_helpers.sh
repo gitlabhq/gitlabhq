@@ -39,7 +39,8 @@ export GITLAB_WORKHORSE_PACKAGE="workhorse-${GITLAB_WORKHORSE_TREE}.tar.gz"
 export GITLAB_WORKHORSE_PACKAGE_URL="${API_PACKAGES_BASE_URL}/${GITLAB_WORKHORSE_FOLDER}/${GITLAB_WORKHORSE_TREE}/${GITLAB_WORKHORSE_PACKAGE}"
 
 # Assets constants
-export GITLAB_ASSETS_PATHS_LIST="cached-assets-hash.txt app/assets/javascripts/locale/**/app.js public/assets/ tmp/cache/assets/sprockets/ tmp/cache/babel-loader/ tmp/cache/vue-loader/"
+export GITLAB_ASSETS_PATHS_LIST="cached-assets-hash.txt app/assets/javascripts/locale/**/app.js public/assets/"
+export GITLAB_ASSETS_PACKAGE_VERSION="v2" # bump this version each time GITLAB_ASSETS_PATHS_LIST is changed
 
 export GITLAB_EDITION="ee"
 if [[ "${FOSS_ONLY:-no}" = "1" ]] || [[ "${CI_PROJECT_NAME}" = "gitlab-foss" ]]; then
@@ -47,7 +48,7 @@ if [[ "${FOSS_ONLY:-no}" = "1" ]] || [[ "${CI_PROJECT_NAME}" = "gitlab-foss" ]];
 fi
 
 export GITLAB_ASSETS_HASH="${GITLAB_ASSETS_HASH:-"NO_HASH"}"
-export GITLAB_ASSETS_PACKAGE="assets-${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}.tar.gz"
+export GITLAB_ASSETS_PACKAGE="assets-${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}-${GITLAB_ASSETS_PACKAGE_VERSION}.tar.gz"
 export GITLAB_ASSETS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/assets/${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}/${GITLAB_ASSETS_PACKAGE}"
 
 # Generic helper functions

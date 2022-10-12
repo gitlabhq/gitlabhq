@@ -53,7 +53,7 @@ export default {
     :svg-path="svgPath"
     :svg-height="$options.svgHeight"
   >
-    <template #description>
+    <template v-if="registrationToken" #description>
       <gl-sprintf
         :message="
           s__(
@@ -70,6 +70,13 @@ export default {
         :modal-id="$options.modalId"
         :registration-token="registrationToken"
       />
+    </template>
+    <template v-else #description>
+      {{
+        s__(
+          'Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator.',
+        )
+      }}
     </template>
   </gl-empty-state>
 </template>

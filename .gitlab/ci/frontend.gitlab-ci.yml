@@ -291,7 +291,7 @@ coverage-frontend:
 .qa-frontend-node:
   extends:
     - .default-retry
-    - .yarn-cache
+    - .qa-frontend-node-cache
     - .frontend:rules:qa-frontend-node
   stage: test
   needs: []

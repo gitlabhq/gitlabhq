@@ -8,6 +8,7 @@ import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vu
 
 const mockSvgPath = 'mock-svg-path.svg';
 const mockFilteredSvgPath = 'mock-filtered-svg-path.svg';
+const mockRegistrationToken = 'REGISTRATION_TOKEN';
 
 describe('RunnerListEmptyState', () => {
   let wrapper;
@@ -21,6 +22,7 @@ describe('RunnerListEmptyState', () => {
       propsData: {
         svgPath: mockSvgPath,
         filteredSvgPath: mockFilteredSvgPath,
+        registrationToken: mockRegistrationToken,
         ...props,
       },
       directives: {
@@ -35,27 +37,52 @@ describe('RunnerListEmptyState', () => {
   };
 
   describe('when search is not filtered', () => {
-    beforeEach(() => {
-      createComponent();
+    const title = s__('Runners|Get started with runners');
+
+    describe('when there is a registration token', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders an illustration', () => {
+        expect(findEmptyState().props('svgPath')).toBe(mockSvgPath);
+      });
+
+      it('displays "no results" text with instructions', () => {
+        const desc = s__(
+          'Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner.',
+        );
+
+        expect(findEmptyState().text()).toMatchInterpolatedText(`${title} ${desc}`);
+      });
+
+      it('opens a runner registration instructions modal with a link', () => {
+        const { value } = getBinding(findLink().element, 'gl-modal');
+
+        expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+      });
     });
 
-    it('renders an illustration', () => {
-      expect(findEmptyState().props('svgPath')).toBe(mockSvgPath);
-    });
+    describe('when there is no registration token', () => {
+      beforeEach(() => {
+        createComponent({ props: { registrationToken: null } });
+      });
 
-    it('displays "no results" text', () => {
-      const title = s__('Runners|Get started with runners');
-      const desc = s__(
-        'Runners|Runners are the agents that run your CI/CD jobs. Follow the %{linkStart}installation and registration instructions%{linkEnd} to set up a runner.',
-      );
+      it('renders an illustration', () => {
+        expect(findEmptyState().props('svgPath')).toBe(mockSvgPath);
+      });
 
-      expect(findEmptyState().text()).toMatchInterpolatedText(`${title} ${desc}`);
-    });
+      it('displays "no results" text', () => {
+        const desc = s__(
+          'Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator.',
+        );
 
-    it('opens a runner registration instructions modal with a link', () => {
-      const { value } = getBinding(findLink().element, 'gl-modal');
+        expect(findEmptyState().text()).toMatchInterpolatedText(`${title} ${desc}`);
+      });
 
-      expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
+      it('has no registration instructions link', () => {
+        expect(findLink().exists()).toBe(false);
+      });
     });
   });
 

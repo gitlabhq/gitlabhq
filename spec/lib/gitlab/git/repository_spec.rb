@@ -1801,7 +1801,7 @@ RSpec.describe Gitlab::Git::Repository do
       subject(:license) { repository.license(from_gitaly) }
 
       context 'when no license file can be found' do
-        let(:project) { create(:project, :repository) }
+        let_it_be(:project) { create(:project, :repository) }
         let(:repository) { project.repository.raw_repository }
 
         before do
@@ -1814,9 +1814,25 @@ RSpec.describe Gitlab::Git::Repository do
       context 'when an mit license is found' do
         it { is_expected.to have_attributes(key: 'mit') }
       end
+
+      context 'when license is not recognized ' do
+        let_it_be(:project) { create(:project, :repository) }
+        let(:repository) { project.repository.raw_repository }
+
+        before do
+          project.repository.update_file(
+            project.owner,
+            'LICENSE',
+            'This software is licensed under the Dummy license.',
+            message: 'Update license',
+            branch_name: 'master')
+        end
+
+        it { is_expected.to have_attributes(key: 'other', nickname: 'LICENSE') }
+      end
     end
 
-    it 'does not crash when license is not recognized' do
+    it 'does not crash when license is invalid' do
       expect(Licensee::License).to receive(:new)
         .and_raise(Licensee::InvalidLicense)
 

@@ -1,9 +1,7 @@
 ---
 # Cop supports --auto-correct.
 Rails/RedundantForeignKey:
-  # Offense count: 90
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/models/alert_management/metric_image.rb'
     - 'app/models/ci/build.rb'
@@ -23,9 +21,11 @@ Rails/RedundantForeignKey:
     - 'app/models/commit_signatures/x509_commit_signature.rb'
     - 'app/models/concerns/analytics/cycle_analytics/stage.rb'
     - 'app/models/concerns/commit_signature.rb'
+    - 'app/models/concerns/integrations/base_data_fields.rb'
     - 'app/models/group.rb'
     - 'app/models/group_group_link.rb'
-    - 'app/models/integrations/zentao_tracker_data.rb'
+    - 'app/models/incident_management/timeline_event.rb'
+    - 'app/models/issue.rb'
     - 'app/models/member.rb'
     - 'app/models/merge_request.rb'
     - 'app/models/merge_request/metrics.rb'
@@ -35,9 +35,13 @@ Rails/RedundantForeignKey:
     - 'app/models/project.rb'
     - 'app/models/resource_state_event.rb'
     - 'app/models/review.rb'
+    - 'app/models/time_tracking/timelog_category.rb'
     - 'app/models/user.rb'
+    - 'app/models/users/phone_number_validation.rb'
+    - 'app/models/work_item.rb'
     - 'app/models/x509_certificate.rb'
     - 'ee/app/models/allowed_email_domain.rb'
+    - 'ee/app/models/audit_events/streaming/header.rb'
     - 'ee/app/models/boards/epic_board.rb'
     - 'ee/app/models/boards/epic_list_user_preference.rb'
     - 'ee/app/models/ci/sources/project.rb'

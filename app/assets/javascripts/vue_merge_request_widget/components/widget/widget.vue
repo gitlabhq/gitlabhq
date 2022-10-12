@@ -246,16 +246,16 @@ export default {
             {{ contentError }}
           </template>
         </content-row>
-        <slot v-else name="content">
-          <div class="gl-w-full">
+        <div v-else class="gl-w-full">
+          <slot name="content">
             <dynamic-content
               v-for="(data, index) in content"
               :key="data.id || index"
               :data="data"
               :widget-name="widgetName"
             />
-          </div>
-        </slot>
+          </slot>
+        </div>
       </div>
     </div>
   </section>

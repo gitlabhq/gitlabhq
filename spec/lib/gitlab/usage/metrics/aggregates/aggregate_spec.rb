@@ -235,10 +235,27 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
       end
     end
 
-    it 'allows for YAML aliases in aggregated metrics configs' do
-      expect(YAML).to receive(:safe_load).with(kind_of(String), aliases: true).at_least(:once)
+    context 'legacy aggregated metrics configuration' do
+      let(:temp_dir) { Dir.mktmpdir }
+      let(:temp_file) { Tempfile.new(%w[common .yml], temp_dir) }
 
-      described_class.new(recorded_at)
+      before do
+        stub_const("#{namespace}::AGGREGATED_METRICS_PATH", File.expand_path('*.yml', temp_dir))
+        File.open(temp_file.path, "w+b") do |file|
+          file.write [aggregated_metric(name: "gmau_1", time_frame: '7d')].to_yaml
+        end
+      end
+
+      after do
+        temp_file.unlink
+        FileUtils.remove_entry(temp_dir) if Dir.exist?(temp_dir)
+      end
+
+      it 'allows for YAML aliases in aggregated metrics configs' do
+        expect(YAML).to receive(:safe_load).with(kind_of(String), aliases: true).at_least(:once)
+
+        described_class.new(recorded_at)
+      end
     end
 
     describe '.aggregated_metrics_weekly_data' do

@@ -71,11 +71,19 @@ describe('issue_comment_form component', () => {
   };
 
   const notableDataMockCanUpdateIssuable = createNotableDataMock({
-    current_user: { can_update: true, can_create_note: true },
+    current_user: { can_update: true, can_create_note: true, can_create_confidential_note: true },
   });
 
   const notableDataMockCannotUpdateIssuable = createNotableDataMock({
-    current_user: { can_update: false, can_create_note: true },
+    current_user: {
+      can_update: false,
+      can_create_note: false,
+      can_create_confidential_note: false,
+    },
+  });
+
+  const notableDataMockCannotCreateConfidentialNote = createNotableDataMock({
+    current_user: { can_update: false, can_create_note: true, can_create_confidential_note: false },
   });
 
   const mountComponent = ({
@@ -560,6 +568,17 @@ describe('issue_comment_form component', () => {
         const checkbox = findConfidentialNoteCheckbox();
         expect(checkbox.exists()).toBe(true);
         expect(checkbox.element.checked).toBe(false);
+      });
+
+      it('should not render checkbox if user is not at least a reporter', () => {
+        mountComponent({
+          mountFunction: mount,
+          initialData: { note: 'confidential note' },
+          noteableData: { ...notableDataMockCannotCreateConfidentialNote },
+        });
+
+        const checkbox = findConfidentialNoteCheckbox();
+        expect(checkbox.exists()).toBe(false);
       });
 
       it.each`

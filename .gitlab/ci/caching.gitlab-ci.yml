@@ -23,7 +23,7 @@ cache-workhorse:
 .cache-assets-base:
   extends:
     - .compile-assets-base
-    - .ruby-node-cache
+    - .assets-compile-cache
     - .caching:rules:cache-assets
   stage: prepare
   variables:

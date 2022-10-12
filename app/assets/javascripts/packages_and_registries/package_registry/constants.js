@@ -78,6 +78,17 @@ export const TRACKING_ACTION_CLICK_COMMIT_LINK = 'click_commit_link_from_package
 export const TRACKING_LABEL_PACKAGE_HISTORY = 'package_history';
 
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
+
+export const DELETE_MODAL_TITLE = s__('PackageRegistry|Delete package version');
+export const DELETE_MODAL_CONTENT = s__(
+  `PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?`,
+);
+export const DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT = s__(
+  `PackageRegistry|Deleting all package assets will remove version %{version} of %{name}. Are you sure?`,
+);
+export const DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT = s__(
+  `PackageRegistry|Deleting the last package asset will remove version %{version} of %{name}. Are you sure?`,
+);
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package asset.',
 );

@@ -44,7 +44,7 @@ module QA
       alias_method :ldap_username, :username
 
       def password
-        @password ||= SecureRandom.hex(8)
+        @password ||= "Pa$$w0rd"
       end
       alias_method :ldap_password, :password
 

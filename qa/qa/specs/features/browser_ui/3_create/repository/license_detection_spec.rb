@@ -36,11 +36,11 @@ module QA
         end
       end
 
-      context 'on a project with a less commonly used LICENSE',
+      context 'on a project with an unrecognized LICENSE',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366843' do
         it_behaves_like 'project license detection' do
-          let(:license_file_name) { 'GFDL-1.2-only' }
-          let(:rendered_license_name) { 'Other' }
+          let(:license_file_name) { 'other' }
+          let(:rendered_license_name) { 'LICENSE' }
         end
       end
     end

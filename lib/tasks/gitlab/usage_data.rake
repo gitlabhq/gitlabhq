@@ -58,8 +58,7 @@ namespace :gitlab do
       end
 
       FileUtils.mkdir_p(path)
-      FileUtils.chdir(path)
-      File.write('sql_metrics_queries.json', Gitlab::Json.pretty_generate(queries))
+      File.write(File.join(path, 'sql_metrics_queries.json'), Gitlab::Json.pretty_generate(queries))
     end
 
     # Events for templates included via YAML-less Auto-DevOps

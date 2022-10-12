@@ -801,6 +801,8 @@ module Gitlab
 
           break nil if licensee_object.name.blank?
 
+          licensee_object.meta.nickname = "LICENSE" if licensee_object.key == "other"
+
           licensee_object
         end
       rescue Licensee::InvalidLicense => e

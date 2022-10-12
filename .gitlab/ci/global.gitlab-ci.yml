@@ -79,20 +79,29 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-cache: &assets-cache
-  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v4"
+  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v5"
   # This list should match GITLAB_ASSETS_PATHS_LIST from scripts/gitlab_component_helpers.sh
   paths:
     - cached-assets-hash.txt
     - app/assets/javascripts/locale/**/app.js
     - public/assets/
-    - tmp/cache/assets/sprockets/
-    - tmp/cache/babel-loader/
-    - tmp/cache/vue-loader/
   policy: pull
 
 .assets-cache-push: &assets-cache-push
   <<: *assets-cache
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+.assets-tmp-cache: &assets-tmp-cache
+  key: "assets-tmp-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v1"
+  paths:
+    - tmp/cache/assets/sprockets/
+    - tmp/cache/babel-loader/
+    - tmp/cache/vue-loader/
+  policy: pull
+
+.assets-tmp-cache-push: &assets-tmp-cache-push
+  <<: *assets-tmp-cache
+  policy: push  # We want to rebuild the cache from scratch to ensure we don't pile up outdated cache files.
 
 .storybook-node-modules-cache: &storybook-node-modules-cache
   key: "storybook-node-modules-${DEBIAN_VERSION}-${NODE_ENV}"
@@ -201,6 +210,11 @@
   cache:
     - *node-modules-cache
 
+.qa-frontend-node-cache:
+  cache:
+    - *node-modules-cache
+    - *assets-tmp-cache
+
 # TODO: Remove this as it's duplicating .assets-compile-cache-push
 .yarn-cache-push:
   cache:
@@ -211,12 +225,14 @@
     - *ruby-gems-cache
     - *node-modules-cache
     - *assets-cache
+    - *assets-tmp-cache
 
 .assets-compile-cache-push:
   cache:
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *node-modules-cache-push
     - *assets-cache-push
+    - *assets-tmp-cache-push
 
 .storybook-yarn-cache:
   cache:

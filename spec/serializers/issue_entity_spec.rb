@@ -150,4 +150,6 @@ RSpec.describe IssueEntity do
       end
     end
   end
+
+  it_behaves_like 'issuable entity current_user properties'
 end

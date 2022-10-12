@@ -1,4 +1,4 @@
-import { GlEmptyState, GlBadge, GlTabs, GlTab } from '@gitlab/ui';
+import { GlEmptyState, GlBadge, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo from 'vue-apollo';
@@ -86,11 +86,17 @@ describe('PackagesApp', () => {
         PackageTitle,
         DeletePackage,
         GlModal: {
-          template: '<div></div>',
+          template: `
+            <div>
+              <slot name="modal-title"></slot>
+              <p><slot></slot></p>
+            </div>
+          `,
           methods: {
             show: jest.fn(),
           },
         },
+        GlSprintf,
         GlTabs,
         GlTab,
       },
@@ -245,7 +251,9 @@ describe('PackagesApp', () => {
 
       await findDeleteButton().trigger('click');
 
-      expect(findDeleteModal().exists()).toBe(true);
+      expect(findDeleteModal().find('p').text()).toBe(
+        'You are about to delete version 1.0.0 of @gitlab-org/package-15. Are you sure?',
+      );
     });
 
     describe('successful request', () => {
@@ -359,6 +367,12 @@ describe('PackagesApp', () => {
 
         expect(showDeletePackageSpy).toHaveBeenCalled();
         expect(showDeleteFileSpy).not.toHaveBeenCalled();
+
+        await waitForPromises();
+
+        expect(findDeleteModal().find('p').text()).toBe(
+          'Deleting the last package asset will remove version 1.0.0 of @gitlab-org/package-15. Are you sure?',
+        );
       });
 
       it('confirming on the modal sets the loading state', async () => {
@@ -533,6 +547,12 @@ describe('PackagesApp', () => {
         findPackageFiles().vm.$emit('delete-files', packageFiles());
 
         expect(showDeletePackageSpy).toHaveBeenCalled();
+
+        await waitForPromises();
+
+        expect(findDeleteModal().find('p').text()).toBe(
+          'Deleting all package assets will remove version 1.0.0 of @gitlab-org/package-15. Are you sure?',
+        );
       });
     });
   });

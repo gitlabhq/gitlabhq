@@ -101,6 +101,7 @@ linters:
       - Style/IfUnlessModifier
       - Style/IndentationWidth
       - Style/Next
+      - Style/SoleNestedConditional
       - Style/TrailingWhitespace
       - Style/WhileUntilModifier
       - Cop/StaticTranslationDefinition
