@@ -108,6 +108,24 @@ RSpec.describe WorkItems::UpdateService do
       end
     end
 
+    context 'when labels are updated' do
+      let_it_be(:label_a) { create(:label, project: project) }
+      let_it_be(:label_b) { create(:label, project: project) }
+      let(:issuable) { work_item }
+
+      it_behaves_like 'broadcasting issuable labels updates' do
+        def update_issuable(update_params)
+          described_class.new(
+            project: project,
+            current_user: current_user,
+            params: update_params,
+            spam_params: spam_params,
+            widget_params: widget_params
+          ).execute(work_item)
+        end
+      end
+    end
+
     context 'when updating state_event' do
       context 'when state_event is close' do
         let(:opts) { { state_event: 'close' } }

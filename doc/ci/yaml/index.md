@@ -2165,7 +2165,7 @@ This example creates four paths of execution:
   explicitly defined for all jobs that use the `needs` keyword, or are referenced
   in a job's `needs` section.
 - In GitLab 13.9 and older, if `needs` refers to a job that might not be added to
-  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.
+  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. In GitLab 13.10 and later, use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
 
 #### `needs:artifacts`
 

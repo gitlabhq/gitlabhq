@@ -65,7 +65,7 @@ module Issues
       user_agent_detail_service.create
       handle_add_related_issue(issue)
       resolve_discussions_with_issue(issue)
-      create_escalation_status(issue)
+      handle_escalation_status_change(issue)
       create_timeline_event(issue)
       try_to_associate_contacts(issue)
 
@@ -101,10 +101,6 @@ module Issues
     end
 
     attr_reader :spam_params, :extra_params
-
-    def create_escalation_status(issue)
-      ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
-    end
 
     def create_timeline_event(issue)
       return unless issue.incident?

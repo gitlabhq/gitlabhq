@@ -127,20 +127,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
           end
         end
 
-        context 'when config value is an array' do
-          let(:config) { { value: ['value'], description: 'description' } }
-
-          describe '#valid?' do
-            it { is_expected.not_to be_valid }
-          end
-
-          describe '#errors' do
-            subject(:errors) { entry.errors }
-
-            it { is_expected.to include 'var1 config value must be an alphanumeric string' }
-          end
-        end
-
         context 'when config description is a symbol' do
           let(:config) { { value: 'value', description: :description } }
 
@@ -206,6 +192,44 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
 
           it { is_expected.to eq(value: 'value') }
         end
+      end
+    end
+  end
+
+  describe 'ComplexArrayVariable' do
+    context 'when allow_array_value metadata is false' do
+      let(:config) { { value: %w[value value2], description: 'description' } }
+      let(:metadata) { { allow_array_value: false } }
+
+      describe '#valid?' do
+        it { is_expected.not_to be_valid }
+      end
+
+      describe '#errors' do
+        subject(:errors) { entry.errors }
+
+        it { is_expected.to include 'var1 config value must be an alphanumeric string' }
+      end
+    end
+
+    context 'when allow_array_value metadata is true' do
+      let(:config) { { value: %w[value value2], description: 'description' } }
+      let(:metadata) { { allowed_value_data: %i[value description], allow_array_value: true } }
+
+      describe '#valid?' do
+        it { is_expected.to be_valid }
+      end
+
+      describe '#value' do
+        subject(:value) { entry.value }
+
+        it { is_expected.to eq('value') }
+      end
+
+      describe '#value_with_data' do
+        subject(:value_with_data) { entry.value_with_data }
+
+        it { is_expected.to eq(value: 'value', description: 'description', value_options: %w[value value2]) }
       end
     end
   end

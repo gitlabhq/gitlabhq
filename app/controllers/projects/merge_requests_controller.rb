@@ -554,7 +554,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def endpoint_metadata_url(project, merge_request)
-    params = request.query_parameters.merge(view: 'inline', diff_head: true)
+    params = request.query_parameters.merge(view: 'inline', diff_head: true, w: current_user&.show_whitespace_in_diffs ? '0' : '1')
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
   end

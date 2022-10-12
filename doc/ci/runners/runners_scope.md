@@ -172,8 +172,12 @@ To create a group runner:
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **CI/CD > Runners**.
-1. Note the URL and token.
-1. [Register the runner](https://docs.gitlab.com/runner/register/).
+1. In the top-right corner, select **Register a group runner**.
+1. Select **Show runner installation and registration instructions**.
+   These instructions include the token, URL, and a command to register a runner.
+
+Alternately, you can copy the registration token and follow the documentation for
+how to [register a runner](https://docs.gitlab.com/runner/register/).
 
 ### View and manage group runners
 

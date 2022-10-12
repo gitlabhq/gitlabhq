@@ -89,12 +89,12 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Google Cloud'),
             link: project_google_cloud_configuration_path(context.project),
-            active_routes: { controller: [
-              :configuration,
-              :service_accounts,
-              :databases,
-              :deployments,
-              :gcp_regions
+            active_routes: { controller: %w[
+              projects/google_cloud/configuration
+              projects/google_cloud/service_accounts
+              projects/google_cloud/databases
+              projects/google_cloud/deployments
+              projects/google_cloud/gcp_regions
             ] },
             item_id: :google_cloud
           )

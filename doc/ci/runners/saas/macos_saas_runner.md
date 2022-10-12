@@ -14,10 +14,6 @@ Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment.
 
-CI/CD minutes used on GitLab SaaS macOS runners are included in your CI/CD minute consumption totals. CI jobs that run on macOS **will** consume CI minutes at a faster rate than CI jobs on the GitLab SaaS runners on Linux.
-
-Refer to the CI/CD minutes [cost factor](../../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the GitLab SaaS macOS runners.
-
 Jobs handled by macOS shared runners on GitLab.com **time out after 2 hours**, regardless of the timeout configured in a project.
 
 ## Access request process

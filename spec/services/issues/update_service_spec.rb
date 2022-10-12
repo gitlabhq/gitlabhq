@@ -852,6 +852,24 @@ RSpec.describe Issues::UpdateService, :mailer do
           service.execute(issue)
         end
 
+        # At the moment of writting old associations are not necessary for update_task
+        # and doing this will prevent fetching associations from the DB and comparing old and new labels
+        it 'does not pass old_associations to the after_update method' do
+          params = {
+            update_task: {
+              index: 1,
+              checked: false,
+              line_source: '- [x] Task 1',
+              line_number: 1
+            }
+          }
+          service = described_class.new(project: project, current_user: user, params: params)
+
+          expect(service).to receive(:after_update).with(issue, {})
+
+          service.execute(issue)
+        end
+
         it 'creates system note about task status change' do
           note1 = find_note('marked the checklist item **Task 1** as completed')
           note2 = find_note('marked the checklist item **Task 2** as completed')

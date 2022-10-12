@@ -40,7 +40,8 @@ RSpec.describe BulkImports::EntityWorker do
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
               'current_stage' => nil,
-              'message' => 'Stage starting'
+              'message' => 'Stage starting',
+              'importer' => 'gitlab_migration'
             )
           )
       end
@@ -70,7 +71,8 @@ RSpec.describe BulkImports::EntityWorker do
             hash_including(
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
-              'current_stage' => nil
+              'current_stage' => nil,
+              'importer' => 'gitlab_migration'
             )
           )
 
@@ -81,14 +83,20 @@ RSpec.describe BulkImports::EntityWorker do
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
               'current_stage' => nil,
-              'message' => 'Error!'
+              'message' => 'Error!',
+              'importer' => 'gitlab_migration'
             )
           )
       end
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
-              .with(exception, bulk_import_entity_id: entity.id, bulk_import_id: entity.bulk_import_id)
+              .with(
+                exception,
+                bulk_import_entity_id: entity.id,
+                bulk_import_id: entity.bulk_import_id,
+                importer: 'gitlab_migration'
+              )
 
       subject
     end
@@ -105,7 +113,8 @@ RSpec.describe BulkImports::EntityWorker do
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
                 'current_stage' => 0,
-                'message' => 'Stage running'
+                'message' => 'Stage running',
+                'importer' => 'gitlab_migration'
               )
             )
         end
@@ -133,7 +142,8 @@ RSpec.describe BulkImports::EntityWorker do
               hash_including(
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
-                'current_stage' => 0
+                'current_stage' => 0,
+                'importer' => 'gitlab_migration'
               )
             )
         end

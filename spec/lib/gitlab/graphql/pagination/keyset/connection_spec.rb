@@ -51,6 +51,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
   before do
     stub_feature_flags(graphql_keyset_pagination_without_next_page_query: false)
+    allow(GitlabSchema).to receive(:default_max_page_size).and_return(2)
   end
 
   it 'invokes an extra query for the next page check' do

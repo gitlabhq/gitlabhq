@@ -202,6 +202,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
   const worker = new TreeWorker();
   const urlParams = {
     view: 'inline',
+    w: state.showWhitespace ? '0' : '1',
   };
 
   commit(types.SET_LOADING, true);

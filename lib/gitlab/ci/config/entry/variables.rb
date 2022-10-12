@@ -36,7 +36,7 @@ module Gitlab
           end
 
           def composable_metadata
-            { allowed_value_data: opt(:allowed_value_data) }
+            { allowed_value_data: opt(:allowed_value_data), allow_array_value: opt(:allow_array_value) }
           end
         end
       end

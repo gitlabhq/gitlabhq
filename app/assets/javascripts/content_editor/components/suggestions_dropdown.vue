@@ -57,6 +57,22 @@ export default {
       return this.isReference && this.nodeProps.referenceType === 'issue';
     },
 
+    isLabel() {
+      return this.isReference && this.nodeProps.referenceType === 'label';
+    },
+
+    isEpic() {
+      return this.isReference && this.nodeProps.referenceType === 'epic';
+    },
+
+    isSnippet() {
+      return this.isReference && this.nodeProps.referenceType === 'snippet';
+    },
+
+    isVulnerability() {
+      return this.isReference && this.nodeProps.referenceType === 'vulnerability';
+    },
+
     isMergeRequest() {
       return this.isReference && this.nodeProps.referenceType === 'merge_request';
     },
@@ -86,10 +102,17 @@ export default {
         case 'issue':
         case 'merge_request':
           return `${this.char}${item.iid}`;
+        case 'snippet':
+          return `${this.char}${item.id}`;
         case 'milestone':
+        case 'label':
           return `${this.char}${item.title}`;
         case 'command':
           return `${this.char}${item.name} `;
+        case 'epic':
+          return `${item.reference}`;
+        case 'vulnerability':
+          return `[vulnerability:${item.id}]`;
         default:
           return '';
       }
@@ -184,7 +207,23 @@ export default {
           <small>{{ item.iid }}</small>
           {{ item.title }}
         </span>
+        <span v-if="isVulnerability || isSnippet">
+          <small>{{ item.id }}</small>
+          {{ item.title }}
+        </span>
+        <span v-if="isEpic">
+          <small>{{ item.reference }}</small>
+          {{ item.title }}
+        </span>
         <span v-if="isMilestone">
+          {{ item.title }}
+        </span>
+        <span v-if="isLabel" class="gl-display-flex gl-align-items-center">
+          <span
+            data-testid="label-color-box"
+            class="gl-rounded-base gl-display-block gl-w-5 gl-h-5 gl-mr-3"
+            :style="{ backgroundColor: item.color }"
+          ></span>
           {{ item.title }}
         </span>
         <span v-if="isCommand">
@@ -193,7 +232,7 @@ export default {
             <small> {{ item.description }} </small>
           </em>
         </span>
-        <div v-if="isEmoji" class="gl-display-flex gl-flex gl-align-items-center">
+        <div v-if="isEmoji" class="gl-display-flex gl-align-items-center">
           <div class="gl-pr-4 gl-font-lg">{{ item.e }}</div>
           <div class="gl-flex-grow-1">
             {{ item.name }}<br />

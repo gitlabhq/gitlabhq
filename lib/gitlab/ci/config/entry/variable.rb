@@ -10,6 +10,7 @@ module Gitlab
         class Variable < ::Gitlab::Config::Entry::Simplifiable
           strategy :SimpleVariable, if: -> (config) { SimpleVariable.applies_to?(config) }
           strategy :ComplexVariable, if: -> (config) { ComplexVariable.applies_to?(config) }
+          strategy :ComplexArrayVariable, if: -> (config) { ComplexArrayVariable.applies_to?(config) }
 
           class SimpleVariable < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable
@@ -39,7 +40,7 @@ module Gitlab
 
             class << self
               def applies_to?(config)
-                config.is_a?(Hash)
+                config.is_a?(Hash) && !config[:value].is_a?(Array)
               end
             end
 
@@ -83,6 +84,34 @@ module Gitlab
 
             def config_description_defined?
               config.key?(:description)
+            end
+          end
+
+          class ComplexArrayVariable < ComplexVariable
+            include ::Gitlab::Config::Entry::Validatable
+
+            class << self
+              def applies_to?(config)
+                config.is_a?(Hash) && config[:value].is_a?(Array)
+              end
+            end
+
+            validations do
+              validates :config_value, array_of_strings: true, allow_nil: false, if: :config_value_defined?
+
+              validate do
+                next if opt(:allow_array_value)
+
+                errors.add(:config, 'value must be an alphanumeric string')
+              end
+            end
+
+            def value
+              config_value.first
+            end
+
+            def value_with_data
+              super.merge(value_options: config_value).compact
             end
           end
 

@@ -46905,9 +46905,6 @@ msgstr ""
 msgid "at least the Reporter role, the author, and assignees"
 msgstr ""
 
-msgid "at risk"
-msgstr ""
-
 msgid "attach a new file"
 msgstr ""
 
@@ -48294,9 +48291,6 @@ msgstr ""
 msgid "my-topic"
 msgstr ""
 
-msgid "need attention"
-msgstr ""
-
 msgid "needs to be between 10 minutes and 1 month"
 msgstr ""
 
@@ -48343,9 +48337,6 @@ msgid "nounSeries|%{item}, %{nextItem}"
 msgstr ""
 
 msgid "nounSeries|%{item}, and %{lastItem}"
-msgstr ""
-
-msgid "on track"
 msgstr ""
 
 msgid "only %{parent_types} can be parent of Task."

@@ -18,7 +18,8 @@ module BulkImports
             bulk_import_entity_id: entity_id,
             bulk_import_id: bulk_import_id(entity_id),
             current_stage: current_stage,
-            message: 'Stage running'
+            message: 'Stage running',
+            importer: 'gitlab_migration'
           )
         )
 
@@ -30,7 +31,8 @@ module BulkImports
           bulk_import_entity_id: entity_id,
           bulk_import_id: bulk_import_id(entity_id),
           current_stage: current_stage,
-          message: 'Stage starting'
+          message: 'Stage starting',
+          importer: 'gitlab_migration'
         )
       )
 
@@ -47,12 +49,13 @@ module BulkImports
           bulk_import_entity_id: entity_id,
           bulk_import_id: bulk_import_id(entity_id),
           current_stage: current_stage,
-          message: e.message
+          message: e.message,
+          importer: 'gitlab_migration'
         )
       )
 
       Gitlab::ErrorTracking.track_exception(
-        e, bulk_import_entity_id: entity_id, bulk_import_id: bulk_import_id(entity_id)
+        e, bulk_import_entity_id: entity_id, bulk_import_id: bulk_import_id(entity_id), importer: 'gitlab_migration'
       )
     end
 

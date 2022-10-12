@@ -38,7 +38,8 @@ RSpec.describe BulkImports::PipelineWorker do
             hash_including(
               'pipeline_name' => 'FakePipeline',
               'bulk_import_entity_id' => entity.id,
-              'bulk_import_id' => entity.bulk_import_id
+              'bulk_import_id' => entity.bulk_import_id,
+              'importer' => 'gitlab_migration'
             )
           )
       end
@@ -86,7 +87,8 @@ RSpec.describe BulkImports::PipelineWorker do
               'pipeline_tracker_id' => pipeline_tracker.id,
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
-              'message' => 'Unstarted pipeline not found'
+              'message' => 'Unstarted pipeline not found',
+              'importer' => 'gitlab_migration'
             )
           )
       end
@@ -124,7 +126,8 @@ RSpec.describe BulkImports::PipelineWorker do
               'pipeline_name' => 'FakePipeline',
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
-              'message' => 'Error!'
+              'message' => 'Error!',
+              'importer' => 'gitlab_migration'
             )
           )
       end
@@ -134,8 +137,9 @@ RSpec.describe BulkImports::PipelineWorker do
         .with(
           instance_of(StandardError),
           bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import.id,
-          pipeline_name: pipeline_tracker.pipeline_name
+          bulk_import_id: entity.bulk_import_id,
+          pipeline_name: pipeline_tracker.pipeline_name,
+          importer: 'gitlab_migration'
         )
 
       expect(BulkImports::EntityWorker)
@@ -184,7 +188,8 @@ RSpec.describe BulkImports::PipelineWorker do
                 'pipeline_name' => 'FakePipeline',
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
-                'message' => 'Skipping pipeline due to failed entity'
+                'message' => 'Skipping pipeline due to failed entity',
+                'importer' => 'gitlab_migration'
               )
             )
         end
@@ -231,7 +236,8 @@ RSpec.describe BulkImports::PipelineWorker do
               hash_including(
                 'pipeline_name' => 'FakePipeline',
                 'bulk_import_entity_id' => entity.id,
-                'bulk_import_id' => entity.bulk_import_id
+                'bulk_import_id' => entity.bulk_import_id,
+                'importer' => 'gitlab_migration'
               )
             )
         end
@@ -356,7 +362,8 @@ RSpec.describe BulkImports::PipelineWorker do
                 'pipeline_name' => 'NdjsonPipeline',
                 'bulk_import_entity_id' => entity.id,
                 'message' => 'Pipeline timeout',
-                'bulk_import_id' => entity.bulk_import_id
+                'bulk_import_id' => entity.bulk_import_id,
+                'importer' => 'gitlab_migration'
               )
             )
         end
@@ -384,7 +391,8 @@ RSpec.describe BulkImports::PipelineWorker do
                 'pipeline_name' => 'NdjsonPipeline',
                 'bulk_import_entity_id' => entity.id,
                 'message' => 'Export from source instance failed: Error!',
-                'bulk_import_id' => entity.bulk_import_id
+                'bulk_import_id' => entity.bulk_import_id,
+                'importer' => 'gitlab_migration'
               )
             )
         end

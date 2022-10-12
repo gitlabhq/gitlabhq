@@ -1,17 +1,21 @@
 import { GlAvatarLabeled, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SuggestionsDropdown from '~/content_editor/components/suggestions_dropdown.vue';
 
 describe('~/content_editor/components/suggestions_dropdown', () => {
   let wrapper;
 
-  const buildWrapper = ({ propsData = {} } = {}) => {
-    wrapper = shallowMount(SuggestionsDropdown, {
-      propsData: {
-        nodeType: 'reference',
-        ...propsData,
-      },
-    });
+  const buildWrapper = ({ propsData } = {}) => {
+    wrapper = extendedWrapper(
+      shallowMount(SuggestionsDropdown, {
+        propsData: {
+          nodeType: 'reference',
+          command: jest.fn(),
+          ...propsData,
+        },
+      }),
+    );
   };
 
   const exampleUser = { username: 'root', avatar_url: 'root_avatar.png', type: 'User' };
@@ -22,6 +26,25 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     name: 'due',
     description: 'Set due date',
     params: ['<in 2 days | this Friday | December 31st>'],
+  };
+  const exampleEpic = {
+    iid: 8884,
+    title: '❓ Remote Development | Solution validation',
+    reference: 'gitlab-org&8884',
+  };
+  const exampleLabel = {
+    title: 'devops::create',
+    color: '#E44D2A',
+    type: 'GroupLabel',
+    textColor: '#FFFFFF',
+  };
+  const exampleVulnerability = {
+    id: 60850147,
+    title: 'System procs network activity',
+  };
+  const exampleSnippet = {
+    id: 2420859,
+    title: 'Project creation QueryRecorder logs',
   };
   const exampleEmoji = {
     c: 'people',
@@ -40,13 +63,17 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
 
   describe('on item select', () => {
     it.each`
-      nodeType       | referenceType      | char   | reference              | insertedText | insertedProps
-      ${'reference'} | ${'user'}          | ${'@'} | ${exampleUser}         | ${`@root`}   | ${{}}
-      ${'reference'} | ${'issue'}         | ${'#'} | ${exampleIssue}        | ${`#123`}    | ${{}}
-      ${'reference'} | ${'merge_request'} | ${'!'} | ${exampleMergeRequest} | ${`!224`}    | ${{}}
-      ${'reference'} | ${'milestone'}     | ${'%'} | ${exampleMilestone}    | ${`%1.3`}    | ${{}}
-      ${'reference'} | ${'command'}       | ${'/'} | ${exampleCommand}      | ${'/due '}   | ${{}}
-      ${'emoji'}     | ${'emoji'}         | ${':'} | ${exampleEmoji}        | ${`😃`}      | ${insertedEmojiProps}
+      nodeType       | referenceType      | char                 | reference               | insertedText                  | insertedProps
+      ${'reference'} | ${'user'}          | ${'@'}               | ${exampleUser}          | ${`@root`}                    | ${{}}
+      ${'reference'} | ${'issue'}         | ${'#'}               | ${exampleIssue}         | ${`#123`}                     | ${{}}
+      ${'reference'} | ${'merge_request'} | ${'!'}               | ${exampleMergeRequest}  | ${`!224`}                     | ${{}}
+      ${'reference'} | ${'milestone'}     | ${'%'}               | ${exampleMilestone}     | ${`%1.3`}                     | ${{}}
+      ${'reference'} | ${'command'}       | ${'/'}               | ${exampleCommand}       | ${'/due '}                    | ${{}}
+      ${'reference'} | ${'epic'}          | ${'&'}               | ${exampleEpic}          | ${`gitlab-org&8884`}          | ${{}}
+      ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel}         | ${`~devops::create`}          | ${{}}
+      ${'reference'} | ${'vulnerability'} | ${'[vulnerability:'} | ${exampleVulnerability} | ${`[vulnerability:60850147]`} | ${{}}
+      ${'reference'} | ${'snippet'}       | ${'$'}               | ${exampleSnippet}       | ${`$2420859`}                 | ${{}}
+      ${'emoji'}     | ${'emoji'}         | ${':'}               | ${exampleEmoji}         | ${`😃`}                       | ${insertedEmojiProps}
     `(
       'runs a command to insert the selected $referenceType',
       ({ char, nodeType, referenceType, reference, insertedText, insertedProps }) => {
@@ -80,24 +107,21 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
 
   describe('rendering user references', () => {
     it('displays avatar labeled component', () => {
-      const testUser = exampleUser;
       buildWrapper({
         propsData: {
           char: '@',
-          command: jest.fn(),
-          nodeType: 'reference',
           nodeProps: {
             referenceType: 'user',
           },
-          items: [testUser],
+          items: [exampleUser],
         },
       });
 
       expect(wrapper.findComponent(GlAvatarLabeled).attributes()).toEqual(
         expect.objectContaining({
-          label: testUser.username,
+          label: exampleUser.username,
           shape: 'circle',
-          src: testUser.avatar_url,
+          src: exampleUser.avatar_url,
         }),
       );
     });
@@ -112,7 +136,6 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
         buildWrapper({
           propsData: {
             char,
-            command: jest.fn(),
             nodeType: 'reference',
             nodeProps: {
               referenceType,
@@ -127,13 +150,68 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       });
     });
 
+    describe.each`
+      referenceType      | char                 | reference
+      ${'snippet'}       | ${'$'}               | ${exampleSnippet}
+      ${'vulnerability'} | ${'[vulnerability:'} | ${exampleVulnerability}
+    `('rendering $referenceType references', ({ referenceType, char, reference }) => {
+      it(`displays ${referenceType} ID and title`, () => {
+        buildWrapper({
+          propsData: {
+            char,
+            nodeProps: {
+              referenceType,
+            },
+            items: [reference],
+          },
+        });
+
+        expect(wrapper.text()).toContain(`${reference.id}`);
+        expect(wrapper.text()).toContain(`${reference.title}`);
+      });
+    });
+
+    describe('rendering label references', () => {
+      it('displays label title and color', () => {
+        buildWrapper({
+          propsData: {
+            char: '~',
+            nodeProps: {
+              referenceType: 'label',
+            },
+            items: [exampleLabel],
+          },
+        });
+
+        expect(wrapper.text()).toContain(`${exampleLabel.title}`);
+        expect(wrapper.findByTestId('label-color-box').attributes().style).toEqual(
+          `background-color: rgb(228, 77, 42);`, // #E44D2A
+        );
+      });
+    });
+
+    describe('rendering epic references', () => {
+      it('displays epic title and reference', () => {
+        buildWrapper({
+          propsData: {
+            char: '&',
+            nodeProps: {
+              referenceType: 'epic',
+            },
+            items: [exampleEpic],
+          },
+        });
+
+        expect(wrapper.text()).toContain(`${exampleEpic.reference}`);
+        expect(wrapper.text()).toContain(`${exampleEpic.title}`);
+      });
+    });
+
     describe('rendering a command (quick action)', () => {
       it('displays command name with a slash', () => {
         buildWrapper({
           propsData: {
             char: '/',
-            command: jest.fn(),
-            nodeType: 'reference',
             nodeProps: {
               referenceType: 'command',
             },
@@ -168,7 +246,6 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
         buildWrapper({
           propsData: {
             char: ':',
-            command: jest.fn(),
             nodeType: 'emoji',
             nodeProps: {},
             items: testEmojis,

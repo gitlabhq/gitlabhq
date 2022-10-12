@@ -10008,7 +10008,6 @@
 - './spec/services/incident_management/issuable_escalation_statuses/after_update_service_spec.rb'
 - './spec/services/incident_management/issuable_escalation_statuses/build_service_spec.rb'
 - './spec/services/incident_management/issuable_escalation_statuses/create_service_spec.rb'
-- './spec/services/incident_management/issuable_escalation_statuses/prepare_update_service_spec.rb'
 - './spec/services/incident_management/pager_duty/create_incident_issue_service_spec.rb'
 - './spec/services/incident_management/pager_duty/process_webhook_service_spec.rb'
 - './spec/services/incident_management/timeline_events/create_service_spec.rb'

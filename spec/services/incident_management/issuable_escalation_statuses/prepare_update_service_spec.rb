@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateService do
+RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateService, factory_default: :keep do
+  let_it_be(:project) { create_default(:project) }
   let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, :triggered) }
   let_it_be(:user_with_permissions) { create(:user) }
 
@@ -10,7 +11,7 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
   let(:issue) { escalation_status.issue }
   let(:status) { :acknowledged }
   let(:params) { { status: status } }
-  let(:service) { IncidentManagement::IssuableEscalationStatuses::PrepareUpdateService.new(issue, current_user, params) }
+  let(:service) { described_class.new(issue, current_user, params) }
 
   subject(:result) { service.execute }
 
@@ -71,8 +72,16 @@ RSpec.describe IncidentManagement::IssuableEscalationStatuses::PrepareUpdateServ
     end
   end
 
-  context 'when called without params' do
+  context 'when called nil params' do
     let(:params) { nil }
+
+    it 'raises an exception' do
+      expect { result }.to raise_error NoMethodError
+    end
+  end
+
+  context 'when called without params' do
+    let(:params) { {} }
 
     it_behaves_like 'successful response', {}
   end

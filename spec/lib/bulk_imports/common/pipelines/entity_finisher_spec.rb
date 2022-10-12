@@ -17,7 +17,8 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher do
           bulk_import_entity_id: entity.id,
           bulk_import_entity_type: entity.source_type,
           pipeline_class: described_class.name,
-          message: 'Entity finished'
+          message: 'Entity finished',
+          importer: 'gitlab_migration'
         )
     end
 

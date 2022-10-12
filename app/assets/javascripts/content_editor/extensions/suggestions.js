@@ -121,7 +121,6 @@ export default Node.create({
         dataSource: gl.GfmAutoComplete?.dataSources.members,
         nodeType: 'reference',
         nodeProps: {
-          className: 'gfm gfm-project_member',
           referenceType: 'user',
         },
         search: (query) => ({ name, username }) => find(name, query) || find(username, query),
@@ -132,10 +131,49 @@ export default Node.create({
         dataSource: gl.GfmAutoComplete?.dataSources.issues,
         nodeType: 'reference',
         nodeProps: {
-          className: 'gfm gfm-issue',
           referenceType: 'issue',
         },
         search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
+      }),
+      createSuggestionPlugin({
+        editor: this.editor,
+        char: '$',
+        dataSource: gl.GfmAutoComplete?.dataSources.snippets,
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'snippet',
+        },
+        search: (query) => ({ id, title }) => find(id, query) || find(title, query),
+      }),
+      createSuggestionPlugin({
+        editor: this.editor,
+        char: '~',
+        dataSource: gl.GfmAutoComplete?.dataSources.labels,
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'label',
+        },
+        search: (query) => ({ title }) => find(title, query),
+      }),
+      createSuggestionPlugin({
+        editor: this.editor,
+        char: '&',
+        dataSource: gl.GfmAutoComplete?.dataSources.epics,
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'epic',
+        },
+        search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
+      }),
+      createSuggestionPlugin({
+        editor: this.editor,
+        char: '[vulnerability:',
+        dataSource: gl.GfmAutoComplete?.dataSources.vulnerabilities,
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'vulnerability',
+        },
+        search: (query) => ({ id, title }) => find(id, query) || find(title, query),
       }),
       createSuggestionPlugin({
         editor: this.editor,
@@ -143,7 +181,6 @@ export default Node.create({
         dataSource: gl.GfmAutoComplete?.dataSources.mergeRequests,
         nodeType: 'reference',
         nodeProps: {
-          className: 'gfm gfm-issue',
           referenceType: 'merge_request',
         },
         search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),
@@ -154,7 +191,6 @@ export default Node.create({
         dataSource: gl.GfmAutoComplete?.dataSources.milestones,
         nodeType: 'reference',
         nodeProps: {
-          className: 'gfm gfm-milestone',
           referenceType: 'milestone',
         },
         search: (query) => ({ iid, title }) => find(iid, query) || find(title, query),

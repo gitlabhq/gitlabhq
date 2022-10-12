@@ -23,6 +23,7 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)' do
           ciConfigVariables(sha: "#{sha}") {
             key
             value
+            valueOptions
             description
           }
         }
@@ -53,13 +54,21 @@ RSpec.describe 'Query.project(fullPath).ciConfigVariables(sha)' do
 
         expect(graphql_data.dig('project', 'ciConfigVariables')).to contain_exactly(
           {
+            'key' => 'KEY_VALUE_VAR',
+            'value' => 'value x',
+            'valueOptions' => nil,
+            'description' => 'value of KEY_VALUE_VAR'
+          },
+          {
             'key' => 'DB_NAME',
             'value' => 'postgres',
+            'valueOptions' => nil,
             'description' => nil
           },
           {
             'key' => 'ENVIRONMENT_VAR',
             'value' => 'env var value',
+            'valueOptions' => ['env var value', 'env var value2'],
             'description' => 'env var description'
           }
         )

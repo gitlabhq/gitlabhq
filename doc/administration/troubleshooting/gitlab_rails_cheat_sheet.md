@@ -62,21 +62,6 @@ Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
 Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 ```
 
-## Open object in `irb`
-
-Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
-
-```ruby
-Object.define_method(:irb) { binding.irb }
-
-project = Project.last
-# => #<Project id:2537 root/discard>>
-project.irb
-# Notice new context
-irb(#<Project>)> web_url
-# => "https://gitlab-example/root/discard"
-```
-
 ## Time an operation
 
 ```ruby
@@ -358,37 +343,6 @@ If this fails, [enable verbose logging](../operations/rails_console.md#looking-u
 repeat the above procedure after,
 and report the output to
 [GitLab Support](https://about.gitlab.com/support/).
-
-## Repository
-
-### Search sequence of pushes to a repository
-
-If it seems that a commit has gone "missing", search the sequence of pushes to a repository.
-[This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
-describes how you can end up in this state without a force push. Another cause can be a misconfigured [server hook](../server_hooks.md) that changes a HEAD ref via a `git reset` operation.
-
-If you look at the output from the sample code below for the target branch, you
-see a discontinuity in the from/to commits as you step through the output. The `commit_from` of each new push should equal the `commit_to` of the previous push. A break in that sequence indicates one or more commits have been "lost" from the repository history.
-
-The following example checks the last 100 pushes and prints the `commit_from` and `commit_to` entries:
-
-```ruby
-p = Project.find_by_full_path('u/p')
-p.events.pushed_action.last(100).each do |e|
-  printf "%-20.20s %8s...%8s (%s)
-", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
-end
-```
-
-Example output showing break in sequence at line 4:
-
-```plaintext
-master               f21b07713251e04575908149bdc8ac1f105aabc3...6bc56c1f46244792222f6c85b11606933af171de (root)
-master               6bc56c1f46244792222f6c85b11606933af171de...132da6064f5d3453d445fd7cb452b148705bdc1b (root)
-master               132da6064f5d3453d445fd7cb452b148705bdc1b...a62e1e693150a2e46ace0ce696cd4a52856dfa65 (root)
-master               58b07b719a4b0039fec810efa52f479ba1b84756...f05321a5b5728bd8a89b7bf530aa44043c951dce (root)
-master               f05321a5b5728bd8a89b7bf530aa44043c951dce...7d02e575fd790e76a3284ee435368279a5eb3773 (root)
-```
 
 ## Mirrors
 

@@ -28,7 +28,8 @@ module BulkImports
             bulk_import_entity_id: context.entity.id,
             bulk_import_entity_type: context.entity.source_type,
             pipeline_class: self.class.name,
-            message: "Entity #{entity.status_name}"
+            message: "Entity #{entity.status_name}",
+            importer: 'gitlab_migration'
           )
 
           context.portable.try(:after_import)

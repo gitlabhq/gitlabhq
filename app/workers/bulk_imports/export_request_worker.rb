@@ -42,7 +42,9 @@ module BulkImports
         structured_payload(
           log_attributes(exception, entity).merge(
             bulk_import_id: entity.bulk_import_id,
-            bulk_import_entity_type: entity.source_type
+            bulk_import_entity_type: entity.source_type,
+            message: "Request to export #{entity.source_type} failed",
+            importer: 'gitlab_migration'
           )
         )
       )
@@ -83,7 +85,8 @@ module BulkImports
           log_attributes(e, entity).merge(
             message: 'Failed to fetch source entity id',
             bulk_import_id: entity.bulk_import_id,
-            bulk_import_entity_type: entity.source_type
+            bulk_import_entity_type: entity.source_type,
+            importer: 'gitlab_migration'
           )
         )
       )

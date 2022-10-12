@@ -154,10 +154,13 @@ class IssuableBaseService < ::BaseProjectService
   end
 
   def filter_escalation_status(issuable)
+    status_params = params.delete(:escalation_status) || {}
+    status_params.permit! if status_params.respond_to?(:permit!)
+
     result = ::IncidentManagement::IssuableEscalationStatuses::PrepareUpdateService.new(
       issuable,
       current_user,
-      params.delete(:escalation_status)
+      status_params
     ).execute
 
     return unless result.success? && result[:escalation_status].present?
@@ -270,8 +273,9 @@ class IssuableBaseService < ::BaseProjectService
     # To be overridden by subclasses
   end
 
-  def after_update(issuable)
+  def after_update(issuable, old_associations)
     handle_description_updated(issuable)
+    handle_label_changes(issuable, old_associations[:labels])
   end
 
   def handle_description_updated(issuable)
@@ -327,7 +331,7 @@ class IssuableBaseService < ::BaseProjectService
         affected_assignees = (old_associations[:assignees] + new_assignees) - (old_associations[:assignees] & new_assignees)
 
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
-        after_update(issuable)
+        after_update(issuable, old_associations)
         issuable.create_new_cross_references!(current_user)
         execute_hooks(
           issuable,
@@ -367,7 +371,8 @@ class IssuableBaseService < ::BaseProjectService
 
         handle_task_changes(issuable)
         invalidate_cache_counts(issuable, users: issuable.assignees.to_a)
-        after_update(issuable)
+        # not passing old_associations here to keep `update_task` as fast as possible
+        after_update(issuable, {})
         execute_hooks(issuable, 'update', old_associations: nil)
 
         if issuable.is_a?(MergeRequest)
@@ -542,6 +547,8 @@ class IssuableBaseService < ::BaseProjectService
   end
 
   def has_label_changes?(issuable, old_labels)
+    return false if old_labels.nil?
+
     Set.new(issuable.labels) != Set.new(old_labels)
   end
 
@@ -553,12 +560,15 @@ class IssuableBaseService < ::BaseProjectService
 
   # override if needed
   def handle_label_changes(issuable, old_labels)
-    return unless has_label_changes?(issuable, old_labels)
+    return false unless has_label_changes?(issuable, old_labels)
 
     # reset to preserve the label sort order (title ASC)
     issuable.labels.reset
 
     GraphqlTriggers.issuable_labels_updated(issuable)
+
+    # return true here to avoid checking for label changes in sub classes
+    true
   end
 
   # override if needed

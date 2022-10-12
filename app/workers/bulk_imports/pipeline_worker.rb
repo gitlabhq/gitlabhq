@@ -21,7 +21,9 @@ module BulkImports
           structured_payload(
             bulk_import_entity_id: pipeline_tracker.entity.id,
             bulk_import_id: pipeline_tracker.entity.bulk_import_id,
-            pipeline_name: pipeline_tracker.pipeline_name
+            pipeline_name: pipeline_tracker.pipeline_name,
+            message: 'Pipeline starting',
+            importer: 'gitlab_migration'
           )
         )
 
@@ -32,7 +34,8 @@ module BulkImports
             bulk_import_entity_id: entity_id,
             bulk_import_id: bulk_import_id(entity_id),
             pipeline_tracker_id: pipeline_tracker_id,
-            message: 'Unstarted pipeline not found'
+            message: 'Unstarted pipeline not found',
+            importer: 'gitlab_migration'
           )
         )
       end
@@ -74,7 +77,8 @@ module BulkImports
           bulk_import_entity_id: pipeline_tracker.entity.id,
           bulk_import_id: pipeline_tracker.entity.bulk_import_id,
           pipeline_name: pipeline_tracker.pipeline_name,
-          message: exception.message
+          message: exception.message,
+          importer: 'gitlab_migration'
         )
       )
 
@@ -82,7 +86,8 @@ module BulkImports
         exception,
         bulk_import_entity_id: pipeline_tracker.entity.id,
         bulk_import_id: pipeline_tracker.entity.bulk_import_id,
-        pipeline_name: pipeline_tracker.pipeline_name
+        pipeline_name: pipeline_tracker.pipeline_name,
+        importer: 'gitlab_migration'
       )
 
       BulkImports::Failure.create(
@@ -150,7 +155,8 @@ module BulkImports
           bulk_import_entity_id: pipeline_tracker.entity.id,
           bulk_import_id: pipeline_tracker.entity.bulk_import_id,
           pipeline_name: pipeline_tracker.pipeline_name,
-          message: "Retrying error: #{exception.message}"
+          message: "Retrying error: #{exception.message}",
+          importer: 'gitlab_migration'
         )
       )
 
@@ -165,7 +171,8 @@ module BulkImports
           bulk_import_entity_id: pipeline_tracker.entity.id,
           bulk_import_id: pipeline_tracker.entity.bulk_import_id,
           pipeline_name: pipeline_tracker.pipeline_name,
-          message: 'Skipping pipeline due to failed entity'
+          message: 'Skipping pipeline due to failed entity',
+          importer: 'gitlab_migration'
         )
       )
 

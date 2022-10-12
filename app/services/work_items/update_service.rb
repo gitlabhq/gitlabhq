@@ -49,7 +49,7 @@ module WorkItems
       super
     end
 
-    def after_update(work_item)
+    def after_update(work_item, old_associations)
       super
 
       GraphqlTriggers.issuable_title_updated(work_item) if work_item.previous_changes.key?(:title)

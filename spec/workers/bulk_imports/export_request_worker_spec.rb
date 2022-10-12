@@ -45,7 +45,8 @@ RSpec.describe BulkImports::ExportRequestWorker do
                 'exception_message' => 'Export error',
                 'correlation_id_value' => anything,
                 'bulk_import_id' => bulk_import.id,
-                'bulk_import_entity_type' => entity.source_type
+                'bulk_import_entity_type' => entity.source_type,
+                'importer' => 'gitlab_migration'
               )
             ).twice
 
@@ -104,7 +105,8 @@ RSpec.describe BulkImports::ExportRequestWorker do
                   'exception_message' => "undefined method `model_id' for nil:NilClass",
                   'correlation_id_value' => anything,
                   'bulk_import_id' => bulk_import.id,
-                  'bulk_import_entity_type' => entity.source_type
+                  'bulk_import_entity_type' => entity.source_type,
+                  'importer' => 'gitlab_migration'
                 )
               ).twice
 

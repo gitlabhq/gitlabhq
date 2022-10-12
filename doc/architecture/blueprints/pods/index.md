@@ -24,6 +24,8 @@ We use the following terms to describe components and properties of the Pods arc
 
 A Pod is a set of infrastructure components that contains multiple top-level namespaces that belong to different organizations. The components include both datastores (PostgreSQL, Redis etc.) and stateless services (web etc.). The infrastructure components provided within a Pod are shared among organizations and their top-level namespaces but not shared with other Pods. This isolation of infrastructure components means that Pods are independent from each other.
 
+![Term Pod](term-pod.png)
+
 #### Pod properties
 
 - Each pod is independent from the others
@@ -40,6 +42,14 @@ Discouraged synonyms: GitLab instance, cluster, shard
 
 A cluster is a collection of Pods.
 
+![Term Cluster](term-cluster.png)
+
+#### Cluster properties
+
+- A cluster holds cluster-wide metadata, for example Users, Routes, Settings.
+
+Discouraged synonyms: whale
+
 ### Organizations
 
 GitLab references [Organizations in the initial set up](../../../topics/set_up_organization.md) and users can add a (free text) organization to their profile. There is no Organization entity established in the GitLab codebase.
@@ -54,6 +64,9 @@ Organizations work under the following assumptions:
 1. Features need to work within an organization.
 1. Only few features need to work across organizations.
 1. Users understand that the majority of pages they view are only scoped to a single organization at a time.
+1. Organizations are located on a single pod.
+
+![Term Organization](term-organization.png)
 
 #### Organization properties
 
@@ -80,6 +93,8 @@ Example:
 Top-level namespaces may [be replaced by workspaces](https://gitlab.com/gitlab-org/gitlab/-/issues/368237#high-level-goals). This proposal only uses the term top-level namespaces as the workspace definition is ongoing.
 
 Discouraged synonyms: Root-level namespace
+
+![Term Top-level Namespace](term-top-level-namespace.png)
 
 #### Top-level namespace properties
 
@@ -174,7 +189,7 @@ Organizations solve the following problems:
 1. Self-managed instances would set a default organization.
 1. Organizations can control user-profiles in a central way. This could be achieved by having an organization specific user-profile. Such a profile makes it possible for the organization administrators to control the user role in a company, enforce user emails, or show a graphical indicator of a user being part of the organization. An example would be a "GitLab Employee stamp" on comments.
 
-![Move to Organizations](2022-10-05-Pods-Organizations-Iteration0.png)
+![Move to Organizations](iteration0-organizations-introduction.png)
 
 #### Why would customers opt-in to Organizations?
 

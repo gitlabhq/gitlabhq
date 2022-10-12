@@ -77,7 +77,8 @@ RSpec.describe Projects::MergeRequestsController do
             merge_request,
             'json',
             diff_head: true,
-            view: 'inline'))
+            view: 'inline',
+            w: '0'))
       end
 
       context 'when diff files were cleaned' do

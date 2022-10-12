@@ -58,7 +58,8 @@ module BulkImports
         pipeline_name: pipeline[:pipeline],
         minimum_source_version: minimum_version,
         maximum_source_version: maximum_version,
-        source_version: source_version.to_s
+        source_version: source_version.to_s,
+        importer: 'gitlab_migration'
       )
     end
 

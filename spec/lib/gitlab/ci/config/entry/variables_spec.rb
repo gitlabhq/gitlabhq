@@ -98,6 +98,62 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
     it_behaves_like 'invalid config', /must be either a string or a hash/
   end
 
+  context 'when entry config value has unallowed value key-value pair and value is a string' do
+    let(:config) do
+      { 'VARIABLE_1' => { value: 'value', description: 'variable 1' } }
+    end
+
+    context 'when there is no allowed_value_data metadata' do
+      it_behaves_like 'invalid config', /variable_1 config must be a string/
+    end
+
+    context 'when metadata has allow_array_value and allowed_value_data' do
+      let(:metadata) { { allowed_value_data: %i[value description], allow_array_value: true } }
+
+      let(:result) do
+        { 'VARIABLE_1' => 'value' }
+      end
+
+      it_behaves_like 'valid config'
+
+      describe '#value_with_data' do
+        it 'returns variable with data' do
+          expect(entry.value_with_data).to eq(
+            'VARIABLE_1' => { value: 'value', description: 'variable 1' }
+          )
+        end
+      end
+    end
+  end
+
+  context 'when entry config value has key-value pair and value is an array' do
+    let(:config) do
+      { 'VARIABLE_1' => { value: %w[value1 value2], description: 'variable 1' } }
+    end
+
+    context 'when there is no allowed_value_data metadata' do
+      it_behaves_like 'invalid config', /variable_1 config value must be an alphanumeric string/
+    end
+
+    context 'when metadata has allow_array_value and allowed_value_data' do
+      let(:metadata) { { allowed_value_data: %i[value description], allow_array_value: true } }
+
+      let(:result) do
+        { 'VARIABLE_1' => 'value1' }
+      end
+
+      it_behaves_like 'valid config'
+
+      describe '#value_with_data' do
+        it 'returns variable with data' do
+          expect(entry.value_with_data).to eq(
+            'VARIABLE_1' => { value: 'value1', value_options: %w[value1 value2], description: 'variable 1' }
+          )
+        end
+      end
+    end
+  end
+
   context 'when entry config value has key-value pair and hash' do
     let(:config) do
       { 'VARIABLE_1' => { value: 'value 1', description: 'variable 1' },

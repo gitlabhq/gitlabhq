@@ -63,7 +63,6 @@ module Issues
 
       handle_assignee_changes(issue, old_assignees)
       handle_confidential_change(issue)
-      handle_label_changes(issue, old_labels)
       handle_added_labels(issue, old_labels)
       handle_milestone_change(issue)
       handle_added_mentions(issue, old_mentioned_users)
@@ -199,15 +198,6 @@ module Issues
       return unless old_severity && issue.severity != old_severity
 
       ::IncidentManagement::AddSeveritySystemNoteWorker.perform_async(issue.id, current_user.id)
-    end
-
-    def handle_escalation_status_change(issue)
-      return unless issue.supports_escalation? && issue.escalation_status
-
-      ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(
-        issue,
-        current_user
-      ).execute
     end
 
     def create_confidentiality_note(issue)

@@ -335,8 +335,10 @@ If you update the `CODEOWNERS` file, close the merge request and create a new on
 
 ### User not shown as possible approver
 
-A user might not show as an approver on the Code Owner merge request approval rules.
+A user might not show as an approver on the Code Owner merge request approval rules
+if any of these conditions are true:
 
-This result occurs when a rule prevents the specific user from approving the merge request.
-Check the project
-[merge request approval setting](merge_requests/approvals/settings.md#edit-merge-request-approval-settings).
+- A rule prevents the specific user from approving the merge request.
+  Check the project [merge request approval](merge_requests/approvals/settings.md#edit-merge-request-approval-settings) settings.
+- A Code Owner group has a visibility of **private**, and the current user is not a
+  member of the Code Owner group.

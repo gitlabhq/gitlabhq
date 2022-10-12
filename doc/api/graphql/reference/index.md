@@ -10406,6 +10406,7 @@ CI/CD config variables.
 | <a id="ciconfigvariabledescription"></a>`description` | [`String`](#string) | Description for the CI/CD config variable. |
 | <a id="ciconfigvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="ciconfigvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="ciconfigvariablevalueoptions"></a>`valueOptions` | [`[String!]`](#string) | Value options for the variable. |
 
 ### `CiGroup`
 

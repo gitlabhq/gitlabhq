@@ -680,3 +680,18 @@ unlike with issues or merge requests.
 ```ruby
 ApplicationSetting.current
 ```
+
+### Open object in `irb`
+
+Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
+
+```ruby
+Object.define_method(:irb) { binding.irb }
+
+project = Project.last
+# => #<Project id:2537 root/discard>>
+project.irb
+# Notice new context
+irb(#<Project>)> web_url
+# => "https://gitlab-example/root/discard"
+```
