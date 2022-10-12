@@ -100,9 +100,11 @@ GEM
     loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
+    mini_portile2 (2.8.0)
     minitest (5.16.3)
     multi_json (1.15.0)
-    nokogiri (1.13.8-x86_64-linux)
+    nokogiri (1.13.8)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     public_suffix (5.0.0)
     racc (1.6.0)
@@ -124,15 +126,16 @@ GEM
     simplecov-rcov (0.3.1)
       simplecov (>= 0.4.1)
     simplecov_json_formatter (0.1.4)
-    sqlite3 (1.5.0-x86_64-linux)
+    sqlite3 (1.5.0)
+      mini_portile2 (~> 2.8.0)
     stringex (1.5.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uuidtools (2.2.0)
-    zeitwerk (2.6.0)
+    zeitwerk (2.6.1)
 
 PLATFORMS
-  x86_64-linux
+  ruby
 
 DEPENDENCIES
   actionpack (~> 6.1)
@@ -149,4 +152,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   2.3.19
+   2.3.22

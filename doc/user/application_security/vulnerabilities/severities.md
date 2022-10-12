@@ -56,7 +56,9 @@ the following tables:
 
 | GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)         | **{check-circle}** Yes       | CVSS v2.0 Rating and CVSS v3.1 Qualitative Severity Rating | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`, `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
+| [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)         | **{check-circle}** Yes       | CVSS v2.0 Rating and CVSS v3.1 Qualitative Severity Rating <sup>1</sup> | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`, `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
+
+1. The CVSS v3.1 rating is used to calculate the severity level. If it's not available, the CVSS v2.0 rating is used instead.
 
 ## Container Scanning
 

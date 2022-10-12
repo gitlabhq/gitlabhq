@@ -19,19 +19,23 @@ The Security Configuration page lists the following for the security testing and
 - Whether or not it is available.
 - A configuration button or a link to its configuration guide.
 
-The status of each security control is determined by the following process:
+To determine the status of each security control, GitLab checks for a [CI/CD pipeline](../../../ci/pipelines/index.md)
+in the most recent commit on the default branch.
 
-1. Check for a [CI pipeline](../../../ci/pipelines/index.md) in the most recent commit on the default branch. 
-1. If no CI pipelines exist, then consider all security scanners disabled. Show the **Not enabled** status.
-1. If a pipeline is found, then inspect the CI YAML for each job in the CI/CD pipeline. If a
-   job in the pipeline defines an [`artifacts:reports` keyword](../../../ci/yaml/artifacts_reports.md)
-   for a security scanner, then consider the security scanner enabled. Show the **Enabled** status.
+If GitLab finds a CI/CD pipeline, then it inspects each job in the `.gitlab-ci.yml` file.
+
+- If a job defines an [`artifacts:reports` keyword](../../../ci/yaml/artifacts_reports.md)
+  for a security scanner, then GitLab considers the security scanner enabled and shows the **Enabled** status.
+- If no jobs define an `artifacts:reports` keyword for a security scanner, then GitLab considers 
+  the security scanner disabled and shows the **Not enabled** status.
+
+If GitLab does not find a CI/CD pipeline, then it considers all security scanners disabled and shows the **Not enabled** status.
 
 Failed pipelines and jobs are included in this process. If a scanner is configured but the job fails,
 that scanner is still considered enabled. This process also determines the scanners and statuses
-returned through [our API](../../../api/graphql/reference/index.md#securityscanners).
+returned through the [API](../../../api/graphql/reference/index.md#securityscanners).
 
-If the latest pipeline used [Auto DevOps](../../../topics/autodevops/index.md),
+If the latest pipeline uses [Auto DevOps](../../../topics/autodevops/index.md),
 all security features are configured by default.
 
 To view a project's security configuration:

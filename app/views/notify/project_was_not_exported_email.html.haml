@@ -1,7 +1,7 @@
 %p
-  Project #{@project.name} couldn't be exported.
+  = s_("Notify|Project %{project_name} couldn't be exported.") % {project_name: @project.name}
 %p
-  The errors we encountered were:
+  = s_('Notify|The errors we encountered were:')
 
   %ul
   - @errors.each do |error|

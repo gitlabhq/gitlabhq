@@ -27509,6 +27509,9 @@ msgstr ""
 msgid "Notify|Project %{old_path_with_namespace} was moved to another location."
 msgstr ""
 
+msgid "Notify|Project %{project_name} couldn't be exported."
+msgstr ""
+
 msgid "Notify|Project %{project_name} was exported successfully."
 msgstr ""
 
@@ -27528,6 +27531,9 @@ msgid "Notify|The diff was not included because it is too large."
 msgstr ""
 
 msgid "Notify|The download link will expire in 24 hours."
+msgstr ""
+
+msgid "Notify|The errors we encountered were:"
 msgstr ""
 
 msgid "Notify|The project is now located under %{project_full_name_link_start}%{project_full_name}%{link_end}."
