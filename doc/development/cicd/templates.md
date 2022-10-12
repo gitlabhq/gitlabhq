@@ -391,7 +391,7 @@ This is useful information for reviewers to make sure the template is safe to be
 ### Make sure the new template can be selected in UI
 
 Templates located under some directories are also [selectable in the **New file** UI](#template-directories).
-When you add a template into one of those directories, make sure that it correctly appears in the dropdown:
+When you add a template into one of those directories, make sure that it correctly appears in the dropdown list:
 
 ![CI/CD template selection](img/ci_template_selection_v13_1.png)
 

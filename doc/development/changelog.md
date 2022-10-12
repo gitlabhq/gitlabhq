@@ -114,7 +114,7 @@ making it both concise and descriptive, err on the side of descriptive.
 
 - **Bad:** Go to a project order.
 - **Good:** Show a user's starred projects at the top of the "Go to project"
-  dropdown.
+  dropdown list.
 
 The first example provides no context of where the change was made, or why, or
 how it benefits the user.
@@ -126,9 +126,9 @@ how it benefits the user.
 Again, the first example is too vague and provides no context.
 
 - **Bad:** Fixes and Improves CSS and HTML problems in mini pipeline graph and
-  builds dropdown.
+  builds dropdown list.
 - **Good:** Fix tooltips and hover states in mini pipeline graph and builds
-  dropdown.
+  dropdown list.
 
 The first example is too focused on implementation details. The user doesn't
 care that we changed CSS and HTML, they care about the _end result_ of those

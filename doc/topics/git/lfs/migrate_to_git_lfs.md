@@ -15,7 +15,7 @@ instead of the method documented below.
 Using Git LFS can help you to reduce the size of your Git
 repository and improve its performance.
 
-However, simply adding the large files that are already in your repository to Git LFS
+However, adding the large files that are already in your repository to Git LFS
 doesn't actually reduce the size of your repository because
 the files are still referenced by previous commits.
 

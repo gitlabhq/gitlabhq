@@ -133,7 +133,7 @@ they have the following privileges:
 Users granted access to a protected environment, but not push or merge access
 to the branch deployed to it, are only granted access to deploy the environment.
 [Invited groups](../../user/project/members/share_project_with_groups.md#share-a-project-with-a-group-of-users) added
-to the project with [Reporter role](../../user/permissions.md#project-members-permissions), appear in the dropdown menu for deployment-only access.
+to the project with [Reporter role](../../user/permissions.md#project-members-permissions), appear in the dropdown list for deployment-only access.
 
 To add deployment-only access:
 
@@ -146,7 +146,7 @@ To add deployment-only access:
 Maintainers can:
 
 - Update existing protected environments at any time by changing the access in the
-  **Allowed to Deploy** dropdown menu.
+  **Allowed to Deploy** dropdown list.
 - Unprotect a protected environment by clicking the **Unprotect** button for that environment.
 
 After an environment is unprotected, all access entries are deleted and must

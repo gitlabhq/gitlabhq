@@ -13,7 +13,7 @@ Danger is a gem that runs in the CI environment, like any other analysis tool.
 What sets it apart from (for example, RuboCop) is that it's designed to allow you to
 easily write arbitrary code to test properties of your code or changes. To this
 end, it provides a set of common helpers and access to information about what
-has actually changed in your environment, then simply runs your code!
+has actually changed in your environment, then runs your code!
 
 If Danger is asking you to change something about your merge request, it's best
 just to make the change. If you want to learn how Danger works, or make changes

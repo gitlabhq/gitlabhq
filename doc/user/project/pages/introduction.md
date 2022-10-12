@@ -108,7 +108,7 @@ Supposed your repository contained the following files:
     └── main.js
 ```
 
-Then the `.gitlab-ci.yml` example below simply moves all files from the root
+Then the `.gitlab-ci.yml` example below moves all files from the root
 directory of the project to the `public/` directory. The `.public` workaround
 is so `cp` doesn't also copy `public/` to itself in an infinite loop:
 

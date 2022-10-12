@@ -48,7 +48,7 @@ click_element(:my_element, Some::Page)
 
 First it is important to define what a "required element" is.
 
-Simply put, a required element is a visible HTML element that appears on a UI component without any user input.
+A required element is a visible HTML element that appears on a UI component without any user input.
 
 "Visible" can be defined as
 

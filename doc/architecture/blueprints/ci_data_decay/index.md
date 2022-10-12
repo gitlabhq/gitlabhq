@@ -177,7 +177,7 @@ everyone to understand the vision described in this architectural blueprint.
 
 ### Removing pipeline data
 
-While it might be tempting to simply remove old or archived data from our
+While it might be tempting to remove old or archived data from our
 databases this should be avoided. It is usually not desired to permanently
 remove user data unless consent is given to do so. We can, however, move data
 to a different data store, like object storage.

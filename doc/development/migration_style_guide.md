@@ -612,7 +612,7 @@ Note that it is not necessary to check if the index exists prior to
 removing it, however it is required to specify the name of the
 index that is being removed. This can be done either by passing the name
 as an option to the appropriate form of `remove_index` or `remove_concurrent_index`,
-or more simply by using the `remove_concurrent_index_by_name` method. Explicitly
+or by using the `remove_concurrent_index_by_name` method. Explicitly
 specifying the name is important to ensure the correct index is removed.
 
 For a small table (such as an empty one or one with less than `1,000` records),

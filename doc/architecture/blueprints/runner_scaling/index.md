@@ -178,24 +178,24 @@ There are several concerns represented in the current architecture. They are
 coupled in the current implementation so we will break them out here to consider
 them each separately.
 
-1. **Virtual Machine (VM) shape**. The underlying provider of a VM requires configuration to
-   know what kind of machine to create. E.g. Cores, memory, failure domain,
-   etc... This information is very provider specific.
-1. **VM lifecycle management**. Multiple machines will be created and a
-   system must keep track of which machines belong to this executor. Typically
-   a cloud provider will have a way to manage a set of homogenous machines.
-   E.g. GCE Instance Group. The basic operations are increase, decrease and
-   usually delete a specific machine.
-1. **VM autoscaling**. In addition to low-level lifecycle management,
-   job-aware capacity decisions must be made to the set of machines to provide
-   capacity when it is needed but not maintain excess capacity for cost reasons.
-1. **Job to VM mapping (routing)**. Currently the system assigns only one job to a
-   given a machine. A machine may be reused based on the specific executor
-   configuration.
-1. **In-VM job execution**. Within each VM a job must be driven through
-   various pre-defined stages and results and trace information returned
-   to the Runner system. These details are highly dependent on the VM
-   architecture and operating system as well as Executor type.
+- **Virtual Machine (VM) shape**. The underlying provider of a VM requires configuration to
+  know what kind of machine to create. E.g. Cores, memory, failure domain,
+  etc... This information is very provider specific.
+- **VM lifecycle management**. Multiple machines will be created and a
+  system must keep track of which machines belong to this executor. Typically
+  a cloud provider will have a way to manage a set of homogenous machines.
+  E.g. GCE Instance Group. The basic operations are increase, decrease and
+  usually delete a specific machine.
+- **VM autoscaling**. In addition to low-level lifecycle management,
+  job-aware capacity decisions must be made to the set of machines to provide
+  capacity when it is needed but not maintain excess capacity for cost reasons.
+- **Job to VM mapping (routing)**. Currently the system assigns only one job to a
+  given a machine. A machine may be reused based on the specific executor
+  configuration.
+- **In-VM job execution**. Within each VM a job must be driven through
+  various pre-defined stages and results and trace information returned
+  to the Runner system. These details are highly dependent on the VM
+  architecture and operating system as well as Executor type.
 
 The current architecture has several points of coupling between concerns.
 Coupling reduces opportunities for abstraction (e.g. community supported
@@ -243,37 +243,37 @@ abstraction.
 
 #### General high-level principles
 
-1. Design the new auto-scaling architecture aiming for having more choices and
-   flexibility in the future, instead of imposing new constraints.
-1. Design the new auto-scaling architecture to experiment with running multiple
-   jobs in parallel, on a single machine.
-1. Design the new provisioning architecture to replace Docker Machine in a way
-   that the wider community can easily build on top of the new abstractions.
+- Design the new auto-scaling architecture aiming for having more choices and
+  flexibility in the future, instead of imposing new constraints.
+- Design the new auto-scaling architecture to experiment with running multiple
+ jobs in parallel, on a single machine.
+- Design the new provisioning architecture to replace Docker Machine in a way
+  that the wider community can easily build on top of the new abstractions.
 
 #### Principles for the new plugin system
 
-1. Make the entry barrier for writing a new plugin low.
-1. Developing a new plugin should be simple and require only basic knowledge of
-   a programming language and a cloud provider's API.
-1. Strive for a balance between the plugin system's simplicity and flexibility.
-   These are not mutually exclusive.
-1. Abstract away as many technical details as possible but do not hide them completely.
-1. Build an abstraction that serves our community well but allows us to ship it quickly.
-1. Invest in a flexible solution, avoid one-way-door decisions, foster iteration.
-1. When in doubts err on the side of making things more simple for the wider community.
-1. Limit coupling between concerns to make the system more simple and extensible.
-1. Concerns should live on one side of the plug or the other--not both, which
-   duplicates effort and increases coupling.
+- Make the entry barrier for writing a new plugin low.
+- Developing a new plugin should be simple and require only basic knowledge of
+  a programming language and a cloud provider's API.
+- Strive for a balance between the plugin system's simplicity and flexibility.
+  These are not mutually exclusive.
+- Abstract away as many technical details as possible but do not hide them completely.
+- Build an abstraction that serves our community well but allows us to ship it quickly.
+- Invest in a flexible solution, avoid one-way-door decisions, foster iteration.
+- When in doubts err on the side of making things more simple for the wider community.
+- Limit coupling between concerns to make the system more simple and extensible.
+- Concerns should live on one side of the plug or the other--not both, which
+  duplicates effort and increases coupling.
 
 #### The most important technical details
 
-1. Favor gRPC communication between a plugin and GitLab Runner.
-1. Make it possible to version communication interface and support many versions.
-1. Make Go a primary language for writing plugins but accept other languages too.
-1. Prefer a GitLab job-aware autoscaler to provider specific autoscalers. Cloud provider
-   autoscalers don't know which VM to delete when scaling down so they make sub-optimal
-   decisions. Rather than teaching all autoscalers about GitLab jobs, we prefer to
-   have one, GitLab-owned autoscaler (not in the plugin).
+- Favor gRPC communication between a plugin and GitLab Runner.
+- Make it possible to version communication interface and support many versions.
+- Make Go a primary language for writing plugins but accept other languages too.
+- Prefer a GitLab job-aware autoscaler to provider specific autoscalers. Cloud provider
+  autoscalers don't know which VM to delete when scaling down so they make sub-optimal
+  decisions. Rather than teaching all autoscalers about GitLab jobs, we prefer to
+  have one, GitLab-owned autoscaler (not in the plugin).
 
 ## Plugin boundary proposals
 

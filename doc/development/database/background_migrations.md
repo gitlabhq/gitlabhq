@@ -86,7 +86,7 @@ migration classes must be defined in the namespace
 
 Scheduling a background migration should be done in a post-deployment
 migration that includes `Gitlab::Database::MigrationHelpers`
-To do so, simply use the following code while
+To do so, use the following code while
 replacing the class name and arguments with whatever values are necessary for
 your migration:
 
@@ -110,7 +110,7 @@ You also need to make sure that newly created data is either migrated, or
 saved in both the old and new version upon creation. For complex and time
 consuming migrations it's best to schedule a background job using an
 `after_create` hook so this doesn't affect response timings. The same applies to
-updates. Removals in turn can be handled by simply defining foreign keys with
+updates. Removals in turn can be handled by defining foreign keys with
 cascading deletes.
 
 ### Rescheduling background migrations

@@ -176,7 +176,7 @@ For project level features:
 Feature.enabled?(:feature_ice_cold_projects, project)
 ```
 
-If you are not certain what percentages to use, simply use the following steps:
+If you are not certain what percentages to use, use the following steps:
 
 1. 25%
 1. 50%

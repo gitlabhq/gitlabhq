@@ -1039,6 +1039,7 @@ can be added, removed, and modified by creating a custom configuration.
 | `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
 | `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `2`. |
 | `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
+| `DAST_API_API_PORT`                                  | Specify the communication port number used by DAST API engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
 |[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
@@ -2084,6 +2085,43 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 
 - Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the DAST API CI/CD template. We recommend this method instead of manually setting a value.
 - If removing the variable is not possible, check to see if this value has changed in the latest version of the [DAST API CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
+
+### `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
+
+The DAST API engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause for this issue is that the background component cannot use the selected port as it's already in use. This error can occur intermittently if timing plays a part (race condition). This issue occurs most often with Kubernetes environments when other services are mapped into the container causing port conflicts.
+
+Before proceeding with a solution, it is important to confirm that the error message was produced because the port was already taken. To confirm this was the cause:
+
+1. Go to the job console.
+
+1. Look for the artifact `gl-api-security-scanner.log`. You can either download all artifacts by selecting **Download** and then search for the file, or directly start searching by selecting **Browse**.
+
+1. Open the file `gl-api-security-scanner.log` in a text editor.
+
+1. If the error message was produced because the port was already taken, you should see in the file a message like the following:
+
+- In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734):
+
+  ```log
+  Failed to bind to address http://127.0.0.1:5500: address already in use.
+  ```
+
+- In GitLab 15.4 and earlier:
+
+  ```log
+  Failed to bind to address http://[::]:5000: address already in use.
+  ```
+
+The text `http://[::]:5000` in the previous message could be different in your case, for instance it could be `http://[::]:5500` or `http://127.0.0.1:5500`. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
+
+If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](#get-support-or-request-an-improvement) through the proper channels.
+
+Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `DAST_API_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
+
+**Solution**
+
+1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `DAST_API_API_PORT`.
+1. Update the value of `DAST_API_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
 
 ### `Application cannot determine the base URL for the target API`
 

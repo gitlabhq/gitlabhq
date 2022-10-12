@@ -461,8 +461,8 @@ _from "Disk-based Shard Allocation | Elasticsearch Reference" [5.6](https://www.
 The use of Elasticsearch in GitLab is only ever as a secondary data store.
 This means that all of the data stored in Elasticsearch can always be derived
 again from other data sources, specifically PostgreSQL and Gitaly. Therefore if
-the Elasticsearch data store is ever corrupted for whatever reason you can
-simply reindex everything from scratch.
+the Elasticsearch data store is ever corrupted for whatever reason you can reindex
+everything from scratch.
 
 If your Elasticsearch index is incredibly large it may be too time consuming or
 cause too much downtime to reindex from scratch. There aren't any built in

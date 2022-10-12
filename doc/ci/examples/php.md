@@ -189,7 +189,7 @@ phpenv config-add my_config.ini
 Since this is a pretty bare installation of the PHP environment, you may need
 some extensions that are not currently present on the build machine.
 
-To install additional extensions simply execute:
+To install additional extensions, execute:
 
 ```shell
 pecl install <extension>
@@ -272,5 +272,5 @@ We have set up an [Example PHP Project](https://gitlab.com/gitlab-examples/php) 
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/index.md).
 
-Want to hack on it? Simply fork it, commit, and push your changes. Within a few
+Want to hack on it? Fork it, commit, and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

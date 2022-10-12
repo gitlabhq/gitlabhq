@@ -54,8 +54,8 @@ description, note the following:
   precision is 2. In some extremely low panels, you can see `0.00`, even though there is still some
   real traffic.
 
-To inspect the raw data of the panel for further calculation, select **Inspect** from the dropdown
-list of a panel. Queries, raw data, and panel JSON structure are available.
+To inspect the raw data of the panel for further calculation, select **Inspect** from the dropdown list of a panel.
+Queries, raw data, and panel JSON structure are available.
 Read more at [Grafana panel inspection](http://grafana.com/docs/grafana/next/panels/query-a-data-source/).
 
 All the dashboards are powered by [Grafana](https://grafana.com/), a frontend for displaying metrics.

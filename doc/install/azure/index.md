@@ -236,7 +236,7 @@ The credentials are:
 - Password: the password is automatically created, and there are
   [two ways to find it](https://docs.bitnami.com/azure/faq/get-started/find-credentials/).
 
-After signing in, be sure to immediately [change the password](../../user/profile/index.md#change-your-password).
+After signing in, be sure to immediately [change the password](../../user/profile/user_passwords.md#change-your-password).
 
 ## Maintain your GitLab instance
 

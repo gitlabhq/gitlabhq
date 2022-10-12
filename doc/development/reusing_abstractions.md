@@ -63,7 +63,7 @@ do so, but then we'd need as many options as we have features. Every option adds
 two code paths, which means that for four features we have to cover 8 different
 code paths.
 
-A much more reliable (and pleasant) way of dealing with this, is to simply use
+A much more reliable (and pleasant) way of dealing with this, is to use
 the underlying bits that make up `GroupProjectsFinder` directly. This means we
 may need a little bit more code in `IssuableFinder`, but it also gives us much
 more control and certainty. This means we might end up with something like this:
@@ -122,7 +122,7 @@ the various abstractions and what they can (not) reuse:
 
 Everything in `app/controllers`.
 
-Controllers should not do much work on their own, instead they simply pass input
+Controllers should not do much work on their own, instead they pass input
 to other classes and present the results.
 
 ### API endpoints

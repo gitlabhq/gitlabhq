@@ -134,7 +134,7 @@ z.sync
 ```
 
 NOTE:
-There is no dependency analysis in the use of batch-loading. There is simply
+There is no dependency analysis in the use of batch-loading. There is
 a pending queue of requests, and as soon as any one result is needed, all pending
 requests are evaluated.
 

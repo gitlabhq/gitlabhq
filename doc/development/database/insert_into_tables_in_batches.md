@@ -181,7 +181,7 @@ end
 ```
 
 You can still save relations that are not `BulkInsertSafe` in this block; they
-simply are treated as if you had invoked `save` from outside the block.
+are treated as if you had invoked `save` from outside the block.
 
 ## Known limitations
 

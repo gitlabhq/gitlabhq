@@ -824,7 +824,7 @@ end
 
 Sometimes we need EE-specific behavior in some of the APIs. Normally we could
 use EE methods to override CE methods, however API routes are not methods and
-therefore can't be simply overridden. We need to extract them into a standalone
+therefore cannot be overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE
 route. Something like this:
 
@@ -875,8 +875,8 @@ end
 
 #### EE `route_setting`
 
-It's very hard to extend this in an EE module, and this is simply storing
-some meta-data for a particular route. Given that, we could simply leave the
+It's very hard to extend this in an EE module, and this is storing
+some meta-data for a particular route. Given that, we could leave the
 EE `route_setting` in CE as it doesn't hurt and we don't use
 those meta-data in CE.
 
@@ -1416,5 +1416,5 @@ to avoid conflicts during CE to EE merge.
 ### GitLab-svgs
 
 Conflicts in `app/assets/images/icons.json` or `app/assets/images/icons.svg` can
-be resolved simply by regenerating those assets with
+be resolved by regenerating those assets with
 [`yarn run svg`](https://gitlab.com/gitlab-org/gitlab-svgs).

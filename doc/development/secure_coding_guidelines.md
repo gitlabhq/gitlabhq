@@ -1071,7 +1071,7 @@ Symlink attacks makes it possible for an attacker to read the contents of arbitr
 
 #### Ruby
 
-For zip files, the [`rubyzip`](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against symlink attacks as it simply ignores symbolic links, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
+For zip files, the [`rubyzip`](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against symlink attacks as it ignores symbolic links, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
 
 ```ruby
 # Vulnerable tar.gz extraction example!

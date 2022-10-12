@@ -605,7 +605,7 @@ alt_usage_data(value = nil, fallback: -1, &block)
 
 Arguments:
 
-- `value`: a simple static value in which case the value is simply returned.
+- `value`: a static value in which case the value is returned.
 - or a `block`: which is evaluated
 - `fallback: -1`: the common value used for any metrics that are failing.
 
@@ -714,7 +714,7 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
   - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445)
 - Use defined `start` and `finish`, and simple queries.
   These values can be memoized and reused, as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
-- Avoid joins and write the queries as simply as possible,
+- Avoid joins and write the queries as clearly as possible,
   as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
 - Set a custom `batch_size` for `distinct_count`, as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
 

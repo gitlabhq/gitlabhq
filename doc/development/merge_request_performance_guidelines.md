@@ -44,7 +44,7 @@ and running.
 
 Can the queries used potentially take down any critical services and result in
 engineers being woken up in the night? Can a malicious user abuse the code to
-take down a GitLab instance? Do my changes simply make loading a certain page
+take down a GitLab instance? Do my changes make loading a certain page
 slower? Does execution time grow exponentially given enough load or data in the
 database?
 

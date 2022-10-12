@@ -86,7 +86,7 @@ steering the browser. In this case, we can use
 [`browser.url`](http://v4.webdriver.io/api/protocol/url.html) to visit `/page-that-does-not-exist` to
 hit our 404 page. We can then use [`browser.getUrl`](http://v4.webdriver.io/api/property/getUrl.html)
 to verify that the current page is indeed at the location we specified. To interact with the page,
-we can simply pass CSS selectors to
+we can pass CSS selectors to
 [`browser.element`](http://v4.webdriver.io/api/protocol/element.html) to get access to elements on the
 page and to interact with them - for example, to click on the link back to the home page.
 

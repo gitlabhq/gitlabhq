@@ -330,7 +330,7 @@ Along with creating local data, we can also extend existing GraphQL types with `
 
 ##### Mocking API response with local Apollo cache
 
-Using local Apollo Cache is helpful when we have a need to mock some GraphQL API responses, queries, or mutations locally (such as when they're still not added to our actual API).
+Using local Apollo Cache is helpful when we have a reason to mock some GraphQL API responses, queries, or mutations locally (such as when they're still not added to our actual API).
 
 For example, we have a [fragment](#fragments) on `DesignVersion` used in our queries:
 
@@ -341,7 +341,7 @@ fragment VersionListItem on DesignVersion {
 }
 ```
 
-We also need to fetch the version author and the `created at` property to display in the versions dropdown. But, these changes are still not implemented in our API. We can change the existing fragment to get a mocked response for these new fields:
+We also must fetch the version author and the `created at` property to display in the versions dropdown list. But, these changes are still not implemented in our API. We can change the existing fragment to get a mocked response for these new fields:
 
 ```javascript
 fragment VersionListItem on DesignVersion {
@@ -627,7 +627,7 @@ GraphQL entities are not yet part of the schema, or if they are feature-flagged 
 ### Manually triggering queries
 
 Queries on a component's `apollo` property are made automatically when the component is created.
-Some components instead want the network request made on-demand, for example a dropdown with lazy-loaded items.
+Some components instead want the network request made on-demand, for example a dropdown list with lazy-loaded items.
 
 There are two ways to do this:
 

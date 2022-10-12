@@ -187,7 +187,7 @@ You can then view the database details for this request:
 
    ![Paste request ID into progress bar](img/paste-request-id-into-progress-bar_v14_3.png)
 
-1. A new request is inserted into the `Request Selector` dropdown on the right-hand side of the Performance Bar. Select the new request to view the metrics of the API request:
+1. A new request is inserted into the `Request Selector` dropdown list on the right-hand side of the Performance Bar. Select the new request to view the metrics of the API request:
 
    ![Select request ID from request selector drop down menu](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
 

@@ -10,13 +10,13 @@ type: tutorial
 GitLab currently doesn't have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).
 
-Use SSH keys when:
+Use SSH keys when you want to:
 
-1. You want to check out internal submodules
-1. You want to download private packages using your package manager (for example, Bundler)
-1. You want to deploy your application to your own server, or, for example, Heroku
-1. You want to execute SSH commands from the build environment to a remote server
-1. You want to rsync files from the build environment to a remote server
+- Check out internal submodules.
+- Download private packages using your package manager. For example, Bundler.
+- Deploy your application to your own server or, for example, Heroku.
+- Execute SSH commands from the build environment to a remote server.
+- Rsync files from the build environment to a remote server.
 
 If anything of the above rings a bell, then you most likely need an SSH key.
 

@@ -311,7 +311,7 @@ end
 The "`it has loose foreign keys`" shared example can be used to test the presence of the `ON DELETE` trigger and the
 loose foreign key definitions.
 
-Simply add to the model test file:
+Add to the model test file:
 
 ```ruby
 it_behaves_like 'it has loose foreign keys' do

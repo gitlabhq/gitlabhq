@@ -25,25 +25,6 @@ To access your user settings:
 1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 
-## Change your password
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23610) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `block_weak_passwords`, weak passwords aren't accepted. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default blocking weak passwords is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `block_weak_passwords`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
-The feature is not ready for production use.
-
-To change your password:
-
-1. On the top bar, in the top-right corner, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **Password**.
-1. In the **Current password** text box, enter your current password.
-1. In the **New password** and **Password confirmation** text box, enter your new password.
-1. Select **Save password**.
-
-If you don't know your current password, select the **I forgot my password** link. A password reset email is sent to the account's **primary** email address.
-
 ## Change your username
 
 Your username has a unique [namespace](../namespace/index.md),
@@ -478,6 +459,7 @@ Without the `config.extend_remember_period` flag, you would be forced to sign in
 
 - [Create users](account/create_accounts.md)
 - [Sign in to your GitLab account](../../topics/authentication/index.md)
+- [Change your password](user_passwords.md)
 - [Receive emails for sign-ins from unknown IP addresses or devices](unknown_sign_in_notification.md)
 - [Receive emails for attempted sign-ins using a wrong two-factor authentication code](wrong_two_factor_authentication_code_notification.md)
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)

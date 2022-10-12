@@ -103,7 +103,7 @@ This looks working as a workaround, however, this approach has some downsides th
   Therefore, you need to be careful of that the offset doesn't exceed the maximum value of 2 bytes integer.
 
 As a conclusion, you should define all of the key/value pairs in FOSS.
-For example, you can simply write the following code in the above case:
+For example, you can write the following code in the above case:
 
 ```ruby
 class Pipeline < ApplicationRecord

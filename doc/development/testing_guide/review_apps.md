@@ -101,7 +101,7 @@ the GitLab handbook information for the [shared 1Password account](https://about
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps). For example, `review-qa-raise-e-12chm0`.
 1. Find and open the `toolbox` Deployment. For example, `review-qa-raise-e-12chm0-toolbox`.
 1. Select the Pod in the "Managed pods" section. For example, `review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz`.
-1. Select the `KUBECTL` dropdown, then `Exec` -> `toolbox`.
+1. Select the `KUBECTL` dropdown list, then `Exec` -> `toolbox`.
 1. Replace `-c toolbox -- ls` with `-it -- gitlab-rails console` from the
    default command or
    - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz -it -- gitlab-rails console` and

@@ -57,7 +57,7 @@ We make the following assumption with regards to automatically being considered 
 - Team members working on a specific feature (for example, search) are considered domain experts for that feature.
 
 We default to assigning reviews to team members with domain expertise.
-When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or simply follow the [Reviewer roulette](#reviewer-roulette) recommendation.
+When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation.
 
 To find a domain expert:
 

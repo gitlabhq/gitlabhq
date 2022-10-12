@@ -465,7 +465,7 @@ RSpec.describe '<What I am taking screenshots of>', :js do
 
 #### Full page screenshots
 
-To take a full page screenshot simply `visit the page` and perform any expectation on real content (to have capybara wait till the page is ready and not take a white screenshot).
+To take a full page screenshot, `visit the page` and perform any expectation on real content (to have capybara wait till the page is ready and not take a white screenshot).
 
 #### Element screenshot
 

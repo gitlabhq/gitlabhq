@@ -60,7 +60,7 @@ out of a database to a different place when data is no longer relevant or
 needed. Our dataset is extremely large (tens of terabytes), so moving such a
 high volume of data is challenging. When time-decay is implemented using
 partitioning, we can archive the entire partition (or set of partitions) by
-simply updating a single record in one of our database tables. It is one of the
+updating a single record in one of our database tables. It is one of the
 least expensive ways to implement time-decay patterns at a database level.
 
 ![decomposition_partitioning_comparison.png](decomposition_partitioning_comparison.png)
@@ -259,7 +259,7 @@ smart enough to move rows between partitions on its own.
 A partitioned table is called a **routing** table and it will use the `p_`
 prefix which should help us with building automated tooling for query analysis.
 
-A table partition will be simply called **partition** and it can use the a
+A table partition will be called **partition** and it can use the a
 physical partition ID as suffix, leaded by a `p` letter, for example
 `ci_builds_p101`. Existing CI tables will become **zero partitions** of the
 new routing tables. Depending on the chosen
@@ -304,7 +304,7 @@ of storing archived data in PostgreSQL will be reduced significantly this way.
 
 There are some technical details here that are out of the scope of this
 description, but by using this strategy we can "archive" data, and make it much
-less expensive to reside in our PostgreSQL cluster by simply toggling a boolean
+less expensive to reside in our PostgreSQL cluster by toggling a boolean
 column value.
 
 ## Accessing partitioned data

@@ -160,7 +160,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
 
 An administrator may want the container registry listening on an arbitrary port such as `5678`.
 However, the registry and application server are behind an AWS application load balancer that only
-listens on ports `80` and `443`. The administrator may simply remove the port number for
+listens on ports `80` and `443`. The administrator may remove the port number for
 `registry_external_url`, so HTTP or HTTPS is assumed. Then, the rules apply that map the load
 balancer to the registry from ports `80` or `443` to the arbitrary port. This is important if users
 rely on the `docker login` example in the container registry. Here's an example:

@@ -357,7 +357,7 @@ Every binary ideally must have structured (JSON) logging in place as it helps
 with searching and filtering the logs. At GitLab we use structured logging in
 JSON format, as all our infrastructure assumes that. When using
 [Logrus](https://github.com/sirupsen/logrus) you can turn on structured
-logging simply by using the build in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
+logging by using the build in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
 same logging type we use in our [Ruby applications](../logging.md#use-structured-json-logging).
 
 #### How to use Logrus

@@ -172,7 +172,8 @@ When the `staging` job runs, it will connect to the cluster via the agent named 
 
 ## Restrict project and group access by using impersonation **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/357934) in GitLab 15.5 to add impersonation support for environment tiers.
 
 By default, your CI/CD job inherits all the permissions from the service account used to install the
 agent in the cluster.
@@ -205,16 +206,17 @@ impersonation credentials in the following way:
   - `gitlab:ci_job` to identify all requests coming from CI jobs.
   - The list of IDs of groups the project is in.
   - The project ID.
-  - The slug of the environment this job belongs to.
+  - The slug and tier of the environment this job belongs to.
 
     Example: for a CI job in `group1/group1-1/project1` where:
 
     - Group `group1` has ID 23.
     - Group `group1/group1-1` has ID 25.
     - Project `group1/group1-1/project1` has ID 150.
-    - Job running in a prod environment.
+    - Job running in the `prod` environment, which has the `production` environment tier.
 
-  Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group:25, gitlab:project:150, gitlab:project_env:150:prod]`.
+  Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group_env_tier:23:production, gitlab:group:25,
+     gitlab:group_env_tier:25:production, gitlab:project:150, gitlab:project_env:150:prod, gitlab:project_env_tier:150:production]`.
 
 - `Extra` carries extra information about the request. The following properties are set on the impersonated identity:
 
@@ -227,6 +229,7 @@ impersonation credentials in the following way:
 | `agent.gitlab.com/ci_job_id`         | Contains the CI job ID.                                                      |
 | `agent.gitlab.com/username`          | Contains the username of the user the CI job is running as.                  |
 | `agent.gitlab.com/environment_slug`  | Contains the slug of the environment. Only set if running in an environment. |
+| `agent.gitlab.com/environment_tier`  | Contains the tier of the environment. Only set if running in an environment. |
 
 Example `config.yaml` to restrict access by the CI/CD job's identity:
 

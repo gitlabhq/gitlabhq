@@ -88,7 +88,7 @@ To maximize component reusability, widgets should be field wrappers owning the
 work item query and mutation of the attribute it's responsible for.
 
 A field component is a generic and simple component. It has no knowledge of the
-attribute or work item details, such as input field, date selector, or dropdown.
+attribute or work item details, such as input field, date selector, or dropdown list.
 
 Widgets must be configurable to support various use cases, depending on work items.
 When building widgets, use slots to provide extra context while minimizing
@@ -96,18 +96,18 @@ the use of props and injected attributes.
 
 ### Examples
 
-We have a [dropdown field component](https://gitlab.com/gitlab-org/gitlab/-/blob/eea9ad536fa2d28ee6c09ed7d9207f803142eed7/app/assets/javascripts/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue)
+We have a [dropdown list component](https://gitlab.com/gitlab-org/gitlab/-/blob/eea9ad536fa2d28ee6c09ed7d9207f803142eed7/app/assets/javascripts/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue)
 for use as reference.
 
-Any work item widget can wrap the dropdown component. The widget has knowledge of
+Any work item widget can wrap the dropdown list. The widget has knowledge of
 the attribute it mutates, and owns the mutation for it. Multiple widgets can use
 the same field component. For example:
 
 - Title and description widgets use the input field component.
 - Start and end date use the date selector component.
-- Labels, milestones, and assignees selectors use the dropdown component.
+- Labels, milestones, and assignees selectors use the dropdown list.
 
-Some frontend widgets already use the dropdown component. Use them as a reference
+Some frontend widgets already use the dropdown list. Use them as a reference
 for work items widgets development:
 
 - `ee/app/assets/javascripts/boards/components/assignee_select.vue`
