@@ -80,7 +80,6 @@ RSpec.describe 'factories' do
     member_task
     milestone_release
     namespace
-    project_broken_repo
     project_namespace
     project_repository
     prometheus_alert

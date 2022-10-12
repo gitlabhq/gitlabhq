@@ -461,7 +461,11 @@ RSpec.describe Gitlab::Git::Repository do
     end
 
     it 'raises an error if it failed' do
-      expect { repository.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
+      # TODO: Once https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4921
+      # is merged, remove the assertion for Gitlab::Git::Repository::GitError
+      expect { repository.delete_refs('refs\heads\fix') }.to raise_error do |e|
+        expect(e).to be_a(Gitlab::Git::Repository::GitError).or be_a(Gitlab::Git::InvalidRefFormatError)
+      end
     end
   end
 

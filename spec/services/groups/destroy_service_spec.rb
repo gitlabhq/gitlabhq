@@ -117,12 +117,6 @@ RSpec.describe Groups::DestroyService do
         Sidekiq::Testing.fake! { destroy_group(group, user, true) }
       end
 
-      after do
-        # Clean up stale directories
-        TestEnv.rm_storage_dir(project.repository_storage, group.path)
-        TestEnv.rm_storage_dir(project.repository_storage, remove_path)
-      end
-
       it 'verifies original paths and projects still exist' do
         expect(TestEnv.storage_dir_exists?(project.repository_storage, group.path)).to be_truthy
         expect(TestEnv.storage_dir_exists?(project.repository_storage, remove_path)).to be_falsey

@@ -332,12 +332,6 @@ FactoryBot.define do
       repository_read_only { true }
     end
 
-    trait :broken_repo do
-      after(:create) do |project|
-        TestEnv.rm_storage_dir(project.repository_storage, "#{project.disk_path}.git/refs")
-      end
-    end
-
     trait :test_repo do
       after :create do |project|
         # There are various tests that rely on there being no repository cache.
@@ -453,13 +447,6 @@ FactoryBot.define do
   # but not pushed any code there yet
   factory :project_empty_repo, parent: :project do
     empty_repo
-  end
-
-  # Project with broken repository
-  #
-  # Project with an invalid repository state
-  factory :project_broken_repo, parent: :project do
-    broken_repo
   end
 
   factory :forked_project_with_submodules, parent: :project do

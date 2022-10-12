@@ -1,13 +1,9 @@
+#import "./work_item.fragment.graphql"
+
 subscription issuableDatesUpdated($issuableId: IssuableID!) {
   issuableDatesUpdated(issuableId: $issuableId) {
     ... on WorkItem {
-      id
-      widgets {
-        ... on WorkItemWidgetStartAndDueDate {
-          dueDate
-          startDate
-        }
-      }
+      ...WorkItem
     }
   }
 }

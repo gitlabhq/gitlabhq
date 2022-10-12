@@ -11,7 +11,6 @@ module Tooling
       PROJECT_FACTORIES = %w[
         :project
         :project_empty_repo
-        :project_broken_repo
         :forked_project_with_submodules
         :redmine_project
         :jira_project

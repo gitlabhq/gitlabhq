@@ -295,14 +295,6 @@ module TestEnv
     end
   end
 
-  def rm_storage_dir(storage, dir)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      target_repo_refs_path = File.join(GitalySetup.repos_path(storage), dir)
-      FileUtils.remove_dir(target_repo_refs_path)
-    end
-  rescue Errno::ENOENT
-  end
-
   def storage_dir_exists?(storage, dir)
     Gitlab::GitalyClient::StorageSettings.allow_disk_access do
       File.exist?(File.join(GitalySetup.repos_path(storage), dir))

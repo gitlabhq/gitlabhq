@@ -1,20 +1,9 @@
+#import "./work_item.fragment.graphql"
+
 subscription issuableAssignees($issuableId: IssuableID!) {
   issuableAssigneesUpdated(issuableId: $issuableId) {
     ... on WorkItem {
-      id
-      widgets {
-        ... on WorkItemWidgetAssignees {
-          assignees {
-            nodes {
-              avatarUrl
-              id
-              name
-              username
-              webUrl
-            }
-          }
-        }
-      }
+      ...WorkItem
     }
   }
 }
