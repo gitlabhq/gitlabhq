@@ -39,11 +39,12 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
     'redis_hll' | '28d' | 'OR'  | 3
     'redis_hll' | '7d'  | 'AND' | 1
     'redis_hll' | '7d'  | 'OR'  | 2
-    'database'  | '7d'  | 'OR'  | 3
-    'database'  | '7d'  | 'AND' | 1
+    'database'  | '7d'  | 'OR'  | 3.0
+    'database'  | '7d'  | 'AND' | 1.0
   end
 
   with_them do
+    let(:error_rate) { Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE }
     let(:metric_definition) do
       {
         data_source: data_source,
@@ -65,8 +66,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
     end
 
     it 'has correct value' do
-      # database source is providing estimated value that have a lot of decimal places, round it for convenience
-      expect(described_class.new(metric_definition).value.round).to eq(expected_value)
+      expect(described_class.new(metric_definition).value).to be_within(error_rate).percent_of(expected_value)
     end
   end
 end

@@ -2,7 +2,7 @@
 
 module QA
   module Resource
-    class Issue < Base
+    class Issue < Issuable
       attr_writer :milestone, :template, :weight
 
       attribute :project do
@@ -53,10 +53,6 @@ module QA
         "/projects/#{project.id}/issues/#{iid}"
       end
 
-      def api_comments_path
-        "#{api_get_path}/notes"
-      end
-
       def api_post_body
         {
           assignee_ids: assignee_ids,
@@ -81,54 +77,6 @@ module QA
         end
 
         QA::Runtime::Logger.debug("Successfully updated issue assignees to #{assignee_ids}")
-      end
-
-      # Get issue comments
-      #
-      # @return [Array]
-      def comments(auto_paginate: false, attempts: 0)
-        return parse_body(api_get_from(api_comments_path)) unless auto_paginate
-
-        auto_paginated_response(
-          Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url,
-          attempts: attempts
-        )
-      end
-
-      # Create a new comment
-      #
-      # @param [String] body
-      # @param [Boolean] confidential
-      # @return [Hash]
-      def add_comment(body:, confidential: false)
-        api_post_to(api_comments_path, body: body, confidential: confidential)
-      end
-
-      # Issue label events
-      #
-      # @param [Boolean] auto_paginate
-      # @param [Integer] attempts
-      # @return [Array<Hash>]
-      def label_events(auto_paginate: false, attempts: 0)
-        events("label", auto_paginate: auto_paginate, attempts: attempts)
-      end
-
-      # Issue state events
-      #
-      # @param [Boolean] auto_paginate
-      # @param [Integer] attempts
-      # @return [Array<Hash>]
-      def state_events(auto_paginate: false, attempts: 0)
-        events("state", auto_paginate: auto_paginate, attempts: attempts)
-      end
-
-      # Issue milestone events
-      #
-      # @param [Boolean] auto_paginate
-      # @param [Integer] attempts
-      # @return [Array<Hash>]
-      def milestone_events(auto_paginate: false, attempts: 0)
-        events("milestone", auto_paginate: auto_paginate, attempts: attempts)
       end
 
       protected
@@ -159,23 +107,6 @@ module QA
           :task_completion_status,
           :closed_at,
           :created_at
-        )
-      end
-
-      private
-
-      # Issue events
-      #
-      # @param [String] name event name
-      # @param [Boolean] auto_paginate
-      # @param [Integer] attempts
-      # @return [Array<Hash>]
-      def events(name, auto_paginate:, attempts:)
-        return parse_body(api_get_from("#{api_get_path}/resource_#{name}_events")) unless auto_paginate
-
-        auto_paginated_response(
-          Runtime::API::Request.new(api_client, "#{api_get_path}/resource_#{name}_events", per_page: '100').url,
-          attempts: attempts
         )
       end
     end

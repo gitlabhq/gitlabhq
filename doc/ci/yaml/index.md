@@ -1238,7 +1238,11 @@ is not found, the prefix is added to `default`, so the key in the example would 
 
 #### `cache:untracked`
 
-Use `untracked: true` to cache all files that are untracked in your Git repository:
+Use `untracked: true` to cache all files that are untracked in your Git repository.
+Untracked files include files that are:
+
+- Ignored due to [`.gitignore` configuration](https://git-scm.com/docs/gitignore).
+- Created, but not added to the checkout with [`git add`](https://git-scm.com/docs/git-add).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1259,7 +1263,7 @@ rspec:
 **Additional details**:
 
 - You can combine `cache:untracked` with `cache:paths` to cache all untracked files
-  as well as files in the configured paths. For example:
+  as well as files in the configured paths. This is useful for including files that are not tracked because of a `.gitignore` configuration. For example:
 
   ```yaml
   rspec:

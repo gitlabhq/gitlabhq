@@ -51,6 +51,7 @@ export default {
   <gl-dropdown
     :text="dropdownText"
     :disabled="disabled"
+    size="small"
     boundary="window"
     right
     lazy

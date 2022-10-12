@@ -8,10 +8,11 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
   include Spec::Support::Helpers::ModalHelpers
   include MergeRequestDiffHelpers
 
-  let(:project)       { create(:project, :public, :repository) }
-  let(:user)          { project.creator }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
-  let(:path)          { 'files/ruby/popen.rb' }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:user)    { project.creator }
+  let_it_be(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
+
+  let(:path) { 'files/ruby/popen.rb' }
   let(:position) do
     build(:text_diff_position, :added,
       file: path,
@@ -22,8 +23,11 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js do
 
   let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
-  before do
+  before_all do
     project.add_maintainer(user)
+  end
+
+  before do
     sign_in user
 
     set_cookie('sidebar_collapsed', 'true')

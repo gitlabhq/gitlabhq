@@ -101,12 +101,14 @@ registry.example.com/mynamespace/myproject/my/image:rc1
 
 ## Authenticate with the Container Registry
 
-To authenticate with the Container Registry, you can use:
+To authenticate with the Container Registry, you can use a:
 
-- A [personal access token](../../profile/personal_access_tokens.md).
-- A [deploy token](../../project/deploy_tokens/index.md).
+- [Personal access token](../../profile/personal_access_tokens.md).
+- [Deploy token](../../project/deploy_tokens/index.md).
+- [Project access token](../../project/settings/project_access_tokens.md).
+- [Group access token](../../group/settings/group_access_tokens.md).
 
-Both of these require the minimum scope to be:
+All of these require the minimum scope to be:
 
 - For read (pull) access, `read_registry`.
 - For write (push) access, `write_registry` & `read_registry`.

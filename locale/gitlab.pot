@@ -1040,6 +1040,9 @@ msgstr[1] ""
 msgid "%{strongStart}Tip:%{strongEnd} You can also check out merge requests locally. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "%{strong_open}%{group_name}%{strong_close} projects:"
+msgstr ""
+
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
 msgid_plural "%{strong_start}%{branch_count}%{strong_end} Branches"
 msgstr[0] ""
@@ -41101,6 +41104,9 @@ msgid "This group has been scheduled for permanent removal on %{date}"
 msgstr ""
 
 msgid "This group has no active access tokens."
+msgstr ""
+
+msgid "This group has no projects yet"
 msgstr ""
 
 msgid "This group is linked to a subscription"
