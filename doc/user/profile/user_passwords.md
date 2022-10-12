@@ -6,12 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # User passwords **(FREE)**
 
-If you use a password to sign in to GitLab, a strong password is very important. A weak or guessable password makes it easier
-for unauthorised people to log into your account.
+If you use a password to sign in to GitLab, a strong password is very important. A weak or guessable password makes it
+easier for unauthorized people to log into your account.
 
 Some organizations require you to meet certain requirements when choosing a password.
 
-INFO:
 Improve the security of your account with [two-factor authentication](account/two_factor_authentication.md)
 
 ## Choose your password
@@ -24,7 +23,8 @@ authorization provider, you do not need to choose a password. GitLab
 
 ## Change your password
 
-You can change your password. GitLab enforces [password requirements](#password-requirements) when you choose your new password.
+You can change your password. GitLab enforces [password requirements](#password-requirements) when you choose your new
+password.
 
 1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
@@ -33,7 +33,8 @@ You can change your password. GitLab enforces [password requirements](#password-
 1. In the **New password** and **Password confirmation** text box, enter your new password.
 1. Select **Save password**.
 
-If you don't know your current password, select the **I forgot my password** link. A password reset email is sent to the account's **primary** email address.
+If you don't know your current password, select the **I forgot my password** link. A password reset email is sent to the
+account's **primary** email address.
 
 ## Password requirements
 
@@ -48,7 +49,7 @@ Your passwords must meet a set of requirements when:
 
 By default GitLab enforces the following password requirements:
 
-- [Minimum and maximum password lengths](../gitlab_com/index.md#password-requirements). For example,
+- Minimum and maximum password lengths. For example,
   see [the settings for GitLab.com](../gitlab_com/index.md#password-requirements).
 - Disallowing [weak passwords](#block-weak-passwords).
 
@@ -62,8 +63,9 @@ Self-managed installations can configure the following additional password requi
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23610) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `block_weak_passwords`, weak passwords aren't accepted. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default blocking weak passwords is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `block_weak_passwords`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On self-managed GitLab, by default blocking weak passwords is not available. To make it available, ask an administrator
+to [enable the feature flag](../../administration/feature_flags.md) named `block_weak_passwords`. On GitLab.com, this
+feature is available but can be configured by GitLab.com administrators only.
 
 GitLab disallows weak passwords. Your password is considered weak when it:
 

@@ -4,7 +4,7 @@
 - can_admin_issues = can?(current_user, :admin_issue, @project)
 - title_text = s_("ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab")
 
-.non-empty-state.media
+.media.gl-border-b.gl-pb-3.gl-text-left
   .svg-content
     = render partial: 'shared/empty_states/icons/service_desk_callout', formats: :svg
 

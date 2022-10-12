@@ -161,6 +161,16 @@ export default Node.create({
       }),
       createSuggestionPlugin({
         editor: this.editor,
+        char: '/',
+        dataSource: gl.GfmAutoComplete?.dataSources.commands,
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'command',
+        },
+        search: (query) => ({ name }) => find(name, query),
+      }),
+      createSuggestionPlugin({
+        editor: this.editor,
         char: ':',
         dataSource: () => Object.values(getAllEmoji()),
         nodeType: 'emoji',

@@ -45,6 +45,10 @@ export default {
       return this.nodeType === 'reference';
     },
 
+    isCommand() {
+      return this.isReference && this.nodeProps.referenceType === 'command';
+    },
+
     isUser() {
       return this.isReference && this.nodeProps.referenceType === 'user';
     },
@@ -84,6 +88,8 @@ export default {
           return `${this.char}${item.iid}`;
         case 'milestone':
           return `${this.char}${item.title}`;
+        case 'command':
+          return `${this.char}${item.name} `;
         default:
           return '';
       }
@@ -140,7 +146,6 @@ export default {
       if (item) {
         this.command({
           text: this.getText(item),
-          href: '#',
           ...this.getProps(item),
         });
       }
@@ -156,7 +161,7 @@ export default {
 <template>
   <ul
     :class="{ show: items.length > 0 }"
-    class="gl-new-dropdown dropdown-menu"
+    class="gl-new-dropdown dropdown-menu gl-relative"
     data-testid="content-editor-suggestions-dropdown"
   >
     <div class="gl-new-dropdown-inner gl-overflow-y-auto">
@@ -181,6 +186,12 @@ export default {
         </span>
         <span v-if="isMilestone">
           {{ item.title }}
+        </span>
+        <span v-if="isCommand">
+          /{{ item.name }} <small> {{ item.params[0] }} </small><br />
+          <em>
+            <small> {{ item.description }} </small>
+          </em>
         </span>
         <div v-if="isEmoji" class="gl-display-flex gl-flex gl-align-items-center">
           <div class="gl-pr-4 gl-font-lg">{{ item.e }}</div>

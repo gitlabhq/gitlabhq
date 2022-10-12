@@ -31,15 +31,15 @@ coverage_fuzzing_unlicensed:
   stage: fuzz
   allow_failure: true
   before_script:
-    - export COVFUZZ_JOB_TOKEN=$CI_JOB_TOKEN
-    - export COVFUZZ_PRIVATE_TOKEN=$CI_PRIVATE_TOKEN
-    - export COVFUZZ_PROJECT_PATH=$CI_PROJECT_PATH
-    - export COVFUZZ_PROJECT_ID=$CI_PROJECT_ID
+    - export COVFUZZ_JOB_TOKEN="$CI_JOB_TOKEN"
+    - export COVFUZZ_PRIVATE_TOKEN="$CI_PRIVATE_TOKEN"
+    - export COVFUZZ_PROJECT_PATH="$CI_PROJECT_PATH"
+    - export COVFUZZ_PROJECT_ID="$CI_PROJECT_ID"
     - if [ -x "$(command -v apt-get)" ] ; then apt-get update && apt-get install -y wget; fi
     - wget -O gitlab-cov-fuzz "${COVFUZZ_URL_PREFIX}"/"${COVFUZZ_VERSION}"/binaries/gitlab-cov-fuzz_Linux_x86_64
     - chmod a+x gitlab-cov-fuzz
     - export REGRESSION=true
-    - if [[ $CI_COMMIT_BRANCH = $COVFUZZ_BRANCH ]]; then REGRESSION=false; fi;
+    - if [[ "$CI_COMMIT_BRANCH" = "$COVFUZZ_BRANCH" ]]; then REGRESSION=false; fi;
   artifacts:
     paths:
       - corpus

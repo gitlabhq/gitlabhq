@@ -18,6 +18,11 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
   const exampleIssue = { iid: 123, title: 'Test Issue' };
   const exampleMergeRequest = { iid: 224, title: 'Test MR' };
   const exampleMilestone = { iid: 21, title: '1.3' };
+  const exampleCommand = {
+    name: 'due',
+    description: 'Set due date',
+    params: ['<in 2 days | this Friday | December 31st>'],
+  };
   const exampleEmoji = {
     c: 'people',
     e: '😃',
@@ -40,6 +45,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       ${'reference'} | ${'issue'}         | ${'#'} | ${exampleIssue}        | ${`#123`}    | ${{}}
       ${'reference'} | ${'merge_request'} | ${'!'} | ${exampleMergeRequest} | ${`!224`}    | ${{}}
       ${'reference'} | ${'milestone'}     | ${'%'} | ${exampleMilestone}    | ${`%1.3`}    | ${{}}
+      ${'reference'} | ${'command'}       | ${'/'} | ${exampleCommand}      | ${'/due '}   | ${{}}
       ${'emoji'}     | ${'emoji'}         | ${':'} | ${exampleEmoji}        | ${`😃`}      | ${insertedEmojiProps}
     `(
       'runs a command to insert the selected $referenceType',
@@ -118,6 +124,24 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
         if (displaysID) expect(wrapper.text()).toContain(`${reference.iid}`);
         else expect(wrapper.text()).not.toContain(`${reference.iid}`);
         expect(wrapper.text()).toContain(`${reference.title}`);
+      });
+    });
+
+    describe('rendering a command (quick action)', () => {
+      it('displays command name with a slash', () => {
+        buildWrapper({
+          propsData: {
+            char: '/',
+            command: jest.fn(),
+            nodeType: 'reference',
+            nodeProps: {
+              referenceType: 'command',
+            },
+            items: [exampleCommand],
+          },
+        });
+
+        expect(wrapper.text()).toContain(`${exampleCommand.name} `);
       });
     });
 

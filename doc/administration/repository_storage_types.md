@@ -167,6 +167,10 @@ For example:
 "@groups/#{hash[0..1]}/#{hash[2..3]}/#{hash}.wiki.git"
 ```
 
+### Gitaly Cluster storage
+
+If Gitaly Cluster is used, Praefect manages storage locations. For more information, see [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later).
+
 ### Object storage support
 
 This table shows which storable objects are storable in each storage type:

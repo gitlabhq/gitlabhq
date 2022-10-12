@@ -1,8 +1,0 @@
----
-name: child_epics_from_different_hierarchies
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99147"
-rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/375622"
-milestone: '15.5'
-type: development
-group: group::product planning
-default_enabled: false
