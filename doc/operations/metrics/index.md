@@ -147,7 +147,7 @@ suggested if this feature is used.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208976) in GitLab 12.9.
 
-You can edit existing additional custom metrics for your dashboard by clicking the
+You can edit existing additional custom metrics for your dashboard by selecting the
 **{ellipsis_v}** **More actions** dropdown and selecting **Edit metric**.
 
 ![Edit metric](img/prometheus_dashboard_edit_metric_link_v_12_9.png)

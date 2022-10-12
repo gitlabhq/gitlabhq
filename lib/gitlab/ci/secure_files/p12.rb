@@ -3,19 +3,19 @@
 module Gitlab
   module Ci
     module SecureFiles
-      class Cer
+      class P12
         include Gitlab::Utils::StrongMemoize
 
         attr_reader :error
 
-        def initialize(filedata)
+        def initialize(filedata, password = nil)
           @filedata = filedata
-          @error    = nil
+          @password = password
         end
 
         def certificate_data
-          OpenSSL::X509::Certificate.new(@filedata)
-        rescue OpenSSL::X509::CertificateError => err
+          OpenSSL::PKCS12.new(@filedata, @password).certificate
+        rescue OpenSSL::PKCS12::PKCS12Error => err
           @error = err.to_s
           nil
         end
@@ -27,7 +27,7 @@ module Gitlab
           {
             issuer: issuer,
             subject: subject,
-            id: id,
+            id: serial,
             expires_at: expires_at
           }
         end
@@ -39,7 +39,7 @@ module Gitlab
           certificate_data.not_before
         end
 
-        def id
+        def serial
           certificate_data.serial.to_s
         end
 

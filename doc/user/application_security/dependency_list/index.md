@@ -48,7 +48,7 @@ can also be sorted by name or by the packager that installed them.
 
 ### Vulnerabilities
 
-If a dependency has known vulnerabilities, view them by clicking the arrow next to the
+If a dependency has known vulnerabilities, view them by selecting the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
 vulnerability, its severity and description appears below it. To view more details of a vulnerability,
 select the vulnerability's description. The [vulnerability's details](../vulnerabilities) page is opened.

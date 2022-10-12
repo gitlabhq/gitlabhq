@@ -358,7 +358,7 @@ using the Git CLI.
 
 ## Preferred method to blur elements
 
-To blur an element, the preferred method is to click another element that does not alter the test state.
+To blur an element, the preferred method is to select another element that does not alter the test state.
 If there's a mask that blocks the page elements, such as may occur with some dropdowns,
 use WebDriver's native mouse events to simulate a click event on the coordinates of an element. Use the following method: `click_element_coordinates`.
 

@@ -465,7 +465,7 @@ We need a preconfigured, custom GitLab AMI to use in our launch configuration la
 From the EC2 dashboard:
 
 1. Use the section below titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI to launch.
-1. After clicking **Launch** on the desired AMI, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware-requirements) to choose one that fits your needs (at least `c5.xlarge`, which is sufficient to accommodate 100 users).
+1. After selecting **Launch** on the desired AMI, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware-requirements) to choose one that fits your needs (at least `c5.xlarge`, which is sufficient to accommodate 100 users).
 1. Select **Configure Instance Details**:
    1. In the **Network** dropdown list, select `gitlab-vpc`, the VPC we created earlier.
    1. In the **Subnet** dropdown list, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.

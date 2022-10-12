@@ -124,7 +124,7 @@ can manage [the settings](settings.md) for your metrics dashboard.
 
 ## Chart Context Menu
 
-You can take action related to a chart's data by clicking the
+You can take action related to a chart's data by selecting the
 **{ellipsis_v}** **More actions** dropdown box above the upper right corner of
 any chart on a dashboard:
 

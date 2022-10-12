@@ -73,7 +73,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
         class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
       >
         <div
-          class="gl-display-flex"
+          class="gl-display-flex gl-align-items-flex-start"
         >
           <div
             class="dropdown b-dropdown gl-new-dropdown gl-display-block gl-md-display-none! btn-group"
@@ -250,7 +250,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
         class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
       >
         <div
-          class="gl-display-flex"
+          class="gl-display-flex gl-align-items-flex-start"
         >
           <div
             class="dropdown b-dropdown gl-new-dropdown gl-display-block gl-md-display-none! btn-group"

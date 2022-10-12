@@ -21,8 +21,6 @@ RSpec.describe Trigger do
       'GITLAB_USER_NAME' => 'gitlab_user_name',
       'GITLAB_USER_LOGIN' => 'gitlab_user_login',
       'QA_IMAGE' => 'qa_image',
-      'OMNIBUS_GITLAB_CACHE_UPDATE' => 'omnibus_gitlab_cache_update',
-      'OMNIBUS_GITLAB_PROJECT_ACCESS_TOKEN' => nil,
       'DOCS_PROJECT_API_TOKEN' => nil
     }
   end

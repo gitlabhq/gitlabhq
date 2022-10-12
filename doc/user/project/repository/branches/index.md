@@ -112,7 +112,7 @@ Sometimes when you have hundreds of branches you may want a more flexible matchi
 
 ![Before swap revisions](img/swap_revisions_before_v13_12.png)
 
-The Swap revisions feature allows you to swap the Source and Target revisions. When the Swap revisions button is clicked, the selected revisions for Source and Target is swapped.
+The Swap revisions feature allows you to swap the Source and Target revisions. When the Swap revisions button is selected, the selected revisions for Source and Target is swapped.
 
 ![After swap revisions](img/swap_revisions_after_v13_12.png)
 

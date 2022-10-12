@@ -40,7 +40,7 @@ might need. GitLab displays a message to help you:
 
 ![First file for your project](img/web_editor_template_dropdown_first_file_v14_1.png)
 
-When clicking on either `LICENSE` or `.gitignore` and so on, a dropdown displays
+When selecting either `LICENSE` or `.gitignore` and so on, a dropdown displays
 to provide you a template that may be suitable for your project:
 
 ![MIT license selected](img/web_editor_template_dropdown_mit_license_v14_1.png)

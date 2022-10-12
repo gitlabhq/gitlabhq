@@ -44717,6 +44717,9 @@ msgstr ""
 msgid "Vulnerability|Status"
 msgstr ""
 
+msgid "Vulnerability|Status:"
+msgstr ""
+
 msgid "Vulnerability|The scanner determined this vulnerability to be a false positive. Verify the evaluation before changing its status. %{linkStart}Learn more about false positive detection.%{linkEnd}"
 msgstr ""
 

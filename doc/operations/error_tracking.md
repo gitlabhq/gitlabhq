@@ -88,7 +88,7 @@ Here, you can filter errors by title or by status (one of Ignored , Resolved, or
 
 ## Error Details
 
-From error list, users can navigate to the error details page by clicking the title of any error.
+From error list, users can navigate to the error details page by selecting the title of any error.
 
 This page has:
 
@@ -112,7 +112,7 @@ You can take action on Sentry Errors from within the GitLab UI. Marking errors i
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39665) in GitLab 12.7.
 
-From within the [Error Details](#error-details) page you can ignore a Sentry error by clicking the **Ignore** button near the top of the page.
+From within the [Error Details](#error-details) page you can ignore a Sentry error by selecting the **Ignore** button near the top of the page.
 
 Ignoring an error prevents it from appearing in the [Error Tracking List](#error-tracking-list), and silences notifications that were set up within Sentry.
 
@@ -121,7 +121,7 @@ Ignoring an error prevents it from appearing in the [Error Tracking List](#error
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39825) in GitLab 12.7.
 
 From within the [Error Details](#error-details) page you can resolve a Sentry error by
-clicking the **Resolve** button near the top of the page.
+selecting the **Resolve** button near the top of the page.
 
 Marking an error as resolved indicates that the error has stopped firing events. If a GitLab issue is linked to the error, then the issue closes.
 

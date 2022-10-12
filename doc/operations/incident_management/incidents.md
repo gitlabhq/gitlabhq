@@ -194,7 +194,7 @@ When you upload an image, you can associate the image with text or a link to the
 
 ![Text link modal](img/incident_metrics_tab_text_link_modal_v14_9.png)
 
-If you add a link, you can access the original graph by clicking the hyperlink above the uploaded image.
+If you add a link, you can access the original graph by selecting the hyperlink above the uploaded image.
 
 ### Alert details
 

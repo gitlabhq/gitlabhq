@@ -41,7 +41,7 @@ of the page to activate it in the GitLab instance.
 You can add a small header message, a small footer message, or both, to the interface
 of your GitLab instance. These messages appear on all projects and pages of the
 instance, including the sign in / sign up page. The default color is white text on
-an orange background, but this can be customized by clicking on **Customize colors**.
+an orange background, but this can be customized by selecting **Customize colors**.
 
 Limited [Markdown](../markdown.md) is supported, such as bold, italics, and links, for
 example. Other Markdown features, including lists, images, and quotes are not supported

@@ -22,7 +22,7 @@ The simplest way to enable the GitLab Slack application for your workspace is to
 install the [GitLab application](https://slack-platform.slack.com/apps/A676ADMV5-gitlab) from
 the [Slack App Directory](https://slack.com/apps).
 
-Clicking install takes you to the [GitLab Slack application landing page](https://gitlab.com/-/profile/slack/edit)
+Selecting install takes you to the [GitLab Slack application landing page](https://gitlab.com/-/profile/slack/edit)
 where you can select a project to enable the GitLab Slack application for.
 
 ## Configuration

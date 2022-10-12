@@ -293,3 +293,28 @@ enabled, unsigned commits may still appear in the commit history if a commit was
 created in GitLab itself. As expected, commits created outside GitLab and
 pushed to the repository are rejected. For more information about this issue,
 read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
+
+### Bulk update push rules for _all_ projects
+
+To update the push rules to be the same for all projects,
+you need to use [the rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),
+or write a script to update each project using the [Push Rules API endpoint](../../../api/projects.md#push-rules).
+
+For example, to enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes,
+and create a filter for allowing commits from a specific email domain only through rails console:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+``` ruby
+Project.find_each do |p|
+  pr = p.push_rule || PushRule.new(project: p)
+  # Check whether the commit author is a GitLab user
+  pr.member_check = true
+  # Do not allow users to remove Git tags with `git push`
+  pr.deny_delete_tag = true
+  # Commit author's email
+  pr.author_email_regex = '@domain\.com$'
+  pr.save!
+end
+```

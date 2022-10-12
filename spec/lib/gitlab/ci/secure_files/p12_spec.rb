@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::SecureFiles::Cer do
+RSpec.describe Gitlab::Ci::SecureFiles::P12 do
   context 'when the supplied certificate cannot be parsed' do
     let(:invalid_certificate) { described_class.new('xyzabc') }
 
     describe '#certificate_data' do
       it 'assigns the error message and returns nil' do
         expect(invalid_certificate.certificate_data).to be nil
-        expect(invalid_certificate.error).to eq('not enough data')
+        expect(invalid_certificate.error).to eq('PKCS12_parse: mac verify failure')
       end
     end
 
@@ -26,8 +26,20 @@ RSpec.describe Gitlab::Ci::SecureFiles::Cer do
     end
   end
 
+  context 'when the supplied certificate can be parsed, but the password is invalid' do
+    let(:sample_file) { fixture_file('ci_secure_files/sample.p12') }
+    let(:subject) { described_class.new(sample_file, 'foo') }
+
+    describe '#certificate_data' do
+      it 'assigns the error message and returns nil' do
+        expect(subject.certificate_data).to be nil
+        expect(subject.error).to eq('PKCS12_parse: mac verify failure')
+      end
+    end
+  end
+
   context 'when the supplied certificate can be parsed' do
-    let(:sample_file) { fixture_file('ci_secure_files/sample.cer') }
+    let(:sample_file) { fixture_file('ci_secure_files/sample.p12') }
     let(:subject) { described_class.new(sample_file) }
 
     describe '#certificate_data' do
@@ -44,13 +56,13 @@ RSpec.describe Gitlab::Ci::SecureFiles::Cer do
 
     describe '#id' do
       it 'returns the certificate serial number' do
-        expect(subject.metadata[:id]).to eq('33669367788748363528491290218354043267')
+        expect(subject.metadata[:id]).to eq('75949910542696343243264405377658443914')
       end
     end
 
     describe '#expires_at' do
       it 'returns the certificate expiration timestamp' do
-        expect(subject.metadata[:expires_at]).to eq('2022-04-26 19:20:40 UTC')
+        expect(subject.metadata[:expires_at]).to eq('2022-09-21 14:56:00 UTC')
       end
     end
 

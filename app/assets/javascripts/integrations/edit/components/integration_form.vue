@@ -14,12 +14,14 @@ import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
+  INTEGRATION_FORM_TYPE_SLACK,
   integrationLevels,
   integrationFormSectionComponents,
   billingPlanNames,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import ConfirmationModal from './confirmation_modal.vue';
@@ -65,6 +67,7 @@ export default {
     GlModal: GlModalDirective,
     SafeHtml,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     helpHtml: {
       default: '',
@@ -101,6 +104,9 @@ export default {
       return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
     hasSections() {
+      if (this.hasSlackNotificationsDisabled) {
+        return false;
+      }
       return this.customState.sections.length !== 0;
     },
     fieldsWithoutSection() {
@@ -109,7 +115,22 @@ export default {
         : this.propsSource.fields;
     },
     hasFieldsWithoutSection() {
+      if (this.hasSlackNotificationsDisabled) {
+        return false;
+      }
       return this.fieldsWithoutSection.length;
+    },
+    isSlackIntegration() {
+      return this.propsSource.type === INTEGRATION_FORM_TYPE_SLACK;
+    },
+    hasSlackNotificationsDisabled() {
+      return this.isSlackIntegration && !this.glFeatures.integrationSlackAppNotifications;
+    },
+    showHelpHtml() {
+      if (this.isSlackIntegration) {
+        return this.helpHtml;
+      }
+      return !this.hasSections && this.helpHtml;
     },
   },
   methods: {
@@ -230,11 +251,17 @@ export default {
       @change="setOverride"
     />
 
+    <section v-if="showHelpHtml" class="gl-lg-display-flex gl-justify-content-end gl-mb-6">
+      <!-- helpHtml is trusted input -->
+      <div
+        v-safe-html:[$options.helpHtmlConfig]="helpHtml"
+        data-testid="help-html"
+        class="gl-flex-basis-two-thirds"
+      ></div>
+    </section>
+
     <section v-if="!hasSections" class="gl-lg-display-flex gl-justify-content-end">
       <div class="gl-flex-basis-two-thirds">
-        <!-- helpHtml is trusted input -->
-        <div v-if="helpHtml" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
-
         <active-checkbox
           v-if="propsSource.showActive"
           :key="`${currentKey}-active-checkbox`"
@@ -257,7 +284,7 @@ export default {
         data-testid="integration-section"
       >
         <section class="gl-lg-display-flex">
-          <div class="gl-flex-basis-third">
+          <div class="gl-flex-basis-third gl-mr-4">
             <h4 class="gl-mt-0">
               {{ section.title
               }}<gl-badge

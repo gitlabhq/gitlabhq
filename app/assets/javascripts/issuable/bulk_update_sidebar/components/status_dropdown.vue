@@ -1,10 +1,9 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { ISSUE_STATUS_SELECT_OPTIONS } from '../constants';
+import { statusDropdownOptions } from '../constants';
 
 export default {
-  name: 'StatusSelect',
   components: {
     GlDropdown,
     GlDropdownItem,
@@ -36,7 +35,7 @@ export default {
     dropdownTitle: __('Change status'),
     defaultDropdownText: __('Select status'),
   },
-  ISSUE_STATUS_SELECT_OPTIONS,
+  statusDropdownOptions,
 };
 </script>
 <template>
@@ -44,7 +43,7 @@ export default {
     <input type="hidden" name="update[state_event]" :value="selectedValue" />
     <gl-dropdown :text="dropdownText" :title="$options.i18n.dropdownTitle" class="gl-w-full">
       <gl-dropdown-item
-        v-for="statusOption in $options.ISSUE_STATUS_SELECT_OPTIONS"
+        v-for="statusOption in $options.statusDropdownOptions"
         :key="statusOption.value"
         :is-checked="selectedValue === statusOption.value"
         is-check-item

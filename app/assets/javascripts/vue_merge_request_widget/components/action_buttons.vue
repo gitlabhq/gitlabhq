@@ -74,7 +74,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex">
+  <div class="gl-display-flex gl-align-items-flex-start">
     <gl-dropdown
       v-if="tertiaryButtons.length"
       v-gl-tooltip

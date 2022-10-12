@@ -66,7 +66,7 @@ cluster certificates:
    - **Main menu > Admin > Kubernetes** page, for an instance-level cluster.
 1. Select **Integrate with a cluster certificate**.
 1. Under the **Create new cluster** tab, select **Google GKE**.
-1. Connect your Google account if you haven't done already by clicking the
+1. Connect your Google account if you haven't done already by selecting the
    **Sign in with Google** button.
 1. Choose your cluster's settings:
    - **Kubernetes cluster name** - The name you wish to give the cluster.

@@ -31,7 +31,7 @@ To download and run a Harbor image hosted in the GitLab Harbor Registry:
 
 1. Copy the link to your container image:
     1. Go to your project or group's **Packages and registries > Harbor Registry** and find the image you want.
-    1. Click the **Copy** icon next to the image name.
+    1. Select the **Copy** icon next to the image name.
 
 1. Use the command to run the container image you want.
 
@@ -41,7 +41,7 @@ To view the list of tags associated with a specific artifact:
 
 1. Go to your project or group.
 1. Go to **Packages and registries > Harbor Registry**.
-1. Click the image name to view its artifacts.
+1. Select the image name to view its artifacts.
 1. Select the artifact you want.
 
 This brings up the list of tags. You can view the tag count and the time published.
@@ -62,7 +62,7 @@ To view these commands, go to your project's **Packages and registries > Harbor 
 To remove the Harbor Registry for a project:
 
 1. Go to your project/group's **Settings > Integrations** page.
-1. Click **Harbor** under **Active integrations**.
+1. Select **Harbor** under **Active integrations**.
 1. Clear the **Active** checkbox under **Enable integration**.
 1. Select **Save changes**.
 

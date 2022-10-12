@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -278,7 +278,7 @@ attributes.
 - `summary`, `time_summary` - Top-level aggregations, most of the metrics are using different APIs/
 finders and not invoking the aggregated backend.
 
-When clicking on a specific stage, the `records` endpoint is invoked, which returns the related
+When selecting a specific stage, the `records` endpoint is invoked, which returns the related
 records (paginated) for the chosen stage in a specific order.
 
 ### Database decomposition

@@ -1,9 +1,9 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import StatusSelect from '~/issuable/bulk_update_sidebar/components/status_select.vue';
-import { ISSUE_STATUS_SELECT_OPTIONS } from '~/issuable/bulk_update_sidebar/constants';
+import StatusDropdown from '~/issuable/bulk_update_sidebar/components/status_dropdown.vue';
+import { statusDropdownOptions } from '~/issuable/bulk_update_sidebar/constants';
 
-describe('StatusSelect', () => {
+describe('SubscriptionsDropdown component', () => {
   let wrapper;
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
@@ -11,7 +11,7 @@ describe('StatusSelect', () => {
   const findHiddenInput = () => wrapper.find('input');
 
   function createComponent() {
-    wrapper = shallowMount(StatusSelect);
+    wrapper = shallowMount(StatusDropdown);
   }
 
   afterEach(() => {
@@ -45,14 +45,12 @@ describe('StatusSelect', () => {
 
     it('updates value of the hidden input', () => {
       expect(findHiddenInput().attributes('value')).toBe(
-        ISSUE_STATUS_SELECT_OPTIONS[selectItemAtIndex].value,
+        statusDropdownOptions[selectItemAtIndex].value,
       );
     });
 
     it('updates the dropdown text prop', () => {
-      expect(findDropdown().props('text')).toBe(
-        ISSUE_STATUS_SELECT_OPTIONS[selectItemAtIndex].text,
-      );
+      expect(findDropdown().props('text')).toBe(statusDropdownOptions[selectItemAtIndex].text);
     });
 
     it('sets dropdown item `is-checked` prop to `true`', () => {

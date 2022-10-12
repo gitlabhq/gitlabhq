@@ -14,7 +14,7 @@
         .block
           .title
             = _('Status')
-          .js-issue-status
+          .js-status-dropdown
       .block
         .title
           = _('Assignee')
@@ -41,15 +41,7 @@
       .block
         .title
           = _('Subscriptions')
-        .filter-item
-          = dropdown_tag(_("Select subscription"), options: { toggle_class: "js-subscription-event", title: _("Change subscription"), dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]", default_label: _("Subscription") } } ) do
-            %ul
-              %li
-                %a{ href: "#", data: { id: "subscribe" } }
-                  = _('Subscribe')
-              %li
-                %a{ href: "#", data: { id: "unsubscribe" } }
-                  = _('Unsubscribe')
+        .js-subscriptions-dropdown
 
       = hidden_field_tag "update[issuable_ids]", []
       = hidden_field_tag :state_event, params[:state_event]

@@ -399,10 +399,10 @@ To delete images from within GitLab:
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 
-   - Deleting the entire repository, and all the tags it contains, by clicking
+   - Deleting the entire repository, and all the tags it contains, by selecting
      the red **{remove}** **Trash** icon.
    - Navigating to the repository, and deleting tags individually or in bulk
-     by clicking the red **{remove}** **Trash** icon next to the tag you want
+     by selecting the red **{remove}** **Trash** icon next to the tag you want
      to delete.
 
 1. In the dialog box, select **Remove tag**.

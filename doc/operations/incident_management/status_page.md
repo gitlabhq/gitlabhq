@@ -14,7 +14,7 @@ overview of recent incidents:
 
 ![Status Page landing page](img/status_page_incidents_v12_10.png)
 
-Clicking an incident displays a detail page with more information about a particular incident:
+Selecting an incident displays a detail page with more information about a particular incident:
 
 ![Status Page detail](img/status_page_detail_v12_10.png)
 
@@ -140,7 +140,7 @@ you provided during setup. As part of publication, GitLab:
 - Publishes any files attached to incident issue descriptions, up to 5000 per issue.
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.)
 
-After publication, you can access the incident's details page by clicking the
+After publication, you can access the incident's details page by selecting the
 **Published on status page** button displayed under the Incident's title.
 
 ![Status Page detail link](img/status_page_detail_link_v13_1.png)

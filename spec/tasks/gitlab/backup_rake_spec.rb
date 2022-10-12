@@ -248,74 +248,42 @@ RSpec.describe 'gitlab:app namespace rake task', :delete do
 
     let!(:project) { create(:project, :repository) }
 
-    describe 'backup creation and deletion using custom_hooks' do
-      let(:user_backup_path) { "repositories/#{project.disk_path}" }
-
+    context 'with specific backup tasks' do
       before do
         stub_env('SKIP', 'db')
-        path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          File.join(project.repository.path_to_repo, 'custom_hooks')
-        end
-        FileUtils.mkdir_p(path)
-        FileUtils.touch(File.join(path, "dummy.txt"))
       end
 
-      context 'when project uses custom_hooks and successfully creates backup' do
-        it 'creates custom_hooks.tar and project bundle' do
-          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
-
-          tar_contents, exit_status = Gitlab::Popen.popen(%W[tar -tvf #{backup_tar}])
-
-          expect(exit_status).to eq(0)
-          expect(tar_contents).to match(user_backup_path)
-          expect(tar_contents).to match("#{user_backup_path}/.+/001.custom_hooks.tar")
-          expect(tar_contents).to match("#{user_backup_path}/.+/001.bundle")
-        end
-
-        it 'restores files correctly' do
-          expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
-          expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout_from_any_process
-
-          repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.path
-          end
-          expect(Dir.entries(File.join(repo_path, 'custom_hooks'))).to include("dummy.txt")
+      it 'prints a progress message to stdout' do
+        backup_tasks.each do |task|
+          expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout_from_any_process
         end
       end
 
-      context 'with specific backup tasks' do
-        it 'prints a progress message to stdout' do
-          backup_tasks.each do |task|
-            expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout_from_any_process
-          end
-        end
+      it 'logs the progress to log file' do
+        ci_database_status = Gitlab::Database.has_config?(:ci) ? "[SKIPPED]" : "[DISABLED]"
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping main_database ... [SKIPPED]")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci_database ... #{ci_database_status}")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... done")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... done")
 
-        it 'logs the progress to log file' do
-          ci_database_status = Gitlab::Database.has_config?(:ci) ? "[SKIPPED]" : "[DISABLED]"
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping main_database ... [SKIPPED]")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci_database ... #{ci_database_status}")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... done")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
-          expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... done")
-
-          backup_tasks.each do |task|
-            run_rake_task("gitlab:backup:#{task}:create")
-          end
+        backup_tasks.each do |task|
+          run_rake_task("gitlab:backup:#{task}:create")
         end
       end
     end

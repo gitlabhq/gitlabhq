@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import StatusSelect from './components/status_select.vue';
+import StatusDropdown from './components/status_dropdown.vue';
+import SubscriptionsDropdown from './components/subscriptions_dropdown.vue';
 import issuableBulkUpdateActions from './issuable_bulk_update_actions';
 import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 
@@ -14,8 +15,8 @@ export function initBulkUpdateSidebar(prefixId) {
   new IssuableBulkUpdateSidebar(); // eslint-disable-line no-new
 }
 
-export function initIssueStatusSelect() {
-  const el = document.querySelector('.js-issue-status');
+export function initStatusDropdown() {
+  const el = document.querySelector('.js-status-dropdown');
 
   if (!el) {
     return null;
@@ -23,7 +24,21 @@ export function initIssueStatusSelect() {
 
   return new Vue({
     el,
-    name: 'StatusSelectRoot',
-    render: (createElement) => createElement(StatusSelect),
+    name: 'StatusDropdownRoot',
+    render: (createElement) => createElement(StatusDropdown),
+  });
+}
+
+export function initSubscriptionsDropdown() {
+  const el = document.querySelector('.js-subscriptions-dropdown');
+
+  if (!el) {
+    return null;
+  }
+
+  return new Vue({
+    el,
+    name: 'SubscriptionsDropdownRoot',
+    render: (createElement) => createElement(SubscriptionsDropdown),
   });
 }

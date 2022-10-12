@@ -126,7 +126,7 @@ application can perform. Available scopes are depicted in the following table.
 | `profile`          |  Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            |  Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 
-At any time you can revoke any access by clicking **Revoke**.
+At any time you can revoke any access by selecting **Revoke**.
 
 ## Hashed OAuth application secrets
 

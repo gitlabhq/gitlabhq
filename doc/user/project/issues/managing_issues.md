@@ -68,7 +68,7 @@ To create an issue from a group:
 The newly created issue opens.
 
 The project you selected most recently becomes the default for your next visit.
-This can save you a lot of time and clicks, if you mostly create issues for the same project.
+This can save you a lot of time, if you mostly create issues for the same project.
 
 ### From another issue or incident
 
