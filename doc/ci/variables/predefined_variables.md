@@ -39,6 +39,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_COMMIT_SHA`                          | 9.0    | all    | The commit revision the project is built for. |
 | `CI_COMMIT_SHORT_SHA`                    | 11.7   | all    | The first eight characters of `CI_COMMIT_SHA`. |
 | `CI_COMMIT_TAG`                          | 9.0    | 0.5    | The commit tag name. Available only in pipelines for tags. |
+| `CI_COMMIT_TAG_MESSAGE`                  | 15.5   | all    | The commit tag message. Avaiable only in pipelines for tags. |
 | `CI_COMMIT_TIMESTAMP`                    | 13.4   | all    | The timestamp of the commit in the ISO 8601 format. |
 | `CI_COMMIT_TITLE`                        | 10.8   | all    | The title of the commit. The full first line of the message. |
 | `CI_CONCURRENT_ID`                       | all    | 11.10  | The unique ID of build execution in a single executor. |
@@ -60,6 +61,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_ENVIRONMENT_URL`                     | 9.3    | all    | The URL of the environment for this job. Available if [`environment:url`](../yaml/index.md#environmenturl) is set. |
 | `CI_ENVIRONMENT_ACTION`                  | 13.11  | all    | The action annotation specified for this job's environment. Available if [`environment:action`](../yaml/index.md#environmentaction) is set. Can be `start`, `prepare`, or `stop`. |
 | `CI_ENVIRONMENT_TIER`                    | 14.0   | all    | The [deployment tier of the environment](../environments/index.md#deployment-tier-of-environments) for this job. |
+| `CI_RELEASE_DESCRIPTION`                 | 15.5   | all    | The description of the release. Available only on pipelines for tags. Description length is limited to first 1024 characters.|
 | `CI_GITLAB_FIPS_MODE`                    | 14.10  | all    | The configuration setting for whether FIPS mode is enabled in the GitLab instance. |
 | `CI_HAS_OPEN_REQUIREMENTS`               | 13.1   | all    | Only available if the pipeline's project has an open [requirement](../../user/project/requirements/index.md). `true` when available. |
 | `CI_JOB_ID`                              | 9.0    | all    | The internal ID of the job, unique across all jobs in the GitLab instance. |

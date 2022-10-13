@@ -5861,6 +5861,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
+| <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` | [`StatusInput`](#statusinput) | Input for status widget. |
 | <a id="mutationworkitemupdatetitle"></a>`title` | [`String`](#string) | Title of the work item. |
 | <a id="mutationworkitemupdateweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | Input for weight widget. |
 
@@ -23434,6 +23435,14 @@ Represents an action to perform over a snippet file.
 | <a id="snippetblobactioninputtypecontent"></a>`content` | [`String`](#string) | Snippet file content. |
 | <a id="snippetblobactioninputtypefilepath"></a>`filePath` | [`String!`](#string) | Path of the snippet file. |
 | <a id="snippetblobactioninputtypepreviouspath"></a>`previousPath` | [`String`](#string) | Previous path of the snippet file. |
+
+### `StatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="statusinputstatus"></a>`status` | [`TestReportState!`](#testreportstate) | Status to assign to the work item. |
 
 ### `Timeframe`
 

@@ -34575,6 +34575,9 @@ msgstr ""
 msgid "Runners|Add your feedback in the issue"
 msgstr ""
 
+msgid "Runners|Administrator"
+msgstr ""
+
 msgid "Runners|All"
 msgstr ""
 
@@ -34781,6 +34784,9 @@ msgstr ""
 msgid "Runners|Online:"
 msgstr ""
 
+msgid "Runners|Owner"
+msgstr ""
+
 msgid "Runners|Pause from accepting jobs"
 msgstr ""
 
@@ -34961,6 +34967,9 @@ msgid "Runners|Take me there!"
 msgstr ""
 
 msgid "Runners|The new view gives you more space and better visibility into your fleet of runners."
+msgstr ""
+
+msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
 msgstr ""
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"

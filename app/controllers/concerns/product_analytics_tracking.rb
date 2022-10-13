@@ -29,7 +29,13 @@ module ProductAnalyticsTracking
     track_unique_redis_hll_event(name, &block) if destinations.include?(:redis_hll)
 
     if destinations.include?(:snowplow) && event_enabled?(name)
-      Gitlab::Tracking.event(self.class.to_s, name, namespace: tracking_namespace_source, user: current_user)
+      Gitlab::Tracking.event(
+        self.class.to_s,
+        name,
+        namespace: tracking_namespace_source,
+        user: current_user,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: name).to_context]
+      )
     end
   end
 
@@ -49,6 +55,7 @@ module ProductAnalyticsTracking
       user: current_user,
       property: name,
       label: label,
+      context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: name).to_context],
       **optional_arguments
     )
   end

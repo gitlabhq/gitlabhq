@@ -2,15 +2,18 @@
 import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { formatJobCount, tableField } from '../utils';
 import RunnerStackedSummaryCell from './cells/runner_stacked_summary_cell.vue';
 import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
+import RunnerOwnerCell from './cells/runner_owner_cell.vue';
 
 const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner') }),
+  tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-20p'] }),
   tableField({ key: 'actions', label: '', thClasses: ['gl-w-15p'] }),
 ];
 
@@ -19,9 +22,11 @@ export default {
     GlFormCheckbox,
     GlTableLite,
     GlSkeletonLoader,
+    HelpPopover,
     RunnerStatusPopover,
     RunnerStackedSummaryCell,
     RunnerStatusCell,
+    RunnerOwnerCell,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -138,6 +143,21 @@ export default {
             <slot name="runner-name" :runner="runner" :index="index"></slot>
           </template>
         </runner-stacked-summary-cell>
+      </template>
+
+      <template #head(owner)="{ label }">
+        {{ label }}
+        <help-popover>
+          {{
+            s__(
+              'Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator.',
+            )
+          }}
+        </help-popover>
+      </template>
+
+      <template #cell(owner)="{ item }">
+        <runner-owner-cell :runner="item" />
       </template>
 
       <template #cell(actions)="{ item }">

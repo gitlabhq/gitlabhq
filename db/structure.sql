@@ -11488,6 +11488,9 @@ CREATE TABLE application_settings (
     lock_maven_package_requests_forwarding boolean DEFAULT false NOT NULL,
     lock_pypi_package_requests_forwarding boolean DEFAULT false NOT NULL,
     lock_npm_package_requests_forwarding boolean DEFAULT false NOT NULL,
+    password_expiration_enabled boolean DEFAULT false NOT NULL,
+    password_expires_in_days integer DEFAULT 90 NOT NULL,
+    password_expires_notice_before_days integer DEFAULT 7 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -11569,6 +11572,12 @@ COMMENT ON COLUMN application_settings.encrypted_feishu_app_key_iv IS 'JiHu-spec
 COMMENT ON COLUMN application_settings.encrypted_feishu_app_secret IS 'JiHu-specific column';
 
 COMMENT ON COLUMN application_settings.encrypted_feishu_app_secret_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.password_expiration_enabled IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.password_expires_in_days IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.password_expires_notice_before_days IS 'JiHu-specific column';
 
 CREATE SEQUENCE application_settings_id_seq
     START WITH 1
@@ -22079,6 +22088,7 @@ CREATE TABLE user_details (
     registration_objective smallint,
     phone text,
     requires_credit_card_verification boolean DEFAULT false NOT NULL,
+    password_last_changed_at timestamp with time zone,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_a73b398c60 CHECK ((char_length(phone) <= 50)),
     CONSTRAINT check_eeeaf8d4f0 CHECK ((char_length(pronouns) <= 50)),
@@ -22086,6 +22096,8 @@ CREATE TABLE user_details (
 );
 
 COMMENT ON COLUMN user_details.phone IS 'JiHu-specific column';
+
+COMMENT ON COLUMN user_details.password_last_changed_at IS 'JiHu-specific column';
 
 CREATE SEQUENCE user_details_user_id_seq
     START WITH 1

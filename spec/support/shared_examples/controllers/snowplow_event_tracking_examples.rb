@@ -32,11 +32,21 @@ RSpec.shared_examples 'Snowplow event tracking' do |overrides: {}|
       user: try(:user),
       project: try(:project),
       label: try(:label),
-      property: try(:property)
+      property: try(:property),
+      context: try(:context)
     }.merge(overrides).compact.merge(extra)
 
     subject
 
     expect_snowplow_event(**params)
+  end
+end
+
+RSpec.shared_examples 'Snowplow event tracking with RedisHLL context' do |overrides: {}|
+  it_behaves_like 'Snowplow event tracking', overrides: overrides do
+    let(:context) do
+      event = try(:property) || action
+      [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event).to_context.to_json]
+    end
   end
 end

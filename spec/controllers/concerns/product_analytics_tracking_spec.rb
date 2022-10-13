@@ -55,11 +55,19 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event)
                                                             .with('g_analytics_valuestream', values: instance_of(String))
 
+    expect_snowplow_tracking(user)
+  end
+
+  def expect_snowplow_tracking(user)
+    context = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'g_analytics_valuestream')
+                                                  .to_context.to_json
+
     expect_snowplow_event(
       category: anything,
       action: 'g_analytics_valuestream',
       namespace: group,
-      user: user
+      user: user,
+      context: [context]
     )
   end
 
@@ -160,12 +168,7 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
       get :show, params: { id: 2 }
 
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-      expect_snowplow_event(
-        category: anything,
-        action: 'g_analytics_valuestream',
-        namespace: group,
-        user: nil
-      )
+      expect_snowplow_tracking(nil)
     end
   end
 end

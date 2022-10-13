@@ -61,7 +61,6 @@ You can create a release:
 
 - [Using a job in your CI/CD pipeline](#creating-a-release-by-using-a-cicd-job).
 - [In the Releases page](#create-a-release-in-the-releases-page).
-- [In the Tags page](#create-a-release-in-the-tags-page).
 - Using the [Releases API](../../../api/releases/index.md#create-a-release).
 
 We recommend creating a release as one of the last steps in your CI/CD pipeline.
@@ -92,29 +91,6 @@ To create a release in the Releases page:
    - Whether or not to include the [Tag message](../../../topics/git/tags.md).
    - [Asset links](release_fields.md#links).
 1. Select **Create release**.
-
-### Create a release in the Tags page
-
-To create a release in the Tags page, add release notes to either an existing or a new Git tag.
-
-To add release notes to a new Git tag:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
-1. Select **New tag**.
-1. Optional. Enter a tag message in the **Message** text box.
-1. In the **Release notes** text box, enter the release's description.
-   You can use Markdown and drag and drop files to this text box.
-1. Select **Create tag**.
-
-To edit release notes of an existing Git tag:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
-1. Select **Edit release notes** (**{pencil}**).
-1. In the **Release notes** text box, enter the release's description.
-   You can use Markdown and drag and drop files to this text box.
-1. Select **Save changes**.
 
 ### Creating a release by using a CI/CD job
 

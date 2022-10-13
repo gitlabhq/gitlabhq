@@ -1,12 +1,13 @@
 import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import {
   extendedWrapper,
   shallowMountExtended,
   mountExtended,
 } from 'helpers/vue_test_utils_helper';
+import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
-import RunnerStatusPopover from '~/runner/components/runner_status_popover.vue';
 import { I18N_PROJECT_TYPE, I18N_STATUS_NEVER_CONTACTED } from '~/runner/constants';
 import { allRunnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
 
@@ -50,7 +51,7 @@ describe('RunnerList', () => {
     createComponent(
       {
         stubs: {
-          RunnerStatusPopover: {
+          HelpPopover: {
             template: '<div/>',
           },
         },
@@ -60,11 +61,13 @@ describe('RunnerList', () => {
 
     const headerLabels = findHeaders().wrappers.map((w) => w.text());
 
-    expect(findHeaders().at(0).findComponent(RunnerStatusPopover).exists()).toBe(true);
+    expect(findHeaders().at(0).findComponent(HelpPopover).exists()).toBe(true);
+    expect(findHeaders().at(2).findComponent(HelpPopover).exists()).toBe(true);
 
     expect(headerLabels).toEqual([
-      'Status',
-      'Runner',
+      s__('Runners|Status'),
+      s__('Runners|Runner'),
+      s__('Runners|Owner'),
       '', // actions has no label
     ]);
   });
