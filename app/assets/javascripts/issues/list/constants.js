@@ -150,7 +150,7 @@ export const TOKEN_TYPE_CONTACT = 'crm_contact';
 export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
 export const TOKEN_TYPE_HEALTH = 'health_status';
 
-export const TYPE_TOKEN_TASK_OPTION = { icon: 'task-done', title: 'task', value: 'task' };
+export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
 
 // This should be consistent with Issue::TYPES_FOR_LIST in the backend
 // https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/models/issue.rb#L48

@@ -10,8 +10,11 @@ value_type: number
 status: active
 time_frame: 7d
 data_source: redis_hll
-instrumentation_class: RedisHLLMetric
+instrumentation_class: AggregatedMetric
 options:
+  aggregate:
+    operator: OR
+    attribute: user_id
   events:
     - i_code_review_click_diff_view_setting
     - i_code_review_click_file_browser_setting

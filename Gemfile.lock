@@ -15,6 +15,7 @@ PATH
   specs:
     devise-pbkdf2-encryptable (0.0.0)
       devise (~> 4.0)
+      devise-two-factor (~> 4.0)
 
 PATH
   remote: vendor/gems/error_tracking_open_api
@@ -711,7 +712,7 @@ GEM
     hashie (4.1.0)
     hashie-forbidden_attributes (0.1.1)
       hashie (>= 3.0)
-    health_check (3.0.0)
+    health_check (3.1.0)
       railties (>= 5.0)
     heapy (0.2.0)
       thor

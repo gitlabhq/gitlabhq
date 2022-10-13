@@ -7,6 +7,7 @@ module API
     feature_category :feature_flags
     urgency :low
 
+    # TODO: remove these helpers with feature flag set_feature_flag_service
     helpers do
       def gate_value(params)
         case params[:value]
@@ -87,35 +88,49 @@ module API
         mutually_exclusive :key, :project
       end
       post ':name' do
-        validate_feature_flag_name!(params[:name]) unless params[:force]
+        if Feature.enabled?(:set_feature_flag_service)
+          flag_params = declared_params(include_missing: false)
+          response = ::Admin::SetFeatureFlagService
+            .new(feature_flag_name: params[:name], params: flag_params)
+            .execute
 
-        targets = gate_targets(params)
-        value = gate_value(params)
-        key = gate_key(params)
-
-        case value
-        when true
-          if gate_specified?(params)
-            targets.each { |target| Feature.enable(params[:name], target) }
+          if response.success?
+            present response.payload[:feature_flag],
+              with: Entities::Feature, current_user: current_user
           else
-            Feature.enable(params[:name])
-          end
-        when false
-          if gate_specified?(params)
-            targets.each { |target| Feature.disable(params[:name], target) }
-          else
-            Feature.disable(params[:name])
+            bad_request!(response.message)
           end
         else
-          if key == :percentage_of_actors
-            Feature.enable_percentage_of_actors(params[:name], value)
-          else
-            Feature.enable_percentage_of_time(params[:name], value)
-          end
-        end
+          validate_feature_flag_name!(params[:name]) unless params[:force]
 
-        present Feature.get(params[:name]), # rubocop:disable Gitlab/AvoidFeatureGet
-          with: Entities::Feature, current_user: current_user
+          targets = gate_targets(params)
+          value = gate_value(params)
+          key = gate_key(params)
+
+          case value
+          when true
+            if gate_specified?(params)
+              targets.each { |target| Feature.enable(params[:name], target) }
+            else
+              Feature.enable(params[:name])
+            end
+          when false
+            if gate_specified?(params)
+              targets.each { |target| Feature.disable(params[:name], target) }
+            else
+              Feature.disable(params[:name])
+            end
+          else
+            if key == :percentage_of_actors
+              Feature.enable_percentage_of_actors(params[:name], value)
+            else
+              Feature.enable_percentage_of_time(params[:name], value)
+            end
+          end
+
+          present Feature.get(params[:name]), # rubocop:disable Gitlab/AvoidFeatureGet
+            with: Entities::Feature, current_user: current_user
+        end
       rescue Feature::Target::UnknowTargetError => e
         bad_request!(e.message)
       end
@@ -128,6 +143,7 @@ module API
       end
     end
 
+    # TODO: remove this helper with feature flag set_feature_flag_service
     helpers do
       def validate_feature_flag_name!(name)
         # no-op

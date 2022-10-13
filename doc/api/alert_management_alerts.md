@@ -79,7 +79,7 @@ Example response:
 ## Update metric image
 
 ```plaintext
-PUT /projects/:id/alert_management_alerts/:alert_iid/metric_image/:image_id
+PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 ```
 
 | Attribute   | Type    | Required | Description                          |

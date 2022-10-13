@@ -34,7 +34,11 @@ module RuboCop
 
     def in_background_migration?(node)
       filepath(node).include?('/lib/gitlab/background_migration/') ||
-        filepath(node).include?('/ee/lib/ee/gitlab/background_migration/')
+        in_ee_background_migration?(node)
+    end
+
+    def in_ee_background_migration?(node)
+      filepath(node).include?('/ee/lib/ee/gitlab/background_migration/')
     end
 
     def in_deployment_migration?(node)

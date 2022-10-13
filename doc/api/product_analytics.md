@@ -21,7 +21,7 @@ Make sure to define the `cube_api_base_url` and `cube_api_key` application setti
 Generate an access token that can be used to query the Cube API. For example:
 
 ```plaintext
-POST /projects/:id/product_analytics/request
+POST /projects/:id/product_analytics/request/load
 ```
 
 | Attribute | Type             | Required | Description                                                   |
@@ -62,6 +62,7 @@ The body of the request should be a valid Cube query.
       "Jitsu.docPath"
     ],
     "limit": 23
-  }
+  },
+  "queryType": "multi"
 }
 ```

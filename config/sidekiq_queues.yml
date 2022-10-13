@@ -459,6 +459,8 @@
   - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
+- - security_process_scan_result_policy
+  - 1
 - - security_scans
   - 2
 - - security_sync_scan_policies

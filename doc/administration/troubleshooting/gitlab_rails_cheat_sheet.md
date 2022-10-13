@@ -262,36 +262,7 @@ This content has been converted to a Rake task, see [verify database values can 
 
 ### Transfer mirror users and tokens to a single service account
 
-Use case: If you have multiple users using their own GitHub credentials to set up
-repository mirroring, mirroring breaks when people leave the company. Use this
-script to migrate disparate mirroring users and tokens into a single service account:
-
-```ruby
-svc_user = User.find_by(username: 'ourServiceUser')
-token = 'githubAccessToken'
-
-Project.where(mirror: true).each do |project|
-  import_url = project.import_url
-
-  # The url we want is https://token@project/path.git
-  repo_url = if import_url.include?('@')
-               # Case 1: The url is something like https://23423432@project/path.git
-               import_url.split('@').last
-             elsif import_url.include?('//')
-               # Case 2: The url is something like https://project/path.git
-               import_url.split('//').last
-             end
-
-  next unless repo_url
-
-  final_url = "https://#{token}@#{repo_url}"
-
-  project.mirror_user = svc_user
-  project.import_url = final_url
-  project.username_only_import_url = final_url
-  project.save
-end
-```
+This content has been moved to [Troubleshooting Repository mirroring](../../user/project/repository/mirror/index.md#transfer-mirror-users-and-tokens-to-a-single-service-account-in-rails-console).
 
 ## Users
 

@@ -18,8 +18,9 @@ describe('IDE pipeline stage', () => {
     },
   };
 
-  const findHeader = () => wrapper.findComponent({ ref: 'cardHeader' });
-  const findJobList = () => wrapper.findComponent({ ref: 'jobList' });
+  const findHeader = () => wrapper.find('[data-testid="card-header"]');
+  const findJobList = () => wrapper.find('[data-testid="job-list"]');
+  const findStageTitle = () => wrapper.find('[data-testid="stage-title"]');
 
   const createComponent = (props) => {
     wrapper = shallowMount(Stage, {
@@ -65,9 +66,9 @@ describe('IDE pipeline stage', () => {
     expect(wrapper.emitted().clickViewLog[0][0]).toBe(job);
   });
 
-  it('renders stage details & icon', () => {
+  it('renders stage title', () => {
     createComponent();
-    expect(wrapper.element).toMatchSnapshot();
+    expect(findStageTitle().isVisible()).toBe(true);
   });
 
   describe('when collapsed', () => {

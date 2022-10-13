@@ -79,6 +79,7 @@ class User < ApplicationRecord
          otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
+  devise :two_factor_backupable_pbkdf2
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
@@ -948,6 +949,22 @@ class User < ApplicationRecord
     validate_and_migrate_bcrypt_password(password)
   rescue ::BCrypt::Errors::InvalidHash
     false
+  end
+
+  def generate_otp_backup_codes!
+    if Gitlab::FIPS.enabled?
+      generate_otp_backup_codes_pbkdf2!
+    else
+      super
+    end
+  end
+
+  def invalidate_otp_backup_code!(code)
+    if Gitlab::FIPS.enabled? && pbkdf2?
+      invalidate_otp_backup_code_pdkdf2!(code)
+    else
+      super(code)
+    end
   end
 
   # This method should be removed once the :pbkdf2_password_encryption feature flag is removed.
@@ -2199,6 +2216,12 @@ class User < ApplicationRecord
   end
 
   private
+
+  def pbkdf2?
+    return false unless otp_backup_codes&.any?
+
+    otp_backup_codes.first.start_with?("$pbkdf2-sha512$")
+  end
 
   # To enable JiHu repository to modify the default language options
   def default_preferred_language

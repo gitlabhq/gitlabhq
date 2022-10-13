@@ -257,7 +257,7 @@
 {"name":"hashdiff","version":"1.0.1","platform":"ruby","checksum":"2cd4d04f5080314ecc8403c4e2e00dbaa282dff395e2d031bc16c8d501bdd6db"},
 {"name":"hashie","version":"4.1.0","platform":"ruby","checksum":"7890dcb9ec18a4b66acec797018c73824b89cef5eb8cda36e8e8501845e87a09"},
 {"name":"hashie-forbidden_attributes","version":"0.1.1","platform":"ruby","checksum":"3a6ed37f3a314e4fb1dd1e2df6eb7721bcadd023a30bc0b951b2b5285a790fb2"},
-{"name":"health_check","version":"3.0.0","platform":"ruby","checksum":"1b336c5c49036a993153e75c8d14e9742377fb9b7361c0a6af2e5fedb45b991f"},
+{"name":"health_check","version":"3.1.0","platform":"ruby","checksum":"10146508237dc54ed7e24c292d8ba7fb8f9590cf26c66e325b947438c4103b57"},
 {"name":"heapy","version":"0.2.0","platform":"ruby","checksum":"74141e845d61ffc7c1e8bf8b127c8cf94544ec7a1181aec613288682543585ea"},
 {"name":"html-pipeline","version":"2.13.2","platform":"ruby","checksum":"a1de83f7bd2d3464f3a068e391b661983fc6099d194c8d9ceb91ace02dadb803"},
 {"name":"html2text","version":"0.2.0","platform":"ruby","checksum":"31c2f0be9ab7aa4fc780b07d5f84882ebc22a9024c29a45f4f5adfe42e92ad4f"},

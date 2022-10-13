@@ -6275,6 +6275,57 @@ RSpec.describe User do
     end
   end
 
+  describe '#generate_otp_backup_codes!' do
+    let(:user) { create(:user) }
+
+    context 'with FIPS mode', :fips_mode do
+      it 'attempts to use #generate_otp_backup_codes_pbkdf2!' do
+        expect(user).to receive(:generate_otp_backup_codes_pbkdf2!).and_call_original
+
+        user.generate_otp_backup_codes!
+      end
+    end
+
+    context 'outside FIPS mode' do
+      it 'does not attempt to use #generate_otp_backup_codes_pbkdf2!' do
+        expect(user).not_to receive(:generate_otp_backup_codes_pbkdf2!)
+
+        user.generate_otp_backup_codes!
+      end
+    end
+  end
+
+  describe '#invalidate_otp_backup_code!' do
+    let(:user) { create(:user) }
+
+    context 'with FIPS mode', :fips_mode do
+      context 'with a PBKDF2-encrypted password' do
+        let(:encrypted_password) { '$pbkdf2-sha512$20000$boHGAw0hEyI$DBA67J7zNZebyzLtLk2X9wRDbmj1LNKVGnZLYyz6PGrIDGIl45fl/BPH0y1TPZnV90A20i.fD9C3G9Bp8jzzOA' }
+
+        it 'attempts to use #invalidate_otp_backup_code_pdkdf2!' do
+          expect(user).to receive(:otp_backup_codes).at_least(:once).and_return([encrypted_password])
+          expect(user).to receive(:invalidate_otp_backup_code_pdkdf2!).and_return(true)
+
+          user.invalidate_otp_backup_code!(user.password)
+        end
+      end
+
+      it 'does not attempt to use #invalidate_otp_backup_code_pdkdf2!' do
+        expect(user).not_to receive(:invalidate_otp_backup_code_pdkdf2!)
+
+        user.invalidate_otp_backup_code!(user.password)
+      end
+    end
+
+    context 'outside FIPS mode' do
+      it 'does not attempt to use #invalidate_otp_backup_code_pdkdf2!' do
+        expect(user).not_to receive(:invalidate_otp_backup_code_pdkdf2!)
+
+        user.invalidate_otp_backup_code!(user.password)
+      end
+    end
+  end
+
   # These entire test section can be removed once the :pbkdf2_password_encryption feature flag is removed.
   describe '#password=' do
     let(:user) { create(:user) }

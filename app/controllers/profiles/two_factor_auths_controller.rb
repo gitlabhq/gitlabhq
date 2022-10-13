@@ -15,31 +15,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   feature_category :authentication_and_authorization
 
   def show
-    if two_factor_authentication_required? && !current_user.two_factor_enabled?
-      two_factor_authentication_reason(
-        global: lambda do
-          flash.now[:alert] =
-            _('The global settings require you to enable Two-Factor Authentication for your account.')
-        end,
-        group: lambda do |groups|
-          flash.now[:alert] = groups_notification(groups)
-        end
-      )
-
-      unless two_factor_grace_period_expired?
-        grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] = flash.now[:alert] + _(" You need to do this before %{grace_period_deadline}.") % { grace_period_deadline: l(grace_period_deadline) }
-      end
-    end
-
-    @qr_code = build_qr_code
-    @account_string = account_string
-
-    if Feature.enabled?(:webauthn)
-      setup_webauthn_registration
-    else
-      setup_u2f_registration
-    end
+    setup_show_page
   end
 
   def create
@@ -147,7 +123,11 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
     current_user.increment_failed_attempts!
 
-    redirect_to profile_two_factor_auth_path, alert: _('You must provide a valid current password')
+    @error = { message: _('You must provide a valid current password') }
+
+    setup_show_page
+
+    render 'show'
   end
 
   def current_password_required?
@@ -243,6 +223,34 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def ensure_verified_primary_email
     unless current_user.two_factor_enabled? || current_user.primary_email_verified?
       redirect_to profile_emails_path, notice: s_('You need to verify your primary email first before enabling Two-Factor Authentication.')
+    end
+  end
+
+  def setup_show_page
+    if two_factor_authentication_required? && !current_user.two_factor_enabled?
+      two_factor_authentication_reason(
+        global: lambda do
+          flash.now[:alert] =
+            _('The global settings require you to enable Two-Factor Authentication for your account.')
+        end,
+        group: lambda do |groups|
+          flash.now[:alert] = groups_notification(groups)
+        end
+      )
+
+      unless two_factor_grace_period_expired?
+        grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
+        flash.now[:alert] = flash.now[:alert] + _(" You need to do this before %{grace_period_deadline}.") % { grace_period_deadline: l(grace_period_deadline) }
+      end
+    end
+
+    @qr_code = build_qr_code
+    @account_string = account_string
+
+    if Feature.enabled?(:webauthn)
+      setup_webauthn_registration
+    else
+      setup_u2f_registration
     end
   end
 end

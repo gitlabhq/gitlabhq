@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlTooltipDirective, GlBadge } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { __ } from '~/locale';
 import Item from './item.vue';
 
 export default {
@@ -10,7 +10,6 @@ export default {
   components: {
     GlIcon,
     GlBadge,
-    CiIcon,
     Item,
     GlLoadingIcon,
   },
@@ -27,10 +26,14 @@ export default {
   },
   computed: {
     collapseIcon() {
-      return this.stage.isCollapsed ? 'chevron-lg-left' : 'chevron-lg-down';
+      return this.stage.isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up';
     },
     showLoadingIcon() {
       return this.stage.isLoading && !this.stage.jobs.length;
+    },
+    stageTitle() {
+      const prefix = __('Stage');
+      return `${prefix}: ${this.stage.name}`;
     },
     jobsCount() {
       return this.stage.jobs.length;
@@ -57,29 +60,29 @@ export default {
 <template>
   <div class="ide-stage card gl-mt-3">
     <div
-      ref="cardHeader"
       :class="{
         'border-bottom-0': stage.isCollapsed,
       }"
-      class="card-header"
+      class="card-header gl-align-items-center gl-cursor-pointer gl-display-flex"
+      data-testid="card-header"
       @click="toggleCollapsed"
     >
-      <ci-icon :status="stage.status" :size="24" />
       <strong
         ref="stageTitle"
         v-gl-tooltip="showTooltip"
         :title="showTooltip ? stage.name : null"
         data-container="body"
-        class="gl-ml-3 text-truncate"
+        class="gl-text-truncate"
+        data-testid="stage-title"
       >
-        {{ stage.name }}
+        {{ stageTitle }}
       </strong>
       <div v-if="!stage.isLoading || stage.jobs.length" class="gl-mr-3 gl-ml-2">
         <gl-badge>{{ jobsCount }}</gl-badge>
       </div>
-      <gl-icon :name="collapseIcon" class="ide-stage-collapse-icon" />
+      <gl-icon :name="collapseIcon" class="gl-absolute gl-right-5" />
     </div>
-    <div v-show="!stage.isCollapsed" ref="jobList" class="card-body p-0">
+    <div v-show="!stage.isCollapsed" class="card-body p-0" data-testid="job-list">
       <gl-loading-icon v-if="showLoadingIcon" size="sm" />
       <template v-else>
         <item v-for="job in stage.jobs" :key="job.id" :job="job" @clickViewLog="clickViewLog" />

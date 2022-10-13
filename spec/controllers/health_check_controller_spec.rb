@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe HealthCheckController, :request_store do
+RSpec.describe HealthCheckController, :request_store, :use_clean_rails_memory_store_caching do
   include StubENV
 
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }
@@ -93,12 +93,13 @@ RSpec.describe HealthCheckController, :request_store do
 
     context 'when a service is down and an endpoint is accessed from whitelisted ip' do
       before do
-        allow(HealthCheck::Utils).to receive(:process_checks).with(['standard']).and_return('The server is on fire')
-        allow(HealthCheck::Utils).to receive(:process_checks).with(['email']).and_return('Email is on fire')
+        allow(::HealthCheck).to receive(:include_error_in_response_body).and_return(true)
         allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
       it 'supports failure plaintext response' do
+        expect(HealthCheck::Utils).to receive(:process_checks).with(['standard']).and_return('The server is on fire')
+
         get :index
 
         expect(response).to have_gitlab_http_status(:internal_server_error)
@@ -107,6 +108,8 @@ RSpec.describe HealthCheckController, :request_store do
       end
 
       it 'supports failure json response' do
+        expect(HealthCheck::Utils).to receive(:process_checks).with(['standard']).and_return('The server is on fire')
+
         get :index, format: :json
 
         expect(response).to have_gitlab_http_status(:internal_server_error)
@@ -116,6 +119,8 @@ RSpec.describe HealthCheckController, :request_store do
       end
 
       it 'supports failure xml response' do
+        expect(HealthCheck::Utils).to receive(:process_checks).with(['standard']).and_return('The server is on fire')
+
         get :index, format: :xml
 
         expect(response).to have_gitlab_http_status(:internal_server_error)
@@ -125,6 +130,8 @@ RSpec.describe HealthCheckController, :request_store do
       end
 
       it 'supports failure responses for specific checks' do
+        expect(HealthCheck::Utils).to receive(:process_checks).with(['email']).and_return('Email is on fire')
+
         get :index, params: { checks: 'email' }, format: :json
 
         expect(response).to have_gitlab_http_status(:internal_server_error)
