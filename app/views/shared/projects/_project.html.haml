@@ -52,7 +52,7 @@
             -# haml-lint:disable UnnecessaryStringOutput
             = ' ' # prevent haml from eating the space between elements
             .metadata-info.gl-mt-3
-              %span.user-access-role.d-block{ data: { qa_selector: 'user_role_content' } }= Gitlab::Access.human_access(access)
+              %span.user-access-role.gl-display-block{ data: { qa_selector: 'user_role_content' } }= localized_project_human_access(access)
 
           - if !explore_projects_tab?
             .metadata-info.gl-mt-3

@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
 class Namespace::PackageSetting < ApplicationRecord
+  include CascadingNamespaceSettingAttribute
+
   self.primary_key = :namespace_id
   self.table_name = 'namespace_package_settings'
+
+  cascading_attr :maven_package_requests_forwarding
+  cascading_attr :npm_package_requests_forwarding
+  cascading_attr :pypi_package_requests_forwarding
 
   PackageSettingNotImplemented = Class.new(StandardError)
 

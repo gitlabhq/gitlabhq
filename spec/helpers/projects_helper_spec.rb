@@ -1336,4 +1336,24 @@ RSpec.describe ProjectsHelper do
       )
     end
   end
+
+  describe '#localized_project_human_access' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:key, :localized_project_human_access) do
+      Gitlab::Access::NO_ACCESS           | _('No access')
+      Gitlab::Access::MINIMAL_ACCESS      | _("Minimal Access")
+      Gitlab::Access::GUEST               | _('Guest')
+      Gitlab::Access::REPORTER            | _('Reporter')
+      Gitlab::Access::DEVELOPER           | _('Developer')
+      Gitlab::Access::MAINTAINER          | _('Maintainer')
+      Gitlab::Access::OWNER               | _('Owner')
+    end
+
+    with_them do
+      it 'with correct key' do
+        expect(helper.localized_project_human_access(key)).to eq(localized_project_human_access)
+      end
+    end
+  end
 end

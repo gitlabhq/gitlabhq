@@ -851,6 +851,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           should_not_email(non_subscriber)
         end
 
+        it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+          expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
+
+          update_merge_request(title: 'New title')
+        end
+
         context 'when removing through wip_event param' do
           it 'removes Draft from the title' do
             expect { update_merge_request({ wip_event: "ready" }) }
@@ -875,6 +881,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           should_email(subscriber)
           should_not_email(non_subscriber)
+        end
+
+        it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+          expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
+
+          update_merge_request(title: 'Draft: New title')
         end
 
         context 'when adding through wip_event param' do

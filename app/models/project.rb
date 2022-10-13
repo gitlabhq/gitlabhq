@@ -493,6 +493,11 @@ class Project < ApplicationRecord
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 
+  delegate :maven_package_requests_forwarding,
+           :pypi_package_requests_forwarding,
+           :npm_package_requests_forwarding,
+           to: :namespace
+
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true

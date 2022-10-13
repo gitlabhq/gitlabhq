@@ -93,12 +93,12 @@ function setup_db() {
 }
 
 function install_gitlab_gem() {
-  run_timed_command "gem install httparty --no-document --version 0.18.1"
-  run_timed_command "gem install gitlab --no-document --version 4.17.0"
+  run_timed_command "gem install httparty --no-document --version 0.20.0"
+  run_timed_command "gem install gitlab --no-document --version 4.19.0"
 }
 
 function install_tff_gem() {
-  run_timed_command "gem install test_file_finder --no-document --version 0.1.1"
+  run_timed_command "gem install test_file_finder --no-document --version 0.1.4"
 }
 
 function install_junit_merge_gem() {

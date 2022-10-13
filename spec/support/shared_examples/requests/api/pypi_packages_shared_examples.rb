@@ -291,7 +291,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
       end
 
       before do
-        allow_fetch_application_setting(attribute: "pypi_package_requests_forwarding", return_value: forward)
+        allow_fetch_cascade_application_setting(attribute: "pypi_package_requests_forwarding", return_value: forward)
       end
 
       it_behaves_like params[:shared_examples_name], :reporter, params[:expected_status]

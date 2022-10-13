@@ -254,7 +254,7 @@ RSpec.describe API::MavenPackages do
         let(:package_name) { package_in_project ? package_file.file_name : 'foo' }
 
         before do
-          allow_fetch_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
+          allow_fetch_cascade_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
         end
 
         it_behaves_like params[:shared_examples_name]
@@ -273,7 +273,7 @@ RSpec.describe API::MavenPackages do
 
           before do
             stub_feature_flags(maven_central_request_forwarding: false)
-            allow_fetch_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
+            allow_fetch_cascade_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
           end
 
           it_behaves_like params[:shared_examples_name]

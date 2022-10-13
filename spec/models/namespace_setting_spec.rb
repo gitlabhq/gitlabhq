@@ -177,4 +177,8 @@ RSpec.describe NamespaceSetting, type: :model do
       end
     end
   end
+
+  describe '#delayed_project_removal' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :delayed_project_removal
+  end
 end

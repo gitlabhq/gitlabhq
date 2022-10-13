@@ -17,7 +17,7 @@ review-cleanup:
   script:
     - delete_release
     - delete_namespace
-    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+    - scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
 start-review-app-pipeline:

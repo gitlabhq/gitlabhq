@@ -13671,6 +13671,9 @@ msgstr ""
 msgid "DevOps adoption"
 msgstr ""
 
+msgid "Developer"
+msgstr ""
+
 msgid "Development"
 msgstr ""
 
@@ -19476,6 +19479,9 @@ msgstr ""
 msgid "Groups|You're creating a new top-level group"
 msgstr ""
 
+msgid "Guest"
+msgstr ""
+
 msgid "Guideline"
 msgstr ""
 
@@ -24457,6 +24463,9 @@ msgstr ""
 msgid "Main menu"
 msgstr ""
 
+msgid "Maintainer"
+msgstr ""
+
 msgid "Maintenance mode"
 msgstr ""
 
@@ -26034,6 +26043,9 @@ msgstr ""
 msgid "Min Value"
 msgstr ""
 
+msgid "Minimal Access"
+msgstr ""
+
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
 msgstr ""
 
@@ -26750,6 +26762,9 @@ msgid "No Scopes"
 msgstr ""
 
 msgid "No Work Item Link found"
+msgstr ""
+
+msgid "No access"
 msgstr ""
 
 msgid "No active admin user found"
@@ -33752,6 +33767,9 @@ msgid "Reported by"
 msgstr ""
 
 msgid "Reported by %{reporter}"
+msgstr ""
+
+msgid "Reporter"
 msgstr ""
 
 msgid "Reporting"

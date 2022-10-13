@@ -51,3 +51,15 @@ cache-assets:production:
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
+
+packages-cleanup:
+  extends:
+    - .default-retry
+    - .caching:rules:packages-cleanup
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  stage: prepare
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/packages/automated_cleanup.rb

@@ -125,7 +125,13 @@ module API
 
         no_package_found = package_file ? false : true
 
-        redirect_registry_request(no_package_found, :maven, path: params[:path], file_name: params[:file_name], target: params[:target]) do
+        redirect_registry_request(
+          forward_to_registry: no_package_found,
+          package_type: :maven,
+          target: params[:target],
+          path: params[:path],
+          file_name: params[:file_name]
+        ) do
           not_found!('Package') if no_package_found
 
           case format

@@ -11,19 +11,77 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29280) from **Settings > CI/CD** to **Settings > Repository** in GitLab 12.10.1.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) package registry scopes in GitLab 13.0.
 
-Deploy tokens allow you to download (`git clone`) or push and pull packages and
-container registry images of a project without having a user and a password.
+You can use a deploy token to enable authentication of deployment tasks, independent of a user
+account. In most cases you use a deploy token from an external host, like a build server or CI/CD
+server.
 
-Deploy tokens can be managed only by users with the Maintainer role.
+With a deploy token, automated tasks can:
+
+- Clone Git repositories.
+- Pull from and push to a GitLab container registry.
+- Pull from and push to a GitLab package registry.
+
+A deploy token is a pair of values:
+
+- **username**: `username` in the HTTP authentication framework. The default username format is
+  `gitlab+deploy-token-{n}`. You can specify a custom username when you create the deploy token.
+- **token**: `password` in the HTTP authentication framework.
+
+You can use a deploy token for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
+to the following endpoints:
+
+- GitLab Package Registry public API.
+- [Git commands](https://git-scm.com/docs/gitcredentials#_description).
+
+You can create deploy tokens at either the project or group level:
+
+- **Project deploy token**: Permissions apply only to the project.
+- **Group deploy token**: Permissions apply to all projects in the group.
+
+By default, a deploy token does not expire. You can optionally set an expiry date when you create
+it. Expiry occurs at midnight UTC on that date.
+
+## Scope
+
+A deploy token's scope determines the actions it can perform.
+
+| Scope                    | Description                                                                                                  |
+|--------------------------|--------------------------------------------------------------------------------------------------------------|
+| `read_repository`        | Read-only access to the repository using `git clone`.                                                        |
+| `read_registry`          | Read-only access to the images in the project's [container registry](../../packages/container_registry/index.md). |
+| `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/index.md).       |
+| `read_package_registry`  | Read-only access to the project's package registry.                                                          |
+| `write_package_registry` | Write access to the project's package registry.                                                              |
+
+## GitLab deploy token
+
+> - Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
+> - [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
+
+A GitLab deploy token is a special type of deploy token. If you create a deploy token named
+`gitlab-deploy-token`, the deploy token is automatically exposed to the CI/CD jobs as variables, for
+use in a CI/CD pipeline:
+
+- `CI_DEPLOY_USER`: Username
+- `CI_DEPLOY_PASSWORD`: Token
+
+For example, to use a GitLab token to log in to your GitLab container registry:
+
+```shell
+docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+```
+
+NOTE:
+In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` deploy token does not
+work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
+`CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings > CI/CD > Variables** to the
+name and token of the group deploy token.
+
+### GitLab public API
 
 Deploy tokens can't be used with the GitLab public API. However, you can use deploy tokens with some
-endpoints, such as those from the Package Registry. For details, see
+endpoints, such as those from the Package Registry. For more information, see
 [Authenticate with the registry](../../packages/package_registry/index.md#authenticate-with-the-registry).
-
-Deploy tokens are tied to the project and stay enabled even when the user who created the token is removed from the project.
-
-If you have a key pair, you might want to use [deploy keys](../../project/deploy_keys/index.md)
-instead.
 
 ## Creating a Deploy token
 
@@ -37,17 +95,13 @@ project. Alternatively, you can also create [group-scoped deploy tokens](#group-
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy tokens**.
 1. Choose a name, and optionally, an expiration date and username for the token.
-1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).
+1. Choose the [desired scopes](#scope).
 1. Select **Create deploy token**.
 
 Save the deploy token somewhere safe. After you leave or refresh
 the page, **you can't access it again**.
 
 ![Personal access tokens page](img/deploy_tokens_ui.png)
-
-## Deploy token expiration
-
-Deploy tokens expire at midnight UTC on the date you define.
 
 ## Revoking a deploy token
 
@@ -59,28 +113,6 @@ To revoke a deploy token:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Deploy tokens**.
 1. In the **Active Deploy Tokens** section, by the token you want to revoke, select **Revoke**.
-
-## Limiting scopes of a deploy token
-
-Deploy tokens can be created with different scopes that allow various actions
-that a given token can perform. The available scopes are depicted in the
-following table along with GitLab version it was introduced in:
-
-| Scope                    | Description | Introduced in GitLab Version |
-|--------------------------|-------------|------------------------------|
-| `read_repository`        | Grants read-access to the repository through `git clone` | -- |
-| `read_registry`          | Grants read-access to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. | -- |
-| `write_registry`         | Grants write-access (push) to [container registry](../../packages/container_registry/index.md). | 12.10 |
-| `read_package_registry`  | Grants read access to the package registry. | 13.0 |
-| `write_package_registry` | Grants write access to the package registry. | 13.0 |
-
-## Deploy token custom username
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29639) in GitLab 12.1.
-
-The default username format is `gitlab+deploy-token-{n}`. Some tools or
-platforms may not support this format; in this case you can specify a custom
-username to be used when creating the deploy token.
 
 ## Usage
 
@@ -191,29 +223,6 @@ To pull images from the Dependency Proxy, you must:
 1. Create a group deploy token with both `read_registry` and `write_registry` scopes.
 1. Take note of your `username` and `token`.
 1. Follow the Dependency Proxy [authentication instructions](../../packages/dependency_proxy/index.md).
-
-### GitLab deploy token
-
-> - Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
-> - [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
-
-There's a special case when it comes to deploy tokens. If a user creates one
-named `gitlab-deploy-token`, the username and token of the deploy token is
-automatically exposed to the CI/CD jobs as CI/CD variables: `CI_DEPLOY_USER`
-and `CI_DEPLOY_PASSWORD`, respectively.
-
-After you create the token, you can sign in to the Container Registry by using
-those variables:
-
-```shell
-docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
-```
-
-NOTE:
-In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` deploy token
-does not work for group deploy tokens. To make the group-level deploy token available
-for CI/CD jobs, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables must be
-set in **Settings > CI/CD > Variables** to the name and token of the group deploy token.
 
 ## Troubleshooting
 
