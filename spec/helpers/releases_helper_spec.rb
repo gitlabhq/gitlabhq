@@ -49,6 +49,12 @@ RSpec.describe ReleasesHelper do
           expect(helper.data_for_releases_page[:new_release_path]).to eq(new_project_release_path(project))
         end
       end
+
+      context 'new releases redirect new milestone creation' do
+        it 'redirects new_milestone_path back to the release page' do
+          expect(helper.data_for_new_release_page[:new_milestone_path]).to include('redirect_path')
+        end
+      end
     end
 
     describe '#data_for_edit_release_page' do

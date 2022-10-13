@@ -71,7 +71,7 @@ on how to configure Review Apps for DAST.
 
 #### Docker Services
 
-If your application utilizes Docker containers you have another option for deploying and scanning with DAST.
+If your application uses Docker containers you have another option for deploying and scanning with DAST.
 After your Docker build job completes and your image is added to your container registry, you can use the image as a
 [service](../../../ci/services/index.md).
 

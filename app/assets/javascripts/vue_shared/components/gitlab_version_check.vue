@@ -1,6 +1,7 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -18,6 +19,7 @@ export default {
   components: {
     GlBadge,
   },
+  mixins: [Tracking.mixin()],
   props: {
     size: {
       type: String,
@@ -53,6 +55,10 @@ export default {
         .then((res) => {
           if (res.data) {
             this.status = res.data.severity;
+
+            this.track('rendered_version_badge', {
+              label: this.status,
+            });
           }
         })
         .catch(() => {
@@ -72,6 +78,7 @@ export default {
     class="version-check-badge"
     :variant="status"
     :size="size"
+    @click="track('click_version_badge', { label: status })"
     >{{ title }}</gl-badge
   >
 </template>

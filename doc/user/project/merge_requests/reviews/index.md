@@ -238,7 +238,7 @@ This can occur if Sidekiq doesn't pick up the changes fast enough.
 
 #### Sidekiq
 
-Sidekiq didn't process the CI state change fast enough. Please wait a few
+Sidekiq didn't process the CI state change fast enough. Wait a few
 seconds and the status should update automatically.
 
 #### Bug

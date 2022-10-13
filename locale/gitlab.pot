@@ -40215,6 +40215,9 @@ msgstr ""
 msgid "The hostname of your Snowplow collector."
 msgstr ""
 
+msgid "The import cannot be canceled because it is %{project_status}"
+msgstr ""
+
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 

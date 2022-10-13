@@ -73,6 +73,17 @@ class Import::GithubController < Import::BaseController
     }
   end
 
+  def cancel
+    project = Project.imported_from(provider_name).find(params[:project_id])
+    result = Import::Github::CancelProjectImportService.new(project, current_user).execute
+
+    if result[:status] == :success
+      render json: serialized_imported_projects(result[:project])
+    else
+      render json: { errors: result[:message] }, status: result[:http_status]
+    end
+  end
+
   protected
 
   override :importable_repos

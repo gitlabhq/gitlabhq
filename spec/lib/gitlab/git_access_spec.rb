@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GitAccess, :aggregate_failures do
   include TermsHelper
-  include GitHelpers
   include AdminModeHelper
 
   let(:user) { create(:user) }
@@ -789,18 +788,29 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
     def merge_into_protected_branch
       @protected_branch_merge_commit ||= begin
         project.repository.add_branch(user, unprotected_branch, 'feature')
-        rugged = rugged_repo(project.repository)
-        target_branch = rugged.rev_parse('feature')
+        target_branch = TestEnv::BRANCH_SHA['feature']
         source_branch = project.repository.create_file(
           user,
           'filename',
           'This is the file content',
           message: 'This is a good commit message',
           branch_name: unprotected_branch)
-        author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
+        merge_id = project.repository.raw.merge_to_ref(
+          user,
+          branch: target_branch,
+          first_parent_ref: target_branch,
+          source_sha: source_branch,
+          target_ref: 'refs/merge-requests/test',
+          message: 'commit message'
+        )
 
-        merge_index = rugged.merge_commits(target_branch, source_branch)
-        Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+        # We are trying to simulate what the repository would look like
+        # during the pre-receive hook, before the actual ref is
+        # written/created. Repository#new_commits relies on there being no
+        # ref pointing to the merge commit.
+        project.repository.delete_refs('refs/merge-requests/test')
+
+        merge_id
       end
     end
 

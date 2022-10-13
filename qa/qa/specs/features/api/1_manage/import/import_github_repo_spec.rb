@@ -20,7 +20,7 @@ module QA
           project.group = group
           project.github_personal_access_token = Runtime::Env.github_access_token
           project.github_repository_path = 'gitlab-qa-github/import-test'
-          project.api_client = api_client
+          project.api_client = Runtime::API::Client.new(user: user)
         end
       end
 

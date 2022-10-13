@@ -141,7 +141,42 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
         end
       end
 
-      context 'when the prev pipeline source is webide' do
+      context 'when the pipeline is a child pipeline' do
+        let!(:parent_pipeline) { create(:ci_pipeline, project: project, sha: new_commit.sha) }
+        let(:pipeline) { create(:ci_pipeline, child_of: parent_pipeline) }
+
+        before do
+          create(:ci_build, :interruptible, :running, pipeline: parent_pipeline)
+          create(:ci_build, :interruptible, :running, pipeline: parent_pipeline)
+        end
+
+        it 'does not cancel any builds' do
+          expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+          expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
+
+          perform
+
+          expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+          expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
+        end
+
+        context 'when feature flag ci_skip_auto_cancelation_on_child_pipelines is disabled' do
+          before do
+            stub_feature_flags(ci_skip_auto_cancelation_on_child_pipelines: false)
+          end
+
+          it 'does not cancel the parent pipeline' do
+            expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
+
+            perform
+
+            expect(build_statuses(prev_pipeline)).to contain_exactly('success', 'canceled', 'canceled')
+            expect(build_statuses(parent_pipeline)).to contain_exactly('running', 'running')
+          end
+        end
+      end
+
+      context 'when the previous pipeline source is webide' do
         let(:prev_pipeline) { create(:ci_pipeline, :webide, project: project) }
 
         it 'does not cancel builds of the previous pipeline' do

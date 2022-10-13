@@ -31,7 +31,7 @@ If required, you can find [a glossary of common terms](../../../integration/saml
    See [specific identity provider documentation](#providers) for more details.
 1. Configure the SAML response to include a [NameID](#nameid) that uniquely identifies each user.
 1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
-1. While the default is enabled for most SAML providers, please ensure the app is set to have service provider
+1. While the default is enabled for most SAML providers, ensure the app is set to have service provider
    initiated calls to link existing GitLab accounts.
 1. Once the identity provider is set up, move on to [configuring GitLab](#configure-gitlab).
 
@@ -156,13 +156,13 @@ When SSO is enforced, users are not immediately revoked. If the user:
 
 The SAML standard means that you can use a wide range of identity providers with GitLab. Your identity provider might have relevant documentation. It can be generic SAML documentation or specifically targeted for GitLab.
 
-When [configuring your identity provider](#configure-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
+When [configuring your identity provider](#configure-your-identity-provider), consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
 For providers not listed below, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#notes-on-configuring-your-identity-provider)
 for additional guidance on information your identity provider may require.
 
 GitLab provides the following information for guidance only.
-If you have any questions on configuring the SAML app, please contact your provider's support.
+If you have any questions on configuring the SAML app, contact your provider's support.
 
 ### Azure setup notes
 
@@ -224,7 +224,7 @@ See our [example configuration page](example_saml_config.md#google-workspace).
 
 ### Okta setup notes
 
-Please follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) with the notes below for consideration.
+Follow the Okta documentation on [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) with the notes below for consideration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
@@ -298,7 +298,7 @@ To migrate users to a new email domain, users must:
 
 > SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
 
-Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, please see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
+Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
 
 When a user tries to sign in with Group SSO, GitLab attempts to find or create a user based on the following:
 

@@ -712,10 +712,10 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 - Use specialized indexes. For examples, see these merge requests:
   - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871)
   - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445)
-- Use defined `start` and `finish`, and simple queries.
-  These values can be memoized and reused, as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
-- Avoid joins and write the queries as clearly as possible,
-  as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
+- Use defined `start` and `finish`. These values can be memoized and reused, as in this
+  [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
+- Avoid joins and unnecessary complexity in your queries. See this
+  [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316) as an example.
 - Set a custom `batch_size` for `distinct_count`, as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
 
 ## Add the metric definition

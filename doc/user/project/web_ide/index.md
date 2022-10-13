@@ -134,10 +134,10 @@ schemas:
 
 Each schema entry supports two properties:
 
-- `uri`: please provide an absolute URL for the schema definition file here.
+- `uri`: Provide an absolute URL for the schema definition file here.
   The schema from this URL is loaded when a matching file is open.
-- `match`: a list of matching paths or glob expressions. If a schema matches a
-  particular path pattern, it is applied to that file. Please enclose the pattern
+- `match`: A list of matching paths or glob expressions. If a schema matches a
+  particular path pattern, it is applied to that file. Enclose the pattern
   in quotes if it begins with an asterisk (`*`), it's be applied to that file.
   If a pattern begins with an asterisk (`*`), enclose it in quotation marks.
   Otherwise, the configuration file is not valid YAML.
@@ -457,5 +457,5 @@ The Web IDE has a few limitations:
   and it can no longer be used. A stopped terminal can be restarted by selecting
   **Restart Terminal**.
 - If the terminal displays **Connection Failure**, then the terminal could not
-  connect to the runner. Please try to stop and restart the terminal. If the
+  connect to the runner. Try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.

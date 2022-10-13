@@ -50,7 +50,7 @@ following issues:
 - `openssl` works when specifying the path to the certificate:
 
   ```shell
-  /opt/gitlab/embedded/bin/openssl s_client -CAfile /root/my-cert.crt -connect gitlab.domain.tld:443
+  /opt/gitlab/embedded/bin/openssl s_client -CAfile /root/my-cert.crt -connect gitlab.domain.tld:443 -servername gitlab.domain.tld
   ```
 
 If you have the previously described issues, add your certificate to

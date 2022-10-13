@@ -44,6 +44,26 @@ RSpec.describe Projects::MilestonesController do
     end
   end
 
+  describe "#create" do
+    it 'does not redirect without redirect_path' do
+      post :create, params: { namespace_id: project.namespace.id, project_id: project.id, milestone: { title: 'test' } }
+
+      expect(response).to redirect_to(project_milestone_path(project, project.milestones.last))
+    end
+
+    it 'redirects when given a redirect_path' do
+      post :create, params: { namespace_id: project.namespace.id, project_id: project.id, redirect_path: 'new_release', milestone: { title: 'test' } }
+
+      expect(response).to redirect_to(new_project_release_path(project))
+    end
+
+    it 'will not redirect when given a redirect_path with an error' do
+      post :create, params: { namespace_id: project.namespace.id, project_id: project.id, redirect_path: 'new_release', milestone: { title: nil } }
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe "#index" do
     context "as html" do
       def render_index(project:, page:, search_title: '')

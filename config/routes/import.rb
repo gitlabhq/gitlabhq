@@ -23,6 +23,7 @@ namespace :import do
     get :status
     get :callback
     get :realtime_changes
+    post :cancel
   end
 
   resource :gitea, only: [:create, :new], controller: :gitea do

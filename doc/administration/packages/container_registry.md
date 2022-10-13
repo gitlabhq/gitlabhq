@@ -1325,8 +1325,8 @@ Check which files are in use:
 The output of these `openssl` commands should match, proving that the cert-key pair is a match:
 
 ```shell
-openssl x509 -noout -modulus -in /var/opt/gitlab/registry/gitlab-registry.crt | openssl sha256
-openssl rsa -noout -modulus -in /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key | openssl sha256
+/opt/gitlab/embedded/bin/openssl x509 -noout -modulus -in /var/opt/gitlab/registry/gitlab-registry.crt | /opt/gitlab/embedded/bin/openssl sha256
+/opt/gitlab/embedded/bin/openssl rsa -noout -modulus -in /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key | /opt/gitlab/embedded/bin/openssl sha256
 ```
 
 If the two pieces of the certificate do not align, remove the files and run `gitlab-ctl reconfigure`

@@ -170,7 +170,7 @@ RSpec.describe WebHook do
     end
 
     it 'does not async execute non-executable hooks' do
-      hook.update!(disabled_until: 1.day.from_now)
+      allow(hook).to receive(:executable?).and_return(false)
 
       expect(WebHookService).not_to receive(:new)
 
@@ -238,17 +238,18 @@ RSpec.describe WebHook do
       [
         [0, :not_set, true],
         [0, :past,    true],
-        [0, :future,  false],
-        [0, :now,     false],
+        [0, :future,  true],
+        [0, :now,     true],
         [1, :not_set, true],
         [1, :past,    true],
-        [1, :future,  false],
+        [1, :future,  true],
         [3, :not_set, true],
         [3, :past,    true],
-        [3, :future,  false],
+        [3, :future,  true],
         [4, :not_set, false],
-        [4, :past,    false],
-        [4, :future,  false]
+        [4, :past,    true], # expired suspension
+        [4, :now,     false], # active suspension
+        [4, :future,  false] # active suspension
       ]
     end
 
@@ -357,6 +358,7 @@ RSpec.describe WebHook do
     end
 
     it 'makes a hook executable if it is currently backed off' do
+      hook.recent_failures = 1000
       hook.disabled_until = 1.hour.from_now
 
       expect { hook.enable! }.to change(hook, :executable?).from(false).to(true)
@@ -378,55 +380,71 @@ RSpec.describe WebHook do
   end
 
   describe 'backoff!' do
-    it 'sets disabled_until to the next backoff' do
-      expect { hook.backoff! }.to change(hook, :disabled_until).to(hook.next_backoff.from_now)
+    context 'when we have not backed off before' do
+      it 'does not disable the hook' do
+        expect { hook.backoff! }.not_to change(hook, :executable?).from(true)
+      end
+
+      it 'increments the recent_failures count' do
+        expect { hook.backoff! }.to change(hook, :recent_failures).by(1)
+      end
     end
 
-    it 'increments the backoff count' do
-      expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
-    end
-
-    context 'when the hook is permanently disabled' do
+    context 'when we have exhausted the grace period' do
       before do
-        allow(hook).to receive(:permanently_disabled?).and_return(true)
+        hook.update!(recent_failures: described_class::FAILURE_THRESHOLD)
       end
 
-      it 'does not set disabled_until' do
-        expect { hook.backoff! }.not_to change(hook, :disabled_until)
+      it 'sets disabled_until to the next backoff' do
+        expect { hook.backoff! }.to change(hook, :disabled_until).to(hook.next_backoff.from_now)
       end
 
-      it 'does not increment the backoff count' do
-        expect { hook.backoff! }.not_to change(hook, :backoff_count)
-      end
-    end
-
-    context 'when we have backed off MAX_FAILURES times' do
-      before do
-        stub_const("#{described_class}::MAX_FAILURES", 5)
-        5.times { hook.backoff! }
+      it 'increments the backoff count' do
+        expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
       end
 
-      it 'does not let the backoff count exceed the maximum failure count' do
-        expect { hook.backoff! }.not_to change(hook, :backoff_count)
-      end
+      context 'when the hook is permanently disabled' do
+        before do
+          allow(hook).to receive(:permanently_disabled?).and_return(true)
+        end
 
-      it 'does not change disabled_until', :skip_freeze_time do
-        travel_to(hook.disabled_until - 1.minute) do
+        it 'does not set disabled_until' do
           expect { hook.backoff! }.not_to change(hook, :disabled_until)
         end
-      end
 
-      it 'changes disabled_until when it has elapsed', :skip_freeze_time do
-        travel_to(hook.disabled_until + 1.minute) do
-          expect { hook.backoff! }.to change { hook.disabled_until }
-          expect(hook.backoff_count).to eq(described_class::MAX_FAILURES)
+        it 'does not increment the backoff count' do
+          expect { hook.backoff! }.not_to change(hook, :backoff_count)
         end
       end
-    end
 
-    include_examples 'is tolerant of invalid records' do
-      def run_expectation
-        expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
+      context 'when we have backed off MAX_FAILURES times' do
+        before do
+          stub_const("#{described_class}::MAX_FAILURES", 5)
+          (described_class::FAILURE_THRESHOLD + 5).times { hook.backoff! }
+        end
+
+        it 'does not let the backoff count exceed the maximum failure count' do
+          expect { hook.backoff! }.not_to change(hook, :backoff_count)
+        end
+
+        it 'does not change disabled_until', :skip_freeze_time do
+          travel_to(hook.disabled_until - 1.minute) do
+            expect { hook.backoff! }.not_to change(hook, :disabled_until)
+          end
+        end
+
+        it 'changes disabled_until when it has elapsed', :skip_freeze_time do
+          travel_to(hook.disabled_until + 1.minute) do
+            expect { hook.backoff! }.to change { hook.disabled_until }
+            expect(hook.backoff_count).to eq(described_class::MAX_FAILURES)
+          end
+        end
+      end
+
+      include_examples 'is tolerant of invalid records' do
+        def run_expectation
+          expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
+        end
       end
     end
   end
@@ -468,8 +486,19 @@ RSpec.describe WebHook do
       expect(hook).not_to be_temporarily_disabled
     end
 
+    it 'allows FAILURE_THRESHOLD initial failures before we back-off' do
+      described_class::FAILURE_THRESHOLD.times do
+        hook.backoff!
+        expect(hook).not_to be_temporarily_disabled
+      end
+
+      hook.backoff!
+      expect(hook).to be_temporarily_disabled
+    end
+
     context 'when hook has been told to back off' do
       before do
+        hook.update!(recent_failures: described_class::FAILURE_THRESHOLD)
         hook.backoff!
       end
 
@@ -550,6 +579,7 @@ RSpec.describe WebHook do
 
     context 'when hook has been backed off' do
       before do
+        hook.update!(recent_failures: described_class::FAILURE_THRESHOLD + 1)
         hook.disabled_until = 1.hour.from_now
       end
 

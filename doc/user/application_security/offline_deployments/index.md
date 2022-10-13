@@ -131,7 +131,7 @@ to be able to use the `docker` command inside the jobs. This runner can be insta
 a bastion, and used only for this specific project.
 
 WARNING:
-This template does not include updates for the container scanning analyzer. Please see
+This template does not include updates for the container scanning analyzer. See
 [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
 #### Scheduling the updates

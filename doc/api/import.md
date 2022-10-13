@@ -47,6 +47,51 @@ Example response:
 }
 ```
 
+## Cancel GitHub project import
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
+
+Cancel an in-progress GitHub project import using the API.
+
+```plaintext
+POST /import/github/cancel
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `project_id`   | integer | yes      | GitLab project ID     |
+
+```shell
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/import/github/cancel" \
+  --header "content-type: application/json" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data '{
+    "project_id": 12345
+}'
+```
+
+Example response:
+
+```json
+{
+    "id": 160,
+    "name": "my-repo",
+    "full_path": "/root/my-repo",
+    "full_name": "Administrator / my-repo",
+    "import_source": "source/source-repo",
+    "import_status": "canceled",
+    "human_import_status_name": "canceled",
+    "provider_link": "/source/source-repo"
+}
+```
+
+Returns the following status codes:
+
+- `200 OK`: the project import is being canceled.
+- `400 Bad Request`: the project import cannot be canceled.
+- `404 Not Found`: the project associated with `project_id` does not exist.
+
 ## Import repository from Bitbucket Server
 
 Import your projects from Bitbucket Server to GitLab via the API.

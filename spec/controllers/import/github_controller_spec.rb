@@ -321,4 +321,37 @@ RSpec.describe Import::GithubController do
       expect(json_response[0]['stats']).to include('imported')
     end
   end
+
+  describe "POST cancel" do
+    let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://fake.url') }
+
+    context 'when project import was canceled' do
+      before do
+        allow(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project, user)
+          .and_return(double(execute: { status: :success, project: project }))
+      end
+
+      it 'returns success' do
+        post :cancel, params: { project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when project import was not canceled' do
+      before do
+        allow(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project, user)
+          .and_return(double(execute: { status: :error, message: 'The import cannot be canceled because it is finished', http_status: :bad_request }))
+      end
+
+      it 'returns error' do
+        post :cancel, params: { project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['errors']).to eq('The import cannot be canceled because it is finished')
+      end
+    end
+  end
 end

@@ -100,7 +100,7 @@ To enable License Compliance in your project's pipeline, either:
   (provided by [Auto DevOps](../../../topics/autodevops/index.md)).
 - Include the [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
-Please note that License Compliance is not supported when GitLab is run with FIPS mode enabled.
+License Compliance is not supported when GitLab is run with FIPS mode enabled.
 
 ### Include the License Scanning template
 
@@ -656,7 +656,7 @@ registry.gitlab.com/security-products/license-finder:latest
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
-**your network security policy**. Please consult your IT staff to find an accepted and approved
+**your network security policy**. Consult your IT staff to find an accepted and approved
 process by which external resources can be imported or temporarily accessed. Note that these scanners are [updated periodically](../../application_security/index.md#vulnerability-scanner-maintenance)
 with new definitions, so consider if you are able to make periodic updates yourself.
 

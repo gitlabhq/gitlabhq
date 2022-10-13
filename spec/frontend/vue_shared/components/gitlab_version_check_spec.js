@@ -2,6 +2,7 @@ import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking } from 'helpers/tracking_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import axios from '~/lib/utils/axios_utils';
 import GitlabVersionCheck from '~/vue_shared/components/gitlab_version_check.vue';
@@ -93,8 +94,11 @@ describe('GitlabVersionCheck', () => {
       ${{ code: 200, res: { severity: 'danger' } }}  | ${{ title: 'Update ASAP', variant: 'danger' }}
     `('badge ui', ({ mockResponse, expectedUI }) => {
       describe(`when response is ${mockResponse.res.severity}`, () => {
+        let trackingSpy;
+
         beforeEach(async () => {
           createComponent(mockResponse);
+          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
           await waitForPromises(); // Ensure we wrap up the axios call
         });
 
@@ -106,8 +110,22 @@ describe('GitlabVersionCheck', () => {
           expect(findGlBadge().attributes('variant')).toBe(expectedUI.variant);
         });
 
+        it(`tracks rendered_version_badge with status ${expectedUI.variant}`, () => {
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'rendered_version_badge', {
+            label: expectedUI.variant,
+          });
+        });
+
         it(`link is ${UPGRADE_DOCS_URL}`, () => {
           expect(findGlBadge().attributes('href')).toBe(UPGRADE_DOCS_URL);
+        });
+
+        it(`tracks click_version_badge with status ${expectedUI.variant} when badge is clicked`, async () => {
+          await findGlBadge().vm.$emit('click');
+
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_version_badge', {
+            label: expectedUI.variant,
+          });
         });
       });
     });

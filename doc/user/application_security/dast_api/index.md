@@ -1340,7 +1340,7 @@ It is also possible to write messages from your script to a log file that is col
 
 Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during normal running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
-Following our example, we provided `renew_token.py` in the environment variable `DAST_API_OVERRIDES_CMD`. Please notice two things in the script:
+Following our example, we provided `renew_token.py` in the environment variable `DAST_API_OVERRIDES_CMD`. Notice two things in the script:
 
 - Log file is saved in the location indicated by the environmental variable `CI_PROJECT_DIR`.
 - Log filename should match `gl-*.log`.
@@ -2065,7 +2065,7 @@ A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cau
 
 The version information can be found in the job details for the `dast_api` job.
 
-If the issue is occurring with versions v1.6.196 or greater, please contact Support and provide the following information:
+If the issue is occurring with versions v1.6.196 or greater, contact Support and provide the following information:
 
 1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
 1. The full console output of the job.
@@ -2129,7 +2129,7 @@ The DAST API engine outputs an error message when it cannot determine the target
 
 There is a order of precedence in which the DAST API engine tries to get the target API when checking the different sources. First, it will try to use the `DAST_API_TARGET_URL`. If the environment variable has not been set, then the DAST API engine will attempt to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the DAST API engine will use the OpenAPI document contents and the URL provided in `DAST_API_OPENAPI` (if a URL is provided) to try to compute the target API.
 
-The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case please refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
+The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
 
 #### Static environment solution
 
@@ -2226,10 +2226,10 @@ DAST API uses the specified media types in the OpenAPI document to generate requ
 
 ## Get support or request an improvement
 
-To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/get-help/).
+To get support for your particular problem, use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and DAST API.
-Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding DAST API to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
+Use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding DAST API to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 
@@ -2241,7 +2241,7 @@ When experiencing a behavior not working as expected, consider providing context
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
 WARNING:
-**Sanitize data attached to a support issue**. Please remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+**Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
 
 ## Glossary
 

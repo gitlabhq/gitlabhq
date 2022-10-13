@@ -43,9 +43,7 @@ Most policy changes take effect as soon as the merge request is merged. Any chan
 do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
 before the policy changes take effect.
 
-![Scan Execution Policy Editor YAML Mode](img/scan_execution_policy_yaml_mode_v14_7.png)
-
-The policy editor currently only supports the YAML mode. The Rule mode is tracked in the [Allow Users to Edit Rule-mode Scan Execution Policies in the Policy UI](https://gitlab.com/groups/gitlab-org/-/epics/5363) epic.
+![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_5.png)
 
 ## Scan execution policies schema
 

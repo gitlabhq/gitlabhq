@@ -13,7 +13,7 @@ with your charts and values. To do this, you use the pull-based GitOps features 
 Kubernetes.
 
 This feature is in Alpha and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/7938)
-to track future work. Please tell us about your use cases by leaving comments in the epic.
+to track future work. Tell us about your use cases by leaving comments in the epic.
 
 NOTE:
 This feature is Alpha. In future releases, to accommodate new features, the configuration format might change without notice.

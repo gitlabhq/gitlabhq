@@ -123,7 +123,9 @@ The OpenID Connect provides you with a client's details and secret for you to us
      in such requests, set this to `false`.
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
-     - `secret` is the client secret as configured in the OpenID Connect service provider.
+     - `secret` is the client secret as configured in the OpenID Connect service provider. For example,
+       [OmniAuth OpenIDConnect](https://github.com/omniauth/omniauth_openid_connect)) requires this. If the service provider doesn't require a secret,
+       provide any value and it is ignored.
      - `redirect_uri` is the GitLab URL to redirect the user to after successful login
        (for example, `http://example.com/users/auth/openid_connect/callback`).
      - `end_session_endpoint` (optional) is the URL to the endpoint that ends the

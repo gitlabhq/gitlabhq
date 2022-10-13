@@ -161,7 +161,7 @@ Cards finished by the UX team automatically appear in the **Frontend** column wh
 for them.
 
 NOTE:
-For a broader use case, please see the blog post
+For a broader use case, see the blog post
 [What is GitLab Flow?](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/).
 For a real use case example, you can read why
 [Codepen decided to adopt issue boards](https://about.gitlab.com/blog/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)

@@ -28,6 +28,12 @@ RSpec.describe 'Milestone' do
       expect(find('[data-testid="no-issues-alert"]')).to have_content('Assign some issues to this milestone.')
       expect(page).to have_content('Nov 16, 2016–Dec 16, 2016')
     end
+
+    it 'passes redirect_path through to form' do
+      visit new_project_milestone_path(project, redirect_path: 'new_release')
+
+      expect(find('#redirect_path', visible: :all)[:value]).to eq('new_release')
+    end
   end
 
   describe 'Open a milestone with closed issues' do

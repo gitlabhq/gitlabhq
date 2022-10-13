@@ -203,7 +203,7 @@ New users and existing users on subsequent visits can access the group through t
 
 ![Enterprise badge for users created with a SCIM identity](img/member_enterprise_badge_v14_0.png)
 
-For role information, please see the [Group SAML page](index.md#user-access-and-management)
+For role information, see the [Group SAML page](index.md#user-access-and-management)
 
 ### Blocking access
 
