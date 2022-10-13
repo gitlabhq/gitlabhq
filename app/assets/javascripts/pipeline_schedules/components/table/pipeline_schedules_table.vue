@@ -86,7 +86,10 @@ export default {
     </template>
 
     <template #cell(actions)="{ item }">
-      <pipeline-schedule-actions :schedule="item" />
+      <pipeline-schedule-actions
+        :schedule="item"
+        @showDeleteModal="$emit('showDeleteModal', $event)"
+      />
     </template>
   </gl-table-lite>
 </template>

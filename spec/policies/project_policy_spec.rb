@@ -2777,6 +2777,50 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'role_enables_download_code' do
+    using RSpec::Parameterized::TableSyntax
+
+    context 'default roles' do
+      let(:current_user) { public_send(role) }
+
+      context 'public project' do
+        let(:project) { public_project }
+
+        where(:role, :allowed) do
+          :owner      | true
+          :maintainer | true
+          :developer  | true
+          :reporter   | true
+          :guest      | true
+
+          with_them do
+            it do
+              expect(subject.can?(:download_code)).to be(allowed)
+            end
+          end
+        end
+      end
+
+      context 'private project' do
+        let(:project) { private_project }
+
+        where(:role, :allowed) do
+          :owner      | true
+          :maintainer | true
+          :developer  | true
+          :reporter   | true
+          :guest      | false
+        end
+
+        with_them do
+          it do
+            expect(subject.can?(:download_code)).to be(allowed)
+          end
+        end
+      end
+    end
+  end
+
   private
 
   def project_subject(project_type)

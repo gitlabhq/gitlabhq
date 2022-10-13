@@ -294,7 +294,7 @@ export default {
 
       <template v-else>
         <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
-          <p class="gl-mt-3 gl-mb-4">
+          <p class="gl-mb-3">
             {{ $options.i18n.emptyStateMessage }}
           </p>
         </div>

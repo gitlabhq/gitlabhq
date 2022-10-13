@@ -6,15 +6,19 @@ RSpec.describe 'ProjectCiCdSettingsUpdate' do
   include GraphqlHelpers
 
   let_it_be(:project) do
-    create(:project, keep_latest_artifact: true, ci_job_token_scope_enabled: true)
-      .tap(&:save!)
+    create(:project,
+      keep_latest_artifact: true,
+      ci_job_token_scope_enabled: true,
+      ci_inbound_job_token_scope_enabled: true
+    ).tap(&:save!)
   end
 
   let(:variables) do
     {
       full_path: project.full_path,
       keep_latest_artifact: false,
-      job_token_scope_enabled: false
+      job_token_scope_enabled: false,
+      inbound_job_token_scope_enabled: false
     }
   end
 
@@ -74,6 +78,43 @@ RSpec.describe 'ProjectCiCdSettingsUpdate' do
 
       expect(response).to have_gitlab_http_status(:success)
       expect(project.ci_job_token_scope_enabled).to eq(true)
+    end
+
+    describe 'inbound_job_token_scope_enabled' do
+      it 'updates inbound_job_token_scope_enabled' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project.ci_inbound_job_token_scope_enabled).to eq(false)
+      end
+
+      it 'does not update inbound_job_token_scope_enabled if not specified' do
+        variables.except!(:inbound_job_token_scope_enabled)
+
+        post_graphql_mutation(mutation, current_user: user)
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project.ci_inbound_job_token_scope_enabled).to eq(true)
+      end
+
+      context 'when ci_inbound_job_token_scope disabled' do
+        before do
+          stub_feature_flags(ci_inbound_job_token_scope: false)
+        end
+
+        it 'does not update inbound_job_token_scope_enabled' do
+          post_graphql_mutation(mutation, current_user: user)
+
+          project.reload
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(project.ci_inbound_job_token_scope_enabled).to eq(true)
+        end
+      end
     end
 
     context 'when bad arguments are provided' do

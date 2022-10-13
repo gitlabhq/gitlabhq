@@ -178,8 +178,8 @@ RSpec.describe Member do
       end
 
       context 'member role is associated' do
-        let_it_be(:member_role) do
-          create(:member_role, members: [member])
+        let!(:member_role) do
+          create(:member_role, members: [member], base_access_level: Gitlab::Access::DEVELOPER)
         end
 
         context 'member role matches access level' do
@@ -201,7 +201,9 @@ RSpec.describe Member do
             member.access_level = Gitlab::Access::MAINTAINER
 
             expect(member).not_to be_valid
-            expect(member.errors.full_messages).to include( "Access level cannot be changed since member is associated with a custom role")
+            expect(member.errors.full_messages).to include(
+              "Access level cannot be changed since member is associated with a custom role"
+            )
           end
         end
       end

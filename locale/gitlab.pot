@@ -29511,6 +29511,9 @@ msgstr ""
 msgid "PipelineSchedules|All"
 msgstr ""
 
+msgid "PipelineSchedules|Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
 msgid "PipelineSchedules|Delete pipeline schedule"
 msgstr ""
 
@@ -29551,6 +29554,9 @@ msgid "PipelineSchedules|Take ownership of pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "PipelineSchedules|There was a problem deleting the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem fetching pipeline schedules."
@@ -48319,6 +48325,9 @@ msgid "must be less than the limit of %{tag_limit} tags"
 msgstr ""
 
 msgid "must be set for a project namespace"
+msgstr ""
+
+msgid "must be top-level namespace"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"

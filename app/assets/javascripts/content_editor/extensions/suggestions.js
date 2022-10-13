@@ -3,7 +3,7 @@ import { VueRenderer } from '@tiptap/vue-2';
 import tippy from 'tippy.js';
 import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from 'prosemirror-state';
-import { isFunction, uniqueId } from 'lodash';
+import { isFunction, uniqueId, memoize } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { initEmojiMap, getAllEmoji } from '~/emoji';
 import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
@@ -21,6 +21,10 @@ function createSuggestionPlugin({
   nodeType,
   nodeProps = {},
 }) {
+  const fetchData = memoize(
+    isFunction(dataSource) ? dataSource : async () => (await axios.get(dataSource)).data,
+  );
+
   return Suggestion({
     editor,
     char,
@@ -38,9 +42,7 @@ function createSuggestionPlugin({
       if (!dataSource) return [];
 
       try {
-        const items = isFunction(dataSource)
-          ? await dataSource()
-          : (await axios.get(dataSource)).data;
+        const items = await fetchData();
 
         return items.filter(search(query)).slice(0, limit);
       } catch {

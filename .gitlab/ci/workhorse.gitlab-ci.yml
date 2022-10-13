@@ -1,6 +1,6 @@
 workhorse:verify:
   extends: .workhorse:rules:workhorse
-  image: ${GITLAB_DEPENDENCY_PROXY}golang:${GO_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}golang:${GO_VERSION}
   stage: test
   needs: []
   script:

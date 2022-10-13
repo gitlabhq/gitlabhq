@@ -67,13 +67,13 @@ The agent has two loggers:
 - A general purpose logger, which defaults to `info`.
 - A gRPC logger, which defaults to `error`.
 
-One can change their log levels by using a top-level `observability` section in the [agent configuration file](install/index.md#configure-your-agent), for example setting the levels to `debug` and `warning`:
+You can change your log levels by using a top-level `observability` section in the [agent configuration file](install/index.md#configure-your-agent), for example setting the levels to `debug` and `warn`:
 
 ```yaml
 observability:
   logging:
     level: debug
-    grpc_level: warning
+    grpc_level: warn
 ```
 
 When `grpc_level` is set to `info` or below, there will be a lot of gRPC logs.

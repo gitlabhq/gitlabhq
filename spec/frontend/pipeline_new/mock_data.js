@@ -65,3 +65,62 @@ export const mockVariables = [
   },
   { uniqueId: 'var-refs/heads/main4', variable_type: 'env_var', key: '', value: '' },
 ];
+
+export const mockYamlVariables = [
+  {
+    description: 'This is a variable with a value.',
+    key: 'VAR_WITH_VALUE',
+    value: 'test_value',
+    valueOptions: null,
+  },
+  {
+    description: 'This is a variable with a multi-line value.',
+    key: 'VAR_WITH_MULTILINE',
+    value: `this is
+      a multiline value`,
+    valueOptions: null,
+  },
+  {
+    description: 'This is a variable with predefined values.',
+    key: 'VAR_WITH_OPTIONS',
+    value: 'development',
+    valueOptions: ['development', 'staging', 'production'],
+  },
+];
+
+export const mockYamlVariablesWithoutDesc = [
+  {
+    description: 'This is a variable with a value.',
+    key: 'VAR_WITH_VALUE',
+    value: 'test_value',
+    valueOptions: null,
+  },
+  {
+    description: null,
+    key: 'VAR_WITH_MULTILINE',
+    value: `this is
+      a multiline value`,
+    valueOptions: null,
+  },
+  {
+    description: null,
+    key: 'VAR_WITH_OPTIONS',
+    value: 'development',
+    valueOptions: ['development', 'staging', 'production'],
+  },
+];
+
+export const mockCiConfigVariablesQueryResponse = (ciConfigVariables) => ({
+  data: {
+    project: {
+      id: 1,
+      ciConfigVariables,
+    },
+  },
+});
+
+export const mockCiConfigVariablesResponse = mockCiConfigVariablesQueryResponse(mockYamlVariables);
+export const mockEmptyCiConfigVariablesResponse = mockCiConfigVariablesQueryResponse([]);
+export const mockCiConfigVariablesResponseWithoutDesc = mockCiConfigVariablesQueryResponse(
+  mockYamlVariablesWithoutDesc,
+);

@@ -587,8 +587,9 @@ The current stages are:
 ### Dependency Proxy
 
 Some of the jobs are using images from Docker Hub, where we also use
-`${GITLAB_DEPENDENCY_PROXY}` as a prefix to the image path, so that we pull
+`${GITLAB_DEPENDENCY_PROXY_ADDRESS}` as a prefix to the image path, so that we pull
 images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
+By default, this variable is set from the value of `${GITLAB_DEPENDENCY_PROXY}`.
 
 `${GITLAB_DEPENDENCY_PROXY}` is a group CI/CD variable defined in
 [`gitlab-org`](https://gitlab.com/gitlab-org) as
@@ -596,12 +597,31 @@ images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
 defined as:
 
 ```yaml
-image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
 ```
 
 Projects in the `gitlab-org` group pull from the Dependency Proxy, while
 forks that reside on any other personal namespaces or groups fall back to
 Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
+
+#### Work around for when a pipeline is started by a Project access token user
+
+When a pipeline is started by a Project access token user (e.g. the `release-tools approver bot` user which
+automatically updates the Gitaly version used in the main project),
+[the Dependency proxy isn't accessible](https://gitlab.com/gitlab-org/gitlab/-/issues/332411#note_1130388163)
+and the job fails at the `Preparing the "docker+machine" executor` step.
+To work around that, we have a special workflow rule, that overrides the
+`${GITLAB_DEPENDENCY_PROXY_ADDRESS}` variable so that Depdendency proxy isn't used in that case:
+
+```yaml
+- if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
+  variables:
+    GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+```
+
+NOTE:
+We don't directly override the `${GITLAB_DEPENDENCY_PROXY}` variable because group-level
+variables have higher precedence over `.gitlab-ci.yml` variables.
 
 ### Common job definitions
 

@@ -301,17 +301,17 @@ coverage-frontend:
 
 qa-frontend-node:14:
   extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY}node:14
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:14
 
 qa-frontend-node:16:
   extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY}node:16
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:16
 
 qa-frontend-node:latest:
   extends:
     - .qa-frontend-node
     - .frontend:rules:qa-frontend-node-latest
-  image: ${GITLAB_DEPENDENCY_PROXY}node:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:latest
 
 webpack-dev-server:
   extends:

@@ -342,7 +342,7 @@
     FOSS_ONLY: '1'
 
 .use-docker-in-docker:
-  image: ${GITLAB_DEPENDENCY_PROXY}docker:${DOCKER_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}docker:${DOCKER_VERSION}
   services:
     - docker:${DOCKER_VERSION}-dind
   variables:

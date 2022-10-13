@@ -1,5 +1,5 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineScheduleActions from '~/pipeline_schedules/components/table/cells/pipeline_schedule_actions.vue';
 import { mockPipelineScheduleNodes, mockPipelineScheduleAsGuestNodes } from '../../../mock_data';
 
@@ -11,7 +11,7 @@ describe('Pipeline schedule actions', () => {
   };
 
   const createComponent = (props = defaultProps) => {
-    wrapper = shallowMount(PipelineScheduleActions, {
+    wrapper = shallowMountExtended(PipelineScheduleActions, {
       propsData: {
         ...props,
       },
@@ -19,6 +19,7 @@ describe('Pipeline schedule actions', () => {
   };
 
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
+  const findDeleteBtn = () => wrapper.findByTestId('delete-pipeline-schedule-btn');
 
   afterEach(() => {
     wrapper.destroy();
@@ -34,5 +35,15 @@ describe('Pipeline schedule actions', () => {
     createComponent({ schedule: mockPipelineScheduleAsGuestNodes[0] });
 
     expect(findAllButtons()).toHaveLength(0);
+  });
+
+  it('delete button emits showDeleteModal event and schedule id', () => {
+    createComponent();
+
+    findDeleteBtn().vm.$emit('click');
+
+    expect(wrapper.emitted()).toEqual({
+      showDeleteModal: [[mockPipelineScheduleNodes[0].id]],
+    });
   });
 });

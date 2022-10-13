@@ -17,17 +17,11 @@ import {
 import * as Sentry from '@sentry/browser';
 import { uniqueId } from 'lodash';
 import Vue from 'vue';
-import axios from '~/lib/utils/axios_utils';
-import { backOff } from '~/lib/utils/common_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
-import {
-  VARIABLE_TYPE,
-  FILE_TYPE,
-  CONFIG_VARIABLES_TIMEOUT,
-  CC_VALIDATION_REQUIRED_ERROR,
-} from '../constants';
+import { VARIABLE_TYPE, FILE_TYPE, CC_VALIDATION_REQUIRED_ERROR } from '../constants';
+import createPipelineMutation from '../graphql/mutations/create_pipeline.mutation.graphql';
+import ciConfigVariablesQuery from '../graphql/queries/ci_config_variables.graphql';
 import filterVariables from '../utils/filter_variables';
 import RefsDropdown from './refs_dropdown.vue';
 
@@ -76,10 +70,6 @@ export default {
       type: String,
       required: true,
     },
-    configVariablesPath: {
-      type: String,
-      required: true,
-    },
     defaultBranch: {
       type: String,
       required: true,
@@ -96,6 +86,10 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    projectPath: {
+      type: String,
+      required: true,
     },
     refParam: {
       type: String,
@@ -116,19 +110,77 @@ export default {
     return {
       refValue: {
         shortName: this.refParam,
+        // this is needed until we add support for ref type in url query strings
+        // ensure default branch is called with full ref on load
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
+        fullName: this.refParam === this.defaultBranch ? `refs/heads/${this.refParam}` : undefined,
       },
       form: {},
       errorTitle: null,
       error: null,
+      predefinedValueOptions: {},
       warnings: [],
       totalWarnings: 0,
       isWarningDismissed: false,
-      isLoading: false,
       submitted: false,
       ccAlertDismissed: false,
     };
   },
+  apollo: {
+    ciConfigVariables: {
+      query: ciConfigVariablesQuery,
+      // Skip when variables already cached in `form`
+      skip() {
+        return Object.keys(this.form).includes(this.refFullName);
+      },
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          ref: this.refQueryParam,
+        };
+      },
+      update({ project }) {
+        return project?.ciConfigVariables || [];
+      },
+      result({ data }) {
+        const predefinedVars = data?.project?.ciConfigVariables || [];
+        const params = {};
+        const descriptions = {};
+
+        predefinedVars.forEach(({ description, key, value, valueOptions }) => {
+          if (description) {
+            params[key] = value;
+            descriptions[key] = description;
+            this.predefinedValueOptions[key] = valueOptions;
+          }
+        });
+
+        Vue.set(this.form, this.refFullName, { descriptions, variables: [] });
+
+        // Add default variables from yml
+        this.setVariableParams(this.refFullName, VARIABLE_TYPE, params);
+
+        // Add/update variables, e.g. from query string
+        if (this.variableParams) {
+          this.setVariableParams(this.refFullName, VARIABLE_TYPE, this.variableParams);
+        }
+
+        if (this.fileParams) {
+          this.setVariableParams(this.refFullName, FILE_TYPE, this.fileParams);
+        }
+
+        // Adds empty var at the end of the form
+        this.addEmptyVariable(this.refFullName);
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+  },
   computed: {
+    isLoading() {
+      return this.$apollo.queries.ciConfigVariables.loading;
+    },
     overMaxWarningsLimit() {
       return this.totalWarnings > this.maxWarnings;
     },
@@ -147,6 +199,9 @@ export default {
     refFullName() {
       return this.refValue.fullName;
     },
+    refQueryParam() {
+      return this.refFullName || this.refShortName;
+    },
     variables() {
       return this.form[this.refFullName]?.variables ?? [];
     },
@@ -156,21 +211,6 @@ export default {
     ccRequiredError() {
       return this.error === CC_VALIDATION_REQUIRED_ERROR && !this.ccAlertDismissed;
     },
-  },
-  watch: {
-    refValue() {
-      this.loadConfigVariablesForm();
-    },
-  },
-  created() {
-    // this is needed until we add support for ref type in url query strings
-    // ensure default branch is called with full ref on load
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
-    if (this.refValue.shortName === this.defaultBranch) {
-      this.refValue.fullName = `refs/heads/${this.refValue.shortName}`;
-    }
-
-    this.loadConfigVariablesForm();
   },
   methods: {
     addEmptyVariable(refValue) {
@@ -204,15 +244,18 @@ export default {
         });
       }
     },
-    setVariableType(key, type) {
+    setVariableAttribute(key, attribute, value) {
       const { variables } = this.form[this.refFullName];
       const variable = variables.find((v) => v.key === key);
-      variable.variable_type = type;
+      variable[attribute] = value;
     },
     setVariableParams(refValue, type, paramsObj) {
       Object.entries(paramsObj).forEach(([key, value]) => {
         this.setVariable(refValue, type, key, value);
       });
+    },
+    shouldShowValuesDropdown(key) {
+      return this.predefinedValueOptions[key]?.length > 1;
     },
     removeVariable(index) {
       this.variables.splice(index, 1);
@@ -220,116 +263,38 @@ export default {
     canRemove(index) {
       return index < this.variables.length - 1;
     },
-    loadConfigVariablesForm() {
-      // Skip when variables already cached in `form`
-      if (this.form[this.refFullName]) {
-        return;
-      }
-
-      this.fetchConfigVariables(this.refFullName || this.refShortName)
-        .then(({ descriptions, params }) => {
-          Vue.set(this.form, this.refFullName, {
-            variables: [],
-            descriptions,
-          });
-
-          // Add default variables from yml
-          this.setVariableParams(this.refFullName, VARIABLE_TYPE, params);
-        })
-        .catch(() => {
-          Vue.set(this.form, this.refFullName, {
-            variables: [],
-            descriptions: {},
-          });
-        })
-        .finally(() => {
-          // Add/update variables, e.g. from query string
-          if (this.variableParams) {
-            this.setVariableParams(this.refFullName, VARIABLE_TYPE, this.variableParams);
-          }
-          if (this.fileParams) {
-            this.setVariableParams(this.refFullName, FILE_TYPE, this.fileParams);
-          }
-
-          // Adds empty var at the end of the form
-          this.addEmptyVariable(this.refFullName);
-        });
-    },
-    fetchConfigVariables(refValue) {
-      this.isLoading = true;
-
-      return backOff((next, stop) => {
-        axios
-          .get(this.configVariablesPath, {
-            params: {
-              sha: refValue,
-            },
-          })
-          .then(({ data, status }) => {
-            if (status === httpStatusCodes.NO_CONTENT) {
-              next();
-            } else {
-              this.isLoading = false;
-              stop(data);
-            }
-          })
-          .catch((error) => {
-            stop(error);
-          });
-      }, CONFIG_VARIABLES_TIMEOUT)
-        .then((data) => {
-          const params = {};
-          const descriptions = {};
-
-          Object.entries(data).forEach(([key, { value, description }]) => {
-            if (description) {
-              params[key] = value;
-              descriptions[key] = description;
-            }
-          });
-
-          return { params, descriptions };
-        })
-        .catch((error) => {
-          this.isLoading = false;
-
-          Sentry.captureException(error);
-
-          return { params: {}, descriptions: {} };
-        });
-    },
-    createPipeline() {
+    async createPipeline() {
       this.submitted = true;
       this.ccAlertDismissed = false;
 
-      return axios
-        .post(this.pipelinesPath, {
+      const { data } = await this.$apollo.mutate({
+        mutation: createPipelineMutation,
+        variables: {
+          endpoint: this.pipelinesPath,
           // send shortName as fall back for query params
           // https://gitlab.com/gitlab-org/gitlab/-/issues/287815
-          ref: this.refValue.fullName || this.refShortName,
-          variables_attributes: filterVariables(this.variables),
-        })
-        .then(({ data }) => {
-          redirectTo(`${this.pipelinesPath}/${data.id}`);
-        })
-        .catch((err) => {
-          // always re-enable submit button
-          this.submitted = false;
+          ref: this.refQueryParam,
+          variablesAttributes: filterVariables(this.variables),
+        },
+      });
 
-          const {
-            errors = [],
-            warnings = [],
-            total_warnings: totalWarnings = 0,
-          } = err.response.data;
-          const [error] = errors;
+      const { id, errors, totalWarnings, warnings } = data.createPipeline;
 
-          this.reportError({
-            title: i18n.submitErrorTitle,
-            error,
-            warnings,
-            totalWarnings,
-          });
-        });
+      if (id) {
+        redirectTo(`${this.pipelinesPath}/${id}`);
+        return;
+      }
+
+      // always re-enable submit button
+      this.submitted = false;
+      const [error] = errors;
+
+      this.reportError({
+        title: i18n.submitErrorTitle,
+        error,
+        warnings,
+        totalWarnings,
+      });
     },
     onRefsLoadingError(error) {
       this.reportError({ title: i18n.refsLoadingErrorTitle });
@@ -416,7 +381,7 @@ export default {
             <gl-dropdown-item
               v-for="type in Object.keys($options.typeOptions)"
               :key="type"
-              @click="setVariableType(variable.key, type)"
+              @click="setVariableAttribute(variable.key, 'variable_type', type)"
             >
               {{ $options.typeOptions[type] }}
             </gl-dropdown-item>
@@ -429,7 +394,24 @@ export default {
             data-qa-selector="ci_variable_key_field"
             @change="addEmptyVariable(refFullName)"
           />
+          <gl-dropdown
+            v-if="shouldShowValuesDropdown(variable.key)"
+            :text="variable.value"
+            :class="$options.formElementClasses"
+            class="gl-flex-grow-1 gl-mr-0!"
+            data-testid="pipeline-form-ci-variable-value-dropdown"
+          >
+            <gl-dropdown-item
+              v-for="value in predefinedValueOptions[variable.key]"
+              :key="value"
+              data-testid="pipeline-form-ci-variable-value-dropdown-items"
+              @click="setVariableAttribute(variable.key, 'value', value)"
+            >
+              {{ value }}
+            </gl-dropdown-item>
+          </gl-dropdown>
           <gl-form-textarea
+            v-else
             v-model="variable.value"
             :placeholder="s__('CiVariables|Input variable value')"
             class="gl-mb-3"

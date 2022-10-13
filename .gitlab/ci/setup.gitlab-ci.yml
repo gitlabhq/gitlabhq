@@ -30,7 +30,7 @@ cache gems:
 .absolutely-minimal-job:
   extends:
     - .minimal-job
-  image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
   variables:
     GIT_STRATEGY: none
 
@@ -79,7 +79,7 @@ verify-ruby-2.7:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}-alpine3.13
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.13
   stage: test
   needs: []
   script:
@@ -116,7 +116,7 @@ generate-frontend-fixtures-mapping:
 
 detect-tests:
   extends: .rails:rules:detect-tests
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   needs: []
   stage: prepare
   variables:

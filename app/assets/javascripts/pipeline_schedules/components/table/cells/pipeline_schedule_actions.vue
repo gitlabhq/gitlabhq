@@ -58,6 +58,8 @@ export default {
         :title="$options.i18n.deleteTooltip"
         icon="remove"
         variant="danger"
+        data-testid="delete-pipeline-schedule-btn"
+        @click="$emit('showDeleteModal', schedule.id)"
       />
     </gl-button-group>
   </div>

@@ -562,20 +562,6 @@ FooBar
     shared_examples_for 'common markdown examples' do
       let(:project_base) { build(:project, :repository) }
 
-      it 'displays inline code' do
-        object = create_object('Text with `inline code`')
-        expected = 'Text with <code>inline code</code>'
-
-        expect(first_line_in_markdown(object, attribute, 100, project: project)).to match(expected)
-      end
-
-      it 'truncates the text with multiple paragraphs' do
-        object = create_object("Paragraph 1\n\nParagraph 2")
-        expected = 'Paragraph 1...'
-
-        expect(first_line_in_markdown(object, attribute, 100, project: project)).to match(expected)
-      end
-
       it 'displays the first line of a code block' do
         object = create_object("```\nCode block\nwith two lines\n```")
         expected = %r{<pre.+><code><span class="line">Code block\.\.\.</span>\n</code></pre>}
@@ -589,18 +575,6 @@ FooBar
         expected = (text * 2).sub(/.{3}/, '...')
 
         expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(expected)
-      end
-
-      it 'preserves a link href when link text is truncated' do
-        text = 'The quick brown fox jumped over the lazy dog' # 44 chars
-        link_url = 'http://example.com/foo/bar/baz' # 30 chars
-        input = "#{text}#{text}#{text} #{link_url}" # 163 chars
-        expected_link_text = 'http://example...</a>'
-
-        object = create_object(input)
-
-        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(link_url)
-        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(expected_link_text)
       end
 
       it 'preserves code color scheme' do
@@ -667,40 +641,6 @@ FooBar
         result = first_line_in_markdown(object, attribute, 100, project: project)
 
         expect(result).to include(html)
-      end
-
-      it 'truncates Markdown properly' do
-        object = create_object("@#{user.username}, can you look at this?\nHello world\n")
-        actual = first_line_in_markdown(object, attribute, 100, project: project)
-
-        doc = Nokogiri::HTML.parse(actual)
-
-        # Make sure we didn't create invalid markup
-        expect(doc.errors).to be_empty
-
-        # Leading user link
-        expect(doc.css('a').length).to eq(1)
-        expect(doc.css('a')[0].attr('href')).to eq user_path(user)
-        expect(doc.css('a')[0].text).to eq "@#{user.username}"
-
-        expect(doc.content).to eq "@#{user.username}, can you look at this?..."
-      end
-
-      it 'truncates Markdown with emoji properly' do
-        object = create_object("foo :wink:\nbar :grinning:")
-        actual = first_line_in_markdown(object, attribute, 100, project: project)
-
-        doc = Nokogiri::HTML.parse(actual)
-
-        # Make sure we didn't create invalid markup
-        # But also account for the 2 errors caused by the unknown `gl-emoji` elements
-        expect(doc.errors.length).to eq(2)
-
-        expect(doc.css('gl-emoji').length).to eq(2)
-        expect(doc.css('gl-emoji')[0].attr('data-name')).to eq 'wink'
-        expect(doc.css('gl-emoji')[1].attr('data-name')).to eq 'grinning'
-
-        expect(doc.content).to eq "foo 😉\nbar 😀"
       end
 
       it 'does not post-process truncated text', :request_store do
