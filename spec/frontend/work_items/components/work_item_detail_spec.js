@@ -29,7 +29,6 @@ import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subs
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
-import { temporaryConfig } from '~/graphql_shared/issuable_client';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockParent,
@@ -86,7 +85,6 @@ describe('WorkItemDetail component', () => {
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     workItemsMvc2Enabled = false,
-    includeWidgets = false,
     error = undefined,
   } = {}) => {
     const handlers = [
@@ -102,13 +100,7 @@ describe('WorkItemDetail component', () => {
     }
 
     wrapper = shallowMount(WorkItemDetail, {
-      apolloProvider: createMockApollo(
-        handlers,
-        {},
-        {
-          typePolicies: includeWidgets ? temporaryConfig.cacheConfig.typePolicies : {},
-        },
-      ),
+      apolloProvider: createMockApollo(handlers),
       propsData: { isModal, workItemId },
       data() {
         return {
@@ -502,11 +494,13 @@ describe('WorkItemDetail component', () => {
 
   describe('labels widget', () => {
     it.each`
-      description                                               | includeWidgets | exists
-      ${'renders when widget is returned from API'}             | ${true}        | ${true}
-      ${'does not render when widget is not returned from API'} | ${false}       | ${false}
-    `('$description', async ({ includeWidgets, exists }) => {
-      createComponent({ includeWidgets, workItemsMvc2Enabled: true });
+      description                                               | labelsWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}             | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}            | ${false}
+    `('$description', async ({ labelsWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ labelsWidgetPresent });
+      const handler = jest.fn().mockResolvedValue(response);
+      createComponent({ handler, workItemsMvc2Enabled: true });
       await waitForPromises();
 
       expect(findWorkItemLabels().exists()).toBe(exists);

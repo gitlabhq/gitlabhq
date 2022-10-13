@@ -1,6 +1,5 @@
 enum LocalWidgetType {
   ASSIGNEES
-  LABELS
 }
 
 interface LocalWorkItemWidget {
@@ -12,16 +11,6 @@ type LocalWorkItemAssignees implements LocalWorkItemWidget {
   nodes: [UserCore]
 }
 
-type LocalWorkItemLabels implements LocalWorkItemWidget {
-  type: LocalWidgetType!
-  allowScopedLabels: Boolean!
-  nodes: [Label!]
-}
-
-extend type WorkItem {
-  mockWidgets: [LocalWorkItemWidget]
-}
-
 input LocalUserInput {
   id: ID!
   name: String
@@ -30,17 +19,9 @@ input LocalUserInput {
   avatarUrl: String
 }
 
-input LocalLabelInput {
-  id: ID!
-  title: String!
-  color: String
-  description: String
-}
-
 input LocalUpdateWorkItemInput {
   id: WorkItemID!
   assignees: [LocalUserInput!]
-  labels: [LocalLabelInput]
 }
 
 type LocalWorkItemPayload {

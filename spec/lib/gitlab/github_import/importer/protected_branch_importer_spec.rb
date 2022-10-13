@@ -9,12 +9,17 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
   let(:allow_force_pushes_on_github) { true }
   let(:required_conversation_resolution) { false }
   let(:required_signatures) { false }
+  let(:required_pull_request_reviews) { false }
+  let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }
+  let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+  let(:expected_allow_force_push) { true }
   let(:github_protected_branch) do
     Gitlab::GithubImport::Representation::ProtectedBranch.new(
       id: branch_name,
       allow_force_pushes: allow_force_pushes_on_github,
       required_conversation_resolution: required_conversation_resolution,
-      required_signatures: required_signatures
+      required_signatures: required_signatures,
+      required_pull_request_reviews: required_pull_request_reviews
     )
   end
 
@@ -28,8 +33,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
       let(:expected_ruleset) do
         {
           name: 'protection',
-          push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
-          merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
+          push_access_levels_attributes: [{ access_level: expected_push_access_level }],
+          merge_access_levels_attributes: [{ access_level: expected_merge_access_level }],
           allow_force_push: expected_allow_force_push
         }
       end
@@ -165,7 +170,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
       end
     end
 
-    context "when branch is not default" do
+    context 'when branch is not default' do
       context 'when required_conversation_resolution rule is enabled' do
         let(:required_conversation_resolution) { true }
 
@@ -188,6 +193,108 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
         let(:required_signatures) { false }
 
         it_behaves_like 'does not change project attributes'
+      end
+    end
+
+    context 'when required_pull_request_reviews rule is enabled on GitHub' do
+      let(:required_pull_request_reviews) { true }
+      let(:expected_push_access_level) { Gitlab::Access::NO_ACCESS }
+      let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+      it_behaves_like 'create branch protection by the strictest ruleset'
+    end
+
+    context 'when required_pull_request_reviews rule is disabled on GitHub' do
+      let(:required_pull_request_reviews) { false }
+
+      context 'when branch is default' do
+        before do
+          allow(project).to receive(:default_branch).and_return(branch_name)
+        end
+
+        context 'when default branch protection = Gitlab::Access::PROTECTION_DEV_CAN_PUSH' do
+          before do
+            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+          end
+
+          let(:expected_push_access_level) { Gitlab::Access::DEVELOPER }
+          let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+
+        context 'when default branch protection = Gitlab::Access::PROTECTION_DEV_CAN_MERGE' do
+          before do
+            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+          end
+
+          let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }
+          let(:expected_merge_access_level) { Gitlab::Access::DEVELOPER }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+      end
+
+      context 'when branch is protected on GitLab' do
+        let(:protected_branch) do
+          create(
+            :protected_branch,
+            project: project,
+            name: 'protect*',
+            allow_force_push: true
+          )
+        end
+
+        let(:push_access_level) { protected_branch.push_access_levels.first }
+        let(:merge_access_level) { protected_branch.merge_access_levels.first }
+
+        context 'when there is branch protection rule for the role' do
+          context 'when No one can merge' do
+            before do
+              merge_access_level.update_column(:access_level, Gitlab::Access::NO_ACCESS)
+            end
+
+            let(:expected_push_access_level) { push_access_level.access_level }
+            let(:expected_merge_access_level) { Gitlab::Access::NO_ACCESS }
+
+            it_behaves_like 'create branch protection by the strictest ruleset'
+          end
+
+          context 'when Maintainers and Developers can merge' do
+            before do
+              merge_access_level.update_column(:access_level, Gitlab::Access::DEVELOPER)
+            end
+
+            let(:gitlab_push_access_level) { push_access_level.access_level }
+            let(:gitlab_merge_access_level) { merge_access_level.access_level }
+            let(:expected_push_access_level) { gitlab_push_access_level }
+            let(:expected_merge_access_level) { [gitlab_merge_access_level, github_default_merge_access_level].max }
+            let(:github_default_merge_access_level) do
+              Gitlab::GithubImport::Importer::ProtectedBranchImporter::GITHUB_DEFAULT_MERGE_ACCESS_LEVEL
+            end
+
+            it_behaves_like 'create branch protection by the strictest ruleset'
+          end
+        end
+
+        context 'when there is no branch protection rule for the role' do
+          before do
+            push_access_level.update_column(:user_id, project.owner.id)
+            merge_access_level.update_column(:user_id, project.owner.id)
+          end
+
+          let(:expected_push_access_level) { ProtectedBranch::PushAccessLevel::GITLAB_DEFAULT_ACCESS_LEVEL }
+          let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+      end
+
+      context 'when branch is neither default nor protected on GitLab' do
+        let(:expected_push_access_level) { ProtectedBranch::PushAccessLevel::GITLAB_DEFAULT_ACCESS_LEVEL }
+        let(:expected_merge_access_level) { ProtectedBranch::MergeAccessLevel::GITLAB_DEFAULT_ACCESS_LEVEL }
+
+        it_behaves_like 'create branch protection by the strictest ruleset'
       end
     end
   end

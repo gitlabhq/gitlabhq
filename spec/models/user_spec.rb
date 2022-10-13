@@ -3723,6 +3723,22 @@ RSpec.describe User do
 
       expect(user.followees).to be_empty
     end
+
+    it 'does not follow if max followee limit is reached' do
+      stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
+
+      user = create(:user)
+      Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
+
+      followee = create(:user)
+      user_follow_user = user.follow(followee)
+
+      expect(user_follow_user).not_to be_persisted
+      expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
+      expect(user_follow_user.errors.messages[:base].first).to eq(expected_message)
+
+      expect(user.following?(followee)).to be_falsey
+    end
   end
 
   describe '#unfollow' do
@@ -3750,6 +3766,18 @@ RSpec.describe User do
       expect(user.unfollow(followee2)).to be_falsey
 
       expect(user.followees).to be_empty
+    end
+
+    it 'unfollows when over followee limit' do
+      user = create(:user)
+
+      followees = create_list(:user, 4)
+      followees.each { |f| expect(user.follow(f)).to be_truthy }
+
+      stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', followees.length - 2)
+
+      expect(user.unfollow(followees.first)).to be_truthy
+      expect(user.following?(followees.first)).to be_falsey
     end
   end
 

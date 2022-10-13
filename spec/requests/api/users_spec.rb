@@ -940,6 +940,17 @@ RSpec.describe API::Users do
         expect(user.followees).to contain_exactly(followee)
         expect(response).to have_gitlab_http_status(:created)
       end
+
+      it 'alerts and not follow when over followee limit' do
+        stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
+        Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
+
+        post api("/users/#{followee.id}/follow", user)
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
+        expect(json_response['message']).to eq(expected_message)
+        expect(user.following?(followee)).to be_falsey
+      end
     end
 
     context 'on a followed user' do

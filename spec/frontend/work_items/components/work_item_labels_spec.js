@@ -7,10 +7,16 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
-import { i18n } from '~/work_items/constants';
-import { temporaryConfig, resolvers } from '~/graphql_shared/issuable_client';
-import { projectLabelsResponse, mockLabels, workItemQueryResponse } from '../mock_data';
+import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS } from '~/work_items/constants';
+import {
+  projectLabelsResponse,
+  mockLabels,
+  workItemQueryResponse,
+  workItemResponseFactory,
+  updateWorkItemMutationResponse,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -24,29 +30,27 @@ describe('WorkItemLabels component', () => {
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findLabelsTitle = () => wrapper.findByTestId('labels-title');
 
+  const workItemQuerySuccess = jest.fn().mockResolvedValue(workItemQueryResponse);
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
+  const successUpdateWorkItemMutationHandler = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemMutationResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const createComponent = ({
-    labels = mockLabels,
     canUpdate = true,
+    workItemQueryHandler = workItemQuerySuccess,
     searchQueryHandler = successSearchQueryHandler,
+    updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
   } = {}) => {
-    const apolloProvider = createMockApollo([[labelSearchQuery, searchQueryHandler]], resolvers, {
-      typePolicies: temporaryConfig.cacheConfig.typePolicies,
-    });
-
-    apolloProvider.clients.defaultClient.writeQuery({
-      query: workItemQuery,
-      variables: {
-        id: workItemId,
-      },
-      data: workItemQueryResponse.data,
-    });
+    const apolloProvider = createMockApollo([
+      [workItemQuery, workItemQueryHandler],
+      [labelSearchQuery, searchQueryHandler],
+      [updateWorkItemMutation, updateWorkItemMutationHandler],
+    ]);
 
     wrapper = mountExtended(WorkItemLabels, {
       propsData: {
-        labels,
         workItemId,
         canUpdate,
         fullPath: 'test-project-path',
@@ -157,7 +161,7 @@ describe('WorkItemLabels component', () => {
     findTokenSelector().vm.$emit('focus');
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[i18n.fetchError]]);
+    expect(wrapper.emitted('error')).toEqual([[I18N_WORK_ITEM_ERROR_FETCHING_LABELS]]);
   });
 
   it('should search for with correct key after text input', async () => {
@@ -169,7 +173,43 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expect(successSearchQueryHandler).toHaveBeenCalledWith(
-      expect.objectContaining({ search: searchKey }),
+      expect.objectContaining({ searchTerm: searchKey }),
     );
+  });
+
+  describe('when clicking outside the token selector', () => {
+    it('calls a mutation with correct variables', () => {
+      createComponent();
+
+      findTokenSelector().vm.$emit('input', [mockLabels[0]]);
+      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
+
+      expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+        input: {
+          labelsWidget: { addLabelIds: [mockLabels[0].id], removeLabelIds: [] },
+          id: 'gid://gitlab/WorkItem/1',
+        },
+      });
+    });
+
+    it('emits an error and resets labels if mutation was rejected', async () => {
+      const workItemQueryHandler = jest.fn().mockResolvedValue(workItemResponseFactory());
+
+      createComponent({ updateWorkItemMutationHandler: errorHandler, workItemQueryHandler });
+
+      await waitForPromises();
+
+      const initialLabels = findTokenSelector().props('selectedTokens');
+
+      findTokenSelector().vm.$emit('input', [mockLabels[0]]);
+      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
+
+      await waitForPromises();
+
+      const updatedLabels = findTokenSelector().props('selectedTokens');
+
+      expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
+      expect(updatedLabels).toEqual(initialLabels);
+    });
   });
 });

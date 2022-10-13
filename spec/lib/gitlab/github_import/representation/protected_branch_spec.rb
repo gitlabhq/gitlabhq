@@ -20,6 +20,10 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
       it 'includes the protected branch required_conversation_resolution attribute' do
         expect(protected_branch.required_conversation_resolution).to eq true
       end
+
+      it 'includes the protected branch required_pull_request_reviews' do
+        expect(protected_branch.required_pull_request_reviews).to eq true
+      end
     end
   end
 
@@ -27,9 +31,11 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
     let(:response) do
       response = Struct.new(
         :url, :allow_force_pushes, :required_conversation_resolution, :required_signatures,
+        :required_pull_request_reviews,
         keyword_init: true
       )
       enabled_setting = Struct.new(:enabled, keyword_init: true)
+      required_pull_request_reviews = Struct.new(:url, :dismissal_restrictions, keyword_init: true)
       response.new(
         url: 'https://example.com/branches/main/protection',
         allow_force_pushes: enabled_setting.new(
@@ -40,6 +46,10 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
         ),
         required_signatures: enabled_setting.new(
           enabled: true
+        ),
+        required_pull_request_reviews: required_pull_request_reviews.new(
+          url: 'https://example.com/branches/main/protection/required_pull_request_reviews',
+          dismissal_restrictions: {}
         )
       )
     end
@@ -56,7 +66,8 @@ RSpec.describe Gitlab::GithubImport::Representation::ProtectedBranch do
           'id' => 'main',
           'allow_force_pushes' => true,
           'required_conversation_resolution' => true,
-          'required_signatures' => true
+          'required_signatures' => true,
+          'required_pull_request_reviews' => true
         }
       end
 

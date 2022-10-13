@@ -177,7 +177,7 @@ export default {
       return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
     },
     workItemLabels() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
     },
     workItemDueDate() {
       return this.workItem?.widgets?.find(

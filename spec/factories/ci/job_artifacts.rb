@@ -393,16 +393,6 @@ FactoryBot.define do
       end
     end
 
-    trait :sast_deprecated do
-      file_type { :sast }
-      file_format { :raw }
-
-      after(:build) do |artifact, _|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/security_reports/deprecated/gl-sast-report.json'), 'application/json')
-      end
-    end
-
     trait :sast_with_corrupted_data do
       file_type { :sast }
       file_format { :raw }

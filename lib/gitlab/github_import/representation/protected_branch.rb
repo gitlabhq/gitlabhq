@@ -9,12 +9,13 @@ module Gitlab
 
         attr_reader :attributes
 
-        expose_attribute :id, :allow_force_pushes, :required_conversation_resolution, :required_signatures
+        expose_attribute :id, :allow_force_pushes, :required_conversation_resolution, :required_signatures,
+                         :required_pull_request_reviews
 
         # Builds a Branch Protection info from a GitHub API response.
         # Resource structure details:
         # https://docs.github.com/en/rest/branches/branch-protection#get-branch-protection
-        # branch_protection - An instance of `Sawyer::Resource` containing the protection details.
+        # branch_protection - An instance of `Hash` containing the protection details.
         def self.from_api_response(branch_protection, _additional_object_data = {})
           branch_name = branch_protection[:url].match(%r{/branches/(\S{1,255})/protection$})[1]
 
@@ -22,7 +23,8 @@ module Gitlab
             id: branch_name,
             allow_force_pushes: branch_protection.dig(:allow_force_pushes, :enabled),
             required_conversation_resolution: branch_protection.dig(:required_conversation_resolution, :enabled),
-            required_signatures: branch_protection.dig(:required_signatures, :enabled)
+            required_signatures: branch_protection.dig(:required_signatures, :enabled),
+            required_pull_request_reviews: branch_protection[:required_pull_request_reviews].present?
           }
 
           new(hash)

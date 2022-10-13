@@ -174,8 +174,9 @@ class UsersController < ApplicationController
   end
 
   def follow
-    current_user.follow(user)
+    followee = current_user.follow(user)
 
+    flash[:alert] = followee.errors.full_messages.join(', ') if followee&.errors&.any?
     redirect_path = referer_path(request) || @user
 
     redirect_to redirect_path

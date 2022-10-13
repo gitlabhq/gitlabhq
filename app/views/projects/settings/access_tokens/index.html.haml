@@ -39,6 +39,7 @@
           access_levels: ProjectMember.permissible_access_level_roles(current_user, @project),
           default_access_level: Gitlab::Access::GUEST,
           prefix: :resource_access_token,
+          description_prefix: :project_access_token,
           help_path: help_page_path('user/project/settings/project_access_tokens', anchor: 'scopes-for-a-project-access-token')
 
     = render 'shared/access_tokens/table',

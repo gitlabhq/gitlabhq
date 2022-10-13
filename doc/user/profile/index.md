@@ -317,6 +317,9 @@ GitLab tracks user contribution activity. You can follow or unfollow other users
 - The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
   in GitLab 15.0).
 
+In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
+the maximum number of users you can follow is 300.
+
 To view a user's activity in a top-level Activity view:
 
 1. From a user's profile, select **Follow**.

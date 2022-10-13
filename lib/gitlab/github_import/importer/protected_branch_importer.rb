@@ -6,6 +6,10 @@ module Gitlab
       class ProtectedBranchImporter
         attr_reader :protected_branch, :project, :client
 
+        # By default on GitHub, both developers and maintainers can merge
+        # a PR into the protected branch
+        GITHUB_DEFAULT_MERGE_ACCESS_LEVEL = Gitlab::Access::DEVELOPER
+
         # protected_branch - An instance of
         #   `Gitlab::GithubImport::Representation::ProtectedBranch`.
         # project - An instance of `Project`
@@ -31,8 +35,8 @@ module Gitlab
         def params
           {
             name: protected_branch.id,
-            push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
-            merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
+            push_access_levels_attributes: [{ access_level: push_access_level }],
+            merge_access_levels_attributes: [{ access_level: merge_access_level }],
             allow_force_push: allow_force_push?
           }
         end
@@ -67,6 +71,71 @@ module Gitlab
           push_rule = project.push_rule || project.build_push_rule
           push_rule.update!(reject_unsigned_commits: true)
           project.project_setting.update!(push_rule_id: push_rule.id)
+        end
+
+        def push_access_level
+          if protected_branch.required_pull_request_reviews
+            Gitlab::Access::NO_ACCESS
+          else
+            gitlab_access_level_for(:push)
+          end
+        end
+
+        # Gets the strictest merge_access_level between GitHub and GitLab
+        def merge_access_level
+          gitlab_access = gitlab_access_level_for(:merge)
+
+          return gitlab_access if gitlab_access == Gitlab::Access::NO_ACCESS
+
+          [gitlab_access, GITHUB_DEFAULT_MERGE_ACCESS_LEVEL].max
+        end
+
+        # action - :push/:merge
+        def gitlab_access_level_for(action)
+          if default_branch?
+            action == :push ? default_branch_push_access_level : default_branch_merge_access_level
+          elsif protected_on_gitlab?
+            non_default_branch_access_level_for(action)
+          else
+            gitlab_default_access_level_for(action)
+          end
+        end
+
+        def default_branch_push_access_level
+          if default_branch_protection.developer_can_push?
+            Gitlab::Access::DEVELOPER
+          else
+            gitlab_default_access_level_for(:push)
+          end
+        end
+
+        def default_branch_merge_access_level
+          if default_branch_protection.developer_can_merge?
+            Gitlab::Access::DEVELOPER
+          else
+            gitlab_default_access_level_for(:merge)
+          end
+        end
+
+        def default_branch_protection
+          Gitlab::Access::BranchProtection.new(project.namespace.default_branch_protection)
+        end
+
+        def protected_on_gitlab?
+          ProtectedBranch.protected?(project, protected_branch.id)
+        end
+
+        def non_default_branch_access_level_for(action)
+          access_level = ProtectedBranch.access_levels_for_ref(protected_branch.id, action: action)
+            .find(&:role?)&.access_level
+
+          access_level || gitlab_default_access_level_for(action)
+        end
+
+        def gitlab_default_access_level_for(action)
+          return ProtectedBranch::PushAccessLevel::GITLAB_DEFAULT_ACCESS_LEVEL if action == :push
+
+          ProtectedBranch::MergeAccessLevel::GITLAB_DEFAULT_ACCESS_LEVEL
         end
       end
     end

@@ -1648,8 +1648,9 @@ class User < ApplicationRecord
     begin
       followee = Users::UserFollowUser.create(follower_id: self.id, followee_id: user.id)
       self.followees.reset if followee.persisted?
+      followee
     rescue ActiveRecord::RecordNotUnique
-      false
+      nil
     end
   end
 

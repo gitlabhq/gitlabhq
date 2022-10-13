@@ -36,6 +36,9 @@ export const i18n = {
   ),
 };
 
+export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
+  'WorkItem|Something went wrong when fetching labels. Please try again.',
+);
 export const I18N_WORK_ITEM_ERROR_CREATING = s__(
   'WorkItem|Something went wrong when creating %{workItemType}. Please try again.',
 );

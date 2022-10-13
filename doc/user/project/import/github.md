@@ -204,7 +204,7 @@ defaults to the default project visibility.
 Supported GitHub branch protection rules are mapped to GitLab branch protection rules or project-wide GitLab settings when they are imported:
 
 - GitHub rule **Require conversation resolution before merging** for the project's default branch is mapped to the [**All threads must be resolved** GitLab setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) in GitLab 15.5.
-- Support for GitHub rule **Require a pull request before merging** is proposed in issue [370951](https://gitlab.com/gitlab-org/gitlab/-/issues/370951).
+- GitHub rule **Require a pull request before merging** is mapped to the **No one** option in the **Allowed to push** list of the branch protection rule. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) in GitLab 15.5.
 - GitHub rule **Require signed commits** for the project's default branch is mapped to the **Reject unsigned commits** GitLab setting. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) in GitLab 15.5.
 - Support for GitHub rule **Require status checks to pass before merging** was proposed in issue [370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule cannot be translated during project import into GitLab due to technical difficulties.
 You can still create [status checks](../merge_requests/status_checks.md) in GitLab yourself.

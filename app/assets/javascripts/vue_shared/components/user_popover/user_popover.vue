@@ -141,8 +141,9 @@ export default {
         await followUser(this.user.id);
         this.$emit('follow');
       } catch (error) {
+        const message = error.response?.data?.message || I18N_ERROR_FOLLOW;
         createAlert({
-          message: I18N_ERROR_FOLLOW,
+          message,
           error,
           captureError: true,
         });

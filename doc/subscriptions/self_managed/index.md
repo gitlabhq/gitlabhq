@@ -261,7 +261,7 @@ It also displays the following information:
 
 ## Export your license usage
 
-> Introduced in GitLab 14.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66826) in GitLab 14.2.
 
 If you are an administrator, you can export your license usage into a CSV:
 

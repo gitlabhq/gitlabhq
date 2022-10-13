@@ -68,11 +68,11 @@ following table along with GitLab version it was introduced in:
 
 | Scope                    | Description | Introduced in GitLab Version |
 |--------------------------|-------------|------------------------------|
-| `read_repository`        | Allows read-access to the repository through `git clone` | -- |
-| `read_registry`          | Allows read-access to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. | -- |
-| `write_registry`         | Allows write-access (push) to [container registry](../../packages/container_registry/index.md). | 12.10 |
-| `read_package_registry`  | Allows read access to the package registry. | 13.0 |
-| `write_package_registry` | Allows write access to the package registry. | 13.0 |
+| `read_repository`        | Grants read-access to the repository through `git clone` | -- |
+| `read_registry`          | Grants read-access to [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. | -- |
+| `write_registry`         | Grants write-access (push) to [container registry](../../packages/container_registry/index.md). | 12.10 |
+| `read_package_registry`  | Grants read access to the package registry. | 13.0 |
+| `write_package_registry` | Grants write access to the package registry. | 13.0 |
 
 ## Deploy token custom username
 

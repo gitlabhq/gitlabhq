@@ -85,10 +85,10 @@ The scope determines the actions you can perform when you authenticate with a pr
 |:-------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api`              | Grants complete read and write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                |
 | `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                                   |
-| `read_registry`    | Allows read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
-| `write_registry`   | Allows write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                             |
-| `read_repository`  | Allows read access (pull) to the repository.                                                                                                                |
-| `write_repository` | Allows read and write access (pull and push) to the repository.                                                                                             |
+| `read_registry`    | Grants read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
+| `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                             |
+| `read_repository`  | Grants read access (pull) to the repository.                                                                                                                |
+| `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                             |
 
 ## Enable or disable project access token creation
 

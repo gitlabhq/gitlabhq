@@ -1,5 +1,5 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 remove_date: '2022-10-29'

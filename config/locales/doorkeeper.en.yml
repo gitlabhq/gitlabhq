@@ -98,17 +98,17 @@ en:
         Grants read-only access to the user's primary email address using OpenID Connect.
     project_access_token_scope_desc:
       api:
-        Grants complete read/write access to the scoped project API.
+        Grants complete read and write access to the scoped project API, including the Package Registry.
       read_api:
-        Grants read access to the scoped project API.
+        Grants read access to the scoped project API, including the Package Registry.
       read_repository:
-        Allows read-only access (pull) to the repository.
+        Grants read access (pull) to the repository.
       write_repository:
-        Allows read-write access (pull, push) to the repository.
+        Grants read and write access (pull and push) to the repository.
       read_registry:
-        Allows read-access (pull) to container registry images if the project is private and authorization is required.
+        Grants read access (pull) to the Container Registry images if a project is private and authorization is required.
       write_registry:
-        Allows write-access (push) to container registry.
+        Grants write access (push) to the Container Registry.
     flash:
       applications:
         create:

@@ -17,6 +17,25 @@ export const mockAssignees = [
   },
 ];
 
+export const mockLabels = [
+  {
+    __typename: 'Label',
+    id: 'gid://gitlab/Label/1',
+    title: 'Label 1',
+    description: '',
+    color: '#f00',
+    textColor: '#00f',
+  },
+  {
+    __typename: 'Label',
+    id: 'gid://gitlab/Label/2',
+    title: 'Label::2',
+    description: '',
+    color: '#b00',
+    textColor: '#00b',
+  },
+];
+
 export const workItemQueryResponse = {
   data: {
     workItem: {
@@ -163,9 +182,11 @@ export const workItemResponseFactory = ({
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
+  labelsWidgetPresent = true,
   weightWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
+  allowsScopedLabels = false,
   parent = mockParent.parent,
 } = {}) => ({
   data: {
@@ -209,6 +230,16 @@ export const workItemResponseFactory = ({
               canInviteMembers,
               assignees: {
                 nodes: mockAssignees,
+              },
+            }
+          : { type: 'MOCK TYPE' },
+        labelsWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetLabels',
+              type: 'LABELS',
+              allowsScopedLabels,
+              labels: {
+                nodes: mockLabels,
               },
             }
           : { type: 'MOCK TYPE' },
@@ -872,25 +903,6 @@ export const currentUserNullResponse = {
     currentUser: null,
   },
 };
-
-export const mockLabels = [
-  {
-    __typename: 'Label',
-    id: 'gid://gitlab/Label/1',
-    title: 'Label 1',
-    description: '',
-    color: '#f00',
-    textColor: '#00f',
-  },
-  {
-    __typename: 'Label',
-    id: 'gid://gitlab/Label/2',
-    title: 'Label 2',
-    description: '',
-    color: '#b00',
-    textColor: '#00b',
-  },
-];
 
 export const projectLabelsResponse = {
   data: {

@@ -15,12 +15,12 @@ module Gitlab
         end
 
         def execute
-          attachment_urls = MarkdownText.fetch_attachment_urls(note_text.text)
-          return if attachment_urls.blank?
+          attachments = MarkdownText.fetch_attachments(note_text.text)
+          return if attachments.blank?
 
-          new_text = attachment_urls.reduce(note_text.text) do |text, url|
-            new_url = download_attachment(url)
-            text.gsub(url, new_url)
+          new_text = attachments.reduce(note_text.text) do |text, attachment|
+            new_url = download_attachment(attachment)
+            text.gsub(attachment.url, new_url)
           end
 
           update_note_record(new_text)
@@ -28,30 +28,15 @@ module Gitlab
 
         private
 
-        # in: github attachment markdown url
+        # in: an instance of Gitlab::GithubImport::Markdown::Attachment
         # out: gitlab attachment markdown url
-        def download_attachment(markdown_url)
-          url = extract_url_from_markdown(markdown_url)
-          name_prefix = extract_name_from_markdown(markdown_url)
-
-          downloader = ::Gitlab::GithubImport::AttachmentsDownloader.new(url)
+        def download_attachment(attachment)
+          downloader = ::Gitlab::GithubImport::AttachmentsDownloader.new(attachment.url)
           file = downloader.perform
           uploader = UploadService.new(project, file, FileUploader).execute
-          "#{name_prefix}(#{uploader.to_h[:url]})"
+          uploader.to_h[:url]
         ensure
           downloader&.delete
-        end
-
-        # in: "![image-icon](https://user-images.githubusercontent.com/..)"
-        # out: https://user-images.githubusercontent.com/..
-        def extract_url_from_markdown(text)
-          text.match(%r{https://.*\)$}).to_a[0].chop
-        end
-
-        # in: "![image-icon](https://user-images.githubusercontent.com/..)"
-        # out: ![image-icon]
-        def extract_name_from_markdown(text)
-          text.match(%r{^!?\[.*\]}).to_a[0]
         end
 
         def update_note_record(text)

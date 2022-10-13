@@ -45635,6 +45635,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong when deleting the task. Please try again."
 msgstr ""
 
+msgid "WorkItem|Something went wrong when fetching labels. Please try again."
+msgstr ""
+
 msgid "WorkItem|Something went wrong when fetching tasks. Please refresh this page."
 msgstr ""
 
@@ -46045,6 +46048,9 @@ msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%
 msgstr ""
 
 msgid "You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members. To get more members an owner of the group can start a trial or upgrade to a paid tier."
+msgstr ""
+
+msgid "You can't follow more than %{limit} users. To follow more users, unfollow some others."
 msgstr ""
 
 msgid "You cannot %{action} %{state} users."
