@@ -41,7 +41,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def contacts
-    render json: autocomplete_service.contacts
+    render json: autocomplete_service.contacts(target)
   end
 
   private

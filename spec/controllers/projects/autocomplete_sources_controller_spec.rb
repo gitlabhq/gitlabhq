@@ -184,7 +184,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
           it 'lists contacts' do
             group.add_developer(user)
 
-            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
+            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name, type_id: issue.id }
 
             emails = json_response.map { |contact_data| contact_data["email"] }
             expect(emails).to match_array([contact_1.email, contact_2.email])
@@ -193,7 +193,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
 
         context 'when a user can not read contacts' do
           it 'renders 404' do
-            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
+            get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name, type_id: issue.id }
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -204,7 +204,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
         it 'renders 404' do
           group.add_developer(user)
 
-          get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path }
+          get :contacts, format: :json, params: { namespace_id: group.path, project_id: project.path, type: issue.class.name, type_id: issue.id }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

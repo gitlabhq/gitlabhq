@@ -42,6 +42,9 @@ module Types
       value 'POLICIES_DENIED',
             value: :policies_denied,
             description: 'There are denied policies for the merge request.'
+      value 'EXTERNAL_STATUS_CHECKS',
+            value: :status_checks_must_pass,
+            description: 'Status checks must pass.'
     end
   end
 end

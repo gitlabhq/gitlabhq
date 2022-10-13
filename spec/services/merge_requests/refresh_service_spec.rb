@@ -189,7 +189,7 @@ RSpec.describe MergeRequests::RefreshService do
 
       subject { service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/master') }
 
-      it 'updates the head_pipeline_id for @merge_request', :sidekiq_might_not_need_inline do
+      it 'updates the head_pipeline_id for @merge_request', :sidekiq_inline do
         expect { subject }.to change { @merge_request.reload.head_pipeline_id }.from(nil).to(pipeline.id)
       end
 
@@ -306,7 +306,7 @@ RSpec.describe MergeRequests::RefreshService do
             subject
           end
 
-          it 'sets the latest detached merge request pipeline as a head pipeline', :sidekiq_might_not_need_inline do
+          it 'sets the latest detached merge request pipeline as a head pipeline' do
             @merge_request.reload
             expect(@merge_request.actual_head_pipeline).to be_merge_request_event
           end
@@ -424,7 +424,7 @@ RSpec.describe MergeRequests::RefreshService do
       end
     end
 
-    context 'push to origin repo target branch', :sidekiq_might_not_need_inline do
+    context 'push to origin repo target branch' do
       context 'when all MRs to the target branch had diffs' do
         before do
           service.new(project: @project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
@@ -474,7 +474,7 @@ RSpec.describe MergeRequests::RefreshService do
         end
       end
 
-      context 'manual merge of source branch', :sidekiq_might_not_need_inline do
+      context 'manual merge of source branch' do
         before do
           # Merge master -> feature branch
           @project.repository.merge(@user, @merge_request.diff_head_sha, @merge_request, 'Test message')
@@ -496,7 +496,7 @@ RSpec.describe MergeRequests::RefreshService do
       end
     end
 
-    context 'push to fork repo source branch', :sidekiq_might_not_need_inline do
+    context 'push to fork repo source branch' do
       let(:refresh_service) { service.new(project: @fork_project, current_user: @user) }
 
       def refresh
@@ -561,7 +561,7 @@ RSpec.describe MergeRequests::RefreshService do
       end
     end
 
-    context 'push to fork repo target branch', :sidekiq_might_not_need_inline do
+    context 'push to fork repo target branch' do
       describe 'changes to merge requests' do
         before do
           service.new(project: @fork_project, current_user: @user).execute(@oldrev, @newrev, 'refs/heads/feature')
@@ -587,7 +587,7 @@ RSpec.describe MergeRequests::RefreshService do
       end
     end
 
-    context 'forked projects with the same source branch name as target branch', :sidekiq_might_not_need_inline do
+    context 'forked projects with the same source branch name as target branch' do
       let!(:first_commit) do
         @fork_project.repository.create_file(@user, 'test1.txt', 'Test data',
                                              message: 'Test commit',
@@ -671,7 +671,7 @@ RSpec.describe MergeRequests::RefreshService do
     context 'push new branch that exists in a merge request' do
       let(:refresh_service) { service.new(project: @fork_project, current_user: @user) }
 
-      it 'refreshes the merge request', :sidekiq_might_not_need_inline do
+      it 'refreshes the merge request' do
         expect(refresh_service).to receive(:execute_hooks)
                                        .with(@fork_merge_request, 'update', old_rev: Gitlab::Git::BLANK_SHA)
         allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)

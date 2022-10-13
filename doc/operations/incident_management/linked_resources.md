@@ -63,7 +63,7 @@ Use the `/zoom` [quick action](../../user/project/quick_actions.md) to add multi
 You can also submit a short optional description with the link. The description shows instead of the URL in the **Linked resources** section of the incident issue:
 
 ```plaintext
-/zoom https://example.zoom.us/j/123456789, Low on memory incident
+/zoom https://example.zoom.us/j/123456789 Low on memory incident
 ```
 
 ## Remove a linked resource

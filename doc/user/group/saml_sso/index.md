@@ -121,12 +121,22 @@ It can also help to compare the XML response from your provider with our [exampl
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Enabled on GitLab.com.
 
-With this option enabled, users must access GitLab using your group GitLab single sign-on URL to access group resources.
-Users can't be added as new members manually.
+SSO is enforced when users access groups and projects in the organization's group hierarchy. Users can view other groups and projects without SSO sign in.
+
+When SAML SSO is enabled, SSO is enforced for each user with an existing SAML identity.
+A user has a SAML identity if one or both of the following are true:
+
+- They have signed in to GitLab by using their GitLab group's single sign-on URL.
+- They were provisioned by SCIM.
+
+Users without SAML identities are not required to use SSO unless explicit enforcement is enabled.
+
+When the **Enforce SSO-only authentication for web activity for this group** option is enabled, all users must access GitLab by using their GitLab group's single sign-on URL to access group resources,
+regardless of whether they have an existing SAML identity.
+Users also cannot be added as new members manually.
 Users with the Owner role can use the standard sign in process to make necessary changes to top-level group settings.
-
-SSO enforcement does not affect sign in or access to any resources outside of the group. Users can view which groups and projects they are a member of without SSO sign in.
 
 However, users are not prompted to sign in through SSO on each visit. GitLab checks whether a user
 has authenticated through SSO. If it's been more than 1 day since the last sign-in, GitLab

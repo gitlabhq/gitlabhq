@@ -213,6 +213,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_deploy_token
     enable :update_runners_registration_token
     enable :owner_access
+
+    enable :read_billing
+    enable :edit_billing
   end
 
   rule { can?(:read_nested_project_resources) }.policy do

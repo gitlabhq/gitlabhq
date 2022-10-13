@@ -33,9 +33,21 @@ module Projects
       SnippetsFinder.new(current_user, project: project).execute.select([:id, :title])
     end
 
-    def contacts
-      Crm::ContactsFinder.new(current_user, group: project.group).execute
-        .select([:id, :email, :first_name, :last_name])
+    def contacts(target)
+      available_contacts = Crm::ContactsFinder.new(current_user, group: project.group).execute
+        .select([:id, :email, :first_name, :last_name, :state])
+
+      contact_hashes = available_contacts.as_json
+
+      return contact_hashes unless target.is_a?(Issue)
+
+      ids = target.customer_relations_contacts.ids # rubocop:disable CodeReuse/ActiveRecord
+
+      contact_hashes.each do |hash|
+        hash[:set] = ids.include?(hash['id'])
+      end
+
+      contact_hashes
     end
 
     def labels_as_hash(target)

@@ -120,6 +120,10 @@ sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdb
   libcurl4-openssl-dev libicu-dev logrotate rsync python3-docutils pkg-config cmake runit-systemd
 ```
 
+NOTE:
+GitLab requires OpenSSL version 1.1. If your Linux distribution includes a different version of OpenSSL,
+you might have to install 1.1 manually.
+
 If you want to use Kerberos for user authentication, install `libkrb5-dev`
 (if you don't know what Kerberos is, you can assume you don't need it):
 

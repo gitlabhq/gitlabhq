@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe AtomicInternalId do
-  let(:milestone) { build(:milestone) }
+  let_it_be(:project) { create(:project) }
+  let(:milestone) { build(:milestone, project: project) }
   let(:iid) { double('iid', to_i: 42) }
   let(:external_iid) { 100 }
-  let(:scope_attrs) { { project: milestone.project } }
+  let(:scope_attrs) { { project: project } }
   let(:usage) { :milestones }
 
   describe '#save!' do
@@ -246,6 +247,14 @@ RSpec.describe AtomicInternalId do
           4.times { supply.next_value }
         end
       end.to change { InternalId.find_by(project: milestone.project, usage: :milestones)&.last_value.to_i }.by(4)
+    end
+  end
+
+  describe '.track_project_iid!' do
+    it 'tracks the present value' do
+      expect do
+        ::Issue.track_project_iid!(milestone.project, external_iid)
+      end.to change { InternalId.find_by(project: milestone.project, usage: :issues)&.last_value.to_i }.to(external_iid)
     end
   end
 end

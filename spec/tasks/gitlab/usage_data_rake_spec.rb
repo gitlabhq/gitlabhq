@@ -69,9 +69,9 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout do
       expect { run_rake_task('gitlab:usage_data:generate_and_send') }.to output(/.*201.*/).to_stdout
     end
 
-    describe 'generate_ci_template_events', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/377698' do
+    describe 'generate_ci_template_events' do
       it "generates #{Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH}" do
-        FileUtils.rm(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH)
+        FileUtils.rm_rf(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH)
         run_rake_task('gitlab:usage_data:generate_ci_template_events')
 
         expect(File.exist?(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH)).to be true

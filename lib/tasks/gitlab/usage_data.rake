@@ -72,11 +72,13 @@ namespace :gitlab do
 
     # Events for templates included in a .gitlab-ci.yml using include:template
     def explicit_template_includes
-      Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/").map do |template|
+      Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/").each_with_object([]) do |template, result|
         expanded_template_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.expand_template_name(template)
+        next unless expanded_template_name # guard against templates unavailable on FOSS
+
         event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, :repository_source)
 
-        ci_template_event(event_name)
+        result << ci_template_event(event_name)
       end
     end
 

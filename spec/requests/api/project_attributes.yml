@@ -147,6 +147,7 @@ project_setting:
     - has_vulnerabilities
     - legacy_open_source_license_available
     - prevent_merge_without_jira_issue
+    - only_allow_merge_if_all_status_checks_passed
     - warn_about_potentially_unwanted_characters
     - previous_default_branch
     - project_id
