@@ -35106,7 +35106,7 @@ msgstr ""
 msgid "SAML for %{group_name}"
 msgstr ""
 
-msgid "SAML|Selecting \"Authorize\" will transfer ownership of your GitLab account \"%{username}\" (%{email}) to your organization."
+msgid "SAML|Select \"Authorize\" to allow %{group_name} to manage your GitLab account \"%{username}\" (%{email}) after you sign in successfully with your single sign-on account."
 msgstr ""
 
 msgid "SAML|Sign in to GitLab to connect your organization's account"

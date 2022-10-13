@@ -374,6 +374,39 @@ RSpec.shared_examples 'wiki model' do
         end
       end
 
+      context 'pages with relative paths' do
+        where(:path, :title) do
+          [
+            ['~hello.md', '~Hello'],
+            ['hello~world.md', 'Hello~World'],
+            ['~~~hello.md', '~~~Hello'],
+            ['~/hello.md', '~/Hello'],
+            ['hello.md', '/Hello'],
+            ['hello.md', '../Hello'],
+            ['hello.md', './Hello'],
+            ['dir/hello.md', '/dir/Hello']
+          ]
+        end
+
+        with_them do
+          before do
+            wiki.repository.create_file(
+              user, path, "content of wiki file",
+              branch_name: wiki.default_branch,
+              message: "created page #{path}",
+              author_email: user.email,
+              author_name: user.name
+            )
+          end
+
+          it "can find page with `#{params[:title]}` title" do
+            page = subject.find_page(title)
+
+            expect(page.content).to eq("content of wiki file")
+          end
+        end
+      end
+
       context 'pages with different file extensions' do
         where(:extension, :path, :title) do
           [
@@ -629,6 +662,8 @@ RSpec.shared_examples 'wiki model' do
         'foo'                       | :org        | ['foo.md']          | false
         'foo'                       | :markdown   | ['dir/foo.md']      | true
         '/foo'                      | :markdown   | ['foo.md']          | false
+        '~foo'                      | :markdown   | []                  | true
+        '~~~foo'                    | :markdown   | []                  | true
         './foo'                     | :markdown   | ['foo.md']          | false
         '../foo'                    | :markdown   | ['foo.md']          | false
         '../../foo'                 | :markdown   | ['foo.md']          | false
@@ -739,6 +774,8 @@ RSpec.shared_examples 'wiki model' do
       using RSpec::Parameterized::TableSyntax
 
       where(:original_title, :original_format, :updated_title, :updated_format, :expected_title, :expected_path) do
+        'test page'          | :markdown | '~new test page'             | :asciidoc | '~new test page'        | '~new-test-page.asciidoc'
+        'test page'          | :markdown | '~~~new test page'           | :asciidoc | '~~~new test page'      | '~~~new-test-page.asciidoc'
         'test page'          | :markdown | 'new test page'              | :asciidoc | 'new test page'         | 'new-test-page.asciidoc'
         'test page'          | :markdown | 'new dir/new test page'      | :asciidoc | 'new dir/new test page' | 'new-dir/new-test-page.asciidoc'
         'test dir/test page' | :markdown | 'new dir/new test page'      | :asciidoc | 'new dir/new test page' | 'new-dir/new-test-page.asciidoc'
@@ -748,13 +785,13 @@ RSpec.shared_examples 'wiki model' do
         'test dir/test page' | :markdown | nil                          | :markdown | 'test dir/test page'    | 'test-dir/test-page.md'
         'test page'          | :markdown | ''                           | :markdown | 'test page'             | 'test-page.md'
         'test.page'          | :markdown | ''                           | :markdown | 'test.page'             | 'test.page.md'
-        'testpage'           | :markdown | '../testpage'                 | :markdown | 'testpage'              | 'testpage.md'
-        'dir/testpage'       | :markdown | 'dir/../testpage'             | :markdown | 'testpage'              | 'testpage.md'
-        'dir/testpage'       | :markdown | './dir/testpage'              | :markdown | 'dir/testpage'          | 'dir/testpage.md'
-        'dir/testpage'       | :markdown | '../dir/testpage'             | :markdown | 'dir/testpage'          | 'dir/testpage.md'
-        'dir/testpage'       | :markdown | '../dir/../testpage'          | :markdown | 'testpage'              | 'testpage.md'
-        'dir/testpage'       | :markdown | '../dir/../dir/testpage'      | :markdown | 'dir/testpage'          | 'dir/testpage.md'
-        'dir/testpage'       | :markdown | '../dir/../another/testpage'  | :markdown | 'another/testpage'      | 'another/testpage.md'
+        'testpage'           | :markdown | '../testpage'                | :markdown | 'testpage'              | 'testpage.md'
+        'dir/testpage'       | :markdown | 'dir/../testpage'            | :markdown | 'testpage'              | 'testpage.md'
+        'dir/testpage'       | :markdown | './dir/testpage'             | :markdown | 'dir/testpage'          | 'dir/testpage.md'
+        'dir/testpage'       | :markdown | '../dir/testpage'            | :markdown | 'dir/testpage'          | 'dir/testpage.md'
+        'dir/testpage'       | :markdown | '../dir/../testpage'         | :markdown | 'testpage'              | 'testpage.md'
+        'dir/testpage'       | :markdown | '../dir/../dir/testpage'     | :markdown | 'dir/testpage'          | 'dir/testpage.md'
+        'dir/testpage'       | :markdown | '../dir/../another/testpage' | :markdown | 'another/testpage'      | 'another/testpage.md'
       end
     end
 

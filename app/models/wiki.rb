@@ -109,8 +109,8 @@ class Wiki
     end
 
     def sluggified_title(title)
-      title = Gitlab::EncodingHelper.encode_utf8_no_detect(title)
-      title = File.expand_path(title, '/')
+      title = Gitlab::EncodingHelper.encode_utf8_no_detect(title.to_s.strip)
+      title = File.absolute_path(title, '/')
       title = Pathname.new(title).relative_path_from('/').to_s
       title.tr(' ', '-')
     end

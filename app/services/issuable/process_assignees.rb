@@ -6,11 +6,11 @@
 module Issuable
   class ProcessAssignees
     def initialize(assignee_ids:, add_assignee_ids:, remove_assignee_ids:, existing_assignee_ids: nil, extra_assignee_ids: nil)
-      @assignee_ids = assignee_ids
-      @add_assignee_ids = add_assignee_ids
-      @remove_assignee_ids = remove_assignee_ids
-      @existing_assignee_ids = existing_assignee_ids || []
-      @extra_assignee_ids = extra_assignee_ids || []
+      @assignee_ids = assignee_ids&.map(&:to_i)
+      @add_assignee_ids = add_assignee_ids&.map(&:to_i)
+      @remove_assignee_ids = remove_assignee_ids&.map(&:to_i)
+      @existing_assignee_ids = existing_assignee_ids&.map(&:to_i) || []
+      @extra_assignee_ids = extra_assignee_ids&.map(&:to_i) || []
     end
 
     def execute

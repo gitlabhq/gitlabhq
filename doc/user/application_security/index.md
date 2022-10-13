@@ -171,6 +171,23 @@ does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker imag
 the instructions for
 [Running container scanning in an offline environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
+### Use security scanning tools with merge request pipelines
+
+By default, the application security jobs are configured to run for branch pipelines only.
+To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
+you must reference the [`latest` templates](../../development/cicd/templates.md):
+
+```yaml
+include:
+  - template: Security/Container-Scanning.latest.gitlab-ci.yml
+  - template: Security/DAST.latest.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+  - template: Jobs/SAST.latest.gitlab-ci.yml
+```
+
+NOTE:
+Latest templates can receive breaking changes in any release.
+
 ## Default behavior of GitLab security scanning tools
 
 ### Secure jobs in your pipeline

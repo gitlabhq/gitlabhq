@@ -344,7 +344,7 @@ RSpec.describe Issues::CreateService do
         let(:opts) do
           { title: 'Title',
             description: 'Description',
-            assignees: [assignee] }
+            assignee_ids: [assignee.id] }
         end
 
         it 'invalidates open issues counter for assignees when issue is assigned' do

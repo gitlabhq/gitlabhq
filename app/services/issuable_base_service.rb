@@ -67,22 +67,14 @@ class IssuableBaseService < ::BaseProjectService
   end
 
   def filter_assignees(issuable)
-    filter_assignees_with_key(issuable, :assignee_ids, :assignees)
-    filter_assignees_with_key(issuable, :add_assignee_ids, :add_assignees)
-    filter_assignees_with_key(issuable, :remove_assignee_ids, :remove_assignees)
-  end
-
-  def filter_assignees_with_key(issuable, id_key, key)
-    if params[key] && params[id_key].blank?
-      params[id_key] = params[key].map(&:id)
-    end
-
-    return if params[id_key].blank?
-
-    filter_assignees_using_checks(issuable, id_key)
+    filter_assignees_using_checks(issuable, :assignee_ids)
+    filter_assignees_using_checks(issuable, :add_assignee_ids)
+    filter_assignees_using_checks(issuable, :remove_assignee_ids)
   end
 
   def filter_assignees_using_checks(issuable, id_key)
+    return if params[id_key].blank?
+
     unless issuable.allows_multiple_assignees?
       params[id_key] = params[id_key].first(1)
     end
