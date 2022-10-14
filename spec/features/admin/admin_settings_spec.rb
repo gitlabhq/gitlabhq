@@ -400,39 +400,19 @@ RSpec.describe 'Admin updates settings' do
       end
 
       context 'Runner Registration' do
-        context 'when feature is enabled' do
-          before do
-            stub_feature_flags(runner_registration_control: true)
+        it 'allows admins to control who has access to register runners' do
+          visit ci_cd_admin_application_settings_path
+
+          expect(current_settings.valid_runner_registrars).to eq(ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
+
+          page.within('.as-runner') do
+            find_all('input[type="checkbox"]').each(&:click)
+
+            click_button 'Save changes'
           end
 
-          it 'allows admins to control who has access to register runners' do
-            visit ci_cd_admin_application_settings_path
-
-            expect(current_settings.valid_runner_registrars).to eq(ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
-
-            page.within('.as-runner') do
-              find_all('input[type="checkbox"]').each(&:click)
-
-              click_button 'Save changes'
-            end
-
-            expect(current_settings.valid_runner_registrars).to eq([])
-            expect(page).to have_content "Application settings saved successfully"
-          end
-        end
-
-        context 'when feature is disabled' do
-          before do
-            stub_feature_flags(runner_registration_control: false)
-          end
-
-          it 'does not allow admins to control who has access to register runners' do
-            visit ci_cd_admin_application_settings_path
-
-            expect(current_settings.valid_runner_registrars).to eq(ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
-
-            expect(page).not_to have_css('.as-runner')
-          end
+          expect(current_settings.valid_runner_registrars).to eq([])
+          expect(page).to have_content "Application settings saved successfully"
         end
       end
 

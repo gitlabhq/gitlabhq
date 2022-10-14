@@ -199,6 +199,8 @@ class User < ApplicationRecord
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :legacy_assigned_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :assignee_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :merged_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :merged_by_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :closed_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :latest_closed_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :updated_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id # rubocop:disable Cop/ActiveRecordDependent

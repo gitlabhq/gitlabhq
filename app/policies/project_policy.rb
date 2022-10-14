@@ -222,7 +222,7 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:project_runner_registration_allowed) do
-    Feature.disabled?(:runner_registration_control) || Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
+    Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
   end
 
   condition :registry_enabled do
@@ -794,7 +794,7 @@ class ProjectPolicy < BasePolicy
 
   rule { project_bot }.enable :project_bot_access
 
-  rule { can?(:read_all_resources) }.enable :read_resource_access_tokens
+  rule { can?(:read_all_resources) & resource_access_token_feature_available }.enable :read_resource_access_tokens
 
   rule { can?(:admin_project) & resource_access_token_feature_available }.policy do
     enable :read_resource_access_tokens

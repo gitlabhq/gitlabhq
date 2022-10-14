@@ -38,12 +38,11 @@
     .settings-content
       = render 'registry'
 
-- if Feature.enabled?(:runner_registration_control)
-  %section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = s_('Runners|Runner registration')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded_by_default? ? 'Collapse' : 'Expand'
-    .settings-content
-      = render 'runner_registrars_form'
+%section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('Runners|Runner registration')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? 'Collapse' : 'Expand'
+  .settings-content
+    = render 'runner_registrars_form'

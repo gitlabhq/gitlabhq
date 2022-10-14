@@ -328,10 +328,8 @@ To set the maximum file size:
 
 ## Prevent users from registering runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../feature_flags.md) named `runner_registration_control`. On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 

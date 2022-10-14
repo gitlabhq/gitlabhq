@@ -441,11 +441,15 @@ class Environment < ApplicationRecord
   end
 
   def auto_stop_in=(value)
-    return unless value
+    if value.nil?
+      # Handles edge case when auto_stop_at is already set and the new value is nil.
+      # Possible by setting `auto_stop_in: null` in the CI configuration yml.
+      self.auto_stop_at = nil
+
+      return
+    end
 
     parser = ::Gitlab::Ci::Build::DurationParser.new(value)
-
-    return if parser.seconds_from_now.nil? && auto_stop_at.nil?
 
     self.auto_stop_at = parser.seconds_from_now
   rescue ChronicDuration::DurationParseError => ex

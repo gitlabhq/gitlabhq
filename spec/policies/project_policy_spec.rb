@@ -2630,28 +2630,14 @@ RSpec.describe ProjectPolicy do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        context 'with runner_registration_control FF disabled' do
+        it { is_expected.to be_allowed(:register_project_runners) }
+
+        context 'with project runner registration disabled' do
           before do
-            stub_feature_flags(runner_registration_control: false)
+            stub_application_setting(valid_runner_registrars: ['group'])
           end
 
           it { is_expected.to be_allowed(:register_project_runners) }
-        end
-
-        context 'with runner_registration_control FF enabled' do
-          before do
-            stub_feature_flags(runner_registration_control: true)
-          end
-
-          it { is_expected.to be_allowed(:register_project_runners) }
-
-          context 'with project runner registration disabled' do
-            before do
-              stub_application_setting(valid_runner_registrars: ['group'])
-            end
-
-            it { is_expected.to be_allowed(:register_project_runners) }
-          end
         end
       end
 
@@ -2665,28 +2651,12 @@ RSpec.describe ProjectPolicy do
 
       it { is_expected.to be_allowed(:register_project_runners) }
 
-      context 'with runner_registration_control FF disabled' do
+      context 'with project runner registration disabled' do
         before do
-          stub_feature_flags(runner_registration_control: false)
+          stub_application_setting(valid_runner_registrars: ['group'])
         end
 
-        it { is_expected.to be_allowed(:register_project_runners) }
-      end
-
-      context 'with runner_registration_control FF enabled' do
-        before do
-          stub_feature_flags(runner_registration_control: true)
-        end
-
-        it { is_expected.to be_allowed(:register_project_runners) }
-
-        context 'with project runner registration disabled' do
-          before do
-            stub_application_setting(valid_runner_registrars: ['group'])
-          end
-
-          it { is_expected.to be_disallowed(:register_project_runners) }
-        end
+        it { is_expected.to be_disallowed(:register_project_runners) }
       end
     end
 

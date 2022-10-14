@@ -22,7 +22,7 @@ namespace :tw do
       CodeOwnerRule.new('Activation', '@phillipwells'),
       CodeOwnerRule.new('Acquisition', '@phillipwells'),
       CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
-      CodeOwnerRule.new('Authentication and Authorization', '@eread'),
+      CodeOwnerRule.new('Authentication and Authorization', '@jglassman1'),
       CodeOwnerRule.new('Certify', '@msedlakjakubowski'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),

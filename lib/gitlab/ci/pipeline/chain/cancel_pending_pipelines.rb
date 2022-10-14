@@ -12,7 +12,7 @@ module Gitlab
           # rubocop: disable CodeReuse/ActiveRecord
           def perform!
             ff_enabled = Feature.enabled?(:ci_skip_auto_cancelation_on_child_pipelines, project)
-            return if ff_enabled && pipeline.child?
+            return if ff_enabled && pipeline.parent_pipeline? # skip if child pipeline
             return unless project.auto_cancel_pending_pipelines?
 
             Gitlab::OptimisticLocking.retry_lock(auto_cancelable_pipelines(ff_enabled), name: 'cancel_pending_pipelines') do |cancelables|
@@ -49,6 +49,14 @@ module Gitlab
               .id_in(pipeline_ids)
               .with_only_interruptible_builds
               .each do |cancelable_pipeline|
+                Gitlab::AppLogger.info(
+                  class: self.class.name,
+                  message: "Pipeline #{pipeline.id} auto-canceling pipeline #{cancelable_pipeline.id}",
+                  canceled_pipeline_id: cancelable_pipeline.id,
+                  canceled_by_pipeline_id: pipeline.id,
+                  canceled_by_pipeline_source: pipeline.source
+                )
+
                 # cascade_to_children not needed because we iterate through descendants here
                 cancelable_pipeline.cancel_running(
                   auto_canceled_by_pipeline_id: pipeline.id,

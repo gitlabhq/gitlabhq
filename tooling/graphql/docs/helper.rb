@@ -55,7 +55,7 @@ module Tooling
         def auto_generated_comment
           <<-MD.strip_heredoc
             ---
-            stage: Ecosystem
+            stage: Manage
             group: Integrations
             info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
             ---

@@ -147,6 +147,8 @@ class Integration < ApplicationRecord
     fields << ::Integrations::Field.new(name: name, integration_class: self, **attrs)
 
     case storage
+    when :attribute
+      # noop
     when :properties
       prop_accessor(name)
     when :data_fields
@@ -155,7 +157,7 @@ class Integration < ApplicationRecord
       raise ArgumentError, "Unknown field storage: #{storage}"
     end
 
-    boolean_accessor(name) if attrs[:type] == 'checkbox'
+    boolean_accessor(name) if attrs[:type] == 'checkbox' && storage != :attribute
   end
   # :nocov:
 

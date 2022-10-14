@@ -44,6 +44,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines do
         expect(build_statuses(pipeline)).to contain_exactly('pending')
       end
 
+      it 'logs canceled pipelines' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
+        perform
+
+        expect(Gitlab::AppLogger).to have_received(:info).with(
+          class: described_class.name,
+          message: "Pipeline #{pipeline.id} auto-canceling pipeline #{prev_pipeline.id}",
+          canceled_pipeline_id: prev_pipeline.id,
+          canceled_by_pipeline_id: pipeline.id,
+          canceled_by_pipeline_source: pipeline.source
+        )
+      end
+
       it 'cancels the builds with 2 queries to avoid query timeout' do
         second_query_regex = /WHERE "ci_pipelines"\."id" = \d+ AND \(NOT EXISTS/
         recorder = ActiveRecord::QueryRecorder.new { perform }

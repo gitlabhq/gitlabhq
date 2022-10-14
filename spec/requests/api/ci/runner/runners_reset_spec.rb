@@ -9,7 +9,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)
-    stub_feature_flags(runner_registration_control: false)
     stub_gitlab_calls
     stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
   end

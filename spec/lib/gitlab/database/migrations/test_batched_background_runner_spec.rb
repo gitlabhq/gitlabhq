@@ -6,106 +6,156 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
   include Gitlab::Database::MigrationHelpers
   include Database::MigrationTestingHelpers
 
-  let(:result_dir) { Dir.mktmpdir }
+  def queue_migration(
+    job_class_name,
+    batch_table_name,
+    batch_column_name,
+    *job_arguments,
+    job_interval:,
+    batch_size: Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_SIZE,
+    sub_batch_size: Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::SUB_BATCH_SIZE
+  )
 
-  after do
-    FileUtils.rm_rf(result_dir)
-  end
+    batch_max_value = define_batchable_model(batch_table_name, connection: connection).maximum(batch_column_name)
 
-  let(:migration) do
-    ActiveRecord::Migration.new.extend(Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers)
-  end
-
-  let(:connection) { ApplicationRecord.connection }
-
-  let(:table_name) { "_test_column_copying" }
-
-  before do
-    connection.execute(<<~SQL)
-      CREATE TABLE #{table_name} (
-        id bigint primary key not null,
-        data bigint default 0
-      );
-
-      insert into #{table_name} (id) select i from generate_series(1, 1000) g(i);
-    SQL
-
-    allow(migration).to receive(:transaction_open?).and_return(false)
-  end
-
-  context 'running a real background migration' do
-    it 'runs sampled jobs from the batched background migration' do
-      migration.queue_batched_background_migration('CopyColumnUsingBackgroundMigrationJob',
-                                         table_name, :id,
-                                         :id, :data,
-                                         batch_size: 100,
-                                         job_interval: 5.minutes) # job_interval is skipped when testing
-
-      # Expect that running sampling for this migration processes some of the rows. Sampling doesn't run
-      # over every row in the table, so this does not completely migrate the table.
-      expect { described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 1.minute) }
-        .to change { define_batchable_model(table_name).where('id IS DISTINCT FROM data').count }
-              .by_at_most(-1)
+    Gitlab::Database::SharedModel.using_connection(connection) do
+      Gitlab::Database::BackgroundMigration::BatchedMigration.create!(
+        job_class_name: job_class_name,
+        table_name: batch_table_name,
+        column_name: batch_column_name,
+        job_arguments: job_arguments,
+        interval: job_interval,
+        min_value: Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_MIN_VALUE,
+        max_value: batch_max_value,
+        batch_class_name: Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_CLASS_NAME,
+        batch_size: batch_size,
+        sub_batch_size: sub_batch_size,
+        status_event: :execute,
+        max_batch_size: nil,
+        gitlab_schema: gitlab_schema
+      )
     end
   end
 
-  context 'with jobs to run' do
-    let(:migration_name) { 'TestBackgroundMigration' }
+  where(:case_name, :base_model, :gitlab_schema) do
+    [
+      ['main database', ApplicationRecord, :gitlab_main],
+      ['ci database', Ci::ApplicationRecord, :gitlab_ci]
+    ]
+  end
 
-    it 'samples jobs' do
-      calls = []
-      define_background_migration(migration_name) do |*args|
-        calls << args
+  with_them do
+    let(:result_dir) { Dir.mktmpdir }
+
+    after do
+      FileUtils.rm_rf(result_dir)
+    end
+
+    let(:connection) { base_model.connection }
+
+    let(:table_name) { "_test_column_copying" }
+
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{table_name} (
+          id bigint primary key not null,
+          data bigint default 0
+        );
+
+        insert into #{table_name} (id) select i from generate_series(1, 1000) g(i);
+      SQL
+    end
+
+    context 'running a real background migration' do
+      before do
+        queue_migration('CopyColumnUsingBackgroundMigrationJob',
+                        table_name, :id,
+                        :id, :data,
+                        batch_size: 100,
+                        job_interval: 5.minutes) # job_interval is skipped when testing
       end
 
-      migration.queue_batched_background_migration(migration_name, table_name, :id,
-                                                   job_interval: 5.minutes,
-                                                   batch_size: 100)
+      subject(:sample_migration) do
+        described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 1.minute)
+      end
 
-      described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 3.minutes)
+      it 'runs sampled jobs from the batched background migration' do
+        # Expect that running sampling for this migration processes some of the rows. Sampling doesn't run
+        # over every row in the table, so this does not completely migrate the table.
+        expect { subject }.to change {
+                                define_batchable_model(table_name, connection: connection)
+                                  .where('id IS DISTINCT FROM data').count
+                              }.by_at_most(-1)
+      end
 
-      expect(calls).not_to be_empty
+      it 'uses the correct connection to instrument the background migration' do
+        expect_next_instance_of(Gitlab::Database::Migrations::Instrumentation) do |instrumentation|
+          expect(instrumentation).to receive(:observe).with(hash_including(connection: connection))
+                                                      .at_least(:once).and_call_original
+        end
+
+        subject
+      end
     end
 
-    context 'with multiple jobs to run' do
-      it 'runs all jobs created within the last 3 hours' do
-        old_migration = define_background_migration(migration_name)
-        migration.queue_batched_background_migration(migration_name, table_name, :id,
-                                             job_interval: 5.minutes,
-                                             batch_size: 100)
+    context 'with jobs to run' do
+      let(:migration_name) { 'TestBackgroundMigration' }
 
-        travel 4.hours
+      it 'samples jobs' do
+        calls = []
+        define_background_migration(migration_name) do |*args|
+          calls << args
+        end
 
-        new_migration = define_background_migration('NewMigration') { travel 1.second }
-        migration.queue_batched_background_migration('NewMigration', table_name, :id,
-                                           job_interval: 5.minutes,
-                                           batch_size: 10,
-                                           sub_batch_size: 5)
+        queue_migration(migration_name, table_name, :id,
+                        job_interval: 5.minutes,
+                        batch_size: 100)
 
-        other_new_migration = define_background_migration('NewMigration2') { travel 2.seconds }
-        migration.queue_batched_background_migration('NewMigration2', table_name, :id,
-                                           job_interval: 5.minutes,
-                                           batch_size: 10,
-                                           sub_batch_size: 5)
+        described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 3.minutes)
 
-        expect_migration_runs(new_migration => 3, other_new_migration => 2, old_migration => 0) do
-          described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 5.seconds)
+        expect(calls).not_to be_empty
+      end
+
+      context 'with multiple jobs to run' do
+        it 'runs all jobs created within the last 3 hours' do
+          old_migration = define_background_migration(migration_name)
+          queue_migration(migration_name, table_name, :id,
+                          job_interval: 5.minutes,
+                          batch_size: 100)
+
+          travel 4.hours
+
+          new_migration = define_background_migration('NewMigration') { travel 1.second }
+          queue_migration('NewMigration', table_name, :id,
+                          job_interval: 5.minutes,
+                          batch_size: 10,
+                          sub_batch_size: 5)
+
+          other_new_migration = define_background_migration('NewMigration2') { travel 2.seconds }
+          queue_migration('NewMigration2', table_name, :id,
+                          job_interval: 5.minutes,
+                          batch_size: 10,
+                          sub_batch_size: 5)
+
+          expect_migration_runs(new_migration => 3, other_new_migration => 2, old_migration => 0) do
+            described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 5.seconds)
+          end
         end
       end
     end
-  end
 
-  context 'choosing uniform batches to run' do
-    subject { described_class.new(result_dir: result_dir, connection: connection) }
+    context 'choosing uniform batches to run' do
+      subject { described_class.new(result_dir: result_dir, connection: connection) }
 
-    describe '#uniform_fractions' do
-      it 'generates evenly distributed sequences of fractions' do
-        received = subject.uniform_fractions.take(9)
-        expected = [0, 1, 1.0 / 2, 1.0 / 4, 3.0 / 4, 1.0 / 8, 3.0 / 8, 5.0 / 8, 7.0 / 8]
+      describe '#uniform_fractions' do
+        it 'generates evenly distributed sequences of fractions' do
+          received = subject.uniform_fractions.take(9)
+          expected = [0, 1, 1.0 / 2, 1.0 / 4, 3.0 / 4, 1.0 / 8, 3.0 / 8, 5.0 / 8, 7.0 / 8]
 
-        # All the fraction numerators are small integers, and all denominators are powers of 2, so these
-        # fit perfectly into floating point numbers with zero loss of precision
-        expect(received).to eq(expected)
+          # All the fraction numerators are small integers, and all denominators are powers of 2, so these
+          # fit perfectly into floating point numbers with zero loss of precision
+          expect(received).to eq(expected)
+        end
       end
     end
   end

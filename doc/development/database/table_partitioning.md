@@ -396,14 +396,15 @@ class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.0]
 end
 ```
 
-### Step 6 - Create parent table and attach existing table as the initial paritition
+### Step 6 - Create parent table and attach existing table as the initial partition
 
-You can now create the parent table attaching the existing table as the initial partition by using the following helpers provided by the database team.
+You can now create the parent table attaching the existing table as the initial
+partition by using the following helpers provided by the database team.
 
-For example, using list partitioning in a Rails migration:
+For example, using list partitioning in Rails post migrations:
 
 ```ruby
-class ConvertTableToZeroPartitioning < Gitlab::Database::Migration[2.0]
+class PrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2.0]
   include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
 
   disable_ddl_transaction!
@@ -420,7 +421,31 @@ class ConvertTableToZeroPartitioning < Gitlab::Database::Migration[2.0]
       parent_table_name: PARENT_TABLE_NAME,
       initial_partitioning_value: FIRST_PARTITION
     )
+  end
 
+  def down
+    revert_preparing_constraint_for_list_partitioning(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION
+    )
+  end
+end
+```
+
+```ruby
+class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
+  include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
+
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  PARENT_TABLE_NAME = :p_table_name
+  FIRST_PARTITION = 100
+  PARTITION_COLUMN = :partition_id
+
+  def up
     convert_table_to_first_list_partition(
       table_name: TABLE_NAME,
       partitioning_column: PARTITION_COLUMN,
@@ -431,13 +456,6 @@ class ConvertTableToZeroPartitioning < Gitlab::Database::Migration[2.0]
 
   def down
     revert_converting_table_to_first_list_partition(
-      table_name: TABLE_NAME,
-      partitioning_column: PARTITION_COLUMN,
-      parent_table_name: PARENT_TABLE_NAME,
-      initial_partitioning_value: FIRST_PARTITION
-    )
-
-    revert_preparing_constraint_for_list_partitioning(
       table_name: TABLE_NAME,
       partitioning_column: PARTITION_COLUMN,
       parent_table_name: PARENT_TABLE_NAME,

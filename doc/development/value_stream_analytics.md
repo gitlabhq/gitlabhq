@@ -326,3 +326,24 @@ in your rails console (`rails c`):
 ```ruby
 Analytics::CycleAnalytics::ReaggregationWorker.new.perform
 ```
+
+### Seed data
+
+#### Value stream analytics
+
+Seed issues and merge requests for value stream analytics:
+
+  ```shell
+  // Seed 10 issues for the project specified by <project-id>
+  $ VSA_SEED_PROJECT_ID=<project-id> VSA_ISSUE_COUNT=10 SEED_VSA=true FILTER=cycle_analytics rake db:seed_fu
+  ```
+
+#### DORA metrics
+
+Seed DORA daily metrics for value stream, insights and CI/CD analytics:
+
+1. [Create an environment from the UI](../ci/environments/index.md#create-a-static-environment) named `production`.
+1. Open the rails console:
+
+   ```shell
+   rails c
