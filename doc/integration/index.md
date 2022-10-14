@@ -9,6 +9,10 @@ comments: false
 
 GitLab can be integrated with external services for enhanced functionality.
 
+## Services
+
+Services such as Campfire, Flowdock, Jira, Pivotal Tracker, and Slack are available as [integrations](../user/project/integrations/index.md).
+
 ## Issue trackers
 
 You can use an [external issue tracker](external-issue-tracker.md) at the same time as the GitLab
@@ -60,10 +64,6 @@ or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc a
 - Attach merge requests to [Trello](trello_power_up.md) cards.
 - Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
 - Add [Elasticsearch](advanced_search/elasticsearch.md) for [Advanced Search](../user/search/advanced_search.md).
-
-## Integrations
-
-Integration with services such as Campfire, Flowdock, Jira, Pivotal Tracker, and Slack are available as [Integrations](../user/project/integrations/index.md).
 
 ## Troubleshooting
 

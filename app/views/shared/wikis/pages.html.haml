@@ -2,7 +2,6 @@
 - breadcrumb_title s_("Wiki|Pages")
 - page_title s_("Wiki|Pages"), _("Wiki")
 - add_page_specific_style 'page_bundles/wiki'
-- wiki_sort_options = [{ text: s_("Wiki|Title"), value: 'title', href: wiki_path(@wiki, action: :pages, sort: Wiki::TITLE_ORDER)}, { text: s_("Wiki|Created date"), value: 'created_at', href: wiki_path(@wiki, action: :pages, sort: Wiki::CREATED_AT_ORDER) }]
 
 .wiki-page-header.top-area.flex-column.flex-lg-row
   %h1.page-title.gl-font-size-h-display.gl-flex-grow-1
@@ -15,9 +14,7 @@
 
     .dropdown.inline.wiki-sort-dropdown
       .btn-group{ role: 'group' }
-        - unless @wiki.disable_sorting?
-          = gl_redirect_listbox_tag wiki_sort_options, params[:sort], data: { right: true }
-        = wiki_sort_controls(@wiki, params[:sort], params[:direction])
+        = wiki_sort_controls(@wiki, params[:direction])
 
 %ul.wiki-pages-list.content-list
   = render @wiki_entries, context: 'pages'

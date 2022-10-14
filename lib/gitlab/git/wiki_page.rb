@@ -5,22 +5,6 @@ module Gitlab
     class WikiPage
       attr_reader :url_path, :title, :format, :path, :version, :raw_data, :name, :historical, :formatted_data
 
-      class << self
-        # Abstracts away Gitlab::GitalyClient::WikiPage
-        def from_gitaly_wiki_page(gitaly_page, version)
-          new(
-            url_path: gitaly_page.url_path,
-            title: gitaly_page.title,
-            format: gitaly_page.format,
-            path: gitaly_page.path,
-            raw_data: gitaly_page.raw_data,
-            name: gitaly_page.name,
-            historical: gitaly_page.historical?,
-            version: version
-          )
-        end
-      end
-
       def initialize(hash)
         @url_path = hash[:url_path]
         @title = hash[:title]

@@ -209,9 +209,7 @@ module WikiActions
   def wiki
     strong_memoize(:wiki) do
       wiki = Wiki.for_container(container, current_user)
-
-      # Call #wiki to make sure the Wiki Repo is initialized
-      wiki.wiki
+      wiki.create_wiki_repository
 
       wiki
     end
@@ -242,7 +240,7 @@ module WikiActions
   def wiki_pages
     strong_memoize(:wiki_pages) do
       Kaminari.paginate_array(
-        wiki.list_pages(sort: params[:sort], direction: params[:direction])
+        wiki.list_pages(direction: params[:direction])
       ).page(params[:page])
     end
   end

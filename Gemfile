@@ -119,6 +119,8 @@ gem 'net-ldap', '~> 0.16.3'
 gem 'grape', '~> 1.5.2'
 gem 'grape-entity', '~> 0.10.0'
 gem 'rack-cors', '~> 1.1.1', require: 'rack/cors'
+gem 'grape-swagger', '~>1.5.0', group: [:development, :test]
+gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test]
 
 # GraphQL API
 gem 'graphql', '~> 1.13.12'

@@ -4,7 +4,7 @@
 #   wiki
 #   user
 
-RSpec.shared_examples 'User views wiki pages' do |support_sorting_by_created_at = true|
+RSpec.shared_examples 'User views wiki pages' do
   include WikiHelpers
 
   let!(:wiki_page1) do
@@ -49,42 +49,6 @@ RSpec.shared_examples 'User views wiki pages' do |support_sorting_by_created_at 
       it 'pages are displayed in reversed order' do
         pages.reverse_each.with_index do |page_title, index|
           expect(page_title.text).to eq(pages_ordered_by_title[index].title)
-        end
-      end
-    end
-  end
-
-  if support_sorting_by_created_at
-    context 'ordered by created_at' do
-      let(:pages_ordered_by_created_at) { [wiki_page1, wiki_page2, wiki_page3] }
-
-      before do
-        stub_feature_flags(wiki_list_pages_with_normal_repository_rpcs: false)
-        page.within('.wiki-sort-dropdown') do
-          click_button('Title')
-          click_button('Created date')
-        end
-      end
-
-      context 'asc' do
-        it 'pages are displayed in direct order' do
-          pages.each.with_index do |page_title, index|
-            expect(page_title.text).to eq(pages_ordered_by_created_at[index].title)
-          end
-        end
-      end
-
-      context 'desc' do
-        before do
-          page.within('.wiki-sort-dropdown') do
-            page.find('.rspec-reverse-sort').click
-          end
-        end
-
-        it 'pages are displayed in reversed order' do
-          pages.reverse_each.with_index do |page_title, index|
-            expect(page_title.text).to eq(pages_ordered_by_created_at[index].title)
-          end
         end
       end
     end

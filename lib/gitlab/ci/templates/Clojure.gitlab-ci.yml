@@ -28,3 +28,8 @@ test:
     # If you need to run any migrations or configure the database, this
     # would be the point to do it.
     - lein test
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

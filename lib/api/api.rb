@@ -3,6 +3,7 @@
 module API
   class API < ::API::Base
     include APIGuard
+    include Helpers::OpenApi
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
@@ -165,6 +166,13 @@ module API
         ::Users::ActivityService.new(@current_user).execute
       end
 
+      # Mount endpoints to include in the OpenAPI V2 documentation here
+      namespace do
+        mount ::API::Metadata
+
+        add_open_api_documentation!
+      end
+
       # Keep in alphabetical order
       mount ::API::AccessRequests
       mount ::API::Admin::BatchedBackgroundMigrations
@@ -250,7 +258,6 @@ module API
       mount ::API::MergeRequestApprovals
       mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
-      mount ::API::Metadata
       mount ::API::Metrics::Dashboard::Annotations
       mount ::API::Metrics::UserStarredDashboards
       mount ::API::Namespaces

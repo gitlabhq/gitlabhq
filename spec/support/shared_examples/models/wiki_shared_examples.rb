@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'wiki model' do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user, :commit_email) }
 
   let(:wiki_container) { raise NotImplementedError }
@@ -121,36 +123,6 @@ RSpec.shared_examples 'wiki model' do
 
       expect(subject.wiki_base_path).to start_with('/root/')
       expect(subject.wiki_base_path).not_to start_with('/root/root')
-    end
-  end
-
-  describe '#wiki' do
-    it 'contains a Gitlab::Git::Wiki instance' do
-      expect(subject.wiki).to be_a Gitlab::Git::Wiki
-    end
-
-    it 'creates a new wiki repo if one does not yet exist' do
-      expect(subject.create_page('index', 'test content')).to be_truthy
-    end
-
-    it 'creates a new wiki repo with a default commit message' do
-      expect(subject.create_page('index', 'test content', :markdown, '')).to be_truthy
-
-      page = subject.find_page('index')
-
-      expect(page.last_version.message).to eq("#{user.username} created page: index")
-    end
-
-    context 'when the repository cannot be created' do
-      let(:wiki_container) { wiki_container_without_repo }
-
-      before do
-        expect(subject.repository).to receive(:create_if_not_exists) { false }
-      end
-
-      it 'raises CouldNotCreateWikiError' do
-        expect { subject.wiki }.to raise_exception(Wiki::CouldNotCreateWikiError)
-      end
     end
   end
 
@@ -447,14 +419,6 @@ RSpec.shared_examples 'wiki model' do
       end
     end
 
-    context 'find page with legacy wiki service' do
-      before do
-        stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
-      end
-
-      it_behaves_like 'wiki model #find_page'
-    end
-
     context 'find page with normal repository RPCs' do
       it_behaves_like 'wiki model #find_page'
     end
@@ -473,14 +437,6 @@ RSpec.shared_examples 'wiki model' do
       end
     end
 
-    context 'find sidebar with legacy wiki service' do
-      before do
-        stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
-      end
-
-      it_behaves_like 'wiki model #find_sidebar'
-    end
-
     context 'find sidebar with normal repository RPCs' do
       it_behaves_like 'wiki model #find_sidebar'
     end
@@ -490,7 +446,7 @@ RSpec.shared_examples 'wiki model' do
     let(:image) { File.open(Rails.root.join('spec', 'fixtures', 'big-image.png')) }
 
     before do
-      subject.wiki # Make sure the wiki repo exists
+      subject.create_wiki_repository # Make sure the wiki repo exists
 
       subject.repository.create_file(user, 'image.png', image, branch_name: subject.default_branch, message: 'add image')
     end
@@ -694,14 +650,6 @@ RSpec.shared_examples 'wiki model' do
     end
 
     it_behaves_like 'create_page tests'
-
-    context 'create page with legacy find_page wiki service' do
-      it_behaves_like 'create_page tests' do
-        before do
-          stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
-        end
-      end
-    end
   end
 
   describe '#update_page' do
@@ -798,17 +746,6 @@ RSpec.shared_examples 'wiki model' do
     it_behaves_like 'update_page tests' do
       include_context 'common examples'
       include_context 'extended examples'
-    end
-
-    context 'update page with legacy find_page wiki service' do
-      it_behaves_like 'update_page tests' do
-        before do
-          stub_feature_flags(wiki_find_page_with_normal_repository_rpcs: false)
-        end
-
-        include_context 'common examples'
-        include_context 'extended examples'
-      end
     end
 
     context 'when format is invalid' do
@@ -981,6 +918,42 @@ RSpec.shared_examples 'wiki model' do
         subject
 
         expect(File.read(head_path).squish).to eq "ref: refs/heads/#{default_branch}"
+      end
+    end
+  end
+
+  describe '#preview_slug' do
+    where(:title, :file_extension, :format, :expected_slug) do
+      'The Best Thing'       | :md  | :markdown  | 'The-Best-Thing'
+      'The Best Thing'       | :txt | :plaintext | 'The-Best-Thing'
+      'A Subject/Title Here' | :txt | :plaintext | 'A-Subject/Title-Here'
+      'A subject'            | :txt | :plaintext | 'A-subject'
+      'A 1/B 2/C 3'          | :txt | :plaintext | 'A-1/B-2/C-3'
+      'subject/title'        | :txt | :plaintext | 'subject/title'
+      'subject/title.md'     | :txt | :plaintext | 'subject/title.md'
+      'foo%2Fbar'            | :txt | :plaintext | 'foo%2Fbar'
+      ''                     | :md  | :markdown  | '.md'
+      ''                     | :txt | :plaintext | '.txt'
+    end
+
+    with_them do
+      before do
+        subject.repository.create_file(
+          user, "#{title}.#{file_extension}", 'content',
+          branch_name: subject.default_branch,
+          message: "Add #{title}"
+        )
+      end
+
+      it do
+        expect(described_class.preview_slug(title, file_extension)).to eq(expected_slug)
+      end
+
+      it 'matches the slug generated by gitaly' do
+        skip('Gitaly cannot generate a slug for an empty title') unless title.present?
+
+        gitaly_slug = subject.list_pages.first.slug
+        expect(described_class.preview_slug(title, file_extension)).to eq(gitaly_slug)
       end
     end
   end

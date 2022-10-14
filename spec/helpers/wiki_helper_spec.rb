@@ -75,78 +75,38 @@ RSpec.describe WikiHelper do
 
   describe '#wiki_sort_controls' do
     let(:wiki) { create(:project_wiki) }
-    let(:wiki_link) { helper.wiki_sort_controls(wiki, sort, direction) }
+    let(:wiki_link) { helper.wiki_sort_controls(wiki, direction) }
     let(:classes) { "gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort" }
 
-    def expected_link(sort, direction, icon_class)
-      reversed_direction = direction == 'desc' ? 'asc' : 'desc'
-      path =
-        if sort
-          "/#{wiki.project.full_path}/-/wikis/pages?direction=#{reversed_direction}&sort=#{sort}"
-        else
-          "/#{wiki.project.full_path}/-/wikis/pages?direction=#{reversed_direction}"
-        end
-
-      title = direction == 'desc' ? _('Sort direction: Descending') : _('Sort direction: Ascending')
+    def expected_link(direction, icon_class)
+      path = "/#{wiki.project.full_path}/-/wikis/pages?direction=#{direction}"
+      title = direction == 'desc' ? _('Sort direction: Ascending') : _('Sort direction: Descending')
       helper.link_to(path, type: 'button', class: classes, title: title) do
         helper.sprite_icon("sort-#{icon_class}")
       end
     end
 
-    context 'wiki sorting enabled' do
-      before do
-        allow(wiki).to receive(:disable_sorting?).and_return(false)
-      end
+    context 'initial call' do
+      let(:direction) { nil }
 
-      context 'initial call' do
-        let(:sort) { nil }
-        let(:direction) { nil }
-
-        it 'renders with default values' do
-          expect(wiki_link).to eq(expected_link('title', 'asc', 'lowest'))
-        end
-      end
-
-      context 'sort by title' do
-        let(:sort) { 'title' }
-        let(:direction) { 'asc' }
-
-        it 'renders a link with opposite direction' do
-          expect(wiki_link).to eq(expected_link('title', 'aesc', 'lowest'))
-        end
-      end
-
-      context 'sort by created_at' do
-        let(:sort) { 'created_at' }
-        let(:direction) { 'desc' }
-
-        it 'renders a link with opposite direction' do
-          expect(wiki_link).to eq(expected_link('created_at', 'desc', 'highest'))
-        end
+      it 'renders with default values' do
+        expect(wiki_link).to eq(expected_link('desc', 'lowest'))
       end
     end
 
-    context 'wiki sorting disabled' do
-      before do
-        allow(wiki).to receive(:disable_sorting?).and_return(true)
+    context 'sort by asc order' do
+      let(:direction) { 'asc' }
+
+      it 'renders a link with opposite direction' do
+        expect(wiki_link).to eq(expected_link('desc', 'lowest'))
       end
+    end
 
-      context 'sort by created_at' do
-        let(:sort) { 'created_at' }
-        let(:direction) { 'asc' }
+    context 'sort by desc order' do
+      let(:direction) { 'desc' }
 
-        it 'ignores created_at and renders a link with opposite direction' do
-          expect(wiki_link).to eq(expected_link(nil, 'asc', 'lowest'))
-        end
-      end
-
-      context 'initial call' do
-        let(:sort) { nil }
-        let(:direction) { nil }
-
-        it 'renders with default values' do
-          expect(wiki_link).to eq(expected_link(nil, 'asc', 'lowest'))
-        end
+      it 'renders a link with opposite direction' do
+        expect(wiki_link).to eq(expected_link('asc', 'highest'))
       end
     end
   end

@@ -48,7 +48,7 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when the wiki repository cannot be created' do
       before do
         expect(Wiki).to receive(:for_container).and_return(wiki)
-        expect(wiki).to receive(:wiki) { raise Wiki::CouldNotCreateWikiError }
+        expect(wiki).to receive(:create_wiki_repository) { raise Wiki::CouldNotCreateWikiError }
       end
 
       it 'redirects to the wiki container and displays an error message' do
@@ -200,7 +200,7 @@ RSpec.shared_examples 'wiki controller actions' do
       context 'the sidebar fails to load' do
         before do
           allow(Wiki).to receive(:for_container).and_return(wiki)
-          wiki.wiki
+          wiki.create_wiki_repository
           expect(wiki).to receive(:find_sidebar) do
             raise ::Gitlab::Git::CommandTimedOut, 'Deadline Exceeded'
           end

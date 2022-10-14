@@ -2,10 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Repository License Detection', product_group: :source_code, quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/376154',
-      type: :stale
-    } do
+    describe 'Repository License Detection', product_group: :source_code do
       after do
         project.remove_via_api!
       end

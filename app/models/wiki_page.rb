@@ -73,7 +73,7 @@ class WikiPage
 
   # The escaped URL path of this page.
   def slug
-    attributes[:slug].presence || wiki.wiki.preview_slug(title, format)
+    attributes[:slug].presence || ::Wiki.preview_slug(title, format)
   end
   alias_method :id, :slug # required to use build_stubbed
 

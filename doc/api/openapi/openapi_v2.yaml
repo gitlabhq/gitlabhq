@@ -1,0 +1,90 @@
+---
+info:
+  title: GitLab API
+  version: v4
+swagger: '2.0'
+produces:
+- application/json
+securityDefinitions:
+  access_token_header:
+    type: apiKey
+    name: PRIVATE-TOKEN
+    in: header
+  access_token_query:
+    type: apiKey
+    name: private_token
+    in: query
+host: gitlab.com
+tags:
+- name: metadata
+  description: Operations related to metadata of the GitLab instance
+paths:
+  "/api/v4/metadata":
+    get:
+      summary: Retrieve metadata information for this GitLab instance.
+      description: This feature was introduced in GitLab 15.2.
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            "$ref": "#/definitions/API_Entities_Metadata"
+          examples:
+            successful_response:
+              value:
+                version: 15.0-pre
+                revision: c401a659d0c
+                kas:
+                  enabled: true
+                  externalUrl: grpc://gitlab.example.com:8150
+                  version: 15.0.0
+        '401':
+          description: unauthorized operation
+      tags:
+      - metadata
+      operationId: getApiV4Metadata
+  "/api/v4/version":
+    get:
+      summary: Get the version information of the GitLab instance.
+      description: This feature was introduced in GitLab 8.13 and deprecated in 15.5.
+        We recommend you instead use the Metadata API.
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            "$ref": "#/definitions/API_Entities_Metadata"
+          examples:
+            Example:
+              value:
+                version: 15.0-pre
+                revision: c401a659d0c
+                kas:
+                  enabled: true
+                  externalUrl: grpc://gitlab.example.com:8150
+                  version: 15.0.0
+        '401':
+          description: unauthorized operation
+      tags:
+      - metadata
+      operationId: getApiV4Version
+definitions:
+  API_Entities_Metadata:
+    type: object
+    properties:
+      version:
+        type: string
+      revision:
+        type: string
+      kas:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+          externalUrl:
+            type: string
+          version:
+            type: string
+    description: API_Entities_Metadata model

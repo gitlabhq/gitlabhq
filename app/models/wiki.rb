@@ -9,6 +9,8 @@ class Wiki
 
   extend ActiveModel::Naming
 
+  DuplicatePageError = Class.new(StandardError)
+
   MARKUPS = { # rubocop:disable Style/MultilineIfModifier
     markdown: {
       name: 'Markdown',
@@ -114,6 +116,29 @@ class Wiki
       title = Pathname.new(title).relative_path_from('/').to_s
       title.tr(' ', '-')
     end
+
+    def canonicalize_filename(filename)
+      ::File.basename(filename, ::File.extname(filename)).tr('-', ' ')
+    end
+
+    def cname(name, char_white_sub = '-', char_other_sub = '-')
+      name.to_s.gsub(/\s/, char_white_sub).gsub(/[<>+]/, char_other_sub)
+    end
+
+    def preview_slug(title, format)
+      ext = format == :markdown ? "md" : format.to_s
+      name = cname(title) + '.' + ext
+      canonical_name = canonicalize_filename(name)
+
+      path =
+        if name.include?('/')
+          name.sub(%r{/[^/]+$}, '/')
+        else
+          ''
+        end
+
+      path + cname(canonical_name, '-', '-')
+    end
   end
 
   def initialize(container, user = nil)
@@ -143,14 +168,6 @@ class Wiki
 
   def path
     container.path + '.wiki'
-  end
-
-  # Returns the Gitlab::Git::Wiki object.
-  def wiki
-    strong_memoize(:wiki) do
-      create_wiki_repository
-      Gitlab::Git::Wiki.new(repository.raw)
-    end
   end
 
   def create_wiki_repository
@@ -190,13 +207,9 @@ class Wiki
   #
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def list_pages(limit: 0, sort: nil, direction: DIRECTION_ASC, load_content: false)
-    if list_pages_with_repository_rpcs?
-      create_wiki_repository unless repository_exists?
-      list_pages_with_repository_rpcs(limit: limit, sort: sort, direction: direction, load_content: load_content)
-    else
-      list_pages_with_legacy_wiki_service(limit: limit, sort: sort, direction: direction, load_content: load_content)
-    end
+  def list_pages(limit: 0, direction: DIRECTION_ASC, load_content: false)
+    create_wiki_repository unless repository_exists?
+    list_pages_with_repository_rpcs(limit: limit, direction: direction, load_content: load_content)
   end
 
   def sidebar_entries(limit: Gitlab::WikiPages::MAX_SIDEBAR_PAGES, **options)
@@ -215,12 +228,8 @@ class Wiki
   #
   # Returns an initialized WikiPage instance or nil
   def find_page(title, version = nil, load_content: true)
-    if find_page_with_repository_rpcs?
-      create_wiki_repository unless repository_exists?
-      find_page_with_repository_rpcs(title, version, load_content: load_content)
-    else
-      find_page_with_legacy_wiki_service(title, version, load_content: load_content)
-    end
+    create_wiki_repository unless repository_exists?
+    find_page_with_repository_rpcs(title, version, load_content: load_content)
   end
 
   def find_sidebar(version = nil)
@@ -254,7 +263,7 @@ class Wiki
         raise_duplicate_page_error!
       end
     end
-  rescue Gitlab::Git::Wiki::DuplicatePageError => e
+  rescue DuplicatePageError => e
     @error_message = _("Duplicate page: %{error_message}" % { error_message: e.message })
 
     false
@@ -270,6 +279,7 @@ class Wiki
       extension = page.format != format.to_sym ? default_extension : File.extname(page.path).downcase[1..]
 
       capture_git_error(:updated) do
+        create_wiki_repository unless repository_exists?
         repository.update_file(
           user,
           sluggified_full_path(title, extension),
@@ -288,6 +298,7 @@ class Wiki
     return unless page
 
     capture_git_error(:deleted) do
+      create_wiki_repository unless repository_exists?
       repository.delete_file(user, page.path, **multi_commit_options(:deleted, message, page.title))
 
       after_wiki_activity
@@ -304,8 +315,10 @@ class Wiki
     [title, title_array.join("/")]
   end
 
+  # TODO: This method is redundant. Should be replaced by create_wiki_repository
   def ensure_repository
-    raise CouldNotCreateWikiError unless wiki.repository_exists?
+    create_wiki_repository
+    raise CouldNotCreateWikiError unless repository_exists?
   end
 
   def hook_attrs
@@ -341,7 +354,7 @@ class Wiki
 
   override :default_branch
   def default_branch
-    super || Gitlab::Git::Wiki.default_ref(container)
+    super || Gitlab::DefaultBranch.value(object: container)
   end
 
   def wiki_base_path
@@ -379,10 +392,6 @@ class Wiki
     Gitlab::ErrorTracking.log_exception(e, action: action, wiki_id: id)
 
     false
-  end
-
-  def disable_sorting?
-    list_pages_with_repository_rpcs?
   end
 
   private
@@ -429,7 +438,7 @@ class Wiki
   end
 
   def raise_duplicate_page_error!
-    raise Gitlab::Git::Wiki::DuplicatePageError, _('A page with that title already exists')
+    raise ::Wiki::DuplicatePageError, _('A page with that title already exists')
   end
 
   def sluggified_full_path(title, extension)
@@ -441,15 +450,7 @@ class Wiki
   end
 
   def canonicalize_filename(filename)
-    Gitlab::Git::Wiki::GollumSlug.canonicalize_filename(filename)
-  end
-
-  def find_page_with_legacy_wiki_service(title, version, load_content: false)
-    page_title, page_dir = page_title_and_dir(title)
-
-    if page = wiki.page(title: page_title, version: version, dir: page_dir, load_content: load_content)
-      WikiPage.new(self, page)
-    end
+    self.class.canonicalize_filename(filename)
   end
 
   def find_matched_file(title, version)
@@ -494,17 +495,6 @@ class Wiki
     WikiPage.new(self, page)
   end
 
-  def find_page_with_repository_rpcs?
-    group =
-      if container.is_a?(::Group)
-        container
-      else
-        container.group
-      end
-
-    Feature.enabled?(:wiki_find_page_with_normal_repository_rpcs, group, type: :development)
-  end
-
   def file_extension_regexp
     # We could not use ALLOWED_EXTENSIONS_REGEX constant or similar regexp with
     # Regexp.union. The result combination complicated modifiers:
@@ -519,17 +509,6 @@ class Wiki
     path.sub(/\.[^.]+\z/, "")
   end
 
-  def list_pages_with_repository_rpcs?
-    group =
-      if container.is_a?(::Group)
-        container
-      else
-        container.group
-      end
-
-    Feature.enabled?(:wiki_list_pages_with_normal_repository_rpcs, group, type: :development)
-  end
-
   def list_page_paths
     return [] if repository.empty?
 
@@ -537,7 +516,7 @@ class Wiki
     repository.search_files_by_regexp(path_regexp, default_branch)
   end
 
-  def list_pages_with_repository_rpcs(limit:, sort:, direction:, load_content:)
+  def list_pages_with_repository_rpcs(limit:, direction:, load_content:)
     paths = list_page_paths
     return [] if paths.empty?
 
@@ -553,29 +532,18 @@ class Wiki
       )
       WikiPage.new(self, page)
     end
-    sort_pages!(pages, sort, direction)
+    sort_pages!(pages, direction)
     pages = pages.take(limit) if limit > 0
     fetch_pages_content!(pages) if load_content
 
     pages
   end
 
-  def list_pages_with_legacy_wiki_service(limit:, sort:, direction:, load_content:)
-    wiki.list_pages(
-      limit: limit,
-      sort: sort,
-      direction_desc: direction == DIRECTION_DESC,
-      load_content: load_content
-    ).map do |page|
-      WikiPage.new(self, page)
-    end
-  end
-
   # After migrating to normal repository RPCs, it's very expensive to sort the
   # pages by created_at. We have to either ListLastCommitsForTree RPC call or
   # N+1 LastCommitForPath. Either are efficient for a large repository.
   # Therefore, we decide to sort the title only.
-  def sort_pages!(pages, _sort, direction)
+  def sort_pages!(pages, direction)
     # Sort by path to ensure the files inside a sub-folder are grouped and sorted together
     pages.sort_by!(&:path)
     pages.reverse! if direction == DIRECTION_DESC

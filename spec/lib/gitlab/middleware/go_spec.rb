@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Middleware::Go do
 
       shared_examples 'go-get=1' do |enabled_protocol:|
         context 'with simple 2-segment project path' do
-          let!(:project) { create(:project, :private, :repository) }
+          let!(:project) { create(:project, :public, :repository) }
 
           context 'with subpackages' do
             let(:path) { "#{project.full_path}/subpackage" }
@@ -48,6 +48,16 @@ RSpec.describe Gitlab::Middleware::Go do
             it 'returns the full project path' do
               expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
             end
+          end
+        end
+
+        context 'with nonexistent path' do
+          let(:path) { 'nonexistent-group/nonexistent-project' }
+
+          it 'responses not found' do
+            status_code, _headers, body = go
+            expect(status_code).to eq(404)
+            expect(body).to match_array([''])
           end
         end
 
@@ -68,8 +78,10 @@ RSpec.describe Gitlab::Middleware::Go do
               end
 
               shared_examples 'unauthorized' do
-                it 'returns the 2-segment group path' do
-                  expect_response_with_path(go, enabled_protocol, group.full_path, project.default_branch)
+                it 'returns unauthorized' do
+                  status_code, _headers, body = go
+                  expect(status_code).to eq(404)
+                  expect(body).to match_array([''])
                 end
               end
 
@@ -141,7 +153,7 @@ RSpec.describe Gitlab::Middleware::Go do
                         expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::IpBlacklisted)
                         response = go
 
-                        expect(response[0]).to eq(403)
+                        expect(response[0]).to eq(404)
                         expect(response[1]['Content-Length']).to be_nil
                         expect(response[2]).to eq([''])
                       end
@@ -158,7 +170,7 @@ RSpec.describe Gitlab::Middleware::Go do
                       expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(Gitlab::Auth::MissingPersonalAccessTokenError)
                       response = go
 
-                      expect(response[0]).to eq(401)
+                      expect(response[0]).to eq(404)
                       expect(response[1]['Content-Length']).to be_nil
                       expect(response[2]).to eq([''])
                     end

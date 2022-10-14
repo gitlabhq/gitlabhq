@@ -139,5 +139,5 @@ end
 ```
 
 The `ApplicationRecord` class uses a different database connection than the `Ci::Build` records.
-The two statements in the transaction block are not part of the transaction and are
-rolled back in case something goes wrong. They act as 3rd part calls.
+The two statements in the transaction block are not part of the transaction and are not
+rolled back in case something goes wrong. They act as third-party calls.

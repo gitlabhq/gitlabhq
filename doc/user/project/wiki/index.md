@@ -152,6 +152,8 @@ You need at least the Developer role to edit a wiki page:
 1. Edit the content.
 1. Select **Save changes**.
 
+Unsaved changes to a wiki page are preserved in local browser storage to prevent accidental data loss.
+
 ### Create a table of contents
 
 To generate a table of contents from a wiki page's subheadings, use the `[[_TOC_]]` tag.

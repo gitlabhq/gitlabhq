@@ -33,3 +33,8 @@ test:
   stage: test
   script:
     - ./runmytests.sh
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

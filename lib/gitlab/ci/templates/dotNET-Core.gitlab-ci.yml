@@ -111,3 +111,8 @@ tests:
   # (e.g. integration tests, unit tests etc).
   script:
     - 'dotnet test --no-restore'
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production
