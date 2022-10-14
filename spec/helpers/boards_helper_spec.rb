@@ -105,10 +105,6 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:can?).with(user, :admin_issue_board, project).and_return(false)
       end
 
-      it 'returns a board_lists_path as lists_endpoint' do
-        expect(helper.board_data[:lists_endpoint]).to eq(board_lists_path(project_board))
-      end
-
       it 'returns board type as parent' do
         expect(helper.board_data[:parent]).to eq('project')
       end

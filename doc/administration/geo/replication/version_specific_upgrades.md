@@ -10,6 +10,12 @@ Review this page for upgrade instructions for your version. These steps
 accompany the [general steps](upgrading_the_geo_sites.md#general-upgrade-steps)
 for upgrading Geo sites.
 
+## Upgrading to 15.1
+
+[Geo proxying](../secondary_proxy/index.md) was [enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in 15.1. This may be a breaking change. If needed, you may [disable Geo proxying](../secondary_proxy/index.md#disable-geo-proxying).
+
+If you are using SAML with different URLs, there is a [known issue which requires proxying to be disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/377372).
+
 ## Upgrading to 14.9
 
 **Do not** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
@@ -32,6 +38,10 @@ results in a loop that consistently fails for all objects stored in object stora
 
 For information on how to fix this, see
 [Troubleshooting - Failed syncs with GitLab-managed object storage replication](troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
+## Upgrading to 14.6
+
+[Geo proxying](../secondary_proxy/index.md) was [enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in 14.6. This may be a breaking change. If needed, you may [disable Geo proxying](../secondary_proxy/index.md#disable-geo-proxying).
 
 ## Upgrading to 14.4
 

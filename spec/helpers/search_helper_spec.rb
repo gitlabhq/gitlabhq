@@ -776,7 +776,7 @@ RSpec.describe SearchHelper do
     end
 
     context 'project data' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let(:project_metadata) { { project_path: project.path, issues_path: "/issues" } }
       let(:scope) { 'issues' }
       let(:code_search) { true }
@@ -852,7 +852,7 @@ RSpec.describe SearchHelper do
   describe '.search_navigation' do
     using RSpec::Parameterized::TableSyntax
     let(:user) { build(:user) }
-    let(:project) { build(:project) }
+    let_it_be(:project) { build(:project) }
 
     before do
       allow(self).to receive(:current_user).and_return(user)
@@ -1068,6 +1068,7 @@ RSpec.describe SearchHelper do
       with_them do
         it 'converts correctly' do
           allow(self).to receive(:search_navigation).with(no_args).and_return(data)
+
           expect(search_navigation_json).to instance_exec(&matcher)
         end
       end

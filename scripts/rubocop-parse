@@ -38,7 +38,7 @@ end
 options = Struct.new(:eval, :ruby_version, :print_help, keyword_init: true).new
 
 parser = OptionParser.new do |opts|
-  opts.banner = "Usage: #{$0} [-e code] [FILE...]"
+  opts.banner = "Usage: #{$PROGRAM_NAME} [-e code] [FILE...]"
 
   opts.on('-e FRAGMENT', '--eval FRAGMENT', 'Process a fragment of Ruby code') do |code|
     options.eval = code

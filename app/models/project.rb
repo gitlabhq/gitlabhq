@@ -1286,6 +1286,8 @@ class Project < ApplicationRecord
     valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
+  # TODO: rename to build_or_assign_import_data as it doesn't save record
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/377319
   def create_or_update_import_data(data: nil, credentials: nil)
     return if data.nil? && credentials.nil?
 

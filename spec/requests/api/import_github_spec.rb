@@ -70,7 +70,8 @@ RSpec.describe API::ImportGithub do
         target_namespace: user.namespace_path,
         personal_access_token: token,
         repo_id: non_existing_record_id,
-        github_hostname: "https://github.somecompany.com/"
+        github_hostname: "https://github.somecompany.com/",
+        optional_stages: { attachments_import: true }
       }
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to be_a Hash

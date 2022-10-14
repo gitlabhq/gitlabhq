@@ -4,6 +4,15 @@ import GlobalSearchSidebar from './components/app.vue';
 
 Vue.use(Translate);
 
+export const sidebarInitState = () => {
+  const el = document.getElementById('js-search-sidebar');
+
+  if (!el) return {};
+
+  const { navigation } = el.dataset;
+  return JSON.parse(navigation);
+};
+
 export const initSidebar = (store) => {
   const el = document.getElementById('js-search-sidebar');
 

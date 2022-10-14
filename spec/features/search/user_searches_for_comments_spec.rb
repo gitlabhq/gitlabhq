@@ -7,6 +7,7 @@ RSpec.describe 'User searches for comments' do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(search_page_vertical_nav: false)
     project.add_reporter(user)
     sign_in(user)
 

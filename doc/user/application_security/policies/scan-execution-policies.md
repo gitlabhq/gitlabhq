@@ -88,6 +88,7 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
+| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The object key is the name of the Kubernetes cluster configured for your project in GitLab. You can use the optional value of the object to select and scan specific Kubernetes resources. |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
@@ -95,6 +96,31 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
 Other elements of the CRON syntax may work in the cadence field, however, GitLab does not officially test or support them. The CRON expression is evaluated in UTC by default. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
+
+### `agent` schema
+
+Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).
+
+| Field        | Type                | Possible values          | Description |
+|--------------|---------------------|--------------------------|-------------|
+| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces will be scanned. |
+
+#### Policy example
+
+```yaml
+- name: Enforce Container Scanning in cluster connected through gitlab-agent for production and staging namespaces
+  enabled: true
+  rules:
+  - type: schedule
+    cadence: '0 10 * * *'
+    agents:
+      gitlab-agent:
+        namespaces:
+        - 'production'
+        - 'staging'
+  actions:
+  - scan: container_scanning
+```
 
 ## `scan` action type
 
@@ -124,9 +150,8 @@ Note the following:
 - A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
   [`historic`](../secret_detection/index.md#full-history-secret-detection)
   mode when executed as part of a scheduled scan.
-- A container scanning scan configured for the `pipeline` rule type ignores the cluster defined in the `clusters` object.
-  They use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
-  A cluster with a name provided in the `clusters` object must be created and configured for the project.
+- A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
+  An agent with a name provided in the `agents` object must be created and configured for the project.
 - The SAST scan uses the default template and runs in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 ## Example security policies project

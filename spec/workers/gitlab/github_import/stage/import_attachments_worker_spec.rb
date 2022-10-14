@@ -7,7 +7,12 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
 
   let(:project) { create(:project) }
   let!(:group) { create(:group, projects: [project]) }
-  let(:feature_flag_state) { [group] }
+  let(:settings) { ::Gitlab::GithubImport::Settings.new(project) }
+  let(:stage_enabled) { true }
+
+  before do
+    settings.write({ attachments_import: stage_enabled })
+  end
 
   describe '#import' do
     let(:releases_importer) { instance_double('Gitlab::GithubImport::Importer::Attachments::ReleasesImporter') }
@@ -15,10 +20,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
     let(:client) { instance_double('Gitlab::GithubImport::Client') }
     let(:releases_waiter) { Gitlab::JobWaiter.new(2, '123') }
     let(:notes_waiter) { Gitlab::JobWaiter.new(3, '234') }
-
-    before do
-      stub_feature_flags(github_importer_attachments_import: feature_flag_state)
-    end
 
     it 'imports release attachments' do
       expect(Gitlab::GithubImport::Importer::Attachments::ReleasesImporter)
@@ -40,8 +41,8 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
       worker.import(client, project)
     end
 
-    context 'when feature flag is disabled' do
-      let(:feature_flag_state) { false }
+    context 'when stage is disabled' do
+      let(:stage_enabled) { false }
 
       it 'skips release attachments import and calls next stage' do
         expect(Gitlab::GithubImport::Importer::Attachments::ReleasesImporter).not_to receive(:new)

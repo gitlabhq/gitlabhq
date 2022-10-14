@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if $".include?(File.expand_path('fast_spec_helper.rb', __dir__))
+if $LOADED_FEATURES.include?(File.expand_path('fast_spec_helper.rb', __dir__))
   warn 'Detected fast_spec_helper is loaded first than spec_helper.'
   warn 'If running test files using both spec_helper and fast_spec_helper,'
   warn 'make sure spec_helper is loaded first, or run rspec with `-r spec_helper`.'

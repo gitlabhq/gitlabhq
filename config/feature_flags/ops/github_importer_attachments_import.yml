@@ -1,8 +1,0 @@
----
-name: github_importer_attachments_import
-introduced_by_url:
-rollout_issue_url:
-milestone: '15.4'
-type: ops
-group: group::import
-default_enabled: false

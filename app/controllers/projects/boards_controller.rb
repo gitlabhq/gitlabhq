@@ -5,7 +5,6 @@ class Projects::BoardsController < Projects::ApplicationController
   include IssuableCollections
 
   before_action :check_issues_available!
-  before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:board_multi_select, project)
     push_frontend_feature_flag(:realtime_labels, project&.group)
@@ -30,11 +29,6 @@ class Projects::BoardsController < Projects::ApplicationController
     strong_memoize :board_create_service do
       Boards::CreateService.new(parent, current_user)
     end
-  end
-
-  def assign_endpoint_vars
-    @boards_endpoint = project_boards_path(project)
-    @bulk_issues_path = bulk_update_project_issues_path(project)
   end
 
   def authorize_read_board!

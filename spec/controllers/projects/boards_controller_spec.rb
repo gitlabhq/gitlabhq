@@ -19,12 +19,6 @@ RSpec.describe Projects::BoardsController do
       expect { list_boards }.to change(project.boards, :count).by(1)
     end
 
-    it 'sets boards_endpoint instance variable to a boards path' do
-      list_boards
-
-      expect(assigns(:boards_endpoint)).to eq project_boards_path(project)
-    end
-
     it 'renders template' do
       list_boards
 
@@ -109,12 +103,6 @@ RSpec.describe Projects::BoardsController do
 
   describe 'GET show' do
     let_it_be(:board) { create(:board, project: project) }
-
-    it 'sets boards_endpoint instance variable to a boards path' do
-      read_board board: board
-
-      expect(assigns(:boards_endpoint)).to eq project_boards_path(project)
-    end
 
     context 'when format is HTML' do
       it 'renders template' do

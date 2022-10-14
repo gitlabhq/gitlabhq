@@ -114,6 +114,9 @@ GitHub are stored in a single table. Therefore, they have globally-unique IDs an
 
 Therefore, both issues and pull requests have a common API for most related things.
 
+NOTE:
+This stage is optional and can consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
+
 ### 9. Stage::ImportNotesWorker
 
 This worker imports regular comments for both issues and pull requests. For
@@ -138,6 +141,9 @@ Each job:
 1. Iterates over all attachment links inside of a specific record.
 1. Downloads the attachment.
 1. Replaces the old link with a newly-generated link to GitLab.
+
+NOTE:
+It's an optional stage that could consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
 
 ### 11. Stage::ImportProtectedBranchesWorker
 

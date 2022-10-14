@@ -11,6 +11,7 @@ RSpec.describe 'User searches for milestones', :js do
   before do
     project.add_maintainer(user)
     sign_in(user)
+    stub_feature_flags(search_page_vertical_nav: false)
 
     visit(search_path)
   end

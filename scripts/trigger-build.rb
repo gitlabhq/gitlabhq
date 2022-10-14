@@ -427,7 +427,7 @@ module Trigger
   Job = Class.new(Pipeline)
 end
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   case ARGV[0]
   when 'cng'
     Trigger::CNG.new.invoke!.wait!

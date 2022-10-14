@@ -36,7 +36,7 @@ module Gitlab
         private
 
         def diff_notes_importer(project)
-          if project.group.present? && Feature.enabled?(:github_importer_single_endpoint_notes_import, project.group, type: :ops)
+          if import_settings(project).enabled?(:single_endpoint_notes_import)
             Importer::SingleEndpointDiffNotesImporter
           else
             Importer::DiffNotesImporter

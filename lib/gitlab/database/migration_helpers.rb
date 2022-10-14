@@ -296,12 +296,11 @@ module Gitlab
 
           with_lock_retries do
             execute("LOCK TABLE #{target}, #{source} IN SHARE ROW EXCLUSIVE MODE") if reverse_lock_order
-
             execute <<-EOF.strip_heredoc
             ALTER TABLE #{source}
             ADD CONSTRAINT #{options[:name]}
-            FOREIGN KEY (#{options[:column]})
-            REFERENCES #{target} (#{target_column})
+            FOREIGN KEY (#{multiple_columns(options[:column])})
+            REFERENCES #{target} (#{multiple_columns(target_column)})
             #{on_delete_statement(options[:on_delete])}
             NOT VALID;
             EOF
@@ -355,7 +354,7 @@ module Gitlab
       # - For standard rails foreign keys the prefix is `fk_rails_`
       #
       def concurrent_foreign_key_name(table, column, prefix: 'fk_')
-        identifier = "#{table}_#{column}_fk"
+        identifier = "#{table}_#{multiple_columns(column, separator: '_')}_fk"
         hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
 
         "#{prefix}#{hashed_identifier}"
@@ -1538,6 +1537,10 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       private
+
+      def multiple_columns(columns, separator: ', ')
+        Array.wrap(columns).join(separator)
+      end
 
       def cascade_statement(cascade)
         cascade ? 'CASCADE' : ''

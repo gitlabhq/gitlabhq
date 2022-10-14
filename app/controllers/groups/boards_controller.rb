@@ -5,7 +5,6 @@ class Groups::BoardsController < Groups::ApplicationController
   include RecordUserLastActivity
   include Gitlab::Utils::StrongMemoize
 
-  before_action :assign_endpoint_vars
   before_action do
     push_frontend_feature_flag(:board_multi_select, group)
     push_frontend_feature_flag(:realtime_labels, group)
@@ -30,10 +29,6 @@ class Groups::BoardsController < Groups::ApplicationController
     strong_memoize :board_create_service do
       Boards::CreateService.new(parent, current_user)
     end
-  end
-
-  def assign_endpoint_vars
-    @boards_endpoint = group_boards_path(group)
   end
 
   def authorize_read_board!

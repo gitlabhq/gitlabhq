@@ -5,8 +5,6 @@ module BoardsActions
   extend ActiveSupport::Concern
 
   included do
-    include BoardsResponses
-
     before_action :authorize_read_board!, only: [:index, :show]
     before_action :redirect_to_recent_board, only: [:index]
     before_action :board, only: [:index, :show]
@@ -49,6 +47,24 @@ module BoardsActions
 
   def board_visit_service
     Boards::Visits::CreateService
+  end
+
+  def parent
+    strong_memoize(:parent) do
+      group? ? group : project
+    end
+  end
+
+  def board_path(board)
+    if group?
+      group_board_path(parent, board)
+    else
+      project_board_path(parent, board)
+    end
+  end
+
+  def group?
+    instance_variable_defined?(:@group)
   end
 end
 

@@ -22,5 +22,6 @@
 .gl-mt-3
   #js-search-topbar{ data: { "group-initial-data": group_attributes.to_json, "project-initial-data": project_attributes.to_json } }
 - if @search_term
-  = render 'search/category'
+  - if Feature.disabled?(:search_page_vertical_nav, current_user)
+    = render 'search/category'
   = render 'search/results'

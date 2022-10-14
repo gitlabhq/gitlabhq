@@ -25,7 +25,7 @@ class CancelPipeline
   attr_reader :project, :pipeline_id, :client
 end
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   options = API::DEFAULT_OPTIONS.dup
 
   OptionParser.new do |opts|

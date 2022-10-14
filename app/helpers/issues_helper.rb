@@ -3,6 +3,10 @@
 module IssuesHelper
   include Issues::IssueTypeHelpers
 
+  def can_admin_issue?
+    can?(current_user, :admin_issue, @group || @project)
+  end
+
   def issue_css_classes(issue)
     classes = ["issue"]
     classes << "closed" if issue.closed?

@@ -149,7 +149,7 @@ class QueryLimitingReport
   end
 end
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   options = QueryLimitingReport::DEFAULT_OPTIONS.dup
 
   OptionParser.new do |opts|

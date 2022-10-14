@@ -113,7 +113,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def permitted_import_params
-    [:repo_id, :new_name, :target_namespace]
+    [:repo_id, :new_name, :target_namespace, { optional_stages: {} }]
   end
 
   def serialized_imported_projects(projects = already_added_projects)

@@ -1100,6 +1100,7 @@ Payload example:
    "object_kind": "pipeline",
    "object_attributes":{
       "id": 31,
+      "iid": 3,
       "ref": "master",
       "tag": false,
       "sha": "bcbb5ec396a2c0f828686f14fac9b80b780504f2",

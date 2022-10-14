@@ -63,6 +63,10 @@ module Gitlab
           import_stage: self.class.name
         )
       end
+
+      def import_settings(project)
+        Gitlab::GithubImport::Settings.new(project)
+      end
     end
   end
 end

@@ -43,6 +43,7 @@ module API
       optional :new_name, type: String, desc: 'New repo name'
       requires :target_namespace, type: String, desc: 'Namespace to import repo into'
       optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname'
+      optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
     end
     post 'import/github' do
       result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)

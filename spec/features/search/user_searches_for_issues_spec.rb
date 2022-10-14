@@ -18,6 +18,7 @@ RSpec.describe 'User searches for issues', :js do
     before do
       project.add_maintainer(user)
       sign_in(user)
+      stub_feature_flags(search_page_vertical_nav: false)
 
       visit(search_path)
     end
@@ -110,6 +111,7 @@ RSpec.describe 'User searches for issues', :js do
 
       before do
         stub_feature_flags(block_anonymous_global_searches: false)
+        stub_feature_flags(search_page_vertical_nav: false)
         visit(search_path)
       end
 
@@ -127,6 +129,7 @@ RSpec.describe 'User searches for issues', :js do
 
     context 'when block_anonymous_global_searches is enabled' do
       before do
+        stub_feature_flags(search_page_vertical_nav: false)
         visit(search_path)
       end
 

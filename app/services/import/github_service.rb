@@ -9,21 +9,13 @@ module Import
     attr_reader :params, :current_user
 
     def execute(access_params, provider)
-      if blocked_url?
-        return log_and_return_error("Invalid URL: #{url}", _("Invalid URL: %{url}") % { url: url }, :bad_request)
-      end
-
-      unless authorized?
-        return error(_('This namespace has already been taken! Please choose another one.'), :unprocessable_entity)
-      end
-
-      if oversized?
-        return error(oversize_error_message, :unprocessable_entity)
-      end
+      context_error = validate_context
+      return context_error if context_error
 
       project = create_project(access_params, provider)
 
       if project.persisted?
+        store_import_settings(project)
         success(project)
       elsif project.errors[:import_source_disabled].present?
         error(project.errors[:import_source_disabled], :forbidden)
@@ -108,6 +100,16 @@ module Import
 
     private
 
+    def validate_context
+      if blocked_url?
+        log_and_return_error("Invalid URL: #{url}", _("Invalid URL: %{url}") % { url: url }, :bad_request)
+      elsif !authorized?
+        error(_('This namespace has already been taken. Choose a different one.'), :unprocessable_entity)
+      elsif oversized?
+        error(oversize_error_message, :unprocessable_entity)
+      end
+    end
+
     def log_error(exception)
       Gitlab::GithubImport::Logger.error(
         message: 'Import failed due to a GitHub error',
@@ -125,6 +127,10 @@ module Import
       )
 
       error(translated_message, http_status)
+    end
+
+    def store_import_settings(project)
+      Gitlab::GithubImport::Settings.new(project).write(params[:optional_stages])
     end
   end
 end

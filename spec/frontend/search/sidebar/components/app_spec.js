@@ -42,20 +42,39 @@ describe('GlobalSearchSidebar', () => {
   const findResetLinkButton = () => wrapper.findComponent(GlLink);
 
   describe('template', () => {
-    beforeEach(() => {
-      createComponent();
+    describe('scope=projects', () => {
+      beforeEach(() => {
+        createComponent({ urlQuery: { ...MOCK_QUERY, scope: 'projects' } });
+      });
+
+      it("doesn't render StatusFilter", () => {
+        expect(findStatusFilter().exists()).toBe(false);
+      });
+
+      it("doesn't render ConfidentialityFilter", () => {
+        expect(findConfidentialityFilter().exists()).toBe(false);
+      });
+
+      it("doesn't render ApplyButton", () => {
+        expect(findApplyButton().exists()).toBe(false);
+      });
     });
 
-    it('renders StatusFilter always', () => {
-      expect(findStatusFilter().exists()).toBe(true);
-    });
+    describe('scope=issues', () => {
+      beforeEach(() => {
+        createComponent({ urlQuery: MOCK_QUERY });
+      });
+      it('renders StatusFilter', () => {
+        expect(findStatusFilter().exists()).toBe(true);
+      });
 
-    it('renders ConfidentialityFilter always', () => {
-      expect(findConfidentialityFilter().exists()).toBe(true);
-    });
+      it('renders ConfidentialityFilter', () => {
+        expect(findConfidentialityFilter().exists()).toBe(true);
+      });
 
-    it('renders ApplyButton always', () => {
-      expect(findApplyButton().exists()).toBe(true);
+      it('renders ApplyButton', () => {
+        expect(findApplyButton().exists()).toBe(true);
+      });
     });
   });
 
@@ -115,7 +134,7 @@ describe('GlobalSearchSidebar', () => {
 
   describe('actions', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({});
     });
 
     it('clicking ApplyButton calls applyQuery', () => {

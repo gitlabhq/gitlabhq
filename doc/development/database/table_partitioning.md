@@ -376,22 +376,28 @@ Enforce foreign keys including the partitioning key column. For example, in a ra
 class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
-  REFERENCED_TABLE_NAME = :references_table_name
-  FOREIGN_KEY_COLUMN = :foreign_key_id
-  FOREIGN_KEY_NAME = :fk_365d1db505_p
-  TABLE_NAME = :table_name
+  SOURCE_TABLE_NAME = :source_table_name
+  TARGET_TABLE_NAME = :target_table_name
+  COLUMN = :foreign_key_id
+  TARGET_COLUMN = :id
+  CONSTRAINT_NAME = :fk_365d1db505_p
   PARTITION_COLUMN = :partition_id
 
   def up
-    execute("ALTER TABLE #{REFERENCED_TABLE_NAME} ADD CONSTRAINT #{FOREIGN_KEY_NAME} " \
-      "FOREIGN KEY (#{FOREIGN_KEY_COLUMN}, #{PARTITION_COLUMN}) " \
-      "REFERENCES #{TABLE_NAME}(id, #{PARTITION_COLUMN}) ON DELETE CASCADE NOT VALID")
+    add_concurrent_foreign_key(
+      SOURCE_TABLE_NAME,
+      TARGET_TABLE_NAME,
+      column: [PARTITION_COLUMN, COLUMN],
+      target_column: [PARTITION_COLUMN, TARGET_COLUMN],
+      validate: false
+      name: CONSTRAINT_NAME
+    )
 
-    execute("ALTER TABLE #{TABLE_NAME} VALIDATE CONSTRAINT #{FOREIGN_KEY_NAME}")
+    validate_foreign_key(TARGET_TABLE_NAME, CONSTRAINT_NAME)
   end
 
   def down
-    execute("ALTER TABLE #{TABLE_NAME} DROP CONSTRAINT #{FOREIGN_KEY_NAME}")
+    drop_constraint(TARGET_TABLE_NAME, CONSTRAINT_NAME)
   end
 end
 ```

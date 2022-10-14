@@ -58,11 +58,11 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
   ```ruby
   # frozen_string_literal: true
 
-  class CreateCoolWidgetRegistry < Gitlab::Database::Migration[1.0]
+  class CreateCoolWidgetRegistry < Gitlab::Database::Migration[2.0]
     disable_ddl_transaction!
 
     def up
-      ApplicationRecord.transaction do
+      Geo::TrackingBase.transaction do
         create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
           t.bigint :cool_widget_id, null: false
           t.datetime_with_timezone :created_at, null: false
@@ -247,7 +247,8 @@ That's all of the required database changes.
         # we want to know which records to replicate. This is not easy to automate
         # because for example:
         #
-        # * The "selective sync" feature allows admins to choose which namespaces #   to replicate, per secondary site. Most Models are scoped to a
+        # * The "selective sync" feature allows admins to choose which namespaces
+        #   to replicate, per secondary site. Most Models are scoped to a
         #   namespace, but the nature of the relationship to a namespace varies
         #   between Models.
         # * The "selective sync" feature allows admins to choose which shards to
@@ -265,7 +266,6 @@ That's all of the required database changes.
         CoolWidgetState
       end
     end
-    ...
 
     def cool_widget_state
       super || build_cool_widget_state
@@ -317,7 +317,7 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Generate the feature flag definition fileы by running the feature flag commands and following the command prompts:
+- [ ] Generate the feature flag definition file by running the feature flag commands and following the command prompts:
 
   ```shell
   bin/feature-flag --ee geo_cool_widget_replication --type development --group 'group::geo'
@@ -355,14 +355,16 @@ That's all of the required database changes.
   ```ruby
   # frozen_string_literal: true
 
-  class Geo::CoolWidgetRegistry < Geo::BaseRegistry
-    include ::Geo::ReplicableRegistry
-    include ::Geo::VerifiableRegistry
+  module Geo
+    class CoolWidgetRegistry < Geo::BaseRegistry
+      include ::Geo::ReplicableRegistry
+      include ::Geo::VerifiableRegistry
 
-    MODEL_CLASS = ::CoolWidget
-    MODEL_FOREIGN_KEY = :cool_widget_id
+      MODEL_CLASS = ::CoolWidget
+      MODEL_FOREIGN_KEY = :cool_widget_id
 
-    belongs_to :cool_widget, class_name: 'CoolWidget'
+      belongs_to :cool_widget, class_name: 'CoolWidget'
+    end
   end
   ```
 
@@ -429,13 +431,13 @@ That's all of the required database changes.
 - [ ] Add the following to `spec/factories/cool_widgets.rb`:
 
   ```ruby
-  trait(:verification_succeeded) do
+  trait :verification_succeeded do
     with_file
     verification_checksum { 'abc' }
     verification_state { CoolWidget.verification_state_value(:verification_succeeded) }
   end
 
-  trait(:verification_failed) do
+  trait :verification_failed do
     with_file
     verification_failure { 'Could not calculate the checksum' }
     verification_state { CoolWidget.verification_state_value(:verification_failed) }
@@ -447,6 +449,8 @@ That's all of the required database changes.
 - [ ] Following [the example of Merge Request Diffs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63309) add a `Geo::CoolWidgetState` model in `ee/app/models/ee/geo/cool_widget_state.rb`:
 
   ``` ruby
+  # frozen_string_literal: true
+
   module Geo
     class CoolWidgetState < ApplicationRecord
       include EachBatch
@@ -471,11 +475,11 @@ That's all of the required database changes.
     factory :geo_cool_widget_state, class: 'Geo::CoolWidgetState' do
       cool_widget
 
-      trait(:checksummed) do
+      trait :checksummed do
         verification_checksum { 'abc' }
       end
 
-      trait(:checksum_failure) do
+      trait :checksum_failure do
         verification_failure { 'Could not calculate the checksum' }
       end
     end
@@ -525,8 +529,9 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
   field :cool_widget_registries, ::Types::Geo::CoolWidgetRegistryType.connection_type,
         null: true,
         resolver: ::Resolvers::Geo::CoolWidgetRegistriesResolver,
-        description: 'Find Cool Widget registries on this Geo node',
-        feature_flag: :geo_cool_widget_replication
+        description: 'Find Cool Widget registries on this Geo node. '\
+                     'Ignored if `geo_cool_widget_replication` feature flag is disabled.',
+        alpha: { milestone: '15.5' } # Update the milestone
   ```
 
 - [ ] Add the new `cool_widget_registries` field name to the `expected_fields` array in `ee/spec/graphql/types/geo/geo_node_type_spec.rb`.
@@ -591,13 +596,15 @@ The GraphQL API is used by `Admin > Geo > Replication Details` views, and is dir
     module Geo
       # rubocop:disable Graphql/AuthorizeTypes because it is included
       class CoolWidgetRegistryType < BaseObject
+        graphql_name 'CoolWidgetRegistry'
+
         include ::Types::Geo::RegistryType
 
-        graphql_name 'CoolWidgetRegistry'
         description 'Represents the Geo replication and verification state of a cool_widget'
 
-        field :cool_widget_id, GraphQL::ID_TYPE, null: false, description: 'ID of the Cool Widget'
+        field :cool_widget_id, GraphQL::Types::ID, null: false, description: 'ID of the Cool Widget.'
       end
+      # rubocop:enable Graphql/AuthorizeTypes
     end
   end
   ```
@@ -682,14 +689,15 @@ As illustrated by the above two examples, batch destroy logic cannot be handled 
   - [ ] Add a step to `Test replication and verification of Cool Widgets on a non-GDK-deployment. For example, using GitLab Environment Toolkit`.
   - [ ] Add a step to `Ping the Geo PM and EM to coordinate testing`. For example, you might add steps to generate Cool Widgets, and then a Geo engineer may take it from there.
 - [ ] In `ee/config/feature_flags/development/geo_cool_widget_replication.yml`, set `default_enabled: true`
-- [ ] In `ee/app/graphql/types/geo/geo_node_type.rb`, remove the `feature_flag` option for the released type:
+- [ ] In `ee/app/graphql/types/geo/geo_node_type.rb`, remove the `alpha` option for the released type:
 
   ```ruby
   field :cool_widget_registries, ::Types::Geo::CoolWidgetRegistryType.connection_type,
         null: true,
         resolver: ::Resolvers::Geo::CoolWidgetRegistriesResolver,
-        description: 'Find Cool Widget registries on this Geo node',
-        feature_flag: :geo_cool_widget_replication # REMOVE THIS LINE
+        description: 'Find Cool Widget registries on this Geo node. '\
+                     'Ignored if `geo_cool_widget_replication` feature flag is disabled.',
+        alpha: { milestone: '15.5' } # Update the milestone
   ```
 
 - [ ] Run `bundle exec rake gitlab:graphql:compile_docs` after the step above to regenerate the GraphQL docs.

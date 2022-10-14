@@ -8,6 +8,7 @@ RSpec.describe 'User searches for users' do
   let(:user3) { create(:user, username: 'gob_2018', name: 'George Oscar Bluth') }
 
   before do
+    stub_feature_flags(search_page_vertical_nav: false)
     sign_in(user1)
   end
 

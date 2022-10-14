@@ -1,26 +1,19 @@
 - search_bar_classes = 'search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4'
+
 = render_if_exists 'shared/promotions/promote_advanced_search'
-= render partial: 'search/results_status', locals: { search_service: @search_service } unless @search_objects.to_a.empty?
+- if Feature.enabled?(:search_page_vertical_nav, current_user) && %w[issues merge_requests].include?(@scope)
+  .results.gl-md-display-flex.gl-mt-0
+    #js-search-sidebar{ class: search_bar_classes, data: { navigation: search_navigation_json } }
+    .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
+      = render partial: 'search/results_status', locals: { search_service: @search_service } unless @search_objects.to_a.empty?
+      = render partial: 'search/results_list'
 
-.results.gl-md-display-flex.gl-mt-3
-  - if %w[issues merge_requests].include?(@scope)
-    #js-search-sidebar{ class: search_bar_classes }
-  .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
-    - if @timeout
-      = render partial: "search/results/timeout"
-    - elsif @search_objects.to_a.empty?
-      = render partial: "search/results/empty"
-    - else
-      - if @scope == 'commits'
-        %ul.content-list.commit-list
-          = render partial: "search/results/commit", collection: @search_objects
-      - else
-        .search-results
-          - if @scope == 'projects'
-            .term
-              = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
-          - else
-            = render_if_exists partial: "search/results/#{@scope.singularize}", collection: @search_objects
+- else
+  = render partial: 'search/results_status', locals: { search_service: @search_service } unless @search_objects.to_a.empty?
 
-      - if @scope != 'projects'
-        = paginate_collection(@search_objects)
+  .results.gl-md-display-flex.gl-mt-3
+    - if %w[issues merge_requests].include?(@scope)
+      #js-search-sidebar{ class: search_bar_classes, data: { navigation: search_navigation_json } }
+
+    .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
+      = render partial: 'search/results_list'

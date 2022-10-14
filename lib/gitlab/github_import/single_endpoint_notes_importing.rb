@@ -4,10 +4,10 @@
 #  - SingleEndpointDiffNotesImporter
 #  - SingleEndpointIssueNotesImporter
 #  - SingleEndpointMergeRequestNotesImporter
-# if `github_importer_single_endpoint_notes_import` feature flag is on.
+# if enabled by Gitlab::GithubImport::Settings
 #
 # - SingleEndpointIssueEventsImporter
-# if `github_importer_issue_events_import` feature flag is on.
+# if enabled by Gitlab::GithubImport::Settings
 #
 # Fetches associated objects page by page to each item of parent collection.
 # Currently `associated` is note or event.

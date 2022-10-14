@@ -116,8 +116,7 @@ Style/FrozenStringLiteralComment:
   EnforcedStyle: always_true
 
 Style/SpecialGlobalVars:
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/358427
-  EnforcedStyle: use_perl_names
+  EnforcedStyle: use_builtin_english_names
 
 RSpec/FilePath:
   Exclude:

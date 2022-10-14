@@ -53,7 +53,7 @@ module Gitlab
         end
 
         def feature_disabled?(project)
-          Feature.disabled?(:github_importer_attachments_import, project.group, type: :ops)
+          import_settings(project).disabled?(:attachments_import)
         end
       end
     end

@@ -136,28 +136,6 @@ InitializerConnections.with_disabled_database_connections do
 
       get 'runner_setup/platforms' => 'runner_setup#platforms'
 
-      # Boards resources shared between group and projects
-      resources :boards, only: [] do
-        resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
-          collection do
-            post :generate
-          end
-
-          resources :issues, only: [:index, :create, :update]
-        end
-
-        resources :issues, module: :boards, only: [:index, :update] do
-          collection do
-            put :bulk_move, format: :json
-          end
-        end
-
-        Gitlab.ee do
-          resources :users, module: :boards, only: [:index]
-          resources :milestones, module: :boards, only: [:index]
-        end
-      end
-
       get 'acme-challenge/' => 'acme_challenges#show'
 
       scope :ide, as: :ide, format: false do

@@ -14,13 +14,14 @@ Import your projects from GitHub to GitLab via the API.
 POST /import/github
 ```
 
-| Attribute  | Type    | Required | Description         |
-|------------|---------|----------|---------------------|
-| `personal_access_token`       | string | yes      | GitHub personal access token |
-| `repo_id`   | integer | yes      | GitHub repository ID     |
-| `new_name`   | string | no      | New repository name     |
-| `target_namespace`   | string | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`.     |
-| `github_hostname`   | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com. |
+| Attribute               | Type    | Required | Description                                                                         |
+|-------------------------|---------|----------|-------------------------------------------------------------------------------------|
+| `personal_access_token` | string  | yes      | GitHub personal access token                                                        |
+| `repo_id`               | integer | yes      | GitHub repository ID                                                                |
+| `new_name`              | string  | no      | New repository name                                                                 |
+| `target_namespace`      | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. |
+| `github_hostname`       | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                       |
+| `optional_stages`       | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import)|
 
 ```shell
 curl --request POST \
@@ -32,9 +33,22 @@ curl --request POST \
     "repo_id": "12345",
     "target_namespace": "group/subgroup",
     "new_name": "NEW-NAME",
-    "github_hostname": "https://github.example.com"
+    "github_hostname": "https://github.example.com",
+    "optional_stages": {
+      "single_endpoint_issue_events_import": true,
+      "single_endpoint_notes_import": true,
+      "attachments_import": true
+    }
 }'
 ```
+
+The following keys are available for `optional_stages`:
+
+- `single_endpoint_issue_events_import`, for issue and pull request events import.
+- `single_endpoint_notes_import`, for an alternative and more thorough comments import.
+- `attachments_import`, for Markdown attachments import.
+
+For more information, see [Select additional items to import](../user/project/import/github.md#select-additional-items-to-import).
 
 Example response:
 

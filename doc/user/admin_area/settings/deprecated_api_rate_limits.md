@@ -37,7 +37,7 @@ To override the general user and IP rate limits for requests to deprecated API e
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Deprecated API Rate Limits**.
-1. Select the check boxes for the types of rate limits you want to enable:
+1. Select the checkboxes for the types of rate limits you want to enable:
    - **Unauthenticated API request rate limit**
    - **Authenticated API request rate limit**
 1. _If you enabled unauthenticated API request rate limits:_

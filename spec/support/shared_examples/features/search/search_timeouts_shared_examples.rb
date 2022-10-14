@@ -3,6 +3,7 @@
 RSpec.shared_examples 'search timeouts' do |scope|
   context 'when search times out' do
     before do
+      stub_feature_flags(search_page_vertical_nav: false)
       allow_next_instance_of(SearchService) do |service|
         allow(service).to receive(:search_objects).and_raise(ActiveRecord::QueryCanceled)
       end

@@ -8,8 +8,11 @@ finder_options = API::DEFAULT_OPTIONS.dup.merge(exclude_allowed_to_fail_jobs: tr
 failed_jobs = PipelineFailedJobs.new(finder_options).execute
 
 class SlackReporter
+  DEFAULT_FAILED_PIPELINE_REPORT_FILE = 'failed_pipeline_report.json'
+
   def initialize(failed_jobs)
     @failed_jobs = failed_jobs
+    @failed_pipeline_report_file = ENV.fetch('FAILED_PIPELINE_REPORT_FILE', DEFAULT_FAILED_PIPELINE_REPORT_FILE)
   end
 
   def report
@@ -44,7 +47,7 @@ class SlackReporter
           fields: [
             {
               type: "mrkdwn",
-              text: "*Source*\n#{source}"
+              text: "*Source*\n#{source} from #{project_link}"
             },
             {
               type: "mrkdwn",
@@ -62,12 +65,12 @@ class SlackReporter
       ]
     }
 
-    File.write(ENV['FAILED_PIPELINE_REPORT_FILE'], JSON.pretty_generate(payload))
+    File.write(failed_pipeline_report_file, JSON.pretty_generate(payload))
   end
 
   private
 
-  attr_reader :failed_jobs
+  attr_reader :failed_jobs, :failed_pipeline_report_file
 
   def title
     "Pipeline #{pipeline_link} for #{branch_link} failed"
@@ -91,6 +94,10 @@ class SlackReporter
 
   def source
     "`#{ENV['CI_PIPELINE_SOURCE']}`"
+  end
+
+  def project_link
+    "<#{ENV['CI_PROJECT_URL']}|#{ENV['CI_PROJECT_NAME']}>"
   end
 
   def triggered_by_link
