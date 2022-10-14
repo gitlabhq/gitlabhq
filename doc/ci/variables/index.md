@@ -682,7 +682,10 @@ The order of precedence for variables is (from highest to lowest):
    - [Manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
    - Variables added when [creating a pipeline with the API](../../api/pipelines.md#create-a-new-pipeline).
 1. Project [variables](#custom-cicd-variables).
-1. Group [variables](#add-a-cicd-variable-to-a-group).
+1. Group [variables](#add-a-cicd-variable-to-a-group). If the same variable name exists in a
+   group and its subgroups, the job uses the value from the closest subgroup. For example, if
+   you have `Group > Subgroup 1 > Subgroup 2 > Project`, the variable defined in
+   `Subgroup 2` takes precedence.
 1. Instance [variables](#add-a-cicd-variable-to-an-instance).
 1. [Inherited variables](#pass-an-environment-variable-to-another-job).
 1. Variables defined in jobs in the `.gitlab-ci.yml` file.

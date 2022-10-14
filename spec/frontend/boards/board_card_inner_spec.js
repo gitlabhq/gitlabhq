@@ -595,5 +595,10 @@ describe('Board card component', () => {
       expect(findEpicCountablesTotalWeight().text()).toBe('15');
       expect(findEpicProgressTooltip().text()).toBe('10 of 15 weight completed');
     });
+
+    it('does not render the move to position icon', () => {
+      createWrapper();
+      expect(findMoveToPositionComponent().exists()).toBe(false);
+    });
   });
 });

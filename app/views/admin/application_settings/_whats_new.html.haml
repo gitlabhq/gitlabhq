@@ -5,4 +5,4 @@
     .gl-mb-4
       = f.gitlab_ui_radio_component :whats_new_variant, variant, whats_new_variants_label(variant), help_text: whats_new_variants_description(variant)
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

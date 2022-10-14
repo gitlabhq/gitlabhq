@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::ProductAnalyticsController < Projects::ApplicationController
-  before_action :feature_enabled!
+  before_action :feature_enabled!, only: [:index, :setup, :test, :graphs]
   before_action :authorize_read_product_analytics!
   before_action :tracker_variables, only: [:setup, :test]
 
@@ -57,3 +57,5 @@ class Projects::ProductAnalyticsController < Projects::ApplicationController
     render_404 unless Feature.enabled?(:product_analytics, @project)
   end
 end
+
+Projects::ProductAnalyticsController.prepend_mod_with('Projects::ProductAnalyticsController')

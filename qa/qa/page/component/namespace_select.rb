@@ -20,6 +20,8 @@ module QA
         def select_namespace(item)
           click_element :namespaces_list
 
+          wait_for_requests
+
           within_element(:namespaces_list) do
             fill_element(:namespaces_list_search, item)
 

@@ -250,7 +250,8 @@ export default {
           >{{ item.title }}</a
         >
       </h4>
-      <board-card-move-to-position :item="item" :list="list" :index="index" />
+      <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->
+      <board-card-move-to-position v-if="!isEpicBoard" :item="item" :list="list" :index="index" />
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">

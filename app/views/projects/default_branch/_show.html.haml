@@ -26,4 +26,4 @@
             _("Auto-close referenced issues on default branch"),
             help_text: (help_text + "&nbsp;" + help_icon).html_safe
 
-      = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+      = f.submit _('Save changes'), data: { qa_selector: 'save_changes_button' }, pajamas_button: true

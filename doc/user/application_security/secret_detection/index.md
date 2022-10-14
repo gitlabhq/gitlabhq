@@ -120,6 +120,10 @@ To enable Secret Detection using a merge request:
 Pipelines now include a Secret Detection job, and the results are included in the merge request
 widget.
 
+## Responding to a leaked secret
+
+If the scanner detects a secret we recommend you rotate it immediately. [Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history) may not be effective in removing all references to the file. Also, the secret remains in any forks of the repository.
+
 ## Configure scan settings
 
 The Secret Detection scan settings can be changed through [CI/CD variables](#available-cicd-variables)

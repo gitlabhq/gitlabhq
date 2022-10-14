@@ -11994,6 +11994,9 @@ msgstr ""
 msgid "DashboardProjects|Trending"
 msgstr ""
 
+msgid "Dashboards"
+msgstr ""
+
 msgid "Dashboard|%{firstProject} and %{secondProject}"
 msgstr ""
 
