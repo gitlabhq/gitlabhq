@@ -28,4 +28,12 @@ RSpec.describe Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter, :clean_
 
     it_behaves_like 'work item unique counter'
   end
+
+  describe '.track_work_item_labels_changed_action' do
+    subject(:track_event) { described_class.track_work_item_labels_changed_action(author: user) }
+
+    let(:event_name) { described_class::WORK_ITEM_LABELS_CHANGED }
+
+    it_behaves_like 'work item unique counter'
+  end
 end

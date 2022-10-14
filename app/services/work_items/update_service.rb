@@ -58,5 +58,13 @@ module WorkItems
     def payload(work_item)
       { work_item: work_item }
     end
+
+    def handle_label_changes(issuable, old_labels)
+      return false unless super
+
+      Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_labels_changed_action(
+        author: current_user
+      )
+    end
   end
 end

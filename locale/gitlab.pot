@@ -40452,9 +40452,6 @@ msgstr ""
 msgid "The resource that you are attempting to access does not exist or you don't have permission to perform this action."
 msgstr ""
 
-msgid "The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com)."
-msgstr ""
-
 msgid "The scan has been created."
 msgstr ""
 

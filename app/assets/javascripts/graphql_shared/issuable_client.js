@@ -19,8 +19,14 @@ export const temporaryConfig = {
       WorkItem: {
         fields: {
           widgets: {
-            merge(_, incoming) {
-              return incoming;
+            merge(existing = [], incoming) {
+              if (existing.length === 0) {
+                return incoming;
+              }
+              return existing.map((existingWidget) => {
+                const incomingWidget = incoming.find((w) => w.type === existingWidget.type);
+                return incomingWidget || existingWidget;
+              });
             },
           },
         },

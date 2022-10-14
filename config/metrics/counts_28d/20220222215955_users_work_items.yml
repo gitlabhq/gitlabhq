@@ -20,6 +20,7 @@ options:
     - users_creating_work_items
     - users_updating_work_item_title
     - users_updating_work_item_dates
+    - users_updating_work_item_labels
 data_category: optional
 distribution:
 - ce
