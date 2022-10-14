@@ -37,7 +37,6 @@ class ProjectStatistics < ApplicationRecord
     :pipeline_artifacts_size,
     :uploads_size
   ].freeze
-  STORAGE_SIZE_SUM = STORAGE_SIZE_COMPONENTS.map { |component| "COALESCE (#{component}, 0)" }.join(' + ').freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
@@ -109,12 +108,12 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_storage_size
-    self.storage_size = STORAGE_SIZE_COMPONENTS.sum { |component| method(component).call }
+    self.storage_size = storage_size_components.sum { |component| method(component).call }
   end
 
   def refresh_storage_size!
     detect_race_on_record(log_fields: { caller: __method__, attributes: :storage_size }) do
-      update!(storage_size: STORAGE_SIZE_SUM)
+      update!(storage_size: storage_size_sum)
     end
   end
 
@@ -150,6 +149,14 @@ class ProjectStatistics < ApplicationRecord
   end
 
   private
+
+  def storage_size_components
+    STORAGE_SIZE_COMPONENTS
+  end
+
+  def storage_size_sum
+    storage_size_components.map { |component| "COALESCE (#{component}, 0)" }.join(' + ').freeze
+  end
 
   def increment_columns!(key, amount)
     increments = { key => amount }

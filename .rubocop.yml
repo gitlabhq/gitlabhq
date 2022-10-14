@@ -53,6 +53,15 @@ AllCops:
   NewCops: disable
   SuggestExtensions: false
 
+RSpec:
+  Language:
+    Includes:
+      Examples:
+        - run_permission_checks
+        - run_group_permission_checks
+        - it_should_email!
+        - it_should_not_email!
+
 Metrics/ParameterLists:
   Exclude:
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/356771

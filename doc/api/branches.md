@@ -84,7 +84,7 @@ Parameters:
 | Attribute | Type           | Required | Description                                                                                                  |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `branch`  | string         | yes      | Name of the branch.                                                                                          |
+| `branch`  | string         | yes      | [URL-encoded name](index.md#namespaced-path-encoding) of the branch.                                                                                          |
 
 Example request:
 
