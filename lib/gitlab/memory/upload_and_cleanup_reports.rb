@@ -6,31 +6,25 @@ module Gitlab
       DEFAULT_SLEEP_TIME_SECONDS = 900 # 15 minutes
 
       def initialize(
-        sleep_time_seconds: ENV['GITLAB_DIAGNOSTIC_REPORTS_UPLOADER_SLEEP_S']&.to_i || DEFAULT_SLEEP_TIME_SECONDS,
-        reports_path: ENV["GITLAB_DIAGNOSTIC_REPORTS_PATH"])
+        uploader:,
+        reports_path:,
+        logger:,
+        sleep_time_seconds: ENV['GITLAB_DIAGNOSTIC_REPORTS_UPLOADER_SLEEP_S']&.to_i || DEFAULT_SLEEP_TIME_SECONDS)
 
-        @sleep_time_seconds = sleep_time_seconds
+        @uploader = uploader
         @reports_path = reports_path
-
-        unless @reports_path.present?
-          log_error_reports_path_missing
-          return
-        end
-
-        @uploader = ReportsUploader.new
-
+        @sleep_time_seconds = sleep_time_seconds
         @alive = true
+        @logger = logger
       end
 
-      attr_reader :sleep_time_seconds, :reports_path, :uploader, :alive
+      attr_reader :uploader, :reports_path, :sleep_time_seconds, :logger
 
       def call
         log_started
 
-        while alive
+        loop do
           sleep(sleep_time_seconds)
-
-          next unless Feature.enabled?(:gitlab_diagnostic_reports_uploader, type: :ops)
 
           files_to_process.each { |path| upload_and_cleanup!(path) }
         end
@@ -39,9 +33,11 @@ module Gitlab
       private
 
       def upload_and_cleanup!(path)
-        cleanup!(path) if uploader.upload(path)
-      rescue StandardError => error
+        uploader.upload(path)
+      rescue StandardError, Errno::ENOENT => error
         log_exception(error)
+      ensure
+        cleanup!(path)
       end
 
       def cleanup!(path)
@@ -56,29 +52,20 @@ module Gitlab
           .select { |path| File.file?(path) }
       end
 
-      def log_error_reports_path_missing
-        Gitlab::AppLogger.error(log_labels.merge(perf_report_status: "path is not configured"))
-      end
-
       def log_started
-        Gitlab::AppLogger.info(log_labels.merge(perf_report_status: "started"))
+        logger.info(log_labels.merge(perf_report_status: "started"))
       end
 
       def log_exception(error)
-        Gitlab::ErrorTracking.log_exception(error, log_labels)
+        logger.error(log_labels.merge(perf_report_status: "error", error: error.message))
       end
 
       def log_labels
         {
           message: "Diagnostic reports",
           class: self.class.name,
-          pid: $$,
-          worker_id: worker_id
+          pid: $$
         }
-      end
-
-      def worker_id
-        ::Prometheus::PidProvider.worker_id
       end
     end
   end

@@ -69,6 +69,8 @@ export const workItemQueryResponse = {
           description: 'some **great** text',
           descriptionHtml:
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+          lastEditedAt: null,
+          lastEditedBy: null,
         },
         {
           __typename: 'WorkItemWidgetAssignees',
@@ -187,6 +189,8 @@ export const workItemResponseFactory = ({
   confidential = false,
   canInviteMembers = false,
   allowsScopedLabels = false,
+  lastEditedAt = null,
+  lastEditedBy = null,
   parent = mockParent.parent,
 } = {}) => ({
   data: {
@@ -221,6 +225,8 @@ export const workItemResponseFactory = ({
           description: 'some **great** text',
           descriptionHtml:
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+          lastEditedAt,
+          lastEditedBy,
         },
         assigneesWidgetPresent
           ? {
@@ -362,6 +368,11 @@ export const createWorkItemFromTaskMutationResponse = {
             type: 'DESCRIPTION',
             description: 'New description',
             descriptionHtml: '<p>New description</p>',
+            lastEditedAt: '2022-09-21T06:18:42Z',
+            lastEditedBy: {
+              name: 'Administrator',
+              webPath: '/root',
+            },
           },
         ],
       },

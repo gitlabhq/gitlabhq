@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
+import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import workItemQuery from '../graphql/work_item.query.graphql';
@@ -16,6 +17,7 @@ export default {
     SafeHtml: GlSafeHtmlDirective,
   },
   components: {
+    EditedAt,
     GlButton,
     GlFormGroup,
     MarkdownField,
@@ -88,6 +90,15 @@ export default {
     },
     workItemType() {
       return this.workItem?.workItemType?.name;
+    },
+    lastEditedAt() {
+      return this.workItemDescription?.lastEditedAt;
+    },
+    lastEditedByName() {
+      return this.workItemDescription?.lastEditedBy?.name;
+    },
+    lastEditedByPath() {
+      return this.workItemDescription?.lastEditedBy?.webPath;
     },
     markdownPreviewPath() {
       return `${gon.relative_url_root || ''}/${this.fullPath}/preview_markdown?target_type=${
@@ -235,5 +246,11 @@ export default {
 
     <div v-if="descriptionEmpty" class="gl-text-secondary gl-mb-5">{{ __('None') }}</div>
     <div v-else v-safe-html="descriptionHtml" class="md gl-mb-5 gl-min-h-8"></div>
+    <edited-at
+      v-if="lastEditedAt"
+      :updated-at="lastEditedAt"
+      :updated-by-name="lastEditedByName"
+      :updated-by-path="lastEditedByPath"
+    />
   </div>
 </template>

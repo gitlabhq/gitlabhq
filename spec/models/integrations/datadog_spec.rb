@@ -47,6 +47,10 @@ RSpec.describe Integrations::Datadog do
     Gitlab::DataBuilder::ArchiveTrace.build(build)
   end
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { instance }
+  end
+
   it_behaves_like Integrations::HasWebHook do
     let(:integration) { instance }
     let(:hook_url) { "#{described_class::URL_TEMPLATE % { datadog_domain: dd_site }}?dd-api-key={api_key}&env=#{dd_env}&service=#{dd_service}" }

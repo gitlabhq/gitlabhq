@@ -1,5 +1,6 @@
 <script>
 import { GlFormCheckbox } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 
 export default {
@@ -34,6 +35,9 @@ export default {
     indeterminate() {
       return !this.checked && this.runners.some(this.isChecked);
     },
+    label() {
+      return this.checked ? s__('Runners|Unselect all') : s__('Runners|Select all');
+    },
   },
   methods: {
     isChecked({ id }) {
@@ -51,6 +55,7 @@ export default {
 
 <template>
   <gl-form-checkbox
+    :aria-label="label"
     :indeterminate="indeterminate"
     :checked="checked"
     :disabled="disabled"

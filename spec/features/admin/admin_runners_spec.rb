@@ -66,9 +66,25 @@ RSpec.describe "Admin Runners" do
 
         it 'has all necessary texts' do
           expect(page).to have_text "Register an instance runner"
+          expect(page).to have_text "#{s_('Runners|All')} 3"
           expect(page).to have_text "#{s_('Runners|Online')} 1"
           expect(page).to have_text "#{s_('Runners|Offline')} 2"
           expect(page).to have_text "#{s_('Runners|Stale')} 1"
+        end
+
+        describe 'delete all runners in bulk' do
+          before do
+            check s_('Runners|Select all')
+            click_button s_('Runners|Delete selected')
+
+            within_modal do
+              click_on 'Permanently delete 3 runners'
+            end
+
+            wait_for_requests
+          end
+
+          it_behaves_like 'shows no runners registered'
         end
       end
 

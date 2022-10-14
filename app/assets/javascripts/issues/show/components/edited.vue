@@ -41,7 +41,7 @@ export default {
     </gl-sprintf>
     <gl-sprintf v-else-if="!updatedAt" :message="__('Edited by %{author}')">
       <template #author>
-        <a :href="updatedByPath" class="author-link">
+        <a :href="updatedByPath" class="author-link gl-hover-text-decoration-underline">
           <span>{{ updatedByName }}</span>
         </a>
       </template>
@@ -51,7 +51,7 @@ export default {
         <time-ago-tooltip :time="updatedAt" tooltip-placement="bottom" />
       </template>
       <template #author>
-        <a :href="updatedByPath" class="author-link">
+        <a :href="updatedByPath" class="author-link gl-hover-text-decoration-underline">
           <span>{{ updatedByName }}</span>
         </a>
       </template>

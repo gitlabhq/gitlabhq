@@ -53,7 +53,7 @@ For most package types, the following credential types are valid:
 - [Project deploy token](../../project/deploy_tokens/index.md):
   allows access to all packages in a project. Good for granting and revoking project access to many
   users.
-- [Group deploy token](../../project/deploy_tokens/index.md#group-deploy-token):
+- [Group deploy token](../../project/deploy_tokens/index.md):
   allows access to all packages in a group and its subgroups. Good for granting and revoking access
   to a large number of packages to sets of users.
 - [Job token](../../../ci/jobs/ci_job_token.md):

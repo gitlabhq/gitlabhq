@@ -6,6 +6,11 @@ fragment WorkItemWidgets on WorkItemWidget {
     type
     description
     descriptionHtml
+    lastEditedAt
+    lastEditedBy {
+      name
+      webPath
+    }
   }
   ... on WorkItemWidgetAssignees {
     type

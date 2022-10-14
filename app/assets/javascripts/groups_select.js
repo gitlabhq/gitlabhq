@@ -1,20 +1,10 @@
 import $ from 'jquery';
 import { escape } from 'lodash';
+import { groupsPath } from '~/vue_shared/components/group_select/utils';
 import { __ } from '~/locale';
 import Api from './api';
 import { loadCSSFile } from './lib/utils/css_utils';
 import { select2AxiosTransport } from './lib/utils/select2_utils';
-
-const groupsPath = (groupsFilter, parentGroupID) => {
-  switch (groupsFilter) {
-    case 'descendant_groups':
-      return Api.descendantGroupsPath.replace(':id', parentGroupID);
-    case 'subgroups':
-      return Api.subgroupsPath.replace(':id', parentGroupID);
-    default:
-      return Api.groupsPath;
-  }
-};
 
 const groupsSelect = () => {
   loadCSSFile(gon.select2_css_path)

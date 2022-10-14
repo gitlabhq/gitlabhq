@@ -43,43 +43,6 @@ RSpec.describe 'diagnostic reports' do
 
         load_initializer
       end
-
-      context 'with `Gitlab::Memory::UploadAndCleanupReports` added into initializer' do
-        before do
-          allow(Gitlab::Memory::ReportsDaemon).to receive(:instance).and_return(report_daemon)
-          allow(report_daemon).to receive(:start)
-        end
-
-        context 'when run from `puma_0` worker process' do
-          let(:uploader) { instance_double(Gitlab::Memory::UploadAndCleanupReports) }
-          let(:background_task) { instance_double(Gitlab::BackgroundTask) }
-
-          before do
-            allow(Prometheus::PidProvider).to receive(:worker_id).and_return('puma_0')
-          end
-
-          it 'sets up `Gitlab::Memory::UploadAndCleanupReports` as `BackgroundTask`' do
-            expect(Gitlab::Memory::UploadAndCleanupReports).to receive(:new).and_return(uploader)
-            expect(Gitlab::BackgroundTask).to receive(:new).with(uploader).and_return(background_task)
-            expect(background_task).to receive(:start)
-
-            load_initializer
-          end
-        end
-
-        context 'when run from worker process other than `puma_0`' do
-          before do
-            allow(Prometheus::PidProvider).to receive(:worker_id).and_return('puma_1')
-          end
-
-          it 'does not set up `Gitlab::Memory::UploadAndCleanupReports`' do
-            expect(Gitlab::Memory::UploadAndCleanupReports).not_to receive(:new)
-            expect(Gitlab::BackgroundTask).not_to receive(:new)
-
-            load_initializer
-          end
-        end
-      end
     end
 
     context 'when run in non-Puma context, such as rails console, tests, Sidekiq' do

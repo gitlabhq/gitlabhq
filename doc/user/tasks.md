@@ -118,6 +118,22 @@ To change the assignee on a task:
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
 
+## Assign labels to a task
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+To add [labels](project/labels.md) to a task:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit. The task window opens.
+1. Next to **Labels**, select **Add labels**.
+1. From the dropdown list, select the labels to add.
+1. Select any area outside the dropdown list.
+
 ## Set a start and due date
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.

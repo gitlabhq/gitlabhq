@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import EditedAt from '~/issues/show/components/edited.vue';
 import { updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -35,6 +36,7 @@ describe('WorkItemDescription', () => {
 
   const findEditButton = () => wrapper.find('[data-testid="edit-description"]');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
+  const findEditedAt = () => wrapper.findComponent(EditedAt);
 
   const editDescription = (newText) => wrapper.find('textarea').setValue(newText);
 
@@ -44,9 +46,9 @@ describe('WorkItemDescription', () => {
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
+    workItemResponse = workItemResponseFactory({ canUpdate }),
     isEditing = false,
   } = {}) => {
-    const workItemResponse = workItemResponseFactory({ canUpdate });
     const workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
 
     const { id } = workItemQueryResponse.data.workItem;
@@ -100,6 +102,33 @@ describe('WorkItemDescription', () => {
   });
 
   describe('editing description', () => {
+    it('shows edited by text', async () => {
+      const lastEditedAt = '2022-09-21T06:18:42Z';
+      const lastEditedBy = {
+        name: 'Administrator',
+        webPath: '/root',
+      };
+
+      await createComponent({
+        workItemResponse: workItemResponseFactory({
+          lastEditedAt,
+          lastEditedBy,
+        }),
+      });
+
+      expect(findEditedAt().props()).toEqual({
+        updatedAt: lastEditedAt,
+        updatedByName: lastEditedBy.name,
+        updatedByPath: lastEditedBy.webPath,
+      });
+    });
+
+    it('does not show edited by text', async () => {
+      await createComponent();
+
+      expect(findEditedAt().exists()).toBe(false);
+    });
+
     it('cancels when clicking cancel', async () => {
       await createComponent({
         isEditing: true,

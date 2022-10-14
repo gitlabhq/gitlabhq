@@ -140,3 +140,7 @@ rules apply:
 For example, if you purchase a license for 100 users, you can have 110 users when you add
 your license. However, if you have 111 users, you must purchase more users before you can add
 the license.
+
+### `Start GitLab Ultimate trial` still displays after adding license
+
+To fix this issue, restart [Puma or your entire GitLab instance](../../administration/restart_gitlab.md).
