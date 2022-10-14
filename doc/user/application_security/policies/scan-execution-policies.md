@@ -103,7 +103,7 @@ rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `dast`, `secret_detection`, `sast`, `container_scanning`, `cluster_image_scanning` | The action's type. |
+| `scan` | `string` | `dast`, `secret_detection`, `sast`, `container_scanning` | The action's type. |
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/index.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/index.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
@@ -124,7 +124,7 @@ Note the following:
 - A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
   [`historic`](../secret_detection/index.md#full-history-secret-detection)
   mode when executed as part of a scheduled scan.
-- A container scanning and cluster image scanning scans configured for the `pipeline` rule type ignores the cluster defined in the `clusters` object.
+- A container scanning scan configured for the `pipeline` rule type ignores the cluster defined in the `clusters` object.
   They use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
   A cluster with a name provided in the `clusters` object must be created and configured for the project.
 - The SAST scan uses the default template and runs in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
@@ -184,8 +184,6 @@ In this example:
   and `Site Profile D`.
 - Secret detection, container scanning, and SAST scans run for every pipeline executed on the `main`
   branch. The SAST scan runs with the `SAST_EXCLUDED_ANALYZER` variable set to `"brakeman"`.
-- Cluster Image Scanning scan runs every 24h. The scan runs on the `production-cluster` cluster and fetches vulnerabilities
-  from the container with the name `database` configured for deployment with the name `production-application` in the `production-namespace` namespace.
 
 ## Example for scan execution policy editor
 

@@ -20,8 +20,12 @@ module Gitlab
               ::Gitlab::Ci::Variables::Collection.new.tap do |variables|
                 next variables unless release
 
-                variables.append(
-                  key: 'CI_RELEASE_DESCRIPTION', value: release.description.truncate(DESCRIPTION_LIMIT), raw: true)
+                if release.description
+                  variables.append(
+                    key: 'CI_RELEASE_DESCRIPTION',
+                    value: release.description.truncate(DESCRIPTION_LIMIT),
+                    raw: true)
+                end
               end
             end
           end

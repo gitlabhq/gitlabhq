@@ -39,6 +39,19 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Release do
           expect(subject['CI_RELEASE_DESCRIPTION'].value.length).to eq(1024)
         end
       end
+
+      context 'when description is nil' do
+        before do
+          release.update_attribute(:description, nil)
+        end
+
+        it 'returns without error' do
+          builder = subject
+
+          expect(builder).to match_array([])
+          expect(builder.errors).to be_nil
+        end
+      end
     end
 
     context 'when the release is not present' do

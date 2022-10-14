@@ -5,14 +5,12 @@ class Import::GithubController < Import::BaseController
 
   include ImportHelper
   include ActionView::Helpers::SanitizeHelper
+  include Import::GithubOauth
 
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :realtime_changes, :create]
   before_action :expire_etag_cache, only: [:status, :create]
 
-  OAuthConfigMissingError = Class.new(StandardError)
-
-  rescue_from OAuthConfigMissingError, with: :missing_oauth_config
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
   rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded
@@ -154,56 +152,8 @@ class Import::GithubController < Import::BaseController
     @filter = @filter&.tr(' ', '')&.tr(':', '')
   end
 
-  def oauth_client
-    raise OAuthConfigMissingError unless oauth_config
-
-    @oauth_client ||= ::OAuth2::Client.new(
-      oauth_config.app_id,
-      oauth_config.app_secret,
-      oauth_options.merge(ssl: { verify: oauth_config['verify_ssl'] })
-    )
-  end
-
-  def oauth_config
-    @oauth_config ||= Gitlab::Auth::OAuth::Provider.config_for('github')
-  end
-
-  def oauth_options
-    if oauth_config
-      oauth_config.dig('args', 'client_options').deep_symbolize_keys
-    else
-      OmniAuth::Strategies::GitHub.default_options[:client_options].symbolize_keys
-    end
-  end
-
-  def authorize_url
-    state = SecureRandom.base64(64)
-    session[auth_state_key] = state
-    if Feature.enabled?(:remove_legacy_github_client)
-      oauth_client.auth_code.authorize_url(
-        redirect_uri: callback_import_url,
-        scope: 'repo, user, user:email',
-        state: state
-      )
-    else
-      client.authorize_url(callback_import_url, state)
-    end
-  end
-
-  def get_token(code)
-    if Feature.enabled?(:remove_legacy_github_client)
-      oauth_client.auth_code.get_token(code).token
-    else
-      client.get_token(code)
-    end
-  end
-
   def verify_import_enabled
     render_404 unless import_enabled?
-  end
-
-  def go_to_provider_for_permissions
-    redirect_to authorize_url
   end
 
   def import_enabled?
@@ -222,10 +172,6 @@ class Import::GithubController < Import::BaseController
     public_send("status_import_#{provider_name}_url", extra_import_params.merge({ namespace_id: params[:namespace_id].presence })) # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  def callback_import_url
-    public_send("users_import_#{provider_name}_callback_url", extra_import_params.merge({ namespace_id: params[:namespace_id] })) # rubocop:disable GitlabSecurity/PublicSend
-  end
-
   def provider_unauthorized
     session[access_token_key] = nil
     redirect_to new_import_url,
@@ -237,12 +183,6 @@ class Import::GithubController < Import::BaseController
     session[access_token_key] = nil
     redirect_to new_import_url,
       alert: _("GitHub API rate limit exceeded. Try again after %{reset_time}") % { reset_time: reset_time }
-  end
-
-  def missing_oauth_config
-    session[access_token_key] = nil
-    redirect_to new_import_url,
-      alert: _('Missing OAuth configuration for GitHub.')
   end
 
   def auth_state_key
@@ -263,22 +203,8 @@ class Import::GithubController < Import::BaseController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def provider_auth
-    if !ci_cd_only? && session[access_token_key].blank?
-      go_to_provider_for_permissions
-    end
-  end
-
-  def ci_cd_only?
-    %w[1 true].include?(params[:ci_cd_only])
-  end
-
   def client_options
     { wait_for_rate_limit_reset: false }
-  end
-
-  def extra_import_params
-    {}
   end
 
   def rate_limit_threshold_exceeded

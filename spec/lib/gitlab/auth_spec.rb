@@ -495,6 +495,12 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching do
           end
         end
       end
+
+      it 'updates last_used_at column if token is valid' do
+        personal_access_token = create(:personal_access_token, scopes: ['write_repository'])
+
+        expect { gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip') }.to change { personal_access_token.reload.last_used_at }
+      end
     end
 
     context 'while using regular user and password' do

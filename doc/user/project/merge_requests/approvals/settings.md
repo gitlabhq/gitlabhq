@@ -125,7 +125,7 @@ when more changes are added to it:
 
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
-   select **Remove all approvals when commits are added to the source branch**.
+   select **Remove all approvals**.
 1. Select **Save changes**.
 
 Approvals aren't removed when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)

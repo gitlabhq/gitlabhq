@@ -407,6 +407,21 @@ RSpec.describe Users::DestroyService do
         expect(issue.updated_by).to be_nil
         expect(resource_label_event.user).to be_nil
       end
+
+      it 'nullifies assigned_merge_requests, last_updated_merge_requests' do
+        merge_request = create(:merge_request, source_project: project, target_project: project,
+                                               assignee: other_user, updated_by: other_user, merge_user: other_user)
+
+        described_class.new(user).execute(other_user, skip_authorization: true)
+
+        merge_request.reload
+
+        aggregate_failures do
+          expect(merge_request.updated_by).to be_nil
+          expect(merge_request.assignee).to be_nil
+          expect(merge_request.assignee_id).to be_nil
+        end
+      end
     end
   end
 

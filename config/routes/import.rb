@@ -69,6 +69,10 @@ namespace :import do
     post :authorize
   end
 
+  resource :github_group, only: [] do
+    get :status
+  end
+
   resource :bulk_imports, only: [:create] do
     post :configure
     get :status

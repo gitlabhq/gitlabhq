@@ -28,6 +28,12 @@ module QA
               element :service_jira_project_key_field
             end
 
+            view 'ee/app/assets/javascripts/integrations/edit/components/jira_issue_creation_vulnerabilities.vue' do
+              element :service_jira_enable_vulnerabilities_checkbox
+              element :service_jira_issue_types_fetch_retry_button
+              element :service_jira_select_issue_type_dropdown
+            end
+
             def setup_service_with(url:)
               QA::Runtime::Logger.info "Setting up JIRA"
 
@@ -41,10 +47,7 @@ module QA
 
               yield self if block_given?
 
-              click_save_changes_button
-              wait_until(reload: false) do
-                has_element?(:save_changes_button, wait: 1) ? !find_element(:save_changes_button).disabled? : true
-              end
+              click_save_changes_and_wait
             end
 
             def enable_jira_issues
@@ -55,10 +58,29 @@ module QA
               fill_element(:service_jira_project_key_field, key)
             end
 
+            def enable_jira_vulnerabilities
+              check_element(:service_jira_enable_vulnerabilities_checkbox, true)
+            end
+
+            def select_vulnerability_bug_type(bug_type)
+              click_retry_vulnerabilities
+              select_jira_bug_type(bug_type)
+              click_save_changes_and_wait
+            end
+
             private
 
             def set_jira_server_url(url)
               fill_element(:service_url_field, url)
+            end
+
+            def click_retry_vulnerabilities
+              click_element(:service_jira_issue_types_fetch_retry_button)
+            end
+
+            def select_jira_bug_type(option)
+              click_element(:service_jira_select_issue_type_dropdown)
+              click_element(:service_jira_type, service_type: option)
             end
 
             def set_username(username)
@@ -83,6 +105,13 @@ module QA
 
             def set_transition_ids(transition_ids)
               fill_element(:service_jira_issue_transition_id_field, transition_ids)
+            end
+
+            def click_save_changes_and_wait
+              click_save_changes_button
+              wait_until(reload: false) do
+                has_element?(:save_changes_button, wait: 1) ? !find_element(:save_changes_button).disabled? : true
+              end
             end
 
             def click_save_changes_button

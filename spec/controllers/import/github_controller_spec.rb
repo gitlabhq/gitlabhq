@@ -44,13 +44,6 @@ RSpec.describe Import::GithubController do
   end
 
   describe "GET callback" do
-    before do
-      allow(controller).to receive(:get_token).and_return(token)
-      allow(controller).to receive(:oauth_options).and_return({})
-
-      stub_omniauth_provider('github')
-    end
-
     context "when auth state param is missing from session" do
       it "reports an error" do
         get :callback
@@ -63,17 +56,31 @@ RSpec.describe Import::GithubController do
     context "when auth state param is present in session" do
       let(:valid_auth_state) { "secret-state" }
 
-      before do
-        session[:github_auth_state_key] = valid_auth_state
-      end
+      context 'when remove_legacy_github_client feature is disabled' do
+        before do
+          stub_feature_flags(remove_legacy_github_client: false)
+          allow_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
+            allow(client).to receive(:get_token).and_return(token)
+          end
+          session[:github_auth_state_key] = valid_auth_state
+        end
 
-      it "updates access token if state param is valid" do
-        token = "asdasd12345"
+        it "updates access token if state param is valid" do
+          token = "asdasd12345"
 
-        get :callback, params: { state: valid_auth_state }
+          get :callback, params: { state: valid_auth_state }
 
-        expect(session[:github_access_token]).to eq(token)
-        expect(controller).to redirect_to(status_import_github_url)
+          expect(session[:github_access_token]).to eq(token)
+          expect(controller).to redirect_to(status_import_github_url)
+        end
+
+        it "includes namespace_id from query params if it is present" do
+          namespace_id = 1
+
+          get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
+
+          expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+        end
       end
 
       it "reports an error if state param is invalid" do
@@ -83,12 +90,31 @@ RSpec.describe Import::GithubController do
         expect(flash[:alert]).to eq('Access denied to your GitHub account.')
       end
 
-      it "includes namespace_id from query params if it is present" do
-        namespace_id = 1
+      context 'when remove_legacy_github_client feature is enabled' do
+        before do
+          stub_feature_flags(remove_legacy_github_client: true)
+          allow_next_instance_of(OAuth2::Client) do |client|
+            allow(client).to receive_message_chain(:auth_code, :get_token, :token).and_return(token)
+          end
+          session[:github_auth_state_key] = valid_auth_state
+        end
 
-        get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
+        it "updates access token if state param is valid" do
+          token = "asdasd12345"
 
-        expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+          get :callback, params: { state: valid_auth_state }
+
+          expect(session[:github_access_token]).to eq(token)
+          expect(controller).to redirect_to(status_import_github_url)
+        end
+
+        it "includes namespace_id from query params if it is present" do
+          namespace_id = 1
+
+          get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
+
+          expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+        end
       end
     end
   end
