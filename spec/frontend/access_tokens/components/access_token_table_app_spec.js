@@ -12,7 +12,6 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   const accessTokenType = 'personal access token';
   const accessTokenTypePlural = 'personal access tokens';
   const information = undefined;
-  const initialActiveAccessTokens = [];
   const noActiveTokensMessage = 'This user has no active personal access tokens.';
   const showRole = false;
 
@@ -49,7 +48,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         accessTokenType,
         accessTokenTypePlural,
         information,
-        initialActiveAccessTokens,
+        initialActiveAccessTokens: defaultActiveAccessTokens,
         noActiveTokensMessage,
         showRole,
         ...props,
@@ -73,8 +72,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     wrapper?.destroy();
   });
 
-  it('should render the `GlTable` with default empty message', () => {
-    createComponent();
+  it('should render an empty table with a default message', () => {
+    createComponent({ initialActiveAccessTokens: [] });
 
     const cells = findCells();
     expect(cells).toHaveLength(1);
@@ -83,22 +82,22 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     );
   });
 
-  it('should render the `GlTable` with custom empty message', () => {
+  it('should render an empty table with a custom message', () => {
     const noTokensMessage = 'This group has no active access tokens.';
-    createComponent({ noActiveTokensMessage: noTokensMessage });
+    createComponent({ initialActiveAccessTokens: [], noActiveTokensMessage: noTokensMessage });
 
     const cells = findCells();
     expect(cells).toHaveLength(1);
     expect(cells.at(0).text()).toBe(noTokensMessage);
   });
 
-  it('should render an h5 element', () => {
+  it('should show a title indicating the amount of tokens', () => {
     createComponent();
 
     expect(wrapper.find('h5').text()).toBe(
       sprintf(__('Active %{accessTokenTypePlural} (%{totalAccessTokens})'), {
         accessTokenTypePlural,
-        totalAccessTokens: initialActiveAccessTokens.length,
+        totalAccessTokens: defaultActiveAccessTokens.length,
       }),
     );
   });
@@ -110,38 +109,34 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(wrapper.findByTestId('information-section').text()).toBe(info);
   });
 
-  it('should render the `GlTable` component with default 6 column headers', () => {
-    createComponent();
+  describe('table headers', () => {
+    it('should include `Action` column', () => {
+      createComponent();
 
-    const headers = findHeaders();
-    expect(headers).toHaveLength(6);
-    [
-      __('Token name'),
-      __('Scopes'),
-      s__('AccessTokens|Created'),
-      __('Last Used'),
-      __('Expires'),
-      __('Action'),
-    ].forEach((text, index) => {
-      expect(headers.at(index).text()).toBe(text);
+      const headers = findHeaders();
+      expect(headers.wrappers.map((header) => header.text())).toStrictEqual([
+        __('Token name'),
+        __('Scopes'),
+        s__('AccessTokens|Created'),
+        __('Last Used'),
+        __('Expires'),
+        __('Action'),
+      ]);
     });
-  });
 
-  it('should render the `GlTable` component with 7 headers', () => {
-    createComponent({ showRole: true });
+    it('should include `Role` column', () => {
+      createComponent({ showRole: true });
 
-    const headers = findHeaders();
-    expect(headers).toHaveLength(7);
-    [
-      __('Token name'),
-      __('Scopes'),
-      s__('AccessTokens|Created'),
-      __('Last Used'),
-      __('Expires'),
-      __('Role'),
-      __('Action'),
-    ].forEach((text, index) => {
-      expect(headers.at(index).text()).toBe(text);
+      const headers = findHeaders();
+      expect(headers.wrappers.map((header) => header.text())).toStrictEqual([
+        __('Token name'),
+        __('Scopes'),
+        s__('AccessTokens|Created'),
+        __('Last Used'),
+        __('Expires'),
+        __('Role'),
+        __('Action'),
+      ]);
     });
   });
 
@@ -159,8 +154,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(assistiveElement.text()).toBe(s__('AccessTokens|The last time a token was used'));
   });
 
-  it('updates the table after a success AJAX event', async () => {
-    createComponent({ showRole: true });
+  it('updates the table after new tokens are created', async () => {
+    createComponent({ initialActiveAccessTokens: [], showRole: true });
     await triggerSuccess();
 
     const cells = findCells();
@@ -200,13 +195,14 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   });
 
   describe('when revoke_path is', () => {
-    beforeEach(() => {
-      createComponent({ showRole: true });
-    });
-
     describe('absent in all tokens', () => {
-      it('should not include `Action` column', async () => {
-        await triggerSuccess(defaultActiveAccessTokens.map(({ revoke_path, ...rest }) => rest));
+      it('should not include `Action` column', () => {
+        createComponent({
+          initialActiveAccessTokens: defaultActiveAccessTokens.map(
+            ({ revoke_path, ...rest }) => rest,
+          ),
+          showRole: true,
+        });
 
         const headers = findHeaders();
         expect(headers).toHaveLength(6);
@@ -225,11 +221,14 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
     it.each([{ revoke_path: null }, { revoke_path: undefined }])(
       '%p in some tokens, does not show revoke button',
-      async (input) => {
-        await triggerSuccess([
-          defaultActiveAccessTokens.map((data) => ({ ...data, ...input }))[0],
-          defaultActiveAccessTokens[1],
-        ]);
+      (input) => {
+        createComponent({
+          initialActiveAccessTokens: [
+            defaultActiveAccessTokens.map((data) => ({ ...data, ...input }))[0],
+            defaultActiveAccessTokens[1],
+          ],
+          showRole: true,
+        });
 
         expect(findHeaders().at(6).text()).toBe(__('Action'));
         expect(findCells().at(6).findComponent(GlButton).exists()).toBe(false);
@@ -239,7 +238,6 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
   it('sorts rows alphabetically', async () => {
     createComponent({ showRole: true });
-    await triggerSuccess();
 
     const cells = findCells();
 
@@ -258,7 +256,6 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
   it('sorts rows by date', async () => {
     createComponent({ showRole: true });
-    await triggerSuccess();
 
     const cells = findCells();
 
@@ -274,14 +271,20 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     expect(cells.at(10).text()).toBe('Never');
   });
 
-  it('should show the pagination component when needed', async () => {
-    createComponent();
-    expect(findPagination().exists()).toBe(false);
+  describe('pagination', () => {
+    it('does not show pagination component', () => {
+      createComponent({
+        initialActiveAccessTokens: Array(PAGE_SIZE).fill(defaultActiveAccessTokens[0]),
+      });
 
-    await triggerSuccess(Array(PAGE_SIZE).fill(defaultActiveAccessTokens[0]));
-    expect(findPagination().exists()).toBe(false);
+      expect(findPagination().exists()).toBe(false);
+    });
 
-    await triggerSuccess(Array(PAGE_SIZE + 1).fill(defaultActiveAccessTokens[0]));
-    expect(findPagination().exists()).toBe(true);
+    it('shows the pagination component', () => {
+      createComponent({
+        initialActiveAccessTokens: Array(PAGE_SIZE + 1).fill(defaultActiveAccessTokens[0]),
+      });
+      expect(findPagination().exists()).toBe(true);
+    });
   });
 });

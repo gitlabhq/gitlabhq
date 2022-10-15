@@ -2,9 +2,12 @@
 import { GlAlert } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { __, n__, sprintf } from '~/locale';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
 import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from './constants';
+
+const convertEventDetail = (event) => convertObjectPropsToCamelCase(event.detail, { deep: true });
 
 export default {
   EVENT_ERROR,
@@ -68,7 +71,7 @@ export default {
     onError(event) {
       this.beforeDisplayResults();
 
-      const [{ errors }] = event.detail;
+      const [{ errors }] = convertEventDetail(event);
       this.errors = errors;
 
       this.submitButton.classList.remove('disabled');
@@ -76,7 +79,7 @@ export default {
     onSuccess(event) {
       this.beforeDisplayResults();
 
-      const [{ new_token: newToken }] = event.detail;
+      const [{ newToken }] = convertEventDetail(event);
       this.newToken = newToken;
 
       this.infoAlert = createAlert({ message: this.alertInfoMessage, variant: VARIANT_INFO });

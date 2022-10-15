@@ -49,7 +49,9 @@ export default {
   ],
   data() {
     return {
-      activeAccessTokens: this.initialActiveAccessTokens,
+      activeAccessTokens: convertObjectPropsToCamelCase(this.initialActiveAccessTokens, {
+        deep: true,
+      }),
       currentPage: INITIAL_PAGE,
     };
   },

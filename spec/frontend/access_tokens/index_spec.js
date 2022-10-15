@@ -28,7 +28,7 @@ describe('access tokens', () => {
   describe('initAccessTokenTableApp', () => {
     const accessTokenType = 'personal access token';
     const accessTokenTypePlural = 'personal access tokens';
-    const initialActiveAccessTokens = [{ id: '1' }];
+    const initialActiveAccessTokens = [{ revoked_path: '1' }];
 
     const FakeAccessTokenTableApp = Vue.component('FakeComponent', {
       inject: [

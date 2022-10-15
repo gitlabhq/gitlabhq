@@ -31,12 +31,7 @@ export const initAccessTokenTableApp = () => {
     sprintf(__('This user has no active %{accessTokenTypePlural}.'), { accessTokenTypePlural });
   const showRole = 'showRole' in el.dataset;
 
-  const initialActiveAccessTokens = convertObjectPropsToCamelCase(
-    JSON.parse(initialActiveAccessTokensJson),
-    {
-      deep: true,
-    },
-  );
+  const initialActiveAccessTokens = JSON.parse(initialActiveAccessTokensJson);
 
   return new Vue({
     el,
