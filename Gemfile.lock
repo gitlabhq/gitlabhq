@@ -85,6 +85,8 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    CFPropertyList (3.0.5)
+      rexml
     RedCloth (4.3.2)
     acme-client (2.0.11)
       faraday (>= 1.0, < 3.0.0)
@@ -1532,6 +1534,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  CFPropertyList
   RedCloth (~> 4.3.2)
   acme-client (~> 2.0)
   activerecord-explain-analyze (~> 0.1)

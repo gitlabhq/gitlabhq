@@ -117,6 +117,11 @@ RSpec.describe Ci::SecureFile do
       expect(file.metadata_parser).to be_an_instance_of(Gitlab::Ci::SecureFiles::P12)
     end
 
+    it 'returns an instance of Gitlab::Ci::SecureFiles::MobileProvision when a .mobileprovision file is supplied' do
+      file = build(:ci_secure_file, name: 'file1.mobileprovision')
+      expect(file.metadata_parser).to be_an_instance_of(Gitlab::Ci::SecureFiles::MobileProvision)
+    end
+
     it 'returns nil when the file type is not supported by any parsers' do
       file = build(:ci_secure_file, name: 'file1.foo')
       expect(file.metadata_parser).to be nil
