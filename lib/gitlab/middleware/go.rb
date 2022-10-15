@@ -2,9 +2,6 @@
 
 # A dumb middleware that returns a Go HTML document if the go-get=1 query string
 # is used irrespective if the namespace/project exists
-#
-# In order to prevent the project from being exposed,
-# auth failure (401 & 403) is regarded as not found (404)
 module Gitlab
   module Middleware
     class Go
@@ -24,16 +21,15 @@ module Gitlab
       rescue Gitlab::Auth::IpBlacklisted
         Gitlab::AuthLogger.error(
           message: 'Rack_Attack',
+          status: 403,
           env: :blocklist,
           remote_ip: request.ip,
           request_method: request.request_method,
           path: request.fullpath
         )
-        Rack::Response.new('', 404).finish
+        Rack::Response.new('', 403).finish
       rescue Gitlab::Auth::MissingPersonalAccessTokenError
-        Rack::Response.new('', 404).finish
-      rescue ActiveRecord::RecordNotFound
-        Rack::Response.new('', 404).finish
+        Rack::Response.new('', 401).finish
       end
 
       private
@@ -104,6 +100,7 @@ module Gitlab
 
         # We find all potential project paths out of the path segments
         path_segments = path.split('/')
+        simple_project_path = path_segments.first(2).join('/')
 
         project_paths = []
         begin
@@ -113,18 +110,28 @@ module Gitlab
 
         # We see if a project exists with any of these potential paths
         project = project_for_paths(project_paths, request)
-        # If a project is found and the user has access, we return the full project path
-        [project.full_path, project.default_branch]
+
+        if project
+          # If a project is found and the user has access, we return the full project path
+          [project.full_path, project.default_branch]
+        else
+          # If not, we return the first two components as if it were a simple `namespace/project` path,
+          # so that we don't reveal the existence of a nested project the user doesn't have access to.
+          # This means that for an unauthenticated request to `group/subgroup/project/subpackage`
+          # for a private `group/subgroup/project` with subpackage path `subpackage`, GitLab will respond
+          # as if the user is looking for project `group/subgroup`, with subpackage path `project/subpackage`.
+          # Since `go get` doesn't authenticate by default, this means that
+          # `go get gitlab.com/group/subgroup/project/subpackage` will not work for private projects.
+          # `go get gitlab.com/group/subgroup/project.git/subpackage` will work, since Go is smart enough
+          # to figure that out. `import 'gitlab.com/...'` behaves the same as `go get`.
+          [simple_project_path, 'master']
+        end
       end
 
       def project_for_paths(paths, request)
         project = Project.where_full_path_in(paths).first
 
-        raise ActiveRecord::RecordNotFound unless project
-
-        unless authentication_result(request, project).can_perform_action_on_project?(:read_project, project)
-          raise Gitlab::Auth::MissingPersonalAccessTokenError
-        end
+        return unless authentication_result(request, project).can_perform_action_on_project?(:read_project, project)
 
         project
       end

@@ -71,23 +71,9 @@ class MergeRequest < ApplicationRecord
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
 
+  # method overriden in EE
   def suggested_reviewer_users
-    return User.none unless predictions && predictions.suggested_reviewers.is_a?(Hash)
-
-    usernames = Array.wrap(suggested_reviewers["reviewers"])
-    return User.none if usernames.empty?
-
-    # Preserve the orginal order of suggested usernames
-    join_sql = MergeRequest.sanitize_sql_array(
-      [
-        'JOIN UNNEST(ARRAY[?]::varchar[]) WITH ORDINALITY AS t(username, ord) USING(username)',
-        usernames
-      ]
-    )
-
-    project.authorized_users.active
-      .joins(Arel.sql(join_sql))
-      .order('t.ord')
+    User.none
   end
 
   # This is the same as latest_merge_request_diff unless:
