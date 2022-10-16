@@ -10,7 +10,7 @@ module Resolvers
       authorize!(object)
 
       BatchLoader::GraphQL.for(object.id).batch(cache: false) do |ids, loader, args|
-        labels = Label.for_targets(ids, object.class.name).group_by(&:target_id)
+        labels = Label.for_targets(object.class.id_in(ids)).group_by(&:target_id)
 
         ids.each do |id|
           loader.call(id, labels[id] || [])

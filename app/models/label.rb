@@ -60,11 +60,10 @@ class Label < ApplicationRecord
       .distinct
   }
 
-  scope :for_targets, ->(target_ids, targets_type) do
+  scope :for_targets, ->(target_relation) do
     joins(:label_links)
-      .where(label_links: { target_id: target_ids })
-      .where(label_links: { target_type: targets_type })
-      .select("labels.*, target_id")
+      .merge(LabelLink.where(target: target_relation))
+      .select(arel_table[Arel.star], LabelLink.arel_table[:target_id])
       .with_preloaded_container
   end
 
