@@ -388,42 +388,95 @@ RSpec.describe Users::DestroyService do
     context 'batched nullify' do
       let(:other_user) { create(:user) }
 
+      # rubocop:disable Layout/LineLength
+      def nullify_in_batches_regexp(table, column, user, batch_size: 100)
+        %r{^UPDATE "#{table}" SET "#{column}" = NULL WHERE "#{table}"."id" IN \(SELECT "#{table}"."id" FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id} LIMIT #{batch_size}\)}
+      end
+
+      def delete_in_batches_regexps(table, column, user, items, batch_size: 1000)
+        select_query = %r{^SELECT "#{table}".* FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id}.*ORDER BY "#{table}"."id" ASC LIMIT #{batch_size}}
+
+        [select_query] + items.map { |item| %r{^DELETE FROM "#{table}" WHERE "#{table}"."id" = #{item.id}} }
+      end
+      # rubocop:enable Layout/LineLength
+
       it 'nullifies related associations in batches' do
         expect(other_user).to receive(:nullify_dependent_associations_in_batches).and_call_original
 
         described_class.new(user).execute(other_user, skip_authorization: true)
       end
 
-      it 'nullifies last_updated_issues, closed_issues, resource_label_events' do
+      it 'nullifies issues and resource associations', :aggregate_failures do
         issue = create(:issue, closed_by: other_user, updated_by: other_user)
         resource_label_event = create(:resource_label_event, user: other_user)
+        resource_state_event = create(:resource_state_event, user: other_user)
+        todos = create_list(:todo, 2, project: issue.project, user: other_user, author: other_user, target: issue)
+        event = create(:event, project: issue.project, author: other_user)
 
-        described_class.new(user).execute(other_user, skip_authorization: true)
+        query_recorder = ActiveRecord::QueryRecorder.new do
+          described_class.new(user).execute(other_user, skip_authorization: true)
+        end
 
         issue.reload
         resource_label_event.reload
+        resource_state_event.reload
 
         expect(issue.closed_by).to be_nil
         expect(issue.updated_by).to be_nil
         expect(resource_label_event.user).to be_nil
+        expect(resource_state_event.user).to be_nil
+        expect(other_user.authored_todos).to be_empty
+        expect(other_user.todos).to be_empty
+        expect(other_user.authored_events).to be_empty
+
+        expected_queries = [
+          nullify_in_batches_regexp(:issues, :updated_by_id, other_user),
+          nullify_in_batches_regexp(:issues, :closed_by_id, other_user),
+          nullify_in_batches_regexp(:resource_label_events, :user_id, other_user),
+          nullify_in_batches_regexp(:resource_state_events, :user_id, other_user)
+        ]
+
+        expected_queries += delete_in_batches_regexps(:todos, :user_id, other_user, todos)
+        expected_queries += delete_in_batches_regexps(:todos, :author_id, other_user, todos)
+        expected_queries += delete_in_batches_regexps(:events, :author_id, other_user, [event])
+
+        expect(query_recorder.log).to include(*expected_queries)
       end
 
-      it 'nullifies merge request associations' do
+      it 'nullifies merge request associations', :aggregate_failures do
         merge_request = create(:merge_request, source_project: project, target_project: project,
                                                assignee: other_user, updated_by: other_user, merge_user: other_user)
         merge_request.metrics.update!(merged_by: other_user, latest_closed_by: other_user)
+        merge_request.reviewers = [other_user]
+        merge_request.assignees = [other_user]
 
-        described_class.new(user).execute(other_user, skip_authorization: true)
+        query_recorder = ActiveRecord::QueryRecorder.new do
+          described_class.new(user).execute(other_user, skip_authorization: true)
+        end
 
         merge_request.reload
 
-        aggregate_failures do
-          expect(merge_request.updated_by).to be_nil
-          expect(merge_request.assignee).to be_nil
-          expect(merge_request.assignee_id).to be_nil
-          expect(merge_request.metrics.merged_by).to be_nil
-          expect(merge_request.metrics.latest_closed_by).to be_nil
-        end
+        expect(merge_request.updated_by).to be_nil
+        expect(merge_request.assignee).to be_nil
+        expect(merge_request.assignee_id).to be_nil
+        expect(merge_request.metrics.merged_by).to be_nil
+        expect(merge_request.metrics.latest_closed_by).to be_nil
+        expect(merge_request.reviewers).to be_empty
+        expect(merge_request.assignees).to be_empty
+
+        expected_queries = [
+          nullify_in_batches_regexp(:merge_requests, :updated_by_id, other_user),
+          nullify_in_batches_regexp(:merge_requests, :assignee_id, other_user),
+          nullify_in_batches_regexp(:merge_request_metrics, :merged_by_id, other_user),
+          nullify_in_batches_regexp(:merge_request_metrics, :latest_closed_by_id, other_user)
+        ]
+
+        expected_queries += delete_in_batches_regexps(:merge_request_assignees, :user_id, other_user,
+                                                      merge_request.assignees)
+        expected_queries += delete_in_batches_regexps(:merge_request_reviewers, :user_id, other_user,
+                                                      merge_request.reviewers)
+
+        expect(query_recorder.log).to include(*expected_queries)
       end
     end
   end

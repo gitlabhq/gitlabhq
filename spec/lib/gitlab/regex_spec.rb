@@ -3,6 +3,7 @@
 require 'fast_spec_helper'
 
 require_relative '../../../lib/gitlab/regex'
+require_relative '../../support/shared_examples/lib/gitlab/regex_shared_examples'
 
 # All specs that can be run with fast_spec_helper only
 # See regex_requires_app_spec for tests that require the full spec_helper
@@ -543,6 +544,8 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('aA') }
     # No underscore
     it { is_expected.not_to match('a_b') }
+
+    it_behaves_like 'regex rejecting path traversal'
   end
 
   describe '.debian_version_regex' do
@@ -595,6 +598,13 @@ RSpec.describe Gitlab::Regex do
       # we limit the number of dashes
       it { is_expected.to match('1-2-3-4-5-6-7-8-9-10-11-12-13-14-15') }
       it { is_expected.not_to match('1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16') }
+    end
+
+    context 'path traversals' do
+      it { is_expected.not_to match('1../0') }
+      it { is_expected.not_to match('1..%2f0') }
+      it { is_expected.not_to match('1%2e%2e%2f0') }
+      it { is_expected.not_to match('1%2e%2e/0') }
     end
   end
 

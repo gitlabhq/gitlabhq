@@ -725,152 +725,19 @@ There is an [issue to implement this functionality in the Admin UI](https://gitl
 
 ### Artifacts
 
-#### Find failed artifacts
-
-```ruby
-Geo::JobArtifactRegistry.failed
-```
-
-#### Get a count of the synced artifacts
-
-```ruby
-Geo::JobArtifactRegistry.synced.count
-```
-
-#### Find `ID` of synced artifacts that are missing on primary
-
-```ruby
-Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#find-failed-artifacts).
 
 ### Repository verification failures
 
-#### Get the number of verification failed repositories
-
-```ruby
-Geo::ProjectRegistry.verification_failed('repository').count
-```
-
-#### Find the verification failed repositories
-
-```ruby
-Geo::ProjectRegistry.verification_failed('repository')
-```
-
-### Find repositories that failed to sync
-
-```ruby
-Geo::ProjectRegistry.sync_failed('repository')
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#repository-verification-failures).
 
 ### Resync repositories
 
-#### Queue up all repositories for resync. Sidekiq handles each sync
-
-```ruby
-Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
-```
-
-#### Sync individual repository now
-
-```ruby
-project = Project.find_by_full_path('<group/project>')
-
-Geo::RepositorySyncService.new(project).execute
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#resync-repositories).
 
 ### Blob types
 
-- `Ci::JobArtifact`
-- `Ci::PipelineArtifact`
-- `LfsObject`
-- `MergeRequestDiff`
-- `Packages::PackageFile`
-- `PagesDeployment`
-- `Terraform::StateVersion`
-- `Upload`
-
-`Packages::PackageFile` is used in the following examples, but things generally work the same for the other Blob types.
-
-#### The Replicator
-
-The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
-
-```ruby
-model_record = Packages::PackageFile.last
-model_record.replicator.registry.replicator.model_record # just showing that these methods exist
-```
-
-#### Replicate a package file, synchronously, given an ID
-
-```ruby
-model_record = Packages::PackageFile.find(id)
-model_record.replicator.send(:download)
-```
-
-#### Replicate a package file, synchronously, given a registry ID
-
-```ruby
-registry = Geo::PackageFileRegistry.find(registry_id)
-registry.replicator.send(:download)
-```
-
-#### Verify package files on the secondary manually
-
-This iterates over all package files on the secondary, looking at the
-`verification_checksum` stored in the database (which came from the primary)
-and then calculate this value on the secondary to check if they match. This
-does not change anything in the UI:
-
-```ruby
-# Run on secondary
-status = {}
-
-Packages::PackageFile.find_each do |package_file|
-  primary_checksum = package_file.verification_checksum
-  secondary_checksum = Packages::PackageFile.hexdigest(package_file.file.path)
-  verification_status = (primary_checksum == secondary_checksum)
-
-  status[verification_status.to_s] ||= []
-  status[verification_status.to_s] << package_file.id
-end
-
-# Count how many of each value we get
-status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
-
-# See the output in its entirety
-status
-```
-
-### Repository types newer than project/wiki repositories
-
-- `SnippetRepository`
-- `GroupWikiRepository`
-
-`SnippetRepository` is used in the examples below, but things generally work the same for the other Repository types.
-
-#### The Replicator
-
-The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it).
-
-```ruby
-model_record = SnippetRepository.last
-model_record.replicator.registry.replicator.model_record # just showing that these methods exist
-```
-
-#### Replicate a snippet repository, synchronously, given an ID
-
-```ruby
-model_record = SnippetRepository.find(id)
-model_record.replicator.send(:sync_repository)
-```
-
-#### Replicate a snippet repository, synchronously, given a registry ID
-
-```ruby
-registry = Geo::SnippetRepositoryRegistry.find(registry_id)
-registry.replicator.send(:sync_repository)
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#blob-types).
 
 ## Generate Service Ping
 

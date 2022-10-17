@@ -214,14 +214,15 @@ class User < ApplicationRecord
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
-  has_many :todos
+  has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 class_name: 'Ci::Trigger', foreign_key: :owner_id
 
   has_many :issue_assignees, inverse_of: :assignee
-  has_many :merge_request_assignees, inverse_of: :assignee
-  has_many :merge_request_reviewers, inverse_of: :reviewer
+  has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests, class_name: "MergeRequest", through: :merge_request_assignees, source: :merge_request
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
@@ -254,6 +255,8 @@ class User < ApplicationRecord
   has_many :timelogs
 
   has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
 
   #
   # Validations

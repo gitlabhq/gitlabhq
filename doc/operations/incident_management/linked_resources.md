@@ -50,6 +50,24 @@ To add a linked resource:
 1. Complete the required fields.
 1. Select **Add**.
 
+### Using a quick action **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5.
+
+To add multiple links to an incident, use the `/link`
+[quick action](../../user/project/quick_actions.md):
+
+```plaintext
+/link https://example.link.us/j/123456789
+```
+
+You can also submit a short description with the link.
+The description shows instead of the URL in the **Linked resources** section of the incident:
+
+```plaintext
+/link https://example.link.us/j/123456789, multiple alerts firing
+```
+
 ### Link Zoom meetings from an incident **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.

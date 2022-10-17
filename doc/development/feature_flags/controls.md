@@ -55,7 +55,7 @@ change feature flags or you do not have access.
 ### Enabling a feature for pre-production testing
 
 As a first step in a feature rollout, you should enable the feature on
-[`about.staging.gitlab.com`](https://about.staging.gitlab.com)
+[`staging.gitlab.com`](https://staging.gitlab.com)
 and [`dev.gitlab.org`](https://dev.gitlab.org).
 
 These two environments have different scopes.

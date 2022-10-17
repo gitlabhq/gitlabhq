@@ -311,6 +311,51 @@ sudo gitlab-rake gitlab:geo:check
   When performing a PostgreSQL major version (9 > 10) update this is expected. Follow
   the [initiate-the-replication-process](../setup/database.md#step-3-initiate-the-replication-process).
 
+### Repository verification failures
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to gather the following, basic troubleshooting information.
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+#### Get the number of verification failed repositories
+
+```ruby
+Geo::ProjectRegistry.verification_failed('repository').count
+```
+
+#### Find the verification failed repositories
+
+```ruby
+Geo::ProjectRegistry.verification_failed('repository')
+```
+
+#### Find repositories that failed to sync
+
+```ruby
+Geo::ProjectRegistry.sync_failed('repository')
+```
+
+### Resync repositories
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to enact the following, basic troubleshooting steps.
+
+#### Queue up all repositories for resync. Sidekiq handles each sync
+
+```ruby
+Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
+```
+
+#### Sync individual repository now
+
+```ruby
+project = Project.find_by_full_path('<group/project>')
+
+Geo::RepositorySyncService.new(project).execute
+```
+
 ## Fixing replication errors
 
 The following sections outline troubleshooting steps for fixing replication
@@ -779,7 +824,7 @@ This behavior affects only the following data types through GitLab 14.6:
 | Data type                | From version |
 | ------------------------ | ------------ |
 | Package Registry         | 13.10        |
-| Pipeline Artifacts       | 13.11        |
+| CI Pipeline Artifacts    | 13.11        |
 | Terraform State Versions | 13.12        |
 | Infrastructure Registry  | 14.0         |
 | External MR diffs        | 14.6         |
@@ -791,6 +836,120 @@ This behavior affects only the following data types through GitLab 14.6:
 [Since GitLab 14.7, files that are missing on the primary site are now treated as sync failures](https://gitlab.com/gitlab-org/gitlab/-/issues/348745)
 to make Geo visibly surface data loss risks. The sync/verification loop is
 therefore short-circuited. `last_sync_failure` is now set to `The file is missing on the Geo primary site`.
+
+### Blob types
+
+- `Ci::JobArtifact`
+- `Ci::PipelineArtifact`
+- `Ci::SecureFile`
+- `LfsObject`
+- `MergeRequestDiff`
+- `Packages::PackageFile`
+- `PagesDeployment`
+- `Terraform::StateVersion`
+- `Upload`
+
+`Packages::PackageFile` is used in the following
+[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+examples, but things generally work the same for the other types.
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+#### The Replicator
+
+The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
+
+```ruby
+model_record = Packages::PackageFile.last
+model_record.replicator.registry.replicator.model_record # just showing that these methods exist
+```
+
+#### Replicate a package file, synchronously, given an ID
+
+```ruby
+model_record = Packages::PackageFile.find(id)
+model_record.replicator.send(:download)
+```
+
+#### Replicate a package file, synchronously, given a registry ID
+
+```ruby
+registry = Geo::PackageFileRegistry.find(registry_id)
+registry.replicator.send(:download)
+```
+
+#### Verify package files on the secondary manually
+
+This iterates over all package files on the secondary, looking at the
+`verification_checksum` stored in the database (which came from the primary)
+and then calculate this value on the secondary to check if they match. This
+does not change anything in the UI:
+
+```ruby
+# Run on secondary
+status = {}
+
+Packages::PackageFile.find_each do |package_file|
+  primary_checksum = package_file.verification_checksum
+  secondary_checksum = Packages::PackageFile.hexdigest(package_file.file.path)
+  verification_status = (primary_checksum == secondary_checksum)
+
+  status[verification_status.to_s] ||= []
+  status[verification_status.to_s] << package_file.id
+end
+
+# Count how many of each value we get
+status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
+
+# See the output in its entirety
+status
+```
+
+### Repository types newer than project/wiki repositories
+
+- `SnippetRepository`
+- `GroupWikiRepository`
+
+`SnippetRepository` is used in the examples below, but things generally work the same for the other Repository types.
+
+#### The Replicator
+
+The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it).
+
+```ruby
+model_record = SnippetRepository.last
+model_record.replicator.registry.replicator.model_record # just showing that these methods exist
+```
+
+#### Replicate a snippet repository, synchronously, given an ID
+
+```ruby
+model_record = SnippetRepository.find(id)
+model_record.replicator.send(:sync_repository)
+```
+
+#### Replicate a snippet repository, synchronously, given a registry ID
+
+```ruby
+registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+registry.replicator.send(:sync_repository)
+```
+
+### Find failed artifacts
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to run the following commands:
+
+```ruby
+Geo::JobArtifactRegistry.failed
+```
+
+#### Find `ID` of synced artifacts that are missing on primary
+
+```ruby
+Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
+```
 
 #### Failed syncs with GitLab-managed object storage replication
 

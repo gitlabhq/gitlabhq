@@ -46,7 +46,7 @@ The following Cloud Native Hybrid reference architectures, where select recommen
 A GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/#self-managed) license is required
 to get assistance from Support with troubleshooting the [2,000 users](2k_users.md)
 and higher reference architectures.
-[Read more about our definition of scaled architectures](https://about.gitlab.com/support/#definition-of-scaled-architecture).
+[Read more about our definition of scaled architectures](https://about.gitlab.com/support/definitions/#definition-of-scaled-architecture).
 
 ## Deciding which architecture to use
 

@@ -12,9 +12,6 @@ module Tooling
         :project
         :project_empty_repo
         :forked_project_with_submodules
-        :redmine_project
-        :jira_project
-        :prometheus_project
         :project_with_design
       ].freeze
 

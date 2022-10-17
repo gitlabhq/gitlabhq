@@ -167,9 +167,6 @@ RSpec.describe Tooling::Danger::Specs do
         " str = 'let(:project) { create(:project) }'",
         " let(:project) { create(:project_empty_repo) }",
         " let(:project) { create(:forked_project_with_submodules) }",
-        " let(:project) { create(:redmine_project) }",
-        " let(:project) { create(:jira_project) }",
-        " let(:project) { create(:prometheus_project) }",
         " let(:project) { create(:project_with_design) }",
         " let(:authorization) { create(:project_authorization) }"
       ]
@@ -185,9 +182,6 @@ RSpec.describe Tooling::Danger::Specs do
         "+ let(:project) { create(:project, :repository) }",
         "+ let(:project) { create(:project_empty_repo) }",
         "+ let(:project) { create(:forked_project_with_submodules) }",
-        "+ let(:project) { create(:redmine_project) }",
-        "+ let(:project) { create(:jira_project) }",
-        "+ let(:project) { create(:prometheus_project) }",
         "+ let(:project) { create(:project_with_design) }"
       ]
     end
@@ -214,10 +208,7 @@ RSpec.describe Tooling::Danger::Specs do
         { suggested_line: " let_it_be(:project) { create(:project, :repository) }", number: 15 },
         { suggested_line: " let_it_be(:project) { create(:project_empty_repo) }", number: 17 },
         { suggested_line: " let_it_be(:project) { create(:forked_project_with_submodules) }", number: 18 },
-        { suggested_line: " let_it_be(:project) { create(:redmine_project) }", number: 19 },
-        { suggested_line: " let_it_be(:project) { create(:jira_project) }", number: 20 },
-        { suggested_line: " let_it_be(:project) { create(:prometheus_project) }", number: 21 },
-        { suggested_line: " let_it_be(:project) { create(:project_with_design) }", number: 22 }
+        { suggested_line: " let_it_be(:project) { create(:project_with_design) }", number: 19 }
       ].each do |test_case|
         comment = format(template, suggested_line: test_case[:suggested_line])
         expect(specs).to receive(:markdown).with(comment, file: filename, line: test_case[:number])
