@@ -194,7 +194,8 @@ From this page, you can edit, pause, and remove runners from the group, its subg
 
 #### Filter group runners to show only inherited
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337838/) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337838/) in GitLab 15.5.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101099) in GitLab 15.5. Feature flag `runners_finder_all_available` removed.
 
 You can choose to show all runners in the list, or show only
 those that are inherited from the instance or other groups.

@@ -32,30 +32,59 @@ RSpec.describe BulkImports::ExportRequestWorker do
         end
 
         context 'when network error is raised' do
-          it 'logs export failure and marks entity as failed' do
-            expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
-              expect(client).to receive(:post).and_raise(BulkImports::NetworkError, 'Export error').twice
+          let(:exception) { BulkImports::NetworkError.new('Export error') }
+
+          before do
+            allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+              allow(client).to receive(:post).and_raise(exception).twice
             end
+          end
 
-            expect(Gitlab::Import::Logger).to receive(:error).with(
-              hash_including(
-                'bulk_import_entity_id' => entity.id,
-                'pipeline_class' => 'ExportRequestWorker',
-                'exception_class' => 'BulkImports::NetworkError',
-                'exception_message' => 'Export error',
-                'correlation_id_value' => anything,
-                'bulk_import_id' => bulk_import.id,
-                'bulk_import_entity_type' => entity.source_type,
-                'importer' => 'gitlab_migration'
-              )
-            ).twice
+          context 'when error is retriable' do
+            it 'logs retry request and reenqueues' do
+              allow(exception).to receive(:retriable?).twice.and_return(true)
 
-            perform_multiple(job_args)
+              expect(Gitlab::Import::Logger).to receive(:error).with(
+                hash_including(
+                  'bulk_import_entity_id' => entity.id,
+                  'pipeline_class' => 'ExportRequestWorker',
+                  'exception_class' => 'BulkImports::NetworkError',
+                  'exception_message' => 'Export error',
+                  'bulk_import_id' => bulk_import.id,
+                  'bulk_import_entity_type' => entity.source_type,
+                  'importer' => 'gitlab_migration',
+                  'message' => 'Retrying export request'
+                )
+              ).twice
 
-            failure = entity.failures.last
+              expect(described_class).to receive(:perform_in).twice.with(2.seconds, entity.id)
 
-            expect(failure.pipeline_class).to eq('ExportRequestWorker')
-            expect(failure.exception_message).to eq('Export error')
+              perform_multiple(job_args)
+            end
+          end
+
+          context 'when error is not retriable' do
+            it 'logs export failure and marks entity as failed' do
+              expect(Gitlab::Import::Logger).to receive(:error).with(
+                hash_including(
+                  'bulk_import_entity_id' => entity.id,
+                  'pipeline_class' => 'ExportRequestWorker',
+                  'exception_class' => 'BulkImports::NetworkError',
+                  'exception_message' => 'Export error',
+                  'correlation_id_value' => anything,
+                  'bulk_import_id' => bulk_import.id,
+                  'bulk_import_entity_type' => entity.source_type,
+                  'importer' => 'gitlab_migration'
+                )
+              ).twice
+
+              perform_multiple(job_args)
+
+              failure = entity.failures.last
+
+              expect(failure.pipeline_class).to eq('ExportRequestWorker')
+              expect(failure.exception_message).to eq('Export error')
+            end
           end
         end
 

@@ -58,8 +58,8 @@ RSpec.describe DeploymentEntity do
     let_it_be(:other_deployment) { create(:deployment, deployable: build, environment: environment) }
 
     it 'returns another manual action' do
-      expect(subject[:manual_actions].count).to eq(2)
-      expect(subject[:manual_actions].pluck(:name)).to match_array(['test', 'another deploy'])
+      expect(subject[:manual_actions].count).to eq(1)
+      expect(subject[:manual_actions].pluck(:name)).to match_array(['another deploy'])
     end
 
     context 'when user is a reporter' do

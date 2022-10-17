@@ -142,7 +142,7 @@ To change the GitLab.com account linked to your Customers Portal account:
 1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com) and ensure you
    are not logged in.
 1. On the Customers Portal page, select **My account > Account details**.
-1. Under **Your GitLab.com account**, select **Change linked account**.
+1. Under **Your GitLab.com account**, select **Change linked account**. If the account is not yet linked, select **Link my GitLab.com account**.
 1. Log in to the [GitLab SaaS](https://gitlab.com) account you want to link to the Customers Portal
    account.
 

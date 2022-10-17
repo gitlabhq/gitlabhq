@@ -515,6 +515,34 @@ include:  # Execute individual project's configuration (if project contains .git
   ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
 ```
 
+##### CF pipelines in Merge Requests originating in project forks
+
+When an MR originates in a fork, the branch to be merged usually only exists in the fork.
+When creating such an MR against a project with CF pipelines, the above snippet will fail with a
+`Project <project-name> reference <branch-name> does not exist!` error message.
+This is because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing branch name.
+
+To get the correct context, use `$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` instead of `$CI_PROJECT_PATH`.
+This variable is only availabe in
+[merge request pipelines](../../ci/pipelines/merge_request_pipelines.md).
+
+For example, for a configuration that supports both branch pipelines, as well as merge request pipelines originating in project forks,
+you need to [combine both `include` directives with `rules:if`](../../ci/yaml/includes.md#use-rules-with-include):
+
+```yaml
+include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
+  - project: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH'
+    file: '$CI_CONFIG_PATH'
+    ref: '$CI_COMMIT_REF_NAME'
+    rules:
+      - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  - project: '$CI_PROJECT_PATH'
+    file: '$CI_CONFIG_PATH'
+    ref: '$CI_COMMIT_REF_NAME'
+    rules:
+      - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
+```
+
 ### Ensure compliance jobs are always run
 
 Compliance pipelines [use GitLab CI/CD](../../ci/index.md) to give you an incredible amount of flexibility

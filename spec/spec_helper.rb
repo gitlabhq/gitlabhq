@@ -140,7 +140,6 @@ RSpec.configure do |config|
   config.include FixtureHelpers
   config.include NonExistingRecordsHelpers
   config.include GitlabRoutingHelper
-  config.include StubExperiments
   config.include StubGitlabCalls
   config.include NextFoundInstanceOf
   config.include NextInstanceOf

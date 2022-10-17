@@ -417,16 +417,8 @@ module Ci
       pipeline.manual_actions.reject { |action| action.name == self.name }
     end
 
-    def environment_manual_actions
-      pipeline.manual_actions.filter { |action| action.expanded_environment_name == self.expanded_environment_name }
-    end
-
     def other_scheduled_actions
       pipeline.scheduled_actions.reject { |action| action.name == self.name }
-    end
-
-    def environment_scheduled_actions
-      pipeline.scheduled_actions.filter { |action| action.expanded_environment_name == self.expanded_environment_name }
     end
 
     def pages_generator?

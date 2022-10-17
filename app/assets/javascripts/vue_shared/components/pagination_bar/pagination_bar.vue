@@ -2,6 +2,7 @@
 import { GlDropdown, GlDropdownItem, GlIcon, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 const DEFAULT_PAGE_SIZES = [20, 50, 100];
 
@@ -12,6 +13,7 @@ export default {
     GlDropdownItem,
     GlIcon,
     GlSprintf,
+    LocalStorageSync,
   },
   props: {
     pageInfo: {
@@ -22,6 +24,11 @@ export default {
       required: false,
       type: Array,
       default: () => DEFAULT_PAGE_SIZES,
+    },
+    storageKey: {
+      required: false,
+      type: String,
+      default: null,
     },
   },
 
@@ -66,6 +73,12 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-align-items-center">
+    <local-storage-sync
+      v-if="storageKey"
+      :storage-key="storageKey"
+      :value="pageInfo.perPage"
+      @input="setPageSize"
+    />
     <pagination-links :change="setPage" :page-info="pageInfo" class="gl-m-0" />
     <gl-dropdown category="tertiary" class="gl-ml-auto" data-testid="page-size">
       <template #button-content>

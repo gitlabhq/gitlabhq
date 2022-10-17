@@ -7,6 +7,7 @@ import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widg
 import LabelItem from '~/vue_shared/components/sidebar/labels_select_widget/label_item.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
+import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 
@@ -74,6 +75,14 @@ export default {
       },
       error() {
         this.$emit('error', i18n.fetchError);
+      },
+      subscribeToMore: {
+        document: workItemLabelsSubscription,
+        variables() {
+          return {
+            issuableId: this.workItemId,
+          };
+        },
       },
     },
     searchLabels: {

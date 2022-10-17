@@ -24,7 +24,7 @@ RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
   if status == :created
     it 'creates package files', :aggregate_failures do
       expect(::Packages::Debian::FindOrCreateIncomingService).to receive(:new).with(container, user).and_call_original
-      expect(::Packages::Debian::CreatePackageFileService).to receive(:new).with(be_a(Packages::Package), be_an(Hash)).and_call_original
+      expect(::Packages::Debian::CreatePackageFileService).to receive(:new).with(package: be_a(Packages::Package), current_user: be_an(User), params: be_an(Hash)).and_call_original
 
       if file_name.end_with? '.changes'
         expect(::Packages::Debian::ProcessChangesWorker).to receive(:perform_async)

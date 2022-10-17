@@ -2,6 +2,7 @@ import { GlPagination, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 describe('Pagination bar', () => {
   const DEFAULT_PROPS = {
@@ -20,6 +21,7 @@ describe('Pagination bar', () => {
         ...DEFAULT_PROPS,
         ...propsData,
       },
+      stubs: { LocalStorageSync: true },
     });
   };
 
@@ -89,5 +91,29 @@ describe('Pagination bar', () => {
     expect(wrapper.find('[data-testid="information"]').text()).toMatchInterpolatedText(
       'Showing 21 - 40 of 1000+',
     );
+  });
+
+  describe('local storage sync', () => {
+    it('does not perform local storage sync when no storage key is provided', () => {
+      createComponent();
+
+      expect(wrapper.findComponent(LocalStorageSync).exists()).toBe(false);
+    });
+
+    it('passes current page size to local storage sync when storage key is provided', () => {
+      const STORAGE_KEY = 'fakeStorageKey';
+      createComponent({ storageKey: STORAGE_KEY });
+
+      expect(wrapper.getComponent(LocalStorageSync).props('storageKey')).toBe(STORAGE_KEY);
+    });
+
+    it('emits set-page event when local storage sync provides new value', () => {
+      const SAVED_SIZE = 50;
+      createComponent({ storageKey: 'some storage key' });
+
+      wrapper.getComponent(LocalStorageSync).vm.$emit('input', SAVED_SIZE);
+
+      expect(wrapper.emitted('set-page-size')).toEqual([[SAVED_SIZE]]);
+    });
   });
 });

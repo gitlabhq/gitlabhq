@@ -1,18 +1,19 @@
 <script>
-import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlModal, GlSprintf, GlIcon, GlPopover } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+import { REVIEW_APP_MODAL_I18N as i18n } from '../constants';
 
 export default {
   components: {
     GlLink,
     GlModal,
     GlSprintf,
+    GlIcon,
+    GlPopover,
     ModalCopyButton,
   },
-  inject: ['defaultBranchName'],
   model: {
     prop: 'visible',
     event: 'change',
@@ -28,25 +29,6 @@ export default {
       default: false,
     },
   },
-  instructionText: {
-    step1: s__(
-      'EnableReviewApp|%{stepStart}Step 1%{stepEnd}. Ensure you have Kubernetes set up and have a base domain for your %{linkStart}cluster%{linkEnd}.',
-    ),
-    step2: s__('EnableReviewApp|%{stepStart}Step 2%{stepEnd}. Copy the following snippet:'),
-    step3: s__(
-      `EnableReviewApp|%{stepStart}Step 3%{stepEnd}. Add it to the project %{linkStart}gitlab-ci.yml%{linkEnd} file.`,
-    ),
-    step4: s__(
-      `EnableReviewApp|%{stepStart}Step 4 (optional)%{stepEnd}. Enable Visual Reviews by following the %{linkStart}setup instructions%{linkEnd}.`,
-    ),
-  },
-  modalInfo: {
-    closeText: s__('EnableReviewApp|Close'),
-    copyToClipboardText: s__('EnableReviewApp|Copy snippet text'),
-    title: s__('ReviewApp|Enable Review App'),
-  },
-  visualReviewsDocs: helpPagePath('ci/review_apps/index.md', { anchor: 'visual-reviews' }),
-  connectClusterDocs: helpPagePath('user/clusters/agent/index'),
   data() {
     const modalInfoCopyId = uniqueId('enable-review-app-copy-string-');
 
@@ -57,81 +39,99 @@ export default {
       return `deploy_review:
   stage: deploy
   script:
-    - echo "Deploy a review app"
+    - echo "Add script here that deploys the code to your infrastructure"
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-  only:
-    - branches
-  except:
-    - ${this.defaultBranchName}`;
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"`;
     },
   },
+  methods: {
+    commaOrPeriod(index, length) {
+      return index + 1 === length ? '.' : ',';
+    },
+  },
+  i18n,
+  configuringReviewAppsPath: helpPagePath('ci/review_apps/index.md', {
+    anchor: 'configuring-review-apps',
+  }),
+  reviewAppsExamplesPath: helpPagePath('ci/review_apps/index.md', {
+    anchor: 'review-apps-examples',
+  }),
 };
 </script>
 <template>
   <gl-modal
     :visible="visible"
     :modal-id="modalId"
-    :title="$options.modalInfo.title"
+    :title="$options.i18n.title"
     static
     size="lg"
-    ok-only
-    ok-variant="light"
-    :ok-title="$options.modalInfo.closeText"
+    hide-footer
     @change="$emit('change', $event)"
   >
+    <p>{{ $options.i18n.intro }}</p>
     <p>
-      <gl-sprintf :message="$options.instructionText.step1">
-        <template #step="{ content }">
-          <strong>{{ content }}</strong>
-        </template>
-        <template #link="{ content }">
-          <gl-link :href="$options.connectClusterDocs" target="_blank">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
+      <strong>{{ $options.i18n.instructions.title }}</strong>
     </p>
-    <div>
-      <p>
-        <gl-sprintf :message="$options.instructionText.step2">
-          <template #step="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
-      </p>
-      <div class="gl-display-flex align-items-start">
-        <pre :id="modalInfoCopyId" class="gl-w-full" data-testid="enable-review-app-copy-string">
- {{ modalInfoCopyStr }} </pre
-        >
-        <modal-copy-button
-          :title="$options.modalInfo.copyToClipboardText"
-          :modal-id="modalId"
-          css-classes="border-0"
-          :target="`#${modalInfoCopyId}`"
-        />
-      </div>
+    <div class="gl-mb-6">
+      <ol class="gl-px-6">
+        <li>
+          {{ $options.i18n.instructions.step1 }}
+          <gl-icon
+            ref="informationIcon"
+            name="information-o"
+            class="gl-text-blue-600 gl-hover-cursor-pointer"
+          />
+          <gl-popover
+            :target="() => $refs.informationIcon.$el"
+            :title="$options.i18n.staticSitePopover.title"
+            triggers="hover focus"
+          >
+            {{ $options.i18n.staticSitePopover.body }}
+          </gl-popover>
+        </li>
+        <li>{{ $options.i18n.instructions.step2 }}</li>
+        <li>
+          {{ $options.i18n.instructions.step3 }}
+          <ul class="gl-px-4 gl-py-2">
+            <li>{{ $options.i18n.instructions.step3a }}</li>
+            <li>
+              <gl-sprintf :message="$options.i18n.instructions.step3b">
+                <template #code="{ content }"
+                  ><code>{{ content }}</code></template
+                >
+              </gl-sprintf>
+            </li>
+            <li class="gl-list-style-none">
+              <div class="gl-display-flex align-items-start">
+                <pre
+                  :id="modalInfoCopyId"
+                  class="gl-w-full"
+                  data-testid="enable-review-app-copy-string"
+                  >{{ modalInfoCopyStr }}</pre
+                >
+                <modal-copy-button
+                  :title="$options.i18n.copyToClipboardText"
+                  :modal-id="modalId"
+                  css-classes="border-0"
+                  :target="`#${modalInfoCopyId}`"
+                />
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li>{{ $options.i18n.instructions.step4 }}</li>
+      </ol>
+      <gl-link :href="$options.configuringReviewAppsPath" target="_blank">
+        {{ $options.i18n.learnMore }}
+        <gl-icon name="external-link" />
+      </gl-link>
+      <gl-link :href="$options.reviewAppsExamplesPath" target="_blank" class="gl-ml-6">
+        {{ $options.i18n.viewMoreExampleProjects }}
+        <gl-icon name="external-link" />
+      </gl-link>
     </div>
-    <p>
-      <gl-sprintf :message="$options.instructionText.step3">
-        <template #step="{ content }">
-          <strong>{{ content }}</strong>
-        </template>
-        <template #link="{ content }">
-          <gl-link :href="`blob/${defaultBranchName}/.gitlab-ci.yml`" target="_blank">{{
-            content
-          }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </p>
-    <p>
-      <gl-sprintf :message="$options.instructionText.step4">
-        <template #step="{ content }">
-          <strong>{{ content }}</strong>
-        </template>
-        <template #link="{ content }">
-          <gl-link :href="$options.visualReviewsDocs" target="_blank">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </p>
   </gl-modal>
 </template>

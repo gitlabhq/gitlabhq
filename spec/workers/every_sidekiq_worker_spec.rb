@@ -225,7 +225,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'Environments::CanaryIngress::UpdateWorker' => false,
         'Epics::UpdateEpicsDatesWorker' => 3,
         'ErrorTrackingIssueLinkWorker' => 3,
-        'Experiments::RecordConversionEventWorker' => 3,
         'ExportCsvWorker' => 3,
         'ExternalServiceReactiveCachingWorker' => 3,
         'FileHookWorker' => false,

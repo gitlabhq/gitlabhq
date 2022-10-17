@@ -1,0 +1,19 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
+subscription workItemLabels($issuableId: IssuableID!) {
+  issuableLabelsUpdated(issuableId: $issuableId) {
+    ... on WorkItem {
+      id
+      widgets {
+        ... on WorkItemWidgetLabels {
+          type
+          labels {
+            nodes {
+              ...Label
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -87,6 +87,7 @@ incidents, over the last couple of months, for example:
 - S2: 2022-04-12 [Transactions detected that have been running for more than 10m](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6821)
 - S2: 2022-04-06 [Database contention plausibly caused by excessive `ci_builds` reads](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6773)
 - S2: 2022-03-18 [Unable to remove a foreign key on `ci_builds`](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6642)
+- S2: 2022-10-10 [The queuing_queries_duration SLI apdex violating SLO](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7852#note_1130123525)
 
 We have approximately 50 `ci_*` prefixed database tables, and some of them
 would benefit from partitioning.
@@ -277,6 +278,14 @@ be able to find the `partition_id` number for a given pipeline ID and we will
 also find information about which logical partitions are "active" or
 "archived", which will help us to implement a time-decay pattern using database
 declarative partitioning.
+
+Doing that will also allow us to use a Unified Resource Identifier for
+partitioned resources, that will contain a pointer to a pipeline ID, we could
+then use to efficiently lookup a partition the resource is stored in. We could
+use an ID like `1e240-5ba0` for pipeline `123456`, build `23456`. If we decide
+to update the primary identifier of a partitioned resource (today it is just a
+big integer) it is important to design a system that is resilient to migrating
+data between partitions, to avoid changing idenfiers when rebalancing happens.
 
 `ci_partitions` table will store information about a partition identifier,
 pipeline ids range it is valid for and whether the partitions have been
@@ -698,8 +707,8 @@ Authors:
 
 Recommenders:
 
-| Role                   | Who             |
-|------------------------|-----------------|
-| Distingiushed Engineer | Kamil Trzciński |
+| Role                          | Who             |
+|-------------------------------|-----------------|
+| Senior Distingiushed Engineer | Kamil Trzciński |
 
 <!-- vale gitlab.Spelling = YES -->

@@ -2203,12 +2203,12 @@ cluster alongside your instance, read how to
 
 ## Supported modifications for lower user counts (HA)
 
-The 3k GitLab reference architecture is the smallest we recommend that achieves High Availability (HA).
-However, for environments that need to serve less users but maintain HA, there's several
+The 3,000 user GitLab reference architecture is the smallest we recommend that achieves High Availability (HA).
+However, for environments that need to serve fewer users but maintain HA, there are several
 supported modifications you can make to this architecture to reduce complexity and cost.
 
-It should be noted that to achieve HA with GitLab, this architecture's makeup is ultimately what is
-required. Each component has various considerations and rules to follow and this architecture
+It should be noted that to achieve HA with GitLab, the 3,000 user architecture's makeup is ultimately what is
+required. Each component has various considerations and rules to follow, and the 3,000 user architecture
 meets all of these. Smaller versions of this architecture will be fundamentally the same,
 but with smaller performance requirements, several modifications can be considered as follows:
 

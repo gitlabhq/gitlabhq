@@ -161,20 +161,3 @@ After the Sidekiq routing rules are changed, administrators must take care
 with the migration to avoid losing jobs entirely, especially in a system with
 long queues of jobs. The migration can be done by following the migration steps
 mentioned in [Sidekiq job migration](sidekiq_job_migration.md)
-
-### Workers that cannot be migrated
-
-Some workers cannot share a queue with other workers - typically because
-they check the size of their own queue - and so must be excluded from
-this process. We recommend excluding these from any further worker
-routing by adding a rule to keep them in their own queue, for example:
-
-```ruby
-sidekiq['routing_rules'] = [
-  ['tags=needs_own_queue', nil],
-  # ...
-]
-```
-
-These queues must also be included in at least one
-[Sidekiq queue group](extra_sidekiq_processes.md#start-multiple-processes).

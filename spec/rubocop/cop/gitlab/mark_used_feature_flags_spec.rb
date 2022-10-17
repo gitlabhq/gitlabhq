@@ -7,7 +7,7 @@ require_relative '../../../../rubocop/cop/gitlab/mark_used_feature_flags'
 
 RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
   let(:defined_feature_flags) do
-    %w[a_feature_flag foo_hello foo_world baz_experiment_percentage bar_baz]
+    %w[a_feature_flag foo_hello foo_world bar_baz baz]
   end
 
   before do
@@ -118,40 +118,33 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     end
   end
 
-  %w[
-    experiment
-    experiment_enabled?
-    push_frontend_experiment
-    Gitlab::Experimentation.active?
-  ].each do |feature_flag_method|
-    context "#{feature_flag_method} method" do
-      context 'a string feature flag' do
-        include_examples 'sets flag as used', %Q|#{feature_flag_method}("baz")|, %w[baz baz_experiment_percentage]
-      end
+  context 'with the experiment method' do
+    context 'a string feature flag' do
+      include_examples 'sets flag as used', %q|experiment("baz")|, %w[baz]
+    end
 
-      context 'a symbol feature flag' do
-        include_examples 'sets flag as used', %Q|#{feature_flag_method}(:baz)|, %w[baz baz_experiment_percentage]
-      end
+    context 'a symbol feature flag' do
+      include_examples 'sets flag as used', %q|experiment(:baz)|, %w[baz]
+    end
 
-      context 'an interpolated string feature flag with a string prefix' do
-        include_examples 'sets flag as used', %Q|#{feature_flag_method}("foo_\#{bar}")|, %w[foo_hello foo_world]
-      end
+    context 'an interpolated string feature flag with a string prefix' do
+      include_examples 'sets flag as used', %Q|experiment("foo_\#{bar}")|, %w[foo_hello foo_world]
+    end
 
-      context 'an interpolated symbol feature flag with a string prefix' do
-        include_examples 'sets flag as used', %Q|#{feature_flag_method}(:"foo_\#{bar}")|, %w[foo_hello foo_world]
-      end
+    context 'an interpolated symbol feature flag with a string prefix' do
+      include_examples 'sets flag as used', %Q|experiment(:"foo_\#{bar}")|, %w[foo_hello foo_world]
+    end
 
-      context 'an interpolated string feature flag with a string prefix and suffix' do
-        include_examples 'does not set any flags as used', %Q|#{feature_flag_method}(:"foo_\#{bar}_baz")|
-      end
+    context 'an interpolated string feature flag with a string prefix and suffix' do
+      include_examples 'does not set any flags as used', %Q|experiment(:"foo_\#{bar}_baz")|
+    end
 
-      context 'a dynamic string feature flag as a variable' do
-        include_examples 'does not set any flags as used', %Q|#{feature_flag_method}(a_variable, an_arg)|
-      end
+    context 'a dynamic string feature flag as a variable' do
+      include_examples 'does not set any flags as used', %q|experiment(a_variable, an_arg)|
+    end
 
-      context 'an integer feature flag' do
-        include_examples 'does not set any flags as used', %Q|#{feature_flag_method}(123)|
-      end
+    context 'an integer feature flag' do
+      include_examples 'does not set any flags as used', %q|experiment(123)|
     end
   end
 

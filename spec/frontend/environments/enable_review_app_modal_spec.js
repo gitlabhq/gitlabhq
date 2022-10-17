@@ -1,7 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import EnableReviewAppButton from '~/environments/components/enable_review_app_modal.vue';
+import EnableReviewAppModal from '~/environments/components/enable_review_app_modal.vue';
+import { REVIEW_APP_MODAL_I18N as i18n } from '~/environments/constants';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 // hardcode uniqueId for determinism
@@ -9,10 +10,12 @@ jest.mock('lodash/uniqueId', () => (x) => `${x}77`);
 
 const EXPECTED_COPY_PRE_ID = 'enable-review-app-copy-string-77';
 
-describe('Enable Review App Button', () => {
+describe('Enable Review App Modal', () => {
   let wrapper;
   let modal;
 
+  const findInstructions = () => wrapper.findAll('ol li');
+  const findInstructionAt = (i) => wrapper.findAll('ol li').at(i);
   const findCopyString = () => wrapper.find(`#${EXPECTED_COPY_PRE_ID}`);
 
   afterEach(() => {
@@ -22,13 +25,10 @@ describe('Enable Review App Button', () => {
   describe('renders the modal', () => {
     beforeEach(() => {
       wrapper = extendedWrapper(
-        shallowMount(EnableReviewAppButton, {
+        shallowMount(EnableReviewAppModal, {
           propsData: {
             modalId: 'fake-id',
             visible: true,
-          },
-          provide: {
-            defaultBranchName: 'main',
           },
         }),
       );
@@ -36,15 +36,20 @@ describe('Enable Review App Button', () => {
       modal = wrapper.findComponent(GlModal);
     });
 
-    it('renders the defaultBranchName copy', () => {
-      expect(findCopyString().text()).toContain('- main');
+    it('displays instructions', () => {
+      expect(findInstructions().length).toBe(7);
+      expect(findInstructionAt(0).text()).toContain(i18n.instructions.step1);
+    });
+
+    it('renders the snippet to copy', () => {
+      expect(findCopyString().text()).toBe(wrapper.vm.modalInfoCopyStr);
     });
 
     it('renders the copyToClipboard button', () => {
       expect(wrapper.findComponent(ModalCopyButton).props()).toMatchObject({
         modalId: 'fake-id',
         target: `#${EXPECTED_COPY_PRE_ID}`,
-        title: 'Copy snippet text',
+        title: i18n.copyToClipboardText,
       });
     });
 

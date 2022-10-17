@@ -71,7 +71,7 @@ class Environment < ApplicationRecord
   validate :safe_external_url
   validate :merge_request_not_changed
 
-  delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
+  delegate :manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
@@ -332,9 +332,9 @@ class Environment < ApplicationRecord
   end
 
   def actions_for(environment)
-    return [] unless other_manual_actions
+    return [] unless manual_actions
 
-    other_manual_actions.select do |action|
+    manual_actions.select do |action|
       action.expanded_environment_name == environment
     end
   end

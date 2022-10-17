@@ -177,8 +177,6 @@
   - 1
 - - error_tracking_issue_link
   - 1
-- - experiments_record_conversion_event
-  - 1
 - - export_csv
   - 1
 - - external_service_reactive_caching

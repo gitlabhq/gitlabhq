@@ -7,6 +7,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS } from '~/work_items/constants';
@@ -16,6 +17,7 @@ import {
   workItemQueryResponse,
   workItemResponseFactory,
   updateWorkItemMutationResponse,
+  workItemLabelsSubscriptionResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -35,6 +37,7 @@ describe('WorkItemLabels component', () => {
   const successUpdateWorkItemMutationHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
+  const subscriptionHandler = jest.fn().mockResolvedValue(workItemLabelsSubscriptionResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const createComponent = ({
@@ -47,6 +50,7 @@ describe('WorkItemLabels component', () => {
       [workItemQuery, workItemQueryHandler],
       [labelSearchQuery, searchQueryHandler],
       [updateWorkItemMutation, updateWorkItemMutationHandler],
+      [workItemLabelsSubscription, subscriptionHandler],
     ]);
 
     wrapper = mountExtended(WorkItemLabels, {
@@ -210,6 +214,16 @@ describe('WorkItemLabels component', () => {
 
       expect(wrapper.emitted('error')).toEqual([[i18n.updateError]]);
       expect(updatedLabels).toEqual(initialLabels);
+    });
+
+    it('has a subscription', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledWith({
+        issuableId: workItemId,
+      });
     });
   });
 });

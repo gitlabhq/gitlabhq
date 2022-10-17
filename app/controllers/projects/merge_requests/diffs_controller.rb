@@ -4,6 +4,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   include DiffHelper
   include RendersNotes
   include Gitlab::Cache::Helpers
+  include Gitlab::Tracking::Helpers
 
   before_action :commit
   before_action :define_diff_vars

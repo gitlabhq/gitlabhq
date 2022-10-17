@@ -16,7 +16,6 @@ class ApplicationController < ActionController::Base
   include SessionlessAuthentication
   include SessionsHelper
   include ConfirmEmailWarning
-  include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
   include Impersonation
   include Gitlab::Logging::CloudflareHelper

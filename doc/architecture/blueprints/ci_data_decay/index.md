@@ -102,9 +102,9 @@ Epic: [Reduce the rate of builds metadata table growth](https://gitlab.com/group
 
 ### Partition CI/CD pipelines database tables
 
-After we move CI/CD metadata to a different store, or reduce the rate of
+Even if we move CI/CD metadata to a different store, or reduce the rate of
 metadata growth in a different way, the problem of having billions of rows
-describing pipelines, builds and artifacts, remains. We still need to keep
+describing pipelines, builds and artifacts, remains. We still may need to keep
 reference to the metadata we might store in object storage and we still do need
 to be able to retrieve this information reliably in bulk (or search through
 it).
@@ -123,12 +123,12 @@ multiple smaller ones, using PostgreSQL partitioning features.
 There are a few approaches we can take to partition CI/CD data. A promising one
 is using list-based partitioning where a partition number is assigned a
 pipeline, and gets propagated to all resources that are related to this
-pipeline. We assign the partition number based on when the pipeline was created
-or when we observed the last processing activity in it. This is very flexible
-because we can extend this partitioning strategy at will; for example with this
-strategy we can assign an arbitrary partition number based on multiple
-partitioning keys, combining time-decay-based partitioning with tenant-based
-partitioning on the application level.
+pipeline. We will assign a partition number using a
+[uniform logical partition ID](pipeline_partitioning.md#why-do-we-want-to-use-explicit-logical-partition-ids)
+This is very flexible because we can extend this partitioning strategy at will;
+for example with this strategy we can assign an arbitrary partition number
+based on multiple partitioning keys, combining time-decay-based partitioning
+with tenant-based partitioning on the application level if desired.
 
 Partitioning rarely accessed data should also follow the policy defined for
 builds archival, to make it consistent and reliable.

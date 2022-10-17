@@ -502,6 +502,24 @@ export const workItemAssigneesSubscriptionResponse = {
   },
 };
 
+export const workItemLabelsSubscriptionResponse = {
+  data: {
+    issuableLabelsUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetLabels',
+          type: 'LABELS',
+          allowsScopedLabels: false,
+          labels: {
+            nodes: mockLabels,
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const workItemHierarchyEmptyResponse = {
   data: {
     workItem: {

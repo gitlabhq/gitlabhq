@@ -28,7 +28,7 @@ RSpec.describe Deployment do
     let(:deployment) { create(:deployment) }
 
     it 'delegates to environment_manual_actions' do
-      expect(deployment.deployable).to receive(:environment_manual_actions).and_call_original
+      expect(deployment.deployable).to receive(:other_manual_actions).and_call_original
 
       deployment.manual_actions
     end
@@ -38,7 +38,7 @@ RSpec.describe Deployment do
     let(:deployment) { create(:deployment) }
 
     it 'delegates to environment_scheduled_actions' do
-      expect(deployment.deployable).to receive(:environment_scheduled_actions).and_call_original
+      expect(deployment.deployable).to receive(:other_scheduled_actions).and_call_original
 
       deployment.scheduled_actions
     end

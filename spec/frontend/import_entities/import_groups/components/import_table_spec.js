@@ -12,6 +12,7 @@ import { STATUSES } from '~/import_entities/constants';
 import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
+import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 import { availableNamespacesFixture, generateFakeEntry } from '../graphql/fixtures';
@@ -526,6 +527,17 @@ describe('import table', () => {
         },
       });
     });
+  });
+
+  it('renders pagination bar with storage key', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => new Promise(() => {}),
+    });
+    await waitForPromises();
+
+    expect(wrapper.getComponent(PaginationBar).props('storageKey')).toBe(
+      ImportTable.LOCAL_STORAGE_KEY,
+    );
   });
 
   describe('unavailable features warning', () => {

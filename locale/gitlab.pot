@@ -14902,22 +14902,40 @@ msgstr ""
 msgid "Enable version check"
 msgstr ""
 
-msgid "EnableReviewApp|%{stepStart}Step 1%{stepEnd}. Ensure you have Kubernetes set up and have a base domain for your %{linkStart}cluster%{linkEnd}."
+msgid "EnableReviewApp|Add a job in your CI/CD configuration that:"
 msgstr ""
 
-msgid "EnableReviewApp|%{stepStart}Step 2%{stepEnd}. Copy the following snippet:"
+msgid "EnableReviewApp|Copy snippet"
 msgstr ""
 
-msgid "EnableReviewApp|%{stepStart}Step 3%{stepEnd}. Add it to the project %{linkStart}gitlab-ci.yml%{linkEnd} file."
+msgid "EnableReviewApp|Have access to infrastructure that can host and deploy the review apps."
 msgstr ""
 
-msgid "EnableReviewApp|%{stepStart}Step 4 (optional)%{stepEnd}. Enable Visual Reviews by following the %{linkStart}setup instructions%{linkEnd}."
+msgid "EnableReviewApp|Install and configure a runner to do the deployment."
 msgstr ""
 
-msgid "EnableReviewApp|Close"
+msgid "EnableReviewApp|Make sure your project has an environment configured with the target URL set to your website URL. If not, create a new one before continuing."
 msgstr ""
 
-msgid "EnableReviewApp|Copy snippet text"
+msgid "EnableReviewApp|Only runs for feature branches or merge requests."
+msgstr ""
+
+msgid "EnableReviewApp|Recommended: Set up a job that manually stops the Review Apps."
+msgstr ""
+
+msgid "EnableReviewApp|Review apps are dynamic environments that you can use to provide a live preview of changes made in a feature branch."
+msgstr ""
+
+msgid "EnableReviewApp|To configure a dynamic review app, you must:"
+msgstr ""
+
+msgid "EnableReviewApp|Uses a predefined CI/CD variable like %{codeStart}$(CI_COMMIT_REF_SLUG)%{codeEnd} to dynamically create the review app environments. For example, for a configuration using merge request pipelines:"
+msgstr ""
+
+msgid "EnableReviewApp|Using a static site?"
+msgstr ""
+
+msgid "EnableReviewApp|View more example projects"
 msgstr ""
 
 msgid "Enabled"
@@ -15143,6 +15161,9 @@ msgid "Environments|Auto stops %{autoStopAt}"
 msgstr ""
 
 msgid "Environments|Commit"
+msgstr ""
+
+msgid "Environments|Copy live environment URL"
 msgstr ""
 
 msgid "Environments|Delete"

@@ -19,9 +19,13 @@ module BulkImports
 
       BulkImports::EntityWorker.perform_async(entity_id)
     rescue BulkImports::NetworkError => e
-      log_export_failure(e, entity)
+      if e.retriable?(entity)
+        retry_request(e, entity)
+      else
+        log_export_failure(e, entity)
 
-      entity.fail_op!
+        entity.fail_op!
+      end
     end
 
     private
@@ -100,6 +104,21 @@ module BulkImports
       else
         BulkImports::Projects::Graphql::GetProjectQuery.new(context: nil)
       end
+    end
+
+    def retry_request(exception, entity)
+      Gitlab::Import::Logger.error(
+        structured_payload(
+          log_attributes(exception, entity).merge(
+            message: 'Retrying export request',
+            bulk_import_id: entity.bulk_import_id,
+            bulk_import_entity_type: entity.source_type,
+            importer: 'gitlab_migration'
+          )
+        )
+      )
+
+      self.class.perform_in(2.seconds, entity.id)
     end
   end
 end

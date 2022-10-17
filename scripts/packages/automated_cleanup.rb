@@ -114,6 +114,10 @@ if $PROGRAM_NAME == __FILE__
 
   automated_cleanup = Packages::AutomatedCleanup.new(options: options)
 
+  timed('"gitlab-workhorse" packages cleanup') do
+    automated_cleanup.perform_gitlab_package_cleanup!(package_name: 'gitlab-workhorse', days_for_delete: 30)
+  end
+
   timed('"assets" packages cleanup') do
     automated_cleanup.perform_gitlab_package_cleanup!(package_name: 'assets', days_for_delete: 7)
   end
