@@ -14,4 +14,24 @@ RSpec.describe GitlabSchema.types['PackageSettings'] do
 
     it { is_expected.to have_graphql_type(Types::UntrustedRegexp) }
   end
+
+  it 'includes package setting fields' do
+    expected_fields = %w[
+      maven_duplicates_allowed
+      maven_duplicate_exception_regex
+      generic_duplicates_allowed
+      generic_duplicate_exception_regex
+      maven_package_requests_forwarding
+      lock_maven_package_requests_forwarding
+      npm_package_requests_forwarding
+      lock_npm_package_requests_forwarding
+      pypi_package_requests_forwarding
+      lock_pypi_package_requests_forwarding
+      maven_package_requests_forwarding_locked
+      npm_package_requests_forwarding_locked
+      pypi_package_requests_forwarding_locked
+    ]
+
+    expect(described_class).to include_graphql_fields(*expected_fields)
+  end
 end

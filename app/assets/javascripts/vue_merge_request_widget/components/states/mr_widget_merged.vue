@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__, __ } from '~/locale';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
@@ -131,7 +131,7 @@ export default {
         })
         .catch(() => {
           this.isMakingRequest = false;
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           });
         });

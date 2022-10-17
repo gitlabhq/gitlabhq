@@ -58,16 +58,15 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
     issues
   end
 
-  let(:project_identifier) { 'namespace/repo' }
-  let(:data) { { 'token' => 'token' } }
+  let_it_be(:project_identifier) { 'namespace/repo' }
 
-  let(:project) do
+  let_it_be_with_reload(:project) do
     create(
       :project,
       :repository,
       import_source: project_identifier,
       import_url: "https://bitbucket.org/#{project_identifier}.git",
-      import_data_attributes: { credentials: data }
+      import_data_attributes: { credentials: { 'token' => 'token' } }
     )
   end
 
@@ -77,6 +76,14 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
     {
       count: sample_issues_statuses.count,
       values: sample_issues_statuses
+    }
+  end
+
+  let(:last_issue_data) do
+    {
+      page: 1,
+      pagelen: 1,
+      values: [sample_issues_statuses.last]
     }
   end
 
@@ -245,6 +252,13 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
 
       stub_request(
         :get,
+        "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/issues?pagelen=1&sort=-created_on&state=ALL"
+      ).to_return(status: 200,
+                  headers: { "Content-Type" => "application/json" },
+                  body: last_issue_data.to_json)
+
+      stub_request(
+        :get,
         "https://api.bitbucket.org/2.0/repositories/#{project_identifier}/issues?pagelen=50&sort=created_on"
       ).to_return(status: 200,
                   headers: { "Content-Type" => "application/json" },
@@ -344,6 +358,12 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
     end
 
     describe 'issue import' do
+      it 'allocates internal ids' do
+        expect(Issue).to receive(:track_project_iid!).with(project, 6)
+
+        importer.execute
+      end
+
       it 'maps reporters to anonymous if bitbucket reporter is nil' do
         allow(importer).to receive(:import_wiki)
         importer.execute
@@ -362,6 +382,29 @@ RSpec.describe Gitlab::BitbucketImport::Importer do
         importer.execute
 
         expect(project.issues.map(&:work_item_type_id).uniq).to contain_exactly(WorkItems::Type.default_issue_type.id)
+      end
+
+      context 'with issue comments' do
+        let(:inline_note) do
+          instance_double(Bitbucket::Representation::Comment, note: 'Hello world', author: 'someuser', created_at: Time.now, updated_at: Time.now)
+        end
+
+        before do
+          allow_next_instance_of(Bitbucket::Client) do |instance|
+            allow(instance).to receive(:issue_comments).and_return([inline_note])
+          end
+        end
+
+        it 'imports issue comments' do
+          allow(importer).to receive(:import_wiki)
+          importer.execute
+
+          comment = project.notes.first
+          expect(project.notes.size).to eq(7)
+          expect(comment.note).to include(inline_note.note)
+          expect(comment.note).to include(inline_note.author)
+          expect(importer.errors).to be_empty
+        end
       end
     end
 

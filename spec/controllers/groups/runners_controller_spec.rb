@@ -72,29 +72,11 @@ RSpec.describe Groups::RunnersController do
         expect(response).to render_template(:show)
       end
 
-      context 'when runners_finder_all_available is enabled' do
-        before do
-          stub_feature_flags(runners_finder_all_available: true)
-        end
+      it 'renders show with 200 status code instance runner' do
+        get :show, params: { group_id: group, id: instance_runner }
 
-        it 'renders show with 200 status code instance runner' do
-          get :show, params: { group_id: group, id: instance_runner }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:show)
-        end
-      end
-
-      context 'when runners_finder_all_available is disabled' do
-        before do
-          stub_feature_flags(runners_finder_all_available: false)
-        end
-
-        it 'renders show with a 404 instance runner' do
-          get :show, params: { group_id: group, id: instance_runner }
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:show)
       end
 
       it 'renders show with 200 status code project runner' do

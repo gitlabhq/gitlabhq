@@ -38,14 +38,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::NotesImporter do
     end
   end
 
-  describe '#representation_class' do
-    it { expect(importer.representation_class).to eq(Gitlab::GithubImport::Representation::NoteText) }
-  end
-
-  describe '#importer_class' do
-    it { expect(importer.importer_class).to eq(Gitlab::GithubImport::Importer::NoteAttachmentsImporter) }
-  end
-
   describe '#sidekiq_worker_class' do
     it { expect(importer.sidekiq_worker_class).to eq(Gitlab::GithubImport::Attachments::ImportNoteWorker) }
   end

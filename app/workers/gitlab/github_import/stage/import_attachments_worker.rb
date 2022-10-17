@@ -30,7 +30,9 @@ module Gitlab
         def importers
           [
             ::Gitlab::GithubImport::Importer::Attachments::ReleasesImporter,
-            ::Gitlab::GithubImport::Importer::Attachments::NotesImporter
+            ::Gitlab::GithubImport::Importer::Attachments::NotesImporter,
+            ::Gitlab::GithubImport::Importer::Attachments::IssuesImporter,
+            ::Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporter
           ]
         end
 

@@ -14,7 +14,7 @@ import {
 import { isEmpty } from 'lodash';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
@@ -444,7 +444,7 @@ export default {
         .catch(() => {
           this.isMakingRequest = false;
           this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           });
         });
@@ -488,7 +488,7 @@ export default {
           }
         })
         .catch(() => {
-          createFlash({
+          createAlert({
             message: __('Something went wrong while deleting the source branch. Please try again.'),
           });
         });

@@ -14,5 +14,9 @@ module Projects
         'required' => %w[project_id namespace_id root_namespace_id features]
       }
     end
+
+    def pages_related?
+      data[:features].include?("pages_access_level")
+    end
   end
 end

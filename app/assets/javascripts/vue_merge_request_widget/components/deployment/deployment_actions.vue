@@ -1,5 +1,5 @@
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -130,7 +130,7 @@ export default {
             }
           })
           .catch(() => {
-            createFlash({
+            createAlert({
               message: errorMessage,
             });
           })

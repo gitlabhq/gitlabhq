@@ -322,27 +322,11 @@ RSpec.describe Ci::RunnersFinder do
           context 'with :all_available membership' do
             let(:membership) { :all_available }
 
-            context 'with runners_finder_all_available FF disabled' do
-              before do
-                stub_feature_flags(runners_finder_all_available: false)
-              end
-
-              it 'returns no runners' do
-                expect(subject).to be_empty
-              end
-            end
-
-            context 'with runners_finder_all_available FF enabled' do
-              before do
-                stub_feature_flags(runners_finder_all_available: [target_group])
-              end
-
-              it 'returns runners available to group' do
-                expect(subject).to match_array([runner_project_7, runner_project_6, runner_project_5,
-                                                runner_project_4, runner_project_3, runner_project_2,
-                                                runner_project_1, runner_sub_group_4, runner_sub_group_3,
-                                                runner_sub_group_2, runner_sub_group_1, runner_group, runner_instance])
-              end
+            it 'returns runners available to group' do
+              expect(subject).to match_array([runner_project_7, runner_project_6, runner_project_5,
+                                              runner_project_4, runner_project_3, runner_project_2,
+                                              runner_project_1, runner_sub_group_4, runner_sub_group_3,
+                                              runner_sub_group_2, runner_sub_group_1, runner_group, runner_instance])
             end
           end
 
@@ -448,14 +432,8 @@ RSpec.describe Ci::RunnersFinder do
             context 'with :all_available membership' do
               let(:membership) { :all_available }
 
-              context 'with runners_finder_all_available FF enabled' do
-                before do
-                  stub_feature_flags(runners_finder_all_available: [target_group])
-                end
-
-                it 'returns no runners' do
-                  expect(subject).to be_empty
-                end
+              it 'returns no runners' do
+                expect(subject).to be_empty
               end
             end
           end

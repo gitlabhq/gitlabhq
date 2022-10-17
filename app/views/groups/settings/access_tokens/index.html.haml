@@ -24,13 +24,11 @@
         = _('You can enable group access token creation in %{link_start}group settings%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
 
   .col-lg-8
-    - if @new_resource_access_token
-      = render 'shared/access_tokens/created_container',
-          type: type,
-          new_token_value: @new_resource_access_token
+    #js-new-access-token-app{ data: { access_token_type: type } }
 
     - if current_user.can?(:create_resource_access_tokens, @group)
       = render 'shared/access_tokens/form',
+          ajax: true,
           type: type,
           path: group_settings_access_tokens_path(@group),
           resource: @group,
@@ -41,10 +39,6 @@
           prefix: :resource_access_token,
           help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
 
-    = render 'shared/access_tokens/table',
-        active_tokens: @active_resource_access_tokens,
-        resource: @group,
-        type: type,
-        type_plural: type_plural,
-        revoke_route_helper: ->(token) { revoke_group_settings_access_token_path(id: token) },
-        no_active_tokens_message: _('This group has no active access tokens.')
+    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_resource_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true
+ } }
+

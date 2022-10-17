@@ -19,8 +19,7 @@ module Types
       value 'ALL_AVAILABLE',
             description:
                            "Include all runners. This list includes runners for all projects in the group " \
-                           "and subgroups, as well as for the parent groups and instance. " \
-                           "Will not return runners if `runners_finder_all_available` feature flag is disabled.",
+                           "and subgroups, as well as for the parent groups and instance.",
             value: :all_available,
             deprecated: { milestone: '15.5', reason: :alpha }
     end

@@ -159,55 +159,30 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('show all available runners toggle', () => {
-    describe('when runners_finder_all_available is enabled', () => {
-      it('shows the membership toggle', () => {
-        createComponent({
-          provide: {
-            glFeatures: { runnersFinderAllAvailable: true },
-          },
-        });
-
-        expect(findRunnerMembershipToggle().exists()).toBe(true);
-      });
-
-      it('sets the membership toggle', () => {
-        setWindowLocation(`?membership[]=${MEMBERSHIP_ALL_AVAILABLE}`);
-        createComponent({
-          provide: {
-            glFeatures: { runnersFinderAllAvailable: true },
-          },
-        });
-
-        expect(findRunnerMembershipToggle().props('value')).toBe(MEMBERSHIP_ALL_AVAILABLE);
-      });
-
-      it('requests filter', async () => {
-        createComponent({
-          provide: {
-            glFeatures: { runnersFinderAllAvailable: true },
-          },
-        });
-
-        findRunnerMembershipToggle().vm.$emit('input', MEMBERSHIP_ALL_AVAILABLE);
-
-        await waitForPromises();
-
-        expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith(
-          expect.objectContaining({
-            membership: MEMBERSHIP_ALL_AVAILABLE,
-          }),
-        );
-      });
+    it('shows the membership toggle', () => {
+      createComponent();
+      expect(findRunnerMembershipToggle().exists()).toBe(true);
     });
 
-    describe('when runners_finder_all_available is disabled', () => {
-      beforeEach(() => {
-        createComponent();
-      });
+    it('sets the membership toggle', () => {
+      setWindowLocation(`?membership[]=${MEMBERSHIP_ALL_AVAILABLE}`);
 
-      it('does not show the membership toggle', () => {
-        expect(findRunnerMembershipToggle().exists()).toBe(false);
-      });
+      createComponent();
+
+      expect(findRunnerMembershipToggle().props('value')).toBe(MEMBERSHIP_ALL_AVAILABLE);
+    });
+
+    it('requests filter', async () => {
+      createComponent();
+      findRunnerMembershipToggle().vm.$emit('input', MEMBERSHIP_ALL_AVAILABLE);
+
+      await waitForPromises();
+
+      expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          membership: MEMBERSHIP_ALL_AVAILABLE,
+        }),
+      );
     });
   });
 

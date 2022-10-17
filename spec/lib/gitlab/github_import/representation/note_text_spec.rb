@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Representation::NoteText do
   shared_examples 'a Note text data' do |match_record_type|
-    it 'returns an instance of ReleaseAttachments' do
+    it 'returns an instance of NoteText' do
       expect(representation).to be_an_instance_of(described_class)
     end
 
@@ -26,6 +26,22 @@ RSpec.describe Gitlab::GithubImport::Representation::NoteText do
       let(:record) { build_stubbed(:release, id: 42, description: 'Some text here..') }
 
       it_behaves_like 'a Note text data', 'Release' do
+        let(:representation) { described_class.from_db_record(record) }
+      end
+    end
+
+    context 'with Issue' do
+      let(:record) { build_stubbed(:issue, id: 42, description: 'Some text here..') }
+
+      it_behaves_like 'a Note text data', 'Issue' do
+        let(:representation) { described_class.from_db_record(record) }
+      end
+    end
+
+    context 'with MergeRequest' do
+      let(:record) { build_stubbed(:merge_request, id: 42, description: 'Some text here..') }
+
+      it_behaves_like 'a Note text data', 'MergeRequest' do
         let(:representation) { described_class.from_db_record(record) }
       end
     end

@@ -35,6 +35,36 @@ module Mutations
                 required: false,
                 description: copy_field_description(Types::Namespace::PackageSettingsType, :generic_duplicate_exception_regex)
 
+        argument :maven_package_requests_forwarding,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :maven_package_requests_forwarding)
+
+        argument :npm_package_requests_forwarding,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :npm_package_requests_forwarding)
+
+        argument :pypi_package_requests_forwarding,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :pypi_package_requests_forwarding)
+
+        argument :lock_maven_package_requests_forwarding,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :lock_maven_package_requests_forwarding)
+
+        argument :lock_npm_package_requests_forwarding,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :lock_npm_package_requests_forwarding)
+
+        argument :lock_pypi_package_requests_forwarding,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :lock_pypi_package_requests_forwarding)
+
         field :package_settings,
               Types::Namespace::PackageSettingsType,
               null: true,

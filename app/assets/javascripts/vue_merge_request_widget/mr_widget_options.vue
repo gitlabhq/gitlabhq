@@ -6,7 +6,7 @@ import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/ap
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
@@ -267,7 +267,7 @@ export default {
         this.initWidget(data);
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Unable to load the merge request widget. Try reloading the page.'),
         }),
       );
@@ -359,7 +359,7 @@ export default {
           }
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           }),
         );
@@ -418,7 +418,7 @@ export default {
         .catch(() => this.throwDeploymentsError());
     },
     throwDeploymentsError() {
-      createFlash({
+      createAlert({
         message: __(
           'Something went wrong while fetching the environments for this merge request. Please try again.',
         ),
@@ -438,7 +438,7 @@ export default {
           }
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           }),
         );

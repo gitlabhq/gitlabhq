@@ -15820,6 +15820,57 @@ msgstr ""
 msgid "Events API"
 msgstr ""
 
+msgid "Event|accepted"
+msgstr ""
+
+msgid "Event|added"
+msgstr ""
+
+msgid "Event|approved"
+msgstr ""
+
+msgid "Event|closed"
+msgstr ""
+
+msgid "Event|commented on"
+msgstr ""
+
+msgid "Event|created"
+msgstr ""
+
+msgid "Event|deleted"
+msgstr ""
+
+msgid "Event|destroyed"
+msgstr ""
+
+msgid "Event|imported"
+msgstr ""
+
+msgid "Event|joined"
+msgstr ""
+
+msgid "Event|left"
+msgstr ""
+
+msgid "Event|opened"
+msgstr ""
+
+msgid "Event|pushed new"
+msgstr ""
+
+msgid "Event|pushed to"
+msgstr ""
+
+msgid "Event|removed"
+msgstr ""
+
+msgid "Event|removed due to membership expiration from"
+msgstr ""
+
+msgid "Event|updated"
+msgstr ""
+
 msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
 msgstr ""
 
@@ -16271,9 +16322,6 @@ msgid "Failed to create framework"
 msgstr ""
 
 msgid "Failed to create import label for jira import."
-msgstr ""
-
-msgid "Failed to create new access token: %{token_response_message}"
 msgstr ""
 
 msgid "Failed to create repository"
@@ -18675,6 +18723,9 @@ msgid "Gravatar enabled"
 msgstr ""
 
 msgid "Group"
+msgstr ""
+
+msgid "Group %{group_name} and its Mattermost team were successfully created."
 msgstr ""
 
 msgid "Group %{group_name} couldn't be exported."
@@ -35312,10 +35363,10 @@ msgstr ""
 msgid "Saving project."
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{ifLabelStart}if%{ifLabelEnd} %{rules} actions for the %{scopes} %{branches}"
+msgid "ScanExecutionPolicy|%{period} %{days} at %{time}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{period} %{days} at %{time}"
+msgid "ScanExecutionPolicy|%{rules} actions for the %{scopes} %{branches} %{agents} %{namespaces}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run"
@@ -35336,7 +35387,13 @@ msgstr ""
 msgid "ScanExecutionPolicy|Schedule rule component"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Select agent"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Select branches"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Select namespaces"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select scanner profile"
@@ -35348,7 +35405,13 @@ msgstr ""
 msgid "ScanExecutionPolicy|Site profile"
 msgstr ""
 
+msgid "ScanExecutionPolicy|agent"
+msgstr ""
+
 msgid "ScanExecutionPolicy|branch"
+msgstr ""
+
+msgid "ScanExecutionPolicy|in namespaces"
 msgstr ""
 
 msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
@@ -46784,9 +46847,6 @@ msgstr ""
 msgid "Your new %{type}"
 msgstr ""
 
-msgid "Your new access token has been created."
-msgstr ""
-
 msgid "Your new comment"
 msgstr ""
 
@@ -46954,9 +47014,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "access:"
-msgstr ""
-
-msgid "added"
 msgstr ""
 
 msgid "added %{emails}"
@@ -48623,9 +48680,6 @@ msgid "remove start date"
 msgstr ""
 
 msgid "remove weight"
-msgstr ""
-
-msgid "removed"
 msgstr ""
 
 msgid "removed a %{link_type} link"

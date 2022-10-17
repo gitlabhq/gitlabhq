@@ -247,6 +247,15 @@ RSpec.shared_examples 'handling helm chart index requests' do
       end
     end
 
+    context 'with access to package registry for everyone' do
+      before do
+        project.update!(visibility: Gitlab::VisibilityLevel::PRIVATE)
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it_behaves_like 'process helm service index request', :anonymous, :success
+    end
+
     context 'when an invalid token is passed' do
       let(:headers) { basic_auth_header(user.username, 'wrong') }
 

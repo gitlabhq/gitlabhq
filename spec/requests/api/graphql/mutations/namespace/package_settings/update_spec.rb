@@ -14,7 +14,13 @@ RSpec.describe 'Updating the package settings' do
       maven_duplicates_allowed: false,
       maven_duplicate_exception_regex: 'foo-.*',
       generic_duplicates_allowed: false,
-      generic_duplicate_exception_regex: 'bar-.*'
+      generic_duplicate_exception_regex: 'bar-.*',
+      maven_package_requests_forwarding: true,
+      lock_maven_package_requests_forwarding: true,
+      npm_package_requests_forwarding: true,
+      lock_npm_package_requests_forwarding: true,
+      pypi_package_requests_forwarding: true,
+      lock_pypi_package_requests_forwarding: true
     }
   end
 
@@ -26,6 +32,12 @@ RSpec.describe 'Updating the package settings' do
           mavenDuplicateExceptionRegex
           genericDuplicatesAllowed
           genericDuplicateExceptionRegex
+          mavenPackageRequestsForwarding
+          lockMavenPackageRequestsForwarding
+          npmPackageRequestsForwarding
+          lockNpmPackageRequestsForwarding
+          pypiPackageRequestsForwarding
+          lockPypiPackageRequestsForwarding
         }
         errors
       QL
@@ -46,6 +58,12 @@ RSpec.describe 'Updating the package settings' do
       expect(package_settings_response['mavenDuplicateExceptionRegex']).to eq(params[:maven_duplicate_exception_regex])
       expect(package_settings_response['genericDuplicatesAllowed']).to eq(params[:generic_duplicates_allowed])
       expect(package_settings_response['genericDuplicateExceptionRegex']).to eq(params[:generic_duplicate_exception_regex])
+      expect(package_settings_response['mavenPackageRequestsForwarding']).to eq(params[:maven_package_requests_forwarding])
+      expect(package_settings_response['lockMavenPackageRequestsForwarding']).to eq(params[:lock_maven_package_requests_forwarding])
+      expect(package_settings_response['pypiPackageRequestsForwarding']).to eq(params[:pypi_package_requests_forwarding])
+      expect(package_settings_response['lockPypiPackageRequestsForwarding']).to eq(params[:lock_pypi_package_requests_forwarding])
+      expect(package_settings_response['npmPackageRequestsForwarding']).to eq(params[:npm_package_requests_forwarding])
+      expect(package_settings_response['lockNpmPackageRequestsForwarding']).to eq(params[:lock_npm_package_requests_forwarding])
     end
   end
 
@@ -75,8 +93,29 @@ RSpec.describe 'Updating the package settings' do
 
   RSpec.shared_examples 'accepting the mutation request updating the package settings' do
     it_behaves_like 'updating the namespace package setting attributes',
-      from: { maven_duplicates_allowed: true, maven_duplicate_exception_regex: 'SNAPSHOT', generic_duplicates_allowed: true, generic_duplicate_exception_regex: 'foo' },
-      to: { maven_duplicates_allowed: false, maven_duplicate_exception_regex: 'foo-.*', generic_duplicates_allowed: false, generic_duplicate_exception_regex: 'bar-.*' }
+      from: {
+        maven_duplicates_allowed: true,
+        maven_duplicate_exception_regex: 'SNAPSHOT',
+        generic_duplicates_allowed: true,
+        generic_duplicate_exception_regex: 'foo',
+        maven_package_requests_forwarding: nil,
+        lock_maven_package_requests_forwarding: false,
+        npm_package_requests_forwarding: nil,
+        lock_npm_package_requests_forwarding: false,
+        pypi_package_requests_forwarding: nil,
+        lock_pypi_package_requests_forwarding: false
+      }, to: {
+        maven_duplicates_allowed: false,
+        maven_duplicate_exception_regex: 'foo-.*',
+        generic_duplicates_allowed: false,
+        generic_duplicate_exception_regex: 'bar-.*',
+        maven_package_requests_forwarding: true,
+        lock_maven_package_requests_forwarding: true,
+        npm_package_requests_forwarding: true,
+        lock_npm_package_requests_forwarding: true,
+        pypi_package_requests_forwarding: true,
+        lock_pypi_package_requests_forwarding: true
+      }
 
     it_behaves_like 'returning a success'
     it_behaves_like 'rejecting invalid regex'

@@ -57,8 +57,8 @@ export default {
     /** @type {HTMLFormElement} */
     this.form = document.querySelector(FORM_SELECTOR);
 
-    /** @type {HTMLInputElement} */
-    this.submitButton = this.form.querySelector('input[type=submit]');
+    /** @type {HTMLButtonElement} */
+    this.submitButton = this.form.querySelector('[type=submit]');
   },
   methods: {
     beforeDisplayResults() {
@@ -75,6 +75,7 @@ export default {
       this.errors = errors;
 
       this.submitButton.classList.remove('disabled');
+      this.submitButton.removeAttribute('disabled');
     },
     onSuccess(event) {
       this.beforeDisplayResults();
@@ -84,7 +85,7 @@ export default {
 
       this.infoAlert = createAlert({ message: this.alertInfoMessage, variant: VARIANT_INFO });
 
-      // Selectively reset all input fields except for the date picker and submit.
+      // Selectively reset all input fields except for the date picker.
       // The form token creation is not controlled by Vue.
       this.form.querySelectorAll('input[type=text]:not([id$=expires_at])').forEach((el) => {
         el.value = '';

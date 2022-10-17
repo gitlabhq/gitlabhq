@@ -12,7 +12,7 @@ module Gitlab
           # The method that will be called for traversing through all the objects to
           # import, yielding them to the supplied block.
           def each_object_to_import
-            collection.each_batch(of: BATCH_SIZE) do |batch|
+            collection.each_batch(of: BATCH_SIZE, column: ordering_column) do |batch|
               batch.each do |record|
                 next if already_imported?(record)
 
@@ -39,6 +39,10 @@ module Gitlab
 
           def collection
             raise Gitlab::GithubImport::Exceptions::NotImplementedError, '#collection'
+          end
+
+          def ordering_column
+            :id
           end
 
           def object_representation(object)

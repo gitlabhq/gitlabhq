@@ -24,6 +24,45 @@ RSpec.describe EventsHelper do
     end
   end
 
+  describe '#localized_action_name' do
+    it 'handles all valid design events' do
+      created, updated, destroyed = %i[created updated destroyed].map do |trait|
+        event = build(:design_event, trait)
+        helper.localized_action_name(event)
+      end
+
+      expect(created).to eq(_('added'))
+      expect(updated).to eq(_('updated'))
+      expect(destroyed).to eq(_('removed'))
+    end
+
+    context 'handles correct base actions' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:trait, :localized_action_name) do
+        :created   | s_('Event|created')
+        :updated   | s_('Event|opened')
+        :closed    | s_('Event|closed')
+        :reopened  | s_('Event|opened')
+        :commented | s_('Event|commented on')
+        :merged    | s_('Event|accepted')
+        :joined    | s_('Event|joined')
+        :left      | s_('Event|left')
+        :destroyed | s_('Event|destroyed')
+        :expired | s_('Event|removed due to membership expiration from')
+        :approved | s_('Event|approved')
+      end
+
+      with_them do
+        it 'with correct name and method' do
+          event = build(:event, trait)
+
+          expect(helper.localized_action_name(event)).to eq(localized_action_name)
+        end
+      end
+    end
+  end
+
   describe '#event_commit_title' do
     let(:message) { 'foo & bar ' + 'A' * 70 + '\n' + 'B' * 80 }
 

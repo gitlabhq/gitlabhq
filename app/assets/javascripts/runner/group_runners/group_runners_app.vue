@@ -149,11 +149,6 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
-    shouldRenderAllAvailableToggle() {
-      // Feature flag for `runners_finder_all_available`
-      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/374525
-      return this.glFeatures?.runnersFinderAllAvailable;
-    },
   },
   watch: {
     search: {
@@ -235,7 +230,6 @@ export default {
         class="gl-flex-grow-1 gl-align-self-stretch"
       />
       <runner-membership-toggle
-        v-if="shouldRenderAllAvailableToggle"
         v-model="search.membership"
         class="gl-align-self-end gl-md-align-self-center"
       />

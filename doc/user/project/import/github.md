@@ -196,6 +196,8 @@ The following items of a project are imported:
 - Attachments for:
   - Release notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4.
   - Comments and notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Issue description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Merge Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
   `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can be imported

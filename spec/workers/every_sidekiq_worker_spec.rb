@@ -260,6 +260,8 @@ RSpec.describe 'Every Sidekiq worker' do
         'Gitlab::GithubImport::ImportReleaseAttachmentsWorker' => 5,
         'Gitlab::GithubImport::Attachments::ImportReleaseWorker' => 5,
         'Gitlab::GithubImport::Attachments::ImportNoteWorker' => 5,
+        'Gitlab::GithubImport::Attachments::ImportIssueWorker' => 5,
+        'Gitlab::GithubImport::Attachments::ImportMergeRequestWorker' => 5,
         'Gitlab::GithubImport::ImportDiffNoteWorker' => 5,
         'Gitlab::GithubImport::ImportIssueWorker' => 5,
         'Gitlab::GithubImport::ImportIssueEventWorker' => 5,

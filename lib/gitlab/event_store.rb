@@ -46,6 +46,9 @@ module Gitlab
       store.subscribe ::Pages::InvalidateDomainCacheWorker,
         to: ::Projects::ProjectAttributesChangedEvent,
         if: -> (event) { event.pages_related? }
+      store.subscribe ::Pages::InvalidateDomainCacheWorker,
+        to: ::Projects::ProjectFeaturesChangedEvent,
+        if: -> (event) { event.pages_related? }
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Groups::GroupTransferedEvent
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Groups::GroupPathChangedEvent
       store.subscribe ::Pages::InvalidateDomainCacheWorker, to: ::Groups::GroupDeletedEvent

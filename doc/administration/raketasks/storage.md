@@ -185,8 +185,7 @@ as most of the fixes are relatively high risk, involving running code on the Rai
 
 ### Read only projects
 
-If you have [set projects read only](../troubleshooting/gitlab_rails_cheat_sheet.md#make-a-project-read-only-can-only-be-done-in-the-console)
-they might fail to migrate.
+If you have set projects as read only they might fail to migrate.
 
 1. [Start a Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 
@@ -233,7 +232,7 @@ Delete the project using the Rails console:
    - Replace `admin_handle` with the handle of an instance administrator or with `root`.
    - Verify the output before proceeding. **There are no other checks performed**.
 
-1. [Destroy the project](../troubleshooting/gitlab_rails_cheat_sheet.md#destroy-a-project) **immediately**:
+1. [Destroy the project](../../user/project/working_with_projects.md#delete-a-project-using-console) **immediately**:
 
    ```ruby
    Projects::DestroyService.new(project, user).execute

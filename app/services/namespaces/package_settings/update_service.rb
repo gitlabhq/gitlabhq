@@ -8,7 +8,13 @@ module Namespaces
       ALLOWED_ATTRIBUTES = %i[maven_duplicates_allowed
                               maven_duplicate_exception_regex
                               generic_duplicates_allowed
-                              generic_duplicate_exception_regex].freeze
+                              generic_duplicate_exception_regex
+                              maven_package_requests_forwarding
+                              npm_package_requests_forwarding
+                              pypi_package_requests_forwarding
+                              lock_maven_package_requests_forwarding
+                              lock_npm_package_requests_forwarding
+                              lock_pypi_package_requests_forwarding].freeze
 
       def execute
         return ServiceResponse.error(message: 'Access Denied', http_status: 403) unless allowed?

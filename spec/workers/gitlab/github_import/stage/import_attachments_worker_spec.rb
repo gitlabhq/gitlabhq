@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
   subject(:worker) { described_class.new }
 
-  let(:project) { create(:project) }
-  let!(:group) { create(:group, projects: [project]) }
+  let_it_be(:project) { create(:project) }
   let(:settings) { ::Gitlab::GithubImport::Settings.new(project) }
   let(:stage_enabled) { true }
 
@@ -15,28 +14,42 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
   end
 
   describe '#import' do
-    let(:releases_importer) { instance_double('Gitlab::GithubImport::Importer::Attachments::ReleasesImporter') }
-    let(:notes_importer) { instance_double('Gitlab::GithubImport::Importer::Attachments::NotesImporter') }
     let(:client) { instance_double('Gitlab::GithubImport::Client') }
-    let(:releases_waiter) { Gitlab::JobWaiter.new(2, '123') }
-    let(:notes_waiter) { Gitlab::JobWaiter.new(3, '234') }
+    let(:importers) do
+      [
+        {
+          klass: Gitlab::GithubImport::Importer::Attachments::ReleasesImporter,
+          double: instance_double('Gitlab::GithubImport::Importer::Attachments::ReleasesImporter'),
+          waiter: Gitlab::JobWaiter.new(2, '123')
+        },
+        {
+          klass: Gitlab::GithubImport::Importer::Attachments::NotesImporter,
+          double: instance_double('Gitlab::GithubImport::Importer::Attachments::NotesImporter'),
+          waiter: Gitlab::JobWaiter.new(3, '234')
+        },
+        {
+          klass: Gitlab::GithubImport::Importer::Attachments::IssuesImporter,
+          double: instance_double('Gitlab::GithubImport::Importer::Attachments::IssuesImporter'),
+          waiter: Gitlab::JobWaiter.new(4, '345')
+        },
+        {
+          klass: Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporter,
+          double: instance_double('Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporter'),
+          waiter: Gitlab::JobWaiter.new(5, '456')
+        }
+      ]
+    end
 
-    it 'imports release attachments' do
-      expect(Gitlab::GithubImport::Importer::Attachments::ReleasesImporter)
-        .to receive(:new)
-        .with(project, client)
-        .and_return(releases_importer)
-      expect(releases_importer).to receive(:execute).and_return(releases_waiter)
-
-      expect(Gitlab::GithubImport::Importer::Attachments::NotesImporter)
-        .to receive(:new)
-        .with(project, client)
-        .and_return(notes_importer)
-      expect(notes_importer).to receive(:execute).and_return(notes_waiter)
+    it 'imports attachments' do
+      importers.each do |importer|
+        expect_next_instance_of(importer[:klass], project, client) do |instance|
+          expect(instance).to receive(:execute).and_return(importer[:waiter])
+        end
+      end
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)
-        .with(project.id, { '123' => 2, '234' => 3 }, :protected_branches)
+        .with(project.id, { '123' => 2, '234' => 3, '345' => 4, '456' => 5 }, :protected_branches)
 
       worker.import(client, project)
     end
@@ -45,8 +58,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportAttachmentsWorker do
       let(:stage_enabled) { false }
 
       it 'skips release attachments import and calls next stage' do
-        expect(Gitlab::GithubImport::Importer::Attachments::ReleasesImporter).not_to receive(:new)
-        expect(Gitlab::GithubImport::Importer::Attachments::NotesImporter).not_to receive(:new)
+        importers.each { |importer| expect(importer[:klass]).not_to receive(:new) }
         expect(Gitlab::GithubImport::AdvanceStageWorker)
           .to receive(:perform_async).with(project.id, {}, :protected_branches)
 

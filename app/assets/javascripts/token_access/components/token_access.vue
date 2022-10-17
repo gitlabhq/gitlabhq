@@ -9,7 +9,7 @@ import {
   GlSprintf,
   GlToggle,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
@@ -63,7 +63,7 @@ export default {
         return data.project.ciCdSettings.jobTokenScopeEnabled;
       },
       error() {
-        createFlash({ message: this.$options.i18n.scopeFetchError });
+        createAlert({ message: this.$options.i18n.scopeFetchError });
       },
     },
     projects: {
@@ -77,7 +77,7 @@ export default {
         return data.project?.ciJobTokenScope?.projects?.nodes ?? [];
       },
       error() {
-        createFlash({ message: this.$options.i18n.projectsFetchError });
+        createAlert({ message: this.$options.i18n.projectsFetchError });
       },
     },
   },
@@ -117,7 +117,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createFlash({ message: error });
+        createAlert({ message: error });
       }
     },
     async addProject() {
@@ -140,7 +140,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createFlash({ message: error });
+        createAlert({ message: error });
       } finally {
         this.clearTargetProjectPath();
         this.getProjects();
@@ -166,7 +166,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createFlash({ message: error });
+        createAlert({ message: error });
       } finally {
         this.getProjects();
       }

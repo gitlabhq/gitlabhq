@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
@@ -139,7 +139,7 @@ export default {
         this.fetchingApprovals = false;
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: FETCH_ERROR,
         }),
       );
@@ -154,7 +154,7 @@ export default {
       this.updateApproval(
         () => this.service.approveMergeRequest(),
         () =>
-          createFlash({
+          createAlert({
             message: APPROVE_ERROR,
           }),
       );
@@ -167,7 +167,7 @@ export default {
             this.hasApprovalAuthError = true;
             return;
           }
-          createFlash({
+          createAlert({
             message: APPROVE_ERROR,
           });
         },
@@ -177,7 +177,7 @@ export default {
       this.updateApproval(
         () => this.service.unapproveMergeRequest(),
         () =>
-          createFlash({
+          createAlert({
             message: UNAPPROVE_ERROR,
           }),
       );

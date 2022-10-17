@@ -280,6 +280,7 @@ class Event < ApplicationRecord
       "opened"
     end
   end
+
   # rubocop: enable Metrics/CyclomaticComplexity
   # rubocop: enable Metrics/PerceivedComplexity
 
@@ -447,9 +448,9 @@ class Event < ApplicationRecord
 
   def design_action_names
     {
-      created: _('added'),
-      updated: _('updated'),
-      destroyed: _('removed')
+      created: 'added',
+      updated: 'updated',
+      destroyed: 'removed'
     }
   end
 

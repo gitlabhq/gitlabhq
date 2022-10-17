@@ -8,6 +8,11 @@ module Bitbucket
       @connection = Connection.new(options)
     end
 
+    def last_issue(repo)
+      parsed_response = connection.get("/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL")
+      Bitbucket::Representation::Issue.new(parsed_response['values'].first)
+    end
+
     def issues(repo)
       path = "/repositories/#{repo}/issues"
       get_collection(path, :issue)

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import 'deckar01-task_list';
 import { __ } from '~/locale';
-import createFlash from './flash';
+import { createAlert } from '~/flash';
 import axios from './lib/utils/axios_utils';
 
 export default class TaskList {
@@ -23,7 +23,7 @@ export default class TaskList {
           errorMessages = e.response.data.errors.join(' ');
         }
 
-        return createFlash({
+        return createAlert({
           message: errorMessages || __('Update failed'),
         });
       };

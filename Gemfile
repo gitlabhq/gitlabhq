@@ -241,7 +241,7 @@ gem 'ruby-progressbar', '~> 1.10'
 gem 'settingslogic', '~> 2.0.9'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.4.0'
+gem 're2', '~> 1.5.0'
 
 # Misc
 
@@ -365,7 +365,7 @@ gem 'prometheus-client-mmap', '~> 0.16', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.1.2', require: false
+  gem 'lefthook', '~> 1.1.3', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 

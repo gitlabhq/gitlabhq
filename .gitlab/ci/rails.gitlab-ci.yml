@@ -236,6 +236,21 @@ db:check-migrations-single-db:
     - .single-db
     - .rails:rules:single-db
 
+db:post_deployment_migrations_validator:
+  extends:
+    - .db-job-base
+    - .rails:rules:ee-and-foss-mr-with-migration
+  script:
+    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
+    - scripts/post_deployment_migrations_validator
+  allow_failure: true
+
+db:post_deployment_migrations_validator-single-db:
+  extends:
+    - db:post_deployment_migrations_validator
+    - .single-db
+    - .rails:rules:single-db
+
 db:migrate-non-superuser:
   extends:
     - .db-job-base

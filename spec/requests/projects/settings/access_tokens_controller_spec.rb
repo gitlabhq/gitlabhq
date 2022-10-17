@@ -88,4 +88,19 @@ RSpec.describe Projects::Settings::AccessTokensController do
     it_behaves_like 'feature unavailable'
     it_behaves_like 'PUT resource access tokens available'
   end
+
+  describe '#index' do
+    let_it_be(:resource_access_tokens) { create_list(:personal_access_token, 3, user: bot_user) }
+
+    before do
+      get project_settings_access_tokens_path(resource)
+    end
+
+    it 'includes details of the active project access tokens' do
+      active_resource_access_tokens =
+        ::ProjectAccessTokenSerializer.new.represent(resource_access_tokens.reverse, project: resource)
+
+      expect(assigns(:active_resource_access_tokens).to_json).to eq(active_resource_access_tokens.to_json)
+    end
+  end
 end

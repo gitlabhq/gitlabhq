@@ -1241,21 +1241,7 @@ RSpec.describe GroupPolicy do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        context 'with runners_finder_all_available FF disabled' do
-          before do
-            stub_feature_flags(runners_finder_all_available: false)
-          end
-
-          specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
-        end
-
-        context 'with runners_finder_all_available FF enabled' do
-          before do
-            stub_feature_flags(runners_finder_all_available: [group])
-          end
-
-          specify { is_expected.to be_allowed(:read_group_all_available_runners) }
-        end
+        specify { is_expected.to be_allowed(:read_group_all_available_runners) }
       end
 
       context 'when admin mode is disabled' do
@@ -1266,21 +1252,7 @@ RSpec.describe GroupPolicy do
     context 'with owner' do
       let(:current_user) { owner }
 
-      context 'with runners_finder_all_available FF disabled' do
-        before do
-          stub_feature_flags(runners_finder_all_available: false)
-        end
-
-        specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
-      end
-
-      context 'with runners_finder_all_available FF enabled' do
-        before do
-          stub_feature_flags(runners_finder_all_available: [group])
-        end
-
-        specify { is_expected.to be_allowed(:read_group_all_available_runners) }
-      end
+      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
     end
 
     context 'with maintainer' do

@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require_relative 'migration_schema_validator'
+
+class PostDeploymentMigrationsValidator < MigrationSchemaValidator
+  def validate!
+    if committed_migrations.empty?
+      puts "\e[32m No migrations found, skipping post-deployment migrations validation\e[0m"
+      return
+    end
+
+    rollback_commited_migrations
+
+    run("SKIP_POST_DEPLOYMENT_MIGRATIONS=true scripts/db_tasks db:migrate")
+    run("scripts/db_tasks db:migrate")
+  end
+
+  private
+
+  def rollback_commited_migrations
+    committed_migrations.reverse_each do |filename|
+      version = find_migration_version(filename)
+
+      run("scripts/db_tasks db:migrate:down VERSION=#{version}")
+    end
+  end
+end
+
+PostDeploymentMigrationsValidator.new.validate!

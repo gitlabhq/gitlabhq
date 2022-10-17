@@ -229,7 +229,7 @@ RSpec.describe GroupsController, factory_default: :keep do
       sign_in(user)
 
       expect do
-        post :create, params: { group: { name: 'new_group', path: "new_group" } }
+        post :create, params: { group: { name: 'new_group', path: 'new_group' } }
       end.to change { Group.count }.by(1)
 
       expect(response).to have_gitlab_http_status(:found)
@@ -240,8 +240,26 @@ RSpec.describe GroupsController, factory_default: :keep do
         sign_in(create(:admin))
 
         expect do
-          post :create, params: { group: { name: 'new_group', path: "new_group" } }
+          post :create, params: { group: { name: 'new_group', path: 'new_group' } }
         end.to change { Group.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
+    end
+
+    context 'when creating chat team' do
+      before do
+        stub_mattermost_setting(enabled: true)
+      end
+
+      it 'triggers Mattermost::CreateTeamService' do
+        sign_in(user)
+
+        expect_next_instance_of(::Mattermost::CreateTeamService) do |service|
+          expect(service).to receive(:execute).and_return({ name: 'test-chat-team', id: 1 })
+        end
+
+        post :create, params: { group: { name: 'new_group', path: 'new_group', create_chat_team: 1 } }
 
         expect(response).to have_gitlab_http_status(:found)
       end

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -168,7 +168,7 @@ describe('DeploymentAction component', () => {
               });
 
               it('should not throw an error', () => {
-                expect(createFlash).not.toHaveBeenCalled();
+                expect(createAlert).not.toHaveBeenCalled();
               });
 
               describe('response includes redirect_url', () => {
@@ -225,9 +225,8 @@ describe('DeploymentAction component', () => {
                   finderFn().trigger('click');
                 });
 
-                it('should call createFlash with error message', () => {
-                  expect(createFlash).toHaveBeenCalled();
-                  expect(createFlash).toHaveBeenCalledWith({
+                it('should call createAlert with error message', () => {
+                  expect(createAlert).toHaveBeenCalledWith({
                     message: actionButtonMocks[configConst].errorMessage,
                   });
                 });

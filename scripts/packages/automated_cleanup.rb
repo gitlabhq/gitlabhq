@@ -96,7 +96,7 @@ def timed(task)
   puts "#{task} finished in #{Time.now - start} seconds.\n"
 end
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   options = {
     dry_run: false
   }

@@ -18,7 +18,7 @@ RSpec.describe GroupAccessTokenEntity do
       expected_revoke_path = Gitlab::Routing.url_helpers
                                             .revoke_group_settings_access_token_path(
                                               { id: token,
-                                                group_id: group.path })
+                                                group_id: group.full_path })
 
       expect(json).to(
         include(
@@ -39,7 +39,7 @@ RSpec.describe GroupAccessTokenEntity do
       expected_revoke_path = Gitlab::Routing.url_helpers
                                             .revoke_group_settings_access_token_path(
                                               { id: token,
-                                                group_id: group.path })
+                                                group_id: group.full_path })
 
       expect(json).to(
         include(

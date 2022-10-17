@@ -5,10 +5,6 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :authorize_update_runner!, only: [:edit, :update, :destroy, :pause, :resume]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
-  before_action do
-    push_frontend_feature_flag(:runners_finder_all_available, @group)
-  end
-
   before_action only: [:show] do
     push_frontend_feature_flag(:enforce_runner_token_expires_at)
   end
@@ -41,8 +37,7 @@ class Groups::RunnersController < Groups::ApplicationController
   private
 
   def runner
-    group_params = { group: @group }
-    group_params[:membership] = :all_available if Feature.enabled?(:runners_finder_all_available, @group)
+    group_params = { group: @group, membership: :all_available }
 
     @runner ||= Ci::RunnersFinder.new(current_user: current_user, params: group_params).execute
       .except(:limit, :offset)

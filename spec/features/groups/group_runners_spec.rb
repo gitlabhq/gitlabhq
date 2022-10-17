@@ -119,45 +119,27 @@ RSpec.describe "Group Runners" do
         create(:ci_runner, :instance, description: 'runner-baz', contacted_at: Time.zone.now)
       end
 
-      context "when runners_finder_all_available is enabled" do
-        before do
-          stub_feature_flags(runners_finder_all_available: true)
-
-          visit group_runners_path(group)
-        end
-
-        context "when selecting 'Show only inherited'" do
-          before do
-            find("[data-testid='runner-membership-toggle'] button").click
-
-            wait_for_requests
-          end
-
-          it_behaves_like 'shows runner in list' do
-            let(:runner) { instance_runner }
-          end
-
-          it 'shows runner details page' do
-            click_link("##{instance_runner.id} (#{instance_runner.short_sha})")
-
-            expect(current_url).to include(group_runner_path(group, instance_runner))
-            expect(page).to have_content "#{s_('Runners|Description')} runner-baz"
-          end
-        end
+      before do
+        visit group_runners_path(group)
       end
 
-      context "when runners_finder_all_available is disabled" do
+      context "when selecting 'Show only inherited'" do
         before do
-          stub_feature_flags(runners_finder_all_available: false)
+          find("[data-testid='runner-membership-toggle'] button").click
 
-          visit group_runners_path(group)
+          wait_for_requests
         end
 
-        it "does not display 'Show only inherited' toggle" do
-          expect(page).not_to have_content(s_('Runners|Show only inherited'))
+        it_behaves_like 'shows runner in list' do
+          let(:runner) { instance_runner }
         end
 
-        it_behaves_like 'shows no runners registered'
+        it 'shows runner details page' do
+          click_link("##{instance_runner.id} (#{instance_runner.short_sha})")
+
+          expect(current_url).to include(group_runner_path(group, instance_runner))
+          expect(page).to have_content "#{s_('Runners|Description')} runner-baz"
+        end
       end
     end
 

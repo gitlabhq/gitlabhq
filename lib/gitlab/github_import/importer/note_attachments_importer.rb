@@ -43,6 +43,10 @@ module Gitlab
           case note_text.record_type
           when ::Release.name
             ::Release.find(note_text.record_db_id).update_column(:description, text)
+          when ::Issue.name
+            ::Issue.find(note_text.record_db_id).update_column(:description, text)
+          when ::MergeRequest.name
+            ::MergeRequest.find(note_text.record_db_id).update_column(:description, text)
           when ::Note.name
             ::Note.find(note_text.record_db_id).update_column(:note, text)
           end

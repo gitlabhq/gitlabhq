@@ -376,3 +376,33 @@ Configure Error Tracking to discover and view [Sentry errors within GitLab](../.
 
 [Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
 to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).
+
+## Troubleshooting
+
+When working with project settings, you might encounter the following issues, or require alternate methods to complete specific tasks.
+
+### Remove a fork relationship through console
+
+If removing the fork through the UI or API is not working, you can attempt the fork relationship removal in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+```ruby
+p = Project.find_by_full_path('<project_path>')
+u = User.find_by_username('<username>')
+Projects::UnlinkForkService.new(p, u).execute
+```
+
+### Transfer a project through console
+
+If transferring a project through the UI or API is not working, you can attempt the transfer in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+```ruby
+p = Project.find_by_full_path('<project_path>')
+
+# To set the owner of the project
+current_user = p.creator
+
+# Namespace where you want this to be moved
+namespace = Namespace.find_by_full_path("<new_namespace>")
+
+Projects::TransferService.new(p, current_user).execute(namespace)
+```

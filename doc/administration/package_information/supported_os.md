@@ -31,6 +31,7 @@ The following lists the currently supported OSs and their possible EOL dates.
 | Ubuntu 20.04                                                 | GitLab CE / GitLab EE 13.2.0   | amd64, arm64    | [Ubuntu Install Documentation](https://about.gitlab.com/install/#ubuntu) | April 2025 | <https://wiki.ubuntu.com/Releases>                           |
 | Amazon Linux 2                                               | GitLab CE / GitLab EE 14.9.0   | amd64, arm64    | [Amazon Linux 2 Install Documentation](https://about.gitlab.com/install/#amazonlinux-2) | June 2023  | <https://aws.amazon.com/amazon-linux-2/faqs/>                |
 | Raspberry Pi OS (Buster) (formerly known as Raspbian Buster) | GitLab CE 12.2.0               | armhf           | [Raspberry Pi Install Documentation](https://about.gitlab.com/install/#raspberry-pi-os) | 2024       | [Raspberry Pi Details](https://www.raspberrypi.com/news/new-old-functionality-with-raspberry-pi-os-legacy/) |
+| Raspberry Pi OS (Bullseye) | GitLab CE 15.5.0               | armhf           | [Raspberry Pi Install Documentation](https://about.gitlab.com/install/#raspberry-pi-os) | 2026       | [Raspberry Pi Details](https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/) |
 
 NOTE:
 CentOS 8 was EOL on December 31, 2021. In GitLab 14.5 and later,
