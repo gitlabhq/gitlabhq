@@ -137,6 +137,19 @@ class GitlabSchema < GraphQL::Schema
       gid
     end
 
+    # Parse an array of strings to an array of GlobalIDs, raising ArgumentError if there are problems
+    # with it.
+    # See #parse_gid
+    #
+    # ```
+    #   gids = GitlabSchema.parse_gids(my_array_of_strings, expected_type: ::Project)
+    #   project_ids = gids.map(&:model_id)
+    #   gids.all? { |gid| gid.model_class == ::Project }
+    # ```
+    def parse_gids(global_ids, ctx = {})
+      global_ids.map { |gid| parse_gid(gid, ctx) }
+    end
+
     private
 
     def max_query_complexity(ctx)

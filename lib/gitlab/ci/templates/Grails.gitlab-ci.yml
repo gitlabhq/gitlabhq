@@ -46,3 +46,8 @@ before_script:
 build:
   script:
     - ./gradlew build
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

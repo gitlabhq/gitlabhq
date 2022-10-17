@@ -124,6 +124,7 @@ class Packages::Package < ApplicationRecord
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
+  scope :including_project_full_path, -> { includes(project: :route) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }

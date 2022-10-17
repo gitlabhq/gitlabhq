@@ -25,7 +25,7 @@ module Mutations
         project = authorized_find!(project_path)
         raise_resource_not_available_error! "Cannot delete more than #{MAXIMUM_FILES} files" if ids.size > MAXIMUM_FILES
 
-        package_files = ::Packages::PackageFile.where(id: parse_gids(ids)) # rubocop:disable CodeReuse/ActiveRecord
+        package_files = ::Packages::PackageFile.id_in(parse_gids(ids))
 
         ensure_file_access!(project, package_files)
 
@@ -47,7 +47,7 @@ module Mutations
       end
 
       def parse_gids(gids)
-        gids.map { |gid| GitlabSchema.parse_gid(gid, expected_type: ::Packages::PackageFile).model_id }
+        GitlabSchema.parse_gids(gids, expected_type: ::Packages::PackageFile).map(&:model_id)
       end
     end
   end

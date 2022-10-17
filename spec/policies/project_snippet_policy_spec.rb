@@ -2,29 +2,28 @@
 
 require 'spec_helper'
 
-# Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb
+# Snippet visibility scenarios are included in more details in spec/finders/snippets_finder_spec.rb
 RSpec.describe ProjectSnippetPolicy do
+  let_it_be(:group) { create(:group, :public) }
   let_it_be(:regular_user) { create(:user) }
-  let_it_be(:other_user) { create(:user) }
   let_it_be(:external_user) { create(:user, :external) }
-  let_it_be(:project) { create(:project, :public) }
-
-  let(:snippet) { create(:project_snippet, snippet_visibility, project: project, author: author) }
-  let(:author) { other_user }
-  let(:author_permissions) do
+  let_it_be(:author) { create(:user) }
+  let_it_be(:author_permissions) do
     [
       :update_snippet,
       :admin_snippet
     ]
   end
 
+  let(:snippet) { build(:project_snippet, snippet_visibility, project: project, author: author) }
+
   subject { described_class.new(current_user, snippet) }
 
-  shared_examples 'regular user access rights' do
+  shared_examples 'regular user member permissions' do
     context 'not snippet author' do
-      context 'project team member (non guest)' do
+      context 'member (guest)' do
         before do
-          project.add_developer(current_user)
+          membership_target.add_guest(current_user)
         end
 
         it do
@@ -33,25 +32,35 @@ RSpec.describe ProjectSnippetPolicy do
         end
       end
 
-      context 'project team member (guest)' do
+      context 'member (reporter)' do
         before do
-          project.add_guest(current_user)
+          membership_target.add_reporter(current_user)
         end
 
         it do
           expect_allowed(:read_snippet, :create_note)
-          expect_disallowed(:admin_snippet)
+          expect_disallowed(*author_permissions)
         end
       end
 
-      context 'project team member (maintainer)' do
+      context 'member (developer)' do
         before do
-          project.add_maintainer(current_user)
+          membership_target.add_developer(current_user)
         end
 
         it do
           expect_allowed(:read_snippet, :create_note)
-          expect_allowed(*author_permissions)
+          expect_disallowed(*author_permissions)
+        end
+      end
+
+      context 'member (maintainer)' do
+        before do
+          membership_target.add_maintainer(current_user)
+        end
+
+        it do
+          expect_allowed(:read_snippet, :create_note, *author_permissions)
         end
       end
     end
@@ -59,196 +68,263 @@ RSpec.describe ProjectSnippetPolicy do
     context 'snippet author' do
       let(:author) { current_user }
 
-      context 'project member (non guest)' do
+      context 'member (guest)' do
         before do
-          project.add_developer(current_user)
+          membership_target.add_guest(current_user)
         end
 
         it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_allowed(*author_permissions)
-        end
-      end
-
-      context 'project member (guest)' do
-        before do
-          project.add_guest(current_user)
-        end
-
-        it do
-          expect_allowed(:read_snippet, :create_note)
+          expect_allowed(:read_snippet, :create_note, :update_snippet)
           expect_disallowed(:admin_snippet)
         end
       end
 
-      context 'project team member (maintainer)' do
+      context 'member (reporter)' do
         before do
-          project.add_maintainer(current_user)
+          membership_target.add_reporter(current_user)
         end
 
         it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_allowed(*author_permissions)
+          expect_allowed(:read_snippet, :create_note, *author_permissions)
         end
       end
 
-      context 'not a project member' do
+      context 'member (developer)' do
+        before do
+          membership_target.add_developer(current_user)
+        end
+
         it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_disallowed(:admin_snippet)
+          expect_allowed(:read_snippet, :create_note, *author_permissions)
+        end
+      end
+
+      context 'member (maintainer)' do
+        before do
+          membership_target.add_maintainer(current_user)
+        end
+
+        it do
+          expect_allowed(:read_snippet, :create_note, *author_permissions)
         end
       end
     end
   end
 
-  context 'public snippet' do
-    let(:snippet_visibility) { :public }
+  shared_examples 'regular user non-member author permissions' do
+    let(:author) { current_user }
 
-    context 'no user' do
-      let(:current_user) { nil }
-
-      it do
-        expect_allowed(:read_snippet)
-        expect_disallowed(*author_permissions)
-      end
-    end
-
-    context 'regular user' do
-      let(:current_user) { regular_user }
-
-      it do
-        expect_allowed(:read_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-
-      it_behaves_like 'regular user access rights'
-    end
-
-    context 'external user' do
-      let(:current_user) { external_user }
-
-      it do
-        expect_allowed(:read_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-
-      context 'project team member' do
-        before do
-          project.add_developer(external_user)
-        end
-
-        it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_disallowed(*author_permissions)
-        end
-      end
+    it do
+      expect_allowed(:read_snippet, :create_note, :update_snippet)
+      expect_disallowed(:admin_snippet)
     end
   end
 
-  context 'internal snippet' do
-    let(:snippet_visibility) { :internal }
+  context 'when project is public' do
+    let_it_be(:project) { create(:project, :public, group: group) }
 
-    context 'no user' do
-      let(:current_user) { nil }
+    context 'with public snippet' do
+      let(:snippet_visibility) { :public }
 
-      it do
-        expect_disallowed(:read_snippet)
-        expect_disallowed(*author_permissions)
-      end
-    end
+      context 'no user' do
+        let(:current_user) { nil }
 
-    context 'regular user' do
-      let(:current_user) { regular_user }
-
-      it do
-        expect_allowed(:read_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-
-      it_behaves_like 'regular user access rights'
-    end
-
-    context 'external user' do
-      let(:current_user) { external_user }
-
-      it do
-        expect_disallowed(:read_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-
-      context 'project team member' do
-        before do
-          project.add_developer(external_user)
+        it do
+          expect_allowed(:read_snippet)
+          expect_disallowed(*author_permissions)
         end
+      end
+
+      context 'regular user' do
+        let(:current_user) { regular_user }
+        let(:membership_target) { project }
+
+        context 'when user is not a member' do
+          context 'and is not the snippet author' do
+            it do
+              expect_allowed(:read_snippet, :create_note)
+              expect_disallowed(*author_permissions)
+            end
+          end
+
+          context 'and is the snippet author' do
+            it_behaves_like 'regular user non-member author permissions'
+          end
+        end
+
+        context 'when user is a member' do
+          it_behaves_like 'regular user member permissions'
+        end
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
 
         it do
           expect_allowed(:read_snippet, :create_note)
           expect_disallowed(*author_permissions)
         end
-      end
-    end
-  end
 
-  context 'private snippet' do
-    let(:snippet_visibility) { :private }
+        context 'when user is a member' do
+          before do
+            project.add_developer(external_user)
+          end
 
-    context 'no user' do
-      let(:current_user) { nil }
-
-      it do
-        expect_disallowed(:read_snippet)
-        expect_disallowed(*author_permissions)
-      end
-    end
-
-    context 'regular user' do
-      let(:current_user) { regular_user }
-
-      it do
-        expect_disallowed(:read_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-
-      it_behaves_like 'regular user access rights'
-    end
-
-    context 'external user' do
-      let(:current_user) { external_user }
-
-      it do
-        expect_disallowed(:read_snippet, :create_note)
-        expect_disallowed(*author_permissions)
-      end
-
-      context 'project team member' do
-        before do
-          project.add_developer(current_user)
+          it do
+            expect_allowed(:read_snippet, :create_note)
+            expect_disallowed(*author_permissions)
+          end
         end
+      end
+    end
+
+    context 'with internal snippet' do
+      let(:snippet_visibility) { :internal }
+
+      context 'no user' do
+        let(:current_user) { nil }
 
         it do
-          expect_allowed(:read_snippet, :create_note)
+          expect_disallowed(:read_snippet)
           expect_disallowed(*author_permissions)
         end
       end
-    end
 
-    context 'admin user' do
-      let(:snippet_visibility) { :private }
-      let(:current_user) { create(:admin) }
+      context 'regular user' do
+        let(:current_user) { regular_user }
+        let(:membership_target) { project }
 
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it do
-          expect_allowed(:read_snippet, :create_note)
-          expect_allowed(*author_permissions)
+        context 'when user is not a member' do
+          context 'and is not the snippet author' do
+            it do
+              expect_allowed(:read_snippet, :create_note)
+              expect_disallowed(*author_permissions)
+            end
+          end
+
+          context 'and is the snippet author' do
+            it_behaves_like 'regular user non-member author permissions'
+          end
+        end
+
+        context 'when user is a member' do
+          it_behaves_like 'regular user member permissions'
         end
       end
 
-      context 'when admin mode is disabled' do
+      context 'external user' do
+        let(:current_user) { external_user }
+
         it do
           expect_disallowed(:read_snippet, :create_note)
           expect_disallowed(*author_permissions)
         end
+
+        context 'when user is a member' do
+          before do
+            project.add_developer(external_user)
+          end
+
+          it do
+            expect_allowed(:read_snippet, :create_note)
+            expect_disallowed(*author_permissions)
+          end
+        end
       end
+    end
+
+    context 'with private snippet' do
+      let(:snippet_visibility) { :private }
+
+      context 'no user' do
+        let(:current_user) { nil }
+
+        it do
+          expect_disallowed(:read_snippet)
+          expect_disallowed(*author_permissions)
+        end
+      end
+
+      context 'regular user' do
+        let(:current_user) { regular_user }
+        let(:membership_target) { project }
+
+        context 'when user is not a member' do
+          context 'and is not the snippet author' do
+            it do
+              expect_disallowed(:read_snippet, :create_note)
+              expect_disallowed(*author_permissions)
+            end
+          end
+
+          context 'and is the snippet author' do
+            it_behaves_like 'regular user non-member author permissions'
+          end
+        end
+
+        context 'when user is a member' do
+          it_behaves_like 'regular user member permissions'
+        end
+      end
+
+      context 'inherited user' do
+        let(:current_user) { regular_user }
+        let(:membership_target) { group }
+
+        it_behaves_like 'regular user member permissions'
+      end
+
+      context 'external user' do
+        let(:current_user) { external_user }
+
+        it do
+          expect_disallowed(:read_snippet, :create_note)
+          expect_disallowed(*author_permissions)
+        end
+
+        context 'when user is a member' do
+          before do
+            project.add_developer(current_user)
+          end
+
+          it do
+            expect_allowed(:read_snippet, :create_note)
+            expect_disallowed(*author_permissions)
+          end
+        end
+      end
+
+      context 'admin user' do
+        let(:snippet_visibility) { :private }
+        let(:current_user) { create(:admin) }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it do
+            expect_allowed(:read_snippet, :create_note)
+            expect_allowed(*author_permissions)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it do
+            expect_disallowed(:read_snippet, :create_note)
+            expect_disallowed(*author_permissions)
+          end
+        end
+      end
+    end
+  end
+
+  context 'when project is private' do
+    let_it_be(:project) { create(:project, :private, group: group) }
+
+    let(:snippet_visibility) { :private }
+
+    context 'inherited user' do
+      let(:current_user) { regular_user }
+      let(:membership_target) { group }
+
+      it_behaves_like 'regular user member permissions'
     end
   end
 end

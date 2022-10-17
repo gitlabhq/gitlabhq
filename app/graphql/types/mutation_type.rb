@@ -138,6 +138,8 @@ module Types
     mount_mutation Mutations::UserCallouts::Create
     mount_mutation Mutations::UserPreferences::Update
     mount_mutation Mutations::Packages::Destroy
+    mount_mutation Mutations::Packages::BulkDestroy,
+                   extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
