@@ -41,6 +41,11 @@ export default {
       required: false,
       default: () => [],
     },
+    approvals: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     showUsersDivider() {
@@ -79,6 +84,16 @@ export default {
       :show-divider="showGroupsDivider"
       :title="$options.i18n.groupsTitle"
       :access-levels="groups"
+    />
+
+    <!-- Approvals -->
+    <protection-row
+      v-for="(approval, index) in approvals"
+      :key="approval.name"
+      :show-divider="index !== 0"
+      :title="approval.name"
+      :users="approval.eligibleApprovers.nodes"
+      :approvals-required="approval.approvalsRequired"
     />
   </gl-card>
 </template>

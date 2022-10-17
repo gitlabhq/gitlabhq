@@ -1001,6 +1001,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
     - <<: *if-ruby3-branch
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
       changes: *feature-flag-development-config-patterns
       when: manual

@@ -12,14 +12,14 @@ RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state,
   describe "#default_lease_timeout" do
     subject(:default_lease_timeout) { default_timeout }
 
-    it { is_expected.to eq 1.hour.to_i }
+    it { is_expected.to eq 30.minutes.to_i }
 
     context 'when remove_namespace_aggregator_delay FF is disabled' do
       before do
         stub_feature_flags(remove_namespace_aggregator_delay: false)
       end
 
-      it { is_expected.to eq 1.5.hours.to_i }
+      it { is_expected.to eq 1.hour.to_i }
     end
   end
 

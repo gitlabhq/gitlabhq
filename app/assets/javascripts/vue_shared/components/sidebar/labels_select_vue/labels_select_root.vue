@@ -53,6 +53,11 @@ export default {
       required: false,
       default: false,
     },
+    allowMultipleScopedLabels: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     variant: {
       type: String,
       required: false,
@@ -164,6 +169,7 @@ export default {
       allowLabelCreate: this.allowLabelCreate,
       allowMultiselect: this.allowMultiselect,
       allowScopedLabels: this.allowScopedLabels,
+      allowMultipleScopedLabels: this.allowMultipleScopedLabels,
       dropdownButtonText: this.dropdownButtonText,
       selectedLabels: this.selectedLabels,
       labelsFetchPath: this.labelsFetchPath,

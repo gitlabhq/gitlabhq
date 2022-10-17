@@ -31,6 +31,13 @@ class PipelineFailedJobs
       failed_jobs << job
     end
 
+    client.pipeline_bridges(project, pipeline_id, scope: 'failed', per_page: 100).auto_paginate do |job|
+      next if exclude_allowed_to_fail_jobs && job.allow_failure
+
+      job.web_url = job.downstream_pipeline.web_url # job.web_url is linking to an invalid page
+      failed_jobs << job
+    end
+
     failed_jobs
   end
 

@@ -36,6 +36,8 @@ const accessLevelsMock = [
   { accessLevelDescription: 'Maintainer' },
 ];
 
+const approvalsRequired = 3;
+
 const groupsMock = [{ name: 'test_group_1' }, { name: 'test_group_2' }];
 
 export const protectionPropsMock = {
@@ -45,12 +47,20 @@ export const protectionPropsMock = {
   roles: accessLevelsMock,
   users: usersMock,
   groups: groupsMock,
+  approvals: [
+    {
+      name: 'test',
+      eligibleApprovers: { nodes: usersMock },
+      approvalsRequired,
+    },
+  ],
 };
 
 export const protectionRowPropsMock = {
   title: 'Test title',
   users: usersMock,
   accessLevels: accessLevelsMock,
+  approvalsRequired,
 };
 
 export const accessLevelsMockResponse = [

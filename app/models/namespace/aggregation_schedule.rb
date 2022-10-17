@@ -14,9 +14,9 @@ class Namespace::AggregationSchedule < ApplicationRecord
 
   def self.default_lease_timeout
     if Feature.enabled?(:remove_namespace_aggregator_delay)
-      1.hour.to_i
+      30.minutes.to_i
     else
-      1.5.hours.to_i
+      1.hour.to_i
     end
   end
 

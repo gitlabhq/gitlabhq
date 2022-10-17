@@ -11,22 +11,28 @@ import {
   BRANCH_PARAM_NAME,
   WILDCARDS_HELP_PATH,
   PROTECTED_BRANCHES_HELP_PATH,
+  APPROVALS_HELP_PATH,
 } from './constants';
 
 const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
 const protectedBranchesHelpDocLink = helpPagePath(PROTECTED_BRANCHES_HELP_PATH);
+const approvalsHelpDocLink = helpPagePath(APPROVALS_HELP_PATH);
 
 export default {
   name: 'RuleView',
   i18n: I18N,
   wildcardsHelpDocLink,
   protectedBranchesHelpDocLink,
+  approvalsHelpDocLink,
   components: { Protection, GlSprintf, GlLink, GlLoadingIcon },
   inject: {
     projectPath: {
       default: '',
     },
     protectedBranchesPath: {
+      default: '',
+    },
+    approvalRulesPath: {
       default: '',
     },
   },
@@ -48,7 +54,9 @@ export default {
   data() {
     return {
       branch: getParameterByName(BRANCH_PARAM_NAME),
-      branchProtection: {},
+      branchProtection: {
+        approvalRules: {},
+      },
     };
   },
   computed: {
@@ -75,6 +83,15 @@ export default {
         total: this.pushAccessLevels.total,
       });
     },
+    approvalsHeader() {
+      const total = this.approvals.reduce(
+        (sum, { approvalsRequired }) => sum + approvalsRequired,
+        0,
+      );
+      return sprintf(this.$options.i18n.approvalsHeader, {
+        total,
+      });
+    },
     allBranches() {
       return this.branch === ALL_BRANCHES_WILDCARD;
     },
@@ -85,6 +102,9 @@ export default {
       return this.allBranches
         ? this.$options.i18n.targetBranch
         : this.$options.i18n.branchNameOrPattern;
+    },
+    approvals() {
+      return this.branchProtection?.approvalRules?.nodes || [];
     },
   },
   methods: {
@@ -164,7 +184,22 @@ export default {
     />
 
     <!-- Approvals -->
-    <!-- Follow-up: add approval section (https://gitlab.com/gitlab-org/gitlab/-/issues/372362) -->
+    <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>
+    <gl-sprintf :message="$options.i18n.approvalsDescription">
+      <template #link="{ content }">
+        <gl-link :href="$options.approvalsHelpDocLink">
+          {{ content }}
+        </gl-link>
+      </template>
+    </gl-sprintf>
+
+    <protection
+      class="gl-mt-3"
+      :header="approvalsHeader"
+      :header-link-title="$options.i18n.manageApprovalsLinkTitle"
+      :header-link-href="approvalRulesPath"
+      :approvals="approvals"
+    />
 
     <!-- Status checks -->
     <!-- Follow-up: add status checks section (https://gitlab.com/gitlab-org/gitlab/-/issues/372362) -->

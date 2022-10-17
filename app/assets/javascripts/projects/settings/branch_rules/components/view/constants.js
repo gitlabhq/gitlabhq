@@ -19,9 +19,14 @@ export const I18N = {
   ),
   disallowForcePushDescription: s__('BranchRules|Force push is not allowed.'),
   approvalsTitle: s__('BranchRules|Approvals'),
+  manageApprovalsLinkTitle: s__('BranchRules|Manage in Merge Request Approvals'),
+  approvalsDescription: s__(
+    'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Lean more.%{linkEnd}',
+  ),
   statusChecksTitle: s__('BranchRules|Status checks'),
   allowedToPushHeader: s__('BranchRules|Allowed to push (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
+  approvalsHeader: s__('BranchRules|Required approvals (%{total})'),
   noData: s__('BranchRules|No data to display'),
 };
 
@@ -33,3 +38,5 @@ export const WILDCARDS_HELP_PATH =
   'user/project/protected_branches#configure-multiple-protected-branches-by-using-a-wildcard';
 
 export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
+
+export const APPROVALS_HELP_PATH = 'user/project/merge_requests/approvals/index.md';

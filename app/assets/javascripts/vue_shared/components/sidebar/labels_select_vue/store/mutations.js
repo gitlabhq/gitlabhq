@@ -94,14 +94,13 @@ export default {
       candidateLabel.indeterminate = false;
     }
 
-    if (isScopedLabel(candidateLabel)) {
+    if (isScopedLabel(candidateLabel) && !state.allowMultipleScopedLabels) {
       const currentActiveScopedLabel = state.labels.find(
         ({ set, title }) =>
           set &&
           title !== candidateLabel.title &&
           scopedLabelKey({ title }) === scopedLabelKey(candidateLabel),
       );
-
       if (currentActiveScopedLabel) {
         currentActiveScopedLabel.set = false;
       }

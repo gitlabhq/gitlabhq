@@ -21,6 +21,7 @@ options:
     - users_updating_work_item_title
     - users_updating_work_item_dates
     - users_updating_work_item_labels
+    - users_updating_work_item_iteration
 data_category: optional
 distribution:
 - ce

@@ -105,6 +105,7 @@ class Deployment < ApplicationRecord
 
     after_transition any => :running do |deployment|
       next unless deployment.project.ci_forward_deployment_enabled?
+      next if Feature.enabled?(:prevent_outdated_deployment_jobs, deployment.project)
 
       deployment.run_after_commit do
         Deployments::DropOlderDeploymentsWorker.perform_async(id)

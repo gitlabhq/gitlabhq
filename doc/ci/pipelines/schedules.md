@@ -39,6 +39,9 @@ To add a pipeline schedule:
      These variables are available only when the scheduled pipeline runs,
      and not in any other pipeline run.
 
+If the project already has the [maximum number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules),
+you must delete unused schedules before you can add another.
+
 ## Edit a pipeline schedule
 
 > Introduced in GitLab 14.8, only a pipeline schedule owner can edit the schedule.

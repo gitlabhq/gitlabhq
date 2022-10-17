@@ -455,8 +455,7 @@ module Ci
 
     def prevent_rollback_deployment?
       strong_memoize(:prevent_rollback_deployment) do
-        Feature.enabled?(:prevent_outdated_deployment_jobs, project) &&
-          starts_environment? &&
+        starts_environment? &&
           project.ci_forward_deployment_enabled? &&
           deployment&.older_than_last_successful_deployment?
       end

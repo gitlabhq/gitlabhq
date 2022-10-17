@@ -56,4 +56,13 @@ describe('Branch rule protection', () => {
       title: i18n.groupsTitle,
     });
   });
+
+  it('renders a protection row for approvals', () => {
+    const approval = protectionPropsMock.approvals[0];
+    expect(findProtectionRows().at(3).props()).toMatchObject({
+      title: approval.name,
+      users: approval.eligibleApprovers.nodes,
+      approvalsRequired: approval.approvalsRequired,
+    });
+  });
 });

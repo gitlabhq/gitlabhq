@@ -632,15 +632,6 @@ RSpec.describe Ci::Build do
       it { expect(subject).to be_falsey }
     end
 
-    context 'when prevent_outdated_deployment_jobs FF is disabled' do
-      before do
-        stub_feature_flags(prevent_outdated_deployment_jobs: false)
-        expect(build.deployment).not_to receive(:rollback?)
-      end
-
-      it { expect(subject).to be_falsey }
-    end
-
     context 'when build can prevent rollback deployment' do
       before do
         expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)

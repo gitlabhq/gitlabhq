@@ -33,6 +33,7 @@ describe('View branch rules', () => {
   let fakeApollo;
   const projectPath = 'test/testing';
   const protectedBranchesPath = 'protected/branches';
+  const approvalRulesPath = 'approval/rules';
   const branchProtectionsMockRequestHandler = jest
     .fn()
     .mockResolvedValue(branchProtectionsMockResponse);
@@ -42,7 +43,7 @@ describe('View branch rules', () => {
 
     wrapper = shallowMountExtended(RuleView, {
       apolloProvider: fakeApollo,
-      provide: { projectPath, protectedBranchesPath },
+      provide: { projectPath, protectedBranchesPath, approvalRulesPath },
     });
 
     await waitForPromises();
@@ -57,6 +58,7 @@ describe('View branch rules', () => {
   const findBranchProtectionTitle = () => wrapper.findByText(I18N.protectBranchTitle);
   const findBranchProtections = () => wrapper.findAllComponents(Protection);
   const findForcePushTitle = () => wrapper.findByText(I18N.allowForcePushDescription);
+  const findApprovalsTitle = () => wrapper.findByText(I18N.approvalsTitle);
 
   it('gets the branch param from url and renders it in the view', () => {
     expect(util.getParameterByName).toHaveBeenCalledWith('branch');
@@ -96,6 +98,16 @@ describe('View branch rules', () => {
     expect(findBranchProtections().at(1).props()).toMatchObject({
       header: sprintf(I18N.allowedToMergeHeader, { total: 2 }),
       ...protectionMockProps,
+    });
+  });
+
+  it('renders a branch protection component for approvals', () => {
+    expect(findApprovalsTitle().exists()).toBe(true);
+
+    expect(findBranchProtections().at(2).props()).toMatchObject({
+      header: sprintf(I18N.approvalsHeader, { total: 0 }),
+      headerLinkHref: approvalRulesPath,
+      headerLinkTitle: I18N.manageApprovalsLinkTitle,
     });
   });
 });

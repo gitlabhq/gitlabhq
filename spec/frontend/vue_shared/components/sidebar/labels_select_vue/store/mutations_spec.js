@@ -193,6 +193,16 @@ describe('LabelsSelect Mutations', () => {
         expect(state.labels[l.id - 1].set).toBe(false);
       });
     });
+    it('allows selection of multiple scoped labels', () => {
+      const state = { labels: cloneDeep(labels), allowMultipleScopedLabels: true };
+
+      mutations[types.UPDATE_SELECTED_LABELS](state, { labels: [{ id: labels[4].id }] });
+      mutations[types.UPDATE_SELECTED_LABELS](state, { labels: [{ id: labels[5].id }] });
+
+      expect(state.labels[4].set).toBe(true);
+      expect(state.labels[5].set).toBe(true);
+      expect(state.labels[6].set).toBe(true);
+    });
   });
 
   describe(`${types.UPDATE_LABELS_SET_STATE}`, () => {

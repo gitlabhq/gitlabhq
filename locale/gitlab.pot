@@ -143,6 +143,11 @@ msgid_plural "%d additional users"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d approval required"
+msgid_plural "%d approvals required"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d approver"
 msgid_plural "%d approvers"
 msgstr[0] ""
@@ -6826,6 +6831,9 @@ msgstr ""
 msgid "BranchRules|Approvals"
 msgstr ""
 
+msgid "BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Lean more.%{linkEnd}"
+msgstr ""
+
 msgid "BranchRules|Branch"
 msgstr ""
 
@@ -6853,6 +6861,9 @@ msgstr ""
 msgid "BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}"
 msgstr ""
 
+msgid "BranchRules|Manage in Merge Request Approvals"
+msgstr ""
+
 msgid "BranchRules|Manage in Protected Branches"
 msgstr ""
 
@@ -6872,6 +6883,9 @@ msgid "BranchRules|Reject code pushes that change files listed in the CODEOWNERS
 msgstr ""
 
 msgid "BranchRules|Require approval from code owners."
+msgstr ""
+
+msgid "BranchRules|Required approvals (%{total})"
 msgstr ""
 
 msgid "BranchRules|Roles"
@@ -9841,6 +9855,9 @@ msgstr ""
 msgid "Complete verification to sign up."
 msgstr ""
 
+msgid "Complete with errors"
+msgstr ""
+
 msgid "Completed"
 msgstr ""
 
@@ -12570,6 +12587,9 @@ msgid "Decompressed archive size validation failed."
 msgstr ""
 
 msgid "Decrease"
+msgstr ""
+
+msgid "Default - Never run"
 msgstr ""
 
 msgid "Default CI/CD configuration file"
@@ -21985,6 +22005,9 @@ msgstr ""
 msgid "Invalid yaml"
 msgstr ""
 
+msgid "Invalidated"
+msgstr ""
+
 msgid "Investigate vulnerability: %{title}"
 msgstr ""
 
@@ -30439,6 +30462,27 @@ msgid "Potentially unwanted character detected: Unicode BiDi Control"
 msgstr ""
 
 msgid "Pre-defined push rules"
+msgstr ""
+
+msgid "PreScanVerification|(optional)"
+msgstr ""
+
+msgid "PreScanVerification|Last run %{timeAgo} in pipeline"
+msgstr ""
+
+msgid "PreScanVerification|Pre-scan verification"
+msgstr ""
+
+msgid "PreScanVerification|Started %{timeAgo} in pipeline"
+msgstr ""
+
+msgid "PreScanVerification|Test your configuration and identify potential errors before running a full scan."
+msgstr ""
+
+msgid "PreScanVerification|Verify configuration"
+msgstr ""
+
+msgid "PreScanVerification|View results"
 msgstr ""
 
 msgid "Preferences"

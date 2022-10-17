@@ -85,7 +85,7 @@ export default {
       return this.loading || this.$apollo.queries.issuable.loading;
     },
     canUpdate() {
-      return this.issuable.userPermissions?.updateMergeRequest || false;
+      return this.issuable.userPermissions?.adminMergeRequest || false;
     },
   },
   created() {
