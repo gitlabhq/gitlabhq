@@ -17,6 +17,8 @@ export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
+export const WIDGET_TYPE_ITERATION = 'ITERATION';
+
 export const WORK_ITEM_VIEWED_STORAGE_KEY = 'gl-show-work-item-banner';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
@@ -53,6 +55,10 @@ export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE = s__(
   'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
 );
 export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
+
+export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
+  'WorkItem|Something went wrong when fetching iterations. Please try again.',
+);
 
 export const sprintfWorkItem = (msg, workItemTypeArg) => {
   const workItemType = workItemTypeArg || s__('WorkItem|Work item');

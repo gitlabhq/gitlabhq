@@ -15,7 +15,9 @@ rules:changes as array of strings:
 
 # valid workflow:rules:exists
 # valid rules:changes:path
+# valid workflow:name
 workflow:
+  name: 'Pipeline name'
   rules:
     - changes:
         paths:

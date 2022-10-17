@@ -12,6 +12,7 @@ import {
 } from 'ee_else_ce/runner/runner_search_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import groupRunnersQuery from 'ee_else_ce/runner/graphql/list/group_runners.query.graphql';
+import groupRunnersCountQuery from 'ee_else_ce/runner/graphql/list/group_runners_count.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerStackedLayoutBanner from '../components/runner_stacked_layout_banner.vue';
@@ -173,13 +174,17 @@ export default {
     editUrl(runner) {
       return this.runners.urlsById[runner.id]?.edit;
     },
+    refetchCounts() {
+      this.$apollo.getClient().refetchQueries({ include: [groupRunnersCountQuery] });
+    },
     onToggledPaused() {
       // When a runner becomes Paused, the tab count can
       // become stale, refetch outdated counts.
-      this.$refs['runner-type-tabs'].refetch();
+      this.refetchCounts();
     },
     onDeleted({ message }) {
       this.$root.$toast?.show(message);
+      this.refetchCounts();
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -245,7 +250,7 @@ export default {
       :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
-      <runner-list :runners="runners.items" :loading="runnersLoading">
+      <runner-list :runners="runners.items" :loading="runnersLoading" @deleted="onDeleted">
         <template #runner-name="{ runner }">
           <gl-link :href="webUrl(runner)">
             <runner-name :runner="runner" />

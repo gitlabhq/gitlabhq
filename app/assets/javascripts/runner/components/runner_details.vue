@@ -4,7 +4,6 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { ACCESS_LEVEL_REF_PROTECTED, GROUP_TYPE, PROJECT_TYPE } from '../constants';
 import RunnerDetail from './runner_detail.vue';
@@ -29,7 +28,6 @@ export default {
     RunnerTags,
     TimeAgo,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     runner: {
       type: Object,
@@ -117,10 +115,7 @@ export default {
           </template>
         </runner-detail>
         <runner-detail :label="s__('Runners|Maximum job timeout')" :value="maximumTimeout" />
-        <runner-detail
-          v-if="glFeatures.enforceRunnerTokenExpiresAt"
-          :empty-value="s__('Runners|Never expires')"
-        >
+        <runner-detail :empty-value="s__('Runners|Never expires')">
           <template #label>
             {{ s__('Runners|Token expiry') }}
             <help-popover :options="tokenExpirationHelpPopoverOptions">

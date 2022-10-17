@@ -2,17 +2,17 @@
 - dropdown_class = local_assigns.fetch(:dropdown_class, '')
 
 .git-clone-holder.js-git-clone-holder
-  %a#clone-dropdown.gl-button.btn.btn-confirm.clone-dropdown-btn.qa-clone-dropdown{ href: '#', data: { toggle: 'dropdown' } }
+  %a#clone-dropdown.gl-button.btn.btn-confirm.clone-dropdown-btn{ href: '#', data: { toggle: 'dropdown', qa_selector: 'clone_dropdown' } }
     %span.gl-mr-2.js-clone-dropdown-label
       = _('Clone')
     = sprite_icon("chevron-down", css_class: "icon")
-  %ul.dropdown-menu.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown.qa-clone-options{ class: dropdown_class }
+  %ul.dropdown-menu.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown{ class: dropdown_class, data: { qa_selector: 'clone_dropdown_content' } }
     - if ssh_enabled?
       %li{ class: 'gl-px-4!' }
         %label.label-bold
           = _('Clone with SSH')
         .input-group.btn-group
-          = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control qa-ssh-clone-url", readonly: true, aria: { label: _('Repository clone URL') }
+          = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'ssh_clone_url_content' }
           .input-group-append
             = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
             = render_if_exists 'projects/buttons/geo'
@@ -21,7 +21,7 @@
         %label.label-bold
           = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
         .input-group.btn-group
-          = text_field_tag :http_project_clone, project.http_url_to_repo, class: "js-select-on-focus form-control qa-http-clone-url", readonly: true, aria: { label: _('Repository clone URL') }
+          = text_field_tag :http_project_clone, project.http_url_to_repo, class: "js-select-on-focus form-control", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'http_clone_url_content' }
           .input-group-append
             = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), class: "input-group-text gl-button btn btn-icon btn-default")
             = render_if_exists 'projects/buttons/geo'

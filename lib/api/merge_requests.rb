@@ -218,6 +218,7 @@ module API
             [
               current_user&.cache_key,
               mr.merge_status,
+              mr.labels.map(&:cache_key),
               mr.merge_request_assignees.map(&:cache_key),
               mr.merge_request_reviewers.map(&:cache_key)
             ].join(":")

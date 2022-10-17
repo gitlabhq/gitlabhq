@@ -5,6 +5,8 @@ import { s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { formatJobCount, tableField } from '../utils';
+import RunnerBulkDelete from './runner_bulk_delete.vue';
+import RunnerBulkDeleteCheckbox from './runner_bulk_delete_checkbox.vue';
 import RunnerStackedSummaryCell from './cells/runner_stacked_summary_cell.vue';
 import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
@@ -23,6 +25,8 @@ export default {
     GlTableLite,
     GlSkeletonLoader,
     HelpPopover,
+    RunnerBulkDelete,
+    RunnerBulkDeleteCheckbox,
     RunnerStatusPopover,
     RunnerStackedSummaryCell,
     RunnerStatusCell,
@@ -39,6 +43,7 @@ export default {
       },
     },
   },
+  inject: ['localMutations'],
   props: {
     checkable: {
       type: Boolean,
@@ -55,7 +60,7 @@ export default {
       required: true,
     },
   },
-  emits: ['checked'],
+  emits: ['deleted'],
   data() {
     return { checkedRunnerIds: [] };
   },
@@ -84,6 +89,12 @@ export default {
     },
   },
   methods: {
+    canDelete(runner) {
+      return runner.userPermissions?.deleteRunner;
+    },
+    onDeleted(event) {
+      this.$emit('deleted', event);
+    },
     formatJobCount(jobCount) {
       return formatJobCount(jobCount);
     },
@@ -96,7 +107,7 @@ export default {
       return {};
     },
     onCheckboxChange(runner, isChecked) {
-      this.$emit('checked', {
+      this.localMutations.setRunnerChecked({
         runner,
         isChecked,
       });
@@ -109,6 +120,7 @@ export default {
 </script>
 <template>
   <div>
+    <runner-bulk-delete v-if="checkable" :runners="runners" @deleted="onDeleted" />
     <gl-table-lite
       :aria-busy="loading"
       :class="tableClass"
@@ -121,11 +133,15 @@ export default {
       fixed
     >
       <template #head(checkbox)>
-        <slot name="head-checkbox"></slot>
+        <runner-bulk-delete-checkbox :runners="runners" />
       </template>
 
       <template #cell(checkbox)="{ item }">
-        <gl-form-checkbox :checked="isChecked(item)" @change="onCheckboxChange(item, $event)" />
+        <gl-form-checkbox
+          v-if="canDelete(item)"
+          :checked="isChecked(item)"
+          @change="onCheckboxChange(item, $event)"
+        />
       </template>
 
       <template #head(status)="{ label }">

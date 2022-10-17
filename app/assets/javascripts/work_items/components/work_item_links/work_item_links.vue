@@ -5,7 +5,7 @@ import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
-import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
+import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 
@@ -59,7 +59,7 @@ export default {
       },
     },
     parentIssue: {
-      query: issueConfidentialQuery,
+      query: getIssueDetailsQuery,
       variables() {
         return {
           fullPath: this.projectPath,
@@ -85,6 +85,9 @@ export default {
   computed: {
     confidential() {
       return this.parentIssue?.confidential || this.workItem?.confidential || false;
+    },
+    issuableIteration() {
+      return this.parentIssue?.iteration;
     },
     children() {
       return (
@@ -305,6 +308,7 @@ export default {
           :issuable-gid="issuableGid"
           :children-ids="childrenIds"
           :parent-confidential="confidential"
+          :parent-iteration="issuableIteration"
           @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />

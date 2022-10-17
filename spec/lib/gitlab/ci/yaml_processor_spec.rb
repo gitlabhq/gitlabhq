@@ -514,6 +514,35 @@ module Gitlab
             expect(subject.root_variables).to eq([])
           end
         end
+
+        context 'with name' do
+          let(:config) do
+            <<-EOYML
+              workflow:
+                name: 'Pipeline name'
+
+              hello:
+                script: echo world
+            EOYML
+          end
+
+          it 'parses the workflow:name as workflow_name' do
+            expect(subject.workflow_name).to eq('Pipeline name')
+          end
+        end
+
+        context 'with no name' do
+          let(:config) do
+            <<-EOYML
+              hello:
+                script: echo world
+            EOYML
+          end
+
+          it 'parses the workflow:name' do
+            expect(subject.workflow_name).to be_nil
+          end
+        end
       end
 
       describe '#warnings' do

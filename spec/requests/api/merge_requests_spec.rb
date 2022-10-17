@@ -1044,6 +1044,14 @@ RSpec.describe API::MergeRequests do
           it_behaves_like 'a non-cached MergeRequest api request', 1
         end
 
+        context 'when the label changes' do
+          before do
+            merge_request.labels << create(:label, project: merge_request.project)
+          end
+
+          it_behaves_like 'a non-cached MergeRequest api request', 1
+        end
+
         context 'when the assignees change' do
           before do
             merge_request.assignees << create(:user)

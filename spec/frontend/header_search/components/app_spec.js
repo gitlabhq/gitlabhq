@@ -2,6 +2,7 @@ import { GlSearchBoxByType, GlToken, GlIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import { s__, sprintf } from '~/locale';
 import HeaderSearchApp from '~/header_search/components/app.vue';
 import HeaderSearchAutocompleteItems from '~/header_search/components/header_search_autocomplete_items.vue';
@@ -360,22 +361,43 @@ describe('HeaderSearchApp', () => {
 
     describe('Header Search Input', () => {
       describe('when dropdown is closed', () => {
-        it('onFocus opens dropdown', async () => {
+        let trackingSpy;
+
+        beforeEach(() => {
+          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+        });
+
+        it('onFocus opens dropdown and triggers snowplow event', async () => {
           expect(findHeaderSearchDropdown().exists()).toBe(false);
           findHeaderSearchInput().vm.$emit('focus');
 
           await nextTick();
 
           expect(findHeaderSearchDropdown().exists()).toBe(true);
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'focus_input', {
+            label: 'global_search',
+            property: 'top_navigation',
+          });
         });
 
-        it('onClick opens dropdown', async () => {
+        it('onClick opens dropdown and triggers snowplow event', async () => {
           expect(findHeaderSearchDropdown().exists()).toBe(false);
           findHeaderSearchInput().vm.$emit('click');
 
           await nextTick();
 
           expect(findHeaderSearchDropdown().exists()).toBe(true);
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'focus_input', {
+            label: 'global_search',
+            property: 'top_navigation',
+          });
+        });
+
+        it('onClick followed by onFocus only triggers a single snowplow event', async () => {
+          findHeaderSearchInput().vm.$emit('click');
+          findHeaderSearchInput().vm.$emit('focus');
+
+          expect(trackingSpy).toHaveBeenCalledTimes(1);
         });
       });
 

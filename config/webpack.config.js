@@ -646,7 +646,11 @@ module.exports = {
       patterns: [
         {
           from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
-          to: path.join(WEBPACK_OUTPUT_PATH, 'cmaps/'),
+          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/cmaps/'),
+        },
+        {
+          from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js'),
+          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/'),
         },
         {
           from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),

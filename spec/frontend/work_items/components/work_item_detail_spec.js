@@ -9,7 +9,6 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import workItemWeightSubscription from 'ee_component/work_items/graphql/work_item_weight.subscription.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -35,7 +34,6 @@ import {
   workItemDatesSubscriptionResponse,
   workItemResponseFactory,
   workItemTitleSubscriptionResponse,
-  workItemWeightSubscriptionResponse,
   workItemAssigneesSubscriptionResponse,
 } from '../mock_data';
 
@@ -57,7 +55,6 @@ describe('WorkItemDetail component', () => {
   const assigneesSubscriptionHandler = jest
     .fn()
     .mockResolvedValue(workItemAssigneesSubscriptionResponse);
-  const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -95,10 +92,6 @@ describe('WorkItemDetail component', () => {
       confidentialityMock,
     ];
 
-    if (IS_EE) {
-      handlers.push([workItemWeightSubscription, weightSubscriptionHandler]);
-    }
-
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
       propsData: { isModal, workItemId },
@@ -113,6 +106,12 @@ describe('WorkItemDetail component', () => {
           workItemsMvc2: workItemsMvc2Enabled,
         },
         hasIssueWeightsFeature: true,
+        hasIterationsFeature: true,
+        projectNamespace: 'namespace',
+      },
+      stubs: {
+        WorkItemWeight: true,
+        WorkItemIteration: true,
       },
     });
   };

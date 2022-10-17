@@ -2983,6 +2983,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 
+    it 'logs the event' do
+      allow(Gitlab::AppJsonLogger).to receive(:info)
+
+      pipeline.cancel_running
+
+      expect(Gitlab::AppJsonLogger)
+        .to have_received(:info)
+        .with(
+          a_hash_including(
+            event: 'pipeline_cancel_running',
+            pipeline_id: pipeline.id,
+            auto_canceled_by_pipeline_id: nil,
+            cascade_to_children: true,
+            execute_async: true
+          )
+        )
+    end
+
     context 'when there is a running external job and a regular job' do
       before do
         create(:ci_build, :running, pipeline: pipeline)

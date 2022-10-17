@@ -23,6 +23,7 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_VIEWED_STORAGE_KEY,
+  WIDGET_TYPE_ITERATION,
 } from '../constants';
 
 import workItemQuery from '../graphql/work_item.query.graphql';
@@ -65,6 +66,7 @@ export default {
     WorkItemInformation,
     LocalStorageSync,
     WorkItemTypeIcon,
+    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -134,7 +136,7 @@ export default {
             };
           },
           skip() {
-            return !this.workItemDueDate;
+            return !this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
           },
         },
         {
@@ -145,7 +147,7 @@ export default {
             };
           },
           skip() {
-            return !this.workItemAssignees;
+            return !this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
           },
         },
       ],
@@ -170,28 +172,8 @@ export default {
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
-    hasDescriptionWidget() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
-    },
-    workItemAssignees() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
-    },
-    workItemLabels() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
-    },
-    workItemDueDate() {
-      return this.workItem?.widgets?.find(
-        (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE,
-      );
-    },
-    workItemWeight() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
-    },
-    workItemHierarchy() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
-    },
     parentWorkItem() {
-      return this.workItemHierarchy?.parent;
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
@@ -205,6 +187,27 @@ export default {
     noAccessSvgPath() {
       return `data:image/svg+xml;utf8,${encodeURIComponent(noAccessSvg)}`;
     },
+    hasDescriptionWidget() {
+      return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
+    },
+    workItemAssignees() {
+      return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
+    },
+    workItemLabels() {
+      return this.isWidgetPresent(WIDGET_TYPE_LABELS);
+    },
+    workItemDueDate() {
+      return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
+    },
+    workItemWeight() {
+      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    workItemHierarchy() {
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
+    },
+    workItemIteration() {
+      return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
+    },
   },
   beforeDestroy() {
     /** make sure that if the user has not even dismissed the alert ,
@@ -212,6 +215,9 @@ export default {
     this.dismissBanner();
   },
   methods: {
+    isWidgetPresent(type) {
+      return this.workItem?.widgets?.find((widget) => widget.type === type);
+    },
     dismissBanner() {
       this.showInfoBanner = false;
     },
@@ -416,6 +422,17 @@ export default {
         :work-item-type="workItemType"
         @error="updateError = $event"
       />
+      <template v-if="workItemsMvc2Enabled">
+        <work-item-iteration
+          v-if="workItemIteration"
+          class="gl-mb-5"
+          :iteration="workItemIteration.iteration"
+          :can-update="canUpdate"
+          :work-item-id="workItem.id"
+          :work-item-type="workItemType"
+          @error="updateError = $event"
+        />
+      </template>
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"

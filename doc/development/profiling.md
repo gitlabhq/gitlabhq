@@ -20,6 +20,9 @@ The first argument to the profiler is either a full URL
 (including the instance hostname) or an absolute path, including the
 leading slash.
 
+By default the report dump will be stored in a temporary file, which can be
+interacted with using the [stackprof API](#reading-a-gitlabprofiler-report).
+
 When using the script, command-line documentation is available by passing no
 arguments.
 
@@ -31,10 +34,11 @@ For example:
 
 ```ruby
 Gitlab::Profiler.profile('/my-user')
-# Returns a RubyProf::Profile for the regular operation of this request
+# Returns the location of the temp file where the report dump is stored
 class UsersController; def show; sleep 100; end; end
 Gitlab::Profiler.profile('/my-user')
-# Returns a RubyProf::Profile where 100 seconds is spent in UsersController#show
+# Returns the location of the temp file where the report dump is stored
+# where 100 seconds is spent in UsersController#show
 ```
 
 For routes that require authorization you must provide a user to
@@ -52,56 +56,13 @@ documented with the method source.
 Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, logger: Logger.new($stdout))
 ```
 
-There is also a RubyProf printer available:
-`Gitlab::Profiler::TotalTimeFlatPrinter`. This acts like
-`RubyProf::FlatPrinter`, but its `min_percent` option works on the method's
-total time, not its self time. (This is because we often spend most of our time
-in library code, but this comes from calls in our application.) It also offers a
-`max_percent` option to help filter out outer calls that aren't useful (like
-`ActionDispatch::Integration::Session#process`).
-
-There is a convenience method for using this,
-`Gitlab::Profiler.print_by_total_time`:
-
-```ruby
-result = Gitlab::Profiler.profile('/my-user')
-Gitlab::Profiler.print_by_total_time(result, max_percent: 60, min_percent: 2)
-# Measure Mode: wall_time
-# Thread ID: 70005223698240
-# Fiber ID: 70004894952580
-# Total: 1.768912
-# Sort by: total_time
-#
-#  %self      total      self      wait     child     calls  name
-#   0.00      1.017     0.000     0.000     1.017       14  *ActionView::Helpers::RenderingHelper#render
-#   0.00      1.017     0.000     0.000     1.017       14  *ActionView::Renderer#render_partial
-#   0.00      1.017     0.000     0.000     1.017       14  *ActionView::PartialRenderer#render
-#   0.00      1.007     0.000     0.000     1.007       14  *ActionView::PartialRenderer#render_partial
-#   0.00      0.930     0.000     0.000     0.930       14   Hamlit::TemplateHandler#call
-#   0.00      0.928     0.000     0.000     0.928       14   Temple::Engine#call
-#   0.02      0.865     0.000     0.000     0.864      638  *Enumerable#inject
-```
-
-To print the profile in HTML format, use the following example:
-
-```ruby
-result = Gitlab::Profiler.profile('/my-user')
-
-printer = RubyProf::CallStackPrinter.new(result)
-printer.print(File.open('/tmp/profile.html', 'w'))
-```
-
-### Stackprof support
-
-By default, `Gitlab::Profiler.profile` uses a tracing profiler called [`ruby-prof`](https://ruby-prof.github.io/). However, sampling profilers
-[run faster and use less memory](https://jvns.ca/blog/2017/12/17/how-do-ruby---python-profilers-work-/), so they might be preferred.
-
-You can switch to [Stackprof](https://github.com/tmm1/stackprof) (a sampling profiler) to generate a profile by passing `sampling_mode: true`.
 Pass in a `profiler_options` hash to configure the output file (`out`) of the sampling data. For example:
 
 ```ruby
-Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, sampling_mode: true, profiler_options: { out: 'tmp/profile.dump' })
+Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, profiler_options: { out: 'tmp/profile.dump' })
 ```
+
+## Reading a GitLab::Profiler report
 
 You can get a summary of where time was spent by running Stackprof against the sampling data. For example:
 

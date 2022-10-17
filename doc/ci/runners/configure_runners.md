@@ -915,12 +915,8 @@ To determine which runners need to be upgraded:
 
 ## Authentication token security
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
-[enable the feature flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`.
-On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
 
 Each runner has an [authentication token](../../api/runners.md#registration-and-authentication-tokens)
 to connect with the GitLab instance.

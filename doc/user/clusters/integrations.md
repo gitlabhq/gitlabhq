@@ -88,11 +88,11 @@ Prometheus as long as you meet the requirements above.
 To enable the Prometheus integration for your cluster:
 
 1. Go to the cluster's page:
-      - For a [project-level cluster](../project/clusters/index.md), navigate to your project's
+      - For a [project-level cluster](../project/clusters/index.md), go to your project's
       **Infrastructure > Kubernetes clusters**.
-      - For a [group-level cluster](../group/clusters/index.md), navigate to your group's
+      - For a [group-level cluster](../group/clusters/index.md), go to your group's
       **Kubernetes** page.
-      - For an [instance-level cluster](../instance/clusters/index.md), navigate to your instance's
+      - For an [instance-level cluster](../instance/clusters/index.md), go to your instance's
       **Kubernetes** page.
 1. Select the **Integrations** tab.
 1. Check the **Enable Prometheus integration** checkbox.

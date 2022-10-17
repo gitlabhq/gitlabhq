@@ -4,16 +4,12 @@
 - link_end = '</a>'.html_safe
 
 - if hook.rate_limited?
-  - support_path = 'https://support.gitlab.com/hc/en-us/requests/new'
-  - placeholders = { strong_start: strong_start,
-    strong_end: strong_end,
-    limit: hook.rate_limit,
-    support_link_start: link_start % { url: support_path },
-    support_link_end: link_end }
-  = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook was automatically disabled'),
+  - placeholders = { limit: number_with_delimiter(hook.rate_limit),
+    root_namespace: hook.parent.root_namespace.path }
+  = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook rate limit has been reached'),
     variant: :danger) do |c|
     = c.body do
-      = s_('Webhooks|The webhook was triggered more than %{limit} times per minute and is now disabled. To re-enable this webhook, fix the problems shown in %{strong_start}Recent events%{strong_end}, then re-test your settings. %{support_link_start}Contact Support%{support_link_end} if you need help re-enabling your webhook.').html_safe % placeholders
+      = s_("Webhooks|Webhooks for %{root_namespace} are now disabled because they've been triggered more than %{limit} times per minute. They'll be automatically re-enabled in the next minute.").html_safe % placeholders
 - elsif hook.permanently_disabled?
   = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook failed to connect'),
     variant: :danger) do |c|

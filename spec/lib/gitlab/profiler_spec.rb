@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Profiler do
     end
 
     it 'returns a profile result' do
-      expect(described_class.profile('/')).to be_an_instance_of(RubyProf::Profile)
+      expect(described_class.profile('/')).to be_an_instance_of(File)
     end
 
     it 'uses the custom logger given' do
@@ -59,28 +59,26 @@ RSpec.describe Gitlab::Profiler do
       described_class.profile('/', user: user, private_token: private_token)
     end
 
-    context 'with sampling profiler' do
-      it 'generates sampling data' do
-        user = double(:user)
-        temp_data = Tempfile.new
+    it 'generates sampling data' do
+      user = double(:user)
+      temp_data = Tempfile.new
 
-        expect(described_class).to receive(:with_user).with(user).and_call_original
-        described_class.profile('/', user: user, sampling_mode: true, profiler_options: { out: temp_data.path })
+      expect(described_class).to receive(:with_user).with(user).and_call_original
+      described_class.profile('/', user: user, profiler_options: { out: temp_data.path })
 
-        expect(File.stat(temp_data).size).to be > 0
-        File.unlink(temp_data)
-      end
+      expect(File.stat(temp_data).size).to be > 0
+      File.unlink(temp_data)
+    end
 
-      it 'saves sampling data with a randomly-generated filename' do
-        user = double(:user)
+    it 'saves sampling data with a randomly-generated filename' do
+      user = double(:user)
 
-        expect(described_class).to receive(:with_user).with(user).and_call_original
-        result = described_class.profile('/', user: user, sampling_mode: true)
+      expect(described_class).to receive(:with_user).with(user).and_call_original
+      result = described_class.profile('/', user: user)
 
-        expect(result).to be_a(File)
-        expect(File.stat(result.path).size).to be > 0
-        File.unlink(result.path)
-      end
+      expect(result).to be_a(File)
+      expect(File.stat(result.path).size).to be > 0
+      File.unlink(result.path)
     end
   end
 
@@ -209,56 +207,6 @@ RSpec.describe Gitlab::Profiler do
       expect(null_logger).not_to receive(:info)
 
       expect(described_class.log_load_times_by_model(null_logger)).to be_nil
-    end
-  end
-
-  describe '.print_by_total_time' do
-    let(:stdout) { StringIO.new }
-    let(:regexp) { /^\s+\d+\.\d+\s+(\d+\.\d+)/ }
-
-    let(:output) do
-      stdout.rewind
-      stdout.read
-    end
-
-    let_it_be(:result) do
-      Thread.new { sleep 1 }
-
-      RubyProf.profile do
-        sleep 0.1
-        1.to_s
-      end
-    end
-
-    around do |example|
-      original_stdout = $stdout
-
-      $stdout = stdout # rubocop: disable RSpec/ExpectOutput
-      example.run
-      $stdout = original_stdout # rubocop: disable RSpec/ExpectOutput
-    end
-
-    it 'prints a profile result sorted by total time' do
-      described_class.print_by_total_time(result)
-
-      expect(output).to include('Kernel#sleep')
-
-      thread_profiles = output.split('Sort by: total_time').select { |x| x =~ regexp }
-
-      thread_profiles.each do |profile|
-        total_times =
-          profile
-            .scan(regexp)
-            .map { |(total)| total.to_f }
-
-        expect(total_times).to eq(total_times.sort.reverse)
-      end
-    end
-
-    it 'accepts a max_percent option' do
-      described_class.print_by_total_time(result, max_percent: 50)
-
-      expect(output).not_to include('Kernel#sleep')
     end
   end
 end

@@ -1,4 +1,4 @@
-%aside.nav-sidebar.qa-admin-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), 'aria-label': _('Admin navigation') }
+%aside.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?), 'aria-label': _('Admin navigation'), data: { qa_selector: 'admin_sidebar_content' } }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to admin_root_path, title: _('Admin Overview'), class: 'has-tooltip', data: { container: 'body', placement: 'right' } do
@@ -6,7 +6,7 @@
           = sprite_icon('admin', size: 18)
         %span.sidebar-context-title
           = _('Admin Area')
-    %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_sidebar_overview_submenu_content' } }
+    %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_overview_submenu_content' } }
       = nav_link(controller: %w[dashboard admin admin/projects users groups admin/topics jobs runners gitaly_servers cohorts], html_options: {class: 'home'}) do
         = link_to admin_root_path, class: 'has-sub-items' do
           .nav-icon-container
@@ -28,15 +28,15 @@
               %span
                 = _('Projects')
           = nav_link(controller: %w[users cohorts]) do
-            = link_to admin_users_path, title: _('Users'), data: { qa_selector: 'users_overview_link' } do
+            = link_to admin_users_path, title: _('Users'), data: { qa_selector: 'admin_overview_users_link' } do
               %span
                 = _('Users')
           = nav_link(controller: :groups) do
-            = link_to admin_groups_path, title: _('Groups'), data: { qa_selector: 'groups_overview_link' } do
+            = link_to admin_groups_path, title: _('Groups'), data: { qa_selector: 'admin_overview_groups_link' } do
               %span
                 = _('Groups')
           = nav_link(controller: [:admin, 'admin/topics']) do
-            = link_to admin_topics_path, title: _('Topics'), data: { qa_selector: 'topics_overview_link' } do
+            = link_to admin_topics_path, title: _('Topics') do
               %span
                 = _('Topics')
           = nav_link path: 'jobs#index' do
@@ -75,13 +75,13 @@
                 = _('Usage Trends')
 
       = nav_link(controller: admin_monitoring_nav_links) do
-        = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' }, class: 'has-sub-items' do
+        = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_menu_link' }, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('monitor')
           %span.nav-item-name
             = _('Monitoring')
 
-        %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_monitoring_submenu_content' } }
+        %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_monitoring_submenu_content' } }
           = nav_link(controller: admin_monitoring_nav_links, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_system_info_path do
               %strong.fly-out-top-item-name
@@ -222,10 +222,10 @@
         = link_to general_admin_application_settings_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('settings')
-          %span.nav-item-name.qa-admin-settings-item
+          %span.nav-item-name{ data: { qa_selector: 'admin_settings_menu_link' } }
             = _('Settings')
 
-        %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_settings_submenu_content' } }
+        %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_settings_submenu_content' } }
           -# This active_nav_link check is also used in `app/views/layouts/admin.html.haml`
           = nav_link(controller: [:application_settings, :integrations, :appearances], html_options: { class: "fly-out-top-item" } ) do
             = link_to general_admin_application_settings_path do
@@ -233,24 +233,24 @@
                 = _('Settings')
             %li.divider.fly-out-top-item
             = nav_link(path: 'application_settings#general') do
-              = link_to general_admin_application_settings_path, title: _('General'), class: 'qa-admin-settings-general-item' do
+              = link_to general_admin_application_settings_path, title: _('General'), data: { qa_selector: 'admin_settings_general_link' } do
                 %span
                   = _('General')
 
-            = render_if_exists 'layouts/nav/sidebar/advanced_search', class: 'qa-admin-settings-advanced-search'
+            = render_if_exists 'layouts/nav/sidebar/advanced_search', data: { qa_selector: 'admin_settings_advanced_search_link' }
 
             - if instance_level_integrations?
               = nav_link(path: ['application_settings#integrations', 'integrations#edit']) do
-                = link_to integrations_admin_application_settings_path, title: _('Integrations'), data: { qa_selector: 'integration_settings_link' } do
+                = link_to integrations_admin_application_settings_path, title: _('Integrations'), data: { qa_selector: 'admin_settings_integrations_link' } do
                   %span
                     = _('Integrations')
             = nav_link(path: 'application_settings#repository') do
-              = link_to repository_admin_application_settings_path, title: _('Repository'), class: 'qa-admin-settings-repository-item' do
+              = link_to repository_admin_application_settings_path, title: _('Repository'), data: { qa_selector: 'admin_settings_repository_link' } do
                 %span
                   = _('Repository')
             - if Gitlab.ee? && License.feature_available?(:custom_file_templates)
               = nav_link(path: 'application_settings#templates') do
-                = link_to templates_admin_application_settings_path, title: _('Templates'), class: 'qa-admin-settings-template-item' do
+                = link_to templates_admin_application_settings_path, title: _('Templates'), data: { qa_selector: 'admin_settings_templates_link' } do
                   %span
                     = _('Templates')
             = nav_link(path: 'application_settings#ci_cd') do
@@ -262,7 +262,7 @@
                 %span
                   = _('Reporting')
             = nav_link(path: 'application_settings#metrics_and_profiling') do
-              = link_to metrics_and_profiling_admin_application_settings_path, title: _('Metrics and profiling'), class: 'qa-admin-settings-metrics-and-profiling-item' do
+              = link_to metrics_and_profiling_admin_application_settings_path, title: _('Metrics and profiling'), data: { qa_selector: 'admin_settings_metrics_and_profiling_link' } do
                 %span
                   = _('Metrics and profiling')
             = nav_link(path: ['application_settings#service_usage_data']) do
@@ -270,7 +270,7 @@
                 %span
                   = _('Service usage data')
             = nav_link(path: 'application_settings#network') do
-              = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_item' } do
+              = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_link' } do
                 %span
                   = _('Network')
             = nav_link(controller: :appearances ) do

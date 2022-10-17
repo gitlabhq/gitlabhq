@@ -101,6 +101,11 @@ describe('GroupRunnerShowApp', () => {
                         Platform darwin
                         Configuration Runs untagged jobs
                         Maximum job timeout None
+                        Token expiry
+                        Runner authentication token expiration
+                        Runner authentication tokens will expire based on a set interval.
+                        They will automatically rotate once expired. Learn more
+                        Never expires
                         Tags None`.replace(/\s+/g, ' ');
 
       expect(wrapper.text().replace(/\s+/g, ' ')).toContain(expected);

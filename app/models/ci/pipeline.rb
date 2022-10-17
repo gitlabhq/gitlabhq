@@ -617,6 +617,15 @@ module Ci
     # auto_canceled_by_pipeline_id - store the pipeline_id of the pipeline that triggered cancellation
     # execute_async - if true cancel the children asyncronously
     def cancel_running(retries: 1, cascade_to_children: true, auto_canceled_by_pipeline_id: nil, execute_async: true)
+      Gitlab::AppJsonLogger.info(
+        event: 'pipeline_cancel_running',
+        pipeline_id: id,
+        auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id,
+        cascade_to_children: cascade_to_children,
+        execute_async: execute_async,
+        **Gitlab::ApplicationContext.current
+      )
+
       update(auto_canceled_by_id: auto_canceled_by_pipeline_id) if auto_canceled_by_pipeline_id
 
       cancel_jobs(cancelable_statuses, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)

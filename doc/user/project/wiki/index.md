@@ -390,6 +390,11 @@ line of your Apache configuration to ensure your page slugs render correctly.
 WARNING:
 This operation deletes all data in the wiki.
 
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the
+right conditions. We highly recommend running them in a test environment with a backup of the
+instance ready to be restored, just in case.
+
 To clear all data from a project wiki and recreate it in a blank state:
 
 1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).

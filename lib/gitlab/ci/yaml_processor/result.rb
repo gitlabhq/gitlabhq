@@ -36,6 +36,10 @@ module Gitlab
           @workflow_rules ||= @ci_config.workflow_rules
         end
 
+        def workflow_name
+          @workflow_name ||= @ci_config.workflow_name&.strip
+        end
+
         def root_variables
           @root_variables ||= transform_to_array(@ci_config.variables)
         end

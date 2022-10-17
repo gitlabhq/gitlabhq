@@ -16,7 +16,13 @@ export default function initWorkItemLinks() {
     return;
   }
 
-  const { projectPath, wiHasIssueWeightsFeature, iid } = workItemLinksRoot.dataset;
+  const {
+    projectPath,
+    wiHasIssueWeightsFeature,
+    iid,
+    wiHasIterationsFeature,
+    projectNamespace,
+  } = workItemLinksRoot.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -31,6 +37,8 @@ export default function initWorkItemLinks() {
       iid,
       fullPath: projectPath,
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
+      hasIterationsFeature: wiHasIterationsFeature,
+      projectNamespace,
     },
     render: (createElement) =>
       createElement('work-item-links', {

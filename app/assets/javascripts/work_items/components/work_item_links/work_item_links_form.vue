@@ -16,7 +16,7 @@ export default {
     GlFormGroup,
     GlFormInput,
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'hasIterationsFeature'],
   props: {
     issuableGid: {
       type: String,
@@ -32,6 +32,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    parentIteration: {
+      type: Object,
+      required: false,
+      default: () => {},
     },
   },
   apollo: {
@@ -76,6 +81,9 @@ export default {
     },
     taskWorkItemType() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
+    },
+    parentIterationId() {
+      return this.parentIteration?.id;
     },
   },
   methods: {
@@ -133,6 +141,13 @@ export default {
           } else {
             this.unsetError();
             this.$emit('addWorkItemChild', data.workItemCreate.workItem);
+            /**
+             * call update mutation only when there is an iteration associated with the issue
+             */
+            // TODO: setting the iteration should be moved to the creation mutation once the backend is done
+            if (this.parentIterationId && this.hasIterationsFeature) {
+              this.addIterationToWorkItem(data.workItemCreate.workItem.id);
+            }
           }
         })
         .catch(() => {
@@ -142,6 +157,19 @@ export default {
           this.search = '';
           this.childToCreateTitle = null;
         });
+    },
+    async addIterationToWorkItem(workItemId) {
+      await this.$apollo.mutate({
+        mutation: updateWorkItemMutation,
+        variables: {
+          input: {
+            id: workItemId,
+            iterationWidget: {
+              iterationId: this.parentIterationId,
+            },
+          },
+        },
+      });
     },
   },
   i18n: {

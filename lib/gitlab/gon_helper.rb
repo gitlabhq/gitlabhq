@@ -56,7 +56,6 @@ module Gitlab
       push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:new_header_search)
       push_frontend_feature_flag(:source_editor_toolbar)
-      push_frontend_feature_flag(:gl_listbox_for_sort_dropdowns)
       push_frontend_feature_flag(:integration_slack_app_notifications)
     end
 

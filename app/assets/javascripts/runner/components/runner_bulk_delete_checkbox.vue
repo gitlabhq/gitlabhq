@@ -26,14 +26,17 @@ export default {
     },
   },
   computed: {
+    deletableRunners() {
+      return this.runners.filter((runner) => runner.userPermissions?.deleteRunner);
+    },
     disabled() {
-      return !this.runners.length;
+      return !this.deletableRunners.length;
     },
     checked() {
-      return Boolean(this.runners.length) && this.runners.every(this.isChecked);
+      return Boolean(this.deletableRunners.length) && this.deletableRunners.every(this.isChecked);
     },
     indeterminate() {
-      return !this.checked && this.runners.some(this.isChecked);
+      return !this.checked && this.deletableRunners.some(this.isChecked);
     },
     label() {
       return this.checked ? s__('Runners|Unselect all') : s__('Runners|Select all');
@@ -45,7 +48,7 @@ export default {
     },
     onChange($event) {
       this.localMutations.setRunnersChecked({
-        runners: this.runners,
+        runners: this.deletableRunners,
         isChecked: $event,
       });
     },

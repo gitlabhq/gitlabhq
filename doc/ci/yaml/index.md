@@ -398,6 +398,30 @@ Use [`workflow`](workflow.md) to control pipeline behavior.
 - [`workflow: rules` examples](workflow.md#workflow-rules-examples)
 - [Switch between branch pipelines and merge request pipelines](workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
 
+#### `workflow:name`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `pipeline_name`.
+The feature is not ready for production use.
+
+You can use `name` in `workflow:` to define a name for pipelines.
+
+All pipelines are assigned the defined name. Any leading or trailing spaces in the name are removed.
+
+**Possible inputs**:
+
+- A string.
+
+**Example of `workflow:name`**:
+
+```yaml
+workflow:
+  name: 'Pipeline name'
+```
+
 #### `workflow:rules`
 
 The `rules` keyword in `workflow` is similar to [`rules` defined in jobs](#rules),

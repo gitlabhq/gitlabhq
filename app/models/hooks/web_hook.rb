@@ -7,7 +7,7 @@ class WebHook < ApplicationRecord
 
   MAX_FAILURES = 100
   FAILURE_THRESHOLD = 3 # three strikes
-  INITIAL_BACKOFF = 10.minutes
+  INITIAL_BACKOFF = 1.minute
   MAX_BACKOFF = 1.day
   BACKOFF_GROWTH_FACTOR = 2.0
 

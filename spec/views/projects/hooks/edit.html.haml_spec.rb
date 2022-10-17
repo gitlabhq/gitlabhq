@@ -27,7 +27,7 @@ RSpec.describe 'projects/hooks/edit' do
     it 'renders alert' do
       render
 
-      expect(rendered).to have_text(s_('Webhooks|Webhook was automatically disabled'))
+      expect(rendered).to have_text(s_('Webhooks|Webhook rate limit has been reached'))
     end
   end
 

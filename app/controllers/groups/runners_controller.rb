@@ -5,10 +5,6 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :authorize_update_runner!, only: [:edit, :update, :destroy, :pause, :resume]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
-  before_action only: [:show] do
-    push_frontend_feature_flag(:enforce_runner_token_expires_at)
-  end
-
   feature_category :runner
   urgency :low
 

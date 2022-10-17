@@ -25,12 +25,7 @@ describe('RunnerDetails', () => {
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
 
-  const createComponent = ({
-    props = {},
-    stubs,
-    mountFn = shallowMountExtended,
-    enforceRunnerTokenExpiresAt = false,
-  } = {}) => {
+  const createComponent = ({ props = {}, stubs, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerDetails, {
       propsData: {
         ...props,
@@ -38,9 +33,6 @@ describe('RunnerDetails', () => {
       stubs: {
         RunnerDetail,
         ...stubs,
-      },
-      provide: {
-        glFeatures: { enforceRunnerTokenExpiresAt },
       },
     });
   };
@@ -82,7 +74,6 @@ describe('RunnerDetails', () => {
               ...runner,
             },
           },
-          enforceRunnerTokenExpiresAt: true,
           stubs: {
             GlIntersperse,
             GlSprintf,
@@ -133,23 +124,6 @@ describe('RunnerDetails', () => {
 
       it('Shows a group runner details', () => {
         expect(findDetailGroups().props('runner')).toEqual(mockGroupRunner);
-      });
-    });
-
-    describe('Token expiration field', () => {
-      it.each`
-        case                                            | flag     | shown
-        ${'is shown when feature flag is enabled'}      | ${true}  | ${true}
-        ${'is not shown when feature flag is disabled'} | ${false} | ${false}
-      `('$case', ({ flag, shown }) => {
-        createComponent({
-          props: {
-            runner: mockGroupRunner,
-          },
-          enforceRunnerTokenExpiresAt: flag,
-        });
-
-        expect(findDd('Token expiry', wrapper).exists()).toBe(shown);
       });
     });
   });

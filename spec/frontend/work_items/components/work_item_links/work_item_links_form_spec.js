@@ -28,6 +28,7 @@ describe('WorkItemLinksForm', () => {
     listResponse = availableWorkItemsResponse,
     typesResponse = projectWorkItemTypesQueryResponse,
     parentConfidential = false,
+    hasIterationsFeature = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
@@ -39,6 +40,7 @@ describe('WorkItemLinksForm', () => {
       propsData: { issuableGid: 'gid://gitlab/WorkItem/1', parentConfidential },
       provide: {
         projectPath: 'project/path',
+        hasIterationsFeature,
       },
     });
 

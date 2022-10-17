@@ -1,0 +1,9 @@
+query issuableDetails($fullPath: ID!, $iid: String) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    issuable: issue(iid: $iid) {
+      id
+      confidential
+    }
+  }
+}

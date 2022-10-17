@@ -26,8 +26,6 @@ module.exports = {
   entry: {
     vendor: [
       'jquery/dist/jquery.slim.js',
-      'pdfjs-dist/build/pdf',
-      'pdfjs-dist/build/pdf.worker.min',
       'core-js',
       'echarts',
       'lodash',

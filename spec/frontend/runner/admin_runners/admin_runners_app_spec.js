@@ -20,8 +20,6 @@ import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerStackedLayoutBanner from '~/runner/components/runner_stacked_layout_banner.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
-import RunnerBulkDelete from '~/runner/components/runner_bulk_delete.vue';
-import RunnerBulkDeleteCheckbox from '~/runner/components/runner_bulk_delete_checkbox.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
@@ -84,8 +82,6 @@ const COUNT_QUERIES = 7; // 4 tabs + 3 status queries
 
 describe('AdminRunnersApp', () => {
   let wrapper;
-  let cacheConfig;
-  let localMutations;
   let showToast;
 
   const findRunnerStackedLayoutBanner = () => wrapper.findComponent(RunnerStackedLayoutBanner);
@@ -93,8 +89,6 @@ describe('AdminRunnersApp', () => {
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
-  const findRunnerBulkDelete = () => wrapper.findComponent(RunnerBulkDelete);
-  const findRunnerBulkDeleteCheckbox = () => wrapper.findComponent(RunnerBulkDeleteCheckbox);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
@@ -107,7 +101,7 @@ describe('AdminRunnersApp', () => {
     provide,
     ...options
   } = {}) => {
-    ({ cacheConfig, localMutations } = createLocalState());
+    const { cacheConfig, localMutations } = createLocalState();
 
     const handlers = [
       [allRunnersQuery, mockRunnersHandler],
@@ -373,37 +367,8 @@ describe('AdminRunnersApp', () => {
         await createComponent({ mountFn: mountExtended });
       });
 
-      it('runner bulk delete is available', () => {
-        expect(findRunnerBulkDelete().props('runners')).toEqual(mockRunners);
-      });
-
-      it('runner bulk delete checkbox is available', () => {
-        expect(findRunnerBulkDeleteCheckbox().props('runners')).toEqual(mockRunners);
-      });
-
       it('runner list is checkable', () => {
         expect(findRunnerList().props('checkable')).toBe(true);
-      });
-
-      it('responds to checked items by updating the local cache', () => {
-        const setRunnerCheckedMock = jest
-          .spyOn(localMutations, 'setRunnerChecked')
-          .mockImplementation(() => {});
-
-        const runner = mockRunners[0];
-
-        expect(setRunnerCheckedMock).toHaveBeenCalledTimes(0);
-
-        findRunnerList().vm.$emit('checked', {
-          runner,
-          isChecked: true,
-        });
-
-        expect(setRunnerCheckedMock).toHaveBeenCalledTimes(1);
-        expect(setRunnerCheckedMock).toHaveBeenCalledWith({
-          runner,
-          isChecked: true,
-        });
       });
     });
 
@@ -415,7 +380,7 @@ describe('AdminRunnersApp', () => {
       it('count data is refetched', async () => {
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
-        findRunnerBulkDelete().vm.$emit('deleted', { message: 'Runners deleted' });
+        findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
 
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES * 2);
       });
@@ -423,7 +388,7 @@ describe('AdminRunnersApp', () => {
       it('toast is shown', async () => {
         expect(showToast).toHaveBeenCalledTimes(0);
 
-        findRunnerBulkDelete().vm.$emit('deleted', { message: 'Runners deleted' });
+        findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
 
         expect(showToast).toHaveBeenCalledTimes(1);
         expect(showToast).toHaveBeenCalledWith('Runners deleted');

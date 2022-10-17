@@ -103,6 +103,7 @@
     "workflow": {
       "type": "object",
       "properties": {
+        "name": { "$ref": "#/definitions/workflowName" },
         "rules": {
           "type": "array",
           "items": {
@@ -713,6 +714,12 @@
           }
         ]
       }
+    },
+    "workflowName": {
+      "type": "string",
+      "markdownDescription": "Defines the pipeline name. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#workflowname).",
+      "minLength": 1,
+      "maxLength": 255
     },
     "globalVariables": {
       "markdownDescription": "Defines default variables for all jobs. Job level property overrides global variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",

@@ -186,7 +186,7 @@ When you use the `/add_contacts` or `/remove_contacts` quick actions, follow the
 
 The root group is the topmost group in the group hierarchy.
 
-When you move an issue, project, or group **within the same group hierarchy**,
+When you move an issue, project, or group **in the same group hierarchy**,
 issues retain their contacts.
 
 When you move an issue or project and the **root group changes**,

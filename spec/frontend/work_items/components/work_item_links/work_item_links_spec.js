@@ -5,7 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
+import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -21,16 +21,29 @@ import {
 
 Vue.use(VueApollo);
 
-const issueConfidentialityResponse = (confidential = false) => ({
+const issueDetailsResponse = (confidential = false) => ({
   data: {
     workspace: {
-      id: '1',
-      __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
       issuable: {
-        __typename: 'Issue',
         id: 'gid://gitlab/Issue/4',
         confidential,
+        iteration: {
+          id: 'gid://gitlab/Iteration/1124',
+          title: null,
+          startDate: '2022-06-22',
+          dueDate: '2022-07-19',
+          webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/iterations/1124',
+          iterationCadence: {
+            id: 'gid://gitlab/Iterations::Cadence/1101',
+            title: 'Quod voluptates quidem ea eaque eligendi ex corporis.',
+            __typename: 'IterationCadence',
+          },
+          __typename: 'Iteration',
+        },
+        __typename: 'Issue',
       },
+      __typename: 'Project',
     },
   },
 });
@@ -55,14 +68,15 @@ describe('WorkItemLinks', () => {
     data = {},
     fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse),
     mutationHandler = mutationChangeParentHandler,
-    confidentialQueryHandler = jest.fn().mockResolvedValue(issueConfidentialityResponse()),
+    issueDetailsQueryHandler = jest.fn().mockResolvedValue(issueDetailsResponse()),
+    hasIterationsFeature = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
         [getWorkItemLinksQuery, fetchHandler],
         [changeWorkItemParentMutation, mutationHandler],
         [workItemQuery, childWorkItemQueryHandler],
-        [issueConfidentialQuery, confidentialQueryHandler],
+        [issueDetailsQuery, issueDetailsQueryHandler],
       ],
       {},
       { addTypename: true },
@@ -77,6 +91,7 @@ describe('WorkItemLinks', () => {
       provide: {
         projectPath: 'project/path',
         iid: '1',
+        hasIterationsFeature,
       },
       propsData: { issuableId: 1 },
       apolloProvider: mockApollo,
@@ -266,7 +281,7 @@ describe('WorkItemLinks', () => {
   describe('when parent item is confidential', () => {
     it('passes correct confidentiality status to form', async () => {
       await createComponent({
-        confidentialQueryHandler: jest.fn().mockResolvedValue(issueConfidentialityResponse(true)),
+        issueDetailsQueryHandler: jest.fn().mockResolvedValue(issueDetailsResponse(true)),
       });
       findToggleAddFormButton().vm.$emit('click');
       await nextTick();

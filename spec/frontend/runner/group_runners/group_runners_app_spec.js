@@ -14,6 +14,7 @@ import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
+import { createLocalState } from '~/runner/graphql/list/local_state';
 
 import RunnerStackedLayoutBanner from '~/runner/components/runner_stacked_layout_banner.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
@@ -101,13 +102,15 @@ describe('GroupRunnersApp', () => {
     mountFn = shallowMountExtended,
     ...options
   } = {}) => {
+    const { cacheConfig, localMutations } = createLocalState();
+
     const handlers = [
       [groupRunnersQuery, mockGroupRunnersHandler],
       [groupRunnersCountQuery, mockGroupRunnersCountHandler],
     ];
 
     wrapper = mountFn(GroupRunnersApp, {
-      apolloProvider: createMockApollo(handlers),
+      apolloProvider: createMockApollo(handlers, {}, cacheConfig),
       propsData: {
         registrationToken: mockRegistrationToken,
         groupFullPath: mockGroupFullPath,
@@ -115,6 +118,7 @@ describe('GroupRunnersApp', () => {
         ...props,
       },
       provide: {
+        localMutations,
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
         emptyStateSvgPath,
@@ -260,7 +264,7 @@ describe('GroupRunnersApp', () => {
     const { id: graphqlId, shortSha } = node;
     const id = getIdFromGraphQLId(graphqlId);
     const COUNT_QUERIES = 6; // Smart queries that display a filtered count of runners
-    const FILTERED_COUNT_QUERIES = 3; // Smart queries that display a count of runners in tabs
+    const FILTERED_COUNT_QUERIES = 6; // Smart queries that display a count of runners in tabs and single stats
 
     beforeEach(async () => {
       await createComponent({ mountFn: mountExtended });
@@ -385,6 +389,11 @@ describe('GroupRunnersApp', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
     expect(findRunnerPagination().attributes('disabled')).toBe('true');
+  });
+
+  it('runners cannot be deleted in bulk', () => {
+    createComponent();
+    expect(findRunnerList().props('checkable')).toBe(false);
   });
 
   describe('when no runners are found', () => {

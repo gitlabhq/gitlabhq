@@ -14,7 +14,7 @@ module Ci
     include Presentable
     include EachBatch
 
-    add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
+    add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration
 
     enum access_level: {
       not_protected: 0,
@@ -478,10 +478,6 @@ module Ci
       when 'project_type'
         compute_token_expiration_project
       end
-    end
-
-    def self.token_expiration_enforced?
-      Feature.enabled?(:enforce_runner_token_expires_at)
     end
 
     private

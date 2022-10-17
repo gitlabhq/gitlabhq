@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Profile bundled RuboCop version.
+#
+# See https://github.com/rubocop/rubocop/blob/master/bin/rubocop-profile
+
+if ARGV.include?('-h') || ARGV.include?('--help')
+  puts "Usage: same as main `rubocop` command but gathers profiling info"
+  puts "Additional option: `--memory` to print memory usage"
+  exit(0)
+end
+with_mem = ARGV.delete('--memory')
+ARGV.unshift '--cache', 'false' unless ARGV.include?('--cache')
+
+require 'stackprof'
+if with_mem
+  require 'memory_profiler'
+  MemoryProfiler.start
+end
+StackProf.start
+start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+begin
+  require 'rubocop'
+
+  exit RuboCop::CLI.new.run
+ensure
+  delta = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+  puts "Finished in #{delta.round(1)} seconds"
+  StackProf.stop
+  if with_mem
+    puts "Building memory report..."
+    report = MemoryProfiler.stop
+  end
+  Dir.mkdir('tmp') unless File.exist?('tmp')
+  StackProf.results('tmp/stackprof.dump')
+  report&.pretty_print(scale_bytes: true)
+  puts "StackProf written to `tmp/stackprof.dump`."
+end

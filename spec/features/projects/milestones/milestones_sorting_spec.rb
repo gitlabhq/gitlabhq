@@ -21,7 +21,6 @@ RSpec.describe 'Milestones sorting', :js do
   end
 
   before do
-    stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
     create(:milestone, start_date: 7.days.from_now, due_date: 10.days.from_now, title: "a", project: project)
     create(:milestone, start_date: 6.days.from_now, due_date: 11.days.from_now, title: "c", project: project)
     create(:milestone, start_date: 5.days.from_now, due_date: 12.days.from_now, title: "b", project: project)
@@ -43,10 +42,10 @@ RSpec.describe 'Milestones sorting', :js do
     milestones_for_sort_by.each do |sort_by, expected_milestones|
       within '[data-testid=milestone_sort_by_dropdown]' do
         click_button selected_sort_order
-        milestones = find('.gl-new-dropdown-contents').all('.gl-new-dropdown-item-text-wrapper p').map(&:text)
+        milestones = find('ul[role="listbox"]').all('li').map(&:text)
         expect(milestones).to eq(ordered_milestones)
 
-        click_button sort_by
+        find('li', text: sort_by).click
         expect(page).to have_button(sort_by)
       end
 

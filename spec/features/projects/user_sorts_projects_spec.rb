@@ -42,7 +42,6 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context "from explore projects", :js do
     before do
-      stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
       sign_in(user)
       visit(explore_projects_path)
       find('#sort-projects-dropdown').click
@@ -54,7 +53,6 @@ RSpec.describe 'User sorts projects and order persists' do
 
   context 'from dashboard projects', :js do
     before do
-      stub_feature_flags(gl_listbox_for_sort_dropdowns: false)
       sign_in(user)
       visit(dashboard_projects_path)
       find('#sort-projects-dropdown').click
