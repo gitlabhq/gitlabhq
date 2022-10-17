@@ -37,7 +37,8 @@ module Resolvers
 
     def preloads
       {
-        last_edited_by: :last_edited_by
+        last_edited_by: :last_edited_by,
+        web_url: { project: { namespace: :route } }
       }
     end
 

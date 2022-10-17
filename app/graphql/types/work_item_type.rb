@@ -4,6 +4,8 @@ module Types
   class WorkItemType < BaseObject
     graphql_name 'WorkItem'
 
+    implements(Types::TodoableInterface)
+
     authorize :read_work_item
 
     field :closed_at, Types::TimeType, null: true,
@@ -42,5 +44,9 @@ module Types
     markdown_field :description_html, null: true
 
     expose_permissions Types::PermissionTypes::WorkItem
+
+    def web_url
+      Gitlab::UrlBuilder.build(object)
+    end
   end
 end

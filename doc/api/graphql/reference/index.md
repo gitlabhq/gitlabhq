@@ -19338,6 +19338,7 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
 | <a id="workitemupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the work item was last updated. |
 | <a id="workitemuserpermissions"></a>`userPermissions` | [`WorkItemPermissions!`](#workitempermissions) | Permissions for the current user on the resource. |
+| <a id="workitemweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 | <a id="workitemwidgets"></a>`widgets` | [`[WorkItemWidget!]`](#workitemwidget) | Collection of widgets that belong to the work item. |
 | <a id="workitemworkitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Type assigned to the work item. |
 
@@ -21167,6 +21168,7 @@ Category of error.
 | <a id="todotargetenumepic"></a>`EPIC` | An Epic. |
 | <a id="todotargetenumissue"></a>`ISSUE` | Issue. |
 | <a id="todotargetenummergerequest"></a>`MERGEREQUEST` | Merge request. |
+| <a id="todotargetenumworkitem"></a>`WORKITEM` | Work item. |
 
 ### `TrainingUrlRequestStatus`
 
@@ -22457,6 +22459,7 @@ Implementations:
 - [`EpicIssue`](#epicissue)
 - [`Issue`](#issue)
 - [`MergeRequest`](#mergerequest)
+- [`WorkItem`](#workitem)
 
 ##### Fields
 

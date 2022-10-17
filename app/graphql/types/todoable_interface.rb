@@ -10,6 +10,8 @@ module Types
 
     def self.resolve_type(object, context)
       case object
+      when WorkItem
+        Types::WorkItemType
       when Issue
         Types::IssueType
       when MergeRequest
