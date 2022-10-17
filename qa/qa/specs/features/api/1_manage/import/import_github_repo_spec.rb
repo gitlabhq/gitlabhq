@@ -3,7 +3,7 @@
 module QA
   # Spec uses real github.com, which means outage of github.com can actually block deployment
   # Keep spec in reliable bucket but don't run in blocking pipelines
-  RSpec.describe 'Manage', :github, :reliable, :skip_live_env, :requires_admin do
+  RSpec.describe 'Manage', :github, :reliable, :skip_live_env, :requires_admin, product_group: :import do
     describe 'Project import', issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/353583' do
       let!(:api_client) { Runtime::API::Client.as_admin }
       let!(:group) { Resource::Group.fabricate_via_api! { |resource| resource.api_client = api_client } }
