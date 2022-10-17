@@ -56,3 +56,9 @@ export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
 export const TOKEN_TITLE_ORGANIZATION = s__('Crm|Organization');
 export const TOKEN_TITLE_RELEASE = __('Release');
 export const TOKEN_TITLE_TYPE = __('Type');
+
+// As health status gets reused between issue lists and boards
+// this is in the shared constants. Until we have not decoupled the EE filtered search bar
+// from the CE component, we need to keep this in the CE code.
+// https://gitlab.com/gitlab-org/gitlab/-/issues/377838
+export const TOKEN_TYPE_HEALTH = 'health_status';

@@ -126,6 +126,7 @@ describe('BoardFilteredSearch', () => {
         { type: 'weight', value: { data: '2', operator: '=' } },
         { type: 'iteration', value: { data: 'Any&3', operator: '=' } },
         { type: 'release', value: { data: 'v1.0.0', operator: '=' } },
+        { type: 'health_status', value: { data: 'onTrack', operator: '=' } },
       ];
       jest.spyOn(urlUtility, 'updateHistory');
       findFilteredSearch().vm.$emit('onFilter', mockFilters);
@@ -134,7 +135,7 @@ describe('BoardFilteredSearch', () => {
         title: '',
         replace: true,
         url:
-          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label%262&assignee_username=root&milestone_title=New%20Milestone&iteration_id=Any&iteration_cadence_id=3&types=INCIDENT&weight=2&release_tag=v1.0.0',
+          'http://test.host/?author_username=root&label_name[]=label&label_name[]=label%262&assignee_username=root&milestone_title=New%20Milestone&iteration_id=Any&iteration_cadence_id=3&types=INCIDENT&weight=2&release_tag=v1.0.0&health_status=onTrack',
       });
     });
 
@@ -160,7 +161,9 @@ describe('BoardFilteredSearch', () => {
 
   describe('when url params are already set', () => {
     beforeEach(() => {
-      createComponent({ initialFilterParams: { authorUsername: 'root', labelName: ['label'] } });
+      createComponent({
+        initialFilterParams: { authorUsername: 'root', labelName: ['label'], healthStatus: 'Any' },
+      });
 
       jest.spyOn(store, 'dispatch');
     });
@@ -169,6 +172,7 @@ describe('BoardFilteredSearch', () => {
       expect(findFilteredSearch().props('initialFilterValue')).toEqual([
         { type: 'author', value: { data: 'root', operator: '=' } },
         { type: 'label', value: { data: 'label', operator: '=' } },
+        { type: 'health_status', value: { data: 'Any', operator: '=' } },
       ]);
     });
   });

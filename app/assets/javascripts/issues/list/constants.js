@@ -7,6 +7,7 @@ import {
   FILTER_UPCOMING,
   OPERATOR_IS,
   OPERATOR_IS_NOT,
+  TOKEN_TYPE_HEALTH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -148,7 +149,6 @@ export const TOKEN_TYPE_EPIC = 'epic_id';
 export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_CONTACT = 'crm_contact';
 export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
-export const TOKEN_TYPE_HEALTH = 'health_status';
 
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
 

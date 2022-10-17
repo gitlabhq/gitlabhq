@@ -624,8 +624,9 @@ by authorized users.
 Use [`when: delayed`](../yaml/index.md#when) to execute scripts after a waiting period, or if you want to avoid
 jobs immediately entering the `pending` state.
 
-You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time in seconds, unless a unit is
-provided. `start_in` must be less than or equal to one week. Examples of valid values include:
+You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time
+in seconds, unless a unit is provided. The minimum is one second, and the maximum is one week.
+Examples of valid values include:
 
 - `'5'` (a value with no unit must be surrounded by single quotes)
 - `5 seconds`

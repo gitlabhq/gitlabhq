@@ -76,7 +76,7 @@ module Glfm
       glfm_spec_txt_lines = ghfm_spec_txt_lines.dup
       replace_header(glfm_spec_txt_lines)
       replace_intro_section(glfm_spec_txt_lines)
-      insert_examples_txt(glfm_spec_txt_lines)
+      insert_examples(glfm_spec_txt_lines)
       glfm_spec_txt_lines.join('')
     end
 
@@ -103,9 +103,12 @@ module Glfm
       spec_txt_lines[ghfm_intro_header_begin_index, ghfm_intro_section_length] = glfm_intro_md_lines
     end
 
-    def insert_examples_txt(spec_txt_lines)
-      glfm_examples_txt_lines = File.open(GLFM_EXAMPLES_TXT_PATH).readlines
-      raise "Unable to read lines from #{GLFM_EXAMPLES_TXT_PATH}" if glfm_examples_txt_lines.empty?
+    def insert_examples(spec_txt_lines)
+      official_spec_lines = File.open(GLFM_OFFICIAL_SPECIFICATION_EXAMPLES_MD_PATH).readlines
+      raise "Unable to read lines from #{GLFM_OFFICIAL_SPECIFICATION_EXAMPLES_MD_PATH}" if official_spec_lines.empty?
+
+      internal_extension_lines = File.open(GLFM_INTERNAL_EXTENSION_EXAMPLES_MD_PATH).readlines
+      raise "Unable to read lines from #{GLFM_INTERNAL_EXTENSION_EXAMPLES_MD_PATH}" if internal_extension_lines.empty?
 
       ghfm_end_tests_comment_index = spec_txt_lines.index do |line|
         line =~ END_TESTS_COMMENT_LINE_TEXT
@@ -113,7 +116,13 @@ module Glfm
       raise "Unable to locate 'END TESTS' comment line in #{GHFM_SPEC_MD_PATH}" if ghfm_end_tests_comment_index.nil?
 
       # Insert the GLFM examples before the 'END TESTS' comment line
-      spec_txt_lines[ghfm_end_tests_comment_index - 1] = ["\n", glfm_examples_txt_lines, "\n"].flatten
+      spec_txt_lines[ghfm_end_tests_comment_index - 1] = [
+        "\n",
+        official_spec_lines,
+        "\n",
+        internal_extension_lines,
+        "\n"
+      ].flatten
 
       spec_txt_lines
     end

@@ -7638,7 +7638,7 @@
     <p data-sourcepos="1:1-1:19" dir="auto">Multiple     spaces</p>
   wysiwyg: |-
     <p>Multiple     spaces</p>
-07_01_00__gitlab_specific_markdown__footnotes__001:
+07_01_00__gitlab_official_specification_markdown__footnotes__001:
   canonical: |
     <p>
     footnote reference tag
@@ -7671,7 +7671,7 @@
   wysiwyg: |-
     <p>footnote reference tag <sup identifier="fortytwo">fortytwo</sup></p>
     <div node="footnoteDefinition(paragraph(&quot;footnote text&quot;))" htmlattributes="[object Object]"><p>footnote text</p></div>
-07_02_00__gitlab_specific_markdown__task_list_items__001:
+07_02_00__gitlab_official_specification_markdown__task_list_items__001:
   canonical: |
     <ul>
     <li>
@@ -7687,7 +7687,7 @@
     </ul>
   wysiwyg: |-
     <ul start="1" parens="false" data-type="taskList"><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>incomplete</p></div></li></ul>
-07_02_00__gitlab_specific_markdown__task_list_items__002:
+07_02_00__gitlab_official_specification_markdown__task_list_items__002:
   canonical: |
     <ul>
     <li>
@@ -7703,7 +7703,7 @@
     </ul>
   wysiwyg: |-
     <ul start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>completed</p></div></li></ul>
-07_02_00__gitlab_specific_markdown__task_list_items__003:
+07_02_00__gitlab_official_specification_markdown__task_list_items__003:
   canonical: |
     <ul>
     <li>
@@ -7720,9 +7720,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" data-inapplicable disabled> <s>inapplicable</s>
     </li>
     </ul>
-  wysiwyg: |-
-    <ul bullet="*"><li><p>[~] inapplicable</p></li></ul>
-07_02_00__gitlab_specific_markdown__task_list_items__004:
+07_02_00__gitlab_official_specification_markdown__task_list_items__004:
   canonical: |
     <ul>
     <li>
@@ -7745,9 +7743,7 @@
     <p data-sourcepos="3:3-3:20">text in loose list</p>
     </li>
     </ul>
-  wysiwyg: |-
-    Inapplicable task list items not yet implemented for WYSYWIG
-07_03_00__gitlab_specific_markdown__front_matter__001:
+07_03_00__gitlab_official_specification_markdown__front_matter__001:
   canonical: |
     <pre>
     <code>
@@ -7761,7 +7757,7 @@
     </div>
   wysiwyg: |-
     <pre language="yaml" class="content-editor-code-block undefined code highlight" isfrontmatter="true"><code>title: YAML front matter</code></pre>
-07_03_00__gitlab_specific_markdown__front_matter__002:
+07_03_00__gitlab_official_specification_markdown__front_matter__002:
   canonical: |
     <pre>
     <code>
@@ -7775,7 +7771,7 @@
     </div>
   wysiwyg: |-
     <pre language="toml" class="content-editor-code-block undefined code highlight" isfrontmatter="true"><code>title: TOML front matter</code></pre>
-07_03_00__gitlab_specific_markdown__front_matter__003:
+07_03_00__gitlab_official_specification_markdown__front_matter__003:
   canonical: |
     <pre>
     <code>
@@ -7795,7 +7791,7 @@
     <pre language="json" class="content-editor-code-block undefined code highlight" isfrontmatter="true"><code>{
       "title": "JSON front matter"
     }</code></pre>
-07_03_00__gitlab_specific_markdown__front_matter__004:
+07_03_00__gitlab_official_specification_markdown__front_matter__004:
   canonical: |
     <p>text</p>
     <hr>
@@ -7809,7 +7805,7 @@
     <p>text</p>
     <hr>
     <h2>title: YAML front matter</h2>
-07_03_00__gitlab_specific_markdown__front_matter__005:
+07_03_00__gitlab_official_specification_markdown__front_matter__005:
   canonical: |
     <hr>
     <h2>title: YAML front matter</h2>
@@ -7820,37 +7816,7 @@
   wysiwyg: |-
     <hr>
     <h2>title: YAML front matter</h2>
-07_04_00__gitlab_specific_markdown__audio__001:
-  canonical: |
-    <p><audio src="audio.oga" title="audio title"></audio></p>
-  static: |-
-    <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
-  wysiwyg: |-
-    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
-07_04_00__gitlab_specific_markdown__audio__002:
-  canonical: |
-    <p><audio src="audio.oga" title="audio title"></audio></p>
-  static: |-
-    <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
-  wysiwyg: |-
-    <pre>[audio]: audio.oga "audio title"</pre>
-    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
-07_05_00__gitlab_specific_markdown__video__001:
-  canonical: |
-    <p><video src="video.m4v" title="video title"></video></p>
-  static: |-
-    <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video title" width="400" preload="metadata"></video><a href="video.m4v" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
-  wysiwyg: |-
-    <p><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video"></video><a href="video.m4v">video</a></span></p>
-07_05_00__gitlab_specific_markdown__video__002:
-  canonical: |
-    <p><video src="video.mov" title="video title"></video></p>
-  static: |-
-    <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video title" width="400" preload="metadata"></video><a href="video.mov" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
-  wysiwyg: |-
-    <pre>[video]: video.mov "video title"</pre>
-    <p><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video"></video><a href="video.mov">video</a></span></p>
-07_06_00__gitlab_specific_markdown__table_of_contents__001:
+07_04_00__gitlab_official_specification_markdown__table_of_contents__001:
   canonical: |
     <nav>
       <ul>
@@ -7874,7 +7840,7 @@
     <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
     <h1>Heading 1</h1>
     <h2>Heading 2</h2>
-07_06_00__gitlab_specific_markdown__table_of_contents__002:
+07_04_00__gitlab_official_specification_markdown__table_of_contents__002:
   canonical: |
     <nav>
       <ul>
@@ -7898,7 +7864,7 @@
     <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
     <h1>Heading 1</h1>
     <h2>Heading 2</h2>
-07_06_00__gitlab_specific_markdown__table_of_contents__003:
+07_04_00__gitlab_official_specification_markdown__table_of_contents__003:
   canonical: |
     <p>[[<em>TOC</em>]]text</p>
     <p>text[TOC]</p>
@@ -7912,7 +7878,7 @@
     text</p>
     <p>text
     [TOC]</p>
-07_06_00__gitlab_specific_markdown__table_of_contents__004:
+07_04_00__gitlab_official_specification_markdown__table_of_contents__004:
   canonical: |
     <nav>
       <ul>
@@ -7927,45 +7893,63 @@
   wysiwyg: |-
     <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
     <h1>Heading 1</h1>
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001:
+08_01_00__gitlab_internal_extension_markdown__audio__001:
+  canonical: |
+    <p><audio src="audio.oga" title="audio title"></audio></p>
+  static: |-
+    <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
+  wysiwyg: |-
+    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
+08_01_00__gitlab_internal_extension_markdown__audio__002:
+  canonical: |
+    <p><audio src="audio.oga" title="audio title"></audio></p>
+  static: |-
+    <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
+  wysiwyg: |-
+    <pre>[audio]: audio.oga "audio title"</pre>
+    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
+08_02_00__gitlab_internal_extension_markdown__video__001:
+  canonical: |
+    <p><video src="video.m4v" title="video title"></video></p>
+  static: |-
+    <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video title" width="400" preload="metadata"></video><a href="video.m4v" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
+  wysiwyg: |-
+    <p><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video"></video><a href="video.m4v">video</a></span></p>
+08_02_00__gitlab_internal_extension_markdown__video__002:
+  canonical: |
+    <p><video src="video.mov" title="video title"></video></p>
+  static: |-
+    <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video title" width="400" preload="metadata"></video><a href="video.mov" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
+  wysiwyg: |-
+    <pre>[video]: video.mov "video title"</pre>
+    <p><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video"></video><a href="video.mov">video</a></span></p>
+08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__001:
   canonical: |
     <p><a href="groups-test-file">groups-test-file</a></p>
   static: |-
     <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
-  wysiwyg: |-
-    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002:
+08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__002:
   canonical: |
     <p><a href="projects-test-file">projects-test-file</a></p>
   static: |-
     <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file">projects-test-file</a></p>
-  wysiwyg: |-
-    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__003:
+08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__003:
   canonical: |
     <p>This project snippet ID reference IS filtered: $88888</p>
   static: |-
     <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
-  wysiwyg: |-
-    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__004:
+08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__004:
   canonical: |
     <p>This personal snippet ID reference is not filtered: $99999</p>
   static: |-
     <p data-sourcepos="1:1-1:58" dir="auto">This personal snippet ID reference is not filtered: $99999</p>
-  wysiwyg: |-
-    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__005:
+08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__005:
   canonical: |
     <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
   static: |-
     <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
-  wysiwyg: |-
-    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__006:
+08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__006:
   canonical: |
     <p><a href="group-wikis-test-file">group-wikis-test-file</a></p>
   static: |-
     <p data-sourcepos="1:1-1:46" dir="auto"><a href="/groups/glfm_group/-/wikis/group-wikis-test-file" data-canonical-src="group-wikis-test-file">group-wikis-test-file</a></p>
-  wysiwyg: |-
-    Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236

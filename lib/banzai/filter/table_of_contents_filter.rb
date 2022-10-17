@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'cgi/util'
+
 # Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/table_of_contents.js
 module Banzai
   module Filter
@@ -93,7 +95,7 @@ module Banzai
         def text
           return '' unless node
 
-          @text ||= EscapeUtils.escape_html(node.text)
+          @text ||= CGI.escapeHTML(node.text)
         end
 
         private

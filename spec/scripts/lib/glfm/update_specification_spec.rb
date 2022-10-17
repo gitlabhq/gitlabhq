@@ -16,8 +16,10 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
   let(:glfm_intro_md_path) { described_class::GLFM_INTRO_MD_PATH }
   let(:glfm_intro_md_io) { StringIO.new(glfm_intro_md_contents) }
-  let(:glfm_examples_txt_path) { described_class::GLFM_EXAMPLES_TXT_PATH }
-  let(:glfm_examples_txt_io) { StringIO.new(glfm_examples_txt_contents) }
+  let(:glfm_official_specification_examples_md_path) { described_class::GLFM_OFFICIAL_SPECIFICATION_EXAMPLES_MD_PATH }
+  let(:glfm_official_specification_examples_md_io) { StringIO.new(glfm_official_specification_examples_md_contents) }
+  let(:glfm_internal_extension_examples_md_path) { described_class::GLFM_INTERNAL_EXTENSION_EXAMPLES_MD_PATH }
+  let(:glfm_internal_extension_examples_md_io) { StringIO.new(glfm_internal_extension_examples_md_contents) }
   let(:glfm_spec_txt_path) { described_class::GLFM_SPEC_TXT_PATH }
   let(:glfm_spec_txt_io) { StringIO.new }
 
@@ -67,9 +69,17 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     MARKDOWN
   end
 
-  let(:glfm_examples_txt_contents) do
+  let(:glfm_official_specification_examples_md_contents) do
     <<~MARKDOWN
-      # GitLab-Specific Section with Examples
+      # Official Specification Section with Examples
+
+      Some examples.
+    MARKDOWN
+  end
+
+  let(:glfm_internal_extension_examples_md_contents) do
+    <<~MARKDOWN
+      # Internal Extension Section with Examples
 
       Some examples.
     MARKDOWN
@@ -88,7 +98,12 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     end
     allow(File).to receive(:open).with(ghfm_spec_md_path) { ghfm_spec_txt_local_io }
     allow(File).to receive(:open).with(glfm_intro_md_path) { glfm_intro_md_io }
-    allow(File).to receive(:open).with(glfm_examples_txt_path) { glfm_examples_txt_io }
+    allow(File).to receive(:open).with(glfm_official_specification_examples_md_path) do
+      glfm_official_specification_examples_md_io
+    end
+    allow(File).to receive(:open).with(glfm_internal_extension_examples_md_path) do
+      glfm_internal_extension_examples_md_io
+    end
     allow(File).to receive(:open).with(glfm_spec_txt_path, 'w') { glfm_spec_txt_io }
 
     # Prevent console output when running tests
@@ -179,11 +194,15 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       expect(glfm_contents).to match(/#{Regexp.escape(glfm_intro_md_contents)}/m)
     end
 
-    it 'inserts the GitLab examples sections before the appendix section' do
+    it 'inserts the GitLab official spec and internal extension examples sections before the appendix section' do
       expected = <<~MARKDOWN
         End of last GitHub examples section.
 
-        # GitLab-Specific Section with Examples
+        # Official Specification Section with Examples
+
+        Some examples.
+
+        # Internal Extension Section with Examples
 
         Some examples.
 

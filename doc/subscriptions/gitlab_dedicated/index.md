@@ -27,41 +27,58 @@ GitLab Dedicated enables you to offload the operational overhead of managing the
 - Upgrades:
   - Monthly upgrades tracking one release behind the latest (n-1), with the latest security release.
   - Out of band security patches provided for high severity releases.
-- Backups: regular backups taken and tested.
-- Choice of cloud region: upon onboarding, choose the cloud region where you want to deploy your instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not currently supported.
+- Backups: Regular backups taken and tested.
+- Choice of cloud region: Upon onboarding, choose the cloud region where you want to deploy your instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not currently supported.
 - Security: Data encrypted at rest and in transit using latest encryption standards.
-- Application: Self-managed [Ultimate feature set](https://about.gitlab.com/pricing/self-managed/feature-comparison/) with the exception of the unsupported features [listed below](#features-not-available-at-launch).
+- Application: Self-managed [Ultimate feature set](https://about.gitlab.com/pricing/self-managed/feature-comparison/) with the exception of the unsupported features [listed below](#features-that-are-not-available).
 
-## Features not available at launch
+## Features that are not available
 
-Features that are not available but we plan to support in the future:
+### GitLab application features
 
-- LDAP, Smartcard, Kerberos authentication
-- Custom domain
+The following GitLab application features are not available:
+
+- LDAP, Smartcard, or Kerberos authentication
+- Multiple login providers
 - Advanced Search
-- Pages
-- GitLab-managed runners
-- FortiAuthenticator/FortiToken 2FA
+- GitLab Pages
+- FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
 - Service Desk
-- Any feature not listed [above](#available-features) which needs to be configured outside of the web interface.
+- GitLab-managed runners
+- Any feature [not listed above](#available-features) which must be configured outside of the GitLab user interface.
 
-Features that we do not plan to offer at all:
+The following features will not be supported:
 
 - Mattermost
-- Server-side Git Hooks
+- Server-side Git hooks
+
+### Dedicated service features
+
+The following operational features are not available:
+
+- Custom domains
+- Bring Your Own Key (BYOK) encryption
+- Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
+- Self-serve purchasing and configuration
+- Multiple login providers
+- Non-AWS cloud providers, such as GCP or Azure
 
 ### AWS regions not supported
 
-The following AWS regions are not available at launch:
+The following AWS regions are not available:
 
-- Jakarta (ap-southeast-3)
-- Bahrain (me-south-1)
-- Hong Kong (ap-east-1)
-- Cape Town (af-south-1)
-- Milan (eu-south-1)
-- Paris (eu-west-3)
+- Jakarta (`ap-southeast-3`)
+- Bahrain (`me-south-1`)
+- Hong Kong (`ap-east-1`)
+- Cape Town (`af-south-1`)
+- Milan (`eu-south-1`)
+- Paris (`eu-west-3`)
 - GovCloud
+
+## Planned features
+
+Learn more about the planned improvements to Dedicated on the public [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/).
 
 ## Contact us
 

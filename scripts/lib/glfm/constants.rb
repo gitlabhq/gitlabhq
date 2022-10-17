@@ -16,7 +16,9 @@ module Glfm
     # GitLab Flavored Markdown specification files
     specification_input_glfm_path = specification_path.join('input/gitlab_flavored_markdown')
     GLFM_INTRO_MD_PATH = specification_input_glfm_path.join('glfm_intro.md')
-    GLFM_EXAMPLES_TXT_PATH = specification_input_glfm_path.join('glfm_canonical_examples.txt')
+    GLFM_OFFICIAL_SPECIFICATION_EXAMPLES_MD_PATH =
+      specification_input_glfm_path.join('glfm_official_specification_examples.md')
+    GLFM_INTERNAL_EXTENSION_EXAMPLES_MD_PATH = specification_input_glfm_path.join('glfm_internal_extension_examples.md')
     GLFM_EXAMPLE_STATUS_YML_PATH = specification_input_glfm_path.join('glfm_example_status.yml')
     GLFM_EXAMPLE_METADATA_YML_PATH =
       specification_input_glfm_path.join('glfm_example_metadata.yml')

@@ -194,7 +194,6 @@ gem 'rouge', '~> 3.30.0'
 gem 'truncato', '~> 0.7.12'
 gem 'bootstrap_form', '~> 4.2.0'
 gem 'nokogiri', '~> 1.13.8'
-gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
 gem 'icalendar'
