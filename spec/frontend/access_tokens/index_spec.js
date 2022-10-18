@@ -1,7 +1,4 @@
-/* eslint-disable vue/require-prop-types */
-/* eslint-disable vue/one-component-per-file */
 import { createWrapper } from '@vue/test-utils';
-import Vue from 'vue';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 import {
@@ -10,10 +7,11 @@ import {
   initNewAccessTokenApp,
   initTokensApp,
 } from '~/access_tokens';
-import * as AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
+import AccessTokenTableApp from '~/access_tokens/components/access_token_table_app.vue';
 import ExpiresAtField from '~/access_tokens/components/expires_at_field.vue';
-import * as NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
-import * as TokensApp from '~/access_tokens/components/tokens_app.vue';
+import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.vue';
+import TokensApp from '~/access_tokens/components/tokens_app.vue';
+import { FORM_SELECTOR } from '~/access_tokens/components/constants';
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from '~/access_tokens/constants';
 import { __, sprintf } from '~/locale';
 
@@ -30,25 +28,6 @@ describe('access tokens', () => {
     const accessTokenTypePlural = 'personal access tokens';
     const initialActiveAccessTokens = [{ revoked_path: '1' }];
 
-    const FakeAccessTokenTableApp = Vue.component('FakeComponent', {
-      inject: [
-        'accessTokenType',
-        'accessTokenTypePlural',
-        'initialActiveAccessTokens',
-        'noActiveTokensMessage',
-        'showRole',
-      ],
-      props: [
-        'accessTokenType',
-        'accessTokenTypePlural',
-        'initialActiveAccessTokens',
-        'noActiveTokensMessage',
-        'showRole',
-      ],
-      render: () => null,
-    });
-    AccessTokenTableApp.default = FakeAccessTokenTableApp;
-
     it('mounts the component and provides required values', () => {
       setHTMLFixture(
         `<div id="js-access-token-table-app"
@@ -60,19 +39,18 @@ describe('access tokens', () => {
       );
 
       const vueInstance = initAccessTokenTableApp();
-
       wrapper = createWrapper(vueInstance);
-      const component = wrapper.findComponent(FakeAccessTokenTableApp);
+      const component = wrapper.findComponent({ name: 'AccessTokenTableRoot' });
 
       expect(component.exists()).toBe(true);
-
-      expect(component.props()).toMatchObject({
+      expect(wrapper.findComponent(AccessTokenTableApp).vm).toMatchObject({
         // Required value
         accessTokenType,
         accessTokenTypePlural,
         initialActiveAccessTokens,
 
         // Default values
+        information: undefined,
         noActiveTokensMessage: sprintf(__('This user has no active %{accessTokenTypePlural}.'), {
           accessTokenTypePlural,
         }),
@@ -81,12 +59,14 @@ describe('access tokens', () => {
     });
 
     it('mounts the component and provides all values', () => {
+      const information = 'Additional information';
       const noActiveTokensMessage = 'This group has no active access tokens.';
       setHTMLFixture(
         `<div id="js-access-token-table-app"
           data-access-token-type="${accessTokenType}"
           data-access-token-type-plural="${accessTokenTypePlural}"
           data-initial-active-access-tokens=${JSON.stringify(initialActiveAccessTokens)}
+          data-information="${information}"
           data-no-active-tokens-message="${noActiveTokensMessage}"
           data-show-role
           >
@@ -94,15 +74,15 @@ describe('access tokens', () => {
       );
 
       const vueInstance = initAccessTokenTableApp();
-
       wrapper = createWrapper(vueInstance);
-      const component = wrapper.findComponent(FakeAccessTokenTableApp);
+      const component = wrapper.findComponent({ name: 'AccessTokenTableRoot' });
 
       expect(component.exists()).toBe(true);
-      expect(component.props()).toMatchObject({
+      expect(component.findComponent(AccessTokenTableApp).vm).toMatchObject({
         accessTokenType,
         accessTokenTypePlural,
         initialActiveAccessTokens,
+        information,
         noActiveTokensMessage,
         showRole: true,
       });
@@ -157,23 +137,16 @@ describe('access tokens', () => {
     it('mounts the component and sets `accessTokenType` prop', () => {
       const accessTokenType = 'personal access token';
       setHTMLFixture(
-        `<div id="js-new-access-token-app" data-access-token-type="${accessTokenType}"></div>`,
+        `<div id="js-new-access-token-app" data-access-token-type="${accessTokenType}"></div>
+        <form id="${FORM_SELECTOR.slice(1)}"></form>`,
       );
 
-      const FakeNewAccessTokenApp = Vue.component('FakeComponent', {
-        inject: ['accessTokenType'],
-        props: ['accessTokenType'],
-        render: () => null,
-      });
-      NewAccessTokenApp.default = FakeNewAccessTokenApp;
-
       const vueInstance = initNewAccessTokenApp();
-
       wrapper = createWrapper(vueInstance);
-      const component = wrapper.findComponent(FakeNewAccessTokenApp);
+      const component = wrapper.findComponent({ name: 'NewAccessTokenRoot' });
 
       expect(component.exists()).toBe(true);
-      expect(component.props('accessTokenType')).toEqual(accessTokenType);
+      expect(component.findComponent(NewAccessTokenApp).vm).toMatchObject({ accessTokenType });
     });
 
     it('returns `null`', () => {
@@ -192,20 +165,12 @@ describe('access tokens', () => {
         `<div id="js-tokens-app" data-tokens-data=${JSON.stringify(tokensData)}></div>`,
       );
 
-      const FakeTokensApp = Vue.component('FakeComponent', {
-        inject: ['tokenTypes'],
-        props: ['tokenTypes'],
-        render: () => null,
-      });
-      TokensApp.default = FakeTokensApp;
-
       const vueInstance = initTokensApp();
-
       wrapper = createWrapper(vueInstance);
-      const component = wrapper.findComponent(FakeTokensApp);
+      const component = wrapper.findComponent(TokensApp);
 
       expect(component.exists()).toBe(true);
-      expect(component.props('tokenTypes')).toEqual(tokensData);
+      expect(component.vm).toMatchObject({ tokenTypes: tokensData });
     });
 
     it('returns `null`', () => {

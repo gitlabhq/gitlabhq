@@ -110,6 +110,13 @@ RSpec.describe API::Helpers do
       end
     end
 
+    context 'when ID is a negative number' do
+      let(:existing_id) { project.id }
+      let(:non_existing_id) { -1 }
+
+      it_behaves_like 'project finder'
+    end
+
     context 'when project is pending delete' do
       let(:project_pending_delete) { create(:project, pending_delete: true) }
 
@@ -325,6 +332,13 @@ RSpec.describe API::Helpers do
 
         it_behaves_like 'group finder'
       end
+
+      context 'when ID is a negative number' do
+        let(:existing_id) { group.id }
+        let(:non_existing_id) { -1 }
+
+        it_behaves_like 'group finder'
+      end
     end
   end
 
@@ -418,6 +432,13 @@ RSpec.describe API::Helpers do
     context 'when PATH is used as an argument' do
       let(:existing_id) { namespace.path }
       let(:non_existing_id) { 'non-existing-path' }
+
+      it_behaves_like 'namespace finder'
+    end
+
+    context 'when ID is a negative number' do
+      let(:existing_id) { namespace.id }
+      let(:non_existing_id) { -1 }
 
       it_behaves_like 'namespace finder'
     end

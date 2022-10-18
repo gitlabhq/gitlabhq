@@ -19,9 +19,9 @@ POST /import/github
 | `personal_access_token` | string  | yes      | GitHub personal access token                                                        |
 | `repo_id`               | integer | yes      | GitHub repository ID                                                                |
 | `new_name`              | string  | no      | New repository name                                                                 |
-| `target_namespace`      | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. |
+| `target_namespace`      | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup` |
 | `github_hostname`       | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                       |
-| `optional_stages`       | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import)|
+| `optional_stages`       | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
 
 ```shell
 curl --request POST \

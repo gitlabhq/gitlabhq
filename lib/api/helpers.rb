@@ -18,6 +18,7 @@ module API
     API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
+    INTEGER_ID_REGEX = /^-?\d+$/.freeze
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -139,7 +140,7 @@ module API
 
       projects = Project.without_deleted.not_hidden
 
-      if id.is_a?(Integer) || id =~ /^\d+$/
+      if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
         projects.find_by(id: id)
       elsif id.include?("/")
         projects.find_by_full_path(id)
@@ -168,7 +169,7 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
-      if id.to_s =~ /^\d+$/
+      if id.to_s =~ INTEGER_ID_REGEX
         Group.find_by(id: id)
       else
         Group.find_by_full_path(id)
@@ -203,7 +204,7 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
-      if id.to_s =~ /^\d+$/
+      if id.to_s =~ INTEGER_ID_REGEX
         Namespace.without_project_namespaces.find_by(id: id)
       else
         find_namespace_by_path(id)

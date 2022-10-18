@@ -100,7 +100,7 @@ export const initNewAccessTokenApp = () => {
 export const initTokensApp = () => {
   const el = document.getElementById('js-tokens-app');
 
-  if (!el) return false;
+  if (!el) return null;
 
   const tokensData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.tokensData), {
     deep: true,

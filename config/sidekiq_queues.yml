@@ -453,14 +453,14 @@
   - 1
 - - security_auto_fix
   - 1
-- - security_findings_delete_by_job_id
-  - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_process_scan_result_policy
   - 1
 - - security_scans
   - 2
+- - security_scans_purge_by_job_id
+  - 1
 - - security_sync_scan_policies
   - 1
 - - self_monitoring_project_create

@@ -120,6 +120,8 @@ your GitLab account and sign in again, or revoke the older personal access token
 
 ### Select additional items to import
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
+
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
 - Issue and pull request events. For example, _opened_ or _closed_, _renamed_, and _labeled_ or _unlabeled_.

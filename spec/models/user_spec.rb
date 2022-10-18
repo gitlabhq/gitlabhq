@@ -1166,6 +1166,20 @@ RSpec.describe User do
           'ORDER BY "users"."last_activity_on" ASC NULLS FIRST, "users"."id" DESC')
       end
     end
+
+    describe '.order_recent_sign_in' do
+      it 'sorts users by current_sign_in_at in descending order' do
+        expect(described_class.order_recent_sign_in.to_sql).to include(
+          'ORDER BY "users"."current_sign_in_at" DESC NULLS LAST')
+      end
+    end
+
+    describe '.order_oldest_sign_in' do
+      it 'sorts users by current_sign_in_at in ascending order' do
+        expect(described_class.order_oldest_sign_in.to_sql).to include(
+          'ORDER BY "users"."current_sign_in_at" ASC NULLS LAST')
+      end
+    end
   end
 
   context 'strip attributes' do

@@ -21,6 +21,8 @@ module QA
           project.github_personal_access_token = Runtime::Env.github_access_token
           project.github_repository_path = 'gitlab-qa-github/import-test'
           project.api_client = Runtime::API::Client.new(user: user)
+          project.issue_events_import = true
+          project.full_notes_import = true
         end
       end
 

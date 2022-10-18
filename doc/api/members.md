@@ -365,7 +365,8 @@ Example response:
     "last_activity_on": "2021-01-27",
     "membership_type": "group_member",
     "removable": true,
-    "created_at": "2021-01-03T12:16:02.000Z"
+    "created_at": "2021-01-03T12:16:02.000Z",
+    "last_login_at": "2022-10-09T01:33:06.000Z"
   },
   {
     "id": 2,
@@ -378,7 +379,8 @@ Example response:
     "last_activity_on": "2021-01-25",
     "membership_type": "group_member",
     "removable": true,
-    "created_at": "2021-01-04T18:46:42.000Z"
+    "created_at": "2021-01-04T18:46:42.000Z",
+    "last_login_at": "2022-09-29T22:18:46.000Z"
   },
   {
     "id": 3,
@@ -390,7 +392,8 @@ Example response:
     "last_activity_on": "2021-01-20",
     "membership_type": "group_invite",
     "removable": false,
-    "created_at": "2021-01-09T07:12:31.000Z"
+    "created_at": "2021-01-09T07:12:31.000Z",
+    "last_login_at": "2022-10-10T07:28:56.000Z"
   }
 ]
 ```

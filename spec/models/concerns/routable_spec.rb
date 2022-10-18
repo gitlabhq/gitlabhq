@@ -23,6 +23,12 @@ RSpec.shared_examples 'routable resource' do
       end.not_to exceed_all_query_limit(control_count)
     end
 
+    context 'when path is a negative number' do
+      it 'returns nil' do
+        expect(described_class.find_by_full_path(-1)).to be_nil
+      end
+    end
+
     context 'with redirect routes' do
       let_it_be(:redirect_route) { create(:redirect_route, source: record) }
 

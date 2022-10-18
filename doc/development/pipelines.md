@@ -823,19 +823,38 @@ needed in the GitLab test suite (under `app/assets/javascripts/locale/**/app.js`
 and `public/assets`).
 
 - If the package URL returns a 404:
-   1. It runs `bin/rake gitlab:assets:compile`, so that the GitLab assets are compiled.
-   1. It then creates an archive which contains the assets and upload it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
+  1. It runs `bin/rake gitlab:assets:compile`, so that the GitLab assets are compiled.
+  1. It then creates an archive which contains the assets and uploads it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
+     The package version is set to the assets folders' hash sum.
 - Otherwise, if the package already exists, it exits the job successfully.
+
+#### `compile-*-assets`
 
 We also changed the `compile-test-assets`, `compile-test-assets as-if-foss`,
 and `compile-production-assets` jobs to:
 
-1. First download the GitLab assets generic package build and uploaded by `cache-assets:*`.
-1. If the package is retrieved successfully, assets aren't compiled.
-1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab assets are compiled as part of `bin/rake gitlab:assets:compile`.
+1. First download the "native" cache assets, which contain:
+   - The [compiled assets](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/global.gitlab-ci.yml#L86-87).
+   - A [`cached-assets-hash.txt` file](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/global.gitlab-ci.yml#L85)
+     containing the `SHA256` hexdigest of all the source files on which the assets depend on.
+     This list of files is a pessimistic list and the assets might not depend on
+     some of these files. At worst we compile the assets more often, which is better than
+     using outdated assets.
 
-NOTE:
-The version of the package is the assets folders hash sum.
+     The file is [created after assets are compiled](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/frontend.gitlab-ci.yml#L83).
+1. We then we compute the `SHA256` hexdigest of all the source files the assets depend on, **for the current checked out branch**. We [store the hexdigest in the `GITLAB_ASSETS_HASH` variable](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/frontend.gitlab-ci.yml#L27).
+1. If `$CACHE_ASSETS_AS_PACKAGE == "true"`, we download the generic package built and uploaded by [`cache-assets:*`](#cache-assets).
+   - If the cache is up-to-date for the checked out branch, we download the native cache
+     **and** the cache package. We could optimize that by not downloading
+     the genetic package but the native cache is actually very often outdated because it's
+     rebuilt only every 2 hours.
+1. We [run the `assets_compile_script` function](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/frontend.gitlab-ci.yml#L35),
+   which [itself runs](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/scripts/utils.sh#L76)
+   the [`assets:compile` Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/lib/tasks/gitlab/assets.rake#L80-109).
+
+   This task is responsible for deciding if assets need to be compiled or not.
+   It [compares the `HEAD` `SHA256` hexdigest from `$GITLAB_ASSETS_HASH` with the `master` hexdigest from `cached-assets-hash.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/lib/tasks/gitlab/assets.rake#L86).
+1. If the hashes are the same, we don't compile anything. If they're different, we compile the assets.
 
 ### Pre-clone step
 
