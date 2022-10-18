@@ -555,12 +555,15 @@ Additionally, the certificate (or its certificate authority) must be installed o
 - Gitaly servers.
 - Gitaly clients that communicate with it.
 
-Note the following:
+### Certificate requirements
 
 - The certificate must specify the address you use to access the Gitaly server. You must add the hostname or IP address as a Subject Alternative Name to the certificate.
 - You can configure Gitaly servers with both an unencrypted listening address `listen_addr` and an
   encrypted listening address `tls_listen_addr` at the same time. This allows you to gradually
   transition from unencrypted to encrypted traffic if necessary.
+- The certificate's Common Name field is ignored.
+
+### Configure Gitaly with TLS
 
 To configure Gitaly with TLS:
 

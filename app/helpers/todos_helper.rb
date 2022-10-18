@@ -168,22 +168,22 @@ module TodosHelper
 
   def todo_actions_options
     [
-      { id: '', text: 'Any Action' },
-      { id: Todo::ASSIGNED, text: 'Assigned' },
-      { id: Todo::REVIEW_REQUESTED, text: 'Review requested' },
-      { id: Todo::MENTIONED, text: 'Mentioned' },
-      { id: Todo::MARKED, text: 'Added' },
-      { id: Todo::BUILD_FAILED, text: 'Pipelines' }
+      { id: '', text: s_('Todos|Any Action') },
+      { id: Todo::ASSIGNED, text: s_('Todos|Assigned') },
+      { id: Todo::REVIEW_REQUESTED, text: s_('Todos|Review requested') },
+      { id: Todo::MENTIONED, text: s_('Todos|Mentioned') },
+      { id: Todo::MARKED, text: s_('Todos|Added') },
+      { id: Todo::BUILD_FAILED, text: s_('Todos|Pipelines') }
     ]
   end
 
   def todo_types_options
     [
-      { id: '', text: 'Any Type' },
-      { id: 'Issue', text: 'Issue' },
-      { id: 'MergeRequest', text: 'Merge request' },
-      { id: 'DesignManagement::Design', text: 'Design' },
-      { id: 'AlertManagement::Alert', text: 'Alert' }
+      { id: '', text: s_('Todos|Any Type') },
+      { id: 'Issue', text: s_('Todos|Issue') },
+      { id: 'MergeRequest', text: s_('Todos|Merge request') },
+      { id: 'DesignManagement::Design', text: s_('Todos|Design') },
+      { id: 'AlertManagement::Alert', text: s_('Todos|Alert') }
     ]
   end
 

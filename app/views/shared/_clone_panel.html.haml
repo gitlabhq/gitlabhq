@@ -9,7 +9,7 @@
         %span.js-clone-dropdown-label
           = default_clone_protocol.upcase
         = sprite_icon('chevron-down', css_class: 'gl-icon')
-      %ul.dropdown-menu.dropdown-menu-selectable{ data: { qa_selector: 'clone_dropdown_content' } }
+      %ul.dropdown-menu.dropdown-menu-selectable.clone-options-dropdown{ data: { qa_selector: 'clone_dropdown_content' } }
         %li
           = ssh_clone_button(container)
         %li

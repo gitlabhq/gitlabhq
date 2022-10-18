@@ -67,6 +67,13 @@ remote: GitLab: 401 Unauthorized
 You need to sync your `gitlab-secrets.json` file with your GitLab
 application nodes.
 
+### 500 and `fetching folder content` errors on repository pages
+
+`Fetching folder content`, and in some cases `500`, errors indicate
+connectivity problems between GitLab and Gitaly.
+Consult the [client-side gRPC logs](#client-side-grpc-logs)
+for details.
+
 ### Client side gRPC logs
 
 Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
@@ -80,6 +87,19 @@ You can run a gRPC trace with:
 ```shell
 sudo GRPC_TRACE=all GRPC_VERBOSITY=DEBUG gitlab-rake gitlab:gitaly:check
 ```
+
+If this command fails with a `failed to connect to all addresses` error,
+check for an SSL or TLS problem:
+
+```shell
+/opt/gitlab/embedded/bin/openssl s_client -connect <gitaly-ipaddress>:<port> -verify_return_error
+```
+
+Check whether `Verify return code` field indicates a
+[known Omnibus GitLab configuration problem](https://docs.gitlab.com/omnibus/settings/ssl.html).
+
+If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
+check [certificate requirements](configure_gitaly.md#certificate-requirements) for Gitaly.
 
 ### Server side gRPC logs
 

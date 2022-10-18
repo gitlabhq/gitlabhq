@@ -313,7 +313,7 @@ node throughout the process.
 
 - If you're using PgBouncer:
 
-  You must bypass PgBouncer and connect directly to the database leader
+  You must [bypass PgBouncer](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer) and connect directly to the database leader
   before running migrations.
 
   Rails uses an advisory lock when attempting to run a migration to prevent
@@ -699,7 +699,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 1. If you're using PgBouncer:
 
-   You must bypass PgBouncer and connect directly to the database leader
+   You must [bypass PgBouncer](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer) and connect directly to the database leader
    before running migrations.
 
    Rails uses an advisory lock when attempting to run a migration to prevent

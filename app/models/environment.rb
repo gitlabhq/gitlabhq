@@ -544,7 +544,7 @@ class Environment < ApplicationRecord
       self.class.tiers[:development]
     when /(test|tst|int|ac(ce|)pt|qa|qc|control|quality)/i
       self.class.tiers[:testing]
-    when /(st(a|)g|mod(e|)l|pre|demo)/i
+    when /(st(a|)g|mod(e|)l|pre|demo|non)/i
       self.class.tiers[:staging]
     when /(pr(o|)d|live)/i
       self.class.tiers[:production]
