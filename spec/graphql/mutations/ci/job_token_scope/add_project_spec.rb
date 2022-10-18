@@ -8,7 +8,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject do
 
   describe '#resolve' do
     let_it_be(:project) do
-      create(:project, ci_job_token_scope_enabled: true).tap(&:save!)
+      create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!)
     end
 
     let_it_be(:target_project) { create(:project) }

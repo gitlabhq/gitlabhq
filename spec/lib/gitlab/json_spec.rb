@@ -8,6 +8,12 @@ RSpec.describe Gitlab::Json do
   end
 
   describe ".parse" do
+    it "is aliased" do
+      [:parse!, :load, :decode].each do |method|
+        expect(described_class.method(method)).to eq(described_class.method(:parse))
+      end
+    end
+
     context "legacy_mode is disabled by default" do
       it "parses an object" do
         expect(subject.parse('{ "foo": "bar" }')).to eq({ "foo" => "bar" })
@@ -176,6 +182,10 @@ RSpec.describe Gitlab::Json do
   describe ".generate" do
     let(:obj) do
       { test: true, "foo.bar" => "baz", is_json: 1, some: [1, 2, 3] }
+    end
+
+    it "is aliased" do
+      expect(described_class.method(:encode)).to eq(described_class.method(:generate))
     end
 
     it "generates JSON" do

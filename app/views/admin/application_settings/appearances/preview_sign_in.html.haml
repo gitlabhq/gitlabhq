@@ -9,5 +9,5 @@
       = label_tag :password
       = password_field_tag :password, nil, disabled: true, class: "form-control gl-form-input bottom", title: title
     .form-group
-      = button_tag _("Sign in"), disabled: true, class: "btn gl-button btn-confirm", type: "button", title: title
-
+      = render Pajamas::ButtonComponent.new(variant: :confirm, disabled: true, button_options: { title: title }) do
+        = _("Sign in")

@@ -16411,6 +16411,40 @@ CREATE SEQUENCE incident_management_pending_issue_escalations_id_seq
 
 ALTER SEQUENCE incident_management_pending_issue_escalations_id_seq OWNED BY incident_management_pending_issue_escalations.id;
 
+CREATE TABLE incident_management_timeline_event_tag_links (
+    id bigint NOT NULL,
+    timeline_event_id bigint NOT NULL,
+    timeline_event_tag_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE incident_management_timeline_event_tag_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE incident_management_timeline_event_tag_links_id_seq OWNED BY incident_management_timeline_event_tag_links.id;
+
+CREATE TABLE incident_management_timeline_event_tags (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_8717184e2c CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE incident_management_timeline_event_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE incident_management_timeline_event_tags_id_seq OWNED BY incident_management_timeline_event_tags.id;
+
 CREATE TABLE incident_management_timeline_events (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23743,6 +23777,10 @@ ALTER TABLE ONLY incident_management_pending_alert_escalations ALTER COLUMN id S
 
 ALTER TABLE ONLY incident_management_pending_issue_escalations ALTER COLUMN id SET DEFAULT nextval('incident_management_pending_issue_escalations_id_seq'::regclass);
 
+ALTER TABLE ONLY incident_management_timeline_event_tag_links ALTER COLUMN id SET DEFAULT nextval('incident_management_timeline_event_tag_links_id_seq'::regclass);
+
+ALTER TABLE ONLY incident_management_timeline_event_tags ALTER COLUMN id SET DEFAULT nextval('incident_management_timeline_event_tags_id_seq'::regclass);
+
 ALTER TABLE ONLY incident_management_timeline_events ALTER COLUMN id SET DEFAULT nextval('incident_management_timeline_events_id_seq'::regclass);
 
 ALTER TABLE ONLY index_statuses ALTER COLUMN id SET DEFAULT nextval('index_statuses_id_seq'::regclass);
@@ -25102,9 +25140,6 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
-ALTER TABLE members
-    ADD CONSTRAINT check_508774aac0 CHECK ((member_namespace_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
@@ -25701,6 +25736,12 @@ ALTER TABLE ONLY incident_management_pending_alert_escalations
 
 ALTER TABLE ONLY incident_management_pending_issue_escalations
     ADD CONSTRAINT incident_management_pending_issue_escalations_pkey PRIMARY KEY (id, process_at);
+
+ALTER TABLE ONLY incident_management_timeline_event_tag_links
+    ADD CONSTRAINT incident_management_timeline_event_tag_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY incident_management_timeline_event_tags
+    ADD CONSTRAINT incident_management_timeline_event_tags_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT incident_management_timeline_events_pkey PRIMARY KEY (id);
@@ -29053,6 +29094,12 @@ CREATE INDEX index_identities_on_user_id ON identities USING btree (user_id);
 CREATE INDEX index_im_issuable_escalation_statuses_on_policy_id ON incident_management_issuable_escalation_statuses USING btree (policy_id);
 
 CREATE UNIQUE INDEX index_im_oncall_schedules_on_project_id_and_iid ON incident_management_oncall_schedules USING btree (project_id, iid);
+
+CREATE INDEX index_im_timeline_event_id ON incident_management_timeline_event_tag_links USING btree (timeline_event_id);
+
+CREATE UNIQUE INDEX index_im_timeline_event_tags_name_project_id ON incident_management_timeline_event_tags USING btree (project_id, name);
+
+CREATE UNIQUE INDEX index_im_timeline_event_tags_on_tag_id_and_event_id ON incident_management_timeline_event_tag_links USING btree (timeline_event_tag_id, timeline_event_id);
 
 CREATE INDEX index_im_timeline_events_author_id ON incident_management_timeline_events USING btree (author_id);
 
@@ -33925,6 +33972,9 @@ ALTER TABLE ONLY issue_user_mentions
 ALTER TABLE ONLY merge_request_assignees
     ADD CONSTRAINT fk_rails_579d375628 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY incident_management_timeline_event_tag_links
+    ADD CONSTRAINT fk_rails_57baccd7f9 FOREIGN KEY (timeline_event_id) REFERENCES incident_management_timeline_events(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_debian_project_architectures
     ADD CONSTRAINT fk_rails_5808663adf FOREIGN KEY (distribution_id) REFERENCES packages_debian_project_distributions(id) ON DELETE CASCADE;
 
@@ -34128,6 +34178,9 @@ ALTER TABLE ONLY group_crm_settings
 
 ALTER TABLE ONLY clusters_applications_ingress
     ADD CONSTRAINT fk_rails_753a7b41c1 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_timeline_event_tag_links
+    ADD CONSTRAINT fk_rails_753b8b6ee3 FOREIGN KEY (timeline_event_tag_id) REFERENCES incident_management_timeline_event_tags(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY release_links
     ADD CONSTRAINT fk_rails_753be7ae29 FOREIGN KEY (release_id) REFERENCES releases(id) ON DELETE CASCADE;
@@ -34755,6 +34808,9 @@ ALTER TABLE ONLY deployment_merge_requests
 
 ALTER TABLE ONLY packages_debian_group_component_files
     ADD CONSTRAINT fk_rails_dd262386e9 FOREIGN KEY (component_id) REFERENCES packages_debian_group_components(id) ON DELETE RESTRICT;
+
+ALTER TABLE ONLY incident_management_timeline_event_tags
+    ADD CONSTRAINT fk_rails_dd5c91484e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_callouts
     ADD CONSTRAINT fk_rails_ddfdd80f3d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

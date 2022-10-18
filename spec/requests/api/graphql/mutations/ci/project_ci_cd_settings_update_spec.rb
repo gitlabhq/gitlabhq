@@ -8,7 +8,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate' do
   let_it_be(:project) do
     create(:project,
       keep_latest_artifact: true,
-      ci_job_token_scope_enabled: true,
+      ci_outbound_job_token_scope_enabled: true,
       ci_inbound_job_token_scope_enabled: true
     ).tap(&:save!)
   end
@@ -66,7 +66,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate' do
       project.reload
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(project.ci_job_token_scope_enabled).to eq(false)
+      expect(project.ci_outbound_job_token_scope_enabled).to eq(false)
     end
 
     it 'does not update job_token_scope_enabled if not specified' do
@@ -77,7 +77,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate' do
       project.reload
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(project.ci_job_token_scope_enabled).to eq(true)
+      expect(project.ci_outbound_job_token_scope_enabled).to eq(true)
     end
 
     describe 'inbound_job_token_scope_enabled' do

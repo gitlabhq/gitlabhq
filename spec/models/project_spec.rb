@@ -149,6 +149,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:build_artifacts_size_refresh).class_name('Projects::BuildArtifactsSizeRefresh') }
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout').with_foreign_key(:project_id) }
     it { is_expected.to have_many(:pipeline_metadata).class_name('Ci::PipelineMetadata') }
+    it { is_expected.to have_many(:incident_management_timeline_event_tags).class_name('IncidentManagement::TimelineEventTag') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -845,6 +846,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'delegation' do
+    let_it_be(:project) { create(:project) }
+
     [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
@@ -887,8 +890,24 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     include_examples 'ci_cd_settings delegation' do
-      # Skip attributes defined in EE code
+      let(:attributes_with_prefix) do
+        {
+          'group_runners_enabled' => '',
+          'default_git_depth' => 'ci_',
+          'forward_deployment_enabled' => 'ci_',
+          'keep_latest_artifact' => '',
+          'restrict_user_defined_variables' => '',
+          'runner_token_expiration_interval' => '',
+          'separated_caches' => 'ci_',
+          'opt_in_jwt' => 'ci_',
+          'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
+          'inbound_job_token_scope_enabled' => 'ci_',
+          'job_token_scope_enabled' => 'ci_outbound_'
+        }
+      end
+
       let(:exclude_attributes) do
+        # Skip attributes defined in EE code
         %w(
           merge_pipelines_enabled
           merge_trains_enabled
@@ -909,8 +928,8 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
-    describe '#ci_job_token_scope_enabled?' do
-      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+    describe '#ci_outbound_job_token_scope_enabled?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_outbound_' do
         let(:delegated_method) { :job_token_scope_enabled? }
       end
     end

@@ -14,6 +14,7 @@ RSpec.describe Ci::JobArtifacts::DeleteService do
       result = service.execute
 
       expect(result).to be_success
+      expect(result[:destroyed_artifacts_count]).to be(2)
     end
 
     it 'deletes erasable artifacts' do
@@ -24,7 +25,7 @@ RSpec.describe Ci::JobArtifacts::DeleteService do
       expect { service.execute }.not_to change { build.has_trace? }.from(true)
     end
 
-    context 'when project is undergoing statistics refresh' do
+    context 'when project is undergoing stats refresh' do
       before do
         allow(build.project).to receive(:refreshing_build_artifacts_size?).and_return(true)
       end
@@ -35,6 +36,30 @@ RSpec.describe Ci::JobArtifacts::DeleteService do
                 .with(method: 'Ci::JobArtifacts::DeleteService#execute', project_id: build.project_id)
 
         service.execute
+      end
+
+      it 'returns an error response with the correct message and reason' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result[:message]).to be('Action temporarily disabled. ' \
+          'The project this job belongs to is undergoing stats refresh.')
+        expect(result[:reason]).to be(:project_stats_refresh)
+      end
+    end
+
+    context 'when an error response is received from DestroyBatchService' do
+      before do
+        allow_next_instance_of(Ci::JobArtifacts::DestroyBatchService) do |service|
+          allow(service).to receive(:execute).and_return({ status: :error, message: 'something went wrong' })
+        end
+      end
+
+      it 'returns an error response with the correct message' do
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result[:message]).to be('something went wrong')
       end
     end
   end

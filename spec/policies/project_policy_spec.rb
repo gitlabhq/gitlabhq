@@ -2437,7 +2437,7 @@ RSpec.describe ProjectPolicy do
       before do
         current_user.set_ci_job_token_scope!(job)
         current_user.external = external_user
-        scope_project.update!(ci_job_token_scope_enabled: token_scope_enabled)
+        scope_project.update!(ci_outbound_job_token_scope_enabled: token_scope_enabled)
       end
 
       it "enforces the expected permissions" do

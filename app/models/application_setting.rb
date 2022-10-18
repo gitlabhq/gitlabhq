@@ -120,7 +120,7 @@ class ApplicationSetting < ApplicationRecord
             if: :help_page_support_url_column_exists?
 
   validates :help_page_documentation_base_url,
-            length: { maximum: 255, message: _("is too long (maximum is %{count} characters)") },
+            length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
             allow_blank: true,
             addressable_url: true
 
@@ -148,7 +148,7 @@ class ApplicationSetting < ApplicationRecord
             if: :akismet_enabled
 
   validates :spam_check_api_key,
-            length: { maximum: 2000, message: _('is too long (maximum is %{count} characters)') },
+            length: { maximum: 2000, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
   validates :unique_ips_limit_per_user,
@@ -228,7 +228,7 @@ class ApplicationSetting < ApplicationRecord
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_expiration_policies_enable_historic_entries,
-            inclusion: { in: [true, false], message: _('must be a boolean value') }
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -320,8 +320,8 @@ class ApplicationSetting < ApplicationRecord
 
   validates :personal_access_token_prefix,
             format: { with: %r{\A[a-zA-Z0-9_+=/@:.-]+\z},
-                      message: _("can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'") },
-            length: { maximum: 20, message: _('is too long (maximum is %{count} characters)') },
+                      message: N_("can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'") },
+            length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
   validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
@@ -369,7 +369,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :email_restrictions, untrusted_regexp: true
 
-  validates :hashed_storage_enabled, inclusion: { in: [true], message: _("Hashed storage can't be disabled anymore for new projects") }
+  validates :hashed_storage_enabled, inclusion: { in: [true], message: N_("Hashed storage can't be disabled anymore for new projects") }
 
   validates :container_registry_delete_tags_service_timeout,
             :container_registry_cleanup_tags_service_max_list_size,
@@ -377,7 +377,7 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :container_registry_expiration_policies_caching,
-            inclusion: { in: [true, false], message: _('must be a boolean value') }
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :container_registry_import_max_tags_count,
             :container_registry_import_max_retries,
@@ -404,11 +404,11 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :invisible_captcha_enabled,
-            inclusion: { in: [true, false], message: _('must be a boolean value') }
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :invitation_flow_enforcement, :can_create_group,
             allow_nil: false,
-            inclusion: { in: [true, false], message: _('must be a boolean value') }
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -513,11 +513,11 @@ class ApplicationSetting < ApplicationRecord
             rsa_key: true, allow_nil: true
 
   validates :rate_limiting_response_text,
-            length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
+            length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
   validates :jira_connect_application_key,
-            length: { maximum: 255, message: _('is too long (maximum is %{count} characters)') },
+            length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
@@ -561,7 +561,7 @@ class ApplicationSetting < ApplicationRecord
             allow_nil: false
 
   validates :admin_mode,
-            inclusion: { in: [true, false], message: _('must be a boolean value') }
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :external_pipeline_validation_service_url,
             addressable_url: true, allow_blank: true
@@ -574,7 +574,7 @@ class ApplicationSetting < ApplicationRecord
             inclusion: { in: ApplicationSetting.whats_new_variants.keys }
 
   validates :floc_enabled,
-            inclusion: { in: [true, false], message: _('must be a boolean value') }
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   enum sidekiq_job_limiter_mode: {
          Gitlab::SidekiqMiddleware::SizeLimiter::Validator::TRACK_MODE => 0,
@@ -589,7 +589,7 @@ class ApplicationSetting < ApplicationRecord
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :sentry_enabled,
-    inclusion: { in: [true, false], message: _('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :sentry_dsn,
     addressable_url: true, presence: true, length: { maximum: 255 },
     if: :sentry_enabled?
@@ -601,7 +601,7 @@ class ApplicationSetting < ApplicationRecord
     if: :sentry_enabled?
 
   validates :error_tracking_enabled,
-    inclusion: { in: [true, false], message: _('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :error_tracking_api_url,
     presence: true,
     addressable_url: true,
@@ -670,7 +670,7 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :jitsu_administrator_password, encryption_options_base_32_aes_256_gcm
 
   validates :disable_feed_token,
-            inclusion: { in: [true, false], message: _('must be a boolean value') }
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?

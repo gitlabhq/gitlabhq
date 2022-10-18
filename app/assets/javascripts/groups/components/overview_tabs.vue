@@ -19,34 +19,35 @@ export default {
   components: { GlTabs, GlTab, GroupsApp, GlSearchBoxByType, GlSorting, GlSortingItem },
   inject: ['endpoints', 'initialSort'],
   data() {
+    const tabs = [
+      {
+        title: this.$options.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
+        key: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
+        renderEmptyState: true,
+        lazy: this.$route.name !== ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
+        service: new GroupsService(this.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]),
+        store: new GroupsStore({ showSchemaMarkup: true }),
+      },
+      {
+        title: this.$options.i18n[ACTIVE_TAB_SHARED],
+        key: ACTIVE_TAB_SHARED,
+        renderEmptyState: false,
+        lazy: this.$route.name !== ACTIVE_TAB_SHARED,
+        service: new GroupsService(this.endpoints[ACTIVE_TAB_SHARED]),
+        store: new GroupsStore(),
+      },
+      {
+        title: this.$options.i18n[ACTIVE_TAB_ARCHIVED],
+        key: ACTIVE_TAB_ARCHIVED,
+        renderEmptyState: false,
+        lazy: this.$route.name !== ACTIVE_TAB_ARCHIVED,
+        service: new GroupsService(this.endpoints[ACTIVE_TAB_ARCHIVED]),
+        store: new GroupsStore(),
+      },
+    ];
     return {
-      tabs: [
-        {
-          title: this.$options.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS],
-          key: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
-          renderEmptyState: true,
-          lazy: false,
-          service: new GroupsService(this.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]),
-          store: new GroupsStore({ showSchemaMarkup: true }),
-        },
-        {
-          title: this.$options.i18n[ACTIVE_TAB_SHARED],
-          key: ACTIVE_TAB_SHARED,
-          renderEmptyState: false,
-          lazy: true,
-          service: new GroupsService(this.endpoints[ACTIVE_TAB_SHARED]),
-          store: new GroupsStore(),
-        },
-        {
-          title: this.$options.i18n[ACTIVE_TAB_ARCHIVED],
-          key: ACTIVE_TAB_ARCHIVED,
-          renderEmptyState: false,
-          lazy: true,
-          service: new GroupsService(this.endpoints[ACTIVE_TAB_ARCHIVED]),
-          store: new GroupsStore(),
-        },
-      ],
-      activeTabIndex: 0,
+      tabs,
+      activeTabIndex: tabs.findIndex((tab) => tab.key === this.$route.name),
       sort: SORTING_ITEM_NAME,
       isAscending: true,
       search: '',
@@ -75,14 +76,6 @@ export default {
       ) || SORTING_ITEM_NAME;
     this.sort = sort;
     this.isAscending = sort.asc === sortQueryStringValue;
-
-    const activeTabIndex = this.tabs.findIndex((tab) => tab.key === this.$route.name);
-
-    if (activeTabIndex === -1) {
-      return;
-    }
-
-    this.activeTabIndex = activeTabIndex;
   },
   methods: {
     handleTabInput(tabIndex) {

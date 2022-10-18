@@ -21,6 +21,11 @@ module IncidentManagement
     validates :note, presence: true, length: { maximum: 10_000 }
     validates :note_html, length: { maximum: 10_000 }
 
+    has_many :timeline_event_tag_links, class_name: 'IncidentManagement::TimelineEventTagLink'
+    has_many :timeline_event_tags,
+      class_name: 'IncidentManagement::TimelineEventTag',
+      through: :timeline_event_tag_links
+
     scope :order_occurred_at_asc_id_asc, -> { reorder(occurred_at: :asc, id: :asc) }
   end
 end

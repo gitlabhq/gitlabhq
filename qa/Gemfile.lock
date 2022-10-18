@@ -185,7 +185,7 @@ GEM
     oj (3.13.21)
     os (1.1.4)
     parallel (1.19.2)
-    parallel_tests (2.32.0)
+    parallel_tests (3.13.0)
       parallel
     parser (3.1.2.1)
       ast (~> 2.4.1)
@@ -316,7 +316,7 @@ DEPENDENCIES
   nokogiri (~> 1.13, >= 1.13.8)
   octokit (~> 5.6.1)
   parallel (~> 1.19)
-  parallel_tests (~> 2.32)
+  parallel_tests (~> 3.13)
   pry-byebug (~> 3.5.1)
   rainbow (~> 3.0.0)
   rake (~> 13)

@@ -2,8 +2,7 @@
 
 require_relative '../../qa'
 
-require_relative 'qa_deprecation_toolkit_env'
-QaDeprecationToolkitEnv.configure!
+QA::Specs::QaDeprecationToolkitEnv.configure!
 
 Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
 

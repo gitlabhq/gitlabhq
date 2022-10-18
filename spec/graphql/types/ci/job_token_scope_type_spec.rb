@@ -12,7 +12,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'] do
   end
 
   describe 'query' do
-    let(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
+    let(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
     let_it_be(:current_user) { create(:user) }
 
     let(:query) do

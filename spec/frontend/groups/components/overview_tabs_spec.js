@@ -141,6 +141,14 @@ describe('OverviewTabs', () => {
     expect(tabPanel.vm.$attrs.lazy).toBe(false);
   });
 
+  it('sets `lazy` prop to `false` for initially active tab and `true` for all other tabs', async () => {
+    await createComponent({ route: { name: ACTIVE_TAB_SHARED, params: { group: 'foo/bar' } } });
+
+    expect(findTabPanels().at(0).vm.$attrs.lazy).toBe(true);
+    expect(findTabPanels().at(1).vm.$attrs.lazy).toBe(false);
+    expect(findTabPanels().at(2).vm.$attrs.lazy).toBe(true);
+  });
+
   describe.each([
     [
       { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, params: { group: 'foo/bar/baz' } },

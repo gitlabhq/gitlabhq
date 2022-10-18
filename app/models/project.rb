@@ -262,6 +262,7 @@ class Project < ApplicationRecord
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :incident_management_issuable_escalation_statuses, through: :issues, inverse_of: :project, class_name: 'IncidentManagement::IssuableEscalationStatus'
+  has_many :incident_management_timeline_event_tags, inverse_of: :project, class_name: 'IncidentManagement::TimelineEventTag'
   has_many :labels, class_name: 'ProjectLabel'
   has_many :integrations
   has_many :events
@@ -476,7 +477,7 @@ class Project < ApplicationRecord
   delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :forward_deployment_enabled, :forward_deployment_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
-  delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
+  delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci_outbound, allow_nil: true
   delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
   delegate :opt_in_jwt, :opt_in_jwt=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
@@ -503,7 +504,7 @@ class Project < ApplicationRecord
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
     format: { without: %r{(\.{2}|\A/)},
-              message: _('cannot include leading slash or directory traversal.') },
+              message: N_('cannot include leading slash or directory traversal.') },
     length: { maximum: 255 },
     allow_blank: true
   validates :name,
@@ -699,13 +700,13 @@ class Project < ApplicationRecord
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
-    default: 3600, error_message: _('Maximum job timeout has a value which could not be accepted')
+    default: 3600, error_message: N_('Maximum job timeout has a value which could not be accepted')
 
   validates :build_timeout, allow_nil: true,
                             numericality: { greater_than_or_equal_to: 10.minutes,
                                             less_than: MAX_BUILD_TIMEOUT,
                                             only_integer: true,
-                                            message: _('needs to be between 10 minutes and 1 month') }
+                                            message: N_('needs to be between 10 minutes and 1 month') }
 
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
@@ -2896,7 +2897,7 @@ class Project < ApplicationRecord
     ci_cd_settings.allow_fork_pipelines_to_run_in_parent_project?
   end
 
-  def ci_job_token_scope_enabled?
+  def ci_outbound_job_token_scope_enabled?
     return false unless ci_cd_settings
 
     ci_cd_settings.job_token_scope_enabled?

@@ -1,6 +1,6 @@
 import { GlBadge } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -27,7 +27,7 @@ describe('GitlabVersionCheck', () => {
     mock = new MockAdapter(axios);
     mock.onGet().replyOnce(response.code, response.res);
 
-    wrapper = shallowMount(GitlabVersionCheck);
+    wrapper = shallowMountExtended(GitlabVersionCheck);
   };
 
   const dummyGon = {
@@ -42,6 +42,7 @@ describe('GitlabVersionCheck', () => {
     window.gon = originalGon;
   });
 
+  const findGlBadgeClickWrapper = () => wrapper.findByTestId('badge-click-wrapper');
   const findGlBadge = () => wrapper.findComponent(GlBadge);
 
   describe.each`
@@ -81,7 +82,8 @@ describe('GitlabVersionCheck', () => {
           await waitForPromises(); // Ensure we wrap up the axios call
         });
 
-        it(`does${renders ? '' : ' not'} render GlBadge`, () => {
+        it(`does${renders ? '' : ' not'} render Badge Click Wrapper and GlBadge`, () => {
+          expect(findGlBadgeClickWrapper().exists()).toBe(renders);
           expect(findGlBadge().exists()).toBe(renders);
         });
       });
@@ -110,9 +112,9 @@ describe('GitlabVersionCheck', () => {
           expect(findGlBadge().attributes('variant')).toBe(expectedUI.variant);
         });
 
-        it(`tracks rendered_version_badge with status ${expectedUI.variant}`, () => {
+        it(`tracks rendered_version_badge with label ${expectedUI.title}`, () => {
           expect(trackingSpy).toHaveBeenCalledWith(undefined, 'rendered_version_badge', {
-            label: expectedUI.variant,
+            label: expectedUI.title,
           });
         });
 
@@ -120,11 +122,11 @@ describe('GitlabVersionCheck', () => {
           expect(findGlBadge().attributes('href')).toBe(UPGRADE_DOCS_URL);
         });
 
-        it(`tracks click_version_badge with status ${expectedUI.variant} when badge is clicked`, async () => {
-          await findGlBadge().vm.$emit('click');
+        it(`tracks click_version_badge with label ${expectedUI.title} when badge is clicked`, async () => {
+          await findGlBadgeClickWrapper().trigger('click');
 
           expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_version_badge', {
-            label: expectedUI.variant,
+            label: expectedUI.title,
           });
         });
       });

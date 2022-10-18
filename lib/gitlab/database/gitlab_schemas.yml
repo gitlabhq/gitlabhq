@@ -264,6 +264,8 @@ incident_management_oncall_shifts: :gitlab_main
 incident_management_pending_alert_escalations: :gitlab_main
 incident_management_pending_issue_escalations: :gitlab_main
 incident_management_timeline_events: :gitlab_main
+incident_management_timeline_event_tags: :gitlab_main
+incident_management_timeline_event_tag_links: :gitlab_main
 index_statuses: :gitlab_main
 in_product_marketing_emails: :gitlab_main
 insights: :gitlab_main

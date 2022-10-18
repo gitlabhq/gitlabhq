@@ -286,10 +286,10 @@ class User < ApplicationRecord
   validate :check_username_format, if: :username_changed?
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
-                                                     message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
+                                                     message: ->(*) { _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } } }
 
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
-                                                            message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
+                                                            message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
 
   validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
 

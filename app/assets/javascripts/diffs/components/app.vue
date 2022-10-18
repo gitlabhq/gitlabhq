@@ -472,7 +472,7 @@ export default {
     fetchData(toggleTree = true) {
       this.fetchDiffFilesMeta()
         .then(({ real_size = 0 }) => {
-          this.diffFilesLength = parseInt(real_size, 10);
+          this.diffFilesLength = parseInt(real_size, 10) || 0;
           if (toggleTree) {
             this.setTreeDisplay();
           }

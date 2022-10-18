@@ -20,8 +20,6 @@ module API
         use :pagination
         use :event_filter_params
         use :sort_params
-        optional :scope, type: String, desc: 'Include all events across a user\'s projects',
-                         documentation: { example: 'all' }
       end
 
       get do

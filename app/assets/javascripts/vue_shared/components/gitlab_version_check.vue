@@ -57,7 +57,7 @@ export default {
             this.status = res.data.severity;
 
             this.track('rendered_version_badge', {
-              label: this.status,
+              label: this.title,
             });
           }
         })
@@ -66,19 +66,24 @@ export default {
           this.status = null;
         });
     },
+    onClick() {
+      this.track('click_version_badge', { label: this.title });
+    },
   },
   UPGRADE_DOCS_URL,
 };
 </script>
 
 <template>
-  <gl-badge
-    v-if="status"
-    :href="$options.UPGRADE_DOCS_URL"
-    class="version-check-badge"
-    :variant="status"
-    :size="size"
-    @click="track('click_version_badge', { label: status })"
-    >{{ title }}</gl-badge
-  >
+  <!-- TODO: remove the span element once bootstrap-vue is updated to version 2.21.1 -->
+  <!-- TODO: https://github.com/bootstrap-vue/bootstrap-vue/issues/6219 -->
+  <span v-if="status" data-testid="badge-click-wrapper" @click="onClick">
+    <gl-badge
+      :href="$options.UPGRADE_DOCS_URL"
+      class="version-check-badge"
+      :variant="status"
+      :size="size"
+      >{{ title }}</gl-badge
+    >
+  </span>
 </template>

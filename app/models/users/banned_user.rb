@@ -7,6 +7,6 @@ module Users
     belongs_to :user
 
     validates :user, presence: true
-    validates :user_id, uniqueness: { message: _("banned user already exists") }
+    validates :user_id, uniqueness: { message: N_("banned user already exists") }
   end
 end

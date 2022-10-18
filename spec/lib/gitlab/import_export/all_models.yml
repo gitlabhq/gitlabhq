@@ -61,6 +61,8 @@ issues:
 - requirement
 - incident_management_issuable_escalation_status
 - incident_management_timeline_events
+- incident_management_timeline_event_tags
+- incident_management_timeline_event_links
 - pending_escalations
 - customer_relations_contacts
 - issue_customer_relations_contacts
@@ -622,6 +624,7 @@ project:
 - incident_management_oncall_rotations
 - incident_management_escalation_policies
 - incident_management_issuable_escalation_statuses
+- incident_management_timeline_event_tags
 - debian_distributions
 - merge_request_metrics
 - security_orchestration_policy_configuration

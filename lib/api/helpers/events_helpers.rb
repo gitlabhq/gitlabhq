@@ -6,7 +6,7 @@ module API
       extend Grape::API::Helpers
 
       params :event_filter_params do
-        optional :action, type: String, values: Event.actions.keys, desc: 'Event action to filter on'
+        optional :action, type: String, values: Event.actions, desc: 'Event action to filter on'
         optional :target_type, type: String, values: Event.target_types, desc: 'Event target type to filter on'
         optional :before, type: Date, desc: 'Include only events created before this date'
         optional :after, type: Date, desc: 'Include only events created after this date'

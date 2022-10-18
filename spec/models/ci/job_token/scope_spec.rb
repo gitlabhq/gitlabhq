@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobToken::Scope do
-  let_it_be(:project) { create(:project, ci_job_token_scope_enabled: true).tap(&:save!) }
+  let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
 
   let(:scope) { described_class.new(project) }
 
@@ -53,7 +53,7 @@ RSpec.describe Ci::JobToken::Scope do
 
       context 'when project scope setting is disabled' do
         before do
-          project.ci_job_token_scope_enabled = false
+          project.ci_outbound_job_token_scope_enabled = false
         end
 
         it 'considers any project to be part of the scope' do

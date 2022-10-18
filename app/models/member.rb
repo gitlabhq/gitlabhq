@@ -55,7 +55,7 @@ class Member < ApplicationRecord
   validate :signup_email_valid?, on: :create, if: ->(member) { member.invite_email.present? }
   validates :user_id,
     uniqueness: {
-      message: _('project bots cannot be added to other groups / projects')
+      message: N_('project bots cannot be added to other groups / projects')
     },
     if: :project_bot?
   validate :access_level_inclusion

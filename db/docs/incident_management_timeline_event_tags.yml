@@ -1,0 +1,9 @@
+---
+table_name: incident_management_timeline_event_tags
+classes:
+- IncidentManagement::TimelineEventTag
+feature_categories:
+- incident_management
+description: Persists tags for timeline events in a project.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100271
+milestone: '15.6'
