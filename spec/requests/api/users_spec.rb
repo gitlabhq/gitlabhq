@@ -165,6 +165,7 @@ RSpec.describe API::Users do
 
           expect(json_response.first).not_to have_key('note')
           expect(json_response.first).not_to have_key('namespace_id')
+          expect(json_response.first).not_to have_key('created_by')
         end
       end
 
@@ -175,6 +176,7 @@ RSpec.describe API::Users do
 
             expect(json_response.first).not_to have_key('note')
             expect(json_response.first).not_to have_key('namespace_id')
+            expect(json_response.first).not_to have_key('created_by')
           end
         end
 
@@ -185,6 +187,26 @@ RSpec.describe API::Users do
             expect(response).to have_gitlab_http_status(:success)
             expect(json_response.first).to have_key('note')
             expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
+          end
+
+          context 'with `created_by` details' do
+            it 'has created_by as nil with a self-registered account' do
+              get api("/users", admin), params: { username: user.username }
+
+              expect(response).to have_gitlab_http_status(:success)
+              expect(json_response.first).to have_key('created_by')
+              expect(json_response.first['created_by']).to eq(nil)
+            end
+
+            it 'is created_by a user and has those details' do
+              created = create(:user, created_by_id: user.id)
+
+              get api("/users", admin), params: { username: created.username }
+
+              expect(response).to have_gitlab_http_status(:success)
+              expect(json_response.first['created_by'].symbolize_keys)
+                .to eq(API::Entities::UserBasic.new(user).as_json)
+            end
           end
         end
 

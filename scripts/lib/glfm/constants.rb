@@ -24,6 +24,7 @@ module Glfm
       specification_input_glfm_path.join('glfm_example_metadata.yml')
     GLFM_EXAMPLE_NORMALIZATIONS_YML_PATH = specification_input_glfm_path.join('glfm_example_normalizations.yml')
     GLFM_SPEC_TXT_PATH = specification_path.join('output/spec.txt')
+    GLFM_SPEC_HTML_PATH = specification_path.join('output/spec.html')
 
     # Example Snapshot (ES) files
     es_fixtures_path = File.expand_path("../../../glfm_specification/example_snapshots", __dir__)

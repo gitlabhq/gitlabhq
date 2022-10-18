@@ -114,6 +114,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries
   masked by query caching, memory profiling and why should we avoid cached
   queries.
+- [JSON guidelines](json.md) for how to handle JSON in a performant manner.
 
 ## Database guides
 

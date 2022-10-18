@@ -43,10 +43,10 @@ to be able to keep using this and ship fixes and updates needed for our use case
 and the documentation for it has been removed from the official page. This
 means that the original reason to use Docker Machine is no longer valid too.
 
-To keep supporting our customers and the wider community we need to design a
-new mechanism for GitLab Runner auto-scaling. It not only needs to support
-auto-scaling, but it also needs to do that in the way to enable us to build on
-top of it to improve efficiency, reliability and availability.
+To keep supporting our customers and the wider community and to improve our SaaS runners
+maintenance we need to design a new mechanism for GitLab Runner auto-scaling. It not only
+needs to support auto-scaling, but it also needs to do that in the way to enable us to
+build on top of it to improve efficiency, reliability and availability.
 
 We call this new mechanism the "next GitLab Runner Scaling architecture".
 
@@ -61,6 +61,66 @@ _As with all projects, the items mentioned in this document and linked pages are
 subject to change or delay. The development, release and timing of any
 products, features, or functionality remain at the sole discretion of GitLab
 Inc._
+
+## Continuing building on Docker Machine
+
+At this moment one of our core products - GitLab Runner - and one of its most
+important features - ability to auto-scale job execution environments - depends
+on an external product that is abandoned.
+
+Docker Machine project itself is also hard to maintain. Its design starts to
+show its age, which makes it hard to bring new features and fixes. A huge
+codebase that it brings with a lack of internal knowledge about it makes it
+hard for our maintainers to support and properly handle incoming feature
+requests and community contributions.
+
+Docker Machine and it integrated 20+ drivers for cloud and virtualization
+providers creates also another subset of problems, like:
+
+- Each cloud/virtualization environment brings features that come and go
+  and we would need to maintain support for them (add new features, fix
+  bugs).
+
+- We basically need to become experts for each of the virtualization/cloud
+  provider to properly support integration with their API,
+
+- Every single provider that Docker Machine integrates with has its
+  bugs, security releases, vulnerabilities - to maintain the project properly
+  we would need to be on top of all of that and handle updates whenever
+  they are needed.
+
+Another problem is the fact that Docker Machine, from its beginnings, was
+focused on managing Linux based instances only. Despite that at some moment
+Docker got official and native integration on Windows, Docker Machine never
+followed this step. Nor its designed to make such integration easy.
+
+There is also no support for MacOS. This one is obvious - Docker Machine is a
+tool to maintain hosts for Docker Engine and there is no native Docker Engine
+for MacOS. And by native we mean MacOS containers executed within MacOS
+operating system. Docker for MacOS product is not a native support - it's just
+a tooling and a virtualized Linux instance installed with it that makes it
+easier to develop **Linux containers** on MacOS development instances.
+
+This means that only one of three of our officially supported platforms -
+Linux, Windows and MacOS - have a fully-featured support for CI/CD
+auto-scaling. For Windows there is a possibility to use Kubernetes (which in
+some cases have limitations) and maybe with a lot of effort we could bring
+support for Windows into Docker Machine. But for MacOS, there is no
+auto-scaling solution provided natively by GitLab Runner.
+
+This is a huge limitation for our users and a frequently requested feature.
+It's also a limitation for our SaaS runners offering. We've maintained to
+create some sort of auto-scaling for our SaaS Windows and SaaS MacOS runners
+hacking around Custom executor. But experiences from past three years show
+that it's not the best way of doing this. And yet, after this time, Windows
+and MacOS runners autoscaling lacks a lot of performance and feature support
+that we have with our SaaS Linux runners.
+
+To keep supporting our customers and the wider community and to improve our
+SaaS runners maintenance we need to design a new mechanism for GitLab Runner
+auto-scaling. It not only needs to support auto-scaling, but it also needs to
+do that in the way to enable us to build on top of it to improve efficiency,
+reliability and availability.
 
 ## Proposal
 
@@ -246,9 +306,17 @@ abstraction.
 - Design the new auto-scaling architecture aiming for having more choices and
   flexibility in the future, instead of imposing new constraints.
 - Design the new auto-scaling architecture to experiment with running multiple
- jobs in parallel, on a single machine.
+  jobs in parallel, on a single machine.
 - Design the new provisioning architecture to replace Docker Machine in a way
   that the wider community can easily build on top of the new abstractions.
+- New auto-scaling method should become a core component of GitLab Runner product so that
+  we can simplify maintenance, use the same tooling, test configuration and Go language
+  setup as we do in our other main products.
+- It should support multiple job execution environments - not only Docker containers
+  on Linux operating system.
+
+    The best design would be to bring auto-scaling as a feature wrapped around
+    our current executors like Docker or Shell.
 
 #### Principles for the new plugin system
 
@@ -270,10 +338,14 @@ abstraction.
 - Favor gRPC communication between a plugin and GitLab Runner.
 - Make it possible to version communication interface and support many versions.
 - Make Go a primary language for writing plugins but accept other languages too.
-- Prefer a GitLab job-aware autoscaler to provider specific autoscalers. Cloud provider
-  autoscalers don't know which VM to delete when scaling down so they make sub-optimal
-  decisions. Rather than teaching all autoscalers about GitLab jobs, we prefer to
-  have one, GitLab-owned autoscaler (not in the plugin).
+- Autoscaling mechanism should be fully owned by GitLab.
+
+    Cloud provider autoscalers don't know which VM to delete when scaling down so
+    they make sub-optimal decisions. Rather than teaching all autoscalers about GitLab
+    jobs, we prefer to have one, GitLab-owned autoscaler (not in the plugin).
+
+    It will also ensure that we can shape the future of the mechanism and make decisions
+    that fit our needs and requirements.
 
 ## Plugin boundary proposals
 
@@ -350,7 +422,7 @@ Proposal:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                         | Who
+| Role                         | Who                                             |
 |------------------------------|-------------------------------------------------|
 | Authors                      | Grzegorz Bizon, Tomasz Maczukin, Joseph Burnett |
 | Architecture Evolution Coach | Kamil Trzciński                                 |
@@ -360,16 +432,16 @@ Proposal:
 
 DRIs:
 
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | Elliot Rushton         |
-| Product                      | Darren Eastman         |
-| Engineering                  | Tomasz Maczukin        |
+| Role        | Who             |
+|-------------|-----------------|
+| Leadership  | Elliot Rushton  |
+| Product     | Darren Eastman  |
+| Engineering | Tomasz Maczukin |
 
 Domain experts:
 
-| Area                         | Who
-|------------------------------|------------------------|
-| Domain Expert / Runner       | Arran Walker           |
+| Area                   | Who          |
+|------------------------|--------------|
+| Domain Expert / Runner | Arran Walker |
 
 <!-- vale gitlab.Spelling = YES -->

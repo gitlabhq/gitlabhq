@@ -9,23 +9,27 @@ module Boards
         end
 
         lists = board.lists.preload_associated_models
+        lists = lists.with_types(available_list_types_for(board))
 
         return lists.id_in(params[:list_id]) if params[:list_id].present?
 
-        list_types = unavailable_list_types_for(board)
-        lists.without_types(list_types)
+        lists
       end
 
       private
 
-      def unavailable_list_types_for(board)
-        hidden_lists_for(board)
+      def available_list_types_for(board)
+        licensed_list_types(board) + visible_lists(board)
       end
 
-      def hidden_lists_for(board)
-        [].tap do |hidden|
-          hidden << ::List.list_types[:backlog] if board.hide_backlog_list?
-          hidden << ::List.list_types[:closed] if board.hide_closed_list?
+      def licensed_list_types(board)
+        [List.list_types[:label]]
+      end
+
+      def visible_lists(board)
+        [].tap do |visible|
+          visible << ::List.list_types[:backlog] unless board.hide_backlog_list?
+          visible << ::List.list_types[:closed] unless board.hide_closed_list?
         end
       end
     end

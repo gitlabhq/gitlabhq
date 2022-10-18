@@ -59,7 +59,7 @@ module API
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all threads are resolved'
         optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Deprecated: Use :topics instead'
         optional :topics, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The list of topics for a project'
-        optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for project'
+        optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for project', documentation: { type: 'file' }
         optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
         optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
         optional :suggestion_commit_message, type: String, desc: 'The commit message used to apply merge request suggestions'
@@ -73,7 +73,7 @@ module API
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
         optional :packages_enabled, type: Boolean, desc: 'Enable project packages feature'
         optional :squash_option, type: String, values: %w(never always default_on default_off), desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
-        optional :mr_default_target_self, Boolean, desc: 'Merge requests of this forked project targets itself by default'
+        optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
       end
 
       params :optional_project_params_ee do

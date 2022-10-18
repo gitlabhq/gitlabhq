@@ -43,7 +43,7 @@ gem 'rugged', '~> 1.2'
 gem 'grape-path-helpers', '~> 1.7.1'
 
 gem 'faraday', '~> 1.0'
-gem 'marginalia', '~> 1.10.0'
+gem 'marginalia', '~> 1.11.1'
 
 # Authorization
 gem 'declarative_policy', '~> 1.1.0'
@@ -478,7 +478,6 @@ gem 'gitlab-mail_room', '~> 0.0.9', require: 'mail_room'
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
-gem 'ruby-prof', '~> 1.3.0'
 gem 'stackprof', '~> 0.2.21', require: false
 gem 'rbtrace', '~> 0.4', require: false
 gem 'memory_profiler', '~> 0.9', require: false

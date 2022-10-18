@@ -404,7 +404,7 @@ RSpec.describe Emails::Profile do
     end
 
     it 'includes a link to the change password documentation' do
-      is_expected.to have_body_text 'https://docs.gitlab.com/ee/user/profile/#changing-your-password'
+      is_expected.to have_body_text 'https://docs.gitlab.com/ee/user/profile/user_passwords.html#change-your-password'
     end
 
     it 'mentions two factor authentication when two factor is not enabled' do
@@ -454,7 +454,7 @@ RSpec.describe Emails::Profile do
     end
 
     it 'includes a link to the change password documentation' do
-      is_expected.to have_body_text 'https://docs.gitlab.com/ee/user/profile/#changing-your-password'
+      is_expected.to have_body_text 'https://docs.gitlab.com/ee/user/profile/user_passwords.html#change-your-password'
     end
   end
 

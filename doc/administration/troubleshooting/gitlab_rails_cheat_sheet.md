@@ -779,3 +779,24 @@ Prints the metrics saved in `conversational_development_index_metrics`.
 ```shell
 rake gitlab:usage_data:generate_and_send
 ```
+
+## GraphQL
+
+Call a [GraphQL](../../api/graphql/getting_started.md) endpoint through the Rails console:
+
+```ruby
+query = <<~EOQ
+query securityGetProjects($search: String!) {
+  projects(search: $search) {
+    nodes {
+      path
+    }
+  }
+}
+EOQ
+
+variables = { "search": "gitlab" }
+
+result = GitlabSchema.execute(query, variables: variables, context: { current_user: current_user })
+result.to_h
+```

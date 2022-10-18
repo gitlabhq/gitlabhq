@@ -10,7 +10,7 @@ require_relative 'constants'
 require_relative 'shared'
 require_relative 'parse_examples'
 
-# IMPORTANT NOTE: See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/
+# IMPORTANT NOTE: See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#update-example-snapshotsrb-script
 # for details on the implementation and usage of this script. This developers guide
 # contains diagrams and documentation of this script,
 # including explanations and examples of all files it reads and writes.
@@ -29,8 +29,6 @@ module Glfm
     # which do not require it.
     def process(skip_static_and_wysiwyg: false)
       output('Updating example snapshots...')
-
-      output('(Skipping static HTML generation)') if skip_static_and_wysiwyg
 
       output("Reading #{GLFM_SPEC_TXT_PATH}...")
       glfm_spec_txt_lines = File.open(GLFM_SPEC_TXT_PATH).readlines
@@ -266,7 +264,7 @@ module Glfm
 
       # NOTE 2: We run this as an RSpec process, for the same reasons we run via Jest process below:
       # because that's the easiest way to ensure a reliable, fully-configured environment in which
-      # to execute the markdown-generation logic. Also, in the static/backend case, Rspec
+      # to execute the markdown-processing logic. Also, in the static/backend case, Rspec
       # provides the easiest and most reliable way to generate example data via Factorybot
       # creation of stable model records. This ensures consistent snapshot values across
       # machines/environments.

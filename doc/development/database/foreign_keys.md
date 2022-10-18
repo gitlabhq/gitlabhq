@@ -4,7 +4,7 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Foreign Keys & Associations
+# Foreign keys and associations
 
 When adding an association to a model you must also add a foreign key. For
 example, say you have the following model:
@@ -20,7 +20,7 @@ that data consistency is enforced on database level. Foreign keys also mean that
 the database can very quickly remove associated data (for example, when removing a
 user), instead of Rails having to do this.
 
-## Adding Foreign Keys In Migrations
+## Adding foreign keys in migrations
 
 Foreign keys can be added concurrently using `add_concurrent_foreign_key` as
 defined in `Gitlab::Database::MigrationHelpers`. See the
@@ -31,7 +31,7 @@ you have removed any orphaned rows. The method `add_concurrent_foreign_key`
 does not take care of this so you must do so manually. See
 [adding foreign key constraint to an existing column](add_foreign_key_to_existing_column.md).
 
-## Updating Foreign Keys In Migrations
+## Updating foreign keys in migrations
 
 Sometimes a foreign key constraint must be changed, preserving the column
 but updating the constraint condition. For example, moving from
@@ -45,64 +45,64 @@ To replace a foreign key:
 
 1. [Add the new foreign key without validation](add_foreign_key_to_existing_column.md#prevent-invalid-records)
 
-  The name of the foreign key constraint must be changed to add a new
-  foreign key before removing the old one.
+   The name of the foreign key constraint must be changed to add a new
+   foreign key before removing the old one.
 
-  ```ruby
-  class ReplaceFkOnPackagesPackagesProjectId < Gitlab::Database::Migration[2.0]
-    disable_ddl_transaction!
+   ```ruby
+   class ReplaceFkOnPackagesPackagesProjectId < Gitlab::Database::Migration[2.0]
+     disable_ddl_transaction!
 
-    NEW_CONSTRAINT_NAME = 'fk_new'
+     NEW_CONSTRAINT_NAME = 'fk_new'
 
-    def up
-      add_concurrent_foreign_key(:packages_packages, :projects, column: :project_id, on_delete: :nullify, validate: false, name: NEW_CONSTRAINT_NAME)
-    end
+     def up
+       add_concurrent_foreign_key(:packages_packages, :projects, column: :project_id, on_delete: :nullify, validate: false, name: NEW_CONSTRAINT_NAME)
+     end
 
-    def down
-      with_lock_retries do
-        remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :nullify, name: NEW_CONSTRAINT_NAME)
-      end
-    end
-  end
-  ```
+     def down
+       with_lock_retries do
+         remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :nullify, name: NEW_CONSTRAINT_NAME)
+       end
+     end
+   end
+   ```
 
 1. [Validate the new foreign key](add_foreign_key_to_existing_column.md#validate-the-foreign-key)
 
-  ```ruby
-  class ValidateFkNew < Gitlab::Database::Migration[2.0]
-    NEW_CONSTRAINT_NAME = 'fk_new'
+   ```ruby
+   class ValidateFkNew < Gitlab::Database::Migration[2.0]
+     NEW_CONSTRAINT_NAME = 'fk_new'
 
-    # foreign key added in <link to MR or path to migration adding new FK>
-    def up
-      validate_foreign_key(:packages_packages, name: NEW_CONSTRAINT_NAME)
-    end
+     # foreign key added in <link to MR or path to migration adding new FK>
+     def up
+       validate_foreign_key(:packages_packages, name: NEW_CONSTRAINT_NAME)
+     end
 
-    def down
-      # no-op
-    end
-  end
-  ```
+     def down
+       # no-op
+     end
+   end
+   ```
 
 1. Remove the old foreign key:
 
-  ```ruby
-  class RemoveFkOld < Gitlab::Database::Migration[2.0]
-    OLD_CONSTRAINT_NAME = 'fk_old'
+   ```ruby
+   class RemoveFkOld < Gitlab::Database::Migration[2.0]
+     OLD_CONSTRAINT_NAME = 'fk_old'
 
-    # new foreign key added in <link to MR or path to migration adding new FK>
-    # and validated in <link to MR or path to migration validating new FK>
-    def up
-      remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :cascade, name: OLD_CONSTRAINT_NAME)
-    end
+     # new foreign key added in <link to MR or path to migration adding new FK>
+     # and validated in <link to MR or path to migration validating new FK>
+     def up
+       remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :cascade, name: OLD_CONSTRAINT_NAME)
+     end
 
-    def down
-      # Validation is skipped here, so if rolled back, this will need to be revalidated in a separate migration
-      add_concurrent_foreign_key(:packages_packages, :projects, column: :project_id, on_delete: :cascade, validate: false, name: OLD_CONSTRAINT_NAME)
-    end
-  end
-  ```
+     def down
+       # Validation is skipped here, so if rolled back, this will need to be revalidated in a separate migration
+       add_concurrent_foreign_key(:packages_packages, :projects, column: :project_id, on_delete: :cascade, validate: false, name: OLD_CONSTRAINT_NAME)
+     end
+   end
+   ```
 
-## Cascading Deletes
+## Cascading deletes
 
 Every foreign key must define an `ON DELETE` clause, and in 99% of the cases
 this should be set to `CASCADE`.
@@ -124,7 +124,7 @@ have a foreign key constraint. So if that spec fails, don't add the column to
 `IGNORED_FK_COLUMNS`, but instead add the FK constraint, or consider naming it
 differently.
 
-## Dependent Removals
+## Dependent removals
 
 Don't define options such as `dependent: :destroy` or `dependent: :delete` when
 defining an association. Defining these options means Rails handles the
@@ -182,9 +182,9 @@ create_table :user_configs, id: false do |t|
 end
 ```
 
-Setting `default: nil` ensures a primary key sequence is not created, and since the primary key
+Setting `default: nil` ensures a primary key sequence is not created, and because the primary key
 automatically gets an index, we set `index: false` to avoid creating a duplicate.
-You also need to add the new primary key to the model:
+You must also add the new primary key to the model:
 
 ```ruby
 class UserConfig < ActiveRecord::Base

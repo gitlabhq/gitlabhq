@@ -281,11 +281,17 @@ declarative partitioning.
 
 Doing that will also allow us to use a Unified Resource Identifier for
 partitioned resources, that will contain a pointer to a pipeline ID, we could
-then use to efficiently lookup a partition the resource is stored in. We could
-use an ID like `1e240-5ba0` for pipeline `123456`, build `23456`. If we decide
-to update the primary identifier of a partitioned resource (today it is just a
-big integer) it is important to design a system that is resilient to migrating
-data between partitions, to avoid changing idenfiers when rebalancing happens.
+then use to efficiently lookup a partition the resource is stored in. It might
+be important when a resources can be directly referenced by an URL, in UI or
+API. We could use an ID like `1e240-5ba0` for pipeline `123456`, build `23456`.
+Using a dash `-` can prevent an identifier from being highlighted and copied
+with a mouse double-click. If we want to avoid this problem, we can use any
+character of written representation that is not present in base-16 numeral
+system - any letter from `g` to `z` in Latin alphabet, for example `x`. In that
+case an example of an URI would look like `1e240x5ba0`. If we decide to update
+the primary identifier of a partitioned resource (today it is just a big
+integer) it is important to design a system that is resilient to migrating data
+between partitions, to avoid changing idenfiers when rebalancing happens.
 
 `ci_partitions` table will store information about a partition identifier,
 pipeline ids range it is valid for and whether the partitions have been

@@ -27,14 +27,6 @@ RSpec.shared_examples 'boards listable model' do |list_factory|
           .to eq([list1, list3, list4, list2])
       end
     end
-
-    describe '.without_types' do
-      it 'excludes lists of given types' do
-        lists = described_class.without_types([:label, :closed])
-
-        expect(lists).to match_array([list1])
-      end
-    end
   end
 
   describe '#destroyable?' do

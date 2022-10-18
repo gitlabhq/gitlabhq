@@ -1636,7 +1636,9 @@ To configure Praefect with TLS:
 
 Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
-[Object storage](#configure-the-object-storage) is also required to be configured.
+Since it's recommended to use [Object storage](#configure-the-object-storage)
+over [NFS](#configure-nfs-optional) for data objects, the following examples
+include the Object storage configuration.
 
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
@@ -1802,34 +1804,11 @@ run [multiple Sidekiq processes](../operations/extra_sidekiq_processes.md).
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
-[Object storage](#configure-the-object-storage) is also required to be configured.
+Since it's recommended to use [Object storage](#configure-the-object-storage)
+over [NFS](#configure-nfs-optional) for data objects, the following examples
+include the Object storage configuration.
 
 On each node perform the following:
-
-1. If you're [using NFS](#configure-nfs-optional):
-
-   1. If necessary, install the NFS client utility packages using the following
-      commands:
-
-      ```shell
-      # Ubuntu/Debian
-      apt-get install nfs-common
-
-      # CentOS/Red Hat
-      yum install nfs-utils nfs-utils-lib
-      ```
-
-   1. Specify the necessary NFS mounts in `/etc/fstab`.
-      The exact contents of `/etc/fstab` depends on how you chose
-      to configure your NFS server. See the [NFS documentation](../nfs.md)
-      for examples and the various options.
-
-   1. Create the shared directories. These may be different depending on your NFS
-      mount locations.
-
-      ```shell
-      mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
-      ```
 
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
@@ -1981,9 +1960,10 @@ On each node perform the following:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-1. If you're not using NFS, [enable incremental logging](#enable-incremental-logging).
+1. [Enable incremental logging](#enable-incremental-logging), unless you are using [NFS](#configure-nfs-optional).
 
 1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the node can connect to Gitaly.
+
 1. Tail the logs to see the requests:
 
    ```shell

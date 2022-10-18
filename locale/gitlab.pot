@@ -30800,7 +30800,13 @@ msgstr ""
 msgid "Product Analytics"
 msgstr ""
 
+msgid "ProductAnalytics|Audience"
+msgstr ""
+
 msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
+msgstr ""
+
+msgid "ProductAnalytics|Widgets content"
 msgstr ""
 
 msgid "Productivity"

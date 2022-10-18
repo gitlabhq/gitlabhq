@@ -592,31 +592,6 @@ but this is dependent on workload.
 
 On each node perform the following:
 
-1. If you're [using NFS](#configure-nfs-optional):
-
-   1. If necessary, install the NFS client utility packages using the following
-      commands:
-
-      ```shell
-      # Ubuntu/Debian
-      apt-get install nfs-common
-
-      # CentOS/Red Hat
-      yum install nfs-utils nfs-utils-lib
-      ```
-
-   1. Specify the necessary NFS mounts in `/etc/fstab`.
-      The exact contents of `/etc/fstab` will depend on how you chose
-      to configure your NFS server. See the [NFS documentation](../nfs.md)
-      for examples and the various options.
-
-   1. Create the shared directories. These may be different depending on your NFS
-      mount locations.
-
-      ```shell
-      mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
-      ```
-
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
@@ -745,9 +720,10 @@ On each node perform the following:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-1. If you're not using NFS, [enable incremental logging](#enable-incremental-logging).
+1. [Enable incremental logging](#enable-incremental-logging), unless you are using [NFS](#configure-nfs-optional).
 
 1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the node can connect to Gitaly.
+
 1. Tail the logs to see the requests:
 
    ```shell

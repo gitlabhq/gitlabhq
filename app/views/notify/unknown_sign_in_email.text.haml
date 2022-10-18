@@ -3,7 +3,7 @@
 = _('A sign-in to your account has been made from the following IP address: %{ip}') % { ip: @ip }
 
 = _('If you recently signed in and recognize the IP address, you may disregard this email.')
-= _('If you did not recently sign in, you should immediately change your password: %{password_link}.') % { password_link: 'https://docs.gitlab.com/ee/user/profile/#changing-your-password' }
+= _('If you did not recently sign in, you should immediately change your password: %{password_link}.') % { password_link: 'https://docs.gitlab.com/ee/user/profile/user_passwords.html#change-your-password' }
 = _('Passwords should be unique and not used for any other sites or services.')
 
 - unless @user.two_factor_enabled?

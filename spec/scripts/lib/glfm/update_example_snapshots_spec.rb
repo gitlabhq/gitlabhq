@@ -2,8 +2,8 @@
 require 'fast_spec_helper'
 require_relative '../../../../scripts/lib/glfm/update_example_snapshots'
 
-# IMPORTANT NOTE: See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/
-# for details on the implementation and usage of the `update_example_snapshots` script being tested.
+# IMPORTANT NOTE: See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#update-example-snapshotsrb-script
+# for details on the implementation and usage of the `update_example_snapshots.rb` script being tested.
 # This developers guide contains diagrams and documentation of the script,
 # including explanations and examples of all files it reads and writes.
 #
@@ -16,11 +16,11 @@ require_relative '../../../../scripts/lib/glfm/update_example_snapshots'
 # which runs a jest test environment. This results in each full run of the script
 # taking between 30-60 seconds. The majority of this is spent loading the Rails environment.
 #
-# However, only the `writing html.yml and prosemirror_json.yml` context is used
-# to test these slow sub-processes, and it only contains a single example.
+# However, only the `with full processing of static and WYSIWYG HTML` context is used
+# to test these slow sub-processes, and it only contains two examples.
 #
 # All other tests currently in the file pass the `skip_static_and_wysiwyg: true`
-# flag to `#process`, which skips the slow sub-processes. All of these tests
+# flag to `#process`, which skips the slow sub-processes. All of these other tests
 # should run in sub-second time when the Spring pre-loader is used. This allows
 # logic which is not directly related to the slow sub-processes to be TDD'd with a
 # very rapid feedback cycle.

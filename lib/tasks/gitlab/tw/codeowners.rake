@@ -7,10 +7,10 @@ namespace :tw do
   task :codeowners do
     CodeOwnerRule = Struct.new(:category, :writer)
     DocumentOwnerMapping = Struct.new(:path, :writer) do
-      def writer_owns_all_pages?(mappings)
-        mappings
-          .select { |mapping| mapping.directory == directory }
-          .all? { |mapping| mapping.writer == writer }
+      def writer_owns_directory?(mappings)
+        dir_mappings = mappings.select { |mapping| mapping.directory == directory }
+
+        dir_mappings.count { |mapping| mapping.writer == writer } / dir_mappings.length.to_f > 0.5
       end
 
       def directory
@@ -115,14 +115,14 @@ namespace :tw do
     deduplicated_mappings = Set.new
 
     mappings.each do |mapping|
-      if mapping.writer_owns_all_pages?(mappings)
+      if mapping.writer_owns_directory?(mappings)
         deduplicated_mappings.add("#{mapping.directory}/ #{mapping.writer}")
       else
         deduplicated_mappings.add("#{mapping.path} #{mapping.writer}")
       end
     end
 
-    deduplicated_mappings.each { |mapping| puts mapping }
+    deduplicated_mappings.sort.each { |mapping| puts mapping }
 
     if errors.present?
       puts "-----"

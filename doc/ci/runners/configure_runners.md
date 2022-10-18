@@ -302,6 +302,7 @@ globally or for individual jobs:
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
+- [`GIT_SUBMODULE_PATHS`](#git-submodule-paths)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
 - [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
@@ -487,6 +488,32 @@ git fetch origin $REFSPECS --depth 50  --prune
 ```
 
 Where `$REFSPECS` is a value provided to the runner internally by GitLab.
+
+### Git submodule paths
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
+
+Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
+You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+
+This variable can be very useful for projects which have a large number of submodules which not all of them
+need to be synced or updated in all CI jobs.
+
+The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
+
+- To sync and update specific paths:
+
+   ```yaml
+   variables:
+      GIT_SUBMODULE_PATHS: submoduleA submoduleB
+   ```
+
+- To exclude specific paths:
+
+   ```yaml
+   variables:
+      GIT_SUBMODULE_PATHS: :(exclude)submoduleA :(exclude)submoduleB
+   ```
 
 ### Git submodule update flags
 
