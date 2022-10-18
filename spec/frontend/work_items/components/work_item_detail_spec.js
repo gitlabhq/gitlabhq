@@ -81,7 +81,6 @@ describe('WorkItemDetail component', () => {
     handler = successHandler,
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
-    workItemsMvc2Enabled = false,
     error = undefined,
   } = {}) => {
     const handlers = [
@@ -102,9 +101,6 @@ describe('WorkItemDetail component', () => {
         };
       },
       provide: {
-        glFeatures: {
-          workItemsMvc2: workItemsMvc2Enabled,
-        },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         projectNamespace: 'namespace',
@@ -435,7 +431,7 @@ describe('WorkItemDetail component', () => {
         it('does not call the assignees subscription', async () => {
           const response = workItemResponseFactory({ assigneesWidgetPresent: false });
           const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler, workItemsMvc2Enabled: true });
+          createComponent({ handler });
           await waitForPromises();
 
           expect(assigneesSubscriptionHandler).not.toHaveBeenCalled();
@@ -459,7 +455,7 @@ describe('WorkItemDetail component', () => {
         it('does not call the dates subscription', async () => {
           const response = workItemResponseFactory({ datesWidgetPresent: false });
           const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler, workItemsMvc2Enabled: true });
+          createComponent({ handler });
           await waitForPromises();
 
           expect(datesSubscriptionHandler).not.toHaveBeenCalled();
@@ -470,9 +466,7 @@ describe('WorkItemDetail component', () => {
 
   describe('assignees widget', () => {
     it('renders assignees component when widget is returned from the API', async () => {
-      createComponent({
-        workItemsMvc2Enabled: true,
-      });
+      createComponent();
       await waitForPromises();
 
       expect(findWorkItemAssignees().exists()).toBe(true);
@@ -480,7 +474,6 @@ describe('WorkItemDetail component', () => {
 
     it('does not render assignees component when widget is not returned from the API', async () => {
       createComponent({
-        workItemsMvc2Enabled: true,
         handler: jest
           .fn()
           .mockResolvedValue(workItemResponseFactory({ assigneesWidgetPresent: false })),
@@ -499,7 +492,7 @@ describe('WorkItemDetail component', () => {
     `('$description', async ({ labelsWidgetPresent, exists }) => {
       const response = workItemResponseFactory({ labelsWidgetPresent });
       const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler, workItemsMvc2Enabled: true });
+      createComponent({ handler });
       await waitForPromises();
 
       expect(findWorkItemLabels().exists()).toBe(exists);
@@ -515,7 +508,7 @@ describe('WorkItemDetail component', () => {
       it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, async () => {
         const response = workItemResponseFactory({ datesWidgetPresent });
         const handler = jest.fn().mockResolvedValue(response);
-        createComponent({ handler, workItemsMvc2Enabled: true });
+        createComponent({ handler });
         await waitForPromises();
 
         expect(findWorkItemDueDate().exists()).toBe(exists);
@@ -523,7 +516,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('shows an error message when it emits an `error` event', async () => {
-      createComponent({ workItemsMvc2Enabled: true });
+      createComponent();
       await waitForPromises();
       const updateError = 'Failed to update';
 

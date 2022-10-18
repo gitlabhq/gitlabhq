@@ -4,7 +4,6 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
   include RepositorySettingsRedirect
 
   # Authorize
-  before_action :require_non_empty_project
   before_action :authorize_admin_project!
   before_action :load_protected_ref, only: [:show, :update, :destroy]
 

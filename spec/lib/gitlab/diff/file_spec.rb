@@ -309,12 +309,13 @@ RSpec.describe Gitlab::Diff::File do
       let(:diffs) { commit.diffs }
 
       before do
-        info_dir_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          File.join(project.repository.path_to_repo, 'info')
-        end
-
-        FileUtils.mkdir(info_dir_path) unless File.exist?(info_dir_path)
-        File.write(File.join(info_dir_path, 'attributes'), "*.md -diff\n")
+        project.repository.commit_files(
+          project.creator,
+          branch_name: 'master',
+          message: 'Add attributes',
+          actions: [{ action: :update, file_path: '.gitattributes', content: "*.md -diff\n" }]
+        )
+        project.repository.copy_gitattributes('master')
       end
 
       it "returns true for files that do not have attributes" do

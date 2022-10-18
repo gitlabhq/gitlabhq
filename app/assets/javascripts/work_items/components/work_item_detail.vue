@@ -395,24 +395,22 @@ export default {
         :full-path="fullPath"
         @error="updateError = $event"
       />
-      <template v-if="workItemsMvc2Enabled">
-        <work-item-labels
-          v-if="workItemLabels"
-          :work-item-id="workItem.id"
-          :can-update="canUpdate"
-          :full-path="fullPath"
-          @error="updateError = $event"
-        />
-        <work-item-due-date
-          v-if="workItemDueDate"
-          :can-update="canUpdate"
-          :due-date="workItemDueDate.dueDate"
-          :start-date="workItemDueDate.startDate"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-          @error="updateError = $event"
-        />
-      </template>
+      <work-item-labels
+        v-if="workItemLabels"
+        :work-item-id="workItem.id"
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        @error="updateError = $event"
+      />
+      <work-item-due-date
+        v-if="workItemDueDate"
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="updateError = $event"
+      />
       <work-item-weight
         v-if="workItemWeight"
         class="gl-mb-5"

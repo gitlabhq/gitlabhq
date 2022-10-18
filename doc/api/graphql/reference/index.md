@@ -6059,6 +6059,29 @@ The edge type for [`AlertManagementIntegration`](#alertmanagementintegration).
 | <a id="alertmanagementintegrationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="alertmanagementintegrationedgenode"></a>`node` | [`AlertManagementIntegration`](#alertmanagementintegration) | The item at the end of the edge. |
 
+#### `ApprovalProjectRuleConnection`
+
+The connection type for [`ApprovalProjectRule`](#approvalprojectrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalprojectruleconnectionedges"></a>`edges` | [`[ApprovalProjectRuleEdge]`](#approvalprojectruleedge) | A list of edges. |
+| <a id="approvalprojectruleconnectionnodes"></a>`nodes` | [`[ApprovalProjectRule]`](#approvalprojectrule) | A list of nodes. |
+| <a id="approvalprojectruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ApprovalProjectRuleEdge`
+
+The edge type for [`ApprovalProjectRule`](#approvalprojectrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalprojectruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="approvalprojectruleedgenode"></a>`node` | [`ApprovalProjectRule`](#approvalprojectrule) | The item at the end of the edge. |
+
 #### `AuditEventStreamingHeaderConnection`
 
 The connection type for [`AuditEventStreamingHeader`](#auditeventstreamingheader).
@@ -9892,6 +9915,20 @@ An API Fuzzing scan profile.
 | <a id="apifuzzingscanprofilename"></a>`name` | [`String`](#string) | Unique name of the profile. |
 | <a id="apifuzzingscanprofileyaml"></a>`yaml` | [`String`](#string) | Syntax highlighted HTML representation of the YAML. |
 
+### `ApprovalProjectRule`
+
+Describes a project approval rule regarding who can approve merge requests.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalprojectruleapprovalsrequired"></a>`approvalsRequired` | [`Int`](#int) | Number of required approvals. |
+| <a id="approvalprojectruleeligibleapprovers"></a>`eligibleApprovers` | [`UserCoreConnection`](#usercoreconnection) | List of users eligible to approve merge requests for this approval rule. (see [Connections](#connections)) |
+| <a id="approvalprojectruleid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
+| <a id="approvalprojectrulename"></a>`name` | [`String`](#string) | Name of the rule. |
+| <a id="approvalprojectruletype"></a>`type` | [`ApprovalRuleType`](#approvalruletype) | Type of the rule. |
+
 ### `ApprovalRule`
 
 Describes a rule for who can approve merge requests.
@@ -10305,6 +10342,7 @@ List of branch rules for a project, grouped by branch name.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="branchruleapprovalrules"></a>`approvalRules` | [`ApprovalProjectRuleConnection`](#approvalprojectruleconnection) | Merge request approval rules configured for this branch rule. (see [Connections](#connections)) |
 | <a id="branchrulebranchprotection"></a>`branchProtection` | [`BranchProtection!`](#branchprotection) | Branch protections configured for this branch rule. |
 | <a id="branchrulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the branch rule was created. |
 | <a id="branchruleisdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Check if this branch rule protects the project's default branch. |

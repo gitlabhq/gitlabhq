@@ -418,14 +418,6 @@ RSpec.describe API::Tags do
 
       context 'annotated tag' do
         it 'creates a new annotated tag' do
-          # Identity must be set in .gitconfig to create annotated tag.
-          repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.path_to_repo
-          end
-
-          system(*%W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} config user.name #{user.name}))
-          system(*%W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} config user.email #{user.email}))
-
           post api(route, current_user), params: { tag_name: 'v7.1.0', ref: 'master', message: 'Release 7.1.0' }
 
           expect(response).to have_gitlab_http_status(:created)

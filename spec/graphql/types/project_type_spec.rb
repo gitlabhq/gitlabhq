@@ -508,20 +508,6 @@ RSpec.describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_resolver(Resolvers::Ci::JobTokenScopeResolver) }
   end
 
-  describe 'branch_rules field' do
-    subject { described_class.fields['branchRules'] }
-
-    let(:br_resolver) { Resolvers::Projects::BranchRulesResolver }
-
-    specify do
-      is_expected.to have_graphql_type(
-        Types::Projects::BranchRuleType.connection_type
-      )
-    end
-
-    specify { is_expected.to have_graphql_resolver(br_resolver) }
-  end
-
   describe 'agent_configurations' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }

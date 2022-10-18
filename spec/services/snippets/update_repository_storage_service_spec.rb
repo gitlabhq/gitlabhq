@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Snippets::UpdateRepositoryStorageService do
-  include Gitlab::ShellAdapter
-
   subject { described_class.new(repository_storage_move) }
 
   describe "#execute" do
@@ -32,10 +30,6 @@ RSpec.describe Snippets::UpdateRepositoryStorageService do
 
     context 'when the move succeeds' do
       it 'moves the repository to the new storage and unmarks the repository as read-only' do
-        old_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          snippet.repository.path_to_repo
-        end
-
         expect(snippet_repository_double).to receive(:replicate)
           .with(snippet.repository.raw)
         expect(snippet_repository_double).to receive(:checksum)
@@ -48,7 +42,6 @@ RSpec.describe Snippets::UpdateRepositoryStorageService do
         expect(result).to be_success
         expect(snippet).not_to be_repository_read_only
         expect(snippet.repository_storage).to eq(destination)
-        expect(gitlab_shell.repository_exists?('default', old_path)).to be(false)
         expect(snippet.snippet_repository.shard_name).to eq(destination)
       end
     end

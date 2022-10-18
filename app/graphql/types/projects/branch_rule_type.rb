@@ -38,3 +38,5 @@ module Types
     end
   end
 end
+
+Types::Projects::BranchRuleType.prepend_mod

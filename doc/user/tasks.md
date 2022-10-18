@@ -120,12 +120,7 @@ To change the assignee on a task:
 
 ## Assign labels to a task
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5.
 
 To add [labels](project/labels.md) to a task:
 
@@ -136,12 +131,8 @@ To add [labels](project/labels.md) to a task:
 
 ## Set a start and due date
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/365399) in GitLab 15.5.
 
 You can set a [start and due date](project/issues/due_dates.md) on a task.
 

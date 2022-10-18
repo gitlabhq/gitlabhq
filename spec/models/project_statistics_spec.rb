@@ -169,10 +169,8 @@ RSpec.describe ProjectStatistics do
       let(:project) { create(:project, :repository, :wiki_repo) }
 
       before do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          FileUtils.rm_rf(project.repository.path)
-          FileUtils.rm_rf(project.wiki.repository.path)
-        end
+        project.repository.remove
+        project.wiki.repository.remove
       end
 
       it 'does not crash' do
