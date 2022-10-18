@@ -670,6 +670,64 @@ records_by_id.each do |id, _|
 end
 ```
 
+#### Ordering by `JOIN` columns
+
+Ordering records by mixed columns where one or more columns are coming from `JOIN` tables
+works with limitations. It requires extra configuration (CTE). The trick is to use a
+non-materialized CTE to act as a "fake" table which exposes all required columns.
+
+NOTE:
+The query performance might not improve compared to the standard `IN` query. Always
+check the query plan.
+
+Example: order issues by `projects.name, issues.id` within the group hierarchy
+
+The first step is to create a CTE, where all required columns are collected in the `SELECT`
+clause.
+
+```ruby
+cte_query = Issue
+  .select('issues.id AS id', 'issues.project_id AS project_id', 'projects.name AS projects_name')
+  .joins(:project)
+
+cte = Gitlab::SQL::CTE.new(:issue_with_projects, cte_query, materialized: false)
+```
+
+Custom order object configuration:
+
+```ruby
+order = Gitlab::Pagination::Keyset::Order.build([
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'projects_name',
+            order_expression: Issue.arel_table[:projects_name].asc,
+            sql_type: 'character varying',
+            nullable: :nulls_last,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Issue.arel_table[:id].asc
+          )
+        ])
+```
+
+Generate the query:
+
+```ruby
+scope = cte.apply_to(Issue.where({}).reorder(order))
+
+opts = {
+  scope: scope,
+  array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
+  array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
+}
+
+records = Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
+  .new(**opts)
+  .execute
+  .limit(20)
+```
+
 #### Batch iteration
 
 Batch iteration over the records is possible via the keyset `Iterator` class.

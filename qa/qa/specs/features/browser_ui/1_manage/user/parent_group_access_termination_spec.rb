@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'User', :requires_admin, :reliable do
+    describe 'User', :requires_admin, :reliable, product_group: :workspace do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:user) do
@@ -27,7 +27,7 @@ module QA
         end
       end
 
-      context 'after parent group membership termination' do
+      context 'for after parent group membership termination' do
         before do
           Flow::Login.while_signed_in_as_admin do
             group.sandbox.visit!
@@ -39,7 +39,14 @@ module QA
           end
         end
 
-        it 'is not allowed to edit the project files', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347866' do
+        after do
+          user.remove_via_api!
+          project.remove_via_api!
+          group.remove_via_api!
+        end
+
+        it 'is not allowed to edit the project files',
+           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347866' do
           Flow::Login.sign_in(as: user)
           project.visit!
 
@@ -50,12 +57,6 @@ module QA
           Page::File::Show.perform(&:click_edit)
 
           expect(page).to have_text("You can’t edit files directly in this project.")
-        end
-
-        after do
-          user.remove_via_api!
-          project.remove_via_api!
-          group.remove_via_api!
         end
       end
     end

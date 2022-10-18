@@ -5421,6 +5421,41 @@ RSpec.describe User do
     end
   end
 
+  describe '#ensure_user_detail_assigned' do
+    let(:user) { build(:user) }
+
+    context 'when no user detail field has been changed' do
+      before do
+        allow(UserDetail)
+          .to receive(:user_fields_changed?)
+          .and_return(false)
+      end
+
+      it 'does not assign user details before save' do
+        expect(user.user_detail)
+          .not_to receive(:assign_changed_fields_from_user)
+
+        user.save!
+      end
+    end
+
+    context 'when a user detail field has been changed' do
+      before do
+        allow(UserDetail)
+          .to receive(:user_fields_changed?)
+          .and_return(true)
+      end
+
+      it 'assigns user details before save' do
+        expect(user.user_detail)
+          .to receive(:assign_changed_fields_from_user)
+          .and_call_original
+
+        user.save!
+      end
+    end
+  end
+
   describe '#username_changed_hook' do
     context 'for a new user' do
       let(:user) { build(:user) }

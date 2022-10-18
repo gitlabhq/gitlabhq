@@ -347,3 +347,4 @@ Seed DORA daily metrics for value stream, insights and CI/CD analytics:
 
    ```shell
    rails c
+   ```

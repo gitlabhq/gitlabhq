@@ -13,10 +13,12 @@ module Packages
     def initialize(
       project_path: ENV['CI_PROJECT_PATH'],
       gitlab_token: ENV['GITLAB_PROJECT_PACKAGES_CLEANUP_API_TOKEN'],
+      api_endpoint: ENV['CI_API_V4_URL'],
       options: {}
     )
       @project_path = project_path
       @gitlab_token = gitlab_token
+      @api_endpoint = api_endpoint
       @dry_run = options[:dry_run]
 
       puts "Dry-run mode." if dry_run
@@ -25,7 +27,7 @@ module Packages
     def gitlab
       @gitlab ||= begin
         Gitlab.configure do |config|
-          config.endpoint = 'https://gitlab.com/api/v4'
+          config.endpoint = api_endpoint
           config.private_token = gitlab_token
         end
 
@@ -50,7 +52,7 @@ module Packages
 
     private
 
-    attr_reader :project_path, :gitlab_token, :dry_run
+    attr_reader :project_path, :gitlab_token, :api_endpoint, :dry_run
 
     def delete_package(package)
       print_package_state(package)

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Manage' do
     include Support::API
 
-    describe 'Jira integration', :jira, :orchestrated, :requires_admin do
+    describe 'Jira integration', :jira, :orchestrated, :requires_admin, product_group: :integrations do
       let(:jira_project_key) { 'JITP' }
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -15,7 +15,8 @@ module QA
       before do
         page.visit Vendor::Jira::JiraAPI.perform(&:base_url)
 
-        QA::Support::Retrier.retry_until(sleep_interval: 3, reload_page: page, max_attempts: 20, raise_on_failure: true) do
+        QA::Support::Retrier
+          .retry_until(sleep_interval: 3, reload_page: page, max_attempts: 20, raise_on_failure: true) do
           page.has_text? 'Welcome to Jira'
         end
 
@@ -33,10 +34,11 @@ module QA
           jira.setup_service_with(url: Vendor::Jira::JiraAPI.perform(&:base_url))
         end
 
-        expect(page).not_to have_text("Requests to the local network are not allowed")
+        expect(page).not_to have_text("Requests to the local network are not allowed") # rubocop:disable RSpec/ExpectInHook
       end
 
-      it 'closes an issue via pushing a commit', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347794' do
+      it 'closes an issue via pushing a commit',
+         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347794' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end
@@ -46,7 +48,8 @@ module QA
         expect_issue_done(issue_key)
       end
 
-      it 'closes an issue via a merge request', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347795' do
+      it 'closes an issue via a merge request',
+         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347795' do
         issue_key = Vendor::Jira::JiraAPI.perform do |jira_api|
           jira_api.create_issue(jira_project_key)
         end

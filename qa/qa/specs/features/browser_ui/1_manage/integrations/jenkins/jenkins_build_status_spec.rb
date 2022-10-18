@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :requires_admin, :skip_live_env, except: { job: 'review-qa-*' } do
-    describe 'Jenkins integration' do
+  RSpec.describe 'Manage', :requires_admin, :skip_live_env, except: { job: 'review-qa-*' } do
+    describe 'Jenkins integration', product_group: :integrations do
       let(:jenkins_server) { Service::DockerRun::Jenkins.new }
 
       let(:jenkins_client) do
@@ -48,7 +48,8 @@ module QA
         toggle_local_requests(false)
       end
 
-      it 'integrates and displays build status for MR pipeline in GitLab', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347788' do
+      it 'integrates and displays build status for MR pipeline in GitLab',
+         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347788' do
         setup_project_integration
 
         jenkins_integration = project.find_integration('jenkins')
@@ -133,7 +134,8 @@ module QA
       def patch_host_name(host_name, container_name)
         return host_name unless host_name.include?('localhost')
 
-        ip_address = `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' #{container_name}`.strip
+        ip_address = `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' #{container_name}`
+                       .strip
         host_name.gsub('localhost', ip_address)
       end
 

@@ -301,6 +301,7 @@ class User < ApplicationRecord
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
+  before_save :ensure_user_detail_assigned
   after_validation :set_username_errors
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
@@ -1587,6 +1588,11 @@ class User < ApplicationRecord
       namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
       namespace.build_namespace_settings
     end
+  end
+
+  # Temporary, will be removed when user_detail fields are fully migrated
+  def ensure_user_detail_assigned
+    user_detail.assign_changed_fields_from_user if UserDetail.user_fields_changed?(self)
   end
 
   def set_username_errors

@@ -53,6 +53,10 @@ class WebHook < ApplicationRecord
     where('recent_failures > ? OR disabled_until >= ?', FAILURE_THRESHOLD, Time.current)
   end
 
+  def self.web_hooks_disable_failed?(hook)
+    Feature.enabled?(:web_hooks_disable_failed, hook.parent)
+  end
+
   def executable?
     !temporarily_disabled? && !permanently_disabled?
   end
@@ -197,7 +201,7 @@ class WebHook < ApplicationRecord
   private
 
   def web_hooks_disable_failed?
-    Feature.enabled?(:web_hooks_disable_failed)
+    self.class.web_hooks_disable_failed?(self)
   end
 
   def initialize_url_variables

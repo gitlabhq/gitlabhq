@@ -287,22 +287,11 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      if Feature.enabled?(:gitlab_shell_jwt_token)
-        begin
-          payload, _ = JSONWebToken::HMACToken.decode(headers[GITLAB_SHELL_API_HEADER], secret_token)
-          unauthorized! unless payload['iss'] == GITLAB_SHELL_JWT_ISSUER
-        rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
-          Gitlab::ErrorTracking.track_exception(ex)
-          unauthorized!
-        end
-      else
-        input = params['secret_token']
-        input ||= Base64.decode64(headers[GITLAB_SHARED_SECRET_HEADER]) if headers.key?(GITLAB_SHARED_SECRET_HEADER)
-
-        input&.chomp!
-
-        unauthorized! unless Devise.secure_compare(secret_token, input)
-      end
+      payload, _ = JSONWebToken::HMACToken.decode(headers[GITLAB_SHELL_API_HEADER], secret_token)
+      unauthorized! unless payload['iss'] == GITLAB_SHELL_JWT_ISSUER
+    rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
+      Gitlab::ErrorTracking.track_exception(ex)
+      unauthorized!
     end
 
     def authenticated_with_can_read_all_resources!

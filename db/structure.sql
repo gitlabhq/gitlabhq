@@ -22092,7 +22092,19 @@ CREATE TABLE user_details (
     phone text,
     requires_credit_card_verification boolean DEFAULT false NOT NULL,
     password_last_changed_at timestamp with time zone,
+    linkedin text DEFAULT ''::text NOT NULL,
+    twitter text DEFAULT ''::text NOT NULL,
+    skype text DEFAULT ''::text NOT NULL,
+    website_url text DEFAULT ''::text NOT NULL,
+    location text DEFAULT ''::text NOT NULL,
+    organization text DEFAULT ''::text NOT NULL,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
+    CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
+    CONSTRAINT check_466a25be35 CHECK ((char_length(twitter) <= 500)),
+    CONSTRAINT check_7b246dad73 CHECK ((char_length(organization) <= 500)),
+    CONSTRAINT check_7d6489f8f3 CHECK ((char_length(linkedin) <= 500)),
+    CONSTRAINT check_7fe2044093 CHECK ((char_length(website_url) <= 500)),
+    CONSTRAINT check_8a7fcf8a60 CHECK ((char_length(location) <= 500)),
     CONSTRAINT check_a73b398c60 CHECK ((char_length(phone) <= 50)),
     CONSTRAINT check_eeeaf8d4f0 CHECK ((char_length(pronouns) <= 50)),
     CONSTRAINT check_f932ed37db CHECK ((char_length(pronunciation) <= 255))
@@ -30971,6 +30983,10 @@ CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestr
 CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
 
 CREATE INDEX scan_finding_approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id) WHERE (report_type = 4);
+
+CREATE INDEX scan_finding_approval_project_rule_index_created_at_project_id ON approval_project_rules USING btree (created_at, project_id) WHERE (report_type = 4);
+
+CREATE INDEX scan_finding_approval_project_rule_index_project_id ON approval_project_rules USING btree (project_id) WHERE (report_type = 4);
 
 CREATE INDEX security_findings_confidence_idx ON ONLY security_findings USING btree (confidence);
 

@@ -128,6 +128,12 @@ See [database guidelines](database/index.md).
 - [How to run Jenkins in development environment](integrations/jenkins.md)
 - [How to run local `Codesandbox` integration for Web IDE Live Preview](integrations/codesandbox.md)
 
+The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
+
+- [Jira app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/jira.md)
+- [Slack app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/slack.md)
+- [ZenTao development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/zentao.md)
+
 ## Testing guides
 
 - [Testing standards and style guidelines](testing_guide/index.md)

@@ -41,6 +41,14 @@ RSpec.describe WebHooks::LogExecutionService do
       service.execute
     end
 
+    it 'does not update the last failure when the feature flag is disabled' do
+      stub_feature_flags(web_hooks_disable_failed: false)
+
+      expect(project_hook).not_to receive(:update_last_failure)
+
+      service.execute
+    end
+
     context 'obtaining an exclusive lease' do
       let(:lease_key) { "web_hooks:update_hook_failure_state:#{project_hook.id}" }
 

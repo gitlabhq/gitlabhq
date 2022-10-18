@@ -13019,6 +13019,21 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupepicsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Epics updated after this date. |
 | <a id="groupepicsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Epics updated before this date. |
 
+##### `Group.gitlabSubscriptionsPreviewBillableUserChange`
+
+Preview Billable User Changes.
+
+Returns [`PreviewBillableUserChange`](#previewbillableuserchange).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupgitlabsubscriptionspreviewbillableuserchangeaddgroupid"></a>`addGroupId` | [`Int`](#int) | Group ID to add. |
+| <a id="groupgitlabsubscriptionspreviewbillableuserchangeadduseremails"></a>`addUserEmails` | [`[String!]`](#string) | User emails to add. |
+| <a id="groupgitlabsubscriptionspreviewbillableuserchangeadduserids"></a>`addUserIds` | [`[Int!]`](#int) | User IDs to add. |
+| <a id="groupgitlabsubscriptionspreviewbillableuserchangerole"></a>`role` | [`GitlabSubscriptionsUserRole!`](#gitlabsubscriptionsuserrole) | Role of users being added to group. |
+
 ##### `Group.groupMembers`
 
 A membership of a user within this group.
@@ -16133,6 +16148,16 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | Name of the vulnerability finding. |
 
+### `PreviewBillableUserChange`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="previewbillableuserchangehasoverage"></a>`hasOverage` | [`Boolean`](#boolean) | If the group has an overage after change. |
+| <a id="previewbillableuserchangenewbillableusercount"></a>`newBillableUserCount` | [`Int`](#int) | Total number of billable users after change. |
+| <a id="previewbillableuserchangeseatsinsubscription"></a>`seatsInSubscription` | [`Int`](#int) | Number of seats in subscription. |
+
 ### `Project`
 
 #### Fields
@@ -16541,6 +16566,21 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectforktargetssearch"></a>`search` | [`String`](#string) | Search query for path or name. |
+
+##### `Project.gitlabSubscriptionsPreviewBillableUserChange`
+
+Preview Billable User Changes.
+
+Returns [`PreviewBillableUserChange`](#previewbillableuserchange).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectgitlabsubscriptionspreviewbillableuserchangeaddgroupid"></a>`addGroupId` | [`Int`](#int) | Group ID to add. |
+| <a id="projectgitlabsubscriptionspreviewbillableuserchangeadduseremails"></a>`addUserEmails` | [`[String!]`](#string) | User emails to add. |
+| <a id="projectgitlabsubscriptionspreviewbillableuserchangeadduserids"></a>`addUserIds` | [`[Int!]`](#int) | User IDs to add. |
+| <a id="projectgitlabsubscriptionspreviewbillableuserchangerole"></a>`role` | [`GitlabSubscriptionsUserRole!`](#gitlabsubscriptionsuserrole) | Role of users being added to group. |
 
 ##### `Project.incidentManagementEscalationPolicies`
 
@@ -20573,6 +20613,18 @@ Event action.
 | <a id="eventactionpushed"></a>`PUSHED` | Pushed action. |
 | <a id="eventactionreopened"></a>`REOPENED` | Reopened action. |
 | <a id="eventactionupdated"></a>`UPDATED` | Updated action. |
+
+### `GitlabSubscriptionsUserRole`
+
+Role of User.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="gitlabsubscriptionsuserroledeveloper"></a>`DEVELOPER` | Developer. |
+| <a id="gitlabsubscriptionsuserroleguest"></a>`GUEST` | Guest. |
+| <a id="gitlabsubscriptionsuserrolemaintainer"></a>`MAINTAINER` | Maintainer. |
+| <a id="gitlabsubscriptionsuserroleowner"></a>`OWNER` | Owner. |
+| <a id="gitlabsubscriptionsuserrolereporter"></a>`REPORTER` | Reporter. |
 
 ### `GroupMemberRelation`
 

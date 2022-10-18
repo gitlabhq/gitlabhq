@@ -56,7 +56,7 @@ module API
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
-          optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for user'
+          optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for user', documentation: { type: 'file' }
           optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
@@ -890,7 +890,7 @@ module API
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the impersonation token'
-            optional :scopes, type: Array, desc: 'The array of scopes of the impersonation token'
+            optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The array of scopes of the impersonation token'
           end
           post feature_category: :authentication_and_authorization do
             impersonation_token = finder.build(declared_params(include_missing: false))

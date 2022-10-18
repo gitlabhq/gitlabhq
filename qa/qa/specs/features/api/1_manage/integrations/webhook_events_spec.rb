@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'WebHooks integration', :requires_admin, :integrations, :orchestrated do
+  RSpec.describe 'Manage' do
+    describe 'WebHooks integration', :requires_admin, :integrations, :orchestrated, product_group: :integrations do
       before(:context) do
         toggle_local_requests(true)
       end
@@ -70,7 +70,8 @@ module QA
         end
       end
 
-      it 'sends an issues and note event', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
+      it 'sends an issues and note event',
+         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
         setup_webhook(issues: true, note: true) do |webhook, smocker|
           issue = Resource::Issue.fabricate_via_api! do |issue_init|
             issue_init.project = webhook.project

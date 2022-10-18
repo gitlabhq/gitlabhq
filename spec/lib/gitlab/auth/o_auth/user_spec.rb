@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::OAuth::User do
   include LdapHelpers
-  include TermsHelper
 
   let(:oauth_user) { described_class.new(auth_hash) }
   let(:oauth_user_2) { described_class.new(auth_hash_2) }
@@ -143,49 +142,6 @@ RSpec.describe Gitlab::Auth::OAuth::User do
 
         expect(gl_user).to be_persisted
         expect(gl_user).to be_password_automatically_set
-      end
-
-      context 'terms of service' do
-        context 'when terms are enforced' do
-          before do
-            enforce_terms
-          end
-
-          context 'when feature flag update_oauth_registration_flow is enabled' do
-            before do
-              stub_feature_flags(update_oauth_registration_flow: true)
-            end
-
-            it 'creates the user with accepted terms' do
-              oauth_user.save # rubocop:disable Rails/SaveBang
-
-              expect(gl_user).to be_persisted
-              expect(gl_user.terms_accepted?).to be(true)
-            end
-          end
-
-          context 'when feature flag update_oauth_registration_flow is disabled' do
-            before do
-              stub_feature_flags(update_oauth_registration_flow: false)
-            end
-
-            it 'creates the user without accepted terms' do
-              oauth_user.save # rubocop:disable Rails/SaveBang
-
-              expect(gl_user).to be_persisted
-              expect(gl_user.terms_accepted?).to be(false)
-            end
-          end
-        end
-
-        context 'when terms are not enforced' do
-          it 'creates the user without accepted terms' do
-            oauth_user.save # rubocop:disable Rails/SaveBang
-
-            expect(gl_user).to be_persisted
-            expect(gl_user.terms_accepted?).to be(false)
-          end
-        end
       end
 
       shared_examples 'to verify compliance with allow_single_sign_on' do

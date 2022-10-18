@@ -156,8 +156,8 @@ RSpec.describe IssuablePolicy, models: true do
         expect(permissions(guest, issue)).to be_disallowed(:create_timelog)
       end
 
-      it 'does not allow reading confidential notes' do
-        expect(permissions(guest, issue)).to be_disallowed(:read_confidential_notes)
+      it 'does not allow reading internal notes' do
+        expect(permissions(guest, issue)).to be_disallowed(:read_internal_note)
       end
     end
 

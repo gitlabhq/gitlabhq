@@ -989,42 +989,5 @@ RSpec.describe API::Helpers do
 
       it_behaves_like 'authorized'
     end
-
-    context 'when gitlab_shell_jwt_token is disabled' do
-      let(:valid_secret_token) { +'valid' } # mutable string to use chomp!
-      let(:invalid_secret_token) { +'invalid' } # mutable string to use chomp!
-
-      before do
-        stub_feature_flags(gitlab_shell_jwt_token: false)
-      end
-
-      context 'when shared secret is not provided' do
-        it_behaves_like 'unauthorized'
-      end
-
-      context 'when shared secret provided via params' do
-        let(:params) { { 'secret_token' => valid_secret_token } }
-
-        it_behaves_like 'authorized'
-
-        context 'but it is invalid' do
-          let(:params) { { 'secret_token' => invalid_secret_token } }
-
-          it_behaves_like 'unauthorized'
-        end
-      end
-
-      context 'when shared secret provided via headers' do
-        let(:headers) { { described_class::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(valid_secret_token) } }
-
-        it_behaves_like 'authorized'
-
-        context 'but it is invalid' do
-          let(:headers) { { described_class::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(invalid_secret_token) } }
-
-          it_behaves_like 'unauthorized'
-        end
-      end
-    end
   end
 end

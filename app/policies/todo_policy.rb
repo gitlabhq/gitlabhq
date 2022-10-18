@@ -16,7 +16,7 @@ class TodoPolicy < BasePolicy
 
   desc "User can read the todo's confidential note"
   condition(:can_read_todo_confidential_note) do
-    @user && @user.can?(:read_confidential_notes, @subject.target)
+    @user && @user.can?(:read_internal_note, @subject.target)
   end
 
   rule { own_todo & can_read_target }.enable :read_todo
