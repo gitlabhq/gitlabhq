@@ -391,7 +391,7 @@ We store these results also when running nightly scheduled CI jobs on the
 default branch on `gitlab.com`. Statistics of these profiling data are
 [available online](https://gitlab-org.gitlab.io/rspec_profiling_stats/). For
 example, you can find which tests take longest to run or which execute the most
-queries. This can be handy for optimizing our tests or identifying performance
+queries. Use this to optimize our tests or identify performance
 issues in our code.
 
 ## Memory optimization

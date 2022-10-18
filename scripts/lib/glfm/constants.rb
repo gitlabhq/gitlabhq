@@ -23,15 +23,16 @@ module Glfm
     GLFM_EXAMPLE_METADATA_YML_PATH =
       specification_input_glfm_path.join('glfm_example_metadata.yml')
     GLFM_EXAMPLE_NORMALIZATIONS_YML_PATH = specification_input_glfm_path.join('glfm_example_normalizations.yml')
-    GLFM_SPEC_TXT_PATH = specification_path.join('output/spec.txt')
-    GLFM_SPEC_HTML_PATH = specification_path.join('output/spec.html')
+    GLFM_SPEC_OUTPUT_PATH = specification_path.join('output')
+    GLFM_SPEC_TXT_PATH = GLFM_SPEC_OUTPUT_PATH.join('spec.txt')
+    GLFM_SPEC_HTML_PATH = GLFM_SPEC_OUTPUT_PATH.join('spec.html')
 
     # Example Snapshot (ES) files
-    es_fixtures_path = File.expand_path("../../../glfm_specification/example_snapshots", __dir__)
-    ES_EXAMPLES_INDEX_YML_PATH = File.join(es_fixtures_path, 'examples_index.yml')
-    ES_MARKDOWN_YML_PATH = File.join(es_fixtures_path, 'markdown.yml')
-    ES_HTML_YML_PATH = File.join(es_fixtures_path, 'html.yml')
-    ES_PROSEMIRROR_JSON_YML_PATH = File.join(es_fixtures_path, 'prosemirror_json.yml')
+    EXAMPLE_SNAPSHOTS_PATH = File.expand_path("../../../glfm_specification/example_snapshots", __dir__)
+    ES_EXAMPLES_INDEX_YML_PATH = File.join(EXAMPLE_SNAPSHOTS_PATH, 'examples_index.yml')
+    ES_MARKDOWN_YML_PATH = File.join(EXAMPLE_SNAPSHOTS_PATH, 'markdown.yml')
+    ES_HTML_YML_PATH = File.join(EXAMPLE_SNAPSHOTS_PATH, 'html.yml')
+    ES_PROSEMIRROR_JSON_YML_PATH = File.join(EXAMPLE_SNAPSHOTS_PATH, 'prosemirror_json.yml')
 
     # Other constants used for processing files
     GLFM_SPEC_TXT_HEADER = <<~MARKDOWN

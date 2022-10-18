@@ -1,0 +1,12 @@
+glfm-verify:
+  # NOTE: We do not restrict this job to any specific subset of file changes via rules, because
+  #       there are potentially many different source files within the codebase which could
+  #       change the contents of the generated GLFM files. It is therefore safer to always
+  #       run this job to ensure that no changes are missed.
+  extends:
+    - .rspec-ee-base-pg12
+  stage: test
+  needs: ["setup-test-env"]
+  script:
+    - !reference [.base-script, script]
+    - bundle exec scripts/glfm/verify-all-generated-files-are-up-to-date.rb

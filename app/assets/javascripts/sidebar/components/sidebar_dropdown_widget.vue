@@ -25,6 +25,8 @@ import {
   Tracking,
   IssuableAttributeState,
   IssuableAttributeType,
+  LocalizedIssuableAttributeType,
+  IssuableAttributeTypeKeyMap,
   issuableAttributesQueries,
   noAttributeId,
   defaultEpicSort,
@@ -229,7 +231,9 @@ export default {
       return timeFor(this.currentAttribute?.dueDate);
     },
     i18n() {
-      return dropdowni18nText(this.issuableAttribute, this.issuableType);
+      const localizedAttribute =
+        LocalizedIssuableAttributeType[IssuableAttributeTypeKeyMap[this.issuableAttribute]];
+      return dropdowni18nText(localizedAttribute, this.issuableType);
     },
     isEpic() {
       // MV to EE https://gitlab.com/gitlab-org/gitlab/-/issues/345311

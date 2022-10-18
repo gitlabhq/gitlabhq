@@ -350,6 +350,15 @@ RSpec.describe Ci::BuildRunnerPresenter do
         )
       end
 
+      it 'logs file_variable_is_referenced_in_another_variable' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          event: 'file_variable_is_referenced_in_another_variable',
+          project_id: project.id
+        ).once
+
+        runner_variables
+      end
+
       context 'when the FF ci_stop_expanding_file_vars_for_runners is disabled' do
         before do
           stub_feature_flags(ci_stop_expanding_file_vars_for_runners: false)

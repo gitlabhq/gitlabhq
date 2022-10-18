@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe IdeController do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:reporter) { create(:user) }
 
   let_it_be(:project) do
@@ -237,21 +239,29 @@ RSpec.describe IdeController do
       end
 
       # This indirectly tests that `minimal: true` was passed to the fullscreen layout
-      it 'does not render top nav' do
-        subject
-
-        expect(response).not_to render_template(top_nav_partial)
-      end
-
-      context 'without vscode_web_ide feature flag' do
-        before do
-          stub_feature_flags(vscode_web_ide: false)
+      describe 'layout' do
+        where(:ff_state, :use_legacy_web_ide, :expect_top_nav) do
+          false | false | true
+          false | true  | true
+          true  | true  | true
+          true  | false | false
         end
 
-        it 'renders top nav' do
-          subject
+        with_them do
+          before do
+            stub_feature_flags(vscode_web_ide: ff_state)
+            allow(user).to receive(:use_legacy_web_ide).and_return(use_legacy_web_ide)
 
-          expect(response).to render_template(top_nav_partial)
+            subject
+          end
+
+          it 'handles rendering top nav' do
+            if expect_top_nav
+              expect(response).to render_template(top_nav_partial)
+            else
+              expect(response).not_to render_template(top_nav_partial)
+            end
+          end
         end
       end
     end

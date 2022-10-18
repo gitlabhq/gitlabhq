@@ -177,10 +177,10 @@ RSpec.describe 'Admin updates settings' do
           end
 
           it 'change Dormant users period' do
-            expect(page).to have_field _('Period of inactivity (days)')
+            expect(page).to have_field _('Days of inactivity before deactivation')
 
             page.within(find('[data-testid="account-limit"]')) do
-              fill_in _('application_setting_deactivate_dormant_users_period'), with: '35'
+              fill_in _('application_setting_deactivate_dormant_users_period'), with: '90'
               click_button 'Save changes'
             end
 
@@ -188,7 +188,7 @@ RSpec.describe 'Admin updates settings' do
 
             page.refresh
 
-            expect(page).to have_field _('Period of inactivity (days)'), with: '35'
+            expect(page).to have_field _('Days of inactivity before deactivation'), with: '90'
           end
         end
       end

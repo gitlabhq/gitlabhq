@@ -23,6 +23,7 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_VIEWED_STORAGE_KEY,
+  WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
 } from '../constants';
 
@@ -40,6 +41,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
+import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemInformation from './work_item_information.vue';
 
 export default {
@@ -67,6 +69,7 @@ export default {
     LocalStorageSync,
     WorkItemTypeIcon,
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemMilestone,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -207,6 +210,9 @@ export default {
     },
     workItemIteration() {
       return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
+    },
+    workItemMilestone() {
+      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
     },
   },
   beforeDestroy() {
@@ -411,6 +417,17 @@ export default {
         :work-item-type="workItemType"
         @error="updateError = $event"
       />
+      <template v-if="workItemsMvc2Enabled">
+        <work-item-milestone
+          v-if="workItemMilestone"
+          :work-item-id="workItem.id"
+          :work-item-milestone="workItemMilestone.nodes[0]"
+          :work-item-type="workItemType"
+          :can-update="canUpdate"
+          :full-path="fullPath"
+          @error="updateError = $event"
+        />
+      </template>
       <work-item-weight
         v-if="workItemWeight"
         class="gl-mb-5"

@@ -45,6 +45,13 @@ RSpec.describe UserPreference do
         it { is_expected.not_to allow_value(color).for(:diffs_addition_color) }
       end
     end
+
+    describe 'use_legacy_web_ide' do
+      it { is_expected.to allow_value(true).for(:use_legacy_web_ide) }
+      it { is_expected.to allow_value(false).for(:use_legacy_web_ide) }
+      it { is_expected.not_to allow_value(nil).for(:use_legacy_web_ide) }
+      it { is_expected.not_to allow_value("").for(:use_legacy_web_ide) }
+    end
   end
 
   describe 'notes filters global keys' do

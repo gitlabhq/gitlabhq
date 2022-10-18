@@ -4,10 +4,14 @@ import { concatPagination } from '@apollo/client/utilities';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
+import { WIDGET_TYPE_MILESTONE } from '~/work_items/constants';
 
 export const temporaryConfig = {
   typeDefs,
   cacheConfig: {
+    possibleTypes: {
+      LocalWorkItemWidget: ['LocalWorkItemMilestone'],
+    },
     typePolicies: {
       Project: {
         fields: {
@@ -18,6 +22,28 @@ export const temporaryConfig = {
       },
       WorkItem: {
         fields: {
+          mockWidgets: {
+            read(widgets) {
+              return (
+                widgets || [
+                  {
+                    __typename: 'LocalWorkItemMilestone',
+                    type: WIDGET_TYPE_MILESTONE,
+                    nodes: [
+                      {
+                        dueDate: null,
+                        expired: false,
+                        id: 'gid://gitlab/Milestone/30',
+                        title: 'v4.0',
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        __typename: 'Milestone',
+                      },
+                    ],
+                  },
+                ]
+              );
+            },
+          },
           widgets: {
             merge(existing = [], incoming) {
               if (existing.length === 0) {

@@ -11,7 +11,6 @@ class IdeController < ApplicationController
     push_frontend_feature_flag(:build_service_proxy)
     push_frontend_feature_flag(:schema_linting)
     push_frontend_feature_flag(:reject_unsigned_commits_by_gitlab)
-    push_frontend_feature_flag(:vscode_web_ide, current_user)
     define_index_vars
   end
 
@@ -27,7 +26,7 @@ class IdeController < ApplicationController
         namespace: project&.namespace, user: current_user)
     end
 
-    render layout: 'fullscreen', locals: { minimal: Feature.enabled?(:vscode_web_ide, current_user) }
+    render layout: 'fullscreen', locals: { minimal: helpers.use_new_web_ide? }
   end
 
   private

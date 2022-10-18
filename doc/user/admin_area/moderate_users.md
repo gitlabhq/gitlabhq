@@ -171,11 +171,12 @@ Users can also be deactivated using the [GitLab API](../../api/users.md#deactiva
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320875) in GitLab 14.0.
 > - Customizable time period [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336747) in GitLab 15.4
+> - The lower limit for inactive period set to 90 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100793) in GitLab 15.5
 
 Administrators can enable automatic deactivation of users who either:
 
 - Were created more than a week ago and have not signed in.
-- Have no activity for a specified period of time (defaults to 90 days).
+- Have no activity for a specified period of time (default and minimum is 90 days).
 
 To do this:
 
@@ -183,7 +184,7 @@ To do this:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Under **Dormant users**, check **Deactivate dormant users after a period of inactivity**.
-1. Under  **Period of inactivity (days)**, enter a period of time before deactivation.
+1. Under **Days of inactivity before deactivation**, enter the number of days before deactivation. Minimum value is 90 days.
 1. Select **Save changes**.
 
 When this feature is enabled, GitLab runs a job once a day to deactivate the dormant users.

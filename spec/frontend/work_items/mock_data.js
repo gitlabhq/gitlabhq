@@ -186,6 +186,7 @@ export const workItemResponseFactory = ({
   datesWidgetPresent = true,
   labelsWidgetPresent = true,
   weightWidgetPresent = true,
+  milestoneWidgetPresent = true,
   iterationWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
@@ -277,6 +278,16 @@ export const workItemResponseFactory = ({
                 startDate: '2022-09-22',
                 dueDate: '2022-09-30',
               },
+            }
+          : { type: 'MOCK TYPE' },
+        milestoneWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetMilestone',
+              dueDate: null,
+              expired: false,
+              id: 'gid://gitlab/Milestone/30',
+              title: 'v4.0',
+              type: 'MILESTONE',
             }
           : { type: 'MOCK TYPE' },
         {
@@ -1056,6 +1067,58 @@ export const groupIterationsResponseWithNoIterations = {
         __typename: 'IterationConnection',
       },
       __typename: 'Group',
+    },
+  },
+};
+
+export const mockMilestoneWidgetResponse = {
+  dueDate: null,
+  expired: false,
+  id: 'gid://gitlab/Milestone/30',
+  title: 'v4.0',
+};
+
+export const projectMilestonesResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      attributes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Milestone/5',
+            title: 'v4.0',
+            webUrl: '/gitlab-org/gitlab-test/-/milestones/5',
+            dueDate: null,
+            expired: false,
+            __typename: 'Milestone',
+            state: 'active',
+          },
+          {
+            id: 'gid://gitlab/Milestone/4',
+            title: 'v3.0',
+            webUrl: '/gitlab-org/gitlab-test/-/milestones/4',
+            dueDate: null,
+            expired: false,
+            __typename: 'Milestone',
+            state: 'active',
+          },
+        ],
+        __typename: 'MilestoneConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const projectMilestonesResponseWithNoMilestones = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      attributes: {
+        nodes: [],
+        __typename: 'MilestoneConnection',
+      },
+      __typename: 'Project',
     },
   },
 };

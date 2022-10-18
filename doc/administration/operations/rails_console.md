@@ -240,6 +240,24 @@ project.id
 # => 2537
 ```
 
+## Time an operation
+
+If you'd like to time one or more operations, use the following format, replacing
+the placeholder `<operation>` with your Ruby or Rails commands of choice:
+
+```ruby
+# A single operation
+Benchmark.measure { <operation> }
+
+# A breakdown of multiple operations
+Benchmark.bm do |x|
+  x.report(:label1) { <operation_1> }
+  x.report(:label2) { <operation_2> }
+end
+```
+
+For more information, review [our developer documentation about benchmarks](../../development/performance.md#benchmarks).
+
 ## Active Record objects
 
 ### Looking up database-persisted objects

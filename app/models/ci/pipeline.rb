@@ -1364,9 +1364,9 @@ module Ci
       self.builds.latest.build_matchers(project)
     end
 
-    def authorized_cluster_agents
-      strong_memoize(:authorized_cluster_agents) do
-        ::Clusters::AgentAuthorizationsFinder.new(project).execute.map(&:agent)
+    def cluster_agent_authorizations
+      strong_memoize(:cluster_agent_authorizations) do
+        ::Clusters::AgentAuthorizationsFinder.new(project).execute
       end
     end
 

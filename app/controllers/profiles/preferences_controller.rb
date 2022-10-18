@@ -56,7 +56,8 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :gitpod_enabled,
       :render_whitespace_in_code,
       :markdown_surround_selection,
-      :markdown_automatic_lists
+      :markdown_automatic_lists,
+      :use_legacy_web_ide
     ]
   end
 end

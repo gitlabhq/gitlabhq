@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 module HooksHelper
+  def webhook_form_data(hook)
+    {
+      url: hook.url,
+      url_variables: nil
+    }
+  end
+
   def link_to_test_hook(hook, trigger)
     path = test_hook_path(hook, trigger)
     trigger_human_name = trigger.to_s.tr('_', ' ').camelize

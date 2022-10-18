@@ -22,8 +22,9 @@ module BulkImports
         subdir_path = export_subdir_path(upload)
         mkdir_p(subdir_path)
         download_or_copy_upload(uploader, File.join(subdir_path, uploader.filename))
-      rescue Errno::ENAMETOOLONG => e
-        # Do not fail entire export process if downloaded file has filename that exceeds 255 characters.
+      rescue StandardError => e
+        # Do not fail entire project export if something goes wrong during file download
+        # (e.g. downloaded file has filename that exceeds 255 characters).
         # Ignore raised exception, skip such upload, log the error and keep going with the export instead.
         Gitlab::ErrorTracking.log_exception(e, portable_id: portable.id, portable_class: portable.class.name, upload_id: upload.id)
       end

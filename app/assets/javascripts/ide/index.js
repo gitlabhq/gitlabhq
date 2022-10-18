@@ -99,7 +99,9 @@ export function startIde(options) {
     return;
   }
 
-  if (gon.features?.vscodeWebIde) {
+  const useNewWebIde = parseBoolean(ideElement.dataset.useNewWebIde);
+
+  if (useNewWebIde) {
     initGitlabWebIDE(ideElement);
   } else {
     resetServiceWorkersPublicPath();

@@ -51,7 +51,6 @@ export default {
       isModalVisible: false,
       isLoading: true,
       isSearchEmpty: false,
-      searchEmptyMessage: '',
       targetGroup: null,
       targetParentGroup: null,
       showEmptyState: false,
@@ -88,10 +87,6 @@ export default {
     },
   },
   created() {
-    this.searchEmptyMessage = this.hideProjects
-      ? COMMON_STR.GROUP_SEARCH_EMPTY
-      : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
-
     eventHub.$on(`${this.action}fetchPage`, this.fetchPage);
     eventHub.$on(`${this.action}toggleChildren`, this.toggleChildren);
     eventHub.$on(`${this.action}showLeaveGroupModal`, this.showLeaveGroupModal);
@@ -259,7 +254,7 @@ export default {
       const hasGroups = groups && groups.length > 0;
 
       if (this.renderEmptyState) {
-        this.isSearchEmpty = this.filterGroupsBy !== null && !hasGroups;
+        this.isSearchEmpty = fromSearch && !hasGroups;
       } else {
         this.isSearchEmpty = !hasGroups;
       }
@@ -294,7 +289,6 @@ export default {
       v-else
       :groups="groups"
       :search-empty="isSearchEmpty"
-      :search-empty-message="searchEmptyMessage"
       :page-info="pageInfo"
       :action="action"
     />

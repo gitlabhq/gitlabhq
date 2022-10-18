@@ -1,5 +1,6 @@
 enum LocalWidgetType {
   ASSIGNEES
+  MILESTONE
 }
 
 interface LocalWorkItemWidget {
@@ -11,6 +12,15 @@ type LocalWorkItemAssignees implements LocalWorkItemWidget {
   nodes: [UserCore]
 }
 
+type LocalWorkItemMilestone implements LocalWorkItemWidget {
+  type: LocalWidgetType!
+  nodes: [Milestone!]
+}
+
+extend type WorkItem {
+  mockWidgets: [LocalWorkItemWidget]
+}
+
 input LocalUserInput {
   id: ID!
   name: String
@@ -19,9 +29,14 @@ input LocalUserInput {
   avatarUrl: String
 }
 
+input LocalMilestoneInput {
+  milestoneId: ID!
+}
+
 input LocalUpdateWorkItemInput {
   id: WorkItemID!
   assignees: [LocalUserInput!]
+  milestone: LocalMilestoneInput!
 }
 
 type LocalWorkItemPayload {

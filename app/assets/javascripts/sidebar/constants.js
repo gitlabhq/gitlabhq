@@ -1,3 +1,4 @@
+import { invert } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
@@ -250,6 +251,12 @@ export const milestonesQueries = {
 export const IssuableAttributeType = {
   Milestone: 'milestone',
 };
+
+export const LocalizedIssuableAttributeType = {
+  Milestone: s__('Issuable|milestone'),
+};
+
+export const IssuableAttributeTypeKeyMap = invert(IssuableAttributeType);
 
 export const IssuableAttributeState = {
   [IssuableAttributeType.Milestone]: 'active',

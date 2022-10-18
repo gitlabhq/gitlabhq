@@ -8,11 +8,18 @@ export default () => {
     return null;
   }
 
+  const { url: initialUrl, urlVariables } = el.dataset;
+
   return new Vue({
     el,
     name: 'WebhookFormRoot',
     render(createElement) {
-      return createElement(FormUrlApp, {});
+      return createElement(FormUrlApp, {
+        props: {
+          initialUrl,
+          initialUrlVariables: urlVariables ? JSON.parse(urlVariables) : undefined,
+        },
+      });
     },
   });
 };

@@ -173,9 +173,21 @@ module Gitlab
         def alter_sequence_statements(old_table:, new_table:)
           sequences_owned_by(old_table).map do |seq_info|
             seq_name, column_name = seq_info.values_at(:name, :column_name)
-            <<~SQL.chomp
+
+            statement_parts = []
+
+            # If a different user owns the old table, the conversion process will fail to reassign the sequence
+            # ownership to the new parent table (as it will be owned by the current user).
+            # Force the old table to be owned by the current user in that case.
+            unless current_user_owns_table?(old_table)
+              statement_parts << set_current_user_owns_table_statement(old_table)
+            end
+
+            statement_parts << <<~SQL.chomp
               ALTER SEQUENCE #{quote_table_name(seq_name)} OWNED BY #{quote_table_name(new_table)}.#{quote_column_name(column_name)}
             SQL
+
+            statement_parts.join(SQL_STATEMENT_SEPARATOR)
           end
         end
 
@@ -205,6 +217,23 @@ module Gitlab
             name, column_name = seq_info.values_at('seq_name', 'col_name')
             { name: name, column_name: column_name }
           end
+        end
+
+        def table_owner(table_name)
+          connection.select_value(<<~SQL, nil, [table_name])
+            SELECT tableowner FROM pg_tables WHERE tablename = $1
+          SQL
+        end
+
+        def current_user_owns_table?(table_name)
+          current_user = connection.select_value('select current_user')
+          table_owner(table_name) == current_user
+        end
+
+        def set_current_user_owns_table_statement(table_name)
+          <<~SQL.chomp
+            ALTER TABLE #{connection.quote_table_name(table_name)} OWNER TO CURRENT_USER
+          SQL
         end
       end
     end

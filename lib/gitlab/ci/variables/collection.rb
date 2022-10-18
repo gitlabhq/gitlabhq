@@ -72,7 +72,7 @@ module Gitlab
           Collection.new(@variables.reject(&block))
         end
 
-        def expand_value(value, keep_undefined: false, expand_file_vars: true)
+        def expand_value(value, keep_undefined: false, expand_file_vars: true, project: nil)
           value.gsub(Item::VARIABLES_REGEXP) do
             match = Regexp.last_match # it is either a valid variable definition or a ($$ / %%)
             full_match = match[0]
@@ -88,6 +88,16 @@ module Gitlab
             if variable # VARIABLE_NAME is an existing variable
               next variable.value unless variable.file?
 
+              # Will be cleaned up with https://gitlab.com/gitlab-org/gitlab/-/issues/378266
+              if project
+                # We only log if `project` exists to make sure it is called from `Ci::BuildRunnerPresenter`
+                # when the variables are sent to Runner.
+                Gitlab::AppJsonLogger.info(
+                  event: 'file_variable_is_referenced_in_another_variable',
+                  project_id: project.id
+                )
+              end
+
               expand_file_vars ? variable.value : full_match
             elsif keep_undefined
               full_match # we do not touch the variable definition
@@ -97,7 +107,7 @@ module Gitlab
           end
         end
 
-        def sort_and_expand_all(keep_undefined: false, expand_file_vars: true)
+        def sort_and_expand_all(keep_undefined: false, expand_file_vars: true, project: nil)
           sorted = Sort.new(self)
           return self.class.new(self, sorted.errors) unless sorted.valid?
 
@@ -112,7 +122,8 @@ module Gitlab
             # expand variables as they are added
             variable = item.to_runner_variable
             variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined,
-                                                                             expand_file_vars: expand_file_vars)
+                                                                             expand_file_vars: expand_file_vars,
+                                                                             project: project)
             new_collection.append(variable)
           end
 

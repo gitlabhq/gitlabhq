@@ -50,8 +50,8 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
     allow_gitaly_n_plus_1 { create(:project, group: subgroup) }
   end
 
-  let!(:label) { create(:label, project: project1) }
-  let!(:label2) { create(:label, project: project1) }
+  let_it_be(:label) { create(:label, project: project1) }
+  let_it_be(:label2) { create(:label, project: project1) }
 
   let!(:merge_request1) do
     create(:merge_request, assignees: [user], author: user, reviewers: [user2],
@@ -87,13 +87,16 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   let!(:label_link) { create(:label_link, label: label, target: merge_request2) }
   let!(:label_link2) { create(:label_link, label: label2, target: merge_request3) }
 
-  before do
+  before_all do
     project1.add_maintainer(user)
-    project2.add_developer(user)
-    project3.add_developer(user)
     project4.add_developer(user)
     project5.add_developer(user)
     project6.add_developer(user)
+  end
+
+  before do
+    project2.add_developer(user)
+    project3.add_developer(user)
 
     project2.add_developer(user2)
   end

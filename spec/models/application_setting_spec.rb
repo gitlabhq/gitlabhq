@@ -203,6 +203,17 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value([]).for(:valid_runner_registrars) }
     it { is_expected.to allow_value(%w(project group)).for(:valid_runner_registrars) }
 
+    context 'when deactivate_dormant_users is enabled' do
+      before do
+        stub_application_setting(deactivate_dormant_users: true)
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:deactivate_dormant_users_period) }
+      it { is_expected.to allow_value(90).for(:deactivate_dormant_users_period) }
+      it { is_expected.to allow_value(365).for(:deactivate_dormant_users_period) }
+      it { is_expected.not_to allow_value(89).for(:deactivate_dormant_users_period) }
+    end
+
     context 'help_page_documentation_base_url validations' do
       it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
       it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }

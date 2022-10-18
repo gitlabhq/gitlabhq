@@ -14981,6 +14981,7 @@ CREATE TABLE elastic_reindexing_tasks (
     delete_original_index_at timestamp with time zone,
     max_slices_running smallint DEFAULT 60 NOT NULL,
     slice_multiplier smallint DEFAULT 2 NOT NULL,
+    targets text[],
     CONSTRAINT check_7f64acda8e CHECK ((char_length(error_message) <= 255))
 );
 
@@ -22272,6 +22273,7 @@ CREATE TABLE user_preferences (
     diffs_deletion_color text,
     diffs_addition_color text,
     markdown_automatic_lists boolean DEFAULT true NOT NULL,
+    use_legacy_web_ide boolean DEFAULT false NOT NULL,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );

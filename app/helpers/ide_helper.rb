@@ -3,6 +3,32 @@
 module IdeHelper
   def ide_data
     {
+      'can-use-new-web-ide' => can_use_new_web_ide?.to_s,
+      'use-new-web-ide' => use_new_web_ide?.to_s,
+      'user-preferences-path' => profile_preferences_path,
+      'branch-name' => @branch
+    }.merge(use_new_web_ide? ? new_ide_data : legacy_ide_data)
+  end
+
+  def can_use_new_web_ide?
+    Feature.enabled?(:vscode_web_ide, current_user)
+  end
+
+  def use_new_web_ide?
+    can_use_new_web_ide? && !current_user.use_legacy_web_ide
+  end
+
+  private
+
+  def new_ide_data
+    {
+      'project-path' => @project&.path_with_namespace,
+      'csp-nonce' => content_security_policy_nonce
+    }
+  end
+
+  def legacy_ide_data
+    {
       'empty-state-svg-path' => image_path('illustrations/multi_file_editor_empty.svg'),
       'no-changes-state-svg-path' => image_path('illustrations/multi-editor_no_changes_empty.svg'),
       'committed-state-svg-path' => image_path('illustrations/multi-editor_all_changes_committed_empty.svg'),
@@ -13,7 +39,6 @@ module IdeHelper
       'clientside-preview-enabled': Gitlab::CurrentSettings.web_ide_clientside_preview_enabled?.to_s,
       'render-whitespace-in-code': current_user.render_whitespace_in_code.to_s,
       'codesandbox-bundler-url': Gitlab::CurrentSettings.web_ide_clientside_preview_bundler_url,
-      'branch-name' => @branch,
       'default-branch' => @project && @project.default_branch,
       'file-path' => @path,
       'merge-request' => @merge_request,
@@ -24,12 +49,9 @@ module IdeHelper
       'web-terminal-svg-path' => image_path('illustrations/web-ide_promotion.svg'),
       'web-terminal-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'interactive-web-terminals-for-the-web-ide'),
       'web-terminal-config-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'web-ide-configuration-file'),
-      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'runner-configuration'),
-      'csp-nonce' => content_security_policy_nonce
+      'web-terminal-runners-help-path' => help_page_path('user/project/web_ide/index.md', anchor: 'runner-configuration')
     }
   end
-
-  private
 
   def convert_to_project_entity_json(project)
     return unless project

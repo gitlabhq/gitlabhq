@@ -47,7 +47,7 @@ RSpec.describe Ci::Variable do
 
   context 'loose foreign key on ci_variables.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:project) }
+      let!(:parent) { create(:project, namespace: create(:group)) }
       let!(:model) { create(:ci_variable, project: parent) }
     end
   end

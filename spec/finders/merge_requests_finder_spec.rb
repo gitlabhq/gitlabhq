@@ -228,9 +228,9 @@ RSpec.describe MergeRequestsFinder do
       end
 
       describe ':label_name parameter' do
-        let(:common_labels) { create_list(:label, 3) }
-        let(:distinct_labels) { create_list(:label, 3) }
-        let(:merge_requests) do
+        let_it_be(:common_labels) { create_list(:label, 3) }
+        let_it_be(:distinct_labels) { create_list(:label, 3) }
+        let_it_be(:merge_requests) do
           common_attrs = {
             source_project: project1, target_project: project1, author: user
           }
@@ -561,7 +561,7 @@ RSpec.describe MergeRequestsFinder do
       end
 
       context 'filtering by created_at/updated_at' do
-        let(:new_project) { create(:project, forked_from_project: project1) }
+        let_it_be(:new_project) { create(:project, forked_from_project: project1) }
 
         let!(:new_merge_request) do
           create(:merge_request,
@@ -584,7 +584,7 @@ RSpec.describe MergeRequestsFinder do
                 target_project: new_project)
         end
 
-        before do
+        before_all do
           new_project.add_maintainer(user)
         end
 
@@ -646,10 +646,10 @@ RSpec.describe MergeRequestsFinder do
       end
 
       context 'filtering by the merge request deployments' do
-        let(:gstg) { create(:environment, project: project4, name: 'gstg') }
-        let(:gprd) { create(:environment, project: project4, name: 'gprd') }
+        let_it_be(:gstg) { create(:environment, project: project4, name: 'gstg') }
+        let_it_be(:gprd) { create(:environment, project: project4, name: 'gprd') }
 
-        let(:mr1) do
+        let_it_be(:mr1) do
           create(
             :merge_request,
             :simple,
@@ -660,7 +660,7 @@ RSpec.describe MergeRequestsFinder do
           )
         end
 
-        let(:mr2) do
+        let_it_be(:mr2) do
           create(
             :merge_request,
             :simple,
@@ -671,7 +671,7 @@ RSpec.describe MergeRequestsFinder do
           )
         end
 
-        let(:deploy1) do
+        let_it_be(:deploy1) do
           create(
             :deployment,
             :success,
@@ -683,7 +683,7 @@ RSpec.describe MergeRequestsFinder do
           )
         end
 
-        let(:deploy2) do
+        let_it_be(:deploy2) do
           create(
             :deployment,
             :success,
@@ -695,7 +695,7 @@ RSpec.describe MergeRequestsFinder do
           )
         end
 
-        before do
+        before_all do
           deploy1.link_merge_requests(MergeRequest.where(id: mr1.id))
           deploy2.link_merge_requests(MergeRequest.where(id: mr2.id))
         end
@@ -833,13 +833,13 @@ RSpec.describe MergeRequestsFinder do
   end
 
   context 'when projects require different access levels for merge requests' do
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
 
-    let(:public_project) { create(:project, :public) }
-    let(:internal) { create(:project, :internal) }
-    let(:private_project) { create(:project, :private) }
-    let(:public_with_private_repo) { create(:project, :public, :repository, :repository_private) }
-    let(:internal_with_private_repo) { create(:project, :internal, :repository, :repository_private) }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:internal) { create(:project, :internal) }
+    let_it_be(:private_project) { create(:project, :private) }
+    let_it_be(:public_with_private_repo) { create(:project, :public, :repository, :repository_private) }
+    let_it_be(:internal_with_private_repo) { create(:project, :internal, :repository, :repository_private) }
 
     let(:merge_requests) { described_class.new(user, {}).execute }
 
@@ -850,7 +850,7 @@ RSpec.describe MergeRequestsFinder do
     let!(:mr_internal_private_repo_access) { create(:merge_request, source_project: internal_with_private_repo) }
 
     context 'with admin user' do
-      let(:user) { create(:user, :admin) }
+      let_it_be(:user) { create(:user, :admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'returns all merge requests' do
@@ -968,7 +968,7 @@ RSpec.describe MergeRequestsFinder do
       let_it_be(:labels) { create_list(:label, 2, project: project) }
       let_it_be(:merge_requests) { create_list(:merge_request, 4, :unique_branches, author: user, target_project: project, source_project: project, labels: labels) }
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 

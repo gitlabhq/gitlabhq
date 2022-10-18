@@ -8,6 +8,13 @@ RSpec.describe HooksHelper do
   let(:service_hook) { create(:service_hook, integration: create(:drone_ci_integration)) }
   let(:system_hook) { create(:system_hook) }
 
+  describe '#webhook_form_data' do
+    subject { helper.webhook_form_data(project_hook) }
+
+    it { expect(subject[:url]).to eq(project_hook.url) }
+    it { expect(subject[:url_variables]).to be_nil }
+  end
+
   describe '#link_to_test_hook' do
     let(:trigger) { 'push_events' }
 

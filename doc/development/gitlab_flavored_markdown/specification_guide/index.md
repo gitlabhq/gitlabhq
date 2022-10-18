@@ -738,6 +738,20 @@ subgraph output:<br/>test results/output
 end
 ```
 
+#### `verify-all-generated-files-are-up-to-date.rb` script
+
+The `scripts/glfm/verify-all-generated-files-are-up-to-date.rb` script
+runs the [`update-specification.rb`](#update-specificationrb-script).
+[`update-example-snapshots.rb`](#update-example-snapshotsrb-script) scripts,
+It fails with an exception and non-zero return code if running these scripts
+results in any diffs to the generated and committed
+[output specification files](#output-specification-files) or
+[example snapshot files](#example-snapshot-files).
+
+This script is run via the `glfm-verify` CI job to ensure that all changes to the
+[input specification files](#input-specification-files)
+are reflected in the generated output specification and example snapshot files.
+
 ### Specification files
 
 These files represent the GLFM specification itself. They are all

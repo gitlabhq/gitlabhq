@@ -62,19 +62,6 @@ Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
 Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 ```
 
-## Time an operation
-
-```ruby
-# A single operation
-Benchmark.measure { <operation> }
-
-# A breakdown of multiple operations
-Benchmark.bm do |x|
-  x.report(:label1) { <operation_1> }
-  x.report(:label2) { <operation_2> }
-end
-```
-
 ## Imports and exports
 
 ### Import a project

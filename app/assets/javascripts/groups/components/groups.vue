@@ -1,11 +1,18 @@
 <script>
+import { GlEmptyState } from '@gitlab/ui';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
+  i18n: {
+    emptyStateTitle: __('No results found'),
+    emptyStateDescription: __('Edit your search and try again'),
+  },
   components: {
     PaginationLinks,
+    GlEmptyState,
   },
   props: {
     groups: {
@@ -18,10 +25,6 @@ export default {
     },
     searchEmpty: {
       type: Boolean,
-      required: true,
-    },
-    searchEmptyMessage: {
-      type: String,
       required: true,
     },
     action: {
@@ -43,12 +46,11 @@ export default {
 
 <template>
   <div class="groups-list-tree-container" data-qa-selector="groups_list_tree_container">
-    <div
+    <gl-empty-state
       v-if="searchEmpty"
-      class="has-no-search-results gl-font-style-italic gl-text-center gl-text-gray-600 gl-p-5"
-    >
-      {{ searchEmptyMessage }}
-    </div>
+      :title="$options.i18n.emptyStateTitle"
+      :description="$options.i18n.emptyStateDescription"
+    />
     <template v-else>
       <group-folder :groups="groups" :action="action" />
       <pagination-links

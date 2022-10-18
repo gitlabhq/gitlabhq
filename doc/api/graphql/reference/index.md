@@ -11916,7 +11916,7 @@ Describes where code is deployed for a project.
 
 ##### `Environment.deployments`
 
-Deployments of the environment. This field can only be resolved for one project in any single request.
+Deployments of the environment. This field can only be resolved for one environment in any single request.
 
 Returns [`DeploymentConnection`](#deploymentconnection).
 

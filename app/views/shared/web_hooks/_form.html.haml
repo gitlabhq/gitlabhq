@@ -1,7 +1,7 @@
 = form_errors(hook)
 
 - if Feature.enabled?(:webhook_form_mask_url)
-  .js-vue-webhook-form
+  .js-vue-webhook-form{ data: webhook_form_data(hook) }
 - else
   .form-group
     = form.label :url, s_('Webhooks|URL'), class: 'label-bold'

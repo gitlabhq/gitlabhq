@@ -28,7 +28,7 @@ const nonStandardEvents = {
     },
     counter: {},
   },
-  testReport: {
+  testSummary: {
     uniqueUser: {
       expand: ['i_testing_summary_widget_total'],
     },

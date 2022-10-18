@@ -24,8 +24,6 @@ export const COMMON_STR = {
   EDIT_BTN_TITLE: s__('GroupsTree|Edit'),
   REMOVE_BTN_TITLE: s__('GroupsTree|Delete'),
   OPTIONS_DROPDOWN_TITLE: s__('GroupsTree|Options'),
-  GROUP_SEARCH_EMPTY: s__('GroupsTree|No groups matched your search'),
-  GROUP_PROJECT_SEARCH_EMPTY: s__('GroupsTree|No groups or projects matched your search'),
 };
 
 export const ITEM_TYPE = {

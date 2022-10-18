@@ -20,6 +20,7 @@ import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -28,6 +29,7 @@ import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subs
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
+import { temporaryConfig } from '~/graphql_shared/issuable_client';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockParent,
@@ -67,6 +69,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
+  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
@@ -82,6 +85,8 @@ describe('WorkItemDetail component', () => {
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
+    includeWidgets = false,
+    workItemsMvc2Enabled = false,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
@@ -92,7 +97,13 @@ describe('WorkItemDetail component', () => {
     ];
 
     wrapper = shallowMount(WorkItemDetail, {
-      apolloProvider: createMockApollo(handlers),
+      apolloProvider: createMockApollo(
+        handlers,
+        {},
+        {
+          typePolicies: includeWidgets ? temporaryConfig.cacheConfig.typePolicies : {},
+        },
+      ),
       propsData: { isModal, workItemId },
       data() {
         return {
@@ -101,6 +112,9 @@ describe('WorkItemDetail component', () => {
         };
       },
       provide: {
+        glFeatures: {
+          workItemsMvc2: workItemsMvc2Enabled,
+        },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         projectNamespace: 'namespace',
@@ -524,6 +538,19 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findAlert().text()).toBe(updateError);
+    });
+  });
+
+  describe('milestone widget', () => {
+    it.each`
+      description                                               | includeWidgets | exists
+      ${'renders when widget is returned from API'}             | ${true}        | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}       | ${false}
+    `('$description', async ({ includeWidgets, exists }) => {
+      createComponent({ includeWidgets, workItemsMvc2Enabled: true });
+      await waitForPromises();
+
+      expect(findWorkItemMilestone().exists()).toBe(exists);
     });
   });
 

@@ -16,7 +16,7 @@ module Clusters
       end
 
       def config
-        nil
+        {}
       end
     end
   end

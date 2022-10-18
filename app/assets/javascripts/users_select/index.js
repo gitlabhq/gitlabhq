@@ -819,13 +819,14 @@ UsersSelect.prototype.renderRow = function (
   const tooltipAttributes = tooltip
     ? `data-container="body" data-placement="left" data-title="${tooltip}"`
     : '';
+  const dataUserSuggested = user.suggested ? `data-user-suggested=${user.suggested}` : '';
 
   const name =
     user?.availability && isUserBusy(user.availability)
       ? sprintf(__('%{name} (Busy)'), { name: user.name })
       : user.name;
   return `
-    <li data-user-id=${user.id}>
+    <li data-user-id=${user.id} ${dataUserSuggested}>
       <a href="#" class="dropdown-menu-user-link gl-display-flex! gl-align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">

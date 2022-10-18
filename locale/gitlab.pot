@@ -1253,6 +1253,9 @@ msgstr ""
 msgid "'%{template_name}' is unknown or invalid"
 msgstr ""
 
+msgid "'%{value}' days of inactivity must be greater than or equal to 90"
+msgstr ""
+
 msgid "(%d closed)"
 msgid_plural "(%d closed)"
 msgstr[0] ""
@@ -1289,6 +1292,9 @@ msgid "(leave blank if you don't want to change it)"
 msgstr ""
 
 msgid "(max size 15 MB)"
+msgstr ""
+
+msgid "(no user)"
 msgstr ""
 
 msgid "(optional)"
@@ -12565,6 +12571,9 @@ msgstr ""
 msgid "Days"
 msgstr ""
 
+msgid "Days of inactivity before deactivation"
+msgstr ""
+
 msgid "Days to merge"
 msgstr ""
 
@@ -19520,12 +19529,6 @@ msgstr ""
 msgid "GroupsTree|Loading groups"
 msgstr ""
 
-msgid "GroupsTree|No groups matched your search"
-msgstr ""
-
-msgid "GroupsTree|No groups or projects matched your search"
-msgstr ""
-
 msgid "GroupsTree|Options"
 msgstr ""
 
@@ -22422,6 +22425,18 @@ msgid "IssuableStatus|moved"
 msgstr ""
 
 msgid "IssuableStatus|promoted"
+msgstr ""
+
+msgid "Issuable|epic"
+msgstr ""
+
+msgid "Issuable|escalation policy"
+msgstr ""
+
+msgid "Issuable|iteration"
+msgstr ""
+
+msgid "Issuable|milestone"
 msgstr ""
 
 msgid "Issue"
@@ -26426,6 +26441,9 @@ msgstr ""
 msgid "Multiplier to apply to polling intervals. Decimal values are supported. Defaults to 1."
 msgstr ""
 
+msgid "Must be 90 days or more."
+msgstr ""
+
 msgid "My awesome group"
 msgstr ""
 
@@ -29352,12 +29370,6 @@ msgid "PerformanceBar|wall"
 msgstr ""
 
 msgid "Period in seconds"
-msgstr ""
-
-msgid "Period of inactivity (days)"
-msgstr ""
-
-msgid "Period of inactivity before deactivation."
 msgstr ""
 
 msgid "Permalink"
@@ -45217,6 +45229,9 @@ msgstr ""
 msgid "Webhooks Help"
 msgstr ""
 
+msgid "Webhooks|+ Mask another portion of URL"
+msgstr ""
+
 msgid "Webhooks|A comment is added to a confidential issue."
 msgstr ""
 
@@ -45797,6 +45812,9 @@ msgstr ""
 msgid "WorkItem|Add to iteration"
 msgstr ""
 
+msgid "WorkItem|Add to milestone"
+msgstr ""
+
 msgid "WorkItem|Are you sure you want to cancel editing?"
 msgstr ""
 
@@ -45853,10 +45871,16 @@ msgstr ""
 msgid "WorkItem|Learn about tasks."
 msgstr ""
 
+msgid "WorkItem|Milestone"
+msgstr ""
+
 msgid "WorkItem|No iteration"
 msgstr ""
 
 msgid "WorkItem|No matching results"
+msgstr ""
+
+msgid "WorkItem|No milestone"
 msgstr ""
 
 msgid "WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts."
@@ -45905,6 +45929,9 @@ msgid "WorkItem|Something went wrong when trying to add a child. Please try agai
 msgstr ""
 
 msgid "WorkItem|Something went wrong when trying to create a child. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while fetching milestones. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the %{workItemType}. Please try again."

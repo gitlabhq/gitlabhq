@@ -2,6 +2,7 @@
 import { GlTabs, GlTab, GlSearchBoxByType, GlSorting, GlSortingItem } from '@gitlab/ui';
 import { isString, debounce } from 'lodash';
 import { __ } from '~/locale';
+import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import GroupsStore from '../store/groups_store';
 import GroupsService from '../service/groups_service';
 import {
@@ -60,11 +61,6 @@ export default {
     sortQueryStringValue() {
       return this.isAscending ? this.sort.asc : this.sort.desc;
     },
-  },
-  watch: {
-    search: debounce(async function debouncedSearch() {
-      this.handleSearchOrSortChange();
-    }, 250),
   },
   mounted() {
     this.search = this.$route.query?.filter || '';
@@ -137,6 +133,14 @@ export default {
 
       this.handleSearchOrSortChange();
     },
+    handleSearchInput(value) {
+      this.search = value;
+
+      this.debouncedSearch();
+    },
+    debouncedSearch: debounce(async function debouncedSearch() {
+      this.handleSearchOrSortChange();
+    }, DEBOUNCE_DELAY),
   },
   i18n: {
     [ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]: __('Subgroups and projects'),
@@ -169,9 +173,10 @@ export default {
         <div class="gl-lg-display-flex gl-justify-content-end gl-mx-n2 gl-my-n2">
           <div class="gl-p-2 gl-lg-form-input-md gl-w-full">
             <gl-search-box-by-type
-              v-model="search"
+              :value="search"
               :placeholder="$options.i18n.searchPlaceholder"
               data-qa-selector="groups_filter_field"
+              @input="handleSearchInput"
             />
           </div>
           <div class="gl-p-2 gl-w-full gl-lg-w-auto">

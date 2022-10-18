@@ -354,6 +354,7 @@ class User < ApplicationRecord
             :markdown_automatic_lists, :markdown_automatic_lists=,
             :diffs_deletion_color, :diffs_deletion_color=,
             :diffs_addition_color, :diffs_addition_color=,
+            :use_legacy_web_ide, :use_legacy_web_ide=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true

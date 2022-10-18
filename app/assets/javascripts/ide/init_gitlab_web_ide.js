@@ -7,8 +7,7 @@ export const initGitlabWebIDE = async (el) => {
   const baseUrl = new URL(process.env.GITLAB_WEB_IDE_PUBLIC_PATH, window.location.origin);
 
   // what: Pull what we need from the element. We will replace it soon.
-  const { path_with_namespace: projectPath } = JSON.parse(el.dataset.project);
-  const { cspNonce: nonce, branchName: ref } = el.dataset;
+  const { cspNonce: nonce, branchName: ref, projectPath } = el.dataset;
 
   // what: Clean up the element, but preserve id.
   // why:  This way we don't inherit any `ide-loading` side-effects. This

@@ -5337,19 +5337,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#authorized_cluster_agents' do
+  describe '#cluster_agent_authorizations' do
     let(:pipeline) { create(:ci_empty_pipeline, :created) }
-    let(:agent) { instance_double(Clusters::Agent) }
-    let(:authorization) { instance_double(Clusters::Agents::GroupAuthorization, agent: agent) }
+    let(:authorization) { instance_double(Clusters::Agents::GroupAuthorization) }
     let(:finder) { double(execute: [authorization]) }
 
-    it 'retrieves agent records from the finder and caches the result' do
+    it 'retrieves authorization records from the finder and caches the result' do
       expect(Clusters::AgentAuthorizationsFinder).to receive(:new).once
         .with(pipeline.project)
         .and_return(finder)
 
-      expect(pipeline.authorized_cluster_agents).to contain_exactly(agent)
-      expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
+      expect(pipeline.cluster_agent_authorizations).to contain_exactly(authorization)
+      expect(pipeline.cluster_agent_authorizations).to contain_exactly(authorization) # cached
     end
   end
 

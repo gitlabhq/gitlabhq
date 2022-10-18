@@ -1144,7 +1144,7 @@ describe('MrWidgetOptions', () => {
         ${'WidgetCodeQuality'} | ${'i_testing_code_quality_widget_total'}
         ${'WidgetTerraform'}   | ${'i_testing_terraform_widget_total'}
         ${'WidgetIssues'}      | ${'i_testing_issues_widget_total'}
-        ${'WidgetTestReport'}  | ${'i_testing_summary_widget_total'}
+        ${'WidgetTestSummary'} | ${'i_testing_summary_widget_total'}
       `(
         "sends non-standard events for the '$widgetName' widget",
         async ({ widgetName, nonStandardEvent }) => {

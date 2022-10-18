@@ -13,10 +13,6 @@ module QA
           element :group_id_content
         end
 
-        view 'app/assets/javascripts/groups/constants.js' do
-          element :no_result_text, 'No groups or projects matched your search' # rubocop:disable QA/ElementWithPattern
-        end
-
         view 'app/views/shared/members/_access_request_links.html.haml' do
           element :leave_group_link
         end

@@ -17,6 +17,7 @@ export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
+export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
 export const WIDGET_TYPE_ITERATION = 'ITERATION';
 
 export const WORK_ITEM_VIEWED_STORAGE_KEY = 'gl-show-work-item-banner';
