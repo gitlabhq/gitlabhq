@@ -11,7 +11,7 @@ module API
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the group'
-        optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for the group'
+        optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for the group', documentation: { type: 'file' }
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
         optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users in this group to setup Two-factor authentication'
         optional :two_factor_grace_period, type: Integer, desc: 'Time before Two-factor authentication is enforced'

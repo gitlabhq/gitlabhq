@@ -66,7 +66,7 @@ There is more than two billion rows in `ci_builds` table. We store many
 terabytes of data in that table, and the total size of indexes is measured in
 terabytes as well.
 
-This amount of data contributes to a significant number of performance 
+This amount of data contributes to a significant number of performance
 problems we experience on our CI PostgreSQL database.
 
 Most of the problems are related to how PostgreSQL database works internally,

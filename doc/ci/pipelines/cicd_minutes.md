@@ -139,7 +139,7 @@ Premium license:
 If you use `13,000` minutes during the month, the next month your additional minutes become
 `2,000`. If you use `9,000` minutes during the month, your additional minutes remain the same.
 
-If you bought additional CI/CD minutes while on a trial subscription those minutes will be available after the trial ends or you upgrade to a paid plan. 
+If you bought additional CI/CD minutes while on a trial subscription those minutes will be available after the trial ends or you upgrade to a paid plan.
 
 You can find pricing for additional CI/CD minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).

@@ -193,7 +193,7 @@ The output is:
 
 > Support for environment scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) in GitLab Premium 13.11
 
-To make a CI/CD variable available to all projects in a group, define a group CI/CD variable. Only group owners can add or update group-level CI/CD variables. 
+To make a CI/CD variable available to all projects in a group, define a group CI/CD variable. Only group owners can add or update group-level CI/CD variables.
 
 Use group variables to store secrets like passwords, SSH keys, and credentials, if you:
 

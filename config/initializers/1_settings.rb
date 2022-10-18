@@ -657,7 +657,7 @@ Settings.cron_jobs['ci_runner_versions_reconciliation_worker'] ||= Settingslogic
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '@daily'
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'Ci::Runners::ReconcileExistingRunnerVersionsCronWorker'
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job_class'] = 'Users::MigrateRecordsToGhostUserInBatchesWorker'
 
 Gitlab.ee do

@@ -374,7 +374,7 @@ For this solution to work, you must:
 
 - Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
 - [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-the-docker-executor-with-docker-socket-binding).
-  If you must, then in the above example, instead of `host`, use the dynamic network name created for this job. 
+  If you must, then in the above example, instead of `host`, use the dynamic network name created for this job.
 
 ## How Docker integration works
 

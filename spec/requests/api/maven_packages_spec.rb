@@ -438,21 +438,7 @@ RSpec.describe API::MavenPackages do
       it_behaves_like 'processing HEAD requests', instance_level: true
     end
 
-    context 'with check_maven_path_first enabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: true)
-      end
-
-      it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
-    end
-
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
-      end
-
-      it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
-    end
+    it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
   end
 
   describe 'GET /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
@@ -668,21 +654,7 @@ RSpec.describe API::MavenPackages do
     let(:path) { package.maven_metadatum.path }
     let(:url) { "/groups/#{group.id}/-/packages/maven/#{path}/#{package_file.file_name}" }
 
-    context 'with check_maven_path_first enabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: true)
-      end
-
-      it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
-    end
-
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
-      end
-
-      it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
-    end
+    it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
   end
 
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
@@ -774,21 +746,7 @@ RSpec.describe API::MavenPackages do
     let(:path) { package.maven_metadatum.path }
     let(:url) { "/projects/#{project.id}/packages/maven/#{path}/#{package_file.file_name}" }
 
-    context 'with check_maven_path_first enabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: true)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
-
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
+    it_behaves_like 'processing HEAD requests'
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name/authorize' do

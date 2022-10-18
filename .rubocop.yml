@@ -462,6 +462,12 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
+RSpec/FactoryBot/AvoidCreate:
+  Enabled: true
+  Include:
+    - 'spec/serializers/**/*.rb'
+    - 'ee/spec/serializers/**/*.rb'
+
 Cop/IncludeSidekiqWorker:
   Enabled: true
   Exclude:

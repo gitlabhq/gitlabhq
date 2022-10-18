@@ -1322,7 +1322,7 @@ for a Go project will contain dependencies that are compatible with this environ
 `linux/amd64`, the final list of dependencies might contain additional incompatible
 modules. The dependency list might also omit modules that are only compatible with your deployment environment. To prevent
 this issue, you can configure the build process to target the operating system and architecture of the deployment
-environment by setting the `GOOS` and `GOARCH` [environment variables](https://go.dev/ref/mod#minimal-version-selection) 
+environment by setting the `GOOS` and `GOARCH` [environment variables](https://go.dev/ref/mod#minimal-version-selection)
 of your `.gitlab-ci.yml` file.
 
 For example:

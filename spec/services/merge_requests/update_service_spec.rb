@@ -425,16 +425,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           create(:merge_request, :simple, source_project: project, reviewer_ids: [user2.id])
         end
 
-        context 'when merge_request_reviewer feature is enabled' do
-          before do
-            stub_feature_flags(merge_request_reviewer: true)
-          end
+        let(:opts) { { reviewer_ids: [IssuableFinder::Params::NONE] } }
 
-          let(:opts) { { reviewer_ids: [IssuableFinder::Params::NONE] } }
-
-          it 'removes reviewers' do
-            expect(update_merge_request(opts).reviewers).to eq []
-          end
+        it 'removes reviewers' do
+          expect(update_merge_request(opts).reviewers).to eq []
         end
       end
     end

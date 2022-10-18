@@ -314,15 +314,15 @@ RSpec.describe GitlabSchema do
     end
 
     describe '.parse_gids' do
-      let_it_be(:global_ids) { %w[gid://gitlab/TestOne/123 gid://gitlab/TestOne/456] }
+      let_it_be(:global_ids) { %w[gid://gitlab/TestOne/123 gid://gitlab/TestTwo/456] }
 
-      subject(:parse_gids) { described_class.parse_gids(global_ids, expected_type: TestOne) }
+      subject(:parse_gids) { described_class.parse_gids(global_ids, expected_type: [TestOne, TestTwo]) }
 
       it 'parses the gids' do
-        expect(described_class).to receive(:parse_gid).with('gid://gitlab/TestOne/123', expected_type: TestOne).and_call_original
-        expect(described_class).to receive(:parse_gid).with('gid://gitlab/TestOne/456', expected_type: TestOne).and_call_original
+        expect(described_class).to receive(:parse_gid).with('gid://gitlab/TestOne/123', expected_type: [TestOne, TestTwo]).and_call_original
+        expect(described_class).to receive(:parse_gid).with('gid://gitlab/TestTwo/456', expected_type: [TestOne, TestTwo]).and_call_original
         expect(parse_gids.map(&:model_id)).to eq %w[123 456]
-        expect(parse_gids.map(&:model_class)).to match_array [TestOne, TestOne]
+        expect(parse_gids.map(&:model_class)).to eq [TestOne, TestTwo]
       end
     end
   end

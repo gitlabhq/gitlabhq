@@ -202,7 +202,7 @@ Next, take screenshots of your project to confirm that project's eligibility. Yo
 - [Publicly visible settings](#screenshot-3-publicly-visible-settings)
 
 NOTE:
-Benefits of the GitLab Open Source Program apply to all projects in a GitLab namespace. All projects in an eligible namespace must meet program requirements. 
+Benefits of the GitLab Open Source Program apply to all projects in a GitLab namespace. All projects in an eligible namespace must meet program requirements.
 
 ##### Screenshot 1: License overview
 

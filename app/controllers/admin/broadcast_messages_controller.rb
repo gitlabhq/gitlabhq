@@ -11,6 +11,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def index
     push_frontend_feature_flag(:vue_broadcast_messages, current_user)
+    push_frontend_feature_flag(:role_targeted_broadcast_messages, current_user)
 
     @broadcast_messages = BroadcastMessage.order(ends_at: :desc).page(params[:page])
     @broadcast_message  = BroadcastMessage.new

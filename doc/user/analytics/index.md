@@ -93,7 +93,7 @@ Lead time for changes displays in several charts:
 
 To retrieve metrics for lead time for changes, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
 
-- The definition of lead time for change can vary widely, which often creates confusion within the industry. 
+- The definition of lead time for change can vary widely, which often creates confusion within the industry.
 - "Lead time for changes" is not the same as "Lead time". In the value stream, "Lead time" measures the time it takes for work on issue to move from the moment it's requested (Issue created) to the time it's fulfilled and delivered (Issue closed).
 
 ### Time to restore service

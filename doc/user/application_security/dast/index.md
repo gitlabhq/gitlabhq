@@ -736,7 +736,7 @@ After DAST has authenticated with the application, all cookies are collected fro
 For each cookie a matching session token is created for use by ZAP. This ensures ZAP is recognized
 by the application as correctly authenticated.
 
-Authentication supports single form logins, multi-step login forms, and authenticating to URLs outside of the configured target URL. 
+Authentication supports single form logins, multi-step login forms, and authenticating to URLs outside of the configured target URL.
 
 WARNING:
 **Never** run an authenticated scan against a production server. When an authenticated
@@ -752,7 +752,7 @@ DAST can authenticate to websites making use of SSO, with the following restrict
 - DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS or authenticator apps.
 - DAST must get a cookie, or a local or session storage, with a sufficiently random value.
 
-The [authentication debug output](index.md#configure-the-authentication-debug-output) can be helpful for troubleshooting SSO authentication 
+The [authentication debug output](index.md#configure-the-authentication-debug-output) can be helpful for troubleshooting SSO authentication
 with DAST.
 
 ### Log in using automatic detection of the login form

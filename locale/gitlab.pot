@@ -7056,6 +7056,9 @@ msgstr ""
 msgid "Broadcast Messages"
 msgstr ""
 
+msgid "BroadcastMessages|There was an issue deleting this message, please try again later."
+msgstr ""
+
 msgid "Browse Directory"
 msgstr ""
 
@@ -12252,6 +12255,9 @@ msgid "DastProfiles|Save commonly used configurations for target sites and scan 
 msgstr ""
 
 msgid "DastProfiles|Save profile"
+msgstr ""
+
+msgid "DastProfiles|Scan Method"
 msgstr ""
 
 msgid "DastProfiles|Scan method"

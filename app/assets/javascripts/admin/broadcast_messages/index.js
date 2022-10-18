@@ -3,14 +3,16 @@ import BroadcastMessagesBase from './components/base.vue';
 
 export default () => {
   const el = document.querySelector('#js-broadcast-messages');
-  const { messages } = el.dataset;
+  const { page, messagesCount, messages } = el.dataset;
 
   return new Vue({
     el,
-    name: 'BroadcastMessagesBase',
+    name: 'BroadcastMessages',
     render(createElement) {
       return createElement(BroadcastMessagesBase, {
         props: {
+          page: Number(page),
+          messagesCount: Number(messagesCount),
           messages: JSON.parse(messages),
         },
       });

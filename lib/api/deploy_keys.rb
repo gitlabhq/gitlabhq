@@ -161,9 +161,7 @@ module API
         end
       end
 
-      desc 'Delete deploy key for a project' do
-        success Key
-      end
+      desc 'Delete deploy key for a project'
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end

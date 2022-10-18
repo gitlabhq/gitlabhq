@@ -7,13 +7,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Generate test vulnerabilities
 
-You can generate test vulnerabilities for the [Vulnerability Report](../vulnerability_report/index.md) to test GitLab 
+You can generate test vulnerabilities for the [Vulnerability Report](../vulnerability_report/index.md) to test GitLab
 vulnerability management features without running a pipeline.
 
 1. Login in to GitLab.
 1. Go to `/-/profile/personal_access_tokens` and generate a personal access token with `api` permissions.
 1. Go to your project page and find the project ID. You can find the project ID below the project title.
-1. [Clone the GitLab repository](../../../gitlab-basics/start-using-git.md#clone-a-repository) to your local machine. 
+1. [Clone the GitLab repository](../../../gitlab-basics/start-using-git.md#clone-a-repository) to your local machine.
 1. Open a terminal and go to `gitlab/qa` directory.
 1. Run `bundle install`
 1. Run the following command:

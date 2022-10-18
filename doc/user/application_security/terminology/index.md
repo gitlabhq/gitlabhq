@@ -100,7 +100,7 @@ Findings are all potential vulnerability items scanners identify in MRs/feature 
 
 A flexible and non-destructive way to visually organize vulnerabilities in groups when there are multiple findings
 that are likely related but do not qualify for deduplication. For example, you can include findings that should be
-evaluated together, would be fixed by the same action, or come from the same source. Grouping behavior for vulnerabilities is 
+evaluated together, would be fixed by the same action, or come from the same source. Grouping behavior for vulnerabilities is
 under development and tracked in issue [267588](https://gitlab.com/gitlab-org/gitlab/-/issues/267588).
 
 ### Insignificant finding

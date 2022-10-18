@@ -26,7 +26,7 @@ If GitLab finds a CI/CD pipeline, then it inspects each job in the `.gitlab-ci.y
 
 - If a job defines an [`artifacts:reports` keyword](../../../ci/yaml/artifacts_reports.md)
   for a security scanner, then GitLab considers the security scanner enabled and shows the **Enabled** status.
-- If no jobs define an `artifacts:reports` keyword for a security scanner, then GitLab considers 
+- If no jobs define an `artifacts:reports` keyword for a security scanner, then GitLab considers
   the security scanner disabled and shows the **Not enabled** status.
 
 If GitLab does not find a CI/CD pipeline, then it considers all security scanners disabled and shows the **Not enabled** status.

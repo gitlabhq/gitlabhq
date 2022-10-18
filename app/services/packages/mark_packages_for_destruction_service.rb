@@ -33,7 +33,7 @@ module Packages
       min_batch_size = [batch_size, BATCH_SIZE].min
 
       @packages.each_batch(of: min_batch_size) do |batched_packages|
-        loaded_packages = batched_packages.including_project_full_path.to_a
+        loaded_packages = batched_packages.including_project_route.to_a
 
         break no_access = true unless can_destroy_packages?(loaded_packages)
 

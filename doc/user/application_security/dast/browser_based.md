@@ -196,7 +196,7 @@ The modules that can be configured for logging are as follows:
 
 ### Artifacts
 
-DAST's browser-based analyzer generates artifacts that can help you understand how the scanner works. 
+DAST's browser-based analyzer generates artifacts that can help you understand how the scanner works.
 Using the latest version of the DAST [template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml) these artifacts are exposed for download by default.
 
 The list of artifacts includes the following files:

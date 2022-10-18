@@ -36,6 +36,8 @@ class EventPresenter < Gitlab::View::Presenter::Delegated
       'Design'
     elsif wiki_page?
       'Wiki Page'
+    elsif issue? || work_item?
+      target.issue_type
     elsif target_type.present?
       target_type.titleize
     else

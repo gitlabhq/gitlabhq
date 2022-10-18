@@ -155,26 +155,38 @@ The pipeline now executes the jobs as configured.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
-You can use the [`value` and `description`](../yaml/index.md#variablesdescription)
-keywords to define
-[pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
-that are prefilled when running a pipeline manually.
+You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
+keywords to define [pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
+that are prefilled when running a pipeline manually. Use the description to explain
+what the variable is used for, what the acceptable values are, and so on.
 
-In pipelines triggered manually, the **Run pipelines** page displays all top-level variables
-with a `description` and `value` defined in the `.gitlab-ci.yml` file. The values
-can then be modified if needed, which overrides the value for that single pipeline run.
+Job-level variables cannot be pre-filled.
 
-The description is displayed next to the variable. It can be used to explain what
-the variable is used for, what the acceptable values are, and so on:
+In manually-triggered pipelines, the **Run pipeline** page displays all pipeline-level variables
+with a `description` defined in the `.gitlab-ci.yml` file. The description displays
+below the variable.
+
+You can change the prefilled value, which overrides the value for that single pipeline run.
+If you do not define a `value` for the variable in the configuration file, the variable still displays,
+but the value field is blank.
+
+For example:
 
 ```yaml
 variables:
+  TEST_SUITE:
+    description: "The test suite that will run. Valid options are: 'default', 'short', 'full'."
+    value: "default"
   DEPLOY_ENVIRONMENT:
-    value: "staging"  # Deploy to staging by default
-    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+    description: "Select the deployment target. Valid options are: 'canary', 'staging', 'production', or a stable branch of your choice."
 ```
 
-You cannot set job-level variables to be pre-filled when you run a pipeline manually.
+In this example:
+
+- `TEST_SUITE` is pre-filled in the **Run pipeline** page with `default`,
+  and the message explains the other options.
+- `DEPLOY_ENVIRONMENT` is listed in the **Run pipeline** page, but with no value set.
+  The user is expected to define the value each time the pipeline is run manually.
 
 ### Run a pipeline by using a URL query string
 

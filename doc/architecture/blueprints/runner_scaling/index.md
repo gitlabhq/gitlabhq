@@ -265,7 +265,7 @@ test, maintain and extend.
 A primary design decision will be which concerns to externalize to the plugin
 and which should remain with the runner system. The current implementation
 has several abstractions internally which could be used as cut points for a
-new abstraction. 
+new abstraction.
 
 For example the [`Build`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/build.go#L125)
 type uses the [`GetExecutorProvider`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/common/executor.go#L171)

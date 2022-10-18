@@ -30,12 +30,42 @@ require_relative '../config/bundler_setup'
 require 'rubocop'
 require 'optparse'
 
-def print_ast(file, source, version)
-  version ||= RuboCop::ConfigStore.new.for_file(file).target_ruby_version
-  puts RuboCop::AST::ProcessedSource.new(source, version).ast.to_s
+module Helper
+  extend self
+
+  class << self
+    attr_writer :ruby_version
+  end
+
+  def ast(source, file: '', version: nil)
+    version ||= ruby_version
+    puts RuboCop::AST::ProcessedSource.new(source, version).ast.to_s
+  end
+
+  def ruby_version
+    @ruby_version ||= rubocop_target_ruby_version
+  end
+
+  def rubocop_target_ruby_version
+    @rubocop_target_ruby_version ||= RuboCop::ConfigStore.new.for_file('.').target_ruby_version
+  end
 end
 
-options = Struct.new(:eval, :ruby_version, :print_help, keyword_init: true).new
+def start_irb
+  require 'irb'
+
+  include Helper # rubocop:disable Style/MixinUsage
+
+  puts "Ruby version: #{ruby_version}"
+  puts
+  puts "Use `ast(source_string, version: nil)` method to parse code and output AST. For example:"
+  puts "  ast('puts :hello')"
+  puts
+
+  IRB.start
+end
+
+options = Struct.new(:eval, :interactive, :print_help, keyword_init: true).new
 
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: #{$PROGRAM_NAME} [-e code] [FILE...]"
@@ -44,9 +74,13 @@ parser = OptionParser.new do |opts|
     options.eval = code
   end
 
+  opts.on('-i', '--interactive', '') do
+    options.interactive = true
+  end
+
   opts.on('-v RUBY_VERSION', '--ruby-version RUBY_VERSION',
           'Parse as Ruby would. Defaults to RuboCop TargetRubyVersion setting.') do |ruby_version|
-    options.ruby_version = Float(ruby_version)
+    Helper.ruby_version = Float(ruby_version)
   end
 
   opts.on('-h', '--help') do
@@ -54,20 +88,31 @@ parser = OptionParser.new do |opts|
   end
 end
 
-args = parser.parse!
+files = parser.parse!
 
 if options.print_help
   puts parser
-  exit
-end
+elsif options.interactive
+  if options.eval || files.any?
+    puts "Cannot combine `--interactive` with `--eval` or passing files. Aborting..."
+    puts
 
-print_ast('', options.eval, options.ruby_version) if options.eval
-
-args.each do |arg|
-  if File.file?(arg)
-    source = File.read(arg)
-    print_ast(arg, source, options.ruby_version)
+    puts parser
+    exit 1
   else
-    warn "Skipping non-file #{arg.inspect}"
+    start_irb
   end
+elsif options.eval
+  Helper.ast(options.eval)
+elsif files.any?
+  files.each do |file|
+    if File.file?(file)
+      source = File.read(file)
+      Helper.ast(source, file: file)
+    else
+      warn "Skipping non-file #{file.inspect}"
+    end
+  end
+else
+  puts parser
 end

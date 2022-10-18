@@ -148,7 +148,7 @@ At this moment, GitLab.com has "social-network"-like capabilities that may not f
 1. How will existing `gitlab-org` contributors contribute to the namespace??
 1. How do we move existing top-level namespaces into the new model (effectively breaking their social features)?
 
-We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases. 
+We should evaluate if the SMB and mid market segment is interested in these features, or if not having them is acceptable in most cases.
 
 ## High-level architecture problems to solve
 

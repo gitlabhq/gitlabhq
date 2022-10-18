@@ -4200,9 +4200,9 @@ deploy_review_job:
 Use the `description` keyword to define a [pipeline-level (global) variable that is prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
 
-Must be used with `value`, for the variable value.
+If used with `value`, the variable value is also prefilled when running a pipeline manually.
 
-**Keyword type**: Global keyword. You cannot set job-level variables to be pre-filled when you run a pipeline manually.
+**Keyword type**: Global keyword. You cannot use it for job-level variables.
 
 **Possible inputs**:
 
@@ -4213,9 +4213,14 @@ Must be used with `value`, for the variable value.
 ```yaml
 variables:
   DEPLOY_ENVIRONMENT:
-    value: "staging"
     description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+    value: "staging"
 ```
+
+**Additional details**:
+
+- A global variable defined with `value` but no `description` behaves the same as
+  [`variables`](#variables).
 
 ### `when`
 

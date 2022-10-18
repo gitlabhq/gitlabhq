@@ -54,6 +54,16 @@ FactoryBot.define do
       target { note }
     end
 
+    trait :for_issue do
+      target { association(:issue, issue_type: :issue) }
+      target_type { 'Issue' }
+    end
+
+    trait :for_work_item do
+      target { association(:work_item, :task) }
+      target_type { 'WorkItem' }
+    end
+
     factory :design_event, traits: [:has_design] do
       action { :created }
       target { design }

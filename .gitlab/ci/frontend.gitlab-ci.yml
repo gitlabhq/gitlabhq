@@ -1,13 +1,3 @@
-.yarn-install:
-  script:
-    - source scripts/utils.sh
-    - yarn_install_script
-
-.storybook-yarn-install:
-  script:
-    - source scripts/utils.sh
-    - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
-
 .compile-assets-base:
   extends:
     - .default-retry
@@ -98,20 +88,22 @@ update-assets-compile-test-cache:
 update-yarn-cache:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .yarn-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - !reference [.yarn-install, script]
+    - yarn_install_script
 
 update-storybook-yarn-cache:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .storybook-yarn-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - !reference [.storybook-yarn-install, script]
+    - yarn_install_script
 
 .frontend-fixtures-base:
   extends:
@@ -194,7 +186,7 @@ graphql-schema-dump as-if-foss:
     SETUP_DB: "false"
   before_script:
     - !reference [.default-before_script, before_script]
-    - !reference [.yarn-install, script]
+    - yarn_install_script
   stage: test
 
 .jest-base:
@@ -261,6 +253,7 @@ jest-integration:
 coverage-frontend:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .yarn-cache
     - .frontend:rules:coverage-frontend
   needs:
@@ -269,9 +262,8 @@ coverage-frontend:
     - job: "jest minimal"
       optional: true
   stage: post-test
-  before_script:
-    - !reference [.yarn-install, script]
   script:
+    - yarn_install_script
     - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
     # Removing the individual coverage results, as we just merged them.
     - if ls coverage-frontend/jest-* > /dev/null 2>&1; then
@@ -291,12 +283,13 @@ coverage-frontend:
 .qa-frontend-node:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .qa-frontend-node-cache
     - .frontend:rules:qa-frontend-node
   stage: test
   needs: []
   script:
-    - !reference [.yarn-install, script]
+    - yarn_install_script
     - run_timed_command "retry yarn run webpack-prod"
 
 qa-frontend-node:14:
@@ -316,6 +309,7 @@ qa-frontend-node:latest:
 webpack-dev-server:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .yarn-cache
     - .frontend:rules:default-frontend-jobs
   stage: test
@@ -324,7 +318,7 @@ webpack-dev-server:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"
   script:
-    - !reference [.yarn-install, script]
+    - yarn_install_script
     - run_timed_command "retry yarn webpack-vendor"
     - run_timed_command "node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js"
   artifacts:
@@ -336,13 +330,14 @@ webpack-dev-server:
 bundle-size-review:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .assets-compile-cache
     - .frontend:rules:bundle-size-review
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:danger
   stage: test
   needs: []
   script:
-    - !reference [.yarn-install, script]
+    - yarn_install_script
     - scripts/bundle_size_review
   artifacts:
     when: always
@@ -380,8 +375,8 @@ startup-css-check as-if-foss:
     - .frontend-test-base
     - .storybook-yarn-cache
   script:
-    - !reference [.storybook-yarn-install, script]
-    - yarn run storybook:build
+    - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
+    - run_timed_command "yarn run storybook:build"
   needs: ["graphql-schema-dump"]
 
 compile-storybook:
