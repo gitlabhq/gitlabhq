@@ -105,8 +105,11 @@ export const buildSortHref = ({
   return setUrlParams({ ...filterParams, sort: sortParam }, window.location.href, true);
 };
 
-// Defined in `ee/app/assets/javascripts/vue_shared/components/members/utils.js`
+// Defined in `ee/app/assets/javascripts/members/utils.js`
 export const canOverride = () => false;
+
+// Defined in `ee/app/assets/javascripts/members/utils.js`
+export const canUnban = () => false;
 
 export const parseDataAttributes = (el) => {
   const { membersData } = el.dataset;

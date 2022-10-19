@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
   let(:middleware) { described_class.new }
   let(:worker) { worker_class.new }
   let(:location) { '0/D525E3A8' }
-  let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location } }
+  let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_s => location } }
   let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations } }
 
   before do
@@ -314,6 +314,46 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
 
       expect(middleware.send(:databases_in_sync?, locations))
         .to eq(false)
+    end
+
+    context 'when locations have string keys' do
+      it 'returns false when the load balancers are not in sync' do
+        locations = {}
+
+        Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+          locations[lb.name.to_s] = 'foo'
+
+          allow(lb)
+            .to receive(:select_up_to_date_host)
+                  .with('foo')
+                  .and_return(false)
+        end
+
+        expect(middleware.send(:databases_in_sync?, locations))
+          .to eq(false)
+      end
+
+      context 'when "indifferent_wal_location_keys" FF is off' do
+        before do
+          stub_feature_flags(indifferent_wal_location_keys: false)
+        end
+
+        it 'returns true when the load balancers are not in sync' do
+          locations = {}
+
+          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            locations[lb.name.to_s] = 'foo'
+
+            allow(lb)
+              .to receive(:select_up_to_date_host)
+                    .with('foo')
+                    .and_return(false)
+          end
+
+          expect(middleware.send(:databases_in_sync?, locations))
+            .to eq(true)
+        end
+      end
     end
   end
 

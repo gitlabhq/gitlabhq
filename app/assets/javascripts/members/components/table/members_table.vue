@@ -2,7 +2,7 @@
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
-import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
+import { canUnban, canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import {
@@ -90,7 +90,8 @@ export default {
         canRemove(member) ||
         canResend(member) ||
         canUpdate(member, this.currentUserId) ||
-        canOverride(member)
+        canOverride(member) ||
+        canUnban(member)
       );
     },
     showField(field) {

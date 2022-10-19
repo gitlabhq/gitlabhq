@@ -46,7 +46,7 @@ export default {
 </script>
 <template>
   <history-item :icon="eventDetails.eventTypeIcon" class="gl-my-0! gl-px-0! gl-pb-0!">
-    <strong class="gl-pl-5 gl-font-lg">
+    <strong class="gl-pl-3 gl-font-lg">
       <gl-sprintf :message="eventDetails.title"
         ><template v-if="eventDetails.titleIcon" #titleIcon
           ><gl-icon
@@ -61,7 +61,7 @@ export default {
     </strong>
 
     <template #body>
-      <p class="gl-mb-0 gl-pb-3 gl-ml-3 gl-text-secondary" :class="bodyClass">
+      <p class="gl-mt-2 gl-mb-0 gl-ml-3 gl-pb-3 gl-text-secondary" :class="bodyClass">
         <gl-sprintf :message="eventDetails.body">
           <template #userName>
             <span class="gl-font-weight-bold gl-text-body">{{ eventDetails.user.name }}</span>

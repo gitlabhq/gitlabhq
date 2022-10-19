@@ -11354,6 +11354,7 @@ Represents a DAST Site Validation.
 | <a id="dastsitevalidationid"></a>`id` | [`DastSiteValidationID!`](#dastsitevalidationid) | Global ID of the site validation. |
 | <a id="dastsitevalidationnormalizedtargeturl"></a>`normalizedTargetUrl` | [`String`](#string) | Normalized URL of the target to be validated. |
 | <a id="dastsitevalidationstatus"></a>`status` | [`DastSiteProfileValidationStatusEnum!`](#dastsiteprofilevalidationstatusenum) | Status of the site validation. |
+| <a id="dastsitevalidationvalidationstartedat"></a>`validationStartedAt` | [`Time`](#time) | Timestamp of when the validation started. |
 
 ### `DeleteJobsResponse`
 

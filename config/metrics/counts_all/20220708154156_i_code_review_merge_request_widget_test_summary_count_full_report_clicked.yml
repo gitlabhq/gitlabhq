@@ -12,9 +12,10 @@ introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91831"
 time_frame: all
 data_source: redis
 data_category: optional
+instrumentation_class: MergeRequestWidgetExtensionMetric
 options:
-  events:
-    - i_code_review_merge_request_widget_test_summary_count_full_report_clicked
+  event: full_report_clicked
+  widget: test_summary
 distribution:
 - ce
 - ee

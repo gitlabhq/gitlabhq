@@ -76,6 +76,19 @@ In a relevant log entry, the `json.params` should provide a valid response with:
 - `"key": "RelayState"` with `"value": "/group-path"`, and
 - `"key": "group_id"` with `"value": "group-path"`.
 
+You should also check the decoded SAML response with the following filters
+in case the customer has [configured SAML Group Sync](group_sync.md):
+
+- `json.class`: `GroupSamlGroupSyncWorker`
+- `json.args`: `<user ID> or <group ID>`
+
+In the relevant log entry, the: 
+
+- `json.args` are in the form `<userID>, <group ID>,
+  [group link ID 1, group link ID 2, ..., group link ID N]`.
+- `json.extra.group_saml_group_sync_worker.stats.*` fields show how many times
+  this run of group sync `added`, `removed` or `changed` the user's membership.
+
 In some cases, if the SAML response is lengthy, you may receive a `"key": "truncated"` with `"value":"..."`.
 In these cases, use one of the [SAML debugging tools](#saml-debugging-tools), or for SAML SSO for groups,
 a group owner can get a copy of the SAML response from when they select

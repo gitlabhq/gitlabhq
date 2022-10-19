@@ -2,9 +2,7 @@
 
 module Gitlab
   module UsageDataCounters
-    COUNTERS = [
-      MergeRequestWidgetExtensionCounter
-    ].freeze
+    COUNTERS = [].freeze
 
     COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES = [
       PackageEventCounter,
@@ -20,7 +18,8 @@ module Gitlab
       SnippetCounter,
       CycleAnalyticsCounter,
       ProductivityAnalyticsCounter,
-      SourceCodeCounter
+      SourceCodeCounter,
+      MergeRequestWidgetExtensionCounter
     ].freeze
 
     UsageDataCounterError = Class.new(StandardError)

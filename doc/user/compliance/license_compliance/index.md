@@ -869,29 +869,60 @@ A full list of variables can be found in [CI/CD variables](#available-cicd-varia
 To find out what tools are pre-installed in the `license_scanning` Docker image use the following command:
 
 ```shell
-$ docker run --entrypoint='' registry.gitlab.com/security-products/license-finder:4 /bin/bash -lc 'asdf list'
+$ docker run --entrypoint='' -ti --rm registry.gitlab.com/security-products/license-finder:4 \
+  /bin/bash -c 'dpkg -i /opt/toolcache/*.deb && asdf list'
+...
+dotnet-core
+  3.1.302
+elixir
+  1.10.4
 golang
-  1.14
+  1.15.5
+  1.16.2
 gradle
-  6.3
+No versions installed
 java
-  adopt-openjdk-11.0.7+10
-  adopt-openjdk-8u242-b08
+  11
+  14
+  15
+  8
 maven
-  3.6.3
+No versions installed
 nodejs
-  10.20.1
-  12.16.3
+  10.21.0
+  12.18.2
+  14.17.1
 php
-  7.4.5
+  7.4.8
 python
   2.7.18
-  3.8.2
+  3.3.7
+  3.4.10
+  3.5.9
+  3.6.11
+  3.7.7
+  3.8.5
 ruby
+  2.4.10
+  2.4.5
+  2.4.9
+  2.5.8
+  2.6.0
+  2.6.1
+  2.6.2
+  2.6.3
+  2.6.4
+  2.6.5
   2.6.6
-sbt
-  1.3.8
+  2.7.0
+  2.7.1
+  2.7.2
+rust
+  1.45.0
 ```
+
+It might take more than 10 minutes to run the command above.
+This is because it installs every single tool version available in the Docker image.
 
 To interact with the `license_scanning` runtime environment use the following command:
 

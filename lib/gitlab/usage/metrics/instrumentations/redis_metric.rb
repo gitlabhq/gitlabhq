@@ -22,6 +22,10 @@ module Gitlab
           def initialize(metric_definition)
             super
 
+            validate_options!
+          end
+
+          def validate_options!
             raise ArgumentError, "'event' option is required" unless metric_event.present?
             raise ArgumentError, "'prefix' option is required" unless options.has_key?(OPTIONS_PREFIX_KEY)
           end
