@@ -3952,7 +3952,7 @@ msgstr ""
 msgid "All users with matching cards"
 msgstr ""
 
-msgid "Allow \"%{group_name}\" to sign you in"
+msgid "Allow %{strongOpen}%{group_name}%{strongClose} to sign you in?"
 msgstr ""
 
 msgid "Allow access to members of the following group"
@@ -35303,16 +35303,22 @@ msgstr ""
 msgid "SAML for %{group_name}"
 msgstr ""
 
-msgid "SAML|Select \"Authorize\" to allow %{group_name} to manage your GitLab account \"%{username}\" (%{email}) after you sign in successfully with your single sign-on account."
+msgid "SAML single sign-on"
+msgstr ""
+
+msgid "SAML single sign-on for %{group_name}"
 msgstr ""
 
 msgid "SAML|Sign in to GitLab to connect your organization's account"
 msgstr ""
 
-msgid "SAML|The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account."
+msgid "SAML|The %{strongOpen}%{group_path}%{strongClose} group allows you to sign in using single sign-on."
 msgstr ""
 
-msgid "SAML|To access \"%{group_name}\" you must sign in with your Single Sign-On account, through an external sign-in page."
+msgid "SAML|To access %{strongOpen}%{group_name}%{strongClose}, you must sign in using single sign-on through an external sign-in page."
+msgstr ""
+
+msgid "SAML|To allow %{strongOpen}%{group_name}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}."
 msgstr ""
 
 msgid "SAML|Your organization's SSO has been connected to your GitLab account"
@@ -37660,7 +37666,7 @@ msgstr ""
 msgid "Sign in preview"
 msgstr ""
 
-msgid "Sign in to \"%{group_name}\""
+msgid "Sign in to %{group_name}"
 msgstr ""
 
 msgid "Sign in to GitLab"
@@ -37675,7 +37681,7 @@ msgstr ""
 msgid "Sign in with"
 msgstr ""
 
-msgid "Sign in with Single Sign-On"
+msgid "Sign in with single sign-on"
 msgstr ""
 
 msgid "Sign in with smart card"
@@ -41274,9 +41280,6 @@ msgid "This epic already has the maximum number of child epics."
 msgstr ""
 
 msgid "This epic cannot be added. An epic cannot be added to itself."
-msgstr ""
-
-msgid "This epic cannot be added. An epic cannot belong to an ancestor group of its parent epic."
 msgstr ""
 
 msgid "This epic cannot be added. An epic must belong to the same group or subgroup as its parent epic."

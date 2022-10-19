@@ -42,7 +42,7 @@ module Banzai
         def apply_relative_link_rules!
           if @uri.relative? && @uri.path.present?
             link = @uri.path
-            link = ::File.join(@wiki_base_path, link) unless link.starts_with?(@wiki_base_path)
+            link = ::File.join(@wiki_base_path, link) unless prefixed_with_base_path?(link)
             link = "#{link}##{@uri.fragment}" if @uri.fragment
             @uri = Addressable::URI.parse(link)
           end
@@ -54,6 +54,15 @@ module Banzai
 
         def repository_upload?
           @uri.relative? && @uri.path.starts_with?(Wikis::CreateAttachmentService::ATTACHMENT_PATH)
+        end
+
+        def prefixed_with_base_path?(link)
+          link.starts_with?(@wiki_base_path) || link.starts_with?(old_wiki_base_path)
+        end
+
+        # before we added `/-/` to all our paths
+        def old_wiki_base_path
+          @wiki_base_path.sub('/-/', '/')
         end
       end
     end

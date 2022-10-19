@@ -53,8 +53,6 @@ RSpec.describe ChangePublicProjectsCostFactor, migration: :gitlab_ci do
         expect(shared_2.public_projects_minutes_cost_factor).to eq(0)
         expect(shared_3.public_projects_minutes_cost_factor).to eq(1)
         expect(group_1.public_projects_minutes_cost_factor).to eq(0)
-
-        schema_migrate_up!
       end
     end
   end

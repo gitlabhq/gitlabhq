@@ -18,6 +18,7 @@ See [Terminology](../../user/application_security/terminology) for an overview o
 - [Scanning](#scanning)
 - [Processing, visualization, and management](#processing-visualization-and-management)
 - [Severity Levels](../../user/application_security/vulnerabilities/severities.md)
+- [Analyzer Development](analyzer_development_guide.md)
 
 ## Overview
 
@@ -65,5 +66,5 @@ Depending on the context, the security reports may be stored either in the datab
 
 ## CI/CD template development
 
-While CI/CD templates are the responsibiility of the Verify section, many are critical to the Sec Section's feature usage.
+While CI/CD templates are the responsibility of the Verify section, many are critical to the Sec Section's feature usage.
 If you are working with CI/CD templates, please read the [development guide for GitLab CI/CD templates](../cicd/templates.md).

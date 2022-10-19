@@ -175,15 +175,20 @@ the instructions for
 
 By default, the application security jobs are configured to run for branch pipelines only.
 To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
-you must reference the [`latest` templates](../../development/cicd/templates.md):
+you must reference the [`latest` templates](../../development/cicd/templates.md).
+
+All `latest` security templates support merge request pipelines.
+
+For example, to run both SAST and Dependency Scanning:
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.latest.gitlab-ci.yml
-  - template: Security/DAST.latest.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
   - template: Jobs/SAST.latest.gitlab-ci.yml
 ```
+
+NOTE:
+Mixing `latest` and `stable` security templates can cause both MR and branch pipelines to run. We recommend choosing `latest` or `stable` for all security scanners.
 
 NOTE:
 Latest templates can receive breaking changes in any release.

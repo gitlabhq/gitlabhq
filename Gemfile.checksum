@@ -585,7 +585,7 @@
 {"name":"timeliness","version":"0.3.10","platform":"ruby","checksum":"c357233ce19dc53148e8b29dfddde134689f18f52b32928e9dfe12ebcf4a773f"},
 {"name":"timfel-krb5-auth","version":"0.8.3","platform":"ruby","checksum":"ab388c9d747fa3cd95baf2cc1c03253e372d8c680adcc543670f4f099854bb80"},
 {"name":"tins","version":"1.31.1","platform":"ruby","checksum":"51c4a347c25c630d310cbc2c040ffb84e266c8227f2ade881f1130ee4f9fbecf"},
-{"name":"toml-rb","version":"2.0.1","platform":"ruby","checksum":"5016c6c77ac72bca5fe67c372722bdfdd4479a6fe1a1c4ff2a486e247849b274"},
+{"name":"toml-rb","version":"2.2.0","platform":"ruby","checksum":"a1e2c54ac3cc9d49861004f75f0648b3622ac03a76abe105358c31553227d9a6"},
 {"name":"tomlrb","version":"1.3.0","platform":"ruby","checksum":"68666bf53fa70ba686a48a7435ce7e086f5227c58c4c993bd9792f4760f2a503"},
 {"name":"tpm-key_attestation","version":"0.9.0","platform":"ruby","checksum":"e469ad9111a68dab4d04596e1c0621d7c877c2e3e247f765af3c04f1adf2b8cd"},
 {"name":"train-core","version":"3.4.9","platform":"ruby","checksum":"d7ad8fa9a379c43a30baaaf1141af1cb28349d386c054f7fc81d169a625d6edd"},

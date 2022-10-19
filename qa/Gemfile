@@ -8,7 +8,7 @@ gem 'allure-rspec', '~> 2.18.0'
 gem 'capybara', '~> 3.35.0'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'rake', '~> 13'
-gem 'rspec', '~> 3.10'
+gem 'rspec', '~> 3.11'
 gem 'selenium-webdriver', '~> 4.5'
 gem 'airborne', '~> 0.3.7', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
 gem 'rest-client', '~> 2.1.0'
@@ -44,6 +44,6 @@ gem 'nokogiri', '~> 1.13', '>= 1.13.8'
 gem 'deprecation_toolkit', '~> 2.0.0', require: false
 
 group :development do
-  gem 'pry-byebug', '~> 3.5.1', platform: :mri
+  gem 'pry-byebug', '~> 3.10.1', platform: :mri
   gem "ruby-debug-ide", "~> 0.7.3"
 end
