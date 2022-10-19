@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
-  |settings_association: :namespace_settings, settings_attribute_name:|
+  |settings_attribute_name:, settings_association: :namespace_settings|
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
   let(:group_settings) { group.send(settings_association) }
