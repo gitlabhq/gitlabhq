@@ -8,12 +8,15 @@ module Packages
 
         INDENT_SPACE = 2
 
-        def initialize(metadata_content:, package:)
+        def initialize(metadata_content:, package:, logger: nil)
           @metadata_content = metadata_content
           @package = package
+          @logger = logger || Gitlab::AppJsonLogger
         end
 
         private
+
+        attr_reader :logger
 
         def xml_doc
           strong_memoize(:xml_doc) do

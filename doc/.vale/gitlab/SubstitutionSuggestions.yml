@@ -16,7 +16,8 @@ swap:
   docs: '"documentation"'
   e-mail: '"email"'
   GLFM: '"GitLab Flavored Markdown"'
-  it is recommended: '"we recommend"'
+  it is recommended: '"you should"'
+  we recommend: '"you should"'
   navigate: go
   OAuth2: '"OAuth 2.0"'
   once that: '"after that"'

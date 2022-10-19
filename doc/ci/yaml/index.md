@@ -3938,14 +3938,15 @@ Use `trigger` to declare that a job is a "trigger job" which starts a
 Trigger jobs can use only a limited set of GitLab CI/CD configuration keywords.
 The keywords available for use in trigger jobs are:
 
-- [`trigger`](#trigger).
-- [`stage`](#stage).
 - [`allow_failure`](#allow_failure).
-- [`rules`](#rules).
-- [`only` and `except`](#only--except).
-- [`when`](#when) (only with a value of `on_success`, `on_failure`, or `always`).
 - [`extends`](#extends).
 - [`needs`](#needs), but not [`needs:project`](#needsproject).
+- [`only` and `except`](#only--except).
+- [`rules`](#rules).
+- [`stage`](#stage).
+- [`trigger`](#trigger).
+- [`variables`](#variables).
+- [`when`](#when) (only with a value of `on_success`, `on_failure`, or `always`).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

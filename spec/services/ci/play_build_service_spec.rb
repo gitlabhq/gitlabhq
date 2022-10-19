@@ -87,11 +87,15 @@ RSpec.describe Ci::PlayBuildService, '#execute' do
         expect(build.reload.job_variables.map(&:key)).to contain_exactly('first', 'second')
       end
 
-      context 'when variables are invalid' do
+      context 'and variables are invalid' do
         let(:job_variables) { [{}] }
 
-        it 'raises an error' do
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+        it 'resets the attributes of the build' do
+          build.update!(job_variables_attributes: [{ key: 'old', value: 'old variable' }])
+
+          subject
+
+          expect(build.job_variables.map(&:key)).to contain_exactly('old')
         end
       end
 

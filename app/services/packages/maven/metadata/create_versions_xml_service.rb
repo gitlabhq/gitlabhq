@@ -67,6 +67,12 @@ module Packages
         def update_release
           return false if release_coherent?
 
+          unless release_xml_node.present?
+            log_malformed_content('Missing release tag')
+
+            return false
+          end
+
           if release_from_database
             release_xml_node.content = release_from_database
           else
@@ -158,6 +164,15 @@ module Packages
             non_snapshot_versions_from_database = versions_from_database.reject { |v| v.ends_with?('SNAPSHOT') }
             non_snapshot_versions_from_database.last
           end
+        end
+
+        def log_malformed_content(reason)
+          logger.warn(
+            message: 'A malformed metadata file has been encountered',
+            reason: reason,
+            project_id: @package.project_id,
+            package_id: @package.id
+          )
         end
       end
     end

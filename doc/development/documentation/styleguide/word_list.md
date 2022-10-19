@@ -720,24 +720,17 @@ Do not use **navigate**. Use **go** instead. For example:
 
 ## need to, should
 
-Try to avoid **needs to**, because it's wordy. Avoid **should** when you can be more specific. If something is required, use **must**.
+Try to avoid **needs to**, because it's wordy. If something is recommended, use **should** instead. If something is required, use **must**.
 
 Use:
 
-- You must set the variable.
-- Set the variable.
+- You should set the variable. (recommended)
+- You must set the variable. (required)
+- Set the variable. (required)
 
 Instead of:
 
 - You need to set the variable.
-
-**Should** is acceptable for recommended actions or items, or in cases where an event may not
-happen. For example:
-
-- Although you can configure the installation manually, you should use the express configuration to
-  avoid complications.
-- You should see a success message in the console. Contact support if an error message appears
-  instead.
 
 ## note that
 
@@ -1173,7 +1166,7 @@ Instead of:
 
 - We created a feature for you to add widgets.
 
-One exception: You can use **we recommend** instead of **it is recommended** or **GitLab recommends**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
 ## whitelist
 

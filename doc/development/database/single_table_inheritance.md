@@ -47,7 +47,7 @@ This ensures that the migration loads the columns for the migration in isolation
 and the helper disables STI by default.
 
 ```ruby
-class EnqueueSomeBackgroundMigration < Gitlab::Database::Migration[1.0]
+class EnqueueSomeBackgroundMigration < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up
