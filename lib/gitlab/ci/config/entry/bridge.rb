@@ -18,7 +18,7 @@ module Gitlab
             validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
 
             with_options allow_nil: true do
-              validates :when, inclusion: {
+              validates :when, type: String, inclusion: {
                 in: ALLOWED_WHEN,
                 message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
               }

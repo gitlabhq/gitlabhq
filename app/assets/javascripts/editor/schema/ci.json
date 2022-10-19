@@ -858,46 +858,10 @@
       ]
     },
     "when": {
-      "markdownDescription": "Describes the conditions for when to run the job. Defaults to 'on_success'.",
+      "markdownDescription": "Describes the conditions for when to run the job. Defaults to 'on_success'. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when).",
       "default": "on_success",
-      "oneOf": [
-        {
-          "enum": [
-            "on_success"
-          ],
-          "description": "Execute job only when all jobs from prior stages succeed."
-        },
-        {
-          "enum": [
-            "on_failure"
-          ],
-          "description": "Execute job when at least one job from prior stages fails."
-        },
-        {
-          "enum": [
-            "always"
-          ],
-          "description": "Execute job regardless of the status from prior stages."
-        },
-        {
-          "enum": [
-            "manual"
-          ],
-          "markdownDescription": "Execute the job manually from Gitlab UI or API. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when)."
-        },
-        {
-          "enum": [
-            "delayed"
-          ],
-          "markdownDescription": "Execute a job after the time limit in 'start_in' expires. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when)."
-        },
-        {
-          "enum": [
-            "never"
-          ],
-          "description": "Never execute the job."
-        }
-      ]
+      "type": "string",
+      "enum": ["on_success", "on_failure", "always", "never", "manual", "delayed"]
     },
     "cache": {
       "properties": {

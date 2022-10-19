@@ -102,9 +102,9 @@ or manually with Google Cloud Shell:
 
    ```shell
    kubectl create ns gitlab-managed-apps
-   helm repo add stable https://charts.helm.sh/stable
+   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
    helm repo update
-   helm install ingress stable/nginx-ingress -n gitlab-managed-apps
+   helm install ingress ngress-nginx/ingress-nginx -n gitlab-managed-apps
 
    # Check that the ingress controller is installed successfully
    kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps

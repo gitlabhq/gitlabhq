@@ -317,6 +317,26 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
+      context 'when the `when` keyword is not a string' do
+        context 'when it is an array' do
+          let(:config) { { script: 'exit 0', when: ['always'] } }
+
+          it 'returns error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job when should be a string'
+          end
+        end
+
+        context 'when it is a boolean' do
+          let(:config) { { script: 'exit 0', when: true } }
+
+          it 'returns error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job when should be a string'
+          end
+        end
+      end
+
       context 'when only: is used with rules:' do
         let(:config) { { only: ['merge_requests'], rules: [{ if: '$THIS' }] } }
 

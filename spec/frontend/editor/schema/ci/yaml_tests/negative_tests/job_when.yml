@@ -1,0 +1,11 @@
+job_with_wrong_when:
+  script: exit 0
+  when: on_xyz
+
+job_with_boolean_when:
+  script: exit 0
+  when: true
+
+job_with_array_when:
+  script: exit 0
+  when: [on_success]

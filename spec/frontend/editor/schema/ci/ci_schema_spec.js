@@ -31,6 +31,7 @@ import IncludeYaml from './yaml_tests/positive_tests/include.yml';
 import RulesYaml from './yaml_tests/positive_tests/rules.yml';
 import ProjectPathYaml from './yaml_tests/positive_tests/project_path.yml';
 import VariablesYaml from './yaml_tests/positive_tests/variables.yml';
+import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -38,6 +39,7 @@ import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
 import VariablesNegativeYaml from './yaml_tests/negative_tests/variables.yml';
+import JobWhenNegativeYaml from './yaml_tests/negative_tests/job_when.yml';
 
 import ProjectPathIncludeEmptyYaml from './yaml_tests/negative_tests/project_path/include/empty.yml';
 import ProjectPathIncludeInvalidVariableYaml from './yaml_tests/negative_tests/project_path/include/invalid_variable.yml';
@@ -90,6 +92,7 @@ describe('positive tests', () => {
       CacheYaml,
       FilterYaml,
       IncludeYaml,
+      JobWhenYaml,
       RulesYaml,
       VariablesYaml,
       ProjectPathYaml,
@@ -115,6 +118,7 @@ describe('negative tests', () => {
       ArtifactsNegativeYaml,
       CacheNegativeYaml,
       IncludeNegativeYaml,
+      JobWhenNegativeYaml,
       RulesNegativeYaml,
       VariablesNegativeYaml,
       ProjectPathIncludeEmptyYaml,

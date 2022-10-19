@@ -97,7 +97,7 @@ PUT projects/:id/packages/nuget
 
 ```shell
 curl --request PUT \
-     --upload-file path/to/mynugetpkg.1.3.0.17.nupkg \
+     --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
      --user <username>:<personal_access_token> \
      "https://gitlab.example.com/api/v4/projects/1/packages/nuget"
 ```
@@ -121,7 +121,7 @@ PUT projects/:id/packages/nuget/symbolpackage
 
 ```shell
 curl --request PUT \
-     --upload-file path/to/mynugetpkg.1.3.0.17.snupkg \
+     --form 'package=@path/to/mynugetpkg.1.3.0.17.snupkg' \
      --user <username>:<personal_access_token> \
      "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolpackage"
 ```

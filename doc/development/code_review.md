@@ -56,8 +56,8 @@ We make the following assumption with regards to automatically being considered 
 - Team members working in a specific stage/group (for example, create: source code) are considered domain experts for that area of the app they work on.
 - Team members working on a specific feature (for example, search) are considered domain experts for that feature.
 
-We default to assigning reviews to team members with domain expertise.
-When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation.
+We default to assigning reviews to team members with domain expertise for code reviews. For UX reviews we default to the recommended designer from the Reviewer roulette.
+When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation (see above for UX reviews).
 
 To find a domain expert:
 
