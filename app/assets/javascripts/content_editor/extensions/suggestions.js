@@ -34,7 +34,10 @@ function createSuggestionPlugin({
       tiptapEditor
         .chain()
         .focus()
-        .insertContentAt(range, [{ type: nodeType, attrs: props }])
+        .insertContentAt(range, [
+          { type: nodeType, attrs: props },
+          { type: 'text', text: ' ' },
+        ])
         .run();
     },
 
@@ -82,7 +85,7 @@ function createSuggestionPlugin({
         },
 
         onUpdate(props) {
-          component.updateProps(props);
+          component?.updateProps(props);
 
           if (!props.clientRect) {
             return;
@@ -100,12 +103,12 @@ function createSuggestionPlugin({
             return true;
           }
 
-          return component.ref?.onKeyDown(props);
+          return component?.ref?.onKeyDown(props);
         },
 
         onExit() {
           popup?.[0].destroy();
-          component.destroy();
+          component?.destroy();
         },
       };
     },
@@ -151,7 +154,7 @@ export default Node.create({
         editor: this.editor,
         char: '~',
         dataSource: gl.GfmAutoComplete?.dataSources.labels,
-        nodeType: 'reference',
+        nodeType: 'reference_label',
         nodeProps: {
           referenceType: 'label',
         },

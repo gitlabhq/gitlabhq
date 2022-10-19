@@ -42,7 +42,7 @@ export default {
 
   computed: {
     isReference() {
-      return this.nodeType === 'reference';
+      return this.nodeType.startsWith('reference');
     },
 
     isCommand() {
@@ -96,7 +96,7 @@ export default {
     getText(item) {
       if (this.isEmoji) return item.e;
 
-      switch (this.nodeType === 'reference' && this.nodeProps.referenceType) {
+      switch (this.isReference && this.nodeProps.referenceType) {
         case 'user':
           return `${this.char}${item.username}`;
         case 'issue':
@@ -105,12 +105,13 @@ export default {
         case 'snippet':
           return `${this.char}${item.id}`;
         case 'milestone':
-        case 'label':
           return `${this.char}${item.title}`;
+        case 'label':
+          return item.title;
         case 'command':
-          return `${this.char}${item.name} `;
+          return `${this.char}${item.name}`;
         case 'epic':
-          return `${item.reference}`;
+          return item.reference;
         case 'vulnerability':
           return `[vulnerability:${item.id}]`;
         default:
@@ -119,17 +120,35 @@ export default {
     },
 
     getProps(item) {
+      const props = {};
+
       if (this.isEmoji) {
-        return {
+        Object.assign(props, {
           name: item.name,
           unicodeVersion: item.u,
           title: item.d,
           moji: item.e,
-          ...this.nodeProps,
-        };
+        });
       }
 
-      return this.nodeProps;
+      if (this.isLabel || this.isMilestone) {
+        Object.assign(props, {
+          originalText: `${this.char}${
+            /\W/.test(item.title) ? JSON.stringify(item.title) : item.title
+          }`,
+        });
+      }
+
+      if (this.isLabel) {
+        Object.assign(props, {
+          text: item.title,
+          color: item.color,
+        });
+      }
+
+      Object.assign(props, this.nodeProps);
+
+      return props;
     },
 
     onKeyDown({ event }) {

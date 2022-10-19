@@ -423,6 +423,10 @@ export function renderOrderedList(state, node) {
   });
 }
 
+export function renderReference(state, node) {
+  state.write(node.attrs.originalText || node.attrs.text);
+}
+
 const generateBoldTags = (wrapTagName = openTag) => {
   return (_, mark) => {
     const type = /^(\*\*|__|<strong|<b).*/.exec(mark.attrs.sourceMarkdown)?.[1];

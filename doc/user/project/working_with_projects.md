@@ -559,3 +559,33 @@ If this fails, display why it doesn't work with:
 project = Project.find_by_full_path('<project_path>')
 project.delete_error
 ```
+
+### Toggle a feature for all projects within a group
+
+While toggling a feature in a project can be done through the [projects API](../../api/projects.md),
+you may need to do this for a large number of projects.
+
+To toggle a specific feature, you can [start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
+and run the following function:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+```ruby
+projects = Group.find_by_name('_group_name').projects
+projects.each do |p|
+  ## replace <feature-name> with the appropriate feature name in all instances
+  state = p.<feature-name>
+
+  if state != 0
+    puts "#{p.name} has <feature-name> already enabled. Skipping..."
+  else
+    puts "#{p.name} didn't have <feature-name> enabled. Enabling..."
+    p.project_feature.update!(<feature-name>: ProjectFeature::PRIVATE)
+  end
+end
+```
+
+To find features that can be toggled, run `pp p.project_feature`.
+Available permission levels are listed in
+[concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).

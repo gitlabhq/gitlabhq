@@ -805,3 +805,45 @@ To find and store an array of groups based on an SQL query in the [rails console
 Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
 => [#<Group id:3 @test-group>, #<Group id:4 @template-group/template-subgroup>]
 ```
+
+### Transfer subgroup to another location using Rails console
+
+If transferring a group doesn't work through the UI or API, you may want to attempt the transfer in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+```ruby
+user = User.find_by_username('<username>')
+group = Group.find_by_name("<group_name>")
+## Set parent_group = nil to make the subgroup a top-level group
+parent_group = Group.find_by(id: "<group_id>")
+service = ::Groups::TransferService.new(group, user)
+service.execute(parent_group)
+```
+
+### Find groups pending deletion using Rails console
+
+If you need to find all the groups that are pending deletion, you can use the following command in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Group.all.each do |g|
+ if g.marked_for_deletion?
+    puts "Group ID: #{g.id}"
+    puts "Group name: #{g.name}"
+    puts "Group path: #{g.full_path}"
+ end
+end
+```
+
+### Delete a group using Rails console
+
+At times, a group deletion may get stuck. If needed, in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session),
+you can attempt to delete a group using the following command:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+```ruby
+GroupDestroyWorker.new.perform(group_id, user_id)
+```

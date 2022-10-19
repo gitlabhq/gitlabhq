@@ -3978,7 +3978,7 @@ trigger-multi-project-pipeline:
 
 **Related topics**:
 
-- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-from-a-job-in-your-gitlab-ciyml-file).
+- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
 - To run a pipeline for a specific branch, tag, or commit, you can use a [trigger token](../triggers/index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
@@ -4006,7 +4006,7 @@ trigger-child-pipeline:
 
 **Related topics**:
 
-- [Child pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-parent-child-pipeline).
+- [Child pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
 
 #### `trigger:project`
 
@@ -4042,7 +4042,7 @@ trigger-multi-project-pipeline:
 
 **Related topics**:
 
-- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-from-a-job-in-your-gitlab-ciyml-file).
+- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
 - To run a pipeline for a specific branch, tag, or commit, you can also use a [trigger token](../triggers/index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.

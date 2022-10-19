@@ -107,7 +107,18 @@ identifying abstract concepts and are subject to changes as we refine the design
 - **Catalog** is the collection of projects that are set to contain components.
 - **Version** is the release name of a tag in the project, which allows components to be pinned to a specific revision.
 
-## Characteristics of a component
+## Definition of pipeline component
+
+A pipeline component is a reusable single-purpose building block that abstracts away a single pipeline configuration unit. Components are used to compose a part or entire pipeline configuration.
+It can optionally take input parameters and set output data to be adaptable and reusable in different pipeline contexts,
+while encapsulating and isolating implementation details.
+
+Components allow a pipeline to be assembled by using abstractions instead of having all the details defined in one place.
+When using a component in a pipeline, a user shouldn't need to know the implementation details of the component and should
+only rely on the provided interface. The interface will have a version / revision, so that users understand which revision they are interfacing with.
+
+A pipeline component defines its type which indicates in which context of the pipeline configuration the component can be used.
+For example, a component of type X can only be used according to the type X use-case.
 
 For best experience with any systems made of components it's fundamental that components are single purpose,
 isolated, reusable and resolvable.
@@ -118,7 +129,7 @@ isolated, reusable and resolvable.
 - **Reusability:** a component is designed to be used in different pipelines.
   Depending on the assumptions it's built on a component can be more or less generic.
   Generic components are more reusable but may require more customization.
-- **Resolvable:** When a component depends on another component, this dependency needs to be explicit and trackable. Hidden dependencies can lead to myriads of problems.
+- **Resolvable:** When a component depends on another component, this dependency must be explicit and trackable.
 
 ## Proposal
 

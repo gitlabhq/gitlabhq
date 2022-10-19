@@ -7,33 +7,59 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Downstream pipelines **(FREE)**
 
 A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline.
-A downstream pipeline can be either:
+Downstream pipelines run independently and concurrently to the upstream pipeline
+that triggered them.
 
-- A [parent-child pipeline](downstream_pipelines.md#parent-child-pipelines), which is a downstream pipeline triggered
-  in the same project as the first pipeline.
-- A [multi-project pipeline](#multi-project-pipelines), which is a downstream pipeline triggered
-  in a different project than the first pipeline.
+- A [parent-child pipeline](downstream_pipelines.md#parent-child-pipelines) is a downstream pipeline
+  triggered in the *same* project as the first pipeline.
+- A [multi-project pipeline](#multi-project-pipelines) is a downstream pipeline triggered
+  in a *different* project than the first pipeline.
 
-Parent-child pipelines and multi-project pipelines can sometimes be used for similar purposes,
-but there are some key differences.
+You can sometimes use parent-child pipelines and multi-project pipelines for similar purposes,
+but there are [key differences](pipeline_architectures.md).
 
-Parent-child pipelines:
+## Parent-child pipelines
+
+A parent pipeline is one that triggers a downstream pipeline in the same project.
+The downstream pipeline is called a child pipeline. Child pipelines:
 
 - Run under the same project, ref, and commit SHA as the parent pipeline.
-- Affect the overall status of the ref the pipeline runs against. For example,
+- Do not directly affect the overall status of the ref the pipeline runs against. For example,
   if a pipeline fails for the main branch, it's common to say that "main is broken".
-  The status of child pipelines don't directly affect the status of the ref, unless the child
+  The status of child pipelines only affects the status of the ref if the child
   pipeline is triggered with [`strategy:depend`](../yaml/index.md#triggerstrategy).
 - Are automatically canceled if the pipeline is configured with [`interruptible`](../yaml/index.md#interruptible)
   when a new pipeline is created for the same ref.
-- Display only the parent pipelines in the pipeline index page. Child pipelines are
-  visible when visiting their parent pipeline's page.
-- Are limited to 2 levels of nesting. A parent pipeline can trigger multiple child pipelines,
-  and those child pipeline can trigger multiple child pipelines (`A -> B -> C`).
+- Are not displayed in the pipeline index page. You can only view child pipelines on
+  their parent pipeline's page.
+
+### Nested child pipelines
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243747) in GitLab 13.5.
+
+Parent and child pipelines were introduced with a maximum depth of one level of child
+pipelines, which was later increased to two. A parent pipeline can trigger many child
+pipelines, and these child pipelines can trigger their own child pipelines. It's not
+possible to trigger another level of child pipelines.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
+
+## Multi-project pipelines
+
+A pipeline in one project can trigger downstream pipelines in another project,
+called multi-project pipelines. The user triggering the upstream pipeline must be able to
+start pipelines in the downstream project, otherwise [the downstream pipeline fails to start](#trigger-job-fails-and-does-not-create-multi-project-pipeline).
+
+For example, you might deploy your web application from three different GitLab projects.
+With multi-project pipelines you can trigger a pipeline in each project, where each
+has its own build, test, and deploy process. You can visualize the connected pipelines
+in one place, including all cross-project interdependencies.
 
 Multi-project pipelines:
 
-- Are triggered from another pipeline, but the upstream (triggering) pipeline does
+- Are triggered from another project's pipeline, but the upstream (triggering) pipeline does
   not have much control over the downstream (triggered) pipeline. However, it can
   choose the ref of the downstream pipeline, and pass CI/CD variables to it.
 - Affect the overall status of the ref of the project it runs in, but does not
@@ -46,75 +72,86 @@ Multi-project pipelines:
   that happened to be triggered by an external project. They are all visible on the pipeline index page.
 - Are independent, so there are no nesting limits.
 
-## Multi-project pipelines
+Learn more in the "Cross-project Pipeline Triggering and Visualization" demo at
+[GitLab@learn](https://about.gitlab.com/learn/), in the Continuous Integration section.
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
+If you use a public project to trigger downstream pipelines in a private project,
+make sure there are no confidentiality problems. The upstream project's pipelines page
+always displays:
 
-You can set up [GitLab CI/CD](../index.md) across multiple projects, so that a pipeline
-in one project can trigger a downstream pipeline in another project. You can visualize the entire pipeline
-in one place, including all cross-project interdependencies.
-
-For example, you might deploy your web application from three different projects in GitLab.
-Each project has its own build, test, and deploy process. With multi-project pipelines you can
-visualize the entire pipeline, including all build and test stages for all three projects.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see the [Multi-project pipelines demo](https://www.youtube.com/watch?v=g_PIwBM1J84).
-
-Multi-project pipelines are also useful for larger products that require cross-project interdependencies, like those
-with a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
-Learn more in the [Cross-project Pipeline Triggering and Visualization demo](https://about.gitlab.com/learn/)
-at GitLab@learn, in the Continuous Integration section.
-
-If you trigger a pipeline in a downstream private project, on the upstream project's pipelines page,
-you can view:
-
-- The name of the project.
+- The name of the downstream project.
 - The status of the pipeline.
 
-If you have a public project that can trigger downstream pipelines in a private project,
-make sure there are no confidentiality problems.
+## Trigger a downstream pipeline from a job in the `.gitlab-ci.yml` file
 
-### Trigger a multi-project pipeline from a job in your `.gitlab-ci.yml` file
+Use the [`trigger`](../yaml/index.md#trigger) keyword in your `.gitlab-ci.yml` file
+to create a job that triggers a downstream pipeline. This job is called a trigger job.
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
+After the trigger job starts, the initial status of the job is `pending` while GitLab
+attempts to create the downstream pipeline. If the downstream pipeline is created,
+GitLab marks the job as passed, otherwise the job failed. Alternatively,
+you can [set the trigger job to show the downstream pipeline's status](#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job)
+instead.
 
-When you use the [`trigger`](../yaml/index.md#trigger) keyword to create a multi-project
-pipeline in your `.gitlab-ci.yml` file, you create what is called a *trigger job*. For example:
+For example:
+
+::Tabs
+
+:::TabTitle Multi-project pipeline
 
 ```yaml
-rspec:
-  stage: test
-  script: bundle exec rspec
-
-staging:
-  variables:
-    ENVIRONMENT: staging
-  stage: deploy
-  trigger: my/deployment
+trigger_job:
+  trigger:
+    project: project-group/my-downstream-project
 ```
 
-In this example, after the `rspec` job succeeds in the `test` stage,
-the `staging` trigger job starts. The initial status of this
-job is `pending`.
+:::TabTitle Parent-child pipeline
 
-GitLab then creates a downstream pipeline in the
-`my/deployment` project and, as soon as the pipeline is created, the
-`staging` job succeeds. The full path to the project is `my/deployment`.
+```yaml
+trigger_job:
+  trigger:
+    include:
+      - local: path/to/child-pipeline.yml
+```
 
-You can view the status for the pipeline, or you can display
-[the downstream pipeline's status instead](#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job).
+::EndTabs
 
-The user that creates the upstream pipeline must be able to create pipelines in the
-downstream project (`my/deployment`) too. If the downstream project is not found,
-or the user does not have [permission](../../user/permissions.md) to create a pipeline there,
-the `staging` job is marked as _failed_.
+### Use `rules` to control downstream pipeline jobs
 
-#### Specify a downstream pipeline branch
+You can use CI/CD variables or the [`rules`](../yaml/index.md#rulesif) keyword to
+[control job behavior](../jobs/job_control.md) for downstream pipelines.
 
-You can specify a branch name for the downstream pipeline to use.
-GitLab uses the commit on the head of the branch to
-create the downstream pipeline.
+When a downstream pipeline is triggered with the [`trigger`](../yaml/index.md#trigger) keyword,
+the value of the [`$CI_PIPELINE_SOURCE` predefined variable](../variables/predefined_variables.md)
+for all jobs is:
+
+- `pipeline` for multi-project pipelines.
+- `parent` for parent-child pipelines.
+
+For example, with a multi-project pipeline:
+
+```yaml
+job1:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+  script: echo "This job runs in multi-project pipelines only"
+
+job2:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script: echo "This job runs in merge request pipelines only"
+
+job3:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script: echo "This job runs in both multi-project and merge request pipelines"
+```
+
+### Specify a branch for multi-project pipelines
+
+You can specify a branch name for a multi-project pipeline to use. GitLab uses
+the commit on the head of the branch to create the downstream pipeline:
 
 ```yaml
 rspec:
@@ -137,112 +174,11 @@ Use:
   In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/10126), variable expansion is
   supported.
 
-Pipelines triggered on a protected branch in a downstream project use the [role](../../user/permissions.md)
-of the user that ran the trigger job in the upstream project. If the user does not
-have permission to run CI/CD pipelines against the protected branch, the pipeline fails. See
-[pipeline security for protected branches](index.md#pipeline-security-on-protected-branches).
+### Use a child pipeline configuration file in a different project
 
-#### Use `rules` or `only`/`except` with multi-project pipelines
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
 
-You can use CI/CD variables or the [`rules`](../yaml/index.md#rulesif) keyword to
-[control job behavior](../jobs/job_control.md) for multi-project pipelines. When a
-downstream pipeline is triggered with the [`trigger`](../yaml/index.md#trigger) keyword,
-the value of the [`$CI_PIPELINE_SOURCE` predefined variable](../variables/predefined_variables.md)
-is `pipeline` for all its jobs.
-
-If you use [`only/except`](../yaml/index.md#only--except) to control job behavior, use the
-[`pipelines`](../yaml/index.md#onlyrefs--exceptrefs) keyword.
-
-### Trigger a multi-project pipeline by using the API
-
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) to GitLab Free in 12.4.
-
-When you use the [`CI_JOB_TOKEN` to trigger pipelines](../jobs/ci_job_token.md),
-GitLab recognizes the source of the job token. The pipelines become related,
-so you can visualize their relationships on pipeline graphs.
-
-These relationships are displayed in the pipeline graph by showing inbound and
-outbound connections for upstream and downstream pipeline dependencies.
-
-When using:
-
-- CI/CD variables or [`rules`](../yaml/index.md#rulesif) to control job behavior, the value of
-  the [`$CI_PIPELINE_SOURCE` predefined variable](../variables/predefined_variables.md) is
-  `pipeline` for multi-project pipeline triggered through the API with `CI_JOB_TOKEN`.
-- [`only/except`](../yaml/index.md#only--except) to control job behavior, use the
-  `pipelines` keyword.
-
-## Parent-child pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16094) in GitLab 12.7.
-
-As pipelines grow more complex, a few related problems start to emerge:
-
-- The staged structure, where all steps in a stage must be completed before the first
-  job in next stage begins, causes arbitrary waits, slowing things down.
-- Configuration for the single global pipeline becomes very long and complicated,
-  making it hard to manage.
-- Imports with [`include`](../yaml/index.md#include) increase the complexity of the configuration, and create the potential
-  for namespace collisions where jobs are unintentionally duplicated.
-- Pipeline UX can become unwieldy with so many jobs and stages to work with.
-
-Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The ability
-to choose to start sub-pipelines (or not) is a powerful ability, especially if the
-YAML is dynamically generated.
-
-![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v14_3.png)
-
-Similarly to [multi-project pipelines](#multi-project-pipelines), a pipeline can trigger a
-set of concurrently running downstream child pipelines, but in the same project:
-
-- Child pipelines still execute each of their jobs according to a stage sequence, but
-  would be free to continue forward through their stages without waiting for unrelated
-  jobs in the parent pipeline to finish.
-- The configuration is split up into smaller child pipeline configurations. Each child pipeline contains only relevant steps which are
-  easier to understand. This reduces the cognitive load to understand the overall configuration.
-- Imports are done at the child pipeline level, reducing the likelihood of collisions.
-
-Child pipelines work well with other GitLab CI/CD features:
-
-- Use [`rules: changes`](../yaml/index.md#ruleschanges) to trigger pipelines only when
-  certain files change. This is useful for monorepos, for example.
-- Since the parent pipeline in `.gitlab-ci.yml` and the child pipeline run as normal
-  pipelines, they can have their own behaviors and sequencing in relation to triggers.
-
-See the [`trigger`](../yaml/index.md#trigger) keyword documentation for full details on how to
-include the child pipeline configuration.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).
-
-NOTE:
-The artifact containing the generated YAML file must not be [larger than 5MB](https://gitlab.com/gitlab-org/gitlab/-/issues/249140).
-
-### Trigger a parent-child pipeline
-
-The simplest case is [triggering a child pipeline](../yaml/index.md#trigger) using a
-local YAML file to define the pipeline configuration. In this case, the parent pipeline
-triggers the child pipeline, and continues without waiting:
-
-```yaml
-microservice_a:
-  trigger:
-    include: path/to/microservice_a.yml
-```
-
-You can include multiple files when defining a child pipeline. The child pipeline's
-configuration is composed of all configuration files merged together:
-
-```yaml
-microservice_a:
-  trigger:
-    include:
-      - local: path/to/microservice_a.yml
-      - template: Security/SAST.gitlab-ci.yml
-```
-
-In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/205157),
-you can use [`include:file`](../yaml/index.md#includefile) to trigger child pipelines
+You can use [`include:file`](../yaml/index.md#includefile) to trigger child pipelines
 with a configuration file in a different project:
 
 ```yaml
@@ -254,119 +190,150 @@ microservice_a:
         file: '/path/to/child-pipeline.yml'
 ```
 
-The maximum number of entries that are accepted for `trigger:include` is three.
+### Combine multiple child pipeline configuration files
 
-### Merge request child pipelines
-
-To trigger a child pipeline as a [merge request pipeline](merge_request_pipelines.md) we need to:
-
-- Set the trigger job to run on merge requests:
+You can include up to three configuration files when defining a child pipeline. The child pipeline's
+configuration is composed of all configuration files merged together:
 
 ```yaml
-# parent .gitlab-ci.yml
 microservice_a:
   trigger:
-    include: path/to/microservice_a.yml
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
+    include:
+      - local: path/to/microservice_a.yml
+      - template: Security/SAST.gitlab-ci.yml
+      - project: 'my-group/my-pipeline-library'
+        ref: 'main'
+        file: '/path/to/child-pipeline.yml'
 ```
-
-- Configure the child pipeline by either:
-
-  - Setting all jobs in the child pipeline to evaluate in the context of a merge request:
-
-    ```yaml
-    # child path/to/microservice_a.yml
-    workflow:
-      rules:
-        - if: $CI_MERGE_REQUEST_ID
-
-    job1:
-      script: ...
-
-    job2:
-      script: ...
-    ```
-
-  - Alternatively, setting the rule per job. For example, to create only `job1` in
-    the context of merge request pipelines:
-
-    ```yaml
-    # child path/to/microservice_a.yml
-    job1:
-      script: ...
-      rules:
-        - if: $CI_MERGE_REQUEST_ID
-
-    job2:
-      script: ...
-    ```
 
 ### Dynamic child pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35632) in GitLab 12.9.
 
-Instead of running a child pipeline from a static YAML file, you can define a job that runs
-your own script to generate a YAML file, which is then used to trigger a child pipeline.
+You can trigger a child pipeline from a YAML file generated in a job, instead of a
+static file saved in your project. This technique can be very powerful for generating pipelines
+targeting content that changed or to build a matrix of targets and architectures.
 
-This technique can be very powerful in generating pipelines targeting content that changed or to
-build a matrix of targets and architectures.
+The artifact containing the generated YAML file must not be [larger than 5MB](https://gitlab.com/gitlab-org/gitlab/-/issues/249140).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Create child pipelines using dynamically generated configurations](https://youtu.be/nMdfus2JWHM).
 
-We also have an example project using
-[Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet)
-which shows how to use a data templating language to generate your `.gitlab-ci.yml` at runtime.
-You could use a similar process for other templating languages like
+For an example project that generates a dynamic child pipeline, see
+[Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet).
+This project shows how to use a data templating language to generate your `.gitlab-ci.yml` at runtime.
+You can use a similar process for other templating languages like
 [Dhall](https://dhall-lang.org/) or [ytt](https://get-ytt.io/).
+
+#### Trigger a dynamic child pipeline
+
+To trigger a child pipeline from a dynamically generated configuration file:
+
+1. Generate the configuration file in a job and save it as an [artifact](../yaml/index.md#artifactspaths):
+
+  ```yaml
+  generate-config:
+    stage: build
+    script: generate-ci-config > generated-config.yml
+    artifacts:
+      paths:
+        - generated-config.yml
+  ```
+
+1. Configure the trigger job to run after the job that generated the configuration file,
+   and set `include: artifact` to the generated artifact:
+
+  ```yaml
+  child-pipeline:
+    stage: test
+    trigger:
+      include:
+        - artifact: generated-config.yml
+          job: generate-config
+  ```
+
+In this example, `generated-config.yml` is extracted from the artifacts and used as the configuration
+for triggering the child pipeline.
 
 The artifact path is parsed by GitLab, not the runner, so the path must match the
 syntax for the OS running GitLab. If GitLab is running on Linux but using a Windows
-runner for testing, the path separator for the trigger job would be `/`. Other CI/CD
-configuration for jobs, like scripts, that use the Windows runner would use `\`.
+runner for testing, the path separator for the trigger job is `/`. Other CI/CD
+configuration for jobs that use the Windows runner, like scripts, use `\`.
 
-For example, to trigger a child pipeline from a dynamically generated configuration file:
+### Run child pipelines with merge request pipelines
+
+To trigger a child pipeline as a [merge request pipeline](merge_request_pipelines.md):
+
+1. Set the trigger job to run on merge requests:
+
+   ```yaml
+   # parent .gitlab-ci.yml
+   microservice_a:
+     trigger:
+       include: path/to/microservice_a.yml
+     rules:
+       - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+   ```
+
+1. Configure the child pipeline jobs to run in merge request pipelines:
+
+   - With [`workflow:rules`](../yaml/index.md#workflowrules):
+
+     ```yaml
+     # child path/to/microservice_a.yml
+     workflow:
+       rules:
+         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+     job1:
+       script: ...
+
+     job2:
+       script: ...
+     ```
+
+   - By configuring [rules](../yaml/index.md#rules) for each job:
+
+     ```yaml
+     # child path/to/microservice_a.yml
+     job1:
+       script: ...
+       rules:
+         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+     job2:
+       script: ...
+       rules:
+         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+     ```
+
+## Trigger a multi-project pipeline by using the API
+
+You can use the [CI/CD job token (`CI_JOB_TOKEN`)](../jobs/ci_job_token.md) with the
+[pipeline trigger API endpoint](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
+to trigger multi-project pipelines from a CI/CD job. GitLab recognizes the source of the job token
+and marks the pipelines as related. In the pipeline graph, the relationships are displayed
+as inbound and outbound connections for upstream and downstream pipeline dependencies.
+
+For example:
 
 ```yaml
-generate-config:
-  stage: build
-  script: generate-ci-config > generated-config.yml
-  artifacts:
-    paths:
-      - generated-config.yml
-
-child-pipeline:
-  stage: test
-  trigger:
-    include:
-      - artifact: generated-config.yml
-        job: generate-config
+trigger_pipeline:
+  stage: deploy
+  script:
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+  rules:
+    - if: $CI_COMMIT_TAG
+  environment: production
 ```
-
-The `generated-config.yml` is extracted from the artifacts and used as the configuration
-for triggering the child pipeline.
-
-In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
-This is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/209070) in GitLab 12.10.
-
-### Nested child pipelines
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243747) in GitLab 13.5.
-
-Parent and child pipelines were introduced with a maximum depth of one level of child
-pipelines, which was later increased to two. A parent pipeline can trigger many child
-pipelines, and these child pipelines can trigger their own child pipelines. It's not
-possible to trigger another level of child pipelines.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
 
 ## View a downstream pipeline
 
+> Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
+
 In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
-as a list of cards on the right of the graph.
+as a list of cards on the right of the graph. Hover over the pipeline's card to view
+which job triggered the downstream pipeline.
 
 ### Retry a downstream pipeline
 
@@ -389,9 +356,6 @@ To cancel a downstream pipeline that is still running, select **Cancel** (**{can
 - On the pipeline's card in the [pipeline graph view](index.md#view-full-pipeline-graph).
 
 ### Mirror the status of a downstream pipeline in the trigger job
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11238) in GitLab Premium 12.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
 You can mirror the pipeline status from the triggered pipeline to the source trigger job
 by using [`strategy: depend`](../yaml/index.md#triggerstrategy):
@@ -549,8 +513,9 @@ The `ENVIRONMENT` variable is passed to every job defined in a downstream
 pipeline. It is available as a variable when GitLab Runner picks a job.
 
 In the following configuration, the `MY_VARIABLE` variable is passed to the downstream pipeline
-that is created when the `trigger-downstream` job is queued. This is because `trigger-downstream`
-job inherits variables declared in global variables blocks, and then we pass these variables to a downstream pipeline.
+that is created when the `trigger-downstream` job is queued. This behavior is because `trigger-downstream`
+job inherits variables declared in [global `variables`](../yaml/index.md#variables) blocks,
+and then GitLab passes these variables to the downstream pipeline.
 
 ```yaml
 variables:
@@ -562,7 +527,7 @@ trigger-downstream:
   trigger: my/project
 ```
 
-### Prevent global variables from being passed
+#### Prevent global variables from being passed
 
 You can stop global variables from reaching the downstream pipeline by using the [`inherit:variables` keyword](../yaml/index.md#inheritvariables).
 For example, in a [multi-project pipeline](#multi-project-pipelines):
@@ -645,3 +610,16 @@ For example, in a [multi-project pipeline](#multi-project-pipelines):
          ref: master
          artifacts: true
    ```
+
+## Troubleshooting
+
+### Trigger job fails and does not create multi-project pipeline
+
+With multi-project pipelines, the trigger job fails and does not create the downstream pipeline if:
+
+- The downstream project is not found.
+- The user that creates the upstream pipeline does not have [permission](../../user/permissions.md)
+  to create pipelines in the downstream project.
+- The downstream pipeline targets a protected branch and the user does not have permission
+  to run pipelines against the protected branch. See [pipeline security for protected branches](index.md#pipeline-security-on-protected-branches)
+  for more information.

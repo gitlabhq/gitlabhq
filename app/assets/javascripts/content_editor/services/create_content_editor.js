@@ -43,6 +43,7 @@ import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
+import ReferenceLabel from '../extensions/reference_label';
 import ReferenceDefinition from '../extensions/reference_definition';
 import Sourcemap from '../extensions/sourcemap';
 import Strike from '../extensions/strike';
@@ -132,6 +133,7 @@ export const createContentEditor = ({
     Paragraph,
     PasteMarkdown.configure({ eventHub, renderMarkdown }),
     Reference,
+    ReferenceLabel,
     ReferenceDefinition,
     Sourcemap,
     Strike,
