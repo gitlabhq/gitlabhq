@@ -160,7 +160,7 @@ class Issue < ApplicationRecord
   scope :with_api_entity_associations, -> {
     preload(:timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
       milestone: { project: [:route, { namespace: :route }] },
-      project: [:route, { namespace: :route }],
+      project: [:project_feature, :route, { namespace: :route }],
       duplicated_to: { project: [:project_feature] })
   }
   scope :with_issue_type, ->(types) { where(issue_type: types) }
@@ -612,7 +612,9 @@ class Issue < ApplicationRecord
   # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
   # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
-    if user.can_read_all_resources?
+    if !project.issues_enabled?
+      false
+    elsif user.can_read_all_resources?
       true
     elsif project.personal? && project.team.owner?(user)
       true

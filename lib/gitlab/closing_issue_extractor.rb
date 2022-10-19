@@ -27,8 +27,7 @@ module Gitlab
 
       @extractor.issues.reject do |issue|
         @extractor.project.forked_from?(issue.project) ||
-          !issue.project.autoclose_referenced_issues ||
-          !issue.project.issues_enabled?
+          !issue.project.autoclose_referenced_issues
       end
     end
   end

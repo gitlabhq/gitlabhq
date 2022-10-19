@@ -297,14 +297,21 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
       end
 
       context 'with an external issue tracker reference' do
-        it 'extracts the referenced issue' do
-          jira_project = create(:jira_project, name: 'JIRA_EXT1')
-          jira_project.add_maintainer(jira_project.creator)
-          jira_issue = ExternalIssue.new("#{jira_project.name}-1", project: jira_project)
-          closing_issue_extractor = described_class.new(jira_project, jira_project.creator)
-          message = "Resolve #{jira_issue.to_reference}"
+        let_it_be_with_reload(:jira_project) { create(:project, :with_jira_integration, name: 'JIRA_EXT1') }
 
-          expect(closing_issue_extractor.closed_by_message(message)).to eq([jira_issue])
+        let(:jira_issue) { ExternalIssue.new("#{jira_project.name}-1", project: jira_project) }
+        let(:message) { "Resolve #{jira_issue.to_reference}" }
+
+        subject { described_class.new(jira_project, jira_project.creator) }
+
+        it 'extracts the referenced issue' do
+          expect(subject.closed_by_message(message)).to eq([jira_issue])
+        end
+
+        it 'extracts the referenced issue even if GitLab issues are disabled for the project' do
+          jira_project.update!(issues_enabled: false)
+
+          expect(subject.closed_by_message(message)).to eq([jira_issue])
         end
       end
     end
@@ -338,6 +345,17 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     context 'when target project has autoclose issues disabled' do
       before do
         project2.update!(autoclose_referenced_issues: false)
+      end
+
+      it 'omits the issue reference' do
+        message = "Closes #{cross_reference}"
+        expect(subject.closed_by_message(message)).to be_empty
+      end
+    end
+
+    context 'when target project has issues disabled' do
+      before do
+        project2.update!(issues_enabled: false)
       end
 
       it 'omits the issue reference' do

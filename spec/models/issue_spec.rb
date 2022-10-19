@@ -971,13 +971,8 @@ RSpec.describe Issue do
 
     context 'with a project' do
       it 'returns false when feature is disabled' do
+        project.add_developer(user)
         project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-
-        is_expected.to eq(false)
-      end
-
-      it 'returns false when restricted for members' do
-        project.project_feature.update_attribute(:issues_access_level, ProjectFeature::PRIVATE)
 
         is_expected.to eq(false)
       end

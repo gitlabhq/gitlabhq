@@ -427,6 +427,12 @@ FactoryBot.define do
     error_tracking_setting { association :project_error_tracking_setting }
   end
 
+  trait :with_jira_integration do
+    has_external_issue_tracker { true }
+
+    jira_integration
+  end
+
   # Project with empty repository
   #
   # This is a case when you just created a project

@@ -13,9 +13,9 @@
             = render "layouts/flash"
             .mt-3
               .col-sm-12.gl-text-center
-                %img.gl-w-10{ :alt => _("GitLab Logo"), :src => image_path('logo.svg') }
+                = brand_image
                 %h1.mb-3.gl-font-size-h2
-                  = current_appearance&.title.presence || _('GitLab')
+                  = brand_title
                 - if current_appearance&.description?
                   = brand_text
                 = render_if_exists 'layouts/devise_help_text'
