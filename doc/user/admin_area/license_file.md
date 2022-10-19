@@ -24,6 +24,9 @@ Otherwise, to add your license:
 1. Select the **Terms of Service** checkbox.
 1. Select **Add license**.
 
+NOTE:
+For GitLab versions 14.1.x or newer, you can access the **Add License** page directly from the URL, `<YourGitLabURL>/admin/license/new`.
+
 ## Add your license file during installation
 
 You can import a license file when you install GitLab.

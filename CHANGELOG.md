@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.4.3 (2022-10-19)
+
+### Fixed (4 changes)
+
+- [Sign in: use custom logo again](gitlab-org/gitlab@5822562c4c3508927e3b217749867736e91316f3) ([merge request](gitlab-org/gitlab!101235))
+- [Fix closing of external issues](gitlab-org/gitlab@1302f992e3706b698c983961f596fcab03704c3f) ([merge request](gitlab-org/gitlab!101235))
+- [Sign in: use custom logo again](gitlab-org/gitlab@d760473a022ef485be7e258ab5fc406f05a127a4) ([merge request](gitlab-org/gitlab!101235))
+- [Fix REST/GRAPHQL APIs handling TODOs WorkItem target](gitlab-org/gitlab@f4157b08596040bbc504292c4a75fe2100aa570c) ([merge request](gitlab-org/gitlab!100081))
+
 ## 15.4.2 (2022-10-04)
 
 ### Fixed (1 change)

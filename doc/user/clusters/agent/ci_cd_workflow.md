@@ -281,13 +281,6 @@ See the [official Kubernetes documentation for details](https://kubernetes.io/do
 
 ## Troubleshooting
 
-### `kubectl` commands not supported
-
-The commands `kubectl exec`, `kubectl cp`, `kubectl attach`, `kubectl run --attach=true` and `kubectl port-forward` are not supported.
-Anything that uses these API endpoints does not work, because they use the deprecated
-SPDY protocol.
-[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/346248) to add support for these commands.
-
 ### Grant write permissions to `~/.kube/cache`
 
 Tools like `kubectl`, Helm, `kpt`, and `kustomize` cache information about

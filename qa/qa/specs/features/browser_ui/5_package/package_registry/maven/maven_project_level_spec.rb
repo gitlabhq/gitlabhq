@@ -207,6 +207,10 @@ module QA
       it(
         'uses GitLab as a mirror of the central proxy',
         :skip_live_env,
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/378221',
+          type: :investigating
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/375767'
       ) do
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
