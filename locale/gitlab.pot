@@ -4252,6 +4252,9 @@ msgstr ""
 msgid "An error occurred while fetching terraform reports."
 msgstr ""
 
+msgid "An error occurred while fetching the health status."
+msgstr ""
+
 msgid "An error occurred while fetching the job log."
 msgstr ""
 
@@ -15550,9 +15553,6 @@ msgstr ""
 msgid "Error occurred when saving reviewers"
 msgstr ""
 
-msgid "Error occurred while updating the %{issuableType} status"
-msgstr ""
-
 msgid "Error occurred while updating the issue status"
 msgstr ""
 
@@ -19777,9 +19777,6 @@ msgid "Health information can be retrieved from the following endpoints. More in
 msgstr ""
 
 msgid "Health status"
-msgstr ""
-
-msgid "Health status cannot be edited because this issue is closed"
 msgstr ""
 
 msgid "HealthCheck|Access token is"

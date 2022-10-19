@@ -89,7 +89,9 @@ export default {
         return;
       }
 
-      this.edit = true;
+      if (this.canEdit && this.canUpdate) {
+        this.edit = true;
+      }
       this.$emit('open');
       window.addEventListener('click', this.collapseWhenOffClick);
       window.addEventListener('keyup', this.collapseOnEscape);

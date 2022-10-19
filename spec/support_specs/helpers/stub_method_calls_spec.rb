@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+
+require_relative '../../support/helpers/stub_method_calls'
 
 RSpec.describe StubMethodCalls do
   include described_class

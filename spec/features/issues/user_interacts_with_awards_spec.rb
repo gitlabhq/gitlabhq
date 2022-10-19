@@ -218,7 +218,7 @@ RSpec.describe 'User interacts with awards' do
         expect(first('[data-testid="award-button"]')).to have_content '1'
       end
 
-      it 'removes award from issue' do
+      it 'removes award from issue', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375241' do
         first('[data-testid="award-button"]').click
         find('[data-testid="award-button"].selected').click
 

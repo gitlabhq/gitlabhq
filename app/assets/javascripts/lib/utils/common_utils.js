@@ -167,7 +167,7 @@ export const contentTop = () => {
 
       return size;
     },
-    () => getOuterHeight('.merge-request-tabs'),
+    () => getOuterHeight('.merge-request-sticky-header, .merge-request-tabs'),
     () => getOuterHeight('.js-diff-files-changed'),
     () => getOuterHeight('.issue-sticky-header.gl-fixed'),
     ({ desktop }) => {
@@ -175,7 +175,9 @@ export const contentTop = () => {
       let size;
 
       if (desktop && diffsTabIsActive) {
-        size = getOuterHeight('.diff-file .file-title-flex-parent:not([style="display:none"])');
+        size = getOuterHeight(
+          '.diffs .diff-file .file-title-flex-parent:not([style="display:none"])',
+        );
       }
 
       return size;

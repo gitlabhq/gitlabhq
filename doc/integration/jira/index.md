@@ -173,3 +173,8 @@ p.each do |project|
   project.jira_integration.update_attribute(:password, '<your-new-password>')
 end
 ```
+
+### `500 Whoops` when accessing a Jira issue in GitLab
+
+When accessing a Jira issue in GitLab, you might get a `500 Whoops, something went wrong on our end` error.
+Check [`production.log`](../../administration/logs/index.md#productionlog) to see if it contains a `:NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)` exception. If that's the case, ensure the **Due date** field is visible for issues in the integrated Jira project.
