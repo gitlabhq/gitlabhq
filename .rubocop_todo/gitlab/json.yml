@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Gitlab/Json:
   Details: grace period
   Exclude:
@@ -247,6 +247,7 @@ Gitlab/Json:
     - 'lib/gitlab/database/background_migration/batched_migration.rb'
     - 'lib/gitlab/database/background_migration_job.rb'
     - 'lib/gitlab/database/migration_helpers.rb'
+    - 'lib/gitlab/database/migrations/batched_background_migration_helpers.rb'
     - 'lib/gitlab/database/migrations/instrumentation.rb'
     - 'lib/gitlab/database/migrations/runner.rb'
     - 'lib/gitlab/database/postgres_hll/buckets.rb'
@@ -284,6 +285,7 @@ Gitlab/Json:
     - 'lib/microsoft_teams/notifier.rb'
     - 'lib/tasks/gitlab/background_migrations.rake'
     - 'lib/version_check.rb'
+    - 'spec/commands/diagnostic_reports/uploader_smoke_spec.rb'
     - 'spec/controllers/admin/integrations_controller_spec.rb'
     - 'spec/controllers/concerns/product_analytics_tracking_spec.rb'
     - 'spec/controllers/groups/settings/integrations_controller_spec.rb'
@@ -417,7 +419,9 @@ Gitlab/Json:
     - 'spec/requests/api/merge_requests_spec.rb'
     - 'spec/requests/api/namespaces_spec.rb'
     - 'spec/requests/api/project_snapshots_spec.rb'
+    - 'spec/requests/groups/settings/access_tokens_controller_spec.rb'
     - 'spec/requests/projects/incident_management/pagerduty_incidents_spec.rb'
+    - 'spec/requests/projects/settings/access_tokens_controller_spec.rb'
     - 'spec/requests/users_controller_spec.rb'
     - 'spec/requests/whats_new_controller_spec.rb'
     - 'spec/scripts/pipeline_test_report_builder_spec.rb'

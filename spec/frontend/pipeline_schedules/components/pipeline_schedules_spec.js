@@ -1,9 +1,10 @@
-import { GlAlert, GlLoadingIcon, GlModal } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlLoadingIcon, GlModal, GlTabs } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { trimText } from 'helpers/text_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineSchedules from '~/pipeline_schedules/components/pipeline_schedules.vue';
 import PipelineSchedulesTable from '~/pipeline_schedules/components/table/pipeline_schedules_table.vue';
 import deletePipelineScheduleMutation from '~/pipeline_schedules/graphql/mutations/delete_pipeline_schedule.mutation.graphql';
@@ -32,7 +33,7 @@ describe('Pipeline schedules app', () => {
   };
 
   const createComponent = (requestHandlers) => {
-    wrapper = shallowMount(PipelineSchedules, {
+    wrapper = mountExtended(PipelineSchedules, {
       provide: {
         fullPath: 'gitlab-org/gitlab',
       },
@@ -44,17 +45,24 @@ describe('Pipeline schedules app', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findModal = () => wrapper.findComponent(GlModal);
+  const findTabs = () => wrapper.findComponent(GlTabs);
+  const findNewButton = () => wrapper.findByTestId('new-schedule-button');
+  const findAllTab = () => wrapper.findByTestId('pipeline-schedules-all-tab');
+  const findActiveTab = () => wrapper.findByTestId('pipeline-schedules-active-tab');
+  const findInactiveTab = () => wrapper.findByTestId('pipeline-schedules-inactive-tab');
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('displays table', async () => {
+  it('displays table, tabs and new button', async () => {
     createComponent();
 
     await waitForPromises();
 
     expect(findTable().exists()).toBe(true);
+    expect(findNewButton().exists()).toBe(true);
+    expect(findTabs().exists()).toBe(true);
     expect(findAlert().exists()).toBe(false);
   });
 
@@ -157,5 +165,39 @@ describe('Pipeline schedules app', () => {
     await nextTick();
 
     expect(findModal().props('visible')).toBe(false);
+  });
+
+  describe('tabs', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await waitForPromises();
+    });
+
+    it('displays All tab with count', () => {
+      expect(trimText(findAllTab().text())).toBe(`All ${mockPipelineScheduleNodes.length}`);
+    });
+
+    it('displays Active tab with no count', () => {
+      expect(findActiveTab().text()).toBe('Active');
+    });
+
+    it('displays Inactive tab with no count', () => {
+      expect(findInactiveTab().text()).toBe('Inactive');
+    });
+  });
+
+  it('should refetch the schedules query on a tab click', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    jest.spyOn(wrapper.vm.$apollo.queries.schedules, 'refetch').mockImplementation(jest.fn());
+
+    expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalledTimes(0);
+
+    await findAllTab().trigger('click');
+
+    expect(wrapper.vm.$apollo.queries.schedules.refetch).toHaveBeenCalledTimes(1);
   });
 });

@@ -22,7 +22,7 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions do
 
       context 'with feature flag disabled' do
         before do
-          stub_feature_flags(jira_connect_oauth: false)
+          stub_feature_flags(jira_connect_oauth_self_managed: false)
         end
 
         let(:jwt) { '123' }

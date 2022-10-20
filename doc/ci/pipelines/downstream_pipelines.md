@@ -170,7 +170,10 @@ Use:
 - The `project` keyword to specify the full path to a downstream project.
   In [GitLab 15.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367660), variable expansion is
   supported.
-- The `branch` keyword to specify the name of a branch in the project specified by `project`.
+- The `branch` keyword to specify the name of a branch or [tag](../../topics/git/tags.md)
+  in the project specified by `project`. If you use a tag when a branch exists with the same
+  name, the downstream pipeline fails to create with the error: `downstream pipeline can not be created, Ref is ambiguous`.
+
   In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/10126), variable expansion is
   supported.
 

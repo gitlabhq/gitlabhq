@@ -28,9 +28,9 @@ RSpec.describe JiraConnect::SubscriptionsController do
       it { is_expected.not_to include('http://self-managed-gitlab.com/api/') }
     end
 
-    context 'with jira_connect_oauth_self_managed feature disabled' do
+    context 'with jira_connect_oauth_self_managed_setting feature disabled' do
       before do
-        stub_feature_flags(jira_connect_oauth_self_managed: false)
+        stub_feature_flags(jira_connect_oauth_self_managed_setting: false)
       end
 
       it { is_expected.not_to include('http://self-managed-gitlab.com/-/jira_connect/') }

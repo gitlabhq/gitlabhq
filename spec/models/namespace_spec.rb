@@ -2356,7 +2356,7 @@ RSpec.describe Namespace do
     end
   end
 
-  describe 'storage_enforcement_date' do
+  describe 'storage_enforcement_date', :freeze_time do
     let_it_be(:namespace) { create(:group) }
 
     before do
@@ -2364,7 +2364,7 @@ RSpec.describe Namespace do
     end
 
     it 'returns correct date' do
-      expect(namespace.storage_enforcement_date).to eql(Date.new(2022, 10, 19))
+      expect(namespace.storage_enforcement_date).to eql(3.months.from_now.to_date)
     end
 
     context 'when :storage_banner_bypass_date_check is enabled' do
@@ -2372,7 +2372,7 @@ RSpec.describe Namespace do
         stub_feature_flags(namespace_storage_limit_bypass_date_check: true)
       end
 
-      it 'returns the current date', :freeze_time do
+      it 'returns the current date' do
         expect(namespace.storage_enforcement_date).to eq(Date.current)
       end
     end

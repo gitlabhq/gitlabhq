@@ -18,17 +18,9 @@ module QA
             element :expiry_date_field
           end
 
-          base.view 'app/views/shared/access_tokens/_created_container.html.haml' do
-            element :created_access_token_field
-          end
-
           base.view 'app/views/shared/access_tokens/_form.html.haml' do
             element :access_token_name_field
             element :create_token_button
-          end
-
-          base.view 'app/views/shared/access_tokens/_table.html.haml' do
-            element :revoke_button
           end
 
           base.view 'app/views/shared/tokens/_scopes_form.html.haml' do

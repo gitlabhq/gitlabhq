@@ -12,31 +12,37 @@ export default {
     {
       key: 'description',
       label: s__('PipelineSchedules|Description'),
+      thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-40p',
     },
     {
       key: 'target',
       label: s__('PipelineSchedules|Target'),
+      thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-10p',
     },
     {
       key: 'pipeline',
       label: s__('PipelineSchedules|Last Pipeline'),
+      thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-10p',
     },
     {
       key: 'next',
       label: s__('PipelineSchedules|Next Run'),
+      thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-15p',
     },
     {
       key: 'owner',
       label: s__('PipelineSchedules|Owner'),
+      thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-10p',
     },
     {
       key: 'actions',
       label: '',
+      thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-15p',
     },
   ],

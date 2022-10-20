@@ -601,7 +601,8 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
         it 'logs file_variable_is_referenced_in_another_variable once for VAR5' do
           expect(Gitlab::AppJsonLogger).to receive(:info).with(
             event: 'file_variable_is_referenced_in_another_variable',
-            project_id: project.id
+            project_id: project.id,
+            variable: 'FILEVAR4'
           ).once
 
           sort_and_expand_all

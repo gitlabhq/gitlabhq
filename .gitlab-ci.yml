@@ -127,7 +127,7 @@ variables:
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
 
-  DOCS_REVIEW_APPS_DOMAIN: "35.193.151.162.nip.io"
+  DOCS_REVIEW_APPS_DOMAIN: "docs.gitlab-review-app"
   DOCS_GITLAB_REPO_SUFFIX: "ee"
 
   REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ruby-3.0:gcloud-383-kubectl-1.23-helm-3.5"

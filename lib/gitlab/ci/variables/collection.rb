@@ -94,7 +94,8 @@ module Gitlab
                 # when the variables are sent to Runner.
                 Gitlab::AppJsonLogger.info(
                   event: 'file_variable_is_referenced_in_another_variable',
-                  project_id: project.id
+                  project_id: project.id,
+                  variable: variable_name
                 )
               end
 

@@ -17,7 +17,7 @@ module API
                 requires :namespace_path, type: String, desc: 'Path for the namespace that should be subscribed'
               end
               post do
-                not_found! unless Feature.enabled?(:jira_connect_oauth, current_user)
+                not_found! unless Feature.enabled?(:jira_connect_oauth_self_managed, current_user)
 
                 jwt = Atlassian::JiraConnect::Jwt::Symmetric.new(params[:jwt])
                 installation = JiraConnectInstallation.find_by_client_key(jwt.iss_claim)

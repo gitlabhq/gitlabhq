@@ -1,6 +1,8 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlButton, GlLoadingIcon, GlModal, GlTabs, GlTab } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
+import { queryToObject } from '~/lib/utils/url_utility';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
@@ -11,6 +13,7 @@ export default {
     scheduleDeleteError: s__(
       'PipelineSchedules|There was a problem deleting the pipeline schedule.',
     ),
+    newSchedule: s__('PipelineSchedules|New schedule'),
   },
   modal: {
     id: 'delete-pipeline-schedule-modal',
@@ -28,8 +31,12 @@ export default {
   },
   components: {
     GlAlert,
+    GlBadge,
+    GlButton,
     GlLoadingIcon,
     GlModal,
+    GlTabs,
+    GlTab,
     PipelineSchedulesTable,
   },
   inject: {
@@ -43,10 +50,16 @@ export default {
       variables() {
         return {
           projectPath: this.fullPath,
+          status: this.scope,
         };
       },
-      update({ project }) {
-        return project?.pipelineSchedules?.nodes || [];
+      update(data) {
+        const { pipelineSchedules: { nodes: list = [], count } = {} } = data.project || {};
+
+        return {
+          list,
+          count,
+        };
       },
       error() {
         this.reportError(this.$options.i18n.schedulesFetchError);
@@ -54,17 +67,57 @@ export default {
     },
   },
   data() {
+    const { scope } = queryToObject(window.location.search);
     return {
-      schedules: [],
+      schedules: {
+        list: [],
+      },
+      scope,
       hasError: false,
       errorMessage: '',
       scheduleToDeleteId: null,
       showModal: false,
+      count: 0,
     };
   },
   computed: {
     isLoading() {
       return this.$apollo.queries.schedules.loading;
+    },
+    schedulesCount() {
+      return this.schedules.count;
+    },
+    tabs() {
+      return [
+        {
+          text: s__('PipelineSchedules|All'),
+          count: limitedCounterWithDelimiter(this.count),
+          scope: null,
+          showBadge: true,
+          attrs: { 'data-testid': 'pipeline-schedules-all-tab' },
+        },
+        {
+          text: s__('PipelineSchedules|Active'),
+          scope: 'ACTIVE',
+          showBadge: false,
+          attrs: { 'data-testid': 'pipeline-schedules-active-tab' },
+        },
+        {
+          text: s__('PipelineSchedules|Inactive'),
+          scope: 'INACTIVE',
+          showBadge: false,
+          attrs: { 'data-testid': 'pipeline-schedules-inactive-tab' },
+        },
+      ];
+    },
+  },
+  watch: {
+    // this watcher ensures that the count on the all tab
+    //  is not updated when switching to other tabs
+    schedulesCount(newCount) {
+      if (!this.scope) {
+        this.count = newCount;
+      }
     },
   },
   methods: {
@@ -100,6 +153,10 @@ export default {
         this.reportError(this.$options.i18n.scheduleDeleteError);
       }
     },
+    fetchPipelineSchedulesByStatus(scope) {
+      this.scope = scope;
+      this.$apollo.queries.schedules.refetch();
+    },
   },
 };
 </script>
@@ -110,12 +167,45 @@ export default {
       {{ errorMessage }}
     </gl-alert>
 
-    <gl-loading-icon v-if="isLoading" size="lg" />
-
-    <!-- Tabs will be addressed in #371989 -->
-
     <template v-else>
-      <pipeline-schedules-table :schedules="schedules" @showDeleteModal="showDeleteModal" />
+      <gl-tabs
+        sync-active-tab-with-query-params
+        query-param-name="scope"
+        nav-class="gl-flex-grow-1 gl-align-items-center"
+      >
+        <gl-tab
+          v-for="tab in tabs"
+          :key="tab.text"
+          :title-link-attributes="tab.attrs"
+          :query-param-value="tab.scope"
+          @click="fetchPipelineSchedulesByStatus(tab.scope)"
+        >
+          <template #title>
+            <span>{{ tab.text }}</span>
+
+            <template v-if="tab.showBadge">
+              <gl-loading-icon v-if="tab.scope === scope && isLoading" class="gl-ml-2" />
+
+              <gl-badge v-else-if="tab.count" size="sm" class="gl-tab-counter-badge">
+                {{ tab.count }}
+              </gl-badge>
+            </template>
+          </template>
+
+          <gl-loading-icon v-if="isLoading" size="lg" />
+          <pipeline-schedules-table
+            v-else
+            :schedules="schedules.list"
+            @showDeleteModal="showDeleteModal"
+          />
+        </gl-tab>
+
+        <template #tabs-end>
+          <gl-button variant="confirm" class="gl-ml-auto" data-testid="new-schedule-button">
+            {{ $options.i18n.newSchedule }}
+          </gl-button>
+        </template>
+      </gl-tabs>
 
       <gl-modal
         :visible="showModal"

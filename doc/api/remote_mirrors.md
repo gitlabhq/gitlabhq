@@ -8,15 +8,15 @@ type: reference, api
 # Project remote mirrors API **(FREE)**
 
 [Push mirrors](../user/project/repository/mirror/push.md)
-defined on a project's repository settings are called "remote mirrors", and the
-state of these mirrors can be queried and modified via the remote mirror API
-outlined below.
+defined on a project's repository settings are called "remote mirrors". You
+can query and modify the state of these mirrors with the remote mirror API.
+
+For security reasons, the `url` attribute in the API response is always scrubbed of username
+and password information.
 
 ## List a project's remote mirrors
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38121) in GitLab 12.9.
-
-Returns an Array of remote mirrors and their statuses:
+Returns an array of remote mirrors and their statuses:
 
 ```plaintext
 GET /projects/:id/remote_mirrors
@@ -46,10 +46,6 @@ Example response:
   }
 ]
 ```
-
-NOTE:
-For security reasons, the `url` attribute is always scrubbed of username
-and password information.
 
 ## Get a single project's remote mirror
 
@@ -84,19 +80,14 @@ Example response:
 }
 ```
 
-NOTE:
-For security reasons, the `url` attribute is always scrubbed of username
-and password information.
-
 ## Create a pull mirror
 
 Learn how to [configure a pull mirror](projects.md#configure-pull-mirroring-for-a-project) using the Projects API.
 
 ## Create a push mirror
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24189) in GitLab 12.9.
-
-Push mirroring is disabled by default. You can enable it by including the optional parameter `enabled` when creating it:
+Push mirroring is disabled by default. To enable it, include the optional parameter
+`enabled` when you create the mirror:
 
 ```plaintext
 POST /projects/:id/remote_mirrors
@@ -106,8 +97,8 @@ POST /projects/:id/remote_mirrors
 | :----------               | :-----  | :--------- | :------------                                       |
 | `url`                     | String  | yes        | The target URL to which the repository is mirrored. |
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
-| `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
+| `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
 
 Example request:
 
@@ -135,8 +126,6 @@ Example response:
 
 ## Update a remote mirror's attributes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38121) in GitLab 12.9.
-
 Toggle a remote mirror on or off, or change which types of branches are
 mirrored:
 
@@ -148,8 +137,8 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 | :----------               | :-----  | :--------- | :------------                                       |
 | `mirror_id`               | Integer | yes        | The remote mirror ID.                               |
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
-| `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
+| `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
 
 Example request:
 

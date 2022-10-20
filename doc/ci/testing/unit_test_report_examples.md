@@ -18,7 +18,10 @@ Use the following job in `.gitlab-ci.yml`. This includes the `artifacts:paths` k
 ```yaml
 ## Use https://github.com/sj26/rspec_junit_formatter to generate a JUnit report format XML file with rspec
 ruby:
+  image: ruby:3.0.4
   stage: test
+  before_script:
+    - apt-get update -y && apt-get install -y bundler
   script:
     - bundle install
     - bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml

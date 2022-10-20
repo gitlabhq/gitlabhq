@@ -1,7 +1,8 @@
-query getPipelineSchedulesQuery($projectPath: ID!) {
+query getPipelineSchedulesQuery($projectPath: ID!, $status: PipelineScheduleStatus) {
   project(fullPath: $projectPath) {
     id
-    pipelineSchedules {
+    pipelineSchedules(status: $status) {
+      count
       nodes {
         id
         description

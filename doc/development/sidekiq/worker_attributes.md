@@ -277,7 +277,7 @@ they prefer read replicas and will wait for replicas to catch up:
 
 | **Data Consistency**  | **Description**  |
 |--------------|-----------------------------|
-| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes or that have strict requirements around data consistency when reading their own writes. |
+| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes, have strict requirements around data consistency when reading their own writes, or are cron jobs. |
 | `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. It should be used for jobs that require to be executed as fast as possible but can sustain a small initial queuing delay.  |
 | `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. |
 

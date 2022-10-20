@@ -2125,9 +2125,6 @@ msgstr ""
 msgid "Active %{accessTokenTypePlural} (%{totalAccessTokens})"
 msgstr ""
 
-msgid "Active %{type} (%{token_length})"
-msgstr ""
-
 msgid "Active Sessions"
 msgstr ""
 
@@ -5213,9 +5210,6 @@ msgid "Are you sure you want to retry this migration?"
 msgstr ""
 
 msgid "Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone."
-msgstr ""
-
-msgid "Are you sure you want to revoke this %{type}? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to revoke this personal access token? This action cannot be undone."
@@ -10780,9 +10774,6 @@ msgid "Copy %{name}"
 msgstr ""
 
 msgid "Copy %{protocol} clone URL"
-msgstr ""
-
-msgid "Copy %{type}"
 msgstr ""
 
 msgid "Copy ID"
@@ -29693,6 +29684,9 @@ msgstr ""
 msgid "PipelineSchedules|Last Pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|New schedule"
+msgstr ""
+
 msgid "PipelineSchedules|Next Run"
 msgstr ""
 
@@ -41750,9 +41744,6 @@ msgstr ""
 msgid "This user has no active %{accessTokenTypePlural}."
 msgstr ""
 
-msgid "This user has no active %{type}."
-msgstr ""
-
 msgid "This user has no identities"
 msgstr ""
 
@@ -47022,9 +47013,6 @@ msgid "Your new %{accessTokenType}"
 msgstr ""
 
 msgid "Your new %{accessTokenType} has been created."
-msgstr ""
-
-msgid "Your new %{type}"
 msgstr ""
 
 msgid "Your new comment"

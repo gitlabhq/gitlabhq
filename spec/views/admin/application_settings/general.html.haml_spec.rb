@@ -76,9 +76,9 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       expect(rendered).to have_css('#js-jira_connect-settings')
     end
 
-    context 'when the jira_connect_oauth feature flag is disabled' do
+    context 'when the jira_connect_oauth_self_managed_setting feature flag is disabled' do
       before do
-        stub_feature_flags(jira_connect_oauth: false)
+        stub_feature_flags(jira_connect_oauth_self_managed_setting: false)
       end
 
       it 'does not show the jira connect application key section' do

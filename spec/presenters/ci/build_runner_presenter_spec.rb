@@ -353,7 +353,8 @@ RSpec.describe Ci::BuildRunnerPresenter do
       it 'logs file_variable_is_referenced_in_another_variable' do
         expect(Gitlab::AppJsonLogger).to receive(:info).with(
           event: 'file_variable_is_referenced_in_another_variable',
-          project_id: project.id
+          project_id: project.id,
+          variable: 'file_var'
         ).once
 
         runner_variables
