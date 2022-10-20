@@ -134,9 +134,7 @@ RSpec.configure do |config|
   end
 
   config.append_after(:context, :migration) do
-    break if recreate_databases_and_seed_if_needed
-
-    ensure_schema_and_empty_tables
+    recreate_databases_and_seed_if_needed || ensure_schema_and_empty_tables
   end
 
   config.around(:each, :migration) do |example|
