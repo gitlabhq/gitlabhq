@@ -34,7 +34,12 @@ module MergeRequests
       # callback (e.g. after_create), a database transaction will be
       # open while the Gitaly RPC waits. To avoid an idle in transaction
       # timeout, we do this before we attempt to save the merge request.
-      merge_request.eager_fetch_ref!
+
+      if Feature.enabled?(:async_merge_request_diff_creation, current_user)
+        merge_request.skip_ensure_merge_request_diff = true
+      else
+        merge_request.eager_fetch_ref!
+      end
     end
 
     def set_projects!

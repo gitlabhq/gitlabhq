@@ -187,6 +187,21 @@ To remove a member from a project:
    [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).
 1. Select **Remove member**.
 
+## Ensure removed users cannot invite themselves back
+
+Malicious users with the Maintainer or Owner role could exploit a race condition that allows
+them to invite themselves back to a group or project that a GitLab administrator has removed them from.
+
+To avoid this problem, GitLab administrators can:
+
+- Remove the malicious user session from the [GitLab Rails console](../../../administration/operations/rails_console.md).
+- Impersonate the malicious user to:
+  - Remove the user from the project.
+  - Log the user out of GitLab.
+- Block the malicious user account.
+- Remove the malicious user account.
+- Change the password for the malicious user account.
+
 ## Filter and sort members
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.

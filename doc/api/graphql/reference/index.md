@@ -11442,6 +11442,33 @@ The deployment of an environment.
 | <a id="deploymenttriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
 | <a id="deploymentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
 
+### `DeploymentApproval`
+
+Approval of the deployment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentapprovalcomment"></a>`comment` | [`String`](#string) | Additional comment. |
+| <a id="deploymentapprovalcreatedat"></a>`createdAt` | [`Time`](#time) | When the user approved/rejected first time. |
+| <a id="deploymentapprovalstatus"></a>`status` | [`DeploymentsApprovalStatus`](#deploymentsapprovalstatus) | Whether the deployment was approved/rejected. |
+| <a id="deploymentapprovalupdatedat"></a>`updatedAt` | [`Time`](#time) | When the user updated the approval. |
+| <a id="deploymentapprovaluser"></a>`user` | [`UserCore`](#usercore) | User who approved or rejected the deployment. |
+
+### `DeploymentApprovalSummary`
+
+Approval summary of the deployment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentapprovalsummaryrules"></a>`rules` | [`[ProtectedEnvironmentApprovalRuleForSummary!]`](#protectedenvironmentapprovalruleforsummary) | Approval Rules for the deployment. |
+| <a id="deploymentapprovalsummarystatus"></a>`status` | [`DeploymentApprovalSummaryStatus`](#deploymentapprovalsummarystatus) | Status of the approvals. |
+| <a id="deploymentapprovalsummarytotalpendingapprovalcount"></a>`totalPendingApprovalCount` | [`Int`](#int) | Total pending approval count. |
+| <a id="deploymentapprovalsummarytotalrequiredapprovals"></a>`totalRequiredApprovals` | [`Int`](#int) | Total number of required approvals. |
+
 ### `DeploymentDetails`
 
 The details of the deployment.
@@ -11450,6 +11477,7 @@ The details of the deployment.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="deploymentdetailsapprovalsummary"></a>`approvalSummary` | [`DeploymentApprovalSummary`](#deploymentapprovalsummary) | Approval summary of the deployment. |
 | <a id="deploymentdetailscommit"></a>`commit` | [`Commit`](#commit) | Commit details of the deployment. |
 | <a id="deploymentdetailscreatedat"></a>`createdAt` | [`Time`](#time) | When the deployment record was created. |
 | <a id="deploymentdetailsfinishedat"></a>`finishedAt` | [`Time`](#time) | When the deployment finished. |
@@ -17605,6 +17633,23 @@ Which group, user or role is allowed to approve deployments to the environment.
 | <a id="protectedenvironmentapprovalrulerequiredapprovals"></a>`requiredApprovals` | [`Int`](#int) | Number of required approvals. |
 | <a id="protectedenvironmentapprovalruleuser"></a>`user` | [`UserCore`](#usercore) | User details. Present if it's user specific access control. |
 
+### `ProtectedEnvironmentApprovalRuleForSummary`
+
+Which group, user or role is allowed to approve deployments to the environment.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="protectedenvironmentapprovalruleforsummaryaccesslevel"></a>`accessLevel` | [`AccessLevel`](#accesslevel) | Role details. Present if it's role specific access control. |
+| <a id="protectedenvironmentapprovalruleforsummaryapprovals"></a>`approvals` | [`[DeploymentApproval!]`](#deploymentapproval) | Current approvals of the deployment. |
+| <a id="protectedenvironmentapprovalruleforsummaryapprovedcount"></a>`approvedCount` | [`Int`](#int) | Approved count. |
+| <a id="protectedenvironmentapprovalruleforsummarygroup"></a>`group` | [`Group`](#group) | Group details. Present if it's group specific access control. |
+| <a id="protectedenvironmentapprovalruleforsummarypendingapprovalcount"></a>`pendingApprovalCount` | [`Int`](#int) | Pending approval count. |
+| <a id="protectedenvironmentapprovalruleforsummaryrequiredapprovals"></a>`requiredApprovals` | [`Int`](#int) | Number of required approvals. |
+| <a id="protectedenvironmentapprovalruleforsummarystatus"></a>`status` | [`DeploymentApprovalSummaryStatus`](#deploymentapprovalsummarystatus) | Status of the approval summary. |
+| <a id="protectedenvironmentapprovalruleforsummaryuser"></a>`user` | [`UserCore`](#usercore) | User details. Present if it's user specific access control. |
+
 ### `ProtectedEnvironmentDeployAccessLevel`
 
 Which group, user or role is allowed to execute deployments to the environment.
@@ -20479,6 +20524,16 @@ Weight of the data visualization palette.
 | <a id="dependencyproxymanifeststatuspending_destruction"></a>`PENDING_DESTRUCTION` | Dependency proxy manifest has a status of pending_destruction. |
 | <a id="dependencyproxymanifeststatusprocessing"></a>`PROCESSING` | Dependency proxy manifest has a status of processing. |
 
+### `DeploymentApprovalSummaryStatus`
+
+Status of the deployment approval summary.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="deploymentapprovalsummarystatusapproved"></a>`APPROVED` | Summarized deployment approval status that is approved. |
+| <a id="deploymentapprovalsummarystatuspending_approval"></a>`PENDING_APPROVAL` | Summarized deployment approval status that is pending approval. |
+| <a id="deploymentapprovalsummarystatusrejected"></a>`REJECTED` | Summarized deployment approval status that is rejected. |
+
 ### `DeploymentStatus`
 
 All deployment statuses.
@@ -20504,6 +20559,15 @@ All environment deployment tiers.
 | <a id="deploymenttierproduction"></a>`PRODUCTION` | Production. |
 | <a id="deploymenttierstaging"></a>`STAGING` | Staging. |
 | <a id="deploymenttiertesting"></a>`TESTING` | Testing. |
+
+### `DeploymentsApprovalStatus`
+
+Status of the deployment approval.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="deploymentsapprovalstatusapproved"></a>`APPROVED` | A deployment approval that is approved. |
+| <a id="deploymentsapprovalstatusrejected"></a>`REJECTED` | A deployment approval that is rejected. |
 
 ### `DesignCollectionCopyState`
 

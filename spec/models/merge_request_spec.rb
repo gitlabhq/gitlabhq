@@ -278,6 +278,34 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   describe 'callbacks' do
+    describe '#ensure_merge_request_diff' do
+      let(:merge_request) { build(:merge_request) }
+
+      context 'when async_merge_request_diff_creation is true' do
+        before do
+          merge_request.skip_ensure_merge_request_diff = true
+        end
+
+        it 'does not create a merge_request_diff after create' do
+          merge_request.save!
+
+          expect(merge_request.merge_request_diff).to be_empty
+        end
+      end
+
+      context 'when async_merge_request_diff_creation is false' do
+        before do
+          merge_request.skip_ensure_merge_request_diff = false
+        end
+
+        it 'creates merge_request_diff after create' do
+          merge_request.save!
+
+          expect(merge_request.merge_request_diff).not_to be_empty
+        end
+      end
+    end
+
     describe '#ensure_merge_request_metrics' do
       let(:merge_request) { create(:merge_request) }
 

@@ -3,7 +3,14 @@ import { GlModal } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { __, s__ } from '~/locale';
+import {
+  CANCEL_TEXT,
+  STOP_JOBS_MODAL_ID,
+  STOP_JOBS_FAILED_TEXT,
+  STOP_JOBS_MODAL_TITLE,
+  STOP_JOBS_WARNING,
+  PRIMARY_ACTION_TEXT,
+} from './constants';
 
 export default {
   components: {
@@ -13,13 +20,6 @@ export default {
     url: {
       type: String,
       required: true,
-    },
-  },
-  computed: {
-    text() {
-      return s__(
-        'AdminArea|You’re about to stop all jobs. This will halt all current jobs that are running.',
-      );
     },
   },
   methods: {
@@ -32,30 +32,33 @@ export default {
         })
         .catch((error) => {
           createAlert({
-            message: s__('AdminArea|Stopping jobs failed'),
+            message: STOP_JOBS_FAILED_TEXT,
           });
           throw error;
         });
     },
   },
   primaryAction: {
-    text: s__('AdminArea|Stop jobs'),
+    text: PRIMARY_ACTION_TEXT,
     attributes: [{ variant: 'danger' }],
   },
   cancelAction: {
-    text: __('Cancel'),
+    text: CANCEL_TEXT,
   },
+  STOP_JOBS_WARNING,
+  STOP_JOBS_MODAL_ID,
+  STOP_JOBS_MODAL_TITLE,
 };
 </script>
 
 <template>
   <gl-modal
-    modal-id="stop-jobs-modal"
+    :modal-id="$options.STOP_JOBS_MODAL_ID"
     :action-primary="$options.primaryAction"
     :action-cancel="$options.cancelAction"
     @primary="onSubmit"
   >
-    <template #modal-title>{{ s__('AdminArea|Stop all jobs?') }}</template>
-    {{ text }}
+    <template #modal-title>{{ $options.STOP_JOBS_MODAL_TITLE }}</template>
+    {{ $options.STOP_JOBS_WARNING }}
   </gl-modal>
 </template>

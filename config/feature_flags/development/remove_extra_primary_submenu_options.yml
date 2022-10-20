@@ -1,8 +1,0 @@
----
-name: remove_extra_primary_submenu_options
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96931
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373078
-milestone: '15.4'
-type: development
-group: group::foundations
-default_enabled: true

@@ -89,8 +89,10 @@ At any time, you can revoke a personal access token.
 
 ## View the last time a token was used
 
-Token usage is updated once every 24 hours. It is updated each time the token is used to request
-[API resources](../../api/api_resources.md) and the [GraphQL API](../../api/graphql/index.md).
+Token usage information is updated every 24 hours. GitLab considers a token used when the token is used to:
+
+- Authenticate with the [REST](../../api/index.md) or [GraphQL](../../api/graphql/index.md) APIs.
+- Perform a Git operation.
 
 To view the last time a token was used:
 

@@ -64,12 +64,7 @@ module QA
 
         def go_to_groups
           within_groups_menu do
-            # Remove if statement once :remove_extra_primary_submenu_options ff is enabled by default
-            if has_element?(:menu_item_link, title: 'Your groups')
-              click_element(:menu_item_link, title: 'Your groups')
-            else
-              click_element(:menu_item_link, title: 'View all groups')
-            end
+            click_element(:menu_item_link, title: 'View all groups')
           end
         end
 
@@ -80,12 +75,7 @@ module QA
 
         def go_to_projects
           within_projects_menu do
-            # Remove if statement once :remove_extra_primary_submenu_options ff is enabled by default
-            if has_element?(:menu_item_link, title: 'Your projects')
-              click_element(:menu_item_link, title: 'Your projects')
-            else
-              click_element(:menu_item_link, title: 'View all projects')
-            end
+            click_element(:menu_item_link, title: 'View all projects')
           end
         end
 

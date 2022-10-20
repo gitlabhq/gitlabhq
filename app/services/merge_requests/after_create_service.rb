@@ -5,6 +5,8 @@ module MergeRequests
     include Gitlab::Utils::StrongMemoize
 
     def execute(merge_request)
+      merge_request.ensure_merge_request_diff
+
       prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
     end

@@ -29481,6 +29481,8 @@ CREATE INDEX index_merge_requests_on_assignee_id ON merge_requests USING btree (
 
 CREATE INDEX index_merge_requests_on_author_id ON merge_requests USING btree (author_id);
 
+CREATE INDEX index_merge_requests_on_author_id_and_target_project_id ON merge_requests USING btree (author_id, target_project_id);
+
 CREATE INDEX index_merge_requests_on_created_at ON merge_requests USING btree (created_at);
 
 CREATE INDEX index_merge_requests_on_description_trigram ON merge_requests USING gin (description gin_trgm_ops);

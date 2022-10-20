@@ -9,7 +9,7 @@ RSpec.describe 'value stream analytics events' do
   let(:project) { create(:project, :repository, public_builds: false) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
 
-  describe 'GET /:namespace/:project/value_stream_analytics/events/issues' do
+  describe 'GET /:namespace/:project/value_stream_analytics/events/issues', :sidekiq_inline do
     let(:first_issue_iid) { project.issues.sort_by_attribute(:created_desc).pick(:iid).to_s }
     let(:first_mr_iid) { project.merge_requests.sort_by_attribute(:created_desc).pick(:iid).to_s }
 
@@ -65,7 +65,7 @@ RSpec.describe 'value stream analytics events' do
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
 
-    it 'lists the staging events', :sidekiq_inline do
+    it 'lists the staging events' do
       get project_cycle_analytics_staging_path(project, format: :json)
 
       expect(json_response['events']).not_to be_empty

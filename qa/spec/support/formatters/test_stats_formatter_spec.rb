@@ -28,6 +28,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:api_fabrication) { 0 }
   let(:fabrication_resources) { {} }
   let(:testcase) { 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234' }
+  let(:product_group) { nil }
 
   let(:influx_client_args) do
     {
@@ -53,6 +54,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
         merge_request: 'false',
         run_type: run_type,
         stage: stage.match(%r{\d{1,2}_(\w+)}).captures.first,
+        product_group: product_group,
         testcase: testcase
       },
       fields: {
@@ -139,6 +141,19 @@ describe QA::Support::Formatters::TestStatsFormatter do
       it 'exports data to influxdb with correct reliable tag' do
         run_spec do
           it('spec', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+        end
+
+        expect(influx_write_api).to have_received(:write).once
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with product group tag' do
+      let(:product_group) { :import }
+
+      it 'exports data to influxdb with correct reliable tag' do
+        run_spec do
+          it('spec', product_group: :import, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).once

@@ -2689,6 +2689,24 @@ msgstr ""
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
+msgid "AdminEmail|Body"
+msgstr ""
+
+msgid "AdminEmail|Body is required."
+msgstr ""
+
+msgid "AdminEmail|Recipient group or project"
+msgstr ""
+
+msgid "AdminEmail|Recipient group or project is required."
+msgstr ""
+
+msgid "AdminEmail|Subject"
+msgstr ""
+
+msgid "AdminEmail|Subject is required."
+msgstr ""
+
 msgid "AdminLabels|Define your default set of project labels"
 msgstr ""
 
@@ -11224,9 +11242,6 @@ msgid "Create new file or directory"
 msgstr ""
 
 msgid "Create new label"
-msgstr ""
-
-msgid "Create new project"
 msgstr ""
 
 msgid "Create new..."

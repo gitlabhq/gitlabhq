@@ -56,7 +56,7 @@ RSpec.describe 'Value Stream Analytics', :js do
       end
     end
 
-    context "when there's value stream analytics data" do
+    context "when there's value stream analytics data", :sidekiq_inline do
       # NOTE: in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68595 travel back
       # 5 days in time before we create data for these specs, to mitigate some flakiness
       # So setting the date range to be the last 2 days should skip past the existing data
@@ -103,7 +103,7 @@ RSpec.describe 'Value Stream Analytics', :js do
         end
       end
 
-      it 'shows data on each stage', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
+      it 'shows data on each stage', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
         expect_issue_to_be_present
 
         click_stage('Plan')
@@ -207,11 +207,11 @@ RSpec.describe 'Value Stream Analytics', :js do
       wait_for_requests
     end
 
-    it 'does not show the commit stats' do
+    it 'does not show the commit stats', :sidekiq_inline do
       expect(page.find(metrics_selector)).not_to have_selector("#commits")
     end
 
-    it 'does not show restricted stages', :aggregate_failures do
+    it 'does not show restricted stages', :aggregate_failures, :sidekiq_inline do
       expect(find(stage_table_selector)).to have_content(issue.title)
 
       expect(page).to have_selector('.gl-path-nav-list-item', text: 'Issue')

@@ -72,6 +72,7 @@ module QA
               merge_request: merge_request,
               run_type: run_type,
               stage: devops_stage(file_path),
+              product_group: example.metadata[:product_group],
               testcase: example.metadata[:testcase]
             },
             fields: {
