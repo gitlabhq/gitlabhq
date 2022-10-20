@@ -458,7 +458,7 @@ If you cannot register handlers to the `Promise`, for example because it is exec
 ```javascript
 it('waits for an Ajax call', async () => {
   synchronousFunction();
-  
+
   await waitForPromises();
 
   expect(something).toBe('done');

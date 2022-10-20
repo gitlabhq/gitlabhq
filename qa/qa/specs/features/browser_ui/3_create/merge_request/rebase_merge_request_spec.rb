@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge request rebasing' do
+    describe 'Merge request rebasing', product_group: :code_review do
       let(:merge_request) { Resource::MergeRequest.fabricate_via_api! }
 
       before do

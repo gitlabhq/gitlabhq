@@ -875,8 +875,11 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-workflow {
-  margin-top: $gl-padding;
   position: relative;
+
+  &:not(:first-child) {
+    margin-top: $gl-padding;
+  }
 
   &:not(:last-child)::before {
     content: '';

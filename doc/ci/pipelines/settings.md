@@ -82,9 +82,10 @@ You can set pending or running pipelines to cancel automatically when a new pipe
 Use the [`interruptible`](../yaml/index.md#interruptible) keyword to indicate if a
 running job can be cancelled before it completes.
 
-## Skip outdated deployment jobs
+## Prevent outdated deployment jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
+> - In GitLab 15.5, the behavior was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) to prevent outdated job runs.
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run in the same time frame.
@@ -97,27 +98,8 @@ To avoid this scenario:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. Select the **Skip outdated deployment jobs** checkbox.
+1. Select the **Prevent outdated deployment jobs** checkbox.
 1. Select **Save changes**.
-
-When a new deployment starts, older deployment jobs are skipped. Skipped jobs are labeled:
-
-- `forward deployment failure` in the pipeline view.
-- `The deployment job is older than the previously succeeded deployment job, and therefore cannot be run`
-  when viewing the completed job.
-
-Job age is determined by the job start time, not the commit time, so a newer commit
-can be skipped in some circumstances.
-
-For more information, see [Deployment safety](../environments/deployment_safety.md).
-
-## Retry outdated jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211339) in GitLab 13.6.
-
-A deployment job can fail because a newer one has run. If you retry the failed deployment job, the
-environment could be overwritten with older source code. If you select **Retry**, a modal warns you
-about this and asks for confirmation.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md).
 

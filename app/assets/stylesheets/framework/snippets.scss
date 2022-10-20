@@ -24,6 +24,10 @@
   + .snippet-file-content {
     @include gl-mt-5;
   }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .snippet-header {

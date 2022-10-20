@@ -247,7 +247,7 @@ export default {
 
 <template>
   <div
-    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-5"
+    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-4"
     data-testid="work-item-links"
   >
     <div

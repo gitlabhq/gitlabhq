@@ -133,7 +133,7 @@ Example response:
       "tag": false,
       "project": {
         "ci_job_token_scope_enabled": false
-      },  
+      },
       "user": {
         "id": 1,
         "name": "Administrator",

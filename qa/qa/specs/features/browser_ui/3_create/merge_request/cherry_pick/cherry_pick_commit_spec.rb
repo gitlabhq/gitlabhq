@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Cherry picking a commit' do
+    describe 'Cherry picking a commit', product_group: :code_review do
       let(:file_name) { "secret_file.md" }
 
       let(:project) do

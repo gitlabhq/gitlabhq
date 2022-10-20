@@ -349,7 +349,7 @@ export default {
 <template>
   <div
     data-testid="designs-root"
-    class="gl-mt-5"
+    class="gl-mt-4"
     @mouseenter="toggleOnPasteListener"
     @mouseleave="toggleOffPasteListener"
   >

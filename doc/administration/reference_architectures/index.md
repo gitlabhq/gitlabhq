@@ -109,18 +109,18 @@ Below you can find the above guidance in the form of a decision tree. It's recom
 
 ```mermaid
 %%{init: { 'theme': 'base' } }%%
-graph TD  
+graph TD
    L1A(<b>What Reference Architecture should I use?</b>) --> L2A(More than 3000 users?)
    L2A -->|No| L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or Zero-Downtime Upgrades)") --> |Yes| L4A><b>Recommendation</b><br><br>3K architecture with HA<br>including supported modifications]
    L3A -->|No| L4B><b>Recommendation</b><br><br>Architecture closest to user<br>count with Backups]
    L2A -->|Yes| L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
    L3B -->|No| L4C><b>Recommendation</b><br><br>Architecture closest to user<br>count with HA]
    L3B -->|Yes| L4D><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to user count]
-   
+
    L5A("<a href=#gitlab-geo-cross-regional-distribution-disaster-recovery>Do you need cross regional distribution or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
    L4A -.- L5A
-   L4B -.- L5A 
-   L4C -.- L5A 
+   L4B -.- L5A
+   L4C -.- L5A
    L4D -.- L5A
 
 classDef default fill:#FCA326

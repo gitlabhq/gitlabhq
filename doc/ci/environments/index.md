@@ -721,7 +721,7 @@ build:
 ```
 
 This gives you access to environment-scoped variables, and can be used to protect builds from unauthorized access. Also,
-it's effective to avoid the [skip outdated deployment jobs](deployment_safety.md#skip-outdated-deployment-jobs) feature.
+it's effective to avoid the [prevent outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) feature.
 
 ### Group similar environments
 

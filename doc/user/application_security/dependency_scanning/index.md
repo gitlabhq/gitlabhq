@@ -501,11 +501,11 @@ From GitLab 14.8 the `gemnasium` analyzer scans supported JavaScript projects fo
 
 #### Go
 
-When scanning a Go project, gemnasium invokes a builder and attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
-[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If a non-fatal error is encountered, the build process signals
-that the execution should proceed and falls back to parsing the available `go.sum` file.
+Multiple files are supported. When a `go.mod` file is detected, the analyzer attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
+[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If a non-fatal error is encountered, the analyzer falls back to parsing the
+available `go.sum` file. The process is repeated for every detected `go.mod` and `go.sum` file.
 
-#### PHP, Go, C, C++, .NET, C&#35;, Ruby, JavaScript
+#### PHP, C, C++, .NET, C&#35;, Ruby, JavaScript
 
 The analyzer for these languages supports multiple lockfiles.
 

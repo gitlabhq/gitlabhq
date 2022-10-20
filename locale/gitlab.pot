@@ -30719,6 +30719,9 @@ msgstr ""
 msgid "Prevent environment from auto-stopping"
 msgstr ""
 
+msgid "Prevent outdated deployment jobs"
+msgstr ""
+
 msgid "Prevent project forking outside current group"
 msgstr ""
 
@@ -34760,9 +34763,6 @@ msgstr ""
 msgid "Runners|Add notes, like who owns the runner or what it should be used for."
 msgstr ""
 
-msgid "Runners|Add your feedback in the issue"
-msgstr ""
-
 msgid "Runners|Administrator"
 msgstr ""
 
@@ -35238,12 +35238,6 @@ msgid "Runners|Version %{version}"
 msgstr ""
 
 msgid "Runners|View installation instructions"
-msgstr ""
-
-msgid "Runners|We want you to be able to manage your runners easily and efficiently from this page, and we are making changes to get there. Give us feedback on how we're doing!"
-msgstr ""
-
-msgid "Runners|We've made some changes and want your feedback"
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."
@@ -37799,9 +37793,6 @@ msgid "Size Limits"
 msgstr ""
 
 msgid "Size limit per repository (MB)"
-msgstr ""
-
-msgid "Skip outdated deployment jobs"
 msgstr ""
 
 msgid "Skipped"
@@ -45493,7 +45484,7 @@ msgstr ""
 msgid "What's new"
 msgstr ""
 
-msgid "When a deployment job is successful, skip older deployment jobs that are still pending."
+msgid "When a deployment job is successful, prevent older deployment jobs that are still pending."
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"

@@ -115,7 +115,7 @@ sequenceDiagram
    > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/295289) in GitLab 15.2. [Feature flag `measure_service_ping_metric_collection`](https://gitlab.com/gitlab-org/gitlab/-/issues/358128) removed.
 
 ```ruby
-    { 
+    {
       "metadata"=>
       {
         "uuid"=>"0000000-0000-0000-0000-000000000000",

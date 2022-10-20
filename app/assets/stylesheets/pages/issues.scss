@@ -123,9 +123,6 @@ ul.related-merge-requests > li gl-emoji {
 }
 
 .new-branch-col {
-  @include gl-pb-3;
-  @include gl-my-2;
-
   .discussion-filter-container {
     &:not(:last-child) {
       margin-right: $gl-spacing-scale-3;
@@ -225,7 +222,7 @@ ul.related-merge-requests > li gl-emoji {
 
     .new-branch-col {
       @include gl-pb-0;
-      align-self: center;
+      align-self: flex-end;
     }
   }
 

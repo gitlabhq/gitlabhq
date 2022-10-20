@@ -22,7 +22,7 @@ You can:
 If you are using a continuous deployment workflow and want to ensure that concurrent deployments to the same environment do not happen, you should enable the following options:
 
 - [Ensure only one deployment job runs at a time](#ensure-only-one-deployment-job-runs-at-a-time)
-- [Skip outdated deployment jobs](#skip-outdated-deployment-jobs)
+- [Prevent outdated deployment jobs](#prevent-outdated-deployment-jobs)
 
 ## Restrict write access to a critical environment
 
@@ -63,7 +63,10 @@ The improved pipeline flow **after** using the resource group:
 
 For more information, see [Resource Group documentation](../resource_groups/index.md).
 
-## Skip outdated deployment jobs
+## Prevent outdated deployment jobs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
+> - In GitLab 15.5, the behavior was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) to prevent outdated job runs.
 
 The effective execution order of pipeline jobs can vary from run to run, which
 could cause undesired behavior. For example, a [deployment job](../jobs/index.md#deployment-jobs)
@@ -71,22 +74,45 @@ in a newer pipeline could finish before a deployment job in an older pipeline.
 This creates a race condition where the older deployment finishes later,
 overwriting the "newer" deployment.
 
-You can ensure that older deployment jobs are cancelled automatically when a newer deployment
-job is started by enabling the [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) feature.
+You can prevent older deployment jobs from running when a newer deployment
+job is started by enabling the [Prevent outdated deployment jobs](../pipelines/settings.md#prevent-outdated-deployment-jobs) feature.
 
-Example of a problematic pipeline flow **before** enabling Skip outdated deployment jobs:
+When an older deployment job starts, it fails and is labeled:
+
+- `failed outdated deployment job` in the pipeline view.
+- `The deployment job is older than the latest deployment, and therefore failed.`
+  when viewing the completed job.
+
+When an older deployment job is manual, the play button is disabled with a message
+`This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run.`.
+
+Job age is determined by the job start time, not the commit time, so a newer commit
+can be prevented in some circumstances.
+
+### How to rollback to an outdated deployment
+
+In some cases, you need to rollback to an outdated deployment. Current workarounds are:
+
+- Temporarily disable this feature, rollback and re-enable.
+- Run a new pipeline with previous commit. It contains newer deployment jobs than the latest deployment.
+
+Please see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/378359) for more information about improving the usability.
+
+### Example
+
+Example of a problematic pipeline flow **before** enabling Prevent outdated deployment jobs:
 
 1. Pipeline-A is created on the default branch.
 1. Later, Pipeline-B is created on the default branch (with a newer commit SHA).
 1. The `deploy` job in Pipeline-B finishes first, and deploys the newer code.
 1. The `deploy` job in Pipeline-A finished later, and deploys the older code, **overwriting** the newer (latest) deployment.
 
-The improved pipeline flow **after** enabling Skip outdated deployment jobs:
+The improved pipeline flow **after** enabling Prevent outdated deployment jobs:
 
 1. Pipeline-A is created on the default branch.
 1. Later, Pipeline-B is created on the default branch (with a newer SHA).
 1. The `deploy` job in Pipeline-B finishes first, and deploys the newer code.
-1. The `deploy` job in Pipeline-A was automatically cancelled, so that it doesn't overwrite the deployment from the newer pipeline.
+1. The `deploy` job in Pipeline-A fails, so that it doesn't overwrite the deployment from the newer pipeline.
 
 ## Prevent deployments during deploy freeze windows
 
@@ -153,7 +179,7 @@ Before promoting a deployment to a production environment, cross-verifying it wi
 
 ### Pipelines jobs fail with `The deployment job is older than the previously succeeded deployment job...`
 
-This is caused by the [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) feature.
+This is caused by the [Prevent outdated deployment jobs](../pipelines/settings.md#prevent-outdated-deployment-jobs) feature.
 If you have multiple jobs for the same environment (including non-deployment jobs), you might encounter this problem, for example:
 
 ```yaml
@@ -166,5 +192,5 @@ build:service-b:
    name: production
 ```
 
-The [Skip outdated deployment jobs](../pipelines/settings.md#skip-outdated-deployment-jobs) might
+The [Prevent outdated deployment jobs](../pipelines/settings.md#prevent-outdated-deployment-jobs) might
 not work well with this configuration, and must be disabled.

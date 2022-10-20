@@ -2,7 +2,7 @@
 
 exports[`Design management index page designs renders error 1`] = `
 <div
-  class="gl-mt-5"
+  class="gl-mt-4"
   data-testid="designs-root"
 >
   <!---->
@@ -34,7 +34,7 @@ exports[`Design management index page designs renders error 1`] = `
 
 exports[`Design management index page designs renders loading icon 1`] = `
 <div
-  class="gl-mt-5"
+  class="gl-mt-4"
   data-testid="designs-root"
 >
   <!---->

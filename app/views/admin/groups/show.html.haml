@@ -7,8 +7,9 @@
 %h1.page-title.gl-font-size-h-display
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 
-  = link_to admin_group_edit_path(@group), class: "btn btn-default gl-button float-right", data: { qa_selector: 'edit_group_link' } do
-    = sprite_icon('pencil', css_class: 'gl-icon gl-mr-2')
+  = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(@group),
+    button_options: { class: 'gl-float-right', data: { qa_selector: 'edit_group_link' }},
+    icon: 'pencil') do
     = _('Edit')
 %hr
 .row
