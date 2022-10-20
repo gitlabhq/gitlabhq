@@ -119,6 +119,8 @@ class Group < Namespace
 
   has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
 
+  has_many :protected_branches, inverse_of: :group
+
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 
   delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings

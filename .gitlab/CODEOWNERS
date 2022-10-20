@@ -955,6 +955,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/pages/getting_started/ @ashrafkhamis
 /doc/user/project/quick_actions.md @msedlakjakubowski
 /doc/user/project/releases/ @rdickenson
+/doc/user/project/remote_development/ @ashrafkhamis
 /doc/user/project/repository/ @aqualls
 /doc/user/project/repository/branches/ @aqualls
 /doc/user/project/repository/file_finder.md @ashrafkhamis

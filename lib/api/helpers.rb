@@ -673,7 +673,6 @@ module API
 
       finder_params[:with_issues_enabled] = true if params[:with_issues_enabled].present?
       finder_params[:with_merge_requests_enabled] = true if params[:with_merge_requests_enabled].present?
-      finder_params[:without_deleted] = true
       finder_params[:search_namespaces] = true if params[:search_namespaces].present?
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:id_after] = sanitize_id_param(params[:id_after]) if params[:id_after]

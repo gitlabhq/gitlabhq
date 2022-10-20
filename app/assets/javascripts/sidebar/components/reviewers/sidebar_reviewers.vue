@@ -9,6 +9,8 @@ import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getMergeRequestReviewersQuery from '~/vue_shared/components/sidebar/queries/get_merge_request_reviewers.query.graphql';
+import mergeRequestReviewersUpdatedSubscription from '~/vue_shared/components/sidebar/queries/merge_request_reviewers.subscription.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ReviewerTitle from './reviewer_title.vue';
 import Reviewers from './reviewers.vue';
 
@@ -66,6 +68,36 @@ export default {
       error() {
         createAlert({ message: __('An error occurred while fetching reviewers.') });
       },
+      subscribeToMore: {
+        document() {
+          return mergeRequestReviewersUpdatedSubscription;
+        },
+        variables() {
+          return {
+            issuableId: this.issuable?.id,
+          };
+        },
+        skip() {
+          return !this.issuable?.id || !this.isRealtimeEnabled;
+        },
+        updateQuery(
+          _,
+          {
+            subscriptionData: {
+              data: { mergeRequestReviewersUpdated },
+            },
+          },
+        ) {
+          if (mergeRequestReviewersUpdated) {
+            this.store.setReviewersFromRealtime(
+              mergeRequestReviewersUpdated.reviewers.nodes.map((r) => ({
+                ...r,
+                id: getIdFromGraphQLId(r.id),
+              })),
+            );
+          }
+        },
+      },
     },
   },
   data() {
@@ -86,6 +118,9 @@ export default {
     },
     canUpdate() {
       return this.issuable.userPermissions?.adminMergeRequest || false;
+    },
+    isRealtimeEnabled() {
+      return this.glFeatures.realtimeReviewers;
     },
   },
   created() {

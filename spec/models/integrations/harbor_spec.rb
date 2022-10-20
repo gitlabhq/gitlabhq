@@ -70,7 +70,7 @@ RSpec.describe Integrations::Harbor do
   end
 
   context 'ci variables' do
-    let(:harbor_integration) { create(:harbor_integration) }
+    let(:harbor_integration) { build_stubbed(:harbor_integration) }
 
     it 'returns vars when harbor_integration is activated' do
       ci_vars = [
@@ -85,9 +85,12 @@ RSpec.describe Integrations::Harbor do
       expect(harbor_integration.ci_variables).to match_array(ci_vars)
     end
 
-    it 'returns [] when harbor_integration is inactive' do
-      harbor_integration.update!(active: false)
-      expect(harbor_integration.ci_variables).to match_array([])
+    context 'when harbor_integration is inactive' do
+      let(:harbor_integration) { build_stubbed(:harbor_integration, active: false) }
+
+      it 'returns []' do
+        expect(harbor_integration.ci_variables).to match_array([])
+      end
     end
 
     context 'with robot username' do

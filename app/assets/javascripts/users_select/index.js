@@ -431,6 +431,10 @@ function UsersSelect(currentUser, els, options = {}) {
       hidden() {
         if ($dropdown.hasClass('js-multiselect')) {
           if ($dropdown.hasClass(elsClassName)) {
+            if (window.gon?.features?.realtimeReviewers) {
+              $dropdown.data('deprecatedJQueryDropdown').clearMenu();
+              $dropdown.closest('.selectbox').children('input[type="hidden"]').remove();
+            }
             emitSidebarEvent('sidebar.saveReviewers');
           } else {
             emitSidebarEvent('sidebar.saveAssignees');

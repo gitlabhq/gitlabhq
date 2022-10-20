@@ -6,9 +6,9 @@ RSpec.describe Integrations::MattermostSlashCommands do
   it_behaves_like Integrations::BaseSlashCommands
 
   describe 'Mattermost API' do
-    let(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
     let(:integration) { project.build_mattermost_slash_commands_integration }
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     before do
       session = ::Mattermost::Session.new(nil)

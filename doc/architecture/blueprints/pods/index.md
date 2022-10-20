@@ -251,7 +251,14 @@ Based on user research, we may want to change certain features to work across or
 
 - Specific features allow for cross-organization interactions, for example forking, search.
 
-### Links
+## Technical Proposals
+
+The Pods architecture do have long lasting implications to data processing, location, scalability and the GitLab architecture.
+This section links all different technical proposals that are being evaluated.
+
+- [Stateless Router That Uses a Cache to Pick Pods and Is Redirected When Wrong Pod Is Reached](proposal-stateless-router.md)
+
+## Links
 
 - [Internal Pods presentation](https://docs.google.com/presentation/d/1x1uIiN8FR9fhL7pzFh9juHOVcSxEY7d2_q4uiKKGD44/edit#slide=id.ge7acbdc97a_0_155)
 - [Pods Epic](https://gitlab.com/groups/gitlab-org/-/epics/7582)
@@ -259,7 +266,7 @@ Based on user research, we may want to change certain features to work across or
 - [Shopify Pods architecture](https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale)
 - [Opstrace architecture](https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/docs/architecture/overview.md)
 
-### Who
+## Who
 
 | Role                         | Who
 |------------------------------|-------------------------|

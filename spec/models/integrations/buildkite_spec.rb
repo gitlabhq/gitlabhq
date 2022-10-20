@@ -6,7 +6,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
   include StubRequests
 
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   subject(:integration) do
     described_class.create!(

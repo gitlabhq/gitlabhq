@@ -1690,6 +1690,12 @@
       when: never
     - <<: *if-dot-com-ee-schedule-nightly-child-pipeline
 
+.reports:rules:test-dast:
+  rules:
+    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
+      when: never
+    - <<: *if-merge-request
+
 .reports:rules:package_hunter-yarn:
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"

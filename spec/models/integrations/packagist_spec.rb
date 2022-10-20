@@ -22,7 +22,7 @@ RSpec.describe Integrations::Packagist do
   let(:packagist_token) { 'verySecret' }
   let(:packagist_username) { 'theUser' }
   let(:packagist_server) { 'https://packagist.example.com' }
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   it_behaves_like Integrations::HasWebHook do
     let(:integration) { described_class.new(packagist_params) }
@@ -34,8 +34,7 @@ RSpec.describe Integrations::Packagist do
   end
 
   describe '#execute' do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
     let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
     let(:packagist_integration) { described_class.create!(packagist_params) }
 

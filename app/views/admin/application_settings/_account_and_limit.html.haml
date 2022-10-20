@@ -69,4 +69,6 @@
     = render 'admin/application_settings/invitation_flow_enforcement', form: f
     = render 'admin/application_settings/user_restrictions', form: f
     = render_if_exists 'admin/application_settings/availability_on_namespace_setting', form: f
+    -# This is added for Jihu edition which should not be deleted without notifying Jihu
+    = render_if_exists 'admin/application_settings/password_expiration_setting', form: f
   = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }

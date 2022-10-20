@@ -8,7 +8,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
 
   let(:teamcity_url) { 'https://gitlab.teamcity.com' }
   let(:teamcity_full_url) { 'https://gitlab.teamcity.com/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   subject(:integration) do
     described_class.create!(

@@ -13,7 +13,8 @@ FactoryBot.define do
     end
 
     after(:create) do |protected_branch, evaluator|
-      break unless protected_branch.project&.persisted?
+      # Do not use `break` because it will cause `LocalJumpError`
+      next unless protected_branch.project&.persisted?
 
       ProtectedBranches::CacheService.new(protected_branch.project).refresh
     end

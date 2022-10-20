@@ -361,6 +361,7 @@ hooks:
 - web_hook_logs
 protected_branches:
 - project
+- group
 - merge_access_levels
 - push_access_levels
 - unprotect_access_levels

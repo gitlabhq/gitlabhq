@@ -5114,9 +5114,6 @@ msgstr ""
 msgid "Are you sure you want to delete %{name}?"
 msgstr ""
 
-msgid "Are you sure you want to delete these artifacts?"
-msgstr ""
-
 msgid "Are you sure you want to delete this %{commentType}?"
 msgstr ""
 
@@ -5267,6 +5264,21 @@ msgid "Artifact was successfully deleted."
 msgstr ""
 
 msgid "Artifacts"
+msgstr ""
+
+msgid "Artifacts|An error occurred while deleting the artifact"
+msgstr ""
+
+msgid "Artifacts|An error occurred while retrieving job artifacts"
+msgstr ""
+
+msgid "Artifacts|Artifacts"
+msgstr ""
+
+msgid "Artifacts|Browse"
+msgstr ""
+
+msgid "Artifacts|Total artifacts size"
 msgstr ""
 
 msgid "As we continue to build more features for SAST, we'd love your feedback on the SAST configuration feature in %{linkStart}this issue%{linkEnd}."
@@ -7090,9 +7102,6 @@ msgid "Browse File"
 msgstr ""
 
 msgid "Browse Files"
-msgstr ""
-
-msgid "Browse artifacts"
 msgstr ""
 
 msgid "Browse files"
@@ -9700,10 +9709,16 @@ msgstr ""
 msgid "Comment/Reply (quoting selected text)"
 msgstr ""
 
+msgid "Commenting on files that are only moved or renamed is currently not supported"
+msgstr ""
+
 msgid "Commenting on files that replace or are replaced by symbolic links is currently not supported."
 msgstr ""
 
 msgid "Commenting on symbolic links that replace or are replaced by files is currently not supported."
+msgstr ""
+
+msgid "Commenting on this line is currently not supported"
 msgstr ""
 
 msgid "Comments"
@@ -11508,9 +11523,6 @@ msgstr ""
 msgid "Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
 msgstr ""
 
-msgid "Creation date"
-msgstr ""
-
 msgid "Creator"
 msgstr ""
 
@@ -12755,9 +12767,6 @@ msgid "Delete Value Stream"
 msgstr ""
 
 msgid "Delete account"
-msgstr ""
-
-msgid "Delete artifacts"
 msgstr ""
 
 msgid "Delete asset"
@@ -27058,9 +27067,6 @@ msgid "No iterations to show"
 msgstr ""
 
 msgid "No job log"
-msgstr ""
-
-msgid "No jobs to show"
 msgstr ""
 
 msgid "No label"
@@ -42543,9 +42549,6 @@ msgstr ""
 msgid "Total Score"
 msgstr ""
 
-msgid "Total artifacts size: %{total_size}"
-msgstr ""
-
 msgid "Total cores (CPUs)"
 msgstr ""
 
@@ -47341,6 +47344,12 @@ msgstr ""
 msgid "cannot be added since you've reached your %{free_limit} member limit for %{namespace_name}"
 msgstr ""
 
+msgid "cannot be associated with a subgroup"
+msgstr ""
+
+msgid "cannot be associated with both a Group and a Project"
+msgstr ""
+
 msgid "cannot be changed"
 msgstr ""
 
@@ -48615,6 +48624,9 @@ msgid "must be after start"
 msgstr ""
 
 msgid "must be an email you have verified"
+msgstr ""
+
+msgid "must be associated with a Group or a Project"
 msgstr ""
 
 msgid "must be greater than start date"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Jenkins do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let(:jenkins_integration) { described_class.new(jenkins_params) }
   let(:jenkins_url) { 'http://jenkins.example.com/' }
   let(:jenkins_hook_url) { jenkins_url + 'project/my_project' }
@@ -144,8 +144,7 @@ RSpec.describe Integrations::Jenkins do
 
   describe '#test' do
     it 'returns the right status' do
-      user = create(:user, username: 'username')
-      project = create(:project, name: 'project')
+      user = build(:user, username: 'username')
       push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       jenkins_integration = described_class.create!(jenkins_params)
       stub_request(:post, jenkins_hook_url).with(headers: { 'Authorization' => jenkins_authorization })
@@ -157,9 +156,9 @@ RSpec.describe Integrations::Jenkins do
   end
 
   describe '#execute' do
-    let(:user) { create(:user, username: 'username') }
-    let(:namespace) { create(:group, :private) }
-    let(:project) { create(:project, :private, name: 'project', namespace: namespace) }
+    let(:user) { build(:user, username: 'username') }
+    let_it_be(:namespace) { create(:group, :private) }
+    let_it_be(:project) { create(:project, :private, name: 'project', namespace: namespace) }
     let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
     let(:jenkins_integration) { described_class.create!(jenkins_params) }
 
@@ -193,8 +192,6 @@ RSpec.describe Integrations::Jenkins do
   end
 
   describe 'Stored password invalidation' do
-    let(:project) { create(:project) }
-
     context 'when a password was previously set' do
       let(:jenkins_integration) do
         described_class.create!(
@@ -249,7 +246,7 @@ RSpec.describe Integrations::Jenkins do
     context 'when no password was previously set' do
       let(:jenkins_integration) do
         described_class.create!(
-          project: create(:project),
+          project: project,
           properties: {
             jenkins_url: 'http://jenkins.example.com/',
             username: 'jenkins'

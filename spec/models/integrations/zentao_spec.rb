@@ -7,15 +7,14 @@ RSpec.describe Integrations::Zentao do
   let(:api_url) { 'https://jihudemo.zentao.net' }
   let(:api_token) { 'ZENTAO_TOKEN' }
   let(:zentao_product_xid) { '3' }
-  let(:zentao_integration) { create(:zentao_integration) }
+  let(:zentao_integration) { build(:zentao_integration, project: project) }
+  let_it_be(:project) { create(:project, :repository) }
 
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { zentao_integration }
   end
 
   describe 'set_default_data' do
-    let(:project) { create(:project, :repository) }
-
     context 'when gitlab.yml was initialized' do
       it 'is prepopulated with the settings' do
         settings = {
@@ -35,7 +34,6 @@ RSpec.describe Integrations::Zentao do
   end
 
   describe '#create' do
-    let(:project) { create(:project, :repository) }
     let(:params) do
       {
         project: project,

@@ -112,7 +112,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator do
 
       context 'when archive path is not a string' do
         let(:filepath) { 123 }
-        let(:error_message) { 'Archive path is not a string' }
+        let(:error_message) { 'Invalid path' }
 
         it 'returns false' do
           expect(subject.valid?).to eq(false)

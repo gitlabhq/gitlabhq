@@ -6,8 +6,8 @@ RSpec.describe Integrations::Slack do
   it_behaves_like Integrations::SlackMattermostNotifier, "Slack"
 
   describe '#execute' do
-    let(:slack_integration) { create(:integrations_slack, branches_to_be_notified: 'all', project_id: project.id) }
-    let(:project) { create_default(:project, :repository, :wiki_repo) }
+    let_it_be(:project) { create(:project, :repository, :wiki_repo) }
+    let_it_be(:slack_integration) { create(:integrations_slack, branches_to_be_notified: 'all', project: project) }
 
     before do
       stub_request(:post, slack_integration.webhook)
@@ -42,7 +42,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'event is not supported for usage log' do
-        let_it_be(:pipeline) { create(:ci_pipeline) }
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
         let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
@@ -54,7 +54,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'issue notification' do
-        let_it_be(:issue) { create(:issue) }
+        let_it_be(:issue) { create(:issue, project: project) }
 
         let(:data) { issue.to_hook_data(user) }
 
@@ -68,7 +68,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'deployment notification' do
-        let_it_be(:deployment) { create(:deployment, user: user) }
+        let_it_be(:deployment) { create(:deployment, project: project, user: user) }
 
         let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, deployment.status, Time.current) }
 
@@ -76,7 +76,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'wiki_page notification' do
-        let(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
+        let(:wiki_page) { create(:wiki_page, wiki: project.wiki, project: project, message: 'user created page: Awesome wiki_page') }
 
         let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
@@ -90,7 +90,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'merge_request notification' do
-        let_it_be(:merge_request) { create(:merge_request) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
         let(:data) { merge_request.to_hook_data(user) }
 
@@ -98,7 +98,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'note notification' do
-        let_it_be(:issue_note) { create(:note_on_issue, note: 'issue note') }
+        let_it_be(:issue_note) { create(:note_on_issue, project: project, note: 'issue note') }
 
         let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
 
@@ -115,7 +115,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'confidential note notification' do
-        let_it_be(:confidential_issue_note) { create(:note_on_issue, note: 'issue note', confidential: true) }
+        let_it_be(:confidential_issue_note) { create(:note_on_issue, project: project, note: 'issue note', confidential: true) }
 
         let(:data) { Gitlab::DataBuilder::Note.build(confidential_issue_note, user) }
 
@@ -123,7 +123,7 @@ RSpec.describe Integrations::Slack do
       end
 
       context 'confidential issue notification' do
-        let_it_be(:issue) { create(:issue, confidential: true) }
+        let_it_be(:issue) { create(:issue, project: project, confidential: true) }
 
         let(:data) { issue.to_hook_data(user) }
 
@@ -132,7 +132,7 @@ RSpec.describe Integrations::Slack do
     end
 
     context 'hook data does not include a user' do
-      let(:data) { Gitlab::DataBuilder::Pipeline.build(create(:ci_pipeline)) }
+      let(:data) { Gitlab::DataBuilder::Pipeline.build(create(:ci_pipeline, project: project)) }
 
       it 'does not increase the usage data counter' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)

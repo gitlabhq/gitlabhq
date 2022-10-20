@@ -342,7 +342,7 @@ To move an issue:
 
 #### From the issues list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
 
 You can move multiple issues at the same time when you’re in a project.
 You can't move tasks or test cases.
@@ -712,8 +712,11 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/213567) in GitLab 13.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
 
-To help you track issue statuses, you can assign a status to each issue.
-This status marks issues as progressing as planned or needing attention to keep on schedule.
+To better track the risk in meeting your plans, you can assign a health status to each issue.
+You can use health status to signal to others in your organization whether issues are progressing
+as planned or need attention to stay on schedule.
+
+Incorporate a review of issue health status into your daily stand-up, project status reports, or weekly meetings to address risks to timely delivery of your planned work.
 
 Prerequisites:
 

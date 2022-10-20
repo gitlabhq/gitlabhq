@@ -6,11 +6,7 @@
     = gl_loading_icon(inline: true)
 
 .selectbox.hide-collapsed
-  - if reviewers.none?
-    = hidden_field_tag "#{issuable_type}[reviewer_ids][]", 0, id: nil
-  - else
-    - reviewers.each do |reviewer|
-      = hidden_field_tag "#{issuable_type}[reviewer_ids][]", reviewer.id, id: nil, data: reviewer_sidebar_data(reviewer, merge_request: @merge_request)
+  .js-reviewers-inputs
 
   - options = { toggle_class: 'js-reviewer-search js-author-search',
     title: _('Request review from'),
@@ -32,8 +28,7 @@
   - dropdown_options = reviewers_dropdown_options(issuable_type)
   - title = dropdown_options[:title]
   - options[:toggle_class] += ' js-multiselect js-save-user-data'
-  - data = { field_name: "#{issuable_type}[reviewer_ids][]" }
-  - data[:multi_select] = true
+  - data = { multi_select: true }
   - data['dropdown-title'] = title
   - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
   - data[:suggested_reviewers_header] = dropdown_options[:data][:suggested_reviewers_header]

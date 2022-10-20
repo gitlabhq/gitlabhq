@@ -138,6 +138,10 @@ export default class SidebarStore {
     this.assignees = data;
   }
 
+  setReviewersFromRealtime(data) {
+    this.reviewers = data;
+  }
+
   setAutocompleteProjects(projects) {
     this.autocompleteProjects = projects;
   }

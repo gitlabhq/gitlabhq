@@ -8,10 +8,6 @@ RSpec.describe GraphqlController do
   # two days is enough to make timezones irrelevant
   let_it_be(:last_activity_on) { 2.days.ago.to_date }
 
-  before do
-    stub_feature_flags(graphql: true)
-  end
-
   describe 'rescue_from' do
     let_it_be(:message) { 'green ideas sleep furiously' }
 

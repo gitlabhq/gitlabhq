@@ -74,6 +74,7 @@ namespace :tw do
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@claytoncornell'),
+      CodeOwnerRule.new('Tutorials', '@kpaizee'),
       CodeOwnerRule.new('Utilization', '@fneill'),
       CodeOwnerRule.new('Vulnerability Research', '@claytoncornell'),
       CodeOwnerRule.new('Workspace', '@lciutacu')

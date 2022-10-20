@@ -87,8 +87,8 @@ RSpec.describe Integrations::EmailsOnPush do
   end
 
   describe '#execute' do
+    let_it_be(:project) { create(:project, :repository) }
     let(:push_data) { { object_kind: 'push' } }
-    let(:project)   { create(:project, :repository) }
     let(:integration) { create(:emails_on_push_integration, project: project) }
     let(:recipients) { 'test@gitlab.com' }
 

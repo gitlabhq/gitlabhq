@@ -470,3 +470,14 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
   end
 end
 ```
+
+NOTE:
+Do not forget to set the sequence name explicitly in your model because it will
+be owned by the routing table and `ActiveRecord` can't determine it. This can
+be cleaned up after the `table_name` is changed to the routing table.
+
+```ruby
+class Model < ApplicationRecord
+  self.sequence_name = 'model_id_seq'
+end
+```

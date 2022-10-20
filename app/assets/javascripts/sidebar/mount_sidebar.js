@@ -33,6 +33,7 @@ import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
 import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
+import SidebarReviewersInputs from './components/reviewers/sidebar_reviewers_inputs.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
 import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
@@ -209,6 +210,18 @@ function mountReviewersComponent(mediator) {
         },
       }),
   });
+
+  const reviewersInputEl = document.querySelector('.js-reviewers-inputs');
+
+  if (reviewersInputEl) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: reviewersInputEl,
+      render(createElement) {
+        return createElement(SidebarReviewersInputs);
+      },
+    });
+  }
 
   const reviewerDropdown = document.querySelector('.js-sidebar-reviewer-dropdown');
 

@@ -968,7 +968,7 @@ $system-note-svg-size: 1rem;
     height: 12px;
   }
 
-  &:hover,
+  &:hover:not([disabled]),
   &.inverted {
     &::before {
       background-color: $white;

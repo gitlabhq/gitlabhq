@@ -17,35 +17,8 @@ RSpec.describe Integrations::MicrosoftTeams do
   let(:chat_integration) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
-  describe 'Validations' do
-    context 'when integration is active' do
-      before do
-        subject.active = true
-      end
-
-      it { is_expected.to validate_presence_of(:webhook) }
-
-      it_behaves_like 'issue tracker integration URL attribute', :webhook
-    end
-
-    context 'when integration is inactive' do
-      before do
-        subject.active = false
-      end
-
-      it { is_expected.not_to validate_presence_of(:webhook) }
-    end
-  end
-
-  describe '.supported_events' do
-    it 'does not support deployment_events' do
-      expect(described_class.supported_events).not_to include('deployment')
-    end
-  end
-
   describe "#execute" do
-    let(:user) { create(:user) }
-
+    let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
 
     before do
@@ -145,8 +118,8 @@ RSpec.describe Integrations::MicrosoftTeams do
   end
 
   describe "Note events" do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_integration).to receive_messages(
@@ -221,8 +194,7 @@ RSpec.describe Integrations::MicrosoftTeams do
   end
 
   describe 'Pipeline events' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,

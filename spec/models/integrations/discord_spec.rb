@@ -25,7 +25,7 @@ RSpec.describe Integrations::Discord do
 
     let_it_be(:project) { create(:project, :repository) }
 
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:webhook_url) { "https://example.gitlab.com/" }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)

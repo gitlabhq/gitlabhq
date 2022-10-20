@@ -34,8 +34,8 @@ RSpec.describe Integrations::Campfire do
   end
 
   describe "#execute" do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let(:user)    { build_stubbed(:user) }
+    let(:project) { build_stubbed(:project, :repository) }
 
     before do
       @campfire_integration = described_class.new

@@ -19,7 +19,7 @@ RSpec.describe Integrations::BaseChatNotification do
 
     let_it_be(:project) { create(:project, :repository) }
 
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
     let(:webhook_url) { 'https://example.gitlab.com/' }
     let(:data) { Gitlab::DataBuilder::Push.build_sample(subject.project, user) }
 
@@ -44,7 +44,7 @@ RSpec.describe Integrations::BaseChatNotification do
 
     context 'with an empty repository' do
       it 'returns true' do
-        subject.project = create(:project, :empty_repo)
+        subject.project = build_stubbed(:project, :empty_repo)
 
         expect(chat_integration).to receive(:notify).and_return(true)
         expect(chat_integration.execute(data)).to be true
@@ -61,9 +61,9 @@ RSpec.describe Integrations::BaseChatNotification do
     end
 
     context 'when the data object has a label' do
-      let_it_be(:label) { create(:label, name: 'Bug') }
-      let_it_be(:label_2) { create(:label, name: 'Community contribution') }
-      let_it_be(:label_3) { create(:label, name: 'Backend') }
+      let_it_be(:label) { create(:label, project: project, name: 'Bug') }
+      let_it_be(:label_2) { create(:label, project: project, name: 'Community contribution') }
+      let_it_be(:label_3) { create(:label, project: project, name: 'Backend') }
       let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label, label_2, label_3]) }
       let_it_be(:note) { create(:note, noteable: issue, project: project) }
 
@@ -93,7 +93,7 @@ RSpec.describe Integrations::BaseChatNotification do
         it_behaves_like 'notifies the chat integration'
 
         context 'MergeRequest events' do
-          let(:data) { create(:merge_request, labels: [label]).to_hook_data(user) }
+          let(:data) { build_stubbed(:merge_request, source_project: project, labels: [label]).to_hook_data(user) }
 
           it_behaves_like 'notifies the chat integration'
         end

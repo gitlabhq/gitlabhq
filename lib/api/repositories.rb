@@ -173,7 +173,7 @@ module API
       params do
         requires :from, type: String, desc: 'The commit, branch name, or tag name to start comparison'
         requires :to, type: String, desc: 'The commit, branch name, or tag name to stop comparison'
-        optional :from_project_id, type: String, desc: 'The project to compare from'
+        optional :from_project_id, type: Integer, desc: 'The project to compare from'
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
       end
       get ':id/repository/compare', urgency: :low do
@@ -215,7 +215,7 @@ module API
         success Entities::Commit
       end
       params do
-        requires :refs, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+        requires :refs, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The refs to find the common ancestor of, multiple refs can be passed'
       end
       get ':id/repository/merge_base' do
         refs = params[:refs]

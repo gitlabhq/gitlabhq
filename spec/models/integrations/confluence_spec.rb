@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Confluence do
+  let_it_be(:project) { create(:project) }
+
   describe 'Validations' do
     before do
       subject.active = active
@@ -40,7 +42,6 @@ RSpec.describe Integrations::Confluence do
 
   describe '#help' do
     it 'can correctly return a link to the project wiki when active' do
-      project = create(:project)
       subject.project = project
       subject.active = true
 
@@ -62,8 +63,6 @@ RSpec.describe Integrations::Confluence do
   end
 
   describe 'Caching has_confluence on project_settings' do
-    let(:project) { create(:project) }
-
     subject { project.project_setting.has_confluence? }
 
     it 'sets the property to true when integration is active' do

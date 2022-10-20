@@ -11,7 +11,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
     )
   end
 
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let(:recipients) { 'test@gitlab.com' }
   let(:receivers) { [recipients] }
 

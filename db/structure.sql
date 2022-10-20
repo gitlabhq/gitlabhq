@@ -20471,12 +20471,14 @@ ALTER SEQUENCE protected_branch_unprotect_access_levels_id_seq OWNED BY protecte
 
 CREATE TABLE protected_branches (
     id integer NOT NULL,
-    project_id integer NOT NULL,
+    project_id integer,
     name character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     code_owner_approval_required boolean DEFAULT false NOT NULL,
-    allow_force_push boolean DEFAULT false NOT NULL
+    allow_force_push boolean DEFAULT false NOT NULL,
+    namespace_id bigint,
+    CONSTRAINT protected_branches_project_id_namespace_id_any_not_null CHECK (((project_id IS NULL) <> (namespace_id IS NULL)))
 );
 
 CREATE SEQUENCE protected_branches_id_seq
@@ -30225,6 +30227,8 @@ CREATE INDEX index_protected_branch_unprotect_access_levels_on_group_id ON prote
 
 CREATE INDEX index_protected_branch_unprotect_access_levels_on_user_id ON protected_branch_unprotect_access_levels USING btree (user_id);
 
+CREATE INDEX index_protected_branches_namespace_id ON protected_branches USING btree (namespace_id) WHERE (namespace_id IS NOT NULL);
+
 CREATE INDEX index_protected_branches_on_project_id ON protected_branches USING btree (project_id);
 
 CREATE INDEX index_protected_environment_approval_rules_on_group_id ON protected_environment_approval_rules USING btree (group_id);
@@ -31098,8 +31102,6 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree 
 CREATE INDEX tmp_idx_project_features_on_releases_al_and_repo_al_partial ON project_features USING btree (releases_access_level, repository_access_level) WHERE (releases_access_level > repository_access_level);
 
 CREATE INDEX tmp_idx_vulnerabilities_on_id_where_report_type_7_99 ON vulnerabilities USING btree (id) WHERE (report_type = ANY (ARRAY[7, 99]));
-
-CREATE INDEX tmp_index_approval_merge_request_rules_on_report_type_equal_one ON approval_merge_request_rules USING btree (id, report_type) WHERE (report_type = 1);
 
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
@@ -33331,6 +33333,9 @@ ALTER TABLE ONLY security_scans
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_dccd3f98fc FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY protected_branches
+    ADD CONSTRAINT fk_de9216e774 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_df75a7c8b8 FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;

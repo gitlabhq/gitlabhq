@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Pages::InvalidateDomainCacheWorker do
   shared_examples 'clears caches with' do |event_class:, event_data:, caches:|
-    let(:event) do
-      event_class.new(data: event_data)
-    end
+    include AfterNextHelpers
+
+    let(:event) { event_class.new(data: event_data) }
 
     subject { consume_event(subscriber: described_class, event: event) }
 
@@ -14,9 +14,8 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
 
     it 'clears the cache with Gitlab::Pages::CacheControl' do
       caches.each do |cache|
-        expect_next_instance_of(Gitlab::Pages::CacheControl, type: cache[:type], id: cache[:id]) do |cache_control|
-          expect(cache_control).to receive(:clear_cache)
-        end
+        expect_next(Gitlab::Pages::CacheControl, type: cache[:type], id: cache[:id])
+          .to receive(:clear_cache)
       end
 
       subject
@@ -181,19 +180,17 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
         ]
     end
 
-    it 'does not clear the cache when the attributes is not pages related' do
-      event = Projects::ProjectAttributesChangedEvent.new(
-        data: {
-          project_id: 1,
-          namespace_id: 2,
-          root_namespace_id: 3,
-          attributes: ['unknown']
-        }
-      )
-
-      expect(described_class).not_to receive(:clear_cache)
-
-      ::Gitlab::EventStore.publish(event)
+    it_behaves_like 'ignores the published event' do
+      let(:event) do
+        Projects::ProjectAttributesChangedEvent.new(
+          data: {
+            project_id: 1,
+            namespace_id: 2,
+            root_namespace_id: 3,
+            attributes: ['unknown']
+          }
+        )
+      end
     end
   end
 
@@ -204,26 +201,24 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
         project_id: 1,
         namespace_id: 2,
         root_namespace_id: 3,
-        features: ["pages_access_level"]
+        features: ['pages_access_level']
       },
       caches: [
         { type: :project, id: 1 },
         { type: :namespace, id: 3 }
       ]
 
-    it 'does not clear the cache when the features is not pages related' do
-      event = Projects::ProjectFeaturesChangedEvent.new(
-        data: {
-          project_id: 1,
-          namespace_id: 2,
-          root_namespace_id: 3,
-          features: ['unknown']
-        }
-      )
-
-      expect(described_class).not_to receive(:clear_cache)
-
-      ::Gitlab::EventStore.publish(event)
+    it_behaves_like 'ignores the published event' do
+      let(:event) do
+        Projects::ProjectFeaturesChangedEvent.new(
+          data: {
+            project_id: 1,
+            namespace_id: 2,
+            root_namespace_id: 3,
+            features: ['unknown']
+          }
+        )
+      end
     end
   end
 

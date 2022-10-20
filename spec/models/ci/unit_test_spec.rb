@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::UnitTest do
   it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:parent) { create(:project) }
+    let!(:parent) { create(:project, namespace: create(:group)) }
     let!(:model) { create(:ci_unit_test, project: parent) }
   end
 
