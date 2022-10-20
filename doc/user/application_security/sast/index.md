@@ -83,14 +83,14 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | C                                              | [Semgrep](https://semgrep.dev)                                                                            | 14.2                                                                                    |
 | C/C++                                          | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                                               | 10.7                                                                                    |
 | Elixir (Phoenix)                               | [Sobelow](https://github.com/nccgroup/sobelow)                                                            | 11.1                                                                                    |
-| Go                                             | [Gosec](https://github.com/securego/gosec)                                                                | 10.7                                                                                    |
+| Go<sup>3</sup>                                 | [Gosec](https://github.com/securego/gosec)                                                                | 10.7                                                                                    |
 | Go                                             | [Semgrep](https://semgrep.dev)                                                                            | 14.4                                                                                    |
 | Groovy<sup>2</sup>                             | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Maven, SBT)                                                  |
 | Helm Charts                                    | [Kubesec](https://github.com/controlplaneio/kubesec)                                                      | 13.1                                                                                    |
 | Java (any build system)                        | [Semgrep](https://semgrep.dev)                                                                            | 14.10                                                                                   |
-| Java<sup>2</sup>                               | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (SBT)                                           |
+| Java<sup>2, 3</sup>                            | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (SBT)                                           |
 | Java (Android)                                 | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
-| JavaScript                                     | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.8                                                                                    |
+| JavaScript<sup>3</sup>                         | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.8                                                                                    |
 | JavaScript                                     | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
 | Kotlin (Android)                               | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
 | Kotlin (General)<sup>2</sup>                   | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 13.11                                                                                   |
@@ -98,15 +98,15 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | Node.js                                        | [NodeJsScan](https://github.com/ajinabraham/NodeJsScan)                                                   | 11.1                                                                                    |
 | Objective-C (iOS)                              | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
 | PHP                                            | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit)                    | 10.8                                                                                    |
-| Python ([pip](https://pip.pypa.io/en/stable/)) | [bandit](https://github.com/PyCQA/bandit)                                                                 | 10.3                                                                                    |
+| Python<sup>3</sup>                             | [bandit](https://github.com/PyCQA/bandit)                                                                 | 10.3                                                                                    |
 | Python                                         | [Semgrep](https://semgrep.dev)                                                                            | 13.9                                                                                    |
-| React                                          | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                                   | 12.5                                                                                    |
+| React<sup>3</sup>                              | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                                   | 12.5                                                                                    |
 | React                                          | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
 | Ruby                                           | [brakeman](https://brakemanscanner.org)                                                                   | 13.9                                                                                    |
 | Ruby on Rails                                  | [brakeman](https://brakemanscanner.org)                                                                   | 10.3                                                                                    |
 | Scala<sup>2</sup>                              | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                  |
 | Swift (iOS)                                    | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
-| TypeScript                                     | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
+| TypeScript<sup>3</sup>                         | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
 | TypeScript                                     | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
 
 1. .NET 4 support is limited. The analyzer runs in a Linux container and does not have access to Windows-specific libraries or features. Use the Semgrep-based scanner if you need .NET 4 support.
@@ -114,6 +114,7 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
 [Grails](https://grails.org/),
 and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java projects.
+1. These analyzers reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) status [in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554).
 
 ### Multi-project support
 
@@ -473,8 +474,8 @@ All customization of GitLab security scanning tools should be tested in a merge 
 merging these changes to the default branch. Failure to do so can give unexpected results,
 including a large number of false positives.
 
-The following example includes the SAST template to override the `SAST_GOSEC_LEVEL`
-variable to `2`. The template is [evaluated before](../../../ci/yaml/index.md#include) the pipeline
+The following example includes the SAST template to override the `SEARCH_MAX_DEPTH`
+variable to `10`. The template is [evaluated before](../../../ci/yaml/index.md#include) the pipeline
 configuration, so the last mention of the variable takes precedence.
 
 ```yaml
@@ -482,7 +483,7 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 variables:
-  SAST_GOSEC_LEVEL: 2
+  SEARCH_MAX_DEPTH: 10
 ```
 
 #### Logging level
@@ -536,10 +537,10 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 |------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `SAST_EXCLUDED_PATHS`        | `spec, test, tests, tmp` | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. You might need to exclude temporary directories used by your build tool as these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your own paths to be excluded. If you don't specify the default excluded paths, you will override the defaults and _only_ paths you specify will be excluded from the SAST scans. |
 | `SEARCH_MAX_DEPTH`           | 4                        | SAST searches the repository to detect the programming languages used, and selects the matching analyzers. Set the value of `SEARCH_MAX_DEPTH` to specify how many directory levels the search phase should span. After the analyzers have been selected, the _entire_ repository is analyzed. |
-| `SAST_BANDIT_EXCLUDED_PATHS` |                          | Comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*, */venv/*'`                                                  |
+| `SAST_BANDIT_EXCLUDED_PATHS` |                          | Comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html); For example: `'*/tests/*, */venv/*'`. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. |
 | `SAST_BRAKEMAN_LEVEL`        | 1                        | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High.                                                                                                                                        |
 | `SAST_FLAWFINDER_LEVEL`      | 1                        | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk.                                                                                                                                  |
-| `SAST_GOSEC_LEVEL`           | 0                        | Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High.                                                                                                                   |
+| `SAST_GOSEC_LEVEL`           | 0                        | Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. |
 
 #### Analyzer settings
 
@@ -664,11 +665,8 @@ import the following default SAST analyzer images from `registry.gitlab.com` int
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/bandit:2
 registry.gitlab.com/security-products/brakeman:2
-registry.gitlab.com/security-products/eslint:2
 registry.gitlab.com/security-products/flawfinder:2
-registry.gitlab.com/security-products/gosec:3
 registry.gitlab.com/security-products/kubesec:2
 registry.gitlab.com/security-products/nodejs-scan:2
 registry.gitlab.com/security-products/phpcs-security-audit:2
@@ -694,11 +692,11 @@ Support for custom certificate authorities was introduced in the following versi
 
 | Analyzer               | Version                                                                                                    |
 | --------               | -------                                                                                                    |
-| `bandit`               | [v2.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/bandit/-/releases/v2.3.0)               |
+| `bandit`<sup>1</sup>   | [v2.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/bandit/-/releases/v2.3.0)               |
 | `brakeman`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman/-/releases/v2.1.0)             |
-| `eslint`               | [v2.9.2](https://gitlab.com/gitlab-org/security-products/analyzers/eslint/-/releases/v2.9.2)               |
+| `eslint`<sup>1</sup>   | [v2.9.2](https://gitlab.com/gitlab-org/security-products/analyzers/eslint/-/releases/v2.9.2)               |
 | `flawfinder`           | [v2.3.0](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder/-/releases/v2.3.0)           |
-| `gosec`                | [v2.5.0](https://gitlab.com/gitlab-org/security-products/analyzers/gosec/-/releases/v2.5.0)                |
+| `gosec`<sup>1</sup>    | [v2.5.0](https://gitlab.com/gitlab-org/security-products/analyzers/gosec/-/releases/v2.5.0)                |
 | `kubesec`              | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec/-/releases/v2.1.0)              |
 | `nodejs-scan`          | [v2.9.5](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan/-/releases/v2.9.5)          |
 | `phpcs-security-audit` | [v2.8.2](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit/-/releases/v2.8.2) |
@@ -707,6 +705,8 @@ Support for custom certificate authorities was introduced in the following versi
 | `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)              |
 | `sobelow`              | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)              |
 | `spotbugs`             | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1)             |
+
+1. These analyzers were deprecated in GitLab 14.8 and [reached End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
 
 ### Set SAST CI/CD variables to use local SAST analyzers
 

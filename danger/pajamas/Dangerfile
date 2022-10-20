@@ -20,8 +20,6 @@ PATTERNS = %w[
   <tabs
   bs-callout
   deprecated-modal
-  has-tooltip
-  has_tooltip
   initDeprecatedJQueryDropdown
   loading-button
   v-popover

@@ -31,7 +31,7 @@ To request access to ChatOps on GitLab.com:
 
 1. Comment in your onboarding issue, and tag your onboarding buddy and your manager.
    Request they add you to the `ops` ChatOps project by running this command
-   in the `#chat-ops-test` Slack channel, replacing `<username>` with your username:
+   in the `#chat-ops-test` Slack channel, replacing `<username>` with your GitLab.com username:
    `/chatops run member add <username> gitlab-com/chatops --ops`
 
    ```plaintext

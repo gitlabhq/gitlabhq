@@ -16,6 +16,8 @@ Currently, IaC scanning supports configuration files for Terraform, Ansible, AWS
 
 IaC Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
+We recommend a minimum of 4GB RAM to ensure consistent performance.
+
 To run IaC scanning jobs, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
@@ -32,16 +34,16 @@ is **not** `19.03.0`. See [troubleshooting information](../sast/index.md#error-r
 
 GitLab IaC scanning supports a variety of IaC configuration files. Our IaC security scanners also feature automatic language detection which works even for mixed-language projects. If any supported configuration files are detected in project source code we automatically run the appropriate IaC analyzers.
 
-| Configuration File Type                  | Scan tool                        | Introduced in GitLab Version  |
-|------------------------------------------|----------------------------------|-------------------------------|
-| Ansible                                  | [KICS](https://kics.io/)         | 14.5                          |
-| AWS CloudFormation                       | [KICS](https://kics.io/)         | 14.5                          |
-| Azure Resource Manager <sup>1</sup>      | [KICS](https://kics.io/)         | 14.5                          |
-| Dockerfile                               | [KICS](https://kics.io/)         | 14.5                          |
-| Google Deployment Manager                | [KICS](https://kics.io/)         | 14.5                          |
-| Kubernetes                               | [KICS](https://kics.io/)         | 14.5                          |
-| OpenAPI                                  | [KICS](https://kics.io/)         | 14.5                          |
-| Terraform <sup>2</sup>                   | [KICS](https://kics.io/)         | 14.5                          |
+| Configuration File Type             | Scan tool                | Introduced in GitLab Version |
+| ----------------------------------- | ------------------------ | ---------------------------- |
+| Ansible                             | [KICS](https://kics.io/) | 14.5                         |
+| AWS CloudFormation                  | [KICS](https://kics.io/) | 14.5                         |
+| Azure Resource Manager <sup>1</sup> | [KICS](https://kics.io/) | 14.5                         |
+| Dockerfile                          | [KICS](https://kics.io/) | 14.5                         |
+| Google Deployment Manager           | [KICS](https://kics.io/) | 14.5                         |
+| Kubernetes                          | [KICS](https://kics.io/) | 14.5                         |
+| OpenAPI                             | [KICS](https://kics.io/) | 14.5                         |
+| Terraform <sup>2</sup>              | [KICS](https://kics.io/) | 14.5                         |
 
 1. IaC scanning can analyze Azure Resource Manager templates in JSON format. If you write templates in the [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) language, you must use [the bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to convert your Bicep files into JSON before GitLab IaC scanning can analyze them.
 1. Terraform modules in a custom registry are not scanned for vulnerabilities. You can follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/357004) for the proposed feature.
@@ -77,7 +79,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 as shown in the following table:
 
 | Capability                                                      | In Free & Premium   | In Ultimate        |
-|:----------------------------------------------------------------|:--------------------|:-------------------|
+| :-------------------------------------------------------------- | :------------------ | :----------------- |
 | [Configure IaC scanner](#configuration)                         | **{check-circle}**  | **{check-circle}** |
 | Download [JSON Report](#reports-json-format)                    | **{check-circle}**  | **{check-circle}** |
 | See new findings in merge request widget                        | **{dotted-circle}** | **{check-circle}** |

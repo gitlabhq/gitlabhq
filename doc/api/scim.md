@@ -25,7 +25,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer | Yes      | Return SAML identities for the given group ID. |
+| `id`              | integer | Yes      | Return SCIM identities for the given group ID. |
 
 If successful, returns [`200`](index.md#status-codes) and the following
 response attributes:

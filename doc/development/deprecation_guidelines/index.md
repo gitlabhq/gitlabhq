@@ -83,7 +83,7 @@ For configuration removals, see the [Omnibus deprecation policy](../../administr
 
 For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).
 
-## Update the deprecations and removals documentation
+## Update the deprecations and removals documentation pages
 
 The [deprecations](../../update/deprecations.md) and [removals](../../update/removals.md)
 documentation is generated from the YAML files located in
@@ -131,3 +131,7 @@ Related Handbook pages:
 
 - <https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes>
 - <https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-docs>
+
+## Update the related documentation
+
+When features are deprecated and removed, [update the related documentation](../documentation/versions.md#deprecations-and-removals).
