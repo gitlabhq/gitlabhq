@@ -209,7 +209,15 @@ We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1148).
 
-### Single database testing
+### Compatibility testing
+
+By default, we run all tests with the versions that runs on GitLab.com.
+
+Other versions (usually one back-compatible version, and one forward-compatible version) should be running in nightly scheduled pipelines.
+
+Exceptions to this general guideline should be motivated and documented.
+
+#### Single database testing
 
 By default, all tests run with [multiple databases](database/multiple_databases.md).
 

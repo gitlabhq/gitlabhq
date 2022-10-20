@@ -5,13 +5,7 @@ module API
     module Ml
       module Mlflow
         class UpdateRun < Grape::Entity
-          expose :run_info
-
-          private
-
-          def run_info
-            RunInfo.represent object
-          end
+          expose :itself, using: RunInfo, as: :run_info
         end
       end
     end

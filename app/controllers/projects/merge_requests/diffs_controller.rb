@@ -38,9 +38,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
     unfoldable_positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user).unfoldable
 
-    diffs.unfold_diff_files(unfoldable_positions)
-    diffs.write_cache
-
     options = {
       merge_request: @merge_request,
       commit: commit,
@@ -63,7 +60,16 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       options[:allow_tree_conflicts]
     ]
 
-    return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
+    if Feature.enabled?(:check_etags_diffs_batch_before_write_cache, merge_request.project) && !stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
+      return
+    end
+
+    diffs.unfold_diff_files(unfoldable_positions)
+    diffs.write_cache
+
+    if Feature.disabled?(:check_etags_diffs_batch_before_write_cache, merge_request.project) && !stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
+      return
+    end
 
     render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
   end

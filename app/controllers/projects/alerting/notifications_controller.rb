@@ -18,8 +18,9 @@ module Projects
       def create
         token = extract_alert_manager_token(request)
         result = notify_service.execute(token, integration)
+        has_something_to_return = result.success? && result.http_status != :created
 
-        if result.success?
+        if has_something_to_return
           render json: AlertManagement::AlertSerializer.new.represent(result.payload[:alerts]), code: result.http_status
         else
           head result.http_status

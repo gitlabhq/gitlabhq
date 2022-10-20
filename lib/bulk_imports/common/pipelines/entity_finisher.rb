@@ -24,11 +24,13 @@ module BulkImports
           end
 
           logger.info(
-            bulk_import_id: context.bulk_import_id,
-            bulk_import_entity_id: context.entity.id,
-            bulk_import_entity_type: context.entity.source_type,
+            bulk_import_id: entity.bulk_import_id,
+            bulk_import_entity_id: entity.id,
+            bulk_import_entity_type: entity.source_type,
+            source_full_path: entity.source_full_path,
             pipeline_class: self.class.name,
             message: "Entity #{entity.status_name}",
+            source_version: entity.bulk_import.source_version_info.to_s,
             importer: 'gitlab_migration'
           )
 

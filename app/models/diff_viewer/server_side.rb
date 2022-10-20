@@ -9,14 +9,6 @@ module DiffViewer
       self.size_limit = 5.megabytes
     end
 
-    def prepare!
-      return if Feature.enabled?(:disable_load_entire_blob_for_diff_viewer, diff_file.repository.project)
-
-      # TODO: remove this after resolving #342703
-      diff_file.old_blob&.load_all_data!
-      diff_file.new_blob&.load_all_data!
-    end
-
     def render_error
       # Files that are not stored in the repository, like LFS files and
       # build artifacts, can only be rendered using a client-side viewer,

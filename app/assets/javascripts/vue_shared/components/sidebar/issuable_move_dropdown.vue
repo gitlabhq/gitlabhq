@@ -43,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -128,7 +133,7 @@ export default {
 </script>
 
 <template>
-  <div class="block js-issuable-move-block issuable-move-dropdown sidebar-move-issue-dropdown">
+  <div class="js-issuable-move-block issuable-move-dropdown sidebar-move-issue-dropdown">
     <div
       v-gl-tooltip.left.viewport
       data-testid="move-collapsed"
@@ -141,7 +146,7 @@ export default {
     <gl-dropdown
       ref="dropdown"
       :block="true"
-      :disabled="moveInProgress"
+      :disabled="moveInProgress || disabled"
       class="hide-collapsed"
       toggle-class="js-sidebar-dropdown-toggle"
       @shown="fetchProjects"

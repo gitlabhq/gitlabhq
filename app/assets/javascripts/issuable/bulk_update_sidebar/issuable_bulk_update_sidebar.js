@@ -46,6 +46,11 @@ export default class IssuableBulkUpdateSidebar {
     // https://gitlab.com/gitlab-org/gitlab/-/issues/325874
     issuableEventHub.$on('issuables:enableBulkEdit', () => this.toggleBulkEdit(null, true));
     issuableEventHub.$on('issuables:updateBulkEdit', () => this.updateFormState());
+
+    // These events are connected to the logic inside `move_issues_button.vue`,
+    // so that only one action can be performed at a time
+    issuableEventHub.$on('issuables:bulkMoveStarted', () => this.toggleSubmitButtonDisabled(true));
+    issuableEventHub.$on('issuables:bulkMoveEnded', () => this.updateFormState());
   }
 
   initDropdowns() {
@@ -89,6 +94,8 @@ export default class IssuableBulkUpdateSidebar {
     this.updateSelectedIssuableIds();
 
     IssuableBulkUpdateActions.setOriginalDropdownData();
+
+    issuableEventHub.$emit('issuables:selectionChanged', !noCheckedIssues);
   }
 
   prepForSubmit() {

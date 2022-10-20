@@ -68,6 +68,15 @@ module API
         def find_candidate!(iid)
           candidate_repository.by_iid(iid) || resource_not_found!
         end
+
+        def packages_url
+          path = api_v4_projects_packages_generic_package_version_path(
+            id: user_project.id, package_name: '', file_name: ''
+          )
+          path = path.delete_suffix('/package_version')
+
+          "#{request.base_url}#{path}"
+        end
       end
 
       params do
@@ -143,7 +152,8 @@ module API
               optional :tags, type: Array, desc: 'This will be ignored'
             end
             post 'create', urgency: :low do
-              present candidate_repository.create!(experiment, params[:start_time]), with: Entities::Ml::Mlflow::Run
+              present candidate_repository.create!(experiment, params[:start_time]),
+                      with: Entities::Ml::Mlflow::Run, packages_url: packages_url
             end
 
             desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
@@ -155,7 +165,7 @@ module API
               optional :run_uuid, type: String, desc: 'This parameter is ignored'
             end
             get 'get', urgency: :low do
-              present candidate, with: Entities::Ml::Mlflow::Run
+              present candidate, with: Entities::Ml::Mlflow::Run, packages_url: packages_url
             end
 
             desc 'Updates a Run.' do
@@ -174,7 +184,7 @@ module API
             post 'update', urgency: :low do
               candidate_repository.update(candidate, params[:status], params[:end_time])
 
-              present candidate, with: Entities::Ml::Mlflow::UpdateRun
+              present candidate, with: Entities::Ml::Mlflow::UpdateRun, packages_url: packages_url
             end
 
             desc 'Logs a metric to a run.' do

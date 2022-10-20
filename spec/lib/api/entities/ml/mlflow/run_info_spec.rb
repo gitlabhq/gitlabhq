@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Entities::Ml::Mlflow::RunInfo do
   let_it_be(:candidate) { create(:ml_candidates) }
 
-  subject { described_class.new(candidate).as_json }
+  subject { described_class.new(candidate, packages_url: 'http://example.com').as_json }
 
   context 'when start_time is nil' do
     it { expect(subject[:start_time]).to eq(0) }
@@ -53,7 +53,7 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo do
 
   describe 'artifact_uri' do
     it 'is not implemented' do
-      expect(subject[:artifact_uri]).to eq('not_implemented')
+      expect(subject[:artifact_uri]).to eq("http://example.com#{candidate.artifact_root}")
     end
   end
 

@@ -1,0 +1,5 @@
+mutation moveIssue($moveIssueInput: IssueMoveInput!) {
+  issueMove(input: $moveIssueInput) {
+    errors
+  }
+}

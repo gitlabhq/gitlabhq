@@ -1,29 +1,34 @@
 const usersMock = [
   {
+    id: '123',
     username: 'usr1',
     webUrl: 'http://test.test/usr1',
     name: 'User 1',
     avatarUrl: 'http://test.test/avt1.png',
   },
   {
+    id: '456',
     username: 'usr2',
     webUrl: 'http://test.test/usr2',
     name: 'User 2',
     avatarUrl: 'http://test.test/avt2.png',
   },
   {
+    id: '789',
     username: 'usr3',
     webUrl: 'http://test.test/usr3',
     name: 'User 3',
     avatarUrl: 'http://test.test/avt3.png',
   },
   {
+    id: '987',
     username: 'usr4',
     webUrl: 'http://test.test/usr4',
     name: 'User 4',
     avatarUrl: 'http://test.test/avt4.png',
   },
   {
+    id: '654',
     username: 'usr5',
     webUrl: 'http://test.test/usr5',
     name: 'User 5',
@@ -40,6 +45,17 @@ const approvalsRequired = 3;
 
 const groupsMock = [{ name: 'test_group_1' }, { name: 'test_group_2' }];
 
+export const approvalRulesMock = [
+  {
+    __typename: 'ApprovalProjectRule',
+    id: '123',
+    name: 'test',
+    type: 'REGULAR',
+    eligibleApprovers: { nodes: usersMock },
+    approvalsRequired,
+  },
+];
+
 export const protectionPropsMock = {
   header: 'Test protection',
   headerLinkTitle: 'Test link title',
@@ -47,13 +63,7 @@ export const protectionPropsMock = {
   roles: accessLevelsMock,
   users: usersMock,
   groups: groupsMock,
-  approvals: [
-    {
-      name: 'test',
-      eligibleApprovers: { nodes: usersMock },
-      approvalsRequired,
-    },
-  ],
+  approvals: approvalRulesMock,
 };
 
 export const protectionRowPropsMock = {
@@ -116,6 +126,10 @@ export const branchProtectionsMockResponse = {
                 edges: accessLevelsMockResponse,
               },
             },
+            approvalRules: {
+              __typename: 'ApprovalProjectRuleConnection',
+              nodes: approvalRulesMock,
+            },
           },
           {
             __typename: 'BranchRule',
@@ -132,6 +146,10 @@ export const branchProtectionsMockResponse = {
                 __typename: 'PushAccessLevelConnection',
                 edges: [],
               },
+            },
+            approvalRules: {
+              __typename: 'ApprovalProjectRuleConnection',
+              nodes: [],
             },
           },
         ],

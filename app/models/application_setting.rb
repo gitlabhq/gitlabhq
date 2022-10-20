@@ -636,6 +636,10 @@ class ApplicationSetting < ApplicationRecord
             addressable_url: { allow_localhost: true, allow_local_network: false },
             allow_blank: true
 
+  validates :product_analytics_enabled,
+            presence: true,
+            allow_blank: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

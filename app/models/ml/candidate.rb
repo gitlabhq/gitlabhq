@@ -14,6 +14,10 @@ module Ml
 
     default_value_for(:iid) { SecureRandom.uuid }
 
+    def artifact_root
+      "/ml_candidate_#{iid}/-/"
+    end
+
     class << self
       def with_project_id_and_iid(project_id, iid)
         return unless project_id.present? && iid.present?

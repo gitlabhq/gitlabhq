@@ -565,6 +565,7 @@ export default {
         bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
         bulkUpdateSidebar.initStatusDropdown();
         bulkUpdateSidebar.initSubscriptionsDropdown();
+        bulkUpdateSidebar.initMoveIssuesButton();
 
         const usersSelect = await import('~/users_select');
         const UsersSelect = usersSelect.default;

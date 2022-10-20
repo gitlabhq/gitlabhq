@@ -14210,7 +14210,7 @@ Represents the merge access level of a branch protection.
 | <a id="mergerequestdefaultsquashcommitmessage"></a>`defaultSquashCommitMessage` | [`String`](#string) | Default squash commit message of the merge request. |
 | <a id="mergerequestdescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mergerequestdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
-| <a id="mergerequestdetailedmergestatus"></a>`detailedMergeStatus` **{warning-solid}** | [`DetailedMergeStatus`](#detailedmergestatus) | **Introduced** in 15.3. This feature is in Alpha. It can be changed or removed at any time. Detailed merge status of the merge request. |
+| <a id="mergerequestdetailedmergestatus"></a>`detailedMergeStatus` | [`DetailedMergeStatus`](#detailedmergestatus) | Detailed merge status of the merge request. |
 | <a id="mergerequestdiffheadsha"></a>`diffHeadSha` | [`String`](#string) | Diff head SHA of the merge request. |
 | <a id="mergerequestdiffrefs"></a>`diffRefs` | [`DiffRefs`](#diffrefs) | References of the base SHA, the head SHA, and the start SHA for this merge request. |
 | <a id="mergerequestdiffstatssummary"></a>`diffStatsSummary` | [`DiffStatsSummary`](#diffstatssummary) | Summary of which files were changed in this merge request. |

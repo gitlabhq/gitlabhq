@@ -22673,6 +22673,21 @@ msgstr ""
 msgid "IssuesAnalytics|Total:"
 msgstr ""
 
+msgid "Issues|Move selected"
+msgstr ""
+
+msgid "Issues|Tasks and test cases can not be moved."
+msgstr ""
+
+msgid "Issues|Tasks can not be moved."
+msgstr ""
+
+msgid "Issues|Test cases can not be moved."
+msgstr ""
+
+msgid "Issues|There was an error while moving the issues."
+msgstr ""
+
 msgid "Issue|Title"
 msgstr ""
 
@@ -32717,6 +32732,9 @@ msgstr ""
 msgid "ProtectedBranch|Allow all users with push access to force push."
 msgstr ""
 
+msgid "ProtectedBranch|Allowed to create"
+msgstr ""
+
 msgid "ProtectedBranch|Allowed to force push"
 msgstr ""
 
@@ -32753,13 +32771,25 @@ msgstr ""
 msgid "ProtectedBranch|Code owner approval"
 msgstr ""
 
+msgid "ProtectedBranch|Create wildcard"
+msgstr ""
+
 msgid "ProtectedBranch|Does not apply to users allowed to push. Optional sections are not enforced."
 msgstr ""
 
 msgid "ProtectedBranch|Keep stable branches secure and force developers to use merge requests."
 msgstr ""
 
+msgid "ProtectedBranch|Last commit"
+msgstr ""
+
 msgid "ProtectedBranch|Learn more."
+msgstr ""
+
+msgid "ProtectedBranch|New Protected Tag"
+msgstr ""
+
+msgid "ProtectedBranch|No tags are protected."
 msgstr ""
 
 msgid "ProtectedBranch|Protect"
@@ -32777,10 +32807,19 @@ msgstr ""
 msgid "ProtectedBranch|Protected branches, merge request approvals, and status checks will appear here once configured."
 msgstr ""
 
+msgid "ProtectedBranch|Protected tags (%{tags_count})"
+msgstr ""
+
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
 msgstr ""
 
 msgid "ProtectedBranch|Require approval from code owners:"
+msgstr ""
+
+msgid "ProtectedBranch|Search protected tags"
+msgstr ""
+
+msgid "ProtectedBranch|Select tag or create wildcard"
 msgstr ""
 
 msgid "ProtectedBranch|There are currently no protected branches, protect a branch with the form above."

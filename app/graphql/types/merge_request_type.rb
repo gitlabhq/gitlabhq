@@ -100,8 +100,7 @@ module Types
 
     field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, null: true,
                                                                                    calls_gitaly: true,
-                                                                                   description: 'Detailed merge status of the merge request.',
-                                                                                   alpha: { milestone: '15.3' }
+                                                                                   description: 'Detailed merge status of the merge request.'
 
     field :mergeable_discussions_state, GraphQL::Types::Boolean, null: true,
                                                                  calls_gitaly: true,

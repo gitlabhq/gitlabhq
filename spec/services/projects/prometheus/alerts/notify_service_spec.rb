@@ -244,9 +244,10 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
 
       shared_examples 'process truncated alerts' do
-        it 'returns 200 but skips processing and logs a warning', :aggregate_failures do
+        it 'returns 201 but skips processing and logs a warning', :aggregate_failures do
           expect(subject).to be_success
-          expect(subject.payload[:alerts].size).to eq(max_alerts)
+          expect(subject.payload).to eq({})
+          expect(subject.http_status).to eq(:created)
           expect(Gitlab::AppLogger)
             .to have_received(:warn)
             .with(
@@ -260,9 +261,10 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
       end
 
       shared_examples 'process all alerts' do
-        it 'returns 200 and process alerts without warnings', :aggregate_failures do
+        it 'returns 201 and process alerts without warnings', :aggregate_failures do
           expect(subject).to be_success
-          expect(subject.payload[:alerts].size).to eq(2)
+          expect(subject.payload).to eq({})
+          expect(subject.http_status).to eq(:created)
           expect(Gitlab::AppLogger).not_to have_received(:warn)
         end
       end

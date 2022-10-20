@@ -209,22 +209,25 @@ RSpec.describe 'User interacts with awards' do
 
       it 'adds award to issue' do
         first('[data-testid="award-button"]').click
-
+        wait_for_requests
         expect(page).to have_selector('[data-testid="award-button"].selected')
         expect(first('[data-testid="award-button"]')).to have_content '1'
 
         visit project_issue_path(project, issue)
+        wait_for_requests
 
         expect(first('[data-testid="award-button"]')).to have_content '1'
       end
 
       it 'removes award from issue', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375241' do
         first('[data-testid="award-button"]').click
+        wait_for_requests
         find('[data-testid="award-button"].selected').click
-
+        wait_for_requests
         expect(first('[data-testid="award-button"]')).to have_content '0'
 
         visit project_issue_path(project, issue)
+        wait_for_requests
 
         expect(first('[data-testid="award-button"]')).to have_content '0'
       end

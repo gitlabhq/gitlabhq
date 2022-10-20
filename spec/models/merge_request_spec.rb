@@ -232,10 +232,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'for branch' do
-      before do
-        stub_feature_flags(stricter_mr_branch_name: false)
-      end
-
       where(:branch_name, :valid) do
         'foo' | true
         'foo:bar' | false

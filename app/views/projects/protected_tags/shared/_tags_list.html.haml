@@ -1,9 +1,9 @@
 .protected-tags-list.js-protected-tags-list
   - if @protected_tags.empty?
     .card-header
-      Protected tags (0)
+      = s_('ProtectedBranch|Protected tags (%{tags_count})') % { tags_count: 0 }
     %p.settings-message.text-center
-      No tags are protected.
+      = s_('ProtectedBranch|No tags are protected.')
   - else
     - can_admin_project = can?(current_user, :admin_project, @project)
 
@@ -16,9 +16,12 @@
           %col
       %thead
         %tr
-          %th Protected tags (#{@protected_tags_count})
-          %th Last commit
-          %th Allowed to create
+          %th
+            = s_('ProtectedBranch|Protected tags (%{tags_count})') % { tags_count: @protected_tags_count }
+          %th
+            = s_('ProtectedBranch|Last commit')
+          %th
+            = s_('ProtectedBranch|Allowed to create')
           - if can_admin_project
             %th
       %tbody

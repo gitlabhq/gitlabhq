@@ -46,7 +46,9 @@ module Gitlab
 
         # This is either the new path, otherwise the old path for the diff_file
         def diff_file_paths
-          diff_files.map(&:file_path)
+          diffs.map do |diff|
+            diff.new_path.presence || diff.old_path
+          end
         end
 
         # This is both the new and old paths for the diff_file

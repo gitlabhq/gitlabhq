@@ -3,13 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Candidate, factory_default: :keep do
-  let_it_be(:candidate) { create_default(:ml_candidates, :with_metrics_and_params) }
+  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:experiment) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:params) }
     it { is_expected.to have_many(:metrics) }
+  end
+
+  describe '.artifact_root' do
+    subject { candidate.artifact_root }
+
+    it { is_expected.to eq("/ml_candidate_#{candidate.iid}/-/") }
   end
 
   describe '#new' do

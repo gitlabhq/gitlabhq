@@ -36,6 +36,15 @@ module QA
         end
       end
 
+      let(:invalid_content) do
+        <<~YAML
+
+        job3:
+        stage: stage_foo
+        script: echo 'Done.'
+        YAML
+      end
+
       before do
         # Make sure a pipeline is created before visiting pipeline editor page.
         # Otherwise, test might timeout before the page finishing fetching pipeline status.
@@ -80,7 +89,7 @@ module QA
           invalid_msg = 'syntax is invalid'
 
           Page::Project::PipelineEditor::Show.perform do |show|
-            show.write_to_editor(SecureRandom.hex(10))
+            show.write_to_editor(invalid_content)
 
             aggregate_failures do
               show.go_to_visualize_tab
@@ -90,8 +99,10 @@ module QA
               show.simulate_pipeline
               expect(show.tab_alert_title).to have_content('Pipeline simulation completed with errors')
 
+              expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')
+
               show.go_to_view_merged_yaml_tab
-              expect(show.tab_alert_message).to have_content(invalid_msg)
+              expect(show).to have_source_editor
 
               expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')
             end

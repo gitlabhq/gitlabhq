@@ -44,6 +44,23 @@ query getBranchRulesDetails($projectPath: ID!) {
             }
           }
         }
+        approvalRules {
+          nodes {
+            id
+            name
+            type
+            approvalsRequired
+            eligibleApprovers {
+              nodes {
+                id
+                name
+                username
+                webUrl
+                avatarUrl
+              }
+            }
+          }
+        }
       }
     }
   }

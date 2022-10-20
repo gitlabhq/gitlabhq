@@ -7,24 +7,42 @@ module RuboCop
         extend RuboCop::Cop::AutoCorrector
 
         MSG = <<~EOL
-          Avoid calling `JSON` directly. Instead, use the `Gitlab::Json`
-          wrapper. This allows us to alter the JSON parser being used.
+          Prefer `Gitlab::Json` over calling `JSON` or `to_json` directly. See https://docs.gitlab.com/ee/development/json.html
         EOL
 
         def_node_matcher :json_node?, <<~PATTERN
-          (send (const {nil? | (const nil? :ActiveSupport)} :JSON)...)
+          (send (const {nil? | (const nil? :ActiveSupport)} :JSON) $_ $...)
+        PATTERN
+
+        def_node_matcher :to_json_call?, <<~PATTERN
+          (send $_ :to_json)
         PATTERN
 
         def on_send(node)
-          return unless json_node?(node)
+          method_name, arg_source = match_node(node)
+          return unless method_name
 
           add_offense(node) do |corrector|
-            _, method_name, *arg_nodes = *node
-
-            replacement = "Gitlab::Json.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
+            replacement = "Gitlab::Json.#{method_name}(#{arg_source})"
 
             corrector.replace(node.source_range, replacement)
           end
+        end
+
+        private
+
+        def match_node(node)
+          method_name, arg_nodes = json_node?(node)
+
+          # Only match if the method is implemented by Gitlab::Json
+          if method_name && ::Gitlab::Json.methods(false).include?(method_name)
+            return [method_name, arg_nodes.map(&:source).join(', ')]
+          end
+
+          receiver = to_json_call?(node)
+          return [:generate, receiver.source] if receiver
+
+          nil
         end
       end
     end

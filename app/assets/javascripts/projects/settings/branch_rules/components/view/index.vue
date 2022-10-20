@@ -45,18 +45,17 @@ export default {
         };
       },
       update({ project: { branchRules } }) {
-        this.branchProtection = branchRules.nodes.find(
-          (rule) => rule.name === this.branch,
-        )?.branchProtection;
+        const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
+        this.branchProtection = branchRule?.branchProtection;
+        this.approvalRules = branchRule?.approvalRules;
       },
     },
   },
   data() {
     return {
       branch: getParameterByName(BRANCH_PARAM_NAME),
-      branchProtection: {
-        approvalRules: {},
-      },
+      branchProtection: {},
+      approvalRules: {},
     };
   },
   computed: {
@@ -104,7 +103,7 @@ export default {
         : this.$options.i18n.branchNameOrPattern;
     },
     approvals() {
-      return this.branchProtection?.approvalRules?.nodes || [];
+      return this.approvalRules?.nodes || [];
     },
   },
   methods: {

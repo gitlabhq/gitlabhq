@@ -36,9 +36,9 @@ module Projects
 
           truncate_alerts! if max_alerts_exceeded?
 
-          alert_responses = process_prometheus_alerts
+          process_prometheus_alerts
 
-          alert_response(alert_responses)
+          created
         end
 
         def self.processable?(payload)
@@ -151,12 +151,6 @@ module Projects
               .new(project, alert)
               .execute
           end
-        end
-
-        def alert_response(alert_responses)
-          alerts = alert_responses.flat_map { |resp| resp.payload[:alerts] }.compact
-
-          success(alerts)
         end
       end
     end

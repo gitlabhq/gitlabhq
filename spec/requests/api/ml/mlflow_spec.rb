@@ -295,7 +295,6 @@ RSpec.describe API::Ml::Mlflow do
           'experiment_id' => params[:experiment_id],
           'user_id' => current_user.id.to_s,
           'start_time' => params[:start_time],
-          'artifact_uri' => 'not_implemented',
           'status' => "RUNNING",
           'lifecycle_stage' => "active"
         }
@@ -339,7 +338,7 @@ RSpec.describe API::Ml::Mlflow do
           'experiment_id' => candidate.experiment.iid.to_s,
           'user_id' => candidate.user.id.to_s,
           'start_time' => candidate.start_time,
-          'artifact_uri' => 'not_implemented',
+          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.iid}/-/",
           'status' => "RUNNING",
           'lifecycle_stage' => "active"
         }
@@ -378,7 +377,7 @@ RSpec.describe API::Ml::Mlflow do
           'user_id' => candidate.user.id.to_s,
           'start_time' => candidate.start_time,
           'end_time' => params[:end_time],
-          'artifact_uri' => 'not_implemented',
+          'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_candidate_#{candidate.iid}/-/",
           'status' => 'FAILED',
           'lifecycle_stage' => 'active'
         }

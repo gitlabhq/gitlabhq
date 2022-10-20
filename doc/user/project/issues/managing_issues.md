@@ -340,6 +340,29 @@ To move an issue:
 
 ### Bulk move issues **(FREE SELF)**
 
+#### From the issues list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.5.
+
+You can move multiple issues at the same time when you’re in a project.
+You can't move tasks or test cases.
+
+Prerequisite:
+
+- You must have at least the Reporter role for the project.
+
+To move multiple issues at the same time:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues**.
+1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select the checkboxes next to each issue you want to move.
+1. From the right sidebar, select **Move selected**.
+1. From the dropdown list, select the destination project.
+1. Select **Move**.
+
+#### From the Rails console
+
 You can move all open issues from one project to another.
 
 Prerequisites:

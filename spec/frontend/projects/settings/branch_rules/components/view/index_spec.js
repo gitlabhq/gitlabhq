@@ -12,7 +12,7 @@ import {
 import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
 import branchRulesQuery from '~/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { sprintf } from '~/locale';
-import { branchProtectionsMockResponse } from './mock_data';
+import { branchProtectionsMockResponse, approvalRulesMock } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),
@@ -105,9 +105,10 @@ describe('View branch rules', () => {
     expect(findApprovalsTitle().exists()).toBe(true);
 
     expect(findBranchProtections().at(2).props()).toMatchObject({
-      header: sprintf(I18N.approvalsHeader, { total: 0 }),
+      header: sprintf(I18N.approvalsHeader, { total: 3 }),
       headerLinkHref: approvalRulesPath,
       headerLinkTitle: I18N.manageApprovalsLinkTitle,
+      approvals: approvalRulesMock,
     });
   });
 });

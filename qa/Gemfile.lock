@@ -187,7 +187,7 @@ GEM
       sawyer (~> 0.9)
     oj (3.13.21)
     os (1.1.4)
-    parallel (1.19.2)
+    parallel (1.22.1)
     parallel_tests (3.13.0)
       parallel
     parser (3.1.2.1)
@@ -319,7 +319,7 @@ DEPENDENCIES
   knapsack (~> 4.0)
   nokogiri (~> 1.13, >= 1.13.9)
   octokit (~> 5.6.1)
-  parallel (~> 1.19)
+  parallel (~> 1.22, >= 1.22.1)
   parallel_tests (~> 3.13)
   pry-byebug (~> 3.10.1)
   rainbow (~> 3.1.1)

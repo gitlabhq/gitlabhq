@@ -37,6 +37,7 @@ const mockProps = {
   dropdownButtonTitle: 'Move issuable',
   dropdownHeaderTitle: 'Move issuable',
   moveInProgress: false,
+  disabled: false,
 };
 
 const mockEvent = {
@@ -44,20 +45,21 @@ const mockEvent = {
   preventDefault: jest.fn(),
 };
 
-const createComponent = (propsData = mockProps) =>
-  shallowMount(IssuableMoveDropdown, {
-    propsData,
-  });
-
 describe('IssuableMoveDropdown', () => {
   let mock;
   let wrapper;
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-    wrapper = createComponent();
+  const createComponent = (propsData = mockProps) => {
+    wrapper = shallowMount(IssuableMoveDropdown, {
+      propsData,
+    });
     wrapper.vm.$refs.dropdown.hide = jest.fn();
     wrapper.vm.$refs.searchInput.focusInput = jest.fn();
+  };
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+    createComponent();
   });
 
   afterEach(() => {
@@ -192,6 +194,12 @@ describe('IssuableMoveDropdown', () => {
 
       it('renders gl-dropdown-form component', () => {
         expect(findDropdownEl().findComponent(GlDropdownForm).exists()).toBe(true);
+      });
+
+      it('renders disabled dropdown when `disabled` is true', () => {
+        createComponent({ ...mockProps, disabled: true });
+
+        expect(findDropdownEl().attributes('disabled')).toBe('true');
       });
 
       it('renders header element', () => {

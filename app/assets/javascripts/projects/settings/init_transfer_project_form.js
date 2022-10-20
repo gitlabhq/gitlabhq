@@ -12,7 +12,7 @@ export default () => {
   Vue.use(VueApollo);
 
   const {
-    projectId,
+    projectId: resourceId,
     targetFormId = null,
     targetHiddenInputId = null,
     buttonText: confirmButtonText = '',
@@ -27,7 +27,7 @@ export default () => {
     }),
     provide: {
       confirmDangerMessage,
-      projectId,
+      resourceId,
     },
     render(createElement) {
       return createElement(TransferProjectForm, {
@@ -36,7 +36,7 @@ export default () => {
           confirmationPhrase,
         },
         on: {
-          selectNamespace: (id) => {
+          selectTransferLocation: (id) => {
             if (targetHiddenInputId && document.getElementById(targetHiddenInputId)) {
               document.getElementById(targetHiddenInputId).value = id;
             }

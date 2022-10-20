@@ -20,5 +20,4 @@
         %li= _('You will need to update your local repositories to point to the new location.')
         %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
       = hidden_field_tag(hidden_input_id)
-      = label_tag :new_namespace_id, _('Select a new namespace'), class: 'gl-font-weight-bold'
       .js-transfer-project-form{ data: initial_data }

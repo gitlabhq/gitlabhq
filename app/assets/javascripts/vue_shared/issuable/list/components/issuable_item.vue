@@ -62,6 +62,9 @@ export default {
     issuableId() {
       return getIdFromGraphQLId(this.issuable.id);
     },
+    issuableIid() {
+      return this.issuable.iid;
+    },
     createdInPastDay() {
       const createdSecondsAgo = differenceInSeconds(new Date(this.issuable.createdAt), new Date());
       return createdSecondsAgo < SECONDS_IN_DAY;
@@ -193,6 +196,8 @@ export default {
       class="issue-check gl-mr-0"
       :checked="checked"
       :data-id="issuableId"
+      :data-iid="issuableIid"
+      :data-type="issuable.type"
       @input="$emit('checked-input', $event)"
     >
       <span class="gl-sr-only">{{ issuable.title }}</span>

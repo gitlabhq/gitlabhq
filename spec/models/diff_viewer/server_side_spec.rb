@@ -16,34 +16,6 @@ RSpec.describe DiffViewer::ServerSide do
 
   subject { viewer_class.new(diff_file) }
 
-  describe '#prepare!' do
-    before do
-      stub_feature_flags(disable_load_entire_blob_for_diff_viewer: feature_flag_enabled)
-    end
-
-    context 'when the disable_load_entire_blob_for_diff_viewer flag is disabled' do
-      let(:feature_flag_enabled) { false }
-
-      it 'loads all diff file data' do
-        subject
-        expect(diff_file).to receive_message_chain(:old_blob, :load_all_data!)
-        expect(diff_file).to receive_message_chain(:new_blob, :load_all_data!)
-        subject.prepare!
-      end
-    end
-
-    context 'when the disable_load_entire_blob_for_diff_viewer flag is enabled' do
-      let(:feature_flag_enabled) { true }
-
-      it 'does not load file data' do
-        subject
-        expect(diff_file).not_to receive(:old_blob)
-        expect(diff_file).not_to receive(:new_blob)
-        subject.prepare!
-      end
-    end
-  end
-
   describe '#render_error' do
     context 'when the diff file is stored externally' do
       before do
