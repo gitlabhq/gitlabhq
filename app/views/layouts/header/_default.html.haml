@@ -56,7 +56,7 @@
                 container: 'body' } do
                 = sprite_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
-                = gl_badge_tag({ size: :sm, variant: :success }, { class: "gl-ml-n2 #{(' gl-display-none' if issues_count == 0)}", "aria-label": n_("%d assigned issue", "%d assigned issues", issues_count) % issues_count }) do
+                = gl_badge_tag({ size: :sm, variant: :success }, { class: "gl-ml-n2 #{'gl-display-none' if issues_count == 0}", "aria-label": n_("%d assigned issue", "%d assigned issues", issues_count) % issues_count }) do
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
@@ -70,7 +70,7 @@
                 track_property: 'navigation',
                 container: 'body' } do
                 = sprite_icon('git-merge')
-                = gl_badge_tag({ size: :sm, variant: :warning }, { class: "js-merge-requests-count gl-ml-n2#{(' gl-display-none' if user_merge_requests_counts[:total] == 0)}", "aria-label": n_("%d merge request", "%d merge requests", user_merge_requests_counts[:total]) % user_merge_requests_counts[:total] }) do
+                = gl_badge_tag({ size: :sm, variant: :warning }, { class: "js-merge-requests-count gl-ml-n2 #{'gl-display-none' if user_merge_requests_counts[:total] == 0}", "aria-label": n_("%d merge request", "%d merge requests", user_merge_requests_counts[:total]) % user_merge_requests_counts[:total] }) do
                   = number_with_delimiter(user_merge_requests_counts[:total])
                 = sprite_icon('chevron-down', css_class: 'caret-down gl-mx-0!')
               .dropdown-menu.dropdown-menu-right
@@ -98,7 +98,7 @@
                 = sprite_icon('todo-done')
                 -# The todos' counter badge's visibility is being toggled by adding or removing the .hidden class in Js.
                 -# We'll eventually migrate to .gl-display-none: https://gitlab.com/gitlab-org/gitlab/-/issues/351792.
-                = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2#{(' hidden' if todos_pending_count == 0)}", "aria-label": _("Todos count") }) do
+                = gl_badge_tag({ size: :sm, variant: :info }, { class: "js-todos-count gl-ml-n2 #{'hidden' if todos_pending_count == 0}", "aria-label": _("Todos count") }) do
                   = todos_count_format(todos_pending_count)
           %li.nav-item.header-help.dropdown.d-none.d-md-block{ data: { track_action: 'click_question_mark_link', track_label: 'main_navigation', track_property: 'navigation', track_experiment: 'cross_stage_fdm' } }
             = link_to help_path, class: 'header-help-dropdown-toggle gl-relative', data: { toggle: "dropdown" } do

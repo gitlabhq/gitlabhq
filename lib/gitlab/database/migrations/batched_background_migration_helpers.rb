@@ -196,6 +196,43 @@ module Gitlab
             :gitlab_main
           end
         end
+
+        def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:, finalize: true)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
+
+          Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
+          migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+            Gitlab::Database.gitlab_schemas_for_connection(connection),
+            job_class_name, table_name, column_name, job_arguments
+          )
+
+          configuration = {
+            job_class_name: job_class_name,
+            table_name: table_name,
+            column_name: column_name,
+            job_arguments: job_arguments
+          }
+
+          return Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}" if migration.nil?
+
+          return if migration.finished?
+
+          finalize_batched_background_migration(job_class_name: job_class_name, table_name: table_name, column_name: column_name, job_arguments: job_arguments) if finalize
+
+          return if migration.reload.finished? # rubocop:disable Cop/ActiveRecordAssociationReload
+
+          raise "Expected batched background migration for the given configuration to be marked as 'finished', " \
+            "but it is '#{migration.status_name}':" \
+            "\t#{configuration}" \
+            "\n\n" \
+            "Finalize it manually by running the following command in a `bash` or `sh` shell:" \
+            "\n\n" \
+            "\tsudo gitlab-rake gitlab:background_migrations:finalize[#{job_class_name},#{table_name},#{column_name},'#{job_arguments.to_json.gsub(',', '\,')}']" \
+            "\n\n" \
+            "For more information, check the documentation" \
+            "\n\n" \
+            "\thttps://docs.gitlab.com/ee/user/admin_area/monitoring/background_migrations.html#database-migrations-failing-because-of-batched-background-migration-not-finished"
+        end
       end
     end
   end

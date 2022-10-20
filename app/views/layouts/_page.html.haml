@@ -24,7 +24,7 @@
       = yield :group_invite_members_banner
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
-    %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
+    %div{ class: "#{container_class unless @no_container} #{@content_class}" }
       %main.content{ id: "content-body", **page_itemtype }
         = render "layouts/flash", extra_flash_class: 'limit-container-width'
         = yield :after_flash_content

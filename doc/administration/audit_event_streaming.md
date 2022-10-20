@@ -312,10 +312,7 @@ Streamed audit events have a predictable schema in the body of the response.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.0.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.1 by default.
 > - [Added `details.author_class` field](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the
-feature, ask an administrator to [disable the feature flag](feature_flags.md) named `audit_event_streaming_git_operations`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101583) in GitLab 15.6. Feature flag `audit_event_streaming_git_operations` removed.
 
 Streaming audit events can be sent when signed-in users push, pull, or clone a project's remote Git repositories:
 

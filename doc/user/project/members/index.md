@@ -51,20 +51,9 @@ flowchart RL
 Add users to a project so they become members and have permission
 to perform actions.
 
-The maximum role (access level) you set depends on if you have the Owner or Maintainer role for the group. For example, the maximum
-role that can be set is:
-
-- Owner (`50`), if you have the Owner role for the project.
-- Maintainer (`40`), if you have the Maintainer role on the project.
-
-In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
-The Owner [role](../../permissions.md#project-members-permissions) can only be added at the group level.
-
 Prerequisite:
 
-- You must have the Maintainer or Owner role:
-  - To remove direct members with the Maintainer role and below, you must have the Maintainer role.
-  - To remove members with the Owner role, you must have the Owner role.
+- You must have the Owner or Maintainer role.
 
 To add a user to a project:
 
@@ -85,6 +74,17 @@ deleted after 90 days.
 
 If the user does not have a GitLab account, they are prompted to create an account
 using the email address the invitation was sent to.
+
+### Which roles you can assign
+
+The maximum role you can assign depends on whether you have the Owner or Maintainer
+role for the group. For example, the maximum role you can set is:
+
+- Owner (`50`), if you have the Owner role for the project.
+- Maintainer (`40`), if you have the Maintainer role on the project.
+
+In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
+The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
 
 ## Add groups to a project
 
@@ -169,7 +169,8 @@ group itself.
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role.
+- To remove direct members with the Maintainer, Developer, Reporter, or Guest role, you must have the Maintainer role.
+- To remove members with the Owner role, you must have the Owner role.
 - Optional. Unassign the member from all issues and merge requests that
   are assigned to them.
 

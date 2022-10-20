@@ -12,6 +12,30 @@ module WorkItems
 
     private
 
+    def filter_items(items)
+      items = super(items)
+
+      by_widgets(items)
+    end
+
+    def by_widgets(items)
+      WorkItems::Type.available_widgets.each do |widget_class|
+        widget_filter = widget_filter_for(widget_class)
+
+        next unless widget_filter
+
+        items = widget_filter.filter(items, params)
+      end
+
+      items
+    end
+
+    def widget_filter_for(widget_class)
+      "WorkItems::Widgets::Filters::#{widget_class.name.demodulize.camelize}".constantize
+    rescue NameError
+      nil
+    end
+
     def model_class
       WorkItem
     end

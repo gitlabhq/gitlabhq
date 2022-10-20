@@ -533,7 +533,7 @@ To get the correct context, use `$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` instead 
 This variable is only availabe in
 [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md).
 
-For example, for a configuration that supports both branch pipelines, as well as merge request pipelines originating in project forks,
+For example, for a configuration that supports both merge request pipelines originating in project forks and branch pipelines,
 you need to [combine both `include` directives with `rules:if`](../../ci/yaml/includes.md#use-rules-with-include):
 
 ```yaml

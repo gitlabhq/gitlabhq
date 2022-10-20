@@ -363,6 +363,7 @@ operations_scopes: :gitlab_main
 operations_strategies: :gitlab_main
 operations_strategies_user_lists: :gitlab_main
 operations_user_lists: :gitlab_main
+p_ci_builds_metadata: :gitlab_ci
 packages_build_infos: :gitlab_main
 packages_cleanup_policies: :gitlab_main
 packages_composer_cache_files: :gitlab_main

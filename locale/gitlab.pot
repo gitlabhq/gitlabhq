@@ -4665,9 +4665,6 @@ msgstr ""
 msgid "Application settings update failed"
 msgstr ""
 
-msgid "Application uninstalled but failed to destroy: %{error_message}"
-msgstr ""
-
 msgid "Application was successfully destroyed."
 msgstr ""
 
@@ -28424,9 +28421,6 @@ msgstr ""
 msgid "Operation not allowed"
 msgstr ""
 
-msgid "Operation timed out. Check pod logs for %{pod_name} for more details."
-msgstr ""
-
 msgid "Operations"
 msgstr ""
 
@@ -28855,6 +28849,12 @@ msgstr ""
 msgid "PackageRegistry|Helm"
 msgstr ""
 
+msgid "PackageRegistry|Help us learn about your registry migration needs"
+msgstr ""
+
+msgid "PackageRegistry|If you are interested in migrating packages from your private registry to the GitLab Package Registry, take our survey and tell us more about your needs."
+msgstr ""
+
 msgid "PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file."
 msgstr ""
 
@@ -28999,6 +28999,9 @@ msgid "PackageRegistry|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "PackageRegistry|Source project located at %{link}"
+msgstr ""
+
+msgid "PackageRegistry|Take survey"
 msgstr ""
 
 msgid "PackageRegistry|Target SHA: %{sha}"

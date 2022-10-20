@@ -4,7 +4,7 @@
 .flash-container.flash-container-page.user-callout{ data: callout_data }
   -# We currently only support `alert`, `warning`, `notice`, `success`
   %div{ class: "flash-#{flash_type}" }
-    %div{ class: "#{(container_class unless fluid_layout)} #{(extra_flash_class unless @no_container)} #{@content_class}" }
+    %div{ class: "#{container_class unless fluid_layout} #{extra_flash_class unless @no_container} #{@content_class}" }
       %span= message
       %button.btn.gl-button.btn-default.close.js-close{ type: 'button',
         'aria-label' => _('Dismiss') }

@@ -33,6 +33,7 @@ RSpec.describe 'Database schema' do
     chat_teams: %w[team_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
     ci_builds_metadata: %w[partition_id],
+    p_ci_builds_metadata: %w[partition_id],
     ci_job_artifacts: %w[partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipeline_variables: %w[partition_id],

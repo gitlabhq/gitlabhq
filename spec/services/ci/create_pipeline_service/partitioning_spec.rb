@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :aggregate_failures do
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :aggregate_failures,
+:ci_partitionable do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user)    { project.first_owner }
 
@@ -31,7 +32,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
   end
 
   let(:pipeline) { service.execute(:push).payload }
-  let(:current_partition_id) { 123 }
+  let(:current_partition_id) { ci_testing_partition_id }
 
   before do
     stub_ci_pipeline_yaml_file(config)

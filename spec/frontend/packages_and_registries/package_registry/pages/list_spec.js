@@ -1,8 +1,8 @@
-import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlBanner, GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo from 'vue-apollo';
-
+import * as utils from '~/lib/utils/common_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -16,6 +16,7 @@ import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
+  HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE,
   EMPTY_LIST_HELP_URL,
   PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
@@ -24,7 +25,6 @@ import getPackagesQuery from '~/packages_and_registries/package_registry/graphql
 
 import { packagesListQuery, packageData, pagination } from '../mock_data';
 
-jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');
 
 describe('PackagesListApp', () => {
@@ -49,6 +49,7 @@ describe('PackagesListApp', () => {
     filters: { packageName: 'foo', packageType: 'CONAN' },
   };
 
+  const findBanner = () => wrapper.findComponent(GlBanner);
   const findPackageTitle = () => wrapper.findComponent(PackageTitle);
   const findSearch = () => wrapper.findComponent(PackageSearch);
   const findListComponent = () => wrapper.findComponent(PackageList);
@@ -68,6 +69,7 @@ describe('PackagesListApp', () => {
       apolloProvider,
       provide,
       stubs: {
+        GlBanner,
         GlEmptyState,
         GlLoadingIcon,
         GlSprintf,
@@ -113,6 +115,70 @@ describe('PackagesListApp', () => {
     expect(findPackageTitle().props()).toMatchObject({
       count: 2,
       helpUrl: PACKAGE_HELP_URL,
+    });
+  });
+
+  describe('package migration survey banner', () => {
+    describe('with no cookie set', () => {
+      beforeEach(() => {
+        utils.setCookie = jest.fn();
+
+        mountComponent();
+      });
+
+      it('displays the banner', () => {
+        expect(findBanner().exists()).toBe(true);
+      });
+
+      it('does not call setCookie', () => {
+        expect(utils.setCookie).not.toHaveBeenCalled();
+      });
+
+      describe('when the close button is clicked', () => {
+        beforeEach(() => {
+          findBanner().vm.$emit('close');
+        });
+
+        it('sets the dismissed cookie', () => {
+          expect(utils.setCookie).toHaveBeenCalledWith(
+            HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE,
+            'true',
+          );
+        });
+
+        it('does not display the banner', () => {
+          expect(findBanner().exists()).toBe(false);
+        });
+      });
+
+      describe('when the primary button is clicked', () => {
+        beforeEach(() => {
+          findBanner().vm.$emit('primary');
+        });
+
+        it('sets the dismissed cookie', () => {
+          expect(utils.setCookie).toHaveBeenCalledWith(
+            HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE,
+            'true',
+          );
+        });
+
+        it('does not display the banner', () => {
+          expect(findBanner().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('with the dismissed cookie set', () => {
+      beforeEach(() => {
+        jest.spyOn(utils, 'getCookie').mockReturnValue('true');
+
+        mountComponent();
+      });
+
+      it('does not display the banner', () => {
+        expect(findBanner().exists()).toBe(false);
+      });
     });
   });
 

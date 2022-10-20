@@ -51,7 +51,7 @@ namespace :tw do
       CodeOwnerRule.new('Application Performance', '@sselhorn'),
       CodeOwnerRule.new('Monitor', '@msedlakjakubowski'),
       CodeOwnerRule.new('Observability', 'msedlakjakubowski'),
-      CodeOwnerRule.new('Optimize', '@fneill'),
+      CodeOwnerRule.new('Optimize', '@lciutacu'),
       CodeOwnerRule.new('Package', '@claytoncornell'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Execution', '@marcel.amirault'),
@@ -76,7 +76,7 @@ namespace :tw do
       CodeOwnerRule.new('Threat Insights', '@claytoncornell'),
       CodeOwnerRule.new('Utilization', '@fneill'),
       CodeOwnerRule.new('Vulnerability Research', '@claytoncornell'),
-      CodeOwnerRule.new('Workspace', '@fneill')
+      CodeOwnerRule.new('Workspace', '@lciutacu')
     ].freeze
 
     Document = Struct.new(:group, :redirect) do

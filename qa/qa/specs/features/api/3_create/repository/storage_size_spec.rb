@@ -46,6 +46,7 @@ module QA
         local_size = Git::Repository.perform do |repository|
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
+          repository.default_branch = project.default_branch
           repository.clone
           repository.configure_identity('GitLab QA', 'root@gitlab.com')
           # These two commits add a total of 1mb, but half of that is the same as content that has already been added to

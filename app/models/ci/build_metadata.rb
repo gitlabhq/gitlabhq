@@ -13,6 +13,7 @@ module Ci
 
     self.table_name = 'ci_builds_metadata'
     self.primary_key = 'id'
+    self.sequence_name = 'ci_builds_metadata_id_seq'
     partitionable scope: :build
 
     belongs_to :build, class_name: 'CommitStatus'

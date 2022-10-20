@@ -1,16 +1,18 @@
 <script>
-import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlBanner, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/flash';
-import { historyReplaceState } from '~/lib/utils/common_utils';
+import { getCookie, historyReplaceState, parseBoolean, setCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
+  HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
   EMPTY_LIST_HELP_URL,
   PACKAGE_HELP_URL,
+  SURVEY_LINK,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 
@@ -21,6 +23,7 @@ import PackageList from '~/packages_and_registries/package_registry/components/l
 
 export default {
   components: {
+    GlBanner,
     GlEmptyState,
     GlLink,
     GlSprintf,
@@ -36,6 +39,7 @@ export default {
       sort: '',
       filters: {},
       mutationLoading: false,
+      showSurveyBanner: !parseBoolean(getCookie(HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE)),
     };
   },
   apollo: {
@@ -114,6 +118,10 @@ export default {
       this.sort = sort;
       this.filters = { ...filters };
     },
+    hideSurvey() {
+      this.showSurveyBanner = false;
+      setCookie(HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE, 'true');
+    },
     updateQuery(_, { fetchMoreResult }) {
       return fetchMoreResult;
     },
@@ -151,16 +159,33 @@ export default {
     noResultsText: s__(
       'PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab.',
     ),
+    surveyBannerTitle: s__('PackageRegistry|Help us learn about your registry migration needs'),
+    surveyBannerDescription: s__(
+      'PackageRegistry|If you are interested in migrating packages from your private registry to the GitLab Package Registry, take our survey and tell us more about your needs.',
+    ),
+    surveyBannerPrimaryButtonText: s__('PackageRegistry|Take survey'),
   },
   links: {
     EMPTY_LIST_HELP_URL,
     PACKAGE_HELP_URL,
   },
+  surveyLink: SURVEY_LINK,
 };
 </script>
 
 <template>
   <div>
+    <gl-banner
+      v-if="showSurveyBanner"
+      :title="$options.i18n.surveyBannerTitle"
+      :button-text="$options.i18n.surveyBannerPrimaryButtonText"
+      :button-link="$options.surveyLink"
+      class="gl-mt-3"
+      @primary="hideSurvey"
+      @close="hideSurvey"
+    >
+      <p>{{ $options.i18n.surveyBannerDescription }}</p>
+    </gl-banner>
     <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount" />
     <package-search @update="handleSearchUpdate" />
 

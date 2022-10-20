@@ -104,7 +104,7 @@ class Gitlab::Seeder::CycleAnalytics
 
   def seed_test_stage!
     merge_requests.each do |merge_request|
-      pipeline = FactoryBot.create(:ci_pipeline, :success, project: project)
+      pipeline = FactoryBot.create(:ci_pipeline, :success, project: project, partition_id: Ci::Pipeline.current_partition_value)
       build = FactoryBot.create(:ci_build, pipeline: pipeline, project: project, user: developers.sample)
 
       # Required because seeds run in a transaction and these are now

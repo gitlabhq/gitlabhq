@@ -20,6 +20,8 @@ FactoryBot.define do
 
     after :build do |artifact|
       artifact.project ||= artifact.job.project
+
+      artifact.job&.valid?
     end
 
     trait :raw do
