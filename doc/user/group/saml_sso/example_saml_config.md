@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -9,7 +9,7 @@ type: reference
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team's collected knowledge.
 
-Please refer to the GitLab [Group SAML](index.md) docs for information on the feature and how to set it up.
+Refer to the GitLab [Group SAML](index.md) documentation for information on the feature and how to set it up.
 
 When troubleshooting a SAML configuration, GitLab team members will frequently start with the [SAML troubleshooting section](index.md#troubleshooting).
 

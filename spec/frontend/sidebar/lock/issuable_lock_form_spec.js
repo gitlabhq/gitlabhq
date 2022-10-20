@@ -26,7 +26,7 @@ describe('IssuableLockForm', () => {
   const findSidebarCollapseIcon = () => wrapper.find('[data-testid="sidebar-collapse-icon"]');
   const findLockStatus = () => wrapper.find('[data-testid="lock-status"]');
   const findEditLink = () => wrapper.find('[data-testid="edit-link"]');
-  const findEditForm = () => wrapper.find(EditForm);
+  const findEditForm = () => wrapper.findComponent(EditForm);
   const findSidebarLockStatusTooltip = () =>
     getBinding(findSidebarCollapseIcon().element, 'gl-tooltip');
 

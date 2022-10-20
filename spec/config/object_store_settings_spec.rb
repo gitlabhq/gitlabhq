@@ -113,6 +113,27 @@ RSpec.describe ObjectStoreSettings do
         expect(settings.lfs['object_store']['bucket_prefix']).to eq('lfs')
       end
 
+      context 'with Google CDN enabled' do
+        let(:cdn_config) do
+          {
+            'provider' => 'Google',
+            'url' => 'https://cdn.example.org',
+            'key_name' => 'stanhu-key',
+            'key' => Base64.urlsafe_encode64(SecureRandom.hex)
+          }
+        end
+
+        before do
+          config['object_store']['objects']['artifacts']['cdn'] = cdn_config
+        end
+
+        it 'populates artifacts CDN config' do
+          subject
+
+          expect(settings.artifacts['object_store']['cdn']).to eq(cdn_config)
+        end
+      end
+
       it 'raises an error when a bucket is missing' do
         config['object_store']['objects']['lfs'].delete('bucket')
 

@@ -15,9 +15,9 @@ describe('Merge request widget merge checks failed state component', () => {
   });
 
   it.each`
-    mrState                                          | displayText
-    ${{ approvals: true, isApproved: false }}        | ${'approvalNeeded'}
-    ${{ blockingMergeRequests: { total_count: 1 } }} | ${'blockingMergeRequests'}
+    mrState                                      | displayText
+    ${{ approvals: true, isApproved: false }}    | ${'approvalNeeded'}
+    ${{ detailedMergeStatus: 'BLOCKED_STATUS' }} | ${'blockingMergeRequests'}
   `('display $displayText text for $mrState', ({ mrState, displayText }) => {
     factory({ mr: mrState });
 

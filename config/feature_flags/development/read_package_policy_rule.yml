@@ -1,8 +1,0 @@
----
-name: read_package_policy_rule
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90963
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366711
-milestone: '15.4'
-type: development
-group: group::package
-default_enabled: false

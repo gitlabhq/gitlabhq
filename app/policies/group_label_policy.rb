@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class GroupLabelPolicy < BasePolicy
-  delegate { @subject.group }
+  delegate { @subject.parent_container }
 end

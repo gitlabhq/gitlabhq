@@ -194,7 +194,8 @@ class WebHookService
       headers = {
         'Content-Type' => 'application/json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}",
-        Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name)
+        Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name),
+        Gitlab::WebHooks::GITLAB_INSTANCE_HEADER => Gitlab.config.gitlab.base_url
       }
 
       headers['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?

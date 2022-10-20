@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Sidekiq worker attributes
@@ -60,7 +60,7 @@ that branch, but be told in the UI that the branch does not exist. We deem these
 jobs to be `urgency :high`.
 
 Extra effort is made to ensure that these jobs are started within a very short
-period of time after being scheduled. However, in order to ensure throughput,
+period of time after being scheduled. However, to ensure throughput,
 these jobs also have very strict execution duration requirements:
 
 1. The median job execution time should be less than 1 second.
@@ -117,7 +117,7 @@ Most background jobs in the GitLab application communicate with other GitLab
 services. For example, PostgreSQL, Redis, Gitaly, and Object Storage. These are considered
 to be "internal" dependencies for a job.
 
-However, some jobs are dependent on external services in order to complete
+However, some jobs are dependent on external services to complete
 successfully. Some examples include:
 
 1. Jobs which call web-hooks configured by a user.

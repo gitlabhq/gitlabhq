@@ -183,7 +183,7 @@ RSpec.describe 'Protected Branches', :js do
     end
 
     include_examples 'Deploy keys with protected branches' do
-      let(:all_dropdown_sections) { %w(Roles Deploy\ Keys) }
+      let(:all_dropdown_sections) { ['Roles', 'Deploy Keys'] }
     end
   end
 end

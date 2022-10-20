@@ -2,7 +2,6 @@
 
 module WorkItems
   class CreateService < Issues::CreateService
-    include ::Services::ReturnServiceResponses
     include WidgetableService
 
     def initialize(project:, current_user: nil, params: {}, spam_params:, widget_params: {})
@@ -17,11 +16,10 @@ module WorkItems
     end
 
     def execute
-      unless @current_user.can?(:create_work_item, @project)
-        return error(_('Operation not allowed'), :forbidden)
-      end
+      result = super
+      return result if result.error?
 
-      work_item = super
+      work_item = result[:issue]
 
       if work_item.valid?
         success(payload(work_item))
@@ -42,6 +40,10 @@ module WorkItems
     end
 
     private
+
+    def authorization_action
+      :create_work_item
+    end
 
     def payload(work_item)
       { work_item: work_item }

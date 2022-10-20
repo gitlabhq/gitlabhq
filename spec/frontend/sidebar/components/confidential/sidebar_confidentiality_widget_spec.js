@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import SidebarConfidentialityContent from '~/sidebar/components/confidential/sidebar_confidentiality_content.vue';
 import SidebarConfidentialityForm from '~/sidebar/components/confidential/sidebar_confidentiality_form.vue';
 import SidebarConfidentialityWidget, {
@@ -126,7 +126,7 @@ describe('Sidebar Confidentiality Widget', () => {
     });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   it('closes the form and dispatches an event when `closeForm` is emitted', async () => {

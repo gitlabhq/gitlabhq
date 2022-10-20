@@ -126,6 +126,107 @@ RSpec.describe Pages::InvalidateDomainCacheWorker do
       { type: :namespace, id: 3 }
     ]
 
+  it_behaves_like 'clears caches with',
+    event_class: PagesDomains::PagesDomainDeletedEvent,
+    event_data: {
+      project_id: 1,
+      namespace_id: 2,
+      root_namespace_id: 3,
+      domain: 'somedomain.com'
+    },
+    caches: [
+      { type: :project, id: 1 },
+      { type: :namespace, id: 3 }
+    ]
+
+  it_behaves_like 'clears caches with',
+    event_class: PagesDomains::PagesDomainUpdatedEvent,
+    event_data: {
+      project_id: 1,
+      namespace_id: 2,
+      root_namespace_id: 3,
+      domain: 'somedomain.com'
+    },
+    caches: [
+      { type: :project, id: 1 },
+      { type: :namespace, id: 3 }
+    ]
+
+  it_behaves_like 'clears caches with',
+    event_class: PagesDomains::PagesDomainCreatedEvent,
+    event_data: {
+      project_id: 1,
+      namespace_id: 2,
+      root_namespace_id: 3,
+      domain: 'somedomain.com'
+    },
+    caches: [
+      { type: :project, id: 1 },
+      { type: :namespace, id: 3 }
+    ]
+
+  context 'when project attributes change' do
+    Projects::ProjectAttributesChangedEvent::PAGES_RELATED_ATTRIBUTES.each do |attribute|
+      it_behaves_like 'clears caches with',
+        event_class: Projects::ProjectAttributesChangedEvent,
+        event_data: {
+          project_id: 1,
+          namespace_id: 2,
+          root_namespace_id: 3,
+          attributes: [attribute]
+        },
+        caches: [
+          { type: :project, id: 1 },
+          { type: :namespace, id: 3 }
+        ]
+    end
+
+    it 'does not clear the cache when the attributes is not pages related' do
+      event = Projects::ProjectAttributesChangedEvent.new(
+        data: {
+          project_id: 1,
+          namespace_id: 2,
+          root_namespace_id: 3,
+          attributes: ['unknown']
+        }
+      )
+
+      expect(described_class).not_to receive(:clear_cache)
+
+      ::Gitlab::EventStore.publish(event)
+    end
+  end
+
+  context 'when project features change' do
+    it_behaves_like 'clears caches with',
+      event_class: Projects::ProjectFeaturesChangedEvent,
+      event_data: {
+        project_id: 1,
+        namespace_id: 2,
+        root_namespace_id: 3,
+        features: ["pages_access_level"]
+      },
+      caches: [
+        { type: :project, id: 1 },
+        { type: :namespace, id: 3 }
+      ]
+
+    it 'does not clear the cache when the features is not pages related' do
+      event = Projects::ProjectFeaturesChangedEvent.new(
+        data: {
+          project_id: 1,
+          namespace_id: 2,
+          root_namespace_id: 3,
+          features: ['unknown']
+        }
+      )
+
+      expect(described_class).not_to receive(:clear_cache)
+
+      ::Gitlab::EventStore.publish(event)
+    end
+  end
+
   context 'when namespace based cache keys are duplicated' do
     # de-dups namespace cache keys
     it_behaves_like 'clears caches with',

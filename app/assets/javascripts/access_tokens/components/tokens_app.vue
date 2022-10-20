@@ -79,7 +79,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="js-search-settings-section">
     <token
       v-for="(tokenData, tokenType) in enabledTokenTypes"
       :key="tokenType"

@@ -25,7 +25,7 @@ module Gitlab
         end
 
         def importers(project)
-          if project.group.present? && Feature.enabled?(:github_importer_single_endpoint_notes_import, project.group, type: :ops)
+          if import_settings(project).enabled?(:single_endpoint_notes_import)
             [
               Importer::SingleEndpointMergeRequestNotesImporter,
               Importer::SingleEndpointIssueNotesImporter

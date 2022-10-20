@@ -13,6 +13,12 @@ module Groups
       def resource_access_tokens_path
         group_settings_access_tokens_path
       end
+
+      private
+
+      def represent(tokens)
+        ::GroupAccessTokenSerializer.new.represent(tokens, group: resource)
+      end
     end
   end
 end

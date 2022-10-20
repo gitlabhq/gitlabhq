@@ -11,10 +11,6 @@ RSpec.describe InviteMembersHelper do
 
   let(:owner) { project.owner }
 
-  before do
-    helper.extend(Gitlab::Experimentation::ControllerConcern)
-  end
-
   describe '#common_invite_group_modal_data' do
     it 'has expected common attributes' do
       attributes = {

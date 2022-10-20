@@ -62,7 +62,7 @@ module QA
           end
 
           def authentication_method=(value)
-            unless %w[Password None SSH\ public\ key].include?(value)
+            unless ['Password', 'None', 'SSH public key'].include?(value)
               raise ArgumentError, "Authentication method must be 'SSH public key', 'Password', or 'None'"
             end
 

@@ -47,6 +47,14 @@ RSpec.describe Banzai::Filter::WikiLinkFilter do
 
       expect(filtered_link.attribute('href').value).to eq(path)
     end
+
+    it 'does not rewrite links to old relative wiki path' do
+      old_wiki_base_path = wiki.wiki_base_path.sub('/-/', '/')
+      path = "#{old_wiki_base_path}/#{repository_upload_folder}/a.jpg"
+      filtered_link = filter("<a href='#{path}'>Link</a>", wiki: wiki, page_slug: 'home').children[0]
+
+      expect(filtered_link.attribute('href').value).to eq(path)
+    end
   end
 
   describe "when links point to the #{Wikis::CreateAttachmentService::ATTACHMENT_PATH} folder" do

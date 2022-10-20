@@ -1,13 +1,11 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, api
 ---
 
 # Project Aliases API **(PREMIUM SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3264) in GitLab 12.1.
 
 All methods require administrator authorization.
 
@@ -50,7 +48,7 @@ GET /project_aliases/:name
 
 | Attribute | Type   | Required | Description           |
 |-----------|--------|----------|-----------------------|
-| `name`    | string | yes      | The name of the alias |
+| `name`    | string | **{check-circle}** Yes      | The name of the alias. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"
@@ -77,8 +75,8 @@ POST /project_aliases
 
 | Attribute    | Type           | Required | Description                            |
 |--------------|----------------|----------|----------------------------------------|
-| `project_id` | integer/string | yes      | The ID or path of the project.         |
-| `name`       | string         | yes      | The name of the alias. Must be unique. |
+| `name`       | string         | **{check-circle}** Yes | The name of the alias. Must be unique. |
+| `project_id` | integer or string | **{check-circle}** Yes | The ID or path of the project.         |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -113,7 +111,7 @@ DELETE /project_aliases/:name
 
 | Attribute | Type   | Required | Description           |
 |-----------|--------|----------|-----------------------|
-| `name`    | string | yes      | The name of the alias |
+| `name`    | string | **{check-circle}** Yes | The name of the alias. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"

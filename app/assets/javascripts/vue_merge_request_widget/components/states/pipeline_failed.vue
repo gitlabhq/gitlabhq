@@ -11,6 +11,12 @@ export default {
     GlSprintf,
     StatusIcon,
   },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+    },
+  },
   computed: {
     troubleshootingDocsPath() {
       return helpPagePath('ci/troubleshooting', { anchor: 'merge-request-status-messages' });
@@ -29,7 +35,14 @@ export default {
     <status-icon status="failed" />
     <div class="media-body space-children">
       <span class="gl-font-weight-bold">
-        <gl-sprintf :message="$options.i18n.failedMessage">
+        <span v-if="mr.isPipelineBlocked">
+          {{
+            s__(
+              `mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual action to continue.`,
+            )
+          }}
+        </span>
+        <gl-sprintf v-else :message="$options.i18n.failedMessage">
           <template #link="{ content }">
             <gl-link :href="troubleshootingDocsPath" target="_blank">
               {{ content }}

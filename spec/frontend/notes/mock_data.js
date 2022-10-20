@@ -1,4 +1,5 @@
 // Copied to ee/spec/frontend/notes/mock_data.js
+import { __ } from '~/locale';
 
 export const notesDataMock = {
   discussionsPath: '/gitlab-org/gitlab-foss/issues/26/discussions.json',
@@ -35,6 +36,7 @@ export const noteableDataMock = {
     can_create_note: true,
     can_update: true,
     can_award_emoji: true,
+    can_create_confidential_note: true,
   },
   description: '',
   due_date: null,
@@ -1292,3 +1294,18 @@ export const draftDiffDiscussion = {
   file_path: 'lib/foo.rb',
   isDraft: true,
 };
+
+export const notesFilters = [
+  {
+    title: __('Show all activity'),
+    value: 0,
+  },
+  {
+    title: __('Show comments only'),
+    value: 1,
+  },
+  {
+    title: __('Show history only'),
+    value: 2,
+  },
+];

@@ -541,11 +541,12 @@ RSpec.describe DiffNote do
 
   describe '#shas' do
     it 'returns list of SHAs based on original_position' do
-      expect(subject.shas).to match_array([
-        position.base_sha,
-        position.start_sha,
-        position.head_sha
-      ])
+      expect(subject.shas).to match_array(
+        [
+          position.base_sha,
+          position.start_sha,
+          position.head_sha
+        ])
     end
 
     context 'when position changes' do
@@ -554,14 +555,15 @@ RSpec.describe DiffNote do
       end
 
       it 'includes the new position SHAs' do
-        expect(subject.shas).to match_array([
-          position.base_sha,
-          position.start_sha,
-          position.head_sha,
-          new_position.base_sha,
-          new_position.start_sha,
-          new_position.head_sha
-        ])
+        expect(subject.shas).to match_array(
+          [
+            position.base_sha,
+            position.start_sha,
+            position.head_sha,
+            new_position.base_sha,
+            new_position.start_sha,
+            new_position.head_sha
+          ])
       end
     end
   end

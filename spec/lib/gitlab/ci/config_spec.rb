@@ -889,4 +889,31 @@ RSpec.describe Gitlab::Ci::Config do
 
     it { is_expected.to eq([{ if: '$CI_COMMIT_REF_NAME == "master"' }]) }
   end
+
+  describe '#workflow_name' do
+    subject(:workflow_name) { config.workflow_name }
+
+    let(:yml) do
+      <<-EOS
+        workflow:
+          name: 'Pipeline name'
+
+        rspec:
+          script: exit 0
+      EOS
+    end
+
+    it { is_expected.to eq('Pipeline name') }
+
+    context 'with no name' do
+      let(:yml) do
+        <<-EOS
+          rspec:
+            script: exit 0
+        EOS
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

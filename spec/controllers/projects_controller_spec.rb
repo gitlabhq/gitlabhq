@@ -231,7 +231,7 @@ RSpec.describe ProjectsController do
     end
 
     context "project with broken repo" do
-      let_it_be(:empty_project) { create(:project_broken_repo, :public) }
+      let_it_be(:empty_project) { create(:project, :public) }
 
       before do
         sign_in(user)
@@ -246,8 +246,6 @@ RSpec.describe ProjectsController do
           end
 
           it "renders the empty project view" do
-            allow(Project).to receive(:repo).and_raise(Gitlab::Git::Repository::NoRepository)
-
             expect(response).to render_template('projects/no_repo')
           end
         end
@@ -299,14 +297,16 @@ RSpec.describe ProjectsController do
       end
 
       it "renders files even with invalid license" do
+        invalid_license = ::Gitlab::Git::DeclaredLicense.new(key: 'woozle', name: 'woozle wuzzle')
+
         controller.instance_variable_set(:@project, public_project)
-        expect(public_project.repository).to receive(:license_key).and_return('woozle wuzzle').at_least(:once)
+        expect(public_project.repository).to receive(:license).and_return(invalid_license).at_least(:once)
 
         get_show
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('_files')
-        expect(response.body).to have_content('LICENSE') # would be 'MIT license' if stub not works
+        expect(response.body).to have_content('woozle wuzzle')
       end
 
       describe 'tracking events', :snowplow do
@@ -1231,26 +1231,6 @@ RSpec.describe ProjectsController do
       end
 
       get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
-    end
-
-    context 'when use_gitaly_pagination_for_refs is disabled' do
-      before do
-        stub_feature_flags(use_gitaly_pagination_for_refs: false)
-      end
-
-      it 'does not use gitaly pagination' do
-        expected_params = ActionController::Parameters.new(ref: '123456', per_page: 100).permit!
-
-        expect_next_instance_of(BranchesFinder, project.repository, expected_params) do |finder|
-          expect(finder).to receive(:execute).with(gitaly_pagination: false).and_call_original
-        end
-
-        expect_next_instance_of(TagsFinder, project.repository, expected_params) do |finder|
-          expect(finder).to receive(:execute).with(gitaly_pagination: false).and_call_original
-        end
-
-        get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
-      end
     end
 
     context 'when gitaly is unavailable' do

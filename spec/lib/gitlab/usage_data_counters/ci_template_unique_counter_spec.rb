@@ -65,17 +65,11 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
     context 'with implicit includes', :snowplow do
       let(:config_source) { :auto_devops_source }
 
-      [
-        ['', ['Auto-DevOps.gitlab-ci.yml']],
-        ['Jobs', described_class.ci_templates('lib/gitlab/ci/templates/Jobs')],
-        ['Security', described_class.ci_templates('lib/gitlab/ci/templates/Security')]
-      ].each do |directory, templates|
-        templates.each do |template|
-          context "for #{template}" do
-            let(:template_path) { File.join(directory, template) }
+      described_class.all_included_templates('Auto-DevOps.gitlab-ci.yml').each do |template_name|
+        context "for #{template_name}" do
+          let(:template_path) { Gitlab::Template::GitlabCiYmlTemplate.find(template_name.delete_suffix('.gitlab-ci.yml')).full_name }
 
-            include_examples 'tracks template'
-          end
+          include_examples 'tracks template'
         end
       end
     end

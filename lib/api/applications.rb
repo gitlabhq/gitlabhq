@@ -41,6 +41,9 @@ module API
       end
 
       desc 'Delete an application'
+      params do
+        requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'
+      end
       delete ':id' do
         application = ApplicationsFinder.new(params).execute
         break not_found!('Application') unless application

@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Cookies from '~/lib/utils/cookies';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { INTERACTIVE_RESOLVE_MODE, EDIT_RESOLVE_MODE } from '~/merge_conflicts/constants';
 import * as actions from '~/merge_conflicts/store/actions';
 import * as types from '~/merge_conflicts/store/mutation_types';
@@ -125,7 +125,7 @@ describe('merge conflicts actions', () => {
         ],
         [],
       );
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Failed to save merge conflicts resolutions. Please try again!',
       });
     });

@@ -14,12 +14,14 @@ import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
+  INTEGRATION_FORM_TYPE_SLACK,
   integrationLevels,
   integrationFormSectionComponents,
   billingPlanNames,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import ConfirmationModal from './confirmation_modal.vue';
@@ -65,6 +67,7 @@ export default {
     GlModal: GlModalDirective,
     SafeHtml,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     helpHtml: {
       default: '',
@@ -101,12 +104,33 @@ export default {
       return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
     hasSections() {
+      if (this.hasSlackNotificationsDisabled) {
+        return false;
+      }
       return this.customState.sections.length !== 0;
     },
     fieldsWithoutSection() {
       return this.hasSections
         ? this.propsSource.fields.filter((field) => !field.section)
         : this.propsSource.fields;
+    },
+    hasFieldsWithoutSection() {
+      if (this.hasSlackNotificationsDisabled) {
+        return false;
+      }
+      return this.fieldsWithoutSection.length;
+    },
+    isSlackIntegration() {
+      return this.propsSource.type === INTEGRATION_FORM_TYPE_SLACK;
+    },
+    hasSlackNotificationsDisabled() {
+      return this.isSlackIntegration && !this.glFeatures.integrationSlackAppNotifications;
+    },
+    showHelpHtml() {
+      if (this.isSlackIntegration) {
+        return this.helpHtml;
+      }
+      return !this.hasSections && this.helpHtml;
     },
   },
   methods: {
@@ -227,6 +251,31 @@ export default {
       @change="setOverride"
     />
 
+    <section v-if="showHelpHtml" class="gl-lg-display-flex gl-justify-content-end gl-mb-6">
+      <!-- helpHtml is trusted input -->
+      <div
+        v-safe-html:[$options.helpHtmlConfig]="helpHtml"
+        data-testid="help-html"
+        class="gl-flex-basis-two-thirds"
+      ></div>
+    </section>
+
+    <section v-if="!hasSections" class="gl-lg-display-flex gl-justify-content-end">
+      <div class="gl-flex-basis-two-thirds">
+        <active-checkbox
+          v-if="propsSource.showActive"
+          :key="`${currentKey}-active-checkbox`"
+          @toggle-integration-active="onToggleIntegrationState"
+        />
+        <trigger-fields
+          v-if="propsSource.triggerEvents.length"
+          :key="`${currentKey}-trigger-fields`"
+          :events="propsSource.triggerEvents"
+          :type="propsSource.type"
+        />
+      </div>
+    </section>
+
     <template v-if="hasSections">
       <div
         v-for="(section, index) in customState.sections"
@@ -234,8 +283,8 @@ export default {
         :class="{ 'gl-border-b gl-pb-3 gl-mb-6': index !== customState.sections.length - 1 }"
         data-testid="integration-section"
       >
-        <div class="row">
-          <div class="col-lg-4">
+        <section class="gl-lg-display-flex">
+          <div class="gl-flex-basis-third gl-mr-4">
             <h4 class="gl-mt-0">
               {{ section.title
               }}<gl-badge
@@ -253,7 +302,7 @@ export default {
             <p v-safe-html="section.description"></p>
           </div>
 
-          <div class="col-lg-8">
+          <div class="gl-flex-basis-two-thirds">
             <component
               :is="$options.integrationFormSectionComponents[section.type]"
               :fields="fieldsForSection(section)"
@@ -262,28 +311,12 @@ export default {
               @request-jira-issue-types="onRequestJiraIssueTypes"
             />
           </div>
-        </div>
+        </section>
       </div>
     </template>
 
-    <div class="row">
-      <div class="col-lg-4"></div>
-
-      <div class="col-lg-8">
-        <!-- helpHtml is trusted input -->
-        <div v-if="helpHtml && !hasSections" v-safe-html:[$options.helpHtmlConfig]="helpHtml"></div>
-
-        <active-checkbox
-          v-if="propsSource.showActive && !hasSections"
-          :key="`${currentKey}-active-checkbox`"
-          @toggle-integration-active="onToggleIntegrationState"
-        />
-        <trigger-fields
-          v-if="propsSource.triggerEvents.length && !hasSections"
-          :key="`${currentKey}-trigger-fields`"
-          :events="propsSource.triggerEvents"
-          :type="propsSource.type"
-        />
+    <section v-if="hasFieldsWithoutSection" class="gl-lg-display-flex gl-justify-content-end">
+      <div class="gl-flex-basis-two-thirds">
         <dynamic-field
           v-for="field in fieldsWithoutSection"
           :key="`${currentKey}-${field.name}`"
@@ -292,12 +325,12 @@ export default {
           :data-qa-selector="`${field.name}_div`"
         />
       </div>
-    </div>
+    </section>
 
-    <div v-if="isEditable" class="row">
-      <div :class="hasSections ? 'col' : 'col-lg-8 offset-lg-4'">
+    <section v-if="isEditable" :class="!hasSections && 'gl-lg-display-flex gl-justify-content-end'">
+      <div :class="!hasSections && 'gl-flex-basis-two-thirds'">
         <div
-          class="footer-block row-content-block gl-display-flex gl-justify-content-space-between"
+          class="footer-block row-content-block gl-lg-display-flex gl-justify-content-space-between"
         >
           <div>
             <template v-if="isInstanceOrGroupLevel">
@@ -359,6 +392,6 @@ export default {
           </template>
         </div>
       </div>
-    </div>
+    </section>
   </gl-form>
 </template>

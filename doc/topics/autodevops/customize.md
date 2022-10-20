@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Customizing Auto DevOps **(FREE)**
@@ -190,7 +190,7 @@ You can override the default values in the `values.yaml` file in the
   `HELM_UPGRADE_VALUES_FILE` [CI/CD variable](#cicd-variables) with
   the path and name.
 
-Some values can not be overridden with the options above. Settings like `replicaCount` should instead be overridden with the `REPLICAS`
+Some values cannot be overridden with the options above. Settings like `replicaCount` should instead be overridden with the `REPLICAS`
 [build and deployment](#build-and-deployment) CI/CD variable. Follow [this issue](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/31) for more information.
 
 NOTE:

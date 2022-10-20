@@ -13,7 +13,9 @@ module Ci
 
     def perform(pipeline_id)
       ::Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-        break unless pipeline.has_archive_artifacts?
+        # TODO: Move this check inside the Ci::UnlockArtifactsService
+        # once the feature flags in it have been removed.
+        break unless pipeline.has_erasable_artifacts?
 
         results = ::Ci::UnlockArtifactsService
           .new(pipeline.project, pipeline.user)

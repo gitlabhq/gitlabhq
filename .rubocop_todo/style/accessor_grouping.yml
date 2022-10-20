@@ -1,9 +1,7 @@
 ---
 # Cop supports --auto-correct.
 Style/AccessorGrouping:
-  # Offense count: 254
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/finders/template_finder.rb'
     - 'app/models/commit.rb'
@@ -23,7 +21,6 @@ Style/AccessorGrouping:
     - 'app/models/project.rb'
     - 'app/services/deployments/update_environment_service.rb'
     - 'app/services/issues/clone_service.rb'
-    - 'app/services/merge_requests/bulk_remove_attention_requested_service.rb'
     - 'app/services/note_summary.rb'
     - 'app/services/notification_recipients/builder/default.rb'
     - 'app/services/task_list_toggle_service.rb'
@@ -38,6 +35,7 @@ Style/AccessorGrouping:
     - 'ee/lib/gitlab/ci/reports/security/locations/dast.rb'
     - 'ee/lib/gitlab/ci/reports/security/locations/dependency_scanning.rb'
     - 'lib/feature/definition.rb'
+    - 'lib/gitlab/audit/type/definition.rb'
     - 'lib/gitlab/bitbucket_server_import/importer.rb'
     - 'lib/gitlab/ci/config/external/context.rb'
     - 'lib/gitlab/ci/reports/security/finding.rb'
@@ -65,7 +63,6 @@ Style/AccessorGrouping:
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/suggestions/file_suggestion.rb'
     - 'lib/gitlab/tracking/event_definition.rb'
-    - 'lib/gitlab/tree_summary.rb'
     - 'lib/gitlab/usage/metric_definition.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/base_metric.rb'
     - 'lib/gitlab/usage/service_ping/instrumented_payload.rb'

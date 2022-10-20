@@ -274,9 +274,7 @@ RSpec.describe API::Issues do
       post api("/projects/#{project.id}/issues", user),
         params: { title: 'g' * 256 }
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']['title']).to eq([
-        'is too long (maximum is 255 characters)'
-      ])
+      expect(json_response['message']['title']).to eq(['is too long (maximum is 255 characters)'])
     end
 
     context 'resolving discussions' do

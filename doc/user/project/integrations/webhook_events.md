@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Webhook events **(FREE)**
@@ -1100,6 +1100,7 @@ Payload example:
    "object_kind": "pipeline",
    "object_attributes":{
       "id": 31,
+      "iid": 3,
       "ref": "master",
       "tag": false,
       "sha": "bcbb5ec396a2c0f828686f14fac9b80b780504f2",

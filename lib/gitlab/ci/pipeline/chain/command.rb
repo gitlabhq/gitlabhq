@@ -121,11 +121,7 @@ module Gitlab
           end
 
           def observe_jobs_count_in_alive_pipelines
-            jobs_count = if Feature.enabled?(:ci_limit_active_jobs_early, project)
-                           project.all_pipelines.jobs_count_in_alive_pipelines
-                         else
-                           project.all_pipelines.builds_count_in_alive_pipelines
-                         end
+            jobs_count = project.all_pipelines.jobs_count_in_alive_pipelines
 
             metrics.active_jobs_histogram
               .observe({ plan: project.actual_plan_name }, jobs_count)

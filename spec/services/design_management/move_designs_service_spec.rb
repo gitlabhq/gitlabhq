@@ -88,23 +88,24 @@ RSpec.describe DesignManagement::MoveDesignsService do
 
         expect(subject).to be_success
 
-        expect(issue.designs.ordered).to eq([
-          # Existing designs which already had a relative_position set.
-          # These should stay at the beginning, in the same order.
-          other_design1,
-          other_design2,
+        expect(issue.designs.ordered).to eq(
+          [
+            # Existing designs which already had a relative_position set.
+            # These should stay at the beginning, in the same order.
+            other_design1,
+            other_design2,
 
-          # The designs we're passing into the service.
-          # These should be placed between the existing designs, in the correct order.
-          previous_design,
-          current_design,
-          next_design,
+            # The designs we're passing into the service.
+            # These should be placed between the existing designs, in the correct order.
+            previous_design,
+            current_design,
+            next_design,
 
-          # Existing designs which didn't have a relative_position set.
-          # These should be placed at the end, in the order of their IDs.
-          other_design3,
-          other_design4
-        ])
+            # Existing designs which didn't have a relative_position set.
+            # These should be placed at the end, in the order of their IDs.
+            other_design3,
+            other_design4
+          ])
       end
     end
   end

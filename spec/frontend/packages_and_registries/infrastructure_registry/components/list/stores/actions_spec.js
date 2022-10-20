@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { MISSING_DELETE_PATH_ERROR } from '~/packages_and_registries/infrastructure_registry/list/constants';
 import * as actions from '~/packages_and_registries/infrastructure_registry/list/stores/actions';
 import * as types from '~/packages_and_registries/infrastructure_registry/list/stores/mutation_types';
@@ -107,7 +107,7 @@ describe('Actions Package list store', () => {
           { type: 'setLoading', payload: false },
         ],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
 
     it('should force the terraform_module type when forceTerraform is true', async () => {
@@ -209,17 +209,17 @@ describe('Actions Package list store', () => {
           { type: 'setLoading', payload: false },
         ],
       );
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
 
     it.each`
       property             | actionPayload
       ${'_links'}          | ${{}}
       ${'delete_api_path'} | ${{ _links: {} }}
-    `('should reject and createFlash when $property is missing', ({ actionPayload }) => {
+    `('should reject and createAlert when $property is missing', ({ actionPayload }) => {
       return testAction(actions.requestDeletePackage, actionPayload, null, [], []).catch((e) => {
         expect(e).toEqual(new Error(MISSING_DELETE_PATH_ERROR));
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: DELETE_PACKAGE_ERROR_MESSAGE,
         });
       });

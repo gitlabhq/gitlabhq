@@ -15,8 +15,6 @@ RSpec.describe "Jira", :js do
     before do
       remotelink = double(:remotelink, all: [], build: double(save!: true))
 
-      stub_feature_flags(remove_user_attributes_projects: false)
-
       stub_request(:get, "https://jira.example.com/rest/api/2/issue/JIRA-5")
       stub_request(:post, "https://jira.example.com/rest/api/2/issue/JIRA-5/comment")
       allow_next_instance_of(JIRA::Resource::Issue) do |instance|
@@ -59,7 +57,7 @@ RSpec.describe "Jira", :js do
         visit(issue_path(issue_actual_project))
 
         page.within("#notes") do
-          expect(page).to have_content("#{user.to_reference} mentioned in merge request #{merge_request.to_reference}")
+          expect(page).to have_content("#{user.name} mentioned in merge request #{merge_request.to_reference}")
         end
       end
 
@@ -67,7 +65,7 @@ RSpec.describe "Jira", :js do
         visit(issue_path(issue_other_project))
 
         page.within("#notes") do
-          expect(page).to have_content("#{user.to_reference} mentioned in merge request #{merge_request.to_reference(other_project)}")
+          expect(page).to have_content("#{user.name} mentioned in merge request #{merge_request.to_reference(other_project)}")
         end
       end
     end

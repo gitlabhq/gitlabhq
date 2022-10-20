@@ -34,4 +34,4 @@
       = f.gitlab_ui_checkbox_component :write_package_registry, 'write_package_registry', help_text: s_('DeployTokens|Allows read and write access to the package registry.'), checkbox_options: { data: { qa_selector: 'deploy_token_write_package_registry_checkbox' } }
 
   .gl-mt-3
-    = f.submit s_('DeployTokens|Create deploy token'), class: 'btn gl-button btn-confirm', data: { qa_selector: 'create_deploy_token_button' }
+    = f.submit s_('DeployTokens|Create deploy token'), data: { qa_selector: 'create_deploy_token_button' }, pajamas_button: true

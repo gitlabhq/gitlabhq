@@ -109,7 +109,7 @@ describe('SmartInterval', () => {
       return waitForPromises().then(() => {
         const { intervalId } = interval.state;
 
-        expect(intervalId).toBeTruthy();
+        expect(intervalId).not.toBeUndefined();
       });
     });
   });
@@ -130,7 +130,7 @@ describe('SmartInterval', () => {
       jest.runOnlyPendingTimers();
 
       return waitForPromises().then(() => {
-        expect(interval.state.intervalId).toBeTruthy();
+        expect(interval.state.intervalId).not.toBeUndefined();
 
         // simulates triggering of visibilitychange event
         interval.onVisibilityChange({ target: { visibilityState: 'hidden' } });
@@ -148,16 +148,16 @@ describe('SmartInterval', () => {
       jest.runOnlyPendingTimers();
 
       return waitForPromises().then(() => {
-        expect(interval.state.intervalId).toBeTruthy();
+        expect(interval.state.intervalId).not.toBeUndefined();
         expect(
           interval.getCurrentInterval() >= DEFAULT_STARTING_INTERVAL &&
             interval.getCurrentInterval() <= DEFAULT_MAX_INTERVAL,
-        ).toBeTruthy();
+        ).toBe(true);
 
         // simulates triggering of visibilitychange event
         interval.onVisibilityChange({ target: { visibilityState: 'hidden' } });
 
-        expect(interval.state.intervalId).toBeTruthy();
+        expect(interval.state.intervalId).not.toBeUndefined();
         expect(interval.getCurrentInterval()).toBe(HIDDEN_INTERVAL);
       });
     });
@@ -166,7 +166,7 @@ describe('SmartInterval', () => {
       jest.runOnlyPendingTimers();
 
       return waitForPromises().then(() => {
-        expect(interval.state.intervalId).toBeTruthy();
+        expect(interval.state.intervalId).not.toBeUndefined();
 
         // simulates triggering of visibilitychange event
         interval.onVisibilityChange({ target: { visibilityState: 'hidden' } });
@@ -176,7 +176,7 @@ describe('SmartInterval', () => {
         // simulates triggering of visibilitychange event
         interval.onVisibilityChange({ target: { visibilityState: 'visible' } });
 
-        expect(interval.state.intervalId).toBeTruthy();
+        expect(interval.state.intervalId).not.toBeUndefined();
       });
     });
 
@@ -194,7 +194,7 @@ describe('SmartInterval', () => {
     it('should execute callback before first interval', () => {
       interval = createDefaultSmartInterval({ immediateExecution: true });
 
-      expect(interval.cfg.immediateExecution).toBeFalsy();
+      expect(interval.cfg.immediateExecution).toBe(false);
     });
   });
 });

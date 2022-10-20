@@ -17,7 +17,7 @@ import groupRunnersData from 'test_fixtures/graphql/runner/list/group_runners.qu
 import groupRunnersDataPaginated from 'test_fixtures/graphql/runner/list/group_runners.query.graphql.paginated.json';
 import groupRunnersCountData from 'test_fixtures/graphql/runner/list/group_runners_count.query.graphql.json';
 
-import { RUNNER_PAGE_SIZE } from '~/runner/constants';
+import { DEFAULT_MEMBERSHIP, RUNNER_PAGE_SIZE } from '~/runner/constants';
 
 const emptyPageInfo = {
   __typename: 'PageInfo',
@@ -34,8 +34,18 @@ export const mockSearchExamples = [
   {
     name: 'a default query',
     urlQuery: '',
-    search: { runnerType: null, filters: [], pagination: {}, sort: 'CREATED_DESC' },
-    graphqlVariables: { sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    search: {
+      runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
+      filters: [],
+      pagination: {},
+      sort: 'CREATED_DESC',
+    },
+    graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
     isDefault: true,
   },
   {
@@ -43,17 +53,24 @@ export const mockSearchExamples = [
     urlQuery: '?status[]=ACTIVE',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
       pagination: {},
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { status: 'ACTIVE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
+      status: 'ACTIVE',
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'a single term text search',
     urlQuery: '?search=something',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [
         {
           type: 'filtered-search-term',
@@ -63,13 +80,19 @@ export const mockSearchExamples = [
       pagination: {},
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { search: 'something', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
+      search: 'something',
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'a two terms text search',
     urlQuery: '?search=something+else',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [
         {
           type: 'filtered-search-term',
@@ -83,24 +106,36 @@ export const mockSearchExamples = [
       pagination: {},
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { search: 'something else', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
+      search: 'something else',
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'single instance type',
     urlQuery: '?runner_type[]=INSTANCE_TYPE',
     search: {
       runnerType: 'INSTANCE_TYPE',
+      membership: DEFAULT_MEMBERSHIP,
       filters: [],
       pagination: {},
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { type: 'INSTANCE_TYPE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      type: 'INSTANCE_TYPE',
+      membership: DEFAULT_MEMBERSHIP,
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'multiple runner status',
     urlQuery: '?status[]=ACTIVE&status[]=PAUSED',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [
         { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
         { type: 'status', value: { data: 'PAUSED', operator: '=' } },
@@ -108,13 +143,19 @@ export const mockSearchExamples = [
       pagination: {},
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { status: 'ACTIVE', sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      status: 'ACTIVE',
+      membership: DEFAULT_MEMBERSHIP,
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'multiple status, a single instance type and a non default sort',
     urlQuery: '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&sort=CREATED_ASC',
     search: {
       runnerType: 'INSTANCE_TYPE',
+      membership: DEFAULT_MEMBERSHIP,
       filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
       pagination: {},
       sort: 'CREATED_ASC',
@@ -122,6 +163,7 @@ export const mockSearchExamples = [
     graphqlVariables: {
       status: 'ACTIVE',
       type: 'INSTANCE_TYPE',
+      membership: DEFAULT_MEMBERSHIP,
       sort: 'CREATED_ASC',
       first: RUNNER_PAGE_SIZE,
     },
@@ -131,11 +173,13 @@ export const mockSearchExamples = [
     urlQuery: '?tag[]=tag-1',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [{ type: 'tag', value: { data: 'tag-1', operator: '=' } }],
       pagination: {},
       sort: 'CREATED_DESC',
     },
     graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
       tagList: ['tag-1'],
       first: 20,
       sort: 'CREATED_DESC',
@@ -146,6 +190,7 @@ export const mockSearchExamples = [
     urlQuery: '?tag[]=tag-1&tag[]=tag-2',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [
         { type: 'tag', value: { data: 'tag-1', operator: '=' } },
         { type: 'tag', value: { data: 'tag-2', operator: '=' } },
@@ -154,6 +199,7 @@ export const mockSearchExamples = [
       sort: 'CREATED_DESC',
     },
     graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
       tagList: ['tag-1', 'tag-2'],
       first: 20,
       sort: 'CREATED_DESC',
@@ -164,22 +210,34 @@ export const mockSearchExamples = [
     urlQuery: '?after=AFTER_CURSOR',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [],
       pagination: { after: 'AFTER_CURSOR' },
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { sort: 'CREATED_DESC', after: 'AFTER_CURSOR', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
+      sort: 'CREATED_DESC',
+      after: 'AFTER_CURSOR',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'the previous page',
     urlQuery: '?before=BEFORE_CURSOR',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [],
       pagination: { before: 'BEFORE_CURSOR' },
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { sort: 'CREATED_DESC', before: 'BEFORE_CURSOR', last: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      membership: DEFAULT_MEMBERSHIP,
+      sort: 'CREATED_DESC',
+      before: 'BEFORE_CURSOR',
+      last: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'the next page filtered by a status, an instance type, tags and a non default sort',
@@ -187,6 +245,7 @@ export const mockSearchExamples = [
       '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&tag[]=tag-1&tag[]=tag-2&sort=CREATED_ASC&after=AFTER_CURSOR',
     search: {
       runnerType: 'INSTANCE_TYPE',
+      membership: DEFAULT_MEMBERSHIP,
       filters: [
         { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
         { type: 'tag', value: { data: 'tag-1', operator: '=' } },
@@ -198,6 +257,7 @@ export const mockSearchExamples = [
     graphqlVariables: {
       status: 'ACTIVE',
       type: 'INSTANCE_TYPE',
+      membership: DEFAULT_MEMBERSHIP,
       tagList: ['tag-1', 'tag-2'],
       sort: 'CREATED_ASC',
       after: 'AFTER_CURSOR',
@@ -209,22 +269,34 @@ export const mockSearchExamples = [
     urlQuery: '?paused[]=true',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [{ type: 'paused', value: { data: 'true', operator: '=' } }],
       pagination: {},
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { paused: true, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      paused: true,
+      membership: DEFAULT_MEMBERSHIP,
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
   {
     name: 'active runners',
     urlQuery: '?paused[]=false',
     search: {
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [{ type: 'paused', value: { data: 'false', operator: '=' } }],
       pagination: {},
       sort: 'CREATED_DESC',
     },
-    graphqlVariables: { paused: false, sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
+    graphqlVariables: {
+      paused: false,
+      membership: DEFAULT_MEMBERSHIP,
+      sort: 'CREATED_DESC',
+      first: RUNNER_PAGE_SIZE,
+    },
   },
 ];
 

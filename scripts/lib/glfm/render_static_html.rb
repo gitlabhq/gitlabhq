@@ -20,21 +20,26 @@ require_relative 'shared'
 # Factorybot factory methods to create persisted model objects with stable
 # and consistent data values, to ensure consistent example snapshot HTML
 # across various machines and environments. RSpec also makes it easy to invoke
-# the API # and obtain the response.
+# the API and obtain the response.
 #
 # It is intended to be invoked as a helper subprocess from the `update_example_snapshots.rb`
 # script class. It's not intended to be run or used directly. This usage is also reinforced
 # by not naming the file with a `_spec.rb` ending.
-RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable RSpec/TopLevelDescribePath
+RSpec.describe 'Render Static HTML', :api, type: :request do
   include Glfm::Constants
   include Glfm::Shared
 
   # noinspection RailsParamDefResolve (RubyMine can't find the shared context from this file location)
   include_context 'with GLFM example snapshot fixtures'
 
-  it 'can create a project dependency graph using factories' do
+  it do
     markdown_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_MARKDOWN_YML_PATH')), symbolize_names: true)
-    metadata_hash = YAML.safe_load(File.open(ENV.fetch('INPUT_METADATA_YML_PATH')), symbolize_names: true)
+    metadata_hash =
+      if input_metadata_yml_path = ENV['INPUT_METADATA_YML_PATH']
+        YAML.safe_load(File.open(input_metadata_yml_path), symbolize_names: true) || {}
+      else
+        {}
+      end
 
     # NOTE: We cannot parallelize this loop like the Javascript WYSIWYG example generation does,
     # because the rspec `post` API cannot be parallized (it is not thread-safe, it can't find
@@ -66,8 +71,7 @@ RSpec.describe 'Render Static HTML', :api, type: :request do # rubocop:disable R
   private
 
   def write_output_file(static_html_hash)
-    tmpfile = File.open(ENV.fetch('OUTPUT_STATIC_HTML_TEMPFILE_PATH'), 'w')
     yaml_string = dump_yaml_with_formatting(static_html_hash)
-    write_file(tmpfile, yaml_string)
+    write_file(ENV.fetch('OUTPUT_STATIC_HTML_TEMPFILE_PATH'), yaml_string)
   end
 end

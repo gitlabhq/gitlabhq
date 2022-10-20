@@ -425,16 +425,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           create(:merge_request, :simple, source_project: project, reviewer_ids: [user2.id])
         end
 
-        context 'when merge_request_reviewer feature is enabled' do
-          before do
-            stub_feature_flags(merge_request_reviewer: true)
-          end
+        let(:opts) { { reviewer_ids: [IssuableFinder::Params::NONE] } }
 
-          let(:opts) { { reviewer_ids: [IssuableFinder::Params::NONE] } }
-
-          it 'removes reviewers' do
-            expect(update_merge_request(opts).reviewers).to eq []
-          end
+        it 'removes reviewers' do
+          expect(update_merge_request(opts).reviewers).to eq []
         end
       end
     end
@@ -625,6 +619,20 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           expect(Todo.count).to eq(2)
         end
+
+        it 'triggers GraphQL description updated subscription' do
+          expect(GraphqlTriggers).to receive(:issuable_description_updated).with(merge_request).and_call_original
+
+          update_merge_request(description: 'updated description')
+        end
+      end
+
+      context 'when decription is not changed' do
+        it 'does not trigger GraphQL description updated subscription' do
+          expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
+
+          update_merge_request(title: 'updated title')
+        end
       end
 
       context 'when is reassigned' do
@@ -684,6 +692,16 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           expect(user2.review_requested_open_merge_requests_count).to eq(1)
           expect(user3.review_requested_open_merge_requests_count).to eq(0)
+        end
+
+        it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
+          let(:action) { update_merge_request({ reviewer_ids: [user2.id] }) }
+        end
+      end
+
+      context 'when reviewers did not change' do
+        it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
+          let(:action) { update_merge_request({ reviewer_ids: [merge_request.reviewer_ids] }) }
         end
       end
 
@@ -827,6 +845,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
           should_not_email(non_subscriber)
         end
 
+        it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+          expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
+
+          update_merge_request(title: 'New title')
+        end
+
         context 'when removing through wip_event param' do
           it 'removes Draft from the title' do
             expect { update_merge_request({ wip_event: "ready" }) }
@@ -851,6 +875,12 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
 
           should_email(subscriber)
           should_not_email(non_subscriber)
+        end
+
+        it 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+          expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(merge_request)
+
+          update_merge_request(title: 'Draft: New title')
         end
 
         context 'when adding through wip_event param' do

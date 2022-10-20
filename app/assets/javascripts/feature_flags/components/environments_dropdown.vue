@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlSearchBoxByType } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -87,7 +87,7 @@ export default {
         .catch(() => {
           this.isLoading = false;
           this.closeSuggestions();
-          createFlash({
+          createAlert({
             message: __('Something went wrong on our end. Please try again.'),
           });
         });

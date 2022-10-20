@@ -1,7 +1,7 @@
 ---
 stage: DevSecOps
 group: Technical writing
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Get started with GitLab application security **(ULTIMATE)**
@@ -14,7 +14,7 @@ The following steps will help you get the most from GitLab application security 
 1. Enable [Secret Detection](secret_detection/index.md) and [Dependency Scanning](dependency_scanning/index.md)
    to identify any leaked secrets and vulnerable packages in your codebase.
 
-   - For all security scanners, enable them by updating your `[.gitlab-ci.yml](../../ci/yaml/gitlab_ci_yaml.md)` directly on your `default` branch. This creates a baseline scan of your `default` branch, which is necessary for
+   - For all security scanners, enable them by updating your [`.gitlab-ci.yml`](../../ci/yaml/gitlab_ci_yaml.md) directly on your `default` branch. This creates a baseline scan of your `default` branch, which is necessary for
    feature branch scans to be compared against. This allows [merge requests](../project/merge_requests/index.md)
    to display only newly-introduced vulnerabilities. Otherwise, merge requests will display every
    vulnerability in the branch, regardless of whether it was introduced by a change in the branch.
@@ -36,7 +36,7 @@ The following steps will help you get the most from GitLab application security 
    remediating existing vulnerabilities and preventing the introduction of new ones.
 1. Enable other scan types such as [SAST](sast/index.md), [DAST](dast/index.md),
    [Fuzz testing](coverage_fuzzing/index.md), or [Container Scanning](container_scanning/index.md).
-1. Use [Compliance Pipelines](../../user/project/settings/index.md#compliance-pipeline-configuration)
+1. Use [Compliance Pipelines](../group/manage.md#configure-a-compliance-pipeline)
    or [Scan Execution Policies](policies/scan-execution-policies.md) to enforce required scan types
    and ensure separation of duties between security and engineering.
 1. Consider enabling [Review Apps](../../development/testing_guide/review_apps.md) to allow for DAST

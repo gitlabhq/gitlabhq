@@ -3,7 +3,7 @@ import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 
 import { ITEM_TYPE } from '~/groups/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 import searchCrmContactsQuery from '../queries/search_crm_contacts.query.graphql';
@@ -81,7 +81,7 @@ export default {
             : data[this.namespace]?.contacts.nodes;
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('There was a problem fetching CRM contacts.'),
           }),
         )

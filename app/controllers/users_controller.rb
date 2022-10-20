@@ -35,7 +35,7 @@ class UsersController < ApplicationController
   feature_category :source_code_management, [:gpg_keys]
 
   # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357914
-  urgency :low, [:show, :calendar_activities, :contributed, :activity, :projects, :groups, :calendar]
+  urgency :low, [:show, :calendar_activities, :contributed, :activity, :projects, :groups, :calendar, :snippets]
   urgency :default, [:followers, :following, :starred]
   urgency :high, [:exists]
 
@@ -174,8 +174,9 @@ class UsersController < ApplicationController
   end
 
   def follow
-    current_user.follow(user)
+    followee = current_user.follow(user)
 
+    flash[:alert] = followee.errors.full_messages.join(', ') if followee&.errors&.any?
     redirect_path = referer_path(request) || @user
 
     redirect_to redirect_path

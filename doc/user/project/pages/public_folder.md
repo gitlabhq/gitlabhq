@@ -3,7 +3,7 @@ description: 'Learn how to configure the build output folder for the most
 common static site generators'
 stage: Create
 group: Incubation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure the public files folder **(FREE)**
@@ -51,16 +51,18 @@ rename that folder to a collision-free alternative first:
 
    ```javascript
    // astro.config.mjs
-   export default {
+   import { defineConfig } from 'astro/config';
+
+   export default defineConfig({
      // GitLab Pages requires exposed files to be located in a folder called "public".
      // So we're instructing Astro to put the static build output in a folder of that name.
-     dist: 'public',
+     outDir: 'public',
 
      // The folder name Astro uses for static files (`public`) is already reserved
      // for the build output. So in deviation from the defaults we're using a folder
      // called `static` instead.
-     public: 'static',
-   };
+     publicDir: 'static',
+   });
    ```
 
 ### SvelteKit

@@ -6,7 +6,7 @@ import { difference, isEqual, escape, sortBy, template, union } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import IssuableBulkUpdateActions from '~/issuable/bulk_update_sidebar/issuable_bulk_update_actions';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { sprintf, __ } from '~/locale';
 import CreateLabelDropdown from './create_label_dropdown';
@@ -146,7 +146,7 @@ export default class LabelsSelect {
             });
           })
           .catch(() =>
-            createFlash({
+            createAlert({
               message: __('Error saving label update.'),
             }),
           );
@@ -185,7 +185,7 @@ export default class LabelsSelect {
               }
             })
             .catch(() =>
-              createFlash({
+              createAlert({
                 message: __('Error fetching labels.'),
               }),
             );

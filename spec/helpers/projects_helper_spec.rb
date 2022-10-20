@@ -825,7 +825,7 @@ RSpec.describe ProjectsHelper do
     end
 
     context 'gitaly is working appropriately' do
-      let(:license) { Licensee::License.new('mit') }
+      let(:license) { ::Gitlab::Git::DeclaredLicense.new(key: 'mit', name: 'MIT License') }
 
       before do
         expect(repository).to receive(:license).and_return(license)
@@ -1334,6 +1334,26 @@ RSpec.describe ProjectsHelper do
         graph_ref: ref,
         graph_csv_path: start_with(daily_coverage_options.fetch(:download_path))
       )
+    end
+  end
+
+  describe '#localized_project_human_access' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:key, :localized_project_human_access) do
+      Gitlab::Access::NO_ACCESS           | _('No access')
+      Gitlab::Access::MINIMAL_ACCESS      | _("Minimal Access")
+      Gitlab::Access::GUEST               | _('Guest')
+      Gitlab::Access::REPORTER            | _('Reporter')
+      Gitlab::Access::DEVELOPER           | _('Developer')
+      Gitlab::Access::MAINTAINER          | _('Maintainer')
+      Gitlab::Access::OWNER               | _('Owner')
+    end
+
+    with_them do
+      it 'with correct key' do
+        expect(helper.localized_project_human_access(key)).to eq(localized_project_human_access)
+      end
     end
   end
 end

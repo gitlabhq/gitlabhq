@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -46,7 +46,7 @@ export default {
           this.branches = data;
         })
         .catch(() => {
-          createFlash({ message: __('There was a problem fetching branches.') });
+          createAlert({ message: __('There was a problem fetching branches.') });
         })
         .finally(() => {
           this.loading = false;

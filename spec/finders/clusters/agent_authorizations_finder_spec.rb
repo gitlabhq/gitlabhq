@@ -9,6 +9,10 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
     let_it_be(:subgroup2) { create(:group, parent: subgroup1) }
     let_it_be(:bottom_level_group) { create(:group, parent: subgroup2) }
 
+    let_it_be(:non_ancestor_group) { create(:group, parent: top_level_group) }
+    let_it_be(:non_ancestor_project) { create(:project, namespace: non_ancestor_group) }
+    let_it_be(:non_ancestor_agent) { create(:cluster_agent, project: non_ancestor_project) }
+
     let_it_be(:agent_configuration_project) { create(:project, namespace: subgroup1) }
     let_it_be(:requesting_project, reload: true) { create(:project, namespace: bottom_level_group) }
 
@@ -54,6 +58,20 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         end
 
         it { is_expected.to be_empty }
+      end
+
+      context 'agent configuration project shares a root namespace, but does not belong to an ancestor of the given project' do
+        let!(:project_authorization) { create(:agent_project_authorization, agent: non_ancestor_agent, project: requesting_project) }
+
+        it { is_expected.to match_array([project_authorization]) }
+
+        context 'agent_authorization_include_descendants feature flag is disabled' do
+          before do
+            stub_feature_flags(agent_authorization_include_descendants: false)
+          end
+
+          it { is_expected.to be_empty }
+        end
       end
 
       context 'with project authorizations present' do
@@ -113,6 +131,20 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
 
         it 'picks the authorization for the closest group to the requesting project' do
           expect(subject).to contain_exactly(bottom_level_auth)
+        end
+      end
+
+      context 'agent configuration project does not belong to an ancestor of the authorized group' do
+        let!(:group_authorization) { create(:agent_group_authorization, agent: non_ancestor_agent, group: bottom_level_group) }
+
+        it { is_expected.to match_array([group_authorization]) }
+
+        context 'agent_authorization_include_descendants feature flag is disabled' do
+          before do
+            stub_feature_flags(agent_authorization_include_descendants: false)
+          end
+
+          it { is_expected.to be_empty }
         end
       end
 

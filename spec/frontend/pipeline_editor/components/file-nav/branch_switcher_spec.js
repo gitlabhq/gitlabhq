@@ -360,7 +360,7 @@ describe('Pipeline editor branch switcher', () => {
   });
 
   describe('loading icon', () => {
-    test.each`
+    it.each`
       isQueryLoading | isRendered
       ${true}        | ${true}
       ${false}       | ${false}

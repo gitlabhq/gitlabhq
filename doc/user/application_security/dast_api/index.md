@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -1039,6 +1039,7 @@ can be added, removed, and modified by creating a custom configuration.
 | `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
 | `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `2`. |
 | `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
+| `DAST_API_API_PORT`                                  | Specify the communication port number used by DAST API engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
 |[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
@@ -1333,13 +1334,13 @@ variables:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334578) in GitLab 14.8.
 
-By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `DAST_API_OVERRIDES_CMD_VERBOSE` to any value in order to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
+By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `DAST_API_OVERRIDES_CMD_VERBOSE` to any value to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
 
 It is also possible to write messages from your script to a log file that is collected when the job completes or fails. The log file must be created in a specific location and following a naming convention.
 
 Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during normal running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
-Following our example, we provided `renew_token.py` in the environment variable `DAST_API_OVERRIDES_CMD`. Please notice two things in the script:
+Following our example, we provided `renew_token.py` in the environment variable `DAST_API_OVERRIDES_CMD`. Notice two things in the script:
 
 - Log file is saved in the location indicated by the environmental variable `CI_PROJECT_DIR`.
 - Log filename should match `gl-*.log`.
@@ -2064,7 +2065,7 @@ A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cau
 
 The version information can be found in the job details for the `dast_api` job.
 
-If the issue is occurring with versions v1.6.196 or greater, please contact Support and provide the following information:
+If the issue is occurring with versions v1.6.196 or greater, contact Support and provide the following information:
 
 1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
 1. The full console output of the job.
@@ -2085,13 +2086,50 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 - Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value will be inherited from the DAST API CI/CD template. We recommend this method instead of manually setting a value.
 - If removing the variable is not possible, check to see if this value has changed in the latest version of the [DAST API CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
+### `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
+
+The DAST API engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause for this issue is that the background component cannot use the selected port as it's already in use. This error can occur intermittently if timing plays a part (race condition). This issue occurs most often with Kubernetes environments when other services are mapped into the container causing port conflicts.
+
+Before proceeding with a solution, it is important to confirm that the error message was produced because the port was already taken. To confirm this was the cause:
+
+1. Go to the job console.
+
+1. Look for the artifact `gl-api-security-scanner.log`. You can either download all artifacts by selecting **Download** and then search for the file, or directly start searching by selecting **Browse**.
+
+1. Open the file `gl-api-security-scanner.log` in a text editor.
+
+1. If the error message was produced because the port was already taken, you should see in the file a message like the following:
+
+- In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734):
+
+  ```log
+  Failed to bind to address http://127.0.0.1:5500: address already in use.
+  ```
+
+- In GitLab 15.4 and earlier:
+
+  ```log
+  Failed to bind to address http://[::]:5000: address already in use.
+  ```
+
+The text `http://[::]:5000` in the previous message could be different in your case, for instance it could be `http://[::]:5500` or `http://127.0.0.1:5500`. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
+
+If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](#get-support-or-request-an-improvement) through the proper channels.
+
+Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `DAST_API_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
+
+**Solution**
+
+1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `DAST_API_API_PORT`.
+1. Update the value of `DAST_API_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
+
 ### `Application cannot determine the base URL for the target API`
 
 The DAST API engine outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
 There is a order of precedence in which the DAST API engine tries to get the target API when checking the different sources. First, it will try to use the `DAST_API_TARGET_URL`. If the environment variable has not been set, then the DAST API engine will attempt to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the DAST API engine will use the OpenAPI document contents and the URL provided in `DAST_API_OPENAPI` (if a URL is provided) to try to compute the target API.
 
-The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case please refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
+The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
 
 #### Static environment solution
 
@@ -2188,10 +2226,10 @@ DAST API uses the specified media types in the OpenAPI document to generate requ
 
 ## Get support or request an improvement
 
-To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/get-help/).
+To get support for your particular problem, use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and DAST API.
-Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding DAST API to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
+Use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding DAST API to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 
@@ -2203,7 +2241,7 @@ When experiencing a behavior not working as expected, consider providing context
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
 WARNING:
-**Sanitize data attached to a support issue**. Please remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+**Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
 
 ## Glossary
 

@@ -19,12 +19,13 @@ module QA
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = template_project
           commit.commit_message = 'Add custom issue template'
-          commit.add_files([
-            {
-              file_path: ".gitlab/issue_templates/#{template_name}.md",
-              content: template_content
-            }
-          ])
+          commit.add_files(
+            [
+              {
+                file_path: ".gitlab/issue_templates/#{template_name}.md",
+                content: template_content
+              }
+            ])
         end
       end
 

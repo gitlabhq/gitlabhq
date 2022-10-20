@@ -1,7 +1,7 @@
 <script>
 import produce from 'immer';
 import Vue from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, sprintf } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { confidentialityQueries, Tracking } from '~/sidebar/constants';
@@ -72,7 +72,7 @@ export default {
         this.$emit('confidentialityUpdated', data.workspace?.issuable?.confidential);
       },
       error() {
-        createFlash({
+        createAlert({
           message: sprintf(
             __('Something went wrong while setting %{issuableType} confidentiality.'),
             {

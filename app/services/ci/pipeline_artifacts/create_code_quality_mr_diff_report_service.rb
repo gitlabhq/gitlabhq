@@ -23,20 +23,15 @@ module Ci
       def artifact_attributes
         file = build_carrierwave_file!
 
-        attributes = {
+        {
           project_id: pipeline.project_id,
           file_type: :code_quality_mr_diff,
           file_format: Ci::PipelineArtifact::REPORT_TYPES.fetch(:code_quality_mr_diff),
           size: file["tempfile"].size,
           file: file,
-          expire_at: Ci::PipelineArtifact::EXPIRATION_DATE.from_now
+          expire_at: Ci::PipelineArtifact::EXPIRATION_DATE.from_now,
+          locked: pipeline.locked
         }
-
-        if ::Feature.enabled?(:ci_update_unlocked_pipeline_artifacts, pipeline.project)
-          attributes[:locked] = pipeline.locked
-        end
-
-        attributes
       end
 
       def merge_requests

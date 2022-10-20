@@ -2,6 +2,7 @@
 - message = message_base.html_safe % { edit_start: '<span class="js-file-fork-suggestion-section-action">'.html_safe, edit_end: '</span>'.html_safe }
 .js-file-fork-suggestion-section.file-fork-suggestion.hidden
   %span.file-fork-suggestion-note= message
-  = link_to s_('ForkSuggestion|Fork'), nil, method: :post, class: 'js-fork-suggestion-button gl-button btn btn-grouped btn-confirm-secondary'
-  %button.js-cancel-fork-suggestion-button.gl-button.btn.btn-grouped{ type: 'button' }
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, category: :secondary, button_options: { class: "js-fork-suggestion-button btn-grouped" }) do
+    = s_('ForkSuggestion|Fork')
+  = render Pajamas::ButtonComponent.new(button_options: { class: "js-cancel-fork-suggestion-button btn-grouped" }) do
     = s_('ForkSuggestion|Cancel')

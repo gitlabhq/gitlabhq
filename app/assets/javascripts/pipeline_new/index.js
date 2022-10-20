@@ -1,6 +1,9 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import LegacyPipelineNewForm from './components/legacy_pipeline_new_form.vue';
 import PipelineNewForm from './components/pipeline_new_form.vue';
+import { resolvers } from './graphql/resolvers';
 
 const mountLegacyPipelineNewForm = (el) => {
   const {
@@ -51,12 +54,12 @@ const mountPipelineNewForm = (el) => {
     projectRefsEndpoint,
 
     // props
-    configVariablesPath,
     defaultBranch,
     fileParam,
     maxWarnings,
     pipelinesPath,
     projectId,
+    projectPath,
     refParam,
     settingsLink,
     varParam,
@@ -65,22 +68,27 @@ const mountPipelineNewForm = (el) => {
   const variableParams = JSON.parse(varParam);
   const fileParams = JSON.parse(fileParam);
 
-  // TODO: add apolloProvider
+  Vue.use(VueApollo);
+
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(resolvers),
+  });
 
   return new Vue({
     el,
+    apolloProvider,
     provide: {
       projectRefsEndpoint,
     },
     render(createElement) {
       return createElement(PipelineNewForm, {
         props: {
-          configVariablesPath,
           defaultBranch,
           fileParams,
           maxWarnings: Number(maxWarnings),
           pipelinesPath,
           projectId,
+          projectPath,
           refParam,
           settingsLink,
           variableParams,

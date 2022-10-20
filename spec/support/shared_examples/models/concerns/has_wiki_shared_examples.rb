@@ -15,7 +15,7 @@ RSpec.shared_examples 'model with wiki' do
 
     context 'when the repository cannot be created' do
       before do
-        expect(container.wiki).to receive(:wiki) { raise Wiki::CouldNotCreateWikiError }
+        expect(container.wiki).to receive(:create_wiki_repository) { raise Wiki::CouldNotCreateWikiError }
       end
 
       it 'returns false and adds a validation error' do

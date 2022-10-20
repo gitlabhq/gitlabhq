@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import createFlash from './flash';
+import { createAlert } from '~/flash';
 import axios from './lib/utils/axios_utils';
 import { n__, s__ } from './locale';
 
@@ -71,7 +71,7 @@ export function fetchCommitMergeRequests() {
       $container.html($content);
     })
     .catch(() =>
-      createFlash({
+      createAlert({
         message: s__('Commits|An error occurred while fetching merge requests data.'),
       }),
     );

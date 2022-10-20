@@ -33,14 +33,6 @@
     }
   }
 
-  a {
-    color: $blue-600;
-
-    > code {
-      color: $blue-600;
-    }
-  }
-
   .media-container {
     display: inline-flex;
     flex-direction: column;
@@ -715,10 +707,6 @@ code {
 textarea.js-gfm-input {
   font-family: $monospace-font;
   font-size: $gl-font-size-monospace;
-}
-
-.strikethrough {
-  text-decoration: line-through;
 }
 
 h1,

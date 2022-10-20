@@ -880,29 +880,20 @@ RSpec.describe 'Git HTTP requests' do
             let(:path) { "#{project.full_path}.git" }
             let(:env) { { user: 'gitlab-ci-token', password: build.token } }
 
-            it_behaves_like 'pulls are allowed'
+            it 'rejects pulls' do
+              download(path, **env) do |response|
+                expect(response).to have_gitlab_http_status(:not_found)
+              end
+            end
 
-            # A non-401 here is not an information leak since the system is
-            # "authenticated" as CI using the correct token. It does not have
-            # push access, so pushes should be rejected as forbidden, and giving
-            # a reason is fine.
-            #
-            # We know for sure it is not an information leak since pulls using
-            # the build token must be allowed.
-            it "rejects pushes with 403 Forbidden" do
+            it 'rejects pushes' do
               push_get(path, **env)
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(response.body).to eq(git_access_error(:auth_upload))
             end
 
-            # We are "authenticated" as CI using a valid token here. But we are
-            # not authorized to see any other project, so return "not found".
-            it "rejects pulls for other project with 404 Not Found" do
-              clone_get("#{other_project.full_path}.git", **env)
-
-              expect(response).to have_gitlab_http_status(:not_found)
-              expect(response.body).to eq(git_access_error(:project_not_found))
+            def pull
+              download(path, **env)
             end
           end
 
@@ -1494,33 +1485,21 @@ RSpec.describe 'Git HTTP requests' do
                     added_by: user)
           end
 
+          # legacy behavior that is blocked/deprecated
           context 'when build created by system is authenticated' do
             let(:path) { "#{project.full_path}.git" }
             let(:env) { { user: 'gitlab-ci-token', password: build.token } }
 
-            it_behaves_like 'pulls are allowed'
+            it 'rejects pulls' do
+              download(path, **env) do |response|
+                expect(response).to have_gitlab_http_status(:not_found)
+              end
+            end
 
-            # A non-401 here is not an information leak since the system is
-            # "authenticated" as CI using the correct token. It does not have
-            # push access, so pushes should be rejected as forbidden, and giving
-            # a reason is fine.
-            #
-            # We know for sure it is not an information leak since pulls using
-            # the build token must be allowed.
-            it "rejects pushes with 403 Forbidden" do
+            it 'rejects pushes' do
               push_get(path, **env)
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(response.body).to eq(git_access_error(:auth_upload))
-            end
-
-            # We are "authenticated" as CI using a valid token here. But we are
-            # not authorized to see any other project, so return "not found".
-            it "rejects pulls for other project with 404 Not Found" do
-              clone_get("#{other_project.full_path}.git", **env)
-
-              expect(response).to have_gitlab_http_status(:not_found)
-              expect(response.body).to eq(git_access_error(:project_not_found))
             end
           end
 
@@ -1780,8 +1759,7 @@ RSpec.describe 'Git HTTP requests' do
   end
 
   describe "User with LDAP identity" do
-    let(:user) { create(:omniauth_user, extern_uid: dn) }
-    let(:dn) { 'uid=john,ou=people,dc=example,dc=com' }
+    let(:user) { create(:omniauth_user, :ldap) }
     let(:path) { 'doesnt/exist.git' }
 
     before do

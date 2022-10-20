@@ -11,7 +11,7 @@ class GroupAccessTokenEntity < AccessTokenEntityBase
 
     revoke_group_settings_access_token_path(
       id: token,
-      group_id: group.path)
+      group_id: group.full_path)
   end
 
   expose :role do |token, options|

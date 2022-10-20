@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Product Intelligence
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Implement Service Ping
@@ -179,7 +179,7 @@ As the HyperLogLog algorithm is probabilistic, the **results always include erro
 The highest encountered error rate is 4.9%.
 
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
-columns that contain non-unique values, which can not be assured by other counters.
+columns that contain non-unique values, which cannot be assured by other counters.
 
 ##### estimate_batch_distinct_count method
 
@@ -605,7 +605,7 @@ alt_usage_data(value = nil, fallback: -1, &block)
 
 Arguments:
 
-- `value`: a simple static value in which case the value is simply returned.
+- `value`: a static value in which case the value is returned.
 - or a `block`: which is evaluated
 - `fallback: -1`: the common value used for any metrics that are failing.
 
@@ -712,10 +712,10 @@ We also use `#database-lab` and [explain.depesz.com](https://explain.depesz.com/
 - Use specialized indexes. For examples, see these merge requests:
   - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26871)
   - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26445)
-- Use defined `start` and `finish`, and simple queries.
-  These values can be memoized and reused, as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
-- Avoid joins and write the queries as simply as possible,
-  as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316).
+- Use defined `start` and `finish`. These values can be memoized and reused, as in this
+  [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37155).
+- Avoid joins and unnecessary complexity in your queries. See this
+  [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36316) as an example.
 - Set a custom `batch_size` for `distinct_count`, as in this [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38000).
 
 ## Add the metric definition
@@ -838,6 +838,22 @@ However, it has the following limitations:
 
 WARNING:
 This feature is intended solely for internal GitLab use.
+
+The aggregated metrics feature provides insight into the data attributes in a collection of Service Ping metrics.
+This aggregation allows you to count data attributes in events without counting each occurrence of the same data attribute in multiple events.
+For example, you can aggregate the number of users who perform several actions, such as creating a new issue and opening a new merge request.
+You can then count each user that performed any combination of these actions.
+
+### Defining aggregated metric via metric YAML definition
+
+To add data for aggregated metrics to the Service Ping payload,
+create metric YAML definition file following [Aggregated metric instrumentation guide](metrics_instrumentation.md#aggregated-metrics).
+
+### (DEPRECATED) Defining aggregated metric via aggregated metric YAML config file
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98206) in GitLab 15.5
+and is planned for removal in 15.5. Use [metrics definition YAMLs](https://gitlab.com/gitlab-org/gitlab/-/issues/370963) instead.
 
 To add data for aggregated metrics to the Service Ping payload, add a corresponding definition to:
 

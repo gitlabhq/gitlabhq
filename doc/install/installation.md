@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Installation from source **(FREE SELF)**
@@ -49,7 +49,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | Software | Minimum version | Notes |
 | -------- | --------------- | ----- |
 | [Ruby](#2-ruby)     | `2.7`             | From GitLab 13.6, Ruby 2.7 is required. Ruby 3.0 is not supported yet (see [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/5149) for the current status). You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
-| [Go](#3-go) | `1.16` | |
+| [Go](#3-go) | `1.17` | From GitLab 15.2, Go 1.17 or later is required. |
 | [Git](#git) | `2.33.x` | From GitLab 14.4, Git 2.33.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git). |
 | [Node.js](#4-node) | `14.15.0` | GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets. Node.js 16.x is recommended, as it's faster. You can check which version you're running with `node -v`. You must update it to a newer version if needed. |
 
@@ -119,6 +119,10 @@ sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdb
   libreadline-dev libncurses5-dev libffi-dev curl openssh-server libxml2-dev libxslt-dev \
   libcurl4-openssl-dev libicu-dev logrotate rsync python3-docutils pkg-config cmake runit-systemd
 ```
+
+NOTE:
+GitLab requires OpenSSL version 1.1. If your Linux distribution includes a different version of OpenSSL,
+you might have to install 1.1 manually.
 
 If you want to use Kerberos for user authentication, install `libkrb5-dev`
 (if you don't know what Kerberos is, you can assume you don't need it):

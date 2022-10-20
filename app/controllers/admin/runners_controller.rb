@@ -4,13 +4,6 @@ class Admin::RunnersController < Admin::ApplicationController
   include RunnerSetupScripts
 
   before_action :runner, except: [:index, :tag_list, :runner_setup_scripts]
-  before_action only: [:index] do
-    push_frontend_feature_flag(:admin_runners_bulk_delete)
-  end
-
-  before_action only: [:show] do
-    push_frontend_feature_flag(:enforce_runner_token_expires_at)
-  end
 
   feature_category :runner
   urgency :low

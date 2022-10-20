@@ -272,17 +272,21 @@ module API
 
         begin
           spam_params = ::Spam::SpamParams.new_from_request(request: request)
-          issue = ::Issues::CreateService.new(project: user_project,
-                                              current_user: current_user,
-                                              params: issue_params,
-                                              spam_params: spam_params).execute
+          result = ::Issues::CreateService.new(project: user_project,
+                                               current_user: current_user,
+                                               params: issue_params,
+                                               spam_params: spam_params).execute
 
-          if issue.valid?
-            present issue, with: Entities::Issue, current_user: current_user, project: user_project
-          else
+          if result.success?
+            present result[:issue], with: Entities::Issue, current_user: current_user, project: user_project
+          elsif result[:issue]
+            issue = result[:issue]
+
             with_captcha_check_rest_api(spammable: issue) do
               render_validation_error!(issue)
             end
+          else
+            render_api_error!(result.errors.join(', '), result.http_status || 422)
           end
         rescue ::ActiveRecord::RecordNotUnique
           render_api_error!('Duplicated issue', 409)

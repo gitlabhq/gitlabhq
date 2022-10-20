@@ -4,6 +4,7 @@ subscription issuableDatesUpdated($issuableId: IssuableID!) {
       id
       widgets {
         ... on WorkItemWidgetStartAndDueDate {
+          type
           dueDate
           startDate
         }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::BranchFormatter do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:commit) { create(:commit, project: project) }
   let(:repo) { double }
   let(:raw) do
@@ -16,19 +16,19 @@ RSpec.describe Gitlab::LegacyGithubImport::BranchFormatter do
 
   describe '#exists?' do
     it 'returns true when branch exists and commit is part of the branch' do
-      branch = described_class.new(project, double(raw))
+      branch = described_class.new(project, raw)
 
       expect(branch.exists?).to eq true
     end
 
     it 'returns false when branch exists and commit is not part of the branch' do
-      branch = described_class.new(project, double(raw.merge(ref: 'feature')))
+      branch = described_class.new(project, raw.merge(ref: 'feature'))
 
       expect(branch.exists?).to eq false
     end
 
     it 'returns false when branch does not exist' do
-      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch')))
+      branch = described_class.new(project, raw.merge(ref: 'removed-branch'))
 
       expect(branch.exists?).to eq false
     end
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::LegacyGithubImport::BranchFormatter do
 
   describe '#repo' do
     it 'returns raw repo' do
-      branch = described_class.new(project, double(raw))
+      branch = described_class.new(project, raw)
 
       expect(branch.repo).to eq repo
     end
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::LegacyGithubImport::BranchFormatter do
 
   describe '#sha' do
     it 'returns raw sha' do
-      branch = described_class.new(project, double(raw))
+      branch = described_class.new(project, raw)
 
       expect(branch.sha).to eq commit.id
     end
@@ -52,19 +52,19 @@ RSpec.describe Gitlab::LegacyGithubImport::BranchFormatter do
 
   describe '#valid?' do
     it 'returns true when raw sha and ref are present' do
-      branch = described_class.new(project, double(raw))
+      branch = described_class.new(project, raw)
 
       expect(branch.valid?).to eq true
     end
 
     it 'returns false when raw sha is blank' do
-      branch = described_class.new(project, double(raw.merge(sha: nil)))
+      branch = described_class.new(project, raw.merge(sha: nil))
 
       expect(branch.valid?).to eq false
     end
 
     it 'returns false when raw ref is blank' do
-      branch = described_class.new(project, double(raw.merge(ref: nil)))
+      branch = described_class.new(project, raw.merge(ref: nil))
 
       expect(branch.valid?).to eq false
     end

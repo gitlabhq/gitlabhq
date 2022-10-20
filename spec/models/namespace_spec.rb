@@ -362,6 +362,9 @@ RSpec.describe Namespace do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix.allow_nil }
     it { is_expected.to delegate_method(:avatar_url).to(:owner).allow_nil }
     it { is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy).to(:namespace_settings).allow_nil }
+    it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:package_settings) }
+    it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:package_settings) }
+    it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:package_settings) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
@@ -1036,7 +1039,9 @@ RSpec.describe Namespace do
         let(:pages_dir) { File.join(TestEnv.pages_path) }
 
         def expect_project_directories_at(namespace_path, with_pages: true)
-          expected_repository_path = File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
+          expected_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
+          end
           expected_upload_path = File.join(uploads_dir, namespace_path, 'the-project')
           expected_pages_path = File.join(pages_dir, namespace_path, 'the-project')
 
@@ -1046,15 +1051,19 @@ RSpec.describe Namespace do
         end
 
         before do
-          FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project.full_path}.git"))
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project.full_path}.git"))
+          end
           FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
           FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
         end
 
         after do
-          FileUtils.remove_entry(File.join(TestEnv.repos_path, parent.full_path), true)
-          FileUtils.remove_entry(File.join(TestEnv.repos_path, new_parent.full_path), true)
-          FileUtils.remove_entry(File.join(TestEnv.repos_path, child.full_path), true)
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            FileUtils.remove_entry(File.join(TestEnv.repos_path, parent.full_path), true)
+            FileUtils.remove_entry(File.join(TestEnv.repos_path, new_parent.full_path), true)
+            FileUtils.remove_entry(File.join(TestEnv.repos_path, child.full_path), true)
+          end
           FileUtils.remove_entry(File.join(uploads_dir, project.full_path), true)
           FileUtils.remove_entry(pages_dir, true)
         end
@@ -1962,7 +1971,7 @@ RSpec.describe Namespace do
     it 'returns the virual domain' do
       expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
       expect(virtual_domain.lookup_paths).not_to be_empty
-      expect(virtual_domain.cache_key).to eq("pages_domain_for_namespace_#{namespace.root_ancestor.id}")
+      expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{namespace.root_ancestor.id}_/)
     end
 
     context 'when :cache_pages_domain_api is disabled' do

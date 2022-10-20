@@ -54,6 +54,8 @@ describe('Markdown field header component', () => {
         'Add a bullet list',
         'Add a numbered list',
         'Add a checklist',
+        'Indent line (⌘])',
+        'Outdent line (⌘[)',
         'Add a collapsible section',
         'Add a table',
         'Go full screen',
@@ -140,7 +142,7 @@ describe('Markdown field header component', () => {
     const tableButton = findToolbarButtonByProp('icon', 'table');
 
     expect(tableButton.props('tag')).toEqual(
-      '| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |',
+      '| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |',
     );
   });
 

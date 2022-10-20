@@ -42,7 +42,8 @@ module CompareHelper
       source_project_refs_path: refs_project_path(project),
       target_project_refs_path: refs_project_path(@target_project),
       params_from: params[:from],
-      params_to: params[:to]
+      params_to: params[:to],
+      straight: params[:straight]
     }.tap do |data|
       data[:projects_from] = target_projects(project).map do |target_project|
         { id: target_project.id, name: target_project.full_path }

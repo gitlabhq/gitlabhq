@@ -4,11 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProjectDestroyWorker do
   let(:project) { create(:project, :repository, pending_delete: true) }
-  let(:path) do
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.path_to_repo
-    end
-  end
+  let!(:repository) { project.repository.raw }
 
   subject { described_class.new }
 
@@ -17,7 +13,7 @@ RSpec.describe ProjectDestroyWorker do
       subject.perform(project.id, project.first_owner.id, {})
 
       expect(Project.all).not_to include(project)
-      expect(Dir.exist?(path)).to be_falsey
+      expect(repository).not_to exist
     end
 
     it 'does not raise error when project could not be found' do

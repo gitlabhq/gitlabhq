@@ -1,127 +1,119 @@
-import Vue, { nextTick } from 'vue';
-import createComponent from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
 import { file } from 'jest/ide/helpers';
 import ItemComponent from '~/vue_shared/components/file_finder/item.vue';
 
 describe('File finder item spec', () => {
-  const Component = Vue.extend(ItemComponent);
-  let vm;
-  let localFile;
+  let wrapper;
 
-  beforeEach(() => {
-    localFile = {
-      ...file(),
-      name: 'test file',
-      path: 'test/file',
-    };
-
-    vm = createComponent(Component, {
-      file: localFile,
-      focused: true,
-      searchText: '',
-      index: 0,
+  const createComponent = ({ file: customFileFields = {}, ...otherProps } = {}) => {
+    wrapper = mount(ItemComponent, {
+      propsData: {
+        file: {
+          ...file(),
+          name: 'test file',
+          path: 'test/file',
+          ...customFileFields,
+        },
+        focused: true,
+        searchText: '',
+        index: 0,
+        ...otherProps,
+      },
     });
-  });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders file name & path', () => {
-    expect(vm.$el.textContent).toContain('test file');
-    expect(vm.$el.textContent).toContain('test/file');
+    createComponent();
+
+    expect(wrapper.text()).toContain('test file');
+    expect(wrapper.text()).toContain('test/file');
   });
 
   describe('focused', () => {
     it('adds is-focused class', () => {
-      expect(vm.$el.classList).toContain('is-focused');
+      createComponent();
+
+      expect(wrapper.classes()).toContain('is-focused');
     });
 
     it('does not have is-focused class when not focused', async () => {
-      vm.focused = false;
+      createComponent({ focused: false });
 
-      await nextTick();
-      expect(vm.$el.classList).not.toContain('is-focused');
+      expect(wrapper.classes()).not.toContain('is-focused');
     });
   });
 
   describe('changed file icon', () => {
     it('does not render when not a changed or temp file', () => {
-      expect(vm.$el.querySelector('.diff-changed-stats')).toBe(null);
+      createComponent();
+
+      expect(wrapper.find('.diff-changed-stats').exists()).toBe(false);
     });
 
     it('renders when a changed file', async () => {
-      vm.file.changed = true;
+      createComponent({ file: { changed: true } });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.diff-changed-stats')).not.toBe(null);
+      expect(wrapper.find('.diff-changed-stats').exists()).toBe(true);
     });
 
     it('renders when a temp file', async () => {
-      vm.file.tempFile = true;
+      createComponent({ file: { tempFile: true } });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.diff-changed-stats')).not.toBe(null);
+      expect(wrapper.find('.diff-changed-stats').exists()).toBe(true);
     });
   });
 
-  it('emits event when clicked', () => {
-    jest.spyOn(vm, '$emit').mockImplementation(() => {});
+  it('emits event when clicked', async () => {
+    createComponent();
 
-    vm.$el.click();
+    await wrapper.find('*').trigger('click');
 
-    expect(vm.$emit).toHaveBeenCalledWith('click', vm.file);
+    expect(wrapper.emitted('click')[0]).toStrictEqual([wrapper.props('file')]);
   });
 
   describe('path', () => {
-    let el;
-
-    beforeEach(async () => {
-      vm.searchText = 'file';
-
-      el = vm.$el.querySelector('.diff-changed-file-path');
-
-      nextTick();
-    });
+    const findChangedFilePath = () => wrapper.find('.diff-changed-file-path');
 
     it('highlights text', () => {
-      expect(el.querySelectorAll('.highlighted').length).toBe(4);
+      createComponent({ searchText: 'file' });
+
+      expect(findChangedFilePath().findAll('.highlighted')).toHaveLength(4);
     });
 
     it('adds ellipsis to long text', async () => {
-      vm.file.path = new Array(70)
+      const path = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)
         .join('');
 
-      await nextTick();
-      expect(el.textContent).toBe(`...${vm.file.path.substr(vm.file.path.length - 60)}`);
+      createComponent({ searchText: 'file', file: { path } });
+
+      expect(findChangedFilePath().text()).toBe(`...${path.substring(path.length - 60)}`);
     });
   });
 
   describe('name', () => {
-    let el;
-
-    beforeEach(async () => {
-      vm.searchText = 'file';
-
-      el = vm.$el.querySelector('.diff-changed-file-name');
-
-      await nextTick();
-    });
+    const findChangedFileName = () => wrapper.find('.diff-changed-file-name');
 
     it('highlights text', () => {
-      expect(el.querySelectorAll('.highlighted').length).toBe(4);
+      createComponent({ searchText: 'file' });
+
+      expect(findChangedFileName().findAll('.highlighted')).toHaveLength(4);
     });
 
     it('does not add ellipsis to long text', async () => {
-      vm.file.name = new Array(70)
+      const name = new Array(70)
         .fill()
         .map((_, i) => `${i}-`)
         .join('');
 
-      await nextTick();
-      expect(el.textContent).not.toBe(`...${vm.file.name.substr(vm.file.name.length - 60)}`);
+      createComponent({ searchText: 'file', file: { name } });
+
+      expect(findChangedFileName().text()).not.toBe(`...${name.substring(name.length - 60)}`);
     });
   });
 });

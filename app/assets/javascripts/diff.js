@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { merge } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import FilesCommentButton from './files_comment_button';
@@ -82,7 +82,7 @@ export default class Diff {
       .get(link, { params })
       .then(({ data }) => $target.parent().replaceWith(data))
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('An error occurred while loading diff'),
         }),
       );

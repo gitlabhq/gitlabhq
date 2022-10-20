@@ -45,11 +45,37 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
     end
   end
 
+  describe 'title' do
+    before do
+      render_inline described_class.new(title: title)
+    end
+
+    context 'with non-empty string' do
+      let(:title) { '_title_' }
+
+      it 'sets the title' do
+        expect(page).to have_selector('.gl-alert-title')
+        expect(page).to have_content(title)
+        expect(page).not_to have_selector('.gl-alert-icon-no-title')
+      end
+    end
+
+    context 'with nil, empty or blank string' do
+      where(:title) { [nil, '', '   '] }
+
+      with_them do
+        it 'does not set a title' do
+          expect(page).not_to have_selector('.gl-alert-title')
+          expect(page).to have_selector('.gl-alert-icon-no-title')
+        end
+      end
+    end
+  end
+
   context 'with custom options' do
     context 'with simple options' do
       before do
         render_inline described_class.new(
-          title: '_title_',
           alert_options: {
             class: '_alert_class_',
             data: {
@@ -58,12 +84,6 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
             }
           }
         )
-      end
-
-      it 'sets the title' do
-        expect(page).to have_selector('.gl-alert-title')
-        expect(page).to have_content('_title_')
-        expect(page).not_to have_selector('.gl-alert-icon-no-title')
       end
 
       it 'sets the alert_class' do
@@ -129,7 +149,7 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
     end
 
     context 'with setting variant type' do
-      where(:variant) { [:warning, :success, :danger, :tip] }
+      where(:variant) { [:warning, "success", :danger, "tip"] }
 
       before do
         render_inline described_class.new(variant: variant)
@@ -138,7 +158,18 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
       with_them do
         it 'renders the variant' do
           expect(page).to have_selector(".gl-alert-#{variant}")
-          expect(page).to have_selector("[data-testid='#{described_class::ICONS[variant]}-icon']")
+          expect(page).to have_selector("[data-testid='#{described_class::VARIANT_ICONS[variant.to_sym]}-icon']")
+        end
+      end
+
+      context "with unknown or nil variant" do
+        where(:variant) { [:foo, nil] }
+
+        with_them do
+          it "adds the default variant class" do
+            expect(page).to have_selector(".gl-alert-info")
+            expect(page).to have_selector("[data-testid='information-o-icon']")
+          end
         end
       end
     end

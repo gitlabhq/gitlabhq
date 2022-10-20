@@ -11,7 +11,7 @@ RSpec.describe Onboarding::ProgressService do
 
     context 'when not onboarded' do
       it 'does not schedule a worker' do
-        expect(Namespaces::OnboardingProgressWorker).not_to receive(:perform_async)
+        expect(Onboarding::ProgressWorker).not_to receive(:perform_async)
 
         execute_service
       end
@@ -28,7 +28,7 @@ RSpec.describe Onboarding::ProgressService do
         end
 
         it 'does not schedule a worker' do
-          expect(Namespaces::OnboardingProgressWorker).not_to receive(:perform_async)
+          expect(Onboarding::ProgressWorker).not_to receive(:perform_async)
 
           execute_service
         end
@@ -36,7 +36,7 @@ RSpec.describe Onboarding::ProgressService do
 
       context 'when action is not yet completed' do
         it 'schedules a worker' do
-          expect(Namespaces::OnboardingProgressWorker).to receive(:perform_async)
+          expect(Onboarding::ProgressWorker).to receive(:perform_async)
 
           execute_service
         end

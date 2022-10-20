@@ -5,7 +5,7 @@ module QA
     module Main
       class Terms < Page::Base
         view 'app/views/layouts/terms.html.haml' do
-          element :user_avatar, required: true
+          element :user_avatar_content, required: true
         end
 
         view 'app/assets/javascripts/terms/components/app.vue' do

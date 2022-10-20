@@ -233,6 +233,7 @@ export default {
         <div
           v-if="isFormVisible"
           class="js-add-related-issues-form-area card-body bordered-box bg-white"
+          :class="{ 'gl-mb-5': shouldShowTokenBody }"
         >
           <add-issuable-form
             :show-categorized-issues="showCategorizedIssues"
@@ -253,7 +254,7 @@ export default {
         </div>
         <template v-if="shouldShowTokenBody">
           <related-issues-list
-            v-for="category in categorisedIssues"
+            v-for="(category, index) in categorisedIssues"
             :key="category.linkType"
             :list-link-type="category.linkType"
             :heading="$options.linkedIssueTypesTextMap[category.linkType]"
@@ -263,6 +264,7 @@ export default {
             :issuable-type="issuableType"
             :path-id-separator="pathIdSeparator"
             :related-issues="category.issues"
+            :class="{ 'gl-mt-5': index > 0 }"
             @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
             @saveReorder="$emit('saveReorder', $event)"
           />

@@ -177,6 +177,12 @@ export default {
     getCodeQualityLine(line) {
       return (line.left ?? line.right)?.codequality?.[0]?.line;
     },
+    lineDrafts(line, side) {
+      return (line[side]?.lineDrafts || []).filter((entry) => entry.isDraft);
+    },
+    lineHasDrafts(line, side) {
+      return this.lineDrafts(line, side).length > 0;
+    },
   },
   userColorScheme: window.gon.user_color_scheme,
 };
@@ -297,19 +303,19 @@ export default {
         class="diff-grid-drafts diff-tr notes_holder"
       >
         <div
-          v-if="!inline || (line.left && line.left.lineDraft.isDraft)"
+          v-if="!inline || lineHasDrafts(line, 'left')"
           class="diff-td notes-content parallel old"
         >
-          <div v-if="line.left && line.left.lineDraft.isDraft" class="content">
-            <draft-note :draft="line.left.lineDraft" :line="line.left" />
+          <div v-for="draft in lineDrafts(line, 'left')" :key="draft.id" class="content">
+            <draft-note :draft="draft" :line="line.left" />
           </div>
         </div>
         <div
-          v-if="!inline || (line.right && line.right.lineDraft.isDraft)"
+          v-if="!inline || lineHasDrafts(line, 'right')"
           class="diff-td notes-content parallel new"
         >
-          <div v-if="line.right && line.right.lineDraft.isDraft" class="content">
-            <draft-note :draft="line.right.lineDraft" :line="line.right" />
+          <div v-for="draft in lineDrafts(line, 'right')" :key="draft.id" class="content">
+            <draft-note :draft="draft" :line="line.right" />
           </div>
         </div>
       </div>

@@ -8,8 +8,8 @@ import { defaultConfig, harborTagsList } from '../../mock_data';
 describe('Harbor tag list row', () => {
   let wrapper;
 
-  const findListItem = () => wrapper.find(ListItem);
-  const findClipboardButton = () => wrapper.find(ClipboardButton);
+  const findListItem = () => wrapper.findComponent(ListItem);
+  const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findByTestId = (testId) => wrapper.findByTestId(testId);
 
   const $route = {
@@ -58,7 +58,7 @@ describe('Harbor tag list row', () => {
       expect(findByTestId('name').text()).toBe(harborTagsList[0].name);
     });
 
-    describe(' clipboard button', () => {
+    describe('clipboard button', () => {
       it('exists', () => {
         expect(findClipboardButton().exists()).toBe(true);
       });

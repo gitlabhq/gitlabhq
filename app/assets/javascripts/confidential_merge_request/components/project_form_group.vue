@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Api from '~/api';
 import { __ } from '~/locale';
 import state from '../state';
@@ -80,7 +80,7 @@ export default {
           this.selectProject(this.projects[0]);
         })
         .catch((e) => {
-          createFlash({
+          createAlert({
             message: __('Error fetching forked projects. Please try again.'),
           });
           throw e;

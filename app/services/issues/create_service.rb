@@ -4,6 +4,7 @@ module Issues
   class CreateService < Issues::BaseService
     include ResolveDiscussions
     prepend RateLimitedService
+    include ::Services::ReturnServiceResponses
 
     rate_limit key: :issues_create,
                opts: { scope: [:project, :current_user, :external_author] }
@@ -20,6 +21,8 @@ module Issues
     end
 
     def execute(skip_system_notes: false)
+      return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, @project)
+
       @issue = @build_service.execute
 
       handle_move_between_ids(@issue)
@@ -27,7 +30,13 @@ module Issues
       @add_related_issue ||= params.delete(:add_related_issue)
       filter_resolve_discussion_params
 
-      create(@issue, skip_system_notes: skip_system_notes)
+      issue = create(@issue, skip_system_notes: skip_system_notes)
+
+      if issue.persisted?
+        success(issue: issue)
+      else
+        error(issue.errors.full_messages, 422, pass_back: { issue: issue })
+      end
     end
 
     def external_author
@@ -47,7 +56,7 @@ module Issues
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
         Issues::PlacementWorker.perform_async(nil, issue.project_id)
-        Namespaces::OnboardingIssueCreatedWorker.perform_async(issue.project.namespace_id)
+        Onboarding::IssueCreatedWorker.perform_async(issue.project.namespace_id)
       end
     end
 
@@ -56,7 +65,7 @@ module Issues
       user_agent_detail_service.create
       handle_add_related_issue(issue)
       resolve_discussions_with_issue(issue)
-      create_escalation_status(issue)
+      handle_escalation_status_change(issue)
       create_timeline_event(issue)
       try_to_associate_contacts(issue)
 
@@ -87,11 +96,11 @@ module Issues
 
     private
 
-    attr_reader :spam_params, :extra_params
-
-    def create_escalation_status(issue)
-      ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?
+    def authorization_action
+      :create_issue
     end
+
+    attr_reader :spam_params, :extra_params
 
     def create_timeline_event(issue)
       return unless issue.incident?

@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { createStore } from '~/batch_comments/stores';
 import diffsModule from '~/diffs/store/modules';
@@ -8,8 +7,7 @@ import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
 
 describe('Batch comments draft preview item component', () => {
-  let vm;
-  let Component;
+  let wrapper;
   let draft;
 
   function createComponent(isLast = false, extra = {}, extendStore = () => {}) {
@@ -24,21 +22,17 @@ describe('Batch comments draft preview item component', () => {
       ...extra,
     };
 
-    vm = mountComponentWithStore(Component, { store, props: { draft, isLast } });
+    wrapper = mount(PreviewItem, { store, propsData: { draft, isLast } });
   }
 
-  beforeAll(() => {
-    Component = Vue.extend(PreviewItem);
-  });
-
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders text content', () => {
     createComponent(false, { note_html: '<img src="" /><p>Hello world</p>' });
 
-    expect(vm.$el.querySelector('.review-preview-item-content').innerHTML).toEqual(
+    expect(wrapper.find('.review-preview-item-content').element.innerHTML).toBe(
       '<p>Hello world</p>',
     );
   });
@@ -47,9 +41,7 @@ describe('Batch comments draft preview item component', () => {
     it('renders file path', () => {
       createComponent(false, { file_path: 'index.js', file_hash: 'abc', position: {} });
 
-      expect(vm.$el.querySelector('.review-preview-item-header-text').textContent).toContain(
-        'index.js',
-      );
+      expect(wrapper.find('.review-preview-item-header-text').text()).toContain('index.js');
     });
 
     it('renders new line position', () => {
@@ -66,7 +58,7 @@ describe('Batch comments draft preview item component', () => {
         },
       });
 
-      expect(vm.$el.querySelector('.bold').textContent).toContain(':+1');
+      expect(wrapper.find('.bold').text()).toContain(':+1');
     });
 
     it('renders old line position', () => {
@@ -82,7 +74,7 @@ describe('Batch comments draft preview item component', () => {
         },
       });
 
-      expect(vm.$el.querySelector('.bold').textContent).toContain(':2');
+      expect(wrapper.find('.bold').text()).toContain(':2');
     });
 
     it('renders image position', () => {
@@ -92,7 +84,7 @@ describe('Batch comments draft preview item component', () => {
         position: { position_type: 'image', x: 10, y: 20 },
       });
 
-      expect(vm.$el.querySelector('.bold').textContent).toContain('10x 20y');
+      expect(wrapper.find('.bold').text()).toContain('10x 20y');
     });
   });
 
@@ -113,15 +105,13 @@ describe('Batch comments draft preview item component', () => {
     });
 
     it('renders title', () => {
-      expect(vm.$el.querySelector('.review-preview-item-header-text').textContent).toContain(
+      expect(wrapper.find('.review-preview-item-header-text').text()).toContain(
         "Author 'Nick' Name's thread",
       );
     });
 
     it('renders thread resolved text', () => {
-      expect(vm.$el.querySelector('.draft-note-resolution').textContent).toContain(
-        'Thread will be resolved',
-      );
+      expect(wrapper.find('.draft-note-resolution').text()).toContain('Thread will be resolved');
     });
   });
 
@@ -131,9 +121,7 @@ describe('Batch comments draft preview item component', () => {
         store.state.notes.discussions.push({});
       });
 
-      expect(vm.$el.querySelector('.review-preview-item-header-text').textContent).toContain(
-        'Your new comment',
-      );
+      expect(wrapper.find('.review-preview-item-header-text').text()).toContain('Your new comment');
     });
   });
 });

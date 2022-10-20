@@ -50,11 +50,13 @@ module API
           optional :provider, type: String, desc: 'The external provider'
           optional :bio, type: String, desc: 'The biography of the user'
           optional :location, type: String, desc: 'The location of the user'
+          optional :pronouns, type: String, desc: 'The pronouns of the user'
           optional :public_email, type: String, desc: 'The public email of the user'
+          optional :commit_email, type: String, desc: 'The commit email, _private for private commit email'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
-          optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for user'
+          optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for user', documentation: { type: 'file' }
           optional :theme_id, type: Integer, desc: 'The GitLab theme for the user'
           optional :color_scheme_id, type: Integer, desc: 'The color scheme for the file viewer'
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
@@ -187,7 +189,10 @@ module API
         user = find_user(params[:id])
         not_found!('User') unless user
 
-        if current_user.follow(user)
+        followee = current_user.follow(user)
+        if followee&.errors&.any?
+          render_api_error!(followee.errors.full_messages.join(', '), 400)
+        elsif followee&.persisted?
           present user, with: Entities::UserBasic
         else
           not_modified!
@@ -885,7 +890,7 @@ module API
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the impersonation token'
-            optional :scopes, type: Array, desc: 'The array of scopes of the impersonation token'
+            optional :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The array of scopes of the impersonation token'
           end
           post feature_category: :authentication_and_authorization do
             impersonation_token = finder.build(declared_params(include_missing: false))

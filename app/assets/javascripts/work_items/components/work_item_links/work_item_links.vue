@@ -5,7 +5,7 @@ import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
-import issueConfidentialQuery from '~/sidebar/queries/issue_confidential.query.graphql';
+import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 
@@ -59,7 +59,7 @@ export default {
       },
     },
     parentIssue: {
-      query: issueConfidentialQuery,
+      query: getIssueDetailsQuery,
       variables() {
         return {
           fullPath: this.projectPath,
@@ -85,6 +85,9 @@ export default {
   computed: {
     confidential() {
       return this.parentIssue?.confidential || this.workItem?.confidential || false;
+    },
+    issuableIteration() {
+      return this.parentIssue?.iteration;
     },
     children() {
       return (
@@ -257,7 +260,7 @@ export default {
           class="gl-display-inline-flex gl-align-items-center gl-line-height-24 gl-ml-3"
           data-testid="children-count"
         >
-          <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-gray-500" />
+          <gl-icon :name="$options.WIDGET_TYPE_TASK_ICON" class="gl-mr-2 gl-text-secondary" />
           {{ childrenCountLabel }}
         </span>
       </div>
@@ -294,7 +297,7 @@ export default {
 
       <template v-else>
         <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">
-          <p class="gl-mt-3 gl-mb-4">
+          <p class="gl-mb-3">
             {{ $options.i18n.emptyStateMessage }}
           </p>
         </div>
@@ -305,6 +308,7 @@ export default {
           :issuable-gid="issuableGid"
           :children-ids="childrenIds"
           :parent-confidential="confidential"
+          :parent-iteration="issuableIteration"
           @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />

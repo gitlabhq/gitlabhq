@@ -314,52 +314,22 @@ RSpec.describe Ci::Runner, 'TokenAuthenticatable', :freeze_time do
   describe '#token_expired?' do
     subject { runner.token_expired? }
 
-    context 'when enforce_runner_token_expires_at feature flag is disabled' do
-      before do
-        stub_feature_flags(enforce_runner_token_expires_at: false)
-      end
+    context 'when runner has no token expiration' do
+      let(:runner) { non_expirable_runner }
 
-      context 'when runner has no token expiration' do
-        let(:runner) { non_expirable_runner }
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'when runner token is not expired' do
-        let(:runner) { non_expired_runner }
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'when runner token is expired' do
-        let(:runner) { expired_runner }
-
-        it { is_expected.to eq(false) }
-      end
+      it { is_expected.to eq(false) }
     end
 
-    context 'when enforce_runner_token_expires_at feature flag is enabled' do
-      before do
-        stub_feature_flags(enforce_runner_token_expires_at: true)
-      end
+    context 'when runner token is not expired' do
+      let(:runner) { non_expired_runner }
 
-      context 'when runner has no token expiration' do
-        let(:runner) { non_expirable_runner }
+      it { is_expected.to eq(false) }
+    end
 
-        it { is_expected.to eq(false) }
-      end
+    context 'when runner token is expired' do
+      let(:runner) { expired_runner }
 
-      context 'when runner token is not expired' do
-        let(:runner) { non_expired_runner }
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'when runner token is expired' do
-        let(:runner) { expired_runner }
-
-        it { is_expected.to eq(true) }
-      end
+      it { is_expected.to eq(true) }
     end
   end
 
@@ -386,52 +356,22 @@ RSpec.describe Ci::Runner, 'TokenAuthenticatable', :freeze_time do
   describe '.find_by_token' do
     subject { Ci::Runner.find_by_token(runner.token) }
 
-    context 'when enforce_runner_token_expires_at feature flag is disabled' do
-      before do
-        stub_feature_flags(enforce_runner_token_expires_at: false)
-      end
+    context 'when runner has no token expiration' do
+      let(:runner) { non_expirable_runner }
 
-      context 'when runner has no token expiration' do
-        let(:runner) { non_expirable_runner }
-
-        it { is_expected.to eq(non_expirable_runner) }
-      end
-
-      context 'when runner token is not expired' do
-        let(:runner) { non_expired_runner }
-
-        it { is_expected.to eq(non_expired_runner) }
-      end
-
-      context 'when runner token is expired' do
-        let(:runner) { expired_runner }
-
-        it { is_expected.to eq(expired_runner) }
-      end
+      it { is_expected.to eq(non_expirable_runner) }
     end
 
-    context 'when enforce_runner_token_expires_at feature flag is enabled' do
-      before do
-        stub_feature_flags(enforce_runner_token_expires_at: true)
-      end
+    context 'when runner token is not expired' do
+      let(:runner) { non_expired_runner }
 
-      context 'when runner has no token expiration' do
-        let(:runner) { non_expirable_runner }
+      it { is_expected.to eq(non_expired_runner) }
+    end
 
-        it { is_expected.to eq(non_expirable_runner) }
-      end
+    context 'when runner token is expired' do
+      let(:runner) { expired_runner }
 
-      context 'when runner token is not expired' do
-        let(:runner) { non_expired_runner }
-
-        it { is_expected.to eq(non_expired_runner) }
-      end
-
-      context 'when runner token is expired' do
-        let(:runner) { expired_runner }
-
-        it { is_expected.to be_nil }
-      end
+      it { is_expected.to be_nil }
     end
   end
 end

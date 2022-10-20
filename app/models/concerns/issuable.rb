@@ -33,6 +33,7 @@ module Issuable
   DESCRIPTION_LENGTH_MAX = 1.megabyte
   DESCRIPTION_HTML_LENGTH_MAX = 5.megabytes
   SEARCHABLE_FIELDS = %w(title description).freeze
+  MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 200
 
   STATE_ID_MAP = {
     opened: 1,
@@ -95,6 +96,7 @@ module Issuable
     # to avoid breaking the existing Issuables which may have their descriptions longer
     validates :description, length: { maximum: DESCRIPTION_LENGTH_MAX }, allow_blank: true, on: :create
     validate :description_max_length_for_new_records_is_valid, on: :update
+    validate :validate_assignee_size_length, unless: :importing?
 
     before_validation :truncate_description_on_import!
 
@@ -166,6 +168,11 @@ module Issuable
       def locking_enabled?
         false
       end
+
+      def max_number_of_assignees_or_reviewers_message
+        # Assignees will be included in https://gitlab.com/gitlab-org/gitlab/-/issues/368936
+        format(_("total must be less than or equal to %{size}"), size: MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS)
+      end
     end
 
     # We want to use optimistic lock for cases when only title or description are involved
@@ -227,11 +234,19 @@ module Issuable
     def truncate_description_on_import!
       self.description = description&.slice(0, Issuable::DESCRIPTION_LENGTH_MAX) if importing?
     end
+
+    def validate_assignee_size_length
+      return true unless Feature.enabled?(:limit_assignees_per_issuable)
+      return true unless assignees.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
+
+      errors.add :assignees,
+        -> (_object, _data) { self.class.max_number_of_assignees_or_reviewers_message }
+    end
   end
 
   class_methods do
     def participant_includes
-      [:assignees, :author, { notes: [:author, :award_emoji] }]
+      [:author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] }]
     end
 
     # Searches for records with a matching title.
@@ -383,10 +398,12 @@ module Issuable
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
-      elsif %w(merged_at_desc merged_at_asc).include?(sort)
+      elsif %w(merged_at_desc merged_at_asc merged_at).include?(sort)
+        grouping_columns << MergeRequest::Metrics.arel_table[:id]
         grouping_columns << MergeRequest::Metrics.arel_table[:merged_at]
-      elsif %w(closed_at_desc closed_at_asc).include?(sort)
-        grouping_columns << MergeRequest::Metrics.arel_table[:closed_at]
+      elsif %w(closed_at_desc closed_at_asc closed_at).include?(sort)
+        grouping_columns << MergeRequest::Metrics.arel_table[:id]
+        grouping_columns << MergeRequest::Metrics.arel_table[:latest_closed_at]
       end
 
       grouping_columns
@@ -431,7 +448,16 @@ module Issuable
   end
 
   def assignee_or_author?(user)
-    author_id == user.id || assignees.exists?(user.id)
+    author_id == user.id || assignee?(user)
+  end
+
+  def assignee?(user)
+    # Necessary so we can preload the association and avoid N + 1 queries
+    if assignees.loaded?
+      assignees.to_a.include?(user)
+    else
+      assignees.exists?(user.id)
+    end
   end
 
   def today?
@@ -629,6 +655,14 @@ module Issuable
   #
   def draftless_title_changed(old_title)
     old_title != title
+  end
+
+  def read_ability_for(participable_source)
+    return super if participable_source == self
+
+    name =  participable_source.try(:issuable_ability_name) || :read_issuable_participables
+
+    { name: name, subject: self }
   end
 end
 

@@ -5,11 +5,21 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerBulkDeleteCheckbox from '~/runner/components/runner_bulk_delete_checkbox.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createLocalState } from '~/runner/graphql/list/local_state';
-import { allRunnersData } from '../mock_data';
 
 Vue.use(VueApollo);
 
-jest.mock('~/flash');
+const makeRunner = (id, deleteRunner = true) => ({
+  id,
+  userPermissions: { deleteRunner },
+});
+
+// Multi-select checkbox possible states:
+const stateToAttrs = {
+  unchecked: { disabled: undefined, checked: undefined, indeterminate: undefined },
+  checked: { disabled: undefined, checked: 'true', indeterminate: undefined },
+  indeterminate: { disabled: undefined, checked: undefined, indeterminate: 'true' },
+  disabled: { disabled: 'true', checked: undefined, indeterminate: undefined },
+};
 
 describe('RunnerBulkDeleteCheckbox', () => {
   let wrapper;
@@ -18,12 +28,14 @@ describe('RunnerBulkDeleteCheckbox', () => {
 
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
-  const mockRunners = allRunnersData.data.runners.nodes;
-  const mockIds = allRunnersData.data.runners.nodes.map(({ id }) => id);
-  const mockId = mockIds[0];
-  const mockIdAnotherPage = 'RUNNER_IN_ANOTHER_PAGE_ID';
+  const expectCheckboxToBe = (state) => {
+    const expected = stateToAttrs[state];
+    expect(findCheckbox().attributes('disabled')).toBe(expected.disabled);
+    expect(findCheckbox().attributes('checked')).toBe(expected.checked);
+    expect(findCheckbox().attributes('indeterminate')).toBe(expected.indeterminate);
+  };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ runners = [] } = {}) => {
     const { cacheConfig, localMutations } = mockState;
     const apolloProvider = createMockApollo(undefined, undefined, cacheConfig);
 
@@ -33,8 +45,7 @@ describe('RunnerBulkDeleteCheckbox', () => {
         localMutations,
       },
       propsData: {
-        runners: mockRunners,
-        ...props,
+        runners,
       },
     });
   };
@@ -49,31 +60,61 @@ describe('RunnerBulkDeleteCheckbox', () => {
     jest.spyOn(mockState.localMutations, 'setRunnersChecked');
   });
 
-  describe.each`
-    case                         | is                 | checkedRunnerIds                   | disabled     | checked      | indeterminate
-    ${'no runners'}              | ${'unchecked'}     | ${[]}                              | ${undefined} | ${undefined} | ${undefined}
-    ${'no runners in this page'} | ${'unchecked'}     | ${[mockIdAnotherPage]}             | ${undefined} | ${undefined} | ${undefined}
-    ${'all runners'}             | ${'checked'}       | ${mockIds}                         | ${undefined} | ${'true'}    | ${undefined}
-    ${'some runners'}            | ${'indeterminate'} | ${[mockId]}                        | ${undefined} | ${undefined} | ${'true'}
-    ${'all plus other runners'}  | ${'checked'}       | ${[...mockIds, mockIdAnotherPage]} | ${undefined} | ${'true'}    | ${undefined}
-  `('When $case are checked', ({ is, checkedRunnerIds, disabled, checked, indeterminate }) => {
-    beforeEach(async () => {
+  describe('when all runners can be deleted', () => {
+    const mockIds = ['1', '2', '3'];
+    const mockIdAnotherPage = '4';
+    const mockRunners = mockIds.map((id) => makeRunner(id));
+
+    it.each`
+      case                         | checkedRunnerIds                   | state
+      ${'no runners'}              | ${[]}                              | ${'unchecked'}
+      ${'no runners in this page'} | ${[mockIdAnotherPage]}             | ${'unchecked'}
+      ${'all runners'}             | ${mockIds}                         | ${'checked'}
+      ${'some runners'}            | ${[mockIds[0]]}                    | ${'indeterminate'}
+      ${'all plus other runners'}  | ${[...mockIds, mockIdAnotherPage]} | ${'checked'}
+    `('if $case are checked, checkbox is $state', ({ checkedRunnerIds, state }) => {
       mockCheckedRunnerIds = checkedRunnerIds;
 
-      createComponent();
+      createComponent({ runners: mockRunners });
+      expectCheckboxToBe(state);
+    });
+  });
+
+  describe('when some runners cannot be deleted', () => {
+    it('all allowed runners are selected, checkbox is checked', () => {
+      mockCheckedRunnerIds = ['a', 'b', 'c'];
+      createComponent({
+        runners: [makeRunner('a'), makeRunner('b'), makeRunner('c', false)],
+      });
+
+      expectCheckboxToBe('checked');
     });
 
-    it(`is ${is}`, () => {
-      expect(findCheckbox().attributes('disabled')).toBe(disabled);
-      expect(findCheckbox().attributes('checked')).toBe(checked);
-      expect(findCheckbox().attributes('indeterminate')).toBe(indeterminate);
+    it('some allowed runners are selected, checkbox is indeterminate', () => {
+      mockCheckedRunnerIds = ['a', 'b'];
+      createComponent({
+        runners: [makeRunner('a'), makeRunner('b'), makeRunner('c')],
+      });
+
+      expectCheckboxToBe('indeterminate');
+    });
+
+    it('no allowed runners are selected, checkbox is disabled', () => {
+      mockCheckedRunnerIds = ['a', 'b'];
+      createComponent({
+        runners: [makeRunner('a', false), makeRunner('b', false)],
+      });
+
+      expectCheckboxToBe('disabled');
     });
   });
 
   describe('When user selects', () => {
+    const mockRunners = [makeRunner('1'), makeRunner('2')];
+
     beforeEach(() => {
-      mockCheckedRunnerIds = mockIds;
-      createComponent();
+      mockCheckedRunnerIds = ['1', '2'];
+      createComponent({ runners: mockRunners });
     });
 
     it.each([[true], [false]])('sets checked to %s', (checked) => {
@@ -89,13 +130,11 @@ describe('RunnerBulkDeleteCheckbox', () => {
 
   describe('When runners are loading', () => {
     beforeEach(() => {
-      createComponent({ props: { runners: [] } });
+      createComponent();
     });
 
-    it(`is disabled`, () => {
-      expect(findCheckbox().attributes('disabled')).toBe('true');
-      expect(findCheckbox().attributes('checked')).toBe(undefined);
-      expect(findCheckbox().attributes('indeterminate')).toBe(undefined);
+    it('is disabled', () => {
+      expectCheckboxToBe('disabled');
     });
   });
 });

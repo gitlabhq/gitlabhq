@@ -1,5 +1,5 @@
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
@@ -48,7 +48,7 @@ export const addVariable = ({ state, dispatch }) => {
       dispatch('fetchVariables');
     })
     .catch((error) => {
-      createFlash({
+      createAlert({
         message: error.response.data[0],
       });
       dispatch('receiveAddVariableError', error);
@@ -80,7 +80,7 @@ export const updateVariable = ({ state, dispatch }) => {
       dispatch('fetchVariables');
     })
     .catch((error) => {
-      createFlash({
+      createAlert({
         message: error.response.data[0],
       });
       dispatch('receiveUpdateVariableError', error);
@@ -109,7 +109,7 @@ export const fetchVariables = ({ dispatch, state }) => {
       dispatch('receiveVariablesSuccess', prepareDataForDisplay(data.variables));
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: __('There was an error fetching the variables.'),
       });
     });
@@ -139,7 +139,7 @@ export const deleteVariable = ({ dispatch, state }) => {
       dispatch('fetchVariables');
     })
     .catch((error) => {
-      createFlash({
+      createAlert({
         message: error.response.data[0],
       });
       dispatch('receiveDeleteVariableError', error);
@@ -162,7 +162,7 @@ export const fetchEnvironments = ({ dispatch, state }) => {
       dispatch('receiveEnvironmentsSuccess', prepareEnvironments(res.data));
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: __('There was an error fetching the environments information.'),
       });
     });

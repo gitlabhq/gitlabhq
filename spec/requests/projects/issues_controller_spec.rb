@@ -31,11 +31,12 @@ RSpec.describe Projects::IssuesController do
         notes = discussions.flat_map { |d| d['notes'] }
 
         expect(discussions.count).to eq(2)
-        expect(notes).to match([
-          a_hash_including('id' => discussion.id.to_s),
-          a_hash_including('id' => discussion_reply.id.to_s),
-          a_hash_including('type' => 'StateNote')
-        ])
+        expect(notes).to match(
+          [
+            a_hash_including('id' => discussion.id.to_s),
+            a_hash_including('id' => discussion_reply.id.to_s),
+            a_hash_including('type' => 'StateNote')
+          ])
 
         cursor = response.header['X-Next-Page-Cursor']
         expect(cursor).to be_present
@@ -46,9 +47,7 @@ RSpec.describe Projects::IssuesController do
         notes = discussions.flat_map { |d| d['notes'] }
 
         expect(discussions.count).to eq(1)
-        expect(notes).to match([
-          a_hash_including('id' => discussion_2.id.to_s)
-        ])
+        expect(notes).to match([a_hash_including('id' => discussion_2.id.to_s)])
       end
     end
   end

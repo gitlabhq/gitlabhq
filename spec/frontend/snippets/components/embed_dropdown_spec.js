@@ -36,7 +36,7 @@ describe('snippets/components/embed_dropdown', () => {
 
         sections.push(current);
       } else {
-        const value = x.find(GlFormInputGroup).props('value');
+        const value = x.findComponent(GlFormInputGroup).props('value');
         const copyValue = x.find('button[title="Copy"]').attributes('data-clipboard-text');
 
         Object.assign(current, {

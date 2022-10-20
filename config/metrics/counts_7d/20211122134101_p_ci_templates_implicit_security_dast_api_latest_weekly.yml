@@ -6,7 +6,7 @@ product_stage: secure
 product_group: dynamic_analysis
 product_category: dynamic_application_security_testing
 value_type: number
-status: active
+status: removed
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73876
 time_frame: 7d
@@ -23,3 +23,5 @@ tier:
 options:
   events:
   - p_ci_templates_implicit_security_dast_api_latest
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90163
+milestone_removed: '15.5'

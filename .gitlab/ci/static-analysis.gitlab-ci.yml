@@ -31,7 +31,7 @@ static-analysis:
     - .static-analysis:rules:static-analysis
   parallel: 2
   script:
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn_install_script
     - scripts/static-analysis
 
 static-analysis as-if-foss:
@@ -84,7 +84,7 @@ eslint:
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn_install_script
     - run_timed_command "yarn run lint:eslint:all"
 
 eslint as-if-foss:

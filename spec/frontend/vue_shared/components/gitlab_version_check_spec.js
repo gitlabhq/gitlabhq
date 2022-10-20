@@ -1,13 +1,17 @@
 import { GlBadge } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking } from 'helpers/tracking_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import axios from '~/lib/utils/axios_utils';
 import GitlabVersionCheck from '~/vue_shared/components/gitlab_version_check.vue';
 
 describe('GitlabVersionCheck', () => {
   let wrapper;
   let mock;
+
+  const UPGRADE_DOCS_URL = helpPagePath('update/index');
 
   const defaultResponse = {
     code: 200,
@@ -23,7 +27,7 @@ describe('GitlabVersionCheck', () => {
     mock = new MockAdapter(axios);
     mock.onGet().replyOnce(response.code, response.res);
 
-    wrapper = shallowMount(GitlabVersionCheck);
+    wrapper = shallowMountExtended(GitlabVersionCheck);
   };
 
   const dummyGon = {
@@ -38,6 +42,7 @@ describe('GitlabVersionCheck', () => {
     window.gon = originalGon;
   });
 
+  const findGlBadgeClickWrapper = () => wrapper.findByTestId('badge-click-wrapper');
   const findGlBadge = () => wrapper.findComponent(GlBadge);
 
   describe.each`
@@ -77,7 +82,8 @@ describe('GitlabVersionCheck', () => {
           await waitForPromises(); // Ensure we wrap up the axios call
         });
 
-        it(`does${renders ? '' : ' not'} render GlBadge`, () => {
+        it(`does${renders ? '' : ' not'} render Badge Click Wrapper and GlBadge`, () => {
+          expect(findGlBadgeClickWrapper().exists()).toBe(renders);
           expect(findGlBadge().exists()).toBe(renders);
         });
       });
@@ -90,8 +96,11 @@ describe('GitlabVersionCheck', () => {
       ${{ code: 200, res: { severity: 'danger' } }}  | ${{ title: 'Update ASAP', variant: 'danger' }}
     `('badge ui', ({ mockResponse, expectedUI }) => {
       describe(`when response is ${mockResponse.res.severity}`, () => {
+        let trackingSpy;
+
         beforeEach(async () => {
           createComponent(mockResponse);
+          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
           await waitForPromises(); // Ensure we wrap up the axios call
         });
 
@@ -101,6 +110,24 @@ describe('GitlabVersionCheck', () => {
 
         it(`variant is ${expectedUI.variant}`, () => {
           expect(findGlBadge().attributes('variant')).toBe(expectedUI.variant);
+        });
+
+        it(`tracks rendered_version_badge with label ${expectedUI.title}`, () => {
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'rendered_version_badge', {
+            label: expectedUI.title,
+          });
+        });
+
+        it(`link is ${UPGRADE_DOCS_URL}`, () => {
+          expect(findGlBadge().attributes('href')).toBe(UPGRADE_DOCS_URL);
+        });
+
+        it(`tracks click_version_badge with label ${expectedUI.title} when badge is clicked`, async () => {
+          await findGlBadgeClickWrapper().trigger('click');
+
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_version_badge', {
+            label: expectedUI.title,
+          });
         });
       });
     });

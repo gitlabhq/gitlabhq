@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Unit test report examples **(FREE)**
@@ -183,7 +183,11 @@ the `javascript` job uses Jest to generate the test reports:
 
 ```yaml
 javascript:
+  image: node:latest
   stage: test
+  before_script:
+    - 'yarn global add jest'
+    - 'yarn add --dev jest-junit'
   script:
     - 'jest --ci --reporters=default --reporters=jest-junit'
   artifacts:
@@ -192,6 +196,9 @@ javascript:
       junit:
         - junit.xml
 ```
+
+To make the job pass when there are no `.test.js` files with unit tests, add the
+`--passWithNoTests` flag to the end of the `jest` command in the `script:` section.
 
 ### Karma
 

@@ -8,7 +8,10 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline do
   let(:portable) { create(:project) }
   let(:tmpdir) { Dir.mktmpdir }
   let(:bundle_path) { File.join(tmpdir, 'repository.bundle') }
-  let(:entity) { create(:bulk_import_entity, :project_entity, project: portable, source_full_path: 'test') }
+  let(:entity) do
+    create(:bulk_import_entity, :project_entity, project: portable, source_full_path: 'test', source_xid: nil)
+  end
+
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 

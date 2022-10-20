@@ -30,6 +30,8 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.not_to match('AMD64') }
     it { is_expected.not_to match('Amd64') }
     it { is_expected.not_to match('aMD64') }
+
+    it_behaves_like 'regex rejecting path traversal'
   end
 
   describe '.npm_package_name_regex' do
@@ -73,6 +75,8 @@ RSpec.describe Gitlab::Regex do
 
     # Do not allow Unicode
     it { is_expected.not_to match('hé') }
+
+    it_behaves_like 'regex rejecting path traversal'
   end
 
   describe '.debian_component_regex' do
@@ -86,5 +90,7 @@ RSpec.describe Gitlab::Regex do
 
     # Do not allow Unicode
     it { is_expected.not_to match('hé') }
+
+    it_behaves_like 'regex rejecting path traversal'
   end
 end

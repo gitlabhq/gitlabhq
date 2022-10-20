@@ -8,6 +8,7 @@ RSpec.describe 'User searches for wiki pages', :js do
   let!(:wiki_page) { create(:wiki_page, wiki: project.wiki, title: 'directory/title', content: 'Some Wiki content') }
 
   before do
+    stub_feature_flags(search_page_vertical_nav: false)
     project.add_maintainer(user)
     sign_in(user)
 
@@ -18,6 +19,10 @@ RSpec.describe 'User searches for wiki pages', :js do
   include_examples 'search timeouts', 'wiki_blobs'
 
   shared_examples 'search wiki blobs' do
+    before do
+      stub_feature_flags(search_page_vertical_nav: false)
+    end
+
     it 'finds a page' do
       find('[data-testid="project-filter"]').click
 

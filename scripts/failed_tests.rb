@@ -87,7 +87,7 @@ class FailedTests
   end
 end
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   options = {
     previous_tests_report_path: 'test_results/previous/test_reports.json',
     output_directory: 'tmp/previous_failed_tests/',

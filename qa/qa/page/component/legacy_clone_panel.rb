@@ -11,8 +11,8 @@ module QA
 
           base.view 'app/views/shared/_clone_panel.html.haml' do
             element :clone_dropdown
-            element :clone_options_dropdown, '.clone-options-dropdown' # rubocop:disable QA/ElementWithPattern
-            element :clone_url, 'text_field_tag :clone_url' # rubocop:disable QA/ElementWithPattern
+            element :clone_dropdown_content
+            element :clone_url_content
           end
         end
 
@@ -28,7 +28,7 @@ module QA
         end
 
         def repository_location
-          Git::Location.new(find('#clone_url').value)
+          Git::Location.new(find_element(:clone_url_content).text)
         end
 
         private
@@ -37,7 +37,7 @@ module QA
           wait_until(reload: false) do
             click_element :clone_dropdown
 
-            page.within('.clone-options-dropdown') do
+            within_element(:clone_dropdown_content) do
               click_link(kind)
             end
 

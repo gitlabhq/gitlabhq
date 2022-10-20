@@ -1,5 +1,4 @@
 import { s__, __ } from '~/locale';
-import { DEFAULT_TH_CLASSES } from '~/lib/utils/constants';
 
 /* Error constants */
 export const POST_FAILURE = 'post_failure';
@@ -29,62 +28,46 @@ export const PLAY_JOB_CONFIRMATION_MESSAGE = s__(
 export const RUN_JOB_NOW_HEADER_TITLE = s__('DelayedJobs|Run the delayed job now?');
 
 /* Table constants */
-
-const defaultTableClasses = {
-  tdClass: 'gl-p-5!',
-  thClass: DEFAULT_TH_CLASSES,
-};
-// eslint-disable-next-line @gitlab/require-i18n-strings
-const coverageTdClasses = `${defaultTableClasses.tdClass} gl-display-none! gl-lg-display-table-cell!`;
-
 export const DEFAULT_FIELDS = [
   {
     key: 'status',
     label: __('Status'),
-    ...defaultTableClasses,
     columnClass: 'gl-w-10p',
   },
   {
     key: 'job',
     label: __('Job'),
-    ...defaultTableClasses,
     columnClass: 'gl-w-20p',
   },
   {
     key: 'pipeline',
     label: __('Pipeline'),
-    ...defaultTableClasses,
     columnClass: 'gl-w-10p',
   },
   {
     key: 'stage',
     label: __('Stage'),
-    ...defaultTableClasses,
     columnClass: 'gl-w-10p',
   },
   {
     key: 'name',
     label: __('Name'),
-    ...defaultTableClasses,
     columnClass: 'gl-w-15p',
   },
   {
     key: 'duration',
     label: __('Duration'),
-    ...defaultTableClasses,
     columnClass: 'gl-w-15p',
   },
   {
     key: 'coverage',
     label: __('Coverage'),
-    tdClass: coverageTdClasses,
-    thClass: defaultTableClasses.thClass,
+    tdClass: 'gl-display-none! gl-lg-display-table-cell!',
     columnClass: 'gl-w-10p',
   },
   {
     key: 'actions',
     label: '',
-    ...defaultTableClasses,
     columnClass: 'gl-w-10p',
   },
 ];

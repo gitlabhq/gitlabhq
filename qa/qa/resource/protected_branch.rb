@@ -22,9 +22,7 @@ module QA
           commit.branch = branch_name
           commit.start_branch = project.default_branch
           commit.commit_message = 'Add new file'
-          commit.add_files([
-            { file_path: "new_file-#{SecureRandom.hex(8)}.md", content: 'new file' }
-          ])
+          commit.add_files([{ file_path: "new_file-#{SecureRandom.hex(8)}.md", content: 'new file' }])
         end
       end
 

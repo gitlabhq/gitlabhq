@@ -11,6 +11,7 @@ module MergeRequests
         return error("Failed to update reviewer") unless reviewer.update(state: :unreviewed)
 
         notify_reviewer(merge_request, user)
+        trigger_merge_request_reviewers_updated(merge_request)
 
         success
       else

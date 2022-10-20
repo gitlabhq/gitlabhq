@@ -2,7 +2,7 @@
 type: reference, dev
 stage: none
 group: Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Issues workflow
@@ -373,7 +373,7 @@ below will make it easy to manage this, without unnecessary overhead.
    which might lead to many hard problems to solve. Changing some text in GitLab
    is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
 1. If something is very large, it should probably be split up in multiple
-   issues or chunks. You can simply not set the weight of a parent issue and set
+   issues or chunks. You can not set the weight of a parent issue and set
    weights to children issues.
 
 ## Regression issues
@@ -432,7 +432,7 @@ original merge request - or not tracked at all!
 The overheads of scheduling, and rate of change in the GitLab codebase, mean
 that the cost of a trivial technical debt issue can quickly exceed the value of
 tracking it. This generally means we should resolve these in the original merge
-request - or simply not create a follow-up issue at all.
+request - or not create a follow-up issue at all.
 
 For example, a typo in a comment that is being copied between files is worth
 fixing in the same MR, but not worth creating a follow-up issue for. Renaming a

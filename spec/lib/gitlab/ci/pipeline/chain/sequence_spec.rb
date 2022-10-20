@@ -100,19 +100,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
         expect(histogram).to have_received(:observe)
           .with(hash_including(plan: project.actual_plan_name), 4)
       end
-
-      context 'when feature flag ci_limit_active_jobs_early is disabled' do
-        before do
-          stub_feature_flags(ci_limit_active_jobs_early: false)
-        end
-
-        it 'counts all the active builds' do
-          subject.build!
-
-          expect(histogram).to have_received(:observe)
-            .with(hash_including(plan: project.actual_plan_name), 3)
-        end
-      end
     end
   end
 end

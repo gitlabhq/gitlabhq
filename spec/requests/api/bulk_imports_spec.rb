@@ -53,6 +53,18 @@ RSpec.describe API::BulkImports do
       end
     end
 
+    context 'when bulk_import feature flag is disabled' do
+      before do
+        stub_feature_flags(bulk_import: false)
+      end
+
+      it 'returns 404' do
+        post api('/bulk_imports', user), params: {}
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     shared_examples 'starting a new migration' do
       it 'starts a new migration' do
         post api('/bulk_imports', user), params: {

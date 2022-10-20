@@ -4,26 +4,23 @@ require('spec_helper')
 
 RSpec.describe Projects::ProtectedBranchesController do
   let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be(:maintainer) { create(:user) }
+  let_it_be_with_reload(:empty_project) { create(:project, :empty_repo) }
+  let_it_be(:maintainer) { create(:user, maintainer_projects: [project, empty_project]) }
 
   let(:protected_branch) { create(:protected_branch, project: project) }
   let(:project_params) { { namespace_id: project.namespace.to_param, project_id: project } }
   let(:base_params) { project_params.merge(id: protected_branch.id) }
   let(:user) { maintainer }
 
-  before_all do
-    project.add_maintainer(maintainer)
-  end
-
   before do
     sign_in(user)
   end
 
   describe "GET #index" do
-    let(:project) { create(:project_empty_repo, :public) }
+    it 'redirects to repository settings' do
+      get(:index, params: { namespace_id: empty_project.namespace.to_param, project_id: empty_project })
 
-    it "redirects empty repo to projects page" do
-      get(:index, params: { namespace_id: project.namespace.to_param, project_id: project })
+      expect(response).to redirect_to(project_settings_repository_path(empty_project))
     end
   end
 
@@ -40,6 +37,18 @@ RSpec.describe Projects::ProtectedBranchesController do
       expect do
         post(:create, params: project_params.merge(protected_branch: create_params))
       end.to change(ProtectedBranch, :count).by(1)
+    end
+
+    context 'when repository is empty' do
+      let(:project) { empty_project }
+
+      it 'creates the protected branch rule' do
+        expect do
+          post(:create, params: project_params.merge(protected_branch: create_params))
+        end.to change(ProtectedBranch, :count).by(1)
+
+        expect(response).to have_gitlab_http_status(:found)
+      end
     end
 
     context 'when a policy restricts rule creation' do
@@ -63,6 +72,17 @@ RSpec.describe Projects::ProtectedBranchesController do
       expect(json_response["name"]).to eq('new_name')
     end
 
+    context 'when repository is empty' do
+      let(:project) { empty_project }
+
+      it 'updates the protected branch rule' do
+        put(:update, params: base_params.merge(protected_branch: update_params))
+
+        expect(protected_branch.reload.name).to eq('new_name')
+        expect(json_response["name"]).to eq('new_name')
+      end
+    end
+
     context 'when a policy restricts rule update' do
       it "prevents update of the protected branch rule" do
         disallow(:update_protected_branch, protected_branch)
@@ -81,6 +101,16 @@ RSpec.describe Projects::ProtectedBranchesController do
       delete(:destroy, params: base_params)
 
       expect { ProtectedBranch.find(protected_branch.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context 'when repository is empty' do
+      let(:project) { empty_project }
+
+      it 'deletes the protected branch rule' do
+        delete(:destroy, params: base_params)
+
+        expect { ProtectedBranch.find(protected_branch.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
 
     context 'when a policy restricts rule deletion' do

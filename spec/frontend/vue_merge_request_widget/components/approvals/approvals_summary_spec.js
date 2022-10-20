@@ -29,7 +29,7 @@ describe('MRWidget approvals summary', () => {
     });
   };
 
-  const findAvatars = () => wrapper.find(UserAvatarList);
+  const findAvatars = () => wrapper.findComponent(UserAvatarList);
 
   afterEach(() => {
     wrapper.destroy();
@@ -136,7 +136,7 @@ describe('MRWidget approvals summary', () => {
     });
 
     it('does not render avatar list', () => {
-      expect(wrapper.find(UserAvatarList).exists()).toBe(false);
+      expect(wrapper.findComponent(UserAvatarList).exists()).toBe(false);
     });
   });
 });

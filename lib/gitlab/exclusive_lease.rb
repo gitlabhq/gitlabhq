@@ -118,7 +118,7 @@ module Gitlab
     # Returns true if the key for this lease is set.
     def exists?
       Gitlab::Redis::SharedState.with do |redis|
-        redis.exists(@redis_shared_state_key)
+        redis.exists?(@redis_shared_state_key) # rubocop:disable CodeReuse/ActiveRecord
       end
     end
 

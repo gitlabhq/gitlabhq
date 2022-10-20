@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Code Review Guidelines
@@ -57,7 +57,7 @@ We make the following assumption with regards to automatically being considered 
 - Team members working on a specific feature (for example, search) are considered domain experts for that feature.
 
 We default to assigning reviews to team members with domain expertise.
-When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or simply follow the [Reviewer roulette](#reviewer-roulette) recommendation.
+When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation.
 
 To find a domain expert:
 
@@ -75,9 +75,9 @@ NOTE:
 Reviewer roulette is an internal tool for use on GitLab.com, and not available for use on customer installations.
 
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
-each area of the codebase that your merge request seems to touch. It only makes
-**recommendations** and you should override it if you think someone else is a better
-fit!
+each area of the codebase that your merge request seems to touch. It makes
+**recommendations** for developer reviewers and you should override it if you think someone else is a better
+fit. User-facing changes are required to have a UX review, too. Default to the recommended UX reviewer suggested.
 
 It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
@@ -149,7 +149,7 @@ with [domain expertise](#domain-experts).
 | `~UX` user-facing changes (*3*) | [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
 | Adding a new JavaScript library (*1*) | - [Frontend foundations member](https://about.gitlab.com/direction/ecosystem/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
 | A new dependency or a file system change | - [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details.<br/>- For Rubygems, request an [AppSec review](gemfile.md#request-an-appsec-review). |
-| `~documentation` changes | [Technical writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
+| `~documentation` or `~UI text` changes | [Technical writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
 | Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
 | End-to-end **and** non-end-to-end changes (*4*) | [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors). |
 | Only End-to-end changes (*4*) **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa). |
@@ -208,7 +208,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. I have included changelog trailers, or I have decided that they are not needed.
     - [Does this MR need a changelog?](changelog.md#what-warrants-a-changelog-entry)
 1. I have added/updated documentation or decided that documentation changes are unnecessary for this MR.
-    - [Is documentation required?](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#when-documentation-is-required)
+    - [Is documentation required?](https://about.gitlab.com/handbook/product/ux/technical-writing/workflow/#when-documentation-is-required)
 
 ##### Security
 
@@ -442,8 +442,7 @@ first time.
 ### Requesting a review
 
 When you are ready to have your merge request reviewed,
-you should [request an initial review](../user/project/merge_requests/getting_started.md#reviewer) by selecting a reviewer from your group or team.
-However, you can also assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
+you should [request an initial review](../user/project/merge_requests/getting_started.md#reviewer) by selecting a reviewer based on the [approval guidelines](#approval-guidelines).
 
 When a merge request has multiple areas for review, it is recommended you specify which area a reviewer should be reviewing, and at which stage (first or second).
 This will help team members who qualify as a reviewer for multiple areas to know which area they're being requested to review.
@@ -662,9 +661,10 @@ Enterprise Edition instance. This has some implications:
       - Regular migrations run before the new code is running on the instance.
       - [Post-deployment migrations](database/post_deployment_migrations.md) run _after_
         the new code is deployed, when the instance is configured to do that.
-      - [Background migrations](database/background_migrations.md) run in Sidekiq, and
-        should only be done for migrations that would take an extreme amount of
-        time at GitLab.com scale.
+      - [Batched background migrations](database/batched_background_migrations.md) run in Sidekiq, and
+        should be used for migrations that
+        [exceed the post-deployment migration time limit](migration_style_guide.md#how-long-a-migration-should-take)
+        GitLab.com scale.
 1. **Sidekiq workers** [cannot change in a backwards-incompatible way](sidekiq/compatibility_across_updates.md):
    1. Sidekiq queues are not drained before a deploy happens, so there are
       workers in the queue from the previous version of GitLab.

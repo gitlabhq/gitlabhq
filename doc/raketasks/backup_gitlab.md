@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Back up GitLab
@@ -351,8 +351,6 @@ To create an [untarred](#skipping-tar-creation) incremental backup from a tarred
 ```shell
 sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
 ```
-
-You can't create an incremental backup from an [untarred](#skipping-tar-creation) backup.
 
 ### Back up specific repository storages
 

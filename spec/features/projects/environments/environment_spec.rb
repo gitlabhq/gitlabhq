@@ -97,6 +97,10 @@ RSpec.describe 'Environment' do
         it 'does show deployments' do
           expect(page).to have_link("#{build.name} (##{build.id})")
         end
+
+        it 'shows a tooltip on the job name' do
+          expect(page).to have_css("[title=\"#{build.name} (##{build.id})\"].has-tooltip")
+        end
       end
 
       context 'when there is a failed deployment' do

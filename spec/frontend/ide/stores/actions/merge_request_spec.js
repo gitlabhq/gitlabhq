@@ -3,7 +3,7 @@ import { range } from 'lodash';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { leftSidebarViews, PERMISSION_READ_MR, MAX_MR_FILES_AUTO_OPEN } from '~/ide/constants';
 import service from '~/ide/services';
 import { createStore } from '~/ide/stores';
@@ -139,8 +139,8 @@ describe('IDE store merge request actions', () => {
             branchId: 'bar',
           })
           .catch(() => {
-            expect(createFlash).toHaveBeenCalled();
-            expect(createFlash.mock.calls[0][0].message).toBe(
+            expect(createAlert).toHaveBeenCalled();
+            expect(createAlert.mock.calls[0][0].message).toBe(
               'Error fetching merge requests for bar',
             );
           });
@@ -520,7 +520,7 @@ describe('IDE store merge request actions', () => {
       store.dispatch.mockRejectedValue();
 
       return openMergeRequest(store, mr).catch(() => {
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: expect.any(String),
         });
       });

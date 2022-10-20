@@ -1,4 +1,3 @@
-#import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_widgets.fragment.graphql"
 
 fragment WorkItem on WorkItem {

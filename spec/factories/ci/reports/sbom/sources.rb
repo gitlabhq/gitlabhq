@@ -19,15 +19,12 @@ FactoryBot.define do
       }
     end
 
-    fingerprint { Digest::SHA256.hexdigest(data.to_json) }
-
     skip_create
 
     initialize_with do
       ::Gitlab::Ci::Reports::Sbom::Source.new(
         type: type,
-        data: data,
-        fingerprint: fingerprint
+        data: data
       )
     end
   end

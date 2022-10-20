@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -100,7 +100,7 @@ export const receiveJobSuccess = ({ commit }, data = {}) => {
 };
 export const receiveJobError = ({ commit }) => {
   commit(types.RECEIVE_JOB_ERROR);
-  createFlash({
+  createAlert({
     message: __('An error occurred while fetching the job.'),
   });
   resetFavicon();
@@ -205,14 +205,14 @@ export const receiveJobLogSuccess = ({ commit }, log) => commit(types.RECEIVE_JO
 
 export const receiveJobLogError = ({ dispatch }) => {
   dispatch('stopPollingJobLog');
-  createFlash({
+  createAlert({
     message: __('An error occurred while fetching the job log.'),
   });
 };
 
 export const receiveJobLogUnauthorizedError = ({ dispatch }) => {
   dispatch('stopPollingJobLog');
-  createFlash({
+  createAlert({
     message: __('The current user is not authorized to access the job log.'),
   });
 };
@@ -254,7 +254,7 @@ export const receiveJobsForStageSuccess = ({ commit }, data) =>
 
 export const receiveJobsForStageError = ({ commit }) => {
   commit(types.RECEIVE_JOBS_FOR_STAGE_ERROR);
-  createFlash({
+  createAlert({
     message: __('An error occurred while fetching the jobs.'),
   });
 };
@@ -271,7 +271,7 @@ export const triggerManualJob = ({ state }, variables) => {
       job_variables_attributes: parsedVariables,
     })
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __('An error occurred while triggering the job.'),
       }),
     );

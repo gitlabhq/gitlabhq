@@ -4,7 +4,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import stubChildren from 'helpers/stub_children';
 import SetStatusModalWrapper from '~/set_status_modal/set_status_modal_wrapper.vue';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
@@ -51,11 +51,11 @@ describe('SetStatusModalWrapper', () => {
     });
   };
 
-  const findModal = () => wrapper.find(GlModal);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findMessageField = () =>
     wrapper.findByPlaceholderText(SetStatusForm.i18n.statusMessagePlaceholder);
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
-  const findAvailabilityCheckbox = () => wrapper.find(GlFormCheckbox);
+  const findAvailabilityCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findClearStatusAtMessage = () => wrapper.find('[data-testid="clear-status-at-message"]');
   const getEmojiPicker = () => wrapper.findComponent(EmojiPickerStub);
 
@@ -253,7 +253,7 @@ describe('SetStatusModalWrapper', () => {
         findModal().vm.$emit('primary');
         await nextTick();
 
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: "Sorry, we weren't able to set your status. Please try again later.",
         });
       });

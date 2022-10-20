@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Development
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
 # Feature development
@@ -114,6 +114,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Cached queries guidelines](cached_queries.md), for tracking down N+1 queries
   masked by query caching, memory profiling and why should we avoid cached
   queries.
+- [JSON guidelines](json.md) for how to handle JSON in a performant manner.
 
 ## Database guides
 
@@ -127,6 +128,12 @@ See [database guidelines](database/index.md).
 - [Secure Partner Integration](integrations/secure_partner_integration.md)
 - [How to run Jenkins in development environment](integrations/jenkins.md)
 - [How to run local `Codesandbox` integration for Web IDE Live Preview](integrations/codesandbox.md)
+
+The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
+
+- [Jira app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/jira.md)
+- [Slack app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/slack.md)
+- [ZenTao development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/zentao.md)
 
 ## Testing guides
 

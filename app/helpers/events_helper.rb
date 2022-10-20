@@ -16,6 +16,54 @@ module EventsHelper
     'joined' => 'users'
   }.freeze
 
+  def localized_action_name_map
+    {
+      accepted: s_('Event|accepted'),
+      approved: s_('Event|approved'),
+      closed: s_('Event|closed'),
+      'commented on': s_('Event|commented on'),
+      created: s_('Event|created'),
+      destroyed: s_('Event|destroyed'),
+      joined: s_('Event|joined'),
+      left: s_('Event|left'),
+      opened: s_('Event|opened'),
+      updated: s_('Event|updated'),
+      'removed due to membership expiration from': s_('Event|removed due to membership expiration from')
+    }.merge(localized_push_action_name_map,
+            localized_created_project_action_name_map,
+            localized_design_action_names
+           ).freeze
+  end
+
+  def localized_push_action_name_map
+    {
+      'pushed new': s_('Event|pushed new'),
+      deleted: s_('Event|deleted'),
+      'pushed to': s_('Event|pushed to')
+    }.freeze
+  end
+
+  def localized_created_project_action_name_map
+    {
+      created: s_('Event|created'),
+      imported: s_('Event|imported')
+    }.freeze
+  end
+
+  def localized_design_action_names
+    {
+      added: s_('Event|added'),
+      updated: s_('Event|updated'),
+      removed: s_('Event|removed')
+    }.freeze
+  end
+
+  def localized_action_name(event)
+    action_name = event.action_name
+    # The action fallback is used to cover the types were not included in the maps.
+    localized_action_name_map[action_name.to_sym] || action_name
+  end
+
   def link_to_author(event, self_added: false)
     author = event.author
 

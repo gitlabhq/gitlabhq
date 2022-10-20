@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Dependency Proxy **(FREE)**
@@ -74,7 +74,7 @@ you must authenticate against the Dependency Proxy.
 Follow the [instructions for using images from a private registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry),
 but instead of using `registry.example.com:5000`, use your GitLab domain with no port `gitlab.example.com`.
 
-For example, to manually log in:
+For example, to manually sign in:
 
 ```shell
 docker login gitlab.example.com --username my_username --password my_password
@@ -84,7 +84,7 @@ You can authenticate using:
 
 - Your GitLab username and password.
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
-- A [group deploy token](../../../user/project/deploy_tokens/index.md#group-deploy-token) with the scope set to `read_registry` and `write_registry`.
+- A [group deploy token](../../../user/project/deploy_tokens/index.md) with the scope set to `read_registry` and `write_registry`.
 
 Users accessing the Dependency Proxy with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.
@@ -109,7 +109,7 @@ Proxy.
 > - Automatic runner authentication, when using the Dependency Proxy to pull the image for the job, was [added](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27302) in GitLab 13.9.
 > - The prefix for group names containing uppercase letters was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54559) in GitLab 13.10.
 
-Runners log in to the Dependency Proxy automatically. To pull through
+Runners sign in to the Dependency Proxy automatically. To pull through
 the Dependency Proxy, use one of the [predefined variables](../../../ci/variables/predefined_variables.md):
 
 - `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` pulls through the top-level group.

@@ -1,0 +1,22 @@
+{
+  "description": "CI Secure File Metadata",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "team_name": { "type": "string" },
+    "team_id": { "type": "string" },
+    "app_name": { "type": "string" },
+    "app_id": { "type": "string" },
+    "app_id_prefix": { "type": "string" },
+    "xcode_managed": { "type": "boolean" },
+    "entitlements": { "type": "object" },
+    "devices": { "type": "array" },
+    "certificate_ids": { "type": "array" },
+    "issuer": { "type": "object" },
+    "subject": { "type": "object" }
+  },
+  "additionalProperties": true,
+  "required": [
+    "id"
+  ]
+}

@@ -26,6 +26,7 @@ describe('Release edit/new mutations', () => {
 
       expect(state.release).toEqual({
         tagName: 'v1.3',
+        tagMessage: '',
         name: '',
         description: '',
         milestones: [],
@@ -87,6 +88,16 @@ describe('Release edit/new mutations', () => {
       mutations[types.UPDATE_RELEASE_TAG_NAME](state, newTag);
 
       expect(state.release.tagName).toBe(newTag);
+    });
+  });
+
+  describe(`${types.UPDATE_RELEASE_TAG_MESSAGE}`, () => {
+    it("updates the release's tag message", () => {
+      state.release = release;
+      const newMessage = 'updated-tag-message';
+      mutations[types.UPDATE_RELEASE_TAG_MESSAGE](state, newMessage);
+
+      expect(state.release.tagMessage).toBe(newMessage);
     });
   });
 

@@ -1,10 +1,7 @@
-import { GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteHeader from '~/notes/components/note_header.vue';
-import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
-import UserNameWithStatus from '~/sidebar/components/assignees/user_name_with_status.vue';
 
 Vue.use(Vuex);
 
@@ -23,7 +20,6 @@ describe('NoteHeader component', () => {
   const findTimestamp = () => wrapper.findComponent({ ref: 'noteTimestamp' });
   const findInternalNoteIndicator = () => wrapper.findByTestId('internalNoteIndicator');
   const findSpinner = () => wrapper.findComponent({ ref: 'spinner' });
-  const findAuthorStatus = () => wrapper.findComponent({ ref: 'authorStatus' });
 
   const statusHtml =
     '"<span class="user-status-emoji has-tooltip" title="foo bar" data-html="true" data-placement="top"><gl-emoji title="basketball and hoop" data-name="basketball" data-unicode-version="6.0">🏀</gl-emoji></span>"';
@@ -37,48 +33,20 @@ describe('NoteHeader component', () => {
     username: 'root',
     show_status: true,
     status_tooltip_html: statusHtml,
-    availability: '',
   };
 
-  const createComponent = (props, userAttributes = false) => {
+  const createComponent = (props) => {
     wrapper = shallowMountExtended(NoteHeader, {
       store: new Vuex.Store({
         actions,
       }),
       propsData: { ...props },
-      stubs: { GlSprintf, UserNameWithStatus },
-      provide: {
-        glFeatures: {
-          removeUserAttributesProjects: userAttributes,
-          removeUserAttributesGroups: userAttributes,
-        },
-      },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
     wrapper = null;
-  });
-
-  describe('when removeUserAttributesProjects feature flag is enabled', () => {
-    it('does not render busy status', () => {
-      createComponent({ author: { ...author, availability: AVAILABILITY_STATUS.BUSY } }, true);
-
-      expect(wrapper.find('.note-header-info').text()).not.toContain('(Busy)');
-    });
-
-    it('does not render author status', () => {
-      createComponent({ author }, true);
-
-      expect(findAuthorStatus().exists()).toBe(false);
-    });
-
-    it('does not render username', () => {
-      createComponent({ author }, true);
-
-      expect(wrapper.find('.note-header-info').text()).not.toContain('@');
-    });
   });
 
   it('does not render discussion actions when includeToggle is false', () => {
@@ -145,39 +113,6 @@ describe('NoteHeader component', () => {
 
     expect(wrapper.find('.js-user-link').exists()).toBe(true);
   });
-
-  it('renders busy status if author availability is set', () => {
-    createComponent({ author: { ...author, availability: AVAILABILITY_STATUS.BUSY } });
-
-    expect(wrapper.find('.js-user-link').text()).toContain('(Busy)');
-  });
-
-  it('renders author status', () => {
-    createComponent({ author });
-
-    expect(findAuthorStatus().exists()).toBe(true);
-  });
-
-  it('does not render author status if show_status=false', () => {
-    createComponent({
-      author: { ...author, status: { availability: AVAILABILITY_STATUS.BUSY }, show_status: false },
-    });
-
-    expect(findAuthorStatus().exists()).toBe(false);
-  });
-
-  it('does not render author status if status_tooltip_html=null', () => {
-    createComponent({
-      author: {
-        ...author,
-        status: { availability: AVAILABILITY_STATUS.BUSY },
-        status_tooltip_html: null,
-      },
-    });
-
-    expect(findAuthorStatus().exists()).toBe(false);
-  });
-
   it('renders deleted user text if author is not passed as a prop', () => {
     createComponent();
 
@@ -270,24 +205,6 @@ describe('NoteHeader component', () => {
     });
   });
 
-  describe('when author status tooltip is opened', () => {
-    it('removes `title` attribute from emoji to prevent duplicate tooltips', () => {
-      createComponent({
-        author: {
-          ...author,
-          status_tooltip_html: statusHtml,
-        },
-      });
-
-      return nextTick().then(() => {
-        const authorStatus = findAuthorStatus();
-        authorStatus.trigger('mouseenter');
-
-        expect(authorStatus.find('gl-emoji').attributes('title')).toBeUndefined();
-      });
-    });
-  });
-
   describe('when author username link is hovered', () => {
     it('toggles hover specific CSS classes on author name link', async () => {
       createComponent({ author });
@@ -325,6 +242,20 @@ describe('NoteHeader component', () => {
       expect(findInternalNoteIndicator().attributes('title')).toBe(
         'This internal note will always remain confidential',
       );
+    });
+  });
+
+  it('does render username', () => {
+    createComponent({ author }, true);
+
+    expect(wrapper.find('.note-header-info').text()).toContain('@');
+  });
+
+  describe('with system note', () => {
+    it('does not render username', () => {
+      createComponent({ author, isSystemNote: true }, true);
+
+      expect(wrapper.find('.note-header-info').text()).not.toContain('@');
     });
   });
 });

@@ -382,6 +382,8 @@ $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: $white;
 $gl-text-color-secondary-inverted: rgba($white, 0.85);
 $gl-text-color-disabled: $gray-400;
+$link-color: $blue-500 !default;
+$link-hover-color: $blue-500 !default;
 $gl-grayish-blue: #7f8fa4;
 $gl-header-color: #4c4e54;
 $gl-font-size-12: 12px;
@@ -440,7 +442,6 @@ $browser-scrollbar-size: 10px;
 $header-height: var(--header-height, 48px);
 $header-zindex: 1000;
 $zindex-dropdown-menu: 300;
-$suggestion-header-height: 46px;
 $ide-statusbar-height: 25px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
@@ -650,14 +651,6 @@ $calendar-border-color: rgba(#000, 0.1);
 $calendar-user-contrib-text: #959494;
 
 /*
- *  Value Stream Analytics
- */
-$cycle-analytics-box-padding: 30px;
-$cycle-analytics-box-text-color: #8c8c8c;
-$cycle-analytics-big-font: 19px;
-$cycle-analytics-dismiss-icon-color: #b2b2b2;
-
-/*
 * CI
 */
 $ci-skipped-color: #888;
@@ -717,11 +710,11 @@ $job-arrow-margin: 55px;
  */
 // See https://gitlab.com/gitlab-org/gitlab/-/issues/332150 to align with Pajamas Design System
 $calendar-activity-colors: (
-  #ededed,
-  #acd5f2,
-  #7fa8c9,
-  #527ba0,
-  #254e77,
+  #f5f5f5,
+  #d4dcfa,
+  #748eff,
+  #3547de,
+  #11118a,
 ) !default;
 
 /*

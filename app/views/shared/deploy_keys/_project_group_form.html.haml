@@ -17,4 +17,4 @@
         help_text: _('Allow this key to push to this repository')
 
   .form-group.row
-    = f.submit _("Add key"), class: "btn gl-button btn-confirm", data: { qa_selector: "add_deploy_key_button"}
+    = f.submit _("Add key"), data: { qa_selector: "add_deploy_key_button"}, pajamas_button: true

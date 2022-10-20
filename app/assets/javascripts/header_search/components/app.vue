@@ -14,6 +14,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { truncate } from '~/lib/utils/text_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 import {
   FIRST_DROPDOWN_INDEX,
@@ -163,8 +164,17 @@ export default {
     ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     openDropdown() {
       this.showDropdown = true;
-      this.isFocused = true;
-      this.$emit('expandSearchBar', true);
+
+      // check isFocused state to avoid firing duplicate events
+      if (!this.isFocused) {
+        this.isFocused = true;
+        this.$emit('expandSearchBar', true);
+
+        Tracking.event(undefined, 'focus_input', {
+          label: 'global_search',
+          property: 'top_navigation',
+        });
+      }
     },
     closeDropdown() {
       this.showDropdown = false;
@@ -178,6 +188,11 @@ export default {
         this.showDropdown = false;
         this.isFocused = false;
         this.$emit('collapseSearchBar');
+
+        Tracking.event(undefined, 'blur_input', {
+          label: 'global_search',
+          property: 'top_navigation',
+        });
       }, 200);
     },
     submitSearch() {

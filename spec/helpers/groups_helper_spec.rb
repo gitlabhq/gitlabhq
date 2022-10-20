@@ -388,22 +388,30 @@ RSpec.describe GroupsHelper do
   end
 
   describe '#show_thanks_for_purchase_alert?' do
-    subject { helper.show_thanks_for_purchase_alert? }
+    subject { helper.show_thanks_for_purchase_alert?(quantity) }
 
-    it 'returns true with purchased_quantity present in params' do
-      allow(controller).to receive(:params) { { purchased_quantity: '1' } }
+    context 'with quantity present' do
+      let(:quantity) { 1 }
 
-      is_expected.to be_truthy
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
     end
 
-    it 'returns false with purchased_quantity not present in params' do
-      is_expected.to be_falsey
+    context 'with quantity not present' do
+      let(:quantity) { nil }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
     end
 
-    it 'returns false with purchased_quantity is empty in params' do
-      allow(controller).to receive(:params) { { purchased_quantity: '' } }
+    context 'with quantity empty' do
+      let(:quantity) { '' }
 
-      is_expected.to be_falsey
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
     end
   end
 
@@ -523,12 +531,14 @@ RSpec.describe GroupsHelper do
   describe '#group_overview_tabs_app_data' do
     let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
+    let_it_be(:initial_sort) { 'created_asc' }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
 
       allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
       allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
+      allow(helper).to receive(:project_list_sort_by).and_return(initial_sort)
     end
 
     it 'returns expected hash' do
@@ -537,7 +547,8 @@ RSpec.describe GroupsHelper do
           subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json"),
           shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
           archived_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
-          current_group_visibility: group.visibility
+          current_group_visibility: group.visibility,
+          initial_sort: initial_sort
         }.merge(helper.group_overview_tabs_app_data(group))
       )
     end

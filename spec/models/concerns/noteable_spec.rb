@@ -47,18 +47,19 @@ RSpec.describe Noteable do
     let(:discussions) { subject.discussions }
 
     it 'includes discussions for diff notes, commit diff notes, commit notes, and regular notes' do
-      expect(discussions).to eq([
-        DiffDiscussion.new([active_diff_note1, active_diff_note2], subject),
-        DiffDiscussion.new([active_diff_note3], subject),
-        DiffDiscussion.new([outdated_diff_note1, outdated_diff_note2], subject),
-        Discussion.new([discussion_note1, discussion_note2], subject),
-        DiffDiscussion.new([commit_diff_note1, commit_diff_note2], subject),
-        OutOfContextDiscussion.new([commit_note1, commit_note2], subject),
-        Discussion.new([commit_discussion_note1, commit_discussion_note2], subject),
-        Discussion.new([commit_discussion_note3], subject),
-        IndividualNoteDiscussion.new([note1], subject),
-        IndividualNoteDiscussion.new([note2], subject)
-      ])
+      expect(discussions).to eq(
+        [
+          DiffDiscussion.new([active_diff_note1, active_diff_note2], subject),
+          DiffDiscussion.new([active_diff_note3], subject),
+          DiffDiscussion.new([outdated_diff_note1, outdated_diff_note2], subject),
+          Discussion.new([discussion_note1, discussion_note2], subject),
+          DiffDiscussion.new([commit_diff_note1, commit_diff_note2], subject),
+          OutOfContextDiscussion.new([commit_note1, commit_note2], subject),
+          Discussion.new([commit_discussion_note1, commit_discussion_note2], subject),
+          Discussion.new([commit_discussion_note3], subject),
+          IndividualNoteDiscussion.new([note1], subject),
+          IndividualNoteDiscussion.new([note2], subject)
+        ])
     end
   end
 
@@ -88,23 +89,24 @@ RSpec.describe Noteable do
         { table_name: n.table_name, discussion_id: n.discussion_id, id: n.id }
       end
 
-      expect(discussions).to match([
-        a_hash_including(table_name: 'notes', discussion_id: active_diff_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: active_diff_note3.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: outdated_diff_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: discussion_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_diff_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_note2.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note3.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: note2.discussion_id),
-        a_hash_including(table_name: 'resource_label_events', id: label_event.id),
-        a_hash_including(table_name: 'notes', discussion_id: system_note.discussion_id),
-        a_hash_including(table_name: 'resource_milestone_events', id: milestone_event.id),
-        a_hash_including(table_name: 'resource_state_events', id: state_event.id)
-      ])
+      expect(discussions).to match(
+        [
+          a_hash_including(table_name: 'notes', discussion_id: active_diff_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: active_diff_note3.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: outdated_diff_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: discussion_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_diff_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_note2.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note3.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: note2.discussion_id),
+          a_hash_including(table_name: 'resource_label_events', id: label_event.id),
+          a_hash_including(table_name: 'notes', discussion_id: system_note.discussion_id),
+          a_hash_including(table_name: 'resource_milestone_events', id: milestone_event.id),
+          a_hash_including(table_name: 'resource_state_events', id: state_event.id)
+        ])
     end
 
     it 'filters by comments only' do
@@ -112,19 +114,20 @@ RSpec.describe Noteable do
         { table_name: n.table_name, discussion_id: n.discussion_id, id: n.id }
       end
 
-      expect(discussions).to match([
-        a_hash_including(table_name: 'notes', discussion_id: active_diff_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: active_diff_note3.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: outdated_diff_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: discussion_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_diff_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_note2.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note3.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: note1.discussion_id),
-        a_hash_including(table_name: 'notes', discussion_id: note2.discussion_id)
-      ])
+      expect(discussions).to match(
+        [
+          a_hash_including(table_name: 'notes', discussion_id: active_diff_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: active_diff_note3.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: outdated_diff_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: discussion_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_diff_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_note2.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note3.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: note1.discussion_id),
+          a_hash_including(table_name: 'notes', discussion_id: note2.discussion_id)
+        ])
     end
 
     it 'filters by system notes only' do
@@ -132,12 +135,13 @@ RSpec.describe Noteable do
         { table_name: n.table_name, discussion_id: n.discussion_id, id: n.id }
       end
 
-      expect(discussions).to match([
-        a_hash_including(table_name: 'resource_label_events', id: label_event.id),
-        a_hash_including(table_name: 'notes', discussion_id: system_note.discussion_id),
-        a_hash_including(table_name: 'resource_milestone_events', id: milestone_event.id),
-        a_hash_including(table_name: 'resource_state_events', id: state_event.id)
-      ])
+      expect(discussions).to match(
+        [
+          a_hash_including(table_name: 'resource_label_events', id: label_event.id),
+          a_hash_including(table_name: 'notes', discussion_id: system_note.discussion_id),
+          a_hash_including(table_name: 'resource_milestone_events', id: milestone_event.id),
+          a_hash_including(table_name: 'resource_state_events', id: state_event.id)
+        ])
     end
   end
 

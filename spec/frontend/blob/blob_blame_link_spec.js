@@ -29,19 +29,19 @@ describe('Blob links', () => {
   it('adds wrapper elements with correct classes', () => {
     const wrapper = document.querySelector('.line-links');
 
-    expect(wrapper).toBeTruthy();
+    expect(wrapper).not.toBeNull();
     expect(wrapper.classList).toContain('diff-line-num');
   });
 
   it('adds blame link with correct classes and path', () => {
     const blameLink = document.querySelector('.file-line-blame');
-    expect(blameLink).toBeTruthy();
+    expect(blameLink).not.toBeNull();
     expect(blameLink.getAttribute('href')).toBe('/blamePath#L5');
   });
 
   it('adds line link within wraper with correct classes and path', () => {
     const lineLink = document.querySelector('.file-line-num');
-    expect(lineLink).toBeTruthy();
+    expect(lineLink).not.toBeNull();
     expect(lineLink.getAttribute('href')).toBe('#L5');
   });
 });

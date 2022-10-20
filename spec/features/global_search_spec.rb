@@ -9,6 +9,7 @@ RSpec.describe 'Global search' do
   let(:project) { create(:project, namespace: user.namespace) }
 
   before do
+    stub_feature_flags(search_page_vertical_nav: false)
     project.add_maintainer(user)
     sign_in(user)
   end

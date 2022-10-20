@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -53,7 +53,7 @@ you already have a working GitLab instance that is in-use, it can be used as a
 
 The second GitLab site serves as the Geo **secondary** site. Again, use the
 [GitLab reference architectures documentation](../../reference_architectures/index.md) to set this up.
-It's a good idea to log in and test it. However, be aware that its data is
+It's a good idea to sign in and test it. However, be aware that its data is
 wiped out as part of the process of replicating from the **primary** site.
 
 ## Configure a GitLab site to be the Geo **primary** site

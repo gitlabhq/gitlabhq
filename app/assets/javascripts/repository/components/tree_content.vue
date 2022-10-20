@@ -1,6 +1,6 @@
 <script>
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
 import {
@@ -142,7 +142,7 @@ export default {
           }
         })
         .catch((error) => {
-          createFlash({
+          createAlert({
             message: __('An error occurred while fetching folder content.'),
           });
           throw error;

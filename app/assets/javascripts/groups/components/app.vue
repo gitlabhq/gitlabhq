@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
@@ -51,7 +51,6 @@ export default {
       isModalVisible: false,
       isLoading: true,
       isSearchEmpty: false,
-      searchEmptyMessage: '',
       targetGroup: null,
       targetParentGroup: null,
       showEmptyState: false,
@@ -88,15 +87,12 @@ export default {
     },
   },
   created() {
-    this.searchEmptyMessage = this.hideProjects
-      ? COMMON_STR.GROUP_SEARCH_EMPTY
-      : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
-
     eventHub.$on(`${this.action}fetchPage`, this.fetchPage);
     eventHub.$on(`${this.action}toggleChildren`, this.toggleChildren);
     eventHub.$on(`${this.action}showLeaveGroupModal`, this.showLeaveGroupModal);
     eventHub.$on(`${this.action}updatePagination`, this.updatePagination);
     eventHub.$on(`${this.action}updateGroups`, this.updateGroups);
+    eventHub.$on(`${this.action}fetchFilteredAndSortedGroups`, this.fetchFilteredAndSortedGroups);
   },
   mounted() {
     this.fetchAllGroups();
@@ -111,6 +107,7 @@ export default {
     eventHub.$off(`${this.action}showLeaveGroupModal`, this.showLeaveGroupModal);
     eventHub.$off(`${this.action}updatePagination`, this.updatePagination);
     eventHub.$off(`${this.action}updateGroups`, this.updateGroups);
+    eventHub.$off(`${this.action}fetchFilteredAndSortedGroups`, this.fetchFilteredAndSortedGroups);
   },
   methods: {
     hideModal() {
@@ -132,7 +129,7 @@ export default {
           this.isLoading = false;
           window.scrollTo({ top: 0, behavior: 'smooth' });
 
-          createFlash({ message: COMMON_STR.FAILURE });
+          createAlert({ message: COMMON_STR.FAILURE });
         });
     },
     fetchAllGroups() {
@@ -151,6 +148,18 @@ export default {
       }).then((res) => {
         this.isLoading = false;
         this.updateGroups(res, Boolean(this.filterGroupsBy));
+      });
+    },
+    fetchFilteredAndSortedGroups({ filterGroupsBy, sortBy }) {
+      this.isLoading = true;
+
+      return this.fetchGroups({
+        filterGroupsBy,
+        sortBy,
+        updatePagination: true,
+      }).then((res) => {
+        this.isLoading = false;
+        this.updateGroups(res, Boolean(filterGroupsBy));
       });
     },
     fetchPage({ page, filterGroupsBy, sortBy, archived }) {
@@ -218,7 +227,7 @@ export default {
           if (err.status === 403) {
             message = COMMON_STR.LEAVE_FORBIDDEN;
           }
-          createFlash({ message });
+          createAlert({ message });
           this.targetGroup.isBeingRemoved = false;
         });
     },
@@ -245,7 +254,7 @@ export default {
       const hasGroups = groups && groups.length > 0;
 
       if (this.renderEmptyState) {
-        this.isSearchEmpty = this.filterGroupsBy !== null && !hasGroups;
+        this.isSearchEmpty = fromSearch && !hasGroups;
       } else {
         this.isSearchEmpty = !hasGroups;
       }
@@ -280,7 +289,6 @@ export default {
       v-else
       :groups="groups"
       :search-empty="isSearchEmpty"
-      :search-empty-message="searchEmptyMessage"
       :page-info="pageInfo"
       :action="action"
     />

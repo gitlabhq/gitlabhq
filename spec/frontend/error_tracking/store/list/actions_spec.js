@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/error_tracking/store/list/actions';
 import * as types from '~/error_tracking/store/list/mutation_types';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
 
@@ -51,7 +51,7 @@ describe('error tracking actions', () => {
         ],
         [],
       );
-      expect(createFlash).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledTimes(1);
     });
   });
 

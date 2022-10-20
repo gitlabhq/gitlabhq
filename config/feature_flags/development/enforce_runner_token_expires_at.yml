@@ -1,8 +1,0 @@
----
-name: enforce_runner_token_expires_at
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78557
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352008
-milestone: '14.8'
-type: development
-group: group::runner
-default_enabled: false

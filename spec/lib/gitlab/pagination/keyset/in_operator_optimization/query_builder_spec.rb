@@ -117,23 +117,24 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:order) do
       # NULLS LAST ordering requires custom Order object for keyset pagination:
       # https://docs.gitlab.com/ee/development/database/keyset_pagination.html#complex-order-configuration
-      Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :relative_position,
-          column_expression: Issue.arel_table[:relative_position],
-          order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
-          reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
-          order_direction: :desc,
-          nullable: :nulls_last,
-          distinct: false
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :id,
-          order_expression: Issue.arel_table[:id].desc,
-          nullable: :not_nullable,
-          distinct: true
-        )
-      ])
+      Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :relative_position,
+            column_expression: Issue.arel_table[:relative_position],
+            order_expression: Issue.arel_table[:relative_position].desc.nulls_last,
+            reversed_order_expression: Issue.arel_table[:relative_position].asc.nulls_first,
+            order_direction: :desc,
+            nullable: :nulls_last,
+            distinct: false
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Issue.arel_table[:id].desc,
+            nullable: :not_nullable,
+            distinct: true
+          )
+        ])
     end
 
     let(:in_operator_optimization_options) do
@@ -279,17 +280,18 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
   context 'when ordering by SQL expression' do
     let(:order) do
       # ORDER BY (id * 10), id
-      Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'id_multiplied_by_ten',
-          order_expression: Arel.sql('(id * 10)').asc,
-          sql_type: 'integer'
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :id,
-          order_expression: Issue.arel_table[:id].asc
-        )
-      ])
+      Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id_multiplied_by_ten',
+            order_expression: Arel.sql('(id * 10)').asc,
+            sql_type: 'integer'
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: :id,
+            order_expression: Issue.arel_table[:id].asc
+          )
+        ])
     end
 
     let(:scope) { Issue.reorder(order) }
@@ -325,6 +327,150 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
         expect do
           iterator.each_batch(of: batch_size) { |records| records.to_a }
         end.to raise_error /The "RecordLoaderStrategy" does not support/
+      end
+    end
+  end
+
+  context 'when ordering by JOIN-ed columns' do
+    let(:scope) { cte_with_issues_and_projects.apply_to(Issue.where({})).reorder(order) }
+
+    let(:cte_with_issues_and_projects) do
+      cte_query = Issue.select('issues.id AS id', 'project_id', 'projects.id AS projects_id', 'projects.name AS projects_name').joins(:project)
+      Gitlab::SQL::CTE.new(:issue_with_project, cte_query, materialized: false)
+    end
+
+    let(:in_operator_optimization_options) do
+      {
+        array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
+        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
+      }
+    end
+
+    context 'when directions are project.id DESC, issues.id ASC' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: 'projects_id',
+                                                    order_expression: Issue.arel_table[:projects_id].asc,
+                                                    sql_type: 'integer',
+                                                    nullable: :not_nullable,
+                                                    distinct: false
+                                                  ),
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: :id,
+                                                    order_expression: Issue.arel_table[:id].asc
+                                                  )
+                                                ])
+      end
+
+      let(:expected_order) { issues.sort_by { |issue| [issue.project_id, issue.id] } }
+
+      context 'when iterating records one by one' do
+        let(:batch_size) { 1 }
+
+        it_behaves_like 'correct ordering examples', skip_finder_query_test: true
+      end
+
+      context 'when iterating records with LIMIT 2' do
+        let(:batch_size) { 2 }
+
+        it_behaves_like 'correct ordering examples', skip_finder_query_test: true
+      end
+    end
+
+    context 'when directions are projects.id DESC, issues.id ASC' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: 'projects_id',
+                                                    order_expression: Issue.arel_table[:projects_id].desc,
+                                                    sql_type: 'integer',
+                                                    nullable: :not_nullable,
+                                                    distinct: false
+                                                  ),
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: :id,
+                                                    order_expression: Issue.arel_table[:id].asc
+                                                  )
+                                                ])
+      end
+
+      let(:expected_order) { issues.sort_by { |issue| [issue.project_id * -1, issue.id] } }
+
+      context 'when iterating records one by one' do
+        let(:batch_size) { 1 }
+
+        it_behaves_like 'correct ordering examples', skip_finder_query_test: true
+      end
+
+      context 'when iterating records with LIMIT 2' do
+        let(:batch_size) { 2 }
+
+        it_behaves_like 'correct ordering examples', skip_finder_query_test: true
+      end
+    end
+
+    context 'when directions are projects.name ASC, projects.id ASC, issues.id ASC' do
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: 'projects_name',
+                                                    order_expression: Issue.arel_table[:projects_name].asc,
+                                                    sql_type: 'character varying',
+                                                    nullable: :not_nullable,
+                                                    distinct: false
+                                                  ),
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: 'projects_id',
+                                                    order_expression: Issue.arel_table[:projects_id].asc,
+                                                    sql_type: 'integer',
+                                                    nullable: :not_nullable,
+                                                    distinct: false
+                                                  ),
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: :id,
+                                                    order_expression: Issue.arel_table[:id].asc
+                                                  )
+                                                ])
+      end
+
+      let(:expected_order) { issues.sort_by { |issue| [issue.project.name, issue.project.id, issue.id] } }
+
+      context 'when iterating records with LIMIT 2' do
+        let(:batch_size) { 2 }
+
+        it_behaves_like 'correct ordering examples', skip_finder_query_test: true
+      end
+    end
+
+    context 'when directions are projects.name ASC (nullable), issues.id ASC' do
+      let(:cte_with_issues_and_projects) do
+        cte_query = Issue.select('issues.id AS id', 'project_id', 'projects.id AS projects_id', 'NULL AS projects_name').joins(:project)
+        Gitlab::SQL::CTE.new(:issue_with_project, cte_query, materialized: false)
+      end
+
+      let(:order) do
+        Gitlab::Pagination::Keyset::Order.build([
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: 'projects_name',
+                                                    order_expression: Issue.arel_table[:projects_name].asc,
+                                                    sql_type: 'character varying',
+                                                    nullable: :nulls_last,
+                                                    distinct: false
+                                                  ),
+                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                                                    attribute_name: :id,
+                                                    order_expression: Issue.arel_table[:id].asc
+                                                  )
+                                                ])
+      end
+
+      let(:expected_order) { issues.sort_by { |issue| [issue.id] } }
+
+      context 'when iterating records with LIMIT 2' do
+        let(:batch_size) { 2 }
+
+        it_behaves_like 'correct ordering examples', skip_finder_query_test: true
       end
     end
   end

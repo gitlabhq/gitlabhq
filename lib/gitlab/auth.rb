@@ -221,6 +221,8 @@ module Gitlab
         end
 
         if token.user.can_log_in_with_non_expired_password? || token.user.project_bot?
+          ::PersonalAccessTokens::LastUsedService.new(token).execute
+
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end

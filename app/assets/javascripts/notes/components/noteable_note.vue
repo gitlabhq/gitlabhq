@@ -5,7 +5,7 @@ import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -199,9 +199,6 @@ export default {
     isMRDiffView() {
       return this.line && !this.isOverviewTab;
     },
-    authorAvatarAdaptiveSize() {
-      return { default: 24, md: 32 };
-    },
   },
   created() {
     const line = this.note.position?.line_range?.start || this.line;
@@ -273,7 +270,7 @@ export default {
             this.isDeleting = false;
           })
           .catch(() => {
-            createFlash({
+            createAlert({
               message: __('Something went wrong while deleting your note. Please try again.'),
             });
             this.isDeleting = false;
@@ -352,7 +349,7 @@ export default {
     },
     handleUpdateError() {
       const msg = __('Something went wrong while editing your comment. Please try again.');
-      createFlash({
+      createAlert({
         message: msg,
         parent: this.$el,
       });
@@ -409,13 +406,13 @@ export default {
     :class="{ ...classNameBindings, 'internal-note': note.internal }"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note note-wrapper"
+    class="note note-wrapper note-comment"
     data-qa-selector="noteable_note_container"
   >
     <div
       v-if="showMultiLineComment"
       data-testid="multiline-comment"
-      class="gl-mb-5 gl-text-gray-500 gl-border-gray-100 gl-border-b-solid gl-border-b-1 gl-pb-4"
+      class="gl-text-gray-500 gl-border-gray-100 gl-border-b-solid gl-border-b-1 gl-px-5 gl-py-3"
     >
       <gl-sprintf :message="__('Comment on lines %{startLine} to %{endLine}')">
         <template #startLine>
@@ -427,7 +424,7 @@ export default {
       </gl-sprintf>
     </div>
 
-    <div v-if="isMRDiffView" class="gl-float-left gl-mt-n1 gl-mr-3">
+    <div v-if="isMRDiffView" class="timeline-avatar gl-float-left gl-pt-2">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"
@@ -440,13 +437,13 @@ export default {
       </gl-avatar-link>
     </div>
 
-    <div v-else class="gl-float-left gl-pl-3 gl-md-pl-2">
+    <div v-else class="timeline-avatar gl-float-left">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"
           :entity-name="author.username"
           :alt="author.name"
-          :size="authorAvatarAdaptiveSize"
+          :size="32"
         />
 
         <slot name="avatar-badge"></slot>

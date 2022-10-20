@@ -27,6 +27,16 @@ class ProjectStatistics < ApplicationRecord
     snippets_size: %i[storage_size]
   }.freeze
   NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size, :container_registry_size].freeze
+  STORAGE_SIZE_COMPONENTS = [
+    :repository_size,
+    :wiki_size,
+    :lfs_objects_size,
+    :build_artifacts_size,
+    :packages_size,
+    :snippets_size,
+    :pipeline_artifacts_size,
+    :uploads_size
+  ].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 
@@ -39,17 +49,18 @@ class ProjectStatistics < ApplicationRecord
   def refresh!(only: [])
     return if Gitlab::Database.read_only?
 
-    COLUMNS_TO_REFRESH.each do |column, generator|
-      if only.empty? || only.include?(column)
-        public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
-      end
+    columns_to_update = only.empty? ? COLUMNS_TO_REFRESH : COLUMNS_TO_REFRESH & only
+    columns_to_update.each do |column|
+      public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
     end
 
     if only.empty? || only.any? { |column| NAMESPACE_RELATABLE_COLUMNS.include?(column) }
       schedule_namespace_aggregation_worker
     end
 
-    save!
+    detect_race_on_record(log_fields: { caller: __method__, attributes: columns_to_update }) do
+      save!
+    end
   end
 
   def update_commit_count
@@ -97,21 +108,13 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_storage_size
-    storage_size = repository_size +
-                   wiki_size +
-                   lfs_objects_size +
-                   build_artifacts_size +
-                   packages_size +
-                   snippets_size +
-                   pipeline_artifacts_size +
-                   uploads_size
-
-    self.storage_size = storage_size
+    self.storage_size = storage_size_components.sum { |component| method(component).call }
   end
 
   def refresh_storage_size!
-    update_storage_size
-    save!
+    detect_race_on_record(log_fields: { caller: __method__, attributes: :storage_size }) do
+      update!(storage_size: storage_size_sum)
+    end
   end
 
   # Since this incremental update method does not call update_storage_size above through before_save,
@@ -129,35 +132,41 @@ class ProjectStatistics < ApplicationRecord
       if counter_attribute_enabled?(key)
         project_statistics.delayed_increment_counter(key, amount)
       else
-        legacy_increment_statistic(project, key, amount)
+        project_statistics.legacy_increment_statistic(key, amount)
       end
     end
-  end
-
-  def self.legacy_increment_statistic(project, key, amount)
-    where(project_id: project.id).columns_to_increment(key, amount)
-
-    Namespaces::ScheduleAggregationWorker.perform_async( # rubocop: disable CodeReuse/Worker
-      project.namespace_id)
-  end
-
-  def self.columns_to_increment(key, amount)
-    updates = ["#{key} = COALESCE(#{key}, 0) + (#{amount})"]
-
-    if (additional = INCREMENTABLE_COLUMNS[key])
-      additional.each do |column|
-        updates << "#{column} = COALESCE(#{column}, 0) + (#{amount})"
-      end
-    end
-
-    update_all(updates.join(', '))
   end
 
   def self.incrementable_attribute?(key)
     INCREMENTABLE_COLUMNS.key?(key) || counter_attribute_enabled?(key)
   end
 
+  def legacy_increment_statistic(key, amount)
+    increment_columns!(key, amount)
+
+    Namespaces::ScheduleAggregationWorker.perform_async( # rubocop: disable CodeReuse/Worker
+      project.namespace_id)
+  end
+
   private
+
+  def storage_size_components
+    STORAGE_SIZE_COMPONENTS
+  end
+
+  def storage_size_sum
+    storage_size_components.map { |component| "COALESCE (#{component}, 0)" }.join(' + ').freeze
+  end
+
+  def increment_columns!(key, amount)
+    increments = { key => amount }
+    additional = INCREMENTABLE_COLUMNS.fetch(key, [])
+    additional.each do |column|
+      increments[column] = amount
+    end
+
+    update_counters_with_lease(increments)
+  end
 
   def schedule_namespace_aggregation_worker
     run_after_commit do

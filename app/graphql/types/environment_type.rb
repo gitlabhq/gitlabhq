@@ -57,7 +57,7 @@ module Types
     field :deployments,
           Types::DeploymentType.connection_type,
           null: true,
-          description: 'Deployments of the environment. This field can only be resolved for one project in any single request.',
+          description: 'Deployments of the environment. This field can only be resolved for one environment in any single request.',
           resolver: Resolvers::DeploymentsResolver do
             extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
           end
@@ -72,3 +72,5 @@ module Types
     end
   end
 end
+
+Types::EnvironmentType.prepend_mod_with('Types::EnvironmentType')

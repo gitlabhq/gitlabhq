@@ -290,7 +290,7 @@ describe('monitoring/utils', () => {
       expect(() => expandedPanelPayloadFromUrl(metricsDashboardViewModel, search)).toThrow();
     });
 
-    test.each`
+    it.each`
       group            | title            | yLabel             | missingField
       ${'NOT_A_GROUP'} | ${title}         | ${yLabel}          | ${'group'}
       ${group}         | ${'NOT_A_TITLE'} | ${yLabel}          | ${'title'}
@@ -367,7 +367,7 @@ describe('monitoring/utils', () => {
       ],
     };
 
-    [
+    it.each([
       {
         input: { metrics: undefined },
         output: {},
@@ -393,12 +393,10 @@ describe('monitoring/utils', () => {
         output: multipleMetricExpected,
         testCase: 'barChartsDataParser returns multiple series object with multiple metrics',
       },
-    ].forEach(({ input, output, testCase }) => {
-      it(testCase, () => {
-        expect(monitoringUtils.barChartsDataParser(input.metrics)).toEqual(
-          expect.objectContaining(output),
-        );
-      });
+    ])('$testCase', ({ input, output }) => {
+      expect(monitoringUtils.barChartsDataParser(input.metrics)).toEqual(
+        expect.objectContaining(output),
+      );
     });
   });
 

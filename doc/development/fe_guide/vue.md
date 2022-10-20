@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Vue
@@ -408,11 +408,11 @@ export function useCount(initialValue) {
   const count = ref(initialValue)
 
   function incrementCount() {
-    ref.value += 1
+    count.value += 1
   }
 
   function decrementCount() {
-    ref.value -= 1
+    count.value -= 1
   }
 
   return { count, incrementCount, decrementCount }

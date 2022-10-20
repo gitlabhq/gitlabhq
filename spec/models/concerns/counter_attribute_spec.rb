@@ -73,8 +73,8 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
         subject
 
         Gitlab::Redis::SharedState.with do |redis|
-          expect(redis.exists(increment_key)).to be_falsey
-          expect(redis.exists(flushed_key)).to eq(flushed_key_present)
+          expect(redis.exists?(increment_key)).to eq(false)
+          expect(redis.exists?(flushed_key)).to eq(flushed_key_present)
         end
       end
     end

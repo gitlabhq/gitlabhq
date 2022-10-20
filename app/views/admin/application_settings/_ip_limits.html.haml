@@ -66,4 +66,4 @@
       .form-text.text-muted
         = html_escape(_("If blank, defaults to %{code_open}Retry later%{code_close}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), data: { qa_selector: 'save_changes_button' }, pajamas_button: true

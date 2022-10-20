@@ -31,6 +31,7 @@ module API
         end
         params do
           use :pagination
+          optional :name, type: String, desc: 'Name for the badge'
         end
         get ":id/badges", urgency: :low do
           source = find_source(source_type, params[:id])

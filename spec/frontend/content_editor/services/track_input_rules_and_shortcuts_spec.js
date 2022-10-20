@@ -44,7 +44,7 @@ describe('content_editor/services/track_input_rules_and_shortcuts', () => {
 
     describe('when creating a heading using an keyboard shortcut', () => {
       it('sends a tracking event indicating that a heading was created using an input rule', async () => {
-        const shortcuts = Heading.config.addKeyboardShortcuts.call(Heading);
+        const shortcuts = Heading.parent.config.addKeyboardShortcuts.call(Heading);
         const [firstShortcut] = Object.keys(shortcuts);
         const nodeName = Heading.name;
 

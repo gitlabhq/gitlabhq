@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Find relevant log entries with a correlation ID **(FREE SELF)**
@@ -28,7 +28,7 @@ documentation for some popular browsers.
 - [Network Monitor - Firefox Developer Tools](https://developer.mozilla.org/en-US/docs/Tools/Network_Monitor)
 - [Inspect Network Activity In Chrome DevTools](https://developer.chrome.com/docs/devtools/network/)
 - [Safari Web Development Tools](https://developer.apple.com/safari/tools/)
-- [Microsoft Edge Network panel](https://docs.microsoft.com/en-us/microsoft-edge/devtools-guide-chromium/network/)
+- [Microsoft Edge Network panel](https://learn.microsoft.com/en-us/microsoft-edge/devtools-guide-chromium/network/)
 
 To locate a relevant request and view its correlation ID:
 
@@ -187,7 +187,7 @@ You can then view the database details for this request:
 
    ![Paste request ID into progress bar](img/paste-request-id-into-progress-bar_v14_3.png)
 
-1. A new request is inserted into the `Request Selector` dropdown on the right-hand side of the Performance Bar. Select the new request to view the metrics of the API request:
+1. A new request is inserted into the `Request Selector` dropdown list on the right-hand side of the Performance Bar. Select the new request to view the metrics of the API request:
 
    ![Select request ID from request selector drop down menu](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
 

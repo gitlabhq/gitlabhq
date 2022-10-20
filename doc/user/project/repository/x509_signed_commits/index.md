@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Sign commits and tags with X.509 certificates **(FREE)**
@@ -48,7 +48,7 @@ GitLab checks certificate revocation lists on a daily basis with a background wo
 - Self-signed certificates without `authorityKeyIdentifier`,
   `subjectKeyIdentifier`, and `crlDistributionPoints` are not supported. We
   recommend using certificates from a PKI that are in line with
-  [RFC 5280](https://tools.ietf.org/html/rfc5280).
+  [RFC 5280](https://www.rfc-editor.org/rfc/rfc5280).
 - If you have more than one email in the Subject Alternative Name list in
   your signing certificate,
   [only the first one is used to verify commits](https://gitlab.com/gitlab-org/gitlab/-/issues/336677).

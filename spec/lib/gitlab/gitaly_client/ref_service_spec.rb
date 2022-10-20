@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::RefService do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
   let(:repository) { project.repository }
@@ -179,13 +180,22 @@ RSpec.describe Gitlab::GitalyClient::RefService do
             )
           )
         end
+
         local_branches = target_commits.each_with_index.map do |gitaly_commit, i|
           Gitaly::Branch.new(name: "#{remote_name}/#{i}", target_commit: gitaly_commit)
         end
-        response = [
-          Gitaly::FindLocalBranchesResponse.new(branches: branches[0, 2], local_branches: local_branches[0, 2]),
-          Gitaly::FindLocalBranchesResponse.new(branches: branches[2, 2], local_branches: local_branches[2, 2])
-        ]
+
+        response = if set_local_branches
+                     [
+                       Gitaly::FindLocalBranchesResponse.new(local_branches: local_branches[0, 2]),
+                       Gitaly::FindLocalBranchesResponse.new(local_branches: local_branches[2, 2])
+                     ]
+                   else
+                     [
+                       Gitaly::FindLocalBranchesResponse.new(branches: branches[0, 2]),
+                       Gitaly::FindLocalBranchesResponse.new(branches: branches[2, 2])
+                     ]
+                   end
 
         expect_any_instance_of(Gitaly::RefService::Stub)
           .to receive(:find_local_branches)
@@ -220,18 +230,14 @@ RSpec.describe Gitlab::GitalyClient::RefService do
       end
     end
 
-    context 'when feature flag :gitaly_simplify_find_local_branches_response is enabled' do
-      before do
-        stub_feature_flags(gitaly_simplify_find_local_branches_response: true)
-      end
+    context 'when local_branches variable is not set' do
+      let(:set_local_branches) { false }
 
       it_behaves_like 'common examples'
     end
 
-    context 'when feature flag :gitaly_simplify_find_local_branches_response is disabled' do
-      before do
-        stub_feature_flags(gitaly_simplify_find_local_branches_response: false)
-      end
+    context 'when local_branches variable is set' do
+      let(:set_local_branches) { true }
 
       it_behaves_like 'common examples'
     end

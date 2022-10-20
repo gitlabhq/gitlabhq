@@ -2,7 +2,7 @@ import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlTooltip, GlSprintf } from 
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { INCIDENT_SEVERITY, ISSUABLE_TYPES } from '~/sidebar/components/severity/constants';
 import updateIssuableSeverity from '~/sidebar/components/severity/graphql/mutations/update_issuable_severity.mutation.graphql';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
@@ -59,7 +59,7 @@ describe('SidebarSeverity', () => {
   const findCriticalSeverityDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
-  const findCollapsedSeverity = () => wrapper.find({ ref: 'severity' });
+  const findCollapsedSeverity = () => wrapper.findComponent({ ref: 'severity' });
 
   describe('Severity widget', () => {
     it('renders severity dropdown and token', () => {
@@ -104,7 +104,7 @@ describe('SidebarSeverity', () => {
 
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
 
     it('shows loading icon while updating', async () => {

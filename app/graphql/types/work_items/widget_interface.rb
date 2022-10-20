@@ -23,6 +23,9 @@ module Types
         ORPHAN_TYPES
       end
 
+      # Whenever a new widget is added make sure to update the spec to avoid N + 1 queries in
+      # spec/requests/api/graphql/project/work_items_spec.rb and add the necessary preloads
+      # in app/graphql/resolvers/work_items_resolver.rb
       def self.resolve_type(object, context)
         case object
         when ::WorkItems::Widgets::Description

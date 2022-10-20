@@ -5,10 +5,6 @@ module Gitlab
     module Parsers
       module Security
         class Sast < Common
-          include Security::Concerns::DeprecatedSyntax
-
-          DEPRECATED_REPORT_VERSION = "1.2"
-
           private
 
           def create_location(location_data)

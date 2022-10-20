@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Working with email in development
@@ -176,7 +176,7 @@ in the Helm Chart configuration rather than the `Gemfile`.
 
 #### Preserving backwards compatibility
 
-Removing the `Gemfile` would break incoming e-mail processing for source
+Removing the `Gemfile` would break incoming email processing for source
 installs. For now, source installs are advised to upgrade manually to
 the version specified in Omnibus and run `bin/mail_room` directly as
 done with Omnibus.

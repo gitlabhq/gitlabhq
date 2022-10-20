@@ -505,13 +505,35 @@ RSpec.describe API::Groups do
         group3.add_maintainer(user2)
       end
 
-      it 'returns an array of groups the user has at least master access' do
-        get api('/groups', user2), params: { min_access_level: 40 }
+      context 'with min_access_level parameter' do
+        it 'returns an array of groups the user has at least master access' do
+          get api('/groups', user2), params: { min_access_level: 40 }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(response_groups).to contain_exactly(group2.id, group3.id)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(response_groups).to contain_exactly(group2.id, group3.id)
+        end
+
+        context 'distinct count with present_groups_select_all feature flag' do
+          subject { get api('/groups', user2), params: { min_access_level: 40 } }
+
+          it 'counts with *' do
+            count_sql = /#{Regexp.escape('SELECT count(*)')}/i
+            expect { subject }.to make_queries_matching count_sql
+          end
+
+          context 'when present_groups_select_all feature flag is disabled' do
+            before do
+              stub_feature_flags(present_groups_select_all: false)
+            end
+
+            it 'counts with count_column' do
+              count_sql = /#{Regexp.escape('SELECT count(count_column)')}/i
+              expect { subject }.to make_queries_matching count_sql
+            end
+          end
+        end
       end
     end
 

@@ -12,3 +12,4 @@ Metrics/AbcSize:
     - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'
     - 'lib/gitlab/sidekiq_middleware/server_metrics.rb'
     - 'qa/qa/resource/repository/push.rb'
+    - 'ee/db/seeds/awesome_co/**/*.rb'

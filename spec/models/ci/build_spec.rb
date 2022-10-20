@@ -160,6 +160,42 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '.with_erasable_artifacts' do
+    subject { described_class.with_erasable_artifacts }
+
+    context 'when job does not have any artifacts' do
+      let!(:job) { create(:ci_build) }
+
+      it 'does not return the job' do
+        is_expected.not_to include(job)
+      end
+    end
+
+    ::Ci::JobArtifact.erasable_file_types.each do |type|
+      context "when job has a #{type} artifact" do
+        it 'returns the job' do
+          job = create(:ci_build)
+          create(
+            :ci_job_artifact,
+            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_type: type,
+            job: job
+          )
+
+          is_expected.to include(job)
+        end
+      end
+    end
+
+    context 'when job has a non-erasable artifact' do
+      let!(:job) { create(:ci_build, :trace_artifact) }
+
+      it 'does not return the job' do
+        is_expected.not_to include(job)
+      end
+    end
+  end
+
   describe '.with_live_trace' do
     subject { described_class.with_live_trace }
 
@@ -284,10 +320,10 @@ RSpec.describe Ci::Build do
 
     let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
 
-    let!(:build_1) { create(:ci_build, :artifacts) }
-    let!(:build_2) { create(:ci_build, :codequality_reports) }
-    let!(:build_3) { create(:ci_build, :test_reports) }
-    let!(:build_4) { create(:ci_build, :artifacts) }
+    let!(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let!(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
+    let!(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
+    let!(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     it 'returns artifacts matching the given scope' do
       expect(builds).to contain_exactly(build_1, build_4)
@@ -591,15 +627,6 @@ RSpec.describe Ci::Build do
     context 'when deployment cannot rollback' do
       before do
         expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
-      end
-
-      it { expect(subject).to be_falsey }
-    end
-
-    context 'when prevent_outdated_deployment_jobs FF is disabled' do
-      before do
-        stub_feature_flags(prevent_outdated_deployment_jobs: false)
-        expect(build.deployment).not_to receive(:rollback?)
       end
 
       it { expect(subject).to be_falsey }
@@ -2668,6 +2695,7 @@ RSpec.describe Ci::Build do
           { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true },
           { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
+          { key: 'CI_JOB_NAME_SLUG', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI_BUILD_NAME', value: 'test', public: true, masked: false },
@@ -2777,6 +2805,14 @@ RSpec.describe Ci::Build do
             expect { subject }.not_to raise_error
             expect(subject.pluck(:key)).not_to include('CI_JOB_JWT')
           end
+        end
+      end
+
+      context 'when the opt_in_jwt project setting is true' do
+        it 'does not include the JWT variables' do
+          project.ci_cd_settings.update!(opt_in_jwt: true)
+
+          expect(subject.pluck(:key)).not_to include('CI_JOB_JWT', 'CI_JOB_JWT_V1', 'CI_JOB_JWT_V2')
         end
       end
 
@@ -3069,8 +3105,24 @@ RSpec.describe Ci::Build do
     end
 
     context 'when build is for tag' do
+      let(:tag_name) { project.repository.tags.first.name }
+      let(:tag_message) { project.repository.tags.first.message }
+
+      let!(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: project.commit.id,
+                             ref: tag_name,
+                             status: 'success')
+      end
+
+      let!(:build) { create(:ci_build, pipeline: pipeline, ref: tag_name) }
+
       let(:tag_variable) do
-        { key: 'CI_COMMIT_TAG', value: 'master', public: true, masked: false }
+        { key: 'CI_COMMIT_TAG', value: tag_name, public: true, masked: false }
+      end
+
+      let(:tag_message_variable) do
+        { key: 'CI_COMMIT_TAG_MESSAGE', value: tag_message, public: true, masked: false }
       end
 
       before do
@@ -3081,7 +3133,7 @@ RSpec.describe Ci::Build do
       it do
         build.reload
 
-        expect(subject).to include(tag_variable)
+        expect(subject).to include(tag_variable, tag_message_variable)
       end
     end
 
@@ -3473,6 +3525,49 @@ RSpec.describe Ci::Build do
       let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
 
       it { is_expected.to include(key: job_variable.key, value: job_variable.value, public: false, masked: false) }
+    end
+
+    context 'when ID tokens are defined on the build' do
+      before do
+        rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
+        stub_application_setting(ci_jwt_signing_key: rsa_key)
+        build.metadata.update!(id_tokens: {
+                                 'ID_TOKEN_1' => { id_token: { aud: 'developers' } },
+                                 'ID_TOKEN_2' => { id_token: { aud: 'maintainers' } }
+                               })
+      end
+
+      subject(:runner_vars) { build.variables.to_runner_variables }
+
+      it 'includes the ID token variables' do
+        expect(runner_vars).to include(
+          a_hash_including(key: 'ID_TOKEN_1', public: false, masked: true),
+          a_hash_including(key: 'ID_TOKEN_2', public: false, masked: true)
+        )
+
+        id_token_var_1 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_1' }
+        id_token_var_2 = runner_vars.find { |var| var[:key] == 'ID_TOKEN_2' }
+        id_token_1 = JWT.decode(id_token_var_1[:value], nil, false).first
+        id_token_2 = JWT.decode(id_token_var_2[:value], nil, false).first
+        expect(id_token_1['aud']).to eq('developers')
+        expect(id_token_2['aud']).to eq('maintainers')
+      end
+
+      context 'when a NoSigningKeyError is raised' do
+        it 'does not include the ID token variables' do
+          allow(::Gitlab::Ci::JwtV2).to receive(:for_build).and_raise(::Gitlab::Ci::Jwt::NoSigningKeyError)
+
+          expect(runner_vars.map { |var| var[:key] }).not_to include('ID_TOKEN_1', 'ID_TOKEN_2')
+        end
+      end
+
+      context 'when a RSAError is raised' do
+        it 'does not include the ID token variables' do
+          allow(::Gitlab::Ci::JwtV2).to receive(:for_build).and_raise(::OpenSSL::PKey::RSAError)
+
+          expect(runner_vars.map { |var| var[:key] }).not_to include('ID_TOKEN_1', 'ID_TOKEN_2')
+        end
+      end
     end
   end
 
@@ -5171,10 +5266,11 @@ RSpec.describe Ci::Build do
       it { expect(matchers.size).to eq(2) }
 
       it 'groups build ids' do
-        expect(matchers.map(&:build_ids)).to match_array([
-          [build_without_tags.id],
-          match_array([build_with_tags.id, other_build_with_tags.id])
-        ])
+        expect(matchers.map(&:build_ids)).to match_array(
+          [
+            [build_without_tags.id],
+            match_array([build_with_tags.id, other_build_with_tags.id])
+          ])
       end
 
       it { expect(matchers.map(&:tag_list)).to match_array([[], %w[tag1 tag2]]) }
@@ -5362,7 +5458,7 @@ RSpec.describe Ci::Build do
   end
 
   describe '#clone' do
-    let_it_be(:user) { FactoryBot.build(:user) }
+    let_it_be(:user) { create(:user) }
 
     context 'when given new job variables' do
       context 'when the cloned build has an action' do
@@ -5371,10 +5467,11 @@ RSpec.describe Ci::Build do
           create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
           create(:ci_job_variable, job: build, key: 'OLD_KEY', value: 'i will not live for long')
 
-          new_build = build.clone(current_user: user, new_job_variables_attributes: [
-            { key: 'TEST_KEY', value: 'new value' },
-            { key: 'NEW_KEY', value: 'exciting new value' }
-          ])
+          new_build = build.clone(current_user: user, new_job_variables_attributes:
+            [
+              { key: 'TEST_KEY', value: 'new value' },
+              { key: 'NEW_KEY', value: 'exciting new value' }
+            ])
           new_build.save!
 
           expect(new_build.job_variables.count).to be(2)
@@ -5388,9 +5485,10 @@ RSpec.describe Ci::Build do
           build = create(:ci_build)
           create(:ci_job_variable, job: build, key: 'TEST_KEY', value: 'old value')
 
-          new_build = build.clone(current_user: user, new_job_variables_attributes: [
-            { key: 'TEST_KEY', value: 'new value' }
-          ])
+          new_build = build.clone(
+            current_user: user,
+            new_job_variables_attributes: [{ key: 'TEST_KEY', value: 'new value' }]
+          )
           new_build.save!
 
           expect(new_build.job_variables.count).to be(1)

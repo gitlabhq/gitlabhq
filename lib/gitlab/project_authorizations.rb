@@ -37,9 +37,9 @@ module Gitlab
         Namespace
           .unscoped
           .select([
-            links[:project_id],
-            least(cte_alias[:access_level], links[:group_access], 'access_level')
-          ])
+                    links[:project_id],
+                    least(cte_alias[:access_level], links[:group_access], 'access_level')
+                  ])
           .from(cte_alias)
           .joins('INNER JOIN project_group_links ON project_group_links.group_id = namespaces.id')
           .joins('INNER JOIN projects ON projects.id = project_group_links.project_id')
@@ -79,9 +79,9 @@ module Gitlab
 
       # Sub groups of any groups the user is a member of.
       cte << Group.select([
-          namespaces[:id],
-          greatest(members[:access_level], cte.table[:access_level], 'access_level')
-        ])
+                            namespaces[:id],
+                            greatest(members[:access_level], cte.table[:access_level], 'access_level')
+                          ])
         .joins(join_cte(cte))
         .joins(join_members_on_namespaces)
         .except(:order)

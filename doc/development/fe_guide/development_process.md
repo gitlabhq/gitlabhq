@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Frontend Development Process
@@ -26,7 +26,7 @@ Use your best judgment when to use it and contribute new points through merge re
 - [ ] Check the current set weight of the issue, does it fit your estimate?
 - [ ] Are all [departments](https://about.gitlab.com/handbook/engineering/#engineering-teams) that are needed from your perspective already involved in the issue? (For example is UX missing?)
 - [ ] Is the specification complete? Are you missing decisions? How about error handling/defaults/edge cases? Take your time to understand the needed implementation and go through its flow.
-- [ ] Are all necessary UX specifications available that you will need in order to implement? Are there new UX components/patterns in the designs? Then contact the UI component team early on. How should error messages or validation be handled?
+- [ ] Are all necessary UX specifications available that you will need to implement? Are there new UX components/patterns in the designs? Then contact the UI component team early on. How should error messages or validation be handled?
 - [ ] **Library usage** Use Vuex as soon as you have even a medium state to manage, use Vue router if you need to have different views internally and want to link from the outside. Check what libraries we already have for which occasions.
 - [ ] **Plan your implementation:**
   - [ ] **Architecture plan:** Create a plan aligned with GitLab's architecture, how you are going to do the implementation, for example Vue application setup and its components (through [onion skinning](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/35873#note_39994091)), Store structure and data flow, which existing Vue components can you reuse. It's a good idea to go through your plan with another engineer to refine it.

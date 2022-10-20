@@ -1,40 +1,36 @@
-import Vue, { nextTick } from 'vue';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import DraftsCount from '~/batch_comments/components/drafts_count.vue';
 import { createStore } from '~/batch_comments/stores';
 
 describe('Batch comments drafts count component', () => {
-  let vm;
-  let Component;
-
-  beforeAll(() => {
-    Component = Vue.extend(DraftsCount);
-  });
+  let store;
+  let wrapper;
 
   beforeEach(() => {
-    const store = createStore();
+    store = createStore();
 
     store.state.batchComments.drafts.push('comment');
 
-    vm = mountComponentWithStore(Component, { store });
+    wrapper = mount(DraftsCount, { store });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders count', () => {
-    expect(vm.$el.textContent).toContain('1');
+    expect(wrapper.text()).toContain('1');
   });
 
   it('renders screen reader text', async () => {
-    const el = vm.$el.querySelector('.sr-only');
+    const el = wrapper.find('.sr-only');
 
-    expect(el.textContent).toContain('draft');
+    expect(el.text()).toContain('draft');
 
-    vm.$store.state.batchComments.drafts.push('comment 2');
-
+    store.state.batchComments.drafts.push('comment 2');
     await nextTick();
-    expect(el.textContent).toContain('drafts');
+
+    expect(el.text()).toContain('drafts');
   });
 });

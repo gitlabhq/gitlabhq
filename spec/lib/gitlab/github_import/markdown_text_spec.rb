@@ -60,31 +60,48 @@ RSpec.describe Gitlab::GithubImport::MarkdownText do
     end
   end
 
-  describe '.fetch_attachment_urls' do
-    let(:image_extension) { described_class::MEDIA_TYPES.sample }
+  describe '.fetch_attachments' do
+    let(:image_extension) { Gitlab::GithubImport::Markdown::Attachment::MEDIA_TYPES.sample }
     let(:image_attachment) do
-      "![special-image](https://user-images.githubusercontent.com/6833862/"\
-        "176685788-e7a93168-7ded-406a-82b5-eb1c56685a93.#{image_extension})"
+      "![special-image](https://user-images.githubusercontent.com/1/uuid-1.#{image_extension})"
     end
 
-    let(:doc_extension) { described_class::DOC_TYPES.sample }
+    let(:img_tag_attachment) do
+      "<img width=\"248\" alt=\"tag-image\" src=\"https://user-images.githubusercontent.com/2/"\
+      "uuid-2.#{image_extension}\">"
+    end
+
+    let(:damaged_img_tag) do
+      "<img width=\"248\" alt=\"tag-image\" src=\"https://user-images.githubusercontent.com"
+    end
+
+    let(:doc_extension) { Gitlab::GithubImport::Markdown::Attachment::DOC_TYPES.sample }
     let(:doc_attachment) do
       "[some-doc](https://github.com/nickname/public-test-repo/"\
-      "files/9020437/git-cheat-sheet.#{doc_extension})"
+      "files/3/git-cheat-sheet.#{doc_extension})"
     end
 
     let(:text) do
-      <<-TEXT
+      <<-TEXT.split("\n").map(&:strip).join("\n")
         Comment with an attachment
         #{image_attachment}
         #{FFaker::Lorem.sentence}
         #{doc_attachment}
+        #{damaged_img_tag}
+        #{FFaker::Lorem.paragraph}
+        #{img_tag_attachment}
       TEXT
     end
 
-    it 'fetches attachment urls' do
-      expect(described_class.fetch_attachment_urls(text))
-        .to contain_exactly(image_attachment, doc_attachment)
+    it 'fetches attachments' do
+      attachments = described_class.fetch_attachments(text)
+
+      expect(attachments.map(&:name)).to contain_exactly('special-image', 'tag-image', 'some-doc')
+      expect(attachments.map(&:url)).to contain_exactly(
+        "https://user-images.githubusercontent.com/1/uuid-1.#{image_extension}",
+        "https://user-images.githubusercontent.com/2/uuid-2.#{image_extension}",
+        "https://github.com/nickname/public-test-repo/files/3/git-cheat-sheet.#{doc_extension}"
+      )
     end
   end
 

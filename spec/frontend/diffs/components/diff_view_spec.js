@@ -21,7 +21,7 @@ describe('DiffView', () => {
       getters: {
         shouldRenderDraftRow: () => false,
         shouldRenderParallelDraftRow: () => () => true,
-        draftForLine: () => false,
+        draftsForLine: () => false,
         draftsForFile: () => false,
         hasParallelDraftLeft: () => false,
         hasParallelDraftRight: () => false,
@@ -75,12 +75,12 @@ describe('DiffView', () => {
   });
 
   it.each`
-    type          | side       | container | sides                                                                                                    | total
-    ${'parallel'} | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true }, right: { lineDraft: {}, renderDiscussion: true } }} | ${2}
-    ${'parallel'} | ${'right'} | ${'.new'} | ${{ left: { lineDraft: {}, renderDiscussion: true }, right: { lineDraft: {}, renderDiscussion: true } }} | ${2}
-    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true } }}                                                   | ${1}
-    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true } }}                                                   | ${1}
-    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDraft: {}, renderDiscussion: true } }}                                                   | ${1}
+    type          | side       | container | sides                                                                                                      | total
+    ${'parallel'} | ${'left'}  | ${'.old'} | ${{ left: { lineDrafts: [], renderDiscussion: true }, right: { lineDrafts: [], renderDiscussion: true } }} | ${2}
+    ${'parallel'} | ${'right'} | ${'.new'} | ${{ left: { lineDrafts: [], renderDiscussion: true }, right: { lineDrafts: [], renderDiscussion: true } }} | ${2}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDrafts: [], renderDiscussion: true } }}                                                    | ${1}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDrafts: [], renderDiscussion: true } }}                                                    | ${1}
+    ${'inline'}   | ${'left'}  | ${'.old'} | ${{ left: { lineDrafts: [], renderDiscussion: true } }}                                                    | ${1}
   `(
     'renders a $type comment row with comment cell on $side',
     ({ type, container, sides, total }) => {
@@ -95,7 +95,7 @@ describe('DiffView', () => {
 
   it('renders a draft row', () => {
     const wrapper = createWrapper({
-      diffLines: [{ renderCommentRow: true, left: { lineDraft: { isDraft: true } } }],
+      diffLines: [{ renderCommentRow: true, left: { lineDrafts: [{ isDraft: true }] } }],
     });
     expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
   });

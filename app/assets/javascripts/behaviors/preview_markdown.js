@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 
 import $ from 'jquery';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -80,7 +80,7 @@ MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {
       success(data);
     })
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __('An error occurred while fetching Markdown preview'),
       }),
     );

@@ -1,6 +1,7 @@
 <script>
 import { GlSorting, GlSortingItem, GlFilteredSearch } from '@gitlab/ui';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
+import { SORT_DIRECTION_UI } from '~/search/sort/constants';
 
 const ASCENDING_ORDER = 'asc';
 const DESCENDING_ORDER = 'desc';
@@ -51,6 +52,9 @@ export default {
         acc[curr.type] = '';
         return acc;
       }, {});
+    },
+    sortDirectionData() {
+      return this.isSortAscending ? SORT_DIRECTION_UI.asc : SORT_DIRECTION_UI.desc;
     },
   },
   methods: {
@@ -119,6 +123,7 @@ export default {
       data-testid="registry-sort-dropdown"
       :text="sortText"
       :is-ascending="isSortAscending"
+      :sort-direction-tool-tip="sortDirectionData.tooltip"
       @sortDirectionChange="onDirectionChange"
     >
       <gl-sorting-item

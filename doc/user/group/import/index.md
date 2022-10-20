@@ -1,19 +1,19 @@
 ---
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Migrating groups **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
-> - Group resources [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
+> - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default [migrating group resources](#migrated-group-resources) is available. To hide the
+On self-managed GitLab, by default [migrating group items](#migrated-group-items) is available. To hide the
 feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`.
-On self-managed GitLab, by default [migrating project resources](#migrated-project-resources) is not available. To show
+On self-managed GitLab, by default [migrating project items](#migrated-project-items) is not available. To show
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
 `bulk_import_projects`. On GitLab.com, migrating group resources is available but migrating project resources is not
 available.
@@ -33,8 +33,8 @@ another GitLab instance. Migrating groups using the method documented here autom
 When you migrate a group, you connect to your GitLab instance and then choose
 groups to import. Not all the data is migrated. See:
 
-- [Migrated group resources](#migrated-group-resources).
-- [Migrated project resources](#migrated-project-resources).
+- [Migrated group items](#migrated-group-items).
+- [Migrated project items](#migrated-project-items).
 
 Leave feedback about group migration in [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
@@ -79,10 +79,17 @@ Migration importer page. The remote groups you have the Owner role for are liste
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](../../project/import/index.md#automate-group-and-project-import).
 
-## Migrated group resources
+## Migrated group items
 
-Only the following resources are migrated to the target instance. Any other items are **not**
-migrated:
+The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
+file for groups lists many of the items migrated when migrating groups using group migration. View this file in the branch
+for your version of GitLab to see the list of items relevant to you. For example,
+[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/group/import_export.yml).
+
+Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../custom_project_templates.md) and
+[instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
+
+Items that are migrated to the target instance include:
 
 - Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
 - Board Lists
@@ -92,6 +99,7 @@ migrated:
 - Finisher
 - Group Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) in 13.9)
 - Iterations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) in 13.10)
+- Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570) in 15.4)
 - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) in 13.9)
   Group members are associated with the imported group if:
   - The user already exists in the target GitLab instance and
@@ -101,15 +109,25 @@ migrated:
 - Namespace Settings
 - Releases
   - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.0).
-- Sub-Groups
+- Subgroups
 - Uploads
 
-## Migrated project resources
+Any other items are **not** migrated.
+
+## Migrated project items
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, migrating project resources are not available by default. To make them available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`. On GitLab.com, migrating project resources are not available.
+
+The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
+file for projects lists many of the items migrated when migrating projects using group migration. View this file in the branch
+for your version of GitLab to see the list of items relevant to you. For example,
+[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/project/import_export.yml).
+
+Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
+[instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
 
 - Projects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
   - Auto DevOps ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339410) in GitLab 14.6)
@@ -117,8 +135,10 @@ On self-managed GitLab, migrating project resources are not available by default
   - CI Pipelines ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339407) in GitLab 14.6)
   - Designs ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339421) in GitLab 15.1)
   - Issues ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267946) in GitLab 14.4)
+    - Issue iteration ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96184) in 15.4)
     - Issue resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Issue resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+    - Issue resource iteration events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
   - Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339419) in GitLab 14.4)
   - LFS Objects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339405) in GitLab 14.8)
   - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341886) in GitLab 14.8)

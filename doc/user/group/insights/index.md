@@ -1,18 +1,19 @@
 ---
-stage: Manage
+stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Insights for groups **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 
-Configure Insights to explore data about you group's activity, such as
+Configure insights to explore data about you group's activity, such as
 triage hygiene, issues created or closed in a given period, and average time for merge
 requests to be merged.
+You can also create custom insights reports that are relevant for your group.
 
-## View your group's Insights
+## View group insights
 
 Prerequisites:
 
@@ -20,22 +21,49 @@ Prerequisites:
 - You must have access to a project to view information about its merge requests and issues,
   and permission to view them if they are confidential.
 
-To access your group's Insights:
+To access your group's insights:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > Insights**.
 
-![Insights example stacked bar chart](img/insights_example_stacked_bar_chart_v13_11.png)
+## Interact with insights charts
 
-## Configure your Insights
+You can interact with the insights charts to view details about your group's activity.
 
-GitLab reads Insights from the
+![Insights example stacked bar chart](img/insights_example_stacked_bar_chart_v15_4.png)
+
+### Display different reports
+
+To display one of the available reports on the insights page, from the **Select report** dropdown list,
+select the report you want to display.
+
+### View bar chart annotations
+
+To view annotations, hover over each bar in the chart.
+
+### Zoom in on chart
+
+Insights display data from the last 90 days. You can zoom in to display data only from a subset of the 90-day range.
+
+To do this, select the pause icons (**{status-paused}**) and slide them along the horizontal axis:
+
+- To select a later start date, slide the left pause icon to the right.
+- To select an earlier end date, slide the right pause icon to the left.
+
+### Exclude dimensions from charts
+
+By default, insights display all available dimensions on the chart.
+
+To exclude a dimension, from the legend below the chart, select the name of the dimension.
+
+## Configure group insights
+
+GitLab reads insights from the
 [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
-You can also create custom Insights charts that are more relevant for your group.
 
-To customize your Insights:
+To configure group insights:
 
-1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md#writing-your-gitlabinsightsyml)
+1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md#configure-project-insights)
 in a project that belongs to your group.
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.

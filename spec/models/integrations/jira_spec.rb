@@ -81,9 +81,10 @@ RSpec.describe Integrations::Jira do
         jira_integration.jira_issue_transition_id = 'foo bar'
 
         expect(jira_integration).not_to be_valid
-        expect(jira_integration.errors.full_messages).to eq([
-          'Jira issue transition IDs must be a list of numbers that can be split with , or ;'
-        ])
+        expect(jira_integration.errors.full_messages).to eq(
+          [
+            'Jira issue transition IDs must be a list of numbers that can be split with , or ;'
+          ])
       end
     end
   end
@@ -213,6 +214,8 @@ RSpec.describe Integrations::Jira do
       'EXT_EXT-1234'       | 'EXT_EXT-1234'
       'EXT3_EXT-1234'      | 'EXT3_EXT-1234'
       '3EXT_EXT-1234'      | ''
+      'CVE-2022-123'       | ''
+      'CVE-123'            | 'CVE-123'
     end
 
     with_them do

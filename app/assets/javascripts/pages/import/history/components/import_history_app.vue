@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { getProjects } from '~/rest_api';
 import ImportStatus from '~/import_entities/components/import_status.vue';
@@ -104,7 +104,7 @@ export default {
         this.pageInfo = parseIntPagination(normalizeHeaders(headers));
         this.historyItems = historyItems;
       } catch (e) {
-        createFlash({ message: DEFAULT_ERROR, captureError: true, error: e });
+        createAlert({ message: DEFAULT_ERROR, captureError: true, error: e });
       } finally {
         this.loading = false;
       }

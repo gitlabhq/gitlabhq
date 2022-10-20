@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Migrating groups using file exports (deprecated) **(FREE)**
@@ -48,7 +48,15 @@ sure these users exist before importing the desired groups.
 
 ### Exported contents
 
-The following items are exported:
+The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
+file for groups lists many of the items exported and imported when migrating groups using file exports. View this file in the branch
+for your version of GitLab to see the list of items relevant to you. For example,
+[`import_export.yml` on the `14-10-stable-ee` branch](https://gitlab.com/gitlab-org/gitlab/-/blob/14-10-stable-ee/lib/gitlab/import_export/group/import_export.yml).
+
+Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../custom_project_templates.md) and
+[instance](../../admin_area/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
+
+Items that are exported include:
 
 - Milestones
 - Labels
@@ -60,8 +68,9 @@ The following items are exported:
 - Events
 - [Wikis](../../project/wiki/group.md)
   ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9)
+- Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95372) in 15.4)
 
-The following items are **not** exported:
+Items that are **not** exported include:
 
 - Projects
 - Runner tokens

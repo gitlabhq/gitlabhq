@@ -105,16 +105,17 @@ const createComponent = (
     },
     stubs: {
       CommitEdit,
+      GlSprintf,
     },
     apolloProvider: createMockApollo([[readyToMergeQuery, readyToMergeResponseSpy]]),
   });
 };
 
-const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
+const findCheckboxElement = () => wrapper.findComponent(SquashBeforeMerge);
 const findCommitEditElements = () => wrapper.findAllComponents(CommitEdit);
-const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
+const findCommitDropdownElement = () => wrapper.findComponent(CommitMessageDropdown);
 const findFirstCommitEditLabel = () => findCommitEditElements().at(0).props('label');
-const findTipLink = () => wrapper.find(GlSprintf);
+const findTipLink = () => wrapper.findComponent(GlSprintf);
 const findCommitEditWithInputId = (inputId) =>
   findCommitEditElements().wrappers.find((x) => x.props('inputId') === inputId);
 const findMergeCommitMessage = () => findCommitEditWithInputId('merge-message-edit').props('value');
@@ -299,6 +300,48 @@ describe('ReadyToMerge', () => {
 
         expect(wrapper.vm.isMergeButtonDisabled).toBe(true);
       });
+    });
+
+    describe('sourceBranchDeletedText', () => {
+      const should = 'Source branch will be deleted.';
+      const shouldNot = 'Source branch will not be deleted.';
+      const did = 'Deleted the source branch.';
+      const didNot = 'Did not delete the source branch.';
+      const scenarios = [
+        "the MR hasn't merged yet, and the backend-provided value expects to delete the branch",
+        "the MR hasn't merged yet, and the backend-provided value expects to leave the branch",
+        "the MR hasn't merged yet, and the backend-provided value is a non-boolean falsey value",
+        "the MR hasn't merged yet, and the backend-provided value is a non-boolean truthy value",
+        'the MR has been merged, and the backend reports that the branch has been removed',
+        'the MR has been merged, and the backend reports that the branch has not been removed',
+        'the MR has been merged, and the backend reports a non-boolean falsey value',
+        'the MR has been merged, and the backend reports a non-boolean truthy value',
+      ];
+
+      it.each`
+        describe        | premerge | mrShould  | mrRemoved | output
+        ${scenarios[0]} | ${true}  | ${true}   | ${null}   | ${should}
+        ${scenarios[1]} | ${true}  | ${false}  | ${null}   | ${shouldNot}
+        ${scenarios[2]} | ${true}  | ${null}   | ${null}   | ${shouldNot}
+        ${scenarios[3]} | ${true}  | ${'yeah'} | ${null}   | ${should}
+        ${scenarios[4]} | ${false} | ${null}   | ${true}   | ${did}
+        ${scenarios[5]} | ${false} | ${null}   | ${false}  | ${didNot}
+        ${scenarios[6]} | ${false} | ${null}   | ${null}   | ${didNot}
+        ${scenarios[7]} | ${false} | ${null}   | ${'yep'}  | ${did}
+      `(
+        'in the case that $describe, returns "$output"',
+        ({ premerge, mrShould, mrRemoved, output }) => {
+          createComponent({
+            mr: {
+              state: !premerge ? 'merged' : 'literally-anything-else',
+              shouldRemoveSourceBranch: mrShould,
+              sourceBranchRemoved: mrRemoved,
+            },
+          });
+
+          expect(wrapper.vm.sourceBranchDeletedText).toBe(output);
+        },
+      );
     });
   });
 
@@ -730,6 +773,34 @@ describe('ReadyToMerge', () => {
       await wrapper.find('[data-testid="widget_edit_commit_message"]').vm.$emit('input', true);
 
       expect(findTipLink().exists()).toBe(true);
+    });
+  });
+
+  describe('source and target branches diverged', () => {
+    describe('when the MR is showing the Merge button', () => {
+      it('does not display the diverged commits message if the source branch is not behind the target', () => {
+        createComponent({ mr: { divergedCommitsCount: 0 } });
+
+        const textBody = wrapper.text();
+
+        expect(textBody).toEqual(
+          expect.not.stringContaining('The source branch is 0 commits behind the target branch'),
+        );
+        expect(textBody).toEqual(
+          expect.not.stringContaining('The source branch is 0 commit behind the target branch'),
+        );
+        expect(textBody).toEqual(
+          expect.not.stringContaining('The source branch is behind the target branch'),
+        );
+      });
+
+      it('shows the diverged commits text when the source branch is behind the target', () => {
+        createComponent({ mr: { divergedCommitsCount: 9001, canMerge: false } });
+
+        expect(wrapper.text()).toEqual(
+          expect.stringContaining('The source branch is 9001 commits behind the target branch'),
+        );
+      });
     });
   });
 

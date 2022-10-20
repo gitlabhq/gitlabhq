@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, howto
 ---
 
@@ -47,6 +47,9 @@ You cannot use group access tokens to create other group, project, or personal a
 
 Group access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
+
+NOTE:
+Group access tokens are not FIPS compliant and creation and use are disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
 
 ## Create a group access token using UI
 
@@ -137,14 +140,14 @@ The scope determines the actions you can perform when you authenticate with a gr
 |:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api`              | Grants complete read and write access to the scoped group and related project API, including the [Package Registry](../../packages/package_registry/index.md).                   |
 | `read_api`         | Grants read access to the scoped group and related project API, including the [Package Registry](../../packages/package_registry/index.md).                                      |
-| `read_registry`    | Allows read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if any project within a group is private and authorization is required. |
-| `write_registry`   | Allows write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                                              |
-| `read_repository`  | Allows read access (pull) to all repositories within a group.                                                                                                                    |
-| `write_repository` | Allows read and write access (pull and push) to all repositories within a group.                                                                                                 |
+| `read_registry`    | Grants read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if any project within a group is private and authorization is required. |
+| `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                                              |
+| `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                    |
+| `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                 |
 
 ## Enable or disable group access token creation
 
-To enable or disable group access token creation for all sub-groups in a top-level group:
+To enable or disable group access token creation for all subgroups in a top-level group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.

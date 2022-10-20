@@ -18,9 +18,7 @@ module QA
           commit.branch = "development"
           commit.start_branch = project.default_branch
           commit.commit_message = 'Add new file'
-          commit.add_files([
-            { file_path: file_name, content: 'pssst!' }
-          ])
+          commit.add_files([{ file_path: file_name, content: 'pssst!' }])
         end
       end
 

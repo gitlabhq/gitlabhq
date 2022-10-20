@@ -11,7 +11,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -471,8 +471,8 @@ export default {
     },
     fetchData(toggleTree = true) {
       this.fetchDiffFilesMeta()
-        .then(({ real_size }) => {
-          this.diffFilesLength = parseInt(real_size, 10);
+        .then(({ real_size = 0 }) => {
+          this.diffFilesLength = parseInt(real_size, 10) || 0;
           if (toggleTree) {
             this.setTreeDisplay();
           }
@@ -480,7 +480,7 @@ export default {
           this.updateChangesTabCount();
         })
         .catch(() => {
-          createFlash({
+          createAlert({
             message: __('Something went wrong on our end. Please try again!'),
           });
         });
@@ -495,7 +495,7 @@ export default {
           this.setDiscussions();
         })
         .catch(() => {
-          createFlash({
+          createAlert({
             message: __('Something went wrong on our end. Please try again!'),
           });
         });

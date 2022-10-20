@@ -317,7 +317,7 @@ describe('Release edit/new getters', () => {
       { milestones: ['release.milestone[0].title'] },
     ],
   ])('releaseUpdateMutatationVariables', (description, state, expectedVariables) => {
-    it(description, () => {
+    it(`${description}`, () => {
       const expectedVariablesObject = { input: expect.objectContaining(expectedVariables) };
 
       const actualVariables = getters.releaseUpdateMutatationVariables(state, {
@@ -332,6 +332,7 @@ describe('Release edit/new getters', () => {
     it('returns all the data needed for the releaseCreate GraphQL query', () => {
       const state = {
         createFrom: 'main',
+        release: { tagMessage: 'hello' },
       };
 
       const otherGetters = {
@@ -352,6 +353,7 @@ describe('Release edit/new getters', () => {
       const expectedVariables = {
         input: {
           name: 'release.name',
+          tagMessage: 'hello',
           ref: 'main',
           assets: {
             links: [

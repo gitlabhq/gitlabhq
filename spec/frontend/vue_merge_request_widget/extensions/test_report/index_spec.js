@@ -42,7 +42,7 @@ describe('Test report extension', () => {
   const findFullReportLink = () => wrapper.findByTestId('full-report-link');
   const findCopyFailedSpecsBtn = () => wrapper.findByTestId('copy-failed-specs-btn');
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
-  const findModal = () => wrapper.find(TestCaseDetails);
+  const findModal = () => wrapper.findComponent(TestCaseDetails);
 
   const createComponent = () => {
     wrapper = mountExtended(extensionsContainer, {

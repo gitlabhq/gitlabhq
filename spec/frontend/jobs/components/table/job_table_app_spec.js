@@ -12,7 +12,7 @@ import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import getJobsQuery from '~/jobs/components/table/graphql/queries/get_jobs.query.graphql';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
@@ -229,7 +229,7 @@ describe('Job table app', () => {
 
       await findFilteredSearch().vm.$emit('filterJobsBySearch', ['raw text']);
 
-      expect(createFlash).toHaveBeenCalledWith(expectedWarning);
+      expect(createAlert).toHaveBeenCalledWith(expectedWarning);
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
     });
 

@@ -18,6 +18,10 @@ module QA
               element :more_assignees_link
             end
 
+            base.view 'app/assets/javascripts/sidebar/components/reviewers/reviewer_title.vue' do
+              element :reviewers_edit_button
+            end
+
             base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue' do
               element :labels_block
             end
@@ -37,6 +41,7 @@ module QA
             base.view 'app/views/shared/issuable/_sidebar.html.haml' do
               element :assignee_block_container
               element :milestone_block
+              element :reviewers_block_container
             end
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_dropdown_widget.vue' do
@@ -45,6 +50,10 @@ module QA
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_editable_item.vue' do
               element :edit_link
+            end
+
+            base.view 'app/helpers/dropdowns_helper.rb' do
+              element :dropdown_list_content
             end
           end
 

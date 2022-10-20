@@ -54,7 +54,8 @@ FactoryBot.define do
       import_last_error { nil }
       forward_deployment_enabled { nil }
       restrict_user_defined_variables { nil }
-      ci_job_token_scope_enabled { nil }
+      ci_outbound_job_token_scope_enabled { nil }
+      ci_inbound_job_token_scope_enabled { nil }
       runner_token_expiration_interval { nil }
       runner_token_expiration_interval_human_readable { nil }
     end
@@ -112,7 +113,8 @@ FactoryBot.define do
       project.merge_trains_enabled = evaluator.merge_trains_enabled unless evaluator.merge_trains_enabled.nil?
       project.keep_latest_artifact = evaluator.keep_latest_artifact unless evaluator.keep_latest_artifact.nil?
       project.restrict_user_defined_variables = evaluator.restrict_user_defined_variables unless evaluator.restrict_user_defined_variables.nil?
-      project.ci_job_token_scope_enabled = evaluator.ci_job_token_scope_enabled unless evaluator.ci_job_token_scope_enabled.nil?
+      project.ci_outbound_job_token_scope_enabled = evaluator.ci_outbound_job_token_scope_enabled unless evaluator.ci_outbound_job_token_scope_enabled.nil?
+      project.ci_inbound_job_token_scope_enabled = evaluator.ci_inbound_job_token_scope_enabled unless evaluator.ci_inbound_job_token_scope_enabled.nil?
       project.runner_token_expiration_interval = evaluator.runner_token_expiration_interval unless evaluator.runner_token_expiration_interval.nil?
       project.runner_token_expiration_interval_human_readable = evaluator.runner_token_expiration_interval_human_readable unless evaluator.runner_token_expiration_interval_human_readable.nil?
 
@@ -330,12 +332,6 @@ FactoryBot.define do
       repository_read_only { true }
     end
 
-    trait :broken_repo do
-      after(:create) do |project|
-        TestEnv.rm_storage_dir(project.repository_storage, "#{project.disk_path}.git/refs")
-      end
-    end
-
     trait :test_repo do
       after :create do |project|
         # There are various tests that rely on there being no repository cache.
@@ -427,10 +423,22 @@ FactoryBot.define do
     error_tracking_setting { association :project_error_tracking_setting }
   end
 
+  trait :with_redmine_integration do
+    has_external_issue_tracker { true }
+
+    redmine_integration
+  end
+
   trait :with_jira_integration do
     has_external_issue_tracker { true }
 
     jira_integration
+  end
+
+  trait :with_prometheus_integration do
+    after :create do |project|
+      create(:prometheus_integration, project: project)
+    end
   end
 
   # Project with empty repository
@@ -439,13 +447,6 @@ FactoryBot.define do
   # but not pushed any code there yet
   factory :project_empty_repo, parent: :project do
     empty_repo
-  end
-
-  # Project with broken repository
-  #
-  # Project with an invalid repository state
-  factory :project_broken_repo, parent: :project do
-    broken_repo
   end
 
   factory :forked_project_with_submodules, parent: :project do
@@ -457,42 +458,6 @@ FactoryBot.define do
       repo = Gitlab::GlRepository::PROJECT.repository_for(project).raw
       repo.create_from_bundle(TestEnv.forked_repo_bundle_path)
     end
-  end
-
-  factory :redmine_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    redmine_integration
-  end
-
-  factory :youtrack_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    youtrack_integration
-  end
-
-  factory :jira_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    jira_integration
-  end
-
-  factory :prometheus_project, parent: :project do
-    after :create do |project|
-      project.create_prometheus_integration(
-        active: true,
-        properties: {
-          api_url: 'https://prometheus.example.com/',
-          manual_configuration: true
-        }
-      )
-    end
-  end
-
-  factory :ewm_project, parent: :project do
-    has_external_issue_tracker { true }
-
-    ewm_integration
   end
 
   factory :project_with_design, parent: :project do

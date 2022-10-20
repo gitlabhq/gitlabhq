@@ -1,11 +1,12 @@
 - scopes = local_assigns.fetch(:scopes)
 - prefix = local_assigns.fetch(:prefix)
+- description_prefix = local_assigns.fetch(:description_prefix, prefix)
 - token = local_assigns.fetch(:token)
 - f = local_assigns.fetch(:f)
 
 %fieldset
   - scopes.each do |scope|
-    - help_text = t scope, scope: scope_description(prefix)
+    - help_text = t scope, scope: scope_description(description_prefix)
     = f.gitlab_ui_checkbox_component :scopes, scope,
       help_text: help_text,
       checkbox_options: { checked: token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}", multiple: true, data: { qa_selector: "#{scope}_checkbox" } },

@@ -7,7 +7,7 @@ module Gitlab
       DEFAULT_SLEEP_MAX_DELTA_S = 600 # 0..10 minutes
       DEFAULT_SLEEP_BETWEEN_REPORTS_S = 120 # 2 minutes
 
-      DEFAULT_REPORTS_PATH = '/tmp'
+      DEFAULT_REPORTS_PATH = Dir.tmpdir
 
       def initialize(**options)
         super

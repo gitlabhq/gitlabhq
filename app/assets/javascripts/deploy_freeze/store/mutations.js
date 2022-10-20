@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { secondsToHours } from '~/lib/utils/datetime_utility';
+import { formatTimezone } from '~/lib/utils/datetime_utility';
 import * as types from './mutation_types';
 
 const formatTimezoneName = (freezePeriod, timezoneList) => {
@@ -8,7 +8,7 @@ const formatTimezoneName = (freezePeriod, timezoneList) => {
   return convertObjectPropsToCamelCase({
     ...freezePeriod,
     cron_timezone: {
-      formattedTimezone: tz && `[UTC ${secondsToHours(tz.offset)}] ${tz.name}`,
+      formattedTimezone: tz && formatTimezone(tz),
       identifier: freezePeriod.cron_timezone,
     },
   });

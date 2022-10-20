@@ -19,7 +19,7 @@ module ObjectStorage
 
         ip = IPAddr.new(request_ip)
 
-        return false if ip.private?
+        return false if ip.private? || ip.link_local? || ip.loopback?
 
         !GoogleIpCache.google_ip?(request_ip)
       end
@@ -41,7 +41,7 @@ module ObjectStorage
       private
 
       def config_valid?
-        [key_name, decoded_key, cdn_url].all?(&:present?)
+        [key_name, decoded_key, cdn_url].all?(&:present?) && cdn_url.start_with?('https://')
       end
 
       def key_name

@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
 import testAction from 'helpers/vuex_action_helper';
 import { getTag } from '~/api/tags_api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
@@ -59,7 +59,7 @@ describe('Release edit/new actions', () => {
     releaseResponse = cloneDeep(originalOneReleaseForEditingQueryResponse);
     gon.api_version = 'v4';
     error = new Error('Yikes!');
-    createFlash.mockClear();
+    createAlert.mockClear();
   });
 
   describe('when creating a new release', () => {
@@ -151,8 +151,8 @@ describe('Release edit/new actions', () => {
 
         it(`shows a flash message`, () => {
           return actions.fetchRelease({ commit: jest.fn(), state, rootState: state }).then(() => {
-            expect(createFlash).toHaveBeenCalledTimes(1);
-            expect(createFlash).toHaveBeenCalledWith({
+            expect(createAlert).toHaveBeenCalledTimes(1);
+            expect(createAlert).toHaveBeenCalledWith({
               message: 'Something went wrong while getting the release details.',
             });
           });
@@ -165,6 +165,15 @@ describe('Release edit/new actions', () => {
         const newTag = 'updated-tag-name';
         return testAction(actions.updateReleaseTagName, newTag, state, [
           { type: types.UPDATE_RELEASE_TAG_NAME, payload: newTag },
+        ]);
+      });
+    });
+
+    describe('updateReleaseTagMessage', () => {
+      it(`commits ${types.UPDATE_RELEASE_TAG_MESSAGE} with the updated tag name`, () => {
+        const newMessage = 'updated-tag-message';
+        return testAction(actions.updateReleaseTagMessage, newMessage, state, [
+          { type: types.UPDATE_RELEASE_TAG_MESSAGE, payload: newMessage },
         ]);
       });
     });
@@ -370,8 +379,8 @@ describe('Release edit/new actions', () => {
           return actions
             .createRelease({ commit: jest.fn(), dispatch: jest.fn(), state, getters: {} })
             .then(() => {
-              expect(createFlash).toHaveBeenCalledTimes(1);
-              expect(createFlash).toHaveBeenCalledWith({
+              expect(createAlert).toHaveBeenCalledTimes(1);
+              expect(createAlert).toHaveBeenCalledWith({
                 message: 'Yikes!',
               });
             });
@@ -396,8 +405,8 @@ describe('Release edit/new actions', () => {
           return actions
             .createRelease({ commit: jest.fn(), dispatch: jest.fn(), state, getters: {} })
             .then(() => {
-              expect(createFlash).toHaveBeenCalledTimes(1);
-              expect(createFlash).toHaveBeenCalledWith({
+              expect(createAlert).toHaveBeenCalledTimes(1);
+              expect(createAlert).toHaveBeenCalledWith({
                 message: 'Something went wrong while creating a new release.',
               });
             });
@@ -527,8 +536,8 @@ describe('Release edit/new actions', () => {
         it('shows a flash message', async () => {
           await actions.updateRelease({ commit, dispatch, state, getters });
 
-          expect(createFlash).toHaveBeenCalledTimes(1);
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledWith({
             message: 'Something went wrong while saving the release details.',
           });
         });
@@ -547,8 +556,8 @@ describe('Release edit/new actions', () => {
           it('shows a flash message', async () => {
             await actions.updateRelease({ commit, dispatch, state, getters });
 
-            expect(createFlash).toHaveBeenCalledTimes(1);
-            expect(createFlash).toHaveBeenCalledWith({
+            expect(createAlert).toHaveBeenCalledTimes(1);
+            expect(createAlert).toHaveBeenCalledWith({
               message: 'Something went wrong while saving the release details.',
             });
           });
@@ -700,8 +709,8 @@ describe('Release edit/new actions', () => {
       it('shows a flash message', async () => {
         await actions.deleteRelease({ commit, dispatch, state, getters });
 
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'Something went wrong while deleting the release.',
         });
       });
@@ -736,8 +745,8 @@ describe('Release edit/new actions', () => {
       it('shows a flash message', async () => {
         await actions.deleteRelease({ commit, dispatch, state, getters });
 
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'Something went wrong while deleting the release.',
         });
       });
@@ -779,7 +788,7 @@ describe('Release edit/new actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: s__('Release|Unable to fetch the tag notes.'),
       });
       expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);

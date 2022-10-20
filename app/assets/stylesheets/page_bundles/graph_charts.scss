@@ -1,0 +1,27 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
+.repo-charts {
+  .sub-header {
+    margin: 20px 0;
+  }
+
+  .sub-header-block.border-top {
+    margin-top: 20px;
+    padding: 0;
+    border-top: 1px solid var(--border-color, $border-color);
+    border-bottom: 0;
+  }
+
+  .commit-stats li {
+    font-size: 16px;
+  }
+
+  .tree-ref-header {
+    margin-bottom: 20px;
+
+    h4 {
+      margin: 0;
+      line-height: 36px;
+    }
+  }
+}

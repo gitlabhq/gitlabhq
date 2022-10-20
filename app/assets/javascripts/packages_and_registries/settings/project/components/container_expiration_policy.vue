@@ -110,7 +110,7 @@ export default {
           {{ cleanupRulesButtonText }}
         </gl-button>
       </gl-card>
-      <template v-else>
+      <template v-if="!$apollo.queries.containerExpirationPolicy.loading">
         <gl-alert
           v-if="showDisabledFormMessage"
           :dismissible="false"

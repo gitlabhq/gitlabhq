@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -233,7 +233,7 @@ At this point, your **secondary** site contains an up-to-date copy of everything
 
 ## Promote the **secondary** site
 
-After the replication is finished, [promote the **secondary** site to a **primary** site](index.md). This process causes a brief outage on the **secondary** site, and users may need to log in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
+After the replication is finished, [promote the **secondary** site to a **primary** site](index.md). This process causes a brief outage on the **secondary** site, and users may need to sign in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
 
 When the promotion is completed, the maintenance window is over, and your new **primary** site now
 begins to diverge from the old one. If problems do arise at this point, failing

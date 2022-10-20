@@ -31,7 +31,7 @@ RSpec.describe 'User uploads avatar to profile' do
 
     wait_for_all_requests
 
-    data_uri = find('.avatar-image .avatar')['src']
+    data_uri = find('.avatar-image .gl-avatar')['src']
     expect(page.find('.header-user-avatar')['src']).to eq data_uri
     expect(page.find('[data-testid="sidebar-user-avatar"]')['src']).to eq data_uri
   end

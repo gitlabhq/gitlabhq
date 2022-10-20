@@ -47,7 +47,7 @@ function factory(propsData = {}) {
 }
 
 describe('Repository table row component', () => {
-  const findRouterLink = () => vm.find(RouterLinkStub);
+  const findRouterLink = () => vm.findComponent(RouterLinkStub);
   const findIntersectionObserver = () => vm.findComponent(GlIntersectionObserver);
 
   afterEach(() => {
@@ -124,7 +124,7 @@ describe('Repository table row component', () => {
     });
 
     await nextTick();
-    expect(vm.find(component).exists()).toBe(true);
+    expect(vm.findComponent(component).exists()).toBe(true);
   });
 
   it.each`
@@ -141,7 +141,7 @@ describe('Repository table row component', () => {
     });
 
     await nextTick();
-    expect(vm.find({ ref: 'link' }).props('to')).toEqual({
+    expect(vm.findComponent({ ref: 'link' }).props('to')).toEqual({
       path: `/-/tree/main/${encodeURIComponent(path)}`,
     });
   });
@@ -197,7 +197,7 @@ describe('Repository table row component', () => {
     });
 
     await nextTick();
-    expect(vm.find(GlBadge).exists()).toBe(true);
+    expect(vm.findComponent(GlBadge).exists()).toBe(true);
   });
 
   it('renders commit and web links with href for submodule', async () => {
@@ -213,7 +213,7 @@ describe('Repository table row component', () => {
 
     await nextTick();
     expect(vm.find('a').attributes('href')).toEqual('https://test.com');
-    expect(vm.find(GlLink).attributes('href')).toEqual('https://test.com/commit');
+    expect(vm.findComponent(GlLink).attributes('href')).toEqual('https://test.com/commit');
   });
 
   it('renders lock icon', async () => {
@@ -226,8 +226,8 @@ describe('Repository table row component', () => {
     });
 
     await nextTick();
-    expect(vm.find(GlIcon).exists()).toBe(true);
-    expect(vm.find(GlIcon).props('name')).toBe('lock');
+    expect(vm.findComponent(GlIcon).exists()).toBe(true);
+    expect(vm.findComponent(GlIcon).props('name')).toBe('lock');
   });
 
   it('renders loading icon when path is loading', () => {
@@ -240,7 +240,7 @@ describe('Repository table row component', () => {
       loadingPath: 'test',
     });
 
-    expect(vm.find(FileIcon).props('loading')).toBe(true);
+    expect(vm.findComponent(FileIcon).props('loading')).toBe(true);
   });
 
   describe('row visibility', () => {

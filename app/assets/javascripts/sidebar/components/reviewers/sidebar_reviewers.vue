@@ -3,7 +3,7 @@
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
 import Vue from 'vue';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
@@ -64,7 +64,7 @@ export default {
         this.initialLoading = false;
       },
       error() {
-        createFlash({ message: __('An error occurred while fetching reviewers.') });
+        createAlert({ message: __('An error occurred while fetching reviewers.') });
       },
     },
   },
@@ -85,7 +85,7 @@ export default {
       return this.loading || this.$apollo.queries.issuable.loading;
     },
     canUpdate() {
-      return this.issuable.userPermissions?.updateMergeRequest || false;
+      return this.issuable.userPermissions?.adminMergeRequest || false;
     },
   },
   created() {
@@ -120,7 +120,7 @@ export default {
         })
         .catch(() => {
           this.loading = false;
-          return createFlash({
+          return createAlert({
             message: __('Error occurred when saving reviewers'),
           });
         });

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Certify
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Reply by email **(FREE SELF)**
@@ -54,4 +54,4 @@ If it finds a reply key, it leaves your reply as a comment on
 the entity the notification was about (issue, merge request, commit...).
 
 For more details about the `Message-ID`, `In-Reply-To`, and `References headers`,
-see [RFC 5322](https://tools.ietf.org/html/rfc5322#section-3.6.4).
+see [RFC 5322](https://www.rfc-editor.org/rfc/rfc5322#section-3.6.4).

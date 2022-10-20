@@ -37,10 +37,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move succeeds' do
         it 'moves the repository to the new storage and unmarks the repository as read-only' do
-          old_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.path_to_repo
-          end
-
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
           expect(project_repository_double).to receive(:checksum)
@@ -53,7 +49,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService do
           expect(result).to be_success
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('test_second_storage')
-          expect(gitlab_shell.repository_exists?('default', old_path)).to be(false)
           expect(project.project_repository.shard_name).to eq('test_second_storage')
         end
       end

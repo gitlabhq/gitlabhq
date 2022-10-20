@@ -32,6 +32,20 @@ RSpec.describe GraphqlTriggers do
     end
   end
 
+  describe '.issuable_description_updated' do
+    it 'triggers the issuableDescriptionUpdated subscription' do
+      work_item = create(:work_item)
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        'issuableDescriptionUpdated',
+        { issuable_id: work_item.to_gid },
+        work_item
+      ).and_call_original
+
+      GraphqlTriggers.issuable_description_updated(work_item)
+    end
+  end
+
   describe '.issuable_labels_updated' do
     it 'triggers the issuableLabelsUpdated subscription' do
       project = create(:project)
@@ -59,6 +73,34 @@ RSpec.describe GraphqlTriggers do
       ).and_call_original
 
       GraphqlTriggers.issuable_dates_updated(work_item)
+    end
+  end
+
+  describe '.merge_request_reviewers_updated' do
+    it 'triggers the mergeRequestReviewersUpdated subscription' do
+      merge_request = build_stubbed(:merge_request)
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        'mergeRequestReviewersUpdated',
+        { issuable_id: merge_request.to_gid },
+        merge_request
+      ).and_call_original
+
+      GraphqlTriggers.merge_request_reviewers_updated(merge_request)
+    end
+  end
+
+  describe '.merge_request_merge_status_updated' do
+    it 'triggers the mergeRequestMergeStatusUpdated subscription' do
+      merge_request = build_stubbed(:merge_request)
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        'mergeRequestMergeStatusUpdated',
+        { issuable_id: merge_request.to_gid },
+        merge_request
+      ).and_call_original
+
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
   end
 end

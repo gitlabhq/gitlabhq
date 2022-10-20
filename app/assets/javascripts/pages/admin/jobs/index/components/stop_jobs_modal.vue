@@ -1,6 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -31,7 +31,7 @@ export default {
           redirectTo(response.request.responseURL);
         })
         .catch((error) => {
-          createFlash({
+          createAlert({
             message: s__('AdminArea|Stopping jobs failed'),
           });
           throw error;

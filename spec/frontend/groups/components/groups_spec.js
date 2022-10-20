@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { GlEmptyState } from '@gitlab/ui';
 
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupFolderComponent from '~/groups/components/group_folder.vue';
@@ -15,7 +16,6 @@ describe('GroupsComponent', () => {
   const defaultPropsData = {
     groups: mockGroups,
     pageInfo: mockPageInfo,
-    searchEmptyMessage: 'No matching results',
     searchEmpty: false,
   };
 
@@ -67,13 +67,16 @@ describe('GroupsComponent', () => {
 
       expect(wrapper.findComponent(GroupFolderComponent).exists()).toBe(true);
       expect(findPaginationLinks().exists()).toBe(true);
-      expect(wrapper.findByText(defaultPropsData.searchEmptyMessage).exists()).toBe(false);
+      expect(wrapper.findComponent(GlEmptyState).exists()).toBe(false);
     });
 
     it('should render empty search message when `searchEmpty` is `true`', () => {
       createComponent({ propsData: { searchEmpty: true } });
 
-      expect(wrapper.findByText(defaultPropsData.searchEmptyMessage).exists()).toBe(true);
+      expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
+        title: GroupsComponent.i18n.emptyStateTitle,
+        description: GroupsComponent.i18n.emptyStateDescription,
+      });
     });
   });
 });

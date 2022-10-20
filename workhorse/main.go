@@ -23,6 +23,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/version"
 )
 
 // Version is the current version of GitLab Workhorse
@@ -55,8 +56,10 @@ func main() {
 		os.Exit(2)
 	}
 
+	version.SetVersion(Version, BuildTime)
+
 	if boot.printVersion {
-		fmt.Printf("gitlab-workhorse %s-%s\n", Version, BuildTime)
+		fmt.Println(version.GetApplicationVersion())
 		os.Exit(0)
 	}
 

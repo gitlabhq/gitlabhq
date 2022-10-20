@@ -1,8 +1,10 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 const STATUS_TYPES = {
   SUCCESS: 'success',
@@ -10,11 +12,14 @@ const STATUS_TYPES = {
   DANGER: 'danger',
 };
 
+const UPGRADE_DOCS_URL = helpPagePath('update/index');
+
 export default {
   name: 'GitlabVersionCheck',
   components: {
     GlBadge,
   },
+  mixins: [Tracking.mixin()],
   props: {
     size: {
       type: String,
@@ -50,6 +55,10 @@ export default {
         .then((res) => {
           if (res.data) {
             this.status = res.data.severity;
+
+            this.track('rendered_version_badge', {
+              label: this.title,
+            });
           }
         })
         .catch(() => {
@@ -57,12 +66,24 @@ export default {
           this.status = null;
         });
     },
+    onClick() {
+      this.track('click_version_badge', { label: this.title });
+    },
   },
+  UPGRADE_DOCS_URL,
 };
 </script>
 
 <template>
-  <gl-badge v-if="status" class="version-check-badge" :variant="status" :size="size">{{
-    title
-  }}</gl-badge>
+  <!-- TODO: remove the span element once bootstrap-vue is updated to version 2.21.1 -->
+  <!-- TODO: https://github.com/bootstrap-vue/bootstrap-vue/issues/6219 -->
+  <span v-if="status" data-testid="badge-click-wrapper" @click="onClick">
+    <gl-badge
+      :href="$options.UPGRADE_DOCS_URL"
+      class="version-check-badge"
+      :variant="status"
+      :size="size"
+      >{{ title }}</gl-badge
+    >
+  </span>
 </template>

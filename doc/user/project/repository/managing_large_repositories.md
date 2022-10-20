@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Documentation on large repositories."
 ---
 
@@ -14,11 +14,11 @@ In the following sections, we detail several best practices for improving perfor
 
 ## Large File System (LFS)
 
-It's *strongly* recommended in any Git system that binary or blob files (for example, packages, audio, video, or graphics) are stored as Large File Storage (LFS) objects. In such setup, the Objects are stored elsewhere, such as in Object Storage, and this can reduce the repository size significantly, thus improving performance.
+It's *strongly* recommended in any Git system that binary or blob files (for example, packages, audio, video, or graphics) are stored as Large File Storage (LFS) objects. With LFS, the objects are stored externally, such as in Object Storage, which reduces the number and size of objects in the repository. Storing objects in external Object Storage can improve performance.
 
-To analyze if the repository has these sorts of objects, it's recommended to run a tool like [`git-sizer`](https://github.com/github/git-sizer) to get a detailed analysis. These tools can show in detail what makes up the repository as well as highlights any areas of concern. If any large objects are found, it's then recommended removing them with tools such as [`git filter-repo`](reducing_the_repo_size_using_git.md).
+To analyze if a repository has large objects, you can use a tool like [`git-sizer`](https://github.com/github/git-sizer) for detailed analysis. This tool shows details about what makes up the repository, and highlights any areas of concern. If any large objects are found, you can then remove them with a tool such as [`git filter-repo`](reducing_the_repo_size_using_git.md).
 
-Refer to the [Git LFS documentation for more information](../../../topics/git/lfs/index.md).
+For more information, refer to the [Git LFS documentation](../../../topics/git/lfs/index.md).
 
 ## Gitaly Pack Objects Cache
 

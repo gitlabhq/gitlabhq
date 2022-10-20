@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Grafana Configuration **(FREE SELF)**
@@ -81,7 +81,7 @@ GitLab displays your link in the **Main menu > Admin > Monitoring > Metrics Dash
 When setting up Grafana through the process above, no scope shows in the screen at
 **Main menu > Admin > Applications > GitLab Grafana**. However, the `read_user` scope is
 required and is provided to the application automatically. Setting any scope other than
-`read_user` without also including `read_user` leads to this error when you try to log in using
+`read_user` without also including `read_user` leads to this error when you try to sign in using
 GitLab as the OAuth provider:
 
 ```plaintext

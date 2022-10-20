@@ -94,6 +94,7 @@ module Mutations
           ).execute
           return if result.success?
 
+          response[:runner] = nil
           response[:errors] = result.errors
           raise ActiveRecord::Rollback
         end
@@ -102,6 +103,7 @@ module Mutations
           result = ::Ci::Runners::UpdateRunnerService.new(runner).execute(attrs)
           return if result.success?
 
+          response[:runner] = nil
           response[:errors] = result.errors
           raise ActiveRecord::Rollback
         end

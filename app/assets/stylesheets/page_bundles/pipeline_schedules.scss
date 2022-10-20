@@ -1,60 +1,82 @@
 @import 'mixins_and_variables_and_functions';
 
+.ci-variable-list {
+  margin-left: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+  clear: both;
+}
+
+.ci-variable-row {
+  display: flex;
+  align-items: flex-start;
+
+  @include media-breakpoint-down(xs) {
+    align-items: flex-end;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: $gl-btn-padding;
+
+    @include media-breakpoint-down(xs) {
+      margin-bottom: 3 * $gl-btn-padding;
+    }
+  }
+
+  &:last-child {
+    .ci-variable-body-item:last-child {
+      margin-right: $ci-variable-remove-button-width;
+
+      @include media-breakpoint-down(xs) {
+        margin-right: 0;
+      }
+    }
+
+    .ci-variable-row-remove-button {
+      display: none;
+    }
+
+    @include media-breakpoint-down(xs) {
+      .ci-variable-row-body {
+        margin-right: $ci-variable-remove-button-width;
+      }
+    }
+  }
+}
+
+.ci-variable-row-body {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding-bottom: $gl-padding;
+
+  @include media-breakpoint-down(xs) {
+    display: block;
+  }
+}
+
+.ci-variable-body-item {
+  flex: 1;
+
+  &:not(:last-child) {
+    margin-right: $gl-btn-padding;
+
+    @include media-breakpoint-down(xs) {
+      margin-right: 0;
+      margin-bottom: $gl-btn-padding;
+    }
+  }
+}
+
 .pipeline-schedule-form {
   .gl-field-error {
     margin: 10px 0 0;
   }
 }
 
-.interval-pattern-form-group {
-  label {
-    margin-right: 10px;
-    font-weight: $gl-font-weight-normal;
-
-    &[for='custom'] {
-      margin-right: 0;
-    }
-  }
-
-  .cron-interval-input-wrapper {
-    padding-left: 0;
-  }
-
-  .cron-interval-input {
-    margin: 10px 10px 0 0;
-  }
-}
-
 .pipeline-schedule-table-row {
-  .branch-name-cell {
-    max-width: 300px;
-  }
-
   a {
     color: var(--gl-text-color, $gl-text-color);
-  }
-
-  svg {
-    vertical-align: middle;
-  }
-}
-
-.pipeline-schedules-user-callout {
-  .bordered-box.content-block {
-    border: 1px solid var(--border-color, $border-color);
-    background-color: transparent;
-  }
-}
-
-.cron-preset-radio-input {
-  display: inline-block;
-
-  @include media-breakpoint-down(md) {
-    display: block;
-    margin: 0 0 5px 5px;
-  }
-
-  input {
-    margin-right: 3px;
   }
 }

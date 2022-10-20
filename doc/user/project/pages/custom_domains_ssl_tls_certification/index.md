@@ -2,7 +2,7 @@
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pages/getting_started_part_three.html'
 stage: Create
 group: Editor
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Custom domains and SSL/TLS certificates **(FREE)**
@@ -96,7 +96,7 @@ Root domains (`example.com`) require:
 | `_gitlab-pages-verification-code.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 For projects on GitLab.com, this IP is `35.185.44.232`.
-For projects living in other GitLab instances (CE or EE), please contact
+For projects living in other GitLab instances (CE or EE), contact
 your sysadmin asking for this information (which IP address is Pages
 server running on your instance).
 

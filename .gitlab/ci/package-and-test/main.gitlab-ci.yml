@@ -1,11 +1,13 @@
 # E2E tests pipeline loaded dynamically by script: scripts/generate-e2e-pipeline
 
+default:
+  interruptible: true
+
 include:
-  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.2.1
+    ref: 1.3.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -27,13 +29,12 @@ stages:
 .ruby-image:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3
 
-.bundle-install:
+.qa-install:
+  variables:
+    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+    BUNDLE_SILENCE_ROOT_WARNING: "true"
   extends:
     - .gitlab-qa-install
-    - .qa-cache
-  variables:
-    RUN_WITH_BUNDLE: "true" # installs and runs gitlab-qa via bundler
-    QA_PATH: qa
 
 .omnibus-env:
   variables:
@@ -44,6 +45,8 @@ stages:
       echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
       echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
       for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
+      echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
       echo "Built environment file for omnibus build:"
       cat $BUILD_ENV
   artifacts:
@@ -59,14 +62,16 @@ stages:
 .qa:
   extends:
     - .qa-base
-    - .bundle-install
+    - .qa-install
     - .gitlab-qa-report
   stage: test
   tags:
     - e2e
   needs:
-    - trigger-omnibus
-    - download-knapsack-report
+    - job: trigger-omnibus
+      optional: true
+    - job: download-knapsack-report
+      artifacts: true
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
@@ -80,14 +85,33 @@ stages:
 # ==========================================
 # Prepare stage
 # ==========================================
+check-release-set:
+  extends: .rules:prepare
+  stage: .pre
+  script:
+    - |
+      if [ -z "$RELEASE" ]; then
+        echo "E2E test pipeline requires omnibus installation docker image to be set via $RELEASE environment variable"
+        exit 1
+      else
+        echo "Omnibus installation image is set to '$RELEASE'"
+      fi
+
+dont-interrupt-me:
+  extends: .rules:dont-interrupt
+  stage: .pre
+  interruptible: false
+  script:
+    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
+
 trigger-omnibus-env:
   extends:
     - .omnibus-env
-    - .rules:prepare
+    - .rules:omnibus-build
   stage: .pre
 
 trigger-omnibus:
-  extends: .rules:prepare
+  extends: .rules:omnibus-build
   stage: .pre
   needs:
     - trigger-omnibus-env
@@ -106,6 +130,8 @@ trigger-omnibus:
     TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
     SECURITY_SOURCES: $SECURITY_SOURCES
     CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
+    RUBY3_BUILD: $OMNIBUS_GITLAB_RUBY3_BUILD
+    CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
     SKIP_QA_DOCKER: "true"
     SKIP_QA_TEST: "true"
     ee: "true"
@@ -115,30 +141,34 @@ trigger-omnibus:
 
 download-knapsack-report:
   extends:
-    - .bundle-install
-    - .ruby-image
+    - .gitlab-qa-image
     - .rules:prepare
   stage: .pre
+  variables:
+    KNAPSACK_DIR: ${CI_PROJECT_DIR}/qa/knapsack
+    GIT_STRATEGY: none
   script:
+    # when using qa-image, code runs in /home/gitlab/qa folder
     - bundle exec rake "knapsack:download[test]"
+    - mkdir -p "$KNAPSACK_DIR" && cp knapsack/*.json "${KNAPSACK_DIR}/"
   allow_failure: true
   artifacts:
     paths:
-      - qa/knapsack/ee-*.json
+      - qa/knapsack/*.json
     expire_in: 1 day
 
-# e2e test jobs run on separate runner which has separate cache setup
 cache-gems:
   extends:
-    - .bundle-install
+    - .qa-install
     - .ruby-image
-    - .qa-cache-push
     - .rules:prepare
   stage: .pre
   tags:
     - e2e
   script:
     - echo "Populated qa cache"
+  cache:
+    policy: pull-push
 
 # ==========================================
 # Test stage
@@ -154,11 +184,11 @@ cache-gems:
 _ee:quarantine:
   extends:
     - .qa
-    - .rules:test:quarantine
+    - .rules:test:manual
   needs:
-    - trigger-omnibus
+    - job: trigger-omnibus
+      optional: true
   stage: test
-  allow_failure: true
   variables:
     QA_RSPEC_TAGS: --tag quarantine
 
@@ -332,8 +362,9 @@ ee:update-minor:
     UPDATE_TYPE: minor
     QA_RSPEC_TAGS: --tag smoke
   rules:
-    - !reference [.rules:test:qa, rules]
+    - !reference [.rules:test:update, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
+    - !reference [.rules:test:manual, rules]
 
 ee:update-major:
   extends:
@@ -343,8 +374,9 @@ ee:update-major:
     UPDATE_TYPE: major
     QA_RSPEC_TAGS: --tag smoke
   rules:
-    - !reference [.rules:test:qa, rules]
+    - !reference [.rules:test:update, rules]
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
+    - !reference [.rules:test:manual, rules]
 
 ee:gitaly-cluster:
   extends: .qa
@@ -353,6 +385,7 @@ ee:gitaly-cluster:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
+    - !reference [.rules:test:manual, rules]
 
 ee:group-saml:
   extends: .qa
@@ -361,6 +394,7 @@ ee:group-saml:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
+    - !reference [.rules:test:manual, rules]
 
 ee:instance-saml:
   extends: .qa
@@ -369,6 +403,7 @@ ee:instance-saml:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::InstanceSAML/
+    - !reference [.rules:test:manual, rules]
 
 ee:jira:
   extends: .qa
@@ -379,6 +414,7 @@ ee:jira:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Jira/
+    - !reference [.rules:test:manual, rules]
 
 ee:ldap-no-server:
   extends: .qa
@@ -387,6 +423,7 @@ ee:ldap-no-server:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
+    - !reference [.rules:test:manual, rules]
 
 ee:ldap-tls:
   extends: .qa
@@ -395,6 +432,7 @@ ee:ldap-tls:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
+    - !reference [.rules:test:manual, rules]
 
 ee:ldap-no-tls:
   extends: .qa
@@ -403,6 +441,7 @@ ee:ldap-no-tls:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
+    - !reference [.rules:test:manual, rules]
 
 ee:mtls:
   extends: .qa
@@ -411,6 +450,7 @@ ee:mtls:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::MTLS/
+    - !reference [.rules:test:manual, rules]
 
 ee:mattermost:
   extends: .qa
@@ -419,6 +459,7 @@ ee:mattermost:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mattermost/
+    - !reference [.rules:test:manual, rules]
 
 ee:registry:
   extends: .qa
@@ -427,6 +468,7 @@ ee:registry:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Registry/
+    - !reference [.rules:test:manual, rules]
 
 ee:registry-with-cdn:
   extends: .qa
@@ -443,6 +485,7 @@ ee:registry-with-cdn:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::RegistryWithCDN/
+    - !reference [.rules:test:manual, rules]
 
 ee:repository-storage:
   extends: .qa
@@ -451,6 +494,7 @@ ee:repository-storage:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
+    - !reference [.rules:test:manual, rules]
 
 ee:service-ping-disabled:
   extends: .qa
@@ -459,6 +503,7 @@ ee:service-ping-disabled:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::ServicePingDisabled/
+    - !reference [.rules:test:manual, rules]
 
 ee:smtp:
   extends: .qa
@@ -467,6 +512,7 @@ ee:smtp:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::SMTP/
+    - !reference [.rules:test:manual, rules]
 
 ee:cloud-activation:
   extends: .qa
@@ -476,6 +522,7 @@ ee:cloud-activation:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::CloudActivation/
+    - !reference [.rules:test:manual, rules]
 
 ee:large-setup:
   extends: .qa
@@ -485,6 +532,7 @@ ee:large-setup:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::LargeSetup/
+    - !reference [.rules:test:manual, rules]
 
 ee:metrics:
   extends: .qa
@@ -493,6 +541,7 @@ ee:metrics:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::Metrics/
+    - !reference [.rules:test:manual, rules]
 
 ee:elasticsearch:
   extends: .qa
@@ -504,6 +553,7 @@ ee:elasticsearch:
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Elasticsearch/
+    - !reference [.rules:test:manual, rules]
 
 ee:registry-object-storage-tls:
   extends: ee:object-storage-aws
@@ -536,7 +586,7 @@ e2e-test-report:
 upload-knapsack-report:
   extends:
     - .generate-knapsack-report-base
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: report
@@ -544,7 +594,7 @@ upload-knapsack-report:
 
 relate-test-failures:
   extends:
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: report
@@ -562,7 +612,7 @@ relate-test-failures:
 
 generate-test-session:
   extends:
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: report
@@ -585,7 +635,7 @@ generate-test-session:
 notify-slack:
   extends:
     - .notify-slack-qa
-    - .bundle-install
+    - .qa-install
     - .ruby-image
     - .rules:report:process-results
   stage: notify
@@ -594,6 +644,7 @@ notify-slack:
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed
+    TYPE: "(package-and-test) "
   when: on_failure
   script:
     - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.xml" # generate summary

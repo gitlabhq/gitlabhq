@@ -23,7 +23,7 @@ module Issuable
         with_csv_lines.each do |row, line_no|
           attributes = issuable_attributes_for(row)
 
-          if create_issuable(attributes).persisted?
+          if create_issuable(attributes)&.persisted?
             @results[:success] += 1
           else
             @results[:error_lines].push(line_no)

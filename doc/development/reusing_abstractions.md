@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Guidelines for reusing abstractions
@@ -63,7 +63,7 @@ do so, but then we'd need as many options as we have features. Every option adds
 two code paths, which means that for four features we have to cover 8 different
 code paths.
 
-A much more reliable (and pleasant) way of dealing with this, is to simply use
+A much more reliable (and pleasant) way of dealing with this, is to use
 the underlying bits that make up `GroupProjectsFinder` directly. This means we
 may need a little bit more code in `IssuableFinder`, but it also gives us much
 more control and certainty. This means we might end up with something like this:
@@ -96,7 +96,7 @@ This is just a sketch, but it shows the general idea: we would use whatever the
 ## End goal
 
 The guidelines in this document are meant to foster _better_ code reuse, by
-clearly defining what can be reused where, and what to do when you can not reuse
+clearly defining what can be reused where, and what to do when you cannot reuse
 something. Clearly separating abstractions makes it harder to use the wrong one,
 makes it easier to debug the code, and (hopefully) results in fewer performance
 problems.
@@ -122,7 +122,7 @@ the various abstractions and what they can (not) reuse:
 
 Everything in `app/controllers`.
 
-Controllers should not do much work on their own, instead they simply pass input
+Controllers should not do much work on their own, instead they pass input
 to other classes and present the results.
 
 ### API endpoints
@@ -135,40 +135,70 @@ API endpoints have the same abstraction level as controllers.
 
 Everything that resides in `app/services`.
 
-Services should consider inheriting from:
+Service classes represent operations that coordinates changes between models
+(such as entities and value objects). Changes impact the state of the application.
 
-- `BaseContainerService` for services scoped by container (project or group)
-- `BaseProjectService` for services scoped to projects
-- `BaseGroupService` for services scoped to groups
+1. When an object makes no changes to the state of the application, then it's not a service.
+   It may be a [finder](#finders) or a value object.
+1. When there is no operation, there is no need to execute a service. The class would
+   probably be better designed as an entity, a value object, or a policy.
 
-or, create a new base class and update the list above.
+When implementing a service class, consider:
 
-Legacy classes inherited from `BaseService` for historical reasons.
+1. A service class initializer should contain in its arguments:
+   1. A [model](#models) instance that is being acted upon. Should be first positional
+      argument of the initializer. The argument name of the argument is left to the
+      developer's discretion, such as: `issue`, `project`, `merge_request`.
+   1. When service represents an action initiated by a user or executed in the
+      context of a user, the initializer must have the `current_user:` keyword argument.
+      Services with `current_user:` argument run high-level business logic.
+   1. When service does not have a user context and it's not directly initiated
+      by a user (like background service or side-effects), the `current_user:`
+      argument is not needed. This describes low-level domain logic or instance-wide logic.
+   1. For all additional data required by a service, the explicit keyword arguments are recommended.
+      When a service requires too long of a list of arguments, consider splitting them into:
+      - `params`: A hash with model properties that will be assigned directly.
+      - `options`: A hash with extra parameters (which need to be processed,
+        and are not model properties). The `options` hash should be stored in an instance variable.
 
-In Service classes the use of `execute` and `#execute` is preferred over `call` and `#call`.
+      ```ruby
+      # merge_request: A model instance that is being acted upon.
+      # assignee: new MR assignee that will be assigned to the MR
+      #   after the service is executed.
+      def initialize(merge_request, assignee:)
+        @merge_request = merge_request
+        @assignee = assignee
+      end
+      ```
 
-Model properties should be passed to the constructor in a `params` hash, and will be assigned directly.
+      ```ruby
+      # issue: A model instance that is being acted upon.
+      # current_user: Current user.
+      # params: Model properties.
+      # options: Configuration for this service. Can be any of the following:
+      #   - notify: Whether to send a notification to the current user.
+      #   - cc: Email address to copy when sending a notification.
+      def initialize(issue:, current_user:, params: {}, options: {})
+        @issue = issue
+        @current_user = current_user
+        @params = params
+        @options = options
+      end
+      ```
 
-To pass extra parameters (which need to be processed, and are not model properties),
-include an `options` hash in the constructor and store it in an instance variable:
+1. It implements a single public instance method `#execute`, which invokes service class behavior:
+   - The `#execute` method takes no arguments. All required data is passed into initializer.
+   - Optional. If needed, the `#execute` method returns its result via [`ServiceResponse`](#serviceresponse).
 
-```ruby
-# container: Project, or Group
-# current_user: Current user
-# params: Model properties from the controller, already allowlisted with strong parameters
-# options: Configuration for this service, can be any of the following:
-#   notify: Whether to send a notifcation to the current user
-#   cc: Email address to copy when sending a notification 
-def initialize(container:, current_user: nil, params: {}, options: {})
-  super(container, current_user, params)
-  @options = options
-end
-```
+Several base classes implement the service classes convention. You may consider inheriting from:
 
-View the [initial discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90008#note_988744060)
-and [further discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90853#note_1053425083).
+- `BaseContainerService` for services scoped by container (project or group).
+- `BaseProjectService` for services scoped to projects.
+- `BaseGroupService` for services scoped to groups.
 
-Classes that are not service objects should be [created elsewhere](directory_structure.md#use-namespaces-to-define-bounded-contexts), such as in `lib`.
+Classes that are not service objects should be
+[created elsewhere](directory_structure.md#use-namespaces-to-define-bounded-contexts),
+such as in `lib`.
 
 #### ServiceResponse
 
@@ -235,7 +265,7 @@ For example: `:job_not_retriable`, `:duplicate_package`, `:merge_request_not_mer
 
 Everything in `app/finders`, typically used for retrieving data from a database.
 
-Finders can not reuse other finders in an attempt to better control the SQL
+Finders cannot reuse other finders in an attempt to better control the SQL
 queries they produce.
 
 Finders' `execute` method should return `ActiveRecord::Relation`. Exceptions

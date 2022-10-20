@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting Sidekiq **(FREE SELF)**
@@ -306,7 +306,7 @@ end
 ### Remove Sidekiq jobs for given parameters (destructive)
 
 The general method to kill jobs conditionally is the following command, which
-removes jobs that are queued but not started. Running jobs can not be killed.
+removes jobs that are queued but not started. Running jobs cannot be killed.
 
 ```ruby
 queue = Sidekiq::Queue.new('<queue name>')

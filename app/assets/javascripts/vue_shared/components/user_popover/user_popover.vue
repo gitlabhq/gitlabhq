@@ -10,7 +10,7 @@ import {
   GlAvatarLabeled,
 } from '@gitlab/ui';
 import { glEmojiTag } from '~/emoji';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';
@@ -83,6 +83,8 @@ export default {
         return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message_html}`;
       } else if (this.user.status.message_html) {
         return this.user.status.message_html;
+      } else if (this.user.status.emoji) {
+        return glEmojiTag(this.user.status.emoji);
       }
 
       return '';
@@ -139,8 +141,9 @@ export default {
         await followUser(this.user.id);
         this.$emit('follow');
       } catch (error) {
-        createFlash({
-          message: I18N_ERROR_FOLLOW,
+        const message = error.response?.data?.message || I18N_ERROR_FOLLOW;
+        createAlert({
+          message,
           error,
           captureError: true,
         });
@@ -159,7 +162,7 @@ export default {
         await unfollowUser(this.user.id);
         this.$emit('unfollow');
       } catch (error) {
-        createFlash({
+        createAlert({
           message: I18N_ERROR_UNFOLLOW,
           error,
           captureError: true,

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Repository storage types **(FREE SELF)**
@@ -166,6 +166,10 @@ For example:
 # group wiki paths
 "@groups/#{hash[0..1]}/#{hash[2..3]}/#{hash}.wiki.git"
 ```
+
+### Gitaly Cluster storage
+
+If Gitaly Cluster is used, Praefect manages storage locations. For more information, see [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later).
 
 ### Object storage support
 

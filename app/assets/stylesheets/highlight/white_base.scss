@@ -154,6 +154,8 @@ pre.code,
   }
 
   &.diff-grid-row {
+    --diff-expansion-background-color: #{$gray-100};
+
     @include diff-match-line;
   }
 

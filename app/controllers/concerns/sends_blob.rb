@@ -27,12 +27,14 @@ module SendsBlob
   private
 
   def cached_blob?(blob, allow_caching: false)
-    stale = stale?(etag: blob.id) # The #stale? method sets cache headers.
+    stale =
+      if Feature.enabled?(:improve_blobs_cache_headers)
+        stale?(strong_etag: blob.id)
+      else
+        stale?(etag: blob.id)
+      end
 
-    # Because we are opinionated we set the cache headers ourselves.
-    response.cache_control[:public] = allow_caching
-
-    response.cache_control[:max_age] =
+    max_age =
       if @ref && @commit && @ref == @commit.id # rubocop:disable Gitlab/ModuleWithInstanceVariables
         # This is a link to a commit by its commit SHA. That means that the blob
         # is immutable. The only reason to invalidate the cache is if the commit
@@ -43,6 +45,16 @@ module SendsBlob
         # value may change over time.
         Blob::CACHE_TIME
       end
+
+    # Because we are opinionated we set the cache headers ourselves.
+    if Feature.enabled?(:improve_blobs_cache_headers)
+      expires_in(max_age,
+        public: allow_caching, must_revalidate: true, stale_if_error: 5.minutes,
+        stale_while_revalidate: 1.minute, 's-maxage': 1.minute)
+    else
+      response.cache_control[:public] = allow_caching
+      response.cache_control[:max_age] = max_age
+    end
 
     !stale
   end

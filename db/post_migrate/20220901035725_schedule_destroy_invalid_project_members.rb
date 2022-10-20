@@ -10,19 +10,11 @@ class ScheduleDestroyInvalidProjectMembers < Gitlab::Database::Migration[2.0]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :members,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      max_batch_size: MAX_BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE,
-      gitlab_schema: :gitlab_main
-    )
+    # no-op
+    # We want to no-op this due to potential inconsistencies in SM upgrade path
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :members, :id, [])
+    # no-op
   end
 end

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -54,7 +54,7 @@ Set a merge request that looks ready to merge to
 
 If you configured [Review Apps](https://about.gitlab.com/stages-devops-lifecycle/review-apps/) for your project,
 you can preview the changes submitted to a feature branch through a merge request
-on a per-branch basis. You don't need to checkout the branch, install, and preview locally.
+on a per-branch basis. You don't need to check out the branch, install, and preview locally.
 All your changes are available to preview by anyone with the Review Apps link.
 
 With GitLab [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the

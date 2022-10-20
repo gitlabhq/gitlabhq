@@ -68,7 +68,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
 
   it 'creates missing wikis' do
     project = create(:project, :wiki_enabled)
-    TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
+    project.wiki.repository.raw.remove
 
     subject.perform(project.id)
 
@@ -77,8 +77,8 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
 
   it 'does not create a wiki if the main repo does not exist at all' do
     project = create(:project, :repository)
-    TestEnv.rm_storage_dir(project.repository_storage, project.path)
-    TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
+    project.repository.raw.remove
+    project.wiki.repository.raw.remove
 
     subject.perform(project.id)
 

@@ -4,11 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GitAccess, :aggregate_failures do
   include TermsHelper
-  include GitHelpers
   include AdminModeHelper
 
   let(:user) { create(:user) }
-
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
   let(:repository_path) { "#{project.full_path}.git" }
@@ -139,26 +137,17 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
           end
         end
 
-        # For backwards compatibility
+        # legacy behavior that is blocked/deprecated
         context 'when actor is :ci' do
           let(:actor) { :ci }
           let(:authentication_abilities) { build_authentication_abilities }
 
-          it 'allows pull access' do
-            expect { pull_access_check }.not_to raise_error
+          it 'disallows pull access' do
+            expect { pull_access_check }.to raise_error(Gitlab::GitAccess::NotFoundError)
           end
 
           it 'does not block pushes with "not found"' do
             expect { push_access_check }.to raise_forbidden(described_class::ERROR_MESSAGES[:auth_upload])
-          end
-
-          it 'logs' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              message: 'Actor was :ci',
-              project_id: project.id
-            ).once
-
-            pull_access_check
           end
         end
 
@@ -741,18 +730,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
       describe 'generic CI (build without a user)' do
         let(:actor) { :ci }
 
-        context 'pull code' do
-          it { expect { pull_access_check }.not_to raise_error }
-
-          it 'logs' do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              message: 'Actor was :ci',
-              project_id: project.id
-            ).once
-
-            pull_access_check
-          end
-        end
+        specify { expect { pull_access_check }.to raise_error Gitlab::GitAccess::NotFoundError }
       end
     end
   end
@@ -810,18 +788,29 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
     def merge_into_protected_branch
       @protected_branch_merge_commit ||= begin
         project.repository.add_branch(user, unprotected_branch, 'feature')
-        rugged = rugged_repo(project.repository)
-        target_branch = rugged.rev_parse('feature')
+        target_branch = TestEnv::BRANCH_SHA['feature']
         source_branch = project.repository.create_file(
           user,
           'filename',
           'This is the file content',
           message: 'This is a good commit message',
           branch_name: unprotected_branch)
-        author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
+        merge_id = project.repository.raw.merge_to_ref(
+          user,
+          branch: target_branch,
+          first_parent_ref: target_branch,
+          source_sha: source_branch,
+          target_ref: 'refs/merge-requests/test',
+          message: 'commit message'
+        )
 
-        merge_index = rugged.merge_commits(target_branch, source_branch)
-        Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+        # We are trying to simulate what the repository would look like
+        # during the pre-receive hook, before the actual ref is
+        # written/created. Repository#new_commits relies on there being no
+        # ref pointing to the merge commit.
+        project.repository.delete_refs('refs/merge-requests/test')
+
+        merge_id
       end
     end
 

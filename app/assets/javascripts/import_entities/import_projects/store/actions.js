@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -43,11 +43,14 @@ const restartJobsPolling = () => {
 const setImportTarget = ({ commit }, { repoId, importTarget }) =>
   commit(types.SET_IMPORT_TARGET, { repoId, importTarget });
 
-const importAll = ({ state, dispatch }) => {
+const importAll = ({ state, dispatch }, config = {}) => {
   return Promise.all(
-    state.repositories
-      .filter(isProjectImportable)
-      .map((r) => dispatch('fetchImport', r.importSource.id)),
+    state.repositories.filter(isProjectImportable).map((r) =>
+      dispatch('fetchImport', {
+        repoId: r.importSource.id,
+        optionalStages: config?.optionalStages,
+      }),
+    ),
   );
 };
 
@@ -73,7 +76,7 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
       } else if (tooManyRequests(e)) {
-        createFlash({
+        createAlert({
           message: sprintf(s__('ImportProjects|%{provider} rate limit exceeded. Try again later'), {
             provider: capitalizeFirstCharacter(provider),
           }),
@@ -81,7 +84,7 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
 
         commit(types.RECEIVE_REPOS_ERROR);
       } else {
-        createFlash({
+        createAlert({
           message: sprintf(s__('ImportProjects|Requesting your %{provider} repositories failed'), {
             provider,
           }),
@@ -92,7 +95,10 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
     });
 };
 
-const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, getters }, repoId) => {
+const fetchImportFactory = (importPath = isRequired()) => (
+  { state, commit, getters },
+  { repoId, optionalStages },
+) => {
   const { ciCdOnly } = state;
   const importTarget = getters.getImportTarget(repoId);
 
@@ -105,6 +111,7 @@ const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, gett
       ci_cd_only: ciCdOnly,
       new_name: newName,
       target_namespace: targetNamespace,
+      ...(Object.keys(optionalStages).length ? { optional_stages: optionalStages } : {}),
     })
     .then(({ data }) => {
       commit(types.RECEIVE_IMPORT_SUCCESS, {
@@ -124,7 +131,7 @@ const fetchImportFactory = (importPath = isRequired()) => ({ state, commit, gett
           )
         : s__('ImportProjects|Importing the project failed');
 
-      createFlash({
+      createAlert({
         message: flashMessage,
       });
 
@@ -149,7 +156,7 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
       if (hasRedirectInError(e)) {
         redirectToUrlInError(e);
       } else {
-        createFlash({
+        createAlert({
           message: s__('ImportProjects|Update of imported projects with realtime changes failed'),
         });
       }
@@ -177,7 +184,7 @@ const fetchNamespacesFactory = (namespacesPath = isRequired()) => ({ commit }) =
       commit(types.RECEIVE_NAMESPACES_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
     )
     .catch(() => {
-      createFlash({
+      createAlert({
         message: s__('ImportProjects|Requesting namespaces failed'),
       });
 

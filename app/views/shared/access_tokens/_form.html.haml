@@ -1,6 +1,7 @@
 - ajax = local_assigns.fetch(:ajax, false)
 - title = local_assigns.fetch(:title, _('Add a %{type}') % { type: type })
 - prefix = local_assigns.fetch(:prefix, :personal_access_token)
+- description_prefix = local_assigns.fetch(:description_prefix, prefix)
 - help_path = local_assigns.fetch(:help_path)
 - resource = local_assigns.fetch(:resource, false)
 - access_levels = local_assigns.fetch(:access_levels, false)
@@ -43,7 +44,7 @@
     %p.text-secondary#select_scope_help_text
       = s_('Tokens|Scopes set the permission levels granted to the token.')
       = link_to _("Learn more."), help_path, target: '_blank', rel: 'noopener noreferrer'
-    = render 'shared/tokens/scopes_form', prefix: prefix, token: token, scopes: scopes, f: f
+    = render 'shared/tokens/scopes_form', prefix: prefix, description_prefix: description_prefix, token: token, scopes: scopes, f: f
 
   .gl-mt-3
-    = f.submit _('Create %{type}') % { type: type }, class: 'gl-button btn btn-confirm', data: { qa_selector: 'create_token_button' }
+    = f.submit _('Create %{type}') % { type: type }, data: { qa_selector: 'create_token_button' }, pajamas_button: true

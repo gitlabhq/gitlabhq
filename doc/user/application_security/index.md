@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Secure your application **(ULTIMATE)**
@@ -32,6 +32,25 @@ schedule. Coverage includes:
 - Vulnerabilities in a running web application.
 - Infrastructure as code configuration.
 
+Each of the GitLab application security tools is relevant to specific stages of the feature development workflow.
+
+- Commit
+  - SAST
+  - Secret Detection
+  - IaC Scanning
+  - Dependency Scanning
+  - License Scanning
+  - Coverage-guided Fuzz Testing
+- Build
+  - Container Scanning
+- Test
+  - API Security
+  - DAST
+- Deploy
+  - Operational Container Scanning
+
+![CI/CD stages and matching GitLab application security tools](img/secure_tools_and_cicd_stages.png)
+
 ### Source code analysis
 
 Source code analysis occurs on every code commit. Details of vulnerabilities detected are provided
@@ -48,7 +67,7 @@ Analysis of the web application occurs on every code commit. As part of the CI/C
 application is built, deployed to a test environment, and subjected to the following tests:
 
 - Test for known application vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
-- Analysis of APIs for known attack vectors - [DAST API](dast_api/index.md).
+- Analysis of APIs for known attack vectors - [API Security](dast_api/index.md).
 - Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
 
 ### Dependency analysis
@@ -66,7 +85,7 @@ For more details, see
 [Dependency Scanning compared to Container Scanning](dependency_scanning/index.md#dependency-scanning-compared-to-container-scanning).
 
 Additionally, dependencies in operational container images can be analyzed for vulnerabilities
-on a regular schedule or cadence. For more details, see [Cluster Image Scanning](cluster_image_scanning/index.md).
+on a regular schedule or cadence. For more details, see [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md).
 
 ### Infrastructure analysis
 
@@ -151,6 +170,28 @@ The [Container Scanning](container_scanning/index.md) analyzer is an exception, 
 does not use the `SECURE_ANALYZERS_PREFIX` variable. To override its Docker image, see
 the instructions for
 [Running container scanning in an offline environment](container_scanning/index.md#running-container-scanning-in-an-offline-environment).
+
+### Use security scanning tools with merge request pipelines
+
+By default, the application security jobs are configured to run for branch pipelines only.
+To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
+you must reference the [`latest` templates](../../development/cicd/templates.md).
+
+All `latest` security templates support merge request pipelines.
+
+For example, to run both SAST and Dependency Scanning:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+  - template: Jobs/SAST.latest.gitlab-ci.yml
+```
+
+NOTE:
+Mixing `latest` and `stable` security templates can cause both MR and branch pipelines to run. We recommend choosing `latest` or `stable` for all security scanners.
+
+NOTE:
+Latest templates can receive breaking changes in any release.
 
 ## Default behavior of GitLab security scanning tools
 
@@ -446,7 +487,7 @@ Security and compliance teams must ensure that security scans:
 
 GitLab provides two methods of accomplishing this, each with advantages and disadvantages.
 
-- [Compliance framework pipelines](../project/settings/index.md#compliance-pipeline-configuration)
+- [Compliance framework pipelines](../group/manage.md#configure-a-compliance-pipeline)
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,
@@ -486,6 +527,7 @@ Feedback is welcome on our vision for [unifying the user experience for these tw
 
 <!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, please ensure to update the corresponding URL in the mentioned repository.
 -->
+
 ### Secure job failing with exit code 1
 
 WARNING:

@@ -12,7 +12,7 @@ import {
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__, __, n__, sprintf } from '~/locale';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -150,6 +150,10 @@ export default {
     },
 
     groupsTableData() {
+      if (!this.availableNamespaces) {
+        return [];
+      }
+
       return this.groups.map((group) => {
         const importTarget = this.getImportTarget(group);
         const status = this.getStatus(group);
@@ -231,6 +235,10 @@ export default {
         host: this.sourceUrl,
         version: this.bulkImportSourceGroups.versionValidation.features.sourceInstanceVersion,
       });
+    },
+
+    pageInfo() {
+      return this.bulkImportSourceGroups?.pageInfo ?? {};
     },
   },
 
@@ -342,7 +350,7 @@ export default {
           variables: { importRequests },
         });
       } catch (error) {
-        createFlash({
+        createAlert({
           message: i18n.ERROR_IMPORT,
           captureError: true,
           error,
@@ -503,6 +511,7 @@ export default {
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
   popoverOptions: { title: __('What is listed here?') },
   i18n,
+  LOCAL_STORAGE_KEY: 'gl-bulk-imports-status-page-size-v1',
 };
 </script>
 
@@ -696,14 +705,15 @@ export default {
             />
           </template>
         </gl-table>
-        <pagination-bar
-          v-if="hasGroups"
-          :page-info="bulkImportSourceGroups.pageInfo"
-          class="gl-mt-3"
-          @set-page="setPage"
-          @set-page-size="setPageSize"
-        />
       </template>
     </template>
+    <pagination-bar
+      v-show="!$apollo.loading && hasGroups"
+      :page-info="pageInfo"
+      class="gl-mt-3"
+      :storage-key="$options.LOCAL_STORAGE_KEY"
+      @set-page="setPage"
+      @set-page-size="setPageSize"
+    />
   </div>
 </template>

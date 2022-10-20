@@ -56,3 +56,5 @@ module Banzai
     end
   end
 end
+
+Banzai::Filter::MarkdownEngines::CommonMark.prepend_mod

@@ -5,7 +5,7 @@ module Gitlab
     module Migrations
       class TestBackgroundRunner < BaseBackgroundRunner
         def initialize(result_dir:)
-          super(result_dir: result_dir)
+          super(result_dir: result_dir, connection: ActiveRecord::Migration.connection)
           @job_coordinator = Gitlab::BackgroundMigration.coordinator_for_database(Gitlab::Database::MAIN_DATABASE_NAME)
         end
 

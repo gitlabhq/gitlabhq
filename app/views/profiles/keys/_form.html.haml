@@ -1,6 +1,6 @@
 - max_date = ::Gitlab::CurrentSettings.max_ssh_key_lifetime_from_now.to_date if ssh_key_expiration_policy_enabled?
 %div
-  = form_for [:profile, @key], html: { class: 'js-requires-input' } do |f|
+  = gitlab_ui_form_for [:profile, @key], html: { class: 'js-requires-input' } do |f|
     = form_errors(@key)
 
     .form-group
@@ -29,4 +29,4 @@
         button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
         = _("Yes, add it")
     .gl-mt-3
-      = f.submit s_('Profiles|Add key'), class: "gl-button btn btn-confirm js-add-ssh-key-validation-original-submit qa-add-key-button"
+      = f.submit s_('Profiles|Add key'), class: "js-add-ssh-key-validation-original-submit qa-add-key-button", pajamas_button: true

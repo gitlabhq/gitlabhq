@@ -31,6 +31,7 @@ describe('~/environments/components/environments_folder.vue', () => {
       apolloProvider,
       propsData: {
         scope: 'available',
+        search: '',
         ...propsData,
       },
       stubs: { transition: stubTransition() },
@@ -137,13 +138,26 @@ describe('~/environments/components/environments_folder.vue', () => {
       expect(environmentFolderMock).toHaveBeenCalledTimes(1);
       expect(environmentFolderMock).toHaveBeenCalledWith(
         {},
-        {
-          environment: nestedEnvironment.latest,
-          scope,
-        },
+        expect.objectContaining({ scope }),
         expect.anything(),
         expect.anything(),
       );
     },
   );
+
+  it('should query for the entered parameter', async () => {
+    const search = 'hello';
+
+    wrapper = createWrapper({ nestedEnvironment, search }, createApolloProvider());
+
+    await nextTick();
+    await waitForPromises();
+
+    expect(environmentFolderMock).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ search }),
+      expect.anything(),
+      expect.anything(),
+    );
+  });
 });

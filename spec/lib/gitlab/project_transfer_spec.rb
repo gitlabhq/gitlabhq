@@ -15,10 +15,11 @@ RSpec.describe Gitlab::ProjectTransfer do
   end
 
   after do
-    FileUtils.rm_rf([
-      File.join(@root_dir, @namespace_path),
-      File.join(@root_dir, @namespace_path_was)
-    ])
+    FileUtils.rm_rf(
+      [
+        File.join(@root_dir, @namespace_path),
+        File.join(@root_dir, @namespace_path_was)
+      ])
   end
 
   describe '#move_project' do

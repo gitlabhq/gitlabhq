@@ -33,6 +33,9 @@ module API
         end
         params do
           requires :key, type: String, desc: 'The key of the variable'
+          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production' do
+            optional :environment_scope, type: String, desc: 'The environment scope of the variable'
+          end
         end
         # rubocop: disable CodeReuse/ActiveRecord
         get ':id/variables/:key', urgency: :low do
@@ -78,7 +81,9 @@ module API
           optional :masked, type: Boolean, desc: 'Whether the variable is masked'
           optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
           optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
-          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production'
+          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production' do
+            optional :environment_scope, type: String, desc: 'The environment scope of the variable'
+          end
         end
         # rubocop: disable CodeReuse/ActiveRecord
         put ':id/variables/:key' do
@@ -104,7 +109,9 @@ module API
         end
         params do
           requires :key, type: String, desc: 'The key of the variable'
-          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production'
+          optional :filter, type: Hash, desc: 'Available filters: [environment_scope]. Example: filter[environment_scope]=production' do
+            optional :environment_scope, type: String, desc: 'The environment scope of the variable'
+          end
         end
         # rubocop: disable CodeReuse/ActiveRecord
         delete ':id/variables/:key' do

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure an external Sidekiq instance **(FREE SELF)**
@@ -376,6 +376,10 @@ To enable LDAP with the synchronization worker for Sidekiq:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+## Configure SAML Groups for SAML Group Sync
+
+If you use [SAML Group Sync](../../user/group/saml_sso/group_sync.md), you must configure [SAML Groups](../../integration/saml.md#saml-groups) on all your Sidekiq nodes.
 
 ## Disable Rugged
 

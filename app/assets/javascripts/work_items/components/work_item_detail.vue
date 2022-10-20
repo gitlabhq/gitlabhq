@@ -7,7 +7,10 @@ import {
   GlBadge,
   GlButton,
   GlTooltipDirective,
+  GlEmptyState,
 } from '@gitlab/ui';
+import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
+import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -20,11 +23,14 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_VIEWED_STORAGE_KEY,
+  WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_ITERATION,
 } from '../constants';
 
 import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
+import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 
@@ -35,6 +41,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
+import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemInformation from './work_item_information.vue';
 
 export default {
@@ -49,6 +56,7 @@ export default {
     GlLoadingIcon,
     GlSkeletonLoader,
     GlIcon,
+    GlEmptyState,
     WorkItemAssignees,
     WorkItemActions,
     WorkItemDescription,
@@ -60,6 +68,8 @@ export default {
     WorkItemInformation,
     LocalStorageSync,
     WorkItemTypeIcon,
+    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemMilestone,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -82,6 +92,7 @@ export default {
   data() {
     return {
       error: undefined,
+      updateError: undefined,
       workItem: {},
       showInfoBanner: true,
       updateInProgress: false,
@@ -100,9 +111,10 @@ export default {
       },
       error() {
         this.error = this.$options.i18n.fetchError;
+        document.title = s__('404|Not found');
       },
       result() {
-        if (!this.isModal) {
+        if (!this.isModal && this.workItem.project) {
           const path = this.workItem.project?.fullPath
             ? ` · ${this.workItem.project.fullPath}`
             : '';
@@ -127,7 +139,18 @@ export default {
             };
           },
           skip() {
-            return !this.workItemDueDate;
+            return !this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
+          },
+        },
+        {
+          document: workItemAssigneesSubscription,
+          variables() {
+            return {
+              issuableId: this.workItemId,
+            };
+          },
+          skip() {
+            return !this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
           },
         },
       ],
@@ -152,28 +175,8 @@ export default {
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
-    hasDescriptionWidget() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
-    },
-    workItemAssignees() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
-    },
-    workItemLabels() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
-    },
-    workItemDueDate() {
-      return this.workItem?.widgets?.find(
-        (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE,
-      );
-    },
-    workItemWeight() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
-    },
-    workItemHierarchy() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
-    },
     parentWorkItem() {
-      return this.workItemHierarchy?.parent;
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
@@ -184,6 +187,33 @@ export default {
     workItemIconName() {
       return this.workItem?.workItemType?.iconName;
     },
+    noAccessSvgPath() {
+      return `data:image/svg+xml;utf8,${encodeURIComponent(noAccessSvg)}`;
+    },
+    hasDescriptionWidget() {
+      return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
+    },
+    workItemAssignees() {
+      return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
+    },
+    workItemLabels() {
+      return this.isWidgetPresent(WIDGET_TYPE_LABELS);
+    },
+    workItemDueDate() {
+      return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
+    },
+    workItemWeight() {
+      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    workItemHierarchy() {
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
+    },
+    workItemIteration() {
+      return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
+    },
+    workItemMilestone() {
+      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
+    },
   },
   beforeDestroy() {
     /** make sure that if the user has not even dismissed the alert ,
@@ -191,6 +221,9 @@ export default {
     this.dismissBanner();
   },
   methods: {
+    isWidgetPresent(type) {
+      return this.workItem?.widgets?.find((widget) => widget.type === type);
+    },
     dismissBanner() {
       this.showInfoBanner = false;
     },
@@ -236,7 +269,7 @@ export default {
           },
         )
         .catch((error) => {
-          this.error = error.message;
+          this.updateError = error.message;
         })
         .finally(() => {
           this.updateInProgress = false;
@@ -249,8 +282,13 @@ export default {
 
 <template>
   <section class="gl-pt-5">
-    <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = undefined">
-      {{ error }}
+    <gl-alert
+      v-if="updateError"
+      class="gl-mb-3"
+      variant="danger"
+      @dismiss="updateError = undefined"
+    >
+      {{ updateError }}
     </gl-alert>
 
     <div v-if="workItemLoading" class="gl-max-w-26 gl-py-5">
@@ -289,7 +327,7 @@ export default {
           </li>
         </ul>
         <work-item-type-icon
-          v-else
+          v-else-if="!error"
           :work-item-icon-name="workItemIconName"
           :work-item-type="workItemType && workItemType.toUpperCase()"
           show-text
@@ -316,7 +354,7 @@ export default {
           :is-parent-confidential="parentWorkItemConfidentiality"
           @deleteWorkItem="$emit('deleteWorkItem', workItemType)"
           @toggleWorkItemConfidentiality="toggleConfidentiality"
-          @error="error = $event"
+          @error="updateError = $event"
         />
         <gl-button
           v-if="isModal"
@@ -332,24 +370,25 @@ export default {
         :storage-key="$options.WORK_ITEM_VIEWED_STORAGE_KEY"
       >
         <work-item-information
-          v-if="showInfoBanner"
+          v-if="showInfoBanner && !error"
           :show-info-banner="showInfoBanner"
           @work-item-banner-dismissed="dismissBanner"
         />
       </local-storage-sync>
       <work-item-title
+        v-if="workItem.title"
         :work-item-id="workItem.id"
         :work-item-title="workItem.title"
         :work-item-type="workItemType"
         :work-item-parent-id="workItemParentId"
         :can-update="canUpdate"
-        @error="error = $event"
+        @error="updateError = $event"
       />
       <work-item-state
         :work-item="workItem"
         :work-item-parent-id="workItemParentId"
         :can-update="canUpdate"
-        @error="error = $event"
+        @error="updateError = $event"
       />
       <work-item-assignees
         v-if="workItemAssignees"
@@ -360,24 +399,33 @@ export default {
         :work-item-type="workItemType"
         :can-invite-members="workItemAssignees.canInviteMembers"
         :full-path="fullPath"
-        @error="error = $event"
+        @error="updateError = $event"
+      />
+      <work-item-labels
+        v-if="workItemLabels"
+        :work-item-id="workItem.id"
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        @error="updateError = $event"
+      />
+      <work-item-due-date
+        v-if="workItemDueDate"
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="updateError = $event"
       />
       <template v-if="workItemsMvc2Enabled">
-        <work-item-labels
-          v-if="workItemLabels"
+        <work-item-milestone
+          v-if="workItemMilestone"
           :work-item-id="workItem.id"
+          :work-item-milestone="workItemMilestone.nodes[0]"
+          :work-item-type="workItemType"
           :can-update="canUpdate"
           :full-path="fullPath"
-          @error="error = $event"
-        />
-        <work-item-due-date
-          v-if="workItemDueDate"
-          :can-update="canUpdate"
-          :due-date="workItemDueDate.dueDate"
-          :start-date="workItemDueDate.startDate"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-          @error="error = $event"
+          @error="updateError = $event"
         />
       </template>
       <work-item-weight
@@ -387,14 +435,31 @@ export default {
         :weight="workItemWeight.weight"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
-        @error="error = $event"
+        @error="updateError = $event"
       />
+      <template v-if="workItemsMvc2Enabled">
+        <work-item-iteration
+          v-if="workItemIteration"
+          class="gl-mb-5"
+          :iteration="workItemIteration.iteration"
+          :can-update="canUpdate"
+          :work-item-id="workItem.id"
+          :work-item-type="workItemType"
+          @error="updateError = $event"
+        />
+      </template>
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"
         :full-path="fullPath"
         class="gl-pt-5"
-        @error="error = $event"
+        @error="updateError = $event"
+      />
+      <gl-empty-state
+        v-if="error"
+        :title="$options.i18n.fetchErrorTitle"
+        :description="error"
+        :svg-path="noAccessSvgPath"
       />
     </template>
   </section>

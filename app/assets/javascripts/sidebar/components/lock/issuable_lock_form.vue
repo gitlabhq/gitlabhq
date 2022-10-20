@@ -3,7 +3,7 @@ import { GlIcon, GlTooltipDirective, GlOutsideDirective as Outside } from '@gitl
 import { mapGetters, mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import eventHub from '~/sidebar/event_hub';
 import toast from '~/vue_shared/plugins/global_toast';
 import EditForm from './edit_form.vue';
@@ -95,7 +95,7 @@ export default {
           const flashMessage = __(
             'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
           );
-          createFlash({
+          createAlert({
             message: sprintf(flashMessage, { issuableDisplayName: this.issuableDisplayName }),
           });
         })

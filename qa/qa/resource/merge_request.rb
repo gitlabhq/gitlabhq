@@ -2,7 +2,7 @@
 
 module QA
   module Resource
-    class MergeRequest < Base
+    class MergeRequest < Issuable
       attr_accessor :approval_rules,
                     :source_branch,
                     :target_new_branch,
@@ -130,10 +130,6 @@ module QA
         }
       end
 
-      def api_comments_path
-        "#{api_get_path}/notes"
-      end
-
       def merge_via_api!
         Support::Waiter.wait_until(sleep_interval: 1) do
           QA::Runtime::Logger.debug("Waiting until merge request with id '#{iid}' can be merged")
@@ -164,26 +160,6 @@ module QA
         @source_branch = "large_merge_request"
         visit("#{project.web_url}/-/merge_requests/1")
         current_url
-      end
-
-      # Get MR comments
-      #
-      # @return [Array]
-      def comments(auto_paginate: false, attempts: 0)
-        return parse_body(api_get_from(api_comments_path)) unless auto_paginate
-
-        auto_paginated_response(
-          Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url,
-          attempts: attempts
-        )
-      end
-
-      # Add mr comment
-      #
-      # @param [String] body
-      # @return [Hash]
-      def add_comment(body)
-        api_post_to(api_comments_path, body: body)
       end
 
       # Return subset of fields for comparing merge requests

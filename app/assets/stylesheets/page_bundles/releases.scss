@@ -1,0 +1,12 @@
+@import 'mixins_and_variables_and_functions';
+
+.release-block {
+  transition: background-color 1s linear;
+}
+
+.release-block-milestone-info {
+  .milestone-progress-bar-container {
+    width: 300px;
+    min-height: 46px;
+  }
+}

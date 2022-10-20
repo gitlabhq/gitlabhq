@@ -368,12 +368,13 @@ describe('MrWidgetOptions', () => {
 
       describe('bindEventHubListeners', () => {
         it.each`
-          event                        | method                   | methodArgs
-          ${'MRWidgetUpdateRequested'} | ${'checkStatus'}         | ${(x) => [x]}
-          ${'MRWidgetRebaseSuccess'}   | ${'checkStatus'}         | ${(x) => [x, true]}
-          ${'FetchActionsContent'}     | ${'fetchActionsContent'} | ${() => []}
-          ${'EnablePolling'}           | ${'resumePolling'}       | ${() => []}
-          ${'DisablePolling'}          | ${'stopPolling'}         | ${() => []}
+          event                        | method                        | methodArgs
+          ${'MRWidgetUpdateRequested'} | ${'checkStatus'}              | ${(x) => [x]}
+          ${'MRWidgetRebaseSuccess'}   | ${'checkStatus'}              | ${(x) => [x, true]}
+          ${'FetchActionsContent'}     | ${'fetchActionsContent'}      | ${() => []}
+          ${'EnablePolling'}           | ${'resumePolling'}            | ${() => []}
+          ${'DisablePolling'}          | ${'stopPolling'}              | ${() => []}
+          ${'FetchDeployments'}        | ${'fetchPreMergeDeployments'} | ${() => []}
         `('should bind to $event', ({ event, method, methodArgs }) => {
           jest.spyOn(wrapper.vm, method).mockImplementation();
 
@@ -771,34 +772,40 @@ describe('MrWidgetOptions', () => {
   });
 
   describe('security widget', () => {
-    describe.each`
-      context                  | hasPipeline | shouldRender
-      ${'there is a pipeline'} | ${true}     | ${true}
-      ${'no pipeline'}         | ${false}    | ${false}
-    `('given $context', ({ hasPipeline, shouldRender }) => {
-      beforeEach(() => {
-        const mrData = {
-          ...mockData,
-          ...(hasPipeline ? {} : { pipeline: null }),
-        };
+    const setup = async (hasPipeline) => {
+      const mrData = {
+        ...mockData,
+        ...(hasPipeline ? {} : { pipeline: null }),
+      };
 
-        // Override top-level mocked requests, which always use a fresh copy of
-        // mockData, which always includes the full pipeline object.
-        mock.onGet(mockData.merge_request_widget_path).reply(() => [200, mrData]);
-        mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
+      // Override top-level mocked requests, which always use a fresh copy of
+      // mockData, which always includes the full pipeline object.
+      mock.onGet(mockData.merge_request_widget_path).reply(() => [200, mrData]);
+      mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
 
-        return createComponent(mrData, {
-          apolloProvider: createMockApollo([
-            [
-              securityReportMergeRequestDownloadPathsQuery,
-              async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
-            ],
-          ]),
-        });
+      return createComponent(mrData, {
+        apolloProvider: createMockApollo([
+          [
+            securityReportMergeRequestDownloadPathsQuery,
+            async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
+          ],
+        ]),
       });
+    };
 
-      it(shouldRender ? 'renders' : 'does not render', () => {
-        expect(findSecurityMrWidget().exists()).toBe(shouldRender);
+    describe('with a pipeline', () => {
+      it('renders the security widget', async () => {
+        await setup(true);
+
+        expect(findSecurityMrWidget().exists()).toBe(true);
+      });
+    });
+
+    describe('with no pipeline', () => {
+      it('does not render the security widget', async () => {
+        await setup(false);
+
+        expect(findSecurityMrWidget().exists()).toBe(false);
       });
     });
   });
@@ -881,7 +888,10 @@ describe('MrWidgetOptions', () => {
       await nextTick();
 
       expect(
-        wrapper.find('[data-testid="widget-extension-top-level"]').find(GlDropdown).exists(),
+        wrapper
+          .find('[data-testid="widget-extension-top-level"]')
+          .findComponent(GlDropdown)
+          .exists(),
       ).toBe(false);
 
       await nextTick();
@@ -891,19 +901,19 @@ describe('MrWidgetOptions', () => {
       expect(collapsedSection.text()).toContain('Hello world');
 
       // Renders icon in the row
-      expect(collapsedSection.find(GlIcon).exists()).toBe(true);
-      expect(collapsedSection.find(GlIcon).props('name')).toBe('status-failed');
+      expect(collapsedSection.findComponent(GlIcon).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlIcon).props('name')).toBe('status-failed');
 
       // Renders badge in the row
-      expect(collapsedSection.find(GlBadge).exists()).toBe(true);
-      expect(collapsedSection.find(GlBadge).text()).toBe('Closed');
+      expect(collapsedSection.findComponent(GlBadge).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlBadge).text()).toBe('Closed');
 
       // Renders a link in the row
-      expect(collapsedSection.find(GlLink).exists()).toBe(true);
-      expect(collapsedSection.find(GlLink).text()).toBe('GitLab.com');
+      expect(collapsedSection.findComponent(GlLink).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlLink).text()).toBe('GitLab.com');
 
-      expect(collapsedSection.find(GlButton).exists()).toBe(true);
-      expect(collapsedSection.find(GlButton).text()).toBe('Full report');
+      expect(collapsedSection.findComponent(GlButton).exists()).toBe(true);
+      expect(collapsedSection.findComponent(GlButton).text()).toBe('Full report');
     });
 
     it('extension polling is not called if enablePolling flag is not passed', () => {
@@ -994,7 +1004,7 @@ describe('MrWidgetOptions', () => {
 
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(4);
+        expect(pollRequest).toHaveBeenCalledTimes(2);
       });
     });
 
@@ -1032,7 +1042,7 @@ describe('MrWidgetOptions', () => {
         registerExtension(pollingErrorExtension);
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(4);
+        expect(pollRequest).toHaveBeenCalledTimes(2);
       });
 
       it('captures sentry error and displays error when poll has failed', async () => {
@@ -1134,7 +1144,7 @@ describe('MrWidgetOptions', () => {
         ${'WidgetCodeQuality'} | ${'i_testing_code_quality_widget_total'}
         ${'WidgetTerraform'}   | ${'i_testing_terraform_widget_total'}
         ${'WidgetIssues'}      | ${'i_testing_issues_widget_total'}
-        ${'WidgetTestReport'}  | ${'i_testing_summary_widget_total'}
+        ${'WidgetTestSummary'} | ${'i_testing_summary_widget_total'}
       `(
         "sends non-standard events for the '$widgetName' widget",
         async ({ widgetName, nonStandardEvent }) => {

@@ -116,8 +116,20 @@ class BulkImports::Entity < ApplicationRecord
     "/#{pluralized_name}/#{encoded_source_full_path}"
   end
 
+  def base_xid_resource_url_path
+    "/#{pluralized_name}/#{source_xid}"
+  end
+
+  def base_resource_path
+    if source_xid.present?
+      base_xid_resource_url_path
+    else
+      base_resource_url_path
+    end
+  end
+
   def export_relations_url_path
-    "#{base_resource_url_path}/export_relations"
+    "#{base_resource_path}/export_relations"
   end
 
   def relation_download_url_path(relation)
@@ -125,7 +137,7 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def wikis_url_path
-    "#{base_resource_url_path}/wikis"
+    "#{base_resource_path}/wikis"
   end
 
   def project?
@@ -149,6 +161,13 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def validate_imported_entity_type
+    if project_entity? && !BulkImports::Features.project_migration_enabled?(destination_namespace)
+      errors.add(
+        :base,
+        s_('BulkImport|invalid entity source type')
+      )
+    end
+
     if group.present? && project_entity?
       errors.add(
         :group,

@@ -11,7 +11,7 @@ module IncidentManagement
         @issuable = issuable
         @param_errors = []
 
-        super(project: issuable.project, current_user: current_user, params: Hash(params))
+        super(project: issuable.project, current_user: current_user, params: params)
       end
 
       def execute

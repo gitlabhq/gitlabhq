@@ -6,42 +6,64 @@ RSpec.describe Ci::RunnerPolicy do
   describe 'ability :read_runner' do
     let_it_be(:guest) { create(:user) }
     let_it_be(:developer) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
     let_it_be(:owner) { create(:user) }
 
-    let_it_be(:group1) { create(:group, name: 'top-level', path: 'top-level') }
-    let_it_be(:subgroup1) { create(:group, name: 'subgroup1', path: 'subgroup1', parent: group1) }
-    let_it_be(:project1) { create(:project, group: subgroup1) }
+    let_it_be_with_reload(:group) { create(:group, name: 'top-level', path: 'top-level') }
+    let_it_be_with_reload(:subgroup) { create(:group, name: 'subgroup', path: 'subgroup', parent: group) }
+    let_it_be_with_reload(:project) { create(:project, group: subgroup) }
+
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:group1_runner) { create(:ci_runner, :group, groups: [group1]) }
-    let_it_be(:project1_runner) { create(:ci_runner, :project, projects: [project1]) }
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
     subject(:policy) { described_class.new(user, runner) }
 
-    before do
-      group1.add_guest(guest)
-      group1.add_developer(developer)
-      group1.add_owner(owner)
+    before_all do
+      group.add_guest(guest)
+      group.add_developer(developer)
+      group.add_maintainer(maintainer)
+      group.add_owner(owner)
     end
 
-    shared_context 'on hierarchy with shared runners disabled' do
-      around do |example|
-        group1.update!(shared_runners_enabled: false)
-        project1.update!(shared_runners_enabled: false)
+    shared_examples 'a policy allowing reading instance runner depending on runner sharing' do
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
 
-        example.run
-      ensure
-        project1.update!(shared_runners_enabled: true)
-        group1.update!(shared_runners_enabled: true)
+        it { expect_allowed :read_runner }
+
+        context 'with shared runners disabled on projects' do
+          before do
+            project.update!(shared_runners_enabled: false)
+          end
+
+          it { expect_allowed :read_runner }
+        end
+
+        context 'with shared runners disabled for groups and projects' do
+          before do
+            group.update!(shared_runners_enabled: false)
+            project.update!(shared_runners_enabled: false)
+          end
+
+          it { expect_disallowed :read_runner }
+        end
       end
     end
 
-    shared_context 'on hierarchy with group runners disabled' do
-      around do |example|
-        project1.update!(group_runners_enabled: false)
+    shared_examples 'a policy allowing reading group runner depending on runner sharing' do
+      context 'with group runner' do
+        let(:runner) { group_runner }
 
-        example.run
-      ensure
-        project1.update!(group_runners_enabled: true)
+        it { expect_allowed :read_runner }
+
+        context 'with sharing of group runners disabled' do
+          before do
+            project.update!(group_runners_enabled: false)
+          end
+
+          it { expect_disallowed :read_runner }
+        end
       end
     end
 
@@ -51,27 +73,32 @@ RSpec.describe Ci::RunnerPolicy do
 
         it { expect_disallowed :read_runner }
 
-        context 'with shared runners disabled' do
-          include_context 'on hierarchy with shared runners disabled' do
-            it { expect_disallowed :read_runner }
+        context 'with shared runners disabled for groups and projects' do
+          before do
+            group.update!(shared_runners_enabled: false)
+            project.update!(shared_runners_enabled: false)
           end
+
+          it { expect_disallowed :read_runner }
         end
       end
 
       context 'with group runner' do
-        let(:runner) { group1_runner }
+        let(:runner) { group_runner }
 
         it { expect_disallowed :read_runner }
 
-        context 'with group runner disabled' do
-          include_context 'on hierarchy with group runners disabled' do
-            it { expect_disallowed :read_runner }
+        context 'with sharing of group runners disabled' do
+          before do
+            project.update!(group_runners_enabled: false)
           end
+
+          it { expect_disallowed :read_runner }
         end
       end
 
       context 'with project runner' do
-        let(:runner) { project1_runner }
+        let(:runner) { project_runner }
 
         it { expect_disallowed :read_runner }
       end
@@ -92,66 +119,52 @@ RSpec.describe Ci::RunnerPolicy do
     context 'with developer access' do
       let(:user) { developer }
 
-      context 'with instance runner' do
-        let(:runner) { instance_runner }
+      it_behaves_like 'a policy allowing reading instance runner depending on runner sharing'
 
-        it { expect_allowed :read_runner }
-
-        context 'with shared runners disabled' do
-          include_context 'on hierarchy with shared runners disabled' do
-            it { expect_disallowed :read_runner }
-          end
-        end
-      end
-
-      context 'with group runner' do
-        let(:runner) { group1_runner }
-
-        it { expect_allowed :read_runner }
-
-        context 'with group runner disabled' do
-          include_context 'on hierarchy with group runners disabled' do
-            it { expect_disallowed :read_runner }
-          end
-        end
-      end
+      it_behaves_like 'a policy allowing reading group runner depending on runner sharing'
 
       context 'with project runner' do
-        let(:runner) { project1_runner }
+        let(:runner) { project_runner }
 
         it { expect_disallowed :read_runner }
+      end
+    end
+
+    context 'with maintainer access' do
+      let(:user) { maintainer }
+
+      it_behaves_like 'a policy allowing reading instance runner depending on runner sharing'
+
+      it_behaves_like 'a policy allowing reading group runner depending on runner sharing'
+
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        it { expect_allowed :read_runner }
       end
     end
 
     context 'with owner access' do
       let(:user) { owner }
 
-      context 'with instance runner' do
-        let(:runner) { instance_runner }
-
-        context 'with shared runners disabled' do
-          include_context 'on hierarchy with shared runners disabled' do
-            it { expect_disallowed :read_runner }
-          end
-        end
-
-        it { expect_allowed :read_runner }
-      end
+      it_behaves_like 'a policy allowing reading instance runner depending on runner sharing'
 
       context 'with group runner' do
-        let(:runner) { group1_runner }
-
-        context 'with group runners disabled' do
-          include_context 'on hierarchy with group runners disabled' do
-            it { expect_allowed :read_runner }
-          end
-        end
+        let(:runner) { group_runner }
 
         it { expect_allowed :read_runner }
+
+        context 'with sharing of group runners disabled' do
+          before do
+            project.update!(group_runners_enabled: false)
+          end
+
+          it { expect_allowed :read_runner }
+        end
       end
 
       context 'with project runner' do
-        let(:runner) { project1_runner }
+        let(:runner) { project_runner }
 
         it { expect_allowed :read_runner }
       end

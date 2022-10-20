@@ -53,6 +53,7 @@ describe('Output component', () => {
       expect(iframe.exists()).toBe(true);
       expect(iframe.element.getAttribute('sandbox')).toBe('');
       expect(iframe.element.getAttribute('srcdoc')).toBe('<p>test</p>');
+      expect(iframe.element.getAttribute('scrolling')).toBe('auto');
     });
 
     it('renders multiple raw HTML outputs', () => {

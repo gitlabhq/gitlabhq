@@ -116,7 +116,12 @@ module API
 
             redirect_request = project_or_nil.blank? || packages.empty?
 
-            redirect_registry_request(redirect_request, :npm, package_name: package_name) do
+            redirect_registry_request(
+              forward_to_registry: redirect_request,
+              package_type: :npm,
+              target: project_or_nil,
+              package_name: package_name
+            ) do
               authorize_read_package!(project)
 
               not_found!('Packages') if packages.empty?

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -608,7 +608,7 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-To log in to Docker Hub, leave `$DOCKER_REGISTRY`
+To sign in to Docker Hub, leave `$DOCKER_REGISTRY`
 empty or remove it.
 
 ### Option 2: Mount `~/.docker/config.json` on each job

@@ -7,9 +7,12 @@ before_script:
   - bundle exec rake db:create
 
 variables:
+  KEY_VALUE_VAR:
+    value: 'value x'
+    description: 'value of KEY_VALUE_VAR'
   DB_NAME: postgres
   ENVIRONMENT_VAR:
-    value: 'env var value'
+    value: ['env var value', 'env var value2']
     description: 'env var description'
 
 stages:

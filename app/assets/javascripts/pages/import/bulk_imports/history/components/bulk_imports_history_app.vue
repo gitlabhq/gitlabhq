@@ -2,7 +2,7 @@
 import { GlButton, GlEmptyState, GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
 
 import { s__, __ } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportsHistory } from '~/rest_api';
@@ -107,7 +107,7 @@ export default {
         this.pageInfo = parseIntPagination(normalizeHeaders(headers));
         this.historyItems = historyItems;
       } catch (e) {
-        createFlash({ message: DEFAULT_ERROR, captureError: true, error: e });
+        createAlert({ message: DEFAULT_ERROR, captureError: true, error: e });
       } finally {
         this.loading = false;
       }

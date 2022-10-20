@@ -1,8 +1,10 @@
--# We currently only support `alert`, `notice`, `success`, 'toast', and 'raw'
-- icons = {'alert' => 'error', 'notice' => 'information-o', 'success' => 'check-circle'}
-- type_to_variant = {'alert' => 'danger', 'notice' => 'info', 'success' => 'success'}
+- flash_container_no_margin = local_assigns.fetch(:flash_container_no_margin, false)
+- flash_container_class = ('flash-container-no-margin' if flash_container_no_margin)
+
+-# We currently only support `alert`, `notice`, `success`, `warning`, 'toast', and 'raw'
+- type_to_variant = {'alert' => 'danger', 'notice' => 'info', 'success' => 'success', 'warning' => 'warning'}
 - closable = %w[alert notice success]
-.flash-container.flash-container-page.sticky{ data: { qa_selector: 'flash_container' } }
+.flash-container.flash-container-page.sticky{ data: { qa_selector: 'flash_container' }, class: flash_container_class }
   - flash.each do |key, value|
     - if key == 'toast' && value
       .js-toast-message{ data: { message: value } }
@@ -11,9 +13,5 @@
     - elsif value == I18n.t('devise.failure.unconfirmed')
       = render 'shared/confirm_your_email_alert'
     - elsif value
-      %div{ class: "flash-#{key} mb-2", data: { testid: "alert-#{type_to_variant[key]}" } }
-        = sprite_icon(icons[key], css_class: 'align-middle mr-1') unless icons[key].nil?
-        %span= value
-        - if closable.include?(key)
-          %div{ class: "close-icon-wrapper js-close-icon" }
-            = sprite_icon('close', css_class: 'close-icon gl-vertical-align-baseline!')
+      = render Pajamas::AlertComponent.new(variant: type_to_variant[key], dismissible: closable.include?(key), alert_options: {class: "flash-#{key}", data: { testid: "alert-#{type_to_variant[key]}" }}) do |c|
+        = c.with_body { value }

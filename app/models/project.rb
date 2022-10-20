@@ -32,7 +32,6 @@ class Project < ApplicationRecord
   include FeatureGate
   include OptionallySearch
   include FromUnion
-  include IgnorableColumns
   include Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper
@@ -48,8 +47,6 @@ class Project < ApplicationRecord
 
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
-
-  ignore_columns :build_coverage_regex, remove_after: '2022-10-22', remove_with: '15.5'
 
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
@@ -239,6 +236,9 @@ class Project < ApplicationRecord
   # Packages
   has_many :packages, class_name: 'Packages::Package'
   has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
+  # repository_files must be destroyed by ruby code in order to properly remove carrierwave uploads
+  has_many :repository_files, inverse_of: :project, class_name: 'Packages::Rpm::RepositoryFile',
+                              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::ProjectDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
@@ -262,11 +262,11 @@ class Project < ApplicationRecord
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :incident_management_issuable_escalation_statuses, through: :issues, inverse_of: :project, class_name: 'IncidentManagement::IssuableEscalationStatus'
+  has_many :incident_management_timeline_event_tags, inverse_of: :project, class_name: 'IncidentManagement::TimelineEventTag'
   has_many :labels, class_name: 'ProjectLabel'
   has_many :integrations
   has_many :events
   has_many :milestones
-  has_many :iterations
 
   # Projects with a very large number of notes may time out destroying them
   # through the foreign key. Additionally, the deprecated attachment uploader
@@ -353,6 +353,7 @@ class Project < ApplicationRecord
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
   has_many :ci_refs, class_name: 'Ci::Ref', inverse_of: :project
 
+  has_many :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :project
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
@@ -476,7 +477,8 @@ class Project < ApplicationRecord
   delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :forward_deployment_enabled, :forward_deployment_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
-  delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
+  delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci_outbound, allow_nil: true
+  delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
   delegate :opt_in_jwt, :opt_in_jwt=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
@@ -492,12 +494,17 @@ class Project < ApplicationRecord
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 
+  delegate :maven_package_requests_forwarding,
+           :pypi_package_requests_forwarding,
+           :npm_package_requests_forwarding,
+           to: :namespace
+
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
     format: { without: %r{(\.{2}|\A/)},
-              message: _('cannot include leading slash or directory traversal.') },
+              message: N_('cannot include leading slash or directory traversal.') },
     length: { maximum: 255 },
     allow_blank: true
   validates :name,
@@ -693,13 +700,13 @@ class Project < ApplicationRecord
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
-    default: 3600, error_message: _('Maximum job timeout has a value which could not be accepted')
+    default: 3600, error_message: N_('Maximum job timeout has a value which could not be accepted')
 
   validates :build_timeout, allow_nil: true,
                             numericality: { greater_than_or_equal_to: 10.minutes,
                                             less_than: MAX_BUILD_TIMEOUT,
                                             only_integer: true,
-                                            message: _('needs to be between 10 minutes and 1 month') }
+                                            message: N_('needs to be between 10 minutes and 1 month') }
 
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
@@ -1280,6 +1287,8 @@ class Project < ApplicationRecord
     valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
+  # TODO: rename to build_or_assign_import_data as it doesn't save record
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/377319
   def create_or_update_import_data(data: nil, credentials: nil)
     return if data.nil? && credentials.nil?
 
@@ -2720,6 +2729,7 @@ class Project < ApplicationRecord
     ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
   end
 
+  # DO NOT USE. This method will be deprecated soon
   def uses_external_project_ci_config?
     !!(ci_config_path =~ %r{@.+/.+})
   end
@@ -2844,6 +2854,7 @@ class Project < ApplicationRecord
     repository.gitlab_ci_yml_for(sha, ci_config_path_or_default)
   end
 
+  # DO NOT USE. This method will be deprecated soon
   def ci_config_external_project
     Project.find_by_full_path(ci_config_path.split('@', 2).last)
   end
@@ -2886,10 +2897,16 @@ class Project < ApplicationRecord
     ci_cd_settings.allow_fork_pipelines_to_run_in_parent_project?
   end
 
-  def ci_job_token_scope_enabled?
+  def ci_outbound_job_token_scope_enabled?
     return false unless ci_cd_settings
 
     ci_cd_settings.job_token_scope_enabled?
+  end
+
+  def ci_inbound_job_token_scope_enabled?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.inbound_job_token_scope_enabled?
   end
 
   def restrict_user_defined_variables?
@@ -2936,12 +2953,6 @@ class Project < ApplicationRecord
 
     DeclarativePolicy.user_scope do
       links.select { Ability.allowed?(user, :read_group, _1.group) }
-    end
-  end
-
-  def remove_project_authorizations(user_ids, per_batch = 1000)
-    user_ids.each_slice(per_batch) do |user_ids_batch|
-      project_authorizations.where(user_id: user_ids_batch).delete_all
     end
   end
 
@@ -3023,11 +3034,7 @@ class Project < ApplicationRecord
   end
 
   def packages_policy_subject
-    if Feature.enabled?(:read_package_policy_rule, group)
-      ::Packages::Policies::Project.new(self)
-    else
-      self
-    end
+    ::Packages::Policies::Project.new(self)
   end
 
   def destroy_deployment_by_id(deployment_id)
@@ -3038,6 +3045,16 @@ class Project < ApplicationRecord
     return true if Gitlab::CurrentSettings.max_pages_custom_domains_per_project == 0
 
     pages_domains.count < Gitlab::CurrentSettings.max_pages_custom_domains_per_project
+  end
+
+  # overridden in EE
+  def can_suggest_reviewers?
+    false
+  end
+
+  # overridden in EE
+  def suggested_reviewers_available?
+    false
   end
 
   private

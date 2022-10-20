@@ -63,7 +63,7 @@ RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService do
 
         it 'responds with error' do
           expect(execute).to be_error
-          expect(execute.message).to eq("Title can't be blank")
+          expect(execute.errors).to contain_exactly("Title can't be blank")
         end
       end
     end

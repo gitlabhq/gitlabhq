@@ -1,59 +1,60 @@
-import Vue, { nextTick } from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
 import Button from '~/ide/components/new_dropdown/button.vue';
 
 describe('IDE new entry dropdown button component', () => {
-  let Component;
-  let vm;
+  let wrapper;
 
-  beforeAll(() => {
-    Component = Vue.extend(Button);
-  });
-
-  beforeEach(() => {
-    vm = mountComponent(Component, {
-      label: 'Testing',
-      icon: 'doc-new',
+  const createComponent = (props = {}) => {
+    wrapper = mount(Button, {
+      propsData: {
+        label: 'Testing',
+        icon: 'doc-new',
+        ...props,
+      },
     });
-
-    jest.spyOn(vm, '$emit').mockImplementation(() => {});
-  });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders button with label', () => {
-    expect(vm.$el.textContent).toContain('Testing');
+    createComponent();
+
+    expect(wrapper.text()).toContain('Testing');
   });
 
   it('renders icon', () => {
-    expect(vm.$el.querySelector('[data-testid="doc-new-icon"]')).not.toBe(null);
+    createComponent();
+
+    expect(wrapper.find('[data-testid="doc-new-icon"]').exists()).toBe(true);
   });
 
-  it('emits click event', () => {
-    vm.$el.click();
+  it('emits click event', async () => {
+    createComponent();
 
-    expect(vm.$emit).toHaveBeenCalledWith('click');
+    await wrapper.trigger('click');
+
+    expect(wrapper.emitted('click')).toHaveLength(1);
   });
 
-  it('hides label if showLabel is false', async () => {
-    vm.showLabel = false;
+  it('hides label if showLabel is false', () => {
+    createComponent({ showLabel: false });
 
-    await nextTick();
-    expect(vm.$el.textContent).not.toContain('Testing');
+    expect(wrapper.text()).not.toContain('Testing');
   });
 
-  describe('tooltipTitle', () => {
+  describe('tooltip title', () => {
     it('returns empty string when showLabel is true', () => {
-      expect(vm.tooltipTitle).toBe('');
+      createComponent({ showLabel: true });
+
+      expect(wrapper.attributes('title')).toBe('');
     });
 
-    it('returns label', async () => {
-      vm.showLabel = false;
+    it('returns label', () => {
+      createComponent({ showLabel: false });
 
-      await nextTick();
-      expect(vm.tooltipTitle).toBe('Testing');
+      expect(wrapper.attributes('title')).toBe('Testing');
     });
   });
 });

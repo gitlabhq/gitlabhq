@@ -152,17 +152,19 @@ RSpec.describe MergeRequestPollWidgetEntity do
 
   describe '#builds_with_coverage' do
     it 'serializes the builds with coverage' do
-      allow(resource).to receive(:head_pipeline_builds_with_coverage).and_return([
-        double(name: 'rspec', coverage: 91.5),
-        double(name: 'jest', coverage: 94.1)
-      ])
+      allow(resource).to receive(:head_pipeline_builds_with_coverage).and_return(
+        [
+          double(name: 'rspec', coverage: 91.5),
+          double(name: 'jest', coverage: 94.1)
+        ])
 
       result = subject[:builds_with_coverage]
 
-      expect(result).to eq([
-        { name: 'rspec', coverage: 91.5 },
-        { name: 'jest', coverage: 94.1 }
-      ])
+      expect(result).to eq(
+        [
+          { name: 'rspec', coverage: 91.5 },
+          { name: 'jest', coverage: 94.1 }
+        ])
     end
   end
 

@@ -10,9 +10,6 @@ class Event < ApplicationRecord
   include UsageStatistics
   include ShaAttribute
 
-  # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/358088
-  default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
-
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,
     updated: 2,
@@ -281,6 +278,7 @@ class Event < ApplicationRecord
       "opened"
     end
   end
+
   # rubocop: enable Metrics/CyclomaticComplexity
   # rubocop: enable Metrics/PerceivedComplexity
 
@@ -448,9 +446,9 @@ class Event < ApplicationRecord
 
   def design_action_names
     {
-      created: _('added'),
-      updated: _('updated'),
-      destroyed: _('removed')
+      created: 'added',
+      updated: 'updated',
+      destroyed: 'removed'
     }
   end
 

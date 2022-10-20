@@ -1,14 +1,17 @@
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDropdownItem, GlFormGroup, GlSprintf } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+import { trimText } from 'helpers/text_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
 import createEditNewModule from '~/releases/stores/modules/edit_new';
 
 const TEST_TAG_NAME = 'test-tag-name';
+const TEST_TAG_MESSAGE = 'Test tag message';
 const TEST_PROJECT_ID = '1234';
 const TEST_CREATE_FROM = 'test-create-from';
 const NONEXISTENT_TAG_NAME = 'nonexistent-tag';
@@ -47,6 +50,8 @@ describe('releases/components/tag_field_new', () => {
       store,
       stubs: {
         RefSelector: RefSelectorStub,
+        GlFormGroup,
+        GlSprintf,
       },
     });
   };
@@ -61,9 +66,11 @@ describe('releases/components/tag_field_new', () => {
     });
 
     store.state.editNew.createFrom = TEST_CREATE_FROM;
+    store.state.editNew.showCreateFrom = true;
 
     store.state.editNew.release = {
       tagName: TEST_TAG_NAME,
+      tagMessage: '',
       assets: {
         links: [],
       },
@@ -85,6 +92,9 @@ describe('releases/components/tag_field_new', () => {
   const findCreateFromDropdown = () => findCreateFromFormGroup().findComponent(RefSelectorStub);
 
   const findCreateNewTagOption = () => wrapper.findComponent(GlDropdownItem);
+
+  const findAnnotatedTagMessageFormGroup = () =>
+    wrapper.find('[data-testid="annotated-tag-message-field"]');
 
   describe('"Tag name" field', () => {
     describe('rendering and behavior', () => {
@@ -122,6 +132,10 @@ describe('releases/components/tag_field_new', () => {
 
         it('hides the "Create from" field', () => {
           expect(findCreateFromFormGroup().exists()).toBe(false);
+        });
+
+        it('hides the "Tag message" field', () => {
+          expect(findAnnotatedTagMessageFormGroup().exists()).toBe(false);
         });
 
         it('fetches the release notes for the tag', () => {
@@ -228,6 +242,36 @@ describe('releases/components/tag_field_new', () => {
 
         expect(store.state.editNew.createFrom).toBe(updatedCreateFrom);
       });
+    });
+  });
+
+  describe('"Annotated Tag" field', () => {
+    beforeEach(() => {
+      createComponent(mountExtended);
+    });
+
+    it('renders a label', () => {
+      expect(wrapper.findByRole('textbox', { name: 'Set tag message' }).exists()).toBe(true);
+    });
+
+    it('renders a description', () => {
+      expect(trimText(findAnnotatedTagMessageFormGroup().text())).toContain(
+        'Add a message to the tag. Leaving this blank creates a lightweight tag.',
+      );
+    });
+
+    it('updates the store', async () => {
+      await findAnnotatedTagMessageFormGroup().find('textarea').setValue(TEST_TAG_MESSAGE);
+
+      expect(store.state.editNew.release.tagMessage).toBe(TEST_TAG_MESSAGE);
+    });
+
+    it('shows a link', () => {
+      const link = wrapper.findByRole('link', {
+        name: 'lightweight tag',
+      });
+
+      expect(link.attributes('href')).toBe('https://git-scm.com/book/en/v2/Git-Basics-Tagging/');
     });
   });
 });

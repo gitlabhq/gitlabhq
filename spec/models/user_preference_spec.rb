@@ -10,20 +10,20 @@ RSpec.describe UserPreference do
       using RSpec::Parameterized::TableSyntax
 
       where(color: [
-        '#000000',
-        '#123456',
-        '#abcdef',
-        '#AbCdEf',
-        '#ffffff',
-        '#fFfFfF',
-        '#000',
-        '#123',
-        '#abc',
-        '#AbC',
-        '#fff',
-        '#fFf',
-        ''
-      ])
+              '#000000',
+              '#123456',
+              '#abcdef',
+              '#AbCdEf',
+              '#ffffff',
+              '#fFfFfF',
+              '#000',
+              '#123',
+              '#abc',
+              '#AbC',
+              '#fff',
+              '#fFf',
+              ''
+            ])
 
       with_them do
         it { is_expected.to allow_value(color).for(:diffs_deletion_color) }
@@ -31,19 +31,26 @@ RSpec.describe UserPreference do
       end
 
       where(color: [
-        '#1',
-        '#12',
-        '#1234',
-        '#12345',
-        '#1234567',
-        '123456',
-        '#12345x'
-      ])
+              '#1',
+              '#12',
+              '#1234',
+              '#12345',
+              '#1234567',
+              '123456',
+              '#12345x'
+            ])
 
       with_them do
         it { is_expected.not_to allow_value(color).for(:diffs_deletion_color) }
         it { is_expected.not_to allow_value(color).for(:diffs_addition_color) }
       end
+    end
+
+    describe 'use_legacy_web_ide' do
+      it { is_expected.to allow_value(true).for(:use_legacy_web_ide) }
+      it { is_expected.to allow_value(false).for(:use_legacy_web_ide) }
+      it { is_expected.not_to allow_value(nil).for(:use_legacy_web_ide) }
+      it { is_expected.not_to allow_value("").for(:use_legacy_web_ide) }
     end
   end
 

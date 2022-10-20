@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Certify
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 type: reference
 ---
@@ -36,7 +36,10 @@ issue list with a search query, including labels or the test case's title.
 
 Prerequisite:
 
-- You must have at least the Guest role.
+Whether you can view an test case depends on the [project visibility level](../../user/public_access.md):
+
+- Public project: You don't have to be a member of the project.
+- Private project: You must have at least the Guest role for the project.
 
 To view a test case:
 

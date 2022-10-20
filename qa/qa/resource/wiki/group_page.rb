@@ -23,6 +23,7 @@ module QA
         end
 
         def initialize
+          # Note: A Group Wiki Home page requires title = 'Home', otherwise when going /-/wikis, Rails will render a new page creation form.
           @title = 'Home'
           @content = 'This wiki page is created via API'
         end

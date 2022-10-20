@@ -1,7 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import initProjectSelectDropdown from '~/project_select';
 import Poll from '~/lib/utils/poll';
@@ -196,7 +196,7 @@ export default class Clusters {
   }
 
   static handleError() {
-    createFlash({
+    createAlert({
       message: s__('ClusterIntegration|Something went wrong on our end.'),
     });
   }

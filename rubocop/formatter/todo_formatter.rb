@@ -31,6 +31,7 @@ module RuboCop
         @config_inspect_todo_dir = load_config_inspect_todo_dir
         @config_old_todo_yml = load_config_old_todo_yml
         check_multiple_configurations!
+        create_empty_todos(@config_inspect_todo_dir)
 
         super
       end
@@ -47,11 +48,9 @@ module RuboCop
 
       def finished(_inspected_files)
         @todos.values.sort_by(&:cop_name).each do |todo|
-          todo.previously_disabled = previously_disabled?(todo)
-          todo.grace_period = grace_period?(todo)
-          validate_todo!(todo)
-          path = @todo_dir.write(todo.cop_name, todo.to_yaml)
+          next unless configure_and_validate_todo(todo)
 
+          path = @todo_dir.write(todo.cop_name, todo.to_yaml)
           output.puts "Written to #{relative_path(path)}\n"
         end
       end
@@ -82,6 +81,14 @@ module RuboCop
         raise "Multiple configurations found for cops:\n#{list}\n"
       end
 
+      # For each inspected cop TODO config create a TODO object to make sure
+      # the cop TODO config will be written even without any offenses.
+      def create_empty_todos(inspected_cop_config)
+        inspected_cop_config.each_key do |cop_name|
+          @todos[cop_name]
+        end
+      end
+
       def config_for(todo)
         cop_name = todo.cop_name
 
@@ -101,10 +108,15 @@ module RuboCop
         GracefulFormatter.grace_period?(todo.cop_name, config)
       end
 
-      def validate_todo!(todo)
-        return unless todo.previously_disabled && todo.grace_period
+      def configure_and_validate_todo(todo)
+        todo.previously_disabled = previously_disabled?(todo)
+        todo.grace_period = grace_period?(todo)
 
-        raise "#{todo.cop_name}: Cop must be enabled to use `#{GracefulFormatter.grace_period_key_value}`."
+        if todo.previously_disabled && todo.grace_period
+          raise "#{todo.cop_name}: Cop must be enabled to use `#{GracefulFormatter.grace_period_key_value}`."
+        end
+
+        todo.generate?
       end
 
       def load_config_inspect_todo_dir

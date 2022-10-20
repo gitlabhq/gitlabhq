@@ -105,14 +105,7 @@ module QA
               nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget', 'nuget_upload_package.yaml.erb')).result(binding)
               commit.project = project
               commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.update_files(
-                [
-                    {
-                        file_path: '.gitlab-ci.yml',
-                        content: nuget_upload_yaml
-                    }
-                ]
-              )
+              commit.update_files([{ file_path: '.gitlab-ci.yml', content: nuget_upload_yaml }])
             end
           end
 
@@ -137,9 +130,9 @@ module QA
               commit.commit_message = 'Add new csproj file'
               commit.add_files(
                 [
-                    {
-                        file_path: 'otherdotnet.csproj',
-                        content: <<~EOF
+                  {
+                      file_path: 'otherdotnet.csproj',
+                      content: <<~EOF
                             <Project Sdk="Microsoft.NET.Sdk">
 
                               <PropertyGroup>
@@ -148,18 +141,11 @@ module QA
                               </PropertyGroup>
 
                             </Project>
-                        EOF
-                    }
+                      EOF
+                  }
                 ]
               )
-              commit.update_files(
-                [
-                    {
-                        file_path: '.gitlab-ci.yml',
-                        content: nuget_install_yaml
-                    }
-                ]
-              )
+              commit.update_files([{ file_path: '.gitlab-ci.yml', content: nuget_install_yaml }])
             end
           end
 

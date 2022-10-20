@@ -15,7 +15,7 @@ describe('createLink', () => {
   it('escapes the user-controlled content', () => {
     const unescapedXSS = '<script>XSS</script>';
     const escapedPackageName = '&lt;script&gt;XSS&lt;/script&gt;';
-    const escapedHref = '&amp;lt;script&amp;gt;XSS&amp;lt;/script&amp;gt;';
+    const escapedHref = '&lt;script&gt;XSS&lt;/script&gt;';
     const href = `http://test.com/${unescapedXSS}`;
     const innerText = `testing${unescapedXSS}`;
     const result = `<a href="http://test.com/${escapedHref}" rel="nofollow noreferrer noopener">testing${escapedPackageName}</a>`;

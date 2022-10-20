@@ -22,7 +22,7 @@ module Packages
 
     def packages_for_group_projects(installable_only: false)
       packages = ::Packages::Package
-        .including_project_route
+        .including_project_namespace_route
         .including_tags
         .for_projects(group_projects_visible_to_current_user.select(:id))
         .sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")

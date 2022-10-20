@@ -471,7 +471,23 @@ module ProjectsHelper
     }
   end
 
+  def localized_project_human_access(access)
+    localized_access_names[access] || Gitlab::Access.human_access(access)
+  end
+
   private
+
+  def localized_access_names
+    {
+      Gitlab::Access::NO_ACCESS => _('No access'),
+      Gitlab::Access::MINIMAL_ACCESS => _("Minimal Access"),
+      Gitlab::Access::GUEST => _('Guest'),
+      Gitlab::Access::REPORTER => _('Reporter'),
+      Gitlab::Access::DEVELOPER => _('Developer'),
+      Gitlab::Access::MAINTAINER => _('Maintainer'),
+      Gitlab::Access::OWNER => _('Owner')
+    }
+  end
 
   def configure_oauth_import_message(provider, help_url)
     str = if current_user.admin?

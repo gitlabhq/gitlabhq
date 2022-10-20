@@ -1,0 +1,134 @@
+{
+  "version": "14.0.4",
+  "vulnerabilities": [
+    {
+      "id": "985a5666dcae22adef5ac12f8a8a2dacf9b9b481ae5d87cd0ac1712b0fd64864",
+      "category": "sast",
+      "message": "Deserialization of Untrusted Data",
+      "description": "Avoid using `load()`. `PyYAML.load` can create arbitrary Python\nobjects. A malicious actor could exploit this to run arbitrary\ncode. Use `safe_load()` instead.\n",
+      "cve": "",
+      "severity": "Critical",
+      "scanner": {
+        "id": "semgrep",
+        "name": "Semgrep"
+      },
+      "location": {
+        "file": "app/app.py",
+        "start_line": 39
+      },
+      "identifiers": [
+        {
+          "type": "semgrep_id",
+          "name": "bandit.B506",
+          "value": "bandit.B506",
+          "url": "https://semgrep.dev/r/gitlab.bandit.B506"
+        },
+        {
+          "type": "cwe",
+          "name": "CWE-502",
+          "value": "502",
+          "url": "https://cwe.mitre.org/data/definitions/502.html"
+        },
+        {
+          "type": "bandit_test_id",
+          "name": "Bandit Test ID B506",
+          "value": "B506"
+        }
+      ],
+      "tracking": {
+        "type": "source",
+        "items": [
+          {
+            "file": "app/app.py",
+            "line_start": 39,
+            "line_end": 39,
+            "signatures": [
+              {
+                "algorithm": "scope_offset",
+                "value": "app/app.py|yaml_hammer[0]:13"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "79f6537b7ec83c7717f5bd1a4f12645916caafefe2e4359148d889855505aa67",
+      "category": "sast",
+      "message": "Key Exchange without Entity Authentication",
+      "description": "Audit the use of ssh.InsecureIgnoreHostKey\n",
+      "cve": "",
+      "severity": "Medium",
+      "scanner": {
+        "id": "semgrep",
+        "name": "Semgrep"
+      },
+      "location": {
+        "file": "og.go",
+        "start_line": 8
+      },
+      "identifiers": [
+        {
+          "type": "semgrep_id",
+          "name": "gosec.G106-1",
+          "value": "gosec.G106-1"
+        },
+        {
+          "type": "cwe",
+          "name": "CWE-322",
+          "value": "322",
+          "url": "https://cwe.mitre.org/data/definitions/322.html"
+        },
+        {
+          "type": "gosec_rule_id",
+          "name": "Gosec Rule ID G106",
+          "value": "G106"
+        }
+      ],
+      "tracking": {
+        "type": "source",
+        "items": [
+          {
+            "file": "og.go",
+            "line_start": 8,
+            "line_end": 8,
+            "signatures": [
+              {
+                "algorithm": "scope_offset",
+                "value": "og.go|foo[0]:1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "scan": {
+    "scanner": {
+      "id": "semgrep",
+      "name": "Semgrep",
+      "url": "https://github.com/returntocorp/semgrep",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "0.82.0"
+    },
+    "primary_identifiers": [
+      {
+        "type": "semgrep_id",
+        "name": "bandit.B506",
+        "value": "bandit.B506",
+        "url": "https://semgrep.dev/r/gitlab.bandit.B506"
+      },
+      {
+        "type": "semgrep_id",
+        "name": "gosec.G106-1",
+        "value": "gosec.G106-1"
+      }
+    ],
+    "type": "sast",
+    "start_time": "2022-03-15T20:36:58",
+    "end_time": "2022-03-15T20:37:05",
+    "status": "success"
+  }
+}

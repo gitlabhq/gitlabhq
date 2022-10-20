@@ -1,6 +1,6 @@
 <script>
 import { isString } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import { DEFAULT_COLOR, COLOR_WIDGET_COLOR, DROPDOWN_VARIANT, ISSUABLE_COLORS } from './constants';
@@ -97,7 +97,7 @@ export default {
         return DEFAULT_COLOR;
       },
       error() {
-        createFlash({
+        createAlert({
           message: this.$options.i18n.fetchingError,
           captureError: true,
         });
@@ -161,7 +161,7 @@ export default {
           });
         })
         .catch((error) =>
-          createFlash({
+          createAlert({
             message: this.$options.i18n.updatingError,
             captureError: true,
             error,

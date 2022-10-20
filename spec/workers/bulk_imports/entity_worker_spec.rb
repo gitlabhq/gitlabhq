@@ -37,9 +37,11 @@ RSpec.describe BulkImports::EntityWorker do
           .to receive(:info).twice
           .with(
             hash_including(
-              'entity_id' => entity.id,
+              'bulk_import_entity_id' => entity.id,
+              'bulk_import_id' => entity.bulk_import_id,
               'current_stage' => nil,
-              'message' => 'Stage starting'
+              'message' => 'Stage starting',
+              'importer' => 'gitlab_migration'
             )
           )
       end
@@ -67,8 +69,10 @@ RSpec.describe BulkImports::EntityWorker do
           .to receive(:info).twice
           .with(
             hash_including(
-              'entity_id' => entity.id,
-              'current_stage' => nil
+              'bulk_import_entity_id' => entity.id,
+              'bulk_import_id' => entity.bulk_import_id,
+              'current_stage' => nil,
+              'importer' => 'gitlab_migration'
             )
           )
 
@@ -76,16 +80,23 @@ RSpec.describe BulkImports::EntityWorker do
           .to receive(:error)
           .with(
             hash_including(
-              'entity_id' => entity.id,
+              'bulk_import_entity_id' => entity.id,
+              'bulk_import_id' => entity.bulk_import_id,
               'current_stage' => nil,
-              'message' => 'Error!'
+              'message' => 'Error!',
+              'importer' => 'gitlab_migration'
             )
           )
       end
 
       expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
-              .with(exception, entity_id: entity.id)
+              .with(
+                exception,
+                bulk_import_entity_id: entity.id,
+                bulk_import_id: entity.bulk_import_id,
+                importer: 'gitlab_migration'
+              )
 
       subject
     end
@@ -99,9 +110,11 @@ RSpec.describe BulkImports::EntityWorker do
             .to receive(:info).twice
             .with(
               hash_including(
-                'entity_id' => entity.id,
+                'bulk_import_entity_id' => entity.id,
+                'bulk_import_id' => entity.bulk_import_id,
                 'current_stage' => 0,
-                'message' => 'Stage running'
+                'message' => 'Stage running',
+                'importer' => 'gitlab_migration'
               )
             )
         end
@@ -127,8 +140,10 @@ RSpec.describe BulkImports::EntityWorker do
             .to receive(:info).twice
             .with(
               hash_including(
-                'entity_id' => entity.id,
-                'current_stage' => 0
+                'bulk_import_entity_id' => entity.id,
+                'bulk_import_id' => entity.bulk_import_id,
+                'current_stage' => 0,
+                'importer' => 'gitlab_migration'
               )
             )
         end

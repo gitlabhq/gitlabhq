@@ -16,14 +16,14 @@ module Gitlab
 
         # Builds a note from a GitHub API response.
         #
-        # note - An instance of `Sawyer::Resource` containing the note details.
+        # note - An instance of `Hash` containing the note details.
         def self.from_api_response(note, additional_data = {})
-          matches = note.html_url.match(NOTEABLE_TYPE_REGEX)
+          matches = note[:html_url].match(NOTEABLE_TYPE_REGEX)
 
           if !matches || !matches[:type]
             raise(
               ArgumentError,
-              "The note URL #{note.html_url.inspect} is not supported"
+              "The note URL #{note[:html_url].inspect} is not supported"
             )
           end
 
@@ -34,15 +34,15 @@ module Gitlab
               'Issue'
             end
 
-          user = Representation::User.from_api_response(note.user) if note.user
+          user = Representation::User.from_api_response(note[:user]) if note[:user]
           hash = {
             noteable_type: noteable_type,
             noteable_id: matches[:iid].to_i,
             author: user,
-            note: note.body,
-            created_at: note.created_at,
-            updated_at: note.updated_at,
-            note_id: note.id
+            note: note[:body],
+            created_at: note[:created_at],
+            updated_at: note[:updated_at],
+            note_id: note[:id]
           }
 
           new(hash)

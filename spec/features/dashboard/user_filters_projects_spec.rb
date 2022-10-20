@@ -145,7 +145,14 @@ RSpec.describe 'Dashboard > User filters projects' do
       end
 
       it 'filters any project' do
+        # Selecting the same option in the `GlListbox` does not emit `select` event
+        # and that is why URL update won't be triggered. Given that `Any` is a default option
+        # we need to explicitly switch from some other option (e.g. `Internal`) to `Any`
+        # to trigger the page update
+        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Internal', '.dropdown-item'
+
         select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Any', '.dropdown-item'
+
         list = page.all('.projects-list .project-name').map(&:text)
 
         expect(list).to contain_exactly("Internal project", "Private project", "Treasure", "Victorialand")

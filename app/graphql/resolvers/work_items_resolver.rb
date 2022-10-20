@@ -37,20 +37,26 @@ module Resolvers
 
     def preloads
       {
-        last_edited_by: :last_edited_by,
-        web_url: { project: { namespace: :route } }
+        work_item_type: :work_item_type,
+        web_url: { project: { namespace: :route } },
+        widgets: :work_item_type
       }
     end
 
-    # Allows to apply lookahead for fields
-    # selected from  WidgetInterface
-    override :node_selection
-    def node_selection
-      selected_fields = super
+    def nested_preloads
+      {
+        widgets: widget_preloads,
+        user_permissions: { update_work_item: :assignees }
+      }
+    end
 
-      return unless selected_fields
-
-      selected_fields.selection(:widgets)
+    def widget_preloads
+      {
+        last_edited_by: :last_edited_by,
+        assignees: :assignees,
+        parent: :work_item_parent,
+        labels: :labels
+      }
     end
 
     def unconditional_includes

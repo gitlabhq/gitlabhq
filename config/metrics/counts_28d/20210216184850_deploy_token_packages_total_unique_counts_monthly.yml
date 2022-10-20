@@ -1,7 +1,7 @@
 ---
 data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.deploy_token_packages_total_unique_counts_monthly
-description: A monthly count of packages published to the registry using a deploy
+description: A monthly count of unique users who published packages to the registry using a deploy
   token
 product_section: ops
 product_stage: package
@@ -11,8 +11,11 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: RedisHLLMetric
+instrumentation_class: AggregatedMetric
 options:
+  aggregate:
+    operator: OR
+    attribute: user_id
   events:
   - i_package_composer_deploy_token
   - i_package_conan_deploy_token

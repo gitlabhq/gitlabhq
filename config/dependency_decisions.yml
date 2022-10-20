@@ -362,3 +362,10 @@
     :why: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79864#note_845406018
     :versions: [2.0.1]
     :when: 2022-02-24 10:44:26.669326000 Z
+- - :license
+  - gridstack
+  - MIT
+  - :who: Balasankar C
+    :why: https://github.com/gridstack/gridstack.js/blob/v7.0.0/LICENSE
+    :versions: []
+    :when: 2022-10-18 16:24:56.611523399 Z

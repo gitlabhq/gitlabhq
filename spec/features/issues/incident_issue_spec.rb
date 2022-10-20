@@ -26,7 +26,6 @@ RSpec.describe 'Incident Detail', :js do
 
   context 'when user displays the incident' do
     before do
-      stub_feature_flags(incident_timeline: project)
       project.add_developer(user)
       sign_in(user)
 
@@ -52,8 +51,8 @@ RSpec.describe 'Incident Detail', :js do
         aggregate_failures 'when on summary tab (default tab)' do
           hidden_items = find_all('.js-issue-widgets')
 
-          # Linked Issues/MRs and comment box
-          expect(hidden_items.count).to eq(2)
+          # Linked Issues/MRs and comment box and emoji block
+          expect(hidden_items.count).to eq(3)
           expect(hidden_items).to all(be_visible)
 
           edit_button = find_all('[aria-label="Edit title and description"]')
@@ -67,13 +66,13 @@ RSpec.describe 'Incident Detail', :js do
           expect(incident_tabs).to have_content('"yet.another": 73')
 
           # does not show the linked issues and notes/comment components' do
-          hidden_items = find_all('.js-issue-widgets')
+          hidden_items = find_all('.js-issue-widgets', wait: false)
 
           # Linked Issues/MRs and comment box are hidden on page
           expect(hidden_items.count).to eq(0)
 
           # does not show the edit title and description button
-          edit_button = find_all('[aria-label="Edit title and description"]')
+          edit_button = find_all('[aria-label="Edit title and description"]', wait: false)
           expect(edit_button.count).to eq(0)
         end
       end
@@ -83,31 +82,18 @@ RSpec.describe 'Incident Detail', :js do
       before do
         visit project_issue_path(project, incident)
         wait_for_requests
+
         click_link 'Timeline'
+        wait_for_requests
       end
 
       it 'does not show the linked issues and notes/comment components' do
         page.within('.issuable-details') do
-          hidden_items = find_all('.js-issue-widgets')
+          hidden_items = find_all('.js-issue-widgets', wait: false)
 
           # Linked Issues/MRs and comment box are hidden on page
           expect(hidden_items.count).to eq(0)
         end
-      end
-    end
-
-    context 'when incident_timeline feature flag is disabled' do
-      before do
-        stub_feature_flags(incident_timeline: false)
-
-        visit project_issues_incident_path(project, incident)
-        wait_for_requests
-      end
-
-      it 'does not show Timeline tab' do
-        tabs = find('[data-testid="incident-tabs"]')
-
-        expect(tabs).not_to have_content('Timeline')
       end
     end
   end

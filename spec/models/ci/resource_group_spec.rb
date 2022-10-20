@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ResourceGroup do
+  let_it_be(:group) { create(:group) }
+
   it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:parent) { create(:project) }
+    let!(:parent) { create(:project, group: group) }
     let!(:model) { create(:ci_resource_group, project: parent) }
   end
 
@@ -94,7 +96,7 @@ RSpec.describe Ci::ResourceGroup do
   describe '#upcoming_processables' do
     subject { resource_group.upcoming_processables }
 
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository, group: group) }
     let_it_be(:pipeline_1) { create(:ci_pipeline, project: project) }
     let_it_be(:pipeline_2) { create(:ci_pipeline, project: project) }
 

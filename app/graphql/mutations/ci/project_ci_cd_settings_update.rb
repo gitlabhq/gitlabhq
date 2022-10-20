@@ -19,7 +19,13 @@ module Mutations
 
       argument :job_token_scope_enabled, GraphQL::Types::Boolean,
         required: false,
-        description: 'Indicates CI job tokens generated in this project have restricted access to resources.'
+        description: 'Indicates CI/CD job tokens generated in this project ' \
+          'have restricted access to other projects.'
+
+      argument :inbound_job_token_scope_enabled, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Indicates CI/CD job tokens generated in other projects ' \
+          'have restricted access to this project.'
 
       field :ci_cd_settings,
         Types::Ci::CiCdSettingType,
@@ -28,6 +34,9 @@ module Mutations
 
       def resolve(full_path:, **args)
         project = authorized_find!(full_path)
+
+        args.delete(:inbound_job_token_scope_enabled) unless Feature.enabled?(:ci_inbound_job_token_scope, project)
+
         settings = project.ci_cd_settings
         settings.update(args)
 

@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader, GlSafeHtmlDirective, GlAlert } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';
@@ -47,7 +47,7 @@ export default {
             handleLocationHash();
           })
           .catch(() =>
-            createFlash({
+            createAlert({
               message: this.$options.i18n.renderingContentFailed,
             }),
           );

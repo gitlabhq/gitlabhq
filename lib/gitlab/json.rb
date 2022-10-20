@@ -34,6 +34,7 @@ module Gitlab
 
       alias_method :parse!, :parse
       alias_method :load, :parse
+      alias_method :decode, :parse
 
       # Restricted method for converting a Ruby object to JSON. If you
       # need to pass options to this, you should use `.generate` instead,
@@ -55,6 +56,8 @@ module Gitlab
       def generate(object, opts = {})
         adapter_generate(object, opts)
       end
+
+      alias_method :encode, :generate
 
       # Generates JSON for an object and makes it look purdy
       #

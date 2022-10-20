@@ -139,7 +139,7 @@ export default {
 </script>
 
 <template>
-  <div class="md-suggestion-header border-bottom-0 gl-mt-3">
+  <div class="md-suggestion-header border-bottom-0 gl-px-4 gl-py-3">
     <div class="js-suggestion-diff-header gl-font-weight-bold">
       {{ __('Suggested change') }}
       <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')" class="js-help-btn">
@@ -162,6 +162,7 @@ export default {
         <gl-button
           class="btn-inverted js-remove-from-batch-btn btn-grouped"
           :disabled="isApplying"
+          size="small"
           @click="removeSuggestionFromBatch"
         >
           {{ __('Remove from batch') }}
@@ -172,6 +173,7 @@ export default {
           class="btn-inverted js-add-to-batch-btn btn-grouped"
           data-qa-selector="add_suggestion_batch_button"
           :disabled="isDisableButton"
+          size="small"
           @click="addSuggestionToBatch"
         >
           {{ __('Add suggestion to batch') }}

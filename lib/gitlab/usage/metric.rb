@@ -46,10 +46,7 @@ module Gitlab
       end
 
       def instrumentation_object
-        @instrumentation_object ||= instrumentation_class.constantize.new(
-          time_frame: definition.time_frame,
-          options: definition.attributes[:options]
-        )
+        @instrumentation_object ||= instrumentation_class.constantize.new(definition.attributes)
       end
     end
   end

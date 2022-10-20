@@ -19,11 +19,12 @@ module SystemCheck
       end
 
       def show_error
-        try_fixing_it([
-          "sudo chmod 700 #{File.dirname(authorized_keys.file)}",
-          "touch #{authorized_keys.file}",
-          "sudo chmod 600 #{authorized_keys.file}"
-        ])
+        try_fixing_it(
+          [
+            "sudo chmod 700 #{File.dirname(authorized_keys.file)}",
+            "touch #{authorized_keys.file}",
+            "sudo chmod 600 #{authorized_keys.file}"
+          ])
         fix_and_rerun
       end
 

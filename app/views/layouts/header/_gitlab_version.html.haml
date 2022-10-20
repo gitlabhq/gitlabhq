@@ -1,6 +1,6 @@
 - return unless show_version_check?
 
-.gl-display-flex.gl-flex-direction-column.gl-px-4.gl-py-3
+%a{ class: 'gl-display-flex! gl-flex-direction-column gl-px-4! gl-py-3! gl-line-height-24!', href: help_page_path('update/index'), 'data-testid': 'gitlab-version-container' }
   %span
     = s_("VersionCheck|Your GitLab Version")
     = emoji_icon('rocket')

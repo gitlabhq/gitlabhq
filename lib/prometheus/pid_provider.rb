@@ -39,7 +39,7 @@ module Prometheus
     end
 
     def process_name
-      $0
+      $PROGRAM_NAME
     end
   end
 end

@@ -8,7 +8,7 @@ module HasWiki
   end
 
   def create_wiki
-    wiki.wiki
+    wiki.create_wiki_repository
     true
   rescue Wiki::CouldNotCreateWikiError
     errors.add(:base, _('Failed to create wiki'))

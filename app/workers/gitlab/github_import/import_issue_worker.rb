@@ -16,6 +16,10 @@ module Gitlab
       def object_type
         :issue
       end
+
+      def increment_object_counter?(object)
+        !object.pull_request?
+      end
     end
   end
 end

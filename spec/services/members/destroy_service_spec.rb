@@ -95,6 +95,37 @@ RSpec.describe Members::DestroyService do
     end
   end
 
+  context 'With ExclusiveLeaseHelpers' do
+    let(:service_object) { described_class.new(current_user) }
+    let!(:member) { group_project.add_developer(member_user) }
+
+    subject(:destroy_member) { service_object.execute(member, **opts) }
+
+    before do
+      group_project.add_maintainer(current_user)
+
+      allow(service_object).to receive(:in_lock) do |_, &block|
+        block.call if lock_obtained
+      end
+    end
+
+    context 'when lock is obtained' do
+      let(:lock_obtained) { true }
+
+      it 'destroys the membership' do
+        expect { destroy_member }.to change { group_project.members.count }.by(-1)
+      end
+    end
+
+    context 'when the lock can not be obtained' do
+      let(:lock_obtained) { false }
+
+      it 'does not destroy the membership' do
+        expect { destroy_member }.not_to change { group_project.members.count }
+      end
+    end
+  end
+
   context 'with a member with access' do
     before do
       group_project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)

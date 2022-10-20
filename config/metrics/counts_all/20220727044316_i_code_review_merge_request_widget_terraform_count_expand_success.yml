@@ -12,9 +12,10 @@ introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93340"
 time_frame: all
 data_source: redis
 data_category: optional
+instrumentation_class: MergeRequestWidgetExtensionMetric
 options:
-  events:
-    - i_code_review_merge_request_widget_terraform_count_expand_success
+  event: expand_success
+  widget: terraform
 distribution:
 - ce
 - ee

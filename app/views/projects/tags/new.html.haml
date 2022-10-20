@@ -9,6 +9,11 @@
 %h1.page-title.gl-font-size-h-display
   = s_('TagsPage|New Tag')
 
+%p.gl-text-secondary
+  - link_start = '<a href="%{url}">'.html_safe % { url: new_namespace_project_release_path }
+  - link_end = '</a>'.html_safe
+  = s_('TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}New release page%{link_end}.').html_safe % { link_start: link_start, link_end: link_end }
+
 = form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "common-note-form tag-form js-quick-submit js-requires-input" do
   .form-group.row
     .col-sm-12
@@ -31,22 +36,7 @@
       = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5, data: { qa_selector: "tag_message_field" }
       .form-text.text-muted
         = tag_description_help_text
-  .form-group.row
-    .col-sm-12
-      = label_tag :release_description, s_('TagsPage|Release notes'), class: 'gl-mb-0'
-      .form-text.mb-3
-        - link_start = '<a href="%{url}" rel="noopener noreferrer" target="_blank">'.html_safe
-        - releases_page_path = project_releases_path(@project)
-        - releases_page_link_start = link_start % { url: releases_page_path }
-        - docs_url = help_page_path('user/project/releases/index.md', anchor: 'create-a-release')
-        - docs_link_start = link_start % { url: docs_url }
-        - link_end = '</a>'.html_safe
-        - replacements = { releases_page_link_start: releases_page_link_start, docs_link_start: docs_link_start, link_end: link_end }
-        = s_('TagsPage|Optionally, create a public Release of your project, based on this tag. Release notes are displayed on the %{releases_page_link_start}Releases%{link_end} page. %{docs_link_start}More information%{link_end}').html_safe % replacements
 
-      = render layout: 'shared/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
-        = render 'shared/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description, qa_selector: 'release_notes_field'
-        = render 'shared/notes/hints'
   .gl-display-flex
     = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3', data: { qa_selector: "create_tag_button" }, type: 'submit' }) do
       = s_('TagsPage|Create tag')

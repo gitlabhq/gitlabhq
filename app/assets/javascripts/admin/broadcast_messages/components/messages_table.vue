@@ -1,0 +1,113 @@
+<script>
+import { GlButton, GlTableLite, GlSafeHtmlDirective } from '@gitlab/ui';
+import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
+const DEFAULT_TD_CLASSES = 'gl-vertical-align-middle!';
+
+export default {
+  name: 'MessagesTable',
+  components: {
+    GlButton,
+    GlTableLite,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
+  },
+  mixins: [glFeatureFlagsMixin()],
+  i18n: {
+    edit: __('Edit'),
+    delete: __('Delete'),
+  },
+  props: {
+    messages: {
+      type: Array,
+      required: true,
+    },
+  },
+  computed: {
+    fields() {
+      if (this.glFeatures.roleTargetedBroadcastMessages) return this.$options.allFields;
+      return this.$options.allFields.filter((f) => f.key !== 'target_roles');
+    },
+  },
+  allFields: [
+    {
+      key: 'status',
+      label: __('Status'),
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'preview',
+      label: __('Preview'),
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'starts_at',
+      label: __('Starts'),
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'ends_at',
+      label: __('Ends'),
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'target_roles',
+      label: __('Target roles'),
+      tdClass: DEFAULT_TD_CLASSES,
+      thAttr: { 'data-testid': 'target-roles-th' },
+    },
+    {
+      key: 'target_path',
+      label: __('Target Path'),
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'type',
+      label: __('Type'),
+      tdClass: DEFAULT_TD_CLASSES,
+    },
+    {
+      key: 'buttons',
+      label: '',
+      tdClass: `${DEFAULT_TD_CLASSES} gl-white-space-nowrap`,
+    },
+  ],
+  safeHtmlConfig: {
+    ADD_TAGS: ['use'],
+  },
+};
+</script>
+<template>
+  <gl-table-lite
+    :items="messages"
+    :fields="fields"
+    :tbody-tr-attr="{ 'data-testid': 'message-row' }"
+    stacked="md"
+  >
+    <template #cell(preview)="{ item: { preview } }">
+      <div v-safe-html:[$options.safeHtmlConfig]="preview"></div>
+    </template>
+
+    <template #cell(buttons)="{ item: { id, edit_path, disable_delete } }">
+      <gl-button
+        icon="pencil"
+        :aria-label="$options.i18n.edit"
+        :href="edit_path"
+        data-testid="edit-message"
+      />
+
+      <gl-button
+        class="gl-ml-3"
+        icon="remove"
+        variant="danger"
+        :aria-label="$options.i18n.delete"
+        rel="nofollow"
+        :disabled="disable_delete"
+        :data-testid="`delete-message-${id}`"
+        @click="$emit('delete-message', id)"
+      />
+    </template>
+  </gl-table-lite>
+</template>

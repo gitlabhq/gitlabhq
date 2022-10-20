@@ -9,12 +9,12 @@ module MergeRequests
     attr_reader :merge_request
 
     # Overridden in EE.
-    def hooks_validation_pass?(_merge_request)
+    def hooks_validation_pass?(merge_request, validate_squash_message: false)
       true
     end
 
     # Overridden in EE.
-    def hooks_validation_error(_merge_request)
+    def hooks_validation_error(merge_request, validate_squash_message: false)
       # No-op
     end
 

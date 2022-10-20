@@ -8,7 +8,7 @@ code_quality:
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-    CODE_QUALITY_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/codequality:0.85.29"
+    CODE_QUALITY_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/codequality:0.87.0"
   needs: []
   script:
     - export SOURCE_CODE=$PWD
@@ -26,6 +26,11 @@ code_quality:
           echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
         done
       }
+    - |
+      if [ -n "$CODECLIMATE_REGISTRY_USERNAME" ] && [ -n "$CODECLIMATE_REGISTRY_PASSWORD" ] && [ -n "$CODECLIMATE_PREFIX" ]; then
+        CODECLIMATE_REGISTRY=${CODECLIMATE_PREFIX%%/*}
+        docker login "$CODECLIMATE_REGISTRY" --username "$CODECLIMATE_REGISTRY_USERNAME" --password "$CODECLIMATE_REGISTRY_PASSWORD"
+      fi
     - docker pull --quiet "$CODE_QUALITY_IMAGE"
     - |
       docker run --rm \
@@ -38,6 +43,8 @@ code_quality:
           REPORT_FORMAT \
           ENGINE_MEMORY_LIMIT_BYTES \
           CODECLIMATE_PREFIX \
+          CODECLIMATE_REGISTRY_USERNAME \
+          CODECLIMATE_REGISTRY_PASSWORD \
         ) \
         --volume "$PWD":/code \
         --volume /var/run/docker.sock:/var/run/docker.sock \

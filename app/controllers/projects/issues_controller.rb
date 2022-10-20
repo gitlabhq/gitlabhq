@@ -41,8 +41,8 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:incident_timeline, project)
-    push_frontend_feature_flag(:remove_user_attributes_projects, project)
+    push_frontend_feature_flag(:preserve_unchanged_markdown, project)
+    push_frontend_feature_flag(:content_editor_on_issues, project)
   end
 
   before_action only: [:index, :show] do
@@ -147,19 +147,26 @@ class Projects::IssuesController < Projects::ApplicationController
 
     spam_params = ::Spam::SpamParams.new_from_request(request: request)
     service = ::Issues::CreateService.new(project: project, current_user: current_user, params: create_params, spam_params: spam_params)
-    @issue = service.execute
+    result = service.execute
 
-    create_vulnerability_issue_feedback(issue)
-
-    if service.discussions_to_resolve.count(&:resolved?) > 0
-      flash[:notice] = if service.discussion_to_resolve_id
-                         _("Resolved 1 discussion.")
-                       else
-                         _("Resolved all discussions.")
-                       end
+    # Only irrecoverable errors such as unauthorized user won't contain an issue in the response
+    if result.error? && result[:issue].blank?
+      render_by_create_result_error(result) && return
     end
 
-    if @issue.valid?
+    @issue = result[:issue]
+
+    if result.success?
+      create_vulnerability_issue_feedback(@issue)
+
+      if service.discussions_to_resolve.count(&:resolved?) > 0
+        flash[:notice] = if service.discussion_to_resolve_id
+                           _("Resolved 1 discussion.")
+                         else
+                           _("Resolved all discussions.")
+                         end
+      end
+
       redirect_to project_issue_path(@project, @issue)
     else
       # NOTE: this CAPTCHA support method is indirectly included via IssuableActions
@@ -372,6 +379,21 @@ class Projects::IssuesController < Projects::ApplicationController
 
   private
 
+  def render_by_create_result_error(result)
+    Gitlab::AppLogger.warn(
+      message: 'Cannot create issue',
+      errors: result.errors,
+      http_status: result.http_status
+    )
+    error_method_name = "render_#{result.http_status}".to_sym
+
+    if respond_to?(error_method_name, true)
+      send(error_method_name) # rubocop:disable GitlabSecurity/PublicSend
+    else
+      render_404
+    end
+  end
+
   def clean_params(all_params)
     issue_type = all_params[:issue_type].to_s
     all_params.delete(:issue_type) unless WorkItems::Type.allowed_types_for_issues.include?(issue_type)
@@ -383,6 +405,7 @@ class Projects::IssuesController < Projects::ApplicationController
     options = super
 
     options[:issue_types] = Issue::TYPES_FOR_LIST
+    options[:issue_types] = options[:issue_types].excluding('task') unless project.work_items_feature_flag_enabled?
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }

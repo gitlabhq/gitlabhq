@@ -108,15 +108,25 @@ module Ci
     validates :ref, presence: true
 
     scope :not_interruptible, -> do
-      joins(:metadata).where.not('ci_builds_metadata.id' => Ci::BuildMetadata.scoped_build.with_interruptible.select(:id))
+      joins(:metadata)
+        .where.not(Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) })
     end
 
     scope :unstarted, -> { where(runner_id: nil) }
+
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)
           .where('ci_builds.id = ci_job_artifacts.job_id')
           .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
+      )
+    end
+
+    scope :with_erasable_artifacts, -> do
+      where('EXISTS (?)',
+        Ci::JobArtifact.select(1)
+          .where('ci_builds.id = ci_job_artifacts.job_id')
+        .where(file_type: Ci::JobArtifact.erasable_file_types)
       )
     end
 
@@ -178,7 +188,7 @@ module Ci
     scope :license_management_jobs, -> { where(name: %i(license_management license_scanning)) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
 
     scope :with_secure_reports_from_config_options, -> (job_types) do
-      joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
+      joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
 
     scope :with_coverage, -> { where.not(coverage: nil) }
@@ -218,7 +228,7 @@ module Ci
            yaml_variables when environment coverage_regex
            description tag_list protected needs_attributes
            job_variables_attributes resource_group scheduling_type
-           ci_stage partition_id].freeze
+           ci_stage partition_id id_tokens].freeze
       end
     end
 
@@ -407,16 +417,8 @@ module Ci
       pipeline.manual_actions.reject { |action| action.name == self.name }
     end
 
-    def environment_manual_actions
-      pipeline.manual_actions.filter { |action| action.expanded_environment_name == self.expanded_environment_name }
-    end
-
     def other_scheduled_actions
       pipeline.scheduled_actions.reject { |action| action.name == self.name }
-    end
-
-    def environment_scheduled_actions
-      pipeline.scheduled_actions.filter { |action| action.expanded_environment_name == self.expanded_environment_name }
     end
 
     def pages_generator?
@@ -445,8 +447,7 @@ module Ci
 
     def prevent_rollback_deployment?
       strong_memoize(:prevent_rollback_deployment) do
-        Feature.enabled?(:prevent_outdated_deployment_jobs, project) &&
-          starts_environment? &&
+        starts_environment? &&
           project.ci_forward_deployment_enabled? &&
           deployment&.older_than_last_successful_deployment?
       end
@@ -1195,6 +1196,14 @@ module Ci
     end
 
     def job_jwt_variables
+      if project.ci_cd_settings.opt_in_jwt?
+        id_tokens_variables
+      else
+        legacy_jwt_variables.concat(id_tokens_variables)
+      end
+    end
+
+    def legacy_jwt_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless Feature.enabled?(:ci_job_jwt, project)
 
@@ -1203,6 +1212,20 @@ module Ci
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
         variables.append(key: 'CI_JOB_JWT_V1', value: jwt, public: false, masked: true)
         variables.append(key: 'CI_JOB_JWT_V2', value: jwt_v2, public: false, masked: true)
+      rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
+        Gitlab::ErrorTracking.track_exception(e)
+      end
+    end
+
+    def id_tokens_variables
+      return [] unless id_tokens?
+
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        id_tokens.each do |var_name, token_data|
+          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['id_token']['aud'])
+
+          variables.append(key: var_name, value: token, public: false, masked: true)
+        end
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end

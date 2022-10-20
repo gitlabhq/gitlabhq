@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import * as types from './mutation_types';
 
@@ -21,7 +21,7 @@ export default {
     if (errorMessage) {
       state.errorMessage = errorMessage;
     } else {
-      createFlash({
+      createAlert({
         message: s__('TestReports|There was an error fetching the test suite.'),
       });
     }

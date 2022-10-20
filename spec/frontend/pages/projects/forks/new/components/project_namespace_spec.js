@@ -10,7 +10,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import searchQuery from '~/pages/projects/forks/new/queries/search_forkable_namespaces.query.graphql';
 import ProjectNamespace from '~/pages/projects/forks/new/components/project_namespace.vue';
 
@@ -167,7 +167,7 @@ describe('ProjectNamespace component', () => {
     });
 
     it('creates a flash message and captures the error', () => {
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Something went wrong while loading data. Please refresh the page to try again.',
         captureError: true,
         error: expect.any(Error),

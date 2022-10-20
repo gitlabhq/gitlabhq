@@ -1,8 +1,7 @@
 ---
+# Cop supports --auto-correct.
 Style/SoleNestedConditional:
-  # Offense count: 64
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/ldap/omniauth_callbacks_controller.rb'
@@ -17,7 +16,6 @@ Style/SoleNestedConditional:
     - 'app/models/network/graph.rb'
     - 'app/models/packages/package.rb'
     - 'app/models/protected_branch.rb'
-    - 'app/services/ci/register_job_service.rb'
     - 'app/services/concerns/update_visibility_level.rb'
     - 'app/services/incident_management/incidents/create_service.rb'
     - 'app/services/merge_requests/update_service.rb'
@@ -27,9 +25,11 @@ Style/SoleNestedConditional:
     - 'app/services/projects/create_service.rb'
     - 'app/services/projects/hashed_storage/migration_service.rb'
     - 'app/services/projects/hashed_storage/rollback_service.rb'
+    - 'app/workers/merge_requests/delete_source_branch_worker.rb'
     - 'ee/app/finders/ee/snippets_finder.rb'
     - 'ee/app/services/ee/issue_links/create_service.rb'
     - 'ee/app/services/ee/lfs/unlock_file_service.rb'
+    - 'ee/app/services/ee/merge_requests/create_pipeline_service.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/geo/framework_repository_sync_service.rb'
     - 'ee/app/services/geo/repository_base_sync_service.rb'
@@ -43,6 +43,7 @@ Style/SoleNestedConditional:
     - 'lib/api/ci/helpers/runner.rb'
     - 'lib/api/deploy_keys.rb'
     - 'lib/api/helpers/label_helpers.rb'
+    - 'lib/api/maven_packages.rb'
     - 'lib/api/users.rb'
     - 'lib/banzai/filter/ascii_doc_sanitization_filter.rb'
     - 'lib/banzai/filter/base_sanitization_filter.rb'
@@ -52,7 +53,9 @@ Style/SoleNestedConditional:
     - 'lib/gitlab/config/entry/configurable.rb'
     - 'lib/gitlab/config/entry/validators.rb'
     - 'lib/gitlab/database/each_database.rb'
+    - 'lib/gitlab/database/load_balancing/load_balancer.rb'
     - 'lib/gitlab/email/handler/reply_processing.rb'
+    - 'lib/gitlab/patch/database_config.rb'
     - 'lib/gitlab/user_access.rb'
     - 'lib/gitlab/utils.rb'
     - 'lib/gitlab/x509/signature.rb'
@@ -60,5 +63,5 @@ Style/SoleNestedConditional:
     - 'lib/mattermost/session.rb'
     - 'lib/object_storage/direct_upload.rb'
     - 'qa/qa/flow/login.rb'
-    - 'qa/qa/support/page_error_checker.rb'
+    - 'qa/qa/page/project/web_ide/edit.rb'
     - 'spec/spec_helper.rb'

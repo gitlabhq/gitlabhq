@@ -2,15 +2,20 @@
 import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { formatJobCount, tableField } from '../utils';
+import RunnerBulkDelete from './runner_bulk_delete.vue';
+import RunnerBulkDeleteCheckbox from './runner_bulk_delete_checkbox.vue';
 import RunnerStackedSummaryCell from './cells/runner_stacked_summary_cell.vue';
 import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
+import RunnerOwnerCell from './cells/runner_owner_cell.vue';
 
 const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner') }),
+  tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-20p'] }),
   tableField({ key: 'actions', label: '', thClasses: ['gl-w-15p'] }),
 ];
 
@@ -19,9 +24,13 @@ export default {
     GlFormCheckbox,
     GlTableLite,
     GlSkeletonLoader,
+    HelpPopover,
+    RunnerBulkDelete,
+    RunnerBulkDeleteCheckbox,
     RunnerStatusPopover,
     RunnerStackedSummaryCell,
     RunnerStatusCell,
+    RunnerOwnerCell,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -34,6 +43,7 @@ export default {
       },
     },
   },
+  inject: ['localMutations'],
   props: {
     checkable: {
       type: Boolean,
@@ -50,7 +60,7 @@ export default {
       required: true,
     },
   },
-  emits: ['checked'],
+  emits: ['deleted'],
   data() {
     return { checkedRunnerIds: [] };
   },
@@ -79,6 +89,12 @@ export default {
     },
   },
   methods: {
+    canDelete(runner) {
+      return runner.userPermissions?.deleteRunner;
+    },
+    onDeleted(event) {
+      this.$emit('deleted', event);
+    },
     formatJobCount(jobCount) {
       return formatJobCount(jobCount);
     },
@@ -91,7 +107,7 @@ export default {
       return {};
     },
     onCheckboxChange(runner, isChecked) {
-      this.$emit('checked', {
+      this.localMutations.setRunnerChecked({
         runner,
         isChecked,
       });
@@ -104,6 +120,7 @@ export default {
 </script>
 <template>
   <div>
+    <runner-bulk-delete v-if="checkable" :runners="runners" @deleted="onDeleted" />
     <gl-table-lite
       :aria-busy="loading"
       :class="tableClass"
@@ -116,11 +133,15 @@ export default {
       fixed
     >
       <template #head(checkbox)>
-        <slot name="head-checkbox"></slot>
+        <runner-bulk-delete-checkbox :runners="runners" />
       </template>
 
       <template #cell(checkbox)="{ item }">
-        <gl-form-checkbox :checked="isChecked(item)" @change="onCheckboxChange(item, $event)" />
+        <gl-form-checkbox
+          v-if="canDelete(item)"
+          :checked="isChecked(item)"
+          @change="onCheckboxChange(item, $event)"
+        />
       </template>
 
       <template #head(status)="{ label }">
@@ -138,6 +159,21 @@ export default {
             <slot name="runner-name" :runner="runner" :index="index"></slot>
           </template>
         </runner-stacked-summary-cell>
+      </template>
+
+      <template #head(owner)="{ label }">
+        {{ label }}
+        <help-popover>
+          {{
+            s__(
+              'Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator.',
+            )
+          }}
+        </help-popover>
+      </template>
+
+      <template #cell(owner)="{ item }">
+        <runner-owner-cell :runner="item" />
       </template>
 
       <template #cell(actions)="{ item }">

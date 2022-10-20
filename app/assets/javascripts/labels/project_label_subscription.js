@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { fixTitle } from '~/tooltips';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -61,7 +61,7 @@ export default class ProjectLabelSubscription {
         });
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('There was an error subscribing to this label.'),
         }),
       );

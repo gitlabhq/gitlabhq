@@ -72,12 +72,14 @@ RSpec.describe AddPremiumAndUltimatePlanLimits, :migration do
           it 'creates plan limits from the source plan' do
             migrate!
 
-            expect(AddPremiumAndUltimatePlanLimits::PlanLimits.pluck(:plan_id, :storage_size_limit)).to match_array([
-              [silver.id, silver_limits.storage_size_limit],
-              [gold.id, gold_limits.storage_size_limit],
-              [premium.id, silver_limits.storage_size_limit],
-              [ultimate.id, gold_limits.storage_size_limit]
-            ])
+            expect(AddPremiumAndUltimatePlanLimits::PlanLimits.pluck(:plan_id, :storage_size_limit))
+              .to match_array(
+                [
+                  [silver.id, silver_limits.storage_size_limit],
+                  [gold.id, gold_limits.storage_size_limit],
+                  [premium.id, silver_limits.storage_size_limit],
+                  [ultimate.id, gold_limits.storage_size_limit]
+                ])
           end
         end
       end

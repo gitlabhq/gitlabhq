@@ -1,8 +1,0 @@
----
-name: incident_timeline
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80802
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/353426
-milestone: '14.9'
-type: development
-group: group::respond
-default_enabled: true

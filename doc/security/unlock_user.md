@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -56,7 +56,7 @@ To unlock a locked user:
 
 1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>
 
-The user should now be able to log in.
+The user should now be able to sign in.
 
 <!-- ## Troubleshooting
 

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.html'
 ---
 
@@ -220,7 +220,6 @@ end
 
 To migrate back to local storage:
 
-1. Set both `direct_upload` and `background_upload` to `false` under the LFS object storage settings. Don't forget to restart GitLab.
 1. Run `rake gitlab:lfs:migrate_to_local` on your console.
 1. Disable `object_storage` for LFS objects in `gitlab.rb`. Remember to restart GitLab afterwards.
 

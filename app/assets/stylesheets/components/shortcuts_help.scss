@@ -1,0 +1,29 @@
+.shortcut-help {
+  &-body {
+    height: 80vh;
+    overflow-y: scroll;
+  }
+
+  &-container {
+    column-count: 1;
+    @include media-breakpoint-up(md) {
+      column-count: 2;
+    }
+    column-gap: 1rem;
+  }
+
+  &-mapping {
+    overflow: hidden;
+    break-inside: avoid;
+
+    &-title {
+      margin-left: 40%;
+    }
+
+    kbd {
+      margin: 0.1rem 0;
+      line-height: unset;
+      font-size: unset;
+    }
+  }
+}

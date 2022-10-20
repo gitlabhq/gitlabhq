@@ -174,6 +174,13 @@ module AtomicInternalId
     #
     #     bulk_insert(attributes)
     #   end
+    #
+    # - track_#{scope}_#{column}!
+    #   This method can be used to set a new greatest IID value during import operations.
+    #
+    #   Example:
+    #
+    #   MyClass.track_project_iid!(project, value)
     def define_singleton_internal_id_methods(scope, column, init)
       define_singleton_method("with_#{scope}_#{column}_supply") do |scope_value, &block|
         subject = find_by(scope => scope_value) || self
@@ -182,6 +189,16 @@ module AtomicInternalId
 
         supply = Supply.new(-> { InternalId.generate_next(subject, scope_attrs, usage, init) })
         block.call(supply)
+      end
+
+      define_singleton_method("track_#{scope}_#{column}!") do |scope_value, value|
+        InternalId.track_greatest(
+          self,
+          ::AtomicInternalId.scope_attrs(scope_value),
+          ::AtomicInternalId.scope_usage(self),
+          value,
+          init
+        )
       end
     end
   end

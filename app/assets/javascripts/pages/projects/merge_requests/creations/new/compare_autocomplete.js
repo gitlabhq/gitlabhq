@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
@@ -39,7 +39,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
             }
           })
           .catch(() =>
-            createFlash({
+            createAlert({
               message: __('Error fetching refs'),
             }),
           );

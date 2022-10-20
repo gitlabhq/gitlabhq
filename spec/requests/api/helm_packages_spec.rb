@@ -73,6 +73,17 @@ RSpec.describe API::HelmPackages do
       end
     end
 
+    context 'with access to package registry for everyone' do
+      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
+
+      before do
+        project.update!(visibility: Gitlab::VisibilityLevel::PRIVATE)
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it_behaves_like 'process helm download content request', :anonymous, :success
+    end
+
     context 'when an invalid token is passed' do
       let(:headers) { basic_auth_header(user.username, 'wrong') }
 

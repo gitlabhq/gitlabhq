@@ -40,10 +40,10 @@ exports[`Repository table row component renders a symlink table row 1`] = `
   </td>
    
   <td
-    class="d-none d-sm-table-cell tree-commit cursor-default"
+    class="d-none d-sm-table-cell tree-commit cursor-default gl-text-secondary"
   >
     <gl-link-stub
-      class="str-truncated-100 tree-commit-link"
+      class="str-truncated-100 tree-commit-link gl-text-secondary"
     />
      
     <gl-intersection-observer-stub>
@@ -52,7 +52,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
   </td>
    
   <td
-    class="tree-time-ago text-right cursor-default"
+    class="tree-time-ago text-right cursor-default gl-text-secondary"
   >
     <timeago-tooltip-stub
       cssclass=""
@@ -105,10 +105,10 @@ exports[`Repository table row component renders table row 1`] = `
   </td>
    
   <td
-    class="d-none d-sm-table-cell tree-commit cursor-default"
+    class="d-none d-sm-table-cell tree-commit cursor-default gl-text-secondary"
   >
     <gl-link-stub
-      class="str-truncated-100 tree-commit-link"
+      class="str-truncated-100 tree-commit-link gl-text-secondary"
     />
      
     <gl-intersection-observer-stub>
@@ -117,7 +117,7 @@ exports[`Repository table row component renders table row 1`] = `
   </td>
    
   <td
-    class="tree-time-ago text-right cursor-default"
+    class="tree-time-ago text-right cursor-default gl-text-secondary"
   >
     <timeago-tooltip-stub
       cssclass=""
@@ -170,10 +170,10 @@ exports[`Repository table row component renders table row for path with special 
   </td>
    
   <td
-    class="d-none d-sm-table-cell tree-commit cursor-default"
+    class="d-none d-sm-table-cell tree-commit cursor-default gl-text-secondary"
   >
     <gl-link-stub
-      class="str-truncated-100 tree-commit-link"
+      class="str-truncated-100 tree-commit-link gl-text-secondary"
     />
      
     <gl-intersection-observer-stub>
@@ -182,7 +182,7 @@ exports[`Repository table row component renders table row for path with special 
   </td>
    
   <td
-    class="tree-time-ago text-right cursor-default"
+    class="tree-time-ago text-right cursor-default gl-text-secondary"
   >
     <timeago-tooltip-stub
       cssclass=""

@@ -1,13 +1,16 @@
 <script>
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import glFeaturesFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateMixin from '../../mixins/update';
 
 export default {
   components: {
     MarkdownField,
+    MarkdownEditor,
   },
-  mixins: [updateMixin],
+  mixins: [updateMixin, glFeaturesFlagMixin()],
   props: {
     value: {
       type: String,
@@ -38,7 +41,12 @@ export default {
     },
   },
   mounted() {
-    this.$refs.textarea.focus();
+    this.focus();
+  },
+  methods: {
+    focus() {
+      this.$refs.textarea?.focus();
+    },
   },
 };
 </script>
@@ -46,7 +54,26 @@ export default {
 <template>
   <div class="common-note-form">
     <label class="sr-only" for="issue-description">{{ __('Description') }}</label>
+    <markdown-editor
+      v-if="glFeatures.contentEditorOnIssues"
+      class="gl-mt-3"
+      :value="value"
+      :render-markdown-path="markdownPreviewPath"
+      :markdown-docs-path="markdownDocsPath"
+      :form-field-aria-label="__('Description')"
+      :form-field-placeholder="__('Write a comment or drag your files here…')"
+      form-field-id="issue-description"
+      form-field-name="issue-description"
+      :quick-actions-docs-path="quickActionsDocsPath"
+      :enable-autocomplete="enableAutocomplete"
+      supports-quick-actions
+      init-on-autofocus
+      @input="$emit('input', $event)"
+      @keydown.meta.enter="updateIssuable"
+      @keydown.ctrl.enter="updateIssuable"
+    />
     <markdown-field
+      v-else
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
       :quick-actions-docs-path="quickActionsDocsPath"

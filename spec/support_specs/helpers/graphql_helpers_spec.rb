@@ -133,6 +133,23 @@ RSpec.describe GraphqlHelpers do
 
       expect(graphql_dig_at(data, :foo, :nodes, :bar, :nodes, :id)).to eq([nil, 2, 3, nil])
     end
+
+    it 'supports fields with leading underscore' do
+      web_path = '/namespace1/project1/-/packages/997'
+      data = {
+        'packages' => {
+          'nodes' => [
+            {
+              '_links' => {
+                'webPath' => web_path
+              }
+            }
+          ]
+        }
+      }
+
+      expect(graphql_dig_at(data, :packages, :nodes, :_links, :web_path)).to match_array([web_path])
+    end
   end
 
   describe 'var' do
@@ -414,6 +431,24 @@ RSpec.describe GraphqlHelpers do
           ArgumentError,
           'Please pass either `fields` parameter or a block to `#graphql_mutation`, but not both.'
         )
+      end
+    end
+  end
+
+  describe '.fieldnamerize' do
+    subject { described_class.fieldnamerize(field) }
+
+    let(:field) { 'merge_request' }
+
+    it 'makes an underscored string look like a fieldname' do
+      is_expected.to eq('mergeRequest')
+    end
+
+    context 'when field has a leading underscore' do
+      let(:field) { :_links }
+
+      it 'skips a transformation' do
+        is_expected.to eq('_links')
       end
     end
   end

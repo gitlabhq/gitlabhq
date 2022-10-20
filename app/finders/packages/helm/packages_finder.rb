@@ -5,7 +5,7 @@ module Packages
     class PackagesFinder
       include ::Packages::FinderHelper
 
-      MAX_PACKAGES_COUNT = 300
+      MAX_PACKAGES_COUNT = 1000
 
       def initialize(project, channel)
         @project = project

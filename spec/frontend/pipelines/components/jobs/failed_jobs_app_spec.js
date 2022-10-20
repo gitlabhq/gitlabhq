@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import FailedJobsApp from '~/pipelines/components/jobs/failed_jobs_app.vue';
 import FailedJobsTable from '~/pipelines/components/jobs/failed_jobs_table.vue';
 import GetFailedJobsQuery from '~/pipelines/graphql/queries/get_failed_jobs.query.graphql';
@@ -70,7 +70,7 @@ describe('Failed Jobs App', () => {
     await waitForPromises();
 
     expect(findJobsTable().exists()).toBe(true);
-    expect(createFlash).not.toHaveBeenCalled();
+    expect(createAlert).not.toHaveBeenCalled();
   });
 
   it('handles query fetch error correctly', async () => {
@@ -80,7 +80,7 @@ describe('Failed Jobs App', () => {
 
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith({
+    expect(createAlert).toHaveBeenCalledWith({
       message: 'There was a problem fetching the failed jobs.',
     });
   });

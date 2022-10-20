@@ -30,3 +30,8 @@ test:
   script:
     # Execute your project's tests
     - sbt clean test
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

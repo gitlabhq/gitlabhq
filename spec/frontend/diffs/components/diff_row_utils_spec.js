@@ -216,7 +216,7 @@ describe('mapParallel', () => {
       diffFile: {},
       hasParallelDraftLeft: () => false,
       hasParallelDraftRight: () => false,
-      draftForLine: () => ({}),
+      draftsForLine: () => [],
     };
     const line = { left: side, right: side };
     const expectation = {
@@ -234,13 +234,13 @@ describe('mapParallel', () => {
     const leftExpectation = {
       renderDiscussion: true,
       hasDraft: false,
-      lineDraft: {},
+      lineDrafts: [],
       hasCommentForm: true,
     };
     const rightExpectation = {
       renderDiscussion: false,
       hasDraft: false,
-      lineDraft: {},
+      lineDrafts: [],
       hasCommentForm: false,
     };
     const mapped = utils.mapParallel(content)(line);

@@ -240,7 +240,8 @@ module ApplicationSettingImplementation
         search_rate_limit: 30,
         search_rate_limit_unauthenticated: 10,
         users_get_by_id_limit: 300,
-        users_get_by_id_limit_allowlist: []
+        users_get_by_id_limit_allowlist: [],
+        can_create_group: true
       }
     end
 

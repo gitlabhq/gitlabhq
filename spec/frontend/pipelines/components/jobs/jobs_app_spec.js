@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import JobsApp from '~/pipelines/components/jobs/jobs_app.vue';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import getPipelineJobsQuery from '~/pipelines/graphql/queries/get_pipeline_jobs.query.graphql';
@@ -88,7 +88,7 @@ describe('Jobs app', () => {
 
     expect(findJobsTable().exists()).toBe(true);
     expect(findSkeletonLoader().exists()).toBe(false);
-    expect(createFlash).not.toHaveBeenCalled();
+    expect(createAlert).not.toHaveBeenCalled();
   });
 
   it('handles job fetch error correctly', async () => {
@@ -98,7 +98,7 @@ describe('Jobs app', () => {
 
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith({
+    expect(createAlert).toHaveBeenCalledWith({
       message: 'An error occurred while fetching the pipelines jobs.',
     });
   });

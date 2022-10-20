@@ -26,8 +26,6 @@ module.exports = {
   entry: {
     vendor: [
       'jquery/dist/jquery.slim.js',
-      'pdfjs-dist/build/pdf',
-      'pdfjs-dist/build/pdf.worker.min',
       'core-js',
       'echarts',
       'lodash',
@@ -79,6 +77,8 @@ module.exports = {
           https://gitlab.com/gitlab-org/gitlab/-/issues/219353
           */
           'chokidar',
+          // We are ignoring esbuild as we want to force a newer version than what esbuild-loader provides
+          'esbuild',
           // We are ignoring ts-jest, because we force a newer version, compatible with our current jest version
           'ts-jest',
         ].join('|'),

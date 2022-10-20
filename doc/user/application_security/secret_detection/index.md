@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Secret Detection **(FREE)**
@@ -120,6 +120,10 @@ To enable Secret Detection using a merge request:
 Pipelines now include a Secret Detection job, and the results are included in the merge request
 widget.
 
+## Responding to a leaked secret
+
+If the scanner detects a secret we recommend you rotate it immediately. [Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history) may not be effective in removing all references to the file. Also, the secret remains in any forks of the repository.
+
 ## Configure scan settings
 
 The Secret Detection scan settings can be changed through [CI/CD variables](#available-cicd-variables)
@@ -148,6 +152,18 @@ include:
 secret_detection:
   variables:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
+```
+
+### Ignoring Secrets
+
+You might want to add a fake secret to your code base. For instance, you can use a fake secret as an example in your documentation or test suite.
+
+In these cases, Secret Detection can ignore the fake secret and not report it as a vulnerability. To ignore a secret, add `gitleaks:allow` as a comment to the line that contains the secret.
+
+For example:
+
+```ruby
+ "A personal token for GitLab will look like glpat-JUST20LETTERSANDNUMB" #gitleaks:allow
 ```
 
 ### Available CI/CD variables
@@ -294,6 +310,11 @@ To create a custom configuration, you can use passthrough chains. Passthroughs c
 to build more complex configurations. For more details, see
 [SAST Customize ruleset](../sast/customize_rulesets.md).
 
+Only the following passthrough types are supported by the `secrets` analyzer:
+
+- `file`
+- `raw`
+
 In the `secret-detection-ruleset.toml` file, do one of the following:
 
 - Define a custom ruleset, for example:
@@ -384,7 +405,7 @@ of CA certificates that you trust. Do this either in the `.gitlab-ci.yml` file, 
 variable, or as a CI/CD variable.
 
 - In the `.gitlab-ci.yml` file, the `ADDITIONAL_CA_CERT_BUNDLE` value must contain the
-  [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1).
+  [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1).
 
   For example:
 

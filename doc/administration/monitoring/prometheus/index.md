@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Monitoring GitLab with Prometheus **(FREE SELF)**
@@ -205,7 +205,7 @@ To use an external Prometheus server:
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
-1. Add the Prometheus server IP address to the [monitoring IP allowlist](../ip_whitelist.md). For example:
+1. Add the Prometheus server IP address to the [monitoring IP allowlist](../ip_allowlist.md). For example:
 
    ```ruby
    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
@@ -353,7 +353,7 @@ To add a Prometheus dashboard for a single server GitLab setup:
 
 1. Create a new data source in Grafana.
 1. Name your data source (such as GitLab).
-1. Select `Prometheus` in the type dropdown box.
+1. Select `Prometheus` in the type dropdown list.
 1. Add your Prometheus listen address as the URL, and set access to `Browser`.
 1. Set the HTTP method to `GET`.
 1. Save and test your configuration to verify that it works.
@@ -381,7 +381,7 @@ memory, disk, and CPU utilization.
 The web exporter is a dedicated metrics server that allows splitting end-user and Prometheus traffic
 into two separate applications to improve performance and availability.
 
-[Read more about the web exporter](puma_exporter.md).
+[Read more about the web exporter](web_exporter.md).
 
 ### Redis exporter
 

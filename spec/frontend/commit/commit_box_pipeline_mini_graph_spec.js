@@ -5,7 +5,7 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import CommitBoxPipelineMiniGraph from '~/projects/commit_box/info/components/commit_box_pipeline_mini_graph.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import { COMMIT_BOX_POLL_INTERVAL } from '~/projects/commit_box/info/constants';
@@ -178,12 +178,12 @@ describe('Commit box pipeline mini graph', () => {
   });
 
   describe('error state', () => {
-    it('createFlash should show if there is an error fetching the data', async () => {
+    it('createAlert should show if there is an error fetching the data', async () => {
       createComponent({ handler: failedHandler });
 
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'There was a problem fetching linked pipelines.',
       });
     });

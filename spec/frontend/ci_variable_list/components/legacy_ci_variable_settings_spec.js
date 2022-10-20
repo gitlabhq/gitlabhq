@@ -9,11 +9,11 @@ Vue.use(Vuex);
 describe('Ci variable table', () => {
   let wrapper;
   let store;
-  let isGroup;
+  let isProject;
 
-  const createComponent = (groupState) => {
+  const createComponent = (projectState) => {
     store = createStore();
-    store.state.isGroup = groupState;
+    store.state.isProject = projectState;
     jest.spyOn(store, 'dispatch').mockImplementation();
     wrapper = shallowMount(LegacyCiVariableSettings, {
       store,
@@ -25,14 +25,14 @@ describe('Ci variable table', () => {
   });
 
   it('dispatches fetchEnvironments when mounted', () => {
-    isGroup = false;
-    createComponent(isGroup);
+    isProject = true;
+    createComponent(isProject);
     expect(store.dispatch).toHaveBeenCalledWith('fetchEnvironments');
   });
 
   it('does not dispatch fetchenvironments when in group context', () => {
-    isGroup = true;
-    createComponent(isGroup);
+    isProject = false;
+    createComponent(isProject);
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 });

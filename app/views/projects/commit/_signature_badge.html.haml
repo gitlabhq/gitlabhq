@@ -17,7 +17,7 @@
 - content = capture do
   - if show_user
     .clearfix
-      - uri_signature_badge_user = "projects/commit/#{"x509/" if x509_signature?(signature)}signature_badge_user"
+      - uri_signature_badge_user = "projects/commit/#{'x509/' if x509_signature?(signature)}signature_badge_user"
       = render partial: "#{uri_signature_badge_user}", locals: { signature: signature }
 
   - if x509_signature?(signature)

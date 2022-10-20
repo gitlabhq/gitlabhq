@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Alert Management alerts API **(FREE)**
@@ -79,7 +79,7 @@ Example response:
 ## Update metric image
 
 ```plaintext
-PUT /projects/:id/alert_management_alerts/:alert_iid/metric_image/:image_id
+PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 ```
 
 | Attribute   | Type    | Required | Description                          |

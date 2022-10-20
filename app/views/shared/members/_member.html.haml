@@ -12,7 +12,7 @@
 %li.member.js-member.py-2.px-3.d-flex.flex-column{ class: [dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member), data: { qa_selector: 'member_row' } }
   %span.list-item-name.mb-2.m-md-0
     - if user
-      = image_tag avatar_icon_for_user(user, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''
+      = render Pajamas::AvatarComponent.new(user, size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
       .user-info
         %span.mr-1
           = link_to user.name, user_path(user), class: 'member js-user-link', data: { user_id: user.id }

@@ -22,6 +22,19 @@ RSpec.describe RuboCop::Cop::RSpec::TopLevelDescribePath do
     end
   end
 
+  context 'when the describe is in a shared context' do
+    context 'with shared_context' do
+      it 'registers no offenses' do
+        expect_no_offenses(<<~SOURCE, 'spec/foo.rb')
+          shared_context 'Foo' do
+            describe '#bar' do
+            end
+          end
+        SOURCE
+      end
+    end
+  end
+
   context 'when the describe is in a shared example' do
     context 'with shared_examples' do
       it 'registers no offenses' do

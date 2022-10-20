@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Geo Frequently Asked Questions **(PREMIUM SELF)**
@@ -69,6 +69,6 @@ That's totally fine. We use HTTP(s) to fetch repository changes from the **prima
 
 Yes. See [Container Registry for a **secondary** site](container_registry.md).
 
-## Can you log in to a secondary site?
+## Can you sign in to a secondary site?
 
 Yes, but secondary sites receive all authentication data (like user accounts and logins) from the primary instance. This means you are re-directed to the primary for authentication and then routed back.

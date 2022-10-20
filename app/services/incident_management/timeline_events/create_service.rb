@@ -109,7 +109,6 @@ module IncidentManagement
 
       def add_system_note(timeline_event)
         return if auto_created
-        return unless Feature.enabled?(:incident_timeline, project)
 
         SystemNoteService.add_timeline_event(timeline_event)
       end

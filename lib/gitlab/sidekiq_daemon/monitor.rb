@@ -182,7 +182,7 @@ module Gitlab
 
       def cancelled?(jid)
         ::Gitlab::Redis::SharedState.with do |redis|
-          redis.exists(self.class.cancel_job_key(jid))
+          redis.exists?(self.class.cancel_job_key(jid)) # rubocop:disable CodeReuse/ActiveRecord
         end
       end
 

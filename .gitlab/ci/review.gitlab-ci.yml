@@ -1,6 +1,3 @@
-include:
-  - remote: 'https://gitlab.com/gitlab-org/modelops/applied-ml/review-recommender/ci-templates/-/raw/v0.2.1/recommender/Reviewers.gitlab-ci.yml'
-
 review-cleanup:
   extends:
     - .default-retry
@@ -20,7 +17,7 @@ review-cleanup:
   script:
     - delete_release
     - delete_namespace
-    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+    - scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
 start-review-app-pipeline:
@@ -72,14 +69,14 @@ review-app-test-results:
 danger-review:
   extends:
     - .default-retry
-    - .danger-review-cache
+    - .ruby-node-cache
     - .review:rules:danger
   stage: test
   needs: []
   before_script:
     - source scripts/utils.sh
     - bundle_install_script "--with danger"
-    - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn_install_script
   script:
     # ${DANGER_DANGERFILE} is used by Jihulab for customizing danger support: https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml
     - >
@@ -96,12 +93,3 @@ danger-review-local:
     - .review:rules:danger-local
   script:
     - run_timed_command danger_as_local
-
-reviewers-recommender:
-  extends:
-    - .default-retry
-  # extends generated values cannot overwrite values from included files
-  # Use !reference as a workaround here
-  rules: !reference [".review:rules:reviewers-recommender", rules]
-  stage: test
-  needs: []

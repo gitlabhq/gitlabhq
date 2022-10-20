@@ -7,6 +7,7 @@ describe('Pipeline editor empty state', () => {
   let wrapper;
   const defaultProvide = {
     emptyStateIllustrationPath: 'my/svg/path',
+    usesExternalConfig: false,
   };
 
   const createComponent = ({ provide } = {}) => {
@@ -18,6 +19,7 @@ describe('Pipeline editor empty state', () => {
   const findFileNav = () => wrapper.findComponent(PipelineEditorFileNav);
   const findSvgImage = () => wrapper.find('img');
   const findTitle = () => wrapper.find('h1');
+  const findExternalCiInstructions = () => wrapper.find('p');
   const findConfirmButton = () => wrapper.findComponent(GlButton);
   const findDescription = () => wrapper.findComponent(GlSprintf);
 
@@ -25,7 +27,33 @@ describe('Pipeline editor empty state', () => {
     wrapper.destroy();
   });
 
-  describe('template', () => {
+  describe('when project uses an external CI config', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: { usesExternalConfig: true },
+      });
+    });
+
+    it('renders an svg image', () => {
+      expect(findSvgImage().exists()).toBe(true);
+    });
+
+    it('renders the correct title and instructions', () => {
+      expect(findTitle().exists()).toBe(true);
+      expect(findExternalCiInstructions().exists()).toBe(true);
+
+      expect(findExternalCiInstructions().html()).toContain(
+        wrapper.vm.$options.i18n.externalCiInstructions,
+      );
+      expect(findTitle().text()).toBe(wrapper.vm.$options.i18n.externalCiNote);
+    });
+
+    it('does not render the CTA button', () => {
+      expect(findConfirmButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when project uses an accessible CI config', () => {
     beforeEach(() => {
       createComponent();
     });

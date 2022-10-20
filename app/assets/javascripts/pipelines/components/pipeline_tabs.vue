@@ -56,7 +56,12 @@ export default {
 
 <template>
   <gl-tabs>
-    <gl-tab ref="pipelineTab" :title="$options.i18n.tabs.pipelineTitle" data-testid="pipeline-tab">
+    <gl-tab
+      ref="pipelineTab"
+      :title="$options.i18n.tabs.pipelineTitle"
+      data-testid="pipeline-tab"
+      lazy
+    >
       <pipeline-graph-wrapper />
     </gl-tab>
     <gl-tab
@@ -64,6 +69,7 @@ export default {
       :title="$options.i18n.tabs.needsTitle"
       :active="isActive($options.tabNames.needs)"
       data-testid="dag-tab"
+      lazy
     >
       <dag />
     </gl-tab>

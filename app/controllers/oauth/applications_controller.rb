@@ -4,7 +4,6 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::GonHelper
   include PageLayoutHelper
   include OauthApplications
-  include Gitlab::Experimentation::ControllerConcern
   include InitializesCurrentUserMode
 
   # Defined by the `Doorkeeper::ApplicationsController` and is redundant as we call `authenticate_user!` below. Not

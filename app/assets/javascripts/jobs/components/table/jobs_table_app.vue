@@ -1,7 +1,7 @@
 <script>
 import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
 import { validateQueryString } from '../filtered_search/utils';
@@ -134,7 +134,7 @@ export default {
         // when a user enters raw text we alert them that it is
         // not supported and we do not make an additional API call
         if (!filter.type) {
-          createFlash({
+          createAlert({
             message: RAW_TEXT_WARNING,
             type: 'warning',
           });

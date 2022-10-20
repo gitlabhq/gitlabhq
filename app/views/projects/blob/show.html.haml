@@ -1,5 +1,6 @@
 - breadcrumb_title _('Repository')
 - page_title @blob.path, @ref
+- add_page_specific_style 'page_bundles/tree'
 - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit, limit: 1)
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco', prefetch: true)

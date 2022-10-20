@@ -5,15 +5,11 @@ require 'spec_helper'
 RSpec.describe Ci::UnlockArtifactsService do
   using RSpec::Parameterized::TableSyntax
 
-  where(:tag, :ci_update_unlocked_job_artifacts, :ci_update_unlocked_pipeline_artifacts) do
-    false | false | false
-    false | true  | false
-    true  | false | false
-    true  | true  | false
-    false | false | true
-    false | true  | true
-    true  | false | true
-    true  | true  | true
+  where(:tag, :ci_update_unlocked_job_artifacts) do
+    false | false
+    false | true
+    true  | false
+    true  | true
   end
 
   with_them do
@@ -35,8 +31,7 @@ RSpec.describe Ci::UnlockArtifactsService do
 
     before do
       stub_const("#{described_class}::BATCH_SIZE", 1)
-      stub_feature_flags(ci_update_unlocked_job_artifacts: ci_update_unlocked_job_artifacts,
-                         ci_update_unlocked_pipeline_artifacts: ci_update_unlocked_pipeline_artifacts)
+      stub_feature_flags(ci_update_unlocked_job_artifacts: ci_update_unlocked_job_artifacts)
     end
 
     describe '#execute' do
@@ -80,7 +75,7 @@ RSpec.describe Ci::UnlockArtifactsService do
         end
 
         it 'unlocks pipeline artifact records' do
-          if ci_update_unlocked_job_artifacts && ci_update_unlocked_pipeline_artifacts
+          if ci_update_unlocked_job_artifacts
             expect { execute }.to change { ::Ci::PipelineArtifact.artifact_unlocked.count }.from(0).to(1)
           else
             expect { execute }.not_to change { ::Ci::PipelineArtifact.artifact_unlocked.count }
@@ -122,7 +117,7 @@ RSpec.describe Ci::UnlockArtifactsService do
         end
 
         it 'unlocks pipeline artifact records' do
-          if ci_update_unlocked_job_artifacts && ci_update_unlocked_pipeline_artifacts
+          if ci_update_unlocked_job_artifacts
             expect { execute }.to change { ::Ci::PipelineArtifact.artifact_unlocked.count }.from(0).to(1)
           else
             expect { execute }.not_to change { ::Ci::PipelineArtifact.artifact_unlocked.count }

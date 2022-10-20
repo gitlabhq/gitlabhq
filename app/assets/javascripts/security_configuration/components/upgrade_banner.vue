@@ -22,7 +22,7 @@ export default {
       s__('SecurityConfiguration|High-level vulnerability statistics across projects and groups'),
       s__('SecurityConfiguration|Runtime security metrics for application environments'),
       s__(
-        'SecurityConfiguration|More scan types, including Container Scanning, DAST, Dependency Scanning, Fuzzing, and Licence Compliance',
+        'SecurityConfiguration|More scan types, including DAST, Dependency Scanning, Fuzzing, and Licence Compliance',
       ),
     ],
     buttonText: s__('SecurityConfiguration|Upgrade or start a free trial'),

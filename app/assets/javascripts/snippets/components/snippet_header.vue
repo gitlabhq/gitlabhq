@@ -19,7 +19,7 @@ import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/flash';
 
 import DeleteSnippetMutation from '../mutations/delete_snippet.mutation.graphql';
 
@@ -196,12 +196,12 @@ export default {
       try {
         this.isSubmittingSpam = true;
         await axios.post(this.reportAbusePath);
-        createFlash({
+        createAlert({
           message: this.$options.i18n.snippetSpamSuccess,
-          type: FLASH_TYPES.SUCCESS,
+          variant: VARIANT_SUCCESS,
         });
       } catch (error) {
-        createFlash({ message: this.$options.i18n.snippetSpamFailure });
+        createAlert({ message: this.$options.i18n.snippetSpamFailure, variant: VARIANT_DANGER });
       } finally {
         this.isSubmittingSpam = false;
       }

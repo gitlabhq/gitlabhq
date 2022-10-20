@@ -2,12 +2,12 @@
 type: reference
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Authentiq OmniAuth Provider **(FREE SELF)**
 
-To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with Authentiq.
+To enable the Authentiq OmniAuth provider for passwordless authentication, you must register an application with Authentiq.
 
 Authentiq generates a Client ID and the accompanying Client Secret for you to use.
 
@@ -38,8 +38,8 @@ Authentiq generates a Client ID and the accompanying Client Secret for you to us
      {
        name: "authentiq",
        # label: "Provider name", # optional label for login button, defaults to "Authentiq"
-       app_id: "YOUR_CLIENT_ID",
-       app_secret: "YOUR_CLIENT_SECRET",
+       app_id: "<your_client_id>",
+       app_secret: "<your_client_secret>",
        args: {
          "scope": 'aq:name email~rs address aq:push'
        }
@@ -52,22 +52,28 @@ Authentiq generates a Client ID and the accompanying Client Secret for you to us
    ```yaml
    - { name: 'authentiq',
        # label: 'Provider name', # optional label for login button, defaults to "Authentiq"
-       app_id: 'YOUR_CLIENT_ID',
-       app_secret: 'YOUR_CLIENT_SECRET',
+       app_id: '<your_client_id>',
+       app_secret: '<your_client_secret>',
        args: {
               scope: 'aq:name email~rs address aq:push'
              }
      }
    ```
 
-1. The `scope` is set to request the user's name, email (required and signed), and permission to send push notifications to sign in on subsequent visits.
+1. The `scope` is set to request the:
+   - User's name.
+   - Required and signed email.
+   - Permission to send push notifications to sign in on subsequent visits.
+
    See [OmniAuth Authentiq strategy](https://github.com/AuthentiqID/omniauth-authentiq/wiki/Scopes,-callback-url-configuration-and-responses) for more information on scopes and modifiers.
 
-1. Change `YOUR_CLIENT_ID` and `YOUR_CLIENT_SECRET` to the Client credentials you received in step 1.
+1. Change `<your_client_id>` and `<your_client_secret>` to the Client credentials you received from Authentiq.
 
 1. Save the configuration file.
 
-1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
+1. For the changes to take effect:
+   - [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) if you installed GitLab using Omnibus.
+   - [Restart GitLab](../restart_gitlab.md#installations-from-source) if you installed GitLab from source.
 
 On the sign in page there should now be an Authentiq icon below the regular sign in form. Select the
 icon to begin the authentication process. If the user:
@@ -77,7 +83,7 @@ icon to begin the authentication process. If the user:
   1. Decide what personal details to share.
   1. Sign in to your GitLab installation.
 - Does not have the app installed, they are prompted to download the app and then follow the
-  procedure above.
+  previous procedure.
 
 If everything works, the user is returned to GitLab and is signed in.
 

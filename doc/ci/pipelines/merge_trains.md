@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge trains **(PREMIUM)**
@@ -91,7 +91,7 @@ In GitLab 13.5 and earlier, there is only one checkbox, named
 **Enable merge trains and pipelines for merged results**.
 
 WARNING:
-If you select the check box but don't configure your CI/CD to use
+If you select the checkbox but don't configure your CI/CD to use
 merge request pipelines, your merge requests may become stuck in an
 unresolved state or your pipelines may be dropped.
 

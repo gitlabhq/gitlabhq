@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Reduce repository size **(FREE)**
@@ -257,4 +257,28 @@ increased, your only option is to:
 ### Incorrect repository statistics shown in the GUI
 
 If the displayed size or commit number is different from the exported `.tar.gz` or local repository,
-you can ask a GitLab administrator to [force an update](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#incorrect-repository-statistics-shown-in-the-gui).
+you can ask a GitLab administrator to force an update.
+
+Using [the rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+p = Project.find_by_full_path('<namespace>/<project>')
+pp p.statistics
+p.statistics.refresh!
+pp p.statistics
+# compare with earlier values
+
+# An alternate method to clear project statistics
+p.repository.expire_all_method_caches
+UpdateProjectStatisticsWorker.perform_async(p.id, ["commit_count","repository_size","storage_size","lfs_objects_size"])
+
+# check the total artifact storage space separately
+builds_with_artifacts = p.builds.with_downloadable_artifacts.all
+
+artifact_storage = 0
+builds_with_artifacts.find_each do |build|
+  artifact_storage += build.artifacts_size
+end
+
+puts "#{artifact_storage} bytes"
+```

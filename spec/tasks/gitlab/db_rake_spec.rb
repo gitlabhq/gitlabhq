@@ -665,21 +665,15 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   end
 
   describe '#migrate_with_instrumentation' do
-    describe '#up' do
+    let(:runner) { instance_double(::Gitlab::Database::Migrations::Runner) }
+
+    describe '#up (legacy mode)' do
       subject { run_rake_task('gitlab:db:migration_testing:up') }
 
-      it 'delegates to the migration runner' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:up, :run)
-
-        subject
-      end
-    end
-
-    describe '#down' do
-      subject { run_rake_task('gitlab:db:migration_testing:down') }
-
-      it 'delegates to the migration runner' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:down, :run)
+      it 'delegates to the migration runner in legacy mode' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive(:up).with(database: 'main', legacy_mode: true)
+                                                                      .and_return(runner)
+        expect(runner).to receive(:run)
 
         subject
       end
@@ -699,31 +693,51 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       end
     end
 
-    describe '#sample_batched_background_migrations' do
-      let(:batched_runner) { instance_double(::Gitlab::Database::Migrations::TestBatchedBackgroundRunner) }
+    where(:db) do
+      Gitlab::Database::DATABASE_NAMES.map(&:to_sym)
+    end
 
-      it 'delegates to the migration runner for the main database with a default sample duration' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
-                                                            .with(for_database: 'main').and_return(batched_runner)
-        expect(batched_runner).to receive(:run_jobs).with(for_duration: 30.minutes)
+    with_them do
+      describe '#up' do
+        subject { run_rake_task("gitlab:db:migration_testing:up:#{db}") }
 
-        run_rake_task('gitlab:db:migration_testing:sample_batched_background_migrations')
+        it 'delegates to the migration runner' do
+          expect(::Gitlab::Database::Migrations::Runner).to receive(:up).with(database: db).and_return(runner)
+          expect(runner).to receive(:run)
+
+          subject
+        end
       end
 
-      it 'delegates to the migration runner for a specified database with a default sample duration' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
-                                                            .with(for_database: 'ci').and_return(batched_runner)
-        expect(batched_runner).to receive(:run_jobs).with(for_duration: 30.minutes)
+      describe '#down' do
+        subject { run_rake_task("gitlab:db:migration_testing:down:#{db}") }
 
-        run_rake_task('gitlab:db:migration_testing:sample_batched_background_migrations', '[ci]')
+        it 'delegates to the migration runner' do
+          expect(::Gitlab::Database::Migrations::Runner).to receive(:down).with(database: db).and_return(runner)
+          expect(runner).to receive(:run)
+
+          subject
+        end
       end
 
-      it 'delegates to the migration runner for a specified database and sample duration' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
-                                                            .with(for_database: 'ci').and_return(batched_runner)
-        expect(batched_runner).to receive(:run_jobs).with(for_duration: 100.seconds)
+      describe '#sample_batched_background_migrations' do
+        let(:batched_runner) { instance_double(::Gitlab::Database::Migrations::TestBatchedBackgroundRunner) }
 
-        run_rake_task('gitlab:db:migration_testing:sample_batched_background_migrations', '[ci, 100]')
+        it 'delegates to the migration runner for a specified database with a default sample duration' do
+          expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
+                                                               .with(for_database: db).and_return(batched_runner)
+          expect(batched_runner).to receive(:run_jobs).with(for_duration: 30.minutes)
+
+          run_rake_task("gitlab:db:migration_testing:sample_batched_background_migrations:#{db}")
+        end
+
+        it 'delegates to the migration runner for a specified database and sample duration' do
+          expect(::Gitlab::Database::Migrations::Runner).to receive(:batched_background_migrations)
+                                                              .with(for_database: db).and_return(batched_runner)
+          expect(batched_runner).to receive(:run_jobs).with(for_duration: 100.seconds)
+
+          run_rake_task("gitlab:db:migration_testing:sample_batched_background_migrations:#{db}", '[100]')
+        end
       end
     end
   end

@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -19,7 +19,7 @@ ensuring DAST coverage.
 
 The browser-based scanner works by loading the target application into a specially-instrumented
 Chromium browser. A snapshot of the page is taken before a search to find any actions that a user
-might perform, such as clicking on a link or filling in a form. For each action found, the
+might perform, such as selecting on a link or filling in a form. For each action found, the
 browser-based scanner executes it, takes a new snapshot, and determines what in the page changed
 from the previous snapshot. Crawling continues by taking more snapshots and finding subsequent
 actions. The benefit of scanning by following user actions in a browser is that the crawler can
@@ -64,7 +64,7 @@ The browser-based crawler can be configured using CI/CD variables.
 | `DAST_BROWSER_EXCLUDED_HOSTS`                | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered excluded and connections are forcibly dropped. |
 | `DAST_BROWSER_EXCLUDED_ELEMENTS`             | selector        | `a[href='2.html'],css:.no-follow` | Comma-separated list of selectors that are ignored when scanning. |
 | `DAST_BROWSER_IGNORED_HOSTS`                 | List of strings | `site.com,another.com`            | Hostnames included in this variable are accessed but not reported against. |
-| `DAST_BROWSER_MAX_ACTIONS`                   | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, clicking a link, or filling a form.  |
+| `DAST_BROWSER_MAX_ACTIONS`                   | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, selecting a link, or filling a form.  |
 | `DAST_BROWSER_MAX_DEPTH`                     | number          | `10`                              | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three. |
 | `DAST_BROWSER_NUMBER_OF_BROWSERS`            | number          | `3`                               | The maximum number of concurrent browser instances to use. For shared runners on GitLab.com, we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but are likely to produce little benefit after five to seven instances. |
 | `DAST_BROWSER_COOKIES`                       | dictionary      | `abtesting_group:3,region:locked` | A cookie name and value to be added to every request. |
@@ -193,3 +193,14 @@ The modules that can be configured for logging are as follows:
 | `NAVDB`    | Used for persistence mechanisms to store navigation entries. |
 | `REPT`     | Used for generating reports. |
 | `STAT`     | Used for general statistics while running the scan. |
+
+### Artifacts
+
+DAST's browser-based analyzer generates artifacts that can help you understand how the scanner works.
+Using the latest version of the DAST [template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml) these artifacts are exposed for download by default.
+
+The list of artifacts includes the following files:
+
+- `gl-dast-debug-auth-report.html`
+- `gl-dast-debug-crawl-report.html`
+- `gl-dast-crawl-graph.svg`

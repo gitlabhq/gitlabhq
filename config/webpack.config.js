@@ -16,17 +16,20 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
 const VUE_VERSION = require('vue/package.json').version;
 
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
+
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const WEBPACK_VERSION = require('webpack/package.json').version;
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const esbuildConfiguration = require('./esbuild.config');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
 const IS_EE = require('./helpers/is_ee_env');
 const IS_JH = require('./helpers/is_jh_env');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
-const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
@@ -40,6 +43,8 @@ const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.env.WEBPACK_SERVE === 'true';
+const WEBPACK_USE_ESBUILD_LOADER =
+  process.env.WEBPACK_USE_ESBUILD_LOADER && process.env.WEBPACK_USE_ESBUILD_LOADER !== 'false';
 
 const { DEV_SERVER_HOST, DEV_SERVER_PUBLIC_ADDR } = process.env;
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10);
@@ -49,9 +54,11 @@ const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD
 const INCREMENTAL_COMPILER_ENABLED =
   IS_DEV_SERVER &&
   process.env.DEV_SERVER_INCREMENTAL &&
-  process.env.DEV_SERVER_INCREMENTAL !== 'false';
+  process.env.DEV_SERVER_INCREMENTAL !== 'false' &&
+  !WEBPACK_USE_ESBUILD_LOADER;
 const INCREMENTAL_COMPILER_TTL = Number(process.env.DEV_SERVER_INCREMENTAL_TTL) || Infinity;
-const INCREMENTAL_COMPILER_RECORD_HISTORY = IS_DEV_SERVER && !process.env.CI;
+const INCREMENTAL_COMPILER_RECORD_HISTORY =
+  IS_DEV_SERVER && !process.env.CI && !WEBPACK_USE_ESBUILD_LOADER;
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT && process.env.WEBPACK_REPORT !== 'false';
 const WEBPACK_MEMORY_TEST =
   process.env.WEBPACK_MEMORY_TEST && process.env.WEBPACK_MEMORY_TEST !== 'false';
@@ -250,6 +257,24 @@ if (VENDOR_DLL && !IS_PRODUCTION) {
   };
 }
 
+const defaultJsOptions = {
+  cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
+  cacheIdentifier: [
+    process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
+    webpack.version,
+    BABEL_VERSION,
+    BABEL_LOADER_VERSION,
+    // Ensure that changing supported browsers will refresh the cache
+    // in order to not pull in outdated files that import core-js
+    SUPPORTED_BROWSERS_HASH,
+  ].join('|'),
+  cacheCompression: false,
+};
+
+if (WEBPACK_USE_ESBUILD_LOADER) {
+  console.log('esbuild-loader is active');
+}
+
 module.exports = {
   mode: IS_PRODUCTION ? 'production' : 'development',
 
@@ -280,23 +305,39 @@ module.exports = {
         test: /\.mjs$/,
         use: [],
       },
-      {
+      WEBPACK_USE_ESBUILD_LOADER && {
+        test: /\.js$/,
+        exclude: (modulePath) =>
+          /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
+        loader: 'esbuild-loader',
+        options: esbuildConfiguration,
+      },
+      !WEBPACK_USE_ESBUILD_LOADER && {
         test: /\.js$/,
         exclude: (modulePath) =>
           /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath),
         loader: 'babel-loader',
+        options: defaultJsOptions,
+      },
+      WEBPACK_USE_ESBUILD_LOADER && {
+        test: /\.js$/,
+        include: (modulePath) =>
+          /node_modules\/(monaco-worker-manager|monaco-marker-data-provider)\/index\.js/.test(
+            modulePath,
+          ) || /node_modules\/yaml/.test(modulePath),
+        loader: 'esbuild-loader',
+        options: esbuildConfiguration,
+      },
+      !WEBPACK_USE_ESBUILD_LOADER && {
+        test: /\.js$/,
+        include: (modulePath) =>
+          /node_modules\/(monaco-worker-manager|monaco-marker-data-provider)\/index\.js/.test(
+            modulePath,
+          ) || /node_modules\/yaml/.test(modulePath),
+        loader: 'babel-loader',
         options: {
-          cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
-          cacheIdentifier: [
-            process.env.BABEL_ENV || process.env.NODE_ENV || 'development',
-            webpack.version,
-            BABEL_VERSION,
-            BABEL_LOADER_VERSION,
-            // Ensure that changing supported browsers will refresh the cache
-            // in order to not pull in outdated files that import core-js
-            SUPPORTED_BROWSERS_HASH,
-          ].join('|'),
-          cacheCompression: false,
+          plugins: ['@babel/plugin-proposal-numeric-separator'],
+          ...defaultJsOptions,
         },
       },
       {
@@ -389,7 +430,7 @@ module.exports = {
         test: /\.(yml|yaml)$/,
         loader: 'raw-loader',
       },
-    ],
+    ].filter(Boolean),
   },
 
   optimization: {
@@ -460,6 +501,9 @@ module.exports = {
         },
       },
     },
+    ...(WEBPACK_USE_ESBUILD_LOADER
+      ? { minimizer: [new ESBuildMinifyPlugin(esbuildConfiguration)] }
+      : {}),
   },
 
   plugins: [
@@ -492,6 +536,16 @@ module.exports = {
     // automatically configure monaco editor web workers
     new MonacoWebpackPlugin({
       filename: '[name].[contenthash:8].worker.js',
+      customLanguages: [
+        {
+          label: 'yaml',
+          entry: 'monaco-yaml',
+          worker: {
+            id: 'monaco-yaml/yamlWorker',
+            entry: 'monaco-yaml/yaml.worker',
+          },
+        },
+      ],
     }),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
@@ -592,7 +646,11 @@ module.exports = {
       patterns: [
         {
           from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
-          to: path.join(WEBPACK_OUTPUT_PATH, 'cmaps/'),
+          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/cmaps/'),
+        },
+        {
+          from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js'),
+          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/'),
         },
         {
           from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),

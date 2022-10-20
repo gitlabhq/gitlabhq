@@ -69,11 +69,17 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:markdown_surround_selection).to(:user_preference) }
     it { is_expected.to delegate_method(:markdown_surround_selection=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:markdown_automatic_lists).to(:user_preference) }
+    it { is_expected.to delegate_method(:markdown_automatic_lists=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:diffs_deletion_color).to(:user_preference) }
     it { is_expected.to delegate_method(:diffs_deletion_color=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:diffs_addition_color).to(:user_preference) }
     it { is_expected.to delegate_method(:diffs_addition_color=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:use_legacy_web_ide).to(:user_preference) }
+    it { is_expected.to delegate_method(:use_legacy_web_ide=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
@@ -101,6 +107,7 @@ RSpec.describe User do
     it { is_expected.to have_one(:atlassian_identity) }
     it { is_expected.to have_one(:user_highest_role) }
     it { is_expected.to have_one(:credit_card_validation) }
+    it { is_expected.to have_one(:phone_number_validation) }
     it { is_expected.to have_one(:banned_user) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
@@ -136,7 +143,6 @@ RSpec.describe User do
     it { is_expected.to have_many(:timelogs) }
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
-    it { is_expected.to have_many(:namespace_callouts).class_name('Users::NamespaceCallout') }
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
 
     describe '#user_detail' do
@@ -1163,6 +1169,20 @@ RSpec.describe User do
           'ORDER BY "users"."last_activity_on" ASC NULLS FIRST, "users"."id" DESC')
       end
     end
+
+    describe '.order_recent_sign_in' do
+      it 'sorts users by current_sign_in_at in descending order' do
+        expect(described_class.order_recent_sign_in.to_sql).to include(
+          'ORDER BY "users"."current_sign_in_at" DESC NULLS LAST')
+      end
+    end
+
+    describe '.order_oldest_sign_in' do
+      it 'sorts users by current_sign_in_at in ascending order' do
+        expect(described_class.order_oldest_sign_in.to_sql).to include(
+          'ORDER BY "users"."current_sign_in_at" ASC NULLS LAST')
+      end
+    end
   end
 
   context 'strip attributes' do
@@ -1882,9 +1902,9 @@ RSpec.describe User do
       end
 
       it 'ensures correct rights and limits for user' do
-        stub_config_setting(default_can_create_group: true)
+        stub_application_setting(can_create_group: true)
 
-        expect { user.update!(external: false) }.to change { user.can_create_group }.to(true)
+        expect { user.update!(external: false) }.to change { user.can_create_group }.from(false).to(true)
           .and change { user.projects_limit }.to(Gitlab::CurrentSettings.default_projects_limit)
       end
     end
@@ -2604,7 +2624,7 @@ RSpec.describe User do
 
       it 'applies defaults to user' do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
-        expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
+        expect(user.can_create_group).to eq(Gitlab::CurrentSettings.can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
         expect(user.private_profile).to eq(false)
@@ -3719,6 +3739,22 @@ RSpec.describe User do
 
       expect(user.followees).to be_empty
     end
+
+    it 'does not follow if max followee limit is reached' do
+      stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
+
+      user = create(:user)
+      Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
+
+      followee = create(:user)
+      user_follow_user = user.follow(followee)
+
+      expect(user_follow_user).not_to be_persisted
+      expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
+      expect(user_follow_user.errors.messages[:base].first).to eq(expected_message)
+
+      expect(user.following?(followee)).to be_falsey
+    end
   end
 
   describe '#unfollow' do
@@ -3746,6 +3782,18 @@ RSpec.describe User do
       expect(user.unfollow(followee2)).to be_falsey
 
       expect(user.followees).to be_empty
+    end
+
+    it 'unfollows when over followee limit' do
+      user = create(:user)
+
+      followees = create_list(:user, 4)
+      followees.each { |f| expect(user.follow(f)).to be_truthy }
+
+      stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', followees.length - 2)
+
+      expect(user.unfollow(followees.first)).to be_truthy
+      expect(user.following?(followees.first)).to be_falsey
     end
   end
 
@@ -4838,23 +4886,6 @@ RSpec.describe User do
     end
   end
 
-  describe '#remove_project_authorizations' do
-    let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
-    let_it_be(:project3) { create(:project) }
-    let_it_be(:user) { create(:user) }
-
-    it 'removes the project authorizations of the user, in specified projects' do
-      create(:project_authorization, user: user, project: project1)
-      create(:project_authorization, user: user, project: project2)
-      create(:project_authorization, user: user, project: project3)
-
-      user.remove_project_authorizations([project1.id, project2.id])
-
-      expect(user.project_authorizations.pluck(:project_id)).to match_array([project3.id])
-    end
-  end
-
   describe '#access_level=' do
     let(:user) { build(:user) }
 
@@ -5389,6 +5420,41 @@ RSpec.describe User do
             end.not_to change { user.namespace.updated_at }
           end
         end
+      end
+    end
+  end
+
+  describe '#ensure_user_detail_assigned' do
+    let(:user) { build(:user) }
+
+    context 'when no user detail field has been changed' do
+      before do
+        allow(UserDetail)
+          .to receive(:user_fields_changed?)
+          .and_return(false)
+      end
+
+      it 'does not assign user details before save' do
+        expect(user.user_detail)
+          .not_to receive(:assign_changed_fields_from_user)
+
+        user.save!
+      end
+    end
+
+    context 'when a user detail field has been changed' do
+      before do
+        allow(UserDetail)
+          .to receive(:user_fields_changed?)
+          .and_return(true)
+      end
+
+      it 'assigns user details before save' do
+        expect(user.user_detail)
+          .to receive(:assign_changed_fields_from_user)
+          .and_call_original
+
+        user.save!
       end
     end
   end
@@ -6251,6 +6317,64 @@ RSpec.describe User do
         it { is_expected.to be_falsey }
       end
     end
+
+    context 'user with autogenerated_password' do
+      let(:user) { build_stubbed(:user, password_automatically_set: true) }
+      let(:password) { user.password }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#generate_otp_backup_codes!' do
+    let(:user) { create(:user) }
+
+    context 'with FIPS mode', :fips_mode do
+      it 'attempts to use #generate_otp_backup_codes_pbkdf2!' do
+        expect(user).to receive(:generate_otp_backup_codes_pbkdf2!).and_call_original
+
+        user.generate_otp_backup_codes!
+      end
+    end
+
+    context 'outside FIPS mode' do
+      it 'does not attempt to use #generate_otp_backup_codes_pbkdf2!' do
+        expect(user).not_to receive(:generate_otp_backup_codes_pbkdf2!)
+
+        user.generate_otp_backup_codes!
+      end
+    end
+  end
+
+  describe '#invalidate_otp_backup_code!' do
+    let(:user) { create(:user) }
+
+    context 'with FIPS mode', :fips_mode do
+      context 'with a PBKDF2-encrypted password' do
+        let(:encrypted_password) { '$pbkdf2-sha512$20000$boHGAw0hEyI$DBA67J7zNZebyzLtLk2X9wRDbmj1LNKVGnZLYyz6PGrIDGIl45fl/BPH0y1TPZnV90A20i.fD9C3G9Bp8jzzOA' }
+
+        it 'attempts to use #invalidate_otp_backup_code_pdkdf2!' do
+          expect(user).to receive(:otp_backup_codes).at_least(:once).and_return([encrypted_password])
+          expect(user).to receive(:invalidate_otp_backup_code_pdkdf2!).and_return(true)
+
+          user.invalidate_otp_backup_code!(user.password)
+        end
+      end
+
+      it 'does not attempt to use #invalidate_otp_backup_code_pdkdf2!' do
+        expect(user).not_to receive(:invalidate_otp_backup_code_pdkdf2!)
+
+        user.invalidate_otp_backup_code!(user.password)
+      end
+    end
+
+    context 'outside FIPS mode' do
+      it 'does not attempt to use #invalidate_otp_backup_code_pdkdf2!' do
+        expect(user).not_to receive(:invalidate_otp_backup_code_pdkdf2!)
+
+        user.invalidate_otp_backup_code!(user.password)
+      end
+    end
   end
 
   # These entire test section can be removed once the :pbkdf2_password_encryption feature flag is removed.
@@ -6588,96 +6712,6 @@ RSpec.describe User do
 
         it 'is not valid' do
           expect(find_or_initialize_callout).not_to be_valid
-        end
-      end
-    end
-  end
-
-  describe 'Users::NamespaceCallout' do
-    describe '#dismissed_callout_for_namespace?' do
-      let_it_be(:user, refind: true) { create(:user) }
-      let_it_be(:namespace) { create(:namespace) }
-      let_it_be(:feature_name) { Users::NamespaceCallout.feature_names.each_key.first }
-
-      let(:query) do
-        { feature_name: feature_name, namespace: namespace }
-      end
-
-      def have_dismissed_callout
-        be_dismissed_callout_for_namespace(**query)
-      end
-
-      context 'when no callout dismissal record exists' do
-        it 'returns false when no ignore_dismissal_earlier_than provided' do
-          expect(user).not_to have_dismissed_callout
-        end
-      end
-
-      context 'when dismissed callout exists' do
-        before_all do
-          create(:namespace_callout,
-                 user: user,
-                 namespace_id: namespace.id,
-                 feature_name: feature_name,
-                 dismissed_at: 4.months.ago)
-        end
-
-        it 'returns true when no ignore_dismissal_earlier_than provided' do
-          expect(user).to have_dismissed_callout
-        end
-
-        it 'returns true when ignore_dismissal_earlier_than is earlier than dismissed_at' do
-          query[:ignore_dismissal_earlier_than] = 6.months.ago
-
-          expect(user).to have_dismissed_callout
-        end
-
-        it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
-          query[:ignore_dismissal_earlier_than] = 2.months.ago
-
-          expect(user).not_to have_dismissed_callout
-        end
-      end
-    end
-
-    describe '#find_or_initialize_namespace_callout' do
-      let_it_be(:user, refind: true) { create(:user) }
-      let_it_be(:namespace) { create(:namespace) }
-      let_it_be(:feature_name) { Users::NamespaceCallout.feature_names.each_key.first }
-
-      subject(:callout_with_source) do
-        user.find_or_initialize_namespace_callout(feature_name, namespace.id)
-      end
-
-      context 'when callout exists' do
-        let!(:callout) do
-          create(:namespace_callout, user: user, feature_name: feature_name, namespace_id: namespace.id)
-        end
-
-        it 'returns existing callout' do
-          expect(callout_with_source).to eq(callout)
-        end
-      end
-
-      context 'when callout does not exist' do
-        context 'when feature name is valid' do
-          it 'initializes a new callout' do
-            expect(callout_with_source)
-              .to be_a_new(Users::NamespaceCallout)
-              .and be_valid
-          end
-        end
-
-        context 'when feature name is not valid' do
-          let(:feature_name) { 'notvalid' }
-
-          it 'initializes a new callout' do
-            expect(callout_with_source).to be_a_new(Users::NamespaceCallout)
-          end
-
-          it 'is not valid' do
-            expect(callout_with_source).not_to be_valid
-          end
         end
       end
     end
@@ -7432,9 +7466,10 @@ RSpec.describe User do
     let_it_be(:internal_user) { User.alert_bot.tap { |u| u.confirm } }
 
     it 'does not return blocked or banned users' do
-      expect(described_class.without_forbidden_states).to match_array([
-        normal_user, admin_user, external_user, unconfirmed_user, omniauth_user, internal_user
-      ])
+      expect(described_class.without_forbidden_states).to match_array(
+        [
+          normal_user, admin_user, external_user, unconfirmed_user, omniauth_user, internal_user
+        ])
     end
   end
 

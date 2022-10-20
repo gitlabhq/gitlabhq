@@ -85,6 +85,8 @@ module Sidebars
         end
 
         def contributors_menu_item
+          return false unless context.project.analytics_enabled?
+
           ::Sidebars::MenuItem.new(
             title: _('Contributors'),
             link: project_graph_path(context.project, context.current_ref),

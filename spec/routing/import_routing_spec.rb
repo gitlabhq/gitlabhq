@@ -177,3 +177,10 @@ RSpec.describe Import::PhabricatorController, 'routing' do
     expect(get("/import/phabricator/new")).to route_to("import/phabricator#new")
   end
 end
+
+# status_import_github_group GET /import/github_group/status(.:format) import/github_groups#status
+RSpec.describe Import::GithubGroupsController, 'routing' do
+  it 'to #status' do
+    expect(get('/import/github_group/status')).to route_to('import/github_groups#status')
+  end
+end

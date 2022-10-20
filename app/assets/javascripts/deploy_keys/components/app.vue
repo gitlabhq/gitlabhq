@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import eventHub from '../eventhub';
@@ -93,7 +93,7 @@ export default {
         .catch(() => {
           this.isLoading = false;
           this.store.keys = {};
-          return createFlash({
+          return createAlert({
             message: s__('DeployKeys|Error getting deploy keys'),
           });
         });
@@ -103,7 +103,7 @@ export default {
         .enableKey(deployKey.id)
         .then(this.fetchKeys)
         .catch(() =>
-          createFlash({
+          createAlert({
             message: s__('DeployKeys|Error enabling deploy key'),
           }),
         );
@@ -119,7 +119,7 @@ export default {
           .then(this.fetchKeys)
           .then(hideModal)
           .catch(() =>
-            createFlash({
+            createAlert({
               message: s__('DeployKeys|Error removing deploy key'),
             }),
           );

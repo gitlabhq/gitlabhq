@@ -1,7 +1,7 @@
 ---
 stage: Release
 group: Release
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -342,6 +342,7 @@ It schedules for deletion multiple environments that have already been
 [stopped](../ci/environments/index.md#stop-an-environment) and
 are [in the review app folder](../ci/review_apps/index.md).
 The actual deletion is performed after 1 week from the time of execution.
+By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.
 
 ```plaintext
 DELETE /projects/:id/environments/review_apps

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Jobs API **(FREE)**
@@ -76,6 +76,9 @@ Example of response
     "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -132,6 +135,9 @@ Example of response
     "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -216,6 +222,9 @@ Example of response
     "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -281,6 +290,9 @@ Example of response
     "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
+    "project": {
+      "ci_job_token_scope_enabled": false
+    },
     "user": {
       "id": 1,
       "name": "Administrator",

@@ -12,7 +12,7 @@ module Gitlab
         return if jira_labels.blank?
 
         existing_labels = LabelsFinder.new(nil, project: project, title: jira_labels)
-          .execute(skip_authorization: true).select(:id, :name)
+          .execute(skip_authorization: true).select(:id, :project_id, :group_id, :type, :name)
         new_labels = create_missing_labels(existing_labels)
 
         label_ids = existing_labels.map(&:id)

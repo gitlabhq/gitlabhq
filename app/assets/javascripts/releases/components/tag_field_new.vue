@@ -1,8 +1,15 @@
 <script>
-import { GlFormGroup, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import {
+  GlCollapse,
+  GlLink,
+  GlFormGroup,
+  GlFormTextarea,
+  GlDropdownItem,
+  GlSprintf,
+} from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_TAGS } from '~/ref/constants';
 import FormFieldContainer from './form_field_container.vue';
@@ -10,7 +17,10 @@ import FormFieldContainer from './form_field_container.vue';
 export default {
   name: 'TagFieldNew',
   components: {
+    GlCollapse,
     GlFormGroup,
+    GlFormTextarea,
+    GlLink,
     RefSelector,
     FormFieldContainer,
     GlDropdownItem,
@@ -39,6 +49,14 @@ export default {
         // dropdown list of existing tag names, so we know the tag
         // already exists and don't need to show the "create from" input
         this.updateShowCreateFrom(false);
+      },
+    },
+    tagMessage: {
+      get() {
+        return this.release.tagMessage;
+      },
+      set(tagMessage) {
+        this.updateReleaseTagMessage(tagMessage);
       },
     },
     createFromModel: {
@@ -70,6 +88,7 @@ export default {
   methods: {
     ...mapActions('editNew', [
       'updateReleaseTagName',
+      'updateReleaseTagMessage',
       'updateCreateFrom',
       'fetchTagNotes',
       'updateShowCreateFrom',
@@ -113,9 +132,20 @@ export default {
       noRefSelected: __('No source selected'),
       searchPlaceholder: __('Search branches, tags, and commits'),
       dropdownHeader: __('Select source'),
+      label: __('Create from'),
+      description: __('Existing branch name, tag, or commit SHA'),
+    },
+    annotatedTag: {
+      label: s__('CreateGitTag|Set tag message'),
+      description: s__(
+        'CreateGitTag|Add a message to the tag. Leaving this blank creates a %{linkStart}lightweight tag%{linkEnd}.',
+      ),
     },
   },
+  tagMessageId: uniqueId('tag-message-'),
+
   tagNameEnabledRefTypes: [REF_TYPE_TAGS],
+  gitTagDocsLink: 'https://git-scm.com/book/en/v2/Git-Basics-Tagging/',
 };
 </script>
 <template>
@@ -156,23 +186,45 @@ export default {
         </ref-selector>
       </form-field-container>
     </gl-form-group>
-    <gl-form-group
-      v-if="showCreateFrom"
-      :label="__('Create from')"
-      :label-for="createFromSelectorId"
-      data-testid="create-from-field"
-    >
-      <form-field-container>
-        <ref-selector
-          :id="createFromSelectorId"
-          v-model="createFromModel"
-          :project-id="projectId"
-          :translations="$options.translations.createFrom"
-        />
-      </form-field-container>
-      <template #description>
-        {{ __('Existing branch name, tag, or commit SHA') }}
-      </template>
-    </gl-form-group>
+    <gl-collapse :visible="showCreateFrom">
+      <div class="gl-pl-6 gl-border-l-1 gl-border-l-solid gl-border-gray-300">
+        <gl-form-group
+          v-if="showCreateFrom"
+          :label="$options.translations.createFrom.label"
+          :label-for="createFromSelectorId"
+          data-testid="create-from-field"
+        >
+          <form-field-container>
+            <ref-selector
+              :id="createFromSelectorId"
+              v-model="createFromModel"
+              :project-id="projectId"
+              :translations="$options.translations.createFrom"
+            />
+          </form-field-container>
+          <template #description>{{ $options.translations.createFrom.description }}</template>
+        </gl-form-group>
+        <gl-form-group
+          v-if="showCreateFrom"
+          :label="$options.translations.annotatedTag.label"
+          :label-for="$options.tagMessageId"
+          data-testid="annotated-tag-message-field"
+        >
+          <gl-form-textarea :id="$options.tagMessageId" v-model="tagMessage" />
+          <template #description>
+            <gl-sprintf :message="$options.translations.annotatedTag.description">
+              <template #link="{ content }">
+                <gl-link
+                  :href="$options.gitTagDocsLink"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  >{{ content }}</gl-link
+                >
+              </template>
+            </gl-sprintf>
+          </template>
+        </gl-form-group>
+      </div>
+    </gl-collapse>
   </div>
 </template>

@@ -1,14 +1,14 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 comments: false
 type: index
 ---
 
 # Security **(FREE)**
 
-- [Password storage](password_storage.md)
+- [Passwords and OAuth tokens storage](password_storage.md)
 - [Password length limits](password_length_limits.md)
 - [Generated passwords for users created through integrated authentication](passwords_for_integrated_authentication_methods.md)
 - [Restrict SSH key technologies and minimum length](ssh_keys_restrictions.md)

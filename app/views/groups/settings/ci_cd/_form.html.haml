@@ -1,6 +1,6 @@
 .row.gl-mt-3
   .col-lg-12
-    = form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|
+    = gitlab_ui_form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|
       %fieldset.builds-feature
         .form-group
           = f.label :max_artifacts_size, _('Maximum artifacts size'), class: 'label-bold'
@@ -8,4 +8,4 @@
           %p.form-text.text-muted
             = _("The maximum file size in megabytes for individual job artifacts.")
             = link_to s_('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
-        = f.submit _('Save changes'), class: "btn gl-button btn-confirm"
+        = f.submit _('Save changes'), pajamas_button: true

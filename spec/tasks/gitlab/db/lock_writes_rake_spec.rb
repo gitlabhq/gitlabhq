@@ -89,6 +89,26 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
       end
     end
 
+    context 'when running in dry_run mode' do
+      before do
+        stub_env('DRY_RUN', 'true')
+      end
+
+      it 'allows writes on the main tables on the ci database' do
+        run_rake_task('gitlab:db:lock_writes')
+        expect do
+          ci_connection.execute("delete from projects")
+        end.not_to raise_error
+      end
+
+      it 'allows writes on the ci tables on the main database' do
+        run_rake_task('gitlab:db:lock_writes')
+        expect do
+          main_connection.execute("delete from ci_builds")
+        end.not_to raise_error
+      end
+    end
+
     context 'multiple shared databases' do
       before do
         allow(::Gitlab::Database).to receive(:db_config_share_with).and_return(nil)

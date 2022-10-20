@@ -5,28 +5,52 @@ require 'fileutils'
 module Tasks
   module Gitlab
     module Assets
-      FOSS_ASSET_FOLDERS = %w[app/assets fixtures/emojis vendor/assets/javascripts].freeze
+      FOSS_ASSET_FOLDERS = %w[app/assets fixtures/emojis vendor/assets].freeze
       EE_ASSET_FOLDERS = %w[ee/app/assets].freeze
       JH_ASSET_FOLDERS = %w[jh/app/assets].freeze
-      JS_ASSET_PATTERNS = %w[*.js config/**/*.js].freeze
-      JS_ASSET_FILES = %w[package.json yarn.lock].freeze
-      MASTER_SHA256_HASH_FILE = 'master-assets-hash.txt'
-      HEAD_SHA256_HASH_FILE = 'assets-hash.txt'
-      PUBLIC_ASSETS_WEBPACK_DIR = 'public/assets/webpack'
+      # In the new caching strategy, we check the assets hash sum *before* compiling
+      # the app/assets/javascripts/locale/**/app.js files. That means the hash sum
+      # must depend on locale/**/gitlab.po.
+      JS_ASSET_PATTERNS = %w[*.js config/**/*.js locale/**/gitlab.po].freeze
+      JS_ASSET_FILES = %w[
+        package.json
+        yarn.lock
+        babel.config.js
+        config/webpack.config.js
+      ].freeze
+      EXCLUDE_PATTERNS = %w[
+        app/assets/javascripts/locale/**/app.js
+      ].freeze
+      PUBLIC_ASSETS_DIR = 'public/assets'
+      HEAD_ASSETS_SHA256_HASH_ENV = 'GITLAB_ASSETS_HASH'
+      CACHED_ASSETS_SHA256_HASH_FILE = 'cached-assets-hash.txt'
 
-      def self.sha256_of_assets_impacting_webpack_compilation
-        start_time = Time.now
-        asset_files = assets_impacting_webpack_compilation
-        puts "Generating the SHA256 hash for #{assets_impacting_webpack_compilation.size} Webpack-related assets..."
-
-        asset_file_sha256s = asset_files.map do |asset_file|
-          Digest::SHA256.file(asset_file).hexdigest
-        end
-
-        Digest::SHA256.hexdigest(asset_file_sha256s.join).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" }
+      def self.master_assets_sha256
+        @master_assets_sha256 ||=
+          if File.exist?(Tasks::Gitlab::Assets::CACHED_ASSETS_SHA256_HASH_FILE)
+            File.read(Tasks::Gitlab::Assets::CACHED_ASSETS_SHA256_HASH_FILE)
+          else
+            'missing!'
+          end
       end
 
-      def self.assets_impacting_webpack_compilation
+      def self.head_assets_sha256
+        @head_assets_sha256 ||= ENV.fetch(Tasks::Gitlab::Assets::HEAD_ASSETS_SHA256_HASH_ENV) do
+          Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
+        end
+      end
+
+      def self.sha256_of_assets_impacting_compilation(verbose: true)
+        start_time = Time.now
+        asset_files = assets_impacting_compilation
+        puts "Generating the SHA256 hash for #{asset_files.size} Webpack-related assets..." if verbose
+
+        assets_sha256 = asset_files.map { |asset_file| Digest::SHA256.file(asset_file).hexdigest }.join
+
+        Digest::SHA256.hexdigest(assets_sha256).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose }
+      end
+
+      def self.assets_impacting_compilation
         assets_folders = FOSS_ASSET_FOLDERS
         assets_folders += EE_ASSET_FOLDERS if ::Gitlab.ee?
         assets_folders += JH_ASSET_FOLDERS if ::Gitlab.jh?
@@ -38,52 +62,34 @@ module Tasks
           asset_files.concat(Dir.glob(["#{folder}/**/*.*"]))
         end
 
-        asset_files
+        asset_files - Dir.glob(EXCLUDE_PATTERNS)
       end
-
-      private_class_method :assets_impacting_webpack_compilation
+      private_class_method :assets_impacting_compilation
     end
   end
 end
 
 namespace :gitlab do
   namespace :assets do
+    desc 'GitLab | Assets | Return the hash sum of all frontend assets'
+    task :hash_sum do
+      print Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
+    end
+
     desc 'GitLab | Assets | Compile all frontend assets'
     task :compile do
       require_dependency 'gitlab/task_helpers'
 
-      %w[
-        yarn:check
-        gettext:po_to_json
-        rake:assets:precompile
-        gitlab:assets:compile_webpack_if_needed
-        gitlab:assets:fix_urls
-        gitlab:assets:check_page_bundle_mixins_css_for_sideeffects
-      ].each(&::Gitlab::TaskHelpers.method(:invoke_and_time_task))
-    end
+      puts "Assets SHA256 for `master`: #{Tasks::Gitlab::Assets.master_assets_sha256.inspect}"
+      puts "Assets SHA256 for `HEAD`: #{Tasks::Gitlab::Assets.head_assets_sha256.inspect}"
 
-    desc 'GitLab | Assets | Compile all Webpack assets'
-    task :compile_webpack_if_needed do
-      FileUtils.mv(Tasks::Gitlab::Assets::HEAD_SHA256_HASH_FILE, Tasks::Gitlab::Assets::MASTER_SHA256_HASH_FILE, force: true)
+      if Tasks::Gitlab::Assets.head_assets_sha256 != Tasks::Gitlab::Assets.master_assets_sha256
+        FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR) if Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR)
 
-      master_assets_sha256 =
-        if File.exist?(Tasks::Gitlab::Assets::MASTER_SHA256_HASH_FILE)
-          File.read(Tasks::Gitlab::Assets::MASTER_SHA256_HASH_FILE)
-        else
-          'missing!'
-        end
-
-      head_assets_sha256 = Tasks::Gitlab::Assets.sha256_of_assets_impacting_webpack_compilation.tap do |sha256|
-        File.write(Tasks::Gitlab::Assets::HEAD_SHA256_HASH_FILE, sha256)
-      end
-
-      puts "Webpack assets SHA256 for `master`: #{master_assets_sha256}"
-      puts "Webpack assets SHA256 for `HEAD`: #{head_assets_sha256}"
-
-      public_assets_webpack_dir_exists = Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR)
-
-      if head_assets_sha256 != master_assets_sha256 || !public_assets_webpack_dir_exists
-        FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_WEBPACK_DIR) if public_assets_webpack_dir_exists
+        # gettext:po_to_json needs to run before rake:assets:precompile because
+        # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
+        Gitlab::TaskHelpers.invoke_and_time_task('gettext:po_to_json')
+        Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
 
@@ -96,6 +102,9 @@ namespace :gitlab do
 
         puts "Written webpack stdout log to #{log_path}" if log_path
         puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
+
+        Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
+        Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:check_page_bundle_mixins_css_for_sideeffects')
       end
     end
 

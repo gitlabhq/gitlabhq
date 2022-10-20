@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -1093,6 +1093,7 @@ profile increases as the number of tests increases.
 | `SECURE_ANALYZERS_PREFIX`                                   | Specify the Docker registry base address from which to download the analyzer. |
 | `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `2`. |
 | `FUZZAPI_IMAGE_SUFFIX`                                      | Specify a container image suffix. Defaults to none. |
+| `FUZZAPI_API_PORT`                                          | Specify the communication port number used by API Fuzzing engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `FUZZAPI_TARGET_URL`                                        | Base URL of API testing target. |
 | `FUZZAPI_CONFIG`                                            | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/276395) in GitLab 13.12, replaced with default `.gitlab/gitlab-api-fuzzing-config.yml`. API Fuzzing configuration file. |
 |[`FUZZAPI_PROFILE`](#api-fuzzing-profiles)                   | Configuration profile to use during testing. Defaults to `Quick-10`. |
@@ -1109,7 +1110,6 @@ profile increases as the number of tests increases.
 |[`FUZZAPI_GRAPHQL_SCHEMA`](#graphql-schema)                  | A URL or filename for a GraphQL schema in JSON format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
 |[`FUZZAPI_POSTMAN_COLLECTION`](#postman-collection)          | Postman Collection file. |
 |[`FUZZAPI_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. The support for comma-separated (`,`) files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1. |
-|[`FUZZAPI_POSTMAN_COLLECTION_VARIABLES`](#postman-variables) | Path to a JSON file to extract Postman variable values. |
 |[`FUZZAPI_OVERRIDES_FILE`](#overrides)                       | Path to a JSON file containing overrides. |
 |[`FUZZAPI_OVERRIDES_ENV`](#overrides)                        | JSON string containing headers to override. |
 |[`FUZZAPI_OVERRIDES_CMD`](#overrides)                        | Overrides command. |
@@ -1386,7 +1386,7 @@ variables:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334578) in GitLab 14.8.
 
-By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `FUZZAPI_OVERRIDES_CMD_VERBOSE` to any value in order to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
+By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `FUZZAPI_OVERRIDES_CMD_VERBOSE` to any value to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
 
 It is also possible to write messages from your script to a log file that is collected when the job completes or fails. The log file must be created in a specific location and follow a naming convention.
 
@@ -2225,6 +2225,43 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 1. The full console output of the job.
 1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
 1. The `apifuzzer_fuzz` job definition from your `.gitlab-ci.yml` file.
+
+### `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
+
+The API Fuzzing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `apifuzzer_fuzz` job. A common cause for this issue is that the background component cannot use the selected port as it's already in use. This error can occur intermittently if timing plays a part (race condition). This issue occurs most often with Kubernetes environments when other services are mapped into the container causing port conflicts.
+
+Before proceeding with a solution, it is important to confirm that the error message was produced because the port was already taken. To confirm this was the cause:
+
+1. Go to the job console.
+
+1. Look for the artifact `gl-api-security-scanner.log`. You can either download all artifacts by selecting **Download** and then search for the file, or directly start searching by selecting **Browse**.
+
+1. Open the file `gl-api-security-scanner.log` in a text editor.
+
+1. If the error message was produced because the port was already taken, you should see in the file a message like the following:
+
+- In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734):
+
+  ```log
+  Failed to bind to address http://127.0.0.1:5500: address already in use.
+  ```
+
+- In GitLab 15.4 and earlier:
+
+  ```log
+  Failed to bind to address http://[::]:5000: address already in use.
+  ```
+
+The text `http://[::]:5000` in the previous message could be different in your case, for instance it could be `http://[::]:5500` or `http://127.0.0.1:5500`. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
+
+If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](#get-support-or-request-an-improvement) through the proper channels.
+
+Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `FUZZAPI_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
+
+**Solution**
+
+1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `FUZZAPI_API_PORT`.
+1. Update the value of `FUZZAPI_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
 
 ### `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
 

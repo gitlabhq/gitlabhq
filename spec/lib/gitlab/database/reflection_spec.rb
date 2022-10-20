@@ -314,6 +314,12 @@ RSpec.describe Gitlab::Database::Reflection do
       expect(database.flavor).to eq('Azure Database for PostgreSQL - Single Server')
     end
 
+    it 'recognizes AlloyDB for PostgreSQL' do
+      stub_statements("SELECT name FROM pg_settings WHERE name LIKE 'alloydb%'")
+
+      expect(database.flavor).to eq('AlloyDB for PostgreSQL')
+    end
+
     it 'returns nil if can not recognize the flavor' do
       expect(database.flavor).to be_nil
     end

@@ -17,6 +17,7 @@ export const appDefaultProps = {
   projects: [sourceProject],
   paramsFrom: 'main',
   paramsTo: 'target/branch',
+  straight: false,
   createMrPath: '',
   sourceProjectRefsPath,
   targetProjectRefsPath,

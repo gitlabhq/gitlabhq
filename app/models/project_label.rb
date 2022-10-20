@@ -4,6 +4,7 @@ class ProjectLabel < Label
   MAX_NUMBER_OF_PRIORITIES = 1
 
   belongs_to :project
+  belongs_to :parent_container, foreign_key: :project_id, class_name: 'Project'
 
   validates :project, presence: true
 

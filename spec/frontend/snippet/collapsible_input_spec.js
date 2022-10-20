@@ -9,7 +9,7 @@ describe('~/snippet/collapsible_input', () => {
 
   beforeEach(() => {
     setHTMLFixture(`
-      <form>    
+      <form>
         <div class="js-collapsible-input js-title">
           <div class="js-collapsed d-none">
             <input type="text" />
@@ -72,7 +72,7 @@ describe('~/snippet/collapsible_input', () => {
         ${'is collapsed'}              | ${''}             | ${true}
         ${'stays open if given value'} | ${'Hello world!'} | ${false}
       `('when loses focus', ({ desc, value, isCollapsed }) => {
-        it(desc, () => {
+        it(`${desc}`, () => {
           findExpandedInput(descriptionEl).value = value;
           focusIn(fooEl);
 

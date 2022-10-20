@@ -40,7 +40,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
   end
 
   describe '#id_for_already_imported_cache' do
-    let(:event) { instance_double('Event', id: 1) }
+    let(:event) { { id: 1 } }
 
     it { expect(subject.id_for_already_imported_cache(event)).to eq(1) }
   end
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
   describe '#each_object_to_import', :clean_gitlab_redis_cache do
     let(:issue_event) do
       struct = Struct.new(:id, :event, :created_at, :issue, keyword_init: true)
-      struct.new(id: rand(10), event: 'closed', created_at: '2022-04-26 18:30:53 UTC')
+      struct.new(id: 1, event: 'closed', created_at: '2022-04-26 18:30:53 UTC')
     end
 
     let(:page) do
@@ -115,9 +115,17 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
       it 'imports each issue event page by page' do
         counter = 0
         subject.each_object_to_import do |object|
-          expect(object).to eq issue_event
-          expect(issue_event.issue['number']).to eq issuable.iid
-          expect(issue_event.issue['pull_request']).to eq false
+          expect(object).to eq(
+            {
+              id: 1,
+              event: 'closed',
+              created_at: '2022-04-26 18:30:53 UTC',
+              issue: {
+                number: issuable.iid,
+                pull_request: false
+              }
+            }
+          )
           counter += 1
         end
         expect(counter).to eq 1
@@ -130,9 +138,17 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
       it 'imports each merge request event page by page' do
         counter = 0
         subject.each_object_to_import do |object|
-          expect(object).to eq issue_event
-          expect(issue_event.issue['number']).to eq issuable.iid
-          expect(issue_event.issue['pull_request']).to eq true
+          expect(object).to eq(
+            {
+              id: 1,
+              event: 'closed',
+              created_at: '2022-04-26 18:30:53 UTC',
+              issue: {
+                number: issuable.iid,
+                pull_request: true
+              }
+            }
+          )
           counter += 1
         end
         expect(counter).to eq 1

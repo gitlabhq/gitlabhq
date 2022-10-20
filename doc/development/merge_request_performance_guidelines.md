@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge Request Performance Guidelines
@@ -44,7 +44,7 @@ and running.
 
 Can the queries used potentially take down any critical services and result in
 engineers being woken up in the night? Can a malicious user abuse the code to
-take down a GitLab instance? Do my changes simply make loading a certain page
+take down a GitLab instance? Do my changes make loading a certain page
 slower? Does execution time grow exponentially given enough load or data in the
 database?
 
@@ -281,7 +281,7 @@ be clearly mentioned in the merge request description.
 ## Batch process
 
 **Summary:** Iterating a single process to external services (for example, PostgreSQL, Redis, Object Storage)
-should be executed in a **batch-style** in order to reduce connection overheads.
+should be executed in a **batch-style** to reduce connection overheads.
 
 For fetching rows from various tables in a batch-style, please see [Eager Loading](#eager-loading) section.
 
@@ -488,7 +488,7 @@ We can consider the following types of storages:
 - **Object-based persistent storage** (long term storage) this type of storage uses external
   services like [AWS S3](https://en.wikipedia.org/wiki/Amazon_S3). The Object Storage
   can be treated as infinitely scalable and redundant. Accessing this storage usually requires
-  downloading the file in order to manipulate it. The Object Storage can be considered as an ultimate
+  downloading the file to manipulate it. The Object Storage can be considered as an ultimate
   solution, as by definition it can be assumed that it can handle unlimited concurrent uploads
   and downloads of files. This is also ultimate solution required to ensure that application can
   run in containerized deployments (Kubernetes) at ease.

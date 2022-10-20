@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Restore GitLab
@@ -17,7 +17,7 @@ You can restore a backup only to _the exact same version and type (CE/EE)_ of
 GitLab that you created it on (for example CE 9.1.0).
 
 If your backup is a different version than the current installation, you must
-[downgrade your GitLab installation](../update/package/downgrade.md)
+[downgrade](../update/package/downgrade.md) or [upgrade](../update/package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) your GitLab installation
 before restoring the backup.
 
 ## Restore prerequisites

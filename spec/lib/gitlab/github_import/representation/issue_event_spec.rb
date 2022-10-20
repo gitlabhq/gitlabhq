@@ -186,7 +186,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         assignee: with_assignee ? user_resource.new(id: 5, login: 'tom') : nil,
         requested_reviewer: with_reviewer ? user_resource.new(id: 6, login: 'mickey') : nil,
         review_requester: with_reviewer ? user_resource.new(id: 7, login: 'minnie') : nil,
-        issue: { 'number' => 2, 'pull_request' => pull_request },
+        issue: { number: 2, pull_request: pull_request },
         created_at: '2022-04-26 18:30:53 UTC',
         performed_via_github_app: nil
       )

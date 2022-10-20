@@ -1,21 +1,6 @@
 # frozen_string_literal: true
 
 module UsageDataHelpers
-  SMAU_KEYS = %i(
-      snippet_create
-      snippet_update
-      snippet_comment
-      merge_request_comment
-      commit_comment
-      wiki_pages_create
-      wiki_pages_update
-      wiki_pages_delete
-      navbar_searches
-      cycle_analytics_views
-      productivity_analytics_views
-      source_code_pushes
-    ).freeze
-
   COUNTS_KEYS = %i(
       assignee_lists
       ci_builds
@@ -83,7 +68,6 @@ module UsageDataHelpers
       projects_with_error_tracking_enabled
       projects_with_enabled_alert_integrations
       projects_with_expiration_policy_enabled
-      projects_with_expiration_policy_disabled
       projects_with_expiration_policy_enabled_with_keep_n_unset
       projects_with_expiration_policy_enabled_with_keep_n_set_to_1
       projects_with_expiration_policy_enabled_with_keep_n_set_to_5
@@ -118,7 +102,7 @@ module UsageDataHelpers
       uploads
       web_hooks
       user_preferences_user_gitpod_enabled
-    ).push(*SMAU_KEYS)
+    ).freeze
 
   USAGE_DATA_KEYS = %i(
       active_user_count

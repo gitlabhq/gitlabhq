@@ -1,9 +1,7 @@
 ---
 # Cop supports --auto-correct.
 Style/StringLiteralsInInterpolation:
-  # Offense count: 119
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/graphql/mutations/base_mutation.rb'
     - 'app/helpers/colors_helper.rb'
@@ -23,11 +21,16 @@ Style/StringLiteralsInInterpolation:
     - 'ee/app/helpers/ee/merge_requests_helper.rb'
     - 'ee/app/models/license.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
+    - 'ee/lib/ee/api/helpers/issues_helpers.rb'
     - 'ee/lib/gitlab/elastic/helper.rb'
+    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
+    - 'ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
+    - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
     - 'lib/api/helpers/snippets_helpers.rb'
     - 'lib/api/validations/validators/check_assignees_count.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
+    - 'lib/banzai/filter/syntax_highlight_filter.rb'
     - 'lib/generators/gitlab/usage_metric_definition_generator.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
     - 'lib/gitlab/ci/config/entry/job.rb'
@@ -36,6 +39,7 @@ Style/StringLiteralsInInterpolation:
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
     - 'lib/gitlab/doctor/secrets.rb'
     - 'lib/gitlab/endpoint_attributes/config.rb'
+    - 'lib/gitlab/gitaly_client/ref_service.rb'
     - 'lib/gitlab/graphql/queries.rb'
     - 'lib/gitlab/quick_actions/extractor.rb'
     - 'lib/gitlab/sanitizers/exif.rb'
@@ -43,13 +47,11 @@ Style/StringLiteralsInInterpolation:
     - 'lib/gitlab/tracking/destinations/snowplow.rb'
     - 'lib/tasks/gitlab/info.rake'
     - 'lib/tasks/gitlab/sidekiq.rake'
-    - 'lib/tasks/gitlab/tw/codeowners.rake'
     - 'qa/qa/ee/page/component/secure_report.rb'
     - 'qa/qa/ee/page/group/secure/show.rb'
     - 'qa/qa/resource/events/base.rb'
     - 'qa/qa/service/cluster_provider/base.rb'
     - 'qa/qa/service/cluster_provider/gcloud.rb'
-    - 'qa/qa/service/docker_run/gitlab_runner.rb'
     - 'qa/qa/specs/helpers/context_selector.rb'
     - 'qa/qa/tools/generate_perf_testdata.rb'
     - 'rubocop/cop/migration/prevent_index_creation.rb'
@@ -59,9 +61,12 @@ Style/StringLiteralsInInterpolation:
     - 'spec/finders/serverless_domain_finder_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/issue_reference_filter_spec.rb'
+    - 'spec/lib/gitlab/background_migration/batched_migration_job_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/security/validators/schema_validator_spec.rb'
     - 'spec/lib/gitlab/database/partitioning_migration_helpers/table_management_helpers_spec.rb'
+    - 'spec/lib/gitlab/gitaly_client/ref_service_spec.rb'
     - 'spec/lib/object_storage/direct_upload_spec.rb'
     - 'spec/models/serverless/domain_spec.rb'
     - 'spec/requests/api/keys_spec.rb'
     - 'spec/support/database/prevent_cross_joins.rb'
+    - 'spec/views/notify/import_issues_csv_email.html.haml_spec.rb'

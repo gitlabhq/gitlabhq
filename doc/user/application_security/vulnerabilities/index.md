@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Threat Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Vulnerability Page **(ULTIMATE)**
@@ -103,7 +103,7 @@ To create a Jira issue for a vulnerability:
 1. On the left sidebar, select **Security & Compliance > Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
-1. If you're not already logged in to Jira, log in.
+1. If you're not already logged in to Jira, sign in.
 
 The Jira issue is created and opened in a new browser tab. The **Summary** and **Description**
 fields are pre-populated from the vulnerability's details.

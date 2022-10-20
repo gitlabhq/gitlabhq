@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Incidents **(FREE)**
@@ -9,9 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Incidents are critical entities in incident management workflows. They represent
 a service disruption or outage that needs to be restored urgently. GitLab provides
 tools for the triage, response, and remediation of incidents.
-
-Users with at least Guest [permissions](../../user/permissions.md) can access
-incidents [on public projects](../../user/permissions.md#project-members-permissions).
 
 ## Incident creation
 
@@ -86,8 +83,14 @@ confirm that a GitLab incident is created from the incident.
 
 ## Incident list
 
-For users with at least Guest [permissions](../../user/permissions.md), the
-Incident list is available at **Monitor > Incidents**
+Whether you can view an incident depends on the [project visibility level](../../user/public_access.md) and
+the incident's confidentiality status:
+
+- Public project and a non-confidential incident: You don't have to be a member of the project.
+- Private project and non-confidential incident: You must have at least the Guest role for the project.
+- Confidential incident (regardless of project visibility): You must have at least the Reporter.
+
+The Incident list is available at **Monitor > Incidents**
 in your project's sidebar. The list contains the following metrics:
 
 ![Incident List](img/incident_list_v14_9.png)
@@ -138,10 +141,9 @@ For a live example of the incident list in action, visit this
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230847) in GitLab 13.4.
 
-Users with at least Guest [permissions](../../user/permissions.md) can view
-the Incident Details page. Navigate to **Monitor > Incidents** in your project's
-sidebar, and select an incident from the list.
-
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Monitor > Incidents**.
+1. Select an incident from the list.
 When you take any of these actions on an incident, GitLab logs a system note and
 displays it in the Incident Details view:
 
@@ -192,7 +194,7 @@ When you upload an image, you can associate the image with text or a link to the
 
 ![Text link modal](img/incident_metrics_tab_text_link_modal_v14_9.png)
 
-If you add a link, you can access the original graph by clicking the hyperlink above the uploaded image.
+If you add a link, you can access the original graph by selecting the hyperlink above the uploaded image.
 
 ### Alert details
 

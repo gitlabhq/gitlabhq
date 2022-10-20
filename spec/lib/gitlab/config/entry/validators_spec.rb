@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Config::Entry::Validators do
         expect(instance.valid?).to be(valid_result)
 
         unless valid_result
-          expect(instance.errors.messages_for(:config)).to include /please use only one the following keys: foo, bar/
+          expect(instance.errors.messages_for(:config)).to include /please use only one of the following keys: foo, bar/
         end
       end
     end

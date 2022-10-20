@@ -44,13 +44,6 @@ RSpec.describe Import::GithubController do
   end
 
   describe "GET callback" do
-    before do
-      allow(controller).to receive(:get_token).and_return(token)
-      allow(controller).to receive(:oauth_options).and_return({})
-
-      stub_omniauth_provider('github')
-    end
-
     context "when auth state param is missing from session" do
       it "reports an error" do
         get :callback
@@ -63,17 +56,31 @@ RSpec.describe Import::GithubController do
     context "when auth state param is present in session" do
       let(:valid_auth_state) { "secret-state" }
 
-      before do
-        session[:github_auth_state_key] = valid_auth_state
-      end
+      context 'when remove_legacy_github_client feature is disabled' do
+        before do
+          stub_feature_flags(remove_legacy_github_client: false)
+          allow_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
+            allow(client).to receive(:get_token).and_return(token)
+          end
+          session[:github_auth_state_key] = valid_auth_state
+        end
 
-      it "updates access token if state param is valid" do
-        token = "asdasd12345"
+        it "updates access token if state param is valid" do
+          token = "asdasd12345"
 
-        get :callback, params: { state: valid_auth_state }
+          get :callback, params: { state: valid_auth_state }
 
-        expect(session[:github_access_token]).to eq(token)
-        expect(controller).to redirect_to(status_import_github_url)
+          expect(session[:github_access_token]).to eq(token)
+          expect(controller).to redirect_to(status_import_github_url)
+        end
+
+        it "includes namespace_id from query params if it is present" do
+          namespace_id = 1
+
+          get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
+
+          expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+        end
       end
 
       it "reports an error if state param is invalid" do
@@ -83,12 +90,31 @@ RSpec.describe Import::GithubController do
         expect(flash[:alert]).to eq('Access denied to your GitHub account.')
       end
 
-      it "includes namespace_id from query params if it is present" do
-        namespace_id = 1
+      context 'when remove_legacy_github_client feature is enabled' do
+        before do
+          stub_feature_flags(remove_legacy_github_client: true)
+          allow_next_instance_of(OAuth2::Client) do |client|
+            allow(client).to receive_message_chain(:auth_code, :get_token, :token).and_return(token)
+          end
+          session[:github_auth_state_key] = valid_auth_state
+        end
 
-        get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
+        it "updates access token if state param is valid" do
+          token = "asdasd12345"
 
-        expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+          get :callback, params: { state: valid_auth_state }
+
+          expect(session[:github_access_token]).to eq(token)
+          expect(controller).to redirect_to(status_import_github_url)
+        end
+
+        it "includes namespace_id from query params if it is present" do
+          namespace_id = 1
+
+          get :callback, params: { state: valid_auth_state, namespace_id: namespace_id }
+
+          expect(controller).to redirect_to(status_import_github_url(namespace_id: namespace_id))
+        end
       end
     end
   end
@@ -218,7 +244,7 @@ RSpec.describe Import::GithubController do
 
         it 'makes request to github search api' do
           expect_next_instance_of(Octokit::Client) do |client|
-            expect(client).to receive(:user).and_return(double(login: user_login))
+            expect(client).to receive(:user).and_return({ login: user_login })
             expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
           end
 
@@ -234,7 +260,7 @@ RSpec.describe Import::GithubController do
           context 'when no page is specified' do
             it 'requests first page' do
               expect_next_instance_of(Octokit::Client) do |client|
-                expect(client).to receive(:user).and_return(double(login: user_login))
+                expect(client).to receive(:user).and_return({ login: user_login })
                 expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
               end
 
@@ -250,7 +276,7 @@ RSpec.describe Import::GithubController do
           context 'when page is specified' do
             it 'requests repos with specified page' do
               expect_next_instance_of(Octokit::Client) do |client|
-                expect(client).to receive(:user).and_return(double(login: user_login))
+                expect(client).to receive(:user).and_return({ login: user_login })
                 expect(client).to receive(:search_repositories).with(search_query, { page: 2, per_page: 25 }).and_return({ items: [].to_enum })
               end
 
@@ -319,6 +345,39 @@ RSpec.describe Import::GithubController do
       expect(json_response[0]).to include('stats')
       expect(json_response[0]['stats']).to include('fetched')
       expect(json_response[0]['stats']).to include('imported')
+    end
+  end
+
+  describe "POST cancel" do
+    let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://fake.url') }
+
+    context 'when project import was canceled' do
+      before do
+        allow(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project, user)
+          .and_return(double(execute: { status: :success, project: project }))
+      end
+
+      it 'returns success' do
+        post :cancel, params: { project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when project import was not canceled' do
+      before do
+        allow(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project, user)
+          .and_return(double(execute: { status: :error, message: 'The import cannot be canceled because it is finished', http_status: :bad_request }))
+      end
+
+      it 'returns error' do
+        post :cancel, params: { project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['errors']).to eq('The import cannot be canceled because it is finished')
+      end
     end
   end
 end

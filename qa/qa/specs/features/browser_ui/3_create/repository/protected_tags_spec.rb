@@ -31,7 +31,6 @@ module QA
           Page::Project::Tag::Show.perform do |show|
             expect(show).to have_tag_name(tag_name)
             expect(show).to have_tag_message(tag_message)
-            expect(show).to have_tag_release_notes(tag_release_notes)
             expect(show).not_to have_element(:create_tag_button)
           end
         end
@@ -83,7 +82,6 @@ module QA
         Page::Project::Tag::New.perform do |new_tag|
           new_tag.fill_tag_name(name)
           new_tag.fill_tag_message(message)
-          new_tag.fill_release_notes(release_notes)
           new_tag.click_create_tag_button
         end
       end

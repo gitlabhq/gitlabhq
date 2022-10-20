@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { produce } from 'immer';
 import $ from 'jquery';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import MergeRequest from '~/merge_request';
@@ -77,7 +77,7 @@ export default {
             },
           ) {
             if (errors?.length) {
-              createFlash({
+              createAlert({
                 message: __('Something went wrong. Please try again.'),
               });
 
@@ -130,7 +130,7 @@ export default {
           },
         )
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           }),
         )
@@ -152,7 +152,7 @@ export default {
           })
           .catch(() => {
             this.isMakingRequest = false;
-            createFlash({
+            createAlert({
               message: __('Something went wrong. Please try again.'),
             });
           });

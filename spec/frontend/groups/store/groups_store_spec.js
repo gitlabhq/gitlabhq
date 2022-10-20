@@ -16,13 +16,13 @@ describe('ProjectsStore', () => {
       store = new GroupsStore();
 
       expect(Object.keys(store.state).length).toBe(2);
-      expect(Array.isArray(store.state.groups)).toBeTruthy();
+      expect(Array.isArray(store.state.groups)).toBe(true);
       expect(Object.keys(store.state.pageInfo).length).toBe(0);
-      expect(store.hideProjects).toBeFalsy();
+      expect(store.hideProjects).toBe(false);
 
       store = new GroupsStore({ hideProjects: true });
 
-      expect(store.hideProjects).toBeTruthy();
+      expect(store.hideProjects).toBe(true);
     });
   });
 
@@ -65,8 +65,8 @@ describe('ProjectsStore', () => {
       expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object));
       expect(mockParentGroupItem.children.length).toBe(1);
       expect(Object.keys(mockParentGroupItem.children[0]).indexOf('fullName')).toBeGreaterThan(-1);
-      expect(mockParentGroupItem.isOpen).toBeTruthy();
-      expect(mockParentGroupItem.isChildrenLoading).toBeFalsy();
+      expect(mockParentGroupItem.isOpen).toBe(true);
+      expect(mockParentGroupItem.isChildrenLoading).toBe(false);
     });
   });
 

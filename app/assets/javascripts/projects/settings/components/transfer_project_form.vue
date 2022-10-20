@@ -1,13 +1,14 @@
 <script>
-import { GlFormGroup } from '@gitlab/ui';
-import produce from 'immer';
+import { GlFormGroup, GlAlert } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
-import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select.vue';
+import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select_deprecated.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getTransferLocations } from '~/api/projects_api';
+import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import searchNamespacesWhereUserCanTransferProjects from '../graphql/queries/search_namespaces_where_user_can_transfer_projects.query.graphql';
-
-const GROUPS_PER_PAGE = 25;
+import { s__, __ } from '~/locale';
+import currentUserNamespace from '../graphql/queries/current_user_namespace.query.graphql';
 
 export default {
   name: 'TransferProjectForm',
@@ -15,7 +16,15 @@ export default {
     GlFormGroup,
     NamespaceSelect,
     ConfirmDanger,
+    GlAlert,
   },
+  i18n: {
+    errorMessage: s__(
+      'ProjectTransfer|An error occurred fetching the transfer locations, please refresh the page and try again.',
+    ),
+    alertDismissAlert: __('Dismiss'),
+  },
+  inject: ['projectId'],
   props: {
     confirmationPhrase: {
       type: String,
@@ -26,93 +35,131 @@ export default {
       required: true,
     },
   },
-  apollo: {
-    currentUser: {
-      query: searchNamespacesWhereUserCanTransferProjects,
-      debounce: DEBOUNCE_DELAY,
-      variables() {
-        return {
-          search: this.searchTerm,
-          after: null,
-          first: GROUPS_PER_PAGE,
-        };
-      },
-      result() {
-        this.isLoadingMoreGroups = false;
-        this.isSearchLoading = false;
-      },
-    },
-  },
   data() {
     return {
-      currentUser: {},
+      userNamespaces: [],
+      groupNamespaces: [],
+      initialNamespacesLoaded: false,
       selectedNamespace: null,
-      isLoadingMoreGroups: false,
+      hasError: false,
+      isLoading: false,
       isSearchLoading: false,
       searchTerm: '',
+      page: 1,
+      totalPages: 1,
     };
   },
   computed: {
     hasSelectedNamespace() {
       return Boolean(this.selectedNamespace?.id);
     },
-    groupNamespaces() {
-      return this.currentUser.groups?.nodes?.map(this.formatNamespace) || [];
-    },
-    userNamespaces() {
-      const { namespace } = this.currentUser;
-
-      return namespace ? [this.formatNamespace(namespace)] : [];
-    },
     hasNextPageOfGroups() {
-      return this.currentUser.groups?.pageInfo?.hasNextPage || false;
+      return this.page < this.totalPages;
     },
   },
   methods: {
+    async handleShow() {
+      if (this.initialNamespacesLoaded) {
+        return;
+      }
+
+      this.isLoading = true;
+
+      [this.groupNamespaces, this.userNamespaces] = await Promise.all([
+        this.getGroupNamespaces(),
+        this.getUserNamespaces(),
+      ]);
+
+      this.isLoading = false;
+      this.initialNamespacesLoaded = true;
+    },
     handleSelect(selectedNamespace) {
       this.selectedNamespace = selectedNamespace;
       this.$emit('selectNamespace', selectedNamespace.id);
     },
-    handleLoadMoreGroups() {
-      this.isLoadingMoreGroups = true;
+    async getGroupNamespaces() {
+      try {
+        const { data: groupNamespaces, headers } = await getTransferLocations(this.projectId, {
+          page: this.page,
+          search: this.searchTerm,
+        });
 
-      this.$apollo.queries.currentUser.fetchMore({
-        variables: {
-          after: this.currentUser.groups.pageInfo.endCursor,
-          first: GROUPS_PER_PAGE,
-        },
-        updateQuery(
-          previousResult,
-          {
-            fetchMoreResult: {
-              currentUser: { groups: newGroups },
-            },
+        const { totalPages } = parseIntPagination(normalizeHeaders(headers));
+        this.totalPages = totalPages;
+
+        return groupNamespaces.map(({ id, full_name: humanName }) => ({
+          id,
+          humanName,
+        }));
+      } catch (error) {
+        this.hasError = true;
+
+        return [];
+      }
+    },
+    async getUserNamespaces() {
+      try {
+        const {
+          data: {
+            currentUser: { namespace },
           },
-        ) {
-          const previousGroups = previousResult.currentUser.groups;
+        } = await this.$apollo.query({
+          query: currentUserNamespace,
+        });
 
-          return produce(previousResult, (draftData) => {
-            draftData.currentUser.groups.nodes = [...previousGroups.nodes, ...newGroups.nodes];
-            draftData.currentUser.groups.pageInfo = newGroups.pageInfo;
-          });
-        },
-      });
+        if (!namespace) {
+          return [];
+        }
+
+        return [
+          {
+            id: getIdFromGraphQLId(namespace.id),
+            humanName: namespace.fullName,
+          },
+        ];
+      } catch (error) {
+        this.hasError = true;
+
+        return [];
+      }
     },
-    handleSearch(searchTerm) {
+    async handleLoadMoreGroups() {
+      this.isLoading = true;
+      this.page += 1;
+
+      const groupNamespaces = await this.getGroupNamespaces();
+      this.groupNamespaces.push(...groupNamespaces);
+
+      this.isLoading = false;
+    },
+    debouncedSearch: debounce(async function debouncedSearch() {
       this.isSearchLoading = true;
+
+      this.groupNamespaces = await this.getGroupNamespaces();
+
+      this.isSearchLoading = false;
+    }, DEBOUNCE_DELAY),
+    handleSearch(searchTerm) {
       this.searchTerm = searchTerm;
+      this.page = 1;
+
+      this.debouncedSearch();
     },
-    formatNamespace({ id, fullName }) {
-      return {
-        id: getIdFromGraphQLId(id),
-        humanName: fullName,
-      };
+    handleAlertDismiss() {
+      this.hasError = false;
     },
   },
 };
 </script>
 <template>
   <div>
+    <gl-alert
+      v-if="hasError"
+      variant="danger"
+      :dismiss-label="$options.i18n.alertDismissLabel"
+      @dismiss="handleAlertDismiss"
+      >{{ $options.i18n.errorMessage }}</gl-alert
+    >
     <gl-form-group>
       <namespace-select
         data-testid="transfer-project-namespace"
@@ -121,12 +168,13 @@ export default {
         :user-namespaces="userNamespaces"
         :selected-namespace="selectedNamespace"
         :has-next-page-of-groups="hasNextPageOfGroups"
-        :is-loading-more-groups="isLoadingMoreGroups"
+        :is-loading="isLoading"
         :is-search-loading="isSearchLoading"
         :should-filter-namespaces="false"
         @select="handleSelect"
         @load-more-groups="handleLoadMoreGroups"
         @search="handleSearch"
+        @show="handleShow"
       />
     </gl-form-group>
     <confirm-danger

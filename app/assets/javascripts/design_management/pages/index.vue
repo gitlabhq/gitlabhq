@@ -133,9 +133,13 @@ export default {
       return this.designCollection && this.designCollection.copyState === 'IN_PROGRESS';
     },
     designDropzoneWrapperClass() {
-      return this.isDesignListEmpty
-        ? 'col-12'
-        : 'gl-flex-direction-column col-md-6 col-lg-3 gl-mt-5';
+      if (!this.isDesignListEmpty) {
+        return 'gl-flex-direction-column col-md-6 col-lg-3 gl-mt-5';
+      }
+      if (this.showToolbar) {
+        return 'col-12 gl-mt-5';
+      }
+      return 'col-12';
     },
   },
   mounted() {

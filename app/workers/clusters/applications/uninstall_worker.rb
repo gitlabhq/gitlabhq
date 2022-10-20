@@ -14,11 +14,7 @@ module Clusters
       worker_has_external_dependencies!
       loggable_arguments 0
 
-      def perform(app_name, app_id)
-        find_application(app_name, app_id) do |app|
-          Clusters::Applications::UninstallService.new(app).execute
-        end
-      end
+      def perform(app_name, app_id); end
     end
   end
 end

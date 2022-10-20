@@ -8,6 +8,7 @@ RSpec.describe 'User searches for code' do
 
   context 'when signed in' do
     before do
+      stub_feature_flags(search_page_vertical_nav: false)
       project.add_maintainer(user)
       sign_in(user)
     end
@@ -214,6 +215,7 @@ RSpec.describe 'User searches for code' do
     let(:project) { create(:project, :public, :repository) }
 
     before do
+      stub_feature_flags(search_page_vertical_nav: false)
       visit(project_path(project))
     end
 

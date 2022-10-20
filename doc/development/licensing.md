@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Licensing and Compatibility
@@ -18,7 +18,7 @@ Some gems may not include their license information in their `gemspec` file, and
 
 ### License Finder commands
 
-There are a few basic commands License Finder provides that you need in order to manage license detection.
+There are a few basic commands License Finder provides that you need to manage license detection.
 
 To verify that the checks are passing, and/or to see what dependencies are causing the checks to fail:
 

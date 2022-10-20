@@ -1,6 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import StatusIcon from '../mr_widget_status_icon.vue';
+import { DETAILED_MERGE_STATUS } from '../../constants';
 
 export default {
   i18n: {
@@ -22,7 +23,7 @@ export default {
     failedText() {
       if (this.mr.approvals && !this.mr.isApproved) {
         return this.$options.i18n.approvalNeeded;
-      } else if (this.mr.blockingMergeRequests?.total_count > 0) {
+      } else if (this.mr.detailedMergeStatus === DETAILED_MERGE_STATUS.BLOCKED_STATUS) {
         return this.$options.i18n.blockingMergeRequests;
       }
 

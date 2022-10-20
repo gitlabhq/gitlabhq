@@ -104,7 +104,7 @@ module MergeRequests
         merge_request = ::MergeRequests::CreateService.new(
           project: project,
           current_user: current_user,
-          params: merge_request.attributes.merge(assignees: merge_request.assignees,
+          params: merge_request.attributes.merge(assignee_ids: merge_request.assignee_ids,
                                                  label_ids: merge_request.label_ids)
         ).execute
       end
@@ -140,8 +140,8 @@ module MergeRequests
       params[:add_labels] = params.delete(:label).keys if params.has_key?(:label)
       params[:remove_labels] = params.delete(:unlabel).keys if params.has_key?(:unlabel)
 
-      params[:add_assignee_ids] = params.delete(:assign).keys if params.has_key?(:assign)
-      params[:remove_assignee_ids] = params.delete(:unassign).keys if params.has_key?(:unassign)
+      params[:add_assignee_ids] = convert_to_user_ids(params.delete(:assign).keys) if params.has_key?(:assign)
+      params[:remove_assignee_ids] = convert_to_user_ids(params.delete(:unassign).keys) if params.has_key?(:unassign)
 
       if push_options[:milestone]
         milestone = Milestone.for_projects_and_groups(@project, @project.ancestors_upto)&.find_by_name(push_options[:milestone])
@@ -169,7 +169,7 @@ module MergeRequests
       params = base_params
 
       params.merge!(
-        assignees: [current_user],
+        assignee_ids: [current_user.id],
         source_branch: branch,
         source_project: project,
         target_project: target_project
@@ -184,6 +184,12 @@ module MergeRequests
 
     def update_params(merge_request)
       base_params.merge(merge_params(merge_request.source_branch))
+    end
+
+    def convert_to_user_ids(ids_or_usernames)
+      ids, usernames = ids_or_usernames.partition { |id_or_username| id_or_username.is_a?(Numeric) || id_or_username.match?(/\A\d+\z/) }
+      ids += User.by_username(usernames).pluck(:id) unless usernames.empty? # rubocop:disable CodeReuse/ActiveRecord
+      ids
     end
 
     def collect_errors_from_merge_request(merge_request)

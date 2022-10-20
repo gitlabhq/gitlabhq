@@ -10,7 +10,7 @@ import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/delete_snippet.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/flash';
 
 jest.mock('~/flash');
 
@@ -267,9 +267,9 @@ describe('Snippet header component', () => {
     });
 
     it.each`
-      request | variant      | text
-      ${200}  | ${'SUCCESS'} | ${i18n.snippetSpamSuccess}
-      ${500}  | ${'DANGER'}  | ${i18n.snippetSpamFailure}
+      request | variant            | text
+      ${200}  | ${VARIANT_SUCCESS} | ${i18n.snippetSpamSuccess}
+      ${500}  | ${VARIANT_DANGER}  | ${i18n.snippetSpamFailure}
     `(
       'renders a "$variant" flash message with "$text" message for a request with a "$request" response',
       async ({ request, variant, text }) => {
@@ -278,9 +278,9 @@ describe('Snippet header component', () => {
         submitAsSpamBtn.trigger('click');
         await waitForPromises();
 
-        expect(createFlash).toHaveBeenLastCalledWith({
+        expect(createAlert).toHaveBeenLastCalledWith({
           message: expect.stringContaining(text),
-          type: FLASH_TYPES[variant],
+          variant,
         });
       },
     );
@@ -311,7 +311,7 @@ describe('Snippet header component', () => {
 
   it('renders modal for deletion of a snippet', () => {
     createComponent();
-    expect(wrapper.find(GlModal).exists()).toBe(true);
+    expect(wrapper.findComponent(GlModal).exists()).toBe(true);
   });
 
   it.each`

@@ -7,7 +7,10 @@ module API
         class Run < Grape::Entity
           expose :run do
             expose(:info) { |candidate| RunInfo.represent(candidate) }
-            expose(:data) { |candidate| {} }
+            expose :data do
+              expose :metrics, using: Metric
+              expose :params, using: RunParam
+            end
           end
         end
       end

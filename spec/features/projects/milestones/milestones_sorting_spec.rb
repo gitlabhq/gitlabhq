@@ -42,10 +42,10 @@ RSpec.describe 'Milestones sorting', :js do
     milestones_for_sort_by.each do |sort_by, expected_milestones|
       within '[data-testid=milestone_sort_by_dropdown]' do
         click_button selected_sort_order
-        milestones = find('.gl-new-dropdown-contents').all('.gl-new-dropdown-item-text-wrapper p').map(&:text)
+        milestones = find('ul[role="listbox"]').all('li').map(&:text)
         expect(milestones).to eq(ordered_milestones)
 
-        click_button sort_by
+        find('li', text: sort_by).click
         expect(page).to have_button(sort_by)
       end
 

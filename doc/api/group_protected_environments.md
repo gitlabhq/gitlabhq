@@ -1,7 +1,7 @@
 ---
 stage: Release
 group: Release
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -112,7 +112,7 @@ POST /groups/:id/protected_environments
 | `approval_rules`                | array          | no  | Array of access levels allowed to approve, with each described by a hash. One of `user_id`, `group_id` or `access_level`. They take the form of `{user_id: integer}`, `{group_id: integer}` or `{access_level: integer}` respectively. You can also specify the number of required approvals from the specified entity with `required_approvals` field. See [Multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules) for more information. |
 
 The assignable `user_id` are the users who belong to the given group with the Maintainer role (or above).
-The assignable `group_id` are the sub-groups under the given group.
+The assignable `group_id` are the subgroups under the given group.
 
 ```shell
 curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22034114/protected_environments"
@@ -157,7 +157,7 @@ PUT /groups/:id/protected_environments/:name
 To update:
 
 - **`user_id`**: Ensure the updated user belongs to the given group with the Maintainer role (or above). You must also pass the `id` of either a `deploy_access_level` or `approval_rule` in the respective hash.
-- **`group_id`**: Ensure the updated group is a sub-group of the group this protected environment belongs to. You must also pass the `id` of either a `deploy_access_level` or `approval_rule` in the respective hash.
+- **`group_id`**: Ensure the updated group is a subgroup of the group this protected environment belongs to. You must also pass the `id` of either a `deploy_access_level` or `approval_rule` in the respective hash.
 
 To delete:
 

@@ -8,10 +8,12 @@ import {
   I18N_USER_BLOCKED,
   I18N_USER_LEARN,
   I18N_USER_FOLLOW,
+  I18N_ERROR_FOLLOW,
   I18N_USER_UNFOLLOW,
+  I18N_ERROR_UNFOLLOW,
 } from '~/vue_shared/components/user_popover/constants';
 import axios from '~/lib/utils/axios_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { followUser, unfollowUser } from '~/api/user_api';
 import { mockTracking } from 'helpers/tracking_helper';
 
@@ -239,6 +241,18 @@ describe('User Popover Component', () => {
       expect(wrapper.html()).toContain('<gl-emoji data-name="basketball_player"');
     });
 
+    it('should show only emoji', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        status: { emoji: 'basketball_player' },
+      };
+
+      createWrapper({ user });
+
+      expect(findUserStatus().exists()).toBe(true);
+      expect(wrapper.html()).toContain('<gl-emoji data-name="basketball_player"');
+    });
+
     it('hides the div when status is null', () => {
       const user = { ...DEFAULT_PROPS.user, status: null };
 
@@ -367,27 +381,49 @@ describe('User Popover Component', () => {
       itTracksToggleFollowButtonClick('follow_from_user_popover');
 
       describe('when an error occurs', () => {
-        beforeEach(() => {
-          followUser.mockRejectedValue({});
+        describe('api send error message', () => {
+          const mockedMessage = sprintf(I18N_ERROR_UNFOLLOW, { limit: 300 });
+          const apiResponse = { response: { data: { message: mockedMessage } } };
 
-          findToggleFollowButton().trigger('click');
-        });
+          beforeEach(() => {
+            followUser.mockRejectedValue(apiResponse);
+            findToggleFollowButton().trigger('click');
+          });
 
-        it('shows an error message', async () => {
-          await axios.waitForAll();
+          it('show an error message from api response', async () => {
+            await axios.waitForAll();
 
-          expect(createFlash).toHaveBeenCalledWith({
-            message: 'An error occurred while trying to follow this user, please try again.',
-            error: {},
-            captureError: true,
+            expect(createAlert).toHaveBeenCalledWith({
+              message: mockedMessage,
+              error: apiResponse,
+              captureError: true,
+            });
           });
         });
 
-        it('emits no events', async () => {
-          await axios.waitForAll();
+        describe('api did not send error message', () => {
+          beforeEach(() => {
+            followUser.mockRejectedValue({});
 
-          expect(wrapper.emitted().follow).toBeUndefined();
-          expect(wrapper.emitted().unfollow).toBeUndefined();
+            findToggleFollowButton().trigger('click');
+          });
+
+          it('shows an error message', async () => {
+            await axios.waitForAll();
+
+            expect(createAlert).toHaveBeenCalledWith({
+              message: I18N_ERROR_FOLLOW,
+              error: {},
+              captureError: true,
+            });
+          });
+
+          it('emits no events', async () => {
+            await axios.waitForAll();
+
+            expect(wrapper.emitted().follow).toBeUndefined();
+            expect(wrapper.emitted().unfollow).toBeUndefined();
+          });
         });
       });
     });
@@ -425,8 +461,8 @@ describe('User Popover Component', () => {
         });
 
         it('shows an error message', () => {
-          expect(createFlash).toHaveBeenCalledWith({
-            message: 'An error occurred while trying to unfollow this user, please try again.',
+          expect(createAlert).toHaveBeenCalledWith({
+            message: I18N_ERROR_UNFOLLOW,
             error: {},
             captureError: true,
           });

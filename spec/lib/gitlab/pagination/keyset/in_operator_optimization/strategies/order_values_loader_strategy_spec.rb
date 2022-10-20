@@ -25,22 +25,24 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::O
 
   describe '#initializer_columns' do
     it 'returns NULLs for each ORDER BY columns' do
-      expect(strategy.initializer_columns).to eq([
-        'NULL::timestamp without time zone AS created_at',
-        'NULL::integer AS id'
-      ])
+      expect(strategy.initializer_columns).to eq(
+        [
+          'NULL::timestamp without time zone AS created_at',
+          'NULL::integer AS id'
+        ])
     end
   end
 
   context 'when an SQL expression is given' do
     context 'when the sql_type attribute is missing' do
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build([
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'id_times_ten',
-            order_expression: Arel.sql('id * 10').asc
-          )
-        ])
+        Gitlab::Pagination::Keyset::Order.build(
+          [
+            Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+              attribute_name: 'id_times_ten',
+              order_expression: Arel.sql('id * 10').asc
+            )
+          ])
       end
 
       let(:keyset_scope) { Project.order(order) }
@@ -52,13 +54,14 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::O
 
     context 'when the sql_type_attribute is present' do
       let(:order) do
-        Gitlab::Pagination::Keyset::Order.build([
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'id_times_ten',
-            order_expression: Arel.sql('id * 10').asc,
-            sql_type: 'integer'
-          )
-        ])
+        Gitlab::Pagination::Keyset::Order.build(
+          [
+            Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+              attribute_name: 'id_times_ten',
+              order_expression: Arel.sql('id * 10').asc,
+              sql_type: 'integer'
+            )
+          ])
       end
 
       let(:keyset_scope) { Project.order(order) }

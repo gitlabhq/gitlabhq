@@ -159,11 +159,13 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
         .with(
           project_id: project.id,
           exception: exception,
-          error_source: 'klass_name'
+          error_source: 'klass_name',
+          fail_import: false
         )
         .and_call_original
 
-      worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
+      expect { worker.import(project, client, { 'number' => 10, 'github_id' => 1 }) }
+        .to raise_error(exception)
 
       expect(project.import_state.reload.status).to eq('started')
 
@@ -191,6 +193,14 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures do
         expect { worker.import(project, client, { 'number' => 10 }) }
           .to raise_error(NoMethodError, /^undefined method `github_identifiers/)
       end
+    end
+  end
+
+  describe '#increment_object_counter?' do
+    let(:issue) { double(:issue, pull_request?: true) }
+
+    it 'returns true' do
+      expect(worker).to be_increment_object_counter(issue)
     end
   end
 end

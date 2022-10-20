@@ -41,7 +41,7 @@ describe('Deployment action button', () => {
     });
 
     it('renders prop icon correctly', () => {
-      expect(wrapper.find(GlIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
     });
   });
 
@@ -59,7 +59,7 @@ describe('Deployment action button', () => {
     });
 
     it('renders slot and icon prop correctly', () => {
-      expect(wrapper.find(GlIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
       expect(wrapper.text()).toContain(actionButtonMocks[DEPLOYING].toString());
     });
   });
@@ -75,8 +75,8 @@ describe('Deployment action button', () => {
     });
 
     it('is disabled and shows the loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.find(GlButton).props('disabled')).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlButton).props('disabled')).toBe(true);
     });
   });
 
@@ -90,8 +90,8 @@ describe('Deployment action button', () => {
       });
     });
     it('is disabled and does not show the loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlButton).props('disabled')).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlButton).props('disabled')).toBe(true);
     });
   });
 
@@ -106,8 +106,8 @@ describe('Deployment action button', () => {
       });
     });
     it('is disabled and does not show the loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlButton).props('disabled')).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlButton).props('disabled')).toBe(true);
     });
   });
 
@@ -118,8 +118,8 @@ describe('Deployment action button', () => {
       });
     });
     it('is not disabled nor does it show the loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find(GlButton).props('disabled')).toBe(false);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+      expect(wrapper.findComponent(GlButton).props('disabled')).toBe(false);
     });
   });
 });

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -58,6 +58,14 @@ To make submodules work correctly in CI/CD jobs:
    ```yaml
    variables:
      GIT_SUBMODULE_STRATEGY: recursive
+   ```
+
+1. You can filter or exclude specific submodules to control which submodules will be synced using
+   [`GIT_SUBMODULE_PATHS`](runners/configure_runners.md#git-submodule-paths).
+
+   ```yaml
+   variables:
+     GIT_SUBMODULE_PATHS: submoduleA submoduleB
    ```
 
 1. You can provide additional flags to control advanced checkout behavior using

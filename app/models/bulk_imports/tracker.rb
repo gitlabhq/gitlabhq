@@ -60,6 +60,8 @@ class BulkImports::Tracker < ApplicationRecord
 
     event :retry do
       transition started: :enqueued
+      # To avoid errors when retrying a pipeline in case of network errors
+      transition enqueued: :enqueued
     end
 
     event :enqueue do

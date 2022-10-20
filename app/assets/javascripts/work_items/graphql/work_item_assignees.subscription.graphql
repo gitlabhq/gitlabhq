@@ -1,0 +1,21 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+subscription issuableAssignees($issuableId: IssuableID!) {
+  issuableAssigneesUpdated(issuableId: $issuableId) {
+    ... on WorkItem {
+      id
+      widgets {
+        ... on WorkItemWidgetAssignees {
+          type
+          allowsMultipleAssignees
+          canInviteMembers
+          assignees {
+            nodes {
+              ...User
+            }
+          }
+        }
+      }
+    }
+  }
+}

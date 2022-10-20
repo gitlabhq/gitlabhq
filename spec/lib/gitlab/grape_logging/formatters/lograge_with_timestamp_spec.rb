@@ -43,10 +43,11 @@ RSpec.describe Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp do
   it 're-formats the params hash' do
     params = result['params']
 
-    expect(params).to eq([
-      { 'key' => 'description', 'value' => '[FILTERED]' },
-      { 'key' => 'name', 'value' => 'gitlab test' },
-      { 'key' => 'int', 'value' => 42 }
-    ])
+    expect(params).to eq(
+      [
+        { 'key' => 'description', 'value' => '[FILTERED]' },
+        { 'key' => 'name', 'value' => 'gitlab test' },
+        { 'key' => 'int', 'value' => 42 }
+      ])
   end
 end

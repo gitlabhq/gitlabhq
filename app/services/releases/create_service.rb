@@ -3,10 +3,10 @@
 module Releases
   class CreateService < Releases::BaseService
     def execute
-      return error('Access Denied', 403) unless allowed?
-      return error('You are not allowed to create this tag as it is protected.', 403) unless can_create_tag?
-      return error('Release already exists', 409) if release
-      return error("Milestone(s) not found: #{inexistent_milestones.join(', ')}", 400) if inexistent_milestones.any?
+      return error(_('Access Denied'), 403) unless allowed?
+      return error(_('You are not allowed to create this tag as it is protected.'), 403) unless can_create_tag?
+      return error(_('Release already exists'), 409) if release
+      return error(format(_("Milestone(s) not found: %{milestones}"), milestones: inexistent_milestones.join(', ')), 400) if inexistent_milestones.any? # rubocop:disable Layout/LineLength
 
       # should be found before the creation of new tag
       # because tag creation can spawn new pipeline

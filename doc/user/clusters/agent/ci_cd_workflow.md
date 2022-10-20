@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Using GitLab CI/CD with a Kubernetes cluster **(FREE)**
@@ -156,9 +156,24 @@ deploy:
   # ... rest of your job configuration
 ```
 
+### Using the agent with Auto DevOps
+
+If Auto DevOps is enabled, you must define the `KUBE_CONTEXT` CI/CD variable. Set the value of `KUBE_CONTEXT` to the context of the agent you want to use in your Auto DevOps pipeline jobs (`<PATH_TO_AGENT_CONFIG_REPOSITORY>:<AGENT_NAME>`).
+
+You can also use different agents for different Auto DevOps jobs. For instance, you can use one agent for `staging` jobs and a different agent for `production` jobs. To use multiple agents, define a unique CI/CD variable for each agent.
+
+For example:
+
+1. Add two [environment-scoped CI/CD variables](../../../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable) and name both `KUBE_CONTEXT`.
+1. Set the `environment` of the first variable to `staging`. Set the value of the variable to `<PATH_TO_AGENT_CONFIGURATION_PROJECT>:<STAGING_AGENT_NAME>`.
+1. Set the `environment` of the second variable to `production`. Set the value of the variable to `<PATH_TO_AGENT_CONFIGURATION_PROJECT>:<PRODUCTION_AGENT_NAME>`.
+
+When the `staging` job runs, it will connect to the cluster via the agent named `<STAGING_AGENT_NAME>`, and when the `production` job runs it will connect to the cluster via the agent named `<PRODUCTION_AGENT_NAME>`.
+
 ## Restrict project and group access by using impersonation **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/357934) in GitLab 15.5 to add impersonation support for environment tiers.
 
 By default, your CI/CD job inherits all the permissions from the service account used to install the
 agent in the cluster.
@@ -191,16 +206,17 @@ impersonation credentials in the following way:
   - `gitlab:ci_job` to identify all requests coming from CI jobs.
   - The list of IDs of groups the project is in.
   - The project ID.
-  - The slug of the environment this job belongs to.
+  - The slug and tier of the environment this job belongs to.
 
     Example: for a CI job in `group1/group1-1/project1` where:
 
     - Group `group1` has ID 23.
     - Group `group1/group1-1` has ID 25.
     - Project `group1/group1-1/project1` has ID 150.
-    - Job running in a prod environment.
+    - Job running in the `prod` environment, which has the `production` environment tier.
 
-  Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group:25, gitlab:project:150, gitlab:project_env:150:prod]`.
+  Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group_env_tier:23:production, gitlab:group:25,
+     gitlab:group_env_tier:25:production, gitlab:project:150, gitlab:project_env:150:prod, gitlab:project_env_tier:150:production]`.
 
 - `Extra` carries extra information about the request. The following properties are set on the impersonated identity:
 
@@ -213,6 +229,7 @@ impersonation credentials in the following way:
 | `agent.gitlab.com/ci_job_id`         | Contains the CI job ID.                                                      |
 | `agent.gitlab.com/username`          | Contains the username of the user the CI job is running as.                  |
 | `agent.gitlab.com/environment_slug`  | Contains the slug of the environment. Only set if running in an environment. |
+| `agent.gitlab.com/environment_tier`  | Contains the tier of the environment. Only set if running in an environment. |
 
 Example `config.yaml` to restrict access by the CI/CD job's identity:
 
@@ -260,6 +277,7 @@ See the [official Kubernetes documentation for details](https://kubernetes.io/do
 ## Related topics
 
 - [Self-paced classroom workshop](https://gitlab-for-eks.awsworkshop.io) (Uses AWS EKS, but you can use for other Kubernetes clusters)
+- [Configure Auto DevOps](../../../topics/autodevops/cloud_deployments/auto_devops_with_gke.md#configure-auto-devops)
 
 ## Troubleshooting
 

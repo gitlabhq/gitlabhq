@@ -3,7 +3,7 @@ import { SourceEditorExtension } from '~/editor/extensions/source_editor_extensi
 import { FileTemplateExtension } from '~/editor/extensions/source_editor_file_template_ext';
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 import { insertFinalNewline } from '~/lib/utils/text_utility';
@@ -44,7 +44,7 @@ export default class EditBlob {
         },
       ]);
     } catch (e) {
-      createFlash({
+      createAlert({
         message: `${BLOB_EDITOR_ERROR}: ${e}`,
       });
     }
@@ -130,7 +130,7 @@ export default class EditBlob {
           currentPane.renderGFM();
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: BLOB_PREVIEW_ERROR,
           }),
         );

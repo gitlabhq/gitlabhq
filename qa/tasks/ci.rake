@@ -13,8 +13,10 @@ namespace :ci do
 
     diff = mr_diff
     labels = mr_labels
+    # Assign mapping of groups to tests in stages other than the groups defined stage
+    additional_group_spec_list = { 'gitaly' => %w[create] }
 
-    qa_changes = QA::Tools::Ci::QaChanges.new(diff, labels)
+    qa_changes = QA::Tools::Ci::QaChanges.new(diff, labels, additional_group_spec_list)
     logger = qa_changes.logger
 
     logger.info("Analyzing merge request changes")

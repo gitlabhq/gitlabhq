@@ -37,7 +37,7 @@ export default ({
    * When creating a new release, this is the default from the URL
    */
   tagName,
-  showCreateFrom: !tagName,
+  showCreateFrom: false,
 
   defaultBranch,
   createFrom: defaultBranch,

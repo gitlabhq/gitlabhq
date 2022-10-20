@@ -1,5 +1,5 @@
 ---
-info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
@@ -17,9 +17,9 @@ In addition to this page, the following resources can help you craft and contrib
 - [Doc contribution guidelines](../index.md)
 - [Recommended word list](word_list.md)
 - [Doc style and consistency testing](../testing.md)
-- [UI text guidelines](https://design.gitlab.com/content/error-messages/)
+- [Guidelines for UI error messages](https://design.gitlab.com/content/error-messages/)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
-- [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
+- [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 - [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
 
@@ -115,7 +115,7 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 
 If you have questions when considering, authoring, or editing documentation, ask
 the Technical Writing team. They're available on Slack in `#docs` or in GitLab by
-mentioning [the writer for](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+mentioning [the writer for](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 the applicable [DevOps stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 Otherwise, forge ahead with your best effort. It does not need to be perfect;
 the team is happy to review and improve upon your content. Review the
@@ -333,7 +333,7 @@ When possible, try to avoid acronyms in headings.
 
 ### Numbers
 
-When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/numbers).
+When using numbers in text, spell out zero through nine, and use numbers for 10 and greater. For details, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/numbers).
 
 ## Text
 
@@ -465,10 +465,18 @@ When using code block style:
 
 ## Lists
 
-- Always start list items with a capital letter, unless they're parameters or
-  commands that are in backticks, or similar.
-- Always leave a blank line before and after a list.
-- Begin a line with spaces (not tabs) to denote a [nested sub-item](#nesting-inside-a-list-item).
+- Use a period after every sentence, including those that complete an introductory phrase.
+  Do not use semicolons or commas.
+- Majority rules. Use either full sentences or all fragments. Avoid a mix.
+- Always start list items with a capital letter.
+- Separate the introductory phrase from explanatory text with a colon (`:`). For example:
+
+  ```markdown
+  You can:
+
+  - Do this thing.
+  - Do this other thing.
+  ```
 
 ### Choose between an ordered or unordered list
 
@@ -492,40 +500,27 @@ These things are imported:
 - Thing 3
 ```
 
-You can choose to introduce either list with a colon, but you do not have to.
-
-### Markup
+### List markup
 
 - Use dashes (`-`) for unordered lists instead of asterisks (`*`).
-- Prefix `1.` to every item in an ordered list. When rendered, the list items
-  display with sequential numbering.
-
-### Punctuation
-
-- Don't add commas (`,`) or semicolons (`;`) to the ends of list items.
-- If a list item is a complete sentence (with a subject and a verb), add a period at the end.
-- Majority rules. If the majority of items do not end in a period, do not end any of the items in a period.
-- Separate list items from explanatory text with a colon (`:`). For example:
-
-  ```markdown
-  The list is as follows:
-
-  - First item: this explains the first item.
-  - Second item: this explains the second item.
-  ```
+- Start every item in an ordered list with `1.`. When rendered, the list items
+  are sequential.
+- Leave a blank line before and after a list.
+- Begin a line with spaces (not tabs) to denote a [nested sub-item](#nesting-inside-a-list-item).
 
 ### Nesting inside a list item
 
-It's possible to nest items under a list item, so that they render with the same
-indentation as the list item. This can be done with:
+You can nest items under a list item, so they render with the same
+indentation as the list item. You can do this with:
 
 - [Code blocks](#code-blocks)
 - [Blockquotes](#blockquotes)
 - [Alert boxes](#alert-boxes)
 - [Images](#images)
+- [Tabs](#tabs)
 
-Items nested in lists should always align with the first character of the list
-item. In unordered lists (using `-`), this means two spaces for each level of
+Nested items should always align with the first character of the list
+item. For unordered lists (using `-`), use two spaces for each level of
 indentation:
 
 ````markdown
@@ -555,26 +550,9 @@ For ordered lists, use three spaces for each level of indentation:
 1. Ordered list item 1
 
    A line nested using 3 spaces to align with the `O` above.
-
-1. Ordered list item 2
-
-   > A quote block that will nest
-   > inside list item 2.
-
-1. Ordered list item 3
-
-   ```plaintext
-   a code block that nests inside list item 3
-   ```
-
-1. Ordered list item 4
-
-   ![an image that will nest inside list item 4](image.png)
 ````
 
-You can nest full lists inside other lists using the same rules as above. If you
-want to mix types, that's also possible, if you don't mix items at the same
-level:
+You can nest lists in other lists.
 
 ```markdown
 1. Ordered list item one.
@@ -676,125 +654,66 @@ For other punctuation rules, refer to the
 [Pajamas Design System Punctuation section](https://design.gitlab.com/content/punctuation/).
 This is overridden by the [documentation-specific punctuation rules](#punctuation).
 
-### Anchor links
-
-Headings generate anchor links when rendered. `## This is an example` generates
-the anchor `#this-is-an-example`.
-
-NOTE:
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39717) in
-GitLab 13.4, [product badges](#product-tier-badges) used in headings aren't
-included in the generated anchor links. For example, when you link to
-`## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
-
-Keep in mind that the GitLab user interface links to many documentation pages
-and anchor links to take the user to the right spot. When you change
-a heading, search `doc/*`, `app/views/*`, and `ee/app/views/*` for the old
-anchor. If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-link-tests)
-in your merge request fails.
-
-Important:
-
-- Avoid crosslinking documentation to headings unless you need to link to a
-  specific section of the document. This avoids breaking anchors in the
-  future in case the heading is changed.
-- If possible, avoid changing headings, because they're not only linked internally.
-  There are various links to GitLab documentation on the internet, such as
-  tutorials, presentations, StackOverflow posts, and other sources.
-- Do not link to `h1` headings.
-
-Note that with Kramdown, it's possible to add a custom ID to an HTML element
-with Markdown markup, but they don't work in `/help`. Because of this, don't use
-this option.
-
 ## Links
 
-Links are important in GitLab documentation. Use links instead of
-summarizing to help preserve a [single source of truth](#documentation-is-the-single-source-of-truth-ssot)
-in GitLab documentation.
+Links help the docs adhere to the
+[single source of truth](#documentation-is-the-single-source-of-truth-ssot) principle.
 
-We include guidance for links in these categories:
+### Links within the same repository
 
-- How to set up [anchor links](#anchor-links) for headings.
-- How to set up [criteria](#basic-link-criteria) for configuring a link.
-- What to set up when [linking to a `help`](../../documentation/index.md#linking-to-help)
-  page.
-- How to set up [links to internal documentation](#links-to-internal-documentation)
-  for cross-references.
-- How to set up [links to external documentation](#links-to-external-documentation)
-  for authoritative sources.
-- When to use [links requiring permissions](#links-requiring-permissions).
-- How to set up a [link to a video](#link-to-video).
-- How to [link to specific lines of code](#link-to-specific-lines-of-code)
+To link to another page in the same repository,
+use a relative file path. For example, `../user/gitlab_com/index.md`.
 
-### Basic link criteria
+Use inline link Markdown markup `[Text](https://example.com)`,
+rather than reference-style links, like `[Text][identifier]`.
 
-- Use inline link Markdown markup `[Text](https://example.com)`.
-  It's easier to read, review, and maintain. Do not use `[Text][identifier]` reference-style links.
-- Use meaningful anchor text.
-  For example, instead of writing something like `Read more about merge requests [here](LINK)`,
-  write `Read more about [merge requests](LINK)`.
-- Put the entire link on a single line. Some of our [linters](../testing.md) do not
-  validate links when split over multiple lines, and incorrect or broken links could
-  slip through.
+Put the entire link on a single line so that [linters](../testing.md) can find it.
 
-### Links to internal documentation
+### Links in separate repositories
 
-NOTE:
-**Internal** refers to documentation in the same project. When linking to
-documentation in separate projects (for example, linking to Omnibus documentation
-from GitLab documentation), you must use absolute URLs.
+To link to a page in a different repository, use an absolute URL.
+For example, to link from a page in the GitLab repo to the Charts repo,
+use a URL like `https://docs.gitlab.com/charts/`.
 
-Do not use absolute URLs like `https://docs.gitlab.com/ee/index.html` to
-cross-link to other documentation in the same project. Use relative links to
-the file, like `../index.md`. (These are converted to HTML when the site is
-rendered.)
+### Anchor links
 
-Relative linking enables crosslinks to work:
+Each heading has an anchor link. For example, a topic with the title
+`## This is an example` has the anchor `#this-is-an-example`.
 
-- in Review Apps, local previews, and `/help`.
-- when working on the documentation locally, so you can verify that they work as
-  early as possible in the process.
-- in the GitLab user interface when browsing doc files in their respective
-  repositories. For example, the links displayed at
-  `https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md`.
+The first topic on a page (the `h1`) has an anchor link,
+but do not use it. Link to the page instead.
 
-To link to internal documentation:
+If a heading has a [product tier badge](#product-tier-badges),
+do not include it in the anchor link. For example, for the heading
+`## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
 
-- Use relative links to Markdown files in the same repository.
-- Do not use absolute URLs or URLs from `docs.gitlab.com`.
-- Use `../` to navigate to higher-level directories.
-- Don't prepend `./` to links to files or directories. To link to a file in the
-  same directory or one of its sub-directories, use the syntax `path/to/file.md`.
-- Don't link relative to root. For example, `/ee/user/gitlab_com/index.md`.
+With Kramdown, you can add a custom ID to an HTML element, but these IDs
+don't work in `/help`, so you should not use them.
 
-  Don't:
+#### Changing links and titles
 
-  - `https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html`
-  - `/ee/administration/geo/replication/troubleshooting.md`
-  - `./troubleshooting.md`
+When you change a heading, the anchor link changes. To ensure you update
+any related links, search these directories:
 
-  Do: `../../geo/replication/troubleshooting.md`
+- `doc/*`
+- `app/views/*`
+- `ee/app/views/*`
 
-- Always add the filename `file.md` at the end of the link with the `.md`
-  extension, not `.html`.
+If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-link-tests)
+in your merge request fails.
 
-  Don't:
+### Text for links
 
-  - `../../merge_requests/`
-  - `../../issues/tags.html`
-  - `../../issues/tags.html#stages`
+Use descriptive text for links, rather than words like `here` or `this page.`
 
-  Do:
+For example, instead of:
 
-  - `../../merge_requests/index.md`
-  - `../../issues/tags.md`
-  - `../../issues/tags.md#stages`
-  - `issues/tags.md`
+- `For more information, see [this page](LINK).`
+- `For more information, go [here](LINK).`
 
-NOTE:
-Using the Markdown extension is necessary for the [`/help`](../index.md#gitlab-help)
-section of GitLab.
+Use:
+
+- `For more information, see [merge requests](LINK)`.
 
 ### Links to external documentation
 
@@ -898,6 +817,28 @@ To open group settings:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
+```
+
+To open either project or group settings:
+
+```markdown
+1. On the top bar, select **Main menu**, and:
+   - For a project, select ***Projects** and find your project.
+   - For a group, select **Groups** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+```
+
+To create a project:
+
+```markdown
+1. On the top bar, select **Create new... > New project**.
+```
+
+To create a group:
+
+```markdown
+1. On the top bar, select **Create new... > New group**.
 ```
 
 To open the Admin Area:
@@ -1126,6 +1067,14 @@ Do not use words to describe the icon:
 
 - Avoid: `Select **Erase job log** (the trash icon).`
 - Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
+
+When the button doesn't have any hover text, you can describe the icon.
+Follow up by creating a
+[UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Bug)
+to add hover text to the button to improve accessibility.
+
+- Avoid: `Select **{ellipsis_v}**.`
+- Use instead: `Select the vertical ellipsis (**{ellipsis_v}**).` This generates as: Select the vertical ellipsis (**{ellipsis_v}**).
 
 ## Videos
 

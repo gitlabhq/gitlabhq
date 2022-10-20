@@ -81,9 +81,9 @@ class GroupsController < Groups::ApplicationController
       successful_creation_hooks
 
       notice = if @group.chat_team.present?
-                 "Group '#{@group.name}' and its Mattermost team were successfully created."
+                 format(_("Group %{group_name} and its Mattermost team were successfully created."), group_name: @group.name)
                else
-                 "Group '#{@group.name}' was successfully created."
+                 format(_("Group %{group_name} was successfully created."), group_name: @group.name)
                end
 
       redirect_to @group, notice: notice
@@ -393,7 +393,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def captcha_enabled?
-    Gitlab::Recaptcha.enabled? && Feature.enabled?(:recaptcha_on_top_level_group_creation, type: :ops)
+    helpers.recaptcha_enabled? && Feature.enabled?(:recaptcha_on_top_level_group_creation, type: :ops)
   end
 
   def captcha_required?

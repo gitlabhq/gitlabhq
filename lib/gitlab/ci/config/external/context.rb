@@ -10,7 +10,6 @@ module Gitlab
           TimeoutError = Class.new(StandardError)
 
           MAX_INCLUDES = 100
-          TRIAL_MAX_INCLUDES = 250
 
           include ::Gitlab::Utils::StrongMemoize
 
@@ -31,7 +30,7 @@ module Gitlab
             @expandset = Set.new
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
-            @max_includes = Feature.enabled?(:ci_increase_includes_to_250, project) ? TRIAL_MAX_INCLUDES : MAX_INCLUDES
+            @max_includes = MAX_INCLUDES
             yield self if block_given?
           end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
   let(:base_data) do
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
     let(:data) { base_data.merge(iid_attr => 1347) }
 
     context 'when milestone is open' do
-      let(:raw_data) { double(data.merge(state: 'open')) }
+      let(:raw_data) { data.merge(state: 'open') }
 
       it 'returns formatted attributes' do
         expected = {
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
     end
 
     context 'when milestone is closed' do
-      let(:raw_data) { double(data.merge(state: 'closed')) }
+      let(:raw_data) { data.merge(state: 'closed') }
 
       it 'returns formatted attributes' do
         expected = {
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
 
     context 'when milestone has a due date' do
       let(:due_date) { DateTime.strptime('2011-01-28T19:01:12Z') }
-      let(:raw_data) { double(data.merge(due_on: due_date)) }
+      let(:raw_data) { data.merge(due_on: due_date) }
 
       it 'returns formatted attributes' do
         expected = {

@@ -18,7 +18,7 @@ import {
   trackErrorDetailsViewsOptions,
   trackErrorStatusUpdateOptions,
 } from '~/error_tracking/utils';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/flash';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 
@@ -144,7 +144,7 @@ describe('ErrorDetails', () => {
 
       await nextTick();
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
       expect(mocks.$apollo.queries.error.stopPolling).not.toHaveBeenCalled();
     });
 
@@ -156,9 +156,9 @@ describe('ErrorDetails', () => {
       await nextTick();
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.findComponent(GlLink).exists()).toBe(false);
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Could not connect to Sentry. Refresh the page to try again.',
-        type: 'warning',
+        variant: VARIANT_WARNING,
       });
       expect(mocks.$apollo.queries.error.stopPolling).toHaveBeenCalled();
     });

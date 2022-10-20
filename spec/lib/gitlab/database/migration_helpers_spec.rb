@@ -757,6 +757,58 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id, reverse_lock_order: true)
         end
       end
+
+      context 'when creating foreign key for a group of columns' do
+        it 'references the custom target columns when provided', :aggregate_failures do
+          expect(model).to receive(:with_lock_retries).and_yield
+          expect(model).to receive(:execute).with(
+            "ALTER TABLE projects\n" \
+            "ADD CONSTRAINT fk_multiple_columns\n" \
+            "FOREIGN KEY \(partition_number, user_id\)\n" \
+            "REFERENCES users \(partition_number, id\)\n" \
+            "ON DELETE CASCADE\n" \
+            "NOT VALID;\n"
+          )
+
+          model.add_concurrent_foreign_key(
+            :projects,
+            :users,
+            column: [:partition_number, :user_id],
+            target_column: [:partition_number, :id],
+            validate: false,
+            name: :fk_multiple_columns
+          )
+        end
+
+        context 'when foreign key is already defined' do
+          before do
+            expect(model).to receive(:foreign_key_exists?).with(
+              :projects,
+              :users,
+              {
+                column: [:partition_number, :user_id],
+                name: :fk_multiple_columns,
+                on_delete: :cascade,
+                primary_key: [:partition_number, :id]
+              }
+            ).and_return(true)
+          end
+
+          it 'does not create foreign key', :aggregate_failures do
+            expect(model).not_to receive(:with_lock_retries).and_yield
+            expect(model).not_to receive(:execute).with(/FOREIGN KEY/)
+
+            model.add_concurrent_foreign_key(
+              :projects,
+              :users,
+              column: [:partition_number, :user_id],
+              target_column: [:partition_number, :id],
+              validate: false,
+              name: :fk_multiple_columns
+            )
+          end
+        end
+      end
     end
   end
 
@@ -812,6 +864,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       expect(name).to be_an_instance_of(String)
       expect(name.length).to eq(13)
+    end
+
+    context 'when using multiple columns' do
+      it 'returns the name of the foreign key', :aggregate_failures do
+        result = model.concurrent_foreign_key_name(:table_name, [:partition_number, :id])
+
+        expect(result).to be_an_instance_of(String)
+        expect(result.length).to eq(13)
+      end
     end
   end
 
@@ -886,6 +947,62 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     it 'compares by target table if no column given' do
       expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
+    end
+
+    context 'with foreign key using multiple columns' do
+      before do
+        key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+          :projects, :users,
+          {
+            column: [:partition_number, :id],
+            name: :fk_projects_users_partition_number_id,
+            on_delete: :cascade,
+            primary_key: [:partition_number, :id]
+          }
+        )
+        allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
+      end
+
+      it 'finds existing foreign keys by columns' do
+        expect(model.foreign_key_exists?(:projects, :users, column: [:partition_number, :id])).to be_truthy
+      end
+
+      it 'finds existing foreign keys by name' do
+        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id)).to be_truthy
+      end
+
+      it 'finds existing foreign_keys by name and column' do
+        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id, column: [:partition_number, :id])).to be_truthy
+      end
+
+      it 'finds existing foreign_keys by name, column and on_delete' do
+        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id, column: [:partition_number, :id], on_delete: :cascade)).to be_truthy
+      end
+
+      it 'finds existing foreign keys by target table only' do
+        expect(model.foreign_key_exists?(:projects, :users)).to be_truthy
+      end
+
+      it 'compares by column name if given' do
+        expect(model.foreign_key_exists?(:projects, :users, column: :id)).to be_falsey
+      end
+
+      it 'compares by target column name if given' do
+        expect(model.foreign_key_exists?(:projects, :users, primary_key: :user_id)).to be_falsey
+        expect(model.foreign_key_exists?(:projects, :users, primary_key: [:partition_number, :id])).to be_truthy
+      end
+
+      it 'compares by foreign key name if given' do
+        expect(model.foreign_key_exists?(:projects, :users, name: :non_existent_foreign_key_name)).to be_falsey
+      end
+
+      it 'compares by foreign key name and column if given' do
+        expect(model.foreign_key_exists?(:projects, :users, name: :non_existent_foreign_key_name, column: [:partition_number, :id])).to be_falsey
+      end
+
+      it 'compares by foreign key name, column and on_delete if given' do
+        expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id, column: [:partition_number, :id], on_delete: :nullify)).to be_falsey
+      end
     end
   end
 
@@ -3356,6 +3473,73 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(model).to receive(:execute).with /ALTER TABLE "test_table"\nRENAME CONSTRAINT "fk_old_name" TO "fk_new_name"/
 
       model.rename_constraint(:test_table, :fk_old_name, :fk_new_name)
+    end
+  end
+
+  describe '#drop_constraint' do
+    it "executes the statement to drop the constraint" do
+      expect(model).to receive(:execute).with("ALTER TABLE \"test_table\" DROP CONSTRAINT \"constraint_name\" CASCADE\n")
+
+      model.drop_constraint(:test_table, :constraint_name, cascade: true)
+    end
+
+    context 'when cascade option is false' do
+      it "executes the statement to drop the constraint without cascade" do
+        expect(model).to receive(:execute).with("ALTER TABLE \"test_table\" DROP CONSTRAINT \"constraint_name\" \n")
+
+        model.drop_constraint(:test_table, :constraint_name, cascade: false)
+      end
+    end
+  end
+
+  describe '#add_primary_key_using_index' do
+    it "executes the statement to add the primary key" do
+      expect(model).to receive(:execute).with /ALTER TABLE "test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
+
+      model.add_primary_key_using_index(:test_table, :old_name, :new_name)
+    end
+  end
+
+  context 'when changing the primary key of a given table' do
+    before do
+      model.create_table(:test_table, primary_key: :id) do |t|
+        t.integer :partition_number, default: 1
+      end
+
+      model.add_index(:test_table, :id, unique: true, name: :old_index_name)
+      model.add_index(:test_table, [:id, :partition_number], unique: true, name: :new_index_name)
+    end
+
+    describe '#swap_primary_key' do
+      it 'executes statements to swap primary key', :aggregate_failures do
+        expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "new_index_name"/).and_call_original
+
+        model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+      end
+
+      context 'when new index does not exist' do
+        before do
+          model.remove_index(:test_table, column: [:id, :partition_number])
+        end
+
+        it 'raises ActiveRecord::StatementInvalid' do
+          expect do
+            model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+          end.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
+    end
+
+    describe '#unswap_primary_key' do
+      it 'executes statements to unswap primary key' do
+        expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).ordered.and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "old_index_name"/).ordered.and_call_original
+
+        model.unswap_primary_key(:test_table, :test_table_pkey, :old_index_name)
+      end
     end
   end
 

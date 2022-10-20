@@ -211,6 +211,13 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       expect(ApplicationSetting.current.valid_runner_registrars).to eq(['project'])
     end
 
+    it 'updates can_create_group setting' do
+      put :update, params: { application_setting: { can_create_group: false } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.can_create_group).to eq(false)
+    end
+
     context "personal access token prefix settings" do
       let(:application_settings) { ApplicationSetting.current }
 

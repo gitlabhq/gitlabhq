@@ -46,7 +46,7 @@ describe('UncollapsedAssigneeList component', () => {
     });
 
     it('calls the AssigneeAvatarLink with the proper props', () => {
-      expect(wrapper.find(AssigneeAvatarLink).exists()).toBe(true);
+      expect(wrapper.findComponent(AssigneeAvatarLink).exists()).toBe(true);
     });
 
     it('Shows one user with avatar, username and author name', () => {

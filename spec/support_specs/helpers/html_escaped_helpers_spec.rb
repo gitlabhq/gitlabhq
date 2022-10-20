@@ -40,4 +40,33 @@ RSpec.describe HtmlEscapedHelpers do
       specify { expect(actual_match).to eq(expected_match) }
     end
   end
+
+  describe '#ensure_no_html_escaped_tags!' do
+    subject { |example| described_class.ensure_no_html_escaped_tags!(content, example) }
+
+    context 'when content contains HTML escaped chars' do
+      let(:content) { 'See &lt;a href=""&gt;Link&lt;/a&gt;' }
+
+      it 'raises an exception' do
+        parts = [
+          'The following string contains HTML escaped tags:',
+          'See «&lt;a» href=""&gt;Link&lt;/a&gt;',
+          'This check can be disabled via:',
+          %(it "raises an exception", :skip_html_escaped_tags_check do)
+        ]
+
+        regexp = Regexp.new(parts.join('.*'), Regexp::MULTILINE)
+
+        expect { subject }.to raise_error(regexp)
+      end
+    end
+
+    context 'when content does not contain HTML escaped tags' do
+      let(:content) { 'See <a href="">Link</a>' }
+
+      it 'does not raise anything' do
+        expect(subject).to be_nil
+      end
+    end
+  end
 end

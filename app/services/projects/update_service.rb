@@ -122,7 +122,7 @@ module Projects
 
       update_pending_builds if runners_settings_toggled?
 
-      publish_event
+      publish_events
     end
 
     def after_rename_service(project)
@@ -212,13 +212,49 @@ module Projects
       end
     end
 
-    def publish_event
+    def publish_events
+      publish_project_archived_event
+      publish_project_attributed_changed_event
+      publish_project_features_changed_event
+    end
+
+    def publish_project_archived_event
       return unless project.archived_previously_changed?
 
       event = Projects::ProjectArchivedEvent.new(data: {
         project_id: @project.id,
         namespace_id: @project.namespace_id,
         root_namespace_id: @project.root_namespace.id
+      })
+
+      Gitlab::EventStore.publish(event)
+    end
+
+    def publish_project_attributed_changed_event
+      changes = @project.previous_changes
+
+      return if changes.blank?
+
+      event = Projects::ProjectAttributesChangedEvent.new(data: {
+        project_id: @project.id,
+        namespace_id: @project.namespace_id,
+        root_namespace_id: @project.root_namespace.id,
+        attributes: changes.keys
+      })
+
+      Gitlab::EventStore.publish(event)
+    end
+
+    def publish_project_features_changed_event
+      changes = @project.project_feature.previous_changes
+
+      return if changes.blank?
+
+      event = Projects::ProjectFeaturesChangedEvent.new(data: {
+        project_id: @project.id,
+        namespace_id: @project.namespace_id,
+        root_namespace_id: @project.root_namespace.id,
+        features: changes.keys
       })
 
       Gitlab::EventStore.publish(event)

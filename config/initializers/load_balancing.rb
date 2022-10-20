@@ -2,6 +2,15 @@
 
 Gitlab::Application.configure do |config|
   config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)
+
+  # We need re-rerun the setup when code reloads in development
+  config.reloader.to_prepare do
+    if Gitlab.dev_or_test_env?
+      Gitlab::Database::LoadBalancing.base_models.each do |model|
+        Gitlab::Database::LoadBalancing::Setup.new(model).setup
+      end
+    end
+  end
 end
 
 Gitlab::Database::LoadBalancing.base_models.each do |model|
@@ -13,13 +22,6 @@ Gitlab::Database::LoadBalancing.base_models.each do |model|
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63485 for more
   # information.
   Gitlab::Database::LoadBalancing::Setup.new(model).setup
-
-  # We need re-rerun the setup when code reloads in development
-  Rails.application.reloader.to_prepare do
-    if Rails.env.development? || Rails.env.test?
-      Gitlab::Database::LoadBalancing::Setup.new(model).setup
-    end
-  end
 
   # Database queries may be run before we fork, so we must set up the load
   # balancer as early as possible. When we do fork, we need to make sure all the

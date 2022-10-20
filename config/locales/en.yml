@@ -5,6 +5,8 @@ en:
   hello: "Hello world"
   activerecord:
     attributes:
+      incident_management/timeline_event:
+        note: 'Timeline text'
       issue_link:
         source: Source issue
         target: Target issue

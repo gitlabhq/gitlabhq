@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merging translations from Crowdin
@@ -79,7 +79,7 @@ recreate it with the following steps:
 ## Manually update the translation levels
 
 There's no automated way to pull the translation levels from Crowdin, to display
-this information in the language selection dropdown. Therefore, the translation
+this information in the language selection dropdown list. Therefore, the translation
 levels are hard-coded in the `TRANSLATION_LEVELS` constant in [`i18n.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/i18n.rb),
 and must be regularly updated.
 

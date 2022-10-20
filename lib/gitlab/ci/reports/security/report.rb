@@ -69,6 +69,10 @@ module Gitlab
             replace_with!(::Security::MergeReportsService.new(self, other).execute)
           end
 
+          def primary_identifiers
+            scanners.values.flat_map(&:primary_identifiers).compact
+          end
+
           def primary_scanner
             scanners.first&.second
           end

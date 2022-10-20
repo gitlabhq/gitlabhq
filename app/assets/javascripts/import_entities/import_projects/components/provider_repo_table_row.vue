@@ -43,6 +43,10 @@ export default {
       type: Array,
       required: true,
     },
+    optionalStages: {
+      type: Object,
+      required: true,
+    },
   },
 
   computed: {
@@ -177,7 +181,7 @@ export default {
         v-if="isImportNotStarted"
         type="button"
         data-qa-selector="import_button"
-        @click="fetchImport(repo.importSource.id)"
+        @click="fetchImport({ repoId: repo.importSource.id, optionalStages })"
       >
         {{ importButtonText }}
       </gl-button>

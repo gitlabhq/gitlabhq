@@ -4,6 +4,7 @@ module Registrations
   class WelcomeController < ApplicationController
     include OneTrustCSP
     include GoogleAnalyticsCSP
+    include RegistrationsTracking
 
     layout 'minimal'
     skip_before_action :authenticate_user!, :required_signup_info, :check_two_factor_requirement, only: [:show, :update]
@@ -25,7 +26,7 @@ module Registrations
 
         members = current_user.members
 
-        if members.count == 1 && members.last.source.present?
+        if registering_from_invite?(members)
           redirect_to members_activity_path(members), notice: helpers.invite_accepted_notice(members.last)
         else
           redirect_to path_for_signed_in_user(current_user)
@@ -36,6 +37,10 @@ module Registrations
     end
 
     private
+
+    def registering_from_invite?(members)
+      members.count == 1 && members.last.source.present?
+    end
 
     def require_current_user
       return redirect_to new_user_registration_path unless current_user

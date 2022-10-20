@@ -127,6 +127,7 @@ export const packageData = (extend) => ({
   version: '1.0.0',
   createdAt: '2020-08-17T14:23:32Z',
   updatedAt: '2020-08-17T14:23:32Z',
+  lastDownloadedAt: '2021-08-17T14:23:32Z',
   status: 'DEFAULT',
   mavenUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/maven',
   npmUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/npm',

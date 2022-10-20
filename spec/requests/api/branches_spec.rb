@@ -221,55 +221,25 @@ RSpec.describe API::Branches do
           get api(route), params: { per_page: 1 }
         end
 
-        context 'when increase_branch_cache_expiry is enabled' do
-          it 'uses the cache up to 60 minutes' do
-            time_of_request = Time.current
+        it 'uses the cache up to 60 minutes' do
+          time_of_request = Time.current
+
+          get api(route), params: { per_page: 1 }
+
+          travel_to time_of_request + 59.minutes do
+            expect(API::Entities::Branch).not_to receive(:represent)
 
             get api(route), params: { per_page: 1 }
-
-            travel_to time_of_request + 59.minutes do
-              expect(API::Entities::Branch).not_to receive(:represent)
-
-              get api(route), params: { per_page: 1 }
-            end
-          end
-
-          it 'requests for new value after 60 minutes' do
-            get api(route), params: { per_page: 1 }
-
-            travel_to 61.minutes.from_now do
-              expect(API::Entities::Branch).to receive(:represent)
-
-              get api(route), params: { per_page: 1 }
-            end
           end
         end
 
-        context 'when increase_branch_cache_expiry is disabled' do
-          before do
-            stub_feature_flags(increase_branch_cache_expiry: false)
-          end
+        it 'requests for new value after 60 minutes' do
+          get api(route), params: { per_page: 1 }
 
-          it 'uses the cache up to 10 minutes' do
-            time_of_request = Time.current
+          travel_to 61.minutes.from_now do
+            expect(API::Entities::Branch).to receive(:represent)
 
             get api(route), params: { per_page: 1 }
-
-            travel_to time_of_request + 9.minutes do
-              expect(API::Entities::Branch).not_to receive(:represent)
-
-              get api(route), params: { per_page: 1 }
-            end
-          end
-
-          it 'requests for new value after 10 minutes' do
-            get api(route), params: { per_page: 1 }
-
-            travel_to 11.minutes.from_now do
-              expect(API::Entities::Branch).to receive(:represent)
-
-              get api(route), params: { per_page: 1 }
-            end
           end
         end
       end

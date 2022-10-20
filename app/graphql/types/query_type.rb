@@ -154,6 +154,12 @@ module Types
           null: true,
           description: "Whether Gitpod is enabled in application settings."
 
+    field :jobs,
+          ::Types::Ci::JobType.connection_type,
+          null: true,
+          description: 'All jobs on this GitLab instance.',
+          resolver: ::Resolvers::Ci::AllJobsResolver
+
     def design_management
       DesignManagementObject.new(nil)
     end

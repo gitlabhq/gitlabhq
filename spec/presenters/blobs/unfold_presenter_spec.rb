@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Blobs::UnfoldPresenter do
   include FakeBlobHelpers
 
-  let(:project) { create(:project, :repository) }
-  let(:blob) { fake_blob(path: 'foo', data: "1\n2\n3") }
-  let(:subject) { described_class.new(blob, params) }
+  let(:project) { nil } # Project object is not needed but `fake_blob` helper requires it to be defined.
+  let(:blob) { fake_blob(path: 'foo', data: data) }
+  let(:data) { "1\n\2\n3" }
+
+  subject(:result) { described_class.new(blob, params) }
 
   describe '#initialize' do
-    let(:result) { subject }
-
     context 'with empty params' do
       let(:params) { {} }
 
@@ -71,7 +71,7 @@ RSpec.describe Blobs::UnfoldPresenter do
 
   describe '#diff_lines' do
     let(:total_lines) { 50 }
-    let(:blob) { fake_blob(path: 'foo', data: (1..total_lines).to_a.join("\n")) }
+    let(:data) { (1..total_lines).to_a.join("\n") }
 
     context 'when "full" is true' do
       let(:params) { { full: true } }
@@ -91,7 +91,7 @@ RSpec.describe Blobs::UnfoldPresenter do
       end
 
       context 'when last line is empty' do
-        let(:blob) { fake_blob(path: 'foo', data: "1\n2\n") }
+        let(:data) { "1\n2\n" }
 
         it 'disregards last line' do
           lines = subject.diff_lines
@@ -123,7 +123,7 @@ RSpec.describe Blobs::UnfoldPresenter do
         expect(line.new_pos).to eq(5)
       end
 
-      context '"to" is higher than blob size' do
+      context 'when "to" is higher than blob size' do
         let(:params) { default_params.merge(to: total_lines + 10, bottom: true) }
 
         it 'does not add bottom match line' do
@@ -133,7 +133,7 @@ RSpec.describe Blobs::UnfoldPresenter do
         end
       end
 
-      context '"to" is equal to blob size' do
+      context 'when "to" is equal to blob size' do
         let(:params) { default_params.merge(to: total_lines, bottom: true) }
 
         it 'does not add bottom match line' do
@@ -143,7 +143,7 @@ RSpec.describe Blobs::UnfoldPresenter do
         end
       end
 
-      context '"to" is less than blob size' do
+      context 'when "to" is less than blob size' do
         let(:params) { default_params.merge(to: total_lines - 3, bottom: true) }
 
         it 'adds bottom match line' do

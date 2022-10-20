@@ -26,8 +26,6 @@ RSpec.describe PoolRepository do
 
   describe '#unlink_repository' do
     let(:pool) { create(:pool_repository, :ready) }
-    let(:repository_path) { File.join(TestEnv.repos_path, pool.source_project.repository.relative_path) }
-    let(:alternates_file) { File.join(repository_path, 'objects', 'info', 'alternates') }
 
     before do
       pool.link_repository(pool.source_project.repository)
@@ -36,19 +34,17 @@ RSpec.describe PoolRepository do
     context 'when the last member leaves' do
       it 'schedules pool removal' do
         expect(::ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id).and_call_original
+        expect(pool.source_project.repository).to receive(:disconnect_alternates).and_call_original
 
         pool.unlink_repository(pool.source_project.repository)
-
-        expect(File).not_to exist(alternates_file)
       end
     end
 
     context 'when skipping disconnect' do
       it 'does not change the alternates file' do
-        before = File.read(alternates_file)
-        pool.unlink_repository(pool.source_project.repository, disconnect: false)
+        expect(pool.source_project.repository).not_to receive(:disconnect_alternates)
 
-        expect(File.read(alternates_file)).to eq(before)
+        pool.unlink_repository(pool.source_project.repository, disconnect: false)
       end
     end
 
@@ -58,10 +54,9 @@ RSpec.describe PoolRepository do
         pool.link_repository(other_project.repository)
 
         expect(::ObjectPool::DestroyWorker).not_to receive(:perform_async).with(pool.id)
+        expect(pool.source_project.repository).to receive(:disconnect_alternates).and_call_original
 
         pool.unlink_repository(pool.source_project.repository)
-
-        expect(File).not_to exist(alternates_file)
       end
     end
   end

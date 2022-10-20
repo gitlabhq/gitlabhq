@@ -6,6 +6,7 @@ RSpec.describe 'Admin Broadcast Messages' do
   before do
     admin = create(:admin)
     sign_in(admin)
+    stub_feature_flags(vue_broadcast_messages: false)
     gitlab_enable_admin_mode_sign_in(admin)
     create(
       :broadcast_message,

@@ -313,7 +313,6 @@ module ApplicationHelper
     class_names = []
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
-    class_names << 'environment-logs-page' if current_controller?(:logs)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << system_message_class
     class_names << marketing_header_experiment_class
@@ -428,7 +427,7 @@ module ApplicationHelper
         milestones: milestones_project_autocomplete_sources_path(object),
         commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         snippets: snippets_project_autocomplete_sources_path(object),
-        contacts: contacts_project_autocomplete_sources_path(object)
+        contacts: contacts_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
       }
     end
   end
@@ -446,6 +445,10 @@ module ApplicationHelper
     options = args.extract_options!
 
     form_for(record, *(args << options.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder })), &block)
+  end
+
+  def gitlab_ui_form_with(**args, &block)
+    form_with(**args.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder }), &block)
   end
 
   private

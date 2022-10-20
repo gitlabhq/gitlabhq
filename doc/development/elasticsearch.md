@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Elasticsearch knowledge **(PREMIUM SELF)**
@@ -64,7 +64,7 @@ Please see the `sha_tokenizer` explanation later below for an example.
 
 Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the filters: [`code`](#code), `lowercase`, and `asciifolding`
 
-The `whitespace` tokenizer was selected in order to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` in order to be properly searched.
+The `whitespace` tokenizer was selected to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` to be properly searched.
 
 Please see the `code` filter for an explanation on how tokens are split.
 
@@ -94,7 +94,7 @@ Example:
 
 #### `path_tokenizer`
 
-This is a custom tokenizer that uses the [`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html) with `reverse: true` in order to allow searches to find paths no matter how much or how little of the path is given as input.
+This is a custom tokenizer that uses the [`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html) with `reverse: true` to allow searches to find paths no matter how much or how little of the path is given as input.
 
 Example:
 
@@ -461,8 +461,8 @@ _from "Disk-based Shard Allocation | Elasticsearch Reference" [5.6](https://www.
 The use of Elasticsearch in GitLab is only ever as a secondary data store.
 This means that all of the data stored in Elasticsearch can always be derived
 again from other data sources, specifically PostgreSQL and Gitaly. Therefore if
-the Elasticsearch data store is ever corrupted for whatever reason you can
-simply reindex everything from scratch.
+the Elasticsearch data store is ever corrupted for whatever reason you can reindex
+everything from scratch.
 
 If your Elasticsearch index is incredibly large it may be too time consuming or
 cause too much downtime to reindex from scratch. There aren't any built in

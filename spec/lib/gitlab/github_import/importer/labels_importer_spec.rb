@@ -28,7 +28,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_red
 
   describe '#build_labels' do
     it 'returns an Array containnig label rows' do
-      label = double(:label, name: 'bug', color: 'ffffff')
+      label = { name: 'bug', color: 'ffffff' }
 
       expect(importer).to receive(:each_label).and_return([label])
 
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_red
     it 'does not create labels that already exist' do
       create(:label, project: project, title: 'bug')
 
-      label = double(:label, name: 'bug', color: 'ffffff')
+      label = { name: 'bug', color: 'ffffff' }
 
       expect(importer).to receive(:each_label).and_return([label])
       expect(importer.build_labels).to be_empty
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_red
 
   describe '#build' do
     let(:label_hash) do
-      importer.build(double(:label, name: 'bug', color: 'ffffff'))
+      importer.build({ name: 'bug', color: 'ffffff' })
     end
 
     it 'returns the attributes of the label as a Hash' do

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Exploring GitLab Pages **(FREE)**
@@ -82,7 +82,7 @@ When using Pages under the top-level domain of a GitLab instance (`*.example.io`
 of subdomains. If your namespace or group name contains a dot (for example, `foo.bar`) the domain
 `https://foo.bar.example.io` does _not_ work.
 
-This limitation is because of the [HTTP Over TLS protocol](https://tools.ietf.org/html/rfc2818#section-3.1). HTTP pages
+This limitation is because of the [HTTP Over TLS protocol](https://www.rfc-editor.org/rfc/rfc2818#section-3.1). HTTP pages
 work as long as you don't redirect HTTP to HTTPS.
 
 ## GitLab Pages and subgroups
@@ -108,7 +108,7 @@ Supposed your repository contained the following files:
     └── main.js
 ```
 
-Then the `.gitlab-ci.yml` example below simply moves all files from the root
+Then the `.gitlab-ci.yml` example below moves all files from the root
 directory of the project to the `public/` directory. The `.public` workaround
 is so `cp` doesn't also copy `public/` to itself in an infinite loop:
 
@@ -299,8 +299,7 @@ To fix this, verify that the user is a member of the project.
 
 ### Cannot play media content on Safari
 
-Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6)
-in order to play your media content. For GitLab Pages to serve
+Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6) to play your media content. For GitLab Pages to serve
 HTTP Range requests, you should use the following two variables in your `.gitlab-ci.yml` file:
 
 ```yaml

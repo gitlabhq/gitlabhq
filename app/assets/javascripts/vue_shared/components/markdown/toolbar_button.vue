@@ -47,6 +47,11 @@ export default {
       required: false,
       default: 0,
     },
+    command: {
+      type: String,
+      required: false,
+      default: '',
+    },
 
     /**
      * A string (or an array of strings) of
@@ -81,6 +86,7 @@ export default {
     :data-md-tag-content="tagContent"
     :data-md-prepend="prepend"
     :data-md-shortcuts="shortcutsString"
+    :data-md-command="command"
     :title="buttonTitle"
     :aria-label="buttonTitle"
     :icon="icon"

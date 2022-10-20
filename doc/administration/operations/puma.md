@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure the bundled Puma instance of the GitLab package **(FREE SELF)**
@@ -401,4 +401,4 @@ The output in `/tmp/puma.txt` may help diagnose the root cause.
 
 ## Related topics
 
-- [Use a dedicated metrics server to export web metrics](../monitoring/prometheus/puma_exporter.md)
+- [Use a dedicated metrics server to export web metrics](../monitoring/prometheus/web_exporter.md)

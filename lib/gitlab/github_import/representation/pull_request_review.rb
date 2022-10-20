@@ -11,16 +11,19 @@ module Gitlab
 
         expose_attribute :author, :note, :review_type, :submitted_at, :merge_request_id, :review_id
 
+        # Builds a PullRequestReview from a GitHub API response.
+        #
+        # review - An instance of `Hash` containing the note details.
         def self.from_api_response(review, additional_data = {})
-          user = Representation::User.from_api_response(review.user) if review.user
+          user = Representation::User.from_api_response(review[:user]) if review[:user]
 
           new(
-            merge_request_id: review.merge_request_id,
+            merge_request_id: review[:merge_request_id],
             author: user,
-            note: review.body,
-            review_type: review.state,
-            submitted_at: review.submitted_at,
-            review_id: review.id
+            note: review[:body],
+            review_type: review[:state],
+            submitted_at: review[:submitted_at],
+            review_id: review[:id]
           )
         end
 

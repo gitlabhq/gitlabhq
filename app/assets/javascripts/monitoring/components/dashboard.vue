@@ -11,7 +11,7 @@ import {
 import Mousetrap from 'mousetrap';
 import VueDraggable from 'vuedraggable';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -176,7 +176,7 @@ export default {
           this.setExpandedPanel(expandedPanel);
         }
       } catch {
-        createFlash({
+        createAlert({
           message: s__(
             'Metrics|Link contains invalid chart information, please verify the link to see the expanded panel.',
           ),
@@ -201,7 +201,7 @@ export default {
        * This watcher is set for future SPA behaviour of the dashboard
        */
       if (hasWarnings) {
-        createFlash({
+        createAlert({
           message: s__(
             'Metrics|Your dashboard schema is invalid. Edit the dashboard to correct the YAML schema.',
           ),
@@ -319,7 +319,7 @@ export default {
       this.isRearrangingPanels = isRearrangingPanels;
     },
     onDateTimePickerInvalid() {
-      createFlash({
+      createAlert({
         message: s__(
           'Metrics|Link contains an invalid time window, please verify the link to see the requested time range.',
         ),

@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # `NOT NULL` constraints
@@ -93,7 +93,7 @@ We only want to enforce the `NOT NULL` constraint without setting a default, as 
 that all epics should have a user-generated description.
 
 After checking our production database, we know that there are `epics` with `NULL` descriptions,
-so we can not add and validate the constraint in one step.
+so we cannot add and validate the constraint in one step.
 
 NOTE:
 Even if we did not have any epic with a `NULL` description, another instance of GitLab could have
@@ -202,7 +202,7 @@ end
 
 If you have to clean up a nullable column for a [high-traffic table](../migration_style_guide.md#high-traffic-tables)
 (for example, the `artifacts` in `ci_builds`), your background migration goes on for a while and
-it needs an additional [background migration cleaning up](background_migrations.md#cleaning-up)
+it needs an additional [batched background migration cleaning up](batched_background_migrations.md#cleaning-up)
 in the release after adding the data migration.
 
 In that rare case you need 3 releases end-to-end:

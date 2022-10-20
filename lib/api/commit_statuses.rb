@@ -52,8 +52,8 @@ module API
         optional :ref,         type: String,  desc: 'The ref'
         optional :target_url,  type: String,  desc: 'The target URL to associate with this status'
         optional :description, type: String,  desc: 'A short description of the status'
-        optional :name,        type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
-        optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
+        optional :name,        type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"', documentation: { default: 'default' }
+        optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"', documentation: { default: 'default' }
         optional :coverage,    type: Float,   desc: 'The total code coverage'
         optional :pipeline_id, type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
       end

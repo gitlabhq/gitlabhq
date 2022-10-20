@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import SidebarSubscriptionWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import issueSubscribedQuery from '~/sidebar/queries/issue_subscribed.query.graphql';
@@ -144,7 +144,7 @@ describe('Sidebar Subscriptions Widget', () => {
     });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   describe('merge request', () => {

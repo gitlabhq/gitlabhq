@@ -1,5 +1,5 @@
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
@@ -13,7 +13,7 @@ export const fetchGroups = ({ commit }, search) => {
       commit(types.RECEIVE_GROUPS_SUCCESS, data);
     })
     .catch(() => {
-      createFlash({ message: __('There was a problem fetching groups.') });
+      createAlert({ message: __('There was a problem fetching groups.') });
       commit(types.RECEIVE_GROUPS_ERROR);
     });
 };
@@ -23,7 +23,7 @@ export const fetchProjects = ({ commit, state }, search) => {
   const groupId = state.query?.group_id;
 
   const handleCatch = () => {
-    createFlash({ message: __('There was an error fetching projects') });
+    createAlert({ message: __('There was an error fetching projects') });
     commit(types.RECEIVE_PROJECTS_ERROR);
   };
   const handleSuccess = ({ data }) => {
@@ -59,7 +59,7 @@ export const loadFrequentGroups = async ({ commit, state }) => {
     const inflatedData = mergeById(await Promise.all(promises), storedData);
     commit(types.LOAD_FREQUENT_ITEMS, { key: GROUPS_LOCAL_STORAGE_KEY, data: inflatedData });
   } catch {
-    createFlash({ message: __('There was a problem fetching recent groups.') });
+    createAlert({ message: __('There was a problem fetching recent groups.') });
   }
 };
 
@@ -70,7 +70,7 @@ export const loadFrequentProjects = async ({ commit, state }) => {
     const inflatedData = mergeById(await Promise.all(promises), storedData);
     commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: inflatedData });
   } catch {
-    createFlash({ message: __('There was a problem fetching recent projects.') });
+    createAlert({ message: __('There was a problem fetching recent projects.') });
   }
 };
 

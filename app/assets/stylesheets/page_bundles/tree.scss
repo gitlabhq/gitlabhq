@@ -1,0 +1,207 @@
+@import 'mixins_and_variables_and_functions';
+
+.project-last-commit {
+  min-height: 4.75rem;
+}
+
+.tree-holder {
+  .nav-block {
+    margin: 16px 0;
+
+    .tree-ref-holder {
+      margin-right: 15px;
+    }
+
+    @include media-breakpoint-up(sm) {
+      display: flex;
+
+      .tree-ref-container {
+        flex: 1;
+      }
+
+      .tree-controls {
+        text-align: right;
+
+        .control {
+          float: left;
+          margin-left: 8px;
+        }
+      }
+
+      .tree-ref-holder {
+        float: left;
+      }
+
+      .tree-ref-target-holder {
+        display: inline-block;
+      }
+
+      .repo-breadcrumb {
+        li:last-of-type {
+          position: relative;
+        }
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .tree-ref-container {
+      justify-content: space-between;
+    }
+
+    .repo-breadcrumb {
+      position: relative;
+
+      .dropdown-menu {
+        left: inherit;
+        right: 0;
+      }
+    }
+
+    .add-to-tree-dropdown {
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+
+    .tree-controls {
+      margin-bottom: 10px;
+
+      .btn:not(.dropdown-toggle-split),
+      .dropdown,
+      .btn-group {
+        width: 100%;
+      }
+
+      .btn {
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .file-finder {
+    max-width: 500px;
+    width: 100%;
+
+    .file-finder-input {
+      width: 95%;
+      display: inline-block;
+    }
+  }
+
+  .add-to-tree {
+    vertical-align: top;
+    padding: 8px;
+
+    svg {
+      top: 0;
+    }
+  }
+
+  table.tree-table {
+    margin-bottom: 0;
+
+    tr {
+      border-bottom: 1px solid var(--gray-50, $gray-50);
+      border-top: 1px solid var(--gray-50, $gray-50);
+
+      &:last-of-type {
+        border-bottom-color: transparent;
+      }
+
+      td,
+      th {
+        line-height: 21px;
+      }
+
+      th {
+        border: 0;
+      }
+
+      td {
+        border-color: var(--border-color, $border-color);
+      }
+
+      &:hover:not(.tree-truncated-warning) {
+        td {
+          background-color: var(--blue-50, $blue-50);
+          background-clip: padding-box;
+          border-top: 1px solid var(--blue-200, $blue-200);
+          border-bottom: 1px solid var(--blue-200, $blue-200);
+          cursor: pointer;
+        }
+      }
+
+      &.selected {
+        td {
+          background: var(--gray-50, $gray-50);
+          border-top: 1px solid var(--border-color, $border-color);
+          border-bottom: 1px solid var(--border-color, $border-color);
+        }
+      }
+    }
+  }
+
+  .tree-item {
+    .link-container {
+      padding: 0;
+
+      a {
+        padding: 10px $gl-padding;
+        display: block;
+      }
+    }
+
+    .tree-item-file-name {
+      max-width: 320px;
+      vertical-align: middle;
+
+      i,
+      a {
+        color: var(--gl-text-color, $gl-text-color);
+      }
+
+      img {
+        position: relative;
+        top: -1px;
+      }
+    }
+
+    .tree-item-file-external-link {
+      margin-right: 4px;
+
+      span {
+        text-decoration: inherit;
+      }
+    }
+  }
+
+  .tree-truncated-warning {
+    color: var(--orange-600, $orange-600);
+    background-color: var(--orange-50, $orange-50);
+  }
+
+  .tree-time-ago {
+    min-width: 135px;
+  }
+
+  .tree-commit {
+    max-width: 320px;
+
+    .tree-commit-link {
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.blob-commit-info {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blob-content-holder {
+  margin-top: $gl-padding;
+}

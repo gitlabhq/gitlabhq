@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Searching in GitLab **(FREE)**
@@ -13,20 +13,40 @@ Both types of search are the same, except when you are searching through code.
 - When you use basic search to search code, your search includes one project at a time.
 - When you use [advanced search](advanced_search.md) to search code, your search includes all projects at once.
 
-## Basic search
+## Global search scopes **(FREE SELF)**
 
-Use basic search to find:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
 
-- Projects
-- Issues
-- Merge requests
-- Milestones
-- Users
-- Epics (when searching in a group only)
-- Code
-- Comments
-- Commits
-- Wiki
+To improve the performance of your instance's global search, a GitLab administrator
+can limit the search scope by disabling the following [`ops` feature flags](../../development/feature_flags/index.md#ops-type).
+
+| Scope | Feature flag | Description |
+|--|--|--|
+| Code | `global_search_code_tab` | When enabled, global search includes code. |
+| Commits | `global_search_commits_tab` | When enabled, global search includes commits. |
+| Issues | `global_search_issues_tab` | When enabled, global search includes issues. |
+| Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests. |
+| Users | `global_search_users_tab` | When enabled, global search includes users. |
+| Wiki | `global_search_wiki_tab` | When enabled, global search includes project wikis (not [group wikis](../project/wiki/group.md)). |
+
+All global search scopes are enabled by default on GitLab.com
+and self-managed instances.
+
+## Global search validation
+
+Global search ignores and logs as abusive any search with:
+
+- Fewer than 2 characters
+- A term longer than 100 characters (URL search terms must not exceed 200 characters)
+- A stop word only (for example, `the`, `and`, or `if`)
+- An unknown `scope`
+- `group_id` or `project_id` that is not completely numeric
+- `repository_ref` or `project_ref` with special characters not allowed by [Git refname](https://git-scm.com/docs/git-check-ref-format)
+
+Global search only flags with an error any search that includes more than:
+
+- 4096 characters
+- 64 terms
 
 ## Perform a search
 
@@ -78,6 +98,10 @@ and gives you the option to return to the search results page.
 
 ## Searching for specific terms
 
+> - [Removed support for partial matches in issue searches](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
+> - Feature flag [`issues_full_text_search` enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 14.10.
+> - Feature flag [`issues_full_text_search` enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/273784) in GitLab 15.2.
+
 You can filter issues and merge requests by specific terms included in titles or descriptions.
 
 - Syntax
@@ -88,6 +112,9 @@ You can filter issues and merge requests by specific terms included in titles or
   - For performance reasons, terms shorter than 3 chars are ignored. For example: searching
     issues for `included in titles` is same as `included titles`
   - Search is limited to 4096 characters and 64 terms per query.
+  - When searching issues, partial matches are not allowed. For example: searching for `play` will
+    not return issues that have the word `display`. But variations of words will still match, so searching
+    for `displays` also returns issues that have the word `display`.
 
 ## Retrieve search results as feed
 
@@ -114,7 +141,7 @@ in your browser. To run a search from history:
 
 ## Removing search filters
 
-Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button or via <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>.
+Individual filters can be removed by selecting the filter's (x) button or backspacing. The entire search filter can be cleared by selecting the search box's (x) button or via <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>.
 
 To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</kbd> + <kbd>⌫</kbd> keyboard combination can be used.
 

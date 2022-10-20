@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Loose foreign keys
@@ -311,7 +311,7 @@ end
 The "`it has loose foreign keys`" shared example can be used to test the presence of the `ON DELETE` trigger and the
 loose foreign key definitions.
 
-Simply add to the model test file:
+Add to the model test file:
 
 ```ruby
 it_behaves_like 'it has loose foreign keys' do

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Spamcheck anti-spam service **(FREE SELF)**
@@ -61,7 +61,7 @@ token as the API key.
 
 ## Running Spamcheck over TLS
 
-Spamcheck service on its own can not communicate directly over TLS with GitLab.
+Spamcheck service on its own cannot communicate directly over TLS with GitLab.
 However, Spamcheck can be deployed behind a reverse proxy which performs TLS
 termination. In such a scenario, GitLab can be made to communicate with
 Spamcheck over TLS by specifying `tls://` scheme for the external Spamcheck URL

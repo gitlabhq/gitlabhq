@@ -30,6 +30,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
       expect(attributes[:sha]).to eq(pipeline.sha)
       expect(attributes[:tag]).to eq(pipeline.tag)
       expect(attributes[:id]).to eq(pipeline.id)
+      expect(attributes[:iid]).to eq(pipeline.iid)
       expect(attributes[:source]).to eq(pipeline.source)
       expect(attributes[:status]).to eq(pipeline.status)
       expect(attributes[:detailed_status]).to eq('passed')

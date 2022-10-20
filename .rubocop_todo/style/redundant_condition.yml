@@ -1,0 +1,6 @@
+---
+# Cop supports --auto-correct.
+Style/RedundantCondition:
+  Exclude:
+    - 'ee/app/models/license.rb'
+    - 'spec/lib/gitlab/sidekiq_middleware/server_metrics_spec.rb'

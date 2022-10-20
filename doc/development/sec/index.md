@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, concepts, howto
 ---
 
@@ -18,6 +18,7 @@ See [Terminology](../../user/application_security/terminology) for an overview o
 - [Scanning](#scanning)
 - [Processing, visualization, and management](#processing-visualization-and-management)
 - [Severity Levels](../../user/application_security/vulnerabilities/severities.md)
+- [Analyzer Development](analyzer_development_guide.md)
 
 ## Overview
 
@@ -45,7 +46,7 @@ flowchart LR
 ### Scanning
 
 The scanning part is responsible for finding vulnerabilities in given resources, and exporting results.
-The scans are executed in CI/CD jobs via several small projects called [Analyzers](../../user/application_security/terminology/index.md#analyzer), which can be found in our [Analyzers sub-group](https://gitlab.com/gitlab-org/security-products/analyzers).
+The scans are executed in CI/CD jobs via several small projects called [Analyzers](../../user/application_security/terminology/index.md#analyzer), which can be found in our [Analyzers subgroup](https://gitlab.com/gitlab-org/security-products/analyzers).
 The Analyzers are wrappers around security tools called [Scanners](../../user/application_security/terminology/index.md#scanner), developed internally or externally, to integrate them into GitLab.
 The Analyzers are mainly written in Go.
 
@@ -65,5 +66,5 @@ Depending on the context, the security reports may be stored either in the datab
 
 ## CI/CD template development
 
-While CI/CD templates are the responsibiility of the Verify section, many are critical to the Sec Section's feature usage.
+While CI/CD templates are the responsibility of the Verify section, many are critical to the Sec Section's feature usage.
 If you are working with CI/CD templates, please read the [development guide for GitLab CI/CD templates](../cicd/templates.md).

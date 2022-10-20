@@ -352,6 +352,18 @@ FactoryBot.define do
       end
     end
 
+    # Equivalent Semgrep report for combined :sast_bandit and :sast_gosec reports.
+    # This report includes signature tracking.
+    trait :sast_semgrep_for_multiple_findings do
+      file_type { :sast }
+      file_format { :raw }
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-sast-report-semgrep-for-multiple-findings.json'), 'application/json')
+      end
+    end
+
     trait :common_security_report do
       file_format { :raw }
       file_type { :dependency_scanning }
@@ -378,16 +390,6 @@ FactoryBot.define do
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/security_reports/master/gl-common-scanning-report-names.json'), 'application/json')
-      end
-    end
-
-    trait :sast_deprecated do
-      file_type { :sast }
-      file_format { :raw }
-
-      after(:build) do |artifact, _|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/security_reports/deprecated/gl-sast-report.json'), 'application/json')
       end
     end
 

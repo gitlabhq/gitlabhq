@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Rails console **(FREE SELF)**
@@ -239,6 +239,24 @@ project = _
 project.id
 # => 2537
 ```
+
+## Time an operation
+
+If you'd like to time one or more operations, use the following format, replacing
+the placeholder `<operation>` with your Ruby or Rails commands of choice:
+
+```ruby
+# A single operation
+Benchmark.measure { <operation> }
+
+# A breakdown of multiple operations
+Benchmark.bm do |x|
+  x.report(:label1) { <operation_1> }
+  x.report(:label2) { <operation_2> }
+end
+```
+
+For more information, review [our developer documentation about benchmarks](../../development/performance.md#benchmarks).
 
 ## Active Record objects
 
@@ -679,4 +697,22 @@ unlike with issues or merge requests.
 
 ```ruby
 ApplicationSetting.current
+```
+
+### Open object in `irb`
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
+
+```ruby
+Object.define_method(:irb) { binding.irb }
+
+project = Project.last
+# => #<Project id:2537 root/discard>>
+project.irb
+# Notice new context
+irb(#<Project>)> web_url
+# => "https://gitlab-example/root/discard"
 ```

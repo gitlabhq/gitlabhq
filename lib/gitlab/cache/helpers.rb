@@ -126,7 +126,6 @@ module Gitlab
       end
 
       def increment_cache_metric(render_type:, total_count:, miss_count:)
-        return unless Feature.enabled?(:add_timing_to_certain_cache_actions)
         return unless caller_id
 
         metric_name = :cached_object_operations_total
@@ -146,17 +145,13 @@ module Gitlab
       end
 
       def time_action(render_type:, &block)
-        if Feature.enabled?(:add_timing_to_certain_cache_actions)
-          real_start = Gitlab::Metrics::System.monotonic_time
+        real_start = Gitlab::Metrics::System.monotonic_time
 
-          presented_object = yield
+        presented_object = yield
 
-          real_duration_histogram(render_type).observe({}, Gitlab::Metrics::System.monotonic_time - real_start)
+        real_duration_histogram(render_type).observe({}, Gitlab::Metrics::System.monotonic_time - real_start)
 
-          presented_object
-        else
-          yield
-        end
+        presented_object
       end
 
       def real_duration_histogram(render_type)

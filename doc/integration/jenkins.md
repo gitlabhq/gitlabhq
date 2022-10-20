@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Jenkins integration **(FREE)**
@@ -222,15 +222,7 @@ Or check for duplicate messages in `/var/log/gitlab/gitlab-rail`, like:
 2019-10-25_04:22:41.25630 2019-10-25T04:22:41.256Z 1584 TID-ovowh4tek WebHookWorker JID-941fb7f40b69dff3d833c99b INFO: start
 ```
 
-To fix this issue:
-
-1. Increase the `gitlab_rails['webhook_timeout']` value in the `gitlab.rb`
-   configuration file.
-1. [Restart](../administration/restart_gitlab.md) GitLab:
-
-   ```shell
-   gitlab-ctl reconfigure
-   ```
+On self-managed GitLab instances, you can fix this issue by [increasing the webhook timeout value](../administration/instance_limits.md#webhook-timeout).
 
 ### Enable job logs in Jenkins
 

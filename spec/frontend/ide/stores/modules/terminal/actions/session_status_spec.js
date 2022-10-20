@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import * as actions from '~/ide/stores/modules/terminal/actions/session_status';
 import { PENDING, RUNNING, STOPPING, STOPPED } from '~/ide/stores/modules/terminal/constants';
 import * as messages from '~/ide/stores/modules/terminal/messages';
@@ -115,7 +115,7 @@ describe('IDE store terminal session controls actions', () => {
     it('flashes message', () => {
       actions.receiveSessionStatusError({ dispatch });
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: messages.UNEXPECTED_ERROR_STATUS,
       });
     });

@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
       trace.being_watched!
 
       result = Gitlab::Redis::SharedState.with do |redis|
-        redis.exists(cache_key)
+        redis.exists?(cache_key)
       end
 
       expect(result).to eq(true)

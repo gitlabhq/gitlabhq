@@ -424,79 +424,79 @@ FactoryBot.define do
 
     trait :codequality_report do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :codequality, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :codequality, job: build)
       end
     end
 
     trait :sast_report do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :sast, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :sast, job: build)
       end
     end
 
     trait :secret_detection_report do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :secret_detection, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :secret_detection, job: build)
       end
     end
 
     trait :test_reports do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :junit, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :junit, job: build)
       end
     end
 
     trait :test_reports_with_attachment do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :junit_with_attachment, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :junit_with_attachment, job: build)
       end
     end
 
     trait :broken_test_reports do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :junit_with_corrupted_data, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :junit_with_corrupted_data, job: build)
       end
     end
 
     trait :test_reports_with_duplicate_failed_test_names do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :junit_with_duplicate_failed_test_names, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :junit_with_duplicate_failed_test_names, job: build)
       end
     end
 
     trait :test_reports_with_three_failures do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :junit_with_three_failures, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :junit_with_three_failures, job: build)
       end
     end
 
     trait :accessibility_reports do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :accessibility, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :accessibility, job: build)
       end
     end
 
     trait :coverage_reports do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :cobertura, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :cobertura, job: build)
       end
     end
 
     trait :codequality_reports do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :codequality, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :codequality, job: build)
       end
     end
 
     trait :codequality_reports_without_degradation do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :codequality_without_errors, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :codequality_without_errors, job: build)
       end
     end
 
     trait :terraform_reports do
       after(:build) do |build|
-        build.job_artifacts << create(:ci_job_artifact, :terraform, job: build)
+        build.job_artifacts << build(:ci_job_artifact, :terraform, job: build)
       end
     end
 

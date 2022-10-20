@@ -1,29 +1,30 @@
 ---
 # Cop supports --auto-correct.
 Rails/IndexWith:
-  # Offense count: 54
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/helpers/ci/jobs_helper.rb'
     - 'app/models/ci/build_trace_chunk.rb'
     - 'app/models/ci/processable.rb'
     - 'app/models/concerns/cached_commit.rb'
+    - 'app/models/customer_relations/organization.rb'
     - 'app/models/environment.rb'
     - 'app/services/concerns/rate_limited_service.rb'
+    - 'app/services/packages/rpm/parse_package_service.rb'
     - 'db/post_migrate/20210731132939_backfill_stage_event_hash.rb'
+    - 'ee/app/models/concerns/identity_verifiable.rb'
     - 'ee/app/models/vulnerabilities/projects_grade.rb'
     - 'ee/lib/ee/gitlab/usage_data.rb'
     - 'ee/lib/gitlab/auth/group_saml/auth_hash.rb'
     - 'ee/lib/gitlab/custom_file_templates.rb'
     - 'ee/lib/gitlab/insights/reducers/count_per_label_reducer.rb'
     - 'ee/spec/lib/ee/gitlab/application_context_spec.rb'
-    - 'ee/spec/models/ee/namespace_spec.rb'
     - 'ee/spec/models/sca/license_compliance_spec.rb'
     - 'ee/spec/views/admin/dashboard/index.html.haml_spec.rb'
     - 'lib/api/entities/project_integration.rb'
     - 'lib/api/helpers/packages/conan/api_helpers.rb'
     - 'lib/banzai/filter/repository_link_filter.rb'
+    - 'lib/gitlab/background_migration/backfill_note_discussion_id.rb'
     - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ci/reports/security/finding.rb'
@@ -32,10 +33,12 @@ Rails/IndexWith:
     - 'lib/gitlab/database/count/exact_count_strategy.rb'
     - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/gitlab/database/obsolete_ignored_columns.rb'
+    - 'lib/gitlab/database/tables_sorted_by_foreign_keys.rb'
     - 'lib/gitlab/issuable_metadata.rb'
     - 'lib/gitlab/template/base_template.rb'
     - 'lib/gitlab/usage_data.rb'
     - 'lib/google_api/cloud_platform/client.rb'
+    - 'lib/tasks/gitlab/db.rake'
     - 'qa/qa/resource/reusable.rb'
     - 'scripts/trigger-build.rb'
     - 'spec/lib/gitlab/api_authentication/sent_through_builder_spec.rb'

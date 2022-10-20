@@ -23,6 +23,7 @@ namespace :import do
     get :status
     get :callback
     get :realtime_changes
+    post :cancel
   end
 
   resource :gitea, only: [:create, :new], controller: :gitea do
@@ -66,6 +67,10 @@ namespace :import do
 
   resource :gitlab_group, only: [:create] do
     post :authorize
+  end
+
+  resource :github_group, only: [] do
+    get :status
   end
 
   resource :bulk_imports, only: [:create] do

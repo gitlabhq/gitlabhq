@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Preloaders::ProjectRootAncestorPreloader do
   let_it_be(:root_parent1) { create(:group, :private, name: 'root-1', path: 'root-1') }
-  let_it_be(:root_parent2) { create(:group, :private, name: 'root-2', path: 'root-2') }
+  let_it_be(:root_parent2) { create(:group, name: 'root-2', path: 'root-2') }
   let_it_be(:guest_project) { create(:project, name: 'public guest', path: 'public-guest') }
   let_it_be(:private_maintainer_project) do
     create(:project, :private, name: 'b private maintainer', path: 'b-private-maintainer', namespace: root_parent1)
@@ -15,7 +15,7 @@ RSpec.describe Preloaders::ProjectRootAncestorPreloader do
   end
 
   let_it_be(:public_maintainer_project) do
-    create(:project, :private, name: 'a public maintainer', path: 'a-public-maintainer', namespace: root_parent2)
+    create(:project, name: 'a public maintainer', path: 'a-public-maintainer', namespace: root_parent2)
   end
 
   let(:root_query_regex) { /\ASELECT.+FROM "namespaces" WHERE "namespaces"."id" = \d+/ }
@@ -36,20 +36,20 @@ RSpec.describe Preloaders::ProjectRootAncestorPreloader do
 
     it 'strong_memoizes the correct root_ancestor' do
       pristine_projects.each do |project|
-        expected_parent_id = project.root_ancestor&.id
+        preloaded_parent_id = project.root_ancestor&.id
 
-        expect(project.parent_id).to eq(expected_parent_id)
+        expect(preloaded_parent_id).to eq(project.parent_id)
       end
     end
   end
 
   context 'when use_traversal_ids FF is enabled' do
     context 'when the preloader is used' do
-      before do
-        preload_ancestors
-      end
-
       context 'when no additional preloads are provided' do
+        before do
+          preload_ancestors(:group)
+        end
+
         it_behaves_like 'executes N matching DB queries', 0
       end
 
@@ -57,12 +57,27 @@ RSpec.describe Preloaders::ProjectRootAncestorPreloader do
         let(:additional_preloads) { [:route] }
         let(:root_query_regex) { /\ASELECT.+FROM "routes" WHERE "routes"."source_id" = \d+/ }
 
+        before do
+          preload_ancestors
+        end
+
         it_behaves_like 'executes N matching DB queries', 0, :full_path
       end
     end
 
     context 'when the preloader is not used' do
       it_behaves_like 'executes N matching DB queries', 4
+    end
+
+    context 'when using a :group sti name and passing projects in a user namespace' do
+      let(:projects) { [private_developer_project] }
+      let(:additional_preloads) { [:ip_restrictions, :saml_provider] }
+
+      it 'does not load a nil value for root_ancestor' do
+        preload_ancestors(:group)
+
+        expect(pristine_projects.first.root_ancestor).to eq(private_developer_project.root_ancestor)
+      end
     end
   end
 
@@ -91,9 +106,22 @@ RSpec.describe Preloaders::ProjectRootAncestorPreloader do
     context 'when the preloader is not used' do
       it_behaves_like 'executes N matching DB queries', 4
     end
+
+    context 'when using a :group sti name and passing projects in a user namespace' do
+      let(:projects) { [private_developer_project] }
+      let(:additional_preloads) { [:ip_restrictions, :saml_provider] }
+
+      it 'does not load a nil value for root_ancestor' do
+        preload_ancestors(:group)
+
+        expect(pristine_projects.first.root_ancestor).to eq(private_developer_project.root_ancestor)
+      end
+    end
   end
 
-  def preload_ancestors
-    described_class.new(pristine_projects, :namespace, additional_preloads).execute
+  private
+
+  def preload_ancestors(namespace_sti_name = :namespace)
+    described_class.new(pristine_projects, namespace_sti_name, additional_preloads).execute
   end
 end

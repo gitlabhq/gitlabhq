@@ -13,6 +13,8 @@ RSpec.shared_context 'API::Markdown Golden Master shared context' do |markdown_y
   let_it_be(:project) { create(:project, :public, :repository, group: group) }
 
   let_it_be(:label) { create(:label, project: project, title: 'bug') }
+  let_it_be(:label2) { create(:label, project: project, title: 'UX bug') }
+
   let_it_be(:milestone) { create(:milestone, project: project, title: '1.1') }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }

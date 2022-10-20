@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlCard,
   GlFormInput,
@@ -8,7 +9,7 @@ import {
   GlSprintf,
   GlToggle,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
@@ -25,6 +26,9 @@ export default {
       `CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
     ),
     cardHeaderTitle: s__('CICD|Add an existing project to the scope'),
+    settingDisabledMessage: s__(
+      'CICD|Enable feature to limit job token access to the following projects.',
+    ),
     addProject: __('Add project'),
     cancel: __('Cancel'),
     addProjectPlaceholder: __('Paste project path (i.e. gitlab-org/gitlab)'),
@@ -32,6 +36,7 @@ export default {
     scopeFetchError: __('There was a problem fetching the job token scope value'),
   },
   components: {
+    GlAlert,
     GlButton,
     GlCard,
     GlFormInput,
@@ -58,7 +63,7 @@ export default {
         return data.project.ciCdSettings.jobTokenScopeEnabled;
       },
       error() {
-        createFlash({ message: this.$options.i18n.scopeFetchError });
+        createAlert({ message: this.$options.i18n.scopeFetchError });
       },
     },
     projects: {
@@ -72,7 +77,7 @@ export default {
         return data.project?.ciJobTokenScope?.projects?.nodes ?? [];
       },
       error() {
-        createFlash({ message: this.$options.i18n.projectsFetchError });
+        createAlert({ message: this.$options.i18n.projectsFetchError });
       },
     },
   },
@@ -112,7 +117,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createFlash({ message: error });
+        createAlert({ message: error });
       }
     },
     async addProject() {
@@ -135,7 +140,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createFlash({ message: error });
+        createAlert({ message: error });
       } finally {
         this.clearTargetProjectPath();
         this.getProjects();
@@ -161,7 +166,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createFlash({ message: error });
+        createAlert({ message: error });
       } finally {
         this.getProjects();
       }
@@ -195,8 +200,8 @@ export default {
         </template>
       </gl-toggle>
 
-      <div data-testid="token-section">
-        <gl-card class="gl-mt-5">
+      <div>
+        <gl-card class="gl-mt-5 gl-mb-3">
           <template #header>
             <h5 class="gl-my-0">{{ $options.i18n.cardHeaderTitle }}</h5>
           </template>
@@ -213,7 +218,16 @@ export default {
             <gl-button @click="clearTargetProjectPath">{{ $options.i18n.cancel }}</gl-button>
           </template>
         </gl-card>
-
+        <gl-alert
+          v-if="!jobTokenScopeEnabled"
+          class="gl-mb-3"
+          variant="warning"
+          :dismissible="false"
+          :show-icon="false"
+          data-testid="token-disabled-alert"
+        >
+          {{ $options.i18n.settingDisabledMessage }}
+        </gl-alert>
         <token-projects-table :projects="projects" @removeProject="removeProject" />
       </div>
     </template>

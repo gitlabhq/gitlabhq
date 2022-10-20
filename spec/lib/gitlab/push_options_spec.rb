@@ -52,10 +52,11 @@ RSpec.describe Gitlab::PushOptions do
   end
 
   it 'can parse multiple push options' do
-    options = described_class.new([
-      'merge_request.create',
-      'merge_request.target=value'
-    ])
+    options = described_class.new(
+      [
+        'merge_request.create',
+        'merge_request.target=value'
+      ])
 
     expect(options.get(:merge_request)).to include({
       create: true,
@@ -66,19 +67,21 @@ RSpec.describe Gitlab::PushOptions do
   end
 
   it 'stores options internally as a HashWithIndifferentAccess' do
-    options = described_class.new([
-      'merge_request.create'
-    ])
+    options = described_class.new(
+      [
+        'merge_request.create'
+      ])
 
     expect(options.get('merge_request', 'create')).to eq(true)
     expect(options.get(:merge_request, :create)).to eq(true)
   end
 
   it 'selects the last option when options contain duplicate namespace and key pairs' do
-    options = described_class.new([
-      'merge_request.target=value1',
-      'merge_request.target=value2'
-    ])
+    options = described_class.new(
+      [
+        'merge_request.target=value1',
+        'merge_request.target=value2'
+      ])
 
     expect(options.get(:merge_request, :target)).to eq('value2')
   end

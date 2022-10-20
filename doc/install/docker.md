@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Docker images **(FREE SELF)**
@@ -122,7 +122,7 @@ After starting a container you can visit `gitlab.example.com` (or
 `http://192.168.59.103` if you used boot2docker on macOS). It might take a while
 before the Docker container starts to respond to queries.
 
-Visit the GitLab URL, and log in with username `root`
+Visit the GitLab URL, and sign in with the username `root`
 and the password from the following command:
 
 ```shell
@@ -298,13 +298,12 @@ sudo docker exec -it gitlab editor /etc/gitlab/gitlab.rb
 Once you open `/etc/gitlab/gitlab.rb` make sure to set the `external_url` to
 point to a valid URL.
 
-To receive e-mails from GitLab you have to configure the
+To receive emails from GitLab you have to configure the
 [SMTP settings](https://docs.gitlab.com/omnibus/settings/smtp.html) because the GitLab Docker image doesn't
 have an SMTP server installed. You may also be interested in
 [enabling HTTPS](https://docs.gitlab.com/omnibus/settings/ssl.html).
 
-After you make all the changes you want, you will need to restart the container
-in order to reconfigure GitLab:
+After you make all the changes you want, you will need to restart the container to reconfigure GitLab:
 
 ```shell
 sudo docker restart gitlab

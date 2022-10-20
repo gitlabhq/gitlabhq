@@ -76,8 +76,8 @@ module Users
       user_dismissed?(WEB_HOOK_DISABLED, last_failure, project: project)
     end
 
-    def show_merge_request_settings_callout?
-      !user_dismissed?(MERGE_REQUEST_SETTINGS_MOVED_CALLOUT)
+    def show_merge_request_settings_callout?(project)
+      !user_dismissed?(MERGE_REQUEST_SETTINGS_MOVED_CALLOUT) && project.merge_requests_enabled?
     end
 
     def ultimate_feature_removal_banner_dismissed?(project)

@@ -2,15 +2,18 @@
 type: reference, dev
 stage: none
 group: Development
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
-# Feature flag controls
+# Use ChatOps to enable and disable feature flags
 
-## Access
+NOTE:
+This document explains how to contribute to the development of the GitLab product.
+If you want to use feature flags to show and hide functionality in your own applications,
+view [this feature flags information](../../operations/feature_flags.md) instead.
 
-To be able to turn on/off features behind feature flags in any of the
-GitLab Inc. provided environments such as staging and production, you need to
+To turn on/off features behind feature flags in any of the
+GitLab-provided environments, like staging and production, you need to
 have access to the [ChatOps](../chatops_on_gitlabcom.md) bot. The ChatOps bot
 is currently running on the ops instance, which is different from
 [GitLab.com](https://gitlab.com) or [`dev.gitlab.org`](https://dev.gitlab.org).
@@ -47,12 +50,12 @@ Note that all the examples in that file must be preceded by
 
 If you get an error "Whoops! This action is not allowed. This incident
 will be reported." that means your Slack account is not allowed to
-change feature flags or you do not [have access](#access).
+change feature flags or you do not have access.
 
 ### Enabling a feature for pre-production testing
 
 As a first step in a feature rollout, you should enable the feature on
-[`about.staging.gitlab.com`](https://about.staging.gitlab.com)
+[`staging.gitlab.com`](https://staging.gitlab.com)
 and [`dev.gitlab.org`](https://dev.gitlab.org).
 
 These two environments have different scopes.
@@ -173,7 +176,7 @@ For project level features:
 Feature.enabled?(:feature_ice_cold_projects, project)
 ```
 
-If you are not certain what percentages to use, simply use the following steps:
+If you are not certain what percentages to use, use the following steps:
 
 1. 25%
 1. 50%

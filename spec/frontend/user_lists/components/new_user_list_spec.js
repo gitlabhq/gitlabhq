@@ -72,7 +72,7 @@ describe('user_lists/components/new_user_list', () => {
 
         await waitForPromises();
 
-        alert = wrapper.find(GlAlert);
+        alert = wrapper.findComponent(GlAlert);
       });
 
       it('should show a flash with the error respopnse', () => {

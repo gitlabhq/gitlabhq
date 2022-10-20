@@ -126,7 +126,9 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProject
     let(:project) { create(:project, :repository, :legacy_storage, path: 'the-path', namespace: known_parent) }
 
     it 'moves the repository for a project' do
-      expected_path = File.join(TestEnv.repos_path, 'known-parent', 'new-repo.git')
+      expected_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, 'known-parent', 'new-repo.git')
+      end
 
       subject.move_repository(project, 'known-parent/the-path', 'known-parent/new-repo')
 
@@ -155,7 +157,9 @@ RSpec.describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProject
       project.create_repository
       subject.rename_project(project)
 
-      expected_path = File.join(TestEnv.repos_path, 'known-parent', 'the-path.git')
+      expected_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(TestEnv.repos_path, 'known-parent', 'the-path.git')
+      end
 
       expect(subject).to receive(:move_project_folders)
                            .with(

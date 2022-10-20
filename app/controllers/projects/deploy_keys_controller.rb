@@ -27,11 +27,9 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create
-    @key = DeployKeys::CreateService.new(current_user, create_params).execute(project: @project)
+    @key = DeployKeys::CreateService.new(current_user, create_params).execute(project: @project).present
 
-    unless @key.valid?
-      flash[:alert] = @key.errors.full_messages.join(', ').html_safe
-    end
+    flash[:alert] = @key.humanized_error_message unless @key.valid?
 
     redirect_to_repository
   end

@@ -10,6 +10,16 @@ module ObjectStorage
 
       include Gitlab::Utils::StrongMemoize
 
+      UrlResult = Struct.new(:url, :used_cdn)
+
+      def cdn_enabled_url(project, ip_address)
+        if Feature.enabled?(:ci_job_artifacts_cdn, project) && use_cdn?(ip_address)
+          UrlResult.new(cdn_signed_url, true)
+        else
+          UrlResult.new(url, false)
+        end
+      end
+
       def use_cdn?(request_ip)
         return false unless cdn_options.is_a?(Hash) && cdn_options['provider']
         return false unless cdn_provider

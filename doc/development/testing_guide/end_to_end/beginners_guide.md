@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Beginner's guide to writing end-to-end tests
@@ -120,6 +120,22 @@ module QA
 end
 ```
 
+### The `product_group` metadata
+
+Assign `product_group` metadata and specify what product group this test belongs to. In this case, `authentication_and_authorization`.
+
+```ruby
+# frozen_string_literal: true
+
+module QA
+  RSpec.describe 'Manage' do
+    describe 'Login', product_group: :authentication_and_authorization do
+
+    end
+  end
+end
+```
+
 ### The `it` blocks (examples)
 
 Every test suite contains at least one `it` block (example). A good way to start
@@ -128,7 +144,7 @@ writing end-to-end tests is to write test case descriptions as `it` blocks:
 ```ruby
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login' do
+    describe 'Login', product_group: :authentication_and_authorization do
       it 'can login' do
 
       end
@@ -152,7 +168,7 @@ Begin by logging in.
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login' do
+    describe 'Login', product_group: :authentication_and_authorization do
       it 'can login' do
         Flow::Login.sign_in
 
@@ -175,7 +191,7 @@ should answer the question "What do we test?"
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login' do
+    describe 'Login', product_group: :authentication_and_authorization do
       it 'can login' do
         Flow::Login.sign_in
 
@@ -222,7 +238,7 @@ a call to `sign_in`.
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Login' do
+    describe 'Login', product_group: :authentication_and_authorization do
       before do
         Flow::Login.sign_in
       end
@@ -246,12 +262,12 @@ end
 ```
 
 The `before` block is essentially a `before(:each)` and is run before each example,
-ensuring we now log in at the beginning of each test.
+ensuring we now sign in at the beginning of each test.
 
 ## Test setup using resources and page objects
 
 Next, let's test something other than Login. Let's test Issues, which are owned by the Plan
-stage, so [create a file](#identify-the-devops-stage) in
+stage and the Project Management Group, so [create a file](#identify-the-devops-stage) in
 `qa/specs/features/browser_ui/3_create/issues` called `issues_spec.rb`.
 
 ```ruby
@@ -259,7 +275,7 @@ stage, so [create a file](#identify-the-devops-stage) in
 
 module QA
   RSpec.describe 'Plan' do
-    describe 'Issues' do
+    describe 'Issues', product_group: :project_management do
       let(:issue) do
         Resource::Issue.fabricate_via_api! do |issue|
           issue.title = 'My issue'

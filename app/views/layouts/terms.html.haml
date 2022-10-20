@@ -25,7 +25,7 @@
                     %ul.nav.navbar-nav
                       %li.header-user.dropdown
                         = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
-                          = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar", data: { qa_selector: 'user_avatar' }
+                          = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'gl-mr-3', avatar_options: { data: { qa_selector: 'user_avatar_content' } })
                           = sprite_icon('chevron-down')
                         .dropdown-menu.dropdown-menu-right
                           = render 'layouts/header/current_user_dropdown'

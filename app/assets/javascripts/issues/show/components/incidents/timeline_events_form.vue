@@ -74,6 +74,9 @@ export default {
 
       return utcDate.toISOString();
     },
+    hasTimelineText() {
+      return this.timelineText.length > 0;
+    },
   },
   mounted() {
     this.focusDate();
@@ -167,6 +170,8 @@ export default {
         variant="confirm"
         category="primary"
         class="gl-mr-3"
+        data-testid="save-button"
+        :disabled="!hasTimelineText"
         :loading="isEventProcessed"
         @click="handleSave(false)"
       >
@@ -177,6 +182,8 @@ export default {
         variant="confirm"
         category="secondary"
         class="gl-mr-3 gl-ml-n2"
+        data-testid="save-and-add-button"
+        :disabled="!hasTimelineText"
         :loading="isEventProcessed"
         @click="handleSave(true)"
       >

@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Compliance features **(FREE)**
@@ -48,9 +48,9 @@ settings and automation to ensure that whatever a compliance team has configured
 stays configured and working correctly. These features can help you automate
 compliance:
 
-- [**Compliance frameworks**](../user/project/settings/index.md#compliance-frameworks) (for groups): Create a custom
+- [**Compliance frameworks**](../user/group/manage.md#compliance-frameworks) (for groups): Create a custom
   compliance framework at the group level to describe the type of compliance requirements any child project needs to follow.
-- [**Compliance pipelines**](../user/project/settings/index.md#compliance-pipeline-configuration) (for groups): Define a
+- [**Compliance pipelines**](../user/group/manage.md#configure-a-compliance-pipeline) (for groups): Define a
   pipeline configuration to run for any projects with a given compliance framework.
 
 ## Audit management

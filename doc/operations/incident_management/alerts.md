@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Alerts **(FREE)**
@@ -13,7 +13,7 @@ Alerts are a critical entity in your incident management workflow. They represen
 Users with at least the Developer role can
 access the Alert list at **Monitor > Alerts** in your project's
 sidebar. The Alert list displays alerts sorted by start time, but
-you can change the sort order by clicking the headers in the Alert list.
+you can change the sort order by selecting the headers in the Alert list.
 
 The alert list displays the following information:
 

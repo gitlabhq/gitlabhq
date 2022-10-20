@@ -17,12 +17,17 @@ module Gitlab
           include Gitlab::UsageDataCounters::RedisCounter
 
           USAGE_PREFIX = "USAGE_"
+          OPTIONS_PREFIX_KEY = :prefix
 
-          def initialize(time_frame:, options: {})
+          def initialize(metric_definition)
             super
 
+            validate_options!
+          end
+
+          def validate_options!
             raise ArgumentError, "'event' option is required" unless metric_event.present?
-            raise ArgumentError, "'prefix' option is required" unless prefix.present?
+            raise ArgumentError, "'prefix' option is required" unless options.has_key?(OPTIONS_PREFIX_KEY)
           end
 
           def metric_event
@@ -30,7 +35,7 @@ module Gitlab
           end
 
           def prefix
-            options[:prefix]
+            options[OPTIONS_PREFIX_KEY]
           end
 
           def include_usage_prefix?
@@ -50,9 +55,10 @@ module Gitlab
           private
 
           def redis_key
-            key = "#{prefix}_#{metric_event}".upcase
+            key = metric_event.dup
+            key.prepend("#{prefix}_") if prefix
             key.prepend(USAGE_PREFIX) if include_usage_prefix?
-            key
+            key.upcase
           end
         end
       end

@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -34,7 +34,7 @@ export default class Milestone {
           this.loadedTabs.add(tab);
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Error loading milestone tab'),
           }),
         );

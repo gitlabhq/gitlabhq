@@ -4,15 +4,30 @@ import {
   keypressNoteText,
   compositionStartNoteText,
   compositionEndNoteText,
+  updateTextForToolbarBtn,
 } from '~/lib/utils/text_markdown';
 import '~/lib/utils/jquery_at_who';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 describe('init markdown', () => {
+  let mdArea;
   let textArea;
+  let indentButton;
+  let outdentButton;
 
   beforeAll(() => {
-    textArea = document.createElement('textarea');
-    document.querySelector('body').appendChild(textArea);
+    setHTMLFixture(
+      `<div class='md-area'>
+        <textarea></textarea>
+        <button data-md-command="indentLines" id="indentButton"></button>
+        <button data-md-command="outdentLines" id="outdentButton"></button>
+      </div>`,
+    );
+    mdArea = document.querySelector('.md-area');
+    textArea = mdArea.querySelector('textarea');
+    indentButton = mdArea.querySelector('#indentButton');
+    outdentButton = mdArea.querySelector('#outdentButton');
+
     textArea.focus();
 
     // needed for the underlying insertText to work
@@ -20,7 +35,7 @@ describe('init markdown', () => {
   });
 
   afterAll(() => {
-    textArea.parentNode.removeChild(textArea);
+    resetHTMLFixture();
   });
 
   describe('insertMarkdownText', () => {
@@ -183,6 +198,7 @@ describe('init markdown', () => {
           textArea.addEventListener('keydown', keypressNoteText);
           textArea.addEventListener('compositionstart', compositionStartNoteText);
           textArea.addEventListener('compositionend', compositionEndNoteText);
+          gon.markdown_automatic_lists = true;
         });
 
         it.each`
@@ -302,19 +318,22 @@ describe('init markdown', () => {
           expect(textArea.value).toEqual(expected);
           expect(textArea.selectionStart).toBe(expected.length);
         });
+
+        it('does nothing if user preference disabled', () => {
+          const text = '- test';
+
+          gon.markdown_automatic_lists = false;
+
+          textArea.value = text;
+          textArea.setSelectionRange(text.length, text.length);
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(text);
+        });
       });
     });
 
     describe('shifting selected lines left or right', () => {
-      const indentEvent = new KeyboardEvent('keydown', { key: ']', metaKey: true });
-      const outdentEvent = new KeyboardEvent('keydown', { key: '[', metaKey: true });
-
-      beforeEach(() => {
-        textArea.addEventListener('keydown', keypressNoteText);
-        textArea.addEventListener('compositionstart', compositionStartNoteText);
-        textArea.addEventListener('compositionend', compositionEndNoteText);
-      });
-
       it.each`
         selectionStart | selectionEnd | expected                | expectedSelectionStart | expectedSelectionEnd
         ${0}           | ${0}         | ${'  012\n456\n89'}     | ${2}                   | ${2}
@@ -338,7 +357,7 @@ describe('init markdown', () => {
           textArea.value = text;
           textArea.setSelectionRange(selectionStart, selectionEnd);
 
-          textArea.dispatchEvent(indentEvent);
+          updateTextForToolbarBtn($(indentButton));
 
           expect(textArea.value).toEqual(expected);
           expect(textArea.selectionStart).toEqual(expectedSelectionStart);
@@ -350,7 +369,7 @@ describe('init markdown', () => {
         textArea.value = '012\n\n89';
         textArea.setSelectionRange(4, 4);
 
-        textArea.dispatchEvent(indentEvent);
+        updateTextForToolbarBtn($(indentButton));
 
         expect(textArea.value).toEqual('012\n  \n89');
         expect(textArea.selectionStart).toEqual(6);
@@ -381,7 +400,7 @@ describe('init markdown', () => {
           textArea.value = text;
           textArea.setSelectionRange(selectionStart, selectionEnd);
 
-          textArea.dispatchEvent(outdentEvent);
+          updateTextForToolbarBtn($(outdentButton));
 
           expect(textArea.value).toEqual(expected);
           expect(textArea.selectionStart).toEqual(expectedSelectionStart);
@@ -393,7 +412,7 @@ describe('init markdown', () => {
         textArea.value = '012\n\n89';
         textArea.setSelectionRange(4, 4);
 
-        textArea.dispatchEvent(outdentEvent);
+        updateTextForToolbarBtn($(outdentButton));
 
         expect(textArea.value).toEqual('012\n\n89');
         expect(textArea.selectionStart).toEqual(4);

@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlModal } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import deleteEnvironmentMutation from '../graphql/mutations/delete_environment.mutation.graphql';
@@ -65,11 +65,11 @@ export default {
           .then(({ data }) => {
             const [message] = data?.deleteEvironment?.errors ?? [];
             if (message) {
-              createFlash({ message });
+              createAlert({ message });
             }
           })
           .catch((error) =>
-            createFlash({
+            createAlert({
               message: s__(
                 'Environments|An error occurred while deleting the environment. Check if the environment stopped; if not, stop it and try again.',
               ),

@@ -11,6 +11,7 @@ RSpec.describe 'User creates release', :js do
   let_it_be(:user) { create(:user) }
 
   let(:new_page_url) { new_project_release_path(project) }
+  let(:tag_name) { 'new-tag' }
 
   before do
     project.add_developer(user)
@@ -33,6 +34,8 @@ RSpec.describe 'User creates release', :js do
   end
 
   it 'defaults the "Create from" dropdown to the project\'s default branch' do
+    select_new_tag_name(tag_name)
+
     expect(page.find('[data-testid="create-from-field"] .ref-selector button')).to have_content(project.default_branch)
   end
 

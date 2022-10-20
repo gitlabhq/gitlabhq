@@ -31,13 +31,26 @@ RSpec.describe Profiles::TwoFactorAuthsController do
 
   shared_examples 'user must enter a valid current password' do
     let(:current_password) { '123' }
-    let(:redirect_path) { profile_two_factor_auth_path }
+    let(:error_message) { { message: _('You must provide a valid current password') } }
 
     it 'requires the current password', :aggregate_failures do
       go
 
-      expect(response).to redirect_to(redirect_path)
-      expect(flash[:alert]).to eq(_('You must provide a valid current password'))
+      expect(assigns[:error]).to eq(error_message)
+      expect(response).to render_template(:show)
+    end
+
+    it 'assigns qr_code' do
+      code = double('qr code')
+      expect(subject).to receive(:build_qr_code).and_return(code)
+
+      go
+      expect(assigns[:qr_code]).to eq(code)
+    end
+
+    it 'assigns account_string' do
+      go
+      expect(assigns[:account_string]).to eq("#{Gitlab.config.gitlab.host}:#{user.email}")
     end
 
     context 'when the user is on the last sign in attempt' do
@@ -58,8 +71,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       it 'does not require the current password', :aggregate_failures do
         go
 
-        expect(response).not_to redirect_to(redirect_path)
-        expect(flash[:alert]).to be_nil
+        expect(assigns[:error]).not_to eq(error_message)
       end
     end
 
@@ -71,8 +83,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       it 'does not require the current password', :aggregate_failures do
         go
 
-        expect(response).not_to redirect_to(redirect_path)
-        expect(flash[:alert]).to be_nil
+        expect(assigns[:error]).not_to eq(error_message)
       end
     end
 
@@ -84,8 +95,7 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       it 'does not require the current password', :aggregate_failures do
         go
 
-        expect(response).not_to redirect_to(redirect_path)
-        expect(flash[:alert]).to be_nil
+        expect(assigns[:error]).not_to eq(error_message)
       end
     end
   end

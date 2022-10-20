@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Tree
-  include Gitlab::MarkupHelper
   include Gitlab::Utils::StrongMemoize
 
   attr_accessor :repository, :sha, :path, :entries, :cursor
@@ -24,11 +23,11 @@ class Tree
       end
 
       previewable_readmes = available_readmes.select do |blob|
-        previewable?(blob.name)
+        Gitlab::MarkupHelper.previewable?(blob.name)
       end
 
       plain_readmes = available_readmes.select do |blob|
-        plain?(blob.name)
+        Gitlab::MarkupHelper.plain?(blob.name)
       end
 
       # Prioritize previewable over plain readmes

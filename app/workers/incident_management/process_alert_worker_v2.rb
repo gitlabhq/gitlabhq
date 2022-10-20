@@ -37,13 +37,13 @@ module IncidentManagement
     end
 
     def log_warning(alert, result)
-      issue_id = result.payload[:issue]&.id
+      issue_id = result[:issue]&.id
 
       Gitlab::AppLogger.warn(
         message: 'Cannot process an Incident',
         issue_id: issue_id,
         alert_id: alert.id,
-        errors: result.message
+        errors: result.errors.join(', ')
       )
     end
   end

@@ -19,18 +19,14 @@ module Gitlab
       ALLOWED_AGGREGATIONS = %i(daily weekly).freeze
 
       CATEGORIES_FOR_TOTALS = %w[
-        analytics
         compliance
-        epics_usage
         error_tracking
         ide_edit
-        incident_management
-        issues_edit
         pipeline_authoring
-        quickactions
       ].freeze
 
       CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
+        analytics
         ci_users
         deploy_token_packages
         code_review
@@ -38,9 +34,13 @@ module Gitlab
         error_tracking
         ide_edit
         importer
+        incident_management
         incident_management_alerts
+        issues_edit
         kubernetes_agent
+        manage
         pipeline_authoring
+        quickactions
         search
         secure
         snippets

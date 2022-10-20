@@ -13,6 +13,13 @@ module Types
             null: false,
             description: 'Branch name, with wildcards, for the branch rules.'
 
+      field :is_default,
+            type: GraphQL::Types::Boolean,
+            null: false,
+            method: :default_branch?,
+            calls_gitaly: true,
+            description: "Check if this branch rule protects the project's default branch."
+
       field :branch_protection,
             type: Types::BranchRules::BranchProtectionType,
             null: false,
@@ -31,3 +38,5 @@ module Types
     end
   end
 end
+
+Types::Projects::BranchRuleType.prepend_mod

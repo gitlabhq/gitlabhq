@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -11,6 +11,7 @@ import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
 import EmptyState from '~/groups/components/empty_state.vue';
+import GroupsComponent from '~/groups/components/groups.vue';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -115,7 +116,7 @@ describe('AppComponent', () => {
         return vm.fetchGroups({}).then(() => {
           expect(vm.isLoading).toBe(false);
           expect(window.scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 0 });
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: 'An error occurred. Please try again.',
           });
         });
@@ -326,7 +327,7 @@ describe('AppComponent', () => {
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
-          expect(createFlash).toHaveBeenCalledWith({ message });
+          expect(createAlert).toHaveBeenCalledWith({ message });
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
         });
       });
@@ -341,7 +342,7 @@ describe('AppComponent', () => {
         expect(vm.service.leaveGroup).toHaveBeenCalledWith(childGroupItem.leavePath);
         return waitForPromises().then(() => {
           expect(vm.store.removeGroup).not.toHaveBeenCalled();
-          expect(createFlash).toHaveBeenCalledWith({ message });
+          expect(createAlert).toHaveBeenCalledWith({ message });
           expect(vm.targetGroup.isBeingRemoved).toBe(false);
         });
       });
@@ -388,24 +389,27 @@ describe('AppComponent', () => {
       });
 
       describe.each`
-        action                      | groups        | fromSearch | renderEmptyState | expected
-        ${'subgroups_and_projects'} | ${[]}         | ${false}   | ${true}          | ${true}
-        ${''}                       | ${[]}         | ${false}   | ${true}          | ${false}
-        ${'subgroups_and_projects'} | ${mockGroups} | ${false}   | ${true}          | ${false}
-        ${'subgroups_and_projects'} | ${[]}         | ${true}    | ${true}          | ${false}
+        action                      | groups        | fromSearch | shouldRenderEmptyState | searchEmpty
+        ${'subgroups_and_projects'} | ${[]}         | ${false}   | ${true}                | ${false}
+        ${''}                       | ${[]}         | ${false}   | ${false}               | ${false}
+        ${'subgroups_and_projects'} | ${mockGroups} | ${false}   | ${false}               | ${false}
+        ${'subgroups_and_projects'} | ${[]}         | ${true}    | ${false}               | ${true}
       `(
-        'when `action` is $action, `groups` is $groups, `fromSearch` is $fromSearch, and `renderEmptyState` is $renderEmptyState',
-        ({ action, groups, fromSearch, renderEmptyState, expected }) => {
-          it(expected ? 'renders empty state' : 'does not render empty state', async () => {
+        'when `action` is $action, `groups` is $groups, and `fromSearch` is $fromSearch',
+        ({ action, groups, fromSearch, shouldRenderEmptyState, searchEmpty }) => {
+          it(`${shouldRenderEmptyState ? 'renders' : 'does not render'} empty state`, async () => {
             createShallowComponent({
-              propsData: { action, renderEmptyState },
+              propsData: { action, renderEmptyState: true },
             });
+
+            await waitForPromises();
 
             vm.updateGroups(groups, fromSearch);
 
             await nextTick();
 
-            expect(wrapper.findComponent(EmptyState).exists()).toBe(expected);
+            expect(wrapper.findComponent(EmptyState).exists()).toBe(shouldRenderEmptyState);
+            expect(wrapper.findComponent(GroupsComponent).props('searchEmpty')).toBe(searchEmpty);
           });
         },
       );
@@ -440,18 +444,10 @@ describe('AppComponent', () => {
       expect(eventHub.$on).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
       expect(eventHub.$on).toHaveBeenCalledWith('updatePagination', expect.any(Function));
       expect(eventHub.$on).toHaveBeenCalledWith('updateGroups', expect.any(Function));
-    });
-
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `false`', async () => {
-      createShallowComponent();
-      await nextTick();
-      expect(vm.searchEmptyMessage).toBe('No groups or projects matched your search');
-    });
-
-    it('should initialize `searchEmptyMessage` prop with correct string when `hideProjects` is `true`', async () => {
-      createShallowComponent({ propsData: { hideProjects: true } });
-      await nextTick();
-      expect(vm.searchEmptyMessage).toBe('No groups matched your search');
+      expect(eventHub.$on).toHaveBeenCalledWith(
+        'fetchFilteredAndSortedGroups',
+        expect.any(Function),
+      );
     });
   });
 
@@ -468,6 +464,46 @@ describe('AppComponent', () => {
       expect(eventHub.$off).toHaveBeenCalledWith('showLeaveGroupModal', expect.any(Function));
       expect(eventHub.$off).toHaveBeenCalledWith('updatePagination', expect.any(Function));
       expect(eventHub.$off).toHaveBeenCalledWith('updateGroups', expect.any(Function));
+      expect(eventHub.$off).toHaveBeenCalledWith(
+        'fetchFilteredAndSortedGroups',
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe('when `fetchFilteredAndSortedGroups` event is emitted', () => {
+    const search = 'Foo bar';
+    const sort = 'created_asc';
+    const emitFetchFilteredAndSortedGroups = () => {
+      eventHub.$emit('fetchFilteredAndSortedGroups', {
+        filterGroupsBy: search,
+        sortBy: sort,
+      });
+    };
+    let setPaginationInfoSpy;
+
+    beforeEach(() => {
+      setPaginationInfoSpy = jest.spyOn(GroupsStore.prototype, 'setPaginationInfo');
+      createShallowComponent();
+    });
+
+    it('renders loading icon', async () => {
+      emitFetchFilteredAndSortedGroups();
+      await nextTick();
+
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    });
+
+    it('calls API with expected params', () => {
+      emitFetchFilteredAndSortedGroups();
+
+      expect(getGroupsSpy).toHaveBeenCalledWith(undefined, undefined, search, sort, undefined);
+    });
+
+    it('updates pagination', () => {
+      emitFetchFilteredAndSortedGroups();
+
+      expect(setPaginationInfoSpy).toHaveBeenCalled();
     });
   });
 

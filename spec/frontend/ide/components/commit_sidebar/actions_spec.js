@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
 import { projectData, branches } from 'jest/ide/mock_data';
-import commitActions from '~/ide/components/commit_sidebar/actions.vue';
+import CommitActions from '~/ide/components/commit_sidebar/actions.vue';
 import { createStore } from '~/ide/stores';
 import {
   COMMIT_TO_NEW_BRANCH,
@@ -18,32 +18,27 @@ const BRANCH_REGULAR_NO_ACCESS = 'regular/no-access';
 
 describe('IDE commit sidebar actions', () => {
   let store;
-  let vm;
+  let wrapper;
 
   const createComponent = ({ hasMR = false, currentBranchId = 'main', emptyRepo = false } = {}) => {
-    const Component = Vue.extend(commitActions);
-
-    vm = createComponentWithStore(Component, store);
-
-    vm.$store.state.currentBranchId = currentBranchId;
-    vm.$store.state.currentProjectId = 'abcproject';
+    store.state.currentBranchId = currentBranchId;
+    store.state.currentProjectId = 'abcproject';
 
     const proj = { ...projectData };
     proj.branches[currentBranchId] = branches.find((branch) => branch.name === currentBranchId);
     proj.empty_repo = emptyRepo;
 
-    Vue.set(vm.$store.state.projects, 'abcproject', proj);
+    Vue.set(store.state.projects, 'abcproject', proj);
 
     if (hasMR) {
-      vm.$store.state.currentMergeRequestId = '1';
-      vm.$store.state.projects[store.state.currentProjectId].mergeRequests[
+      store.state.currentMergeRequestId = '1';
+      store.state.projects[store.state.currentProjectId].mergeRequests[
         store.state.currentMergeRequestId
       ] = { foo: 'bar' };
     }
 
-    vm.$mount();
-
-    return vm;
+    wrapper = mount(CommitActions, { store });
+    return wrapper;
   };
 
   beforeEach(() => {
@@ -52,17 +47,16 @@ describe('IDE commit sidebar actions', () => {
   });
 
   afterEach(() => {
-    vm.$destroy();
-    vm = null;
+    wrapper.destroy();
   });
 
-  const findText = () => vm.$el.textContent;
-  const findRadios = () => Array.from(vm.$el.querySelectorAll('input[type="radio"]'));
+  const findText = () => wrapper.text();
+  const findRadios = () => wrapper.findAll('input[type="radio"]');
 
   it('renders 2 groups', () => {
     createComponent();
 
-    expect(findRadios().length).toBe(2);
+    expect(findRadios()).toHaveLength(2);
   });
 
   it('renders current branch text', () => {
@@ -79,41 +73,38 @@ describe('IDE commit sidebar actions', () => {
     expect(findText()).not.toContain('Create a new branch and merge request');
   });
 
-  describe('currentBranchText', () => {
-    it('escapes current branch', () => {
-      const injectedSrc = '<img src="x" />';
-      createComponent({ currentBranchId: injectedSrc });
+  it('escapes current branch name', () => {
+    const injectedSrc = '<img src="x" />';
+    const escapedSrc = '&lt;img src=&quot;x&quot; /&gt';
+    createComponent({ currentBranchId: injectedSrc });
 
-      expect(vm.currentBranchText).not.toContain(injectedSrc);
-    });
+    expect(wrapper.text()).not.toContain(injectedSrc);
+    expect(wrapper.text).not.toContain(escapedSrc);
   });
 
   describe('updateSelectedCommitAction', () => {
     it('does not return anything if currentBranch does not exist', () => {
       createComponent({ currentBranchId: null });
 
-      expect(vm.$store.dispatch).not.toHaveBeenCalled();
+      expect(store.dispatch).not.toHaveBeenCalled();
     });
 
     it('is not called on mount if there is already a selected commitAction', () => {
       store.state.commitAction = '1';
       createComponent({ currentBranchId: null });
 
-      expect(vm.$store.dispatch).not.toHaveBeenCalled();
+      expect(store.dispatch).not.toHaveBeenCalled();
     });
 
     it('calls again after staged changes', async () => {
       createComponent({ currentBranchId: null });
 
-      vm.$store.state.currentBranchId = 'main';
-      vm.$store.state.changedFiles.push({});
-      vm.$store.state.stagedFiles.push({});
+      store.state.currentBranchId = 'main';
+      store.state.changedFiles.push({});
+      store.state.stagedFiles.push({});
 
       await nextTick();
-      expect(vm.$store.dispatch).toHaveBeenCalledWith(
-        ACTION_UPDATE_COMMIT_ACTION,
-        expect.anything(),
-      );
+      expect(store.dispatch).toHaveBeenCalledWith(ACTION_UPDATE_COMMIT_ACTION, expect.anything());
     });
 
     it.each`
@@ -133,9 +124,7 @@ describe('IDE commit sidebar actions', () => {
       ({ input, expectedOption }) => {
         createComponent(input);
 
-        expect(vm.$store.dispatch.mock.calls).toEqual([
-          [ACTION_UPDATE_COMMIT_ACTION, expectedOption],
-        ]);
+        expect(store.dispatch.mock.calls).toEqual([[ACTION_UPDATE_COMMIT_ACTION, expectedOption]]);
       },
     );
   });

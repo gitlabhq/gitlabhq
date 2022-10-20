@@ -47,7 +47,7 @@ RSpec.shared_examples 'broadcasting issuable labels updates' do
     it 'triggers the GraphQL subscription' do
       expect(GraphqlTriggers).to receive(:issuable_labels_updated).with(issuable)
 
-      update_issuable({ add_label_ids: [label_b.id] })
+      update_issuable(add_label_ids: [label_b.id])
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.shared_examples 'broadcasting issuable labels updates' do
     it 'triggers the GraphQL subscription' do
       expect(GraphqlTriggers).to receive(:issuable_labels_updated).with(issuable)
 
-      update_issuable({ remove_label_ids: [label_a.id] })
+      update_issuable(remove_label_ids: [label_a.id])
     end
   end
 
@@ -63,7 +63,7 @@ RSpec.shared_examples 'broadcasting issuable labels updates' do
     it 'does not trigger the GraphQL subscription' do
       expect(GraphqlTriggers).not_to receive(:issuable_labels_updated).with(issuable)
 
-      update_issuable({ label_ids: [label_a.id] })
+      update_issuable(label_ids: [label_a.id])
     end
   end
 end

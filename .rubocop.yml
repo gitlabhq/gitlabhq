@@ -13,6 +13,9 @@ inherit_from:
     <% end %>
   - '.rubocop_todo.yml'
   <% end %>
+  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
+  - ./rubocop/rubocop-ruby30.yml
+  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -26,7 +29,8 @@ inherit_mode:
     - Exclude
 
 AllCops:
-  TargetRubyVersion: 2.7
+  # Target the current Ruby version. For example, "2.7" or "3.0".
+  TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
   TargetRailsVersion: 6.0
   Exclude:
     - 'vendor/**/*'
@@ -40,11 +44,23 @@ AllCops:
     - 'plugins/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
+    - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 35000
+  NewCops: disable
+  SuggestExtensions: false
+
+RSpec:
+  Language:
+    Includes:
+      Examples:
+        - run_permission_checks
+        - run_group_permission_checks
+        - it_should_email!
+        - it_should_not_email!
 
 Metrics/ParameterLists:
   Exclude:
@@ -80,7 +96,6 @@ Lint/EmptyFile:
 # This cop checks whether some constant value isn't a
 # mutable literal (e.g. array or hash).
 Style/MutableConstant:
-  Enabled: true
   Exclude:
     - 'db/migrate/**/*'
     - 'db/post_migrate/**/*'
@@ -101,8 +116,7 @@ Style/FrozenStringLiteralComment:
   EnforcedStyle: always_true
 
 Style/SpecialGlobalVars:
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/358427
-  EnforcedStyle: use_perl_names
+  EnforcedStyle: use_builtin_english_names
 
 RSpec/FilePath:
   Exclude:
@@ -448,6 +462,12 @@ RSpec/FactoriesInMigrationSpecs:
     - 'spec/lib/ee/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
+RSpec/FactoryBot/AvoidCreate:
+  Enabled: true
+  Include:
+    - 'spec/serializers/**/*.rb'
+    - 'ee/spec/serializers/**/*.rb'
+
 Cop/IncludeSidekiqWorker:
   Enabled: true
   Exclude:
@@ -690,7 +710,7 @@ Gitlab/RailsLogger:
     - 'ee/spec/**/*.rb'
 
 # WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/267606
-FactoryBot/InlineAssociation:
+RSpec/FactoryBot/InlineAssociation:
   Include:
     - 'spec/factories/**/*.rb'
     - 'ee/spec/factories/**/*.rb'
@@ -775,3 +795,39 @@ Fips/OpenSSL:
 
 Gemspec/AvoidExecutingGit:
   Enabled: false
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - '{,ee/,qa/}spec/**/*_{spec,shared_examples,shared_context}.rb'
+
+Cop/SidekiqRedisCall:
+  Enabled: true
+  Exclude:
+    - '{,ee/,jh/}spec/**/*'
+    - 'lib/gitlab/database/migration_helpers.rb'
+    - 'lib/gitlab/sidekiq_migrate_jobs.rb'
+    - 'lib/gitlab/sidekiq_versioning.rb'
+
+Cop/RedisQueueUsage:
+  Enabled: true
+  Exclude:
+    - '{,ee/,jh/}spec/**/*'
+    - 'config/initializers/sidekiq.rb'
+    - 'lib/gitlab/instrumentation/redis.rb'
+    - 'lib/gitlab/redis.rb'
+    - 'lib/system_check/app/redis_version_check.rb'
+    - 'lib/gitlab/mail_room.rb'
+
+Cop/SidekiqApiUsage:
+  Enabled: true
+  Exclude:
+    - '{,ee/,jh/}spec/**/*'
+    - 'db/post_migrate/**/*'
+    - 'lib/gitlab/sidekiq_middleware/**/*'
+    - 'lib/gitlab/background_migration/**/*'
+    - 'lib/gitlab/hashed_storage/migrator.rb'
+    - 'lib/api/sidekiq_metrics.rb'
+    - 'lib/gitlab/sidekiq_config.rb'
+    - 'lib/gitlab/sidekiq_queue.rb'
+    - 'config/initializers/sidekiq.rb'
+    - 'config/initializers/forbid_sidekiq_in_transactions.rb'

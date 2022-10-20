@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -70,7 +70,9 @@ runner settings:
 
 To view the rendered details:
 
-1. On the top bar, select **Main menu > Projects** or **Main menu > Groups** and find your project or group.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select ***Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
 
@@ -242,7 +244,7 @@ To enable or disable the banner:
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 
 NOTE:
-An alternative [compliance solution](../../project/settings/index.md#compliance-pipeline-configuration)
+An alternative [compliance solution](../../group/manage.md#configure-a-compliance-pipeline)
 is available. We recommend this alternative solution because it provides greater flexibility,
 allowing required pipelines to be assigned to specific compliance framework labels.
 
@@ -326,10 +328,8 @@ To set the maximum file size:
 
 ## Prevent users from registering runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../feature_flags.md) named `runner_registration_control`. On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 

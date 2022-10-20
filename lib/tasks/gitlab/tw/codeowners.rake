@@ -7,10 +7,10 @@ namespace :tw do
   task :codeowners do
     CodeOwnerRule = Struct.new(:category, :writer)
     DocumentOwnerMapping = Struct.new(:path, :writer) do
-      def writer_owns_all_pages?(mappings)
-        mappings
-          .select { |mapping| mapping.directory == directory }
-          .all? { |mapping| mapping.writer == writer }
+      def writer_owns_directory?(mappings)
+        dir_mappings = mappings.select { |mapping| mapping.directory == directory }
+
+        dir_mappings.count { |mapping| mapping.writer == writer } / dir_mappings.length.to_f > 0.5
       end
 
       def directory
@@ -22,13 +22,12 @@ namespace :tw do
       CodeOwnerRule.new('Activation', '@phillipwells'),
       CodeOwnerRule.new('Acquisition', '@phillipwells'),
       CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
-      CodeOwnerRule.new('Authentication and Authorization', '@eread'),
+      CodeOwnerRule.new('Authentication and Authorization', '@jglassman1'),
       CodeOwnerRule.new('Certify', '@msedlakjakubowski'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
       CodeOwnerRule.new('Configure', '@phillipwells'),
-      CodeOwnerRule.new('Container Security', '@claytoncornell'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Conversion', '@kpaizee'),
       CodeOwnerRule.new('Database', '@aqualls'),
@@ -39,7 +38,7 @@ namespace :tw do
       CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
       CodeOwnerRule.new('Ecosystem', '@kpaizee'),
-      CodeOwnerRule.new('Editor', '@aqualls'),
+      CodeOwnerRule.new('Editor', '@ashrafkhamis'),
       CodeOwnerRule.new('Foundations', '@rdickenson'),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),
@@ -58,6 +57,7 @@ namespace :tw do
       CodeOwnerRule.new('Pipeline Execution', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Insights', '@marcel.amirault'),
       CodeOwnerRule.new('Portfolio Management', '@msedlakjakubowski'),
+      CodeOwnerRule.new('Product Analytics', '@lciutacu'),
       CodeOwnerRule.new('Product Intelligence', '@claytoncornell'),
       CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
       CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
@@ -68,6 +68,7 @@ namespace :tw do
       CodeOwnerRule.new('Respond', '@msedlakjakubowski'),
       CodeOwnerRule.new('Runner', '@sselhorn'),
       CodeOwnerRule.new('Pods', '@sselhorn'),
+      CodeOwnerRule.new('Security Policies', '@claytoncornell'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
@@ -114,14 +115,14 @@ namespace :tw do
     deduplicated_mappings = Set.new
 
     mappings.each do |mapping|
-      if mapping.writer_owns_all_pages?(mappings)
+      if mapping.writer_owns_directory?(mappings)
         deduplicated_mappings.add("#{mapping.directory}/ #{mapping.writer}")
       else
         deduplicated_mappings.add("#{mapping.path} #{mapping.writer}")
       end
     end
 
-    deduplicated_mappings.each { |mapping| puts mapping }
+    deduplicated_mappings.sort.each { |mapping| puts mapping }
 
     if errors.present?
       puts "-----"

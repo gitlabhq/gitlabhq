@@ -101,9 +101,9 @@ module QA
               commit.commit_message = 'Add files'
               commit.update_files(
                 [
-                    {
-                        file_path: '.gitlab-ci.yml',
-                        content: <<~YAML
+                  {
+                      file_path: '.gitlab-ci.yml',
+                      content: <<~YAML
                         stages:
                           - deploy
                           - install
@@ -132,11 +132,11 @@ module QA
                             - if: '$CI_COMMIT_BRANCH == "#{project.default_branch}"'
                           tags:
                             - "runner-for-#{project.name}"
-                        YAML
-                    },
-                    {
-                      file_path: 'dotnetcore.csproj',
-                      content: <<~EOF
+                      YAML
+                  },
+                  {
+                    file_path: 'dotnetcore.csproj',
+                    content: <<~EOF
                           <Project Sdk="Microsoft.NET.Sdk">
 
                             <PropertyGroup>
@@ -145,8 +145,8 @@ module QA
                             </PropertyGroup>
 
                           </Project>
-                      EOF
-                  }
+                    EOF
+                }
                 ]
               )
             end

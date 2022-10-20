@@ -50,6 +50,7 @@ function UsersSelect(currentUser, els, options = {}) {
     options.iid = $dropdown.data('iid');
     options.issuableType = $dropdown.data('issuableType');
     options.targetBranch = $dropdown.data('targetBranch');
+    options.showSuggested = $dropdown.data('showSuggested');
     const showNullUser = $dropdown.data('nullUser');
     const defaultNullUser = $dropdown.data('nullUserDefault');
     const showMenuAbove = $dropdown.data('showMenuAbove');
@@ -340,6 +341,16 @@ function UsersSelect(currentUser, els, options = {}) {
           if ($dropdown.hasClass('js-multiselect')) {
             const selected = getSelected().filter((i) => i !== 0);
 
+            if ($dropdown.data('showSuggested')) {
+              const suggested = this.suggestedUsers(users);
+              if (suggested.length) {
+                users = users.filter(
+                  (u) => !u.suggested || (u.suggested && selected.indexOf(u.id) !== -1),
+                );
+                users.splice(showDivider + 1, 0, ...suggested);
+              }
+            }
+
             if (selected.length > 0) {
               if ($dropdown.data('dropdownHeader')) {
                 showDivider += 1;
@@ -369,6 +380,19 @@ function UsersSelect(currentUser, els, options = {}) {
         if (showMenuAbove) {
           $dropdown.data('deprecatedJQueryDropdown').positionMenuAbove();
         }
+      },
+      suggestedUsers(users) {
+        const selected = getSelected().filter((i) => i !== 0);
+        const suggestedUsers = users.filter((u) => u.suggested && selected.indexOf(u.id) === -1);
+
+        if (!suggestedUsers.length) return [];
+
+        const items = [
+          { type: 'header', content: $dropdown.data('suggestedReviewersHeader') },
+          ...suggestedUsers,
+          { type: 'header', content: $dropdown.data('allMembersHeader') },
+        ];
+        return items;
       },
       filterable: true,
       filterRemote: true,
@@ -760,6 +784,10 @@ UsersSelect.prototype.users = function (query, options, callback) {
     params.approval_rules = true;
   }
 
+  if (isMergeRequest && options.showSuggested) {
+    params.show_suggested = true;
+  }
+
   if (isNewMergeRequest) {
     params.target_branch = options.targetBranch || null;
   }
@@ -791,13 +819,14 @@ UsersSelect.prototype.renderRow = function (
   const tooltipAttributes = tooltip
     ? `data-container="body" data-placement="left" data-title="${tooltip}"`
     : '';
+  const dataUserSuggested = user.suggested ? `data-user-suggested=${user.suggested}` : '';
 
   const name =
     user?.availability && isUserBusy(user.availability)
       ? sprintf(__('%{name} (Busy)'), { name: user.name })
       : user.name;
   return `
-    <li data-user-id=${user.id}>
+    <li data-user-id=${user.id} ${dataUserSuggested}>
       <a href="#" class="dropdown-menu-user-link gl-display-flex! gl-align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">

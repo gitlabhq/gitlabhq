@@ -11,9 +11,12 @@ module QA
 
           base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue' do
             element :wiki_title_textbox
-            element :wiki_content_textarea
             element :wiki_message_textbox
             element :wiki_submit_button
+          end
+
+          base.view 'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue' do
+            element :markdown_editor_form_field
             element :editing_mode_button
           end
 
@@ -27,7 +30,7 @@ module QA
         end
 
         def set_content(content)
-          fill_element(:wiki_content_textarea, content)
+          fill_element(:markdown_editor_form_field, content)
         end
 
         def set_message(message)

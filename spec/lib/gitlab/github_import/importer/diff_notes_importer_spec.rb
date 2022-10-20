@@ -7,14 +7,13 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
   let(:client) { double(:client) }
 
   let(:github_comment) do
-    double(
-      :response,
+    {
       html_url: 'https://github.com/foo/bar/pull/42',
       path: 'README.md',
       commit_id: '123abc',
       original_commit_id: 'original123abc',
       diff_hunk: "@@ -1 +1 @@\n-Hello\n+Hello world",
-      user: double(:user, id: 4, login: 'alice'),
+      user: { id: 4, login: 'alice' },
       created_at: Time.zone.now,
       updated_at: Time.zone.now,
       line: 23,
@@ -29,7 +28,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
         sug1
         ```
       BODY
-    )
+    }
   end
 
   describe '#parallel?' do
@@ -98,9 +97,10 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
         .to receive(:each_object_to_import)
         .and_yield(github_comment)
 
-      expect(Gitlab::GithubImport::ImportDiffNoteWorker).to receive(:bulk_perform_in).with(1.second, [
-          [project.id, an_instance_of(Hash), an_instance_of(String)]
-        ], batch_size: 1000, batch_delay: 1.minute)
+      expect(Gitlab::GithubImport::ImportDiffNoteWorker).to receive(:bulk_perform_in)
+        .with(1.second, [
+                [project.id, an_instance_of(Hash), an_instance_of(String)]
+              ], batch_size: 1000, batch_delay: 1.minute)
 
       waiter = importer.parallel_import
 

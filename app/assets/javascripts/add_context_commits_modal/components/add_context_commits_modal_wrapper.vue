@@ -2,7 +2,7 @@
 import { GlModal, GlTabs, GlTab, GlSearchBoxByType, GlSprintf, GlBadge } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
@@ -193,7 +193,7 @@ export default {
             window.location.reload();
           }
           if (!values[0] && !values[1]) {
-            createFlash({
+            createAlert({
               message: s__(
                 'ContextCommits|Failed to create/remove context commits. Please try again.',
               ),

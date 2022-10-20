@@ -8,7 +8,7 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import produce from 'immer';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import { workspaceLabelsQueries } from '~/sidebar/constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
@@ -129,7 +129,7 @@ export default {
           this.$emit('hideCreateView');
         }
       } catch {
-        createFlash({ message: errorMessage });
+        createAlert({ message: errorMessage });
       }
       this.labelCreateInProgress = false;
     },

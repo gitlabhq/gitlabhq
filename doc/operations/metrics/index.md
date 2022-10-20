@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Monitor your environment's metrics **(FREE)**
@@ -43,7 +43,7 @@ your Prometheus integration depends on where your apps are running:
 - **For a cluster integrated Prometheus** - GitLab can query
   [an in-cluster Prometheus](../../user/clusters/integrations.md#prometheus-cluster-integration).
   You must also complete a code deployment to your cluster for the **Monitor > Metrics**
-  page to contain data. You can do this using [Auto DevOps](../../topics/autodevops/quick_start_guide.md).
+  page to contain data. You can do this using [Auto DevOps](../../topics/autodevops/cloud_deployments/auto_devops_with_gke.md).
 
 ![Monitoring Dashboard](img/prometheus_monitoring_dashboard_v13_3.png)
 
@@ -147,7 +147,7 @@ suggested if this feature is used.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208976) in GitLab 12.9.
 
-You can edit existing additional custom metrics for your dashboard by clicking the
+You can edit existing additional custom metrics for your dashboard by selecting the
 **{ellipsis_v}** **More actions** dropdown and selecting **Edit metric**.
 
 ![Edit metric](img/prometheus_dashboard_edit_metric_link_v_12_9.png)

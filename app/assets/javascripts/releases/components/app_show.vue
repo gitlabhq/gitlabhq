@@ -1,5 +1,5 @@
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import oneReleaseQuery from '../graphql/queries/one_release.query.graphql';
 import { convertGraphQLRelease } from '../util';
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     showFlash(error) {
-      createFlash({
+      createAlert({
         message: s__('Release|Something went wrong while getting the release details.'),
         captureError: true,
         error,

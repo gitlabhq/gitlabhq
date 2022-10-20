@@ -1,22 +1,28 @@
 - breadcrumb_title _("Schedules")
 - page_title _("Pipeline Schedules")
 - add_page_specific_style 'page_bundles/pipeline_schedules'
+- add_page_specific_style 'page_bundles/ci_status'
 
 #pipeline-schedules-callout{ data: { docs_url: help_page_path('ci/pipelines/schedules'), illustration_url: image_path('illustrations/pipeline_schedule_callout.svg') } }
-.top-area
-  - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
-  = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
 
-  - if can?(current_user, :create_pipeline_schedule, @project)
-    .nav-controls
-      = link_to new_project_pipeline_schedule_path(@project), class: 'btn gl-button btn-confirm' do
-        %span= _('New schedule')
-
-- if @schedules.present?
-  %ul.content-list
-    = render partial: "table"
+- if Feature.enabled?(:pipeline_schedules_vue, @project)
+  #pipeline-schedules-app{ data: { full_path: @project.full_path } }
 - else
-  .card.bg-light.gl-mt-3
-    .nothing-here-block= _("No schedules")
+  .top-area
+    - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
+    = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
 
-#pipeline-take-ownership-modal
+    - if can?(current_user, :create_pipeline_schedule, @project)
+      .nav-controls
+        = link_to new_project_pipeline_schedule_path(@project), class: 'btn gl-button btn-confirm' do
+          %span= _('New schedule')
+
+  - if @schedules.present?
+    %ul.content-list
+      = render partial: "table"
+  - else
+    = render Pajamas::CardComponent.new(card_options: { class: 'bg-light gl-mt-3 gl-text-center' }) do |c|
+      - c.body do
+        = _("No schedules")
+
+  #pipeline-take-ownership-modal

@@ -17,6 +17,7 @@ RSpec.describe BulkImports::RepositoryBundleExportService do
       context 'when repository exists' do
         it 'bundles repository to disk' do
           allow(repository).to receive(:exists?).and_return(true)
+          allow(repository).to receive(:empty?).and_return(false)
           expect(repository).to receive(:bundle_to_disk).with(File.join(export_path, "#{export_filename}.bundle"))
 
           service.execute
@@ -26,6 +27,15 @@ RSpec.describe BulkImports::RepositoryBundleExportService do
       context 'when repository does not exist' do
         it 'does not bundle repository to disk' do
           allow(repository).to receive(:exists?).and_return(false)
+          expect(repository).not_to receive(:bundle_to_disk)
+
+          service.execute
+        end
+      end
+
+      context 'when repository is empty' do
+        it 'does not bundle repository to disk' do
+          allow(repository).to receive(:empty?).and_return(true)
           expect(repository).not_to receive(:bundle_to_disk)
 
           service.execute

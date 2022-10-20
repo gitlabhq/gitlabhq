@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlTableLite, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
@@ -47,7 +47,7 @@ export default {
         return this.extractTimelogs(data);
       },
       error() {
-        createFlash({ message: __('Something went wrong. Please try again.') });
+        createAlert({ message: __('Something went wrong. Please try again.') });
       },
     },
   },
@@ -105,7 +105,7 @@ export default {
           }
         })
         .catch((error) => {
-          createFlash({
+          createAlert({
             message: s__('TimeTracking|An error occurred while removing the timelog.'),
             captureError: true,
             error,

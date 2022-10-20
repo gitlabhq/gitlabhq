@@ -220,5 +220,25 @@ RSpec.describe MergeRequestDiffFile do
         file.utf8_diff
       end
     end
+
+    context 'when exception is raised' do
+      it 'logs exception and returns an empty string' do
+        allow(file).to receive(:diff).and_raise(StandardError, 'Error!')
+
+        expect(Gitlab::AppLogger)
+          .to receive(:warn)
+          .with(
+            a_hash_including(
+              :message => 'Failed fetching merge request diff',
+              :merge_request_diff_file_id => file.id,
+              :merge_request_diff_id => file.merge_request_diff.id,
+              'exception.class' => 'StandardError',
+              'exception.message' => 'Error!'
+            )
+          )
+
+        expect(file.utf8_diff).to eq('')
+      end
+    end
   end
 end

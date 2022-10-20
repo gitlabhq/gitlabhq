@@ -24,8 +24,8 @@ module Mutations
       def prepare_response(alert, result)
         {
           alert: alert,
-          issue: result.payload[:issue],
-          errors: Array(result.message)
+          issue: result[:issue],
+          errors: result.errors
         }
       end
     end

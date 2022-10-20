@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Export issues to CSV **(FREE)**
@@ -15,7 +15,7 @@ notification email address as an attachment.
 collected from issues into a **[comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values)** (CSV)
 file, which stores tabular data in plain text.
 
-> _CSVs are a handy way of getting data from one program to another where one
+> _CSVs are a way of getting data from one program to another where one
 program cannot read the other ones normal output._ [Ref](https://www.quora.com/What-is-a-CSV-file-and-its-uses)
 
 <!-- vale gitlab.Spelling = NO -->

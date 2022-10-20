@@ -118,7 +118,7 @@ RSpec.describe Gitlab::ProjectSearchResults do
   shared_examples 'blob search repository ref' do |entity_type, blob_type|
     let(:query) { 'files' }
     let(:file_finder) { double }
-    let(:project_branch) { 'project_branch' }
+    let(:project_branch) { blob_type == 'wiki_blobs' ? entity.default_branch : 'project_branch' }
 
     subject(:objects) { results.objects(blob_type) }
 
@@ -209,8 +209,11 @@ RSpec.describe Gitlab::ProjectSearchResults do
 
   describe 'wiki search' do
     let(:project) { create(:project, :public, :wiki_repo) }
+    let(:project_branch) { 'project_branch' }
 
     before do
+      allow(project.wiki).to receive(:root_ref).and_return(project_branch)
+
       project.wiki.create_page('Files/Title', 'Content')
       project.wiki.create_page('CHANGELOG', 'Files example')
     end

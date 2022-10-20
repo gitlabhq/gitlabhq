@@ -42,10 +42,8 @@ export const TEXT_STYLE_DROPDOWN_ITEMS = [
   },
 ];
 
-export const LOADING_CONTENT_EVENT = 'loading';
-export const LOADING_SUCCESS_EVENT = 'loadingSuccess';
-export const LOADING_ERROR_EVENT = 'loadingError';
 export const ALERT_EVENT = 'alert';
+export const KEYDOWN_EVENT = 'keydown';
 
 export const PARSE_HTML_PRIORITY_LOWEST = 1;
 export const PARSE_HTML_PRIORITY_DEFAULT = 50;
@@ -66,3 +64,5 @@ export const SAFE_VIDEO_EXT = ['mp4', 'm4v', 'mov', 'webm', 'ogv'];
 export const SAFE_AUDIO_EXT = ['mp3', 'oga', 'ogg', 'spx', 'wav'];
 
 export const DIAGRAM_LANGUAGES = ['plantuml', 'mermaid'];
+
+export const TIPTAP_AUTOFOCUS_OPTIONS = [true, false, 'start', 'end', 'all'];

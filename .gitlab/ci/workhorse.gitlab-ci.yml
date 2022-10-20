@@ -1,9 +1,10 @@
 workhorse:verify:
   extends: .workhorse:rules:workhorse
-  image: ${GITLAB_DEPENDENCY_PROXY}golang:1.17
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}golang:${GO_VERSION}
   stage: test
   needs: []
   script:
+    - go version
     - make -C workhorse  # test build
     - make -C workhorse verify
 
@@ -12,7 +13,6 @@ workhorse:verify:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}:git-2.36
   variables:
     GITALY_ADDRESS: "tcp://127.0.0.1:8075"
-    GO_VERSION: "1.17"
   stage: test
   needs:
     - setup-test-env
@@ -27,7 +27,7 @@ workhorse:test go:
   extends: .workhorse:test
   parallel:
     matrix:
-      - GO_VERSION: ["1.17", "1.18"]
+      - GO_VERSION: ["1.17", "1.18", "1.19"]
   script:
     - make -C workhorse test-coverage
   coverage: '/\d+.\d+%/'

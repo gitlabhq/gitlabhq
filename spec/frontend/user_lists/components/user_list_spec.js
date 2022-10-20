@@ -50,7 +50,7 @@ describe('User List', () => {
     });
 
     it('shows a loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 
@@ -157,7 +157,7 @@ describe('User List', () => {
   });
 
   describe('error', () => {
-    const findAlert = () => wrapper.find(GlAlert);
+    const findAlert = () => wrapper.findComponent(GlAlert);
 
     beforeEach(async () => {
       Api.fetchFeatureFlagUserList.mockRejectedValue();
@@ -190,7 +190,7 @@ describe('User List', () => {
     });
 
     it('displays an empty state', () => {
-      expect(wrapper.find(GlEmptyState).exists()).toBe(true);
+      expect(wrapper.findComponent(GlEmptyState).exists()).toBe(true);
     });
   });
 });

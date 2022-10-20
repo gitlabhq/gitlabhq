@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { debounce } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { hide } from '~/tooltips';
@@ -120,7 +120,7 @@ export default class MirrorRepos {
       .put(this.mirrorEndpoint, payload)
       .then(() => this.removeRow($target))
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Failed to remove mirror.'),
         }),
       );

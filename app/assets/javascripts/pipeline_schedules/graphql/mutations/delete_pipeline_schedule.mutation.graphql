@@ -1,0 +1,6 @@
+mutation deletePipelineSchedule($id: CiPipelineScheduleID!) {
+  pipelineScheduleDelete(input: { id: $id }) {
+    clientMutationId
+    errors
+  }
+}

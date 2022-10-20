@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Application Performance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # IP whitelist **(FREE SELF)**
@@ -15,7 +15,7 @@ that provide health check information when probed.
 To control access to those endpoints via IP whitelisting, you can add single
 hosts or use IP ranges:
 
-**For Omnibus installations**
+**Omnibus**
 
 1. Open `/etc/gitlab/gitlab.rb` and add or uncomment the following:
 
@@ -27,7 +27,7 @@ hosts or use IP ranges:
 
 ---
 
-**For installations using cloud native Helm charts**
+**Helm chart**
 
 You can set the required IPs under the `gitlab.webservice.monitoring.ipWhitelist` key. For example:
 
@@ -42,7 +42,7 @@ gitlab:
 
 ---
 
-**For installations from source**
+**Source**
 
 1. Edit `config/gitlab.yml`:
 

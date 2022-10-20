@@ -4,7 +4,7 @@ import EditorStateObserver, {
   tiptapToComponentMap,
 } from '~/content_editor/components/editor_state_observer.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import { ALERT_EVENT } from '~/content_editor/constants';
+import { ALERT_EVENT, KEYDOWN_EVENT } from '~/content_editor/constants';
 import { createTestEditor } from '../test_utils';
 
 describe('content_editor/components/editor_state_observer', () => {
@@ -14,6 +14,7 @@ describe('content_editor/components/editor_state_observer', () => {
   let onSelectionUpdateListener;
   let onTransactionListener;
   let onAlertListener;
+  let onKeydownListener;
   let eventHub;
 
   const buildEditor = () => {
@@ -30,6 +31,7 @@ describe('content_editor/components/editor_state_observer', () => {
         selectionUpdate: onSelectionUpdateListener,
         transaction: onTransactionListener,
         [ALERT_EVENT]: onAlertListener,
+        [KEYDOWN_EVENT]: onKeydownListener,
       },
     });
   };
@@ -39,6 +41,7 @@ describe('content_editor/components/editor_state_observer', () => {
     onSelectionUpdateListener = jest.fn();
     onTransactionListener = jest.fn();
     onAlertListener = jest.fn();
+    onKeydownListener = jest.fn();
     buildEditor();
   });
 
@@ -67,8 +70,9 @@ describe('content_editor/components/editor_state_observer', () => {
   });
 
   it.each`
-    event          | listener
-    ${ALERT_EVENT} | ${() => onAlertListener}
+    event            | listener
+    ${ALERT_EVENT}   | ${() => onAlertListener}
+    ${KEYDOWN_EVENT} | ${() => onKeydownListener}
   `('listens to $event event in the eventBus object', ({ event, listener }) => {
     const args = {};
 
@@ -97,6 +101,7 @@ describe('content_editor/components/editor_state_observer', () => {
     it.each`
       event
       ${ALERT_EVENT}
+      ${KEYDOWN_EVENT}
     `('removes $event event hook from eventHub', ({ event }) => {
       jest.spyOn(eventHub, '$off');
       jest.spyOn(eventHub, '$on');

@@ -1,5 +1,6 @@
 - breadcrumb_title s_("Profiles|Edit Profile")
 - page_title s_("Profiles|Edit Profile")
+- add_page_specific_style 'page_bundles/profile'
 - @content_class = "limit-container-width" unless fluid_layout
 - gravatar_link = link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host
 
@@ -25,15 +26,21 @@
     .col-lg-8
       .avatar-image
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
-          = image_tag avatar_icon_for_user(@user, 96), alt: '', class: 'avatar s96'
+          = render Pajamas::AvatarComponent.new(@user, size: 96, alt: "", class: 'gl-float-left gl-mr-5')
       %h5.gl-mt-0= s_("Profiles|Upload new avatar")
-      .gl-my-3
-        %button.gl-button.btn.btn-default.js-choose-user-avatar-button{ type: 'button' }= s_("Profiles|Choose file...")
-        %span.avatar-file-name.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
+      .gl-display-flex.gl-align-items-center.gl-my-3
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-user-avatar-button' }) do
+          = s_("Profiles|Choose file...")
+        %span.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
         = f.file_field :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
       .gl-text-gray-500= s_("Profiles|The maximum file size allowed is 200KB.")
       - if @user.avatar?
-        = link_to s_("Profiles|Remove avatar"), profile_avatar_path, data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") }, method: :delete, class: 'gl-button btn btn-danger-secondary btn-sm gl-mt-5'
+        = render Pajamas::ButtonComponent.new(variant: :danger,
+          category: :secondary,
+          href: profile_avatar_path,
+          button_options: { class: 'gl-mt-3', data: { confirm: s_("Profiles|Avatar will be removed. Are you sure?") } },
+          method: :delete) do
+          = s_("Profiles|Remove avatar")
     .col-lg-12
       %hr
   .row.js-search-settings-section
@@ -54,9 +61,8 @@
       %h4.gl-mt-0= s_("Profiles|Time settings")
       %p= s_("Profiles|Set your local time zone.")
     .col-lg-8
-      %h5= _("Time zone")
-      = dropdown_tag(_("Select a time zone"), options: { toggle_class: 'gl-button btn js-timezone-dropdown input-lg gl-w-full!', title: _("Select a time zone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
-      %input.hidden{ :type => 'hidden', :id => 'user_timezone', :name => 'user[timezone]', value: @user.timezone }
+      = f.label :user_timezone, _("Time zone")
+      .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone } }
     .col-lg-12
       %hr
   .row.js-search-settings-section
@@ -134,9 +140,12 @@
         = f.gitlab_ui_checkbox_component :include_private_contributions,
           s_('Profiles|Include private contributions on my profile'),
           help_text: s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information.")
-  %hr
-  = f.submit s_("Profiles|Update profile settings"), class: 'gl-button btn btn-confirm gl-mr-3 js-password-prompt-btn'
-  = link_to _("Cancel"), user_path(current_user), class: 'gl-button btn btn-default btn-cancel'
+  .row.js-hide-when-nothing-matches-search
+    .col-lg-12
+      %hr
+      = f.submit s_("Profiles|Update profile settings"), class: 'gl-mr-3 js-password-prompt-btn', pajamas_button: true
+      = render Pajamas::ButtonComponent.new(href: user_path(current_user)) do
+        = s_('TagsPage|Cancel')
 
 #password-prompt-modal
 
@@ -146,19 +155,19 @@
       .modal-header
         %h4.modal-title
           = s_("Profiles|Position and size your new avatar")
-        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _("Close") }
-          %span{ "aria-hidden": "true" } &times;
+        = render Pajamas::ButtonComponent.new(category: :tertiary,
+          icon: 'close',
+          button_options: { class: 'close', "data-dismiss": "modal", "aria-label" => _("Close") })
       .modal-body
         .profile-crop-image-container
           %img.modal-profile-crop-image{ alt: s_("Profiles|Avatar cropper") }
-        .crop-controls
+        .gl-text-center.gl-mt-4
           .btn-group
-            %button.btn.gl-button.btn-default{ data: { method: 'zoom', option: '-0.1' } }
-              %span
-                = sprite_icon('search-minus')
-            %button.btn.gl-button.btn-default{ data: { method: 'zoom', option: '0.1' } }
-              %span
-                = sprite_icon('search-plus')
+            = render Pajamas::ButtonComponent.new(icon: 'search-minus',
+              button_options: {data: { method: 'zoom', option: '-0.1' }})
+            = render Pajamas::ButtonComponent.new(icon: 'search-plus',
+              button_options: {data: { method: 'zoom', option: '0.1' }})
       .modal-footer
-        %button.btn.gl-button.btn-confirm.js-upload-user-avatar{ type: 'button' }
+        = render Pajamas::ButtonComponent.new(variant: :confirm,
+          button_options: { class: 'js-upload-user-avatar'}) do
           = s_("Profiles|Set new profile picture")

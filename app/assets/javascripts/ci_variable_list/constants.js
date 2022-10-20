@@ -52,7 +52,7 @@ export const groupString = 'Group';
 // eslint-disable-next-line @gitlab/require-i18n-strings
 export const instanceString = 'Instance';
 // eslint-disable-next-line @gitlab/require-i18n-strings
-export const projectString = 'Instance';
+export const projectString = 'Project';
 
 export const AWS_TIP_DISMISSED_COOKIE_NAME = 'ci_variable_list_constants_aws_tip_dismissed';
 export const AWS_TIP_MESSAGE = __(

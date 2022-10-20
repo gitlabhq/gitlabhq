@@ -486,6 +486,25 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#gitlab_ui_form_with' do
+    let_it_be(:user) { build(:user) }
+
+    before do
+      allow(helper).to receive(:users_path).and_return('/root')
+      allow(helper).to receive(:form_with).and_call_original
+    end
+
+    it 'adds custom form builder to options and calls `form_with`' do
+      options = { model: user, html: { class: 'foo-bar' } }
+      expected_options = options.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder })
+
+      expect do |b|
+        helper.gitlab_ui_form_with(**options, &b)
+      end.to yield_with_args(::Gitlab::FormBuilders::GitlabUiFormBuilder)
+      expect(helper).to have_received(:form_with).with(expected_options)
+    end
+  end
+
   describe '#page_class' do
     context 'when logged_out_marketing_header experiment is enabled' do
       let_it_be(:expected_class) { 'logged-out-marketing-header-candidate' }

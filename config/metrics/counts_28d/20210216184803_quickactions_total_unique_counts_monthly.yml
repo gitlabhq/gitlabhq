@@ -10,8 +10,11 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: RedisHLLMetric
+instrumentation_class: AggregatedMetric
 options:
+  aggregate:
+    operator: OR
+    attribute: user_id
   events:
   - i_quickactions_approve
   - i_quickactions_assign_single
@@ -43,6 +46,7 @@ options:
   - i_quickactions_parent_epic
   - i_quickactions_promote
   - i_quickactions_publish
+  - i_quickactions_ready
   - i_quickactions_reassign
   - i_quickactions_reassign_reviewer
   - i_quickactions_rebase

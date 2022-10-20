@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { objectToQuery } from '~/lib/utils/url_utility';
@@ -198,7 +198,7 @@ describe('Dashboard', () => {
       );
 
       await nextTick();
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
 
     it('does not display a warning if there are no validation warnings', async () => {
@@ -210,7 +210,7 @@ describe('Dashboard', () => {
       );
 
       await nextTick();
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
     });
   });
 
@@ -275,7 +275,7 @@ describe('Dashboard', () => {
       setupStoreWithData(store);
 
       await nextTick();
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
       expect(store.dispatch).not.toHaveBeenCalledWith(
         'monitoringDashboard/setExpandedPanel',
         expect.anything(),

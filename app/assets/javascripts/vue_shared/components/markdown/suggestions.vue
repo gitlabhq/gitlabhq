@@ -1,7 +1,7 @@
 <script>
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import Vue from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';
 
@@ -91,7 +91,7 @@ export default {
       const suggestionElements = container.querySelectorAll('.js-render-suggestion');
 
       if (this.lineType === 'old') {
-        createFlash({
+        createAlert({
           message: __('Unable to apply suggestions to a deleted line.'),
           parent: this.$el,
         });

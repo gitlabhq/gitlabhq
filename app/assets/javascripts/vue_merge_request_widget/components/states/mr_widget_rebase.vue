@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -111,7 +111,7 @@ export default {
           if (error.response && error.response.data && error.response.data.merge_error) {
             this.rebasingError = error.response.data.merge_error;
           } else {
-            createFlash({
+            createAlert({
               message: __('Something went wrong. Please try again.'),
             });
           }
@@ -142,7 +142,7 @@ export default {
         })
         .catch(() => {
           this.isMakingRequest = false;
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           });
           stopPolling();

@@ -176,7 +176,7 @@ export default {
             category="secondary"
             data-testid="remove-step-button"
             icon="remove"
-            @click="removeValue"
+            @click="() => removeValue(i)"
           />
         </template>
       </gl-form-input-group>

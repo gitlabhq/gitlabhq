@@ -1,4 +1,4 @@
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 // These statuses are based on how the backend defines pod phases here
 // lib/gitlab/kubernetes/pod.rb
@@ -47,4 +47,33 @@ export const ENVIRONMENTS_SCOPE = {
 export const ENVIRONMENT_COUNT_BY_SCOPE = {
   [ENVIRONMENTS_SCOPE.AVAILABLE]: 'availableCount',
   [ENVIRONMENTS_SCOPE.STOPPED]: 'stoppedCount',
+};
+
+export const REVIEW_APP_MODAL_I18N = {
+  title: s__('ReviewApp|Enable Review App'),
+  intro: s__(
+    'EnableReviewApp|Review apps are dynamic environments that you can use to provide a live preview of changes made in a feature branch.',
+  ),
+  instructions: {
+    title: s__('EnableReviewApp|To configure a dynamic review app, you must:'),
+    step1: s__(
+      'EnableReviewApp|Have access to infrastructure that can host and deploy the review apps.',
+    ),
+    step2: s__('EnableReviewApp|Install and configure a runner to do the deployment.'),
+    step3: s__('EnableReviewApp|Add a job in your CI/CD configuration that:'),
+    step3a: s__('EnableReviewApp|Only runs for feature branches or merge requests.'),
+    step3b: s__(
+      'EnableReviewApp|Uses a predefined CI/CD variable like %{codeStart}$(CI_COMMIT_REF_SLUG)%{codeEnd} to dynamically create the review app environments. For example, for a configuration using merge request pipelines:',
+    ),
+    step4: s__('EnableReviewApp|Recommended: Set up a job that manually stops the Review Apps.'),
+  },
+  staticSitePopover: {
+    title: s__('EnableReviewApp|Using a static site?'),
+    body: s__(
+      'EnableReviewApp|Make sure your project has an environment configured with the target URL set to your website URL. If not, create a new one before continuing.',
+    ),
+  },
+  learnMore: __('Learn more'),
+  viewMoreExampleProjects: s__('EnableReviewApp|View more example projects'),
+  copyToClipboardText: s__('EnableReviewApp|Copy snippet'),
 };

@@ -34,7 +34,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
           image: 'image:1.0',
           default: {},
           services: ['postgres:9.1', 'mysql:5.5'],
-          variables: { VAR: 'root', VAR2: { value: 'val 2', description: 'this is var 2' } },
+          variables: {
+            VAR: 'root',
+            VAR2: { value: 'val 2', description: 'this is var 2' },
+            VAR3: { value: %w[val3 val3b], description: 'this is var 3' }
+          },
           after_script: ['make clean'],
           stages: %w(build pages release),
           cache: { key: 'k', untracked: true, paths: ['public/'] },
@@ -83,7 +87,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         end
 
         it 'sets correct variables value' do
-          expect(root.variables_value).to eq('VAR' => 'root', 'VAR2' => 'val 2')
+          expect(root.variables_value).to eq('VAR' => 'root', 'VAR2' => 'val 2', 'VAR3' => 'val3')
         end
 
         describe '#leaf?' do
@@ -360,20 +364,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         it 'reports errors about the invalid variable' do
           expect(root.errors)
             .to include /var1 config uses invalid data keys: invalid/
-        end
-
-        context 'when the FF ci_variables_refactoring_to_variable is disabled' do
-          let(:root_without_ff) { described_class.new(hash, user: user, project: project) }
-
-          before do
-            stub_feature_flags(ci_variables_refactoring_to_variable: false)
-            root_without_ff.compose!
-          end
-
-          it 'reports errors about the invalid variable' do
-            expect(root_without_ff.errors)
-              .to include /variables config should be a hash of key value pairs, value can be a hash/
-          end
         end
       end
     end

@@ -1,7 +1,7 @@
 ---
 stage: Release
 group: Release
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -11,7 +11,7 @@ GitLab provides Docker images with the libraries and tools you need to deploy
 to AWS. You can reference these images in your CI/CD pipeline.
 
 If you're using GitLab.com and deploying to the [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (ECS),
-read about [deploying to ECS](ecs/quick_start_guide.md).
+read about [deploying to ECS](ecs/deploy_to_aws_ecs.md).
 
 ## Authenticate GitLab with AWS
 

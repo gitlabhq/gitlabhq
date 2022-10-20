@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Transaction guidelines
@@ -139,5 +139,5 @@ end
 ```
 
 The `ApplicationRecord` class uses a different database connection than the `Ci::Build` records.
-The two statements in the transaction block are not part of the transaction and are
-rolled back in case something goes wrong. They act as 3rd part calls.
+The two statements in the transaction block are not part of the transaction and are not
+rolled back in case something goes wrong. They act as third-party calls.

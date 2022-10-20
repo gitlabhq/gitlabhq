@@ -10,8 +10,11 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: RedisHLLMetric
+instrumentation_class: AggregatedMetric
 options:
+  aggregate:
+    operator: OR
+    attribute: user_id
   events:
     - users_viewing_analytics_group_devops_adoption
     - i_analytics_dev_ops_adoption

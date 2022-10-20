@@ -88,6 +88,26 @@ RSpec.describe WorkItems::UpdateService do
       end
     end
 
+    context 'when decription is changed' do
+      let(:opts) { { description: 'description changed' } }
+
+      it 'triggers GraphQL description updated subscription' do
+        expect(GraphqlTriggers).to receive(:issuable_description_updated).with(work_item).and_call_original
+
+        update_work_item
+      end
+    end
+
+    context 'when decription is not changed' do
+      let(:opts) { { title: 'title changed' } }
+
+      it 'does not trigger GraphQL description updated subscription' do
+        expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
+
+        update_work_item
+      end
+    end
+
     context 'when updating state_event' do
       context 'when state_event is close' do
         let(:opts) { { state_event: 'close' } }
@@ -289,6 +309,66 @@ RSpec.describe WorkItems::UpdateService do
 
             update_work_item
           end
+        end
+      end
+    end
+
+    describe 'label updates' do
+      let_it_be(:label1) { create(:label, project: project) }
+      let_it_be(:label2) { create(:label, project: project) }
+
+      context 'when labels are changed' do
+        let(:label) { create(:label, project: project) }
+        let(:opts) { { label_ids: [label1.id] } }
+
+        it 'tracks users updating work item labels' do
+          expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_labels_changed_action).with(author: current_user)
+
+          update_work_item
+        end
+
+        it_behaves_like 'broadcasting issuable labels updates' do
+          let(:issuable) { work_item }
+          let(:label_a) { label1 }
+          let(:label_b) { label2 }
+
+          def update_issuable(update_params)
+            described_class.new(
+              project: project,
+              current_user: current_user,
+              params: update_params,
+              spam_params: spam_params,
+              widget_params: widget_params
+            ).execute(work_item)
+          end
+        end
+      end
+
+      context 'when labels are not changed' do
+        shared_examples 'work item update that does not track label updates' do
+          it 'does not track users updating work item labels' do
+            expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).not_to receive(:track_work_item_labels_changed_action)
+
+            update_work_item
+          end
+        end
+
+        context 'when labels param is not provided' do
+          let(:opts) { { title: 'not updating labels' } }
+
+          it_behaves_like 'work item update that does not track label updates'
+        end
+
+        context 'when labels param is provided but labels remain unchanged' do
+          let(:opts) { { label_ids: [] } }
+
+          it_behaves_like 'work item update that does not track label updates'
+        end
+
+        context 'when labels param is provided invalid values' do
+          let(:opts) { { label_ids: [non_existing_record_id] } }
+
+          it_behaves_like 'work item update that does not track label updates'
         end
       end
     end

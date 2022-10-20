@@ -5,12 +5,14 @@ require 'spec_helper'
 RSpec.describe 'getting merge request listings nested in a project' do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:group_label) { create(:group_label, group: group) }
 
   let_it_be_with_reload(:merge_request_a) do
-    create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label])
+    create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label, group_label])
   end
 
   let_it_be(:merge_request_b) do
@@ -18,7 +20,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
   end
 
   let_it_be(:merge_request_c) do
-    create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label])
+    create(:labeled_merge_request, :closed, :unique_branches, source_project: project, labels: [label, group_label])
   end
 
   let_it_be(:merge_request_d) do
@@ -326,6 +328,51 @@ RSpec.describe 'getting merge request listings nested in a project' do
       end
 
       include_examples 'N+1 query check'
+    end
+
+    context 'when award emoji votes' do
+      let(:requested_fields) { [:upvotes, :downvotes] }
+
+      before do
+        create_list(:award_emoji, 2, name: 'thumbsup', awardable: merge_request_a)
+        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: merge_request_b)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting participants' do
+      let(:requested_fields) { 'participants { nodes { name } }' }
+
+      before do
+        create(:award_emoji, :upvote, awardable: merge_request_a)
+        create(:award_emoji, :upvote, awardable: merge_request_b)
+        create(:award_emoji, :upvote, awardable: merge_request_c)
+
+        note_with_emoji_a = create(:note_on_merge_request, noteable: merge_request_a, project: project)
+        note_with_emoji_b = create(:note_on_merge_request, noteable: merge_request_b, project: project)
+        note_with_emoji_c = create(:note_on_merge_request, noteable: merge_request_c, project: project)
+
+        create(:award_emoji, :upvote, awardable: note_with_emoji_a)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_b)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_c)
+      end
+
+      # Executes 3 extra queries to fetch participant_attrs
+      include_examples 'N+1 query check', threshold: 3
+    end
+
+    context 'when requesting labels' do
+      let(:requested_fields) { ['labels { nodes { id } }'] }
+
+      before do
+        project_labels = create_list(:label, 2, project: project)
+        group_labels = create_list(:group_label, 2, group: group)
+
+        merge_request_c.update!(labels: [project_labels, group_labels].flatten)
+      end
+
+      include_examples 'N+1 query check', skip_cached: false
     end
   end
 

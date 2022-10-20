@@ -67,11 +67,13 @@ RSpec.describe Projects::CompareController do
         from: from_ref,
         to: to_ref,
         w: whitespace,
-        page: page
+        page: page,
+        straight: straight
       }
     end
 
     let(:whitespace) { nil }
+    let(:straight) { nil }
     let(:page) { nil }
 
     context 'when the refs exist in the same project' do
@@ -139,6 +141,58 @@ RSpec.describe Projects::CompareController do
         expect(response).to be_successful
         expect(assigns(:diffs).diff_files.first).not_to be_nil
         expect(assigns(:commits).length).to be >= 1
+      end
+    end
+
+    context 'when comparing missing commits between source and target' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+      let(:to_ref) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+      let(:page) { 1 }
+
+      context 'when comparing them in the other direction' do
+        let(:straight) { "false" }
+        let(:from_ref) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+        let(:to_ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+
+        it 'the commits are there' do
+          show_request
+
+          expect(response).to be_successful
+          expect(assigns(:commits).length).to be >= 2
+          expect(assigns(:diffs).raw_diff_files.size).to be >= 2
+          expect(assigns(:diffs).diff_files.first).to be_present
+        end
+      end
+
+      context 'with straight mode true' do
+        let(:from_ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+        let(:to_ref) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+
+        let(:straight) { "true" }
+
+        it 'the commits are empty, but the removed lines are visible as diffs' do
+          show_request
+
+          expect(response).to be_successful
+          expect(assigns(:commits).length).to be == 0
+          expect(assigns(:diffs).diff_files.size).to be >= 4
+        end
+      end
+
+      context 'with straight mode false' do
+        let(:from_ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+        let(:to_ref) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+
+        let(:straight) { "false" }
+
+        it 'the additional commits are not visible in diffs and commits' do
+          show_request
+
+          expect(response).to be_successful
+          expect(assigns(:commits).length).to be == 0
+          expect(assigns(:diffs).diff_files.size).to be == 0
+        end
       end
     end
 
@@ -450,9 +504,12 @@ RSpec.describe Projects::CompareController do
         project_id: project,
         from: from_ref,
         to: to_ref,
+        straight: straight,
         format: :json
       }
     end
+
+    let(:straight) { nil }
 
     context 'when the source and target refs exist' do
       let(:from_ref) { 'improve%2Fawesome' }
@@ -469,10 +526,43 @@ RSpec.describe Projects::CompareController do
           escaped_to_ref = Addressable::URI.unescape(to_ref)
 
           compare_service = CompareService.new(project, escaped_to_ref)
+          compare = compare_service.execute(project, escaped_from_ref, straight: false)
+
+          expect(CompareService).to receive(:new).with(project, escaped_to_ref).and_return(compare_service)
+          expect(compare_service).to receive(:execute).with(project, escaped_from_ref, straight: false).and_return(compare)
+
+          expect(compare).to receive(:commits).and_return(CommitCollection.new(project, [signature_commit, non_signature_commit]))
+          expect(non_signature_commit).to receive(:has_signature?).and_return(false)
+        end
+
+        it 'returns only the commit with a signature' do
+          signatures_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          signatures = json_response['signatures']
+
+          expect(signatures.size).to eq(1)
+          expect(signatures.first['commit_sha']).to eq(signature_commit.sha)
+          expect(signatures.first['html']).to be_present
+        end
+      end
+
+      context 'when the user has access to the project with straight compare' do
+        render_views
+
+        let(:signature_commit) { project.commit_by(oid: '0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
+        let(:non_signature_commit) { build(:commit, project: project, safe_message: "message", sha: 'non_signature_commit') }
+        let(:straight) { "true" }
+
+        before do
+          escaped_from_ref = Addressable::URI.unescape(from_ref)
+          escaped_to_ref = Addressable::URI.unescape(to_ref)
+
+          compare_service = CompareService.new(project, escaped_to_ref)
           compare = compare_service.execute(project, escaped_from_ref)
 
           expect(CompareService).to receive(:new).with(project, escaped_to_ref).and_return(compare_service)
-          expect(compare_service).to receive(:execute).with(project, escaped_from_ref).and_return(compare)
+          expect(compare_service).to receive(:execute).with(project, escaped_from_ref, straight: true).and_return(compare)
 
           expect(compare).to receive(:commits).and_return(CommitCollection.new(project, [signature_commit, non_signature_commit]))
           expect(non_signature_commit).to receive(:has_signature?).and_return(false)

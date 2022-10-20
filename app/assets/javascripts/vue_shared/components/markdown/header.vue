@@ -7,6 +7,8 @@ import {
   ITALIC_TEXT,
   STRIKETHROUGH_TEXT,
   LINK_TEXT,
+  INDENT_LINE,
+  OUTDENT_LINE,
 } from '~/behaviors/shortcuts/keybindings';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
@@ -68,12 +70,15 @@ export default {
   },
   computed: {
     mdTable() {
+      const header = s__('MarkdownEditor|header');
+      const divider = '-'.repeat(header.length);
+      const cell = ' '.repeat(header.length);
+
       return [
-        // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
-        '| header | header |', // eslint-disable-line @gitlab/require-i18n-strings
-        '| ------ | ------ |',
-        '| cell | cell |', // eslint-disable-line @gitlab/require-i18n-strings
-        '| cell | cell |', // eslint-disable-line @gitlab/require-i18n-strings
+        `| ${header} | ${header} |`,
+        `| ${divider} | ${divider} |`,
+        `| ${cell} | ${cell} |`,
+        `| ${cell} | ${cell} |`,
       ].join('\n');
     },
     mdSuggestion() {
@@ -82,7 +87,8 @@ export default {
       );
     },
     mdCollapsibleSection() {
-      return ['<details><summary>Click to expand</summary>', `{text}`, '</details>'].join('\n');
+      const expandText = s__('MarkdownEditor|Click to expand');
+      return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
     },
     isMac() {
       // Accessing properties using ?. to allow tests to use
@@ -170,6 +176,8 @@ export default {
     italic: keysFor(ITALIC_TEXT),
     strikethrough: keysFor(STRIKETHROUGH_TEXT),
     link: keysFor(LINK_TEXT),
+    indent: keysFor(INDENT_LINE),
+    outdent: keysFor(OUTDENT_LINE),
   },
   i18n: {
     writeTabTitle: __('Write'),
@@ -235,6 +243,7 @@ export default {
                 variant="confirm"
                 category="primary"
                 size="small"
+                data-qa-selector="dismiss_suggestion_popover_button"
                 @click="handleSuggestDismissed"
               >
                 {{ __('Got it') }}
@@ -316,6 +325,32 @@ export default {
             tag="- [ ] "
             :button-title="__('Add a checklist')"
             icon="list-task"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('indent')"
+            class="gl-display-none"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Indent line (%{modifierKey}])'), {
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              })
+            "
+            :shortcuts="$options.shortcuts.indent"
+            command="indentLines"
+            icon="list-indent"
+          />
+          <toolbar-button
+            v-if="!restrictedToolBarItems.includes('outdent')"
+            class="gl-display-none"
+            :button-title="
+              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
+              sprintf(s__('MarkdownEditor|Outdent line (%{modifierKey}[)'), {
+                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
+              })
+            "
+            :shortcuts="$options.shortcuts.outdent"
+            command="outdentLines"
+            icon="list-outdent"
           />
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('collapsible-section')"

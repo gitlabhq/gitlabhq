@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Security scanner integration
@@ -180,7 +180,7 @@ Here are some examples to get you started:
 
 As documented in the [Docker Official Images](https://github.com/docker-library/official-images#tags-and-aliases) project,
 it is strongly encouraged that version number tags be given aliases which allows the user to easily refer to the "most recent" release of a particular series.
-See also [Docker Tagging: Best practices for tagging and versioning Docker images](https://docs.microsoft.com/en-us/archive/blogs/stevelasker/docker-tagging-best-practices-for-tagging-and-versioning-docker-images).
+See also [Docker Tagging: Best practices for tagging and versioning Docker images](https://learn.microsoft.com/en-us/archive/blogs/stevelasker/docker-tagging-best-practices-for-tagging-and-versioning-docker-images).
 
 ## Command line
 
@@ -358,6 +358,10 @@ analyzer to use the latest available schemas.
 After the deprecation period for a schema version, the file is removed from GitLab. Reports that
 declare removed versions are rejected, and an error message displays on the corresponding pipeline.
 
+If a report uses a `PATCH` version that doesn't match any vendored schema version, it is validated against
+the latest vendored `PATCH` version. For example, if a report version is 14.0.23 and the latest vendored
+version is 14.0.6, the report is validated against version 14.0.6.
+
 GitLab uses the
 [`json_schemer`](https://www.rubydoc.info/gems/json_schemer) gem to perform validation.
 
@@ -430,10 +434,29 @@ The value of the `category` field matches the report type:
 - `sast`
 - `dast`
 
-##### Scanner
+##### Scan
 
-The `scanner` field is an object that embeds a human-readable `name` and a technical `id`.
-The `id` should not collide with any other scanner another integrator would provide.
+The `scan` field is an object that embeds meta information about the scan itself: the `analyzer`
+and `scanner` that performed the scan, the `start_time` and `end_time` the scan executed,
+and `status` of the scan (either "success" or "failure").
+
+Both the `analyzer` and `scanner` fields are objects that embeds a human-readable `name` and a technical `id`.
+The `id` should not collide with any other analyzers or scanners another integrator would provide.
+
+##### Scan Primary Identifiers
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`. Disabled by default.
+
+The `scan.primary_identifiers` field is an optional field containing an array of
+[primary identifiers](../../user/application_security/terminology/index.md#primary-identifier)).
+This is an exhaustive list of all rulesets for which the analyzer performed the scan.
+
+Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may be empty, this optional field
+should contain the complete list of potential identifiers to inform the Rails application of which
+rules were executed.
+
+When populated, the Rails application will automatically resolve previously detected vulnerabilities as no
+longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description
 

@@ -4,6 +4,7 @@ import { mapState } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { FIELDS } from '~/members/constants';
 import { parseSortParam, buildSortHref } from '~/members/utils';
+import { SORT_DIRECTION_UI } from '~/search/sort/constants';
 
 export default {
   name: 'SortDropdown',
@@ -29,6 +30,9 @@ export default {
     },
     isAscending() {
       return !this.sort.sortDesc;
+    },
+    sortDirectionData() {
+      return this.isAscending ? SORT_DIRECTION_UI.asc : SORT_DIRECTION_UI.desc;
     },
     filteredOptions() {
       return FIELDS.filter(
@@ -70,7 +74,7 @@ export default {
     data-testid="members-sort-dropdown"
     :text="activeOptionLabel"
     :is-ascending="isAscending"
-    :sort-direction-tool-tip="__('Sort direction')"
+    :sort-direction-tool-tip="sortDirectionData.tooltip"
     @sortDirectionChange="handleSortDirectionChange"
   >
     <gl-sorting-item

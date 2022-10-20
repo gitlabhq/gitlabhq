@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Upgrading GitLab **(FREE SELF)**
@@ -392,6 +392,8 @@ The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
 Additional steps between the mentioned versions are possible. We list the minimally necessary steps only.
 
+For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/). The Upgrade Path tool is maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). Share feedback and help improve the tool by raising an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
+
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `15.1.0`       | `14.6.2`     | `14.6.2` -> `14.9.5` -> `14.10.5` -> `15.0.2` -> `15.1.0`                                            | Three intermediate versions are required: `14.9` and `14.10`, `15.0`, then `15.1.0`.                                              |
@@ -477,7 +479,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.3.0
 
-- [Incorrect deletion of object storage files on Geo secondary sites]((https://gitlab.com/gitlab-org/gitlab/-/issues/371397)) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
+- [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later. See [Geo: LFS transfer redirect to primary from secondary site mid-session issue in GitLab 15.1.0 to 15.3.2](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session-in-gitlab-1510-to-1532) for more details.
 
 ### 15.2.0
@@ -498,7 +500,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
   1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
   1. Run `sudo gitlab-ctl reconfigure`.
-- [Incorrect deletion of object storage files on Geo secondary sites]((https://gitlab.com/gitlab-org/gitlab/-/issues/371397)) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
+- [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later. See [Geo: LFS transfer redirect to primary from secondary site mid-session issue in GitLab 15.1.0 to 15.3.2](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session-in-gitlab-1510-to-1532) for more details.
 
 ### 15.1.0
@@ -518,7 +520,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - Unauthenticated requests to the [`ciConfig` GraphQL field](../api/graphql/reference/index.md#queryciconfig) are no longer supported.
   Before you upgrade to GitLab 15.1, add an [access token](../api/index.md#authentication) to your requests.
   The user creating the token must have [permission](../user/permissions.md) to create pipelines in the project.
-- [Incorrect deletion of object storage files on Geo secondary sites]((https://gitlab.com/gitlab-org/gitlab/-/issues/371397)) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
+- [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later. See [Geo: LFS transfer redirect to primary from secondary site mid-session issue in GitLab 15.1.0 to 15.3.2](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session-in-gitlab-1510-to-1532) for more details.
 
 ### 15.0.0
@@ -534,7 +536,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   Gitaly. The previous implementation in GitLab Shell was removed in GitLab 15.0. With this change, global server hooks are stored only inside a subdirectory named after the
   hook type. Global server hooks can no longer be a single hook file in the root of the custom hooks directory. For example, you must use `<custom_hooks_dir>/<hook_name>.d/*` rather
   than `<custom_hooks_dir>/<hook_name>`.
-- [Incorrect deletion of object storage files on Geo secondary sites]((https://gitlab.com/gitlab-org/gitlab/-/issues/371397)) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
+- [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
 
 ### 14.10.0
@@ -1183,7 +1185,7 @@ Read more [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
 ### Geo: Incorrect object storage LFS file deletion on secondary sites in GitLab 15.0.0 to 15.3.2
 
-[Incorrect deletion of object storage files on Geo secondary sites]((https://gitlab.com/gitlab-org/gitlab/-/issues/371397))
+[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
 can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
 
 - GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.

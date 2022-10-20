@@ -9,11 +9,26 @@ RSpec.describe API::Entities::BulkImports::EntityFailure do
 
   it 'has the correct attributes' do
     expect(subject).to include(
-      :pipeline_class,
-      :pipeline_step,
+      :relation,
+      :step,
       :exception_class,
+      :exception_message,
       :correlation_id_value,
       :created_at
     )
+  end
+
+  describe 'exception message' do
+    it 'truncates exception message to 72 characters' do
+      failure.update!(exception_message: 'a' * 100)
+
+      expect(subject[:exception_message].length).to eq(72)
+    end
+
+    it 'removes paths from the message' do
+      failure.update!(exception_message: 'Test /foo/bar')
+
+      expect(subject[:exception_message]).to eq('Test [FILTERED]')
+    end
   end
 end

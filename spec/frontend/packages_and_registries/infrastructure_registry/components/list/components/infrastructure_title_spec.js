@@ -74,7 +74,7 @@ describe('Infrastructure Title', () => {
       mountComponent({ ...exampleProps, count });
     });
 
-    it(exist ? 'exists' : 'does not exist', () => {
+    it(`${exist ? 'exists' : 'does not exist'}`, () => {
       expect(findMetadataItem().exists()).toBe(exist);
     });
 

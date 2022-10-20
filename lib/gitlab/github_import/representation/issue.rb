@@ -15,28 +15,28 @@ module Gitlab
 
         # Builds an issue from a GitHub API response.
         #
-        # issue - An instance of `Sawyer::Resource` containing the issue
+        # issue - An instance of `Hash` containing the issue
         #         details.
         def self.from_api_response(issue, additional_data = {})
           user =
-            if issue.user
-              Representation::User.from_api_response(issue.user)
+            if issue[:user]
+              Representation::User.from_api_response(issue[:user])
             end
 
           hash = {
-            iid: issue.number,
-            title: issue.title,
-            description: issue.body,
-            milestone_number: issue.milestone&.number,
-            state: issue.state == 'open' ? :opened : :closed,
-            assignees: issue.assignees.map do |u|
+            iid: issue[:number],
+            title: issue[:title],
+            description: issue[:body],
+            milestone_number: issue.dig(:milestone, :number),
+            state: issue[:state] == 'open' ? :opened : :closed,
+            assignees: issue[:assignees].map do |u|
               Representation::User.from_api_response(u)
             end,
-            label_names: issue.labels.map(&:name),
+            label_names: issue[:labels].map { _1[:name] },
             author: user,
-            created_at: issue.created_at,
-            updated_at: issue.updated_at,
-            pull_request: issue.pull_request ? true : false,
+            created_at: issue[:created_at],
+            updated_at: issue[:updated_at],
+            pull_request: issue[:pull_request] ? true : false,
             work_item_type_id: additional_data[:work_item_type_id]
           }
 

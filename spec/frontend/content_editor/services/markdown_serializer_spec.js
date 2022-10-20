@@ -1204,6 +1204,24 @@ Oranges are orange [^1]
     );
   });
 
+  it('correctly adds a space between a preceding block element and a markdown table', () => {
+    expect(
+      serialize(
+        bulletList(listItem(paragraph('List item 1')), listItem(paragraph('List item 2'))),
+        table(tableRow(tableHeader(paragraph('header'))), tableRow(tableCell(paragraph('cell')))),
+      ).trim(),
+    ).toBe(
+      `
+* List item 1
+* List item 2
+
+| header |
+|--------|
+| cell |
+    `.trim(),
+    );
+  });
+
   it('correctly serializes reference definition', () => {
     expect(
       serialize(

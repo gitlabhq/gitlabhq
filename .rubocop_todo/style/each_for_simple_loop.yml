@@ -1,0 +1,6 @@
+---
+# Cop supports --auto-correct.
+Style/EachForSimpleLoop:
+  Exclude:
+    - 'ee/spec/lib/gitlab/insights/reducers/count_per_period_reducer_spec.rb'
+    - 'spec/services/members/invitation_reminder_email_service_spec.rb'

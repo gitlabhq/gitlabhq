@@ -23,7 +23,7 @@
     - if deployment.deployable
       .table-mobile-content
         .flex-truncate-parent
-          .flex-truncate-child
+          .flex-truncate-child.has-tooltip.gl-white-space-normal.gl-md-white-space-nowrap{ :title => "#{deployment.deployable.name} (##{deployment.deployable.id})", data: { container: 'body' } }
             = link_to deployment_path(deployment), class: 'build-link' do
               #{deployment.deployable.name} (##{deployment.deployable.id})
     - else

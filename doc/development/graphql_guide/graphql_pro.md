@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GraphQL Pro
@@ -16,6 +16,6 @@ The main purpose is for support. Per the website:
 > creator and maintainer. Get prioritized support for issues and requests.
 
 Note that we **cannot** use the Pro version directly in our product, since we are
-an Open Core product - we can not require customers to purchase the Pro version, nor can we ship it.
+an Open Core product - we cannot require customers to purchase the Pro version, nor can we ship it.
 
 Details on the billing account and gem licensing can be found in the Engineering 1Password vault.

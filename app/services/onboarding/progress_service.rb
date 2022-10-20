@@ -12,7 +12,7 @@ module Onboarding
       def execute(action:)
         return unless Onboarding::Progress.not_completed?(namespace_id, action)
 
-        Namespaces::OnboardingProgressWorker.perform_async(namespace_id, action)
+        Onboarding::ProgressWorker.perform_async(namespace_id, action)
       end
     end
 

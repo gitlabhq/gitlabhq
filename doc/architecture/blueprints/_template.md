@@ -1,4 +1,7 @@
 ---
+stage: none
+group: unassigned
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 status: proposed
 creation-date: yyyy-mm-dd
 authors: [ "@username" ]
@@ -52,7 +55,10 @@ good title can help communicate what the blueprint is and should be considered
 as part of any review.
 -->
 
-[[_TOC_]]
+<!--
+For long pages, consider creating a table of contents.
+The `[_TOC_]` function is not supported on docs.gitlab.com.
+-->
 
 ## Summary
 

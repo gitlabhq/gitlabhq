@@ -6,9 +6,9 @@ product_stage: secure
 product_group: static_analysis
 product_category: static_application_security_testing
 value_type: number
-status: active
-milestone: "15.0"
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81847'
+status: removed
+milestone: '15.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81847
 time_frame: 28d
 data_source: redis_hll
 data_category: optional
@@ -23,3 +23,5 @@ tier:
 options:
   events:
   - p_ci_templates_implicit_jobs_sast_latest
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90163
+milestone_removed: '15.5'

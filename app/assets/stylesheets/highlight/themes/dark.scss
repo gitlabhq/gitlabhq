@@ -175,6 +175,8 @@ $dark-il: #de935f;
     }
 
     &.diff-grid-row {
+      --diff-expansion-background-color: #{$gray-600};
+
       @include dark-diff-expansion-line;
     }
 

@@ -1,5 +1,6 @@
 query getGroupRunnersCount(
   $groupFullPath: ID!
+  $membership: CiRunnerMembershipFilter
   $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType
@@ -9,7 +10,7 @@ query getGroupRunnersCount(
   group(fullPath: $groupFullPath) {
     id # Apollo required
     runners(
-      membership: DESCENDANTS
+      membership: $membership
       paused: $paused
       status: $status
       type: $type

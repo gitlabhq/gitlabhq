@@ -386,4 +386,16 @@ describe('text_utility', () => {
       expect(textUtils.limitedCounterWithDelimiter(120)).toBe(120);
     });
   });
+
+  describe('base64EncodeUnicode', () => {
+    it('encodes unicode characters', () => {
+      expect(textUtils.base64EncodeUnicode('😀')).toBe('8J+YgA==');
+    });
+  });
+
+  describe('base64DecodeUnicode', () => {
+    it('decodes unicode characters', () => {
+      expect(textUtils.base64DecodeUnicode('8J+YgA==')).toBe('😀');
+    });
+  });
 });

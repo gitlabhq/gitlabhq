@@ -65,7 +65,7 @@ Inc._
 - There is no way to automatically notify a user when they are approaching thresholds.
 - There is no single way to change limits for a namespace / project / user / customer.
 - There is no single way to monitor limits through real-time metrics.
-- There is no framework for hierarchical limit configuration (instance / namespace / sub-group / project).
+- There is no framework for hierarchical limit configuration (instance / namespace / subgroup / project).
 - We allow disabling rate-limiting for some marquee SaaS customers, but this
   increases a risk for those same customers. We should instead be able to set
   higher limits.
@@ -357,7 +357,7 @@ hierarchy. Choosing a proper solution will require a thoughtful research.
 1. Build application limits API in a way that it can be easily extracted to a separate service.
 1. Build application limits definition in a way that is independent from the Rails application.
 1. Build tooling that produce consistent behavior and results across programming languages.
-1. Build the new framework in a way that we can extend to allow self-managed admins to customize limits.
+1. Build the new framework in a way that we can extend to allow self-managed administrators to customize limits.
 1. Maintain consistent features and behavior across SaaS and self-managed codebase.
 1. Be mindful about a cognitive load added by the hierarchical limits, aim to reduce it.
 
@@ -388,7 +388,7 @@ Proposal:
 | Author                       | Hayley Swimelar         |
 | Engineering Leader           | Sam Goldstein           |
 | Product Manager              |                         |
-| Architecture Evolution Coach |                         |
+| Architecture Evolution Coach | Andrew Newdigate        |
 | Recommender                  |                         |
 | Recommender                  |                         |
 | Recommender                  |                         |

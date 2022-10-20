@@ -10,6 +10,8 @@ module MergeRequests
       if reviewer
         return error("Failed to update reviewer") unless reviewer.update(state: :reviewed)
 
+        trigger_merge_request_reviewers_updated(merge_request)
+
         success
       else
         error("Reviewer not found")

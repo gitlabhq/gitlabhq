@@ -2,7 +2,7 @@
 import { GlButton, GlAlert, GlTabs, GlTab } from '@gitlab/ui';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { typeSet, i18n, tabIndices } from '../constants';
@@ -75,7 +75,7 @@ export default {
         return nodes;
       },
       error(err) {
-        createFlash({ message: err });
+        createAlert({ message: err });
       },
     },
     currentIntegration: {
@@ -125,7 +125,7 @@ export default {
         .then(({ data: { httpIntegrationCreate, prometheusIntegrationCreate } = {} } = {}) => {
           const error = httpIntegrationCreate?.errors[0] || prometheusIntegrationCreate?.errors[0];
           if (error) {
-            createFlash({ message: error });
+            createAlert({ message: error });
             return;
           }
 
@@ -140,7 +140,7 @@ export default {
           }
         })
         .catch(() => {
-          createFlash({ message: ADD_INTEGRATION_ERROR });
+          createAlert({ message: ADD_INTEGRATION_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -161,7 +161,7 @@ export default {
         .then(({ data: { httpIntegrationUpdate, prometheusIntegrationUpdate } = {} } = {}) => {
           const error = httpIntegrationUpdate?.errors[0] || prometheusIntegrationUpdate?.errors[0];
           if (error) {
-            createFlash({ message: error });
+            createAlert({ message: error });
             return;
           }
 
@@ -174,13 +174,13 @@ export default {
             this.clearCurrentIntegration({ type });
           }
 
-          createFlash({
+          createAlert({
             message: this.$options.i18n.changesSaved,
-            type: FLASH_TYPES.SUCCESS,
+            variant: VARIANT_SUCCESS,
           });
         })
         .catch(() => {
-          createFlash({ message: UPDATE_INTEGRATION_ERROR });
+          createAlert({ message: UPDATE_INTEGRATION_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -198,7 +198,7 @@ export default {
             const [error] =
               httpIntegrationResetToken?.errors || prometheusIntegrationResetToken.errors;
             if (error) {
-              return createFlash({ message: error });
+              return createAlert({ message: error });
             }
 
             const integration =
@@ -212,14 +212,14 @@ export default {
               variables: integration,
             });
 
-            return createFlash({
+            return createAlert({
               message: this.$options.i18n.changesSaved,
-              type: FLASH_TYPES.SUCCESS,
+              variant: VARIANT_SUCCESS,
             });
           },
         )
         .catch(() => {
-          createFlash({ message: RESET_INTEGRATION_TOKEN_ERROR });
+          createAlert({ message: RESET_INTEGRATION_TOKEN_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -252,7 +252,7 @@ export default {
             );
           },
           error() {
-            createFlash({ message: DEFAULT_ERROR });
+            createAlert({ message: DEFAULT_ERROR });
           },
         });
       } else {
@@ -272,7 +272,7 @@ export default {
           this.tabIndex = tabIndex;
         })
         .catch(() => {
-          createFlash({ message: DEFAULT_ERROR });
+          createAlert({ message: DEFAULT_ERROR });
         });
     },
     deleteIntegration({ id, type }) {
@@ -290,16 +290,16 @@ export default {
         .then(({ data: { httpIntegrationDestroy } = {} } = {}) => {
           const error = httpIntegrationDestroy?.errors[0];
           if (error) {
-            return createFlash({ message: error });
+            return createAlert({ message: error });
           }
           this.clearCurrentIntegration({ type });
-          return createFlash({
+          return createAlert({
             message: this.$options.i18n.integrationRemoved,
-            type: FLASH_TYPES.SUCCESS,
+            variant: VARIANT_SUCCESS,
           });
         })
         .catch(() => {
-          createFlash({ message: DELETE_INTEGRATION_ERROR });
+          createAlert({ message: DELETE_INTEGRATION_ERROR });
         })
         .finally(() => {
           this.isUpdating = false;
@@ -320,9 +320,9 @@ export default {
       return service
         .updateTestAlert(payload)
         .then(() => {
-          return createFlash({
+          return createAlert({
             message: this.$options.i18n.alertSent,
-            type: FLASH_TYPES.SUCCESS,
+            variant: VARIANT_SUCCESS,
           });
         })
         .catch((error) => {
@@ -330,7 +330,7 @@ export default {
           if (error.response?.status === httpStatusCodes.FORBIDDEN) {
             message = INTEGRATION_INACTIVE_PAYLOAD_TEST_ERROR;
           }
-          createFlash({ message });
+          createAlert({ message });
         });
     },
     saveAndTestAlertPayload(integration, payload) {

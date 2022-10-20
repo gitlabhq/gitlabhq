@@ -6,6 +6,7 @@ module API
     include PaginationParams
 
     feature_category :snippets
+    urgency :low
 
     resource :snippets do
       helpers Helpers::SnippetsHelpers
@@ -51,7 +52,7 @@ module API
 
         use :pagination
       end
-      get 'public', urgency: :low do
+      get 'public' do
         authenticate!
 
         filter_params = declared_params(include_missing: false).merge(only_personal: true)
@@ -192,7 +193,7 @@ module API
       params do
         use :raw_file_params
       end
-      get ":id/files/:ref/:file_path/raw", urgency: :low, requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+      get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
         snippet = snippets.find_by_id(params.delete(:id))
         not_found!('Snippet') unless snippet&.repo_exists?
 

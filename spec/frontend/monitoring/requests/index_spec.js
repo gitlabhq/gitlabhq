@@ -129,7 +129,7 @@ describe('monitoring metrics_requests', () => {
       });
     });
 
-    test.each`
+    it.each`
       code                                | reason
       ${statusCodes.BAD_REQUEST}          | ${'Parameters are missing or incorrect'}
       ${statusCodes.UNPROCESSABLE_ENTITY} | ${"Expression can't be executed"}

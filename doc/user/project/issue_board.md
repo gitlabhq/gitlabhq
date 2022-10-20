@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Issue boards **(FREE)**
@@ -161,7 +161,7 @@ Cards finished by the UX team automatically appear in the **Frontend** column wh
 for them.
 
 NOTE:
-For a broader use case, please see the blog post
+For a broader use case, see the blog post
 [What is GitLab Flow?](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/).
 For a real use case example, you can read why
 [Codepen decided to adopt issue boards](https://about.gitlab.com/blog/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
@@ -243,13 +243,13 @@ This allows you to create unique boards according to your team's need.
 
 ![Create scoped board](img/issue_board_creation_v13_6.png)
 
-You can define the scope of your board when creating it or by clicking the **Edit board** button.
+You can define the scope of your board when creating it or by selecting the **Edit board** button.
 After a milestone, iteration, assignee, or weight is assigned to an issue board, you can no longer
 filter through these in the search bar. In order to do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 
 If you don't have editing permission in a board, you're still able to see the configuration by
-clicking **View scope**.
+selecting **View scope**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/m5UTNCSqaDk) of
@@ -474,7 +474,7 @@ Additionally, you can also see the time tracking value.
 
 ### Create a new list
 
-Create a new list by clicking the **Create** button in the upper right corner of the issue board.
+Create a new list by selecting the **Create** button in the upper right corner of the issue board.
 
 ![creating a new list in an issue board](img/issue_board_add_list_v14_1.png)
 
@@ -698,8 +698,8 @@ A few things to remember:
   and adds the label from the list it goes to.
 - An issue can exist in multiple lists if it has more than one label.
 - Lists are populated with issues automatically if the issues are labeled.
-- Clicking the issue title inside a card takes you to that issue.
-- Clicking a label inside a card quickly filters the entire issue board
+- Selecting the issue title inside a card takes you to that issue.
+- Selecting a label inside a card quickly filters the entire issue board
   and show only the issues from all lists that have that label.
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues, start scrolling down and the next

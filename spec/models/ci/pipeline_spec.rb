@@ -43,12 +43,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_one(:triggered_by_pipeline) }
   it { is_expected.to have_one(:source_job) }
   it { is_expected.to have_one(:pipeline_config) }
+  it { is_expected.to have_one(:pipeline_metadata) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :git_author_full_text }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
+  it { is_expected.to delegate_method(:title).to(:pipeline_metadata).allow_nil }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:sha) }
@@ -2981,6 +2983,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 
+    it 'logs the event' do
+      allow(Gitlab::AppJsonLogger).to receive(:info)
+
+      pipeline.cancel_running
+
+      expect(Gitlab::AppJsonLogger)
+        .to have_received(:info)
+        .with(
+          a_hash_including(
+            event: 'pipeline_cancel_running',
+            pipeline_id: pipeline.id,
+            auto_canceled_by_pipeline_id: nil,
+            cascade_to_children: true,
+            execute_async: true
+          )
+        )
+    end
+
     context 'when there is a running external job and a regular job' do
       before do
         create(:ci_build, :running, pipeline: pipeline)
@@ -3813,7 +3833,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   describe '#upstream_root' do
     subject { pipeline.upstream_root }
 
-    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
 
     context 'when pipeline is child of child pipeline' do
       let!(:root_ancestor) { create(:ci_pipeline) }
@@ -4529,10 +4549,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       it 'returns accessibility report with collected data' do
-        expect(subject.urls.keys).to match_array([
-          "https://pa11y.org/",
-          "https://about.gitlab.com/"
-        ])
+        expect(subject.urls.keys).to match_array(
+          [
+            "https://pa11y.org/",
+            "https://about.gitlab.com/"
+          ])
       end
 
       context 'when builds are retried' do
@@ -5316,19 +5337,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#authorized_cluster_agents' do
+  describe '#cluster_agent_authorizations' do
     let(:pipeline) { create(:ci_empty_pipeline, :created) }
-    let(:agent) { instance_double(Clusters::Agent) }
-    let(:authorization) { instance_double(Clusters::Agents::GroupAuthorization, agent: agent) }
+    let(:authorization) { instance_double(Clusters::Agents::GroupAuthorization) }
     let(:finder) { double(execute: [authorization]) }
 
-    it 'retrieves agent records from the finder and caches the result' do
+    it 'retrieves authorization records from the finder and caches the result' do
       expect(Clusters::AgentAuthorizationsFinder).to receive(:new).once
         .with(pipeline.project)
         .and_return(finder)
 
-      expect(pipeline.authorized_cluster_agents).to contain_exactly(agent)
-      expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
+      expect(pipeline.cluster_agent_authorizations).to contain_exactly(authorization)
+      expect(pipeline.cluster_agent_authorizations).to contain_exactly(authorization) # cached
     end
   end
 
@@ -5486,7 +5506,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   end
 
   describe 'partitioning' do
-    let(:pipeline) { build(:ci_pipeline) }
+    let(:pipeline) { build(:ci_pipeline, partition_id: nil) }
 
     before do
       allow(described_class).to receive(:current_partition_value) { 123 }
@@ -5513,6 +5533,75 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
       it 'does not change the partition_id value' do
         expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
+      end
+    end
+  end
+
+  describe '#notes=' do
+    context 'when notes already exist' do
+      it 'does not create duplicate notes', :aggregate_failures do
+        time = Time.zone.now
+        pipeline = create(:ci_pipeline, user: user, project: project)
+        note = Note.new(
+          note: 'note',
+          noteable_type: 'Commit',
+          noteable_id: pipeline.id,
+          commit_id: pipeline.id,
+          author_id: user.id,
+          project_id: pipeline.project_id,
+          created_at: time
+        )
+        another_note = note.dup.tap { |note| note.note = 'another note' }
+
+        expect(project.notes.for_commit_id(pipeline.sha).count).to eq(0)
+
+        pipeline.notes = [note]
+
+        expect(project.notes.for_commit_id(pipeline.sha).count).to eq(1)
+
+        pipeline.notes = [note, note, another_note]
+
+        expect(project.notes.for_commit_id(pipeline.sha).count).to eq(2)
+        expect(project.notes.for_commit_id(pipeline.sha).pluck(:note)).to contain_exactly(note.note, another_note.note)
+      end
+    end
+  end
+
+  describe '#has_erasable_artifacts?' do
+    subject { pipeline.has_erasable_artifacts? }
+
+    context 'when pipeline is not complete' do
+      let(:pipeline) { create(:ci_pipeline, :running, :with_job) }
+
+      context 'and has erasable artifacts' do
+        before do
+          create(:ci_job_artifact, :archive, job: pipeline.builds.first)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when pipeline is complete' do
+      let(:pipeline) { create(:ci_pipeline, :success, :with_job) }
+
+      context 'and has no artifacts' do
+        it { is_expected.to be_falsey }
+      end
+
+      Ci::JobArtifact.erasable_file_types.each do |type|
+        context "and has an artifact of type #{type}" do
+          before do
+            create(
+              :ci_job_artifact,
+              file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+              file_type: type,
+              job: pipeline.builds.first
+            )
+          end
+
+          it { is_expected.to be_truthy }
+        end
       end
     end
   end

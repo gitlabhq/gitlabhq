@@ -14,7 +14,8 @@ namespace :gitlab do
             table_name: table_name,
             connection: connection,
             database_name: database_name,
-            logger: Logger.new($stdout)
+            logger: Logger.new($stdout),
+            dry_run: ENV['DRY_RUN'] == 'true'
           )
 
           if schemas_for_connection.include?(schema_name.to_sym)

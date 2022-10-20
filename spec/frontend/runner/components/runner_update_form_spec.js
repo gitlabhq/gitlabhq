@@ -145,7 +145,7 @@ describe('RunnerUpdateForm', () => {
     });
 
     it('Form skeleton is shown', () => {
-      expect(wrapper.find(GlSkeletonLoader).exists()).toBe(true);
+      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
       expect(findFields()).toHaveLength(0);
     });
 

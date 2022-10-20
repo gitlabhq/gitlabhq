@@ -14,7 +14,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
   it { expect(subject.importer_class).to eq(Gitlab::GithubImport::Importer::NoteImporter) }
   it { expect(subject.collection_method).to eq(:issue_comments) }
   it { expect(subject.object_type).to eq(:note) }
-  it { expect(subject.id_for_already_imported_cache(double(id: 1))).to eq(1) }
+  it { expect(subject.id_for_already_imported_cache({ id: 1 })).to eq(1) }
 
   describe '#each_object_to_import', :clean_gitlab_redis_cache do
     let(:issue) do
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
       )
     end
 
-    let(:note) { double(id: 1) }
+    let(:note) { { id: 1 } }
     let(:page) { double(objects: [note], number: 1) }
 
     it 'fetches data' do

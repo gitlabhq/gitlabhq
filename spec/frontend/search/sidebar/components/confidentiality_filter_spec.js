@@ -34,7 +34,7 @@ describe('ConfidentialityFilter', () => {
     wrapper = null;
   });
 
-  const findRadioFilter = () => wrapper.find(RadioFilter);
+  const findRadioFilter = () => wrapper.findComponent(RadioFilter);
 
   describe('template', () => {
     beforeEach(() => {

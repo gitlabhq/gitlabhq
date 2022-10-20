@@ -1,123 +1,116 @@
-import Vue, { nextTick } from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { GlFormRadioGroup } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import RadioGroup from '~/ide/components/commit_sidebar/radio_group.vue';
 import { createStore } from '~/ide/stores';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 describe('IDE commit sidebar radio group', () => {
-  let vm;
+  let wrapper;
   let store;
 
-  beforeEach(async () => {
+  const createComponent = (config = {}) => {
     store = createStore();
 
-    const Component = Vue.extend(RadioGroup);
-
     store.state.commit.commitAction = '2';
+    store.state.commit.newBranchName = 'test-123';
 
-    vm = createComponentWithStore(Component, store, {
+    wrapper = mount(RadioGroup, {
+      store,
+      propsData: config.props,
+      slots: config.slots,
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
+    });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  describe('without input', () => {
+    const props = {
       value: '1',
       label: 'test',
       checked: true,
+    };
+
+    it('uses label if present', () => {
+      createComponent({ props });
+
+      expect(wrapper.text()).toContain('test');
     });
 
-    vm.$mount();
+    it('uses slot if label is not present', () => {
+      createComponent({ props: { value: '1', checked: true }, slots: { default: 'Testing slot' } });
 
-    await nextTick();
-  });
-
-  afterEach(() => {
-    vm.$destroy();
-  });
-
-  it('uses label if present', () => {
-    expect(vm.$el.textContent).toContain('test');
-  });
-
-  it('uses slot if label is not present', async () => {
-    vm.$destroy();
-
-    vm = new Vue({
-      components: {
-        RadioGroup,
-      },
-      store,
-      render: (createElement) =>
-        createElement('radio-group', { props: { value: '1' } }, 'Testing slot'),
+      expect(wrapper.text()).toContain('Testing slot');
     });
 
-    vm.$mount();
+    it('updates store when changing radio button', async () => {
+      createComponent({ props });
 
-    await nextTick();
-    expect(vm.$el.textContent).toContain('Testing slot');
-  });
+      await wrapper.find('input').trigger('change');
 
-  it('updates store when changing radio button', async () => {
-    vm.$el.querySelector('input').dispatchEvent(new Event('change'));
-
-    await nextTick();
-    expect(store.state.commit.commitAction).toBe('1');
+      expect(store.state.commit.commitAction).toBe('1');
+    });
   });
 
   describe('with input', () => {
-    beforeEach(async () => {
-      vm.$destroy();
-
-      const Component = Vue.extend(RadioGroup);
-
-      store.state.commit.commitAction = '1';
-      store.state.commit.newBranchName = 'test-123';
-
-      vm = createComponentWithStore(Component, store, {
-        value: '1',
-        label: 'test',
-        checked: true,
-        showInput: true,
-      });
-
-      vm.$mount();
-
-      await nextTick();
-    });
+    const props = {
+      value: '2',
+      label: 'test',
+      checked: true,
+      showInput: true,
+    };
 
     it('renders input box when commitAction matches value', () => {
-      expect(vm.$el.querySelector('.form-control')).not.toBeNull();
+      createComponent({ props: { ...props, value: '2' } });
+
+      expect(wrapper.find('.form-control').exists()).toBe(true);
     });
 
-    it('hides input when commitAction doesnt match value', async () => {
-      store.state.commit.commitAction = '2';
+    it('hides input when commitAction doesnt match value', () => {
+      createComponent({ props: { ...props, value: '1' } });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.form-control')).toBeNull();
+      expect(wrapper.find('.form-control').exists()).toBe(false);
     });
 
     it('updates branch name in store on input', async () => {
-      const input = vm.$el.querySelector('.form-control');
-      input.value = 'testing-123';
-      input.dispatchEvent(new Event('input'));
+      createComponent({ props });
 
-      await nextTick();
+      await wrapper.find('.form-control').setValue('testing-123');
+
       expect(store.state.commit.newBranchName).toBe('testing-123');
     });
 
     it('renders newBranchName if present', () => {
-      const input = vm.$el.querySelector('.form-control');
+      createComponent({ props });
 
-      expect(input.value).toBe('test-123');
+      const input = wrapper.find('.form-control');
+
+      expect(input.element.value).toBe('test-123');
     });
   });
 
   describe('tooltipTitle', () => {
     it('returns title when disabled', () => {
-      vm.title = 'test title';
-      vm.disabled = true;
+      createComponent({
+        props: { value: '1', label: 'test', disabled: true, title: 'test title' },
+      });
 
-      expect(vm.tooltipTitle).toBe('test title');
+      const tooltip = getBinding(wrapper.findComponent(GlFormRadioGroup).element, 'gl-tooltip');
+      expect(tooltip.value).toBe('test title');
     });
 
     it('returns blank when not disabled', () => {
-      vm.title = 'test title';
+      createComponent({
+        props: { value: '1', label: 'test', title: 'test title' },
+      });
 
-      expect(vm.tooltipTitle).not.toBe('test title');
+      const tooltip = getBinding(wrapper.findComponent(GlFormRadioGroup).element, 'gl-tooltip');
+
+      expect(tooltip.value).toBe('');
     });
   });
 });

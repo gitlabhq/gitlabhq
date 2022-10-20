@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Database Review Guidelines
@@ -240,9 +240,11 @@ Include in the MR description:
   - Check queries timing (If any): In a single transaction, cumulative query time executed in a migration
     needs to fit comfortably in `15s` - preferably much less than that - on GitLab.com.
   - For column removals, make sure the column has been [ignored in a previous release](database/avoiding_downtime_in_migrations.md#dropping-columns)
-- Check [background migrations](database/background_migrations.md):
+- Check [batched background migrations](database/batched_background_migrations.md):
   - Establish a time estimate for execution on GitLab.com. For historical purposes,
     it's highly recommended to include this estimation on the merge request description.
+    This can be the number of expected batches times the delay interval.
+  - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - If a single `update` is below than `1s` the query can be placed
       directly in a regular migration (inside `db/migrate`).
   - Background migrations are normally used, but not limited to:
@@ -253,8 +255,6 @@ Include in the MR description:
     it's suggested to treat background migrations as
     [post migrations](migration_style_guide.md#choose-an-appropriate-migration-type):
     place them in `db/post_migrate` instead of `db/migrate`.
-  - If a migration [has tracking enabled](database/background_migrations.md#background-jobs-tracking),
-    ensure `mark_all_as_succeeded` is called even if no work is done.
 - Check [timing guidelines for migrations](migration_style_guide.md#how-long-a-migration-should-take)
 - Check migrations are reversible and implement a `#down` method
 - Check new table migrations:

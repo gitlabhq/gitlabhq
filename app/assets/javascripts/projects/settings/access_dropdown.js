@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 import { escape, find, countBy } from 'lodash';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { n__, s__, __, sprintf } from '~/locale';
 import { getUsers, getGroups, getDeployKeys } from './api/access_dropdown_api';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from './constants';
@@ -326,12 +326,12 @@ export default class AccessDropdown {
           );
         })
         .catch(() => {
-          createFlash({ message: __('Failed to load groups, users and deploy keys.') });
+          createAlert({ message: __('Failed to load groups, users and deploy keys.') });
         });
     } else {
       getDeployKeys(query)
         .then((deployKeysResponse) => callback(this.consolidateData(deployKeysResponse.data)))
-        .catch(() => createFlash({ message: __('Failed to load deploy keys.') }));
+        .catch(() => createAlert({ message: __('Failed to load deploy keys.') }));
     }
   }
 

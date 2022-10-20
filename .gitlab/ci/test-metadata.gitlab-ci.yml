@@ -1,5 +1,5 @@
 .tests-metadata-state:
-  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   before_script:
     - source scripts/utils.sh
   artifacts:

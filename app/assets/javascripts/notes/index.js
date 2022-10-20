@@ -1,15 +1,17 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import NotesApp from './components/notes_app.vue';
-import initDiscussionFilters from './discussion_filters';
 import { store } from './stores';
-import initTimelineToggle from './timeline';
+import { getNotesFilterData } from './utils/get_notes_filter_data';
 
 export default () => {
   const el = document.getElementById('js-vue-notes');
   if (!el) {
     return;
   }
+
+  const notesFilterProps = getNotesFilterData(el);
+  const showTimelineViewToggle = parseBoolean(el.dataset.showTimelineViewToggle);
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -19,6 +21,9 @@ export default () => {
       NotesApp,
     },
     store,
+    provide: {
+      showTimelineViewToggle,
+    },
     data() {
       const notesDataset = el.dataset;
       const parsedUserData = JSON.parse(notesDataset.currentUserData);
@@ -56,11 +61,9 @@ export default () => {
           noteableData: this.noteableData,
           notesData: this.notesData,
           userData: this.currentUserData,
+          ...notesFilterProps,
         },
       });
     },
   });
-
-  initDiscussionFilters(store);
-  initTimelineToggle(store);
 };

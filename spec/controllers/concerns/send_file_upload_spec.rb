@@ -96,9 +96,10 @@ RSpec.describe SendFileUpload do
           expect(controller).to receive(:params).at_least(:once).and_return(width: '64')
           expect(controller).to receive(:head).with(:ok)
 
-          expect(Gitlab::Workhorse).to receive(:send_scaled_image).with(a_string_matching('^(/.+|https://.+)'), 64, 'image/png').and_return([
-            Gitlab::Workhorse::SEND_DATA_HEADER, "send-scaled-img:faux"
-          ])
+          expect(Gitlab::Workhorse).to receive(:send_scaled_image)
+           .with(a_string_matching('^(/.+|https://.+)'), 64, 'image/png')
+           .and_return([Gitlab::Workhorse::SEND_DATA_HEADER, "send-scaled-img:faux"])
+
           expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, "send-scaled-img:faux")
 
           subject

@@ -315,7 +315,6 @@ export default {
     data-qa-selector="mr_widget_extension"
   >
     <state-container
-      :mr="mr"
       :status="statusIconName"
       :is-loading="isLoadingSummary"
       :class="{ 'gl-cursor-pointer': isCollapsible }"
@@ -324,7 +323,7 @@ export default {
       @mouseup="onRowMouseUp"
     >
       <div
-        class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
+        class="media-body gl-display-flex gl-flex-direction-row! gl-w-full"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">

@@ -1,0 +1,17 @@
+query BlockingEpics($fullPath: ID!, $iid: ID) {
+  group(fullPath: $fullPath) {
+    id
+    issuable: epic(iid: $iid) {
+      id
+      blockingIssuables: blockedByEpics {
+        nodes {
+          id
+          iid
+          title
+          reference(full: true)
+          webUrl
+        }
+      }
+    }
+  }
+}

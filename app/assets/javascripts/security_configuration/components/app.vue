@@ -21,7 +21,9 @@ export const i18n = {
   ),
   description: s__(
     `SecurityConfiguration|Once you've enabled a scan for the default branch,
-     any subsequent feature branch you create will include the scan.`,
+     any subsequent feature branch you create will include the scan. An enabled
+     scanner will not be reflected as such until the pipeline has been
+     successfully executed and it has generated valid artifacts.`,
   ),
   securityConfiguration: __('Security Configuration'),
   vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),
@@ -165,7 +167,12 @@ export default {
       </template>
     </user-callout-dismisser>
 
-    <gl-tabs content-class="gl-pt-0" sync-active-tab-with-query-params lazy>
+    <gl-tabs
+      content-class="gl-pt-0"
+      data-qa-selector="security_configuration_container"
+      sync-active-tab-with-query-params
+      lazy
+    >
       <gl-tab
         data-testid="security-testing-tab"
         :title="$options.i18n.securityTesting"

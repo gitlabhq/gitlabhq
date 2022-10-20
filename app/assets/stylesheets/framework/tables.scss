@@ -4,22 +4,6 @@
 }
 
 table {
-  /*
-  * TODO
-  * This is a temporary workaround until we fix the neutral
-  * color palette in https://gitlab.com/gitlab-org/gitlab/-/issues/213570
-  *
-  * The overwrites here affected the following areas:
-  * - The subscription seats table. When removing this code, the .seats-table
-  *   <th> and margin overrides should be removed there.
-  *
-  * Remove this code as soon as this happens
-  *
-  */
-  &.gl-table {
-    @include gl-text-gray-500;
-  }
-
   &.table {
     .thead-white {
       th {

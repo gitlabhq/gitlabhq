@@ -95,7 +95,7 @@ describe('MembersTableCell', () => {
     wrapper = null;
   });
 
-  test.each`
+  it.each`
     member           | expectedMemberType
     ${memberMock}    | ${MEMBER_TYPES.user}
     ${group}         | ${MEMBER_TYPES.group}

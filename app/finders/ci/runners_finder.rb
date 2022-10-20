@@ -55,6 +55,12 @@ module Ci
                    Ci::Runner.belonging_to_group(@group.id)
                  when :descendants, nil
                    Ci::Runner.belonging_to_group_or_project_descendants(@group.id)
+                 when :all_available
+                   unless can?(@current_user, :read_group_all_available_runners, @group)
+                     raise Gitlab::Access::AccessDeniedError
+                   end
+
+                   Ci::Runner.usable_from_scope(@group)
                  else
                    raise ArgumentError, 'Invalid membership filter'
                  end

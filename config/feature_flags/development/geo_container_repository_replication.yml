@@ -1,0 +1,8 @@
+---
+name: geo_container_repository_replication
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93690"
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366662
+milestone: '15.5'
+type: development
+group: group::geo
+default_enabled: true

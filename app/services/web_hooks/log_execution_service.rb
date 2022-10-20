@@ -17,7 +17,7 @@ module WebHooks
     end
 
     def execute
-      update_hook_failure_state
+      update_hook_failure_state if WebHook.web_hooks_disable_failed?(hook)
       log_execution
     end
 

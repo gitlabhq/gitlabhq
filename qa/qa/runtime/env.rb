@@ -29,6 +29,15 @@ module QA
         @gitlab_url ||= ENV["QA_GITLAB_URL"] || "http://127.0.0.1:3000" # default to GDK
       end
 
+      # Retrieves the value of the gitlab_canary cookie if set or returns an empty hash.
+      #
+      # @return [Hash]
+      def canary_cookie
+        canary = ENV['QA_COOKIES']&.scan(/gitlab_canary=(true|false)/)&.dig(0, 0)
+
+        canary ? { gitlab_canary: canary } : {}
+      end
+
       def additional_repository_storage
         ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
       end

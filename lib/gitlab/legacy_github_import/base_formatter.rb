@@ -23,7 +23,7 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       def url
-        raw_data.url || ''
+        raw_data[:url] || ''
       end
     end
   end

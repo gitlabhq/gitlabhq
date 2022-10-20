@@ -19,6 +19,7 @@ import {
   expirationPolicyPayload,
   emptyExpirationPolicyPayload,
   containerExpirationPolicyData,
+  nullExpirationPolicyPayload,
 } from '../mock_data';
 
 describe('Cleanup image tags project settings', () => {
@@ -98,15 +99,30 @@ describe('Cleanup image tags project settings', () => {
     expect(findDescription().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_DESCRIPTION);
   });
 
+  it('when loading does not render form or alert components', () => {
+    mountComponentWithApollo({
+      resolver: jest.fn().mockResolvedValue(),
+    });
+
+    expect(findFormComponent().exists()).toBe(false);
+    expect(findAlert().exists()).toBe(false);
+  });
+
   describe('the form is disabled', () => {
-    it('hides the form', () => {
-      mountComponent();
+    it('hides the form', async () => {
+      mountComponentWithApollo({
+        resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+      });
+      await waitForPromises();
 
       expect(findFormComponent().exists()).toBe(false);
     });
 
-    it('shows an alert', () => {
-      mountComponent();
+    it('shows an alert', async () => {
+      mountComponentWithApollo({
+        resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+      });
+      await waitForPromises();
 
       const text = findAlert().text();
       expect(text).toContain(UNAVAILABLE_FEATURE_INTRO_TEXT);
@@ -114,8 +130,12 @@ describe('Cleanup image tags project settings', () => {
     });
 
     describe('an admin is visiting the page', () => {
-      it('shows the admin part of the alert message', () => {
-        mountComponent({ ...defaultProvidedValues, isAdmin: true });
+      it('shows the admin part of the alert message', async () => {
+        mountComponentWithApollo({
+          provide: { ...defaultProvidedValues, isAdmin: true },
+          resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),
+        });
+        await waitForPromises();
 
         const sprintf = findAlert().findComponent(GlSprintf);
         expect(sprintf.text()).toBe('administration settings');

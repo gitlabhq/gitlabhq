@@ -109,6 +109,8 @@ describe('Ref selector component', () => {
   const findCommitDropdownItems = () => findCommitsSection().findAllComponents(GlDropdownItem);
   const findFirstCommitDropdownItem = () => findCommitDropdownItems().at(0);
 
+  const findHiddenInputField = () => wrapper.find('[data-testid="selected-ref-form-field"]');
+
   //
   // Expecters
   //
@@ -181,6 +183,24 @@ describe('Ref selector component', () => {
         expect(findLoadingIcon().exists()).toBe(false);
       });
     });
+
+    describe('when name property is provided', () => {
+      it('renders an forrm input hidden field', () => {
+        const name = 'default_tag';
+
+        createComponent({ propsData: { name } });
+
+        expect(findHiddenInputField().attributes().name).toBe(name);
+      });
+    });
+
+    describe('when name property is not provided', () => {
+      it('renders an forrm input hidden field', () => {
+        createComponent();
+
+        expect(findHiddenInputField().exists()).toBe(false);
+      });
+    });
   });
 
   describe('post-initialization behavior', () => {
@@ -194,7 +214,7 @@ describe('Ref selector component', () => {
       });
 
       it('adds the provided ID to the GlDropdown instance', () => {
-        expect(wrapper.attributes().id).toBe(id);
+        expect(wrapper.findComponent(GlDropdown).attributes().id).toBe(id);
       });
     });
 
@@ -202,13 +222,17 @@ describe('Ref selector component', () => {
       const preselectedRef = fixtures.branches[0].name;
 
       beforeEach(() => {
-        createComponent({ propsData: { value: preselectedRef } });
+        createComponent({ propsData: { value: preselectedRef, name: 'selectedRef' } });
 
         return waitForRequests();
       });
 
       it('renders the pre-selected ref name', () => {
         expect(findButtonContent().text()).toBe(preselectedRef);
+      });
+
+      it('binds hidden input field to the pre-selected ref', () => {
+        expect(findHiddenInputField().attributes().value).toBe(preselectedRef);
       });
     });
 

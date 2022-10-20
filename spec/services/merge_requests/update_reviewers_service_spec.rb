@@ -128,6 +128,10 @@ RSpec.describe MergeRequests::UpdateReviewersService do
         set_reviewers
       end
 
+      it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { set_reviewers }
+      end
+
       it 'calls MergeRequest::ResolveTodosService#async_execute' do
         expect_next_instance_of(MergeRequests::ResolveTodosService, merge_request, user) do |service|
           expect(service).to receive(:async_execute)
@@ -147,6 +151,14 @@ RSpec.describe MergeRequests::UpdateReviewersService do
           )
 
         set_reviewers
+      end
+
+      context 'when reviewers did not change' do
+        let(:opts) { { reviewer_ids: merge_request.reviewer_ids } }
+
+        it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
+          let(:action) { set_reviewers }
+        end
       end
 
       it 'does not update the reviewers if they do not have access' do

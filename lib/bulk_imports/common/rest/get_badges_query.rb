@@ -7,11 +7,8 @@ module BulkImports
         extend self
 
         def to_h(context)
-          resource = context.entity.pluralized_name
-          encoded_full_path = ERB::Util.url_encode(context.entity.source_full_path)
-
           {
-            resource: [resource, encoded_full_path, 'badges'].join('/'),
+            resource: [context.entity.base_resource_path, 'badges'].join('/'),
             query: {
               page: context.tracker.next_page
             }

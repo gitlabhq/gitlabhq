@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # End-to-end Testing
@@ -125,7 +125,7 @@ For example, when we [dequarantine](https://about.gitlab.com/handbook/engineerin
 a flaky test we first want to make sure that it's no longer flaky.
 We can do that using the `ce:custom-parallel` and `ee:custom-parallel` jobs.
 Both are manual jobs that you can configure using custom variables.
-When clicking the name (not the play icon) of one of the parallel jobs,
+When selecting the name (not the play icon) of one of the parallel jobs,
 you are prompted to enter variables. You can use any of
 [the variables that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables)
 as well as these:

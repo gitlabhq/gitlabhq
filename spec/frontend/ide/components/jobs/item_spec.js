@@ -1,36 +1,38 @@
-import Vue, { nextTick } from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+
 import JobItem from '~/ide/components/jobs/item.vue';
 import { jobs } from '../../mock_data';
 
 describe('IDE jobs item', () => {
-  const Component = Vue.extend(JobItem);
   const job = jobs[0];
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    vm = mountComponent(Component, {
-      job,
-    });
+    wrapper = mount(JobItem, { propsData: { job } });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders job details', () => {
-    expect(vm.$el.textContent).toContain(job.name);
-    expect(vm.$el.textContent).toContain(`#${job.id}`);
+    expect(wrapper.text()).toContain(job.name);
+    expect(wrapper.text()).toContain(`#${job.id}`);
   });
 
   it('renders CI icon', () => {
-    expect(vm.$el.querySelector('[data-testid="status_success_borderless-icon"]')).not.toBe(null);
+    expect(wrapper.find('[data-testid="status_success_borderless-icon"]').exists()).toBe(true);
   });
 
   it('does not render view logs button if not started', async () => {
-    vm.job.started = false;
+    await wrapper.setProps({
+      job: {
+        ...jobs[0],
+        started: false,
+      },
+    });
 
-    await nextTick();
-    expect(vm.$el.querySelector('.btn')).toBe(null);
+    expect(wrapper.findComponent(GlButton).exists()).toBe(false);
   });
 });

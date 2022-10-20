@@ -171,6 +171,8 @@ $solarized-dark-il: #2aa198;
     }
 
     &.diff-grid-row {
+      --diff-expansion-background-color: #{lighten($solarized-dark-pre-bg, 10%)};
+
       @include dark-diff-expansion-line;
     }
 

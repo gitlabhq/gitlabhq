@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
@@ -37,8 +37,8 @@ describe('Global Search Store Actions', () => {
   let state;
 
   const flashCallback = (callCount) => {
-    expect(createFlash).toHaveBeenCalledTimes(callCount);
-    createFlash.mockClear();
+    expect(createAlert).toHaveBeenCalledTimes(callCount);
+    createAlert.mockClear();
   };
 
   beforeEach(() => {

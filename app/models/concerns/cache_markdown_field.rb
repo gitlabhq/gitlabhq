@@ -237,3 +237,5 @@ module CacheMarkdownField
     end
   end
 end
+
+CacheMarkdownField.prepend_mod

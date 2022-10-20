@@ -122,19 +122,17 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
       context 'when compare_to is branch or tag' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:pipeline_ref, :compare_to, :paths, :ff, :result) do
-          'feature_1' | 'master'    | ['file1.txt'] | true  | true
-          'feature_1' | 'master'    | ['README.md'] | true  | false
-          'feature_1' | 'master'    | ['xyz.md']    | true  | false
-          'feature_2' | 'master'    | ['file1.txt'] | true  | true
-          'feature_2' | 'master'    | ['file2.txt'] | true  | true
-          'feature_2' | 'feature_1' | ['file1.txt'] | true  | false
-          'feature_2' | 'feature_1' | ['file1.txt'] | false | true
-          'feature_2' | 'feature_1' | ['file2.txt'] | true  | true
-          'feature_1' | 'tag_1'     | ['file1.txt'] | true  | false
-          'feature_1' | 'tag_1'     | ['file1.txt'] | false | true
-          'feature_1' | 'tag_1'     | ['file2.txt'] | true  | true
-          'feature_2' | 'tag_1'     | ['file2.txt'] | true  | true
+        where(:pipeline_ref, :compare_to, :paths, :result) do
+          'feature_1' | 'master'    | ['file1.txt'] | true
+          'feature_1' | 'master'    | ['README.md'] | false
+          'feature_1' | 'master'    | ['xyz.md']    | false
+          'feature_2' | 'master'    | ['file1.txt'] | true
+          'feature_2' | 'master'    | ['file2.txt'] | true
+          'feature_2' | 'feature_1' | ['file1.txt'] | false
+          'feature_2' | 'feature_1' | ['file2.txt'] | true
+          'feature_1' | 'tag_1'     | ['file1.txt'] | false
+          'feature_1' | 'tag_1'     | ['file2.txt'] | true
+          'feature_2' | 'tag_1'     | ['file2.txt'] | true
         end
 
         with_them do
@@ -142,10 +140,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
 
           let(:pipeline) do
             build(:ci_pipeline, project: project, ref: pipeline_ref, sha: project.commit(pipeline_ref).sha)
-          end
-
-          before do
-            stub_feature_flags(ci_rules_changes_compare: ff)
           end
 
           it { is_expected.to eq(result) }
@@ -173,14 +167,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
           expect { satisfied_by }.to raise_error(
             ::Gitlab::Ci::Build::Rules::Rule::Clause::ParseError, 'rules:changes:compare_to is not a valid ref'
           )
-        end
-
-        context 'when the FF ci_rules_changes_compare is disabled' do
-          before do
-            stub_feature_flags(ci_rules_changes_compare: false)
-          end
-
-          it { is_expected.to be_truthy }
         end
       end
     end

@@ -1,5 +1,4 @@
 VERSION merge=ours
 Dangerfile gitlab-language=ruby
-*.pdf filter=lfs diff=lfs merge=lfs -text
 *.rb diff=ruby
 workhorse/testdata/*.pdf -filter -diff -merge

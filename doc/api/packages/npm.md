@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.example/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.example/handbook/product/ux/technical-writing/#assignments
 ---
 
 # npm API **(FREE)**

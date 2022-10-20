@@ -221,6 +221,16 @@ RSpec.describe API::Projects do
         expect(project_response['container_registry_enabled']).to eq(false)
       end
 
+      it 'includes releases_access_level', :aggregate_failures do
+        project.project_feature.update!(releases_access_level: ProjectFeature::DISABLED)
+
+        get api('/projects', user)
+        project_response = json_response.find { |p| p['id'] == project.id }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project_response['releases_access_level']).to eq('disabled')
+      end
+
       context 'when some projects are in a group' do
         before do
           create(:project, :public, group: create(:group))
@@ -1171,6 +1181,7 @@ RSpec.describe API::Projects do
         attrs[:analytics_access_level] = 'disabled'
         attrs[:container_registry_access_level] = 'private'
         attrs[:security_and_compliance_access_level] = 'private'
+        attrs[:releases_access_level] = 'disabled'
       end
 
       post api('/projects', user), params: project
@@ -1180,7 +1191,7 @@ RSpec.describe API::Projects do
       project.each_pair do |k, v|
         next if %i[
           has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
-          container_registry_access_level
+          container_registry_access_level releases_access_level
         ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
@@ -1195,6 +1206,7 @@ RSpec.describe API::Projects do
       expect(project.project_feature.analytics_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::PRIVATE)
       expect(project.project_feature.security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE)
+      expect(project.project_feature.releases_access_level).to eq(ProjectFeature::DISABLED)
     end
 
     it 'assigns container_registry_enabled to project', :aggregate_failures do
@@ -2333,6 +2345,7 @@ RSpec.describe API::Projects do
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['operations_access_level']).to be_present
         expect(json_response['security_and_compliance_access_level']).to be_present
+        expect(json_response['releases_access_level']).to be_present
       end
 
       it 'exposes all necessary attributes' do
@@ -2402,6 +2415,7 @@ RSpec.describe API::Projects do
         expect(json_response['builds_access_level']).to be_present
         expect(json_response['operations_access_level']).to be_present
         expect(json_response['security_and_compliance_access_level']).to be_present
+        expect(json_response['releases_access_level']).to be_present
         expect(json_response).to have_key('emails_disabled')
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy
@@ -2516,7 +2530,7 @@ RSpec.describe API::Projects do
           'name' => project.repository.license.name,
           'nickname' => project.repository.license.nickname,
           'html_url' => project.repository.license.url,
-          'source_url' => project.repository.license.meta['source']
+          'source_url' => nil
         })
       end
 
@@ -3384,6 +3398,14 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['analytics_access_level']).to eq('private')
       expect(Project.find_by(path: project[:path]).analytics_access_level).to eq(ProjectFeature::PRIVATE)
+    end
+
+    it 'sets releases_access_level', :aggregate_failures do
+      put api("/projects/#{project.id}", user), params: { releases_access_level: 'private' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['releases_access_level']).to eq('private')
+      expect(Project.find_by(path: project[:path]).releases_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
     it 'returns 400 when nothing sent' do

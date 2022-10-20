@@ -1,20 +1,6 @@
 ---
 Cop/StaticTranslationDefinition:
   Exclude:
-    - 'app/models/application_setting.rb'
     - 'app/models/diff_viewer/image.rb'
     - 'app/models/diff_viewer/rich.rb'
     - 'app/models/diff_viewer/simple.rb'
-    - 'app/models/group_group_link.rb'
-    - 'app/models/jira_import_state.rb'
-    - 'app/models/member.rb'
-    - 'app/models/project.rb'
-    - 'app/models/project_group_link.rb'
-    - 'app/models/user.rb'
-    - 'app/models/users/banned_user.rb'
-    - 'ee/app/models/allowed_email_domain.rb'
-    - 'ee/app/models/dast/site_profile_secret_variable.rb'
-    - 'ee/app/models/group_merge_request_approval_setting.rb'
-    - 'ee/app/models/incident_management/escalation_policy.rb'
-    - 'ee/app/models/incident_management/escalation_rule.rb'
-    - 'ee/app/models/vulnerabilities/read.rb'

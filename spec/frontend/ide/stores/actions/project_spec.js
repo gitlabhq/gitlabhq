@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import testAction from 'helpers/vuex_action_helper';
 import api from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import service from '~/ide/services';
 import { createStore } from '~/ide/stores';
 import {
@@ -97,7 +97,7 @@ describe('IDE store project actions', () => {
     });
 
     afterEach(() => {
-      createFlash.mockRestore();
+      createAlert.mockRestore();
     });
 
     it.each`
@@ -122,7 +122,7 @@ describe('IDE store project actions', () => {
 
       if (!responseSuccess) {
         expect(logError).toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalled();
       }
     });
   });

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Working with the GitHub importer
@@ -114,6 +114,9 @@ GitHub are stored in a single table. Therefore, they have globally-unique IDs an
 
 Therefore, both issues and pull requests have a common API for most related things.
 
+NOTE:
+This stage is optional and can consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
+
 ### 9. Stage::ImportNotesWorker
 
 This worker imports regular comments for both issues and pull requests. For
@@ -127,15 +130,22 @@ comments.
 
 ### 10. Stage::ImportAttachmentsWorker
 
-This worker imports release notes attachments that are linked inside Markdown.
-For every release of the project, we schedule a job of
-`Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every comment.
+This worker imports note attachments that are linked inside Markdown.
+For each entity with Markdown text in the project, we schedule a job of:
+
+- `Gitlab::GithubImport::ImportReleaseAttachmentsWorker` for every release.
+- `Gitlab::GithubImport::ImportNoteAttachmentsWorker` for every note.
+- `Gitlab::GithubImport::ImportIssueAttachmentsWorker` for every issue.
+- `Gitlab::GithubImport::ImportMergeRequestAttachmentsWorker` for every merge request.
 
 Each job:
 
-1. Iterates over all attachment links inside of a specific release note.
+1. Iterates over all attachment links inside of a specific record.
 1. Downloads the attachment.
 1. Replaces the old link with a newly-generated link to GitLab.
+
+NOTE:
+It's an optional stage that could consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
 
 ### 11. Stage::ImportProtectedBranchesWorker
 
@@ -197,7 +207,7 @@ GitHub has a rate limit of 5,000 API calls per hour. The number of requests
 necessary to import a project is largely dominated by the number of unique users
 involved in a project (for example, issue authors). Other data such as issue pages
 and comments typically only requires a few dozen requests to import. This is
-because we need the Email address of users in order to map them to GitLab users.
+because we need the Email address of users to map them to GitLab users.
 
 We handle this by doing the following:
 

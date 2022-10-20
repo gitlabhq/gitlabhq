@@ -7,15 +7,18 @@ module API
     GLOBAL_TEMPLATE_TYPES = {
       gitignores: {
         gitlab_version: 8.8,
-        feature_category: :source_code_management
+        feature_category: :source_code_management,
+        file_type: '.gitignore'
       },
       gitlab_ci_ymls: {
         gitlab_version: 8.9,
-        feature_category: :pipeline_authoring
+        feature_category: :pipeline_authoring,
+        file_type: 'GitLab CI/CD YAML'
       },
       dockerfiles: {
         gitlab_version: 8.15,
-        feature_category: :source_code_management
+        feature_category: :source_code_management,
+        file_type: 'Dockerfile'
       }
     }.freeze
 
@@ -26,7 +29,7 @@ module API
       end
     end
 
-    desc 'Get the list of the available license template' do
+    desc 'Get all license templates' do
       detail 'This feature was introduced in GitLab 8.7.'
       success ::API::Entities::License
     end
@@ -43,12 +46,14 @@ module API
       present paginate(::Kaminari.paginate_array(templates)), with: ::API::Entities::License
     end
 
-    desc 'Get the text for a specific license' do
+    desc 'Get a single license template' do
       detail 'This feature was introduced in GitLab 8.7.'
       success ::API::Entities::License
     end
     params do
-      requires :name, type: String, desc: 'The name of the template'
+      requires :name, type: String, desc: 'The name of the license template'
+      optional :project, type: String, desc: 'The copyrighted project name'
+      optional :fullname, type: String, desc: 'The full-name of the copyright holder'
     end
     get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ }, feature_category: :source_code_management do
       template = TemplateFinder.build(:licenses, nil, name: params[:name]).execute
@@ -65,8 +70,9 @@ module API
 
     GLOBAL_TEMPLATE_TYPES.each do |template_type, properties|
       gitlab_version = properties[:gitlab_version]
+      file_type = properties[:file_type]
 
-      desc 'Get the list of the available template' do
+      desc "Get all #{file_type} templates" do
         detail "This feature was introduced in GitLab #{gitlab_version}."
         success Entities::TemplatesList
       end
@@ -78,12 +84,12 @@ module API
         present paginate(templates), with: Entities::TemplatesList
       end
 
-      desc 'Get the text for a specific template present in local filesystem' do
+      desc "Get a single #{file_type} template" do
         detail "This feature was introduced in GitLab #{gitlab_version}."
         success Entities::Template
       end
       params do
-        requires :name, type: String, desc: 'The name of the template'
+        requires :name, type: String, desc: "The name of the #{file_type} template"
       end
       get "templates/#{template_type}/:name", requirements: { name: /[\w\.-]+/ }, feature_category: properties[:feature_category] do
         finder = TemplateFinder.build(template_type, nil, name: declared(params)[:name])

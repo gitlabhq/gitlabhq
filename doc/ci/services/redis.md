@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -69,5 +69,5 @@ We have set up an [Example Redis Project](https://gitlab.com/gitlab-examples/red
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/index.md).
 
-Want to hack on it? Simply fork it, commit and push your changes. Within a few
+Want to hack on it? Fork it, commit and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

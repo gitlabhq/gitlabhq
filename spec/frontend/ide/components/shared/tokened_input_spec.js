@@ -1,5 +1,4 @@
-import Vue, { nextTick } from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { mount } from '@vue/test-utils';
 import TokenedInput from '~/ide/components/shared/tokened_input.vue';
 
 const TEST_PLACEHOLDER = 'Searching in test';
@@ -10,120 +9,106 @@ const TEST_TOKENS = [
 ];
 const TEST_VALUE = 'lorem';
 
-function getTokenElements(vm) {
-  return Array.from(vm.$el.querySelectorAll('.filtered-search-token button'));
-}
-
-function createBackspaceEvent() {
-  const e = new Event('keyup');
-  e.keyCode = 8;
-  e.which = e.keyCode;
-  e.altKey = false;
-  e.ctrlKey = true;
-  e.shiftKey = false;
-  e.metaKey = false;
-  return e;
+function getTokenElements(wrapper) {
+  return wrapper.findAll('.filtered-search-token button');
 }
 
 describe('IDE shared/TokenedInput', () => {
-  const Component = Vue.extend(TokenedInput);
-  let vm;
+  let wrapper;
 
-  beforeEach(() => {
-    vm = mountComponent(Component, {
-      tokens: TEST_TOKENS,
-      placeholder: TEST_PLACEHOLDER,
-      value: TEST_VALUE,
+  const createComponent = (props = {}) => {
+    wrapper = mount(TokenedInput, {
+      propsData: {
+        tokens: TEST_TOKENS,
+        placeholder: TEST_PLACEHOLDER,
+        value: TEST_VALUE,
+        ...props,
+      },
+      attachTo: document.body,
     });
-
-    jest.spyOn(vm, '$emit').mockImplementation(() => {});
-  });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders tokens', () => {
-    const renderedTokens = getTokenElements(vm).map((x) => x.textContent.trim());
+    createComponent();
+    const renderedTokens = getTokenElements(wrapper).wrappers.map((w) => w.text());
 
     expect(renderedTokens).toEqual(TEST_TOKENS.map((x) => x.label));
   });
 
   it('renders input', () => {
-    expect(vm.$refs.input).toBeInstanceOf(HTMLInputElement);
-    expect(vm.$refs.input).toHaveValue(TEST_VALUE);
+    createComponent();
+
+    expect(wrapper.find('input').element).toBeInstanceOf(HTMLInputElement);
+    expect(wrapper.find('input').element).toHaveValue(TEST_VALUE);
   });
 
-  it('renders placeholder, when tokens are empty', async () => {
-    vm.tokens = [];
+  it('renders placeholder, when tokens are empty', () => {
+    createComponent({ tokens: [] });
 
-    await nextTick();
-    expect(vm.$refs.input).toHaveAttr('placeholder', TEST_PLACEHOLDER);
+    expect(wrapper.find('input').attributes('placeholder')).toBe(TEST_PLACEHOLDER);
   });
 
-  it('triggers "removeToken" on token click', () => {
-    getTokenElements(vm)[0].click();
+  it('triggers "removeToken" on token click', async () => {
+    createComponent();
+    await getTokenElements(wrapper).at(0).trigger('click');
 
-    expect(vm.$emit).toHaveBeenCalledWith('removeToken', TEST_TOKENS[0]);
+    expect(wrapper.emitted('removeToken')[0]).toStrictEqual([TEST_TOKENS[0]]);
   });
 
-  it('when input triggers backspace event, it calls "onBackspace"', () => {
-    jest.spyOn(vm, 'onBackspace').mockImplementation(() => {});
+  it('removes token on backspace when value is empty', async () => {
+    createComponent({ value: '' });
 
-    vm.$refs.input.dispatchEvent(createBackspaceEvent());
-    vm.$refs.input.dispatchEvent(createBackspaceEvent());
+    expect(wrapper.emitted('removeToken')).toBeUndefined();
 
-    expect(vm.onBackspace).toHaveBeenCalledTimes(2);
+    await wrapper.find('input').trigger('keyup.delete');
+    await wrapper.find('input').trigger('keyup.delete');
+
+    expect(wrapper.emitted('removeToken')[0]).toStrictEqual([TEST_TOKENS[TEST_TOKENS.length - 1]]);
   });
 
-  it('triggers "removeToken" on backspaces when value is empty', () => {
-    vm.value = '';
+  it('does not trigger "removeToken" on backspaces when value is not empty', async () => {
+    createComponent({ value: 'SOMETHING' });
 
-    vm.onBackspace();
+    await wrapper.find('input').trigger('keyup.delete');
+    await wrapper.find('input').trigger('keyup.delete');
 
-    expect(vm.$emit).not.toHaveBeenCalled();
-    expect(vm.backspaceCount).toEqual(1);
-
-    vm.onBackspace();
-
-    expect(vm.$emit).toHaveBeenCalledWith('removeToken', TEST_TOKENS[TEST_TOKENS.length - 1]);
-    expect(vm.backspaceCount).toEqual(0);
+    expect(wrapper.emitted('removeToken')).toBeUndefined();
   });
 
-  it('does not trigger "removeToken" on backspaces when value is not empty', () => {
-    vm.onBackspace();
-    vm.onBackspace();
+  it('does not trigger "removeToken" on backspaces when tokens are empty', async () => {
+    createComponent({ value: '', tokens: [] });
 
-    expect(vm.backspaceCount).toEqual(0);
-    expect(vm.$emit).not.toHaveBeenCalled();
+    await wrapper.find('input').trigger('keyup.delete');
+    await wrapper.find('input').trigger('keyup.delete');
+
+    expect(wrapper.emitted('removeToken')).toBeUndefined();
   });
 
-  it('does not trigger "removeToken" on backspaces when tokens are empty', () => {
-    vm.tokens = [];
+  it('triggers "focus" on input focus', async () => {
+    createComponent();
 
-    vm.onBackspace();
-    vm.onBackspace();
+    await wrapper.find('input').trigger('focus');
 
-    expect(vm.backspaceCount).toEqual(0);
-    expect(vm.$emit).not.toHaveBeenCalled();
+    expect(wrapper.emitted('focus')).toHaveLength(1);
   });
 
-  it('triggers "focus" on input focus', () => {
-    vm.$refs.input.dispatchEvent(new Event('focus'));
+  it('triggers "blur" on input blur', async () => {
+    createComponent();
 
-    expect(vm.$emit).toHaveBeenCalledWith('focus');
+    await wrapper.find('input').trigger('blur');
+
+    expect(wrapper.emitted('blur')).toHaveLength(1);
   });
 
-  it('triggers "blur" on input blur', () => {
-    vm.$refs.input.dispatchEvent(new Event('blur'));
+  it('triggers "input" with value on input change', async () => {
+    createComponent();
 
-    expect(vm.$emit).toHaveBeenCalledWith('blur');
-  });
+    await wrapper.find('input').setValue('something-else');
 
-  it('triggers "input" with value on input change', () => {
-    vm.$refs.input.value = 'something-else';
-    vm.$refs.input.dispatchEvent(new Event('input'));
-
-    expect(vm.$emit).toHaveBeenCalledWith('input', 'something-else');
+    expect(wrapper.emitted('input')[0]).toStrictEqual(['something-else']);
   });
 });

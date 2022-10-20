@@ -1,22 +1,3 @@
-.avatar-image {
-  margin-bottom: $grid-size;
-
-  .avatar {
-    float: none;
-  }
-
-  @include media-breakpoint-up(sm) {
-    float: left;
-    margin-bottom: 0;
-  }
-}
-
-.avatar-file-name {
-  position: relative;
-  top: 2px;
-  display: inline-block;
-}
-
 .account-well {
   padding: 10px;
   background-color: $gray-light;
@@ -27,42 +8,6 @@
     padding-left: 20px;
     margin-bottom: 0;
   }
-}
-
-.user-avatar-button {
-  .file-name {
-    display: inline-block;
-    padding-left: 10px;
-  }
-}
-
-.subkeys-list {
-  @include basic-list;
-
-  li {
-    padding: 3px 0;
-    border: 0;
-  }
-}
-
-.key-list-item {
-  .key-list-item-info {
-    @include media-breakpoint-up(sm) {
-      float: left;
-    }
-  }
-}
-
-.ssh-keys-list {
-  .last-used-at,
-  .expires,
-  .key-created-at {
-    line-height: 32px;
-  }
-}
-
-.key-created-at {
-  line-height: 42px;
 }
 
 .provider-btn-group {
@@ -110,26 +55,6 @@
 
   .last-heading {
     width: 105px;
-  }
-}
-
-.modal-profile-crop {
-  .modal-dialog {
-    width: 380px;
-
-    @include media-breakpoint-down(xs) {
-      width: auto;
-    }
-  }
-
-  .profile-crop-image-container {
-    height: 300px;
-    margin: 0 auto;
-  }
-
-  .crop-controls {
-    padding: 10px 0 0;
-    text-align: center;
   }
 }
 
@@ -243,36 +168,6 @@ table.u2f-registrations {
           height: 120px;
         }
       }
-    }
-  }
-}
-
-.edit-user {
-  svg {
-    fill: $gl-text-color-secondary;
-  }
-
-  .form-group > label {
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .form-group > .form-text {
-    font-size: $gl-font-size;
-  }
-
-  .emoji-menu-toggle-button {
-    @include emoji-menu-toggle-button;
-    padding: 6px 10px;
-
-    .no-emoji-placeholder {
-      position: relative;
-    }
-  }
-
-  @include media-breakpoint-down(sm) {
-    .input-md,
-    .input-lg {
-      max-width: 100%;
     }
   }
 }

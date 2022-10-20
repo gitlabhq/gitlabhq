@@ -87,9 +87,7 @@ RSpec.describe ExpandVariables do
         "simple expansion using Collection": {
           value: 'key$variable',
           result: 'keyvalue',
-          variables: Gitlab::Ci::Variables::Collection.new([
-            { key: 'variable', value: 'value' }
-          ])
+          variables: Gitlab::Ci::Variables::Collection.new([{ key: 'variable', value: 'value' }])
         }
       }
     end

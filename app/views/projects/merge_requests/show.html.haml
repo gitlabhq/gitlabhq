@@ -60,10 +60,10 @@
           %section
             .issuable-discussion.js-vue-notes-event
               - if @merge_request.description.present?
-                .detail-page-description
+                .detail-page-description.gl-pb-0
                   = render "projects/merge_requests/description"
-              = render "projects/merge_requests/widget"
               = render "projects/merge_requests/awards_block"
+              = render "projects/merge_requests/widget"
               - if mr_action === "show"
                 - add_page_startup_api_call Feature.enabled?(:paginated_mr_discussions, @project) ? discussions_path(@merge_request, per_page: 20) : discussions_path(@merge_request)
                 - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
@@ -72,6 +72,8 @@
                 endpoint_metadata: @endpoint_metadata_url,
                 noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',
+                notes_filters: UserPreference.notes_filters.to_json,
+                notes_filter_value: current_user&.notes_filter_for(@merge_request),
                 target_type: 'merge_request',
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,

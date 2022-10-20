@@ -1,0 +1,23 @@
+---
+key_path: counts.gitlab_for_jira_app_proxy_installations
+description: Count active Jira Cloud installations that are using GitLab as a proxy
+product_section: dev
+product_stage: ecosystem
+product_group: integrations
+product_category: integrations
+value_type: number
+status: active
+time_frame: all
+data_source: database
+data_category: optional
+instrumentation_class: GitlabForJiraAppProxyInstallationsCountMetric
+milestone: "15.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97674
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

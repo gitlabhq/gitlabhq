@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -13,7 +13,7 @@ GitLab supports authentication using smartcards.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33669) in GitLab 12.6.
 
-By default, existing users can continue to log in with a username and password when smartcard
+By default, existing users can continue to sign in with a username and password when smartcard
 authentication is enabled.
 
 To force existing users to use only smartcard authentication,
@@ -101,7 +101,7 @@ Certificate:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7693) in GitLab 11.8 as an experimental feature. Smartcard authentication against an LDAP server may change or be removed completely in the future.
 
 GitLab implements a standard way of certificate matching following
-[RFC4523](https://tools.ietf.org/html/rfc4523). It uses the
+[RFC4523](https://www.rfc-editor.org/rfc/rfc4523). It uses the
 `certificateExactMatch` certificate matching rule against the `userCertificate`
 attribute. As a prerequisite, you must use an LDAP server that:
 

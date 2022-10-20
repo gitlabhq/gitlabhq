@@ -4,15 +4,29 @@ require 'spec_helper'
 
 RSpec.describe GoogleCloud::EnableCloudsqlService do
   let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:params) do
+    {
+      google_oauth2_token: 'mock-token',
+      gcp_project_id: 'mock-gcp-project-id',
+      environment_name: 'main'
+    }
+  end
 
-  subject(:result) { described_class.new(project).execute }
+  subject(:result) { described_class.new(project, user, params).execute }
 
   context 'when a project does not have any GCP_PROJECT_IDs configured' do
-    it 'returns error' do
-      message = 'No GCP projects found. Configure a service account or GCP_PROJECT_ID CI variable.'
+    it 'creates GCP_PROJECT_ID project var' do
+      expect_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+        expect(instance).to receive(:enable_cloud_sql_admin).with('mock-gcp-project-id')
+        expect(instance).to receive(:enable_compute).with('mock-gcp-project-id')
+        expect(instance).to receive(:enable_service_networking).with('mock-gcp-project-id')
+      end
 
-      expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq(message)
+      expect(result[:status]).to eq(:success)
+      expect(project.variables.count).to eq(1)
+      expect(project.variables.first.key).to eq('GCP_PROJECT_ID')
+      expect(project.variables.first.value).to eq('mock-gcp-project-id')
     end
   end
 
@@ -30,6 +44,9 @@ RSpec.describe GoogleCloud::EnableCloudsqlService do
 
     it 'enables cloudsql, compute and service networking Google APIs', :aggregate_failures do
       expect_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+        expect(instance).to receive(:enable_cloud_sql_admin).with('mock-gcp-project-id')
+        expect(instance).to receive(:enable_compute).with('mock-gcp-project-id')
+        expect(instance).to receive(:enable_service_networking).with('mock-gcp-project-id')
         expect(instance).to receive(:enable_cloud_sql_admin).with('prj-prod')
         expect(instance).to receive(:enable_compute).with('prj-prod')
         expect(instance).to receive(:enable_service_networking).with('prj-prod')
@@ -44,6 +61,9 @@ RSpec.describe GoogleCloud::EnableCloudsqlService do
     context 'when Google APIs raise an error' do
       it 'returns error result' do
         allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+          allow(instance).to receive(:enable_cloud_sql_admin).with('mock-gcp-project-id')
+          allow(instance).to receive(:enable_compute).with('mock-gcp-project-id')
+          allow(instance).to receive(:enable_service_networking).with('mock-gcp-project-id')
           allow(instance).to receive(:enable_cloud_sql_admin).with('prj-prod')
           allow(instance).to receive(:enable_compute).with('prj-prod')
           allow(instance).to receive(:enable_service_networking).with('prj-prod')

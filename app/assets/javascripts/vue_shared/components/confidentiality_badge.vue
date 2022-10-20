@@ -33,7 +33,7 @@ export default {
     :title="confidentialTooltip"
     icon="eye-slash"
     variant="warning"
-    class="gl-display-inline gl-mr-2"
+    class="gl-display-inline gl-mr-3"
     >{{ __('Confidential') }}</gl-badge
   >
 </template>

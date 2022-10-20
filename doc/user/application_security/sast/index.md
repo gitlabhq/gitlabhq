@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Static Application Security Testing (SAST) **(FREE)**
@@ -138,7 +138,7 @@ The following analyzers have multi-project support:
 #### Enable multi-project support for Security Code Scan
 
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
-the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://docs.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
+the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
 ### Supported distributions
 
@@ -357,7 +357,7 @@ Support for more languages and analyzers is tracked in [this epic](https://gitla
 
 ### Using CI/CD variables to pass credentials for private repositories
 
-Some analyzers require downloading the project's dependencies in order to
+Some analyzers require downloading the project's dependencies to
 perform the analysis. In turn, such dependencies may live in private Git
 repositories and thus require credentials like username and password to download them.
 Depending on the analyzer, such credentials can be provided to
@@ -503,7 +503,7 @@ From highest to lowest severity, the logging levels are:
 #### Custom Certificate Authority
 
 To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
-of CA certs that you want to trust in the SAST environment. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+of CA certs that you want to trust in the SAST environment. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
 
 ```yaml
 variables:
@@ -680,7 +680,7 @@ registry.gitlab.com/security-products/spotbugs:2
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
-**your network security policy**. Please consult your IT staff to find an accepted and approved
+**your network security policy**. Consult your IT staff to find an accepted and approved
 process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../index.md#vulnerability-scanner-maintenance)
 with new definitions, and you may be able to make occasional updates on your own.
 

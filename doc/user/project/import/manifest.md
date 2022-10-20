@@ -2,7 +2,7 @@
 type: howto
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Import multiple repositories by uploading a manifest file **(FREE)**
@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab allows you to import all the required Git repositories
 based on a manifest file like the one used by the
 [Android repository](https://android.googlesource.com/platform/manifest/+/2d6f081a3b05d8ef7a2b1b52b0d536b2b74feab4/default.xml).
-This feature can be very handy when you need to import a project with many
+Use the manifest to import a project with many
 repositories like the Android Open Source Project (AOSP).
 
 ## Requirements

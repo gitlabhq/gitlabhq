@@ -134,6 +134,40 @@ describe('CompareApp component', () => {
     });
   });
 
+  describe('mode dropdown', () => {
+    const findModeDropdownButton = () => wrapper.find('[data-testid="modeDropdown"]');
+    const findEnableStraightModeButton = () =>
+      wrapper.find('[data-testid="enableStraightModeButton"]');
+    const findDisableStraightModeButton = () =>
+      wrapper.find('[data-testid="disableStraightModeButton"]');
+
+    it('renders the mode dropdown button', () => {
+      expect(findModeDropdownButton().exists()).toBe(true);
+    });
+
+    it('has the correct text', () => {
+      expect(findEnableStraightModeButton().text()).toBe('...');
+      expect(findDisableStraightModeButton().text()).toBe('..');
+    });
+
+    it('straight mode button when clicked', async () => {
+      expect(wrapper.props('straight')).toBe(false);
+      expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('false');
+
+      findEnableStraightModeButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('true');
+
+      findDisableStraightModeButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(wrapper.find('input[name="straight"]').attributes('value')).toBe('false');
+    });
+  });
+
   describe('merge request buttons', () => {
     const findProjectMrButton = () => wrapper.find('[data-testid="projectMrButton"]');
     const findCreateMrButton = () => wrapper.find('[data-testid="createMrButton"]');

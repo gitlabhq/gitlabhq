@@ -67,9 +67,9 @@ describe('LabelsSelectRoot', () => {
 
         // We're utilizing `onDropdownClose` event emitted from the component to always include `touchedLabels`
         // while the first param of the method is the labels list which were added/removed.
-        expect(wrapper.emitted('updateSelectedLabels')).toBeTruthy();
+        expect(wrapper.emitted('updateSelectedLabels')).toHaveLength(1);
         expect(wrapper.emitted('updateSelectedLabels')[0]).toEqual([touchedLabels]);
-        expect(wrapper.emitted('onDropdownClose')).toBeTruthy();
+        expect(wrapper.emitted('onDropdownClose')).toHaveLength(1);
         expect(wrapper.emitted('onDropdownClose')[0]).toEqual([touchedLabels]);
       });
 
@@ -88,7 +88,7 @@ describe('LabelsSelectRoot', () => {
           },
         );
 
-        expect(wrapper.emitted('updateSelectedLabels')).toBeTruthy();
+        expect(wrapper.emitted('updateSelectedLabels')).toHaveLength(1);
         expect(wrapper.emitted('updateSelectedLabels')[0]).toEqual([
           [
             {
@@ -97,7 +97,7 @@ describe('LabelsSelectRoot', () => {
             },
           ],
         ]);
-        expect(wrapper.emitted('onDropdownClose')).toBeTruthy();
+        expect(wrapper.emitted('onDropdownClose')).toHaveLength(1);
         expect(wrapper.emitted('onDropdownClose')[0]).toEqual([[]]);
       });
     });
@@ -106,8 +106,7 @@ describe('LabelsSelectRoot', () => {
       it('emits `toggleCollapse` event on component', () => {
         createComponent();
         wrapper.vm.handleCollapsedValueClick();
-
-        expect(wrapper.emitted().toggleCollapse).toBeTruthy();
+        expect(wrapper.emitted().toggleCollapse).toHaveLength(1);
       });
     });
   });

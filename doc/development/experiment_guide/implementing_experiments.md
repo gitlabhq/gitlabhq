@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Acquisition
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Implementing an A/B/n experiment
@@ -136,7 +136,7 @@ somewhat abstract and hard to understand initially, but this approach enables us
 communicate about experiments as something that's wider than just user behavior.
 
 NOTE:
-Using `actor:` utilizes cookies if the `current_user` is nil. If you don't need
+Using `actor:` uses cookies if the `current_user` is nil. If you don't need
 cookies though - meaning that the exposed functionality would only be visible to
 signed in users - `{ user: current_user }` would be just as effective.
 
@@ -318,7 +318,7 @@ Given that we've defined a class for our experiment, and have defined the varian
 
 The first way is by running the experiment. Assuming the experiment has been run, it surfaces in the client layer without having to do anything special.
 
-The second way doesn't run the experiment and is intended to be used if the experiment must only surface in the client layer. To accomplish this we can `.publish` the experiment. This does not run any logic, but does surface the experiment details in the client layer so they can be utilized there.
+The second way doesn't run the experiment and is intended to be used if the experiment must only surface in the client layer. To accomplish this we can `.publish` the experiment. This does not run any logic, but does surface the experiment details in the client layer so they can be used there.
 
 An example might be to publish an experiment in a `before_action` in a controller. Assuming we've defined the `PillColorExperiment` class, like we have above, we can surface it to the client by publishing it instead of running it:
 

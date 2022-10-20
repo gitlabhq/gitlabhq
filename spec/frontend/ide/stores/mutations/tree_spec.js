@@ -17,11 +17,11 @@ describe('Multi-file store tree mutations', () => {
     it('toggles tree open', () => {
       mutations.TOGGLE_TREE_OPEN(localState, localTree.path);
 
-      expect(localTree.opened).toBeTruthy();
+      expect(localTree.opened).toBe(true);
 
       mutations.TOGGLE_TREE_OPEN(localState, localTree.path);
 
-      expect(localTree.opened).toBeFalsy();
+      expect(localTree.opened).toBe(false);
     });
   });
 

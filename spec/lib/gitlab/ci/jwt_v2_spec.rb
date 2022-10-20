@@ -7,6 +7,8 @@ RSpec.describe Gitlab::Ci::JwtV2 do
   let(:project) { build_stubbed(:project, namespace: namespace) }
   let(:user) { build_stubbed(:user) }
   let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19') }
+  let(:aud) { described_class::DEFAULT_AUD }
+
   let(:build) do
     build_stubbed(
       :ci_build,
@@ -16,7 +18,7 @@ RSpec.describe Gitlab::Ci::JwtV2 do
     )
   end
 
-  subject(:ci_job_jwt_v2) { described_class.new(build, ttl: 30) }
+  subject(:ci_job_jwt_v2) { described_class.new(build, ttl: 30, aud: aud) }
 
   it { is_expected.to be_a Gitlab::Ci::Jwt }
 
@@ -28,6 +30,14 @@ RSpec.describe Gitlab::Ci::JwtV2 do
         expect(payload[:iss]).to eq(Settings.gitlab.base_url)
         expect(payload[:aud]).to eq(Settings.gitlab.base_url)
         expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
+      end
+    end
+
+    context 'when given an aud' do
+      let(:aud) { 'AWS' }
+
+      it 'uses that aud in the payload' do
+        expect(payload[:aud]).to eq('AWS')
       end
     end
   end

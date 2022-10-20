@@ -12,7 +12,7 @@ RSpec.describe Issuable::ProcessAssignees do
                                                extra_assignee_ids: %w(2 5 12))
       result = process.execute
 
-      expect(result.sort).to eq(%w(5 7 9).sort)
+      expect(result).to contain_exactly(5, 7, 9)
     end
 
     it 'combines other ids when assignee_ids is nil' do
@@ -23,7 +23,7 @@ RSpec.describe Issuable::ProcessAssignees do
                                                extra_assignee_ids: %w(2 5 12))
       result = process.execute
 
-      expect(result.sort).to eq(%w(1 2 3 5 11 12).sort)
+      expect(result).to contain_exactly(1, 2, 3, 5, 11, 12)
     end
 
     it 'combines other ids when both add_assignee_ids and remove_assignee_ids are not empty' do
@@ -34,7 +34,7 @@ RSpec.describe Issuable::ProcessAssignees do
                                                extra_assignee_ids: %w(2 5 12))
       result = process.execute
 
-      expect(result.sort).to eq(%w(1 2 3 5 6 12).sort)
+      expect(result).to contain_exactly(1, 2, 3, 5, 6, 12)
     end
 
     it 'combines other ids when remove_assignee_ids is not empty' do
@@ -45,7 +45,7 @@ RSpec.describe Issuable::ProcessAssignees do
                                                extra_assignee_ids: %w(2 5 12))
       result = process.execute
 
-      expect(result.sort).to eq(%w(1 2 3 5 12).sort)
+      expect(result).to contain_exactly(1, 2, 3, 5, 12)
     end
 
     it 'combines other ids when add_assignee_ids is not empty' do
@@ -56,7 +56,7 @@ RSpec.describe Issuable::ProcessAssignees do
                                                extra_assignee_ids: %w(2 5 12))
       result = process.execute
 
-      expect(result.sort).to eq(%w(1 2 4 3 5 6 11 12).sort)
+      expect(result).to contain_exactly(1, 2, 4, 3, 5, 6, 11, 12)
     end
 
     it 'combines ids when existing_assignee_ids and extra_assignee_ids are omitted' do
@@ -65,7 +65,18 @@ RSpec.describe Issuable::ProcessAssignees do
                                                remove_assignee_ids: %w(4 7 11))
       result = process.execute
 
-      expect(result.sort).to eq(%w(2 6).sort)
+      expect(result.sort).to eq([2, 6].sort)
+    end
+
+    it 'handles mixed string and integer arrays' do
+      process = Issuable::ProcessAssignees.new(assignee_ids: %w(5 7 9),
+                                               add_assignee_ids: [2, 4, 6],
+                                               remove_assignee_ids: %w(4 7 11),
+                                               existing_assignee_ids: [1, 3, 11],
+                                               extra_assignee_ids: %w(2 5 12))
+      result = process.execute
+
+      expect(result).to contain_exactly(1, 2, 3, 5, 6, 12)
     end
   end
 end

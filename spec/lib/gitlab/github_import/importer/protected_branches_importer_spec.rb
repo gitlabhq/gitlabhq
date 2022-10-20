@@ -23,11 +23,13 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
   let(:github_protection_rule) do
     response = Struct.new(:name, :url, :required_signatures, :enforce_admins, :required_linear_history,
       :allow_force_pushes, :allow_deletion, :block_creations, :required_conversation_resolution,
+      :required_pull_request_reviews,
       keyword_init: true
     )
     required_signatures = Struct.new(:url, :enabled, keyword_init: true)
     enforce_admins = Struct.new(:url, :enabled, keyword_init: true)
     allow_option = Struct.new(:enabled, keyword_init: true)
+    required_pull_request_reviews = Struct.new(:url, :dismissal_restrictions, keyword_init: true)
     response.new(
       name: 'main',
       url: 'https://example.com/branches/main/protection',
@@ -53,6 +55,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
       ),
       required_conversation_resolution: allow_option.new(
         enabled: false
+      ),
+      required_pull_request_reviews: required_pull_request_reviews.new(
+        url: 'https://example.com/branches/main/protection/required_pull_request_reviews',
+        dismissal_restrictions: {}
       )
     )
   end

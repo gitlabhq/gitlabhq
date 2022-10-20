@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
@@ -151,7 +151,7 @@ describe('LabelsSelectRoot', () => {
     it('creates flash with error message when query is rejected', async () => {
       createComponent({ queryHandler: errorQueryHandler });
       await waitForPromises();
-      expect(createFlash).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
+      expect(createAlert).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
     });
   });
 
@@ -197,7 +197,7 @@ describe('LabelsSelectRoot', () => {
       findDropdownContents().vm.$emit('setLabels', [label]);
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         captureError: true,
         error: expect.anything(),
         message: 'An error occurred while updating labels.',

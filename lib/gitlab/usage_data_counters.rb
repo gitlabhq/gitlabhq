@@ -2,25 +2,24 @@
 
 module Gitlab
   module UsageDataCounters
-    COUNTERS = [
-      WikiPageCounter,
-      NoteCounter,
-      SnippetCounter,
-      SearchCounter,
-      CycleAnalyticsCounter,
-      ProductivityAnalyticsCounter,
-      SourceCodeCounter,
-      KubernetesAgentCounter,
-      MergeRequestWidgetExtensionCounter
-    ].freeze
+    COUNTERS = [].freeze
 
     COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES = [
       PackageEventCounter,
       MergeRequestCounter,
       DesignsCounter,
       DiffsCounter,
+      KubernetesAgentCounter,
+      NoteCounter,
+      SearchCounter,
       ServiceUsageDataCounter,
-      WebIdeCounter
+      WebIdeCounter,
+      WikiPageCounter,
+      SnippetCounter,
+      CycleAnalyticsCounter,
+      ProductivityAnalyticsCounter,
+      SourceCodeCounter,
+      MergeRequestWidgetExtensionCounter
     ].freeze
 
     UsageDataCounterError = Class.new(StandardError)
@@ -28,13 +27,11 @@ module Gitlab
 
     class << self
       def unmigrated_counters
-        # we are using the #counters method instead of the COUNTERS const
-        # to make sure it's working correctly for `ee` version of UsageDataCounters
-        counters - self::COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES
+        self::COUNTERS
       end
 
       def counters
-        self::COUNTERS + self::COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES
+        unmigrated_counters + migrated_counters
       end
 
       def count(event_name)
@@ -45,6 +42,12 @@ module Gitlab
         end
 
         raise UnknownEvent, "Cannot find counter for event #{event_name}"
+      end
+
+      private
+
+      def migrated_counters
+        COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES
       end
     end
   end

@@ -13,7 +13,7 @@ import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
 import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -54,7 +54,7 @@ describe('DiffsStoreActions', () => {
     ['requestAnimationFrame', 'requestIdleCallback'].forEach((method) => {
       global[method] = originalMethods[method];
     });
-    createFlash.mockClear();
+    createAlert.mockClear();
     mock.restore();
   });
 
@@ -175,35 +175,10 @@ describe('DiffsStoreActions', () => {
         [{ type: 'startRenderDiffsQueue' }, { type: 'startRenderDiffsQueue' }],
       );
     });
-
-    it.each`
-      viewStyle     | otherView
-      ${'inline'}   | ${'parallel'}
-      ${'parallel'} | ${'inline'}
-    `(
-      'should make a request with the view parameter "$viewStyle" when the batchEndpoint already contains "$otherView"',
-      ({ viewStyle, otherView }) => {
-        const endpointBatch = '/fetch/diffs_batch';
-
-        diffActions
-          .fetchDiffFilesBatch({
-            commit: () => {},
-            state: {
-              endpointBatch: `${endpointBatch}?view=${otherView}`,
-              diffViewType: viewStyle,
-            },
-          })
-          .then(() => {
-            expect(mock.history.get[0].url).toContain(`view=${viewStyle}`);
-            expect(mock.history.get[0].url).not.toContain(`view=${otherView}`);
-          })
-          .catch(() => {});
-      },
-    );
   });
 
   describe('fetchDiffFilesMeta', () => {
-    const endpointMetadata = '/fetch/diffs_metadata.json?view=inline';
+    const endpointMetadata = '/fetch/diffs_metadata.json?view=inline&w=0';
     const noFilesData = { ...diffMetadata };
 
     beforeEach(() => {
@@ -216,7 +191,7 @@ describe('DiffsStoreActions', () => {
       return testAction(
         diffActions.fetchDiffFilesMeta,
         {},
-        { endpointMetadata, diffViewType: 'inline' },
+        { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
         [
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
@@ -254,8 +229,8 @@ describe('DiffsStoreActions', () => {
       mock.onGet(endpointCoverage).reply(400);
 
       await testAction(diffActions.fetchCoverageFiles, {}, { endpointCoverage }, [], []);
-      expect(createFlash).toHaveBeenCalledTimes(1);
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledWith({
         message: expect.stringMatching('Something went wrong'),
       });
     });

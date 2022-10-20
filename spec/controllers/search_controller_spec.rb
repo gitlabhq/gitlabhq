@@ -218,7 +218,7 @@ RSpec.describe SearchController do
         end
       end
 
-      it_behaves_like 'Snowplow event tracking' do
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject { get :show, params: { group_id: namespace.id, scope: 'blobs', search: 'term' } }
 
         let(:project) { nil }

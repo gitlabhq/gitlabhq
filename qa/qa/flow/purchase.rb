@@ -45,11 +45,12 @@ module QA
         Page::Group::Menu.perform(&:go_to_usage_quotas)
         Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quota|
           usage_quota.storage_tab
-          usage_quota.buy_storage
+          usage_quota.purchase_more_storage
         end
 
-        # Purchase checkout opens a new tab
-        Chemlab.configuration.browser.session.engine.switch_window
+        # Purchase checkout opens a new tab but buying additional storage does not
+        session = Chemlab.configuration.browser.session.engine
+        session.switch_window if session.windows.size == 2
 
         Gitlab::Page::Subscriptions::New.perform do |storage|
           storage.quantity = quantity

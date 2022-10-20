@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # NuGet packages in the Package Registry **(FREE)**
@@ -15,8 +15,8 @@ packages whenever you need to use them as a dependency.
 
 The Package Registry works with:
 
-- [NuGet CLI](https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
-- [.NET Core CLI](https://docs.microsoft.com/en-us/dotnet/core/tools/)
+- [NuGet CLI](https://learn.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
+- [.NET Core CLI](https://learn.microsoft.com/en-us/dotnet/core/tools/)
 - [Visual Studio](https://visualstudio.microsoft.com/vs/)
 
 For documentation of the specific API endpoints that these
@@ -342,7 +342,7 @@ When publishing packages:
 
 Prerequisites:
 
-- [A NuGet package created with NuGet CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package).
+- [A NuGet package created with NuGet CLI](https://learn.microsoft.com/en-us/nuget/create-packages/creating-a-package).
 - Set a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 Publish a package by running this command:
@@ -358,7 +358,7 @@ nuget push <package_file> -Source <source_name>
 
 Prerequisites:
 
-- [A NuGet package created with .NET CLI](https://docs.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
+- [A NuGet package created with .NET CLI](https://learn.microsoft.com/en-us/nuget/create-packages/creating-a-package-dotnet-cli).
 - Set a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 Publish a package by running this command:

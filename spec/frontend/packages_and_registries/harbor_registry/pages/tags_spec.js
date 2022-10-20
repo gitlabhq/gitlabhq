@@ -15,8 +15,8 @@ jest.mock('~/rest_api', () => ({
 describe('Harbor Tags page', () => {
   let wrapper;
 
-  const findTagsHeader = () => wrapper.find(TagsHeader);
-  const findTagsList = () => wrapper.find(TagsList);
+  const findTagsHeader = () => wrapper.findComponent(TagsHeader);
+  const findTagsList = () => wrapper.findComponent(TagsList);
 
   const waitForHarborTagsRequest = async () => {
     await waitForPromises();

@@ -898,7 +898,9 @@ export default {
         :help-path="pagesHelpPath"
         :label="$options.i18n.pagesLabel"
         :help-text="
-          s__('ProjectSettings|With GitLab Pages you can host your static websites on GitLab.')
+          s__(
+            'ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute.',
+          )
         "
       >
         <project-feature-setting
@@ -979,20 +981,20 @@ export default {
             name="project[project_feature_attributes][feature_flags_access_level]"
           />
         </project-setting-row>
-        <project-setting-row
-          ref="releases-settings"
-          :label="$options.i18n.releasesLabel"
-          :help-text="$options.i18n.releasesHelpText"
-          :help-path="releasesHelpPath"
-        >
-          <project-feature-setting
-            v-model="releasesAccessLevel"
-            :label="$options.i18n.releasesLabel"
-            :options="featureAccessLevelOptions"
-            name="project[project_feature_attributes][releases_access_level]"
-          />
-        </project-setting-row>
       </template>
+      <project-setting-row
+        ref="releases-settings"
+        :label="$options.i18n.releasesLabel"
+        :help-text="$options.i18n.releasesHelpText"
+        :help-path="releasesHelpPath"
+      >
+        <project-feature-setting
+          v-model="releasesAccessLevel"
+          :label="$options.i18n.releasesLabel"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][releases_access_level]"
+        />
+      </project-setting-row>
     </div>
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-disabled">

@@ -31,7 +31,7 @@ export default {
     <div class="timeline-icon d-none d-lg-flex">
       <gl-icon name="comment" />
     </div>
-    <div class="timeline-content">
+    <div class="timeline-content gl-pl-8">
       <div data-testid="discussion-filter-timeline-content">
         <gl-sprintf :message="$options.i18n.information">
           <template #bold="{ content }">

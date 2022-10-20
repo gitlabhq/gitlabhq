@@ -53,6 +53,21 @@ RSpec.describe Gitlab::SlashCommands::IssueNew do
         expect(subject[:response_type]).to be(:ephemeral)
         expect(subject[:text]).to match("- Title is too long")
       end
+
+      context 'when create issue service return an unrecoverable error' do
+        let(:regex_match) { described_class.match("issue create title}") }
+
+        before do
+          allow_next_instance_of(Issues::CreateService) do |create_service|
+            allow(create_service).to receive(:execute).and_return(ServiceResponse.error(message: 'unauthorized'))
+          end
+        end
+
+        it 'displays the errors' do
+          expect(subject[:response_type]).to be(:ephemeral)
+          expect(subject[:text]).to eq('unauthorized')
+        end
+      end
     end
   end
 

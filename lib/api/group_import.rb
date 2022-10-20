@@ -54,7 +54,7 @@ module API
       params do
         requires :path, type: String, desc: 'Group path'
         requires :name, type: String, desc: 'Group name'
-        requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The group export file to be imported'
+        requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The group export file to be imported', documentation: { type: 'file' }
         optional :parent_id, type: Integer, desc: "The ID of the parent group that the group will be imported into. Defaults to the current user's namespace."
       end
       post 'import' do

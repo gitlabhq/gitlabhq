@@ -132,7 +132,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         expectStepDef,
         expectProgressBarValue,
       }) => {
-        beforeAll(async () => {
+        beforeEach(async () => {
           createComponent();
 
           for (const emittedValue of navigationEventChain) {
@@ -145,7 +145,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
           }
         });
 
-        afterAll(() => {
+        afterEach(() => {
           wrapper.destroy();
         });
 
@@ -184,11 +184,11 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   });
 
   describe('editor overlay', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       createComponent();
     });
 
-    afterAll(() => {
+    afterEach(() => {
       wrapper.destroy();
     });
 
@@ -236,11 +236,11 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   });
 
   describe('line highlights', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       createComponent();
     });
 
-    afterAll(() => {
+    afterEach(() => {
       wrapper.destroy();
     });
 
@@ -266,7 +266,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   });
 
   describe('integration test', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       createComponent({}, mountExtended);
     });
 
@@ -290,14 +290,25 @@ describe('Pipeline Wizard - wrapper.vue', () => {
     describe('navigating back', () => {
       let inputField;
 
-      beforeAll(async () => {
+      beforeEach(async () => {
+        createComponent({}, mountExtended);
+
+        findFirstInputFieldForTarget('$FOO').setValue('fooVal');
+        await nextTick();
+
+        findFirstVisibleStep().vm.$emit('next');
+        await nextTick();
+
+        findFirstInputFieldForTarget('$BAR').setValue('barVal');
+        await nextTick();
+
         findFirstVisibleStep().vm.$emit('back');
         await nextTick();
 
         inputField = findFirstInputFieldForTarget('$FOO');
       });
 
-      afterAll(() => {
+      afterEach(() => {
         wrapper.destroy();
         inputField = undefined;
       });

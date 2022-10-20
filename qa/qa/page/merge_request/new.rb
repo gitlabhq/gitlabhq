@@ -38,7 +38,6 @@ module QA
 
         def click_diffs_tab
           click_element(:diffs_tab)
-          click_element(:dismiss_popover_button) if has_element?(:dismiss_popover_button, wait: 1)
         end
 
         def has_file?(file_name)

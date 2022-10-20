@@ -6,7 +6,7 @@ import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/ap
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
@@ -86,9 +86,6 @@ export default {
       import('../reports/codequality_report/grouped_codequality_reports_app.vue'),
     GroupedTestReportsApp: () =>
       import('../reports/grouped_test_report/grouped_test_reports_app.vue'),
-    TerraformPlan: () => import('./components/terraform/mr_widget_terraform_container.vue'),
-    GroupedAccessibilityReportsApp: () =>
-      import('../reports/accessibility_report/grouped_accessibility_reports_app.vue'),
     MrWidgetApprovals,
     SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
@@ -218,12 +215,6 @@ export default {
     hasAlerts() {
       return this.hasMergeError || this.showMergePipelineForkWarning;
     },
-    shouldShowExtension() {
-      return (
-        window.gon?.features?.refactorMrWidgetsExtensions ||
-        window.gon?.features?.refactorMrWidgetsExtensionsUser
-      );
-    },
     shouldShowSecurityExtension() {
       return window.gon?.features?.refactorSecurityExtension;
     },
@@ -276,7 +267,7 @@ export default {
         this.initWidget(data);
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Unable to load the merge request widget. Try reloading the page.'),
         }),
       );
@@ -368,7 +359,7 @@ export default {
           }
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           }),
         );
@@ -427,7 +418,7 @@ export default {
         .catch(() => this.throwDeploymentsError());
     },
     throwDeploymentsError() {
-      createFlash({
+      createAlert({
         message: __(
           'Something went wrong while fetching the environments for this merge request. Please try again.',
         ),
@@ -447,7 +438,7 @@ export default {
           }
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           }),
         );
@@ -506,17 +497,24 @@ export default {
       eventHub.$on('DisablePolling', () => {
         this.stopPolling();
       });
+
+      eventHub.$on('FetchDeployments', () => {
+        this.fetchPreMergeDeployments();
+        if (this.shouldRenderMergedPipeline) {
+          this.fetchPostMergeDeployments();
+        }
+      });
     },
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;
     },
     registerTerraformPlans() {
-      if (this.shouldRenderTerraformPlans && this.shouldShowExtension) {
+      if (this.shouldRenderTerraformPlans) {
         registerExtension(terraformExtension);
       }
     },
     registerAccessibilityExtension() {
-      if (this.shouldShowAccessibilityReport && this.shouldShowExtension) {
+      if (this.shouldShowAccessibilityReport) {
         registerExtension(accessibilityExtension);
       }
     },
@@ -618,16 +616,6 @@ export default {
         :endpoint="mr.testResultsPath"
         :head-blob-path="mr.headBlobPath"
         :pipeline-path="mr.pipeline.path"
-      />
-
-      <terraform-plan
-        v-if="mr.terraformReportsPath && !shouldShowExtension"
-        :endpoint="mr.terraformReportsPath"
-      />
-
-      <grouped-accessibility-reports-app
-        v-if="shouldShowAccessibilityReport && !shouldShowExtension"
-        :endpoint="mr.accessibilityReportPath"
       />
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">

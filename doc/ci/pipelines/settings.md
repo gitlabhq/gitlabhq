@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/settings.html'
 type: reference, howto
 ---
@@ -159,13 +159,13 @@ If the CI/CD configuration file is in a different project:
 
 - The file must exist on its default branch, or specify the branch as refname.
 - The path must be relative to the root directory in the other project.
-- The path must include the group and project name at the end.
+- The path must be followed by an `@` symbol and the full group and project path.
 
 For example:
 
-- `.gitlab-ci.yml@mygroup/another-project`
-- `my/path/.my-custom-file.yml@mygroup/another-project`
-- `my/path/.my-custom-file.yml@mygroup/another-project:refname`
+- `.gitlab-ci.yml@namespace/another-project`
+- `my/path/.my-custom-file.yml@namespace/sub-group/another-project`
+- `my/path/.my-custom-file.yml@namespace/sub-group1/sub-group2/another-project:refname`
 
 If the configuration file is in a separate project, you can set more granular permissions. For example:
 
@@ -329,7 +329,7 @@ you can view a graph or download a CSV file with this data.
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Repository**.
 
-The historic data for each job is listed in the dropdown above the graph.
+The historic data for each job is listed in the dropdown list above the graph.
 
 To view a CSV file of the data, select **Download raw data (`.csv`)**.
 

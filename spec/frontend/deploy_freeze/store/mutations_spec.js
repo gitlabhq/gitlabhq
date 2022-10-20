@@ -2,7 +2,12 @@ import * as types from '~/deploy_freeze/store/mutation_types';
 import mutations from '~/deploy_freeze/store/mutations';
 import state from '~/deploy_freeze/store/state';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { findTzByName, formatTz, freezePeriodsFixture, timezoneDataFixture } from '../helpers';
+import { formatTimezone } from '~/lib/utils/datetime_utility';
+import { freezePeriodsFixture } from '../helpers';
+import {
+  timezoneDataFixture,
+  findTzByName,
+} from '../../vue_shared/components/timezone_dropdown/helpers';
 
 describe('Deploy freeze mutations', () => {
   let stateCopy;
@@ -28,9 +33,9 @@ describe('Deploy freeze mutations', () => {
   describe('RECEIVE_FREEZE_PERIODS_SUCCESS', () => {
     it('should set freeze periods and format timezones from identifiers to names', () => {
       const timezoneNames = {
-        'Europe/Berlin': '[UTC 2] Berlin',
+        'Europe/Berlin': '[UTC + 2] Berlin',
         'Etc/UTC': '[UTC 0] UTC',
-        'America/New_York': '[UTC -4] Eastern Time (US & Canada)',
+        'America/New_York': '[UTC - 4] Eastern Time (US & Canada)',
       };
 
       mutations[types.RECEIVE_FREEZE_PERIODS_SUCCESS](stateCopy, freezePeriodsFixture);
@@ -51,7 +56,7 @@ describe('Deploy freeze mutations', () => {
     it('should set the cron timezone', () => {
       const selectedTz = findTzByName('Pacific Time (US & Canada)');
       const timezone = {
-        formattedTimezone: formatTz(selectedTz),
+        formattedTimezone: formatTimezone(selectedTz),
         identifier: selectedTz.identifier,
       };
       mutations[types.SET_SELECTED_TIMEZONE](stateCopy, timezone);

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -56,7 +56,7 @@ To configure your Vault server:
 
 1. Ensure your Vault server is running on version 1.2.0 or higher.
 1. Enable the authentication method by running these commands. They provide your Vault
-   server the [JSON Web Key Set](https://tools.ietf.org/html/rfc7517) (JWKS) endpoint for your GitLab instance, so Vault
+   server the [JSON Web Key Set](https://www.rfc-editor.org/rfc/rfc7517) (JWKS) endpoint for your GitLab instance, so Vault
    can fetch the public signing key and verify the JSON Web Token (JWT) when authenticating:
 
    ```shell

@@ -12,8 +12,8 @@ module Pajamas
     def initialize(
       title: nil, variant: :info, dismissible: true, show_icon: true,
       alert_options: {}, close_button_options: {})
-      @title = title
-      @variant = variant
+      @title = title.presence
+      @variant = filter_attribute(variant&.to_sym, VARIANT_ICONS.keys, default: :info)
       @dismissible = dismissible
       @show_icon = show_icon
       @alert_options = alert_options
@@ -35,7 +35,7 @@ module Pajamas
     renders_one :body
     renders_one :actions
 
-    ICONS = {
+    VARIANT_ICONS = {
       info: 'information-o',
       warning: 'warning',
       success: 'check-circle',
@@ -44,7 +44,7 @@ module Pajamas
     }.freeze
 
     def icon
-      ICONS[@variant]
+      VARIANT_ICONS[@variant]
     end
 
     def icon_classes

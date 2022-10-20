@@ -49,7 +49,7 @@ RSpec.describe 'Packages' do
         it 'allows you to delete a package' do
           find('[data-testid="delete-dropdown"]').click
           find('[data-testid="action-delete"]').click
-          click_button('Delete package')
+          click_button('Permanently delete')
 
           expect(page).to have_content 'Package deleted successfully'
           expect(page).not_to have_content(package.name)

@@ -13,6 +13,7 @@ module Gitlab
                       pipeline_schedules: 'Ci::PipelineSchedule',
                       builds: 'Ci::Build',
                       runners: 'Ci::Runner',
+                      pipeline_metadata: 'Ci::PipelineMetadata',
                       hooks: 'ProjectHook',
                       merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                       push_access_levels: 'ProtectedBranch::PushAccessLevel',

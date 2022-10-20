@@ -11,6 +11,7 @@ import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
 import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
+import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import * as constants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
@@ -20,11 +21,14 @@ import * as mockData from '../mock_data';
 
 const TYPE_COMMENT_FORM = 'comment-form';
 const TYPE_NOTES_LIST = 'notes-list';
+const TEST_NOTES_FILTER_VALUE = 1;
 
 const propsData = {
   noteableData: mockData.noteableDataMock,
   notesData: mockData.notesDataMock,
   userData: mockData.userDataMock,
+  notesFilters: mockData.notesFilters,
+  notesFilterValue: TEST_NOTES_FILTER_VALUE,
 };
 
 describe('note_app', () => {
@@ -47,7 +51,7 @@ describe('note_app', () => {
     axiosMock = new AxiosMockAdapter(axios);
 
     store = createStore();
-    mountComponent = () => {
+    mountComponent = ({ props = {} } = {}) => {
       return mount(
         {
           components: {
@@ -58,7 +62,10 @@ describe('note_app', () => {
           </div>`,
         },
         {
-          propsData,
+          propsData: {
+            ...propsData,
+            ...props,
+          },
           store,
         },
       );
@@ -144,6 +151,13 @@ describe('note_app', () => {
     it('updates discussions badge', () => {
       expect(document.querySelector('.js-discussions-count').textContent).toEqual('2');
     });
+
+    it('should render notes activity header', () => {
+      expect(wrapper.findComponent(NotesActivityHeader).props()).toEqual({
+        notesFilterValue: TEST_NOTES_FILTER_VALUE,
+        notesFilters: mockData.notesFilters,
+      });
+    });
   });
 
   describe('render with comments disabled', () => {
@@ -151,8 +165,15 @@ describe('note_app', () => {
       setHTMLFixture('<div class="js-discussions-count"></div>');
 
       axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
-      store.state.commentsDisabled = true;
-      wrapper = mountComponent();
+      wrapper = mountComponent({
+        // why: In this integration test, previously we manually set store.state.commentsDisabled
+        //      This stopped working when we added `<discussion-filter>` into the component tree.
+        //      Let's lean into the integration scope and use a prop that "disables comments".
+        props: {
+          notesFilterValue: constants.HISTORY_ONLY_FILTER_VALUE,
+        },
+      });
+
       return waitForPromises();
     });
 
@@ -358,7 +379,7 @@ describe('note_app', () => {
     it('should listen hashchange event', () => {
       const notesApp = wrapper.findComponent(NotesApp);
       const hash = 'some dummy hash';
-      jest.spyOn(urlUtility, 'getLocationHash').mockReturnValueOnce(hash);
+      jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue(hash);
       const setTargetNoteHash = jest.spyOn(notesApp.vm, 'setTargetNoteHash');
 
       window.dispatchEvent(new Event('hashchange'), hash);

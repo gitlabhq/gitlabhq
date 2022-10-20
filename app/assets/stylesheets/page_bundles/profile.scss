@@ -1,4 +1,33 @@
 @import 'mixins_and_variables_and_functions';
+@import 'framework/buttons';
+
+.edit-user {
+  .emoji-menu-toggle-button {
+    @include emoji-menu-toggle-button;
+  }
+
+  @include media-breakpoint-down(sm) {
+    .input-md,
+    .input-lg {
+      max-width: 100%;
+    }
+  }
+}
+
+.modal-profile-crop {
+  .modal-dialog {
+    width: 380px;
+
+    @include media-breakpoint-down(xs) {
+      width: auto;
+    }
+  }
+
+  .profile-crop-image-container {
+    height: 300px;
+    margin: 0 auto;
+  }
+}
 
 .calendar-block {
   padding-left: 0;
@@ -209,4 +238,33 @@
 
 .twitter-icon {
   color: $twitter;
+}
+
+.key-created-at {
+  line-height: 42px;
+}
+
+.key-list-item {
+  .key-list-item-info {
+    @include media-breakpoint-up(sm) {
+      float: left;
+    }
+  }
+}
+
+.ssh-keys-list {
+  .last-used-at,
+  .expires,
+  .key-created-at {
+    line-height: 32px;
+  }
+}
+
+.subkeys-list {
+  @include basic-list;
+
+  li {
+    padding: 3px 0;
+    border: 0;
+  }
 }

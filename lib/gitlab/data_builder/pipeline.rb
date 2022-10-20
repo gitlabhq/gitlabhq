@@ -63,6 +63,7 @@ module Gitlab
       def hook_attrs(pipeline)
         {
           id: pipeline.id,
+          iid: pipeline.iid,
           ref: pipeline.source_ref,
           tag: pipeline.tag,
           sha: pipeline.sha,

@@ -24,8 +24,10 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
 
   context 'migration to instrumentation classes data collection' do
     let_it_be(:instrumented_events) do
+      instrumentation_classes = %w[AggregatedMetric RedisHLLMetric]
       ::Gitlab::Usage::MetricDefinition.all.map do |definition|
-        next unless definition.attributes[:instrumentation_class] == 'RedisHLLMetric' && definition.available?
+        next unless definition.available?
+        next unless instrumentation_classes.include?(definition.attributes[:instrumentation_class])
 
         definition.attributes.dig(:options, :events)&.sort
       end.compact.to_set
@@ -96,21 +98,17 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'source_code',
         'incident_management',
         'incident_management_alerts',
-        'incident_management_oncall',
         'testing',
         'issues_edit',
-        'ci_secrets_management',
         'snippets',
         'code_review',
         'terraform',
         'ci_templates',
         'quickactions',
         'pipeline_authoring',
-        'epics_usage',
         'secure',
         'importer',
         'geo',
-        'growth',
         'work_items',
         'ci_users',
         'error_tracking',

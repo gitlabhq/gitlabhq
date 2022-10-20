@@ -292,4 +292,22 @@ RSpec.describe TodosHelper do
       it { is_expected.to eq(result) }
     end
   end
+
+  describe '#todos_filter_params' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:state, :result) do
+      'done'    | 'done'
+      'pending' | 'pending'
+      ''        | nil
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:params).and_return({ state: state })
+      end
+
+      it { expect(helper.todos_filter_params[:state]).to eq(result) }
+    end
+  end
 end

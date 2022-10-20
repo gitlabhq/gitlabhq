@@ -54,7 +54,8 @@ module BulkImports
         skip!(
           'Skipping pipeline due to failed entity',
           pipeline_step: step,
-          step_class: class_name
+          step_class: class_name,
+          importer: 'gitlab_migration'
         )
       rescue BulkImports::NetworkError => e
         if e.retriable?(context.tracker)
@@ -108,9 +109,12 @@ module BulkImports
         }
 
         error(
+          bulk_import_id: context.bulk_import_id,
           pipeline_step: step,
           exception_class: exception.class.to_s,
-          exception_message: exception.message
+          exception_message: exception.message,
+          message: "Pipeline failed",
+          importer: 'gitlab_migration'
         )
 
         BulkImports::Failure.create(attributes)
@@ -130,11 +134,12 @@ module BulkImports
 
       def log_params(extra)
         defaults = {
-          bulk_import_id: context.bulk_import.id,
+          bulk_import_id: context.bulk_import_id,
           bulk_import_entity_id: context.entity.id,
           bulk_import_entity_type: context.entity.source_type,
           pipeline_class: pipeline,
-          context_extra: context.extra
+          context_extra: context.extra,
+          importer: 'gitlab_migration'
         }
 
         defaults

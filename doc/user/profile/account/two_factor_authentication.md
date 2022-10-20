@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Two-factor authentication **(FREE)**
@@ -452,11 +452,10 @@ This error occurs in the following scenarios:
   [enforce 2FA for all users](../../../security/two_factor_authentication.md#enforce-2fa-for-all-users) setting.
 - You do not have 2FA enabled, but an administrator has disabled the
   [password authentication enabled for Git over HTTP(S)](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled)
-  setting. If LDAP is:
-  - Configured, an [LDAP password](../../../administration/auth/ldap/index.md)
-    or a [personal access token](../personal_access_tokens.md)
-    must be used to authenticate Git requests over HTTP(S).
-  - Not configured, you must use a [personal access token](../personal_access_tokens.md).
+  setting. You can authenticate Git requests:
+  - Over HTTP(S) using a [personal access token](../personal_access_tokens.md).
+  - In your browser using [Git Credential Manager](#git-credential-manager).
+  - If you have configured LDAP, over HTTP(S) using an [LDAP password](../../../administration/auth/ldap/index.md).
 
 ### Error: "invalid pin code"
 

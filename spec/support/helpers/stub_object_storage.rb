@@ -13,13 +13,16 @@ module StubObjectStorage
         enabled: true,
         proxy_download: false,
         background_upload: false,
-        direct_upload: false
+        direct_upload: false,
+        cdn: {}
   )
+
     new_config = config.to_h.deep_symbolize_keys.merge({
       enabled: enabled,
       proxy_download: proxy_download,
       background_upload: background_upload,
-      direct_upload: direct_upload
+      direct_upload: direct_upload,
+      cdn: cdn
     })
 
     # Needed for ObjectStorage::Config compatibility
@@ -29,6 +32,10 @@ module StubObjectStorage
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:background_upload) { background_upload }
     allow(config).to receive(:direct_upload) { direct_upload }
+
+    uploader_config = Settingslogic.new(new_config.deep_stringify_keys)
+    allow(uploader).to receive(:object_store_options).and_return(uploader_config)
+    allow(uploader.options).to receive(:object_store).and_return(uploader_config)
 
     return unless enabled
 
@@ -71,6 +78,12 @@ module StubObjectStorage
   def stub_package_file_object_storage(**params)
     stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
                                  uploader: ::Packages::PackageFileUploader,
+                                 **params)
+  end
+
+  def stub_rpm_repository_file_object_storage(**params)
+    stub_object_storage_uploader(config: Gitlab.config.packages.object_store,
+                                 uploader: ::Packages::Rpm::RepositoryFileUploader,
                                  **params)
   end
 

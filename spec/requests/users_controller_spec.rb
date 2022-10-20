@@ -828,6 +828,26 @@ RSpec.describe UsersController do
     end
   end
 
+  describe 'POST #follow' do
+    context 'when over followee limit' do
+      before do
+        stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', 2)
+        sign_in(user)
+      end
+
+      it 'alerts and not follow' do
+        Users::UserFollowUser::MAX_FOLLOWEE_LIMIT.times { user.follow(create(:user)) }
+
+        post user_follow_url(username: public_user.username)
+        expect(response).to be_redirect
+
+        expected_message = format(_("You can't follow more than %{limit} users. To follow more users, unfollow some others."), limit: Users::UserFollowUser::MAX_FOLLOWEE_LIMIT)
+        expect(flash[:alert]).to eq(expected_message)
+        expect(user).not_to be_following(public_user)
+      end
+    end
+  end
+
   context 'token authentication' do
     it_behaves_like 'authenticates sessionless user for the request spec', 'show atom', public_resource: true do
       let(:url) { user_url(user, format: :atom) }

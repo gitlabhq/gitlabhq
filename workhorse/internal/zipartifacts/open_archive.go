@@ -8,16 +8,16 @@ import (
 	"os"
 	"strings"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/httptransport"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/httprs"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 
 	zip "gitlab.com/gitlab-org/golang-archive-zip"
 	"gitlab.com/gitlab-org/labkit/mask"
 )
 
 var httpClient = &http.Client{
-	Transport: httptransport.New(
-		httptransport.WithDisabledCompression(), // To avoid bugs when serving compressed files from object storage
+	Transport: transport.NewRestrictedTransport(
+		transport.WithDisabledCompression(), // To avoid bugs when serving compressed files from object storage
 	),
 }
 

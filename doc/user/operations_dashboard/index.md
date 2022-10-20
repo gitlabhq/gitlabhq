@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Operations Dashboard **(PREMIUM)**
@@ -12,11 +12,6 @@ including pipeline and alert status.
 To access the dashboard, on the top bar, select **Main menu > Operations**.
 
 ## Adding a project to the dashboard
-
-NOTE:
-For GitLab.com, you can add your project to the Operations Dashboard for free if
-your project is public. If your project is private, the group it belongs to must
-have a [GitLab Premium](https://about.gitlab.com/pricing/) plan.
 
 To add a project to the dashboard:
 

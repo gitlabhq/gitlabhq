@@ -6,7 +6,7 @@ module Integrations
 
     included do
       after_save :update_web_hook!, if: :activated?
-      has_one :service_hook, inverse_of: :integration, foreign_key: :service_id
+      has_one :service_hook, inverse_of: :integration, foreign_key: :integration_id
     end
 
     # Return the URL to be used for the webhook.

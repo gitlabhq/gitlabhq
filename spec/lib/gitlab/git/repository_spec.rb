@@ -461,7 +461,11 @@ RSpec.describe Gitlab::Git::Repository do
     end
 
     it 'raises an error if it failed' do
-      expect { repository.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
+      # TODO: Once https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4921
+      # is merged, remove the assertion for Gitlab::Git::Repository::GitError
+      expect { repository.delete_refs('refs\heads\fix') }.to raise_error do |e|
+        expect(e).to be_a(Gitlab::Git::Repository::GitError).or be_a(Gitlab::Git::InvalidRefFormatError)
+      end
     end
   end
 
@@ -482,6 +486,12 @@ RSpec.describe Gitlab::Git::Repository do
 
     it 'displays that branch' do
       expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
+    end
+
+    context 'when limit is provided' do
+      it 'displays limited number of branches' do
+        expect(repository.branch_names_contains_sha(head_id, limit: 1)).to match_array(['2-mb-file'])
+      end
     end
   end
 
@@ -668,11 +678,11 @@ RSpec.describe Gitlab::Git::Repository do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
         .to receive(:find_remote_root_ref).and_call_original
 
-      expect(repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to eq 'master'
+      expect(repository.find_remote_root_ref(TestEnv.factory_repo_path.to_s)).to eq 'master'
     end
 
     it 'returns UTF-8' do
-      expect(repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL)).to be_utf8
+      expect(repository.find_remote_root_ref(TestEnv.factory_repo_path.to_s)).to be_utf8
     end
 
     it 'returns nil when remote name is nil' do
@@ -690,7 +700,7 @@ RSpec.describe Gitlab::Git::Repository do
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RemoteService, :find_remote_root_ref do
-      subject { repository.find_remote_root_ref(SeedHelper::GITLAB_GIT_TEST_REPO_URL) }
+      subject { repository.find_remote_root_ref(TestEnv.factory_repo_path.to_s) }
     end
   end
 
@@ -1769,12 +1779,13 @@ RSpec.describe Gitlab::Git::Repository do
     it 'returns exactly the expected results' do
       languages = repository.languages(TestEnv::BRANCH_SHA['master'])
 
-      expect(languages).to match_array([
-        { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516" },
-        { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-        { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-        { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776" }
-      ])
+      expect(languages).to match_array(
+        [
+          { value: a_value_within(0.1).of(66.7), label: "Ruby", color: "#701516", highlight: "#701516" },
+          { value: a_value_within(0.1).of(22.96), label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+          { value: a_value_within(0.1).of(7.9), label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+          { value: a_value_within(0.1).of(2.51), label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+        ])
     end
 
     it "uses the repository's HEAD when no ref is passed" do
@@ -1784,22 +1795,48 @@ RSpec.describe Gitlab::Git::Repository do
     end
   end
 
-  describe '#license_short_name' do
-    subject { repository.license_short_name }
+  describe '#license' do
+    where(from_gitaly: [true, false])
+    with_them do
+      subject(:license) { repository.license(from_gitaly) }
 
-    context 'when no license file can be found' do
-      let(:project) { create(:project, :repository) }
-      let(:repository) { project.repository.raw_repository }
+      context 'when no license file can be found' do
+        let_it_be(:project) { create(:project, :repository) }
+        let(:repository) { project.repository.raw_repository }
 
-      before do
-        project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
+        before do
+          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
+        end
+
+        it { is_expected.to be_nil }
       end
 
-      it { is_expected.to be_nil }
+      context 'when an mit license is found' do
+        it { is_expected.to have_attributes(key: 'mit') }
+      end
+
+      context 'when license is not recognized ' do
+        let_it_be(:project) { create(:project, :repository) }
+        let(:repository) { project.repository.raw_repository }
+
+        before do
+          project.repository.update_file(
+            project.owner,
+            'LICENSE',
+            'This software is licensed under the Dummy license.',
+            message: 'Update license',
+            branch_name: 'master')
+        end
+
+        it { is_expected.to have_attributes(key: 'other', nickname: 'LICENSE') }
+      end
     end
 
-    context 'when an mit license is found' do
-      it { is_expected.to eq('mit') }
+    it 'does not crash when license is invalid' do
+      expect(Licensee::License).to receive(:new)
+        .and_raise(Licensee::InvalidLicense)
+
+      expect(repository.license(false)).to be_nil
     end
   end
 

@@ -33,6 +33,7 @@ import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import Reference from '../extensions/reference';
+import ReferenceLabel from '../extensions/reference_label';
 import ReferenceDefinition from '../extensions/reference_definition';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
@@ -61,6 +62,7 @@ import {
   renderHTMLNode,
   renderContent,
   renderBulletList,
+  renderReference,
   preserveUnchanged,
   bold,
   italic,
@@ -184,9 +186,8 @@ const defaultSerializerConfig = {
     [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
     [OrderedList.name]: preserveUnchanged(renderOrderedList),
     [Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
-    [Reference.name]: (state, node) => {
-      state.write(node.attrs.originalText || node.attrs.text);
-    },
+    [Reference.name]: renderReference,
+    [ReferenceLabel.name]: renderReference,
     [ReferenceDefinition.name]: preserveUnchanged({
       render: (state, node, parent, index, same, sourceMarkdown) => {
         const nextSibling = parent.maybeChild(index + 1);

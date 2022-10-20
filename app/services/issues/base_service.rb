@@ -68,6 +68,19 @@ module Issues
       rebalance_if_needed(issue)
     end
 
+    def handle_escalation_status_change(issue)
+      return unless issue.supports_escalation?
+
+      if issue.escalation_status
+        ::IncidentManagement::IssuableEscalationStatuses::AfterUpdateService.new(
+          issue,
+          current_user
+        ).execute
+      else
+        ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute
+      end
+    end
+
     def issuable_for_positioning(id, positioning_scope)
       return unless id
 

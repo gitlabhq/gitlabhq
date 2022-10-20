@@ -67,10 +67,11 @@ RSpec.describe Repositories::ChangelogService do
       allow(MergeRequestDiffCommit)
         .to receive(:oldest_merge_request_id_per_commit)
         .with(project.id, [commit2.id, commit1.id])
-        .and_return([
-          { sha: sha2, merge_request_id: mr1.id },
-          { sha: sha3, merge_request_id: mr2.id }
-        ])
+        .and_return(
+          [
+            { sha: sha2, merge_request_id: mr1.id },
+            { sha: sha3, merge_request_id: mr2.id }
+          ])
 
       service = described_class
         .new(project, creator, version: '1.0.0', from: sha1, to: sha3)
@@ -135,10 +136,11 @@ RSpec.describe Repositories::ChangelogService do
         allow(MergeRequestDiffCommit)
           .to receive(:oldest_merge_request_id_per_commit)
           .with(project.id, [commit2.id, commit1.id])
-          .and_return([
-            { sha: sha2, merge_request_id: mr1.id },
-            { sha: sha3, merge_request_id: mr2.id }
-          ])
+          .and_return(
+            [
+              { sha: sha2, merge_request_id: mr1.id },
+              { sha: sha3, merge_request_id: mr2.id }
+            ])
 
         service = described_class
           .new(project, creator, version: '1.0.0', from: sha1, to: sha3)

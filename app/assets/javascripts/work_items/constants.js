@@ -17,6 +17,9 @@ export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
+export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
+export const WIDGET_TYPE_ITERATION = 'ITERATION';
+
 export const WORK_ITEM_VIEWED_STORAGE_KEY = 'gl-show-work-item-banner';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
@@ -26,13 +29,19 @@ export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 
 export const i18n = {
-  fetchError: s__('WorkItem|Something went wrong when fetching the work item. Please try again.'),
+  fetchErrorTitle: s__('WorkItem|Work item not found'),
+  fetchError: s__(
+    "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it.",
+  ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
   confidentialTooltip: s__(
     'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task.',
   ),
 };
 
+export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
+  'WorkItem|Something went wrong when fetching labels. Please try again.',
+);
 export const I18N_WORK_ITEM_ERROR_CREATING = s__(
   'WorkItem|Something went wrong when creating %{workItemType}. Please try again.',
 );
@@ -47,6 +56,10 @@ export const I18N_WORK_ITEM_ARE_YOU_SURE_DELETE = s__(
   'WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed.',
 );
 export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
+
+export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
+  'WorkItem|Something went wrong when fetching iterations. Please try again.',
+);
 
 export const sprintfWorkItem = (msg, workItemTypeArg) => {
   const workItemType = workItemTypeArg || s__('WorkItem|Work item');

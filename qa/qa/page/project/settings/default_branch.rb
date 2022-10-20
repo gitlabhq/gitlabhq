@@ -5,16 +5,22 @@ module QA
     module Project
       module Settings
         class DefaultBranch < Page::Base
-          include Page::Component::Select2
-
           view 'app/views/projects/default_branch/_show.html.haml' do
             element :save_changes_button
+          end
+
+          view 'app/assets/javascripts/projects/settings/components/default_branch_selector.vue' do
             element :default_branch_dropdown
           end
 
+          view 'app/assets/javascripts/ref/components/ref_selector.vue' do
+            element :ref_selector_searchbox
+          end
+
           def set_default_branch(branch)
-            find('.select2-chosen').click
-            search_and_select(branch)
+            click_button :default_branch_dropdown
+            fill_in :ref_selector_searchbox, with: branch
+            click_button branch
           end
 
           def click_save_changes_button

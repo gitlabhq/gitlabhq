@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Contract testing
@@ -66,7 +66,7 @@ As mentioned in the [folder structure section](#consumer-tests), consumer tests 
 
 #### Provider naming
 
-These are the API endpoints that provides the data to the consumer so they are simply named according to the API endpoint they pertain to. Be mindful that this name is as descriptive as possible. For example, if we're writing a test for the `GET /groups/:id/projects` endpoint, we don't want to simply name it "Projects endpoint" as there is a `GET /projects` endpoint as well that also fetches a list of projects the user has access to across all of GitLab. An easy way to name them is by checking out our [API documentation](../../../api/api_resources.md) and naming it the same way it is named in there. So the [`GET /groups/:id/projects`](../../../api/groups.md#list-a-groups-projects) would be called `List a group’s projects` and [`GET /projects`](../../../api/projects.md#list-all-projects) would be called `List all projects`. Subsequently, the test files are named `list_a_groups_projects_helper.rb` and `list_all_projects_helper.rb` respectively.
+These are the API endpoints that provides the data to the consumer so they are named according to the API endpoint they pertain to. Be mindful that this name is as descriptive as possible. For example, if we're writing a test for the `GET /groups/:id/projects` endpoint, we don't want to name it "Projects endpoint" as there is a `GET /projects` endpoint as well that also fetches a list of projects the user has access to across all of GitLab. An easy way to name them is by checking out our [API documentation](../../../api/api_resources.md) and naming it the same way it is named in there. So the [`GET /groups/:id/projects`](../../../api/groups.md#list-a-groups-projects) would be called `List a group’s projects` and [`GET /projects`](../../../api/projects.md#list-all-projects) would be called `List all projects`. Subsequently, the test files are named `list_a_groups_projects_helper.rb` and `list_all_projects_helper.rb` respectively.
 
 There are some cases where the provider being tested may not be documented so, in those cases, fall back to choosing a name that is as descriptive as possible to ensure it's easy to tell what the provider is for.
 

@@ -39,7 +39,7 @@ RSpec.describe ProjectCacheWorker do
     context 'with an existing project' do
       before do
         lease_key = "namespace:namespaces_root_statistics:#{project.namespace_id}"
-        stub_exclusive_lease_taken(lease_key, timeout: Namespace::AggregationSchedule::DEFAULT_LEASE_TIMEOUT)
+        stub_exclusive_lease_taken(lease_key, timeout: Namespace::AggregationSchedule.default_lease_timeout)
       end
 
       it 'refreshes the method caches' do
@@ -74,8 +74,8 @@ RSpec.describe ProjectCacheWorker do
 
       context 'with plain readme' do
         it 'refreshes the method caches' do
-          allow(MarkupHelper).to receive(:gitlab_markdown?).and_return(false)
-          allow(MarkupHelper).to receive(:plain?).and_return(true)
+          allow(Gitlab::MarkupHelper).to receive(:gitlab_markdown?).and_return(false)
+          allow(Gitlab::MarkupHelper).to receive(:plain?).and_return(true)
 
           expect_any_instance_of(Repository).to receive(:refresh_method_caches)
                                                   .with(%i(readme))

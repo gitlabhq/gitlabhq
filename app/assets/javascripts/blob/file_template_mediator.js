@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import Api from '~/api';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 
@@ -155,7 +155,7 @@ export default class FileTemplateMediator {
         }
       })
       .catch((err) =>
-        createFlash({
+        createAlert({
           message: __(`An error occurred while fetching the template: ${err}`),
         }),
       );

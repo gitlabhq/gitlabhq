@@ -1,0 +1,85 @@
+# frozen_string_literal: true
+
+module Gitlab
+  module Memory
+    class Watchdog
+      class MonitorState
+        class Result
+          attr_reader :payload
+
+          def initialize(strikes_exceeded:, threshold_violated:, monitor_class:, payload: )
+            @strikes_exceeded = strikes_exceeded
+            @threshold_violated = threshold_violated
+            @monitor_class = monitor_class
+            @payload = payload
+          end
+
+          def strikes_exceeded?
+            @strikes_exceeded
+          end
+
+          def threshold_violated?
+            @threshold_violated
+          end
+
+          def monitor_name
+            @monitor_class.name.demodulize.underscore.to_sym
+          end
+        end
+
+        def initialize(monitor, max_strikes:)
+          @monitor = monitor
+          @max_strikes = max_strikes
+          @strikes = 0
+        end
+
+        def call
+          reset_strikes if strikes_exceeded?
+
+          monitor_result = @monitor.call
+
+          if monitor_result[:threshold_violated]
+            issue_strike
+          else
+            reset_strikes
+          end
+
+          build_result(monitor_result)
+        end
+
+        def monitor_class
+          @monitor.class
+        end
+
+        private
+
+        def build_result(monitor_result)
+          Result.new(
+            strikes_exceeded: strikes_exceeded?,
+            monitor_class: monitor_class,
+            threshold_violated: monitor_result[:threshold_violated],
+            payload: payload.merge(monitor_result[:payload]))
+        end
+
+        def payload
+          {
+            memwd_max_strikes: @max_strikes,
+            memwd_cur_strikes: @strikes
+          }
+        end
+
+        def strikes_exceeded?
+          @strikes > @max_strikes
+        end
+
+        def issue_strike
+          @strikes += 1
+        end
+
+        def reset_strikes
+          @strikes = 0
+        end
+      end
+    end
+  end
+end

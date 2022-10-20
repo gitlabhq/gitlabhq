@@ -17,7 +17,7 @@ describe('IssuableAssignees', () => {
       },
     });
   };
-  const findUncollapsedAssigneeList = () => wrapper.find(UncollapsedAssigneeList);
+  const findUncollapsedAssigneeList = () => wrapper.findComponent(UncollapsedAssigneeList);
   const findEmptyAssignee = () => wrapper.find('[data-testid="none"]');
 
   afterEach(() => {

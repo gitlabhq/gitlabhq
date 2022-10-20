@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -51,7 +51,7 @@ See the epic for:
 - A list of known issues.
 - Our planned direction and next steps.
 
-If you find an issue that isn't listed, please leave a comment on the epic or create a
+If you find an issue that isn't listed, leave a comment on the epic or create a
 new issue.
 
 Dark mode is available as a navigation theme, for MVC and compatibility reasons.
@@ -201,7 +201,7 @@ To set your time preference:
 
 NOTE:
 This feature is experimental, and choosing absolute times might break certain layouts.
-Please open an issue if you notice that using absolute times breaks a layout.
+Open an issue if you notice that using absolute times breaks a layout.
 
 ## Integrations
 

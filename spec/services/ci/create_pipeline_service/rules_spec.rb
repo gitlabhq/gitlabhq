@@ -540,19 +540,10 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             let(:compare_to) { 'invalid-branch' }
 
             it 'returns an error' do
-              expect(pipeline.errors.full_messages).to eq([
-                'Failed to parse rule for job1: rules:changes:compare_to is not a valid ref'
-              ])
-            end
-
-            context 'when the FF ci_rules_changes_compare is not enabled' do
-              before do
-                stub_feature_flags(ci_rules_changes_compare: false)
-              end
-
-              it 'ignores compare_to and changes is always true' do
-                expect(build_names).to contain_exactly('job1', 'job2')
-              end
+              expect(pipeline.errors.full_messages).to eq(
+                [
+                  'Failed to parse rule for job1: rules:changes:compare_to is not a valid ref'
+                ])
             end
           end
 
@@ -563,16 +554,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
               it 'creates job1 and job2' do
                 expect(build_names).to contain_exactly('job1', 'job2')
               end
-
-              context 'when the FF ci_rules_changes_compare is not enabled' do
-                before do
-                  stub_feature_flags(ci_rules_changes_compare: false)
-                end
-
-                it 'ignores compare_to and changes is always true' do
-                  expect(build_names).to contain_exactly('job1', 'job2')
-                end
-              end
             end
 
             context 'when the rule does not match' do
@@ -580,16 +561,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
               it 'does not create job1' do
                 expect(build_names).to contain_exactly('job2')
-              end
-
-              context 'when the FF ci_rules_changes_compare is not enabled' do
-                before do
-                  stub_feature_flags(ci_rules_changes_compare: false)
-                end
-
-                it 'ignores compare_to and changes is always true' do
-                  expect(build_names).to contain_exactly('job1', 'job2')
-                end
               end
             end
           end
@@ -615,17 +586,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             it 'creates job1' do
               expect(pipeline).to be_created_successfully
               expect(build_names).to contain_exactly('job1')
-            end
-
-            context 'when the FF ci_rules_changes_compare is not enabled' do
-              before do
-                stub_feature_flags(ci_rules_changes_compare: false)
-              end
-
-              it 'ignores compare_to and changes is always true' do
-                expect(pipeline).to be_created_successfully
-                expect(build_names).to contain_exactly('job1')
-              end
             end
           end
 

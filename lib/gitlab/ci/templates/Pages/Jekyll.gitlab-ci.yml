@@ -36,3 +36,4 @@ pages:
   only:
     variables:
       - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production

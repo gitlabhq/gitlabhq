@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { MAX_REQUESTS } from '~/clusters_list/constants';
 import * as actions from '~/clusters_list/store/actions';
 import * as types from '~/clusters_list/store/mutation_types';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import { apiData } from '../mock_data';
@@ -98,7 +98,7 @@ describe('Clusters store actions', () => {
           },
         ],
       );
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: expect.stringMatching('error'),
       });
     });

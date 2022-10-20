@@ -1,7 +1,7 @@
 ---
 stage: Release
 group: Release
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto, reference
 ---
 
@@ -118,7 +118,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
    NOTE:
    Matching based on the Kubernetes `app` label was removed in
    [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14020).
-   To migrate, please apply the required annotations (see above) and
+   To migrate, apply the required annotations (see above) and
    re-deploy your application. If you are using Auto DevOps, this will
    be done automatically and no action is necessary.
 
@@ -130,7 +130,7 @@ Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Deployments > Environments**.
 
 Deploy boards are visible by default. You can explicitly select
-the triangle next to their respective environment name in order to hide them.
+the triangle next to their respective environment name to hide them.
 
 ### Example manifest file
 

@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def id_for_already_imported_cache(review)
-          review.id
+          review[:id]
         end
 
         # The worker can be interrupted, by rate limit for instance,
@@ -48,11 +48,13 @@ module Gitlab
         def each_object_to_import(&block)
           each_review_page do |page, merge_request|
             page.objects.each do |review|
+              review = review.to_h
+
               next if already_imported?(review)
 
               Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
-              review.merge_request_id = merge_request.id
+              review[:merge_request_id] = merge_request.id
               yield(review)
 
               mark_as_imported(review)

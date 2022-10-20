@@ -1,8 +1,9 @@
 <script>
-import pdfjsLib from 'pdfjs-dist/build/pdf';
-import workerSrc from 'pdfjs-dist/build/pdf.worker.min';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
 
 import Page from './page/index.vue';
+
+GlobalWorkerOptions.workerSrc = '/assets/webpack/pdfjs/pdf.worker.min.js';
 
 export default {
   components: { Page },
@@ -30,18 +31,16 @@ export default {
   },
   watch: { pdf: 'load' },
   mounted() {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
     if (this.hasPDF) this.load();
   },
   methods: {
     load() {
       this.pages = [];
-      return pdfjsLib
-        .getDocument({
-          url: this.document,
-          cMapUrl: '/assets/webpack/cmaps/',
-          cMapPacked: true,
-        })
+      return getDocument({
+        url: this.document,
+        cMapUrl: '/assets/webpack/pdfjs/cmaps/',
+        cMapPacked: true,
+      })
         .promise.then(this.renderPages)
         .then((pages) => {
           this.pages = pages;

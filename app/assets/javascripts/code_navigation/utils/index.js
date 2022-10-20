@@ -17,11 +17,9 @@ export const addInteractionClass = ({ path, d, wrapTextNodes }) => {
 
     if (wrapTextNodes) {
       line.childNodes.forEach((elm) => {
-        if (isTextNode(elm)) {
-          // Highlight.js does not wrap all text nodes by default
-          // We need all text nodes to be wrapped in order to append code nav attributes
-          elm.replaceWith(...wrapNodes(elm.textContent));
-        }
+        // Highlight.js does not wrap all text nodes by default
+        // We need all text nodes to be wrapped in order to append code nav attributes
+        elm.replaceWith(...wrapNodes(elm.textContent, elm.classList));
       });
     }
 

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -139,6 +139,8 @@ Premium license:
 If you use `13,000` minutes during the month, the next month your additional minutes become
 `2,000`. If you use `9,000` minutes during the month, your additional minutes remain the same.
 
+If you bought additional CI/CD minutes while on a trial subscription those minutes will be available after the trial ends or you upgrade to a paid plan.
+
 You can find pricing for additional CI/CD minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).
 
@@ -205,8 +207,8 @@ The cost factors for jobs running on shared runners on GitLab.com are:
 - `0.5` for public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source).
 - `0.008` for public forks of public projects in the [GitLab for Open Source program](../../subscriptions/index.md#gitlab-for-open-source). For every 125 minutes of job execution time,
   you use 1 CI/CD minute.
-- `0.04` for other public projects, after September 1, 2022 (previously `0.008`).
-  For every 25 minutes of job execution time, you use 1 CI/CD minute.
+- `1` for other public projects, after October 1, 2022 (previously `0.04`).
+  For every 1 minute of job execution time, you use 1 CI/CD minute.
 - Calculated differently for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
@@ -246,7 +248,6 @@ GitLab SaaS runners have different cost factors, depending on the runner type (L
 | Linux OS + Docker executor| Small  |1|
 | Linux OS + Docker executor| Medium  |2|
 | Linux OS + Docker executor| Large |3|
-| macOS + shell executor   | Large| 6 |
 
 ### Monthly reset of CI/CD minutes
 

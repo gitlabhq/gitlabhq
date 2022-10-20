@@ -133,7 +133,7 @@ module API
           success Entities::WikiAttachment
         end
         params do
-          requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
+          requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
           optional :branch, type: String, desc: 'The name of the branch'
         end
         post ":id/wikis/attachments" do

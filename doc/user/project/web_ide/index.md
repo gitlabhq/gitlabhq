@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Web IDE **(FREE)**
@@ -134,10 +134,10 @@ schemas:
 
 Each schema entry supports two properties:
 
-- `uri`: please provide an absolute URL for the schema definition file here.
+- `uri`: Provide an absolute URL for the schema definition file here.
   The schema from this URL is loaded when a matching file is open.
-- `match`: a list of matching paths or glob expressions. If a schema matches a
-  particular path pattern, it is applied to that file. Please enclose the pattern
+- `match`: A list of matching paths or glob expressions. If a schema matches a
+  particular path pattern, it is applied to that file. Enclose the pattern
   in quotes if it begins with an asterisk (`*`), it's be applied to that file.
   If a pattern begins with an asterisk (`*`), enclose it in quotation marks.
   Otherwise, the configuration file is not valid YAML.
@@ -193,7 +193,7 @@ shows you a preview of the merge request diff if you commit your changes.
 You can use the Web IDE to quickly fix failing tests by opening
 the branch or merge request in the Web IDE and opening the logs of the failed
 job. You can access the status of all jobs for the most recent pipeline and job
-traces for the current commit by clicking the **Pipelines** button in the top
+traces for the current commit by selecting the **Pipelines** button in the top
 right.
 
 The pipeline status is also shown at all times in the status bar in the bottom
@@ -375,7 +375,7 @@ may be disabled:
 - `.gitlab/.gitlab-webide.yml` does not exist or is set up incorrectly.
 - No active private runners are available for the project.
 
-If active, clicking the **Start Web Terminal** button loads the terminal view
+If active, selecting the **Start Web Terminal** button loads the terminal view
 and start connecting to the runner's terminal. At any time, the **Terminal** tab
 can be closed and reopened and the state of the terminal is not affected.
 
@@ -384,7 +384,7 @@ runner's shell prompt appears in the terminal. From here, you can enter
 commands executed in the runner's environment. This is similar
 to running commands in a local terminal or through SSH.
 
-While the terminal is running, it can be stopped by clicking **Stop Terminal**.
+While the terminal is running, it can be stopped by selecting **Stop Terminal**.
 This disconnects the terminal and stops the runner's terminal job. From here,
 select **Restart Terminal** to start a new terminal session.
 
@@ -454,8 +454,8 @@ The Web IDE has a few limitations:
 ### Troubleshooting
 
 - If the terminal's text is gray and unresponsive, then the terminal has stopped
-  and it can no longer be used. A stopped terminal can be restarted by clicking
+  and it can no longer be used. A stopped terminal can be restarted by selecting
   **Restart Terminal**.
 - If the terminal displays **Connection Failure**, then the terminal could not
-  connect to the runner. Please try to stop and restart the terminal. If the
+  connect to the runner. Try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -53,7 +53,7 @@ The following is an example of the **Abuse Reports** page:
 
 ### Blocking users
 
-A blocked user cannot log in or access any repositories, but all of their data
+A blocked user cannot sign in or access any repositories, but all of their data
 remains.
 
 Blocking a user:

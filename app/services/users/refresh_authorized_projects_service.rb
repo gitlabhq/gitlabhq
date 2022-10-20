@@ -62,12 +62,12 @@ module Users
 
     # Updates the list of authorizations for the current user.
     #
-    # remove - The IDs of the authorization rows to remove.
+    # remove - The project IDs of the authorization rows to remove.
     # add - Rows to insert in the form `[{ user_id: user_id, project_id: project_id, access_level: access_level}, ...]`
     def update_authorizations(remove = [], add = [])
       log_refresh_details(remove, add)
 
-      user.remove_project_authorizations(remove) if remove.any?
+      ProjectAuthorization.delete_all_in_batches_for_user(user: user, project_ids: remove) if remove.any?
       ProjectAuthorization.insert_all_in_batches(add) if add.any?
 
       # Since we batch insert authorization rows, Rails' associations may get

@@ -155,8 +155,8 @@ Object {
         Object {
           "__typename": "ReleaseEvidence",
           "collectedAt": "2018-12-03T00:00:00Z",
-          "filepath": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/evidences/1.json",
-          "id": "gid://gitlab/Releases::Evidence/1",
+          "filepath": Any<String>,
+          "id": Any<String>,
           "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
         },
       ],
@@ -198,10 +198,10 @@ Object {
   ],
   "paginationInfo": Object {
     "__typename": "PageInfo",
-    "endCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTgtMTItMTAgMDA6MDA6MDAuMDAwMDAwMDAwICswMDAwIiwiaWQiOiIxIn0",
+    "endCursor": Any<String>,
     "hasNextPage": false,
     "hasPreviousPage": false,
-    "startCursor": "eyJyZWxlYXNlZF9hdCI6IjIwMTktMDEtMTAgMDA6MDA6MDAuMDAwMDAwMDAwICswMDAwIiwiaWQiOiIyIn0",
+    "startCursor": Any<String>,
   },
 }
 `;
@@ -377,8 +377,8 @@ Object {
       Object {
         "__typename": "ReleaseEvidence",
         "collectedAt": "2018-12-03T00:00:00Z",
-        "filepath": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/evidences/1.json",
-        "id": "gid://gitlab/Releases::Evidence/1",
+        "filepath": Any<String>,
+        "id": Any<String>,
         "sha": "760d6cdfb0879c3ffedec13af470e0f71cf52c6cde4d",
       },
     ],

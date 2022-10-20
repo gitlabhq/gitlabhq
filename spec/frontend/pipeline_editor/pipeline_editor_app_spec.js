@@ -55,11 +55,12 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-const mockProvide = {
+const defaultProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
   newMergeRequestPath: mockNewMergeRequestPath,
   projectFullPath: mockProjectFullPath,
+  usesExternalConfig: false,
 };
 
 describe('Pipeline editor app component', () => {
@@ -79,7 +80,7 @@ describe('Pipeline editor app component', () => {
     stubs = {},
   } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
-      provide: { ...mockProvide, ...provide },
+      provide: { ...defaultProvide, ...provide },
       stubs,
       mocks: {
         $apollo: {
@@ -227,6 +228,22 @@ describe('Pipeline editor app component', () => {
       mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
       mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
       mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
+    });
+
+    describe('when project uses an external CI config file', () => {
+      beforeEach(async () => {
+        await createComponentWithApollo({
+          provide: {
+            usesExternalConfig: true,
+          },
+        });
+      });
+
+      it('shows an empty state and does not show editor home component', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findAlert().exists()).toBe(false);
+        expect(findEditorHome().exists()).toBe(false);
+      });
     });
 
     describe('when file exists', () => {

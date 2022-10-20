@@ -36,6 +36,20 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
       service.execute(merge_request)
     end
 
+    shared_examples 'it updates and enqueues the job' do
+      it 'correctly updates the MR and enqueues the job' do
+        expect_next(MergeRequests::HandleAssigneesChangeService, project: project, current_user: user) do |service|
+          expect(service)
+            .to receive(:async_execute).with(merge_request, [user3], execute_hooks: true)
+        end
+
+        expect { update_merge_request }
+          .to change { merge_request.reload.assignees }.from([user3]).to(new_users)
+          .and change(merge_request, :updated_at)
+          .and change(merge_request, :updated_by).to(user)
+      end
+    end
+
     shared_examples 'removing all assignees' do
       it 'removes all assignees' do
         expect(update_merge_request).to have_attributes(assignees: be_empty, errors: be_none)
@@ -73,16 +87,8 @@ RSpec.describe MergeRequests::UpdateAssigneesService do
         it_behaves_like 'removing all assignees'
       end
 
-      it 'updates the MR, and queues the more expensive work for later' do
-        expect_next(MergeRequests::HandleAssigneesChangeService, project: project, current_user: user) do |service|
-          expect(service)
-            .to receive(:async_execute).with(merge_request, [user3], execute_hooks: true)
-        end
-
-        expect { update_merge_request }
-          .to change { merge_request.reload.assignees }.from([user3]).to([user2])
-          .and change(merge_request, :updated_at)
-          .and change(merge_request, :updated_by).to(user)
+      it_behaves_like 'it updates and enqueues the job' do
+        let(:new_users) { [user2] }
       end
 
       it 'does not update the assignees if they do not have access' do

@@ -1047,60 +1047,58 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
     let undoMutations;
 
     describe('when re-ordering card', () => {
-      beforeEach(
-        ({
-          itemId = 123,
-          fromListId = 'gid://gitlab/List/1',
-          toListId = 'gid://gitlab/List/1',
-          originalIssue = { foo: 'bar' },
-          originalIndex = 0,
-          moveBeforeId = undefined,
-          moveAfterId = undefined,
-          allItemsLoadedInList = true,
-          listPosition = undefined,
-        } = {}) => {
-          state = {
-            boardLists: {
-              [toListId]: { listType: ListType.backlog },
-              [fromListId]: { listType: ListType.backlog },
+      beforeEach(() => {
+        const itemId = 123;
+        const fromListId = 'gid://gitlab/List/1';
+        const toListId = 'gid://gitlab/List/1';
+        const originalIssue = { foo: 'bar' };
+        const originalIndex = 0;
+        const moveBeforeId = undefined;
+        const moveAfterId = undefined;
+        const allItemsLoadedInList = true;
+        const listPosition = undefined;
+
+        state = {
+          boardLists: {
+            [toListId]: { listType: ListType.backlog },
+            [fromListId]: { listType: ListType.backlog },
+          },
+          boardItems: { [itemId]: originalIssue },
+          boardItemsByListId: { [fromListId]: [123] },
+        };
+        params = {
+          itemId,
+          fromListId,
+          toListId,
+          moveBeforeId,
+          moveAfterId,
+          listPosition,
+          allItemsLoadedInList,
+        };
+        moveMutations = [
+          { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
+          {
+            type: types.ADD_BOARD_ITEM_TO_LIST,
+            payload: {
+              itemId,
+              listId: toListId,
+              moveBeforeId,
+              moveAfterId,
+              listPosition,
+              allItemsLoadedInList,
+              atIndex: originalIndex,
             },
-            boardItems: { [itemId]: originalIssue },
-            boardItemsByListId: { [fromListId]: [123] },
-          };
-          params = {
-            itemId,
-            fromListId,
-            toListId,
-            moveBeforeId,
-            moveAfterId,
-            listPosition,
-            allItemsLoadedInList,
-          };
-          moveMutations = [
-            { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
-            {
-              type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: {
-                itemId,
-                listId: toListId,
-                moveBeforeId,
-                moveAfterId,
-                listPosition,
-                allItemsLoadedInList,
-                atIndex: originalIndex,
-              },
-            },
-          ];
-          undoMutations = [
-            { type: types.UPDATE_BOARD_ITEM, payload: originalIssue },
-            { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
-            {
-              type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: { itemId, listId: fromListId, atIndex: originalIndex },
-            },
-          ];
-        },
-      );
+          },
+        ];
+        undoMutations = [
+          { type: types.UPDATE_BOARD_ITEM, payload: originalIssue },
+          { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
+          {
+            type: types.ADD_BOARD_ITEM_TO_LIST,
+            payload: { itemId, listId: fromListId, atIndex: originalIndex },
+          },
+        ];
+      });
 
       it('moveIssueCard commits a correct set of actions', () => {
         testAction({
@@ -1144,42 +1142,40 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
         },
       ],
     ])('when %s', (_, { toListType, fromListType }) => {
-      beforeEach(
-        ({
-          itemId = 123,
-          fromListId = 'gid://gitlab/List/1',
-          toListId = 'gid://gitlab/List/2',
-          originalIssue = { foo: 'bar' },
-          originalIndex = 0,
-          moveBeforeId = undefined,
-          moveAfterId = undefined,
-        } = {}) => {
-          state = {
-            boardLists: {
-              [fromListId]: { listType: fromListType },
-              [toListId]: { listType: toListType },
-            },
-            boardItems: { [itemId]: originalIssue },
-            boardItemsByListId: { [fromListId]: [123], [toListId]: [] },
-          };
-          params = { itemId, fromListId, toListId, moveBeforeId, moveAfterId };
-          moveMutations = [
-            { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
-            {
-              type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: { itemId, listId: toListId, moveBeforeId, moveAfterId },
-            },
-          ];
-          undoMutations = [
-            { type: types.UPDATE_BOARD_ITEM, payload: originalIssue },
-            { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: toListId } },
-            {
-              type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: { itemId, listId: fromListId, atIndex: originalIndex },
-            },
-          ];
-        },
-      );
+      beforeEach(() => {
+        const itemId = 123;
+        const fromListId = 'gid://gitlab/List/1';
+        const toListId = 'gid://gitlab/List/2';
+        const originalIssue = { foo: 'bar' };
+        const originalIndex = 0;
+        const moveBeforeId = undefined;
+        const moveAfterId = undefined;
+
+        state = {
+          boardLists: {
+            [fromListId]: { listType: fromListType },
+            [toListId]: { listType: toListType },
+          },
+          boardItems: { [itemId]: originalIssue },
+          boardItemsByListId: { [fromListId]: [123], [toListId]: [] },
+        };
+        params = { itemId, fromListId, toListId, moveBeforeId, moveAfterId };
+        moveMutations = [
+          { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
+          {
+            type: types.ADD_BOARD_ITEM_TO_LIST,
+            payload: { itemId, listId: toListId, moveBeforeId, moveAfterId },
+          },
+        ];
+        undoMutations = [
+          { type: types.UPDATE_BOARD_ITEM, payload: originalIssue },
+          { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: toListId } },
+          {
+            type: types.ADD_BOARD_ITEM_TO_LIST,
+            payload: { itemId, listId: fromListId, atIndex: originalIndex },
+          },
+        ];
+      });
 
       it('moveIssueCard commits a correct set of actions', () => {
         testAction({
@@ -1216,47 +1212,45 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
         },
       ],
     ])('when %s', (_, { toListType, fromListType }) => {
-      beforeEach(
-        ({
-          itemId = 123,
-          fromListId = 'gid://gitlab/List/1',
-          toListId = 'gid://gitlab/List/2',
-          originalIssue = { foo: 'bar' },
-          originalIndex = 0,
-          moveBeforeId = undefined,
-          moveAfterId = undefined,
-        } = {}) => {
-          state = {
-            boardLists: {
-              [fromListId]: { listType: fromListType },
-              [toListId]: { listType: toListType },
-            },
-            boardItems: { [itemId]: originalIssue },
-            boardItemsByListId: { [fromListId]: [123], [toListId]: [] },
-          };
-          params = { itemId, fromListId, toListId, moveBeforeId, moveAfterId };
-          moveMutations = [
-            { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
-            {
-              type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: { itemId, listId: toListId, moveBeforeId, moveAfterId },
-            },
-            {
-              type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: { itemId, listId: fromListId, atIndex: originalIndex },
-            },
-          ];
-          undoMutations = [
-            { type: types.UPDATE_BOARD_ITEM, payload: originalIssue },
-            { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
-            { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: toListId } },
-            {
-              type: types.ADD_BOARD_ITEM_TO_LIST,
-              payload: { itemId, listId: fromListId, atIndex: originalIndex },
-            },
-          ];
-        },
-      );
+      beforeEach(() => {
+        const itemId = 123;
+        const fromListId = 'gid://gitlab/List/1';
+        const toListId = 'gid://gitlab/List/2';
+        const originalIssue = { foo: 'bar' };
+        const originalIndex = 0;
+        const moveBeforeId = undefined;
+        const moveAfterId = undefined;
+
+        state = {
+          boardLists: {
+            [fromListId]: { listType: fromListType },
+            [toListId]: { listType: toListType },
+          },
+          boardItems: { [itemId]: originalIssue },
+          boardItemsByListId: { [fromListId]: [123], [toListId]: [] },
+        };
+        params = { itemId, fromListId, toListId, moveBeforeId, moveAfterId };
+        moveMutations = [
+          { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
+          {
+            type: types.ADD_BOARD_ITEM_TO_LIST,
+            payload: { itemId, listId: toListId, moveBeforeId, moveAfterId },
+          },
+          {
+            type: types.ADD_BOARD_ITEM_TO_LIST,
+            payload: { itemId, listId: fromListId, atIndex: originalIndex },
+          },
+        ];
+        undoMutations = [
+          { type: types.UPDATE_BOARD_ITEM, payload: originalIssue },
+          { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: fromListId } },
+          { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload: { itemId, listId: toListId } },
+          {
+            type: types.ADD_BOARD_ITEM_TO_LIST,
+            payload: { itemId, listId: fromListId, atIndex: originalIndex },
+          },
+        ];
+      });
 
       it('moveIssueCard commits a correct set of actions', () => {
         testAction({

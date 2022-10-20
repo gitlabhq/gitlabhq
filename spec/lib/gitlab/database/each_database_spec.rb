@@ -93,12 +93,13 @@ RSpec.describe Gitlab::Database::EachDatabase do
       end
 
       it 'yields each model with SharedModel connected to each database connection' do
-        expect_yielded_models([model1, model2], [
-          { model: model1, connection: ActiveRecord::Base.connection, name: 'main' },
-          { model: model1, connection: Ci::ApplicationRecord.connection, name: 'ci' },
-          { model: model2, connection: ActiveRecord::Base.connection, name: 'main' },
-          { model: model2, connection: Ci::ApplicationRecord.connection, name: 'ci' }
-        ])
+        expect_yielded_models([model1, model2],
+          [
+            { model: model1, connection: ActiveRecord::Base.connection, name: 'main' },
+            { model: model1, connection: Ci::ApplicationRecord.connection, name: 'ci' },
+            { model: model2, connection: ActiveRecord::Base.connection, name: 'main' },
+            { model: model2, connection: Ci::ApplicationRecord.connection, name: 'ci' }
+          ])
       end
 
       context 'when the model limits connection names' do
@@ -108,10 +109,11 @@ RSpec.describe Gitlab::Database::EachDatabase do
         end
 
         it 'only yields the model with SharedModel connected to the limited connections' do
-          expect_yielded_models([model1, model2], [
-            { model: model1, connection: ActiveRecord::Base.connection, name: 'main' },
-            { model: model2, connection: Ci::ApplicationRecord.connection, name: 'ci' }
-          ])
+          expect_yielded_models([model1, model2],
+            [
+              { model: model1, connection: ActiveRecord::Base.connection, name: 'main' },
+              { model: model2, connection: Ci::ApplicationRecord.connection, name: 'ci' }
+            ])
         end
       end
     end
@@ -132,10 +134,11 @@ RSpec.describe Gitlab::Database::EachDatabase do
       end
 
       it 'yields each model after connecting SharedModel' do
-        expect_yielded_models([main_model, ci_model], [
-          { model: main_model, connection: main_connection, name: 'main' },
-          { model: ci_model, connection: ci_connection, name: 'ci' }
-        ])
+        expect_yielded_models([main_model, ci_model],
+          [
+            { model: main_model, connection: main_connection, name: 'main' },
+            { model: ci_model, connection: ci_connection, name: 'ci' }
+          ])
       end
     end
 
@@ -154,21 +157,23 @@ RSpec.describe Gitlab::Database::EachDatabase do
 
       context 'when a single name is passed in' do
         it 'yields models only connected to the given database' do
-          expect_yielded_models([main_model, ci_model, shared_model], [
-            { model: ci_model, connection: Ci::ApplicationRecord.connection, name: 'ci' },
-            { model: shared_model, connection: Ci::ApplicationRecord.connection, name: 'ci' }
-          ], only_on: 'ci')
+          expect_yielded_models([main_model, ci_model, shared_model],
+            [
+              { model: ci_model, connection: Ci::ApplicationRecord.connection, name: 'ci' },
+              { model: shared_model, connection: Ci::ApplicationRecord.connection, name: 'ci' }
+            ], only_on: 'ci')
         end
       end
 
       context 'when a list of names are passed in' do
         it 'yields models only connected to the given databases' do
-          expect_yielded_models([main_model, ci_model, shared_model], [
-            { model: main_model, connection: ActiveRecord::Base.connection, name: 'main' },
-            { model: ci_model, connection: Ci::ApplicationRecord.connection, name: 'ci' },
-            { model: shared_model, connection: ActiveRecord::Base.connection, name: 'main' },
-            { model: shared_model, connection: Ci::ApplicationRecord.connection, name: 'ci' }
-          ], only_on: %i[main ci])
+          expect_yielded_models([main_model, ci_model, shared_model],
+            [
+              { model: main_model, connection: ActiveRecord::Base.connection, name: 'main' },
+              { model: ci_model, connection: Ci::ApplicationRecord.connection, name: 'ci' },
+              { model: shared_model, connection: ActiveRecord::Base.connection, name: 'main' },
+              { model: shared_model, connection: Ci::ApplicationRecord.connection, name: 'ci' }
+            ], only_on: %i[main ci])
         end
       end
     end

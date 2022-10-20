@@ -143,6 +143,7 @@ crosslinks
 Crossplane
 Crowdin
 CSV
+customappsso
 cybersecurity
 Dangerfile
 Datadog
@@ -439,6 +440,7 @@ onboarding
 OpenID
 OpenShift
 Opsgenie
+outdent
 Overcommit
 Packagist
 parallelization
@@ -642,6 +644,8 @@ stunnel
 stylelint
 subchart
 subcharts
+subcommand
+subcommands
 subfolder
 subfolders
 subgraph

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class IdeController < ApplicationController
-  layout 'fullscreen'
-
   include ClientsidePreviewCSP
   include StaticObjectExternalStorageCSP
   include Gitlab::Utils::StrongMemoize
@@ -13,7 +11,6 @@ class IdeController < ApplicationController
     push_frontend_feature_flag(:build_service_proxy)
     push_frontend_feature_flag(:schema_linting)
     push_frontend_feature_flag(:reject_unsigned_commits_by_gitlab)
-    push_frontend_feature_flag(:vscode_web_ide, current_user)
     define_index_vars
   end
 
@@ -28,6 +25,8 @@ class IdeController < ApplicationController
       Gitlab::Tracking.event(self.class.to_s, 'web_ide_views',
         namespace: project&.namespace, user: current_user)
     end
+
+    render layout: 'fullscreen', locals: { minimal: helpers.use_new_web_ide? }
   end
 
   private

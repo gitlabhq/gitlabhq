@@ -2,7 +2,7 @@
 import { GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
@@ -113,7 +113,7 @@ export default {
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           });
         });
@@ -141,7 +141,7 @@ export default {
         })
         .catch(() => {
           this.isRemovingSourceBranch = false;
-          createFlash({
+          createAlert({
             message: __('Something went wrong. Please try again.'),
           });
         });

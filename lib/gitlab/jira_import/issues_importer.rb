@@ -7,10 +7,6 @@ module Gitlab
       # see https://jira.atlassian.com/browse/JRACLOUD-67570
       # We set it to 1000 in case they change their mind.
       BATCH_SIZE = 1000
-      JIRA_IMPORT_THRESHOLD = 100_000
-      JIRA_IMPORT_PAUSE_LIMIT = 50_000
-
-      RetriesExceededError = Class.new(RuntimeError)
 
       attr_reader :imported_items_cache_key, :start_at, :job_waiter
 
@@ -52,7 +48,7 @@ module Gitlab
       end
 
       def schedule_issue_import_workers(issues)
-        next_iid = project.issues.maximum(:iid).to_i + 1
+        next_iid = Issue.with_project_iid_supply(project, &:next_value)
 
         issues.each do |jira_issue|
           # Technically it's possible that the same work is performed multiple
@@ -71,13 +67,11 @@ module Gitlab
               { iid: next_iid }
             ).execute
 
-            # Pause the importer to allow the import to catch up and cache to drain
-            pause_jira_issue_importer if jira_import_issue_worker.queue_size > JIRA_IMPORT_THRESHOLD
-
             Gitlab::JiraImport::ImportIssueWorker.perform_async(project.id, jira_issue.id, issue_attrs, job_waiter.key)
 
             job_waiter.jobs_remaining += 1
-            next_iid += 1
+
+            next_iid = Issue.with_project_iid_supply(project, &:next_value)
 
             # Mark the issue as imported immediately so we don't end up
             # importing it multiple times within same import.
@@ -95,27 +89,6 @@ module Gitlab
         end
 
         job_waiter
-      end
-
-      def jira_import_issue_worker
-        @_jira_import_issue_worker ||= Gitlab::JiraImport::ImportIssueWorker
-      end
-
-      def pause_jira_issue_importer
-        # Wait for import workers to drop below 50K in the iterations of the timeout
-        # timeout - Set to 5 seconds.
-        #           Time to process 100K jobs is currently ~14 seconds.
-        #           Source: https://github.com/mperham/sidekiq#performance
-        # retries - Set to 10 times to avoid indefinitely pause.
-        #           Raises an error if the queue does not reduce below the limit after 10 tries.
-
-        retries = 10
-        while retries > 0 && jira_import_issue_worker.queue_size >= JIRA_IMPORT_PAUSE_LIMIT
-          job_waiter.wait(5)
-          retries -= 1
-        end
-
-        raise RetriesExceededError, 'Retry failed after 10 attempts' if retries == 0
       end
 
       def fetch_issues(start_at)

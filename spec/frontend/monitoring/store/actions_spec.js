@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { backoffMockImplementation } from 'helpers/backoff_helper';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import statusCodes from '~/lib/utils/http_status';
@@ -82,7 +82,7 @@ describe('Monitoring store actions', () => {
     mock.reset();
 
     commonUtils.backOff.mockReset();
-    createFlash.mockReset();
+    createAlert.mockReset();
   });
 
   // Setup
@@ -241,7 +241,7 @@ describe('Monitoring store actions', () => {
           'receiveMetricsDashboardFailure',
           new Error('Request failed with status code 500'),
         );
-        expect(createFlash).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalled();
       });
 
       it('dispatches a failure action when a message is returned', async () => {
@@ -250,7 +250,7 @@ describe('Monitoring store actions', () => {
           'receiveMetricsDashboardFailure',
           new Error('Request failed with status code 500'),
         );
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: expect.stringContaining(mockDashboardsErrorResponse.message),
         });
       });
@@ -263,7 +263,7 @@ describe('Monitoring store actions', () => {
           'receiveMetricsDashboardFailure',
           new Error('Request failed with status code 500'),
         );
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
     });
   });
@@ -328,7 +328,7 @@ describe('Monitoring store actions', () => {
         },
       });
 
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
     });
 
     it('dispatches fetchPrometheusMetric for each panel query', async () => {
@@ -385,7 +385,7 @@ describe('Monitoring store actions', () => {
         defaultQueryParams,
       });
 
-      expect(createFlash).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -570,7 +570,7 @@ describe('Monitoring store actions', () => {
         [],
         [{ type: 'receiveDeploymentsDataFailure' }],
         () => {
-          expect(createFlash).toHaveBeenCalled();
+          expect(createAlert).toHaveBeenCalled();
         },
       );
     });
@@ -1084,8 +1084,8 @@ describe('Monitoring store actions', () => {
 
       return testAction(fetchVariableMetricLabelValues, { defaultQueryParams }, state, [], []).then(
         () => {
-          expect(createFlash).toHaveBeenCalledTimes(1);
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledTimes(1);
+          expect(createAlert).toHaveBeenCalledWith({
             message: expect.stringContaining('error getting options for variable "label1"'),
           });
         },

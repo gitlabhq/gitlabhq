@@ -16,7 +16,7 @@ export default {
     <div class="timeline-icon"></div>
     <div class="timeline-content">
       <div class="note-header"></div>
-      <div class="note-body"><gl-skeleton-loader /></div>
+      <div class="note-body gl-mt-4"><gl-skeleton-loader /></div>
     </div>
   </timeline-entry-item>
 </template>

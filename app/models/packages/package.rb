@@ -114,13 +114,18 @@ class Packages::Package < ApplicationRecord
     )
   end
 
+  scope :with_case_insensitive_version, ->(version) do
+    where('LOWER(version) = ?', version.downcase)
+  end
+
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
-  scope :including_project_route, -> { includes(project: { namespace: :route }) }
+  scope :including_project_route, -> { includes(project: :route) }
+  scope :including_project_namespace_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
 

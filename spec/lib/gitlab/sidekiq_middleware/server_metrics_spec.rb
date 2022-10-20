@@ -322,8 +322,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       with_sidekiq_server_middleware do |chain|
         Gitlab::SidekiqMiddleware.server_configurator(
           metrics: true,
-          arguments_logger: false,
-          memory_killer: false
+          arguments_logger: false
         ).call(chain)
 
         Sidekiq::Testing.inline! { example.run }

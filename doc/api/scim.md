@@ -2,253 +2,82 @@
 type: reference, howto
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
+# SCIM API **(PREMIUM SAAS)**
 
-# SCIM API (SYSTEM ONLY) **(PREMIUM SAAS)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
-
-The SCIM API implements the [RFC7644 protocol](https://tools.ietf.org/html/rfc7644). As this API is for
-**system** use for SCIM provider integration, it is subject to change without notice.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
 To use this API, [Group SSO](../user/group/saml_sso/index.md) must be enabled for the group.
 This API is only in use where [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
 
-## Get a list of SCIM provisioned users
+Not to be confused with the [internal SCIM API](../development/internal_api/index.md#scim-api).
 
-This endpoint is used as part of the SCIM syncing mechanism. It only returns
-a single user based on a unique ID which should match the `extern_uid` of the user.
+## Get SCIM identities for a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
 ```plaintext
-GET /api/scim/v2/groups/:group_path/Users
+GET /groups/:id/scim/identities
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute | Type    | Required | Description                                                                                                                             |
-|:----------|:--------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| `filter`   | string  | no     | A [filter](#available-filters) expression. |
-| `group_path` | string | yes    | Full path to the group. |
-| `startIndex` | integer | no    | The 1-based index indicating where to start returning results from. A value of less than one will be interpreted as 1. |
-| `count` | integer | no    | Desired maximum number of query results. |
+| Attribute         | Type    | Required | Description           |
+|:------------------|:--------|:---------|:----------------------|
+| `id`              | integer | Yes      | Return SAML identities for the given group ID. |
 
-NOTE:
-Pagination follows the [SCIM spec](https://tools.ietf.org/html/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
+If successful, returns [`200`](index.md#status-codes) and the following
+response attributes:
 
-Example request:
-
-```shell
-curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users?filter=id%20eq%20%220b1d561c-21ff-4092-beab-8154b17f82f2%22" \
-     --header "Authorization: Bearer <your_scim_token>" \
-     --header "Content-Type: application/scim+json"
-```
+| Attribute    | Type   | Description               |
+| ------------ | ------ | ------------------------- |
+| `extern_uid` | string | External UID for the user |
+| `user_id`    | string | ID for the user           |
 
 Example response:
 
 ```json
-{
-  "schemas": [
-    "urn:ietf:params:scim:api:messages:2.0:ListResponse"
-  ],
-  "totalResults": 1,
-  "itemsPerPage": 20,
-  "startIndex": 1,
-  "Resources": [
+[
     {
-      "schemas": [
-        "urn:ietf:params:scim:schemas:core:2.0:User"
-      ],
-      "id": "0b1d561c-21ff-4092-beab-8154b17f82f2",
-      "active": true,
-      "name.formatted": "Test User",
-      "userName": "username",
-      "meta": { "resourceType":"User" },
-      "emails": [
-        {
-          "type": "work",
-          "value": "name@example.com",
-          "primary": true
-        }
-      ]
+        "extern_uid": "4",
+        "user_id": 48
     }
-  ]
-}
+]
 ```
-
-## Get a single SCIM provisioned user
-
-```plaintext
-GET /api/scim/v2/groups/:group_path/Users/:id
-```
-
-Parameters:
-
-| Attribute | Type    | Required | Description                                                                                                                             |
-|:----------|:--------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| `id`   | string  | yes     | External UID of the user. |
-| `group_path` | string | yes    | Full path to the group. |
 
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
-     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+curl --location --request GET "https://gdk.test:3443/api/v4/groups/33/scim/identities" \
+--header "<PRIVATE-TOKEN>" \
+--form "extern_uid=<ID_TO_BE_UPDATED>" \
 ```
 
-Example response:
+## Update extern_uid field for a SCIM identity
 
-```json
-{
-  "schemas": [
-    "urn:ietf:params:scim:schemas:core:2.0:User"
-  ],
-  "id": "0b1d561c-21ff-4092-beab-8154b17f82f2",
-  "active": true,
-  "name.formatted": "Test User",
-  "userName": "username",
-  "meta": { "resourceType":"User" },
-  "emails": [
-    {
-      "type": "work",
-      "value": "name@example.com",
-      "primary": true
-    }
-  ]
-}
-```
-
-## Create a SCIM provisioned user
-
-```plaintext
-POST /api/scim/v2/groups/:group_path/Users/
-```
-
-Parameters:
-
-| Attribute      | Type    | Required | Description            |
-|:---------------|:----------|:----|:--------------------------|
-| `externalId` | string      | yes | External UID of the user. |
-| `userName`   | string      | yes | Username of the user. |
-| `emails`     | JSON string | yes | Work email. |
-| `name`       | JSON string | yes | Name of the user. |
-| `meta`       | string      | no  | Resource type (`User`). |
-
-Example request:
-
-```shell
-curl --verbose --request POST "https://gitlab.example.com/api/scim/v2/groups/test_group/Users" \
-     --data '{"externalId":"test_uid","active":null,"userName":"username","emails":[{"primary":true,"type":"work","value":"name@example.com"}],"name":{"formatted":"Test User","familyName":"User","givenName":"Test"},"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"meta":{"resourceType":"User"}}' \
-     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
-```
-
-Example response:
-
-```json
-{
-  "schemas": [
-    "urn:ietf:params:scim:schemas:core:2.0:User"
-  ],
-  "id": "0b1d561c-21ff-4092-beab-8154b17f82f2",
-  "active": true,
-  "name.formatted": "Test User",
-  "userName": "username",
-  "meta": { "resourceType":"User" },
-  "emails": [
-    {
-      "type": "work",
-      "value": "name@example.com",
-      "primary": true
-    }
-  ]
-}
-```
-
-Returns a `201` status code if successful.
-
-## Update a single SCIM provisioned user
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
 Fields that can be updated are:
 
-| SCIM/IdP field                   | GitLab field                                                                 |
-|:---------------------------------|:-----------------------------------------------------------------------------|
-| `id/externalId`                  | `extern_uid`                                                                 |
-| `name.formatted`                 | `name` ([Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/363058))     |
-| `emails\[type eq "work"\].value` | `email` ([Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/363058))    |
-| `active`                         | Identity removal if `active` = `false`                                       |
-| `userName`                       | `username` ([Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/363058)) |
+| SCIM/IdP field  | GitLab field |
+| --------------- | ------------ |
+| `id/externalId` | `extern_uid` |
 
 ```plaintext
-PATCH /api/scim/v2/groups/:group_path/Users/:id
+PATCH groups/:groups_id/scim/:uid
 ```
 
 Parameters:
 
-| Attribute | Type    | Required | Description                                                                                                                             |
-|:----------|:--------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| `id`   | string  | yes     | External UID of the user. |
-| `group_path` | string | yes    | Full path to the group. |
-| `Operations`   | JSON string  | yes     | An [operations](#available-operations) expression. |
+| Attribute | Type   | Required | Description               |
+| --------- | ------ | -------- | ------------------------- |
+| `uid`     | string | yes      | External UID of the user. |
 
 Example request:
 
 ```shell
-curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
-     --data '{ "Operations": [{"op":"Add","path":"name.formatted","value":"New Name"}] }' \
-     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
-```
-
-Returns an empty response with a `204` status code if successful.
-
-## Remove a single SCIM provisioned user
-
-Removes the user's SSO identity and group membership.
-
-```plaintext
-DELETE /api/scim/v2/groups/:group_path/Users/:id
-```
-
-Parameters:
-
-| Attribute | Type    | Required | Description                                                                                                                             |
-|:----------|:--------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| `id`   | string  | yes     | External UID of the user. |
-| `group_path` | string | yes    | Full path to the group. |
-
-Example request:
-
-```shell
-curl --verbose --request DELETE "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
-     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
-```
-
-Returns an empty response with a `204` status code if successful.
-
-## Available filters
-
-They match an expression as specified in [the RFC7644 filtering section](https://tools.ietf.org/html/rfc7644#section-3.4.2.2).
-
-| Filter | Description |
-| ----- | ----------- |
-| `eq` | The attribute matches exactly the specified value. |
-
-Example:
-
-```plaintext
-id eq a-b-c-d
-```
-
-## Available operations
-
-They perform an operation as specified in [the RFC7644 update section](https://tools.ietf.org/html/rfc7644#section-3.5.2).
-
-| Operator | Description |
-| ----- | ----------- |
-| `Replace` | The attribute's value is updated. |
-| `Add` | The attribute has a new value. |
-
-Example:
-
-```json
-{ "op": "Add", "path": "name.formatted", "value": "New Name" }
+curl --location --request PATCH "https://gdk.test:3443/api/v4/groups/33/scim/sydney_jones" \
+--header "<PRIVATE TOKEN>" \
+--form "extern_uid=sydney_jones_new" \
 ```

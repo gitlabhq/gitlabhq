@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Frontend testing standards and style guidelines
@@ -200,7 +200,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper'
 
 const wrapper = shallowMountExtended(ExampleComponent);
 
-// In this example, `wrapper` is a `@vue/test-utils` wrapper returned from `mount` or `shallowMount`.
 it('exists', () => {
   // Best (especially for integration tests)
   wrapper.findByRole('link', { name: /Click Me/i })
@@ -291,7 +290,7 @@ it('tests a promise rejection', async () => {
 });
 ```
 
-You can also simply return a promise from the test function.
+You can also return a promise from the test function.
 
 Using the `done` and `done.fail` callbacks is discouraged when working with
 promises. They should not be used.

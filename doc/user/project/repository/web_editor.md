@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Web Editor **(FREE)**
@@ -40,7 +40,7 @@ might need. GitLab displays a message to help you:
 
 ![First file for your project](img/web_editor_template_dropdown_first_file_v14_1.png)
 
-When clicking on either `LICENSE` or `.gitignore` and so on, a dropdown displays
+When selecting either `LICENSE` or `.gitignore` and so on, a dropdown displays
 to provide you a template that may be suitable for your project:
 
 ![MIT license selected](img/web_editor_template_dropdown_mit_license_v14_1.png)
@@ -115,6 +115,9 @@ the target branch. Select **Create directory** to finish.
 
 There are multiple ways to create a branch from the GitLab web interface.
 
+NOTE:
+Use [branch naming patterns](branches/index.md#naming) to streamline merge request creation.
+
 ### Create a new branch from an issue
 
 > The **Create merge request** button [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) to open the merge request creation form in GitLab 14.8.
@@ -122,7 +125,7 @@ There are multiple ways to create a branch from the GitLab web interface.
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
-Once merged, the merge request closes the issue.
+After merging the merge request, the issue is closed automatically, unless [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
 You can see a **Create merge request** dropdown below the issue description.
 
 NOTE:

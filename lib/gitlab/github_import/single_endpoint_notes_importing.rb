@@ -4,10 +4,10 @@
 #  - SingleEndpointDiffNotesImporter
 #  - SingleEndpointIssueNotesImporter
 #  - SingleEndpointMergeRequestNotesImporter
-# if `github_importer_single_endpoint_notes_import` feature flag is on.
+# if enabled by Gitlab::GithubImport::Settings
 #
 # - SingleEndpointIssueEventsImporter
-# if `github_importer_issue_events_import` feature flag is on.
+# if enabled by Gitlab::GithubImport::Settings
 #
 # Fetches associated objects page by page to each item of parent collection.
 # Currently `associated` is note or event.
@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def id_for_already_imported_cache(associated)
-        associated.id
+        associated[:id]
       end
 
       def parent_collection
@@ -54,6 +54,8 @@ module Gitlab
       # in Github API response object. For example:
       # lib/gitlab/github_import/importer/single_endpoint_issue_events_importer.rb:26
       def each_associated(_parent_record, associated)
+        associated = associated.to_h
+
         return if already_imported?(associated)
 
         Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)

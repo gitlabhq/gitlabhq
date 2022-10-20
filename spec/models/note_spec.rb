@@ -1839,6 +1839,12 @@ RSpec.describe Note do
         let(:note) { create(:note, :system, :on_issue, note: original_note_body) }
 
         it { is_expected.to eq(expected_text_replacement) }
+
+        context 'context when note and cache are null (happens in bulk insert)' do
+          let(:note) { build(:note, :system, :on_issue, note: nil, note_html: nil).tap { |note| note.save!(validate: false) } }
+
+          it { is_expected.to be_in([nil, '']) }
+        end
       end
     end
   end
@@ -1868,7 +1874,7 @@ RSpec.describe Note do
       let(:expected_text_replacement) { '<p data-sourcepos="1:1-1:48" dir="auto">marked the checklist item <strong>task 1</strong> as completed</p>' }
 
       before do
-        note.update_columns(note_html: unchanged_note_body)
+        note.update_columns(note_html: unchanged_note_body) unless note.note.nil?
       end
     end
 
@@ -1878,7 +1884,7 @@ RSpec.describe Note do
       let(:expected_text_replacement) { '<p data-sourcepos="1:1-1:48" dir="auto">marked the checklist item <strong>task 1</strong> as incomplete</p>' }
 
       before do
-        note.update_columns(note_html: unchanged_note_body)
+        note.update_columns(note_html: unchanged_note_body) unless note.note.nil?
       end
     end
   end

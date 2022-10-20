@@ -19,7 +19,7 @@ class LabelsFinder < UnionFinder
     items = with_title(items)
     items = by_subscription(items)
     items = by_search(items)
-    sort(items)
+    sort(items.with_preloaded_container)
   end
 
   private

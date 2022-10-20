@@ -10,6 +10,8 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
 
   feature_category :web_ide
 
+  urgency :low, [:check_config]
+
   def check_config
     return respond_422 unless branch_sha
 

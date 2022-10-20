@@ -10,7 +10,7 @@ import AdminUserActions from '~/admin/users/components/user_actions.vue';
 import AdminUserAvatar from '~/admin/users/components/user_avatar.vue';
 import AdminUsersTable from '~/admin/users/components/users_table.vue';
 import getUsersGroupCountsQuery from '~/admin/users/graphql/queries/get_users_group_counts.query.graphql';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import AdminUserDate from '~/vue_shared/components/user_date.vue';
 
 import { users, paths, createGroupCountResponse } from '../mock_data';
@@ -135,7 +135,7 @@ describe('AdminUsersTable component', () => {
       });
 
       it('creates a flash message and captures the error', () => {
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'Could not load user group counts. Please refresh the page to try again.',
           captureError: true,
           error: expect.any(Error),

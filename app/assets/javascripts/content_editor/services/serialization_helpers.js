@@ -280,6 +280,7 @@ export function renderTableRow(state, node) {
 }
 
 export function renderTable(state, node) {
+  state.flushClose();
   setIsInBlockTable(node, shouldRenderHTMLTable(node));
 
   if (isInBlockTable(node)) renderTagOpen(state, 'table');
@@ -420,6 +421,10 @@ export function renderOrderedList(state, node) {
     const nStr = String(start + i);
     return `${state.repeat(' ', maxW - nStr.length) + nStr}${delimiter} `;
   });
+}
+
+export function renderReference(state, node) {
+  state.write(node.attrs.originalText || node.attrs.text);
 }
 
 const generateBoldTags = (wrapTagName = openTag) => {

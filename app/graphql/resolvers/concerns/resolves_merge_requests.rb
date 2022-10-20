@@ -42,7 +42,6 @@ module ResolvesMergeRequests
       assignees: [:assignees],
       reviewers: [:reviewers],
       participants: MergeRequest.participant_includes,
-      labels: [:labels],
       author: [:author],
       merged_at: [:metrics],
       commit_count: [:metrics],
@@ -53,7 +52,8 @@ module ResolvesMergeRequests
       head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request] }],
       timelogs: [:timelogs],
       pipelines: [:merge_request_diffs], # used by `recent_diff_head_shas` to load pipelines
-      committers: [merge_request_diff: [:merge_request_diff_commits]]
+      committers: [merge_request_diff: [:merge_request_diff_commits]],
+      suggested_reviewers: [:predictions]
     }
   end
 end

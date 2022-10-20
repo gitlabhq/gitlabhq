@@ -43,6 +43,7 @@ module API
       optional :new_name, type: String, desc: 'New repo name'
       requires :target_namespace, type: String, desc: 'Namespace to import repo into'
       optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname'
+      optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
     end
     post 'import/github' do
       result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)
@@ -52,6 +53,21 @@ module API
       else
         status result[:http_status]
         { errors: result[:message] }
+      end
+    end
+
+    params do
+      requires :project_id, type: Integer, desc: 'ID of importing project to be canceled'
+    end
+    post 'import/github/cancel' do
+      project = Project.imported_from(provider.to_s).find(params[:project_id])
+      result = Import::Github::CancelProjectImportService.new(project, current_user).execute
+
+      if result[:status] == :success
+        status :ok
+        present ProjectSerializer.new.represent(project, serializer: :import)
+      else
+        render_api_error!(result[:message], result[:http_status])
       end
     end
   end

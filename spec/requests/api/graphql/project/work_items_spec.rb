@@ -2,16 +2,25 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting an work item list for a project' do
+RSpec.describe 'getting a work item list for a project' do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:label1) { create(:label, project: project) }
+  let_it_be(:label2) { create(:label, project: project) }
 
-  let_it_be(:item1) { create(:work_item, project: project, discussion_locked: true, title: 'item1') }
+  let_it_be(:item1) { create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1]) }
   let_it_be(:item2) do
-    create(:work_item, project: project, title: 'item2', last_edited_by: current_user, last_edited_at: 1.day.ago)
+    create(
+      :work_item,
+      project: project,
+      title: 'item2',
+      last_edited_by: current_user,
+      last_edited_at: 1.day.ago,
+      labels: [label2]
+    )
   end
 
   let_it_be(:confidential_item) { create(:work_item, confidential: true, project: project, title: 'item3') }
@@ -28,6 +37,70 @@ RSpec.describe 'getting an work item list for a project' do
       }
     }
     QUERY
+  end
+
+  shared_examples 'work items resolver without N + 1 queries' do
+    it 'avoids N+1 queries' do
+      post_graphql(query, current_user: current_user) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: current_user)
+      end
+
+      expect_graphql_errors_to_be_empty
+
+      create_list(
+        :work_item, 3,
+        :task,
+        :last_edited_by_user,
+        last_edited_at: 1.week.ago,
+        project: project,
+        labels: [label1, label2]
+      )
+
+      expect_graphql_errors_to_be_empty
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
+    end
+  end
+
+  describe 'N + 1 queries' do
+    context 'when querying root fields' do
+      it_behaves_like 'work items resolver without N + 1 queries'
+    end
+
+    # We need a separate example since all_graphql_fields_for will not fetch fields from types
+    # that implement the widget interface. Only `type` for the widgets field.
+    context 'when querying the widget interface' do
+      let(:fields) do
+        <<~GRAPHQL
+          nodes {
+            widgets {
+              type
+              ... on WorkItemWidgetDescription {
+                edited
+                lastEditedAt
+                lastEditedBy {
+                  webPath
+                  username
+                }
+              }
+              ... on WorkItemWidgetAssignees {
+                assignees { nodes { id } }
+              }
+              ... on WorkItemWidgetHierarchy {
+                parent { id }
+              }
+              ... on WorkItemWidgetLabels {
+                labels { nodes { id } }
+                allowsScopedLabels
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      it_behaves_like 'work items resolver without N + 1 queries'
+    end
   end
 
   it_behaves_like 'a working graphql query' do
@@ -75,40 +148,6 @@ RSpec.describe 'getting an work item list for a project' do
       post_graphql(query, current_user: current_user)
 
       expect(item_ids).to eq([confidential_item.to_global_id.to_s, item2.to_global_id.to_s, item1.to_global_id.to_s])
-    end
-  end
-
-  context 'when fetching description edit information' do
-    let(:fields) do
-      <<~GRAPHQL
-        nodes {
-          widgets {
-            type
-            ... on WorkItemWidgetDescription {
-              edited
-              lastEditedAt
-              lastEditedBy {
-                webPath
-                username
-              }
-            }
-          }
-        }
-      GRAPHQL
-    end
-
-    it 'avoids N+1 queries' do
-      post_graphql(query, current_user: current_user) # warm-up
-
-      control = ActiveRecord::QueryRecorder.new do
-        post_graphql(query, current_user: current_user)
-      end
-      expect_graphql_errors_to_be_empty
-
-      create_list(:work_item, 3, :last_edited_by_user, last_edited_at: 1.week.ago, project: project)
-
-      expect_graphql_errors_to_be_empty
-      expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
     end
   end
 

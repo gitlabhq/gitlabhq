@@ -26,10 +26,10 @@ FactoryBot.define do
 
     factory :wiki_page_event do
       action { :created }
-      # rubocop: disable FactoryBot/InlineAssociation
+      # rubocop: disable RSpec/FactoryBot/InlineAssociation
       # A persistent project is needed to have a wiki page being created properly.
       project { @overrides[:wiki_page]&.container || create(:project, :wiki_repo) }
-      # rubocop: enable FactoryBot/InlineAssociation
+      # rubocop: enable RSpec/FactoryBot/InlineAssociation
       target { association(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page) }
 
       transient do
@@ -52,6 +52,16 @@ FactoryBot.define do
 
       action { :commented }
       target { note }
+    end
+
+    trait :for_issue do
+      target { association(:issue, issue_type: :issue) }
+      target_type { 'Issue' }
+    end
+
+    trait :for_work_item do
+      target { association(:work_item, :task) }
+      target_type { 'WorkItem' }
     end
 
     factory :design_event, traits: [:has_design] do

@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 
@@ -49,7 +49,7 @@ export default {
       };
 
       this.toggleAwardRequest(data).catch(() =>
-        createFlash({
+        createAlert({
           message: __('Something went wrong on our end.'),
         }),
       );

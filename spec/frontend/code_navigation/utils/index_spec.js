@@ -87,5 +87,13 @@ describe('addInteractionClass', () => {
       expect(spans[1].textContent).toBe('Text');
       expect(spans[2].textContent).toBe(' ');
     });
+
+    it('adds the correct class names to wrapped nodes', () => {
+      setHTMLFixture(
+        '<div data-path="index.js"><div class="blob-content"><div id="LC1" class="line"><span class="test"> Text </span></div></div></div>',
+      );
+      addInteractionClass({ ...params, wrapTextNodes: true });
+      expect(findAllSpans()[1].classList.contains('test')).toBe(true);
+    });
   });
 });

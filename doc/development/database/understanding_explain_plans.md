@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Understanding EXPLAIN plans
@@ -546,7 +546,7 @@ improve this query, other than _not_ running it at all.
 What is important here is that while some may recommend to straight up add an
 index the moment you see a sequential scan, it is _much more important_ to first
 understand what your query does, how much data it retrieves, and so on. After
-all, you can not optimize something you do not understand.
+all, you cannot optimize something you do not understand.
 
 ### Cardinality and selectivity
 
@@ -719,7 +719,7 @@ and through its [web interface](https://console.postgres.ai/gitlab/joe-instances
 
 With Joe Bot you can execute DDL statements (like creating indexes, tables, and columns) and get query plans for `SELECT`, `UPDATE`, and `DELETE` statements.
 
-For example, in order to test new index on a column that is not existing on production yet, you can do the following:
+For example, to test new index on a column that is not existing on production yet, you can do the following:
 
 Create the column:
 

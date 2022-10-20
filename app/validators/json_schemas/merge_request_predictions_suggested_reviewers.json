@@ -4,7 +4,7 @@
   "properties": {
     "top_n": { "type": "number" },
     "version": { "type": "string" },
-    "changes": { "type": "array" }
+    "reviewers": { "type": "array" }
   },
   "additionalProperties": true
 }

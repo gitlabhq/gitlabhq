@@ -8,7 +8,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import {
@@ -93,13 +93,13 @@ describe('EmojiToken', () => {
         });
       });
 
-      it('calls `createFlash` with flash error message when request fails', () => {
+      it('calls `createAlert` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchEmojis').mockRejectedValue({});
 
         wrapper.vm.fetchEmojis('foo');
 
         return waitForPromises().then(() => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching emojis.',
           });
         });

@@ -2,7 +2,7 @@
 type: index, reference
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Milestones **(FREE)**
@@ -180,8 +180,9 @@ Prerequisites:
 To promote a project milestone:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > Milestones**.
 1. Either:
-   - Select **Promote to Group Milestone** (**{level-up}**).
+   - Select **Promote to Group Milestone** (**{level-up}**) next to the milestone you want to promote.
    - Select the milestone title, and then select **Promote**.
 1. Select **Promote Milestone**.
 

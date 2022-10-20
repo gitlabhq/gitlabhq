@@ -26,6 +26,7 @@ module MergeRequests
 
       @merge_request = merge_request
       @options = options
+      jid = merge_jid
 
       validate!
 
@@ -37,7 +38,7 @@ module MergeRequests
         end
       end
 
-      log_info("Merge process finished on JID #{merge_jid} with state #{state}")
+      log_info("Merge process finished on JID #{jid} with state #{state}")
     rescue MergeError => e
       handle_merge_error(log_message: e.message, save_message_on_model: true)
     ensure
@@ -159,17 +160,32 @@ module MergeRequests
     end
 
     def handle_merge_error(log_message:, save_message_on_model: false)
-      Gitlab::AppLogger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
+      log_error("MergeService ERROR: #{merge_request_info} - #{log_message}")
       @merge_request.update(merge_error: log_message) if save_message_on_model
     end
 
     def log_info(message)
+      payload = log_payload("#{merge_request_info} - #{message}")
+      logger.info(**payload)
+    end
+
+    def log_error(message)
+      payload = log_payload(message)
+      logger.error(**payload)
+    end
+
+    def logger
       @logger ||= Gitlab::AppLogger
-      @logger.info("#{merge_request_info} - #{message}")
+    end
+
+    def log_payload(message)
+      Gitlab::ApplicationContext.current
+        .merge(merge_request_info: merge_request_info,
+               message: message)
     end
 
     def merge_request_info
-      merge_request.to_reference(full: true)
+      @merge_request_info ||= merge_request.to_reference(full: true)
     end
 
     def source_matches?

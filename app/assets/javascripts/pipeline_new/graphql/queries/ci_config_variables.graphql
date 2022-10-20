@@ -1,0 +1,11 @@
+query ciConfigVariables($fullPath: ID!, $ref: String!) {
+  project(fullPath: $fullPath) {
+    id
+    ciConfigVariables(sha: $ref) {
+      description
+      key
+      value
+      valueOptions
+    }
+  }
+}

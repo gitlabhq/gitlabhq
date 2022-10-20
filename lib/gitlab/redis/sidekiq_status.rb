@@ -14,7 +14,7 @@ module Gitlab
 
         def redis
           primary_store = ::Redis.new(Gitlab::Redis::SharedState.params)
-          secondary_store = ::Redis.new(Gitlab::Redis::Queues.params)
+          secondary_store = ::Redis.new(Gitlab::Redis::Queues.params) # rubocop:disable Cop/RedisQueueUsage
 
           MultiStore.new(primary_store, secondary_store, name.demodulize)
         end

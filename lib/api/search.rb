@@ -63,7 +63,7 @@ module API
           @results = search_service(additional_params).search_objects(preload_method)
         end
 
-        set_global_search_log_information
+        set_global_search_log_information(additional_params)
 
         Gitlab::Metrics::GlobalSearchSlis.record_apdex(
           elapsed: @search_duration_s,
@@ -105,7 +105,7 @@ module API
         # EE, without having to modify this file directly.
       end
 
-      def search_type
+      def search_type(additional_params = {})
         'basic'
       end
 
@@ -113,10 +113,10 @@ module API
         params[:scope]
       end
 
-      def set_global_search_log_information
+      def set_global_search_log_information(additional_params)
         Gitlab::Instrumentation::GlobalSearchApi.set_information(
-          type: search_type,
-          level: search_service.level,
+          type: search_type(additional_params),
+          level: search_service(additional_params).level,
           scope: search_scope,
           search_duration_s: @search_duration_s
         )

@@ -1,8 +1,0 @@
----
-name: skip_checking_namespace_in_query
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96559
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/370742
-milestone: '15.4'
-type: development
-group: group::source code
-default_enabled: false

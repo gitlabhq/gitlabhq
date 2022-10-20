@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { ApolloMutation } from 'vue-apollo';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { s__ } from '~/locale';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
@@ -155,7 +155,7 @@ export default {
   methods: {
     onDone({ data: { createNote } }) {
       if (hasErrors(createNote)) {
-        createFlash({ message: ADD_DISCUSSION_COMMENT_ERROR });
+        createAlert({ message: ADD_DISCUSSION_COMMENT_ERROR });
       }
       this.discussionComment = '';
       this.hideForm();

@@ -10,7 +10,7 @@ module API
           private
 
           def run_info
-            ::API::Entities::Ml::Mlflow::RunInfo.represent object
+            RunInfo.represent object
           end
         end
       end

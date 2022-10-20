@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Style Guide
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
@@ -17,7 +17,7 @@ recommends these word choices. In addition:
 
 For guidance not on this page, we defer to these style guides:
 
-- [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/welcome/)
+- [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 
 <!-- vale off -->
@@ -125,7 +125,7 @@ Instead of:
 - This feature enables users to add files to their repository.
 
 This phrasing is more active and is from the user perspective, rather than the person who implemented the feature.
-[View details in the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
+[View details in the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/allow-allows).
 
 ## Alpha
 
@@ -141,7 +141,7 @@ Instead of **and/or**, use **or** or rewrite the sentence to spell out both opti
 ## and so on
 
 Do not use **and so on**. Instead, be more specific. For details, see
-[the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
+[the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
 
 ## area
 
@@ -218,7 +218,7 @@ Instead of:
 
 ## cannot, can not
 
-Use **cannot** instead of **can not**. You can also use **can't**.
+Use **cannot** instead of **can not**.
 
 See also [contractions](index.md#contractions).
 
@@ -316,7 +316,7 @@ Do not use **Developer permissions**. A user who is assigned the Developer role 
 
 ## disable
 
-See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
+See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
 Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## disallow
@@ -363,9 +363,13 @@ Do not use Latin abbreviations. Use **for example**, **such as**, **for instance
 
 Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
+## emojis
+
+Use **emojis** to refer to the plural form of **emoji**.
+
 ## enable
 
-See [the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
+See [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
 Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
 
 ## enter
@@ -509,12 +513,15 @@ For example, **Snowplow Guide**. Instead, speak about the feature itself, and ho
 When writing about the Guest role:
 
 - Use a capital **G**.
-- Do not use bold.
-- Do not use the phrase, **if you are a guest** to mean someone who is assigned the Guest
-  role. Instead, write it out. For example, **if you are assigned the Guest role**.
-- To describe a situation where the Guest role is the minimum required:
+- Write it out:
+  - Use: if you are assigned the Guest role
+  - Instead of: if you are a guest
+
+- When the Guest role is the minimum required role:
   - Use: at least the Guest role
   - Instead of: the Guest role or higher
+
+Do not use bold.
 
 Do not use **Guest permissions**. A user who is assigned the Guest role has a set of associated permissions.
 
@@ -656,12 +663,15 @@ Instead of:
 When writing about the Maintainer role:
 
 - Use a capital **M**.
-- Do not use bold.
-- Do not use the phrase, **if you are a maintainer** to mean someone who is assigned the Maintainer
-  role. Instead, write it out. For example, **if you are assigned the Maintainer role**.
-- To describe a situation where the Maintainer role is the minimum required:
+- Write it out.
+  - Use: if you are assigned the Maintainer role
+  - Instead of: if you are a maintainer
+
+- When the Maintainer role is the minimum required role:
   - Use: at least the Maintainer role
   - Instead of: the Maintainer role or higher
+
+Do not use bold.
 
 Do not use **Maintainer permissions**. A user who is assigned the Maintainer role has a set of associated permissions.
 
@@ -796,11 +806,14 @@ For example, a log file might overwrite a log file of the same name.
 When writing about the Owner role:
 
 - Use a capital **O**.
-- Do not use bold.
-- Do not use the phrase, **if you are an owner** to mean someone who is assigned the Owner
-  role. Instead, write it out. For example, **if you are assigned the Owner role**.
+- Write it out.
+  - Use: if you are assigned the Owner role
+  - Instead of: if you are an owner
 
+Do not use bold.
+ 
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
+An Owner is the highest role a user can have.
 
 ## Package Registry
 
@@ -818,7 +831,7 @@ Use lowercase for **personal access token**.
 
 ## please
 
-Do not use **please**. For details, see the [Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+Do not use **please**. For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
 ## press
 
@@ -851,12 +864,15 @@ Use **register** instead of **sign up** when talking about creating an account.
 When writing about the Reporter role:
 
 - Use a capital **R**.
-- Do not use bold.
-- Do not use the phrase, **if you are a reporter** to mean someone who is assigned the Reporter
-  role. Instead, write it out. For example, **if you are assigned the Reporter role**.
-- To describe a situation where the Reporter role is the minimum required:
+- Write it out.
+  - Use: if you are assigned the Reporter role
+  - Instead of: if you are a reporter
+
+- When the Reporter role is the minimum required role:
   - Use: at least the Reporter role
   - Instead of: the Reporter role or higher
+
+Do not use bold.
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
 

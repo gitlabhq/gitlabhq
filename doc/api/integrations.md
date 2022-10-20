@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Integrations API **(FREE)**
@@ -276,7 +276,7 @@ Parameters:
 
 | Parameter     | Type    | Required | Description                                                                                 |
 |---------------|---------|----------|---------------------------------------------------------------------------------------------|
-| `token`       | string  | true     | Campfire API token. To find it, log into Campfire and select **My info**.                   |
+| `token`       | string  | true     | Campfire API token. To find it, sign in to Campfire and select **My info**.                   |
 | `subdomain`   | string  | false    | Campfire subdomain. Text between `https://` and `.campfirenow.com` when you're logged in. |
 | `room`        | string  | false    | Campfire room. The last part of the URL when you're in a room.                              |
 

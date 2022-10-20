@@ -51,11 +51,11 @@ RSpec.describe 'Profile > Password' do
   end
 
   context 'Password authentication unavailable' do
-    before do
-      gitlab_sign_in(user)
-    end
-
     context 'Regular user' do
+      before do
+        gitlab_sign_in(user)
+      end
+
       let(:user) { create(:user) }
 
       it 'renders 404 when password authentication is disabled for the web interface and Git' do
@@ -69,7 +69,22 @@ RSpec.describe 'Profile > Password' do
     end
 
     context 'LDAP user' do
+      include LdapHelpers
+
+      let(:ldap_settings) { { enabled: true } }
       let(:user) { create(:omniauth_user, provider: 'ldapmain') }
+      let(:provider) { 'ldapmain' }
+      let(:provider_label) { 'Main LDAP' }
+
+      before do
+        stub_ldap_setting(ldap_settings)
+        stub_ldap_access(user, provider, provider_label)
+        sign_in_using_ldap!(user, provider_label, provider)
+      end
+
+      after(:all) do
+        Rails.application.reload_routes!
+      end
 
       it 'renders 404' do
         visit edit_profile_password_path

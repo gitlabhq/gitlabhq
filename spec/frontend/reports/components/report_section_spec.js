@@ -7,9 +7,13 @@ import ReportSection from '~/reports/components/report_section.vue';
 describe('ReportSection component', () => {
   let wrapper;
 
-  const findButton = () => wrapper.findComponent(GlButton);
+  const findExpandButton = () => wrapper.findComponent(GlButton);
   const findPopover = () => wrapper.findComponent(HelpPopover);
   const findReportSection = () => wrapper.find('.js-report-section-container');
+  const expectExpandButtonOpen = () =>
+    expect(findExpandButton().props('icon')).toBe('chevron-lg-up');
+  const expectExpandButtonClosed = () =>
+    expect(findExpandButton().props('icon')).toBe('chevron-lg-down');
 
   const resolvedIssues = [
     {
@@ -122,22 +126,22 @@ describe('ReportSection component', () => {
       it('toggles issues', async () => {
         createComponent({ props: { hasIssues: true } });
 
-        await findButton().trigger('click');
+        await findExpandButton().trigger('click');
 
         expect(findReportSection().isVisible()).toBe(true);
-        expect(findButton().text()).toBe('Collapse');
+        expectExpandButtonOpen();
 
-        await findButton().trigger('click');
+        await findExpandButton().trigger('click');
 
         expect(findReportSection().isVisible()).toBe(false);
-        expect(findButton().text()).toBe('Expand');
+        expectExpandButtonClosed();
       });
 
       it('is always expanded, if always-open is set to true', () => {
         createComponent({ props: { hasIssues: true, alwaysOpen: true } });
 
         expect(findReportSection().isVisible()).toBe(true);
-        expect(findButton().exists()).toBe(false);
+        expect(findExpandButton().exists()).toBe(false);
       });
     });
   });
@@ -148,7 +152,7 @@ describe('ReportSection component', () => {
 
       expect(wrapper.emitted('toggleEvent')).toBeUndefined();
 
-      findButton().trigger('click');
+      findExpandButton().trigger('click');
 
       expect(wrapper.emitted('toggleEvent')).toEqual([[]]);
     });
@@ -158,7 +162,7 @@ describe('ReportSection component', () => {
 
       expect(wrapper.emitted('toggleEvent')).toBeUndefined();
 
-      findButton().trigger('click');
+      findExpandButton().trigger('click');
 
       expect(wrapper.emitted('toggleEvent')).toBeUndefined();
     });
@@ -208,7 +212,7 @@ describe('ReportSection component', () => {
     });
 
     it('should still render the expand/collapse button', () => {
-      expect(findButton().text()).toBe('Expand');
+      expectExpandButtonClosed();
     });
   });
 

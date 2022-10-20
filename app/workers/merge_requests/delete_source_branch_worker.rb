@@ -18,8 +18,12 @@ class MergeRequests::DeleteSourceBranchWorker
     # Source branch changed while it's being removed
     return if merge_request.source_branch_sha != source_branch_sha
 
-    ::Branches::DeleteService.new(merge_request.source_project, user)
+    delete_service_result = ::Branches::DeleteService.new(merge_request.source_project, user)
       .execute(merge_request.source_branch)
+
+    if Feature.enabled?(:track_delete_source_errors, merge_request.source_project)
+      delete_service_result.track_exception if delete_service_result&.error?
+    end
 
     ::MergeRequests::RetargetChainService.new(project: merge_request.source_project, current_user: user)
       .execute(merge_request)

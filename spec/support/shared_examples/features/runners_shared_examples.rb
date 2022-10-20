@@ -146,6 +146,18 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
   end
 end
 
+RSpec.shared_examples 'filters by tag' do
+  it 'shows correct runner when tag matches' do
+    expect(page).to have_content found_runner
+    expect(page).to have_content missing_runner
+
+    input_filtered_search_filter_is_only('Tags', tag)
+
+    expect(page).to have_content found_runner
+    expect(page).not_to have_content missing_runner
+  end
+end
+
 RSpec.shared_examples 'submits edit runner form' do
   it 'breadcrumb contains runner id and token' do
     page.within '[data-testid="breadcrumb-links"]' do

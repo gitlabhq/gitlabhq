@@ -5,7 +5,7 @@ import SidebarFormattedDate from '~/sidebar/components/date/sidebar_formatted_da
 describe('SidebarFormattedDate', () => {
   let wrapper;
   const findFormattedDate = () => wrapper.find("[data-testid='sidebar-date-value']");
-  const findRemoveButton = () => wrapper.find(GlButton);
+  const findRemoveButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = ({ hasDate = true } = {}) => {
     wrapper = shallowMount(SidebarFormattedDate, {

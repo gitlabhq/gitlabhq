@@ -16,7 +16,8 @@ export default {
   props: {
     mr: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     isLoading: {
       type: Boolean,
@@ -80,6 +81,7 @@ export default {
           </div>
         </div>
         <div
+          v-if="mr"
           class="gl-md-display-none gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6 gl-mt-1"
         >
           <gl-button

@@ -179,7 +179,7 @@ module Members
     def enqueue_onboarding_progress_action
       return unless member_created_namespace_id
 
-      Namespaces::OnboardingUserAddedWorker.perform_async(member_created_namespace_id)
+      Onboarding::UserAddedWorker.perform_async(member_created_namespace_id)
     end
 
     def result
@@ -195,6 +195,8 @@ module Members
     end
 
     def publish_event!
+      return unless member_created_namespace_id
+
       Gitlab::EventStore.publish(
         Members::MembersAddedEvent.new(data: {
           source_id: source.id,

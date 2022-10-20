@@ -22,6 +22,8 @@ describe('~/access_tokens/components/new_access_token_app', () => {
     });
   };
 
+  const findButtonEl = () => document.querySelector('[type=submit]');
+
   const triggerSuccess = async (newToken = 'new token') => {
     wrapper
       .findComponent(DomElementListener)
@@ -41,7 +43,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
         <input type="text" id="expires_at" value="2022-01-01"/>
         <input type="text" value='1'/>
         <input type="checkbox" checked/>
-        <input type="submit" value="Create"/>
+        <button type="submit" value="Create" class="disabled" disabled="disabled"/>
       </form>`,
     );
 
@@ -120,10 +122,10 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       });
 
       it('should not reset the submit button value', async () => {
-        expect(document.querySelector('input[type=submit]').value).toBe('Create');
+        expect(findButtonEl().value).toBe('Create');
         await triggerSuccess();
 
-        expect(document.querySelector('input[type=submit]').value).toBe('Create');
+        expect(findButtonEl().value).toBe('Create');
       });
     });
   });
@@ -161,6 +163,17 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       await nextTick();
 
       expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+    });
+
+    it('should enable the submit button', async () => {
+      const button = findButtonEl();
+      expect(button).toBeDisabled();
+      expect(button.className).toBe('disabled');
+
+      await triggerError();
+
+      expect(button).not.toBeDisabled();
+      expect(button.className).toBe('');
     });
   });
 

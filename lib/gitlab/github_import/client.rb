@@ -69,7 +69,7 @@ module Gitlab
       #
       # username - The username of the user.
       def user(username)
-        with_rate_limit { octokit.user(username) }
+        with_rate_limit { octokit.user(username).to_h }
       end
 
       def pull_request_reviews(repo_name, iid)
@@ -88,7 +88,7 @@ module Gitlab
       end
 
       def pull_request(repo_name, iid)
-        with_rate_limit { octokit.pull_request(repo_name, iid) }
+        with_rate_limit { octokit.pull_request(repo_name, iid).to_h }
       end
 
       def labels(*args)
@@ -108,7 +108,7 @@ module Gitlab
       end
 
       def branch_protection(repo_name, branch_name)
-        with_rate_limit { octokit.branch_protection(repo_name, branch_name) }
+        with_rate_limit { octokit.branch_protection(repo_name, branch_name).to_h }
       end
 
       # Fetches data from the GitHub API and yields a Page object for every page
@@ -150,7 +150,7 @@ module Gitlab
 
         each_page(method, *args) do |page|
           page.objects.each do |object|
-            yield object
+            yield object.to_h
           end
         end
       end
@@ -183,7 +183,7 @@ module Gitlab
       end
 
       def search_query(str:, type:, include_collaborations: true, include_orgs: true)
-        query = "#{str} in:#{type} is:public,private user:#{octokit.user.login}"
+        query = "#{str} in:#{type} is:public,private user:#{octokit.user.to_h[:login]}"
 
         query = [query, collaborations_subquery].join(' ') if include_collaborations
         query = [query, organizations_subquery].join(' ') if include_orgs
@@ -274,13 +274,13 @@ module Gitlab
 
       def collaborations_subquery
         each_object(:repos, nil, { affiliation: 'collaborator' })
-          .map { |repo| "repo:#{repo.full_name}" }
+          .map { |repo| "repo:#{repo[:full_name]}" }
           .join(' ')
       end
 
       def organizations_subquery
         each_object(:organizations)
-          .map { |org| "org:#{org.login}" }
+          .map { |org| "org:#{org[:login]}" }
           .join(' ')
       end
 

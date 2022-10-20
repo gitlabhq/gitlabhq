@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import GrafanaIntegration from '~/grafana_integration/components/grafana_integration.vue';
 import { createStore } from '~/grafana_integration/store';
 import axios from '~/lib/utils/axios_utils';
@@ -30,7 +30,7 @@ describe('grafana integration component', () => {
   afterEach(() => {
     if (wrapper.destroy) {
       wrapper.destroy();
-      createFlash.mockReset();
+      createAlert.mockReset();
       refreshCurrentPage.mockReset();
     }
   });
@@ -113,7 +113,7 @@ describe('grafana integration component', () => {
 
         await nextTick();
         await jest.runAllTicks();
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: `There was an error saving your changes. ${message}`,
         });
       });

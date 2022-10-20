@@ -3,6 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe 'Database::MultipleDatabases' do
+  let(:query) do
+    <<~SQL
+      WITH cte AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (SELECT 1) SELECT 1;
+    SQL
+  end
+
+  it 'preloads database version for ApplicationRecord' do
+    counts = ActiveRecord::QueryRecorder
+    .new { ApplicationRecord.connection.execute(query) }
+    .count
+
+    expect(counts).to eq(1)
+  end
+
+  it 'preloads database version for Ci::ApplicationRecord' do
+    counts = ActiveRecord::QueryRecorder
+    .new { Ci::ApplicationRecord.connection.execute(query) }
+    .count
+
+    expect(counts).to eq(1)
+  end
+
   describe '.with_reestablished_active_record_base' do
     context 'when doing establish_connection' do
       context 'on ActiveRecord::Base' do

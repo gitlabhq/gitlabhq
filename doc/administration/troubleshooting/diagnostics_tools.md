@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -26,4 +26,4 @@ and summarize raw `strace` data.
 
 ## `kubesos`
 
-The [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) utility retrieves GitLab cluster configuration and logs from GitLab Cloud Native chart deployments.
+The [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) utility retrieves GitLab cluster configuration and logs from GitLab Helm chart deployments.

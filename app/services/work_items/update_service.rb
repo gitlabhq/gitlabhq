@@ -26,6 +26,17 @@ module WorkItems
 
     private
 
+    def prepare_update_params(work_item)
+      execute_widgets(
+        work_item: work_item,
+        callback: :prepare_update_params,
+        widget_params: @widget_params,
+        service_params: params
+      )
+
+      super
+    end
+
     def before_update(work_item, skip_spam_check: false)
       execute_widgets(work_item: work_item, callback: :before_update_callback, widget_params: @widget_params)
 
@@ -38,7 +49,7 @@ module WorkItems
       super
     end
 
-    def after_update(work_item)
+    def after_update(work_item, old_associations)
       super
 
       GraphqlTriggers.issuable_title_updated(work_item) if work_item.previous_changes.key?(:title)
@@ -46,6 +57,14 @@ module WorkItems
 
     def payload(work_item)
       { work_item: work_item }
+    end
+
+    def handle_label_changes(issuable, old_labels)
+      return false unless super
+
+      Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_labels_changed_action(
+        author: current_user
+      )
     end
   end
 end

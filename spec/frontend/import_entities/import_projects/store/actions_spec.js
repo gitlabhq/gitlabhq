@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
 import actionsFactory from '~/import_entities/import_projects/store/actions';
 import { getImportTarget } from '~/import_entities/import_projects/store/getters';
@@ -155,7 +155,7 @@ describe('import_projects store actions', () => {
           [],
         );
 
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'Provider rate limit exceeded. Try again later',
         });
       });
@@ -198,7 +198,7 @@ describe('import_projects store actions', () => {
 
       return testAction(
         fetchImport,
-        importRepoId,
+        { repoId: importRepoId, optionalStages: {} },
         localState,
         [
           {
@@ -222,7 +222,7 @@ describe('import_projects store actions', () => {
 
       await testAction(
         fetchImport,
-        importRepoId,
+        { repoId: importRepoId, optionalStages: {} },
         localState,
         [
           {
@@ -234,7 +234,7 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Importing the project failed',
       });
     });
@@ -245,7 +245,7 @@ describe('import_projects store actions', () => {
 
       await testAction(
         fetchImport,
-        importRepoId,
+        { repoId: importRepoId, optionalStages: {} },
         localState,
         [
           {
@@ -257,7 +257,7 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: `Importing the project failed: ${ERROR_MESSAGE}`,
       });
     });
@@ -358,7 +358,7 @@ describe('import_projects store actions', () => {
         [],
       );
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'Requesting namespaces failed',
       });
     });
@@ -366,14 +366,22 @@ describe('import_projects store actions', () => {
 
   describe('importAll', () => {
     it('dispatches multiple fetchImport actions', async () => {
+      const OPTIONAL_STAGES = { stage1: true, stage2: false };
+
       await testAction(
         importAll,
-        null,
+        { optionalStages: OPTIONAL_STAGES },
         localState,
         [],
         [
-          { type: 'fetchImport', payload: importRepoId },
-          { type: 'fetchImport', payload: otherImportRepoId },
+          {
+            type: 'fetchImport',
+            payload: { repoId: importRepoId, optionalStages: OPTIONAL_STAGES },
+          },
+          {
+            type: 'fetchImport',
+            payload: { repoId: otherImportRepoId, optionalStages: OPTIONAL_STAGES },
+          },
         ],
       );
     });

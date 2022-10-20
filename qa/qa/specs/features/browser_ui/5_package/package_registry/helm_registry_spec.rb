@@ -51,16 +51,11 @@ module QA
 
               commit.project = package_project
               commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([
-                                {
-                                  file_path: '.gitlab-ci.yml',
-                                  content: helm_upload_yaml
-                                },
-                                {
-                                  file_path: 'Chart.yaml',
-                                  content: helm_chart_yaml
-                                }
-              ])
+              commit.add_files(
+                [
+                  { file_path: '.gitlab-ci.yml', content: helm_upload_yaml },
+                  { file_path: 'Chart.yaml', content: helm_chart_yaml }
+                ])
             end
           end
 
@@ -94,12 +89,7 @@ module QA
 
               commit.project = client_project
               commit.commit_message = 'Add .gitlab-ci.yml'
-              commit.add_files([
-                {
-                  file_path: '.gitlab-ci.yml',
-                  content: helm_install_yaml
-                }
-              ])
+              commit.add_files([{ file_path: '.gitlab-ci.yml', content: helm_install_yaml }])
             end
           end
 

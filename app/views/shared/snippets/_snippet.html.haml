@@ -2,7 +2,7 @@
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
 %li.snippet-row.py-3{ data: { qa_selector: 'snippet_link', qa_snippet_title: snippet.title } }
-  = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
+  = render Pajamas::AvatarComponent.new(snippet.author, size: 48, alt: "", class: 'gl-display-none gl-sm-display-block gl-float-left gl-mr-3')
 
   = link_to gitlab_snippet_path(snippet), class: "title" do
     = snippet.title
@@ -20,16 +20,15 @@
       = visibility_level_icon(snippet.visibility_level)
 
   .snippet-info
-    #{snippet.to_reference} &middot;
-    authored #{time_ago_with_tooltip(snippet.created_at, placement: 'bottom', html_class: 'snippet-created-ago')}
-    by
-    = link_to user_snippets_path(snippet.author), class: "js-user-link", data: { user_id: snippet.author.id } do
-      = snippet.author_name
-    - if link_project && snippet.project_id?
-      %span.d-none.d-sm-inline-block
-        in
-        = link_to project_path(snippet.project) do
-          = snippet.project.full_name
+    .gl-display-inline{ data: { testid: 'snippet-created-at'} }
+      - created_at = time_ago_with_tooltip(snippet.created_at, placement: 'bottom')
+      - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id })
+      #{snippet.to_reference} &middot;
+      - if link_project && snippet.project_id?
+        - project_link = link_to(snippet.project.full_name, project_path(snippet.project))
+        = _('created %{timeAgo} by %{author} in %{project_link}').html_safe % { timeAgo: created_at, author: author, project_link: project_link }
+      - else
+        = _('created %{timeAgo} by %{author}').html_safe % { timeAgo: created_at, author: author }
 
-    .float-right.snippet-updated-at
-      %span updated #{time_ago_with_tooltip(snippet.updated_at, placement: 'bottom')}
+    .float-right
+      = _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }

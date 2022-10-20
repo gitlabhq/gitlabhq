@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, concepts, howto
 ---
 
@@ -95,6 +95,9 @@ A special type of job is the [bridge job](../../ci/yaml/index.md#trigger) which 
 when transitioning to the `pending` state. This job is responsible for creating a downstream pipeline, such as
 a multi-project or child pipeline. The workflow loop starts again
 from the `CreatePipelineService` every time a downstream pipeline is triggered.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+You can watch a walkthrough of the architecture in [CI Backend Architectural Walkthrough](https://www.youtube.com/watch?v=ew4BwohS5OY).
 
 ## Job scheduling
 

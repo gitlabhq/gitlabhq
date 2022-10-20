@@ -21,7 +21,7 @@ module API
 
         expose :project do
           expose :ci_job_token_scope_enabled do |job|
-            job.project.ci_job_token_scope_enabled?
+            job.project.ci_outbound_job_token_scope_enabled?
           end
         end
       end

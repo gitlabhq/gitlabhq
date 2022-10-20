@@ -108,7 +108,7 @@ describe('Subscriptions', () => {
       expect(wrapper.findByTestId('subscription-title').text()).toContain(
         subscribeDisabledDescription,
       );
-      expect(wrapper.find({ ref: 'tooltip' }).attributes('title')).toBe(
+      expect(wrapper.findComponent({ ref: 'tooltip' }).attributes('title')).toBe(
         subscribeDisabledDescription,
       );
     });

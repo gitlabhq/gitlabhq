@@ -68,8 +68,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
     end
 
     context 'when refs policy is specified' do
+      let(:tag_name) { project.repository.tags.first.name }
+
       let(:pipeline) do
-        build(:ci_pipeline, project: project, ref: 'feature', tag: true)
+        build(:ci_pipeline, project: project, ref: tag_name, tag: true)
       end
 
       let(:config) do

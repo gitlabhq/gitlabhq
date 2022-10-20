@@ -43,8 +43,8 @@ describe('SidebarTodo', () => {
     ({ isTodo, iconClass, label, icon }) => {
       createComponent({ isTodo });
 
-      expect(wrapper.find(GlIcon).classes().join(' ')).toStrictEqual(iconClass);
-      expect(wrapper.find(GlIcon).props('name')).toStrictEqual(icon);
+      expect(wrapper.findComponent(GlIcon).classes().join(' ')).toStrictEqual(iconClass);
+      expect(wrapper.findComponent(GlIcon).props('name')).toStrictEqual(icon);
       expect(wrapper.find('button').text()).toBe(label);
     },
   );
@@ -76,19 +76,19 @@ describe('SidebarTodo', () => {
     it('renders button icon when `collapsed` prop is `true`', () => {
       createComponent({ collapsed: true });
 
-      expect(wrapper.find(GlIcon).props('name')).toBe('todo-done');
+      expect(wrapper.findComponent(GlIcon).props('name')).toBe('todo-done');
     });
 
     it('renders loading icon when `isActionActive` prop is true', () => {
       createComponent({ isActionActive: true });
 
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('hides button icon when `isActionActive` prop is true', () => {
       createComponent({ collapsed: true, isActionActive: true });
 
-      expect(wrapper.find(GlIcon).isVisible()).toBe(false);
+      expect(wrapper.findComponent(GlIcon).isVisible()).toBe(false);
     });
   });
 });

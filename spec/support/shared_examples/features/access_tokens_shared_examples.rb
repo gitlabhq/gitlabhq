@@ -10,11 +10,11 @@ end
 
 RSpec.shared_examples 'resource access tokens creation' do |resource_type|
   def active_resource_access_tokens
-    find('.table.active-tokens')
+    find("[data-testid='active-tokens']")
   end
 
   def created_resource_access_token
-    find('#created-personal-access-token').value
+    find_field('new-access-token').value
   end
 
   it 'allows creation of an access token', :aggregate_failures do
@@ -106,7 +106,7 @@ end
 
 RSpec.shared_examples 'active resource access tokens' do
   def active_resource_access_tokens
-    find('.table.active-tokens')
+    find("[data-testid='active-tokens']")
   end
 
   it 'shows active access tokens' do
@@ -129,24 +129,22 @@ RSpec.shared_examples 'active resource access tokens' do
 end
 
 RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_text|
-  def no_resource_access_tokens_message
-    find('.settings-message')
+  def active_resource_access_tokens
+    find("[data-testid='active-tokens']")
   end
 
   it 'allows revocation of an active token' do
     visit resource_settings_access_tokens_path
     accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }
 
-    expect(page).to have_selector('.settings-message')
-    expect(no_resource_access_tokens_message).to have_text(no_active_tokens_text)
+    expect(active_resource_access_tokens).to have_text(no_active_tokens_text)
   end
 
   it 'removes expired tokens from active section' do
     resource_access_token.update!(expires_at: 5.days.ago)
     visit resource_settings_access_tokens_path
 
-    expect(page).to have_selector('.settings-message')
-    expect(no_resource_access_tokens_message).to have_text(no_active_tokens_text)
+    expect(active_resource_access_tokens).to have_text(no_active_tokens_text)
   end
 
   context 'when resource access token creation is not allowed' do
@@ -158,8 +156,39 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
       visit resource_settings_access_tokens_path
       accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }
 
-      expect(page).to have_selector('.settings-message')
-      expect(no_resource_access_tokens_message).to have_text(no_active_tokens_text)
+      expect(active_resource_access_tokens).to have_text(no_active_tokens_text)
+    end
+  end
+end
+
+RSpec.shared_examples '#create access token' do
+  let(:url) { {} }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:token_attributes) { attributes_for(:personal_access_token) }
+
+  before do
+    sign_in(admin)
+  end
+
+  context "when POST is successful" do
+    it "renders JSON with a new token" do
+      post url, params: { personal_access_token: token_attributes }
+
+      parsed_body = Gitlab::Json.parse(response.body)
+      expect(parsed_body['new_token']).not_to be_blank
+      expect(parsed_body['errors']).to be_blank
+      expect(response).to have_gitlab_http_status(:success)
+    end
+  end
+
+  context "when POST is unsuccessful" do
+    it "renders JSON with an error" do
+      post url, params: { personal_access_token: token_attributes.merge(scopes: []) }
+
+      parsed_body = Gitlab::Json.parse(response.body)
+      expect(parsed_body['new_token']).to be_blank
+      expect(parsed_body['errors']).not_to be_blank
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
   end
 end

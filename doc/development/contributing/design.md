@@ -2,7 +2,7 @@
 type: reference, dev
 stage: none
 group: Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Design and user interface changes
@@ -17,11 +17,15 @@ with additions and improvements.
 
 ## Merge request reviews
 
-As a merge request (MR) author, you must include _Before_ and _After_
+As a merge request (MR) author, you must:
+
+- Include _Before_ and _After_
 screenshots (or videos) of your changes in the description, as explained in our
 [MR workflow](merge_request_workflow.md). These screenshots/videos are very helpful
 for all reviewers and can speed up the review process, especially if the changes
 are small.
+- Attach the ~UX label to any merge request that impacts the user experience. This will enable Product Designers to [review](https://about.gitlab.com/handbook/engineering/ux/product-designer/mr-reviews/#stage-group-mrs/) any user facing changes.  
+- Assign the Product Designer suggested by Reviewer Roulette as the reviewer of your merge request. The reviewer does not have to be the domain expert unless this is a community contribution.
 
 ## Checklist
 
@@ -35,7 +39,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 - Use clear and consistent [terminology](https://design.gitlab.com/content/terminology/).
 - Check grammar and spelling.
 - Consider help content and follow its [guidelines](https://design.gitlab.com/usability/helping-users/).
-- Request review from the [appropriate Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments),
+- Request review from the [appropriate Technical Writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments),
   indicating any specific files or lines they should review, and how to preview
   or understand the location/context of the text from the user's perspective.
 
@@ -100,7 +104,7 @@ When the design is ready, _before_ starting its implementation:
 
 - Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#copy-link)
   link or [GitLab Designs feature](../../user/project/issues/design_management.md).
-  See [when you should use each tool](https://about.gitlab.com/handbook/engineering/ux/product-designer/#deliver).
+  See [when you should use each tool](https://about.gitlab.com/handbook/product/ux/product-designer/#deliver).
 - Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
 - Document animations and transitions.
 - Document responsive behaviors.

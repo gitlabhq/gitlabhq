@@ -25,12 +25,21 @@ module Mutations
         def resolve(id:)
           job = authorized_find!(id: id)
 
-          result = ::Ci::JobArtifacts::DestroyBatchService.new(job.job_artifacts, pick_up_at: Time.current).execute
-          {
-            job: job,
-            destroyed_artifacts_count: result[:destroyed_artifacts_count],
-            errors: Array(result[:errors])
-          }
+          result = ::Ci::JobArtifacts::DeleteService.new(job).execute
+
+          if result.success?
+            {
+              job: job,
+              destroyed_artifacts_count: result.payload[:destroyed_artifacts_count],
+              errors: Array(result.payload[:errors])
+            }
+          else
+            {
+              job: job,
+              destroyed_artifacts_count: 0,
+              errors: Array(result.message)
+            }
+          end
         end
       end
     end

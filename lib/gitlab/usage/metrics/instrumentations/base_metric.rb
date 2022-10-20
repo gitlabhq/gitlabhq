@@ -23,9 +23,9 @@ module Gitlab
             attr_reader :metric_available
           end
 
-          def initialize(time_frame:, options: {})
-            @time_frame = time_frame
-            @options = options
+          def initialize(metric_definition)
+            @time_frame = metric_definition.fetch(:time_frame)
+            @options = metric_definition.fetch(:options, {})
           end
 
           def instrumentation

@@ -7,7 +7,7 @@ jest.mock('~/repository/utils/dom');
 describe('Repository blob page component', () => {
   let wrapper;
 
-  const findBlobContentViewer = () => wrapper.find(BlobContentViewer);
+  const findBlobContentViewer = () => wrapper.findComponent(BlobContentViewer);
   const path = 'file.js';
 
   beforeEach(() => {

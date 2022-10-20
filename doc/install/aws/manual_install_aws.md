@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 {::options parse_block_html="true" /}
@@ -268,7 +268,7 @@ On the EC2 dashboard, look for Load Balancer in the left navigation bar:
 1. Select **Configure Health Check** and set up a health check for your EC2 instances.
    1. For **Ping Protocol**, select HTTP.
    1. For **Ping Port**, enter 80.
-   1. For **Ping Path** - we recommend that you [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-groups.html#elb-vpc-nacl) to the [IP allowlist](../../administration/monitoring/ip_whitelist.md) for the [Health Check endpoints](../../user/admin_area/monitoring/health_check.md)
+   1. For **Ping Path** - we recommend that you [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-security-groups.html#elb-vpc-nacl) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health Check endpoints](../../user/admin_area/monitoring/health_check.md)
    1. Keep the default **Advanced Details** or adjust them according to your needs.
 1. Select **Add EC2 Instances** - don't add anything as we create an Auto Scaling Group later to manage instances for us.
 1. Select **Add Tags** and add any tags you need.
@@ -465,7 +465,7 @@ We need a preconfigured, custom GitLab AMI to use in our launch configuration la
 From the EC2 dashboard:
 
 1. Use the section below titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI to launch.
-1. After clicking **Launch** on the desired AMI, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware-requirements) to choose one that fits your needs (at least `c5.xlarge`, which is sufficient to accommodate 100 users).
+1. After selecting **Launch** on the desired AMI, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md#hardware-requirements) to choose one that fits your needs (at least `c5.xlarge`, which is sufficient to accommodate 100 users).
 1. Select **Configure Instance Details**:
    1. In the **Network** dropdown list, select `gitlab-vpc`, the VPC we created earlier.
    1. In the **Subnet** dropdown list, select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
@@ -670,9 +670,9 @@ Depending on how you installed GitLab and if you did not change the password by 
 - Your instance ID if you used the official GitLab AMI.
 - A randomly generated password stored for 24 hours in `/etc/gitlab/initial_root_password`.
 
-To change the default password, log in as the `root` user with the default password and [change it in the user profile](../../user/profile#change-your-password).
+To change the default password, log in as the `root` user with the default password and [change it in the user profile](../../user/profile/user_passwords.md#change-your-password).
 
-When our [auto scaling group](#create-an-auto-scaling-group) spins up new instances, we are able to log in with username `root` and the newly created password.
+When our [auto scaling group](#create-an-auto-scaling-group) spins up new instances, we are able to sign in with username `root` and the newly created password.
 
 ### Create custom AMI
 

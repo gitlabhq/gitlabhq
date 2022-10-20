@@ -53,8 +53,6 @@ module Feature
         default_enabled: false,
         example: <<-EOS
           experiment(:my_experiment, project: project, actor: current_user) { ...variant code... }
-          # or
-          Gitlab::Experimentation.in_experiment_group?(:my_experiment, subject: current_user)
         EOS
       }
     }.freeze

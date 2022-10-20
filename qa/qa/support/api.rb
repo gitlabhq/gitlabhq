@@ -23,7 +23,7 @@ module QA
             verify_ssl: false
           }
 
-          RestClient::Request.execute(default_args.merge(args))
+          RestClient::Request.execute(default_args.merge(with_canary(args)))
         rescue StandardError => e
           return_response_or_raise(e)
         end
@@ -37,21 +37,22 @@ module QA
             verify_ssl: false
           }
 
-          RestClient::Request.execute(
-            default_args.merge(args)
-          )
+          RestClient::Request.execute(default_args.merge(with_canary(args)))
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
-      def patch(url, payload = nil)
+      def patch(url, payload = nil, args = {})
         with_retry_on_too_many_requests do
-          RestClient::Request.execute(
+          default_args = {
             method: :patch,
             url: url,
             payload: payload,
-            verify_ssl: false)
+            verify_ssl: false
+          }
+
+          RestClient::Request.execute(default_args.merge(with_canary(args)))
         rescue StandardError => e
           return_response_or_raise(e)
         end
@@ -66,7 +67,7 @@ module QA
             verify_ssl: false
           }
 
-          RestClient::Request.execute(default_args.merge(args))
+          RestClient::Request.execute(default_args.merge(with_canary(args)))
         rescue StandardError => e
           return_response_or_raise(e)
         end
@@ -96,6 +97,14 @@ module QA
 
       def masked_url(url)
         url.sub(/private_token=[^&]*/, "private_token=[****]")
+      end
+
+      # Merges the gitlab_canary cookie into existing cookies for mixed environment testing.
+      #
+      # @param [Hash] args the existing args passed to method
+      # @return [Hash] args or args with merged canary cookie if it exists
+      def with_canary(args)
+        args.deep_merge(cookies: QA::Runtime::Env.canary_cookie)
       end
 
       def with_retry_on_too_many_requests

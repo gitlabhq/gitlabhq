@@ -38,7 +38,6 @@ module MergeRequests
       handle_target_branch_change(merge_request)
       handle_milestone_change(merge_request)
       handle_draft_status_change(merge_request, changed_fields)
-      handle_label_changes(merge_request, old_labels)
 
       track_title_and_desc_edits(changed_fields)
       track_discussion_lock_toggle(merge_request, changed_fields)
@@ -71,7 +70,8 @@ module MergeRequests
       MergeRequests::CloseService
     end
 
-    def after_update(issuable)
+    def after_update(issuable, old_associations)
+      super
       issuable.cache_merge_request_closes_issues!(current_user)
     end
 
@@ -179,9 +179,12 @@ module MergeRequests
       old_title_draft = MergeRequest.draft?(old_title)
       new_title_draft = MergeRequest.draft?(new_title)
 
-      # notify the draft status changed. Added/removed message is handled in the
-      # email template itself, see `change_in_merge_request_draft_status_email` template.
-      notify_draft_status_changed(merge_request) if old_title_draft || new_title_draft
+      if old_title_draft || new_title_draft
+        # notify the draft status changed. Added/removed message is handled in the
+        # email template itself, see `change_in_merge_request_draft_status_email` template.
+        notify_draft_status_changed(merge_request)
+        trigger_merge_request_status_updated(merge_request)
+      end
 
       if !old_title_draft && new_title_draft
         # Marked as Draft
@@ -319,6 +322,10 @@ module MergeRequests
 
     def filter_sentinel_values(param)
       param.reject { _1 == 0 }
+    end
+
+    def trigger_merge_request_status_updated(merge_request)
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
   end
 end

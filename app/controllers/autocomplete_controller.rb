@@ -25,7 +25,20 @@ class AutocompleteController < ApplicationController
       .new(params: params, current_user: current_user, project: project, group: group)
       .execute
 
-    render json: UserSerializer.new(params.merge({ current_user: current_user })).represent(users, project: project)
+    presented_users = UserSerializer
+                        .new(params.merge({ current_user: current_user }))
+                        .represent(users, project: project)
+
+    extra_users = presented_suggested_users
+
+    if extra_users.present?
+      presented_users.reject! do |user|
+        extra_users.any? { |suggested_user| suggested_user[:id] == user[:id] }
+      end
+      presented_users += extra_users
+    end
+
+    render json: presented_users
   end
 
   def user
@@ -79,6 +92,11 @@ class AutocompleteController < ApplicationController
 
   def target_branch_params
     params.permit(:group_id, :project_id).select { |_, v| v.present? }
+  end
+
+  # overridden in EE
+  def presented_suggested_users
+    []
   end
 end
 

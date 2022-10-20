@@ -7,7 +7,7 @@ import {
   GlSprintf,
   GlButton,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { INCIDENT_SEVERITY, ISSUABLE_TYPES, I18N } from './constants';
 import updateIssuableSeverity from './graphql/mutations/update_issuable_severity.mutation.graphql';
 import SeverityToken from './severity.vue';
@@ -123,7 +123,7 @@ export default {
           this.severity = severity;
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: `${this.$options.i18n.UPDATE_SEVERITY_ERROR} ${this.$options.i18n.TRY_AGAIN}`,
           }),
         )

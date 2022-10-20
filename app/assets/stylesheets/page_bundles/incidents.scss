@@ -1,0 +1,73 @@
+@import 'mixins_and_variables_and_functions';
+
+.issuable-discussion.incident-timeline-events {
+  .main-notes-list::before {
+    content: none;
+  }
+
+  .timeline-event-note {
+    p {
+      margin-bottom: 0;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+/**
+ * We have a very specific design proposal where we cannot
+ * use `vertical-line` mixin as it is and have to use
+ * custom styles, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81284#note_904867444
+ */
+.timeline-entry-vertical-line {
+  &::before,
+  &::after {
+    content: '';
+    border-left: 2px solid $gray-50;
+    position: absolute;
+    left: 20px;
+    height: calc(100% + #{$gl-spacing-scale-5});
+    top: -#{$gl-spacing-scale-5};
+  }
+
+  &:first-child::before {
+    content: none;
+  }
+
+  &:first-child {
+    &::after {
+      top: $gl-spacing-scale-5;
+      height: calc(100% + #{$gl-spacing-scale-5});
+    }
+  }
+
+  &:last-child,
+  &.create-timeline-event {
+    &::before {
+      top: - #{$gl-spacing-scale-5} !important; // Override default positioning
+      @include gl-h-8;
+    }
+
+    &::after {
+      content: none;
+    }
+  }
+}
+
+.timeline-entry:not(:last-child) {
+  .timeline-event-border {
+    @include gl-pb-5;
+    @include gl-border-gray-50;
+    @include gl-border-1;
+    @include gl-border-b-solid;
+  }
+}
+
+.timeline-group:last-child {
+  .timeline-entry:last-child,
+  .create-timeline-event {
+    .timeline-event-bottom-border {
+      @include gl-border-b;
+      @include gl-pt-5;
+    }
+  }
+}

@@ -1,6 +1,8 @@
 = gitlab_ui_form_for [@project, @milestone],
            html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@milestone)
+  - if @redirect_path.present?
+    = f.hidden_field(:redirect_path, name: :redirect_path, id: :redirect_path, value: @redirect_path)
   .form-group.row
     .col-form-label.col-sm-2
       = f.label :title, _('Title')

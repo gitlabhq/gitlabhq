@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # This is based on https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/bin/slack
 #
 # Sends Slack notification MSG to CI_SLACK_WEBHOOK_URL (which needs to be set).

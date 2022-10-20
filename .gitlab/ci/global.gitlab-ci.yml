@@ -8,13 +8,17 @@
       - job_execution_timeout
       - stuck_or_timeout_failure
 
-.default-before_script:
+.default-utils-before_script:
   before_script:
     - echo $FOSS_ONLY
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
     - source scripts/utils.sh
+
+.default-before_script:
+  before_script:
+    - !reference [.default-utils-before_script, before_script]
     - source scripts/prepare_build.sh
 
 .ruby-gems-cache: &ruby-gems-cache
@@ -79,18 +83,29 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-cache: &assets-cache
-  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v2"
+  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v5"
+  # This list should match GITLAB_ASSETS_PATHS_LIST from scripts/gitlab_component_helpers.sh
   paths:
-    - assets-hash.txt
-    - public/assets/webpack/
-    - tmp/cache/assets/sprockets/
-    - tmp/cache/babel-loader/
-    - tmp/cache/vue-loader/
+    - cached-assets-hash.txt
+    - app/assets/javascripts/locale/**/app.js
+    - public/assets/
   policy: pull
 
 .assets-cache-push: &assets-cache-push
   <<: *assets-cache
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+.assets-tmp-cache: &assets-tmp-cache
+  key: "assets-tmp-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v1"
+  paths:
+    - tmp/cache/assets/sprockets/
+    - tmp/cache/babel-loader/
+    - tmp/cache/vue-loader/
+  policy: pull
+
+.assets-tmp-cache-push: &assets-tmp-cache-push
+  <<: *assets-tmp-cache
+  policy: push  # We want to rebuild the cache from scratch to ensure we don't pile up outdated cache files.
 
 .storybook-node-modules-cache: &storybook-node-modules-cache
   key: "storybook-node-modules-${DEBIAN_VERSION}-${NODE_ENV}"
@@ -174,7 +189,7 @@
   cache:
     - *ruby-gems-cache
 
-.danger-review-cache:
+.ruby-node-cache:
   cache:
     - *ruby-gems-cache
     - *node-modules-cache
@@ -199,6 +214,12 @@
   cache:
     - *node-modules-cache
 
+.qa-frontend-node-cache:
+  cache:
+    - *node-modules-cache
+    - *assets-tmp-cache
+
+# TODO: Remove this as it's duplicating .assets-compile-cache-push
 .yarn-cache-push:
   cache:
     - *node-modules-cache-push
@@ -208,12 +229,14 @@
     - *ruby-gems-cache
     - *node-modules-cache
     - *assets-cache
+    - *assets-tmp-cache
 
 .assets-compile-cache-push:
   cache:
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *node-modules-cache-push
     - *assets-cache-push
+    - *assets-tmp-cache-push
 
 .storybook-yarn-cache:
   cache:
@@ -323,7 +346,7 @@
     FOSS_ONLY: '1'
 
 .use-docker-in-docker:
-  image: ${GITLAB_DEPENDENCY_PROXY}docker:${DOCKER_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}docker:${DOCKER_VERSION}
   services:
     - docker:${DOCKER_VERSION}-dind
   variables:

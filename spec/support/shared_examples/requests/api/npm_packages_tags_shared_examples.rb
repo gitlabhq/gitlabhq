@@ -14,6 +14,7 @@ RSpec.shared_examples 'accept package tags request' do |status:|
 
   before do
     allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: false)
+    allow_fetch_cascade_application_setting(attribute: "npm_package_requests_forwarding", return_value: false)
   end
 
   context 'with valid package name' do

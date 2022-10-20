@@ -78,3 +78,8 @@ test:
     # set it in your package.json script
     # comment this out if you don't have a frontend test
     - npm test
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

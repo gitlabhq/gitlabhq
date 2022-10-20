@@ -205,6 +205,12 @@ export default {
   mrPipelinesDocsPath: helpPagePath('ci/pipelines/merge_request_pipelines.md', {
     anchor: 'prerequisites',
   }),
+  runPipelinesInTheParentProjectHelpPath: helpPagePath(
+    '/ci/pipelines/merge_request_pipelines.html',
+    {
+      anchor: 'run-pipelines-in-the-parent-project',
+    },
+  ),
 };
 </script>
 <template>
@@ -321,10 +327,7 @@ export default {
           s__('Pipelines|If you are unsure, please ask a project maintainer to review it for you.')
         }}
       </p>
-      <gl-link
-        href="/help/ci/pipelines/merge_request_pipelines.html#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project"
-        target="_blank"
-      >
+      <gl-link :href="$options.runPipelinesInTheParentProjectHelpPath" target="_blank">
         {{ s__('Pipelines|More Information') }}
       </gl-link>
     </gl-modal>

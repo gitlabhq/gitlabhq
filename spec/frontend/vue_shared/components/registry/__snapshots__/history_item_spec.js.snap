@@ -2,7 +2,7 @@
 
 exports[`History Item renders the correct markup 1`] = `
 <li
-  class="timeline-entry system-note note-wrapper gl-mb-6!"
+  class="timeline-entry system-note note-wrapper"
 >
   <div
     class="timeline-entry-inner"
@@ -22,11 +22,13 @@ exports[`History Item renders the correct markup 1`] = `
       <div
         class="note-header"
       >
-        <span>
+        <div
+          class="note-header-info"
+        >
           <div
             data-testid="default-slot"
           />
-        </span>
+        </div>
       </div>
        
       <div

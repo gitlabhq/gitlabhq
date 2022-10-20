@@ -60,6 +60,15 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
   });
 };
 
+/**
+ * Return the given element's offset height, or 0 if the element doesn't exist.
+ * Probably not useful outside of handleLocationHash.
+ *
+ * @param {HTMLElement} element The element to measure.
+ * @returns {number} The element's offset height.
+ */
+const getElementOffsetHeight = (element) => element?.offsetHeight ?? 0;
+
 // automatically adjust scroll position for hash urls taking the height of the navbar into account
 // https://github.com/twitter/bootstrap/issues/1768
 export const handleLocationHash = () => {
@@ -84,38 +93,24 @@ export const handleLocationHash = () => {
   const fixedIssuableTitle = document.querySelector('.issue-sticky-header');
 
   let adjustment = 0;
-  if (fixedNav) adjustment -= fixedNav.offsetHeight;
 
-  if (target && target.scrollIntoView) {
-    target.scrollIntoView(true);
-  }
-
-  if (fixedTabs) {
-    adjustment -= fixedTabs.offsetHeight;
-  }
-
-  if (fixedDiffStats) {
-    adjustment -= fixedDiffStats.offsetHeight;
-  }
-
-  if (performanceBar) {
-    adjustment -= performanceBar.offsetHeight;
-  }
-
-  if (diffFileHeader) {
-    adjustment -= diffFileHeader.offsetHeight;
-  }
-
-  if (versionMenusContainer) {
-    adjustment -= versionMenusContainer.offsetHeight;
-  }
+  adjustment -= getElementOffsetHeight(fixedNav);
+  adjustment -= getElementOffsetHeight(fixedTabs);
+  adjustment -= getElementOffsetHeight(fixedDiffStats);
+  adjustment -= getElementOffsetHeight(performanceBar);
+  adjustment -= getElementOffsetHeight(diffFileHeader);
+  adjustment -= getElementOffsetHeight(versionMenusContainer);
 
   if (isInIssuePage()) {
-    adjustment -= fixedIssuableTitle.offsetHeight;
+    adjustment -= getElementOffsetHeight(fixedIssuableTitle);
   }
 
   if (isInMRPage()) {
     adjustment -= topPadding;
+  }
+
+  if (target?.scrollIntoView) {
+    target.scrollIntoView(true);
   }
 
   setTimeout(() => {
@@ -172,7 +167,7 @@ export const contentTop = () => {
 
       return size;
     },
-    () => getOuterHeight('.merge-request-tabs'),
+    () => getOuterHeight('.merge-request-sticky-header, .merge-request-tabs'),
     () => getOuterHeight('.js-diff-files-changed'),
     () => getOuterHeight('.issue-sticky-header.gl-fixed'),
     ({ desktop }) => {
@@ -180,7 +175,9 @@ export const contentTop = () => {
       let size;
 
       if (desktop && diffsTabIsActive) {
-        size = getOuterHeight('.diff-file .file-title-flex-parent:not([style="display:none"])');
+        size = getOuterHeight(
+          '.diffs .diff-file .file-title-flex-parent:not([style="display:none"])',
+        );
       }
 
       return size;

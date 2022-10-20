@@ -7,7 +7,11 @@ RSpec.describe Integrations::Harbor do
   let(:project_name) { 'testproject' }
   let(:username) { 'harborusername' }
   let(:password) { 'harborpassword' }
-  let(:harbor_integration) { create(:harbor_integration) }
+  let(:harbor_integration) { build(:harbor_integration) }
+
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { described_class.new }
+  end
 
   describe "masked password" do
     subject { build(:harbor_integration) }
@@ -66,6 +70,8 @@ RSpec.describe Integrations::Harbor do
   end
 
   context 'ci variables' do
+    let(:harbor_integration) { create(:harbor_integration) }
+
     it 'returns vars when harbor_integration is activated' do
       ci_vars = [
         { key: 'HARBOR_URL', value: url },
@@ -92,68 +98,6 @@ RSpec.describe Integrations::Harbor do
           { key: 'HARBOR_USERNAME', value: 'robot$$project+user' }
         )
       end
-    end
-  end
-
-  describe 'before_validation :reset_username_and_password' do
-    context 'when username/password was previously set' do
-      it 'resets username and password if url changed' do
-        harbor_integration.url = 'https://anotherharbor.com'
-        harbor_integration.valid?
-
-        expect(harbor_integration.password).to be_nil
-        expect(harbor_integration.username).to be_nil
-      end
-
-      it 'does not reset password if username changed' do
-        harbor_integration.username = 'newusername'
-        harbor_integration.valid?
-
-        expect(harbor_integration.password).to eq('harborpassword')
-      end
-
-      it 'does not reset username if password changed' do
-        harbor_integration.password = 'newpassword'
-        harbor_integration.valid?
-
-        expect(harbor_integration.username).to eq('harborusername')
-      end
-
-      it "does not reset password if new url is set together with password, even if it's the same password" do
-        harbor_integration.url = 'https://anotherharbor.com'
-        harbor_integration.password = 'harborpassword'
-        harbor_integration.valid?
-
-        expect(harbor_integration.password).to eq('harborpassword')
-        expect(harbor_integration.username).to be_nil
-        expect(harbor_integration.url).to eq('https://anotherharbor.com')
-      end
-
-      it "does not reset username if new url is set together with username, even if it's the same username" do
-        harbor_integration.url = 'https://anotherharbor.com'
-        harbor_integration.username = 'harborusername'
-        harbor_integration.valid?
-
-        expect(harbor_integration.password).to be_nil
-        expect(harbor_integration.username).to eq('harborusername')
-        expect(harbor_integration.url).to eq('https://anotherharbor.com')
-      end
-    end
-
-    it 'saves password if new url is set together with password when no password was previously set' do
-      harbor_integration.password = nil
-      harbor_integration.username = nil
-
-      harbor_integration.url = 'https://anotherharbor.com'
-      harbor_integration.password = 'newpassword'
-      harbor_integration.username = 'newusername'
-      harbor_integration.save!
-
-      expect(harbor_integration).to have_attributes(
-        url: 'https://anotherharbor.com',
-        password: 'newpassword',
-        username: 'newusername'
-      )
     end
   end
 end

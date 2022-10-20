@@ -5,7 +5,23 @@ require 'spec_helper'
 RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state, type: :model do
   include ExclusiveLeaseHelpers
 
+  let(:default_timeout) { described_class.default_lease_timeout }
+
   it { is_expected.to belong_to :namespace }
+
+  describe "#default_lease_timeout" do
+    subject(:default_lease_timeout) { default_timeout }
+
+    it { is_expected.to eq 30.minutes.to_i }
+
+    context 'when remove_namespace_aggregator_delay FF is disabled' do
+      before do
+        stub_feature_flags(remove_namespace_aggregator_delay: false)
+      end
+
+      it { is_expected.to eq 1.hour.to_i }
+    end
+  end
 
   describe '#schedule_root_storage_statistics' do
     let(:namespace) { create(:namespace) }
@@ -14,7 +30,7 @@ RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state,
 
     context "when we can't obtain the lease" do
       it 'does not schedule the workers' do
-        stub_exclusive_lease_taken(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+        stub_exclusive_lease_taken(lease_key, timeout: default_timeout)
 
         expect(Namespaces::RootStatisticsWorker)
           .not_to receive(:perform_async)
@@ -28,20 +44,20 @@ RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state,
 
     context 'when we can obtain the lease' do
       it 'schedules a root storage statistics after create' do
-        stub_exclusive_lease(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+        stub_exclusive_lease(lease_key, timeout: default_timeout)
 
         expect(Namespaces::RootStatisticsWorker)
           .to receive(:perform_async).once
 
         expect(Namespaces::RootStatisticsWorker)
           .to receive(:perform_in).once
-          .with(described_class::DEFAULT_LEASE_TIMEOUT, aggregation_schedule.namespace_id)
+          .with(default_timeout, aggregation_schedule.namespace_id)
 
         aggregation_schedule.save!
       end
 
       it 'does not release the lease' do
-        stub_exclusive_lease(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
+        stub_exclusive_lease(lease_key, timeout: default_timeout)
 
         aggregation_schedule.save!
 
@@ -58,7 +74,7 @@ RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state,
 
         expect(Namespaces::RootStatisticsWorker)
           .to receive(:perform_in).once
-          .with(described_class::DEFAULT_LEASE_TIMEOUT, aggregation_schedule.namespace_id)
+          .with(default_timeout, aggregation_schedule.namespace_id)
           .and_return(nil)
 
         # Scheduling workers for the first time

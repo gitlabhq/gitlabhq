@@ -11,9 +11,9 @@ import (
 	"gitlab.com/gitlab-org/labkit/mask"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/httptransport"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
 
 type entry struct{ senddata.Prefix }
@@ -44,7 +44,7 @@ var preserveHeaderKeys = map[string]bool{
 	"Pragma":        true, // Support for HTTP 1.0 proxies
 }
 
-var httpTransport = httptransport.New()
+var httpTransport = transport.NewRestrictedTransport()
 
 var httpClient = &http.Client{
 	Transport: httpTransport,

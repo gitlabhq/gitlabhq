@@ -74,9 +74,11 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-display-flex gl-align-items-flex-start">
     <gl-dropdown
       v-if="tertiaryButtons.length"
+      v-gl-tooltip
+      :title="__('Options')"
       :text="dropdownLabel"
       icon="ellipsis_v"
       no-caret

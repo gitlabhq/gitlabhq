@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker do
     end
 
     let(:client) { instance_double('Gitlab::GithubImport::Client') }
-    let(:importer) { instance_double('Gitlab::GithubImport::Importer::ReleaseAttachmentsImporter') }
+    let(:importer) { instance_double('Gitlab::GithubImport::Importer::NoteAttachmentsImporter') }
 
     let(:release_hash) do
       {
@@ -27,10 +27,10 @@ RSpec.describe Gitlab::GithubImport::ImportReleaseAttachmentsWorker do
     end
 
     it 'imports an issue event' do
-      expect(Gitlab::GithubImport::Importer::ReleaseAttachmentsImporter)
+      expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter)
         .to receive(:new)
         .with(
-          an_instance_of(Gitlab::GithubImport::Representation::ReleaseAttachments),
+          an_instance_of(Gitlab::GithubImport::Representation::NoteText),
           project,
           client
         )

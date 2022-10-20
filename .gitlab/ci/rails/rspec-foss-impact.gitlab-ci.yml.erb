@@ -1,0 +1,50 @@
+# RSpec FOSS impact pipeline loaded dynamically by script: scripts/generate-rspec-foss-impact-pipeline
+
+include:
+  - local: .gitlab/ci/rails/shared.gitlab-ci.yml
+
+default:
+  image: $DEFAULT_CI_IMAGE
+  tags:
+    - gitlab-org
+  # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
+  timeout: 90m
+  interruptible: true
+
+stages:
+  - test
+
+dont-interrupt-me:
+  extends: .rules:dont-interrupt
+  stage: .pre
+  interruptible: false
+  script:
+    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
+
+rspec foss-impact:
+  extends: .rspec-base-pg12-as-if-foss
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: detect-tests
+    - pipeline: $PARENT_PIPELINE_ID
+      job: setup-test-env
+    - pipeline: $PARENT_PIPELINE_ID
+      job: retrieve-tests-metadata
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-test-assets as-if-foss
+  rules:
+    - when: always
+  variables:
+    RSPEC_TESTS_FILTER_FILE: "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
+    RSPEC_TESTS_MAPPING_ENABLED: "true"
+<% if Integer(parallel_value) > 1 %>
+  parallel: <%= parallel_value %>
+<% end %>
+  script:
+    - !reference [.base-script, script]
+    - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - "${RSPEC_MATCHING_TESTS_FOSS_PATH}"
+      - tmp/capybara/

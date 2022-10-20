@@ -57,16 +57,6 @@ RSpec.describe NotificationRecipient do
         it 'returns false' do
           expect(recipient.notifiable?).to eq(false)
         end
-
-        context 'when block_emails_with_failures is disabled' do
-          before do
-            stub_feature_flags(block_emails_with_failures: false)
-          end
-
-          it 'returns true' do
-            expect(recipient.notifiable?).to eq(true)
-          end
-        end
       end
 
       context 'with temporary failures' do
@@ -76,16 +66,6 @@ RSpec.describe NotificationRecipient do
 
         it 'returns false' do
           expect(recipient.notifiable?).to eq(false)
-        end
-
-        context 'when block_emails_with_failures is disabled' do
-          before do
-            stub_feature_flags(block_emails_with_failures: false)
-          end
-
-          it 'returns true' do
-            expect(recipient.notifiable?).to eq(true)
-          end
         end
       end
     end

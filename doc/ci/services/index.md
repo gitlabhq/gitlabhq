@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 comments: false
 type: index
 ---
@@ -370,8 +370,11 @@ access-service:
       curlimages/curl:7.74.0 curl "http://tutum-wordpress"
 ```
 
-For this solution to work, you must use
-[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
+For this solution to work, you must:
+
+- Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
+- [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-the-docker-executor-with-docker-socket-binding).
+  If you must, then in the above example, instead of `host`, use the dynamic network name created for this job.
 
 ## How Docker integration works
 

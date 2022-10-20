@@ -38,8 +38,9 @@ RSpec.describe BuildTraceEntity do
   end
 
   it 'includes the trace content in json' do
-    expect(subject[:lines]).to eq([
-      { offset: 0, content: [{ text: 'the-trace' }] }
-    ])
+    expect(subject[:lines]).to eq(
+      [
+        { offset: 0, content: [{ text: 'the-trace' }] }
+      ])
   end
 end

@@ -81,11 +81,7 @@ module API
 
             package = ::Packages::Debian::FindOrCreateIncomingService.new(authorized_user_project, current_user).execute
 
-            package_file = ::Packages::Debian::CreatePackageFileService.new(package, file_params).execute
-
-            if params['file_name'].end_with? '.changes'
-              ::Packages::Debian::ProcessChangesWorker.perform_async(package_file.id, current_user.id) # rubocop:disable CodeReuse/Worker
-            end
+            ::Packages::Debian::CreatePackageFileService.new(package: package, current_user: current_user, params: file_params).execute
 
             created!
           rescue ObjectStorage::RemoteStoreError => e

@@ -14,6 +14,11 @@ RSpec.describe 'Todo Query' do
   let_it_be(:todo) { create(:todo, user: todo_owner, target: issue) }
 
   let(:todo_subject) { todo }
+
+  before do
+    project.add_developer(todo_owner)
+  end
+
   let(:fields) do
     <<~GRAPHQL
       id
@@ -29,10 +34,6 @@ RSpec.describe 'Todo Query' do
 
   let(:query) do
     graphql_query_for(:todo, { id: todo_subject.to_global_id.to_s }, fields)
-  end
-
-  before do
-    project.add_developer(todo_owner)
   end
 
   subject(:graphql_response) do

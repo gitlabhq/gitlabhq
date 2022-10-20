@@ -1,98 +1,100 @@
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlModal, GlSprintf } from '@gitlab/ui';
+import AxiosMockAdapter from 'axios-mock-adapter';
+
 import { TEST_HOST } from 'helpers/test_constants';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { stubComponent } from 'helpers/stub_component';
+
 import axios from '~/lib/utils/axios_utils';
-import promoteLabelModal from '~/labels/components/promote_label_modal.vue';
+import PromoteLabelModal from '~/labels/components/promote_label_modal.vue';
 import eventHub from '~/labels/event_hub';
 
 describe('Promote label modal', () => {
-  let vm;
-  const Component = Vue.extend(promoteLabelModal);
+  let wrapper;
+  let axiosMock;
+
   const labelMockData = {
     labelTitle: 'Documentation',
-    labelColor: '#5cb85c',
-    labelTextColor: '#ffffff',
+    labelColor: 'rgb(92, 184, 92)',
+    labelTextColor: 'rgb(255, 255, 255)',
     url: `${TEST_HOST}/dummy/promote/labels`,
     groupName: 'group',
   };
 
+  const createComponent = () => {
+    wrapper = shallowMount(PromoteLabelModal, {
+      propsData: labelMockData,
+      stubs: {
+        GlSprintf,
+        GlModal: stubComponent(GlModal, {
+          template: `<div><slot name="modal-title"></slot><slot></slot></div>`,
+        }),
+      },
+    });
+  };
+
+  beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
+    createComponent();
+  });
+
+  afterEach(() => {
+    axiosMock.reset();
+    wrapper.destroy();
+  });
+
   describe('Modal title and description', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, labelMockData);
-    });
-
-    afterEach(() => {
-      vm.$destroy();
-    });
-
     it('contains the proper description', () => {
-      expect(vm.text).toContain(
+      expect(wrapper.text()).toContain(
         `Promoting ${labelMockData.labelTitle} will make it available for all projects inside ${labelMockData.groupName}`,
       );
     });
 
     it('contains a label span with the color', () => {
-      expect(vm.labelColor).not.toBe(null);
-      expect(vm.labelColor).toBe(labelMockData.labelColor);
-      expect(vm.labelTitle).toBe(labelMockData.labelTitle);
+      const label = wrapper.find('.modal-title-with-label .label');
+
+      expect(label.element.style.backgroundColor).toBe(labelMockData.labelColor);
+      expect(label.element.style.color).toBe(labelMockData.labelTextColor);
+      expect(label.text()).toBe(labelMockData.labelTitle);
     });
   });
 
   describe('When requesting a label promotion', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
-        ...labelMockData,
-      });
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
     });
 
-    afterEach(() => {
-      vm.$destroy();
-    });
-
-    it('redirects when a label is promoted', () => {
+    it('redirects when a label is promoted', async () => {
       const responseURL = `${TEST_HOST}/dummy/endpoint`;
-      jest.spyOn(axios, 'post').mockImplementation((url) => {
-        expect(url).toBe(labelMockData.url);
-        expect(eventHub.$emit).toHaveBeenCalledWith(
-          'promoteLabelModal.requestStarted',
-          labelMockData.url,
-        );
-        return Promise.resolve({
-          request: {
-            responseURL,
-          },
-        });
-      });
+      axiosMock.onPost(labelMockData.url).reply(200, { url: responseURL });
 
-      return vm.onSubmit().then(() => {
-        expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
-          labelUrl: labelMockData.url,
-          successful: true,
-        });
+      wrapper.findComponent(GlModal).vm.$emit('primary');
+
+      expect(eventHub.$emit).toHaveBeenCalledWith(
+        'promoteLabelModal.requestStarted',
+        labelMockData.url,
+      );
+
+      await axios.waitForAll();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
+        labelUrl: labelMockData.url,
+        successful: true,
       });
     });
 
-    it('displays an error if promoting a label failed', () => {
+    it('displays an error if promoting a label failed', async () => {
       const dummyError = new Error('promoting label failed');
       dummyError.response = { status: 500 };
+      axiosMock.onPost(labelMockData.url).reply(500, { error: dummyError });
 
-      jest.spyOn(axios, 'post').mockImplementation((url) => {
-        expect(url).toBe(labelMockData.url);
-        expect(eventHub.$emit).toHaveBeenCalledWith(
-          'promoteLabelModal.requestStarted',
-          labelMockData.url,
-        );
+      wrapper.findComponent(GlModal).vm.$emit('primary');
 
-        return Promise.reject(dummyError);
-      });
+      await axios.waitForAll();
 
-      return vm.onSubmit().catch((error) => {
-        expect(error).toBe(dummyError);
-        expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
-          labelUrl: labelMockData.url,
-          successful: false,
-        });
+      expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
+        labelUrl: labelMockData.url,
+        successful: false,
       });
     });
   });

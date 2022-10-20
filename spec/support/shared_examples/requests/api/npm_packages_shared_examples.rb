@@ -260,7 +260,11 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
         project.send("add_#{user_role}", user) if user_role
         project.update!(visibility: visibility.to_s)
         package.update!(name: package_name) unless package_name == 'non-existing-package'
-        allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
+        if scope == :instance
+          allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
+        else
+          allow_fetch_cascade_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
+        end
       end
 
       example_name = "#{params[:expected_result]} metadata request"

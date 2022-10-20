@@ -44,31 +44,15 @@ module Gitlab
           attr_reader :json_data, :report, :validate
 
           def valid?
-            # We want validation to happen regardless of VALIDATE_SCHEMA
-            # CI variable.
-            #
-            # Previously it controlled BOTH validation and enforcement of
-            # schema validation result.
-            #
-            # After 15.0 we will enforce schema validation by default
-            # See: https://gitlab.com/groups/gitlab-org/-/epics/6968
+            return true unless validate
+
+            schema_validation_passed = schema_validator.valid?
+
+            schema_validator.errors.each { |error| report.add_error('Schema', error) }
             schema_validator.deprecation_warnings.each { |deprecation_warning| report.add_warning('Schema', deprecation_warning) }
+            schema_validator.warnings.each { |warning| report.add_warning('Schema', warning) }
 
-            if validate
-              schema_validation_passed = schema_validator.valid?
-
-              # Validation warnings are errors
-              schema_validator.errors.each { |error| report.add_error('Schema', error) }
-              schema_validator.warnings.each { |warning| report.add_error('Schema', warning) }
-
-              schema_validation_passed
-            else
-              # Validation warnings are warnings
-              schema_validator.errors.each { |error| report.add_warning('Schema', error) }
-              schema_validator.warnings.each { |warning| report.add_warning('Schema', warning) }
-
-              true
-            end
+            schema_validation_passed
           end
 
           def schema_validator
@@ -216,7 +200,22 @@ module Gitlab
                 external_id: scanner_data['id'],
                 name: scanner_data['name'],
                 vendor: scanner_data.dig('vendor', 'name'),
-                version: scanner_data.dig('version')))
+                version: scanner_data.dig('version'),
+                primary_identifiers: create_scan_primary_identifiers))
+          end
+
+          # TODO: primary_identifiers should be initialized on the
+          # scan itself but we do not currently parse scans through `MergeReportsService`
+          def create_scan_primary_identifiers
+            return unless scan_data.is_a?(Hash) && scan_data.dig('primary_identifiers')
+
+            scan_data.dig('primary_identifiers').map do |identifier|
+              ::Gitlab::Ci::Reports::Security::Identifier.new(
+                external_type: identifier['type'],
+                external_id: identifier['value'],
+                name: identifier['name'],
+                url: identifier['url'])
+            end
           end
 
           def create_identifiers(identifiers)

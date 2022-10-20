@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -11,6 +11,7 @@ import {
   REDEPLOYING,
   STOPPING,
 } from '~/vue_merge_request_widget/components/deployment/constants';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 import DeploymentActions from '~/vue_merge_request_widget/components/deployment/deployment_actions.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import {
@@ -167,7 +168,7 @@ describe('DeploymentAction component', () => {
               });
 
               it('should not throw an error', () => {
-                expect(createFlash).not.toHaveBeenCalled();
+                expect(createAlert).not.toHaveBeenCalled();
               });
 
               describe('response includes redirect_url', () => {
@@ -192,6 +193,7 @@ describe('DeploymentAction component', () => {
               describe('it should call the executeAction method', () => {
                 beforeEach(async () => {
                   jest.spyOn(wrapper.vm, 'executeAction').mockImplementation();
+                  jest.spyOn(eventHub, '$emit');
 
                   await waitForPromises();
 
@@ -206,11 +208,16 @@ describe('DeploymentAction component', () => {
                     actionButtonMocks[configConst],
                   );
                 });
+
+                it('emits the FetchDeployments event', () => {
+                  expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
+                });
               });
 
               describe('when executeInlineAction errors', () => {
                 beforeEach(async () => {
                   executeActionSpy.mockRejectedValueOnce();
+                  jest.spyOn(eventHub, '$emit');
 
                   await waitForPromises();
 
@@ -218,11 +225,14 @@ describe('DeploymentAction component', () => {
                   finderFn().trigger('click');
                 });
 
-                it('should call createFlash with error message', () => {
-                  expect(createFlash).toHaveBeenCalled();
-                  expect(createFlash).toHaveBeenCalledWith({
+                it('should call createAlert with error message', () => {
+                  expect(createAlert).toHaveBeenCalledWith({
                     message: actionButtonMocks[configConst].errorMessage,
                   });
+                });
+
+                it('emits the FetchDeployments event', () => {
+                  expect(eventHub.$emit).toHaveBeenCalledWith('FetchDeployments');
                 });
               });
             });

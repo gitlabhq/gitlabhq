@@ -1,11 +1,3 @@
-.yarn-install: &yarn-install
-  - source scripts/utils.sh
-  - run_timed_command "retry yarn install --frozen-lockfile"
-
-.storybook-yarn-install: &storybook-yarn-install
-  - source scripts/utils.sh
-  - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
-
 .compile-assets-base:
   extends:
     - .default-retry
@@ -21,9 +13,16 @@
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
   script:
-    - *yarn-install
-    - run_timed_command "bin/rake gitlab:assets:compile"
-    - run_timed_command "scripts/clean-old-cached-assets"
+    - yarn_install_script
+    - export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
+    - 'echo "CACHE_ASSETS_AS_PACKAGE: ${CACHE_ASSETS_AS_PACKAGE}"'
+    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
+    - |
+      if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
+        source scripts/gitlab_component_helpers.sh
+        gitlab_assets_archive_doesnt_exist || run_timed_command "download_and_extract_gitlab_assets"
+      fi
+    - assets_compile_script
 
 compile-production-assets:
   extends:
@@ -42,8 +41,6 @@ compile-production-assets:
       - public/assets/
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
-  before_script:
-    - !reference [.default-before_script, before_script]
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
@@ -71,6 +68,9 @@ update-assets-compile-production-cache:
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
+  script:
+    - !reference [compile-production-assets, script]
+    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-assets-compile-test-cache:
@@ -79,25 +79,31 @@ update-assets-compile-test-cache:
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
+  script:
+    - !reference [compile-test-assets, script]
+    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
+# TODO: Remove this as it's duplicating update-assets-compile-*-cache
 update-yarn-cache:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .yarn-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - *yarn-install
+    - yarn_install_script
 
 update-storybook-yarn-cache:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .storybook-yarn-cache-push
     - .shared:rules:update-cache
   stage: prepare
   script:
-    - *storybook-yarn-install
+    - yarn_install_script
 
 .frontend-fixtures-base:
   extends:
@@ -180,7 +186,7 @@ graphql-schema-dump as-if-foss:
     SETUP_DB: "false"
   before_script:
     - !reference [.default-before_script, before_script]
-    - *yarn-install
+    - yarn_install_script
   stage: test
 
 .jest-base:
@@ -247,6 +253,7 @@ jest-integration:
 coverage-frontend:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .yarn-cache
     - .frontend:rules:coverage-frontend
   needs:
@@ -255,9 +262,8 @@ coverage-frontend:
     - job: "jest minimal"
       optional: true
   stage: post-test
-  before_script:
-    - *yarn-install
   script:
+    - yarn_install_script
     - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
     # Removing the individual coverage results, as we just merged them.
     - if ls coverage-frontend/jest-* > /dev/null 2>&1; then
@@ -277,31 +283,33 @@ coverage-frontend:
 .qa-frontend-node:
   extends:
     - .default-retry
-    - .yarn-cache
+    - .default-utils-before_script
+    - .qa-frontend-node-cache
     - .frontend:rules:qa-frontend-node
   stage: test
-  dependencies: []
+  needs: []
   script:
-    - *yarn-install
+    - yarn_install_script
     - run_timed_command "retry yarn run webpack-prod"
 
 qa-frontend-node:14:
   extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY}node:14
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:14
 
 qa-frontend-node:16:
   extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY}node:16
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:16
 
 qa-frontend-node:latest:
   extends:
     - .qa-frontend-node
     - .frontend:rules:qa-frontend-node-latest
-  image: ${GITLAB_DEPENDENCY_PROXY}node:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:latest
 
 webpack-dev-server:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .yarn-cache
     - .frontend:rules:default-frontend-jobs
   stage: test
@@ -310,7 +318,7 @@ webpack-dev-server:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"
   script:
-    - *yarn-install
+    - yarn_install_script
     - run_timed_command "retry yarn webpack-vendor"
     - run_timed_command "node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js"
   artifacts:
@@ -322,13 +330,14 @@ webpack-dev-server:
 bundle-size-review:
   extends:
     - .default-retry
+    - .default-utils-before_script
     - .assets-compile-cache
     - .frontend:rules:bundle-size-review
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:danger
   stage: test
   needs: []
   script:
-    - *yarn-install
+    - yarn_install_script
     - scripts/bundle_size_review
   artifacts:
     when: always
@@ -366,8 +375,8 @@ startup-css-check as-if-foss:
     - .frontend-test-base
     - .storybook-yarn-cache
   script:
-    - *storybook-yarn-install
-    - yarn run storybook:build
+    - run_timed_command "retry yarn run storybook:install --frozen-lockfile"
+    - run_timed_command "yarn run storybook:build"
   needs: ["graphql-schema-dump"]
 
 compile-storybook:

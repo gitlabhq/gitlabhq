@@ -783,10 +783,31 @@ module Gitlab
         end
       end
 
-      def license_short_name
+      def license(from_gitaly)
         wrapped_gitaly_errors do
-          gitaly_repository_client.license_short_name
+          response = gitaly_repository_client.find_license
+
+          break nil if response.license_short_name.empty?
+
+          if from_gitaly
+            break ::Gitlab::Git::DeclaredLicense.new(key: response.license_short_name,
+                                                     name: response.license_name,
+                                                     nickname: response.license_nickname.presence,
+                                                     url: response.license_url.presence,
+                                                     path: response.license_path)
+          end
+
+          licensee_object = Licensee::License.new(response.license_short_name)
+
+          break nil if licensee_object.name.blank?
+
+          licensee_object.meta.nickname = "LICENSE" if licensee_object.key == "other"
+
+          licensee_object
         end
+      rescue Licensee::InvalidLicense => e
+        Gitlab::ErrorTracking.track_exception(e)
+        nil
       end
 
       def fetch_source_branch!(source_repository, source_branch, local_ref)
@@ -1008,8 +1029,8 @@ module Gitlab
         @praefect_info_client ||= Gitlab::GitalyClient::PraefectInfoService.new(self)
       end
 
-      def branch_names_contains_sha(sha)
-        gitaly_ref_client.branch_names_contains_sha(sha)
+      def branch_names_contains_sha(sha, limit: 0)
+        gitaly_ref_client.branch_names_contains_sha(sha, limit: limit)
       end
 
       def tag_names_contains_sha(sha, limit: 0)

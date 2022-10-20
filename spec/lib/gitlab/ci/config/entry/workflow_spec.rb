@@ -65,6 +65,54 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow do
           end
         end
       end
+
+      context 'with workflow name' do
+        let(:factory) { Gitlab::Config::Entry::Factory.new(described_class).value(workflow_hash) }
+
+        context 'with a blank name' do
+          let(:workflow_hash) do
+            { name: '' }
+          end
+
+          it 'is invalid' do
+            expect(config).not_to be_valid
+          end
+
+          it 'returns error about invalid name' do
+            expect(config.errors).to include('workflow name is too short (minimum is 1 character)')
+          end
+        end
+
+        context 'with too long name' do
+          let(:workflow_hash) do
+            { name: 'a' * 256 }
+          end
+
+          it 'is invalid' do
+            expect(config).not_to be_valid
+          end
+
+          it 'returns error about invalid name' do
+            expect(config.errors).to include('workflow name is too long (maximum is 255 characters)')
+          end
+        end
+
+        context 'when name is nil' do
+          let(:workflow_hash) { { name: nil } }
+
+          it 'is valid' do
+            expect(config).to be_valid
+          end
+        end
+
+        context 'when name is not provided' do
+          let(:workflow_hash) { { rules: [{ if: '$VAR' }] } }
+
+          it 'is valid' do
+            expect(config).to be_valid
+          end
+        end
+      end
     end
   end
 

@@ -2,6 +2,7 @@
 
 query getGroupRunners(
   $groupFullPath: ID!
+  $membership: CiRunnerMembershipFilter
   $before: String
   $after: String
   $first: Int
@@ -9,13 +10,14 @@ query getGroupRunners(
   $paused: Boolean
   $status: CiRunnerStatus
   $type: CiRunnerType
+  $tagList: [String!]
   $search: String
   $sort: CiRunnerSort
 ) {
   group(fullPath: $groupFullPath) {
     id # Apollo required
     runners(
-      membership: DESCENDANTS
+      membership: $membership
       before: $before
       after: $after
       first: $first
@@ -23,6 +25,7 @@ query getGroupRunners(
       paused: $paused
       status: $status
       type: $type
+      tagList: $tagList
       search: $search
       sort: $sort
     ) {

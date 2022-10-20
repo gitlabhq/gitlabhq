@@ -94,6 +94,18 @@ module Emails
       end
     end
 
+    def access_token_revoked_email(user, token_name)
+      return unless user&.active?
+
+      @user = user
+      @token_name = token_name
+      @target_url = profile_personal_access_tokens_url
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("A personal access token has been revoked")))
+      end
+    end
+
     def ssh_key_expired_email(user, fingerprints)
       return unless user&.active?
 
@@ -128,6 +140,18 @@ module Emails
         email_with_layout(
           to: @user.notification_email_or_default,
           subject: subject(_("%{host} sign-in from new location") % { host: Gitlab.config.gitlab.host }))
+      end
+    end
+
+    def two_factor_otp_attempt_failed_email(user, ip, time = Time.current)
+      @user = user
+      @ip = ip
+      @time = time
+
+      Gitlab::I18n.with_locale(@user.preferred_language) do
+        email_with_layout(
+          to: @user.notification_email_or_default,
+          subject: subject(_("Attempted sign in to %{host} using a wrong two-factor authentication code") % { host: Gitlab.config.gitlab.host }))
       end
     end
 

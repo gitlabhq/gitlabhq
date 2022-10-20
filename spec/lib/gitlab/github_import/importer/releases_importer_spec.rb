@@ -10,22 +10,21 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:released_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:author) do
-    double(
+    {
       login: 'User A',
       id: 1
-    )
+    }
   end
 
   let(:github_release) do
-    double(
-      :github_release,
+    {
       tag_name: '1.0',
       name: github_release_name,
       body: 'This is my release',
       created_at: created_at,
       published_at: released_at,
       author: author
-    )
+    }
   end
 
   def stub_email_for_github_username(user_name = 'User A', user_email = 'user@example.com')
@@ -56,7 +55,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
     end
 
     it 'imports draft releases' do
-      release_double = double(
+      release_double = {
         name: 'Test',
         body: 'This is description',
         tag_name: '1.0',
@@ -65,7 +64,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
         updated_at: created_at,
         published_at: nil,
         author: author
-      )
+      }
 
       expect(importer).to receive(:each_release).and_return([release_double])
 
@@ -101,7 +100,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
     end
 
     it 'uses a default release description if none is provided' do
-      expect(github_release).to receive(:body).and_return('')
+      github_release[:body] = nil
       expect(importer).to receive(:each_release).and_return([github_release])
 
       release = importer.build_releases.first
@@ -110,10 +109,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
     end
 
     it 'does not create releases that have a NULL tag' do
-      null_tag_release = double(
+      null_tag_release = {
         name: 'NULL Test',
         tag_name: nil
-      )
+      }
 
       expect(importer).to receive(:each_release).and_return([null_tag_release])
       expect(importer.build_releases).to be_empty
@@ -179,13 +178,13 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
       end
 
       it 'returns ghost user when author is empty in Github release' do
-        allow(github_release).to receive(:author).and_return(nil)
+        github_release[:author] = nil
 
         expect(release_hash[:author_id]).to eq(Gitlab::GithubImport.ghost_user_id)
       end
 
       context 'when Github author is not found in Gitlab' do
-        let(:author) { double(login: 'octocat', id: 1 ) }
+        let(:author) { { login: 'octocat', id: 1 } }
 
         before do
           # Stub user email which does not match a Gitlab user.
@@ -222,11 +221,11 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
 
   describe '#description_for' do
     it 'returns the description when present' do
-      expect(importer.description_for(github_release)).to eq(github_release.body)
+      expect(importer.description_for(github_release)).to eq(github_release[:body])
     end
 
     it 'returns a generated description when one is not present' do
-      allow(github_release).to receive(:body).and_return('')
+      github_release[:body] = nil
 
       expect(importer.description_for(github_release)).to eq('Release for tag 1.0')
     end

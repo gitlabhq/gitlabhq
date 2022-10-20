@@ -181,6 +181,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.unknown_sign_in_email(user, '127.0.0.1', Time.current).message
   end
 
+  def two_factor_otp_attempt_failed_email
+    Notify.two_factor_otp_attempt_failed_email(user, '127.0.0.1').message
+  end
+
   def new_email_address_added_email
     Notify.new_email_address_added_email(user, 'someone@gitlab.com').message
   end
@@ -207,6 +211,18 @@ class NotifyPreview < ActionMailer::Preview
 
   def verification_instructions_email
     Notify.verification_instructions_email(user.id, token: '123456', expires_in: 60).message
+  end
+
+  def project_was_exported_email
+    Notify.project_was_exported_email(user, project).message
+  end
+
+  def request_review_merge_request_email
+    Notify.request_review_merge_request_email(user.id, merge_request.id, user.id).message
+  end
+
+  def project_was_moved_email
+    Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab").message
   end
 
   private

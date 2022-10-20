@@ -110,12 +110,61 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
         expect(execute_service[:status]).to eq(:success)
       end
     end
+
+    context 'when only one user fails validations' do
+      let_it_be(:source) { create(:project, group: create(:group)) }
+      let(:user_id) { [member.id, user_invited_by_id.id] }
+
+      before do
+        # validations will fail because we try to invite them to the project as a guest
+        source.group.add_developer(member)
+      end
+
+      it 'triggers the members added event' do
+        expect(Gitlab::EventStore)
+          .to receive(:publish)
+          .with(an_instance_of(Members::MembersAddedEvent))
+          .and_call_original
+
+        expect(execute_service[:status]).to eq(:error)
+        expect(execute_service[:message])
+          .to include 'Access level should be greater than or equal to Developer inherited membership from group'
+        expect(source.users).not_to include(member)
+        expect(source.users).to include(user_invited_by_id)
+      end
+    end
+
+    context 'when all users fail validations' do
+      let_it_be(:source) { create(:project, group: create(:group)) }
+      let(:user_id) { [member.id, user_invited_by_id.id] }
+
+      before do
+        # validations will fail because we try to invite them to the project as a guest
+        source.group.add_developer(member)
+        source.group.add_developer(user_invited_by_id)
+      end
+
+      it 'does not trigger the members added event' do
+        expect(Gitlab::EventStore)
+          .not_to receive(:publish)
+          .with(an_instance_of(Members::MembersAddedEvent))
+
+        expect(execute_service[:status]).to eq(:error)
+        expect(execute_service[:message])
+          .to include 'Access level should be greater than or equal to Developer inherited membership from group'
+        expect(source.users).not_to include(member, user_invited_by_id)
+      end
+    end
   end
 
   context 'when passing no user ids' do
     let(:user_id) { '' }
 
     it 'does not add a member' do
+      expect(Gitlab::EventStore)
+        .not_to receive(:publish)
+        .with(an_instance_of(Members::MembersAddedEvent))
+
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to be_present
       expect(source.users).not_to include member

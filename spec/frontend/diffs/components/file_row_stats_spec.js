@@ -2,13 +2,21 @@ import { mount } from '@vue/test-utils';
 import FileRowStats from '~/diffs/components/file_row_stats.vue';
 
 describe('Diff file row stats', () => {
-  const wrapper = mount(FileRowStats, {
-    propsData: {
-      file: {
-        addedLines: 20,
-        removedLines: 10,
+  let wrapper;
+
+  const createComponent = () => {
+    wrapper = mount(FileRowStats, {
+      propsData: {
+        file: {
+          addedLines: 20,
+          removedLines: 10,
+        },
       },
-    },
+    });
+  };
+
+  beforeEach(() => {
+    createComponent();
   });
 
   it('renders added lines count', () => {

@@ -86,6 +86,7 @@ export default {
 
 <template>
   <gl-intersection-observer
+    class="gl-relative gl-top-2"
     @appear="setStickyHeaderVisible(false)"
     @disappear="setStickyHeaderVisible(true)"
   >

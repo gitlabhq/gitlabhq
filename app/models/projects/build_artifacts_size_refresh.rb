@@ -80,9 +80,7 @@ module Projects
     end
 
     def reset_project_statistics!
-      statistics = project.statistics
-      statistics.update!(build_artifacts_size: 0)
-      statistics.clear_counter!(:build_artifacts_size)
+      project.statistics.reset_counter!(:build_artifacts_size)
     end
 
     def next_batch(limit:)

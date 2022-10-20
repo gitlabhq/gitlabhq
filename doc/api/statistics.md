@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Application statistics API **(FREE SELF)**
@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ## Get current application statistics
 
 List the current statistics of the GitLab instance. You have to be an
-administrator in order to perform this action.
+administrator to perform this action.
 
 NOTE:
 These statistics are approximate.

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, howto
 ---
 
@@ -48,6 +48,9 @@ You cannot use project access tokens to create other group, project, or personal
 Project access tokens inherit the [default prefix setting](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
 
+NOTE:
+Project access tokens are not FIPS compliant and creation and use are disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
+
 ## Create a project access token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89114) in GitLab 15.1, Owners can select Owner role for project access tokens.
@@ -82,10 +85,10 @@ The scope determines the actions you can perform when you authenticate with a pr
 |:-------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api`              | Grants complete read and write access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                |
 | `read_api`         | Grants read access to the scoped project API, including the [Package Registry](../../packages/package_registry/index.md).                                   |
-| `read_registry`    | Allows read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
-| `write_registry`   | Allows write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                             |
-| `read_repository`  | Allows read access (pull) to the repository.                                                                                                                |
-| `write_repository` | Allows read and write access (pull and push) to the repository.                                                                                             |
+| `read_registry`    | Grants read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if a project is private and authorization is required. |
+| `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                             |
+| `read_repository`  | Grants read access (pull) to the repository.                                                                                                                |
+| `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                             |
 
 ## Enable or disable project access token creation
 

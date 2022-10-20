@@ -624,7 +624,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       it 'gathers usage data' do
         expect(subject[:projects_with_expiration_policy_enabled]).to eq 19
-        expect(subject[:projects_with_expiration_policy_disabled]).to eq 5
 
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_unset]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_1]).to eq 1
@@ -756,13 +755,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(subject[:ci_runners_group_type_active_online]).to eq(1)
       expect(subject[:ci_runners_project_type_active_online]).to eq(3)
     end
-  end
-
-  describe '.usage_counters' do
-    subject { described_class.usage_counters }
-
-    it { is_expected.to include(:kubernetes_agent_gitops_sync) }
-    it { is_expected.to include(:kubernetes_agent_k8s_api_proxy_request) }
   end
 
   describe '.usage_data_counters' do
@@ -1057,12 +1049,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       before do
         allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
-        expect(prometheus_client).to receive(:query).with(/gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m/).and_return([
-          {
-            'metric' => {},
-            'value' => [1616016381.473, '0.95']
-          }
-        ])
+        expect(prometheus_client).to receive(:query)
+          .with(/gitlab_usage_ping:gitaly_apdex:ratio_avg_over_time_5m/)
+          .and_return(
+            [
+              { 'metric' => {},
+                'value' => [1616016381.473, '0.95'] }
+            ])
         expect(described_class).to receive(:with_prometheus_client).and_yield(prometheus_client)
       end
 

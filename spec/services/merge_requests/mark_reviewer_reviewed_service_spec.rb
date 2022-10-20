@@ -15,20 +15,26 @@ RSpec.describe MergeRequests::MarkReviewerReviewedService do
   end
 
   describe '#execute' do
-    describe 'invalid permissions' do
-      let(:service) { described_class.new(project: project, current_user: create(:user)) }
-
+    shared_examples_for 'failed service execution' do
       it 'returns an error' do
         expect(result[:status]).to eq :error
       end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { result }
+      end
+    end
+
+    describe 'invalid permissions' do
+      let(:service) { described_class.new(project: project, current_user: create(:user)) }
+
+      it_behaves_like 'failed service execution'
     end
 
     describe 'reviewer does not exist' do
       let(:service) { described_class.new(project: project, current_user: create(:user)) }
 
-      it 'returns an error' do
-        expect(result[:status]).to eq :error
-      end
+      it_behaves_like 'failed service execution'
     end
 
     describe 'reviewer exists' do
@@ -39,6 +45,10 @@ RSpec.describe MergeRequests::MarkReviewerReviewedService do
       it 'updates reviewers state' do
         expect(result[:status]).to eq :success
         expect(reviewer.state).to eq 'reviewed'
+      end
+
+      it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { result }
       end
     end
   end

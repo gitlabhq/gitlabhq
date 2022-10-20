@@ -11,10 +11,11 @@
         - if params[:search].present?
           = hidden_field_tag :search, params[:search]
         - if @can_bulk_update
-          .check-all-holder.gl-display-none.gl-sm-display-block.hidden.gl-float-left.gl-mr-5.gl-line-height-36
-            - checkbox_id = 'check-all-issues'
-            %label.gl-sr-only{ for: checkbox_id }= _('Select all')
-            = check_box_tag checkbox_id, nil, false, class: "check-all-issues left"
+          .check-all-holder.gl-display-none.gl-sm-display-block.hidden.gl-float-left.gl-mr-3.gl-line-height-36
+            = render Pajamas::CheckboxTagComponent.new(name: 'check-all-issues', value: nil) do |c|
+              = c.label do
+                %span.gl-sr-only
+                  = _('Select all')
         .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
           .filtered-search-box
             - if type != :boards

@@ -5,41 +5,38 @@ module BoardsActions
   extend ActiveSupport::Concern
 
   included do
-    include BoardsResponses
-
     before_action :authorize_read_board!, only: [:index, :show]
-    before_action :boards, only: :index
-    before_action :board, only: :show
+    before_action :redirect_to_recent_board, only: [:index]
+    before_action :board, only: [:index, :show]
     before_action :push_licensed_features, only: [:index, :show]
   end
 
   def index
-    respond_with_boards
+    # if no board exists, create one
+    @board = board_create_service.execute.payload unless board # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def show
-    # Add / update the board in the recent visits table
-    board_visit_service.new(parent, current_user).execute(board) if request.format.html?
+    return render_404 unless board
 
-    respond_with_board
+    # Add / update the board in the recent visits table
+    board_visit_service.new(parent, current_user).execute(board)
   end
 
   private
 
-  # Noop on FOSS
-  def push_licensed_features
+  def redirect_to_recent_board
+    return if !parent.multiple_issue_boards_available? || !latest_visited_board
+
+    redirect_to board_path(latest_visited_board.board)
   end
 
-  def boards
-    strong_memoize(:boards) do
-      existing_boards = boards_finder.execute
-      if existing_boards.any?
-        existing_boards
-      else
-        # if no board exists, create one
-        [board_create_service.execute.payload]
-      end
-    end
+  def latest_visited_board
+    @latest_visited_board ||= Boards::VisitsFinder.new(parent, current_user).latest
+  end
+
+  # Noop on FOSS
+  def push_licensed_features
   end
 
   def board
@@ -48,20 +45,26 @@ module BoardsActions
     end
   end
 
-  def board_type
-    board_klass.to_type
-  end
-
   def board_visit_service
     Boards::Visits::CreateService
   end
 
-  def serializer
-    BoardSerializer.new(current_user: current_user)
+  def parent
+    strong_memoize(:parent) do
+      group? ? group : project
+    end
   end
 
-  def serialize_as_json(resource)
-    serializer.represent(resource, serializer: 'board', include_full_project_path: board.group_board?)
+  def board_path(board)
+    if group?
+      group_board_path(parent, board)
+    else
+      project_board_path(parent, board)
+    end
+  end
+
+  def group?
+    instance_variable_defined?(:@group)
   end
 end
 

@@ -32,7 +32,9 @@ describe('MrWidgetAuthorTime', () => {
   });
 
   it('renders author', () => {
-    expect(wrapper.find(MrWidgetAuthor).props('author')).toStrictEqual(defaultProps.author);
+    expect(wrapper.findComponent(MrWidgetAuthor).props('author')).toStrictEqual(
+      defaultProps.author,
+    );
   });
 
   it('renders provided time', () => {

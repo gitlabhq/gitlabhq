@@ -211,15 +211,15 @@ RSpec.describe Ci::BuildTraceChunks::Redis, :clean_gitlab_redis_shared_state do
 
     it 'deletes multiple data' do
       Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.exists("gitlab:ci:trace:#{build.id}:chunks:0")).to be_truthy
-        expect(redis.exists("gitlab:ci:trace:#{build.id}:chunks:1")).to be_truthy
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:0")).to eq(true)
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:1")).to eq(true)
       end
 
       subject
 
       Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.exists("gitlab:ci:trace:#{build.id}:chunks:0")).to be_falsy
-        expect(redis.exists("gitlab:ci:trace:#{build.id}:chunks:1")).to be_falsy
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:0")).to eq(false)
+        expect(redis.exists?("gitlab:ci:trace:#{build.id}:chunks:1")).to eq(false)
       end
     end
   end

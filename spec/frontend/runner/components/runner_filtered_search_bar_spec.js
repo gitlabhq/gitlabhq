@@ -4,9 +4,25 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import { statusTokenConfig } from '~/runner/components/search_tokens/status_token_config';
 import TagToken from '~/runner/components/search_tokens/tag_token.vue';
 import { tagTokenConfig } from '~/runner/components/search_tokens/tag_token_config';
-import { PARAM_KEY_STATUS, PARAM_KEY_TAG, STATUS_ONLINE, INSTANCE_TYPE } from '~/runner/constants';
+import {
+  PARAM_KEY_STATUS,
+  PARAM_KEY_TAG,
+  STATUS_ONLINE,
+  INSTANCE_TYPE,
+  DEFAULT_MEMBERSHIP,
+  DEFAULT_SORT,
+  CONTACTED_DESC,
+} from '~/runner/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+
+const mockSearch = {
+  runnerType: null,
+  membership: DEFAULT_MEMBERSHIP,
+  filters: [],
+  pagination: { page: 1 },
+  sort: DEFAULT_SORT,
+};
 
 describe('RunnerList', () => {
   let wrapper;
@@ -15,8 +31,7 @@ describe('RunnerList', () => {
   const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findSortOptions = () => wrapper.findAllComponents(GlDropdownItem);
 
-  const mockDefaultSort = 'CREATED_DESC';
-  const mockOtherSort = 'CONTACTED_DESC';
+  const mockOtherSort = CONTACTED_DESC;
   const mockFilters = [
     { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
     { type: 'filtered-search-term', value: { data: '' } },
@@ -32,11 +47,7 @@ describe('RunnerList', () => {
       propsData: {
         namespace: 'runners',
         tokens: [],
-        value: {
-          runnerType: null,
-          filters: [],
-          sort: mockDefaultSort,
-        },
+        value: mockSearch,
         ...props,
       },
       stubs: {
@@ -115,6 +126,7 @@ describe('RunnerList', () => {
         props: {
           value: {
             runnerType: INSTANCE_TYPE,
+            membership: DEFAULT_MEMBERSHIP,
             sort: mockOtherSort,
             filters: mockFilters,
           },
@@ -141,6 +153,7 @@ describe('RunnerList', () => {
 
       expectToHaveLastEmittedInput({
         runnerType: INSTANCE_TYPE,
+        membership: DEFAULT_MEMBERSHIP,
         filters: mockFilters,
         sort: mockOtherSort,
         pagination: {},
@@ -154,8 +167,9 @@ describe('RunnerList', () => {
 
     expectToHaveLastEmittedInput({
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: mockFilters,
-      sort: mockDefaultSort,
+      sort: DEFAULT_SORT,
       pagination: {},
     });
   });
@@ -165,6 +179,7 @@ describe('RunnerList', () => {
 
     expectToHaveLastEmittedInput({
       runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
       filters: [],
       sort: mockOtherSort,
       pagination: {},

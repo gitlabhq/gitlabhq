@@ -31,11 +31,11 @@ describe('Artifacts List', () => {
   });
 
   it('renders link for the artifact', () => {
-    expect(wrapper.find(GlLink).attributes('href')).toEqual(data.artifacts[0].url);
+    expect(wrapper.findComponent(GlLink).attributes('href')).toEqual(data.artifacts[0].url);
   });
 
   it('renders artifact name', () => {
-    expect(wrapper.find(GlLink).text()).toEqual(data.artifacts[0].text);
+    expect(wrapper.findComponent(GlLink).text()).toEqual(data.artifacts[0].text);
   });
 
   it('renders job url', () => {

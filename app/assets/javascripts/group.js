@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
@@ -77,7 +77,7 @@ export default class Group {
             element.value = suggestedSlug;
           });
         } else if (exists && !suggests.length) {
-          createFlash({
+          createAlert({
             message: __('Unable to suggest a path. Please refresh and try again.'),
           });
         }
@@ -87,7 +87,7 @@ export default class Group {
           return;
         }
 
-        createFlash({
+        createAlert({
           message: __('An error occurred while checking group path. Please refresh and try again.'),
         });
       });

@@ -13,10 +13,12 @@ import {
   PARAM_KEY_RUNNER_TYPE,
   PARAM_KEY_TAG,
   PARAM_KEY_SEARCH,
+  PARAM_KEY_MEMBERSHIP,
   PARAM_KEY_SORT,
   PARAM_KEY_AFTER,
   PARAM_KEY_BEFORE,
   DEFAULT_SORT,
+  DEFAULT_MEMBERSHIP,
   RUNNER_PAGE_SIZE,
 } from './constants';
 import { getPaginationVariables } from './utils';
@@ -57,9 +59,10 @@ import { getPaginationVariables } from './utils';
  * @param {Object} search
  * @returns {boolean} True if the value follows the search format.
  */
-export const searchValidator = ({ runnerType, filters, sort }) => {
+export const searchValidator = ({ runnerType, membership, filters, sort }) => {
   return (
     (runnerType === null || typeof runnerType === 'string') &&
+    (membership === null || typeof membership === 'string') &&
     Array.isArray(filters) &&
     typeof sort === 'string'
   );
@@ -140,9 +143,11 @@ export const updateOutdatedUrl = (url = window.location.href) => {
 export const fromUrlQueryToSearch = (query = window.location.search) => {
   const params = queryToObject(query, { gatherArrays: true });
   const runnerType = params[PARAM_KEY_RUNNER_TYPE]?.[0] || null;
+  const membership = params[PARAM_KEY_MEMBERSHIP]?.[0] || null;
 
   return {
     runnerType,
+    membership: membership || DEFAULT_MEMBERSHIP,
     filters: prepareTokens(
       urlQueryToFilter(query, {
         filterNamesAllowList: [PARAM_KEY_PAUSED, PARAM_KEY_STATUS, PARAM_KEY_TAG],
@@ -162,13 +167,14 @@ export const fromUrlQueryToSearch = (query = window.location.search) => {
  * @returns {String} New URL for the page
  */
 export const fromSearchToUrl = (
-  { runnerType = null, filters = [], sort = null, pagination = {} },
+  { runnerType = null, membership = null, filters = [], sort = null, pagination = {} },
   url = window.location.href,
 ) => {
   const filterParams = {
     // Defaults
     [PARAM_KEY_STATUS]: [],
     [PARAM_KEY_RUNNER_TYPE]: [],
+    [PARAM_KEY_MEMBERSHIP]: [],
     [PARAM_KEY_TAG]: [],
     // Current filters
     ...filterToQueryObject(processFilters(filters), {
@@ -178,6 +184,10 @@ export const fromSearchToUrl = (
 
   if (runnerType) {
     filterParams[PARAM_KEY_RUNNER_TYPE] = [runnerType];
+  }
+
+  if (membership && membership !== DEFAULT_MEMBERSHIP) {
+    filterParams[PARAM_KEY_MEMBERSHIP] = [membership];
   }
 
   if (!filterParams[PARAM_KEY_SEARCH]) {
@@ -203,6 +213,7 @@ export const fromSearchToUrl = (
  */
 export const fromSearchToVariables = ({
   runnerType = null,
+  membership = null,
   filters = [],
   sort = null,
   pagination = {},
@@ -225,6 +236,9 @@ export const fromSearchToVariables = ({
 
   if (runnerType) {
     filterVariables.type = runnerType;
+  }
+  if (membership) {
+    filterVariables.membership = membership;
   }
   if (sort) {
     filterVariables.sort = sort;

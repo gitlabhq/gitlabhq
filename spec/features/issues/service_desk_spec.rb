@@ -90,7 +90,6 @@ RSpec.describe 'Service Desk Issue Tracker', :js do
 
           it 'displays the small info box, documentation, a button to configure service desk, and the address' do
             aggregate_failures do
-              expect(page).to have_css('.non-empty-state')
               expect(page).to have_link('Learn more.', href: help_page_path('user/project/service_desk'))
               expect(page).not_to have_link('Enable Service Desk')
               expect(page).to have_content(project.service_desk_address)

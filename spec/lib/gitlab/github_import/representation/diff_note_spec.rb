@@ -28,7 +28,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
   let(:start_line) { nil }
   let(:end_line) { 23 }
   let(:note_body) { 'Hello world' }
-  let(:user_data) { { 'id' => 4, 'login' => 'alice' } }
+  let(:user_data) { { id: 4, login: 'alice' } }
   let(:side) { 'RIGHT' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
@@ -275,15 +275,14 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
   describe '.from_api_response' do
     it_behaves_like 'a DiffNote representation' do
       let(:response) do
-        double(
-          :response,
+        {
           id: note_id,
           html_url: 'https://github.com/foo/bar/pull/42',
           path: 'README.md',
           commit_id: '123abc',
           original_commit_id: 'original123abc',
           side: side,
-          user: user_data && double(:user, user_data),
+          user: user_data,
           diff_hunk: hunk,
           body: note_body,
           created_at: created_at,
@@ -291,7 +290,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_red
           line: end_line,
           start_line: start_line,
           in_reply_to_id: in_reply_to_id
-        )
+        }
       end
 
       subject(:note) { described_class.from_api_response(response) }

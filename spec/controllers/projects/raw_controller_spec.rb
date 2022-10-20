@@ -247,9 +247,11 @@ RSpec.describe Projects::RawController do
         sign_in create(:user)
         request_file
 
-        expect(response.cache_control[:public]).to eq(true)
-        expect(response.cache_control[:max_age]).to eq(60)
+        expect(response.headers['ETag']).to eq("\"bdd5aa537c1e1f6d1b66de4bac8a6132\"")
         expect(response.cache_control[:no_store]).to be_nil
+        expect(response.header['Cache-Control']).to eq(
+          'max-age=60, public, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60'
+        )
       end
 
       context 'when a public project has private repo' do
@@ -260,7 +262,9 @@ RSpec.describe Projects::RawController do
           sign_in user
           request_file
 
-          expect(response.header['Cache-Control']).to include('max-age=60, private')
+          expect(response.header['Cache-Control']).to eq(
+            'max-age=60, private, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60'
+          )
         end
       end
 
@@ -272,6 +276,21 @@ RSpec.describe Projects::RawController do
           request_file
 
           expect(response).to have_gitlab_http_status(:not_modified)
+        end
+      end
+
+      context 'when improve_blobs_cache_headers disabled' do
+        before do
+          stub_feature_flags(improve_blobs_cache_headers: false)
+        end
+
+        it 'uses weak etags with a restricted set of headers' do
+          sign_in create(:user)
+          request_file
+
+          expect(response.headers['ETag']).to eq("W/\"bdd5aa537c1e1f6d1b66de4bac8a6132\"")
+          expect(response.cache_control[:no_store]).to be_nil
+          expect(response.header['Cache-Control']).to eq('max-age=60, public')
         end
       end
     end

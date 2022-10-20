@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Run multiple Sidekiq processes **(FREE SELF)**
@@ -74,6 +74,9 @@ To start multiple processes:
      "*"
    ]
    ```
+
+   `*` which matches all workers.
+   As a result, the wildcard query must stay at the end of the list or the rules after it are ignored.
 
    `*` cannot be combined with concrete queue names - `*, mailers`
    just handles the `mailers` queue.

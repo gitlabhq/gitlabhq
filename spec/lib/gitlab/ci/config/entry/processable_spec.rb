@@ -210,20 +210,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
           expect(entry.errors)
             .to include 'variables:var2 config must be a string'
         end
-
-        context 'when the FF ci_variables_refactoring_to_variable is disabled' do
-          let(:entry_without_ff) { node_class.new(config, name: :rspec) }
-
-          before do
-            stub_feature_flags(ci_variables_refactoring_to_variable: false)
-            entry_without_ff.compose!
-          end
-
-          it 'reports error about variable' do
-            expect(entry_without_ff.errors)
-              .to include /config should be a hash of key value pairs/
-          end
-        end
       end
     end
   end

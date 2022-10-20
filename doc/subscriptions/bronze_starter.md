@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Features available to Starter and Bronze subscribers
@@ -82,8 +82,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Rake tasks:
   - [Displaying GitLab license information](../administration/raketasks/maintenance.md#show-gitlab-license-information)
 - Reference Architecture information:
-  - [Traffic load balancers](../administration/reference_architectures/index.md#traffic-load-balancer)
-  - [Zero downtime updates](../administration/reference_architectures/index.md#zero-downtime-updates)
+  - [Zero downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades)
 - Repositories:
   - [Repository size limit](../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:

@@ -185,7 +185,9 @@ describe('AwardsHandler', () => {
 
   describe('::getAwardUrl', () => {
     it('returns the url for request', () => {
-      expect(awardsHandler.getAwardUrl()).toBe('http://test.host/-/snippets/1/toggle_award_emoji');
+      expect(awardsHandler.getAwardUrl()).toBe(
+        document.querySelector('.js-awards-block').dataset.awardUrl,
+      );
     });
   });
 

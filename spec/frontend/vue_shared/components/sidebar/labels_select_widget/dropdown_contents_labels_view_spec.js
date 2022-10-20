@@ -9,7 +9,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue';
@@ -143,13 +143,13 @@ describe('DropdownContentsLabelsView', () => {
     expect(findNoResultsMessage().isVisible()).toBe(true);
   });
 
-  it('calls `createFlash` when fetching labels failed', async () => {
+  it('calls `createAlert` when fetching labels failed', async () => {
     createComponent({ queryHandler: jest.fn().mockRejectedValue('Houston, we have a problem!') });
     await makeObserverAppear();
     jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   it('emits an `input` event on label click', async () => {

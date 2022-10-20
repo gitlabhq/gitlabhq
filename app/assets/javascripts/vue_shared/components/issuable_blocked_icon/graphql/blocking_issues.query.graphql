@@ -1,0 +1,14 @@
+query BlockingIssues($id: IssueID!) {
+  issuable: issue(id: $id) {
+    id
+    blockingIssuables: blockedByIssues {
+      nodes {
+        id
+        iid
+        title
+        reference(full: true)
+        webUrl
+      }
+    }
+  }
+}

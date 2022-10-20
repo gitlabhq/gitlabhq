@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Infrastructure as Code with Terraform and GitLab **(FREE)**
@@ -19,7 +19,7 @@ Terraform to define resources that you can version, reuse, and share:
 
 ## Integrate your project with Terraform
 
-> SAST test was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.6.
+> IaC Scanning was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.6.
 
 The integration with GitLab and Terraform happens through GitLab CI/CD.
 Use an `include` attribute to add the Terraform template to your project and
@@ -35,7 +35,7 @@ All templates:
 - Use the [GitLab-managed Terraform state](terraform_state.md) as the Terraform state storage backend.
 - Trigger four pipeline stages: `test`, `validate`, `build`, and `deploy`.
 - Run Terraform commands: `test`, `validate`, `plan`, and `plan-json`. It also runs the `apply` only on the default branch.
-- Run the [Terraform SAST scanner](../../application_security/iac_scanning/index.md#configure-iac-scanning-manually).
+- Check for security problems using [IaC Scanning](../../application_security/iac_scanning/index.md#configure-iac-scanning-manually).
 
 ### Latest Terraform template
 

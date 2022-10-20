@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
-  let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
-  let(:octocat) { double(id: 123456, login: 'octocat') }
+  let_it_be(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
+  let(:octocat) { { id: 123456, login: 'octocat' } }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:published_at) { DateTime.strptime('2011-01-26T20:00:00Z') }
 
@@ -22,7 +22,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
   subject(:release) { described_class.new(project, raw_data) }
 
   describe '#attributes' do
-    let(:raw_data) { double(base_data) }
+    let(:raw_data) { base_data }
 
     it 'returns formatted attributes' do
       expected = {
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
 
   describe '#valid' do
     context 'when release is not a draft' do
-      let(:raw_data) { double(base_data) }
+      let(:raw_data) { base_data }
 
       it 'returns true' do
         expect(release.valid?).to eq true
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
     end
 
     context 'when release is draft' do
-      let(:raw_data) { double(base_data.merge(draft: true)) }
+      let(:raw_data) { base_data.merge(draft: true) }
 
       it 'returns false' do
         expect(release.valid?).to eq false
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::LegacyGithubImport::ReleaseFormatter do
     end
 
     context 'when release has NULL tag' do
-      let(:raw_data) { double(base_data.merge(tag_name: '')) }
+      let(:raw_data) { base_data.merge(tag_name: '') }
 
       it 'returns false' do
         expect(release.valid?).to eq false

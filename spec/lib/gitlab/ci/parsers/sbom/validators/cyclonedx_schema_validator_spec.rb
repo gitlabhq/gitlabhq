@@ -72,12 +72,13 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator d
       it { is_expected.not_to be_valid }
 
       it "outputs errors for each validation failure" do
-        expect(validator.errors).to match_array([
-          "property '/components/0' is missing required keys: name",
-          "property '/components/0/type' is not one of: [\"application\", \"framework\"," \
-            " \"library\", \"container\", \"operating-system\", \"device\", \"firmware\", \"file\"]",
-          "property '/components/1' is missing required keys: type"
-        ])
+        expect(validator.errors).to match_array(
+          [
+            "property '/components/0' is missing required keys: name",
+            "property '/components/0/type' is not one of: [\"application\", \"framework\"," \
+              " \"library\", \"container\", \"operating-system\", \"device\", \"firmware\", \"file\"]",
+            "property '/components/1' is missing required keys: type"
+          ])
       end
     end
   end
@@ -121,10 +122,11 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator d
         it { is_expected.not_to be_valid }
 
         it "outputs errors for each validation failure" do
-          expect(validator.errors).to match_array([
-            "property '/metadata/properties/0/name' is not of type: string",
-            "property '/metadata/properties/0/value' is not of type: string"
-          ])
+          expect(validator.errors).to match_array(
+            [
+              "property '/metadata/properties/0/name' is not of type: string",
+              "property '/metadata/properties/0/value' is not of type: string"
+            ])
         end
       end
     end

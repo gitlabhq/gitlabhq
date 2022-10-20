@@ -91,7 +91,7 @@ module Gitlab
         # rubocop: disable CodeReuse/ActiveRecord
         def from_pipeline(pipeline)
           status = %w[success failed running canceled]
-          builds = pipeline.builds.latest
+          builds = pipeline.processables.latest
             .where(status: status).where.not(started_at: nil).order(:started_at)
 
           from_builds(builds)

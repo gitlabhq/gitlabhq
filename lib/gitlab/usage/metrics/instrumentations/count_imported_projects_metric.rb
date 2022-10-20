@@ -7,7 +7,7 @@ module Gitlab
         class CountImportedProjectsMetric < DatabaseMetric
           operation :count
 
-          def initialize(time_frame:, options: {})
+          def initialize(metric_definition)
             super
 
             raise ArgumentError, "import_type options attribute is required" unless import_type.present?

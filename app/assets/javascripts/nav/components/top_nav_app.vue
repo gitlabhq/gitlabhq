@@ -1,5 +1,6 @@
 <script>
 import { GlNav, GlIcon, GlNavItemDropdown, GlDropdownForm, GlTooltipDirective } from '@gitlab/ui';
+import Tracking from '~/tracking';
 import TopNavDropdownMenu from './top_nav_dropdown_menu.vue';
 
 export default {
@@ -19,6 +20,14 @@ export default {
       required: true,
     },
   },
+  methods: {
+    trackToggleEvent() {
+      Tracking.event(undefined, 'click_nav', {
+        label: 'hamburger_menu',
+        property: 'top_navigation',
+      });
+    },
+  },
 };
 </script>
 
@@ -32,6 +41,7 @@ export default {
       toggle-class="top-nav-toggle js-top-nav-dropdown-toggle gl-px-3!"
       no-flip
       no-caret
+      @toggle="trackToggleEvent"
     >
       <template #button-content>
         <gl-icon name="hamburger" />

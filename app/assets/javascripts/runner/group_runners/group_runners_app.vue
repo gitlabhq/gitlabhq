@@ -10,7 +10,9 @@ import {
   fromSearchToVariables,
   isSearchFiltered,
 } from 'ee_else_ce/runner/runner_search_utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import groupRunnersQuery from 'ee_else_ce/runner/graphql/list/group_runners.query.graphql';
+import groupRunnersCountQuery from 'ee_else_ce/runner/graphql/list/group_runners_count.query.graphql';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerStackedLayoutBanner from '../components/runner_stacked_layout_banner.vue';
@@ -22,14 +24,17 @@ import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
+import RunnerMembershipToggle from '../components/runner_membership_toggle.vue';
 
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
+import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import {
   GROUP_FILTERED_SEARCH_NAMESPACE,
   GROUP_TYPE,
   PROJECT_TYPE,
   I18N_FETCH_ERROR,
+  FILTER_CSS_CLASSES,
 } from '../constants';
 import { captureException } from '../sentry_utils';
 
@@ -43,11 +48,13 @@ export default {
     RunnerList,
     RunnerListEmptyState,
     RunnerName,
+    RunnerMembershipToggle,
     RunnerStats,
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
   props: {
     registrationToken: {
@@ -126,11 +133,19 @@ export default {
     noRunnersFound() {
       return !this.runnersLoading && !this.runners.items.length;
     },
-    searchTokens() {
-      return [pausedTokenConfig, statusTokenConfig, upgradeStatusTokenConfig];
-    },
     filteredSearchNamespace() {
       return `${GROUP_FILTERED_SEARCH_NAMESPACE}/${this.groupFullPath}`;
+    },
+    searchTokens() {
+      return [
+        pausedTokenConfig,
+        statusTokenConfig,
+        {
+          ...tagTokenConfig,
+          suggestionsDisabled: true,
+        },
+        upgradeStatusTokenConfig,
+      ];
     },
     isSearchFiltered() {
       return isSearchFiltered(this.search);
@@ -159,13 +174,17 @@ export default {
     editUrl(runner) {
       return this.runners.urlsById[runner.id]?.edit;
     },
+    refetchCounts() {
+      this.$apollo.getClient().refetchQueries({ include: [groupRunnersCountQuery] });
+    },
     onToggledPaused() {
       // When a runner becomes Paused, the tab count can
       // become stale, refetch outdated counts.
-      this.$refs['runner-type-tabs'].refetch();
+      this.refetchCounts();
     },
     onDeleted({ message }) {
       this.$root.$toast?.show(message);
+      this.refetchCounts();
     },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
@@ -176,6 +195,7 @@ export default {
   },
   TABS_RUNNER_TYPES: [GROUP_TYPE, PROJECT_TYPE],
   GROUP_TYPE,
+  FILTER_CSS_CLASSES,
 };
 </script>
 
@@ -204,11 +224,21 @@ export default {
       />
     </div>
 
-    <runner-filtered-search-bar
-      v-model="search"
-      :tokens="searchTokens"
-      :namespace="filteredSearchNamespace"
-    />
+    <div
+      class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3"
+      :class="$options.FILTER_CSS_CLASSES"
+    >
+      <runner-filtered-search-bar
+        v-model="search"
+        :tokens="searchTokens"
+        :namespace="filteredSearchNamespace"
+        class="gl-flex-grow-1 gl-align-self-stretch"
+      />
+      <runner-membership-toggle
+        v-model="search.membership"
+        class="gl-align-self-end gl-md-align-self-center"
+      />
+    </div>
 
     <runner-stats :scope="$options.GROUP_TYPE" :variables="countVariables" />
 
@@ -220,7 +250,7 @@ export default {
       :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
-      <runner-list :runners="runners.items" :loading="runnersLoading">
+      <runner-list :runners="runners.items" :loading="runnersLoading" @deleted="onDeleted">
         <template #runner-name="{ runner }">
           <gl-link :href="webUrl(runner)">
             <runner-name :runner="runner" />

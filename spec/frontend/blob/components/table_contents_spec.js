@@ -71,6 +71,11 @@ describe('Markdown table of contents component', () => {
 
       expect(dropdownItems.exists()).toBe(true);
       expect(dropdownItems.length).toBe(4);
+
+      // make sure that this only happens once
+      await setLoaded(true);
+
+      expect(wrapper.findAllComponents(GlDropdownItem).length).toBe(4);
     });
 
     it('sets padding for dropdown items', async () => {

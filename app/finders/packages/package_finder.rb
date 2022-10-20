@@ -10,7 +10,7 @@ module Packages
       @project
         .packages
         .preload_pipelines
-        .including_project_route
+        .including_project_namespace_route
         .including_tags
         .displayable
         .find(@package_id)

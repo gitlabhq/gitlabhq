@@ -290,4 +290,13 @@ RSpec.describe AwardEmoji do
       end
     end
   end
+
+  describe '#to_ability_name' do
+    let(:merge_request) { create(:merge_request) }
+    let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: merge_request) }
+
+    it 'returns correct ability name' do
+      expect(award_emoji.to_ability_name).to be('emoji')
+    end
+  end
 end

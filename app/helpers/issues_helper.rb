@@ -3,12 +3,21 @@
 module IssuesHelper
   include Issues::IssueTypeHelpers
 
+  def can_admin_issue?
+    can?(current_user, :admin_issue, @group || @project)
+  end
+
   def issue_css_classes(issue)
     classes = ["issue"]
     classes << "closed" if issue.closed?
     classes << "today" if issue.new?
     classes << "gl-cursor-grab" if @sort == 'relative_position'
     classes.join(' ')
+  end
+
+  def show_timeline_view_toggle?(issue)
+    # Overridden in EE
+    false
   end
 
   def issue_manual_ordering_class

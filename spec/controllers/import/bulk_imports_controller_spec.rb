@@ -247,10 +247,10 @@ RSpec.describe Import::BulkImportsController do
              "source_full_path" => "full_path",
              "destination_slug" => "destination_name",
              "destination_namespace" => "root" },
-           { "source_type" => "group_entity2",
-             "source_full_path" => "full_path2",
-             "destination_slug" => "destination_name2",
-             "destination_namespace" => "root" }]
+           { "source_type" => "group_entity",
+             "source_full_path" => "full_path",
+             "destination_slug" => "destination_name",
+             "destination_namespace" => "invalid-namespace" }]
         end
 
         before do
@@ -306,6 +306,21 @@ RSpec.describe Import::BulkImportsController do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to match_array([{ "success" => true, "id" => bulk_import.id, "message" => nil }])
+          end
+        end
+
+        context 'when source type is project' do
+          let(:bulk_import_params) do
+            [{ "source_type" => "project_entity",
+               "source_full_path" => "full_path",
+               "destination_slug" => "destination_name",
+               "destination_namespace" => "root" }]
+          end
+
+          it 'returns 422' do
+            post :create, params: { bulk_import: bulk_import_params }
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
         end
       end

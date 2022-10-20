@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Slack application **(FREE SAAS)**
@@ -22,7 +22,7 @@ The simplest way to enable the GitLab Slack application for your workspace is to
 install the [GitLab application](https://slack-platform.slack.com/apps/A676ADMV5-gitlab) from
 the [Slack App Directory](https://slack.com/apps).
 
-Clicking install takes you to the [GitLab Slack application landing page](https://gitlab.com/-/profile/slack/edit)
+Selecting install takes you to the [GitLab Slack application landing page](https://gitlab.com/-/profile/slack/edit)
 where you can select a project to enable the GitLab Slack application for.
 
 ## Configuration
@@ -89,3 +89,17 @@ project, you would do:
 In GitLab 15.0 the Slack app is updated to [Slack's new granular permissions app model](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
 
 There is no change in functionality. A reinstall is not required but recommended.
+
+## Troubleshooting
+
+When you work with the Slack app, the
+[App Home](https://api.slack.com/start/overview#app_home) might not display properly.
+As a workaround, ensure your app is up to date.
+
+To update an existing Slack integration:
+
+1. Go to your [chat settings](https://gitlab.com/-/profile/chat_names).
+1. Next to your project, select **Slack application**.
+1. Select **Reinstall Slack app**.
+
+Alternatively, you can [configure a new Slack integration](https://about.gitlab.com/solutions/slack/).

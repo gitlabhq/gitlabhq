@@ -226,18 +226,19 @@ RSpec.describe API::Ci::Jobs do
           expect(json_response.dig('user', 'username')).to eq(api_user.username)
           expect(json_response.dig('user', 'roles_in_project')).to match_array %w(guest reporter developer)
           expect(json_response).not_to include('environment')
-          expect(json_response['allowed_agents']).to match_array([
-            {
-              'id' => implicit_authorization.agent_id,
-              'config_project' => hash_including('id' => implicit_authorization.agent.project_id),
-              'configuration' => implicit_authorization.config
-            },
-            {
-              'id' => group_authorization.agent_id,
-              'config_project' => hash_including('id' => group_authorization.agent.project_id),
-              'configuration' => group_authorization.config
-            }
-          ])
+          expect(json_response['allowed_agents']).to match_array(
+            [
+              {
+                'id' => implicit_authorization.agent_id,
+                'config_project' => hash_including('id' => implicit_authorization.agent.project_id),
+                'configuration' => implicit_authorization.config
+              },
+              {
+                'id' => group_authorization.agent_id,
+                'config_project' => hash_including('id' => group_authorization.agent.project_id),
+                'configuration' => group_authorization.config
+              }
+            ])
         end
       end
 

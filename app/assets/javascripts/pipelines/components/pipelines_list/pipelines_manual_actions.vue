@@ -1,6 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { s__, __, sprintf } from '~/locale';
@@ -66,7 +66,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
-          createFlash({ message: __('An error occurred while making the request.') });
+          createAlert({ message: __('An error occurred while making the request.') });
         });
     },
     isActionDisabled(action) {

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Proxying assets **(FREE SELF)**
@@ -11,7 +11,7 @@ the ability to steal a user's IP address by referencing images in issues and com
 
 For example, adding `![Example image](http://example.com/example.png)` to
 an issue description causes the image to be loaded from the external
-server in order to be displayed. However, this also allows the external server
+server to be displayed. However, this also allows the external server
 to log the IP address of the user.
 
 One way to mitigate this is by proxying any external images to a server you

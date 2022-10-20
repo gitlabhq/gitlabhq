@@ -47,7 +47,7 @@ describe('user_lists/components/edit_user_list', () => {
     });
 
     it('should show a loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 
@@ -60,7 +60,7 @@ describe('user_lists/components/edit_user_list', () => {
       factory();
       await waitForPromises();
 
-      alert = wrapper.find(GlAlert);
+      alert = wrapper.findComponent(GlAlert);
     });
 
     it('should show a flash with the error respopnse', () => {
@@ -72,7 +72,7 @@ describe('user_lists/components/edit_user_list', () => {
     });
 
     it('should not show a user list form', () => {
-      expect(wrapper.find(UserListForm).exists()).toBe(false);
+      expect(wrapper.findComponent(UserListForm).exists()).toBe(false);
     });
   });
 
@@ -129,7 +129,7 @@ describe('user_lists/components/edit_user_list', () => {
         clickSave();
         await waitForPromises();
 
-        alert = wrapper.find(GlAlert);
+        alert = wrapper.findComponent(GlAlert);
       });
 
       it('should show a flash with the error respopnse', () => {

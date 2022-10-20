@@ -6,7 +6,7 @@ import CiAdminVariables from './components/ci_admin_variables.vue';
 import CiGroupVariables from './components/ci_group_variables.vue';
 import CiProjectVariables from './components/ci_project_variables.vue';
 import LegacyCiVariableSettings from './components/legacy_ci_variable_settings.vue';
-import { resolvers } from './graphql/resolvers';
+import { cacheConfig, resolvers } from './graphql/settings';
 import createStore from './store';
 
 const mountCiVariableListApp = (containerEl) => {
@@ -45,7 +45,7 @@ const mountCiVariableListApp = (containerEl) => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers),
+    defaultClient: createDefaultClient(resolvers, cacheConfig),
   });
 
   return new Vue({
@@ -81,6 +81,7 @@ const mountLegacyCiVariableListApp = (containerEl) => {
     endpoint,
     projectId,
     isGroup,
+    isProject,
     maskableRegex,
     protectedByDefault,
     awsLogoSvgPath,
@@ -92,6 +93,8 @@ const mountLegacyCiVariableListApp = (containerEl) => {
     maskedEnvironmentVariablesLink,
     environmentScopeLink,
   } = containerEl.dataset;
+
+  const parsedIsProject = parseBoolean(isProject);
   const parsedIsGroup = parseBoolean(isGroup);
   const isProtectedByDefault = parseBoolean(protectedByDefault);
 
@@ -99,6 +102,7 @@ const mountLegacyCiVariableListApp = (containerEl) => {
     endpoint,
     projectId,
     isGroup: parsedIsGroup,
+    isProject: parsedIsProject,
     maskableRegex,
     isProtectedByDefault,
     awsLogoSvgPath,

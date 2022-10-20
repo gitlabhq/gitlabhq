@@ -1,0 +1,18 @@
+@import '../mixins_and_variables_and_functions';
+
+.geo-replicable-item-grid {
+  grid-template-columns: 8ch 1fr auto;
+  grid-gap: 1rem;
+}
+
+.geo-replicable-filter-grid {
+  grid-template-columns: 1fr;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  @include media-breakpoint-up(xl) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

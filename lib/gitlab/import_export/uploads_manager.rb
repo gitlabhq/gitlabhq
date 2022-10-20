@@ -86,8 +86,9 @@ module Gitlab
         mkdir_p(File.join(uploads_export_path, secret))
 
         download_or_copy_upload(upload, upload_path)
-      rescue Errno::ENAMETOOLONG => e
-        # Do not fail entire project export if downloaded file has filename that exceeds 255 characters.
+      rescue StandardError => e
+        # Do not fail entire project export if something goes wrong during file download
+        # (e.g. downloaded file has filename that exceeds 255 characters).
         # Ignore raised exception, skip such upload, log the error and keep going with the export instead.
         Gitlab::ErrorTracking.log_exception(e, project_id: @project.id)
       end

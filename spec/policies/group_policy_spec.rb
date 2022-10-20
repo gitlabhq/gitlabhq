@@ -1175,28 +1175,14 @@ RSpec.describe GroupPolicy do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        context 'with runner_registration_control FF disabled' do
+        it { is_expected.to be_allowed(:register_group_runners) }
+
+        context 'with group runner registration disabled' do
           before do
-            stub_feature_flags(runner_registration_control: false)
+            stub_application_setting(valid_runner_registrars: ['project'])
           end
 
           it { is_expected.to be_allowed(:register_group_runners) }
-        end
-
-        context 'with runner_registration_control FF enabled' do
-          before do
-            stub_feature_flags(runner_registration_control: true)
-          end
-
-          it { is_expected.to be_allowed(:register_group_runners) }
-
-          context 'with group runner registration disabled' do
-            before do
-              stub_application_setting(valid_runner_registrars: ['project'])
-            end
-
-            it { is_expected.to be_allowed(:register_group_runners) }
-          end
         end
       end
 
@@ -1210,28 +1196,12 @@ RSpec.describe GroupPolicy do
 
       it { is_expected.to be_allowed(:register_group_runners) }
 
-      context 'with runner_registration_control FF disabled' do
+      context 'with group runner registration disabled' do
         before do
-          stub_feature_flags(runner_registration_control: false)
+          stub_application_setting(valid_runner_registrars: ['project'])
         end
 
-        it { is_expected.to be_allowed(:register_group_runners) }
-      end
-
-      context 'with runner_registration_control FF enabled' do
-        before do
-          stub_feature_flags(runner_registration_control: true)
-        end
-
-        it { is_expected.to be_allowed(:register_group_runners) }
-
-        context 'with group runner registration disabled' do
-          before do
-            stub_application_setting(valid_runner_registrars: ['project'])
-          end
-
-          it { is_expected.to be_disallowed(:register_group_runners) }
-        end
+        it { is_expected.to be_disallowed(:register_group_runners) }
       end
     end
 
@@ -1263,6 +1233,62 @@ RSpec.describe GroupPolicy do
       let(:current_user) { nil }
 
       it { is_expected.to be_disallowed(:register_group_runners) }
+    end
+  end
+
+  describe 'read_group_all_available_runners' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+      end
+
+      context 'when admin mode is disabled' do
+        specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+      end
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      specify { is_expected.to be_allowed(:read_group_all_available_runners) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      specify { is_expected.to be_disallowed(:read_group_all_available_runners) }
     end
   end
 

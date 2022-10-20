@@ -116,7 +116,7 @@ RSpec.describe NavHelper do
     using RSpec::Parameterized::TableSyntax
 
     where path: %w(
-      merge_requests#show
+      projects/merge_requests#show
       projects/merge_requests/conflicts#show
       issues#show
       milestones#show

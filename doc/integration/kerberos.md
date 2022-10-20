@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Kerberos integration **(PREMIUM SELF)**
@@ -295,7 +295,7 @@ this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 After this change, Git remote URLs have to be updated to
-`https://gitlab.example.com:8443/mygroup/myproject.git` in order to use
+`https://gitlab.example.com:8443/mygroup/myproject.git` to use
 Kerberos ticket-based authentication.
 
 ## Upgrading from password-based to ticket-based Kerberos sign-ins

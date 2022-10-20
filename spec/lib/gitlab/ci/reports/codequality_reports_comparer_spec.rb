@@ -191,11 +191,12 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
       end
 
       it 'includes the base report errors sorted by severity' do
-        expect(existing_errors).to eq([
-          blocker_degradation,
-          critical_degradation,
-          major_degradation
-        ])
+        expect(existing_errors).to eq(
+          [
+            blocker_degradation,
+            critical_degradation,
+            major_degradation
+          ])
       end
     end
 
@@ -242,11 +243,12 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
       end
 
       it 'includes errors not found in the base report sorted by severity' do
-        expect(new_errors).to eq([
-          blocker_degradation,
-          critical_degradation,
-          minor_degradation
-        ])
+        expect(new_errors).to eq(
+          [
+            blocker_degradation,
+            critical_degradation,
+            minor_degradation
+          ])
       end
     end
 
@@ -304,11 +306,12 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReportsComparer do
       end
 
       it 'returns the base report errors not found in the head report, sorted by severity' do
-        expect(resolved_errors).to eq([
-          blocker_degradation,
-          critical_degradation,
-          minor_degradation
-        ])
+        expect(resolved_errors).to eq(
+          [
+            blocker_degradation,
+            critical_degradation,
+            minor_degradation
+          ])
       end
     end
 

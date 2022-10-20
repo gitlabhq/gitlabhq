@@ -3,6 +3,7 @@
 class JobArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
+  include ObjectStorage::CDN::Concern
 
   UnknownFileLocationError = Class.new(StandardError)
 

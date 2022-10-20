@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe "GitLab Flavored Markdown" do
-  include CycleAnalyticsHelpers
-
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
@@ -24,7 +22,12 @@ RSpec.describe "GitLab Flavored Markdown" do
     let(:commit) { project.commit }
 
     before do
-      create_commit("fix #{issue.to_reference}\n\nask #{fred.to_reference} for details", project, user, 'master')
+      project.repository.commit_files(
+        user,
+        branch_name: 'master',
+        message: "fix #{issue.to_reference}\n\nask #{fred.to_reference} for details",
+        actions: [{ action: :create, file_path: 'a/new.file', content: 'This is a file' }]
+      )
     end
 
     it "renders title in commits#index" do

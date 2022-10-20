@@ -42,10 +42,7 @@ RSpec.describe CommitCollection do
       merge_commit = project.commit("60ecb67744cb56576c30214ff52294f8ce2def98")
       expect(merge_commit).to receive(:merge_commit?).and_return(true)
 
-      collection = described_class.new(project, [
-        commit,
-        merge_commit
-      ])
+      collection = described_class.new(project, [commit, merge_commit])
 
       expect(collection.without_merge_commits).to contain_exactly(commit)
     end

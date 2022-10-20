@@ -91,7 +91,7 @@ describe('Customer relations organizations root app', () => {
         editButtonLabel: 'Edit',
         title: 'Customer relations organizations',
         newOrganization: 'New organization',
-        errorText: 'Something went wrong. Please try again.',
+        errorMsg: 'Something went wrong. Please try again.',
       },
       serverErrorMessage: '',
       filterSearchKey: 'organizations',

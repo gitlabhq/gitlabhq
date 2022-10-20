@@ -124,7 +124,11 @@ module Gitlab
           #   - https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-servers
           #   - https://docs.microsoft.com/en-us/azure/postgresql/concepts-servers#managing-your-server
           # this database is present on both Flexible and Single server, so we should check the former first.
-          'Azure Database for PostgreSQL - Single Server' => { statement: "SELECT datname FROM pg_database WHERE datname = 'azure_maintenance'" }
+          'Azure Database for PostgreSQL - Single Server' => { statement: "SELECT datname FROM pg_database WHERE datname = 'azure_maintenance'" },
+          # Based on
+          #   - https://cloud.google.com/sql/docs/postgres/flags
+          # running a query to detect flag names that begin with 'alloydb
+          'AlloyDB for PostgreSQL' => { statement: "SELECT name FROM pg_settings WHERE name LIKE 'alloydb%'" }
         }.each do |flavor, conditions|
           return flavor if connection.execute(conditions[:statement]).to_a.present?
         rescue ActiveRecord::StatementInvalid => e

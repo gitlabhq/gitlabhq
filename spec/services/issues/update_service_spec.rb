@@ -512,6 +512,20 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         expect(note.note).to eq('changed the description')
       end
+
+      it 'triggers GraphQL description updated subscription' do
+        expect(GraphqlTriggers).to receive(:issuable_description_updated).with(issue).and_call_original
+
+        update_issue(description: 'Changed description')
+      end
+    end
+
+    context 'when decription is not changed' do
+      it 'does not trigger GraphQL description updated subscription' do
+        expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
+
+        update_issue(title: 'Changed title')
+      end
     end
 
     context 'when issue turns confidential' do
@@ -834,6 +848,24 @@ RSpec.describe Issues::UpdateService, :mailer do
           service = described_class.new(project: project, current_user: user, params: params)
 
           expect(Spam::SpamActionService).not_to receive(:new)
+
+          service.execute(issue)
+        end
+
+        # At the moment of writting old associations are not necessary for update_task
+        # and doing this will prevent fetching associations from the DB and comparing old and new labels
+        it 'does not pass old_associations to the after_update method' do
+          params = {
+            update_task: {
+              index: 1,
+              checked: false,
+              line_source: '- [x] Task 1',
+              line_number: 1
+            }
+          }
+          service = described_class.new(project: project, current_user: user, params: params)
+
+          expect(service).to receive(:after_update).with(issue, {})
 
           service.execute(issue)
         end

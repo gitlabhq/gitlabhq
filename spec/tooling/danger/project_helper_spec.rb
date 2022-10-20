@@ -98,10 +98,11 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'vendor/languages.yml'    | [:backend]
       'file_hooks/examples/'    | [:backend]
 
-      'Gemfile'        | [:backend]
-      'Gemfile.lock'   | [:backend]
-      'Rakefile'       | [:backend]
-      'FOO_VERSION'    | [:backend]
+      'Gemfile'          | [:backend]
+      'Gemfile.lock'     | [:backend]
+      'Gemfile.checksum' | [:backend]
+      'Rakefile'         | [:backend]
+      'FOO_VERSION'      | [:backend]
 
       'scripts/glfm/bar.rb'                                   | [:backend]
       'scripts/glfm/bar.js'                                   | [:frontend]

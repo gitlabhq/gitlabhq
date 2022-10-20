@@ -13,11 +13,8 @@ module RuboCop
         include RuboCop::CodeReuseHelpers
 
         FEATURE_METHODS = %i[enabled? disabled?].freeze
-        EXPERIMENTATION_METHODS = %i[active?].freeze
         EXPERIMENT_METHODS = %i[
           experiment
-          experiment_enabled?
-          push_frontend_experiment
         ].freeze
         RUGGED_METHODS = %i[
           use_rugged?
@@ -33,7 +30,7 @@ module RuboCop
           limit_feature_flag_for_override=
         ].freeze + EXPERIMENT_METHODS + RUGGED_METHODS + WORKER_METHODS
 
-        RESTRICT_ON_SEND = FEATURE_METHODS + EXPERIMENTATION_METHODS + SELF_METHODS
+        RESTRICT_ON_SEND = FEATURE_METHODS + SELF_METHODS
 
         USAGE_DATA_COUNTERS_EVENTS_YAML_GLOBS = [
           File.expand_path("../../../config/metrics/aggregates/*.yml", __dir__),
@@ -78,15 +75,6 @@ module RuboCop
               save_used_feature_flag("gitaly_#{flag_value}")
             else
               save_used_feature_flag(flag_value)
-            end
-
-            if experiment_method?(node) || experimentation_method?(node)
-              # Additionally, mark experiment-related feature flag as used as well
-              matching_feature_flags = defined_feature_flags.select { |flag| flag == "#{flag_value}_experiment_percentage" }
-              matching_feature_flags.each do |matching_feature_flag|
-                puts_if_debug(node, "The '#{matching_feature_flag}' feature flag tracks the #{flag_value} experiment, which is still in use, so we'll mark it as used.")
-                save_used_feature_flag(matching_feature_flag)
-              end
             end
           elsif flag_arg_is_send_type?(flag_arg)
             puts_if_debug(node, "Feature flag is dynamic: '#{flag_value}.")
@@ -176,24 +164,12 @@ module RuboCop
           class_caller(node) == "Feature::Gitaly"
         end
 
-        def caller_is_experimentation?(node)
-          class_caller(node) == "Gitlab::Experimentation"
-        end
-
-        def experiment_method?(node)
-          EXPERIMENT_METHODS.include?(method_name(node))
-        end
-
         def rugged_method?(node)
           RUGGED_METHODS.include?(method_name(node))
         end
 
         def feature_method?(node)
           FEATURE_METHODS.include?(method_name(node)) && (caller_is_feature?(node) || caller_is_feature_gitaly?(node))
-        end
-
-        def experimentation_method?(node)
-          EXPERIMENTATION_METHODS.include?(method_name(node)) && caller_is_experimentation?(node)
         end
 
         def worker_method?(node)
@@ -205,7 +181,7 @@ module RuboCop
         end
 
         def trackable_flag?(node)
-          feature_method?(node) || experimentation_method?(node) || self_method?(node)
+          feature_method?(node) || self_method?(node)
         end
 
         # Marking all event's feature flags as used as Gitlab::UsageDataCounters::HLLRedisCounter.track_event{,context}

@@ -1,7 +1,7 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { flatten, isEqual, keyBy } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { sprintf, s__ } from '~/locale';
 import { METRICS_POPOVER_CONTENT } from '../constants';
 import { removeFlash, prepareTimeMetricsData } from '../utils';
@@ -17,7 +17,7 @@ const requestData = ({ request, endpoint, path, params, name }) => {
         ),
         { requestTypeName: name },
       );
-      createFlash({ message });
+      createAlert({ message });
     });
 };
 

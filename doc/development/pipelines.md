@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Engineering Productivity
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Pipelines for the GitLab project
@@ -62,11 +62,14 @@ The test mappings contain a map of each source files to a list of test files whi
 
 In the `detect-tests` job, we use this mapping to identify the minimal tests needed for the current merge request.
 
+Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipelines), we run the minimal tests needed for the current merge request.
+
 #### Exceptional cases
 
 In addition, there are a few circumstances where we would always run the full RSpec tests:
 
 - when the `pipeline:run-all-rspec` label is set on the merge request
+- when the `pipeline:run-full-rspec` label is set on the merge request, this label is assigned by triage automation when the merge request is approved by any reviewer
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
@@ -92,22 +95,10 @@ In addition, there are a few circumstances where we would always run the full Je
 
 ### Fork pipelines
 
-We only run the minimal RSpec & Jest jobs for fork pipelines unless the `pipeline:run-all-rspec`
+We run only the minimal RSpec & Jest jobs for fork pipelines, unless the `pipeline:run-all-rspec`
 label is set on the MR. The goal is to reduce the CI/CD minutes consumed by fork pipelines.
 
 See the [experiment issue](https://gitlab.com/gitlab-org/quality/team-tasks/-/issues/1170).
-
-## Faster feedback when reverting merge requests
-
-When you need to revert a merge request, to get accelerated feedback, you can add the `~pipeline:revert` label to your merge request.
-
-When this label is assigned, the following steps of the CI/CD pipeline are skipped:
-
-- The `e2e:package-and-test` job.
-- The `rspec:undercoverage` job.
-- The entire [Review Apps process](testing_guide/review_apps.md).
-
-Apply the label to the merge request, and run a new pipeline for the MR.
 
 ## Fail-fast job in merge request pipelines
 
@@ -154,6 +145,18 @@ merge request. This prevents `rspec fail-fast` duration from exceeding the avera
 `rspec` job duration and defeating its purpose.
 
 This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
+
+## Faster feedback when reverting merge requests
+
+When you need to revert a merge request, to get accelerated feedback, you can add the `~pipeline:revert` label to your merge request.
+
+When this label is assigned, the following steps of the CI/CD pipeline are skipped:
+
+- The `e2e:package-and-test` job.
+- The `rspec:undercoverage` job.
+- The entire [Review Apps process](testing_guide/review_apps.md).
+
+Apply the label to the merge request, and run a new pipeline for the MR.
 
 ## Test jobs
 
@@ -356,6 +359,11 @@ with latest `master`, and then it triggers a regular branch pipeline for
 never be merged back to `master`. Any other Ruby 3 changes should go into
 `master` directly, which should be compatible with Ruby 2.7.
 
+Previously, `ruby3-sync` was using a project token stored in `RUBY3_SYNC_TOKEN`
+(now backed up in `RUBY3_SYNC_TOKEN_NOT_USED`), however due to various
+permissions issues, we ended up using an access token from `gitlab-bot` so now
+`RUBY3_SYNC_TOKEN` is actually an access token from `gitlab-bot`.
+
 ### Long-term plan
 
 We follow the [PostgreSQL versions shipped with Omnibus GitLab](../administration/package_information/postgresql_versions.md):
@@ -392,8 +400,7 @@ In general, pipelines for an MR fall into one of the following types (from short
 
 A "pipeline type" is an abstract term that mostly describes the "critical path" (for example, the chain of jobs for which the sum
 of individual duration equals the pipeline's duration).
-We use these "pipeline types" in [metrics dashboards](https://app.periscopedata.com/app/gitlab/858266/GitLab-Pipeline-Durations)
-in order to detect what types and jobs need to be optimized first.
+We use these "pipeline types" in [metrics dashboards](https://app.periscopedata.com/app/gitlab/858266/GitLab-Pipeline-Durations) to detect what types and jobs need to be optimized first.
 
 An MR that touches multiple areas would be associated with the longest type applicable. For instance, an MR that touches backend
 and frontend would fall into the "Frontend" pipeline type since this type takes longer to finish than the "Backend" pipeline type.
@@ -581,8 +588,9 @@ The current stages are:
 ### Dependency Proxy
 
 Some of the jobs are using images from Docker Hub, where we also use
-`${GITLAB_DEPENDENCY_PROXY}` as a prefix to the image path, so that we pull
+`${GITLAB_DEPENDENCY_PROXY_ADDRESS}` as a prefix to the image path, so that we pull
 images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
+By default, this variable is set from the value of `${GITLAB_DEPENDENCY_PROXY}`.
 
 `${GITLAB_DEPENDENCY_PROXY}` is a group CI/CD variable defined in
 [`gitlab-org`](https://gitlab.com/gitlab-org) as
@@ -590,12 +598,31 @@ images from our [Dependency Proxy](../user/packages/dependency_proxy/index.md).
 defined as:
 
 ```yaml
-image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
 ```
 
 Projects in the `gitlab-org` group pull from the Dependency Proxy, while
 forks that reside on any other personal namespaces or groups fall back to
 Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
+
+#### Work around for when a pipeline is started by a Project access token user
+
+When a pipeline is started by a Project access token user (e.g. the `release-tools approver bot` user which
+automatically updates the Gitaly version used in the main project),
+[the Dependency proxy isn't accessible](https://gitlab.com/gitlab-org/gitlab/-/issues/332411#note_1130388163)
+and the job fails at the `Preparing the "docker+machine" executor` step.
+To work around that, we have a special workflow rule, that overrides the
+`${GITLAB_DEPENDENCY_PROXY_ADDRESS}` variable so that Depdendency proxy isn't used in that case:
+
+```yaml
+- if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
+  variables:
+    GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+```
+
+NOTE:
+We don't directly override the `${GITLAB_DEPENDENCY_PROXY}` variable because group-level
+variables have higher precedence over `.gitlab-ci.yml` variables.
 
 ### Common job definitions
 
@@ -731,7 +758,7 @@ This works well for the following reasons:
    - `.static-analysis-cache`
    - `.rubocop-cache`
    - `.coverage-cache`
-   - `.danger-review-cache`
+   - `.ruby-node-cache`
    - `.qa-cache`
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
@@ -749,33 +776,86 @@ This works well for the following reasons:
 
 ### Artifacts strategy
 
-We limit the artifacts that are saved and retrieved by jobs to the minimum in order to reduce the upload/download time and costs, as well as the artifacts storage.
+We limit the artifacts that are saved and retrieved by jobs to the minimum to reduce the upload/download time and costs, as well as the artifacts storage.
 
 ### Components caching
 
-Some external components (currently only GitLab Workhorse) of GitLab need to be built from source as a preliminary step for running tests.
+Some external components (GitLab Workhorse and frontend assets) of GitLab need to be built from source as a preliminary step for running tests.
 
-In [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79766), we introduced a new `build-components` job that:
+#### `cache-workhorse`
+
+In [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79766), and then
+[this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96297),
+we introduced a new `cache-workhorse` job that:
 
 - runs automatically for all GitLab.com `gitlab-org/gitlab` scheduled pipelines
 - runs automatically for any `master` commit that touches the `workhorse/` folder
-- is manual for GitLab.com's `gitlab-org`'s MRs
+- is manual for GitLab.com's `gitlab-org`'s MRs that touches caching-related files
 
 This job tries to download a generic package that contains GitLab Workhorse binaries needed in the GitLab test suite (under `tmp/tests/gitlab-workhorse`).
 
 - If the package URL returns a 404:
    1. It runs `scripts/setup-test-env`, so that the GitLab Workhorse binaries are built.
    1. It then creates an archive which contains the binaries and upload it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
-- Otherwise, if the package already exists, it exit the job successfully.
+- Otherwise, if the package already exists, it exits the job successfully.
 
 We also changed the `setup-test-env` job to:
 
-1. First download the GitLab Workhorse generic package build and uploaded by `build-components`.
+1. First download the GitLab Workhorse generic package build and uploaded by `cache-workhorse`.
 1. If the package is retrieved successfully, its content is placed in the right folder (for example, `tmp/tests/gitlab-workhorse`), preventing the building of the binaries when `scripts/setup-test-env` is run later on.
 1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab Workhorse binaries are built as part of `scripts/setup-test-env`.
 
 NOTE:
 The version of the package is the workhorse tree SHA (for example, `git rev-parse HEAD:workhorse`).
+
+#### `cache-assets`
+
+In [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96297),
+we introduced three new `cache-assets:test`, `cache-assets:test as-if-foss`,
+and `cache-assets:production` jobs that:
+
+- never run unless `$CACHE_ASSETS_AS_PACKAGE == "true"`
+- runs automatically for all GitLab.com `gitlab-org/gitlab` scheduled pipelines
+- runs automatically for any `master` commit that touches the assets-related folders
+- is manual for GitLab.com's `gitlab-org`'s MRs that touches caching-related files
+
+This job tries to download a generic package that contains GitLab compiled assets
+needed in the GitLab test suite (under `app/assets/javascripts/locale/**/app.js`,
+and `public/assets`).
+
+- If the package URL returns a 404:
+  1. It runs `bin/rake gitlab:assets:compile`, so that the GitLab assets are compiled.
+  1. It then creates an archive which contains the assets and uploads it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
+     The package version is set to the assets folders' hash sum.
+- Otherwise, if the package already exists, it exits the job successfully.
+
+#### `compile-*-assets`
+
+We also changed the `compile-test-assets`, `compile-test-assets as-if-foss`,
+and `compile-production-assets` jobs to:
+
+1. First download the "native" cache assets, which contain:
+   - The [compiled assets](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/global.gitlab-ci.yml#L86-87).
+   - A [`cached-assets-hash.txt` file](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/global.gitlab-ci.yml#L85)
+     containing the `SHA256` hexdigest of all the source files on which the assets depend on.
+     This list of files is a pessimistic list and the assets might not depend on
+     some of these files. At worst we compile the assets more often, which is better than
+     using outdated assets.
+
+     The file is [created after assets are compiled](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/frontend.gitlab-ci.yml#L83).
+1. We then we compute the `SHA256` hexdigest of all the source files the assets depend on, **for the current checked out branch**. We [store the hexdigest in the `GITLAB_ASSETS_HASH` variable](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/frontend.gitlab-ci.yml#L27).
+1. If `$CACHE_ASSETS_AS_PACKAGE == "true"`, we download the generic package built and uploaded by [`cache-assets:*`](#cache-assets).
+   - If the cache is up-to-date for the checked out branch, we download the native cache
+     **and** the cache package. We could optimize that by not downloading
+     the genetic package but the native cache is actually very often outdated because it's
+     rebuilt only every 2 hours.
+1. We [run the `assets_compile_script` function](https://gitlab.com/gitlab-org/gitlab/-/blob/a6910c9086bb28e553f5e747ec2dd50af6da3c6b/.gitlab/ci/frontend.gitlab-ci.yml#L35),
+   which [itself runs](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/scripts/utils.sh#L76)
+   the [`assets:compile` Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/lib/tasks/gitlab/assets.rake#L80-109).
+
+   This task is responsible for deciding if assets need to be compiled or not.
+   It [compares the `HEAD` `SHA256` hexdigest from `$GITLAB_ASSETS_HASH` with the `master` hexdigest from `cached-assets-hash.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/lib/tasks/gitlab/assets.rake#L86).
+1. If the hashes are the same, we don't compile anything. If they're different, we compile the assets.
 
 ### Pre-clone step
 

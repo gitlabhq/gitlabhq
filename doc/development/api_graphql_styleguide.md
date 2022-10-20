@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GraphQL API style guide
@@ -436,7 +436,7 @@ By default, fields add `1` to a query's complexity score. This can be overridden
 [providing a custom `complexity`](https://graphql-ruby.org/queries/complexity_and_depth.html) value for a field.
 
 Developers should specify higher complexity for fields that cause more _work_ to be performed
-by the server in order to return data. Fields that represent data that can be returned
+by the server to return data. Fields that represent data that can be returned
 with little-to-no _work_, for example in most cases; `id` or `title`, can be given a complexity of `0`.
 
 ### `calls_gitaly`

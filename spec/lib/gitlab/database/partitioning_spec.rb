@@ -130,12 +130,14 @@ RSpec.describe Gitlab::Database::Partitioning do
     context 'when no partitioned models are given' do
       it 'manages partitions for each registered model' do
         described_class.register_models([models.first])
-        described_class.register_tables([
-          {
-            table_name: table_names.last,
-            partitioned_column: :created_at, strategy: :monthly
-          }
-        ])
+        described_class.register_tables(
+          [
+            {
+              table_name: table_names.last,
+              partitioned_column: :created_at,
+              strategy: :monthly
+            }
+          ])
 
         expect { described_class.sync_partitions }
           .to change { find_partitions(table_names.first).size }.from(0)

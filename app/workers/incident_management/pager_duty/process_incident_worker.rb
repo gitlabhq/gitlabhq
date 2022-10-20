@@ -38,7 +38,7 @@ module IncidentManagement
       def log_error(result)
         Gitlab::AppLogger.warn(
           message: 'Cannot create issue for PagerDuty incident',
-          issue_errors: result.message
+          issue_errors: result.errors.join(', ')
         )
       end
     end

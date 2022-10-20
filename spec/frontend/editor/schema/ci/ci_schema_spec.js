@@ -29,12 +29,36 @@ import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
 import RulesYaml from './yaml_tests/positive_tests/rules.yml';
+import ProjectPathYaml from './yaml_tests/positive_tests/project_path.yml';
+import VariablesYaml from './yaml_tests/positive_tests/variables.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
 import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
+import VariablesNegativeYaml from './yaml_tests/negative_tests/variables.yml';
+
+import ProjectPathIncludeEmptyYaml from './yaml_tests/negative_tests/project_path/include/empty.yml';
+import ProjectPathIncludeInvalidVariableYaml from './yaml_tests/negative_tests/project_path/include/invalid_variable.yml';
+import ProjectPathIncludeLeadSlashYaml from './yaml_tests/negative_tests/project_path/include/leading_slash.yml';
+import ProjectPathIncludeNoSlashYaml from './yaml_tests/negative_tests/project_path/include/no_slash.yml';
+import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/include/tailing_slash.yml';
+import ProjectPathTriggerIncludeEmptyYaml from './yaml_tests/negative_tests/project_path/trigger/include/empty.yml';
+import ProjectPathTriggerIncludeInvalidVariableYaml from './yaml_tests/negative_tests/project_path/trigger/include/invalid_variable.yml';
+import ProjectPathTriggerIncludeLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/include/leading_slash.yml';
+import ProjectPathTriggerIncludeNoSlashYaml from './yaml_tests/negative_tests/project_path/trigger/include/no_slash.yml';
+import ProjectPathTriggerIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/trigger/include/tailing_slash.yml';
+import ProjectPathTriggerMinimalEmptyYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/empty.yml';
+import ProjectPathTriggerMinimalInvalidVariableYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/invalid_variable.yml';
+import ProjectPathTriggerMinimalLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/leading_slash.yml';
+import ProjectPathTriggerMinimalNoSlashYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/no_slash.yml';
+import ProjectPathTriggerMinimalTailSlashYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/tailing_slash.yml';
+import ProjectPathTriggerProjectEmptyYaml from './yaml_tests/negative_tests/project_path/trigger/project/empty.yml';
+import ProjectPathTriggerProjectInvalidVariableYaml from './yaml_tests/negative_tests/project_path/trigger/project/invalid_variable.yml';
+import ProjectPathTriggerProjectLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/leading_slash.yml';
+import ProjectPathTriggerProjectNoSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/no_slash.yml';
+import ProjectPathTriggerProjectTailSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/tailing_slash.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -67,6 +91,8 @@ describe('positive tests', () => {
       FilterYaml,
       IncludeYaml,
       RulesYaml,
+      VariablesYaml,
+      ProjectPathYaml,
     }),
   )('schema validates %s', (_, input) => {
     expect(input).toValidateJsonSchema(schema);
@@ -90,6 +116,27 @@ describe('negative tests', () => {
       CacheNegativeYaml,
       IncludeNegativeYaml,
       RulesNegativeYaml,
+      VariablesNegativeYaml,
+      ProjectPathIncludeEmptyYaml,
+      ProjectPathIncludeInvalidVariableYaml,
+      ProjectPathIncludeLeadSlashYaml,
+      ProjectPathIncludeNoSlashYaml,
+      ProjectPathIncludeTailSlashYaml,
+      ProjectPathTriggerIncludeEmptyYaml,
+      ProjectPathTriggerIncludeInvalidVariableYaml,
+      ProjectPathTriggerIncludeLeadSlashYaml,
+      ProjectPathTriggerIncludeNoSlashYaml,
+      ProjectPathTriggerIncludeTailSlashYaml,
+      ProjectPathTriggerMinimalEmptyYaml,
+      ProjectPathTriggerMinimalInvalidVariableYaml,
+      ProjectPathTriggerMinimalLeadSlashYaml,
+      ProjectPathTriggerMinimalNoSlashYaml,
+      ProjectPathTriggerMinimalTailSlashYaml,
+      ProjectPathTriggerProjectEmptyYaml,
+      ProjectPathTriggerProjectInvalidVariableYaml,
+      ProjectPathTriggerProjectLeadSlashYaml,
+      ProjectPathTriggerProjectNoSlashYaml,
+      ProjectPathTriggerProjectTailSlashYaml,
     }),
   )('schema validates %s', (_, input) => {
     expect(input).not.toValidateJsonSchema(schema);

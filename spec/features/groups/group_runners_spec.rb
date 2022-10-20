@@ -114,6 +114,35 @@ RSpec.describe "Group Runners" do
       end
     end
 
+    context "with an online instance runner" do
+      let!(:instance_runner) do
+        create(:ci_runner, :instance, description: 'runner-baz', contacted_at: Time.zone.now)
+      end
+
+      before do
+        visit group_runners_path(group)
+      end
+
+      context "when selecting 'Show only inherited'" do
+        before do
+          find("[data-testid='runner-membership-toggle'] button").click
+
+          wait_for_requests
+        end
+
+        it_behaves_like 'shows runner in list' do
+          let(:runner) { instance_runner }
+        end
+
+        it 'shows runner details page' do
+          click_link("##{instance_runner.id} (#{instance_runner.short_sha})")
+
+          expect(current_url).to include(group_runner_path(group, instance_runner))
+          expect(page).to have_content "#{s_('Runners|Description')} runner-baz"
+        end
+      end
+    end
+
     context 'with a multi-project runner' do
       let(:project) { create(:project, group: group) }
       let(:project_2) { create(:project, group: group) }
@@ -123,7 +152,7 @@ RSpec.describe "Group Runners" do
         visit group_runners_path(group)
 
         within_runner_row(runner.id) do
-          expect(page).to have_button 'Delete runner', disabled: true
+          expect(page).not_to have_button 'Delete runner'
         end
       end
     end
@@ -140,6 +169,21 @@ RSpec.describe "Group Runners" do
           expect(page).to have_link(s_('Runners|Paused'))
           expect(page).to have_content('Status')
         end
+      end
+    end
+
+    describe 'filter by tag' do
+      let!(:runner_1) { create(:ci_runner, :group, groups: [group], description: 'runner-blue', tag_list: ['blue']) }
+      let!(:runner_2) { create(:ci_runner, :group, groups: [group], description: 'runner-red', tag_list: ['red']) }
+
+      before do
+        visit group_runners_path(group)
+      end
+
+      it_behaves_like 'filters by tag' do
+        let(:tag) { 'blue' }
+        let(:found_runner) { runner_1.description }
+        let(:missing_runner) { runner_2.description }
       end
     end
   end

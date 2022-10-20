@@ -75,10 +75,8 @@
 // .gl-font-size-inherit will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1466
 .gl-font-size-inherit,
 .font-size-inherit { font-size: inherit; }
-.gl-w-8 { width: px-to-rem($grid-size); }
 .gl-w-16 { width: px-to-rem($grid-size * 2); }
 .gl-w-64 { width: px-to-rem($grid-size * 8); }
-.gl-h-8 { height: px-to-rem($grid-size); }
 .gl-h-32 { height: px-to-rem($grid-size * 4); }
 .gl-h-64 { height: px-to-rem($grid-size * 8); }
 
@@ -119,13 +117,6 @@
   flex-basis: 25%;
 }
 
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1168
-.gl-md-ml-3 {
-  @media (min-width: $breakpoint-md) {
-    margin-left: $gl-spacing-scale-3;
-  }
-}
-
 // Will be moved to @gitlab/ui (without the !important) in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1462
 // We only need the bang (!) version until the non-bang version is added to
 // @gitlab/ui utitlities.scss. Once there, it will get loaded in the correct
@@ -152,48 +143,6 @@
   display: flex;
 }
 
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1085
-.gl-md-flex-direction-column {
-  @media (min-width: $breakpoint-md) {
-    flex-direction: column;
-  }
-}
-
-// Same as above
-.gl-md-flex-direction-column\! {
-  @media (min-width: $breakpoint-md) {
-    flex-direction: column !important;
-  }
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1165
-.gl-xs-mb-4 {
-  @media (max-width: $breakpoint-sm) {
-    margin-bottom: $gl-spacing-scale-4;
-  }
-}
-
-// Same as above
-.gl-xs-mb-4\! {
-  @media (max-width: $breakpoint-sm) {
-    margin-bottom: $gl-spacing-scale-4 !important;
-  }
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1168
-.gl-sm-pr-3 {
-  @media (min-width: $breakpoint-sm) {
-    padding-right: $gl-spacing-scale-3;
-  }
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1168
-.gl-sm-w-half {
-  @media (min-width: $breakpoint-sm) {
-    width: 50%;
-  }
-}
-
 .gl-sm-mr-3 {
   @include media-breakpoint-up(sm) {
     margin-right: $gl-spacing-scale-3;
@@ -206,19 +155,8 @@
   }
 }
 
-.gl-mb-n3 {
-  margin-bottom: -$gl-spacing-scale-3;
-}
-
 .gl-mr-n2 {
   margin-right: -$gl-spacing-scale-2;
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1408
-$gl-line-height-42: px-to-rem(42px);
-
-.gl-line-height-42 {
-  line-height: $gl-line-height-42;
 }
 
 .gl-w-grid-size-30 {
@@ -227,26 +165,6 @@ $gl-line-height-42: px-to-rem(42px);
 
 .gl-w-grid-size-40 {
   width: $grid-size * 40;
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2209
-.gl-max-w-none\! {
-  max-width: none !important;
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2209
-.gl-max-h-none\! {
-  max-height: none !important;
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1655
-.gl-max-w-62 {
-  max-width: $grid-size * 62;
-}
-
-// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1655
-.gl-max-w-26 {
-  max-width: $grid-size * 26;
 }
 
 .gl-max-w-50p {
@@ -271,36 +189,15 @@ $gl-line-height-42: px-to-rem(42px);
   }
 }
 
-// Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
-.gl-text-transparent {
-  color: transparent;
-}
-
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
 .gl-focus-ring-border-1-gray-900\! {
   @include gl-focus($gl-border-size-1, $gray-900, true);
-}
-
-// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2600
-.gl-pr-10 {
-  padding-right: $gl-spacing-scale-10;
 }
 
 /*
 All of the following (up until the "End gitlab-ui#1709" comment) will be moved
 to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 */
-.gl-sm-grid-template-columns-2 {
-  @include media-breakpoint-up(sm) {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.gl-md-grid-template-columns-2 {
-  @include media-breakpoint-up(md) {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 .gl-md-grid-template-columns-3 {
   @include media-breakpoint-up(md) {
     grid-template-columns: repeat(3, 1fr);
@@ -311,10 +208,6 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
   @include media-breakpoint-up(lg) {
     grid-template-columns: repeat(4, 1fr);
   }
-}
-
-.gl-gap-6 {
-  gap: $gl-spacing-scale-6;
 }
 
 .gl-max-w-48 {
@@ -346,18 +239,6 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 /* End gitlab-ui#1709 */
 
 /*
- * The below two styles will be moved to @gitlab/ui by
- * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1750
- */
-.gl-max-w-34 {
-  max-width: 34 * $grid-size;
-}
-
-.gl-max-w-80 {
-  max-width: 80 * $grid-size;
-}
-
-/*
  * The below style will be moved to @gitlab/ui by
  * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1751
  */
@@ -369,14 +250,4 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 
 .gl-flex-flow-row-wrap {
   flex-flow: row wrap;
-}
-
-/*
- * The below style will be moved to @gitlab/ui by
- * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1963
- */
-.gl-gap-y-3 {
-  > * + * {
-    margin-top: $gl-spacing-scale-3;
-  }
 }

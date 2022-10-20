@@ -125,9 +125,13 @@ module Gitlab
           next unless page_counter.set(page.number)
 
           page.objects.each do |object|
+            object = object.to_h
+
             next if already_imported?(object)
 
-            Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+            if increment_object_counter?(object)
+              Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+            end
 
             yield object
 
@@ -136,6 +140,10 @@ module Gitlab
             mark_as_imported(object)
           end
         end
+      end
+
+      def increment_object_counter?(_object)
+        true
       end
 
       # Returns true if the given object has already been imported, false

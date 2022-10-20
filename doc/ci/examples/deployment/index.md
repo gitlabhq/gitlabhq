@@ -1,7 +1,7 @@
 ---
 stage: Release
 group: Release
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: tutorial
 ---
 
@@ -36,7 +36,7 @@ apt-get install ruby-dev
 ```
 
 The Dpl provides support for vast number of services, including: Heroku, Cloud Foundry, AWS/S3, and more.
-To use it simply define provider and any additional parameters required by the provider.
+To use it, define provider and any additional parameters required by the provider.
 
 For example if you want to use it to deploy your application to Heroku, you need to specify `heroku` as provider, specify `api_key` and `app`.
 All possible parameters can be found in the [Heroku API section](https://github.com/travis-ci/dpl#heroku-api).

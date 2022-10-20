@@ -3,7 +3,7 @@
 module GoogleCloud
   class EnableCloudsqlService < ::GoogleCloud::BaseService
     def execute
-      return no_projects_error if unique_gcp_project_ids.empty?
+      create_or_replace_project_vars(environment_name, 'GCP_PROJECT_ID', gcp_project_id, ci_var_protected?)
 
       unique_gcp_project_ids.each do |gcp_project_id|
         google_api_client.enable_cloud_sql_admin(gcp_project_id)
@@ -18,8 +18,8 @@ module GoogleCloud
 
     private
 
-    def no_projects_error
-      error("No GCP projects found. Configure a service account or GCP_PROJECT_ID CI variable.")
+    def ci_var_protected?
+      ProtectedBranch.protected?(project, environment_name) || ProtectedTag.protected?(project, environment_name)
     end
   end
 end

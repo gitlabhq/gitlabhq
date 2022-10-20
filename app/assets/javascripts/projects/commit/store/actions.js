@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { PROJECT_BRANCHES_ERROR } from '../constants';
 import * as types from './mutation_types';
@@ -26,7 +26,7 @@ export const fetchBranches = ({ commit, dispatch, state }, query) => {
       commit(types.RECEIVE_BRANCHES_SUCCESS, data.Branches?.length ? data.Branches : data);
     })
     .catch(() => {
-      createFlash({ message: PROJECT_BRANCHES_ERROR });
+      createAlert({ message: PROJECT_BRANCHES_ERROR });
     });
 };
 

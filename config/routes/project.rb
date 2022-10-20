@@ -223,11 +223,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :boards, only: [:index, :show, :create, :update, :destroy], constraints: { id: /\d+/ } do
-          collection do
-            get :recent
-          end
-        end
+        resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
 
         get 'releases/permalink/latest(/)(*suffix_path)', to: 'releases#latest_permalink', as: :latest_release_permalink, format: false
 
@@ -367,6 +363,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         post 'incidents/integrations/pagerduty', to: 'incident_management/pager_duty_incidents#create'
 
         resources :incidents, only: [:index]
+
+        namespace :incident_management do
+          resources :timeline_events, only: [] do
+            collection do
+              post :preview_markdown
+            end
+          end
+        end
 
         get 'issues/incident/:id' => 'incidents#show', as: :issues_incident
 

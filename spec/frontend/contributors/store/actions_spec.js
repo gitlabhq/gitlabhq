@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/contributors/stores/actions';
 import * as types from '~/contributors/stores/mutation_types';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/flash.js');
@@ -47,7 +47,7 @@ describe('Contributors store actions', () => {
         [{ type: types.SET_LOADING_STATE, payload: true }],
         [],
       );
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: expect.stringMatching('error'),
       });
     });

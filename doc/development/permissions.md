@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Implementing permissions
@@ -37,7 +37,7 @@ Groups and projects can have the following visibility levels:
 - private (`0`) - an entity is visible only to the approved members of the entity
 
 By default, subgroups can **not** have higher visibility levels.
-For example, if you create a new private group, it can not include a public subgroup.
+For example, if you create a new private group, it cannot include a public subgroup.
 
 The visibility level of a group can be changed only if all subgroups and
 sub-projects have the same or lower visibility level. For example, a group can be set

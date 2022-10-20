@@ -18,6 +18,7 @@ RSpec.shared_examples 'requires valid Google Oauth2 token' do
         allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
           allow(client).to receive(:validate_token).and_return(true)
           allow(client).to receive(:list_projects).and_return(mock_gcp_projects) if mock_gcp_projects
+          allow(client).to receive(:create_cloudsql_instance)
         end
 
         allow_next_instance_of(BranchesFinder) do |finder|

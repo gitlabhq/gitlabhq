@@ -859,7 +859,7 @@ RSpec.describe Projects::PipelinesController do
         let(:target_id) { ['p_analytics_pipelines', tab[:event]] }
       end
 
-      it_behaves_like 'Snowplow event tracking' do
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject { get :charts, params: request_params, format: :html }
 
         let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }

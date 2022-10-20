@@ -31,11 +31,11 @@ module Releases
     private
 
     def validate
-      return error('Tag does not exist', 404) unless existing_tag
-      return error('Release does not exist', 404) unless release
-      return error('Access Denied', 403) unless allowed?
-      return error('params is empty', 400) if empty_params?
-      return error("Milestone(s) not found: #{inexistent_milestones.join(', ')}", 400) if inexistent_milestones.any?
+      return error(_('Tag does not exist'), 404) unless existing_tag
+      return error(_('Release does not exist'), 404) unless release
+      return error(_('Access Denied'), 403) unless allowed?
+      return error(_('params is empty'), 400) if empty_params?
+      return error(format(_("Milestone(s) not found: %{milestones}"), milestones: inexistent_milestones.join(', ')), 400) if inexistent_milestones.any? # rubocop:disable Layout/LineLength
     end
 
     def allowed?

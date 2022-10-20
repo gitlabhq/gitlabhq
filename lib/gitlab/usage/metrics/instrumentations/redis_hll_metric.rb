@@ -12,7 +12,7 @@ module Gitlab
           #   events:
           #     - g_analytics_valuestream
           # end
-          def initialize(time_frame:, options: {})
+          def initialize(metric_definition)
             super
 
             raise ArgumentError, "options events are required" unless metric_events.present?

@@ -79,10 +79,11 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateMergeRequestDiffCommitUsers, 
       it 'produces a union of the given queries' do
         alice = commit_users.create!(name: 'Alice', email: 'alice@example.com')
         bob = commit_users.create!(name: 'Bob', email: 'bob@example.com')
-        users = commit_users.union([
-          commit_users.where(name: 'Alice').to_sql,
-          commit_users.where(name: 'Bob').to_sql
-        ])
+        users = commit_users.union(
+          [
+            commit_users.where(name: 'Alice').to_sql,
+            commit_users.where(name: 'Bob').to_sql
+          ])
 
         expect(users).to include(alice)
         expect(users).to include(bob)

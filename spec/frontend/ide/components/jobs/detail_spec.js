@@ -1,15 +1,17 @@
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
+
 import { TEST_HOST } from 'helpers/test_constants';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
 import JobDetail from '~/ide/components/jobs/detail.vue';
 import { createStore } from '~/ide/stores';
 import { jobs } from '../../mock_data';
 
 describe('IDE jobs detail view', () => {
-  let vm;
+  let wrapper;
+  let store;
 
   const createComponent = () => {
-    const store = createStore();
+    store = createStore();
 
     store.state.pipelines.detailJob = {
       ...jobs[0],
@@ -18,163 +20,129 @@ describe('IDE jobs detail view', () => {
       rawPath: `${TEST_HOST}/raw`,
     };
 
-    return createComponentWithStore(Vue.extend(JobDetail), store);
+    jest.spyOn(store, 'dispatch');
+    store.dispatch.mockResolvedValue();
+
+    wrapper = mount(JobDetail, { store });
   };
 
-  beforeEach(() => {
-    vm = createComponent();
+  const findBuildJobLog = () => wrapper.find('pre');
+  const findScrollToBottomButton = () => wrapper.find('button[aria-label="Scroll to bottom"]');
+  const findScrollToTopButton = () => wrapper.find('button[aria-label="Scroll to top"]');
 
-    jest.spyOn(vm, 'fetchJobLogs').mockResolvedValue();
+  beforeEach(() => {
+    createComponent();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('mounted', () => {
-    beforeEach(() => {
-      vm = vm.$mount();
-    });
+    const findJobOutput = () => wrapper.find('.bash');
+    const findBuildLoaderAnimation = () => wrapper.find('.build-loader-animation');
 
     it('calls fetchJobLogs', () => {
-      expect(vm.fetchJobLogs).toHaveBeenCalled();
+      expect(store.dispatch).toHaveBeenCalledWith('pipelines/fetchJobLogs', undefined);
     });
 
     it('scrolls to bottom', () => {
-      expect(vm.$refs.buildJobLog.scrollTo).toHaveBeenCalled();
+      expect(findBuildJobLog().element.scrollTo).toHaveBeenCalled();
     });
 
     it('renders job output', () => {
-      expect(vm.$el.querySelector('.bash').textContent).toContain('testing');
+      expect(findJobOutput().text()).toContain('testing');
     });
 
     it('renders empty message output', async () => {
-      vm.$store.state.pipelines.detailJob.output = '';
-
+      store.state.pipelines.detailJob.output = '';
       await nextTick();
-      expect(vm.$el.querySelector('.bash').textContent).toContain('No messages were logged');
+
+      expect(findJobOutput().text()).toContain('No messages were logged');
     });
 
     it('renders loading icon', () => {
-      expect(vm.$el.querySelector('.build-loader-animation')).not.toBe(null);
-      expect(vm.$el.querySelector('.build-loader-animation').style.display).toBe('');
+      expect(findBuildLoaderAnimation().exists()).toBe(true);
+      expect(findBuildLoaderAnimation().isVisible()).toBe(true);
     });
 
     it('hides output when loading', () => {
-      expect(vm.$el.querySelector('.bash')).not.toBe(null);
-      expect(vm.$el.querySelector('.bash').style.display).toBe('none');
+      expect(findJobOutput().exists()).toBe(true);
+      expect(findJobOutput().isVisible()).toBe(false);
     });
 
     it('hide loading icon when isLoading is false', async () => {
-      vm.$store.state.pipelines.detailJob.isLoading = false;
-
+      store.state.pipelines.detailJob.isLoading = false;
       await nextTick();
-      expect(vm.$el.querySelector('.build-loader-animation').style.display).toBe('none');
+
+      expect(findBuildLoaderAnimation().isVisible()).toBe(false);
     });
 
-    it('resets detailJob when clicking header button', () => {
-      jest.spyOn(vm, 'setDetailJob').mockImplementation();
+    it('resets detailJob when clicking header button', async () => {
+      await wrapper.find('.btn').trigger('click');
 
-      vm.$el.querySelector('.btn').click();
-
-      expect(vm.setDetailJob).toHaveBeenCalledWith(null);
+      expect(store.dispatch).toHaveBeenCalledWith('pipelines/setDetailJob', null);
     });
 
     it('renders raw path link', () => {
-      expect(vm.$el.querySelector('.controllers-buttons').getAttribute('href')).toBe(
-        `${TEST_HOST}/raw`,
-      );
+      expect(wrapper.find('.controllers-buttons').attributes('href')).toBe(`${TEST_HOST}/raw`);
     });
   });
 
   describe('scroll buttons', () => {
     beforeEach(() => {
-      vm = createComponent();
-      jest.spyOn(vm, 'fetchJobLogs').mockResolvedValue();
-    });
-
-    afterEach(() => {
-      vm.$destroy();
+      createComponent();
     });
 
     it.each`
-      fnName          | btnName   | scrollPos
-      ${'scrollDown'} | ${'down'} | ${0}
-      ${'scrollUp'}   | ${'up'}   | ${1}
-    `('triggers $fnName when clicking $btnName button', async ({ fnName, scrollPos }) => {
-      jest.spyOn(vm, fnName).mockImplementation();
+      fnName           | btnName   | scrollPos | targetScrollPos
+      ${'scroll down'} | ${'down'} | ${0}      | ${200}
+      ${'scroll up'}   | ${'up'}   | ${200}    | ${0}
+    `('triggers $fnName when clicking $btnName button', async ({ scrollPos, targetScrollPos }) => {
+      jest.spyOn(findBuildJobLog().element, 'offsetHeight', 'get').mockReturnValue(0);
+      jest.spyOn(findBuildJobLog().element, 'scrollHeight', 'get').mockReturnValue(200);
+      jest.spyOn(findBuildJobLog().element, 'scrollTop', 'get').mockReturnValue(scrollPos);
+      findBuildJobLog().element.scrollTo.mockReset();
 
-      vm = vm.$mount();
+      await findBuildJobLog().trigger('scroll'); // trigger button updates
 
-      vm.scrollPos = scrollPos;
+      await wrapper.find('.controllers button:not(:disabled)').trigger('click');
 
-      await nextTick();
-      vm.$el.querySelector('.btn-scroll:not([disabled])').click();
-      expect(vm[fnName]).toHaveBeenCalled();
+      expect(findBuildJobLog().element.scrollTo).toHaveBeenCalledWith(0, targetScrollPos);
     });
   });
 
-  describe('scrollDown', () => {
+  describe('scrolling build log', () => {
     beforeEach(() => {
-      vm = vm.$mount();
-
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollTo').mockImplementation();
+      jest.spyOn(findBuildJobLog().element, 'offsetHeight', 'get').mockReturnValue(100);
+      jest.spyOn(findBuildJobLog().element, 'scrollHeight', 'get').mockReturnValue(200);
     });
 
-    it('scrolls build trace to bottom', () => {
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollHeight', 'get').mockReturnValue(1000);
+    it('keeps scroll at bottom when already at the bottom', async () => {
+      jest.spyOn(findBuildJobLog().element, 'scrollTop', 'get').mockReturnValue(100);
 
-      vm.scrollDown();
+      await findBuildJobLog().trigger('scroll');
 
-      expect(vm.$refs.buildJobLog.scrollTo).toHaveBeenCalledWith(0, 1000);
-    });
-  });
-
-  describe('scrollUp', () => {
-    beforeEach(() => {
-      vm = vm.$mount();
-
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollTo').mockImplementation();
+      expect(findScrollToBottomButton().attributes('disabled')).toBe('disabled');
+      expect(findScrollToTopButton().attributes('disabled')).not.toBe('disabled');
     });
 
-    it('scrolls build trace to top', () => {
-      vm.scrollUp();
+    it('keeps scroll at top when already at top', async () => {
+      jest.spyOn(findBuildJobLog().element, 'scrollTop', 'get').mockReturnValue(0);
 
-      expect(vm.$refs.buildJobLog.scrollTo).toHaveBeenCalledWith(0, 0);
-    });
-  });
+      await findBuildJobLog().trigger('scroll');
 
-  describe('scrollBuildLog', () => {
-    beforeEach(() => {
-      vm = vm.$mount();
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollTo').mockImplementation();
-      jest.spyOn(vm.$refs.buildJobLog, 'offsetHeight', 'get').mockReturnValue(100);
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollHeight', 'get').mockReturnValue(200);
+      expect(findScrollToBottomButton().attributes('disabled')).not.toBe('disabled');
+      expect(findScrollToTopButton().attributes('disabled')).toBe('disabled');
     });
 
-    it('sets scrollPos to bottom when at the bottom', () => {
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollTop', 'get').mockReturnValue(100);
+    it('resets scroll when not at top or bottom', async () => {
+      jest.spyOn(findBuildJobLog().element, 'scrollTop', 'get').mockReturnValue(10);
 
-      vm.scrollBuildLog();
+      await findBuildJobLog().trigger('scroll');
 
-      expect(vm.scrollPos).toBe(1);
-    });
-
-    it('sets scrollPos to top when at the top', () => {
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollTop', 'get').mockReturnValue(0);
-      vm.scrollPos = 1;
-
-      vm.scrollBuildLog();
-
-      expect(vm.scrollPos).toBe(0);
-    });
-
-    it('resets scrollPos when not at top or bottom', () => {
-      jest.spyOn(vm.$refs.buildJobLog, 'scrollTop', 'get').mockReturnValue(10);
-
-      vm.scrollBuildLog();
-
-      expect(vm.scrollPos).toBe('');
+      expect(findScrollToBottomButton().attributes('disabled')).not.toBe('disabled');
+      expect(findScrollToTopButton().attributes('disabled')).not.toBe('disabled');
     });
   });
 });

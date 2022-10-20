@@ -41,12 +41,27 @@
   rules:
     - when: always
 
+.rules:dont-interrupt:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      allow_failure: true
+    - if: $CI_MERGE_REQUEST_IID
+      when: manual
+      allow_failure: true
+
+.rules:omnibus-build:
+  rules:
+    - if: $SKIP_OMNIBUS_TRIGGER == "true"
+      when: never
+    - when: always
+
 # ------------------------------------------
 # Test
 # ------------------------------------------
-.rules:test:quarantine:
+.rules:test:manual:
   rules:
     - when: manual
+      allow_failure: true
       variables:
         QA_TESTS: ""
 
@@ -78,7 +93,10 @@
   rules:
     - *qa-framework-changes
     - <<: *specific-specs
-      when: never
+      when: manual
+      allow_failure: true
+      variables:
+        QA_TESTS: ""
     - *feature-flags-set-manual
 
 # general qa job rule for jobs without the need to run in parallel
@@ -87,11 +105,21 @@
     - *qa-framework-changes
     - *feature-flags-set-manual
 
+.rules:test:update:
+  rules:
+    # skip upgrade jobs if gitlab version is not provided
+    # these jobs need gitlab version because we can't reliably detect it from just the image
+    - if: $GITLAB_VERSION == null
+      when: never
+    - !reference [.rules:test:qa, rules]
+
 # ------------------------------------------
 # Report
 # ------------------------------------------
 .rules:report:allure-report:
   rules:
+    - if: $SKIP_ALLURE_REPORT == "true"
+      when: never
     - when: always
 
 .rules:report:process-results:

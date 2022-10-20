@@ -204,11 +204,12 @@ RSpec.describe UsersHelper do
 
         badges = helper.user_badges_in_admin_section(user)
 
-        expect(badges).to match_array([
-          { text: s_("AdminUsers|Blocked"), variant: "danger" },
-          { text: s_("AdminUsers|Admin"), variant: "success" },
-          { text: s_("AdminUsers|External"), variant: "secondary" }
-        ])
+        expect(badges).to match_array(
+          [
+            { text: s_("AdminUsers|Blocked"), variant: "danger" },
+            { text: s_("AdminUsers|Admin"), variant: "success" },
+            { text: s_("AdminUsers|External"), variant: "secondary" }
+          ])
       end
     end
 

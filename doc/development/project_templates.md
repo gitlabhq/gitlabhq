@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Workspace
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Contribute a built-in project template
@@ -50,7 +50,7 @@ Before GitLab can implement the project template, you must [create a merge reque
 1. [Export the project](../user/project/settings/import_export.md#export-a-project-and-its-data)
    and save the file as `<name>.tar.gz`, where `<name>` is the short name of the project.
    Move this file to the root directory of `gitlab-org/gitlab`.
-1. In `gitlab-org/gitlab`, create and checkout a new branch.
+1. In `gitlab-org/gitlab`, create and check out a new branch.
 1. Edit the following files to include the project template:
    - For **non-Enterprise** project templates:
      - In `lib/gitlab/project_template.rb`, add details about the template

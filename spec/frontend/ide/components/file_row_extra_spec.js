@@ -1,146 +1,146 @@
-import Vue, { nextTick } from 'vue';
-import { createComponentWithStore } from 'helpers/vue_mount_component_helper';
+import Vuex from 'vuex';
+import { mount } from '@vue/test-utils';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';
-import { createStore } from '~/ide/stores';
+import { createStoreOptions } from '~/ide/stores';
 import { file } from '../helpers';
 
 describe('IDE extra file row component', () => {
-  let Component;
-  let vm;
+  let wrapper;
+  let store;
   let unstagedFilesCount = 0;
   let stagedFilesCount = 0;
   let changesCount = 0;
 
-  beforeAll(() => {
-    Component = Vue.extend(FileRowExtra);
-  });
+  const createComponent = (fileProps) => {
+    const storeConfig = createStoreOptions();
 
-  beforeEach(() => {
-    vm = createComponentWithStore(Component, createStore(), {
-      file: {
-        ...file('test'),
+    store = new Vuex.Store({
+      ...storeConfig,
+      getters: {
+        getUnstagedFilesCountForPath: () => () => unstagedFilesCount,
+        getStagedFilesCountForPath: () => () => stagedFilesCount,
+        getChangesInFolder: () => () => changesCount,
       },
-      dropdownOpen: false,
     });
 
-    jest.spyOn(vm, 'getUnstagedFilesCountForPath', 'get').mockReturnValue(() => unstagedFilesCount);
-    jest.spyOn(vm, 'getStagedFilesCountForPath', 'get').mockReturnValue(() => stagedFilesCount);
-    jest.spyOn(vm, 'getChangesInFolder', 'get').mockReturnValue(() => changesCount);
-
-    vm.$mount();
-  });
+    wrapper = mount(FileRowExtra, {
+      store,
+      propsData: {
+        file: {
+          ...file('test'),
+          type: 'tree',
+          ...fileProps,
+        },
+        dropdownOpen: false,
+      },
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
 
     stagedFilesCount = 0;
     unstagedFilesCount = 0;
     changesCount = 0;
   });
 
-  describe('folderChangesTooltip', () => {
-    it('returns undefined when changes count is 0', () => {
-      changesCount = 0;
-
-      expect(vm.folderChangesTooltip).toBe(undefined);
-    });
-
+  describe('folder changes tooltip', () => {
     [
       { input: 1, output: '1 changed file' },
       { input: 2, output: '2 changed files' },
     ].forEach(({ input, output }) => {
-      it('returns changed files count if changes count is not 0', () => {
+      it('shows changed files count if changes count is not 0', () => {
         changesCount = input;
+        createComponent();
 
-        expect(vm.folderChangesTooltip).toBe(output);
+        expect(wrapper.find('.ide-file-modified').attributes('title')).toBe(output);
       });
     });
   });
 
   describe('show tree changes count', () => {
-    it('does not show for blobs', () => {
-      vm.file.type = 'blob';
+    const findTreeChangesCount = () => wrapper.find('.ide-tree-changes');
 
-      expect(vm.$el.querySelector('.ide-tree-changes')).toBe(null);
+    it('does not show for blobs', () => {
+      createComponent({ type: 'blob' });
+
+      expect(findTreeChangesCount().exists()).toBe(false);
     });
 
     it('does not show when changes count is 0', () => {
-      vm.file.type = 'tree';
+      createComponent({ type: 'tree' });
 
-      expect(vm.$el.querySelector('.ide-tree-changes')).toBe(null);
+      expect(findTreeChangesCount().exists()).toBe(false);
     });
 
-    it('does not show when tree is open', async () => {
-      vm.file.type = 'tree';
-      vm.file.opened = true;
+    it('does not show when tree is open', () => {
       changesCount = 1;
+      createComponent({ type: 'tree', opened: true });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.ide-tree-changes')).toBe(null);
+      expect(findTreeChangesCount().exists()).toBe(false);
     });
 
-    it('shows for trees with changes', async () => {
-      vm.file.type = 'tree';
-      vm.file.opened = false;
+    it('shows for trees with changes', () => {
       changesCount = 1;
+      createComponent({ type: 'tree', opened: false });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.ide-tree-changes')).not.toBe(null);
+      expect(findTreeChangesCount().exists()).toBe(true);
     });
   });
 
   describe('changes file icon', () => {
+    const findChangedFileIcon = () => wrapper.find('.file-changed-icon');
+
     it('hides when file is not changed', () => {
-      expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
+      createComponent();
+
+      expect(findChangedFileIcon().exists()).toBe(false);
     });
 
-    it('shows when file is changed', async () => {
-      vm.file.changed = true;
+    it('shows when file is changed', () => {
+      createComponent({ type: 'blob', changed: true });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
+      expect(findChangedFileIcon().exists()).toBe(true);
     });
 
-    it('shows when file is staged', async () => {
-      vm.file.staged = true;
+    it('shows when file is staged', () => {
+      createComponent({ type: 'blob', staged: true });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
+      expect(findChangedFileIcon().exists()).toBe(true);
     });
 
-    it('shows when file is a tempFile', async () => {
-      vm.file.tempFile = true;
+    it('shows when file is a tempFile', () => {
+      createComponent({ type: 'blob', tempFile: true });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
+      expect(findChangedFileIcon().exists()).toBe(true);
     });
 
-    it('shows when file is renamed', async () => {
-      vm.file.prevPath = 'original-file';
+    it('shows when file is renamed', () => {
+      createComponent({ type: 'blob', prevPath: 'original-file' });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
+      expect(findChangedFileIcon().exists()).toBe(true);
     });
 
-    it('hides when file is renamed', async () => {
-      vm.file.prevPath = 'original-file';
-      vm.file.type = 'tree';
+    it('hides when tree is renamed', () => {
+      createComponent({ type: 'tree', prevPath: 'original-path' });
 
-      await nextTick();
-      expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
+      expect(findChangedFileIcon().exists()).toBe(false);
     });
   });
 
   describe('merge request icon', () => {
+    const findMergeRequestIcon = () => wrapper.find('[data-testid="git-merge-icon"]');
+
     it('hides when not a merge request change', () => {
-      expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).toBe(null);
+      createComponent();
+
+      expect(findMergeRequestIcon().exists()).toBe(false);
     });
 
-    it('shows when a merge request change', async () => {
-      vm.file.mrChange = true;
+    it('shows when a merge request change', () => {
+      createComponent({ mrChange: true });
 
-      await nextTick();
-      expect(vm.$el.querySelector('[data-testid="git-merge-icon"]')).not.toBe(null);
+      expect(findMergeRequestIcon().exists()).toBe(true);
     });
   });
 });

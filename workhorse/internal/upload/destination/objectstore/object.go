@@ -8,11 +8,11 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/mask"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/httptransport"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
 
 var httpClient = &http.Client{
-	Transport: httptransport.New(),
+	Transport: transport.NewRestrictedTransport(),
 }
 
 // Object represents an object on a S3 compatible Object Store service.

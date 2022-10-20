@@ -38,6 +38,8 @@ module BulkImports
     def execute
       bulk_import = create_bulk_import
 
+      Gitlab::Tracking.event(self.class.name, 'create', label: 'bulk_import_group')
+
       BulkImportWorker.perform_async(bulk_import.id)
 
       ServiceResponse.success(payload: bulk_import)

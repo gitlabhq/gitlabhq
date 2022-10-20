@@ -30,6 +30,8 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
       '2600:1900:4180:0000:0000:0000:0000:0000' | false
       '10.10.1.5'                               | false
       'fc00:0000:0000:0000:0000:0000:0000:0000' | false
+      '127.0.0.1'                               | false
+      '169.254.0.0'                             | false
     end
 
     with_them do
@@ -63,6 +65,26 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
 
     context 'when the URL is missing' do
       let(:options) { { key: Base64.urlsafe_encode64(SecureRandom.hex) } }
+
+      it 'returns false' do
+        expect(subject.use_cdn?(public_ip)).to be false
+      end
+    end
+
+    context 'when URL is a domain' do
+      before do
+        options[:url] = 'cdn.gitlab.example.com'
+      end
+
+      it 'returns false' do
+        expect(subject.use_cdn?(public_ip)).to be false
+      end
+    end
+
+    context 'when URL uses HTTP' do
+      before do
+        options[:url] = 'http://cdn.gitlab.example.com'
+      end
 
       it 'returns false' do
         expect(subject.use_cdn?(public_ip)).to be false

@@ -83,7 +83,16 @@ module Issues
 
       # Skip creation of system notes for existing attributes of the issue. The system notes of the old
       # issue are copied over so we don't want to end up with duplicate notes.
-      CreateService.new(project: @target_project, current_user: @current_user, params: new_params, spam_params: spam_params).execute(skip_system_notes: true)
+      create_result = CreateService.new(
+        project: @target_project,
+        current_user: @current_user,
+        params: new_params,
+        spam_params: spam_params
+      ).execute(skip_system_notes: true)
+
+      raise MoveError, create_result.errors.join(', ') if create_result.error? && create_result[:issue].blank?
+
+      create_result[:issue]
     end
 
     def queue_copy_designs

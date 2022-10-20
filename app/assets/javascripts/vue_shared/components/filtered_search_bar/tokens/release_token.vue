@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { DEFAULT_NONE_ANY } from '../constants';
@@ -47,7 +47,7 @@ export default {
           this.releases = response;
         })
         .catch(() => {
-          createFlash({ message: __('There was a problem fetching releases.') });
+          createAlert({ message: __('There was a problem fetching releases.') });
         })
         .finally(() => {
           this.loading = false;

@@ -36,7 +36,7 @@
     = platform_kubernetes_field.form_group :authorization_type,
       { help: '%{help_text} %{help_link}'.html_safe % { help_text: rbac_help_text, help_link: rbac_help_link } } do
       = platform_kubernetes_field.check_box :authorization_type,
-        { class: 'qa-rbac-checkbox', label: s_('ClusterIntegration|RBAC-enabled cluster'),
+        { data: { qa_selector: 'rbac_checkbox'}, label: s_('ClusterIntegration|RBAC-enabled cluster'),
         label_class: 'label-bold', inline: true }, 'rbac', 'abac'
 
   .form-group

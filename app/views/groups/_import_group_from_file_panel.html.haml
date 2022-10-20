@@ -2,7 +2,7 @@
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent
 
-= form_for '', url: import_gitlab_group_path, namespace: 'import_group', class: 'group-form gl-show-field-errors', multipart: true do |f|
+= gitlab_ui_form_for '', url: import_gitlab_group_path, namespace: 'import_group', class: 'group-form gl-show-field-errors', multipart: true do |f|
   .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
     %h4
       = _('Import group from file')
@@ -22,4 +22,4 @@
       .gl-mt-3
         = render 'shared/file_picker_button', f: f, field: :file, help_text: nil, classes: 'gl-button btn-confirm-secondary gl-mr-2'
   .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
-    = f.submit _('Import'), class: 'btn gl-button btn-confirm'
+    = f.submit _('Import'), pajamas_button: true

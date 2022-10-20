@@ -1,4 +1,4 @@
-import createFlash from './flash';
+import { createAlert } from '~/flash';
 import axios from './lib/utils/axios_utils';
 import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
@@ -73,7 +73,7 @@ export default class PersistentUserCallout {
         }
       })
       .catch(() => {
-        createFlash({
+        createAlert({
           message: __(
             'An error occurred while dismissing the alert. Refresh the page and try again.',
           ),
@@ -94,7 +94,7 @@ export default class PersistentUserCallout {
         window.location.assign(href);
       })
       .catch(() => {
-        createFlash({
+        createAlert({
           message: __(
             'An error occurred while acknowledging the notification. Refresh the page and try again.',
           ),

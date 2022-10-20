@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Jira integrations **(FREE)**
@@ -122,3 +122,59 @@ and complete the CAPTCHA.
 There is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/341571)
 where the Jira integration sometimes does not work for a project that has been imported.
 As a workaround, disable the integration and then re-enable it.
+
+### Bulk change all Jira integrations to Jira instance-level values
+
+To change all Jira projects to use instance-level integration settings:
+
+1. In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run the following:
+
+   ```ruby
+   jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
+   Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
+     integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
+   end
+   ```
+
+1. Modify and save the instance-level integration from the UI to propagate the changes to all group-level and project-level integrations.
+
+### Check if Jira Cloud is linked
+
+You can use the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session) to check if Jira Cloud is linked to:
+
+A specified namespace:
+
+```ruby
+JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
+```
+
+A specified project:
+
+```ruby
+Project.find_by_full_path('path/to/project').jira_subscription_exists?
+```
+
+Any namespace:
+
+```ruby
+installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
+installation.subscriptions
+```
+
+### Bulk update the service integration password for all projects
+
+To reset the Jira user's password for all projects with active Jira integrations,
+run the following in a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'JiraService' AND s.active = true")
+
+p.each do |project|
+  project.jira_integration.update_attribute(:password, '<your-new-password>')
+end
+```
+
+### `500 Whoops` when accessing a Jira issue in GitLab
+
+When accessing a Jira issue in GitLab, you might get a `500 Whoops, something went wrong on our end` error.
+Check [`production.log`](../../administration/logs/index.md#productionlog) to see if it contains a `:NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)` exception. If that's the case, ensure the **Due date** field is visible for issues in the integrated Jira project.

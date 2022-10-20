@@ -61,7 +61,7 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_sessions do
     subject.cleanup_session_per_ip_count
 
     Gitlab::Redis::Sessions.with do |redis|
-      expect(redis.exists("session:lookup:ip:gitlab2:127.0.0.1")).to eq(false)
+      expect(redis.exists?("session:lookup:ip:gitlab2:127.0.0.1")).to eq(false)
     end
   end
 end

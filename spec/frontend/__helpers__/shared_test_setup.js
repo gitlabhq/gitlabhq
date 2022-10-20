@@ -1,7 +1,7 @@
 /* Common setup for both unit and integration test environments */
-import { config as testUtilsConfig } from '@vue/test-utils';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
+import { enableAutoDestroy } from '@vue/test-utils';
 import 'jquery';
 import Translate from '~/vue_shared/translate';
 import setWindowLocation from './set_window_location_helper';
@@ -12,6 +12,8 @@ import * as customMatchers from './matchers';
 import './dom_shims';
 import './jquery';
 import '~/commons/bootstrap';
+
+enableAutoDestroy(afterEach);
 
 // This module has some fairly decent visual test coverage in it's own repository.
 jest.mock('@gitlab/favicon-overlay');
@@ -44,16 +46,6 @@ Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
 
 expect.extend(customMatchers);
 
-testUtilsConfig.deprecationWarningHandler = (method, message) => {
-  const ALLOWED_DEPRECATED_METHODS = [
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/295679
-    'finding components with `find` or `get`',
-  ];
-  if (!ALLOWED_DEPRECATED_METHODS.includes(method)) {
-    global.console.error(message);
-  }
-};
-
 Object.assign(global, {
   requestIdleCallback(cb) {
     const start = Date.now();
@@ -72,6 +64,7 @@ Object.assign(global, {
 beforeEach(() => {
   // make sure that each test actually tests something
   // see https://jestjs.io/docs/en/expect#expecthasassertions
+  // eslint-disable-next-line jest/no-standalone-expect
   expect.hasAssertions();
 
   // Reset the mocked window.location. This ensures tests don't interfere with

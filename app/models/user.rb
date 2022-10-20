@@ -60,7 +60,7 @@ class User < ApplicationRecord
 
   default_value_for :admin, false
   default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
-  default_value_for :can_create_group, gitlab_config.default_can_create_group
+  default_value_for(:can_create_group) { Gitlab::CurrentSettings.can_create_group }
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
@@ -79,6 +79,7 @@ class User < ApplicationRecord
          otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
+  devise :two_factor_backupable_pbkdf2
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
@@ -168,6 +169,10 @@ class User < ApplicationRecord
            through: :group_members,
            source: :group
   alias_attribute :masters_groups, :maintainers_groups
+  has_many :developer_maintainer_owned_groups,
+           -> { where(members: { access_level: [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
+           through: :group_members,
+           source: :group
   has_many :reporter_developer_maintainer_owned_groups,
            -> { where(members: { access_level: [Gitlab::Access::REPORTER, Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
            through: :group_members,
@@ -193,6 +198,10 @@ class User < ApplicationRecord
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :legacy_assigned_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :assignee_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :merged_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :merged_by_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :closed_merge_requests, class_name: 'MergeRequest::Metrics', dependent: :nullify, foreign_key: :latest_closed_by_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :updated_merge_requests, class_name: 'MergeRequest', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :updated_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :updated_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :closed_issues, class_name: 'Issue', dependent: :nullify, foreign_key: :closed_by_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
@@ -205,14 +214,15 @@ class User < ApplicationRecord
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
-  has_many :todos
+  has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 class_name: 'Ci::Trigger', foreign_key: :owner_id
 
   has_many :issue_assignees, inverse_of: :assignee
-  has_many :merge_request_assignees, inverse_of: :assignee
-  has_many :merge_request_reviewers, inverse_of: :reviewer
+  has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests, class_name: "MergeRequest", through: :merge_request_assignees, source: :merge_request
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
@@ -223,7 +233,6 @@ class User < ApplicationRecord
   has_many :callouts, class_name: 'Users::Callout'
   has_many :group_callouts, class_name: 'Users::GroupCallout'
   has_many :project_callouts, class_name: 'Users::ProjectCallout'
-  has_many :namespace_callouts, class_name: 'Users::NamespaceCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
@@ -235,6 +244,7 @@ class User < ApplicationRecord
   has_one :user_highest_role
   has_one :user_canonical_email
   has_one :credit_card_validation, class_name: '::Users::CreditCardValidation'
+  has_one :phone_number_validation, class_name: '::Users::PhoneNumberValidation'
   has_one :atlassian_identity, class_name: 'Atlassian::Identity'
   has_one :banned_user, class_name: '::Users::BannedUser'
 
@@ -245,6 +255,8 @@ class User < ApplicationRecord
   has_many :timelogs
 
   has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
 
   #
   # Validations
@@ -274,10 +286,10 @@ class User < ApplicationRecord
   validate :check_username_format, if: :username_changed?
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
-                                                     message: _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } }
+                                                     message: ->(*) { _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } } }
 
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
-                                                            message: _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } }
+                                                            message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
 
   validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
 
@@ -289,6 +301,7 @@ class User < ApplicationRecord
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
+  before_save :ensure_user_detail_assigned
   after_validation :set_username_errors
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
@@ -338,8 +351,10 @@ class User < ApplicationRecord
             :setup_for_company, :setup_for_company=,
             :render_whitespace_in_code, :render_whitespace_in_code=,
             :markdown_surround_selection, :markdown_surround_selection=,
+            :markdown_automatic_lists, :markdown_automatic_lists=,
             :diffs_deletion_color, :diffs_deletion_color=,
             :diffs_addition_color, :diffs_addition_color=,
+            :use_legacy_web_ide, :use_legacy_web_ide=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -934,6 +949,7 @@ class User < ApplicationRecord
   # that the password is the user's password
   def valid_password?(password)
     return false unless password_allowed?(password)
+    return false if password_automatically_set?
     return super if Feature.enabled?(:pbkdf2_password_encryption)
 
     Devise::Encryptor.compare(self.class, encrypted_password, password)
@@ -941,6 +957,22 @@ class User < ApplicationRecord
     validate_and_migrate_bcrypt_password(password)
   rescue ::BCrypt::Errors::InvalidHash
     false
+  end
+
+  def generate_otp_backup_codes!
+    if Gitlab::FIPS.enabled?
+      generate_otp_backup_codes_pbkdf2!
+    else
+      super
+    end
+  end
+
+  def invalidate_otp_backup_code!(code)
+    if Gitlab::FIPS.enabled? && pbkdf2?
+      invalidate_otp_backup_code_pdkdf2!(code)
+    else
+      super(code)
+    end
   end
 
   # This method should be removed once the :pbkdf2_password_encryption feature flag is removed.
@@ -1128,12 +1160,6 @@ class User < ApplicationRecord
     Users::RefreshAuthorizedProjectsService.new(self, source: source).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
-
-  def remove_project_authorizations(project_ids, per_batch = 1000)
-    project_ids.each_slice(per_batch) do |project_ids_batch|
-      project_authorizations.where(project_id: project_ids_batch).delete_all
-    end
-  end
 
   def authorized_projects(min_access_level = nil)
     # We're overriding an association, so explicitly call super with no
@@ -1565,6 +1591,11 @@ class User < ApplicationRecord
     end
   end
 
+  # Temporary, will be removed when user_detail fields are fully migrated
+  def ensure_user_detail_assigned
+    user_detail.assign_changed_fields_from_user if UserDetail.user_fields_changed?(self)
+  end
+
   def set_username_errors
     namespace_path_errors = self.errors.delete(:"namespace.path")
 
@@ -1647,8 +1678,9 @@ class User < ApplicationRecord
     begin
       followee = Users::UserFollowUser.create(follower_id: self.id, followee_id: user.id)
       self.followees.reset if followee.persisted?
+      followee
     rescue ActiveRecord::RecordNotUnique
-      false
+      nil
     end
   end
 
@@ -1737,7 +1769,7 @@ class User < ApplicationRecord
   end
 
   def authorized_project_mirrors(level)
-    projects = Ci::ProjectMirror.by_project_id(ci_project_mirrors_for_project_members(level))
+    projects = Ci::ProjectMirror.by_project_id(ci_project_ids_for_project_members(level))
 
     namespace_projects = Ci::ProjectMirror.by_namespace_id(ci_namespace_mirrors_for_group_members(level).select(:namespace_id))
 
@@ -2075,14 +2107,6 @@ class User < ApplicationRecord
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
   end
 
-  # Deprecated: do not use. See: https://gitlab.com/gitlab-org/gitlab/-/issues/371017
-  def dismissed_callout_for_namespace?(feature_name:, namespace:, ignore_dismissal_earlier_than: nil)
-    source_feature_name = "#{feature_name}_#{namespace.id}"
-    callout = namespace_callouts_by_feature_name[source_feature_name]
-
-    callout_dismissed?(callout, ignore_dismissal_earlier_than)
-  end
-
   def dismissed_callout_for_project?(feature_name:, project:, ignore_dismissal_earlier_than: nil)
     callout = project_callouts.find_by(feature_name: feature_name, project: project)
 
@@ -2113,11 +2137,6 @@ class User < ApplicationRecord
   def find_or_initialize_group_callout(feature_name, group_id)
     group_callouts
       .find_or_initialize_by(feature_name: ::Users::GroupCallout.feature_names[feature_name], group_id: group_id)
-  end
-
-  def find_or_initialize_namespace_callout(feature_name, namespace_id)
-    namespace_callouts
-      .find_or_initialize_by(feature_name: ::Users::NamespaceCallout.feature_names[feature_name], namespace_id: namespace_id)
   end
 
   def find_or_initialize_project_callout(feature_name, project_id)
@@ -2198,6 +2217,12 @@ class User < ApplicationRecord
 
   private
 
+  def pbkdf2?
+    return false unless otp_backup_codes&.any?
+
+    otp_backup_codes.first.start_with?("$pbkdf2-sha512$")
+  end
+
   # To enable JiHu repository to modify the default language options
   def default_preferred_language
     'en'
@@ -2209,7 +2234,7 @@ class User < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def ci_project_mirrors_for_project_members(level)
+  def ci_project_ids_for_project_members(level)
     project_members.where('access_level >= ?', level).pluck(:source_id)
   end
 
@@ -2244,10 +2269,6 @@ class User < ApplicationRecord
 
   def group_callouts_by_feature_name
     @group_callouts_by_feature_name ||= group_callouts.index_by(&:source_feature_name)
-  end
-
-  def namespace_callouts_by_feature_name
-    @namespace_callouts_by_feature_name ||= namespace_callouts.index_by(&:source_feature_name)
   end
 
   def authorized_groups_without_shared_membership
@@ -2298,7 +2319,7 @@ class User < ApplicationRecord
       self.projects_limit   = 0
     else
       # Only revert these back to the default if they weren't specifically changed in this update.
-      self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
+      self.can_create_group = Gitlab::CurrentSettings.can_create_group unless can_create_group_changed?
       self.projects_limit = Gitlab::CurrentSettings.default_projects_limit unless projects_limit_changed?
     end
   end
@@ -2363,7 +2384,7 @@ class User < ApplicationRecord
   end
 
   def ci_owned_project_runners_from_project_members
-    project_ids = ci_project_mirrors_for_project_members(Gitlab::Access::MAINTAINER)
+    project_ids = ci_project_ids_for_project_members(Gitlab::Access::MAINTAINER)
 
     Ci::Runner
       .joins(:runner_projects)

@@ -199,12 +199,15 @@
     .sidebar-contained-width,
     .issuable-sidebar-header {
       width: 100%;
-      border-bottom: 0;
     }
 
     .block {
       @include media-breakpoint-up(lg) {
-        padding: $gl-spacing-scale-5 0;
+        padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
+      }
+
+      &.participants {
+        border-bottom: 0;
       }
     }
   }
@@ -213,7 +216,8 @@
   .sidebar-contained-width,
   .issuable-sidebar-header {
     @include clearfix;
-    padding: $gl-padding 0;
+    padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
+    border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter-inner-width;
@@ -234,6 +238,13 @@
           }
         }
       }
+    }
+
+    &.time-tracking,
+    &.participants,
+    &.subscriptions,
+    &.with-sub-blocks {
+      padding-top: $gl-spacing-scale-5;
     }
   }
 
@@ -724,13 +735,7 @@
     }
 
     .issue-check {
-      padding-right: $gl-padding;
-      margin-bottom: 10px;
       min-width: 15px;
-
-      .selected-issuable {
-        vertical-align: text-top;
-      }
     }
 
     .issuable-milestone,
@@ -851,24 +856,6 @@
   }
 }
 
-.issuable-todo-btn {
-  .gl-spinner {
-    display: none;
-  }
-
-  &.is-loading {
-    .gl-spinner {
-      display: inline-block;
-    }
-
-    &.sidebar-collapsed-icon {
-      .issuable-todo-inner {
-        display: none;
-      }
-    }
-  }
-}
-
 /*
  * Following overrides are done to prevent
  * legacy dropdown styles from influencing
@@ -924,91 +911,6 @@
     .issues-filters,
     .epics-filters {
       margin: 0 (-$gl-padding);
-    }
-  }
-}
-
-.icon-overlap-and-shadow {
-  filter:
-    drop-shadow(0 1px 0.5px #fff)
-    drop-shadow(1px 0 0.5px #fff)
-    drop-shadow(0 -1px 0.5px #fff)
-    drop-shadow(-1px 0 0.5px #fff);
-  margin-right: -7px;
-  z-index: 1;
-}
-
-.issuable-discussion.incident-timeline-events {
-  .main-notes-list::before {
-    content: none;
-  }
-
-  .timeline-event-note {
-    p {
-      margin-bottom: 0;
-    }
-  }
-}
-
-/**
- * We have a very specific design proposal where we cannot
- * use `vertical-line` mixin as it is and have to use
- * custom styles, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81284#note_904867444
- */
-.timeline-entry-vertical-line {
-  &::before,
-  &::after {
-    content: '';
-    border-left: 2px solid $gray-50;
-    position: absolute;
-    left: 39px;
-    height: calc(100% + #{$gl-spacing-scale-5});
-    top: -#{$gl-spacing-scale-5};
-  }
-
-  &:first-child::before {
-    content: none;
-  }
-
-  &:first-child {
-    &::after {
-      top: $gl-spacing-scale-5;
-      height: calc(100% + #{$gl-spacing-scale-5});
-    }
-  }
-
-  &:last-child,
-  &.create-timeline-event {
-    &::before {
-      top: - #{$gl-spacing-scale-5} !important; // Override default positioning
-      @include gl-h-8;
-    }
-
-    &::after {
-      content: none;
-    }
-  }
-}
-
-.timeline-event-note-form {
-  padding-left: 20px;
-}
-
-.timeline-entry:not(:last-child) {
-  .timeline-event-border {
-    @include gl-pb-5;
-    @include gl-border-gray-50;
-    @include gl-border-1;
-    @include gl-border-b-solid;
-  }
-}
-
-.timeline-group:last-child {
-  .timeline-entry:last-child,
-  .create-timeline-event {
-    .timeline-event-bottom-border {
-      @include gl-border-b;
-      @include gl-pt-5;
     }
   }
 }

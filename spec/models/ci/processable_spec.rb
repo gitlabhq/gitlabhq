@@ -177,7 +177,7 @@ RSpec.describe Ci::Processable do
           Ci::Build.attribute_names.map(&:to_sym) +
           Ci::Build.attribute_aliases.keys.map(&:to_sym) +
           Ci::Build.reflect_on_all_associations.map(&:name) +
-          [:tag_list, :needs_attributes, :job_variables_attributes] -
+          [:tag_list, :needs_attributes, :job_variables_attributes, :id_tokens] -
           # ToDo: Move EE accessors to ee/
           ::Ci::Build.extra_accessors -
           [:dast_site_profiles_build, :dast_scanner_profiles_build]

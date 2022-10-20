@@ -24,7 +24,7 @@ class JiraImportState < ApplicationRecord
 
   validates :project, uniqueness: {
     conditions: -> { where.not(status: STATUSES.values_at(:failed, :finished)) },
-    message: _('Cannot have multiple Jira imports running at the same time')
+    message: N_('Cannot have multiple Jira imports running at the same time')
   }
 
   before_save :ensure_error_message_size

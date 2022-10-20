@@ -80,7 +80,7 @@ module Ci
     end
 
     def id_tokens?
-      !!metadata&.id_tokens?
+      metadata&.id_tokens.present?
     end
 
     def id_tokens=(value)

@@ -18,23 +18,14 @@ RSpec.describe Gitlab::Git::KeepAround do
     expect(service.kept_around?(sample_commit.id)).to be_truthy
   end
 
-  it "attempting to call keep around on truncated ref does not fail" do
-    service.execute([sample_commit.id])
-    ref = service.send(:keep_around_ref_name, sample_commit.id)
-
-    path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      File.join(repository.path, ref)
-    end
-    # Corrupt the reference
-    File.truncate(path, 0)
+  it "does not fail if writting the ref fails" do
+    expect(repository.raw).to receive(:write_ref).and_raise(Gitlab::Git::CommandError)
 
     expect(service.kept_around?(sample_commit.id)).to be_falsey
 
     service.execute([sample_commit.id])
 
     expect(service.kept_around?(sample_commit.id)).to be_falsey
-
-    File.delete(path)
   end
 
   context 'for multiple SHAs' do

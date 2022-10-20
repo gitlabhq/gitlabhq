@@ -29,6 +29,15 @@ export const emptyExpirationPolicyPayload = () => ({
   },
 });
 
+export const nullExpirationPolicyPayload = () => ({
+  data: {
+    project: {
+      id: '1',
+      containerExpirationPolicy: null,
+    },
+  },
+});
+
 export const expirationPolicyMutationPayload = ({ override, errors = [] } = {}) => ({
   data: {
     updateContainerExpirationPolicy: {

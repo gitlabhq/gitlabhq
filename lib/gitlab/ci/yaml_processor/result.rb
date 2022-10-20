@@ -32,18 +32,16 @@ module Gitlab
           end
         end
 
-        def stage_builds_attributes(stage)
-          jobs.values
-            .select { |job| job[:stage] == stage }
-            .map { |job| build_attributes(job[:name]) }
-        end
-
         def workflow_rules
           @workflow_rules ||= @ci_config.workflow_rules
         end
 
+        def workflow_name
+          @workflow_name ||= @ci_config.workflow_name&.strip
+        end
+
         def root_variables
-          @root_variables ||= transform_to_array(variables)
+          @root_variables ||= transform_to_array(@ci_config.variables)
         end
 
         def jobs
@@ -56,6 +54,38 @@ module Gitlab
 
         def included_templates
           @included_templates ||= @ci_config.included_templates
+        end
+
+        def variables_with_data
+          @ci_config.variables_with_data
+        end
+
+        def yaml_variables_for(job_name)
+          job = jobs[job_name]
+
+          return [] unless job
+
+          Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
+            from: root_variables,
+            to: job[:job_variables],
+            inheritance: job.fetch(:root_variables_inheritance, true)
+          )
+        end
+
+        def stage_for(job_name)
+          jobs.dig(job_name, :stage)
+        end
+
+        def config_metadata
+          @ci_config&.metadata || {}
+        end
+
+        private
+
+        def stage_builds_attributes(stage)
+          jobs.values
+            .select { |job| job[:stage] == stage }
+            .map { |job| build_attributes(job[:name]) }
         end
 
         def build_attributes(name)
@@ -101,36 +131,6 @@ module Gitlab
               bridge_needs: job.dig(:needs, :bridge)&.first,
               release: release(job)
             }.compact }.compact
-        end
-
-        def variables_with_data
-          @ci_config.variables_with_data
-        end
-
-        def yaml_variables_for(job_name)
-          job = jobs[job_name]
-
-          return [] unless job
-
-          Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
-            from: root_variables,
-            to: job[:job_variables],
-            inheritance: job.fetch(:root_variables_inheritance, true)
-          )
-        end
-
-        def stage_for(job_name)
-          jobs.dig(job_name, :stage)
-        end
-
-        def config_metadata
-          @ci_config&.metadata || {}
-        end
-
-        private
-
-        def variables
-          @variables ||= @ci_config.variables
         end
 
         def release(job)

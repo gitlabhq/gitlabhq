@@ -10,6 +10,7 @@
 - advanced_deployments
 - advisory_database
 - api_security
+- application_instrumentation
 - application_performance
 - attack_emulation
 - audit_events
@@ -25,6 +26,7 @@
 - code_quality
 - code_review
 - code_testing
+- commerce_integrations
 - compliance_management
 - container_registry
 - container_scanning
@@ -38,6 +40,7 @@
 - dedicated
 - delivery
 - dependency_firewall
+- dependency_management
 - dependency_proxy
 - dependency_scanning
 - deployment_management

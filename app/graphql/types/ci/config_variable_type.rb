@@ -17,6 +17,10 @@ module Types
       field :value, GraphQL::Types::String,
             null: true,
             description: 'Value of the variable.'
+
+      field :value_options, [GraphQL::Types::String],
+            null: true,
+            description: 'Value options for the variable.'
     end
   end
 end

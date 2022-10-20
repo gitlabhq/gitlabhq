@@ -13,3 +13,4 @@ pages:
   artifacts:
     paths:
       - public/
+  environment: production

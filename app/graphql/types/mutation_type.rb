@@ -114,6 +114,7 @@ module Types
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
+    mount_mutation Mutations::Ci::PipelineSchedule::Delete
     mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
       reason: :renamed,
       replacement: 'ProjectCiCdSettingsUpdate',
@@ -137,6 +138,8 @@ module Types
     mount_mutation Mutations::UserCallouts::Create
     mount_mutation Mutations::UserPreferences::Update
     mount_mutation Mutations::Packages::Destroy
+    mount_mutation Mutations::Packages::BulkDestroy,
+                   extensions: [::Gitlab::Graphql::Limit::FieldCallCount => { limit: 1 }]
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
@@ -146,7 +149,6 @@ module Types
     mount_mutation Mutations::WorkItems::Delete, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::DeleteTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Update, alpha: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::UpdateWidgets, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::UpdateTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update

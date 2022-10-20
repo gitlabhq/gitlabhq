@@ -11,5 +11,9 @@ FactoryBot.define do
     trait :with_organization do
       organization
     end
+
+    trait :inactive do
+      state { :inactive }
+    end
   end
 end

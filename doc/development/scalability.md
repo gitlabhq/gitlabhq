@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab scalability
@@ -216,7 +216,7 @@ core. It does not support multi-threading.
 
 Dumb secondaries: Redis secondaries (also known as replicas) don't actually
 handle any load. Unlike PostgreSQL secondaries, they don't even serve
-read queries. They simply replicate data from the primary and take over
+read queries. They replicate data from the primary and take over
 only when the primary fails.
 
 ### Redis Sentinels

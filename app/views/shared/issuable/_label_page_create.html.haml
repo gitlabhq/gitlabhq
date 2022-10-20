@@ -19,7 +19,7 @@
           %input.js-add-list{ type: "checkbox", name: "add_list", checked: add_list }
           %span= _('Add list')
     .clearfix
-      %button.gl-button.btn.btn-confirm.float-left.js-new-label-btn{ type: "button" }
+      = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'float-left js-new-label-btn' }) do
         = _('Create')
-      %button.gl-button.btn.btn-default.float-right.js-cancel-label-btn{ type: "button" }
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'float-right js-cancel-label-btn' }) do
         = _('Cancel')

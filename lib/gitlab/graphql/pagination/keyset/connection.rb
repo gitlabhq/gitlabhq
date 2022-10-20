@@ -151,7 +151,7 @@ module Gitlab
 
           def limit_value
             # note: only first _or_ last can be specified, not both
-            @limit_value ||= [first, last, max_page_size, GitlabSchema.default_max_page_size].compact.min
+            @limit_value ||= [first, last, max_page_size || GitlabSchema.default_max_page_size].compact.min
           end
 
           def loaded?(items)

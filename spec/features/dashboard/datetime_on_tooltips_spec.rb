@@ -41,9 +41,9 @@ RSpec.describe 'Tooltips on .timeago dates', :js do
     end
 
     it 'has the datetime formated correctly' do
-      expect(page).to have_selector('.js-timeago.snippet-created-ago', text: '1 day ago')
+      expect(page).to have_selector('[data-testid=snippet-created-at] .js-timeago', text: '1 day ago')
 
-      page.find('.js-timeago.snippet-created-ago').hover
+      page.find('[data-testid=snippet-created-at] .js-timeago').hover
 
       expect(datetime_in_tooltip).to eq(created_date)
     end

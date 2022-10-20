@@ -86,6 +86,7 @@ module Gitlab
               'count' => values.size,
               'min' => values.min,
               'max' => values.max,
+              'sum' => values.sum,
               'avg' => values.sum / values.size
             }
           end.compact

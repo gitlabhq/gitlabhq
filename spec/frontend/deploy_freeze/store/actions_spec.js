@@ -7,7 +7,8 @@ import getInitialState from '~/deploy_freeze/store/state';
 import createFlash from '~/flash';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
-import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
+import { freezePeriodsFixture } from '../helpers';
+import { timezoneDataFixture } from '../../vue_shared/components/timezone_dropdown/helpers';
 
 jest.mock('~/api.js');
 jest.mock('~/flash.js');

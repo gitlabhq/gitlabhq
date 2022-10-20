@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 comments: false
 description: 'Making GitLab Pages a Cloud Native application - architecture blueprint.'
 ---
@@ -20,7 +20,7 @@ company behind the project.
 This effort is described in more detail
 [in the infrastructure team handbook page](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/).
 
-GitLab Pages is tightly coupled with NFS and in order to unblock Kubernetes
+GitLab Pages is tightly coupled with NFS and to unblock Kubernetes
 migration a significant change to GitLab Pages' architecture is required. This
 is an ongoing work that we have started more than a year ago. This blueprint
 might be useful to understand why it is important, and what is the roadmap.

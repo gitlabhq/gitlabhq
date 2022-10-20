@@ -207,9 +207,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     context "when duplicate 'include's are defined" do
       let(:values) do
         { include: [
-          { 'local' => local_file },
-          { 'local' => local_file }
-        ],
+            { 'local' => local_file },
+            { 'local' => local_file }
+          ],
           image: 'image:1.0' }
       end
 
@@ -416,17 +416,18 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
     context "when locations are same after masking variables" do
       let(:variables) do
-        Gitlab::Ci::Variables::Collection.new([
-          { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file1', 'masked' => true },
-          { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file2', 'masked' => true }
-        ])
+        Gitlab::Ci::Variables::Collection.new(
+          [
+            { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file1', 'masked' => true },
+            { 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file2', 'masked' => true }
+          ])
       end
 
       let(:values) do
         { include: [
-          { 'local' => 'hello/secret-file1.yml' },
-          { 'local' => 'hello/secret-file2.yml' }
-        ],
+            { 'local' => 'hello/secret-file1.yml' },
+            { 'local' => 'hello/secret-file2.yml' }
+          ],
           image: 'ruby:2.7' }
       end
 

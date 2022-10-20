@@ -22,10 +22,10 @@ jest.mock('~/vue_shared/components/source_viewer/plugins/index');
 Vue.use(VueRouter);
 const router = new VueRouter();
 
-const generateContent = (content, totalLines = 1) => {
+const generateContent = (content, totalLines = 1, delimiter = '\n') => {
   let generatedContent = '';
   for (let i = 0; i < totalLines; i += 1) {
-    generatedContent += `Line: ${i + 1} = ${content}\n`;
+    generatedContent += `Line: ${i + 1} = ${content}${delimiter}`;
   }
   return generatedContent;
 };
@@ -38,7 +38,9 @@ describe('Source Viewer component', () => {
   const mappedLanguage = ROUGE_TO_HLJS_LANGUAGE_MAP[language];
   const chunk1 = generateContent('// Some source code 1', 70);
   const chunk2 = generateContent('// Some source code 2', 70);
-  const content = chunk1 + chunk2;
+  const chunk3 = generateContent('// Some source code 3', 70, '\r\n');
+  const chunk3Result = generateContent('// Some source code 3', 70, '\n');
+  const content = chunk1 + chunk2 + chunk3;
   const path = 'some/path.js';
   const blamePath = 'some/blame/path.js';
   const fileType = 'javascript';
@@ -150,6 +152,19 @@ describe('Source Viewer component', () => {
       expect(secondChunk.props()).toMatchObject({
         totalLines: 70,
         startingFrom: 70,
+      });
+    });
+
+    it('renders the third chunk', async () => {
+      const thirdChunk = findChunks().at(2);
+
+      expect(thirdChunk.props('content')).toContain(chunk3Result.trim());
+
+      expect(chunk3Result).toEqual(chunk3.replace(/\r?\n/g, '\n'));
+
+      expect(thirdChunk.props()).toMatchObject({
+        totalLines: 70,
+        startingFrom: 140,
       });
     });
   });

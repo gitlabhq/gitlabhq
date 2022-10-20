@@ -1,8 +1,16 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
 fragment WorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetDescription {
     type
     description
     descriptionHtml
+    lastEditedAt
+    lastEditedBy {
+      name
+      webPath
+    }
   }
   ... on WorkItemWidgetAssignees {
     type
@@ -11,6 +19,14 @@ fragment WorkItemWidgets on WorkItemWidget {
     assignees {
       nodes {
         ...User
+      }
+    }
+  }
+  ... on WorkItemWidgetLabels {
+    type
+    labels {
+      nodes {
+        ...Label
       }
     }
   }

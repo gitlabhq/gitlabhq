@@ -1,0 +1,64 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml
+
+# Read more about this feature https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing
+#
+# Configure coverage fuzzing with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/coverage_fuzzing/#available-cicd-variables
+
+variables:
+  # Which branch we want to run full fledged long running fuzzing jobs.
+  # All others will run fuzzing regression
+  COVFUZZ_BRANCH: "$CI_DEFAULT_BRANCH"
+  # This is using semantic version and will always download latest v3 gitlab-cov-fuzz release
+  COVFUZZ_VERSION: v3
+  # This is for users who have an offline environment and will have to replicate gitlab-cov-fuzz release binaries
+  # to their own servers
+  COVFUZZ_URL_PREFIX: "https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw"
+
+
+coverage_fuzzing_unlicensed:
+  stage: .pre
+  allow_failure: true
+  rules:
+    - if: $GITLAB_FEATURES !~ /\bcoverage_fuzzing\b/ && $COVFUZZ_DISABLED == null
+  script:
+    - echo "ERROR Your GitLab project is missing licensing for Coverage Fuzzing" && exit 1
+
+.fuzz_base:
+  stage: fuzz
+  allow_failure: true
+  before_script:
+    - export COVFUZZ_JOB_TOKEN="$CI_JOB_TOKEN"
+    - export COVFUZZ_PRIVATE_TOKEN="$CI_PRIVATE_TOKEN"
+    - export COVFUZZ_PROJECT_PATH="$CI_PROJECT_PATH"
+    - export COVFUZZ_PROJECT_ID="$CI_PROJECT_ID"
+    - if [ -x "$(command -v apt-get)" ] ; then apt-get update && apt-get install -y wget; fi
+    - wget -O gitlab-cov-fuzz "${COVFUZZ_URL_PREFIX}"/"${COVFUZZ_VERSION}"/binaries/gitlab-cov-fuzz_Linux_x86_64
+    - chmod a+x gitlab-cov-fuzz
+    - export REGRESSION=true
+    - if [[ "$CI_COMMIT_BRANCH" = "$COVFUZZ_BRANCH" ]]; then REGRESSION=false; fi;
+  artifacts:
+    paths:
+      - corpus
+      - crashes
+      - gl-coverage-fuzzing-report.json
+    reports:
+      coverage_fuzzing: gl-coverage-fuzzing-report.json
+    when: always
+  rules:
+    - if: $COVFUZZ_DISABLED
+      when: never
+
+    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bcoverage_fuzzing\b/
+
+    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # Add the job to branch pipelines.
+    - if: $CI_COMMIT_BRANCH && $GITLAB_FEATURES =~ /\bcoverage_fuzzing\b/

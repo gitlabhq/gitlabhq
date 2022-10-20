@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean
   let_it_be(:merge_request) { create(:merge_request) }
 
   let(:project) { merge_request.project }
-  let(:client_double) { double(user: double(id: 999, login: 'author', email: 'author@email.com')) }
+  let(:client_double) { double(user: { id: 999, login: 'author', email: 'author@email.com' }) }
   let(:submitted_at) { Time.new(2017, 1, 1, 12, 00).utc }
 
   subject { described_class.new(review, project, client_double) }

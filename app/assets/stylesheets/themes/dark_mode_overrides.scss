@@ -141,7 +141,8 @@ body.gl-dark {
   }
 }
 
-.timeline-entry.internal-note:not(.note-form) {
+.timeline-entry.internal-note:not(.note-form) .timeline-content,
+.timeline-entry.draft-note:not(.note-form) .timeline-content {
   // soften on darkmode
-  background-color: mix($gray-50, $orange-50, 75%);
+  background-color: mix($gray-50, $orange-50, 75%) !important;
 }

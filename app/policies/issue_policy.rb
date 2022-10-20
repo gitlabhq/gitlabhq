@@ -81,6 +81,10 @@ class IssuePolicy < IssuablePolicy
   rule { can?(:set_issue_metadata) & can_read_crm_contacts }.policy do
     enable :set_issue_crm_contacts
   end
+
+  rule { can?(:reporter_access) }.policy do
+    enable :mark_note_as_confidential
+  end
 end
 
 IssuePolicy.prepend_mod_with('IssuePolicy')

@@ -46,6 +46,8 @@ RSpec.describe BulkImports::Entity, type: :model do
       end
 
       it 'is invalid as a project_entity' do
+        stub_feature_flags(bulk_import_projects: true)
+
         entity = build(:bulk_import_entity, :project_entity, group: build(:group), project: nil)
 
         expect(entity).not_to be_valid
@@ -55,6 +57,8 @@ RSpec.describe BulkImports::Entity, type: :model do
 
     context 'when associated with a project and no group' do
       it 'is valid' do
+        stub_feature_flags(bulk_import_projects: true)
+
         entity = build(:bulk_import_entity, :project_entity, group: nil, project: build(:project))
 
         expect(entity).to be_valid
@@ -84,6 +88,8 @@ RSpec.describe BulkImports::Entity, type: :model do
 
     context 'when the parent is a project import' do
       it 'is invalid' do
+        stub_feature_flags(bulk_import_projects: true)
+
         entity = build(:bulk_import_entity, parent: build(:bulk_import_entity, :project_entity))
 
         expect(entity).not_to be_valid
@@ -122,6 +128,39 @@ RSpec.describe BulkImports::Entity, type: :model do
         expect(entity).not_to be_valid
         expect(entity.errors[:base])
           .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+      end
+    end
+
+    context 'when bulk_import_projects feature flag is disabled and source_type is a project_entity' do
+      it 'is invalid' do
+        stub_feature_flags(bulk_import_projects: false)
+
+        entity = build(:bulk_import_entity, :project_entity)
+
+        expect(entity).not_to be_valid
+        expect(entity.errors[:base]).to include('invalid entity source type')
+      end
+    end
+
+    context 'when bulk_import_projects feature flag is enabled and source_type is a project_entity' do
+      it 'is valid' do
+        stub_feature_flags(bulk_import_projects: true)
+
+        entity = build(:bulk_import_entity, :project_entity)
+
+        expect(entity).to be_valid
+      end
+    end
+
+    context 'when bulk_import_projects feature flag is enabled on root ancestor level and source_type is a project_entity' do
+      it 'is valid' do
+        top_level_namespace = create(:group)
+
+        stub_feature_flags(bulk_import_projects: top_level_namespace)
+
+        entity = build(:bulk_import_entity, :project_entity, destination_namespace: top_level_namespace.full_path)
+
+        expect(entity).to be_valid
       end
     end
   end
@@ -209,7 +248,7 @@ RSpec.describe BulkImports::Entity, type: :model do
       it 'returns group export relations url' do
         entity = build(:bulk_import_entity, :group_entity)
 
-        expect(entity.export_relations_url_path).to eq("/groups/#{entity.encoded_source_full_path}/export_relations")
+        expect(entity.export_relations_url_path).to eq("/groups/#{entity.source_xid}/export_relations")
       end
     end
 
@@ -217,7 +256,7 @@ RSpec.describe BulkImports::Entity, type: :model do
       it 'returns project export relations url' do
         entity = build(:bulk_import_entity, :project_entity)
 
-        expect(entity.export_relations_url_path).to eq("/projects/#{entity.encoded_source_full_path}/export_relations")
+        expect(entity.export_relations_url_path).to eq("/projects/#{entity.source_xid}/export_relations")
       end
     end
   end
@@ -227,7 +266,7 @@ RSpec.describe BulkImports::Entity, type: :model do
       entity = build(:bulk_import_entity)
 
       expect(entity.relation_download_url_path('test'))
-        .to eq("/groups/#{entity.encoded_source_full_path}/export_relations/download?relation=test")
+        .to eq("/groups/#{entity.source_xid}/export_relations/download?relation=test")
     end
   end
 
@@ -263,15 +302,15 @@ RSpec.describe BulkImports::Entity, type: :model do
 
   describe '#base_resource_url_path' do
     it 'returns base entity url path' do
-      entity = build(:bulk_import_entity)
+      entity = build(:bulk_import_entity, source_xid: nil)
 
-      expect(entity.base_resource_url_path).to eq("/groups/#{entity.encoded_source_full_path}")
+      expect(entity.base_resource_path).to eq("/groups/#{entity.encoded_source_full_path}")
     end
   end
 
   describe '#wiki_url_path' do
     it 'returns entity wiki url path' do
-      entity = build(:bulk_import_entity)
+      entity = build(:bulk_import_entity, source_xid: nil)
 
       expect(entity.wikis_url_path).to eq("/groups/#{entity.encoded_source_full_path}/wikis")
     end

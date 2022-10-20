@@ -390,7 +390,10 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       'staging'            | described_class.tiers[:staging]
       'pre-prod'           | described_class.tiers[:staging]
       'blue-kit-stage'     | described_class.tiers[:staging]
-      'pre-prod'           | described_class.tiers[:staging]
+      'nonprod'            | described_class.tiers[:staging]
+      'nonlive'            | described_class.tiers[:staging]
+      'non-prod'           | described_class.tiers[:staging]
+      'non-live'           | described_class.tiers[:staging]
       'gprd'               | described_class.tiers[:production]
       'gprd-cny'           | described_class.tiers[:production]
       'production'         | described_class.tiers[:production]
@@ -1291,7 +1294,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
     context 'when the environment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:prometheus_project, :repository) }
+        let(:project) { create(:project, :with_prometheus_integration, :repository) }
 
         context 'and a deployment' do
           let!(:deployment) { create(:deployment, environment: environment) }
@@ -1364,7 +1367,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
 
     context 'when the environment is unavailable' do
-      let(:project) { create(:prometheus_project) }
+      let(:project) { create(:project, :with_prometheus_integration) }
 
       before do
         environment.stop
@@ -1391,7 +1394,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   end
 
   describe '#metrics' do
-    let(:project) { create(:prometheus_project) }
+    let(:project) { create(:project, :with_prometheus_integration) }
 
     subject { environment.metrics }
 
@@ -1427,7 +1430,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
   end
 
   describe '#additional_metrics' do
-    let(:project) { create(:prometheus_project) }
+    let(:project) { create(:project, :with_prometheus_integration) }
     let(:metric_params) { [] }
 
     subject { environment.additional_metrics(*metric_params) }
@@ -1617,44 +1620,30 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       nil        | nil
       'never'    | nil
     end
+
     with_them do
-      it 'sets correct auto_stop_in' do
-        freeze_time do
-          if expected_result.is_a?(Integer) || expected_result.nil?
-            subject
-
-            expect(environment.auto_stop_in).to eq(expected_result)
-          else
-            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-              an_instance_of(expected_result),
-              project_id: environment.project_id,
-              environment_id: environment.id
-            )
-
-            expect { subject }.to raise_error(expected_result)
-          end
-        end
-      end
-    end
-
-    context 'resets earlier value' do
-      let(:environment) { create(:environment, auto_stop_at: 1.day.since.round) }
-
-      where(:value, :expected_result) do
-        '2 days'   | 2.days.to_i
-        '1 week'   | 1.week.to_i
-        '2h20min'  | 2.hours.to_i + 20.minutes.to_i
-        ''         | nil
-        'never'    | nil
-      end
-      with_them do
-        it 'assigns new value' do
+      shared_examples 'for given values expected result is set' do
+        it do
           freeze_time do
-            subject
+            if expected_result.is_a?(Integer) || expected_result.nil?
+              subject
 
-            expect(environment.auto_stop_in).to eq(expected_result)
+              expect(environment.auto_stop_in).to eq(expected_result)
+            else
+              expect { subject }.to raise_error(expected_result)
+            end
           end
         end
+      end
+
+      context 'new assignment sets correct auto_stop_in' do
+        include_examples 'for given values expected result is set'
+      end
+
+      context 'resets older value' do
+        let(:environment) { create(:environment, auto_stop_at: 1.day.since.round) }
+
+        include_examples 'for given values expected result is set'
       end
     end
   end

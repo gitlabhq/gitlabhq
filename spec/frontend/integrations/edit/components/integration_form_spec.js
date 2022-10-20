@@ -18,6 +18,7 @@ import {
   integrationLevels,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
+  INTEGRATION_FORM_TYPE_SLACK,
   billingPlans,
   billingPlanNames,
 } from '~/integrations/constants';
@@ -88,6 +89,7 @@ describe('IntegrationForm', () => {
   const findConnectionSection = () => findAllSections().at(0);
   const findConnectionSectionComponent = () =>
     findConnectionSection().findComponent(IntegrationSectionConnection);
+  const findHelpHtml = () => wrapper.findByTestId('help-html');
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
@@ -711,6 +713,49 @@ describe('IntegrationForm', () => {
       it('calls `refreshCurrentPage`', () => {
         expect(refreshCurrentPage).toHaveBeenCalledTimes(1);
       });
+    });
+
+    describe('Help and sections rendering', () => {
+      const dummyHelp = 'Foo Help';
+
+      it.each`
+        integration                    | flagIsOn | helpHtml     | sections                   | shouldShowSections | shouldShowHelp
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${undefined} | ${[mockSectionConnection]} | ${false}           | ${false}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${false}           | ${true}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${true}
+        ${'foo'}                       | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${'foo'}                       | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${'foo'}                       | ${false} | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${'foo'}                       | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${'foo'}                       | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${'foo'}                       | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${'foo'}                       | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${'foo'}                       | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
+      `(
+        '$sections sections, and "$helpHtml" helpHtml when the FF is "$flagIsOn" for "$integration" integration',
+        ({ integration, flagIsOn, helpHtml, sections, shouldShowSections, shouldShowHelp }) => {
+          createComponent({
+            provide: {
+              helpHtml,
+              glFeatures: { integrationSlackAppNotifications: flagIsOn },
+            },
+            customStateProps: {
+              sections,
+              type: integration,
+            },
+          });
+          expect(findAllSections().length > 0).toEqual(shouldShowSections);
+          expect(findHelpHtml().exists()).toBe(shouldShowHelp);
+          if (shouldShowHelp) {
+            expect(findHelpHtml().html()).toContain(helpHtml);
+          }
+        },
+      );
     });
   });
 });

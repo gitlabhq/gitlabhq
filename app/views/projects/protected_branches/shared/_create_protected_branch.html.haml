@@ -1,4 +1,4 @@
-= form_for [@project, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
+= gitlab_ui_form_for [@project, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-branches-settings' }
   = render Pajamas::CardComponent.new(card_options: { class: "gl-mb-5" }) do |c|
     - c.header do
@@ -32,4 +32,4 @@
             = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
       = render_if_exists 'projects/protected_branches/ee/code_owner_approval_form', f: f
     - c.footer do
-      = f.submit s_('ProtectedBranch|Protect'), class: 'gl-button btn btn-confirm', disabled: true, data: { qa_selector: 'protect_button' }
+      = f.submit s_('ProtectedBranch|Protect'), disabled: true, data: { qa_selector: 'protect_button' }, pajamas_button: true

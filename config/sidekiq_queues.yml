@@ -93,6 +93,8 @@
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts
   - 1
+- - ci_parse_secure_file_metadata
+  - 1
 - - ci_runners_process_runner_version_update
   - 1
 - - ci_upstream_projects_subscriptions_cleanup
@@ -102,6 +104,8 @@
 - - compliance_management_chain_of_custody_report
   - 1
 - - compliance_management_merge_requests_compliance_violations
+  - 1
+- - compliance_management_update_default_framework
   - 1
 - - container_repository
   - 1
@@ -174,8 +178,6 @@
 - - epics_new_epic_issue
   - 1
 - - error_tracking_issue_link
-  - 1
-- - experiments_record_conversion_event
   - 1
 - - export_csv
   - 1
@@ -319,14 +321,6 @@
   - 1
 - - migrate_external_diffs
   - 1
-- - namespaces_onboarding_issue_created
-  - 1
-- - namespaces_onboarding_pipeline_created
-  - 1
-- - namespaces_onboarding_progress
-  - 1
-- - namespaces_onboarding_user_added
-  - 1
 - - namespaces_process_sync_events
   - 1
 - - namespaces_sync_namespace_name
@@ -346,6 +340,14 @@
 - - object_storage
   - 1
 - - onboarding_create_learn_gitlab
+  - 1
+- - onboarding_issue_created
+  - 1
+- - onboarding_pipeline_created
+  - 1
+- - onboarding_progress
+  - 1
+- - onboarding_user_added
   - 1
 - - package_cleanup
   - 1
@@ -379,6 +381,8 @@
   - 5
 - - process_commit
   - 3
+- - product_analytics_initialize_analytics
+  - 1
 - - project_cache
   - 1
 - - project_destroy
@@ -404,6 +408,8 @@
 - - projects_record_target_platforms
   - 1
 - - projects_refresh_build_artifacts_size_statistics
+  - 1
+- - projects_register_suggested_reviewers_project
   - 1
 - - projects_schedule_bulk_repository_shard_moves
   - 1
@@ -449,12 +455,14 @@
   - 1
 - - security_auto_fix
   - 1
-- - security_findings_delete_by_job_id
-  - 1
 - - security_orchestration_policy_rule_schedule_namespace
+  - 1
+- - security_process_scan_result_policy
   - 1
 - - security_scans
   - 2
+- - security_scans_purge_by_job_id
+  - 1
 - - security_sync_scan_policies
   - 1
 - - self_monitoring_project_create
@@ -494,6 +502,8 @@
 - - update_project_statistics
   - 1
 - - upload_checksum
+  - 1
+- - vulnerabilities_mark_dropped_as_resolved
   - 1
 - - vulnerabilities_statistics_adjustment
   - 1

@@ -102,7 +102,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
             description: 'please fix',
             source_branch: 'feature',
             target_branch: 'master',
-            assignees: [user2]
+            assignee_ids: [user2.id]
           }
         end
 

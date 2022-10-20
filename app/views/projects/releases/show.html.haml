@@ -1,5 +1,6 @@
 - add_to_breadcrumbs _("Releases"), project_releases_path(@project)
 - page_title @release.name
 - page_description @release.description_html
+- add_page_specific_style 'page_bundles/releases'
 
 #js-show-release-page{ data: data_for_show_page }

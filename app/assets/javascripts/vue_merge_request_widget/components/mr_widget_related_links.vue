@@ -26,16 +26,6 @@ export default {
       required: false,
       default: true,
     },
-    divergedCommitsCount: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    targetBranchPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     closesText() {

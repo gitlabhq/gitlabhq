@@ -29,9 +29,9 @@ RSpec.describe 'Milestones sorting', :js do
 
     within '[data-testid=milestone_sort_by_dropdown]' do
       click_button 'Due soon'
-      expect(find('.gl-new-dropdown-contents').all('.gl-new-dropdown-item-text-wrapper p').map(&:text)).to eq(['Due soon', 'Due later', 'Start soon', 'Start later', 'Name, ascending', 'Name, descending'])
+      expect(find('ul[role="listbox"]').all('li').map(&:text)).to eq(['Due soon', 'Due later', 'Start soon', 'Start later', 'Name, ascending', 'Name, descending'])
 
-      click_button 'Due later'
+      find('li', text: 'Due later').click
       expect(page).to have_button('Due later')
     end
 

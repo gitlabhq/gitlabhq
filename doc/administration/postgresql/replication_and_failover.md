@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # PostgreSQL replication and failover with Omnibus GitLab **(PREMIUM SELF)**
@@ -1123,7 +1123,7 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 ### Reinitialize a replica
 
-If a replica cannot start or rejoin the cluster, or when it lags behind and can not catch up, it might be necessary to reinitialize the replica:
+If a replica cannot start or rejoin the cluster, or when it lags behind and cannot catch up, it might be necessary to reinitialize the replica:
 
 1. [Check the replication status](#check-replication-status) to confirm which server
    needs to be reinitialized. For example:

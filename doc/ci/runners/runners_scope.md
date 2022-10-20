@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -172,8 +172,12 @@ To create a group runner:
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **CI/CD > Runners**.
-1. Note the URL and token.
-1. [Register the runner](https://docs.gitlab.com/runner/register/).
+1. In the top-right corner, select **Register a group runner**.
+1. Select **Show runner installation and registration instructions**.
+   These instructions include the token, URL, and a command to register a runner.
+
+Alternately, you can copy the registration token and follow the documentation for
+how to [register a runner](https://docs.gitlab.com/runner/register/).
 
 ### View and manage group runners
 
@@ -187,6 +191,23 @@ You must have the Owner role for the group.
 1. On the left sidebar, select **CI/CD > Runners**.
 
 From this page, you can edit, pause, and remove runners from the group, its subgroups, and projects.
+
+#### Filter group runners to show only inherited
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337838/) in GitLab 15.5.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101099) in GitLab 15.5. Feature flag `runners_finder_all_available` removed.
+
+You can choose to show all runners in the list, or show only
+those that are inherited from the instance or other groups.
+
+By default, only those that are inherited are shown.
+
+To show all runners available in the instance, including shared runners and
+those in other groups:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. Above the list, turn off the **Show only inherited** toggle.
 
 ### Pause or remove a group runner
 

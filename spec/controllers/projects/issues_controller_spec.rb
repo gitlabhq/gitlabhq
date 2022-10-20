@@ -1107,6 +1107,46 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
+    context 'when create service return an unrecoverable error with http_status' do
+      let(:http_status) { 403 }
+
+      before do
+        allow_next_instance_of(::Issues::CreateService) do |create_service|
+          allow(create_service).to receive(:execute).and_return(
+            ServiceResponse.error(message: 'unrecoverable error', http_status: http_status)
+          )
+        end
+      end
+
+      it 'renders 403 and logs the error' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          message: 'Cannot create issue',
+          errors: ['unrecoverable error'],
+          http_status: http_status
+        )
+
+        post_new_issue
+
+        expect(response).to have_gitlab_http_status :forbidden
+      end
+
+      context 'when no render method is found for the returned http_status' do
+        let(:http_status) { nil }
+
+        it 'renders 404 and logs the error' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            message: 'Cannot create issue',
+            errors: ['unrecoverable error'],
+            http_status: http_status
+          )
+
+          post_new_issue
+
+          expect(response).to have_gitlab_http_status :not_found
+        end
+      end
+    end
+
     it 'creates the issue successfully', :aggregate_failures do
       issue = post_new_issue
 
@@ -1661,12 +1701,26 @@ RSpec.describe Projects::IssuesController do
       end
 
       it 'allows CSV export' do
-        expect(IssuableExportCsvWorker).to receive(:perform_async).with(:issue, viewer.id, project.id, anything)
+        expect(IssuableExportCsvWorker).to receive(:perform_async)
+          .with(:issue, viewer.id, project.id, hash_including('issue_types' => Issue::TYPES_FOR_LIST))
 
         request_csv
 
         expect(response).to redirect_to(project_issues_path(project))
         expect(controller).to set_flash[:notice].to match(/\AYour CSV export has started/i)
+      end
+
+      context 'when work_items is disabled' do
+        before do
+          stub_feature_flags(work_items: false)
+        end
+
+        it 'does not include tasks in CSV export' do
+          expect(IssuableExportCsvWorker).to receive(:perform_async)
+            .with(:issue, viewer.id, project.id, hash_including('issue_types' => Issue::TYPES_FOR_LIST.excluding('task')))
+
+          request_csv
+        end
       end
     end
 

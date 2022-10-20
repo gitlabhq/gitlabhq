@@ -14,7 +14,7 @@ module Packages
 
     def execute
       packages = project.packages
-                        .including_project_route
+                        .including_project_namespace_route
                         .including_tags
       packages = packages.preload_pipelines if preload_pipelines
 

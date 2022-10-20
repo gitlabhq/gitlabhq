@@ -1,5 +1,5 @@
 import Store from '~/sidebar/stores/sidebar_store';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { visitUrl } from '../lib/utils/url_utility';
@@ -93,11 +93,11 @@ export default class SidebarMediator {
   fetch() {
     return this.service
       .get()
-      .then(([restResponse, graphQlResponse]) => {
-        this.processFetchedData(restResponse.data, graphQlResponse.data);
+      .then(({ data }) => {
+        this.processFetchedData(data);
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Error occurred when fetching sidebar data'),
         }),
       );

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::BaseBackgroundRunner, :freeze_time do
+  let(:connection) { ApplicationRecord.connection }
+
   let(:result_dir) { Dir.mktmpdir }
 
   after do
@@ -10,7 +12,7 @@ RSpec.describe Gitlab::Database::Migrations::BaseBackgroundRunner, :freeze_time 
   end
 
   context 'subclassing' do
-    subject { described_class.new(result_dir: result_dir) }
+    subject { described_class.new(result_dir: result_dir, connection: connection) }
 
     it 'requires that jobs_by_migration_name be implemented' do
       expect { subject.jobs_by_migration_name }.to raise_error(NotImplementedError)

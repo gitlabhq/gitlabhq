@@ -10,31 +10,7 @@
   category: analytics
   redis_slot: analytics
   aggregation: weekly
-- name: p_analytics_merge_request
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
 - name: i_analytics_instance_statistics
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_contribution
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_insights
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_issues
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_productivity
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_valuestream
   category: analytics
   redis_slot: analytics
   aggregation: weekly
@@ -42,19 +18,7 @@
   category: analytics
   redis_slot: analytics
   aggregation: weekly
-- name: p_analytics_code_reviews
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
 - name: p_analytics_valuestream
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: p_analytics_insights
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: p_analytics_issues
   category: analytics
   redis_slot: analytics
   aggregation: weekly
@@ -83,26 +47,6 @@
   redis_slot: analytics
   aggregation: weekly
 - name: p_analytics_ci_cd_change_failure_rate
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_ci_cd_release_statistics
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_ci_cd_deployment_frequency
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_ci_cd_lead_time
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_ci_cd_time_to_restore_service
-  category: analytics
-  redis_slot: analytics
-  aggregation: weekly
-- name: g_analytics_ci_cd_change_failure_rate
   category: analytics
   redis_slot: analytics
   aggregation: weekly

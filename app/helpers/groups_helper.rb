@@ -126,8 +126,8 @@ module GroupsHelper
     group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
   end
 
-  def show_thanks_for_purchase_alert?
-    params.key?(:purchased_quantity) && params[:purchased_quantity].to_i > 0
+  def show_thanks_for_purchase_alert?(quantity)
+    quantity.to_i > 0
   end
 
   def project_list_sort_by
@@ -177,7 +177,8 @@ module GroupsHelper
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
       archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
-      current_group_visibility: group.visibility
+      current_group_visibility: group.visibility,
+      initial_sort: project_list_sort_by
     }.merge(subgroups_and_projects_list_app_data(group))
   end
 

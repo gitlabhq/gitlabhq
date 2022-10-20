@@ -6,7 +6,7 @@ RSpec.describe API::Metadata do
   shared_examples_for 'GET /metadata' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        get api('/metadata')
+        get api(endpoint)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -16,7 +16,7 @@ RSpec.describe API::Metadata do
       let(:user) { create(:user) }
 
       it 'returns the metadata information' do
-        get api('/metadata', user)
+        get api(endpoint, user)
 
         expect_metadata
       end
@@ -29,13 +29,13 @@ RSpec.describe API::Metadata do
         let(:scopes) { %i(api) }
 
         it 'returns the metadata information' do
-          get api('/metadata', personal_access_token: personal_access_token)
+          get api(endpoint, personal_access_token: personal_access_token)
 
           expect_metadata
         end
 
         it 'returns "200" response on head requests' do
-          head api('/metadata', personal_access_token: personal_access_token)
+          head api(endpoint, personal_access_token: personal_access_token)
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -45,13 +45,13 @@ RSpec.describe API::Metadata do
         let(:scopes) { %i(read_user) }
 
         it 'returns the metadata information' do
-          get api('/metadata', personal_access_token: personal_access_token)
+          get api(endpoint, personal_access_token: personal_access_token)
 
           expect_metadata
         end
 
         it 'returns "200" response on head requests' do
-          head api('/metadata', personal_access_token: personal_access_token)
+          head api(endpoint, personal_access_token: personal_access_token)
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -61,7 +61,7 @@ RSpec.describe API::Metadata do
         let(:scopes) { %i(read_repository) }
 
         it 'returns authorization error' do
-          get api('/metadata', personal_access_token: personal_access_token)
+          get api(endpoint, personal_access_token: personal_access_token)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -76,18 +76,14 @@ RSpec.describe API::Metadata do
     end
   end
 
-  context 'with graphql enabled' do
-    before do
-      stub_feature_flags(graphql: true)
-    end
+  describe 'GET /metadata' do
+    let(:endpoint) { '/metadata' }
 
     include_examples 'GET /metadata'
   end
 
-  context 'with graphql disabled' do
-    before do
-      stub_feature_flags(graphql: false)
-    end
+  describe 'GET /version' do
+    let(:endpoint) { '/version' }
 
     include_examples 'GET /metadata'
   end

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Flaky tests
@@ -45,14 +45,26 @@ Once a test is in quarantine, there are 3 choices:
 On our CI, we use [RSpec::Retry](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
 times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
 
-We also use a home-made `RspecFlaky::Listener` listener which records flaky
-examples in a JSON report file on `main` (`retrieve-tests-metadata` and
-`update-tests-metadata` jobs).
+We also use a custom [`RspecFlaky::Listener`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/rspec_flaky/listener.rb).
+This listener runs in the `update-tests-metadata` job in `maintenance` scheduled pipelines
+on the `master` branch, and saves flaky examples to `rspec/flaky/report-suite.json`.
+The report file is then retrieved by the `retrieve-tests-metadata` job in all pipelines.
 
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13021>.
 
 If you want to enable retries locally, you can use the `RETRIES` environment variable.
 For instance `RETRIES=1 bin/rspec ...` would retry the failing examples once.
+
+To generate the reports locally, use the `FLAKY_RSPEC_GENERATE_REPORT` environment variable.
+For example, `FLAKY_RSPEC_GENERATE_REPORT=1 bin/rspec ...`.
+
+### Usage of the `rspec/flaky/report-suite.json` report
+
+The `rspec/flaky/report-suite.json` report is:
+
+- Used for [automatically skipping known flaky tests](../pipelines.md#automatic-skipping-of-flaky-tests).
+- [Imported into Snowflake](https://gitlab.com/gitlab-data/analytics/-/blob/master/extract/gitlab_flaky_tests/upload.py)
+  once per day, for monitoring with the [internal dashboard](https://app.periscopedata.com/app/gitlab/888968/EP---Flaky-tests).
 
 ## Problems we had in the past at GitLab
 

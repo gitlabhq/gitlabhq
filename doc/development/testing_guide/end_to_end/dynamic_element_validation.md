@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Dynamic Element Validation
@@ -48,7 +48,7 @@ click_element(:my_element, Some::Page)
 
 First it is important to define what a "required element" is.
 
-Simply put, a required element is a visible HTML element that appears on a UI component without any user input.
+A required element is a visible HTML element that appears on a UI component without any user input.
 
 "Visible" can be defined as
 

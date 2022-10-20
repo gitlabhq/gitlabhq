@@ -183,6 +183,7 @@ Settings.gitlab['default_project_creation'] ||= ::Gitlab::Access::DEVELOPER_MAIN
 Settings.gitlab['default_project_deletion_protection'] ||= false
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
+# `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host'] ||= ENV['GITLAB_HOST'] || 'localhost'
@@ -456,6 +457,7 @@ if Gitlab.ee? && Settings['ee_cron_jobs']
   Settings.cron_jobs.merge!(Settings.ee_cron_jobs)
 end
 
+Settings.cron_jobs['poll_interval'] ||= 30
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
@@ -655,7 +657,7 @@ Settings.cron_jobs['ci_runner_versions_reconciliation_worker'] ||= Settingslogic
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '@daily'
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'Ci::Runners::ReconcileExistingRunnerVersionsCronWorker'
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job_class'] = 'Users::MigrateRecordsToGhostUserInBatchesWorker'
 
 Gitlab.ee do
@@ -779,9 +781,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['cron'] ||= '*/15 * * * *'
   Settings.cron_jobs['security_orchestration_policy_rule_schedule_worker']['job_class'] = 'Security::OrchestrationPolicyRuleScheduleWorker'
-  Settings.cron_jobs['security_findings_cleanup_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['security_findings_cleanup_worker']['cron'] ||= '0 */4 * * 6,0'
-  Settings.cron_jobs['security_findings_cleanup_worker']['job_class'] = 'Security::Findings::CleanupWorker'
+  Settings.cron_jobs['security_scans_purge_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['security_scans_purge_worker']['cron'] ||= '0 */4 * * 6,0'
+  Settings.cron_jobs['security_scans_purge_worker']['job_class'] = 'Security::Scans::PurgeWorker'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['cron'] ||= '7-59/15 * * * *'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['job_class'] = 'AppSec::Dast::ProfileScheduleWorker'
@@ -1045,6 +1047,7 @@ Settings.shutdown['blackout_seconds'] ||= 10
 #
 if Rails.env.test?
   Settings.gitlab['default_projects_limit']   = 42
+  # `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
   Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
 end

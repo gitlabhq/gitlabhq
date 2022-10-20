@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab CI/CD job token **(FREE)**
@@ -20,7 +20,8 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
     (scoped to the job's project, when the `ci_job_token_scope` feature flag is enabled).
 - [Get job artifacts](../../api/job_artifacts.md#get-job-artifacts).
 - [Get job token's job](../../api/jobs.md#get-job-tokens-job).
-- [Pipeline triggers](../../api/pipeline_triggers.md), using the `token=` parameter.
+- [Pipeline triggers](../../api/pipeline_triggers.md), using the `token=` parameter
+  to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
 - [Releases](../../api/releases/index.md) and [Release links](../../api/releases/links.md).
 - [Terraform plan](../../user/infrastructure/index.md).
 
@@ -78,7 +79,7 @@ to be accessed by authenticating with the current project's job token. By defaul
 the token scope only allows access to the same project where the token comes from.
 Other projects can be added and removed by maintainers with access to both projects.
 
-This setting is disabled by default for all new projects. It is recommended that project maintainers enable this
+This setting is disabled by default for all new projects. It is recommended that project maintainers or owners enable this
 setting at all times, and configure the allowlist for cross-project access if needed.
 
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
@@ -98,28 +99,6 @@ The job token scope is only for controlling access to private projects.
 
 There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
 the feature with more strategic control of the access permissions.
-
-## Trigger a multi-project pipeline by using a CI/CD job token
-
-> `CI_JOB_TOKEN` for multi-project pipelines was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/31573) from GitLab Premium to GitLab Free in 12.4.
-
-You can use the `CI_JOB_TOKEN` to [trigger multi-project pipelines](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
-from a CI/CD job.
-
-For example:
-
-```yaml
-trigger_pipeline:
-  stage: deploy
-  script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=main "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
-  rules:
-    - if: $CI_COMMIT_TAG
-  environment: production
-```
-
-If you use the `CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md)
-in a pipeline triggered this way, [the value is `pipeline` (not `triggered`)](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines).
 
 ## Download an artifact from a different pipeline **(PREMIUM)**
 

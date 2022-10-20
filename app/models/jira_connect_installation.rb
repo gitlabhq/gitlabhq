@@ -21,6 +21,9 @@ class JiraConnectInstallation < ApplicationRecord
       })
   }
 
+  scope :direct_installations, -> { joins(:subscriptions) }
+  scope :proxy_installations, -> { where.not(instance_url: nil) }
+
   def client
     Atlassian::JiraConnect::Client.new(base_url, shared_secret)
   end
@@ -29,5 +32,21 @@ class JiraConnectInstallation < ApplicationRecord
     return Gitlab.config.gitlab.url if instance_url.blank? || Feature.disabled?(:jira_connect_oauth_self_managed)
 
     instance_url
+  end
+
+  def audience_url
+    return unless proxy?
+
+    Gitlab::Utils.append_path(instance_url, '/-/jira_connect')
+  end
+
+  def audience_installed_event_url
+    return unless proxy?
+
+    Gitlab::Utils.append_path(instance_url, '/-/jira_connect/events/installed')
+  end
+
+  def proxy?
+    instance_url.present?
   end
 end

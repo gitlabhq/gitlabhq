@@ -75,10 +75,6 @@ module Gitlab
         }
       end
 
-      def epics_deepest_relationship_level
-        { epics_deepest_relationship_level: 0 }
-      end
-
       def topology_usage_data
         {
           duration_s: 0,

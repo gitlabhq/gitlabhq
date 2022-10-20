@@ -21,6 +21,10 @@ RSpec.describe ProjectSetting, type: :model do
     it { is_expected.not_to allow_value(nil).for(:target_platforms) }
     it { is_expected.to allow_value([]).for(:target_platforms) }
 
+    it { is_expected.not_to allow_value(nil).for(:suggested_reviewers_enabled) }
+    it { is_expected.to allow_value(true).for(:suggested_reviewers_enabled) }
+    it { is_expected.to allow_value(false).for(:suggested_reviewers_enabled) }
+
     it 'allows any combination of the allowed target platforms' do
       valid_target_platform_combinations.each do |target_platforms|
         expect(subject).to allow_value(target_platforms).for(:target_platforms)

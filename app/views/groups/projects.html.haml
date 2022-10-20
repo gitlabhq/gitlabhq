@@ -2,45 +2,46 @@
 - page_title _("Projects")
 - @content_class = "limit-container-width" unless fluid_layout
 
-.card.gl-mt-3
-  .card-header
-    %strong= @group.name
-    projects:
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-3 js-search-settings-section' }, header_options: { class: 'gl-display-flex' }, body_options: { class: 'gl-py-0' }) do |c|
+  - c.header do
+    .gl-flex-grow-1
+      = html_escape(_("%{strong_open}%{group_name}%{strong_close} projects:")) % { strong_open: '<strong>'.html_safe, group_name: @group.name, strong_close: '</strong>'.html_safe }
     - if can? current_user, :admin_group, @group
       .controls
-        = link_to new_project_path(namespace_id: @group.id), class: "btn gl-button btn-sm btn-confirm" do
-          New project
-  %ul.projects-list.content-list.group-settings-projects
-    - @projects.each do |project|
-      %li.project-row{ class: ('no-description' if project.description.blank?) }
-        .controls
-          = link_to _('Members'), project_project_members_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button"
-          = link_to _('Edit'), edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn gl-button"
-          = render 'delete_project_button', project: project
+        = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), size: :small, variant: :confirm) do
+          = _("New project")
+  - c.body do
+    %ul.content-list
+      - @projects.each do |project|
+        %li.project-row.gl-align-items-center{ class: 'gl-display-flex!' }
+          .avatar-container.rect-avatar.s40.gl-flex-shrink-0
+            = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
+          .gl-min-w-0.gl-flex-grow-1
+            .title
+              = link_to project_path(project), class: 'js-prefetch-document' do
+                %span.project-full-name
+                  %span.namespace-name
+                    - if project.namespace
+                      = project.namespace.human_name
+                      \/
+                  %span.project-name
+                    = project.name
+                  %span{ class: visibility_level_color(project.visibility_level) }
+                    = visibility_level_icon(project.visibility_level)
 
-        .stats
-          = gl_badge_tag storage_counter(project.statistics&.storage_size)
-          = render 'project_badges', project: project
+            - if project.description.present?
+              .description
+                = markdown_field(project, :description)
 
-        .title
-          = link_to project_path(project), class: 'js-prefetch-document' do
-            .dash-project-avatar
-              .avatar-container.rect-avatar.s40
-                = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
-            %span.project-full-name
-              %span.namespace-name
-                - if project.namespace
-                  = project.namespace.human_name
-                  \/
-              %span.project-name
-                = project.name
-              %span{ class: visibility_level_color(project.visibility_level) }
-                = visibility_level_icon(project.visibility_level)
+          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex
+            = gl_badge_tag storage_counter(project.statistics&.storage_size)
+            = render 'project_badges', project: project
 
-        - if project.description.present?
-          .description
-            = markdown_field(project, :description)
-    - if @projects.blank?
-      .nothing-here-block This group has no projects yet
+          .controls.gl-flex-shrink-0.gl-ml-5
+            = link_to _('Members'), project_project_members_path(project), id: dom_id(project, :edit), class: "btn gl-button"
+            = link_to _('Edit'), edit_project_path(project), id: dom_id(project, :edit), class: "btn gl-button"
+            = render 'delete_project_button', project: project
+      - if @projects.blank?
+        .nothing-here-block= _("This group has no projects yet")
 
 = paginate @projects, theme: "gitlab"

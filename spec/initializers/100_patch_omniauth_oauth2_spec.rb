@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'OmniAuth::Strategies::OAuth2' do
   it 'verifies the gem version' do
     current_version = OmniAuth::OAuth2::VERSION
-    expected_version = '1.7.3'
+    expected_version = '1.8.0'
 
     expect(current_version).to eq(expected_version), <<~EOF
       New version #{current_version} of the `omniauth-oauth2` gem detected!

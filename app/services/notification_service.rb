@@ -87,6 +87,13 @@ class NotificationService
     mailer.access_token_expired_email(user).deliver_later
   end
 
+  # Notify the user when one of their personal access tokens is revoked
+  def access_token_revoked(user, token_name)
+    return unless user.can?(:receive_notifications)
+
+    mailer.access_token_revoked_email(user, token_name).deliver_later
+  end
+
   # Notify the user when at least one of their ssh key has expired today
   def ssh_key_expired(user, fingerprints)
     return unless user.can?(:receive_notifications)
@@ -107,6 +114,14 @@ class NotificationService
     return unless user.can?(:receive_notifications)
 
     mailer.unknown_sign_in_email(user, ip, time).deliver_later
+  end
+
+  # Notify a user when a wrong 2FA OTP has been entered to
+  # try to sign in to their account
+  def two_factor_otp_attempt_failed(user, ip)
+    return unless user.can?(:receive_notifications)
+
+    mailer.two_factor_otp_attempt_failed_email(user, ip).deliver_later
   end
 
   # Notify a user when a new email address is added to the their account

@@ -2,7 +2,8 @@
 import { GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { __ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
+import { formatDate } from '~/lib/utils/datetime_utility';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import { PACKAGE_TYPE_NUGET } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
@@ -25,6 +26,7 @@ export default {
   },
   inject: ['isGroupPage'],
   i18n: {
+    lastDownloadedAt: s__('PackageRegistry|Last downloaded %{dateTime}'),
     packageInfo: __('v%{version} published %{timeAgo}'),
   },
   props: {
@@ -39,6 +41,11 @@ export default {
     };
   },
   computed: {
+    packageLastDownloadedAtDisplay() {
+      return sprintf(this.$options.i18n.lastDownloadedAt, {
+        dateTime: formatDate(this.packageEntity.lastDownloadedAt, 'mmm d, yyyy'),
+      });
+    },
     packageTypeDisplay() {
       return getPackageTypeLabel(this.packageEntity.packageType);
     },
@@ -134,6 +141,15 @@ export default {
 
     <template v-if="packagePipeline && packagePipeline.ref" #metadata-ref>
       <metadata-item data-testid="package-ref" icon="branch" :text="packagePipeline.ref" />
+    </template>
+
+    <template v-if="packageEntity.lastDownloadedAt" #metadata-last-downloaded-at>
+      <metadata-item
+        data-testid="package-last-downloaded-at"
+        icon="download"
+        :text="packageLastDownloadedAtDisplay"
+        size="m"
+      />
     </template>
 
     <template #right-actions>

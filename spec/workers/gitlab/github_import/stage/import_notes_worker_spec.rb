@@ -6,6 +6,13 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportNotesWorker do
   let(:project) { create(:project) }
   let(:worker) { described_class.new }
 
+  let(:settings) { ::Gitlab::GithubImport::Settings.new(project) }
+  let(:single_endpoint_optional_stage) { true }
+
+  before do
+    settings.write({ single_endpoint_notes_import: single_endpoint_optional_stage })
+  end
+
   describe '#import' do
     it 'imports all the notes' do
       client = double(:client)
@@ -33,37 +40,19 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportNotesWorker do
   end
 
   describe '#importers' do
-    context 'when project group is present' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:group) { create(:group, projects: [project]) }
-
-      context 'when feature flag github_importer_single_endpoint_notes_import is enabled' do
-        it 'includes single endpoint mr and issue notes importers' do
-          project = create(:project)
-          group = create(:group, projects: [project])
-
-          stub_feature_flags(github_importer_single_endpoint_notes_import: group)
-
-          expect(worker.importers(project)).to contain_exactly(
-            Gitlab::GithubImport::Importer::SingleEndpointMergeRequestNotesImporter,
-            Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter
-          )
-        end
-      end
-
-      context 'when feature flag github_importer_single_endpoint_notes_import is disabled' do
-        it 'includes default notes importer' do
-          stub_feature_flags(github_importer_single_endpoint_notes_import: false)
-
-          expect(worker.importers(project)).to contain_exactly(
-            Gitlab::GithubImport::Importer::NotesImporter
-          )
-        end
+    context 'when settings single_endpoint_notes_import is enabled' do
+      it 'includes single endpoint mr and issue notes importers' do
+        expect(worker.importers(project)).to contain_exactly(
+          Gitlab::GithubImport::Importer::SingleEndpointMergeRequestNotesImporter,
+          Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter
+        )
       end
     end
 
-    context 'when project group is missing' do
-      it 'includes default diff notes importer' do
+    context 'when settings single_endpoint_notes_import is disabled' do
+      let(:single_endpoint_optional_stage) { false }
+
+      it 'includes default notes importer' do
         expect(worker.importers(project)).to contain_exactly(
           Gitlab::GithubImport::Importer::NotesImporter
         )

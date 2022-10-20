@@ -11,7 +11,7 @@ end
 
 desc "Initialize GitLab with an access token"
 task :initialize_gitlab_auth, [:address] do |_, args|
-  QA::Tools::InitializeGitLabAuth.new(args).run
+  QA::Tools::InitializeGitlabAuth.new(args).run
 end
 
 desc "Generate Performance Testdata"
@@ -46,7 +46,7 @@ task generate_data_and_run_load_test: [:generate_perf_testdata, :run_artillery_l
 
 desc "Deletes test ssh keys a user"
 task :delete_test_ssh_keys, [:title_portion, :delete_before, :dry_run] do |_, args|
-  QA::Tools::DeleteTestSSHKeys.new(args).run
+  QA::Tools::DeleteTestSshKeys.new(args).run
 end
 
 desc "Deletes projects directly under the provided group"

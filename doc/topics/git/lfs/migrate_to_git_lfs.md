@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "How to migrate an existing Git repository to Git LFS with BFG."
 ---
 
@@ -15,7 +15,7 @@ instead of the method documented below.
 Using Git LFS can help you to reduce the size of your Git
 repository and improve its performance.
 
-However, simply adding the large files that are already in your repository to Git LFS
+However, adding the large files that are already in your repository to Git LFS
 doesn't actually reduce the size of your repository because
 the files are still referenced by previous commits.
 

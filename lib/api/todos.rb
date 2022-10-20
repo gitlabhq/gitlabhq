@@ -15,17 +15,17 @@ module API
     }.freeze
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, type: String, desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       ISSUABLE_TYPES.each do |type, finder|
         type_id_str = "#{type.singularize}_iid".to_sym
 
-        desc 'Create a todo on an issuable' do
+        desc 'Create a to-do item on an issuable' do
           success Entities::Todo
         end
         params do
-          requires type_id_str, type: Integer, desc: 'The IID of an issuable'
+          requires type_id_str, type: Integer, desc: 'The internal ID of an issuable'
         end
         post ":id/#{type}/:#{type_id_str}/todo" do
           issuable = instance_exec(params[type_id_str], &finder)
@@ -44,12 +44,12 @@ module API
     resource :todos do
       helpers do
         params :todo_filters do
-          optional :action, String, values: Todo::ACTION_NAMES.values.map(&:to_s)
-          optional :author_id, Integer
-          optional :state, String, values: Todo.state_machine.states.map(&:name).map(&:to_s)
-          optional :type, String, values: TodosFinder.todo_types
-          optional :project_id, Integer
-          optional :group_id, Integer
+          optional :action, type: String, values: Todo::ACTION_NAMES.values.map(&:to_s), desc: 'The action to be filtered'
+          optional :author_id, type: Integer, desc: 'The ID of an author'
+          optional :project_id, type: Integer, desc: 'The ID of a project'
+          optional :group_id, type: Integer, desc: 'The ID of a group'
+          optional :state, type: String, values: Todo.state_machine.states.map(&:name).map(&:to_s), desc: 'The state of the to-do item'
+          optional :type, type: String, values: TodosFinder.todo_types.map(&:to_s), desc: 'The type of to-do item'
         end
 
         def find_todos
@@ -81,7 +81,7 @@ module API
         end
       end
 
-      desc 'Get a todo list' do
+      desc 'Get a list of to-do items' do
         success Entities::Todo
       end
       params do
@@ -96,11 +96,11 @@ module API
         present todos, options
       end
 
-      desc 'Mark a todo as done' do
+      desc 'Mark a to-do item as done' do
         success Entities::Todo
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the todo being marked as done'
+        requires :id, type: Integer, desc: 'The ID of to-do item'
       end
       post ':id/mark_as_done' do
         todo = current_user.todos.find(params[:id])
@@ -110,7 +110,7 @@ module API
         present todo, with: Entities::Todo, current_user: current_user
       end
 
-      desc 'Mark all todos as done'
+      desc 'Mark all to-do items as done'
       post '/mark_as_done' do
         todos = find_todos
 

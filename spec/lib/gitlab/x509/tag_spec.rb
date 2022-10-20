@@ -5,8 +5,8 @@ RSpec.describe Gitlab::X509::Tag do
   subject(:signature) { described_class.new(project.repository, tag).signature }
 
   describe '#signature' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:repository) { project.repository.raw }
 
     describe 'signed tag' do
       let(:tag) { project.repository.find_tag('v1.1.1') }

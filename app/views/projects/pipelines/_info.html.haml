@@ -9,18 +9,21 @@
   .well-segment.pipeline-info{ class: "gl-align-items-baseline!" }
     .icon-container
       = sprite_icon('clock', css_class: 'gl-top-0!')
-    = pluralize @pipeline.total_size, "job"
-    = @pipeline.ref_text
+    - jobs = n_('%d job', '%d jobs', @pipeline.total_size) % @pipeline.total_size
     - if @pipeline.duration
-      in
-      = time_interval_in_words(@pipeline.duration)
+      = s_('Pipelines|%{jobs} %{ref_text} in %{duration}').html_safe % { jobs: jobs, ref_text: @pipeline.ref_text, duration: time_interval_in_words(@pipeline.duration) }
+    - else
+      = jobs
+      = @pipeline.ref_text
     - if @pipeline.queued_duration
-      = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
+      = s_("Pipelines|(queued for %{queued_duration})") % { queued_duration: time_interval_in_words(@pipeline.queued_duration)}
 
   - if has_pipeline_badges?(@pipeline)
     .well-segment.qa-pipeline-badges
       .icon-container
         = sprite_icon('flag', css_class: 'gl-top-0!')
+      - if @pipeline.schedule?
+        = gl_badge_tag _('Scheduled'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-scheduled', title: _('This pipeline was triggered by a schedule.') }
       - if @pipeline.child?
         - text = sprintf(s_('Pipelines|Child pipeline (%{link_start}parent%{link_end})'), { link_start: "<a href='#{pipeline_path(@pipeline.triggered_by_pipeline)}' class='text-underline'>", link_end: "</a>"}).html_safe
         = gl_badge_tag text, { variant: :info, size: :sm }, { class: 'js-pipeline-child has-tooltip', title: s_("Pipelines|This is a child pipeline within the parent pipeline") }

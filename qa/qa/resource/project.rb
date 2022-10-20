@@ -226,7 +226,11 @@ module QA
       end
 
       def api_housekeeping_path
-        "/projects/#{id}/housekeeping"
+        "#{api_get_path}/housekeeping"
+      end
+
+      def api_protected_branches_path
+        "#{api_get_path}/protected_branches"
       end
 
       def api_post_body
@@ -324,8 +328,11 @@ module QA
         result = parse_body(response)
 
         if result[:import_status] == "failed"
-          Runtime::Logger.error("Import failed: #{result[:import_error]}")
-          Runtime::Logger.error("Failed relations: #{result[:failed_relations]}")
+          Runtime::Logger.error(<<~ERR)
+            Import of project '#{full_path}' failed!
+              error: '#{result[:import_error]}'
+              failed relations: '#{result[:failed_relations]}'
+          ERR
         end
 
         result
@@ -420,7 +427,7 @@ module QA
       end
 
       def wikis
-        response = get(request_url(api_wikis_path))
+        response = api_get_from(api_wikis_path)
         parse_body(response)
       end
 
@@ -435,6 +442,11 @@ module QA
 
       def create_release(tag, ref = default_branch, **params)
         api_post_to(api_releases_path, tag_name: tag, ref: ref, **params)
+      end
+
+      def protected_branches
+        response = api_get_from(api_protected_branches_path)
+        parse_body(response)
       end
 
       # Uses the API to wait until a pull mirroring update is successful (pull mirroring is treated as an import)

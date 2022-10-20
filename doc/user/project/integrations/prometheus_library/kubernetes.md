@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Monitoring Kubernetes (DEPRECATED) **(FREE)**
@@ -35,7 +35,7 @@ integration services must be enabled.
 
 ## Configuring Prometheus to monitor for Kubernetes metrics
 
-Prometheus needs to be deployed into the cluster and configured properly in order to gather Kubernetes metrics. GitLab supports two methods for doing so:
+Prometheus needs to be deployed into the cluster and configured properly to gather Kubernetes metrics. GitLab supports two methods for doing so:
 
 - GitLab [integrates with Kubernetes](../../clusters/index.md), and can [query a Prometheus in a connected cluster](../../../clusters/integrations.md#prometheus-cluster-integration). The in-cluster Prometheus can be configured to automatically collect application metrics from your cluster.
 - To configure your own Prometheus server, you can follow the [Prometheus documentation](https://prometheus.io/docs/introduction/overview/).

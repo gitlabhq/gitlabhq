@@ -8,6 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
   include OneTrustCSP
   include BizibleCSP
   include GoogleAnalyticsCSP
+  include RegistrationsTracking
 
   layout 'devise'
 
@@ -114,13 +115,18 @@ class RegistrationsController < Devise::RegistrationsController
   def after_sign_up_path_for(user)
     Gitlab::AppLogger.info(user_created_message(confirmed: user.confirmed?))
 
-    users_sign_up_welcome_path
+    users_sign_up_welcome_path(glm_tracking_params)
   end
 
   def after_inactive_sign_up_path_for(resource)
     Gitlab::AppLogger.info(user_created_message)
     return new_user_session_path(anchor: 'login-pane') if resource.blocked_pending_approval?
     return dashboard_projects_path if Feature.enabled?(:soft_email_confirmation)
+
+    # when email confirmation is enabled, path to redirect is saved
+    # after user confirms and comes back, he will be redirected
+    store_location_for(:redirect, users_sign_up_welcome_path(glm_tracking_params))
+
     return identity_verification_redirect_path if custom_confirmation_enabled?(resource)
 
     users_almost_there_path(email: resource.email)
@@ -183,7 +189,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def resource
     @resource ||= Users::RegistrationsBuildService
-                    .new(current_user, sign_up_params.merge({ skip_confirmation: skip_email_confirmation? }))
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email? }))
                     .execute
   end
 
@@ -191,7 +197,7 @@ class RegistrationsController < Devise::RegistrationsController
     @devise_mapping ||= Devise.mappings[:user]
   end
 
-  def skip_email_confirmation?
+  def registered_with_invite_email?
     invite_email = session.delete(:invite_email)
 
     sign_up_params[:email] == invite_email

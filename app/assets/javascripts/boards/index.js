@@ -86,6 +86,7 @@ function mountBoardApp(el) {
       milestoneListsAvailable: parseBoolean(el.dataset.milestoneListsAvailable),
       assigneeListsAvailable: parseBoolean(el.dataset.assigneeListsAvailable),
       iterationListsAvailable: parseBoolean(el.dataset.iterationListsAvailable),
+      healthStatusFeatureAvailable: parseBoolean(el.dataset.healthStatusFeatureAvailable),
       allowScopedLabels: parseBoolean(el.dataset.scopedLabels),
       swimlanesFeatureAvailable: gon.licensed_features?.swimlanes,
       multipleIssueBoardsAvailable: parseBoolean(el.dataset.multipleBoardsAvailable),

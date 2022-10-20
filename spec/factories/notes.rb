@@ -184,7 +184,7 @@ FactoryBot.define do
     end
 
     trait :with_pdf_attachment do
-      attachment { fixture_file_upload("spec/fixtures/git-cheat-sheet.pdf", "application/pdf") }
+      attachment { fixture_file_upload("spec/fixtures/sample.pdf", "application/pdf") }
     end
 
     trait :confidential do

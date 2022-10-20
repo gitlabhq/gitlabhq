@@ -15,6 +15,7 @@ module Gitlab
       gon.relative_url_root       = Gitlab.config.gitlab.relative_url_root
       gon.user_color_scheme       = Gitlab::ColorSchemes.for_user(current_user).css_class
       gon.markdown_surround_selection = current_user&.markdown_surround_selection
+      gon.markdown_automatic_lists = current_user&.markdown_automatic_lists
 
       if Gitlab.config.sentry.enabled
         gon.sentry_dsn           = Gitlab.config.sentry.clientside_dsn
@@ -32,6 +33,7 @@ module Gitlab
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
       gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
       gon.select2_css_path       = ActionController::Base.helpers.stylesheet_path('lazy_bundles/select2.css')
+      gon.gridstack_css_path     = ActionController::Base.helpers.stylesheet_path('lazy_bundles/gridstack.css')
       gon.test_env               = Rails.env.test?
       gon.disable_animations     = Gitlab.config.gitlab['disable_animations']
       gon.suggested_label_colors = LabelsHelper.suggested_colors
@@ -55,7 +57,7 @@ module Gitlab
       push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:new_header_search)
       push_frontend_feature_flag(:source_editor_toolbar)
-      push_frontend_feature_flag(:gl_avatar_for_all_user_avatars)
+      push_frontend_feature_flag(:integration_slack_app_notifications)
     end
 
     # Exposes the state of a feature flag to the frontend code.

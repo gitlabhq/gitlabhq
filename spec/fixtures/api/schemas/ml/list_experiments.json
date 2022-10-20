@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "required": [
+    "experiments"
+  ],
+  "properties": {
+    "experiments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "experiment_id",
+          "name",
+          "artifact_location",
+          "lifecycle_stage"
+        ],
+        "properties": {
+          "experiment_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "artifact_location": {
+            "type": "string"
+          },
+          "lifecycle_stage": {
+            "type": {
+              "enum": [
+                "active",
+                "deleted"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

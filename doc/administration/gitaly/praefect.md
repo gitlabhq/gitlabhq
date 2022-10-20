@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure Gitaly Cluster **(FREE SELF)**
@@ -1320,7 +1320,7 @@ Deletions are disabled by default due to a race condition with repository rename
 deletions. This is especially prominent in Geo instances as Geo performs more renames than instances without Geo.
 You should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths-gitlab-150-and-later) is enabled.
 
-By default, the worker does not delete invalid metadata records but simply logs them and outputs Prometheus
+By default, the worker does not delete invalid metadata records but logs them and outputs Prometheus
 metrics for them.
 
 You can enable deleting invalid metadata records with:

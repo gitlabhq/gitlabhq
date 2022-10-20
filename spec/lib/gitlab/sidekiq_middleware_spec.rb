@@ -60,7 +60,6 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         ::Labkit::Middleware::Sidekiq::Server,
         ::Gitlab::SidekiqMiddleware::ServerMetrics,
         ::Gitlab::SidekiqMiddleware::ArgumentsLogger,
-        ::Gitlab::SidekiqMiddleware::MemoryKiller,
         ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
         ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
         ::Gitlab::SidekiqMiddleware::BatchLoader,
@@ -79,8 +78,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         with_sidekiq_server_middleware do |chain|
           described_class.server_configurator(
             metrics: true,
-            arguments_logger: true,
-            memory_killer: true
+            arguments_logger: true
           ).call(chain)
 
           Sidekiq::Testing.inline! { example.run }
@@ -112,16 +110,14 @@ RSpec.describe Gitlab::SidekiqMiddleware do
       let(:configurator) do
         described_class.server_configurator(
           metrics: false,
-          arguments_logger: false,
-          memory_killer: false
+          arguments_logger: false
         )
       end
 
       let(:disabled_sidekiq_middlewares) do
         [
           Gitlab::SidekiqMiddleware::ServerMetrics,
-          Gitlab::SidekiqMiddleware::ArgumentsLogger,
-          Gitlab::SidekiqMiddleware::MemoryKiller
+          Gitlab::SidekiqMiddleware::ArgumentsLogger
         ]
       end
 

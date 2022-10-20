@@ -5,10 +5,9 @@ require 'spec_helper'
 RSpec.describe 'User edit profile' do
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
-    stub_feature_flags(remove_user_attributes_projects: false)
     sign_in(user)
     visit(profile_path)
   end
@@ -456,6 +455,8 @@ RSpec.describe 'User edit profile' do
       end
 
       context 'Remove status button' do
+        let(:user) { create(:user) }
+
         before do
           user.status = UserStatus.new(message: 'Eating bread', emoji: 'stuffed_flatbread')
 
@@ -495,45 +496,6 @@ RSpec.describe 'User edit profile' do
 
         expect(page).to have_emoji('speech_balloon')
       end
-
-      context 'note header' do
-        let(:project) { create(:project_empty_repo, :public) }
-        let(:issue) { create(:issue, project: project) }
-        let(:emoji) { "stuffed_flatbread" }
-
-        before do
-          project.add_guest(user)
-          create(:user_status, user: user, message: 'Taking notes', emoji: emoji)
-
-          visit(project_issue_path(project, issue))
-
-          add_note("This is a comment")
-          visit(project_issue_path(project, issue))
-
-          wait_for_requests
-        end
-
-        it 'displays the status emoji' do
-          first_note = page.find_all(".main-notes-list .timeline-entry").first
-
-          expect(first_note).to have_emoji(emoji)
-        end
-
-        it 'clears the status emoji' do
-          open_edit_status_modal
-
-          page.within "#set-user-status-modal" do
-            click_button 'Remove status'
-          end
-
-          visit(project_issue_path(project, issue))
-          wait_for_requests
-
-          first_note = page.find_all(".main-notes-list .timeline-entry").first
-
-          expect(first_note).not_to have_css('.user-status-emoji')
-        end
-      end
     end
 
     context 'User time preferences', :js do
@@ -551,13 +513,13 @@ RSpec.describe 'User edit profile' do
       it 'allows the user to select a time zone from a dropdown list of options' do
         expect(page.find('.user-time-preferences .dropdown')).not_to have_css('.show')
 
-        page.find('.user-time-preferences .js-timezone-dropdown').click
+        page.find('.user-time-preferences .dropdown').click
 
         expect(page.find('.user-time-preferences .dropdown')).to have_css('.show')
 
-        page.find("a", text: "Nuku'alofa").click
+        page.find("button", text: "Arizona").click
 
-        expect(page).to have_field(:user_timezone, with: 'Pacific/Tongatapu', type: :hidden)
+        expect(page).to have_field(:user_timezone, with: 'America/Phoenix', type: :hidden)
       end
 
       it 'timezone defaults to empty' do

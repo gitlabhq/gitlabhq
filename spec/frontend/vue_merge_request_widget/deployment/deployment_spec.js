@@ -37,7 +37,7 @@ describe('Deployment component', () => {
   });
 
   it('always renders DeploymentInfo', () => {
-    expect(wrapper.find(DeploymentInfo).exists()).toBe(true);
+    expect(wrapper.findComponent(DeploymentInfo).exists()).toBe(true);
   });
 
   describe('status message and buttons', () => {
@@ -111,7 +111,7 @@ describe('Deployment component', () => {
         });
 
         it(`renders the text: ${text}`, () => {
-          expect(wrapper.find(DeploymentInfo).text()).toContain(text);
+          expect(wrapper.findComponent(DeploymentInfo).text()).toContain(text);
         });
 
         if (actionButtons.length > 0) {
@@ -137,9 +137,11 @@ describe('Deployment component', () => {
         if (actionButtons.includes(DeploymentViewButton)) {
           it('renders the View button with expected text', () => {
             if (status === SUCCESS) {
-              expect(wrapper.find(DeploymentViewButton).text()).toContain('View app');
+              expect(wrapper.findComponent(DeploymentViewButton).text()).toContain('View app');
             } else {
-              expect(wrapper.find(DeploymentViewButton).text()).toContain('View latest app');
+              expect(wrapper.findComponent(DeploymentViewButton).text()).toContain(
+                'View latest app',
+              );
             }
           });
         }
@@ -150,7 +152,7 @@ describe('Deployment component', () => {
   describe('hasExternalUrls', () => {
     describe('when deployment has both external_url_formatted and external_url', () => {
       it('should render the View Button', () => {
-        expect(wrapper.find(DeploymentViewButton).exists()).toBe(true);
+        expect(wrapper.findComponent(DeploymentViewButton).exists()).toBe(true);
       });
     });
 
@@ -165,7 +167,7 @@ describe('Deployment component', () => {
       });
 
       it('should not render the View Button', () => {
-        expect(wrapper.find(DeploymentViewButton).exists()).toBe(false);
+        expect(wrapper.findComponent(DeploymentViewButton).exists()).toBe(false);
       });
     });
 
@@ -180,7 +182,7 @@ describe('Deployment component', () => {
       });
 
       it('should not render the View Button', () => {
-        expect(wrapper.find(DeploymentViewButton).exists()).toBe(false);
+        expect(wrapper.findComponent(DeploymentViewButton).exists()).toBe(false);
       });
     });
   });

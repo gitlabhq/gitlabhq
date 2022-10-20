@@ -6,7 +6,16 @@ RSpec.describe Import::GithubService do
   let_it_be(:user) { create(:user) }
   let_it_be(:token) { 'complex-token' }
   let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
-  let_it_be(:params) { { repo_id: 123, new_name: 'new_repo', target_namespace: 'root' } }
+  let(:settings) { instance_double(Gitlab::GithubImport::Settings) }
+  let(:optional_stages) { nil }
+  let(:params) do
+    {
+      repo_id: 123,
+      new_name: 'new_repo',
+      target_namespace: 'root',
+      optional_stages: optional_stages
+    }
+  end
 
   subject(:github_importer) { described_class.new(client, user, params) }
 
@@ -16,6 +25,12 @@ RSpec.describe Import::GithubService do
 
   shared_examples 'handles errors' do |klass|
     let(:client) { klass.new(token) }
+    let(:project_double) { instance_double(Project, persisted?: true) }
+
+    before do
+      allow(Gitlab::GithubImport::Settings).to receive(:new).with(project_double).and_return(settings)
+      allow(settings).to receive(:write).with(optional_stages)
+    end
 
     context 'do not raise an exception on input error' do
       let(:exception) { Octokit::ClientError.new(status: 404, body: 'Not Found') }
@@ -62,13 +77,14 @@ RSpec.describe Import::GithubService do
         expect(client).to receive(:repository).and_return(repository_double)
 
         allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |creator|
-          allow(creator).to receive(:execute).and_return(double(persisted?: true))
+          allow(creator).to receive(:execute).and_return(project_double)
         end
       end
 
       context 'when there is no repository size limit defined' do
         it 'skips the check and succeeds' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
+          expect(settings).to have_received(:write).with(nil)
         end
       end
 
@@ -81,6 +97,7 @@ RSpec.describe Import::GithubService do
 
         it 'succeeds when the repository is smaller than the limit' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
+          expect(settings).to have_received(:write).with(nil)
         end
 
         it 'returns error when the repository is larger than the limit' do
@@ -100,6 +117,7 @@ RSpec.describe Import::GithubService do
         context 'when application size limit is defined' do
           it 'succeeds when the repository is smaller than the limit' do
             expect(subject.execute(access_params, :github)).to include(status: :success)
+            expect(settings).to have_received(:write).with(nil)
           end
 
           it 'returns error when the repository is larger than the limit' do
@@ -107,6 +125,22 @@ RSpec.describe Import::GithubService do
 
             expect(subject.execute(access_params, :github)).to include(size_limit_error)
           end
+        end
+      end
+
+      context 'when optional stages params present' do
+        let(:optional_stages) do
+          {
+            single_endpoint_issue_events_import: true,
+            single_endpoint_notes_import: 'false',
+            attachments_import: false
+          }
+        end
+
+        it 'saves optional stages choice to import_data' do
+          subject.execute(access_params, :github)
+
+          expect(settings).to have_received(:write).with(optional_stages)
         end
       end
     end
@@ -170,7 +204,7 @@ RSpec.describe Import::GithubService do
     include_examples 'handles errors', Gitlab::GithubImport::Client
   end
 
-  context 'when remove_legacy_github_client feature flag is enabled' do
+  context 'when remove_legacy_github_client feature flag is disabled' do
     before do
       stub_feature_flags(remove_legacy_github_client: false)
     end

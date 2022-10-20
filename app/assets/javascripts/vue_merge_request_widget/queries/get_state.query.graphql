@@ -10,6 +10,7 @@ query getState($projectPath: ID!, $iid: String!) {
       availableAutoMergeStrategies
       commitCount
       conflicts
+      detailedMergeStatus
       diffHeadSha
       mergeError
       mergeStatus

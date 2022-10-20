@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Container Registry administration **(FREE SELF)**
@@ -40,7 +40,9 @@ if you want to implement this.
 
 If you have installed GitLab from source:
 
-1. You must [install Registry](https://docs.docker.com/registry/deploying/) by yourself.
+1. You must [deploy a registry](https://docs.docker.com/registry/deploying/) using the image corresponding to the
+   version of GitLab you are installing
+   (for example: `registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v3.15.0-gitlab`)
 1. After the installation is complete, to enable it, you must configure the Registry's
    settings in `gitlab.yml`.
 1. Use the sample NGINX configuration file from under
@@ -158,7 +160,7 @@ If your certificate provider provides the CA Bundle certificates, append them to
 
 An administrator may want the container registry listening on an arbitrary port such as `5678`.
 However, the registry and application server are behind an AWS application load balancer that only
-listens on ports `80` and `443`. The administrator may simply remove the port number for
+listens on ports `80` and `443`. The administrator may remove the port number for
 `registry_external_url`, so HTTP or HTTPS is assumed. Then, the rules apply that map the load
 balancer to the registry from ports `80` or `443` to the arbitrary port. This is important if users
 rely on the `docker login` example in the container registry. Here's an example:
@@ -882,9 +884,40 @@ point to the correct registry URL and copy the `registry.key` file to each Sidek
 information, see the [Sidekiq configuration](../sidekiq.md)
 page.
 
-To reduce the amount of [Container Registry disk space used by a given project](../troubleshooting/gitlab_rails_cheat_sheet.md#registry-disk-space-usage-by-project),
+To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
 administrators can clean up image tags
 and [run garbage collection](#container-registry-garbage-collection).
+
+### Registry Disk Space Usage by Project
+
+To find the disk space used by each project, run the following in the
+[GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+projects_and_size = [["project_id", "creator_id", "registry_size_bytes", "project path"]]
+# You need to specify the projects that you want to look through. You can get these in any manner.
+projects = Project.last(100)
+
+projects.each do |p|
+   project_total_size = 0
+   container_repositories = p.container_repositories
+
+   container_repositories.each do |c|
+       c.tags.each do |t|
+          project_total_size = project_total_size + t.total_size unless t.total_size.nil?
+       end
+   end
+
+   if project_total_size > 0
+      projects_and_size << [p.project_id, p.creator.id, project_total_size, p.full_path]
+   end
+end
+
+# print it as comma separated output
+projects_and_size.each do |ps|
+   puts "%s,%s,%s,%s" % ps
+end
+```
 
 To remove image tags by running the cleanup policy, run the following commands in the
 [GitLab Rails console](../operations/rails_console.md):
@@ -935,7 +968,7 @@ provided by `gitlab-ctl`.
 Prerequisites:
 
 - You must have installed GitLab by using an Omnibus package or the
-  [cloud native chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
+  [GitLab Helm chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
 - You must set the Registry to [read-only mode](#performing-garbage-collection-without-downtime).
   Running garbage collection causes downtime for the Container Registry. When you run this command
   on an instance in an environment where another instance is still writing to the Registry storage,
@@ -1192,7 +1225,7 @@ and signed with the private key.
 The Registry then verifies that the signature matches the registry certificate
 specified in its configuration and allows the operation.
 GitLab background jobs processing (through Sidekiq) also interacts with Registry.
-These jobs talk directly to Registry in order to handle image deletion.
+These jobs talk directly to Registry to handle image deletion.
 
 ## Troubleshooting
 
@@ -1292,8 +1325,8 @@ Check which files are in use:
 The output of these `openssl` commands should match, proving that the cert-key pair is a match:
 
 ```shell
-openssl x509 -noout -modulus -in /var/opt/gitlab/registry/gitlab-registry.crt | openssl sha256
-openssl rsa -noout -modulus -in /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key | openssl sha256
+/opt/gitlab/embedded/bin/openssl x509 -noout -modulus -in /var/opt/gitlab/registry/gitlab-registry.crt | /opt/gitlab/embedded/bin/openssl sha256
+/opt/gitlab/embedded/bin/openssl rsa -noout -modulus -in /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key | /opt/gitlab/embedded/bin/openssl sha256
 ```
 
 If the two pieces of the certificate do not align, remove the files and run `gitlab-ctl reconfigure`

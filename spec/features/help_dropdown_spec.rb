@@ -59,6 +59,10 @@ RSpec.describe "Help Dropdown", :js do
             expect(page).to have_text('Your GitLab Version')
             expect(page).to have_text("#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}")
             expect(page).to have_selector('.version-check-badge')
+            expect(page).to have_selector(
+              'a[data-testid="gitlab-version-container"][href="/help/update/index"]'
+            )
+            expect(page).to have_selector('.version-check-badge[href="/help/update/index"]')
             expect(page).to have_text(ui_text)
           end
         end

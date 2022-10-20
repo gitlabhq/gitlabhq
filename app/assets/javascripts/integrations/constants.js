@@ -91,3 +91,5 @@ export const placeholderForType = {
   [INTEGRATION_TYPE_SLACK]: __('#general, #development'),
   [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
 };
+
+export const INTEGRATION_FORM_TYPE_SLACK = 'gitlab_slack_application';

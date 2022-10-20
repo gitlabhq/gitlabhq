@@ -5,7 +5,7 @@ export default {
     ...mapGetters('batchComments', [
       'shouldRenderDraftRow',
       'shouldRenderParallelDraftRow',
-      'draftForLine',
+      'draftsForLine',
       'draftsForFile',
       'hasParallelDraftLeft',
       'hasParallelDraftRight',

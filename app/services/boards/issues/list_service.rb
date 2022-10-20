@@ -50,7 +50,7 @@ module Boards
       end
 
       def set_issue_types
-        params[:issue_types] ||= Issue::TYPES_FOR_LIST
+        params[:issue_types] ||= Issue::TYPES_FOR_BOARD_LIST
       end
 
       def item_model

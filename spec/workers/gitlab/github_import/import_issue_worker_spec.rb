@@ -45,4 +45,15 @@ RSpec.describe Gitlab::GithubImport::ImportIssueWorker do
       worker.import(project, client, hash)
     end
   end
+
+  describe '#increment_object_counter?' do
+    context 'when github issue is a pull request' do
+      let(:issue) { double(:issue, pull_request?: true) }
+      let(:project) { double(:project) }
+
+      it 'returns false' do
+        expect(worker).not_to be_increment_object_counter(issue)
+      end
+    end
+  end
 end

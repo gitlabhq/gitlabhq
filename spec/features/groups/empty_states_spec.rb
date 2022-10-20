@@ -94,9 +94,7 @@ RSpec.describe 'Group empty states' do
           end
 
           it "shows a new #{issuable_name} button" do
-            within '.empty-state' do
-              expect(page).to have_content("create #{issuable_name}")
-            end
+            expect(page).to have_content("create #{issuable_name}")
           end
 
           it "the new #{issuable_name} button opens a project dropdown" do

@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import createFlash, { createAlert } from '~/flash';
+import { createAlert } from '~/flash';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 import httpStatusCodes from '~/lib/utils/http_status';
@@ -172,7 +172,7 @@ export default {
         .postAction(endpoint)
         .then(() => this.updateTable())
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('An error occurred while making the request.'),
           }),
         );

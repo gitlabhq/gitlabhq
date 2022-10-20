@@ -21,6 +21,7 @@
 {"name":"marcel","version":"1.0.2","platform":"ruby","checksum":"a013b677ef46cbcb49fd5c59b3d35803d2ee04dd75d8bfdc43533fc5a31f7e4e"},
 {"name":"method_source","version":"1.0.0","platform":"ruby","checksum":"d779455a2b5666a079ce58577bfad8534f571af7cec8107f4dce328f0981dede"},
 {"name":"mini_mime","version":"1.1.2","platform":"ruby","checksum":"a54aec0cc7438a03a850adb00daca2bdb60747f839e28186994df057cea87151"},
+{"name":"mini_portile2","version":"2.8.0","platform":"ruby","checksum":"1e06b286ff19b73cfc9193cb3dd2bd80416f8262443564b25b23baea74a05765"},
 {"name":"minitest","version":"5.16.2","platform":"ruby","checksum":"c1be0c6b57fab451faa08e74ffa71e7d6a259b90f4bacb881c7f4808ec8b4991"},
 {"name":"nio4r","version":"2.5.8","platform":"java","checksum":"b2b1800f6bf7ce4b797ca8b639ad278a99c9c904fb087a91d944f38e4bd71401"},
 {"name":"nio4r","version":"2.5.8","platform":"ruby","checksum":"3becb4ad95ab8ac0a9bd2e1b16466869402be62848082bf6329ae9091f276676"},

@@ -70,11 +70,6 @@ InitializerConnections.with_disabled_database_connections do
 
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
-
-        # legacy - to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/371996
-        get 'groups/new', to: redirect('users/sign_up/groups_projects/new')
-        get 'projects/new', to: redirect('users/sign_up/groups_projects/new')
-
         resources :groups_projects, only: [:new, :create] do
           collection do
             post :import
@@ -140,28 +135,6 @@ InitializerConnections.with_disabled_database_connections do
       mount Peek::Railtie => '/peek', as: 'peek_routes'
 
       get 'runner_setup/platforms' => 'runner_setup#platforms'
-
-      # Boards resources shared between group and projects
-      resources :boards, only: [] do
-        resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
-          collection do
-            post :generate
-          end
-
-          resources :issues, only: [:index, :create, :update]
-        end
-
-        resources :issues, module: :boards, only: [:index, :update] do
-          collection do
-            put :bulk_move, format: :json
-          end
-        end
-
-        Gitlab.ee do
-          resources :users, module: :boards, only: [:index]
-          resources :milestones, module: :boards, only: [:index]
-        end
-      end
 
       get 'acme-challenge/' => 'acme_challenges#show'
 

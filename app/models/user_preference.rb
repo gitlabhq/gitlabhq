@@ -22,6 +22,7 @@ class UserPreference < ApplicationRecord
   validates :diffs_deletion_color, :diffs_addition_color,
             format: { with: ColorsHelper::HEX_COLOR_PATTERN },
             allow_blank: true
+  validates :use_legacy_web_ide, allow_nil: false, inclusion: { in: [true, false] }
 
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
 
@@ -29,7 +30,6 @@ class UserPreference < ApplicationRecord
   default_value_for :time_display_relative, value: true, allows_nil: false
   default_value_for :time_format_in_24h, value: false, allows_nil: false
   default_value_for :render_whitespace_in_code, value: false, allows_nil: false
-  default_value_for :markdown_surround_selection, value: true, allows_nil: false
 
   class << self
     def notes_filters

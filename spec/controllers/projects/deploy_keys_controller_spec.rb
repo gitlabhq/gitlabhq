@@ -72,13 +72,15 @@ RSpec.describe Projects::DeployKeysController do
   end
 
   describe 'POST create' do
+    let(:deploy_key_content) { attributes_for(:deploy_key)[:key] }
+
     def create_params(title = 'my-key')
       {
         namespace_id: project.namespace.path,
         project_id: project.path,
         deploy_key: {
           title: title,
-          key: attributes_for(:deploy_key)[:key],
+          key: deploy_key_content,
           deploy_keys_projects_attributes: { '0' => { can_push: '1' } }
         }
       }
@@ -96,11 +98,36 @@ RSpec.describe Projects::DeployKeysController do
       expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
     end
 
-    context 'when the deploy key is invalid' do
+    context 'when the deploy key has an invalid title' do
       it 'shows an alert with the validations errors' do
         post :create, params: create_params(nil)
 
         expect(flash[:alert]).to eq("Title can't be blank, Deploy keys projects deploy key title can't be blank")
+      end
+    end
+
+    context 'when the deploy key is not supported SSH public key' do
+      let(:deploy_key_content) { 'bogus ssh public key' }
+
+      it 'shows an alert with a help link' do
+        post :create, params: create_params
+
+        expect(assigns(:key).errors.count).to be > 1
+        expect(flash[:alert]).to eq('Deploy Key must be a <a target="_blank" rel="noopener noreferrer" ' \
+          'href="/help/user/ssh#supported-ssh-key-types">supported SSH public key.</a>')
+      end
+    end
+
+    context 'when the deploy key already exists' do
+      before do
+        create(:deploy_key, title: 'my-key', key: deploy_key_content, projects: [project])
+      end
+
+      it 'shows an alert with the validations errors' do
+        post :create, params: create_params
+
+        expect(flash[:alert]).to eq("Fingerprint sha256 has already been taken, " \
+          "Deploy keys projects deploy key fingerprint sha256 has already been taken")
       end
     end
   end

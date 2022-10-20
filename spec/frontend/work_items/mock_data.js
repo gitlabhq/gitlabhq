@@ -17,6 +17,25 @@ export const mockAssignees = [
   },
 ];
 
+export const mockLabels = [
+  {
+    __typename: 'Label',
+    id: 'gid://gitlab/Label/1',
+    title: 'Label 1',
+    description: '',
+    color: '#f00',
+    textColor: '#00f',
+  },
+  {
+    __typename: 'Label',
+    id: 'gid://gitlab/Label/2',
+    title: 'Label::2',
+    description: '',
+    color: '#b00',
+    textColor: '#00b',
+  },
+];
+
 export const workItemQueryResponse = {
   data: {
     workItem: {
@@ -50,6 +69,8 @@ export const workItemQueryResponse = {
           description: 'some **great** text',
           descriptionHtml:
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+          lastEditedAt: null,
+          lastEditedBy: null,
         },
         {
           __typename: 'WorkItemWidgetAssignees',
@@ -163,9 +184,15 @@ export const workItemResponseFactory = ({
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
+  labelsWidgetPresent = true,
   weightWidgetPresent = true,
+  milestoneWidgetPresent = true,
+  iterationWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
+  allowsScopedLabels = false,
+  lastEditedAt = null,
+  lastEditedBy = null,
   parent = mockParent.parent,
 } = {}) => ({
   data: {
@@ -200,6 +227,8 @@ export const workItemResponseFactory = ({
           description: 'some **great** text',
           descriptionHtml:
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+          lastEditedAt,
+          lastEditedBy,
         },
         assigneesWidgetPresent
           ? {
@@ -209,6 +238,16 @@ export const workItemResponseFactory = ({
               canInviteMembers,
               assignees: {
                 nodes: mockAssignees,
+              },
+            }
+          : { type: 'MOCK TYPE' },
+        labelsWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetLabels',
+              type: 'LABELS',
+              allowsScopedLabels,
+              labels: {
+                nodes: mockLabels,
               },
             }
           : { type: 'MOCK TYPE' },
@@ -225,6 +264,30 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetWeight',
               type: 'WEIGHT',
               weight: 0,
+            }
+          : { type: 'MOCK TYPE' },
+        iterationWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetIteration',
+              type: 'ITERATION',
+              iteration: {
+                description: null,
+                id: 'gid://gitlab/Iteration/1215',
+                iid: '182',
+                title: 'Iteration default title',
+                startDate: '2022-09-22',
+                dueDate: '2022-09-30',
+              },
+            }
+          : { type: 'MOCK TYPE' },
+        milestoneWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetMilestone',
+              dueDate: null,
+              expired: false,
+              id: 'gid://gitlab/Milestone/30',
+              title: 'v4.0',
+              type: 'MILESTONE',
             }
           : { type: 'MOCK TYPE' },
         {
@@ -331,6 +394,11 @@ export const createWorkItemFromTaskMutationResponse = {
             type: 'DESCRIPTION',
             description: 'New description',
             descriptionHtml: '<p>New description</p>',
+            lastEditedAt: '2022-09-21T06:18:42Z',
+            lastEditedBy: {
+              name: 'Administrator',
+              webPath: '/root',
+            },
           },
         ],
       },
@@ -438,6 +506,61 @@ export const workItemWeightSubscriptionResponse = {
         {
           __typename: 'WorkItemWidgetWeight',
           weight: 1,
+        },
+      ],
+    },
+  },
+};
+
+export const workItemAssigneesSubscriptionResponse = {
+  data: {
+    issuableAssigneesUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemAssigneesWeight',
+          assignees: {
+            nodes: [mockAssignees[0]],
+          },
+        },
+      ],
+    },
+  },
+};
+
+export const workItemLabelsSubscriptionResponse = {
+  data: {
+    issuableLabelsUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetLabels',
+          type: 'LABELS',
+          allowsScopedLabels: false,
+          labels: {
+            nodes: mockLabels,
+          },
+        },
+      ],
+    },
+  },
+};
+
+export const workItemIterationSubscriptionResponse = {
+  data: {
+    issuableIterationUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetIteration',
+          iteration: {
+            description: 'Iteration description',
+            dueDate: '2022-07-29',
+            id: 'gid://gitlab/Iteration/1125',
+            iid: '95',
+            startDate: '2022-06-22',
+            title: 'Iteration subcription title',
+          },
         },
       ],
     },
@@ -857,25 +980,6 @@ export const currentUserNullResponse = {
   },
 };
 
-export const mockLabels = [
-  {
-    __typename: 'Label',
-    id: 'gid://gitlab/Label/1',
-    title: 'Label 1',
-    description: '',
-    color: '#f00',
-    textColor: '#00f',
-  },
-  {
-    __typename: 'Label',
-    id: 'gid://gitlab/Label/2',
-    title: 'Label 2',
-    description: '',
-    color: '#b00',
-    textColor: '#00b',
-  },
-];
-
 export const projectLabelsResponse = {
   data: {
     workspace: {
@@ -884,6 +988,137 @@ export const projectLabelsResponse = {
       labels: {
         nodes: mockLabels,
       },
+    },
+  },
+};
+
+export const mockIterationWidgetResponse = {
+  description: 'Iteration description',
+  dueDate: '2022-07-19',
+  id: 'gid://gitlab/Iteration/1124',
+  iid: '91',
+  startDate: '2022-06-22',
+  title: 'Iteration title widget',
+};
+
+export const groupIterationsResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/22',
+      attributes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Iteration/1124',
+            title: null,
+            startDate: '2022-06-22',
+            dueDate: '2022-07-19',
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/iterations/1124',
+            iterationCadence: {
+              id: 'gid://gitlab/Iterations::Cadence/1101',
+              title: 'Quod voluptates quidem ea eaque eligendi ex corporis.',
+              __typename: 'IterationCadence',
+            },
+            __typename: 'Iteration',
+            state: 'current',
+          },
+          {
+            id: 'gid://gitlab/Iteration/1185',
+            title: null,
+            startDate: '2022-07-06',
+            dueDate: '2022-07-19',
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/iterations/1185',
+            iterationCadence: {
+              id: 'gid://gitlab/Iterations::Cadence/1144',
+              title: 'Quo velit perspiciatis saepe aut omnis voluptas ab eos.',
+              __typename: 'IterationCadence',
+            },
+            __typename: 'Iteration',
+            state: 'current',
+          },
+          {
+            id: 'gid://gitlab/Iteration/1194',
+            title: null,
+            startDate: '2022-07-06',
+            dueDate: '2022-07-19',
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/iterations/1194',
+            iterationCadence: {
+              id: 'gid://gitlab/Iterations::Cadence/1152',
+              title:
+                'Minima aut consequatur magnam vero doloremque accusamus maxime repellat voluptatem qui.',
+              __typename: 'IterationCadence',
+            },
+            __typename: 'Iteration',
+            state: 'current',
+          },
+        ],
+        __typename: 'IterationConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const groupIterationsResponseWithNoIterations = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/22',
+      attributes: {
+        nodes: [],
+        __typename: 'IterationConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const mockMilestoneWidgetResponse = {
+  dueDate: null,
+  expired: false,
+  id: 'gid://gitlab/Milestone/30',
+  title: 'v4.0',
+};
+
+export const projectMilestonesResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      attributes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Milestone/5',
+            title: 'v4.0',
+            webUrl: '/gitlab-org/gitlab-test/-/milestones/5',
+            dueDate: null,
+            expired: false,
+            __typename: 'Milestone',
+            state: 'active',
+          },
+          {
+            id: 'gid://gitlab/Milestone/4',
+            title: 'v3.0',
+            webUrl: '/gitlab-org/gitlab-test/-/milestones/4',
+            dueDate: null,
+            expired: false,
+            __typename: 'Milestone',
+            state: 'active',
+          },
+        ],
+        __typename: 'MilestoneConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const projectMilestonesResponseWithNoMilestones = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      attributes: {
+        nodes: [],
+        __typename: 'MilestoneConnection',
+      },
+      __typename: 'Project',
     },
   },
 };

@@ -34,7 +34,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action only: [:show] do
     push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:refactor_mr_widgets_extensions, project)
     push_frontend_feature_flag(:refactor_code_quality_extension, project)
     push_frontend_feature_flag(:refactor_mr_widget_test_summary, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
@@ -45,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:paginated_mr_discussions, project)
     push_frontend_feature_flag(:mr_review_submit_comment, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_frontend_feature_flag(:remove_user_attributes_projects, @project)
   end
 
   before_action do
@@ -451,15 +449,16 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :failed
     end
 
+    squashing = params.fetch(:squash, false)
     merge_service = ::MergeRequests::MergeService.new(project: @project, current_user: current_user, params: merge_params)
 
-    unless merge_service.hooks_validation_pass?(@merge_request)
+    unless merge_service.hooks_validation_pass?(@merge_request, validate_squash_message: squashing)
       return :hook_validation_error
     end
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
-    @merge_request.update(merge_error: nil, squash: params.fetch(:squash, false))
+    @merge_request.update(merge_error: nil, squash: squashing)
 
     if auto_merge_requested?
       if merge_request.auto_merge_enabled?
@@ -555,7 +554,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def endpoint_metadata_url(project, merge_request)
-    params = request.query_parameters.merge(view: 'inline', diff_head: true)
+    params = request.query_parameters.merge(view: 'inline', diff_head: true, w: current_user&.show_whitespace_in_diffs ? '0' : '1')
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
   end

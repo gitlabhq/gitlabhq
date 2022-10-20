@@ -57,11 +57,11 @@ describe('TerraformList', () => {
     });
   };
 
-  const findBadge = () => wrapper.find(GlBadge);
-  const findEmptyState = () => wrapper.find(EmptyState);
-  const findPaginationButtons = () => wrapper.find(GlKeysetPagination);
-  const findStatesTable = () => wrapper.find(StatesTable);
-  const findTab = () => wrapper.find(GlTab);
+  const findBadge = () => wrapper.findComponent(GlBadge);
+  const findEmptyState = () => wrapper.findComponent(EmptyState);
+  const findPaginationButtons = () => wrapper.findComponent(GlKeysetPagination);
+  const findStatesTable = () => wrapper.findComponent(StatesTable);
+  const findTab = () => wrapper.findComponent(GlTab);
 
   afterEach(() => {
     wrapper.destroy();
@@ -182,7 +182,7 @@ describe('TerraformList', () => {
     });
 
     it('displays an alert message', () => {
-      expect(wrapper.find(GlAlert).exists()).toBe(true);
+      expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
     });
   });
 
@@ -195,7 +195,7 @@ describe('TerraformList', () => {
     });
 
     it('displays a loading icon', () => {
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 });

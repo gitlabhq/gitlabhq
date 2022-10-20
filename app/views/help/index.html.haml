@@ -34,14 +34,14 @@
 
 .row.gl-mt-3
   .col-md-8
-    .documentation-index.md
+    .md
       = markdown(@help_index)
   .col-md-4
     .card.links-card
       .card-header
         = _('Quick help')
       %ul.content-list
-        %li= link_to _('See our website for help'), support_url
+        %li= link_to _('See our website for help'), support_url, { class: 'gl-text-blue-600!' }
         %li
           %button.btn-blank.btn-link.js-trigger-search-bar{ type: 'button' }
             = _('Use the search bar on the top of this page')
@@ -49,5 +49,5 @@
           %button.btn-blank.btn-link.js-trigger-shortcut{ type: 'button' }
             = _('Use shortcuts')
         - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
-          %li= link_to _('Get a support subscription'), "https://#{ApplicationHelper.promo_host}/pricing/"
-          %li= link_to _('Compare GitLab editions'), "https://#{ApplicationHelper.promo_host}/features/#compare"
+          %li= link_to _('Get a support subscription'), "https://#{ApplicationHelper.promo_host}/pricing/", { class: 'gl-text-blue-600!' }
+          %li= link_to _('Compare GitLab editions'), "https://#{ApplicationHelper.promo_host}/features/#compare", { class: 'gl-text-blue-600!' }

@@ -15,6 +15,7 @@ RSpec.describe 'User searches for merge requests', :js do
   end
 
   before do
+    stub_feature_flags(search_page_vertical_nav: false)
     project.add_maintainer(user)
     sign_in(user)
 

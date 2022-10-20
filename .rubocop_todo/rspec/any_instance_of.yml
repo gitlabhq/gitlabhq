@@ -13,7 +13,6 @@ RSpec/AnyInstanceOf:
   - ee/spec/controllers/projects/path_locks_controller_spec.rb
   - ee/spec/controllers/projects_controller_spec.rb
   - ee/spec/controllers/subscriptions_controller_spec.rb
-  - ee/spec/controllers/trials_controller_spec.rb
   - ee/spec/features/admin/admin_audit_logs_spec.rb
   - ee/spec/features/admin/admin_reset_pipeline_minutes_spec.rb
   - ee/spec/features/admin/admin_users_spec.rb

@@ -41,4 +41,4 @@
                 = form.gitlab_ui_radio_component :deploy_strategy, 'timed_incremental', (s_('CICD|Continuous deployment to production using timed incremental rollout') + ' ' + help_link_timed).html_safe
                 = form.gitlab_ui_radio_component :deploy_strategy, 'manual', (s_('CICD|Automatic deployment to staging, manual deployment to production') + ' ' + help_link_incremental).html_safe
 
-          = f.submit _('Save changes'), class: "btn gl-button btn-confirm gl-mt-5", data: { qa_selector: 'save_changes_button' }
+          = f.submit _('Save changes'), class: "gl-mt-5", data: { qa_selector: 'save_changes_button' }, pajamas_button: true

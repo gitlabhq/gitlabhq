@@ -3,7 +3,7 @@
 
 %h1.page-title.gl-font-size-h-display= _('Set up new password')
 %hr
-= form_for @user, url: profile_password_path, method: :post do |f|
+= gitlab_ui_form_for @user, url: profile_password_path, method: :post do |f|
   %p.slead
     = _('Please set a new password before proceeding.')
     %br
@@ -29,4 +29,4 @@
     .col-sm-10
       = f.password_field :password_confirmation, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input', data: { qa_selector: 'confirm_password_field' }
   .form-actions
-    = f.submit _('Set new password'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'set_new_password_button' }
+    = f.submit _('Set new password'), data: { qa_selector: 'set_new_password_button' }, pajamas_button: true

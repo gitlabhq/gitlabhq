@@ -127,6 +127,8 @@ describe('SetStatusForm', () => {
 
   describe('when `Clear status after` dropdown is changed', () => {
     it('emits `clear-status-after-click`', async () => {
+      await createComponent();
+
       await wrapper.findByTestId('thirtyMinutes').trigger('click');
 
       expect(wrapper.emitted('clear-status-after-click')).toEqual([[timeRanges[0]]]);

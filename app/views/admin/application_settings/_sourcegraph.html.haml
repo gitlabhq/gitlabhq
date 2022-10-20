@@ -29,4 +29,4 @@
           = f.text_field :sourcegraph_url, class: 'form-control gl-form-input', placeholder: s_('SourcegraphAdmin|https://sourcegraph.example.com')
           .form-text.text-muted
             = s_('SourcegraphAdmin|Configure the URL to a Sourcegraph instance which can read your GitLab projects.')
-      = f.submit s_('SourcegraphAdmin|Save changes'), class: 'gl-button btn btn-confirm'
+      = f.submit s_('SourcegraphAdmin|Save changes'), pajamas_button: true

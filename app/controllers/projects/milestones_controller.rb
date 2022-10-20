@@ -4,8 +4,11 @@ class Projects::MilestonesController < Projects::ApplicationController
   include Gitlab::Utils::StrongMemoize
   include MilestoneActions
 
+  REDIRECT_TARGETS = [:new_release].freeze
+
   before_action :check_issuables_available!
   before_action :milestone, only: [:edit, :update, :destroy, :show, :issues, :merge_requests, :participants, :labels, :promote]
+  before_action :redirect_path, only: [:new, :create]
 
   # Allow read any milestone
   before_action :authorize_read_milestone!
@@ -59,7 +62,11 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone = Milestones::CreateService.new(project, current_user, milestone_params).execute
 
     if @milestone.valid?
-      redirect_to project_milestone_path(@project, @milestone)
+      if @redirect_path == :new_release
+        redirect_to new_project_release_path(@project)
+      else
+        redirect_to project_milestone_path(@project, @milestone)
+      end
     else
       render "new"
     end
@@ -112,6 +119,11 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   protected
+
+  def redirect_path
+    path = params[:redirect_path]&.to_sym
+    @redirect_path = path if REDIRECT_TARGETS.include?(path)
+  end
 
   def project_group
     strong_memoize(:project_group) do

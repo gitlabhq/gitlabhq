@@ -48,10 +48,10 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
         expect(page).to have_content('Releases events')
       end
 
-      it 'create webhook' do
+      it 'create webhook', :js do
         visit webhooks_path
 
-        fill_in 'hook_url', with: url
+        fill_in 'URL', with: url
         check 'Tag push events'
         fill_in 'hook_push_events_branch_filter', with: 'master'
         check 'Enable SSL verification'
@@ -66,12 +66,12 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
         expect(page).to have_content('Job events')
       end
 
-      it 'edit existing webhook' do
+      it 'edit existing webhook', :js do
         hook
         visit webhooks_path
 
         click_link 'Edit'
-        fill_in 'hook_url', with: url
+        fill_in 'URL', with: url
         check 'Enable SSL verification'
         click_button 'Save changes'
 

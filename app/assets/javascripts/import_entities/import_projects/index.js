@@ -42,6 +42,7 @@ export function initPropsFromElement(element) {
     providerTitle: element.dataset.provider,
     filterable: parseBoolean(element.dataset.filterable),
     paginatable: parseBoolean(element.dataset.paginatable),
+    optionalStages: JSON.parse(element.dataset.optionalStages),
   };
 }
 

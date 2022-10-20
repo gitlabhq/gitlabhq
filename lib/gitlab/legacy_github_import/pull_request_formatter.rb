@@ -9,7 +9,7 @@ module Gitlab
       def attributes
         {
           iid: number,
-          title: raw_data.title,
+          title: raw_data[:title],
           description: description,
           source_project: source_branch_project,
           source_branch: source_branch_name,
@@ -21,8 +21,8 @@ module Gitlab
           milestone: milestone,
           author_id: author_id,
           assignee_id: assignee_id,
-          created_at: raw_data.created_at,
-          updated_at: raw_data.updated_at,
+          created_at: raw_data[:created_at],
+          updated_at: raw_data[:updated_at],
           imported: true
         }
       end
@@ -36,7 +36,7 @@ module Gitlab
       end
 
       def source_branch
-        @source_branch ||= BranchFormatter.new(project, raw_data.head)
+        @source_branch ||= BranchFormatter.new(project, raw_data[:head])
       end
 
       def source_branch_name
@@ -57,7 +57,7 @@ module Gitlab
       end
 
       def target_branch
-        @target_branch ||= BranchFormatter.new(project, raw_data.base)
+        @target_branch ||= BranchFormatter.new(project, raw_data[:base])
       end
 
       def target_branch_name
@@ -71,7 +71,7 @@ module Gitlab
       def cross_project?
         return true if source_branch_repo.nil?
 
-        source_branch_repo.id != target_branch_repo.id
+        source_branch_repo[:id] != target_branch_repo[:id]
       end
 
       def opened?
@@ -81,7 +81,7 @@ module Gitlab
       private
 
       def state
-        if raw_data.state == 'closed' && raw_data.merged_at.present?
+        if raw_data[:state] == 'closed' && raw_data[:merged_at].present?
           'merged'
         else
           super

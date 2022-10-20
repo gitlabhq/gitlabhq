@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Host the GitLab product documentation **(FREE SELF)**
@@ -261,7 +261,7 @@ To upgrade to a later version [using your own web-server](#self-host-the-product
 
 If you self-host the product documentation:
 
-- The version dropdown displays additional versions that don't exist. Selecting
+- The version dropdown list displays additional versions that don't exist. Selecting
   these versions displays a `404 Not Found` page.
 - The search displays results from `docs.gitlab.com` and not the local site.
 - By default, the landing page redirects to the

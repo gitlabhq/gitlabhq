@@ -7,15 +7,16 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestMergedByImporter, :cle
 
   let(:project) { merge_request.project }
   let(:merged_at) { Time.new(2017, 1, 1, 12, 00).utc }
-  let(:client_double) { double(user: double(id: 999, login: 'merger', email: 'merger@email.com')) }
-  let(:merger_user) { double(id: 999, login: 'merger') }
+  let(:client_double) { double(user: { id: 999, login: 'merger', email: 'merger@email.com' } ) }
+  let(:merger_user) { { id: 999, login: 'merger' } }
 
   let(:pull_request) do
-    instance_double(
-      Gitlab::GithubImport::Representation::PullRequest,
-      iid: merge_request.iid,
-      merged_at: merged_at,
-      merged_by: merger_user
+    Gitlab::GithubImport::Representation::PullRequest.from_api_response(
+      {
+        number: merge_request.iid,
+        merged_at: merged_at,
+        merged_by: merger_user
+      }
     )
   end
 

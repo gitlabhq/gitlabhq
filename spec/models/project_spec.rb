@@ -28,7 +28,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:issues) }
     it { is_expected.to have_many(:incident_management_issuable_escalation_statuses).through(:issues).inverse_of(:project).class_name('IncidentManagement::IssuableEscalationStatus') }
     it { is_expected.to have_many(:milestones) }
-    it { is_expected.to have_many(:iterations) }
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }
     it { is_expected.to have_many(:users).through(:project_members) }
     it { is_expected.to have_many(:requesters).dependent(:delete_all) }
@@ -149,6 +148,8 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:secure_files).class_name('Ci::SecureFile').dependent(:restrict_with_error) }
     it { is_expected.to have_one(:build_artifacts_size_refresh).class_name('Projects::BuildArtifactsSizeRefresh') }
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout').with_foreign_key(:project_id) }
+    it { is_expected.to have_many(:pipeline_metadata).class_name('Ci::PipelineMetadata') }
+    it { is_expected.to have_many(:incident_management_timeline_event_tags).class_name('IncidentManagement::TimelineEventTag') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -845,6 +846,8 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe 'delegation' do
+    let_it_be(:project) { create(:project) }
+
     [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
@@ -859,6 +862,9 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to delegate_method(:environments_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:feature_flags_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:releases_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:namespace) }
+    it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
+    it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
 
     describe 'read project settings' do
       %i(
@@ -884,8 +890,24 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     include_examples 'ci_cd_settings delegation' do
-      # Skip attributes defined in EE code
+      let(:attributes_with_prefix) do
+        {
+          'group_runners_enabled' => '',
+          'default_git_depth' => 'ci_',
+          'forward_deployment_enabled' => 'ci_',
+          'keep_latest_artifact' => '',
+          'restrict_user_defined_variables' => '',
+          'runner_token_expiration_interval' => '',
+          'separated_caches' => 'ci_',
+          'opt_in_jwt' => 'ci_',
+          'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
+          'inbound_job_token_scope_enabled' => 'ci_',
+          'job_token_scope_enabled' => 'ci_outbound_'
+        }
+      end
+
       let(:exclude_attributes) do
+        # Skip attributes defined in EE code
         %w(
           merge_pipelines_enabled
           merge_trains_enabled
@@ -906,9 +928,15 @@ RSpec.describe Project, factory_default: :keep do
       end
     end
 
-    describe '#ci_job_token_scope_enabled?' do
-      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+    describe '#ci_outbound_job_token_scope_enabled?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_outbound_' do
         let(:delegated_method) { :job_token_scope_enabled? }
+      end
+    end
+
+    describe '#ci_inbound_job_token_scope_enabled?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :inbound_job_token_scope_enabled? }
       end
     end
 
@@ -934,23 +962,6 @@ RSpec.describe Project, factory_default: :keep do
       it_behaves_like 'a ci_cd_settings predicate method' do
         let(:delegated_method) { :group_runners_enabled? }
       end
-    end
-  end
-
-  describe '#remove_project_authorizations' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:user_1) { create(:user) }
-    let_it_be(:user_2) { create(:user) }
-    let_it_be(:user_3) { create(:user) }
-
-    it 'removes the project authorizations of the specified users in the current project' do
-      create(:project_authorization, user: user_1, project: project)
-      create(:project_authorization, user: user_2, project: project)
-      create(:project_authorization, user: user_3, project: project)
-
-      project.remove_project_authorizations([user_1.id, user_2.id])
-
-      expect(project.project_authorizations.pluck(:user_id)).not_to include(user_1.id, user_2.id)
     end
   end
 
@@ -1426,7 +1437,7 @@ RSpec.describe Project, factory_default: :keep do
 
     it "is false if used other tracker" do
       # NOTE: The current nature of this factory requires persistence
-      project = create(:redmine_project)
+      project = create(:project, :with_redmine_integration)
 
       expect(project.default_issues_tracker?).to be_falsey
     end
@@ -1471,7 +1482,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '#external_issue_tracker' do
     it 'sets Project#has_external_issue_tracker when it is nil' do
       project_with_no_tracker = create(:project, has_external_issue_tracker: nil)
-      project_with_tracker = create(:redmine_project, has_external_issue_tracker: nil)
+      project_with_tracker = create(:project, :with_redmine_integration, has_external_issue_tracker: nil)
 
       expect do
         project_with_no_tracker.external_issue_tracker
@@ -1490,7 +1501,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     it 'retrieves external_issue_tracker querying services and cache it when there is external issue tracker' do
-      project = create(:redmine_project)
+      project = create(:project, :with_redmine_integration)
 
       expect(project).to receive(:integrations).once.and_call_original
       2.times { expect(project.external_issue_tracker).to be_a_kind_of(Integrations::Redmine) }
@@ -4620,6 +4631,7 @@ RSpec.describe Project, factory_default: :keep do
   describe '.filter_by_feature_visibility' do
     include_context 'ProjectPolicyTable context'
     include ProjectHelpers
+    include UserHelpers
 
     let_it_be(:group) { create(:group) }
     let_it_be_with_reload(:project) { create(:project, namespace: group) }
@@ -5761,40 +5773,40 @@ RSpec.describe Project, factory_default: :keep do
   describe '#has_active_hooks?' do
     let_it_be_with_refind(:project) { create(:project) }
 
-    it { expect(project.has_active_hooks?).to be_falsey }
+    it { expect(project.has_active_hooks?).to eq(false) }
 
     it 'returns true when a matching push hook exists' do
       create(:project_hook, push_events: true, project: project)
 
-      expect(project.has_active_hooks?(:merge_request_events)).to be_falsey
-      expect(project.has_active_hooks?).to be_truthy
+      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(false)
+      expect(project.has_active_hooks?).to eq(true)
     end
 
     it 'returns true when a matching system hook exists' do
       create(:system_hook, push_events: true)
 
-      expect(project.has_active_hooks?(:merge_request_events)).to be_falsey
-      expect(project.has_active_hooks?).to be_truthy
+      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(false)
+      expect(project.has_active_hooks?).to eq(true)
     end
 
     it 'returns true when a plugin exists' do
       expect(Gitlab::FileHook).to receive(:any?).twice.and_return(true)
 
-      expect(project.has_active_hooks?(:merge_request_events)).to be_truthy
-      expect(project.has_active_hooks?).to be_truthy
+      expect(project.has_active_hooks?(:merge_request_hooks)).to eq(true)
+      expect(project.has_active_hooks?).to eq(true)
     end
   end
 
   describe '#has_active_integrations?' do
     let_it_be(:project) { create(:project) }
 
-    it { expect(project.has_active_integrations?).to be_falsey }
+    it { expect(project.has_active_integrations?).to eq(false) }
 
     it 'returns true when a matching service exists' do
       create(:custom_issue_tracker_integration, push_events: true, merge_requests_events: false, project: project)
 
-      expect(project.has_active_integrations?(:merge_request_hooks)).to be_falsey
-      expect(project.has_active_integrations?).to be_truthy
+      expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
+      expect(project.has_active_integrations?).to eq(true)
     end
   end
 
@@ -8308,16 +8320,6 @@ RSpec.describe Project, factory_default: :keep do
       expect(project.packages_policy_subject).to be_a(Packages::Policies::Project)
       expect(project.packages_policy_subject.project).to eq(project)
     end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(read_package_policy_rule: false)
-      end
-
-      it 'returns project' do
-        expect(project.packages_policy_subject).to eq(project)
-      end
-    end
   end
 
   describe '#destroy_deployment_by_id' do
@@ -8354,6 +8356,22 @@ RSpec.describe Project, factory_default: :keep do
 
       it { is_expected.to be false }
     end
+  end
+
+  describe '#can_suggest_reviewers?' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:can_suggest_reviewers) { project.can_suggest_reviewers? }
+
+    it { is_expected.to be(false) }
+  end
+
+  describe '#suggested_reviewers_available?' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:suggested_reviewers_available) { project.suggested_reviewers_available? }
+
+    it { is_expected.to be(false) }
   end
 
   private

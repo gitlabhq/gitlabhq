@@ -38,7 +38,7 @@ strong {
   font-weight: bolder;
 }
 a {
-  color: #007bff;
+  color: #1f75cb;
   text-decoration: none;
   background-color: transparent;
 }
@@ -349,6 +349,23 @@ kbd kbd {
   white-space: nowrap;
   border: 0;
 }
+.gl-avatar {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.gl-avatar-s24 {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  border-radius: 0.25rem;
+}
+.gl-avatar-circle {
+  border-radius: 50%;
+}
 .gl-badge {
   display: inline-flex;
   align-items: center;
@@ -532,9 +549,6 @@ html [type="button"],
 }
 strong {
   font-weight: bold;
-}
-a {
-  color: #1068bf;
 }
 svg {
   vertical-align: baseline;

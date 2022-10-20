@@ -1,4 +1,5 @@
 import { languages } from 'monaco-editor';
+import { setDiagnosticsOptions as yamlDiagnosticsOptions } from 'monaco-yaml';
 import {
   isTextFile,
   registerLanguages,
@@ -203,7 +204,6 @@ describe('WebIDE utils', () => {
       };
 
       jest.spyOn(languages.json.jsonDefaults, 'setDiagnosticsOptions');
-      jest.spyOn(languages.yaml.yamlDefaults, 'setDiagnosticsOptions');
     });
 
     it('registers the given schemas with monaco for both json and yaml languages', () => {
@@ -212,7 +212,7 @@ describe('WebIDE utils', () => {
       expect(languages.json.jsonDefaults.setDiagnosticsOptions).toHaveBeenCalledWith(
         expect.objectContaining({ schemas: [schema] }),
       );
-      expect(languages.yaml.yamlDefaults.setDiagnosticsOptions).toHaveBeenCalledWith(
+      expect(yamlDiagnosticsOptions).toHaveBeenCalledWith(
         expect.objectContaining({ schemas: [schema] }),
       );
     });

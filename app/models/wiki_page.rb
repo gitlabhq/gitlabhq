@@ -73,7 +73,7 @@ class WikiPage
 
   # The escaped URL path of this page.
   def slug
-    attributes[:slug].presence || wiki.wiki.preview_slug(title, format)
+    attributes[:slug].presence || ::Wiki.preview_slug(title, format)
   end
   alias_method :id, :slug # required to use build_stubbed
 
@@ -99,6 +99,13 @@ class WikiPage
     attributes[:content] ||= page&.text_data
   end
 
+  def raw_content=(content)
+    return if page.nil?
+
+    page.raw_data = content
+    attributes[:content] = page.text_data
+  end
+
   # The hierarchy of the directory this page is contained in.
   def directory
     wiki.page_title_and_dir(slug)&.last.to_s
@@ -118,7 +125,7 @@ class WikiPage
   def version
     return unless persisted?
 
-    @version ||= @page.version
+    @version ||= @page.version || last_version
   end
 
   def path
@@ -138,7 +145,7 @@ class WikiPage
     default_per_page = Kaminari.config.default_per_page
     offset = [options[:page].to_i - 1, 0].max * options.fetch(:per_page, default_per_page)
 
-    wiki.repository.commits('HEAD',
+    wiki.repository.commits(wiki.default_branch,
                             path: page.path,
                             limit: options.fetch(:limit, default_per_page),
                             offset: offset)
@@ -147,11 +154,11 @@ class WikiPage
   def count_versions
     return [] unless persisted?
 
-    wiki.wiki.count_page_versions(page.path)
+    wiki.repository.count_commits(ref: wiki.default_branch, path: page.path)
   end
 
   def last_version
-    @last_version ||= versions(limit: 1).first
+    @last_version ||= wiki.repository.last_commit_for_path(wiki.default_branch, page.path) if page
   end
 
   def last_commit_sha

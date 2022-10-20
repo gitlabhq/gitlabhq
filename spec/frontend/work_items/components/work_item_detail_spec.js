@@ -1,8 +1,14 @@
-import { GlAlert, GlBadge, GlLoadingIcon, GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlLoadingIcon,
+  GlSkeletonLoader,
+  GlButton,
+  GlEmptyState,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import workItemWeightSubscription from 'ee_component/work_items/graphql/work_item_weight.subscription.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -14,11 +20,13 @@ import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
+import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import { temporaryConfig } from '~/graphql_shared/issuable_client';
@@ -28,7 +36,7 @@ import {
   workItemDatesSubscriptionResponse,
   workItemResponseFactory,
   workItemTitleSubscriptionResponse,
-  workItemWeightSubscriptionResponse,
+  workItemAssigneesSubscriptionResponse,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -46,9 +54,12 @@ describe('WorkItemDetail component', () => {
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
-  const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
+  const assigneesSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemAssigneesSubscriptionResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
@@ -58,6 +69,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
+  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findParent = () => wrapper.find('[data-testid="work-item-parent"]');
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
@@ -72,20 +84,17 @@ describe('WorkItemDetail component', () => {
     handler = successHandler,
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
-    workItemsMvc2Enabled = false,
-    includeWidgets = false,
     error = undefined,
+    includeWidgets = false,
+    workItemsMvc2Enabled = false,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
       [workItemTitleSubscription, subscriptionHandler],
       [workItemDatesSubscription, datesSubscriptionHandler],
+      [workItemAssigneesSubscription, assigneesSubscriptionHandler],
       confidentialityMock,
     ];
-
-    if (IS_EE) {
-      handlers.push([workItemWeightSubscription, weightSubscriptionHandler]);
-    }
 
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(
@@ -107,6 +116,12 @@ describe('WorkItemDetail component', () => {
           workItemsMvc2: workItemsMvc2Enabled,
         },
         hasIssueWeightsFeature: true,
+        hasIterationsFeature: true,
+        projectNamespace: 'namespace',
+      },
+      stubs: {
+        WorkItemWeight: true,
+        WorkItemIteration: true,
       },
     });
   };
@@ -384,13 +399,14 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('shows an error message when the work item query was unsuccessful', async () => {
+  it('shows empty state with an error message when the work item query was unsuccessful', async () => {
     const errorHandler = jest.fn().mockRejectedValue('Oops');
     createComponent({ handler: errorHandler });
     await waitForPromises();
 
     expect(errorHandler).toHaveBeenCalled();
-    expect(findAlert().text()).toBe(i18n.fetchError);
+    expect(findEmptyState().props('description')).toBe(i18n.fetchError);
+    expect(findWorkItemTitle().exists()).toBe(false);
   });
 
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {
@@ -413,6 +429,30 @@ describe('WorkItemDetail component', () => {
       });
     });
 
+    describe('assignees subscription', () => {
+      describe('when the assignees widget exists', () => {
+        it('calls the assignees subscription', async () => {
+          createComponent();
+          await waitForPromises();
+
+          expect(assigneesSubscriptionHandler).toHaveBeenCalledWith({
+            issuableId: workItemQueryResponse.data.workItem.id,
+          });
+        });
+      });
+
+      describe('when the assignees widget does not exist', () => {
+        it('does not call the assignees subscription', async () => {
+          const response = workItemResponseFactory({ assigneesWidgetPresent: false });
+          const handler = jest.fn().mockResolvedValue(response);
+          createComponent({ handler });
+          await waitForPromises();
+
+          expect(assigneesSubscriptionHandler).not.toHaveBeenCalled();
+        });
+      });
+    });
+
     describe('dates subscription', () => {
       describe('when the due date widget exists', () => {
         it('calls the dates subscription', async () => {
@@ -429,7 +469,7 @@ describe('WorkItemDetail component', () => {
         it('does not call the dates subscription', async () => {
           const response = workItemResponseFactory({ datesWidgetPresent: false });
           const handler = jest.fn().mockResolvedValue(response);
-          createComponent({ handler, workItemsMvc2Enabled: true });
+          createComponent({ handler });
           await waitForPromises();
 
           expect(datesSubscriptionHandler).not.toHaveBeenCalled();
@@ -440,9 +480,7 @@ describe('WorkItemDetail component', () => {
 
   describe('assignees widget', () => {
     it('renders assignees component when widget is returned from the API', async () => {
-      createComponent({
-        workItemsMvc2Enabled: true,
-      });
+      createComponent();
       await waitForPromises();
 
       expect(findWorkItemAssignees().exists()).toBe(true);
@@ -450,7 +488,6 @@ describe('WorkItemDetail component', () => {
 
     it('does not render assignees component when widget is not returned from the API', async () => {
       createComponent({
-        workItemsMvc2Enabled: true,
         handler: jest
           .fn()
           .mockResolvedValue(workItemResponseFactory({ assigneesWidgetPresent: false })),
@@ -463,11 +500,13 @@ describe('WorkItemDetail component', () => {
 
   describe('labels widget', () => {
     it.each`
-      description                                               | includeWidgets | exists
-      ${'renders when widget is returned from API'}             | ${true}        | ${true}
-      ${'does not render when widget is not returned from API'} | ${false}       | ${false}
-    `('$description', async ({ includeWidgets, exists }) => {
-      createComponent({ includeWidgets, workItemsMvc2Enabled: true });
+      description                                               | labelsWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}             | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}            | ${false}
+    `('$description', async ({ labelsWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ labelsWidgetPresent });
+      const handler = jest.fn().mockResolvedValue(response);
+      createComponent({ handler });
       await waitForPromises();
 
       expect(findWorkItemLabels().exists()).toBe(exists);
@@ -483,7 +522,7 @@ describe('WorkItemDetail component', () => {
       it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, async () => {
         const response = workItemResponseFactory({ datesWidgetPresent });
         const handler = jest.fn().mockResolvedValue(response);
-        createComponent({ handler, workItemsMvc2Enabled: true });
+        createComponent({ handler });
         await waitForPromises();
 
         expect(findWorkItemDueDate().exists()).toBe(exists);
@@ -491,7 +530,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('shows an error message when it emits an `error` event', async () => {
-      createComponent({ workItemsMvc2Enabled: true });
+      createComponent();
       await waitForPromises();
       const updateError = 'Failed to update';
 
@@ -499,6 +538,19 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findAlert().text()).toBe(updateError);
+    });
+  });
+
+  describe('milestone widget', () => {
+    it.each`
+      description                                               | includeWidgets | exists
+      ${'renders when widget is returned from API'}             | ${true}        | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}       | ${false}
+    `('$description', async ({ includeWidgets, exists }) => {
+      createComponent({ includeWidgets, workItemsMvc2Enabled: true });
+      await waitForPromises();
+
+      expect(findWorkItemMilestone().exists()).toBe(exists);
     });
   });
 

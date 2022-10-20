@@ -120,34 +120,6 @@ RSpec.describe ProcessCommitWorker do
         worker.close_issues(project, user, user, commit, [issue])
       end.to change(Issues::CloseWorker.jobs, :size).by(1)
     end
-
-    context 'when process_issue_closure_in_background flag is disabled' do
-      before do
-        stub_feature_flags(process_issue_closure_in_background: false)
-      end
-
-      context 'when the user can update the issues' do
-        it 'closes the issues' do
-          worker.close_issues(project, user, user, commit, [issue])
-
-          issue.reload
-
-          expect(issue.closed?).to eq(true)
-        end
-      end
-
-      context 'when the user can not update the issues' do
-        it 'does not close the issues' do
-          other_user = create(:user)
-
-          worker.close_issues(project, other_user, other_user, commit, [issue])
-
-          issue.reload
-
-          expect(issue.closed?).to eq(false)
-        end
-      end
-    end
   end
 
   describe '#update_issue_metrics', :clean_gitlab_redis_cache do

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Issue Types (DEPRECATED)
@@ -42,7 +42,7 @@ issues or when linking objects of the type from Epics. It should use the same
   - You can't close it from a commit or a merge request.
   - You can't mark it as related to another issue.
 
-If an Issue type can not be used you can still define a first-class type and
+If an Issue type cannot be used you can still define a first-class type and
 then include concerns such as `Issuable` or `Noteable` to reuse functionality
 which is common for all our issue-related resources. But you still need to
 define the interface for working with the new resource and update some other

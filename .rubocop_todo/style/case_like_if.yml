@@ -1,9 +1,7 @@
 ---
 # Cop supports --auto-correct.
 Style/CaseLikeIf:
-  # Offense count: 60
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/controllers/concerns/issuable_actions.rb'
     - 'app/controllers/groups/dependency_proxy/application_controller.rb'
@@ -13,6 +11,7 @@ Style/CaseLikeIf:
     - 'app/helpers/broadcast_messages_helper.rb'
     - 'app/helpers/issues_helper.rb'
     - 'app/helpers/routing/pseudonymization_helper.rb'
+    - 'app/helpers/todos_helper.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/members/member_task.rb'
     - 'app/models/namespace.rb'
@@ -21,8 +20,11 @@ Style/CaseLikeIf:
     - 'app/services/google_cloud/generate_pipeline_service.rb'
     - 'app/services/issuable/bulk_update_service.rb'
     - 'app/services/todo_service.rb'
+    - 'app/services/user_project_access_changed_service.rb'
     - 'ee/app/controllers/concerns/credentials_inventory_actions.rb'
     - 'ee/app/finders/ee/notes_finder.rb'
+    - 'ee/app/finders/security/scan_execution_policies_finder.rb'
+    - 'ee/app/finders/security/training_providers/secure_code_warrior_url_finder.rb'
     - 'ee/app/helpers/ee/branches_helper.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/merge_request_approval_settings/update_service.rb'
@@ -43,18 +45,18 @@ Style/CaseLikeIf:
     - 'lib/gitlab/utils/strong_memoize.rb'
     - 'qa/qa/git/repository.rb'
     - 'qa/qa/scenario/bootable.rb'
-    - 'rubocop/cop/gitlab/keys_first_and_values_first.rb'
     - 'spec/features/boards/user_adds_lists_to_board_spec.rb'
     - 'spec/lib/gitlab/auth/auth_finders_spec.rb'
     - 'spec/lib/gitlab/database/load_balancing_spec.rb'
     - 'spec/lib/omni_auth/strategies/jwt_spec.rb'
     - 'spec/models/concerns/sha_attribute_spec.rb'
     - 'spec/models/preloaders/labels_preloader_spec.rb'
+    - 'spec/requests/api/personal_access_tokens_spec.rb'
     - 'spec/requests/api/rubygem_packages_spec.rb'
     - 'spec/requests/api/terraform/modules/v1/packages_spec.rb'
+    - 'spec/services/ci/pipeline_processing/atomic_processing_service_spec.rb'
     - 'spec/services/resource_events/change_state_service_spec.rb'
     - 'spec/support/helpers/filter_spec_helper.rb'
-    - 'spec/support/matchers/abort_matcher.rb'
     - 'spec/support/shared_examples/metrics/active_record_subscriber_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/notes_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/object_storage_shared_examples.rb'

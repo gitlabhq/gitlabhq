@@ -17,14 +17,14 @@
 
     .form-group
       = f.label :receive_max_input_size, _('Maximum push size (MB)'), class: 'label-light'
-      = f.number_field :receive_max_input_size, class: 'form-control gl-form-input qa-receive-max-input-size-field', title: _('Maximum size limit for a single commit.'), data: { toggle: 'tooltip', container: 'body' }
+      = f.number_field :receive_max_input_size, class: 'form-control gl-form-input', title: _('Maximum size limit for a single commit.'), data: { toggle: 'tooltip', container: 'body', qa_selector: 'receive_max_input_size_field' }
     .form-group
       = f.label :max_export_size, _('Maximum export size (MB)'), class: 'label-light'
       = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('Set to 0 for no size limit.')
     .form-group
       = f.label :max_import_size, _('Maximum import size (MB)'), class: 'label-light'
-      = f.number_field :max_import_size, class: 'form-control gl-form-input qa-receive-max-import-size-field', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
+      = f.number_field :max_import_size, class: 'form-control gl-form-input', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
     .form-group
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
@@ -54,10 +54,10 @@
         - dormant_users_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: dormant_users_help_link }
         = f.gitlab_ui_checkbox_component :deactivate_dormant_users, _('Deactivate dormant users after a period of inactivity'), help_text: _('Users can reactivate their account by signing in. %{link_start}Learn more.%{link_end}').html_safe % { link_start: dormant_users_help_link_start, link_end: '</a>'.html_safe }
         .form-group
-          = f.label :deactivate_dormant_users_period, _('Period of inactivity (days)'), class: 'label-light'
-          = f.number_field :deactivate_dormant_users_period, class: 'form-control gl-form-input', min: '1'
+          = f.label :deactivate_dormant_users_period, _('Days of inactivity before deactivation'), class: 'label-light'
+          = f.number_field :deactivate_dormant_users_period, class: 'form-control gl-form-input', min: '90', step: '1'
           .form-text.text-muted
-            = _('Period of inactivity before deactivation.')
+            = _('Must be 90 days or more.')
 
     .form-group
       = f.label :personal_access_token_prefix, _('Personal Access Token prefix'), class: 'label-light'
@@ -67,6 +67,6 @@
       = f.gitlab_ui_checkbox_component :user_show_add_ssh_key_message, _("Inform users without uploaded SSH keys that they can't push over SSH until one is added")
 
     = render 'admin/application_settings/invitation_flow_enforcement', form: f
-    = render_if_exists 'admin/application_settings/updating_name_disabled_for_users', form: f
+    = render 'admin/application_settings/user_restrictions', form: f
     = render_if_exists 'admin/application_settings/availability_on_namespace_setting', form: f
-  = f.submit _('Save changes'), class: 'qa-save-changes-button', pajamas_button: true
+  = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }

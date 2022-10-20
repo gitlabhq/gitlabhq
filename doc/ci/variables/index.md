@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -193,7 +193,7 @@ The output is:
 
 > Support for environment scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) in GitLab Premium 13.11
 
-To make a CI/CD variable available to all projects in a group, define a group CI/CD variable.
+To make a CI/CD variable available to all projects in a group, define a group CI/CD variable. Only group owners can add or update group-level CI/CD variables.
 
 Use group variables to store secrets like passwords, SSH keys, and credentials, if you:
 
@@ -682,7 +682,10 @@ The order of precedence for variables is (from highest to lowest):
    - [Manual pipeline run variables](#override-a-variable-when-running-a-pipeline-manually).
    - Variables added when [creating a pipeline with the API](../../api/pipelines.md#create-a-new-pipeline).
 1. Project [variables](#custom-cicd-variables).
-1. Group [variables](#add-a-cicd-variable-to-a-group).
+1. Group [variables](#add-a-cicd-variable-to-a-group). If the same variable name exists in a
+   group and its subgroups, the job uses the value from the closest subgroup. For example, if
+   you have `Group > Subgroup 1 > Subgroup 2 > Project`, the variable defined in
+   `Subgroup 2` takes precedence.
 1. Instance [variables](#add-a-cicd-variable-to-an-instance).
 1. [Inherited variables](#pass-an-environment-variable-to-another-job).
 1. Variables defined in jobs in the `.gitlab-ci.yml` file.
@@ -768,7 +771,7 @@ for [deployment jobs](../environments/index.md).
 For example, the [Kubernetes integration](../../user/project/clusters/deploy_to_cluster.md#deployment-variables)
 defines deployment variables that you can use with the integration.
 
-The [documentation for each integration](../../user/project/integrations/overview.md)
+The [documentation for each integration](../../user/project/integrations/index.md)
 explains if the integration has any deployment variables available.
 
 ## Auto DevOps environment variables

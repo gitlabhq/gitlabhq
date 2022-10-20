@@ -4,7 +4,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import httpStatusCodes from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
@@ -47,12 +47,12 @@ describe('UploadBlobModal', () => {
     });
   };
 
-  const findModal = () => wrapper.find(GlModal);
-  const findAlert = () => wrapper.find(GlAlert);
-  const findCommitMessage = () => wrapper.find(GlFormTextarea);
-  const findBranchName = () => wrapper.find(GlFormInput);
-  const findMrToggle = () => wrapper.find(GlToggle);
-  const findUploadDropzone = () => wrapper.find(UploadDropzone);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findCommitMessage = () => wrapper.findComponent(GlFormTextarea);
+  const findBranchName = () => wrapper.findComponent(GlFormInput);
+  const findMrToggle = () => wrapper.findComponent(GlToggle);
+  const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const actionButtonDisabledState = () => findModal().props('actionPrimary').attributes[0].disabled;
   const cancelButtonDisabledState = () => findModal().props('actionCancel').attributes[0].disabled;
   const actionButtonLoadingState = () => findModal().props('actionPrimary').attributes[0].loading;
@@ -185,7 +185,7 @@ describe('UploadBlobModal', () => {
           });
 
           it('creates a flash error', () => {
-            expect(createFlash).toHaveBeenCalledWith({
+            expect(createAlert).toHaveBeenCalledWith({
               message: 'Error uploading file. Please try again.',
             });
           });

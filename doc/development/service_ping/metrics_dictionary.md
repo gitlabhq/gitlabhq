@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Product Intelligence
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Metrics Dictionary Guide
@@ -135,6 +135,9 @@ We use the following categories to classify a metric:
 - `optional`: Default value for a metric. Data that is optional to collect. This can be [enabled or disabled](../../user/admin_area/settings/usage_statistics.md#enable-or-disable-usage-statistics) in the Admin Area.
 - `subscription`: Data related to licensing.
 - `standard`: Standard set of identifiers that are included when collecting data.
+
+An aggregate metric is a metric that is the sum of two or more child metrics. Service Ping uses the data category of
+the aggregate metric to determine whether or not the data is included in the reported Service Ping payload.
 
 ### Metric name suggestion examples
 

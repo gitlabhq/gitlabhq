@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -259,12 +259,12 @@ generated for the renewal and available for viewing or download on the
 #### Enable or disable automatic subscription renewal
 
 To view or change automatic subscription renewal (at the same tier as the
-previous period), log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
+previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
 - If a **Resume subscription** button is displayed, your subscription was canceled
-  previously. Click it to resume automatic renewal.
+  previously. Select it to resume automatic renewal.
 - If a **Cancel subscription** button is displayed, your subscription is set to automatically
-  renew at the end of the subscription period. Click it to cancel automatic renewal.
+  renew at the end of the subscription period. Select it to cancel automatic renewal.
 
 If you have difficulty during the renewal process, contact the
 [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.

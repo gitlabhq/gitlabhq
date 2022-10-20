@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # REST API resources **(FREE)**
@@ -99,7 +99,7 @@ The following API resources are available in the project context:
 | [Runners](runners.md)                                                   | `/projects/:id/runners` (also available standalone)                                                                                                                                                   |
 | [Search](search.md)                                                     | `/projects/:id/search` (also available for groups and standalone)                                                                                                                                     |
 | [Tags](tags.md)                                                         | `/projects/:id/repository/tags`                                                                                                                                                                       |
-| [Terraform modules](packages/terraform-modules.md)                      | `/projects/:id/packages/terraform/mdoules` (also available standalone)                                                                                                                                |
+| [Terraform modules](packages/terraform-modules.md)                      | `/projects/:id/packages/terraform/modules` (also available standalone)                                                                                                                                |
 | [User-starred metrics dashboards](metrics_user_starred_dashboards.md )  | `/projects/:id/metrics/user_starred_dashboards`                                                                                                                                                       |
 | [Visual Review discussions](visual_review_discussions.md) **(PREMIUM)** | `/projects/:id/merge_requests/:merge_request_id/visual_review_discussions`                                                                                                                            |
 | [Vulnerabilities](vulnerabilities.md) **(ULTIMATE)**                    | `/vulnerabilities/:id`                                                                                                                                                                                |

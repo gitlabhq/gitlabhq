@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/shortcuts.html'
 ---
@@ -55,6 +55,8 @@ descriptions):
 | <kbd>Command</kbd> + <kbd>i</kbd>       | <kbd>Control</kbd> + <kbd>i</kbd> | Italicize the selected text (surround it with `_`). |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | Strike through the selected text (surround it with `~~`). |
 | <kbd>Command</kbd> + <kbd>k</kbd>       | <kbd>Control</kbd> + <kbd>k</kbd> | Add a link (surround the selected text with `[]()`). |
+| <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Indent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
+| <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>&#91;</kbd> |  Outdent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
 
 The shortcuts for editing in text fields are always enabled, even if other
 keyboard shortcuts are disabled.

@@ -26,6 +26,8 @@ module Groups
       end
 
       def execute
+        Gitlab::Tracking.event(self.class.name, 'create', label: 'import_group_from_file')
+
         if valid_user_permissions? && import_file && restorers.all?(&:restore)
           notify_success
 

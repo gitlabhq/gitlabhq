@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/359883
 milestone: '15.2'
 type: development
 group: group::container security
-default_enabled: false
+default_enabled: true

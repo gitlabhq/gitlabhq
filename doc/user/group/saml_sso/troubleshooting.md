@@ -2,7 +2,7 @@
 type: reference
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting SAML **(FREE)**
@@ -39,7 +39,7 @@ To generate a SAML Response:
      console.
    - Firefox: Select the SAML-tracer icon located on the browser toolbar.
 1. Go to the GitLab single sign-on URL for the group in the same browser tab with the SAML tracer open.
-1. Select **Authorize** or attempt to log in. A SAML response is displayed in the tracer console that resembles this
+1. Select **Authorize** or attempt to sign in. A SAML response is displayed in the tracer console that resembles this
    [example SAML response](index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
 
@@ -75,6 +75,19 @@ In a relevant log entry, the `json.params` should provide a valid response with:
 - `"key": "SAMLResponse"` and the `"value": (full SAML response)`,
 - `"key": "RelayState"` with `"value": "/group-path"`, and
 - `"key": "group_id"` with `"value": "group-path"`.
+
+You should also check the decoded SAML response with the following filters
+in case the customer has [configured SAML Group Sync](group_sync.md):
+
+- `json.class`: `GroupSamlGroupSyncWorker`
+- `json.args`: `<user ID> or <group ID>`
+
+In the relevant log entry, the: 
+
+- `json.args` are in the form `<userID>, <group ID>,
+  [group link ID 1, group link ID 2, ..., group link ID N]`.
+- `json.extra.group_saml_group_sync_worker.stats.*` fields show how many times
+  this run of group sync `added`, `removed` or `changed` the user's membership.
 
 In some cases, if the SAML response is lengthy, you may receive a `"key": "truncated"` with `"value":"..."`.
 In these cases, use one of the [SAML debugging tools](#saml-debugging-tools), or for SAML SSO for groups,
@@ -175,7 +188,7 @@ initiated by the service provider and not only the identity provider.
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#linking-saml-to-your-existing-gitlabcom-account).
 
-To resolve this problem, the user should check they are using the correct GitLab password to log in. The user first needs
+To resolve this problem, the user should check they are using the correct GitLab password to sign in. The user first needs
 to [reset their password](https://gitlab.com/users/password/new) if both:
 
 - The account was provisioned by SCIM.
@@ -191,7 +204,7 @@ For self-managed, administrators can use the [users API](../../../api/users.md) 
 
 When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
-This can then be compared to the NameID being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match in order to identify users.
+This can then be compared to the NameID being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match to identify users.
 
 ### Stuck in a login "loop"
 
@@ -202,7 +215,7 @@ For GitLab.com, alternatively, when users need to [link SAML to their existing G
 ### Users receive a 404 **(PREMIUM SAAS)**
 
 Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
-If all users are receiving a `404` when attempting to log in using SAML, confirm
+If all users are receiving a `404` when attempting to sign in using SAML, confirm
 [there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) being used in this SAML SSO namespace.
 
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct

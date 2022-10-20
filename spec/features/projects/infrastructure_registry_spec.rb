@@ -57,7 +57,7 @@ RSpec.describe 'Infrastructure Registry' do
         it 'allows you to delete a module', :aggregate_failures do
           # this is still using the package copy in the UI too
           click_button('Remove package')
-          click_button('Delete package')
+          click_button('Permanently delete')
 
           expect(page).to have_content 'Package deleted successfully'
           expect(page).not_to have_content(terraform_module.name)

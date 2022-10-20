@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Zero downtime upgrades **(FREE SELF)**
@@ -313,7 +313,7 @@ node throughout the process.
 
 - If you're using PgBouncer:
 
-  You must bypass PgBouncer and connect directly to the database leader
+  You must [bypass PgBouncer](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer) and connect directly to the database leader
   before running migrations.
 
   Rails uses an advisory lock when attempting to run a migration to prevent
@@ -699,7 +699,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 1. If you're using PgBouncer:
 
-   You must bypass PgBouncer and connect directly to the database leader
+   You must [bypass PgBouncer](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer) and connect directly to the database leader
    before running migrations.
 
    Rails uses an advisory lock when attempting to run a migration to prevent

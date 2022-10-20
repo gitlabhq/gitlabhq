@@ -13,12 +13,7 @@ module Groups
     def execute
       return Group.none unless can_transfer_group?
 
-      items = if Feature.enabled?(:include_groups_from_group_shares_in_group_transfer_locations)
-                find_all_groups
-              else
-                find_groups
-              end
-
+      items = find_all_groups
       items = by_search(items)
 
       sort(items)

@@ -11,9 +11,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content do
 
   subject { described_class.new(pipeline, command) }
 
-  # TODO: change this to `describe` and remove rubocop-disable
-  #   when removing the FF ci_project_pipeline_config_refactoring
-  shared_context '#perform!' do # rubocop:disable RSpec/ContextWording
+  describe '#perform!' do
     context 'when bridge job is passed in as parameter' do
       let(:ci_config_path) { nil }
       let(:bridge) { create(:ci_bridge) }
@@ -202,15 +200,5 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Config::Content do
         expect(pipeline.errors.full_messages).to include('Missing CI config file')
       end
     end
-  end
-
-  it_behaves_like '#perform!'
-
-  context 'when the FF ci_project_pipeline_config_refactoring is disabled' do
-    before do
-      stub_feature_flags(ci_project_pipeline_config_refactoring: false)
-    end
-
-    it_behaves_like '#perform!'
   end
 end

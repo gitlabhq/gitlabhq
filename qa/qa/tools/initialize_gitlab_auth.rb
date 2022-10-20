@@ -6,7 +6,7 @@ module QA
     # Also creates a personal access token
     # @example
     #   $ bundle exec rake  'initialize_gitlab_auth[http://gitlab.test]'
-    class InitializeGitLabAuth
+    class InitializeGitlabAuth
       attr_reader :address
 
       def initialize(address:)

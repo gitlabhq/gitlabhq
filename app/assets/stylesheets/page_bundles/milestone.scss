@@ -1,4 +1,4 @@
-@import 'mixins_and_variables_and_functions';
+@import 'page_bundles/mixins_and_variables_and_functions';
 
 $status-box-line-height: 26px;
 
@@ -37,39 +37,6 @@ $status-box-line-height: 26px;
 
       .gl-label-link {
         color: inherit;
-      }
-    }
-  }
-
-  .card-header {
-    line-height: $line-height-base;
-    padding: 14px 16px;
-    display: flex;
-    justify-content: space-between;
-
-    .title {
-      flex: 1;
-      flex-grow: 2;
-    }
-
-    .issuable-count-weight {
-      white-space: nowrap;
-
-      .counter,
-      .weight {
-        color: var(--gray-500, $gray-500);
-        font-weight: $gl-font-weight-bold;
-      }
-    }
-
-    &.text-white {
-      .issuable-count-weight svg {
-        fill: $white;
-      }
-
-      .issuable-count-weight .counter,
-      .weight {
-        color: var(--white, $white);
       }
     }
   }

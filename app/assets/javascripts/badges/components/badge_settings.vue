@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlModal } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import { __, s__ } from '~/locale';
 import Badge from './badge.vue';
 import BadgeForm from './badge_form.vue';
@@ -40,13 +40,13 @@ export default {
     onSubmitModal() {
       this.deleteBadge(this.badgeInModal)
         .then(() => {
-          createFlash({
+          createAlert({
             message: s__('Badges|The badge was deleted.'),
-            type: 'notice',
+            variant: VARIANT_INFO,
           });
         })
         .catch((error) => {
-          createFlash({
+          createAlert({
             message: s__('Badges|Deleting the badge failed, please try again.'),
           });
           throw error;

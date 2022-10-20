@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 comments: false
 type: index, howto
 ---
@@ -65,6 +65,9 @@ you can use to run a complete Jenkins instance inside of a GitLab job, including
 of transition, by letting you delay the migration of less urgent pipelines for a period of time.
 
 If you are interested in helping GitLab test the wrapper, join our [public testing issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215675) for instructions and to provide your feedback.
+
+NOTE:
+If you have a paid GitLab subscription, note that the JenkinsFile Wrapper is not packaged as part of GitLab, and falls outside of the scope of support. For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support.html).
 
 ## Important product differences
 
@@ -208,7 +211,7 @@ For advanced CI/CD teams, project templates can enable the reuse of pipeline con
 as well as encourage inner sourcing.
 
 In self-managed GitLab instances, you can build an [Instance Template Repository](../../user/admin_area/settings/instance_template_repository.md).
-Development teams across the whole organization can select templates from a dropdown menu.
+Development teams across the whole organization can select templates from a dropdown list.
 A group maintainer or a group owner is able to set a group to use as the source for the
 [custom project templates](../../user/admin_area/custom_project_templates.md), which can
 be used by all projects in the group. An instance administrator can set a group as

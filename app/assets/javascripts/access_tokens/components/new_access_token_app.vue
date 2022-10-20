@@ -2,9 +2,12 @@
 import { GlAlert } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { __, n__, sprintf } from '~/locale';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
 import { EVENT_ERROR, EVENT_SUCCESS, FORM_SELECTOR } from './constants';
+
+const convertEventDetail = (event) => convertObjectPropsToCamelCase(event.detail, { deep: true });
 
 export default {
   EVENT_ERROR,
@@ -54,8 +57,8 @@ export default {
     /** @type {HTMLFormElement} */
     this.form = document.querySelector(FORM_SELECTOR);
 
-    /** @type {HTMLInputElement} */
-    this.submitButton = this.form.querySelector('input[type=submit]');
+    /** @type {HTMLButtonElement} */
+    this.submitButton = this.form.querySelector('[type=submit]');
   },
   methods: {
     beforeDisplayResults() {
@@ -68,20 +71,21 @@ export default {
     onError(event) {
       this.beforeDisplayResults();
 
-      const [{ errors }] = event.detail;
+      const [{ errors }] = convertEventDetail(event);
       this.errors = errors;
 
       this.submitButton.classList.remove('disabled');
+      this.submitButton.removeAttribute('disabled');
     },
     onSuccess(event) {
       this.beforeDisplayResults();
 
-      const [{ new_token: newToken }] = event.detail;
+      const [{ newToken }] = convertEventDetail(event);
       this.newToken = newToken;
 
       this.infoAlert = createAlert({ message: this.alertInfoMessage, variant: VARIANT_INFO });
 
-      // Selectively reset all input fields except for the date picker and submit.
+      // Selectively reset all input fields except for the date picker.
       // The form token creation is not controlled by Vue.
       this.form.querySelectorAll('input[type=text]:not([id$=expires_at])').forEach((el) => {
         el.value = '';

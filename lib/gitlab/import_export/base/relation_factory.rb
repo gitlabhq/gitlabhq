@@ -15,19 +15,19 @@ module Gitlab
         UNIQUE_RELATIONS = %i[].freeze
 
         USER_REFERENCES = %w[
-           author_id
-           assignee_id
-           updated_by_id
-           merged_by_id
-           latest_closed_by_id
-           user_id
-           created_by_id
-           last_edited_by_id
-           merge_user_id
-           resolved_by_id
-           closed_by_id
-           owner_id
-         ].freeze
+          author_id
+          assignee_id
+          updated_by_id
+          merged_by_id
+          latest_closed_by_id
+          user_id
+          created_by_id
+          last_edited_by_id
+          merge_user_id
+          resolved_by_id
+          closed_by_id
+          owner_id
+        ].freeze
 
         TOKEN_RESET_MODELS = %i[Project Namespace Group Ci::Trigger Ci::Build Ci::Runner ProjectHook ErrorTracking::ProjectErrorTrackingSetting].freeze
 

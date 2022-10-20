@@ -1,5 +1,5 @@
 ---
-info: For assistance with this TAM Onboarding page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this TAM Onboarding page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 ---
@@ -283,7 +283,7 @@ You can learn more about how to administer GitLab.
 
 ### Free GitLab training
 
-- GitLab basics: Discover self-service guides on [Git and GitLab basics](../gitlab-basics/index.md).
+- GitLab basics: Discover self-service guides on [Git and GitLab basics](../tutorials/index.md).
 - GitLab Learn: Learn new GitLab skills in a structured course at [GitLab Learn](https://about.gitlab.com/learn/).
 
 ### Third-party training

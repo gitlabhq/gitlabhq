@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import TokenAccess from '~/token_access/components/token_access.vue';
 import addProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
@@ -40,7 +40,7 @@ describe('TokenAccess component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAddProjectBtn = () => wrapper.findByRole('button', { name: 'Add project' });
   const findRemoveProjectBtn = () => wrapper.findByRole('button', { name: 'Remove access' });
-  const findTokenSection = () => wrapper.find('[data-testid="token-section"]');
+  const findTokenDisabledAlert = () => wrapper.findByTestId('token-disabled-alert');
 
   const createMockApolloProvider = (requestHandlers) => {
     return createMockApollo(requestHandlers);
@@ -80,7 +80,7 @@ describe('TokenAccess component', () => {
   });
 
   describe('toggle', () => {
-    it('the toggle should be enabled and the token section should show', async () => {
+    it('the toggle is on and the alert is hidden', async () => {
       createComponent([
         [getCIJobTokenScopeQuery, enabledJobTokenScopeHandler],
         [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
@@ -89,10 +89,10 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       expect(findToggle().props('value')).toBe(true);
-      expect(findTokenSection().exists()).toBe(true);
+      expect(findTokenDisabledAlert().exists()).toBe(false);
     });
 
-    it('the toggle should be disabled and the token section should show', async () => {
+    it('the toggle is off and the alert is visible', async () => {
       createComponent([
         [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
         [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScope],
@@ -101,7 +101,7 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       expect(findToggle().props('value')).toBe(false);
-      expect(findTokenSection().exists()).toBe(true);
+      expect(findTokenDisabledAlert().exists()).toBe(true);
     });
   });
 
@@ -144,7 +144,7 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 
@@ -187,7 +187,7 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalled();
     });
   });
 });

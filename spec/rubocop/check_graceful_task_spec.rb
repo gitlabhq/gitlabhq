@@ -62,24 +62,34 @@ RSpec.describe RuboCop::CheckGracefulTask do
         let(:adjusted_rubocop_status) { status_success }
 
         context 'with sufficient environment variables' do
+          let(:script) { 'scripts/slack' }
           let(:channel) { 'f_rubocop' }
+          let(:emoji) { 'rubocop' }
+          let(:user_name) { 'GitLab Bot' }
+          let(:job_name) { 'some job name' }
+          let(:job_url) { 'some job url' }
+          let(:docs_link) { 'https://docs.gitlab.com/ee/development/contributing/style_guides.html#silenced-offenses' }
 
           before do
             env = {
               'CI_SLACK_WEBHOOK_URL' => 'webhook_url',
-              'CI_JOB_NAME' => 'job_name',
-              'CI_JOB_URL' => 'job_url'
+              'CI_JOB_NAME' => job_name,
+              'CI_JOB_URL' => job_url
             }
 
             stub_const('ENV', ENV.to_hash.update(env))
           end
 
           it 'notifies slack' do
-            popen_args = ['scripts/slack', channel, kind_of(String), 'rubocop', kind_of(String)]
             popen_result = ['', 0]
-            expect(Gitlab::Popen).to receive(:popen).with(popen_args).and_return(popen_result)
+            allow(Gitlab::Popen).to receive(:popen).with(anything).and_return(popen_result)
 
             subject
+
+            message = a_kind_of(String).and include(job_name).and include(job_url).and include(docs_link)
+
+            expect(Gitlab::Popen).to have_received(:popen)
+              .with([script, channel, message, emoji, user_name])
 
             expect(output.string).to include("Notifying Slack ##{channel}.")
           end

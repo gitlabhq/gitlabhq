@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Dependencies API **(ULTIMATE)**
@@ -49,18 +49,34 @@ Example response:
     "version": "5.0.1",
     "package_manager": "bundler",
     "dependency_file_path": "Gemfile.lock",
-    "vulnerabilities": [{
-      "name": "DDoS",
-      "severity": "unknown"
-    }]
+    "vulnerabilities": [
+      {
+        "name": "DDoS",
+        "severity": "unknown",
+        "id": 144827,
+        "url": "https://gitlab.example.com/group/project/-/security/vulnerabilities/144827"
+      }
+    ],
+    "licenses": [
+      {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    ]
   },
   {
-      "name": "hanami",
-      "version": "1.3.1",
-      "package_manager": "bundler",
-      "dependency_file_path": "Gemfile.lock",
-      "vulnerabilities": []
-    }
+    "name": "hanami",
+    "version": "1.3.1",
+    "package_manager": "bundler",
+    "dependency_file_path": "Gemfile.lock",
+    "vulnerabilities": [],
+    "licenses": [
+      {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    ]
+  }
 ]
 ```
 

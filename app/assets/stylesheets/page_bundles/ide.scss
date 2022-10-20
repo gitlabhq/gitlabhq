@@ -970,18 +970,11 @@ $ide-commit-header-height: 48px;
 
 .ide-stage {
   .card-header {
-    display: flex;
-    cursor: pointer;
-
     .ci-status-icon {
       display: flex;
       align-items: center;
     }
   }
-}
-
-.ide-stage-collapse-icon {
-  margin: auto 0 auto auto;
 }
 
 .ide-job-header {

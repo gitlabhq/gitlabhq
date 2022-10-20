@@ -46,22 +46,10 @@ export default Node.create({
         tag: 'a.gfm:not([data-link=true])',
         priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
-      {
-        tag: 'span.gl-label',
-      },
     ];
   },
 
   renderHTML({ node }) {
-    return [
-      'a',
-      {
-        class: node.attrs.className,
-        href: node.attrs.href,
-        'data-reference-type': node.attrs.referenceType,
-        'data-original': node.attrs.originalText,
-      },
-      node.attrs.text,
-    ];
+    return ['a', { href: '#' }, node.attrs.text];
   },
 });

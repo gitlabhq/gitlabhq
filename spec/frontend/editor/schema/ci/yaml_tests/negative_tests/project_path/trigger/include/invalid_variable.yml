@@ -1,0 +1,5 @@
+trigger-include:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'slug#'

@@ -1,19 +1,19 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Use Microsoft Azure as an authentication provider **(FREE SELF)**
 
 You can enable the Microsoft Azure OAuth 2.0 OmniAuth provider and sign in to
 GitLab with your Microsoft Azure credentials. You can configure the provider that uses
-[the earlier Azure Active Directory v1.0 endpoint](https://docs.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-protocols-oauth-code),
+[the earlier Azure Active Directory v1.0 endpoint](https://learn.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-protocols-oauth-code),
 or the provider that uses the v2.0 endpoint.
 
 NOTE:
 For new projects, Microsoft suggests you use the
-[OpenID Connect protocol](../administration/auth/oidc.md#microsoft-azure),
+[OpenID Connect protocol](../administration/auth/oidc.md#configure-microsoft-azure),
 which uses the Microsoft identity platform (v2.0) endpoint.
 
 ## Register an Azure application
@@ -22,8 +22,8 @@ To enable the Microsoft Azure OAuth 2.0 OmniAuth provider, you must register
 an Azure application and get a client ID and secret key.
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
-1. If you have multiple Azure Active Directory tenants, switch to the desired tenant.
-1. [Register an application](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+1. If you have multiple Azure Active Directory tenants, switch to the desired tenant. Note the tenant ID.
+1. [Register an application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
    and provide the following information:
    - The redirect URI, which requires the URL of the Azure OAuth callback of your GitLab
      installation. For example:
@@ -33,7 +33,7 @@ an Azure application and get a client ID and secret key.
 1. Save the client ID and client secret. The client secret is only
    displayed once.
 
-   If required, you can [create a new application secret](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret).
+   If required, you can [create a new application secret](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret).
 
 `client ID` and `client secret` are terms associated with OAuth 2.0.
 In some Microsoft documentation, the terms are named `Application ID` and
@@ -41,7 +41,7 @@ In some Microsoft documentation, the terms are named `Application ID` and
 
 ## Add API permissions (scopes)
 
-If you're using the v2.0 endpoint, after you create the application, [configure it to expose a web API](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis).
+If you're using the v2.0 endpoint, after you create the application, [configure it to expose a web API](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis).
 Add the following delegated permissions under the Microsoft Graph API:
 
 - `email`
@@ -70,7 +70,7 @@ Alternatively, add the `User.Read.All` application permission.
 
 1. [Configure the initial settings](omniauth.md#configure-initial-settings).
 
-1. Add the provider configuration. Replace `CLIENT ID`, `CLIENT SECRET`, and `TENANT ID`
+1. Add the provider configuration. Replace `<client_id>`, `<client_secret>`, and `<tenant_id>`
    with the values you got when you registered the Azure application.
 
    - **For Omnibus installations**
@@ -83,9 +83,9 @@ Alternatively, add the `User.Read.All` application permission.
          name: "azure_oauth2",
          # label: "Provider name", # optional label for login button, defaults to "Azure AD"
          args: {
-           client_id: "CLIENT ID",
-           client_secret: "CLIENT SECRET",
-           tenant_id: "TENANT ID",
+           client_id: "<client_id>",
+           client_secret: "<client_secret>",
+           tenant_id: "<tenant_id>",
          }
        }
      ]
@@ -99,15 +99,15 @@ Alternatively, add the `User.Read.All` application permission.
          "name" => "azure_activedirectory_v2",
          "label" => "Provider name", # optional label for login button, defaults to "Azure AD v2"
          "args" => {
-           "client_id" => "CLIENT ID",
-           "client_secret" => "CLIENT SECRET",
-           "tenant_id" => "TENANT ID",
+           "client_id" => "<client_id>",
+           "client_secret" => "<client_secret>",
+           "tenant_id" => "<tenant_id>",
          }
        }
      ]
      ```
 
-     For [alternative Azure clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
+     For [alternative Azure clouds](https://learn.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
      configure `base_azure_url` under the `args` section. For example, for Azure Government Community Cloud (GCC):
 
      ```ruby
@@ -116,9 +116,9 @@ Alternatively, add the `User.Read.All` application permission.
          "name" => "azure_activedirectory_v2",
          "label" => "Provider name", # optional label for login button, defaults to "Azure AD v2"
          "args" => {
-           "client_id" => "CLIENT ID",
-           "client_secret" => "CLIENT SECRET",
-           "tenant_id" => "TENANT ID",
+           "client_id" => "<client_id>",
+           "client_secret" => "<client_secret>",
+           "tenant_id" => "<tenant_id>",
            "base_azure_url" => "https://login.microsoftonline.us"
          }
        }
@@ -132,9 +132,9 @@ Alternatively, add the `User.Read.All` application permission.
      ```yaml
      - { name: 'azure_oauth2',
          # label: 'Provider name', # optional label for login button, defaults to "Azure AD"
-         args: { client_id: 'CLIENT ID',
-                 client_secret: 'CLIENT SECRET',
-                 tenant_id: 'TENANT ID' } }
+         args: { client_id: '<client_id>',
+                 client_secret: '<client_secret>',
+                 tenant_id: '<tenant_id>' } }
      ```
 
      For the v2.0 endpoint:
@@ -142,26 +142,24 @@ Alternatively, add the `User.Read.All` application permission.
      ```yaml
      - { name: 'azure_activedirectory_v2',
          label: 'Provider name', # optional label for login button, defaults to "Azure AD v2"
-         args: { client_id: "CLIENT ID",
-                 client_secret: "CLIENT SECRET",
-                 tenant_id: "TENANT ID" } }
+         args: { client_id: "<client_id>",
+                 client_secret: "<client_secret>",
+                 tenant_id: "<tenant_id>" } }
      ```
 
-     For [alternative Azure clouds](https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
+     For [alternative Azure clouds](https://learn.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
      configure `base_azure_url` under the `args` section. For example, for Azure Government Community Cloud (GCC):
 
      ```yaml
      - { name: 'azure_activedirectory_v2',
          label: 'Provider name', # optional label for login button, defaults to "Azure AD v2"
-         args: { client_id: "CLIENT ID",
-                 client_secret: "CLIENT SECRET",
-                 tenant_id: "TENANT ID",
+         args: { client_id: "<client_id>",
+                 client_secret: "<client_secret>",
+                 tenant_id: "<tenant_id>",
                  base_azure_url: "https://login.microsoftonline.us" } }
      ```
 
-   In addition, you can optionally add the following parameters to the `args` section:
-
-   - `scope` for [OAuth2 scopes](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow). The default is `openid profile email`.
+   You can also optionally add the `scope` for [OAuth 2.0 scopes](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow) parameter to the `args` section. The default is `openid profile email`.
 
 1. Save the configuration file.
 

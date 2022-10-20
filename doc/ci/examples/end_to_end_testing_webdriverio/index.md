@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 author: Vincent Tunru
 author_gitlab: Vinnl
 description: 'Confidence checking your entire app every time a new feature is added can quickly become repetitive. Learn how to automate it with GitLab CI/CD.'
@@ -86,7 +86,7 @@ steering the browser. In this case, we can use
 [`browser.url`](http://v4.webdriver.io/api/protocol/url.html) to visit `/page-that-does-not-exist` to
 hit our 404 page. We can then use [`browser.getUrl`](http://v4.webdriver.io/api/property/getUrl.html)
 to verify that the current page is indeed at the location we specified. To interact with the page,
-we can simply pass CSS selectors to
+we can pass CSS selectors to
 [`browser.element`](http://v4.webdriver.io/api/protocol/element.html) to get access to elements on the
 page and to interact with them - for example, to click on the link back to the home page.
 

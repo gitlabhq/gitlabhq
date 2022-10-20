@@ -1,0 +1,18 @@
+metadata:
+  doc_version: v4
+  info:
+    title: GitLab API
+    termsOfService: https://about.gitlab.com/terms/
+  host: gitlab.com
+  security_definitions:
+    access_token_header:
+      type: apiKey
+      name: PRIVATE-TOKEN
+      in: header
+    access_token_query:
+      type: apiKey
+      name: private_token
+      in: query
+  tags:
+  - name: metadata
+    description: Operations related to metadata of the GitLab instance

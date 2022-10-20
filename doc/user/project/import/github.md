@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Manage
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Import your project from GitHub to GitLab **(FREE)**
@@ -118,6 +118,23 @@ If you are not using the GitHub integration, you can still perform an authorizat
 To use a newer personal access token in imports after previously performing these steps, sign out of
 your GitLab account and sign in again, or revoke the older personal access token in GitHub.
 
+### Select additional items to import
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
+
+To make imports as fast as possible, the following items aren't imported from GitHub by default:
+
+- Issue and pull request events. For example, _opened_ or _closed_, _renamed_, and _labeled_ or _unlabeled_.
+- All comments. In regular import of large repositories some comments might get skipped due to limitation of GitHub API.
+- Markdown attachments from repository comments, release posts, issue descriptions, and pull request descriptions. These can include
+  images, text, or binary attachments. If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
+
+You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
+
+- **Import issue and pull request events**.
+- **Use alternative comments import method**.
+- **Import Markdown attachments**.
+
 ### Select which repositories to import
 
 After you have authorized access to your GitHub repositories, you are redirected to the GitHub importer page and
@@ -178,8 +195,15 @@ The following items of a project are imported:
 - Milestones.
 - Labels.
 - Release note descriptions.
-- Release note attachments. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4 with `github_importer_attachments_import`
-  [feature flag](../../../administration/feature_flags.md) disabled by default.
+- Attachments for:
+  - Release notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15620) in GitLab 15.4.
+  - Comments and notes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Issue description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+  - Merge Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
+
+  All attachment imports are disabled by default behind
+  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can be imported
+  [as an additional item](#select-additional-items-to-import). The feature flag was removed.
 - Pull request review comments.
 - Regular issue and pull request comments.
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md).
@@ -189,34 +213,31 @@ The following items of a project are imported:
 - Diff Notes suggestions ([GitLab.com and GitLab 14.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340624)).
 - Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4 with `github_importer_issue_events_import`
   [feature flag](../../../administration/feature_flags.md) disabled by default.
+  From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
 
 References to pull requests and issues are preserved. Each imported repository maintains visibility level unless that
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it
 defaults to the default project visibility.
+
+### Branch protection rules
+
+Supported GitHub branch protection rules are mapped to GitLab branch protection rules or project-wide GitLab settings when they are imported:
+
+- GitHub rule **Require conversation resolution before merging** for the project's default branch is mapped to the [**All threads must be resolved** GitLab setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) in GitLab 15.5.
+- GitHub rule **Require a pull request before merging** is mapped to the **No one** option in the **Allowed to push** list of the branch protection rule. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) in GitLab 15.5.
+- GitHub rule **Require signed commits** for the project's default branch is mapped to the **Reject unsigned commits** GitLab setting. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) in GitLab 15.5.
+- Support for GitHub rule **Require status checks to pass before merging** was proposed in issue [370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule cannot be translated during project import into GitLab due to technical difficulties.
+You can still create [status checks](../merge_requests/status_checks.md) in GitLab yourself.
 
 ## Alternative way to import notes and diff notes
 
 When GitHub Importer runs on extremely large projects not all notes & diff notes can be imported due to GitHub API `issues_comments` & `pull_requests_comments` endpoints limitation.
 Not all pages can be fetched due to the following error coming from GitHub API: `In order to keep the API fast for everyone, pagination is limited for this resource. Check the rel=last link relation in the Link response header to see how far back you can traverse.`.
 
-An alternative approach for importing notes and diff notes is available behind a feature flag.
+An [alternative approach](#select-additional-items-to-import) for importing comments is available.
 
 Instead of using `issues_comments` and `pull_requests_comments`, use individual resources `issue_comments` and `pull_request_comments` instead to pull notes from one object at a time.
 This allows us to carry over any missing comments, however it increases the number of network requests required to perform the import, which means its execution takes a longer time.
-
-To use the alternative way of importing notes, the `github_importer_single_endpoint_notes_import` feature flag must be enabled on the group project is being imported into.
-
-Start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
-
-```ruby
-group = Group.find_by_full_path('my/group/fullpath')
-
-# Enable
-Feature.enable(:github_importer_single_endpoint_notes_import, group)
-
-# Disable
-Feature.disable(:github_importer_single_endpoint_notes_import, group)
-```
 
 ## Reduce GitHub API request objects per page
 

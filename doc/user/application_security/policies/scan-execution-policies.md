@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Scan execution policies **(ULTIMATE)**
@@ -9,13 +9,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Group-level security policies were [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 > - Group-level security policies were [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
 
-Group, sub-group, or project owners can use scan execution policies to require that security scans run on a specified
-schedule or with the project (or multiple projects if the policy is defined at a group or sub-group level) pipeline. Required scans are injected into the CI pipeline as new jobs
+Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
+schedule or with the project (or multiple projects if the policy is defined at a group or subgroup level) pipeline. Required scans are injected into the CI pipeline as new jobs
 with a long, random job name. In the unlikely event of a job name collision, the security policy job overwrites
 any pre-existing job in the pipeline. If a policy is created at the group-level, it will apply to every child
-project or sub-group. A group-level policy cannot be edited from a child project or sub-group.
+project or subgroup. A group-level policy cannot be edited from a child project or subgroup.
 
-This feature has some overlap with [compliance framework pipelines](../../project/settings/index.md#compliance-pipeline-configuration),
+This feature has some overlap with [compliance framework pipelines](../../group/manage.md#configure-a-compliance-pipeline),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).
@@ -29,7 +29,7 @@ an error appears that states `chosen stage does not exist`.
 ## Scan execution policy editor
 
 NOTE:
-Only group, sub-group, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
+Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
 to select Security Policy Project.
 
 Once your policy is complete, save it by selecting **Create via merge request**
@@ -43,9 +43,7 @@ Most policy changes take effect as soon as the merge request is merged. Any chan
 do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
 before the policy changes take effect.
 
-![Scan Execution Policy Editor YAML Mode](img/scan_execution_policy_yaml_mode_v14_7.png)
-
-The policy editor currently only supports the YAML mode. The Rule mode is tracked in the [Allow Users to Edit Rule-mode Scan Execution Policies in the Policy UI](https://gitlab.com/groups/gitlab-org/-/epics/5363) epic.
+![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v15_5.png)
 
 ## Scan execution policies schema
 
@@ -90,13 +88,39 @@ This rule enforces the defined actions and schedules a scan on the provided date
 | `type`     | `string` | `schedule` | The rule's type. |
 | `branches` | `array` of `string` | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `cadence`  | `string` | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
+| `agents`   | `object` | | The name of the [GitLab agents](../../clusters/agent/index.md) where [cluster image scanning](../../clusters/agent/vulnerabilities.md) will run. The object key is the name of the Kubernetes cluster configured for your project in GitLab. You can use the optional value of the object to select and scan specific Kubernetes resources. |
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-It is possible that other elements of the CRON syntax will work in the cadence field, however, GitLab does not officially test or support them.
+Other elements of the CRON syntax may work in the cadence field, however, GitLab does not officially test or support them. The CRON expression is evaluated in UTC by default. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
+
+### `agent` schema
+
+Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).
+
+| Field        | Type                | Possible values          | Description |
+|--------------|---------------------|--------------------------|-------------|
+| `namespaces` | `array` of `string` | | The namespace that is scanned. If empty, all namespaces will be scanned. |
+
+#### Policy example
+
+```yaml
+- name: Enforce Container Scanning in cluster connected through gitlab-agent for production and staging namespaces
+  enabled: true
+  rules:
+  - type: schedule
+    cadence: '0 10 * * *'
+    agents:
+      gitlab-agent:
+        namespaces:
+        - 'production'
+        - 'staging'
+  actions:
+  - scan: container_scanning
+```
 
 ## `scan` action type
 
@@ -105,7 +129,7 @@ rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `dast`, `secret_detection`, `sast`, `container_scanning`, `cluster_image_scanning` | The action's type. |
+| `scan` | `string` | `dast`, `secret_detection`, `sast`, `container_scanning` | The action's type. |
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/index.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/index.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
@@ -126,9 +150,8 @@ Note the following:
 - A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
   [`historic`](../secret_detection/index.md#full-history-secret-detection)
   mode when executed as part of a scheduled scan.
-- A container scanning and cluster image scanning scans configured for the `pipeline` rule type ignores the cluster defined in the `clusters` object.
-  They use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
-  A cluster with a name provided in the `clusters` object must be created and configured for the project.
+- A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
+  An agent with a name provided in the `agents` object must be created and configured for the project.
 - The SAST scan uses the default template and runs in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 ## Example security policies project
@@ -186,8 +209,6 @@ In this example:
   and `Site Profile D`.
 - Secret detection, container scanning, and SAST scans run for every pipeline executed on the `main`
   branch. The SAST scan runs with the `SAST_EXCLUDED_ANALYZER` variable set to `"brakeman"`.
-- Cluster Image Scanning scan runs every 24h. The scan runs on the `production-cluster` cluster and fetches vulnerabilities
-  from the container with the name `database` configured for deployment with the name `production-application` in the `production-namespace` namespace.
 
 ## Example for scan execution policy editor
 

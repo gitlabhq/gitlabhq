@@ -2,7 +2,7 @@
 type: reference, dev
 stage: none
 group: Development
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines"
+info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
 # Secure Coding Guidelines
@@ -52,6 +52,10 @@ Each time you implement a new feature/endpoint, whether it is at UI, API or Grap
 - Naming convention to ease auditability: to be defined, for example, a subfolder containing those specific permission tests or a `#permissions` block
 
 Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/doc/development/permissions.md#feature-specific-permissions)** and not only project access rights.
+
+The HTTP status code returned when an authorization check fails should generally be `404 Not Found` to avoid revealing information
+about whether or not the requested resource exists. `403 Forbidden` may be appropriate if you need to display a specific message to the user
+about why they cannot access the resource. If you are displaying a generic message such as "access denied", consider returning `404 Not Found` instead.
 
 Some example of well implemented access controls and tests:
 
@@ -1067,7 +1071,7 @@ Symlink attacks makes it possible for an attacker to read the contents of arbitr
 
 #### Ruby
 
-For zip files, the [`rubyzip`](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against symlink attacks as it simply ignores symbolic links, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
+For zip files, the [`rubyzip`](https://rubygems.org/gems/rubyzip) Ruby gem is already patched against symlink attacks as it ignores symbolic links, so for this vulnerable example we will extract a `tar.gz` file with `Gem::Package::TarReader`:
 
 ```ruby
 # Vulnerable tar.gz extraction example!

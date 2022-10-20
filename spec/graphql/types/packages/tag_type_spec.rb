@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['PackageTag'] do
 
   it 'includes all the package tag fields' do
     expected_fields = %w[
-        id name created_at updated_at
+      id name created_at updated_at
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

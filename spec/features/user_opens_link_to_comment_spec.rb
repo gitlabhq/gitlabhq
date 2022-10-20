@@ -20,7 +20,7 @@ RSpec.describe 'User opens link to comment', :js do
 
       wait_for_requests
 
-      expect(find('#discussion-preferences-dropdown')).to have_content('Sort or filter')
+      expect(find('#discussion-preferences-dropdown')).to have_content(_('Sort or filter'))
       expect(page).not_to have_content('Something went wrong while fetching comments')
 
       # Auto-switching to show all notes shouldn't be persisted

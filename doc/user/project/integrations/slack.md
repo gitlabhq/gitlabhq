@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Slack notifications service **(FREE)**
@@ -127,3 +127,21 @@ the GitLab OpenSSL trust store is incorrect. Typical causes are:
 
 - Overriding the trust store with `gitlab_rails['env'] = {"SSL_CERT_FILE" => "/path/to/file.pem"}`.
 - Accidentally modifying the default CA bundle `/opt/gitlab/embedded/ssl/certs/cacert.pem`.
+
+### Bulk update to disable the Slack Notification service
+
+To disable notifications for all projects that have Slack integration enabled,
+[start a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and use a script similar to the following:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+```ruby
+# Grab all projects that have the Slack notifications enabled
+p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN integrations s ON p.id = s.project_id WHERE s.type_new = 'Slack' AND s.active = true")
+
+# Disable the service on each of the projects that were found.
+p.each do |project|
+  project.slack_service.update!(:active, false)
+end
+```

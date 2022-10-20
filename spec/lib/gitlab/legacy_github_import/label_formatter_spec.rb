@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::LabelFormatter do
-  let(:project) { create(:project) }
-  let(:raw) { double(name: 'improvements', color: 'e6e6e6') }
+  let_it_be(:project) { create(:project) }
+  let(:raw) { { name: 'improvements', color: 'e6e6e6' } }
 
   subject { described_class.new(project, raw) }
 
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::LegacyGithubImport::LabelFormatter do
 
     context 'when label exists' do
       it 'does not create a new label' do
-        Labels::CreateService.new(name: raw.name).execute(project: project)
+        Labels::CreateService.new(name: raw[:name]).execute(project: project)
 
         expect { subject.create! }.not_to change(Label, :count)
       end

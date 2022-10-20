@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Terraform integration in merge requests **(FREE)**
@@ -85,7 +85,7 @@ To manually configure a GitLab Terraform Report artifact:
 
    ![merge request Terraform widget](img/terraform_plan_widget_v13_2.png)
 
-1. Clicking the **View Full Log** button in the widget takes you directly to the
+1. Selecting the **View Full Log** button in the widget takes you directly to the
    plan output present in the pipeline logs:
 
    ![Terraform plan logs](img/terraform_plan_log_v13_0.png)

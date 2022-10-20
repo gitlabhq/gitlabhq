@@ -12,5 +12,11 @@ RSpec.describe 'layouts/header/_gitlab_version' do
     it 'renders the version check badge' do
       expect(rendered).to have_selector('.js-gitlab-version-check')
     end
+
+    it 'renders the container as a link' do
+      expect(rendered).to have_selector(
+        'a[data-testid="gitlab-version-container"][href="/help/update/index"]'
+      )
+    end
   end
 end

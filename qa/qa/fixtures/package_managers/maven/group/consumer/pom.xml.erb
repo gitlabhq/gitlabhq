@@ -1,0 +1,19 @@
+<project>
+  <groupId><%= group_id %></groupId>
+  <artifactId>maven_client</artifactId>
+  <version>1.0</version>
+  <modelVersion>4.0.0</modelVersion>
+  <repositories>
+    <repository>
+      <id><%= client_project.name %></id>
+      <url><%= gitlab_address_with_port %>/api/v4/groups/<%= client_project.group.id %>/-/packages/maven</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId><%= group_id %></groupId>
+      <artifactId><%= artifact_id %></artifactId>
+      <version><%= package_version %></version>
+    </dependency>
+  </dependencies>
+</project>

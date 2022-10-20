@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, howto
 ---
 
@@ -177,7 +177,7 @@ You can add an internal note **to an issue or an epic**. It's then visible only 
 Keep in mind:
 
 - Replies to internal notes are also internal.
-- You can not turn an internal note into a regular comment.
+- You cannot turn an internal note into a regular comment.
 
 Prerequisites:
 
@@ -315,7 +315,7 @@ At the top of the page, the number of unresolved threads is updated:
 
 If you have multiple unresolved threads in a merge request, you can
 create an issue to resolve them separately. In the merge request, at the top of the page,
-click the ellipsis icon button (**{ellipsis_v}**) in the threads control and then select **Create issue to resolve all threads**:
+select the ellipsis icon button (**{ellipsis_v}**) in the threads control and then select **Create issue to resolve all threads**:
 
 ![Open new issue for all unresolved threads](img/create_new_issue_v15_4.png)
 

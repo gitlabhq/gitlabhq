@@ -7,15 +7,14 @@ RSpec.describe Gitlab::GithubImport::Importer::NotesImporter do
   let(:client) { double(:client) }
 
   let(:github_comment) do
-    double(
-      :response,
+    {
       html_url: 'https://github.com/foo/bar/issues/42',
-      user: double(:user, id: 4, login: 'alice'),
+      user: { id: 4, login: 'alice' },
       body: 'Hello world',
       created_at: Time.zone.now,
       updated_at: Time.zone.now,
       id: 1
-    )
+    }
   end
 
   describe '#parallel?' do
@@ -84,9 +83,10 @@ RSpec.describe Gitlab::GithubImport::Importer::NotesImporter do
         .to receive(:each_object_to_import)
         .and_yield(github_comment)
 
-      expect(Gitlab::GithubImport::ImportNoteWorker).to receive(:bulk_perform_in).with(1.second, [
-          [project.id, an_instance_of(Hash), an_instance_of(String)]
-        ], batch_size: 1000, batch_delay: 1.minute)
+      expect(Gitlab::GithubImport::ImportNoteWorker).to receive(:bulk_perform_in)
+        .with(1.second, [
+                [project.id, an_instance_of(Hash), an_instance_of(String)]
+              ], batch_size: 1000, batch_delay: 1.minute)
 
       waiter = importer.parallel_import
 

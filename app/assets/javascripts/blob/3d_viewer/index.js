@@ -1,6 +1,6 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
-import * as THREE from 'three/build/three.module';
+import * as THREE from 'three';
 import MeshObject from './mesh_object';
 
 export default class Renderer {

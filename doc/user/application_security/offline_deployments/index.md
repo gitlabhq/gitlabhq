@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Offline environments **(ULTIMATE SELF)**
@@ -131,7 +131,7 @@ to be able to use the `docker` command inside the jobs. This runner can be insta
 a bastion, and used only for this specific project.
 
 WARNING:
-This template does not include updates for the container scanning analyzer. Please see
+This template does not include updates for the container scanning analyzer. See
 [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment).
 
 #### Scheduling the updates

@@ -46,8 +46,6 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
     context 'with several tags pages' do
       let(:tags_page_size) { 2 }
 
-      it_behaves_like 'handling invalid params'
-
       it_behaves_like 'when regex matching everything is specified',
                       delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
 
@@ -104,8 +102,6 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
 
     context 'with a single tags page' do
       let(:tags_page_size) { 1000 }
-
-      it_behaves_like 'handling invalid params'
 
       it_behaves_like 'when regex matching everything is specified',
                       delete_expectations: [%w[A Ba Bb C D E]]

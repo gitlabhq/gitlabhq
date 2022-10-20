@@ -53,6 +53,7 @@ export default {
     :selected="timelineEnabled"
     :title="tooltip"
     :aria-label="tooltip"
+    data-testid="timeline-toggle-button"
     @click="toggleTimeline"
   />
 </template>

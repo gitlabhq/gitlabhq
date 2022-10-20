@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PersonalAccessTokens
-  class RevokeService
+  class RevokeService < BaseService
     attr_reader :token, :current_user, :group
 
     def initialize(current_user = nil, token: nil, group: nil )
@@ -15,6 +15,7 @@ module PersonalAccessTokens
 
       if token.revoke!
         log_event
+        notification_service.access_token_revoked(token.user, token.name)
         ServiceResponse.success(message: success_message)
       else
         ServiceResponse.error(message: error_message)

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Pipeline trigger tokens API **(FREE)**
@@ -153,7 +153,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 Trigger a pipeline by using a pipeline [trigger token](../ci/triggers/index.md#create-a-trigger-token)
 or a [CI/CD job token](../ci/jobs/ci_job_token.md) for authentication.
 
-With a CI/CD job token, the [triggered pipeline is a multi-project pipeline](../ci/jobs/ci_job_token.md#trigger-a-multi-project-pipeline-by-using-a-cicd-job-token).
+With a CI/CD job token, the [triggered pipeline is a multi-project pipeline](../ci/pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
 The job that authenticates the request becomes associated with the upstream pipeline,
 which is visible on the [pipeline graph](../ci/pipelines/downstream_pipelines.md#view-multi-project-pipelines-in-pipeline-graphs).
 
@@ -170,7 +170,7 @@ Supported attributes:
 | `id`        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `ref`       | string         | **{check-circle}** Yes | The branch or tag to run the pipeline on. |
 | `token`     | string         | **{check-circle}** Yes | The trigger token or CI/CD job token. |
-| `variables` | array          | **{dotted-circle}** No | An array containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`. If `variable_type` is excluded, it defaults to `env_var`. |
+| `variables` | array          | **{dotted-circle}** No | An [array of hashes](index.md#array-of-hashes) containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`. If `variable_type` is excluded, it defaults to `env_var`. |
 
 Example request:
 

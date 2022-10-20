@@ -1,13 +1,17 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 comments: false
 ---
 
 # GitLab integrations **(FREE)**
 
 GitLab can be integrated with external services for enhanced functionality.
+
+## Services
+
+Services such as Campfire, Flowdock, Jira, Pivotal Tracker, and Slack are available as [integrations](../user/project/integrations/index.md).
 
 ## Issue trackers
 
@@ -60,10 +64,6 @@ or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc a
 - Attach merge requests to [Trello](trello_power_up.md) cards.
 - Enable integrated code intelligence powered by [Sourcegraph](sourcegraph.md).
 - Add [Elasticsearch](advanced_search/elasticsearch.md) for [Advanced Search](../user/search/advanced_search.md).
-
-## Integrations
-
-Integration with services such as Campfire, Flowdock, Jira, Pivotal Tracker, and Slack are available as [Integrations](../user/project/integrations/index.md).
 
 ## Troubleshooting
 

@@ -129,28 +129,31 @@ module Gitlab
         end
 
         def primary_key_descending_order
-          Gitlab::Pagination::Keyset::Order.build([
-            Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-              attribute_name: model_class.primary_key,
-              order_expression: arel_table[primary_key].desc
-            )
-          ])
+          Gitlab::Pagination::Keyset::Order.build(
+            [
+              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                attribute_name: model_class.primary_key,
+                order_expression: arel_table[primary_key].desc
+              )
+            ])
         end
 
         def primary_key_order
-          Gitlab::Pagination::Keyset::Order.build([
-            Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-              attribute_name: model_class.primary_key,
-              order_expression: order_values.first
-            )
-          ])
+          Gitlab::Pagination::Keyset::Order.build(
+            [
+              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                attribute_name: model_class.primary_key,
+                order_expression: order_values.first
+              )
+            ])
         end
 
         def column_with_tie_breaker_order(tie_breaker_column_order = default_tie_breaker_column_order)
-          Gitlab::Pagination::Keyset::Order.build([
-            column(order_values.first),
-            tie_breaker_column_order
-          ])
+          Gitlab::Pagination::Keyset::Order.build(
+            [
+              column(order_values.first),
+              tie_breaker_column_order
+            ])
         end
 
         def column(order_value)

@@ -4,16 +4,14 @@ require 'fast_spec_helper'
 require_relative './simple_check_shared'
 
 RSpec.describe Gitlab::HealthChecks::MasterCheck do
-  before do
-    stub_const('SUCCESS_CODE', 100)
-    stub_const('FAILURE_CODE', 101)
-  end
-
   context 'when Puma runs in Clustered mode' do
     before do
       allow(Gitlab::Runtime).to receive(:puma_in_clustered_mode?).and_return(true)
 
-      described_class.register_master
+      # We need to capture the read pipe here to stub out the non-blocking read.
+      # The original implementation actually forked the test suite for a more
+      # end-to-end test but that caused knock-on effects on other tests.
+      @pipe_read, _ = described_class.register_master
     end
 
     after do
@@ -25,34 +23,40 @@ RSpec.describe Gitlab::HealthChecks::MasterCheck do
     end
 
     describe '.readiness' do
-      context 'when master is running' do
-        it 'worker does return success' do
-          _, child_status = run_worker
+      context 'when no worker registered' do
+        it 'succeeds' do
+          expect(described_class.readiness.success).to be(true)
+        end
+      end
 
-          expect(child_status.exitstatus).to eq(SUCCESS_CODE)
+      context 'when worker registers itself' do
+        context 'when reading from pipe succeeds' do
+          it 'succeeds' do
+            expect(@pipe_read).to receive(:read_nonblock) # rubocop: disable RSpec/InstanceVariable
+
+            described_class.register_worker
+
+            expect(described_class.readiness.success).to be(true)
+          end
+        end
+
+        context 'when read pipe is open but not ready for reading' do
+          it 'succeeds' do
+            expect(@pipe_read).to receive(:read_nonblock).and_raise(IO::EAGAINWaitReadable) # rubocop: disable RSpec/InstanceVariable
+
+            described_class.register_worker
+
+            expect(described_class.readiness.success).to be(true)
+          end
         end
       end
 
       context 'when master finishes early' do
-        before do
-          described_class.send(:close_write)
+        it 'fails' do
+          described_class.finish_master
+
+          expect(described_class.readiness.success).to be(false)
         end
-
-        it 'worker does return failure' do
-          _, child_status = run_worker
-
-          expect(child_status.exitstatus).to eq(FAILURE_CODE)
-        end
-      end
-
-      def run_worker
-        pid = fork do
-          described_class.register_worker
-
-          exit(described_class.readiness.success ? SUCCESS_CODE : FAILURE_CODE)
-        end
-
-        Process.wait2(pid)
       end
     end
   end

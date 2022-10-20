@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Workspace
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Members of a project **(FREE)**
@@ -234,8 +234,8 @@ GitLab users can request to become a member of a project.
 
 ![Request access button](img/request_access_button.png)
 
-An email is sent to the most recently active project maintainers.
-Up to ten project maintainers are notified.
+An email is sent to the most recently active project maintainers or owners.
+Up to ten project maintainers or owners are notified.
 Any project owner or maintainer can approve or decline the request.
 Project maintainers cannot approve Owner role access requests.
 

@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import service from '../services';
@@ -18,7 +18,7 @@ export const updateStatus = ({ commit }, { endpoint, redirectUrl, status }) =>
       return resp.data.result;
     })
     .catch(() =>
-      createFlash({
+      createAlert({
         message: __('Failed to update issue status'),
       }),
     );

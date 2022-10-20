@@ -1,8 +1,0 @@
----
-name: cache_issue_sums
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95048
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365940
-milestone: '15.4'
-type: development
-group: group::product planning
-default_enabled: false

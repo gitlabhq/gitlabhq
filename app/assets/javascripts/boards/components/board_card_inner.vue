@@ -17,9 +17,9 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/toolt
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import { ListType } from '../constants';
 import eventHub from '../eventhub';
-import BoardBlockedIcon from './board_blocked_icon.vue';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 
@@ -34,7 +34,7 @@ export default {
     IssueDueDate,
     IssueTimeEstimate,
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
-    BoardBlockedIcon,
+    IssuableBlockedIcon,
     GlSprintf,
     BoardCardMoveToPosition,
     WorkItemTypeIcon,
@@ -218,7 +218,7 @@ export default {
   <div>
     <div class="gl-display-flex" dir="auto">
       <h4 class="board-card-title gl-mb-0 gl-mt-0 gl-mr-3 gl-font-base gl-overflow-break-word">
-        <board-blocked-icon
+        <issuable-blocked-icon
           v-if="item.blocked"
           :item="item"
           :unique-id="`${item.id}${list.id}`"
@@ -250,7 +250,8 @@ export default {
           >{{ item.title }}</a
         >
       </h4>
-      <board-card-move-to-position :item="item" :list="list" :index="index" />
+      <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->
+      <board-card-move-to-position v-if="!isEpicBoard" :item="item" :list="list" :index="index" />
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">
@@ -397,7 +398,6 @@ export default {
           :img-size="avatarSize"
           class="js-no-trigger user-avatar-link"
           tooltip-placement="bottom"
-          :enforce-gl-avatar="true"
         >
           <span class="js-assignee-tooltip">
             <span class="gl-font-weight-bold gl-display-block">{{ __('Assignee') }}</span>

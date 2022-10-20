@@ -17,7 +17,7 @@ RSpec.describe Gitlab::ImportExport::WikiRepoSaver do
       allow_next_instance_of(Gitlab::ImportExport) do |instance|
         allow(instance).to receive(:storage_path).and_return(export_path)
       end
-      project_wiki.wiki
+      project_wiki.create_wiki_repository
       project_wiki.create_page("index", "test content")
     end
 

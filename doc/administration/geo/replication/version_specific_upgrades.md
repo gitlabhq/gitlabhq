@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Version-specific upgrade instructions **(PREMIUM SELF)**
@@ -9,6 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Review this page for upgrade instructions for your version. These steps
 accompany the [general steps](upgrading_the_geo_sites.md#general-upgrade-steps)
 for upgrading Geo sites.
+
+## Upgrading to 15.1
+
+[Geo proxying](../secondary_proxy/index.md) was [enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in 15.1. This may be a breaking change. If needed, you may [disable Geo proxying](../secondary_proxy/index.md#disable-geo-proxying).
+
+If you are using SAML with different URLs, there is a [known issue which requires proxying to be disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/377372).
 
 ## Upgrading to 14.9
 
@@ -32,6 +38,10 @@ results in a loop that consistently fails for all objects stored in object stora
 
 For information on how to fix this, see
 [Troubleshooting - Failed syncs with GitLab-managed object storage replication](troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
+## Upgrading to 14.6
+
+[Geo proxying](../secondary_proxy/index.md) was [enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in 14.6. This may be a breaking change. If needed, you may [disable Geo proxying](../secondary_proxy/index.md#disable-geo-proxying).
 
 ## Upgrading to 14.4
 
@@ -80,9 +90,9 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab 
 
 ## Upgrading to GitLab 14.0/14.1
 
-### Primary sites can not be removed from the UI
+### Primary sites cannot be removed from the UI
 
-We found an issue where [Primary sites can not be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
+We found an issue where [Primary sites cannot be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
 
 This bug only exists in the UI and does not block the removal of Primary sites using any other method.
 

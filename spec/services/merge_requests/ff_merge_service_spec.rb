@@ -108,7 +108,8 @@ RSpec.describe MergeRequests::FfMergeService do
 
         service.execute(merge_request)
 
-        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error)
+          .with(hash_including(message: a_string_matching(error_message)))
       end
 
       it 'logs and saves error if there is an PreReceiveError exception' do
@@ -122,7 +123,8 @@ RSpec.describe MergeRequests::FfMergeService do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to include(error_message)
-        expect(Gitlab::AppLogger).to have_received(:error).with(a_string_matching(error_message))
+        expect(Gitlab::AppLogger).to have_received(:error)
+          .with(hash_including(message: a_string_matching(error_message)))
       end
 
       it 'does not update squash_commit_sha if squash merge is not successful' do

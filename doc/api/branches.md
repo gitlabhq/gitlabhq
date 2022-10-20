@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, api
 ---
 
@@ -84,7 +84,7 @@ Parameters:
 | Attribute | Type           | Required | Description                                                                                                  |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `branch`  | string         | yes      | Name of the branch.                                                                                          |
+| `branch`  | string         | yes      | [URL-encoded name](index.md#namespaced-path-encoding) of the branch.                                                                                          |
 
 Example request:
 

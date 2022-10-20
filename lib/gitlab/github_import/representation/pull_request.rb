@@ -17,30 +17,30 @@ module Gitlab
 
         # Builds a PR from a GitHub API response.
         #
-        # issue - An instance of `Sawyer::Resource` containing the PR details.
+        # issue - An instance of `Hash` containing the PR details.
         def self.from_api_response(pr, additional_data = {})
-          assignee = Representation::User.from_api_response(pr.assignee) if pr.assignee
-          user = Representation::User.from_api_response(pr.user) if pr.user
-          merged_by = Representation::User.from_api_response(pr.merged_by) if pr.merged_by
+          assignee = Representation::User.from_api_response(pr[:assignee]) if pr[:assignee]
+          user = Representation::User.from_api_response(pr[:user]) if pr[:user]
+          merged_by = Representation::User.from_api_response(pr[:merged_by]) if pr[:merged_by]
 
           hash = {
-            iid: pr.number,
-            title: pr.title,
-            description: pr.body,
-            source_branch: pr.head.ref,
-            target_branch: pr.base.ref,
-            source_branch_sha: pr.head.sha,
-            target_branch_sha: pr.base.sha,
-            source_repository_id: pr.head&.repo&.id,
-            target_repository_id: pr.base&.repo&.id,
-            source_repository_owner: pr.head&.user&.login,
-            state: pr.state == 'open' ? :opened : :closed,
-            milestone_number: pr.milestone&.number,
+            iid: pr[:number],
+            title: pr[:title],
+            description: pr[:body],
+            source_branch: pr.dig(:head, :ref),
+            target_branch: pr.dig(:base, :ref),
+            source_branch_sha: pr.dig(:head, :sha),
+            target_branch_sha: pr.dig(:base, :sha),
+            source_repository_id: pr.dig(:head, :repo, :id),
+            target_repository_id: pr.dig(:base, :repo, :id),
+            source_repository_owner: pr.dig(:head, :user, :login),
+            state: pr[:state] == 'open' ? :opened : :closed,
+            milestone_number: pr.dig(:milestone, :number),
             author: user,
             assignee: assignee,
-            created_at: pr.created_at,
-            updated_at: pr.updated_at,
-            merged_at: pr.merged_at,
+            created_at: pr[:created_at],
+            updated_at: pr[:updated_at],
+            merged_at: pr[:merged_at],
             merged_by: merged_by
           }
 

@@ -36,7 +36,7 @@ describe('Evidence Block', () => {
   });
 
   it('renders the title for the dowload link', () => {
-    expect(wrapper.findComponent(GlLink).text()).toBe(`v1.1-evidences-1.json`);
+    expect(wrapper.findComponent(GlLink).text()).toMatch(/v1\.1-evidences-[0-9]+\.json/);
   });
 
   it('renders the correct hover text for the download', () => {
@@ -44,7 +44,9 @@ describe('Evidence Block', () => {
   });
 
   it('renders the correct file link for download', () => {
-    expect(wrapper.findComponent(GlLink).attributes().download).toBe(`v1.1-evidences-1.json`);
+    expect(wrapper.findComponent(GlLink).attributes().download).toMatch(
+      /v1\.1-evidences-[0-9]+\.json/,
+    );
   });
 
   describe('sha text', () => {

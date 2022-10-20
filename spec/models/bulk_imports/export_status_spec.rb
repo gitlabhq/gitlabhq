@@ -157,12 +157,36 @@ RSpec.describe BulkImports::ExportStatus do
     end
 
     context 'when something goes wrong during export status fetch' do
-      it 'returns exception class as error' do
-        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-          allow(client).to receive(:get).and_raise(StandardError, 'Error!')
-        end
+      let(:exception) { BulkImports::NetworkError.new('Error!') }
 
-        expect(subject.error).to eq('Error!')
+      before do
+        allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+          allow(client).to receive(:get).once.and_raise(exception)
+        end
+      end
+
+      it 'raises RetryPipelineError' do
+        allow(exception).to receive(:retriable?).with(tracker).and_return(true)
+
+        expect { subject.failed? }.to raise_error(BulkImports::RetryPipelineError)
+      end
+
+      context 'when error is not retriable' do
+        it 'returns exception class as error' do
+          expect(subject.error).to eq('Error!')
+          expect(subject.failed?).to eq(true)
+        end
+      end
+
+      context 'when error raised is not a network error' do
+        it 'returns exception class as error' do
+          allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            allow(client).to receive(:get).once.and_raise(StandardError, 'Standard Error!')
+          end
+
+          expect(subject.error).to eq('Standard Error!')
+          expect(subject.failed?).to eq(true)
+        end
       end
     end
   end

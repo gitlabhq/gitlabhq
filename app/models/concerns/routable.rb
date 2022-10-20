@@ -17,6 +17,9 @@ module Routable
   def self.find_by_full_path(path, follow_redirects: false, route_scope: Route, redirect_route_scope: RedirectRoute)
     return unless path.present?
 
+    # Convert path to string to prevent DB error: function lower(integer) does not exist
+    path = path.to_s
+
     # Case sensitive match first (it's cheaper and the usual case)
     # If we didn't have an exact match, we perform a case insensitive search
     #

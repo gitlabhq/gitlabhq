@@ -19,10 +19,11 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService do
       notes = described_class.new(issue, user).execute
 
       expect(notes.map(&:created_at)).to eq(events.map(&:created_at))
-      expect(notes.map(&:note)).to eq([
-        "changed milestone to %#{milestone.iid}",
-        'removed milestone'
-      ])
+      expect(notes.map(&:note)).to eq(
+        [
+          "changed milestone to %#{milestone.iid}",
+          'removed milestone'
+        ])
     end
 
     it_behaves_like 'filters by paginated notes', :resource_milestone_event

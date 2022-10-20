@@ -9,7 +9,9 @@ module Gitlab
         raise NotImplementedError
       end
 
-      delegate :number, to: :raw_data
+      def number
+        raw_data[:number]
+      end
 
       def find_condition
         { iid: number }
@@ -18,15 +20,15 @@ module Gitlab
       private
 
       def state
-        raw_data.state == 'closed' ? 'closed' : 'opened'
+        raw_data[:state] == 'closed' ? 'closed' : 'opened'
       end
 
       def assigned?
-        raw_data.assignee.present?
+        raw_data[:assignee].present?
       end
 
       def author
-        @author ||= UserFormatter.new(client, raw_data.user)
+        @author ||= UserFormatter.new(client, raw_data[:user])
       end
 
       def author_id
@@ -35,7 +37,7 @@ module Gitlab
 
       def assignee
         if assigned?
-          @assignee ||= UserFormatter.new(client, raw_data.assignee)
+          @assignee ||= UserFormatter.new(client, raw_data[:assignee])
         end
       end
 
@@ -46,7 +48,7 @@ module Gitlab
       end
 
       def body
-        raw_data.body || ""
+        raw_data[:body] || ""
       end
 
       def description
@@ -59,8 +61,8 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def milestone
-        if raw_data.milestone.present?
-          milestone = MilestoneFormatter.new(project, raw_data.milestone)
+        if raw_data[:milestone].present?
+          milestone = MilestoneFormatter.new(project, raw_data[:milestone])
           project.milestones.find_by(milestone.find_condition)
         end
       end

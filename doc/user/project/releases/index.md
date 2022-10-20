@@ -1,7 +1,7 @@
 ---
 stage: Release
 group: Release
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Releases **(FREE)**
@@ -61,7 +61,6 @@ You can create a release:
 
 - [Using a job in your CI/CD pipeline](#creating-a-release-by-using-a-cicd-job).
 - [In the Releases page](#create-a-release-in-the-releases-page).
-- [In the Tags page](#create-a-release-in-the-tags-page).
 - Using the [Releases API](../../../api/releases/index.md#create-a-release).
 
 We recommend creating a release as one of the last steps in your CI/CD pipeline.
@@ -77,12 +76,14 @@ To create a release in the Releases page:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases** and select **New release**.
-1. From the [**Tag name**](release_fields.md#tag-name) dropdown, either:
+1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
      results in a validation error.
    - Enter a new Git tag name.
-      1. From the **Create from** dropdown, select a branch or commit SHA to use when creating the
-         new tag.
+     1. From the **Create from** dropdown list, select a branch or commit SHA to use when
+        creating the new tag.
+     1. Optional. In the **Set tag message** text box, enter a message to create an
+        [annotated tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging#_annotated_tags).
 1. Optional. Enter additional information about the release, including:
    - [Title](release_fields.md#title).
    - [Milestones](#associate-milestones-with-a-release).
@@ -90,29 +91,6 @@ To create a release in the Releases page:
    - Whether or not to include the [Tag message](../../../topics/git/tags.md).
    - [Asset links](release_fields.md#links).
 1. Select **Create release**.
-
-### Create a release in the Tags page
-
-To create a release in the Tags page, add release notes to either an existing or a new Git tag.
-
-To add release notes to a new Git tag:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
-1. Select **New tag**.
-1. Optional. Enter a tag message in the **Message** text box.
-1. In the **Release notes** text box, enter the release's description.
-   You can use Markdown and drag and drop files to this text box.
-1. Select **Create tag**.
-
-To edit release notes of an existing Git tag:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Repository > Tags**.
-1. Select **Edit release notes** (**{pencil}**).
-1. In the **Release notes** text box, enter the release's description.
-   You can use Markdown and drag and drop files to this text box.
-1. Select **Save changes**.
 
 ### Creating a release by using a CI/CD job
 
@@ -133,7 +111,7 @@ Methods for creating a release using a CI/CD job include:
 You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority,
 which is used to verify the peer when the `release-cli` creates a release through the API using HTTPS with custom certificates.
 The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the
-[text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1)
+[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
 or the `path/to/file` containing the certificate authority.
 For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
 

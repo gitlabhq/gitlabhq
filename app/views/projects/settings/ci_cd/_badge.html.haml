@@ -2,15 +2,15 @@
   .col-lg-12
     %h4
       = badge.title.capitalize
-    .card
-      .card-header
-        %b
-          = badge.title.capitalize
-          &middot;
-        = badge.to_html
-        .float-right
-          = render 'shared/ref_switcher', destination: 'badges', align_right: true
-      .card-body
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, header_options: { class: 'gl-display-flex gl-align-items-center' }) do |c|
+      - c.header do
+        .gl-flex-grow-1
+          %b
+            = badge.title.capitalize
+            &middot;
+          = badge.to_html
+        = render 'shared/ref_switcher', destination: 'badges', align_right: true
+      - c.body do
         .row
           .col-md-2.gl-text-center
             Markdown

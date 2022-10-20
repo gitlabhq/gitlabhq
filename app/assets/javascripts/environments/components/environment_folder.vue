@@ -24,6 +24,10 @@ export default {
       type: String,
       required: true,
     },
+    search: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return { visible: false, interval: undefined };
@@ -32,7 +36,11 @@ export default {
     folder: {
       query: folderQuery,
       variables() {
-        return { environment: this.nestedEnvironment.latest, scope: this.scope };
+        return {
+          environment: this.nestedEnvironment.latest,
+          scope: this.scope,
+          search: this.search,
+        };
       },
     },
     interval: {

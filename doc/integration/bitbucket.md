@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Integrate your GitLab server with Bitbucket Cloud **(FREE SELF)**
@@ -22,14 +22,9 @@ To enable the Bitbucket OmniAuth provider you must register your application
 with Bitbucket.org. Bitbucket generates an application ID and secret key for
 you to use.
 
-WARNING:
-To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
-vulnerability in which users' GitLab accounts could be compromised, append `/users/auth`
-to the end of the Bitbucket authorization callback URL.
-
 1. Sign in to [Bitbucket.org](https://bitbucket.org).
-1. Navigate to your individual user settings (**Bitbucket settings**) or a team's
-   settings (**Manage team**), depending on how you want the application registered.
+1. Go to your individual user settings (**Bitbucket settings**) or a team's
+   settings (**Manage team**), depending on how you want to register the application.
    It does not matter if the application is registered as an individual or a
    team, that is entirely up to you.
 1. In the left menu under **Access Management**, select **OAuth**.
@@ -44,6 +39,12 @@ to the end of the Bitbucket authorization callback URL.
      `https://gitlab.example.com/users/auth`.
      Leaving this field empty
      [results in an `Invalid redirect_uri` message](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
+
+     WARNING:
+     To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
+     vulnerability in which users' GitLab accounts could be compromised, append `/users/auth`
+     to the end of the Bitbucket authorization callback URL.
+
    - **URL:** The URL to your GitLab installation, such as `https://gitlab.example.com`.
 
 1. Grant at least the following permissions:
@@ -85,8 +86,8 @@ to the end of the Bitbucket authorization callback URL.
      {
        name: "bitbucket",
        # label: "Provider name", # optional label for login button, defaults to "Bitbucket"
-       app_id: "BITBUCKET_APP_KEY",
-       app_secret: "BITBUCKET_APP_SECRET",
+       app_id: "<bitbucket_app_key>",
+       app_secret: "<bitbucket_app_secret>",
        url: "https://bitbucket.org/"
      }
    ]
@@ -100,12 +101,12 @@ to the end of the Bitbucket authorization callback URL.
      providers:
        - { name: 'bitbucket',
            # label: 'Provider name', # optional label for login button, defaults to "Bitbucket"
-           app_id: 'BITBUCKET_APP_KEY',
-           app_secret: 'BITBUCKET_APP_SECRET',
+           app_id: '<bitbucket_app_key>',
+           app_secret: '<bitbucket_app_secret>',
            url: 'https://bitbucket.org/' }
    ```
 
-   Where `BITBUCKET_APP_KEY` is the Key and `BITBUCKET_APP_SECRET` the Secret
+   Where `<bitbucket_app_key>` is the **Key** and `<bitbucket_app_secret>` the **Secret**
    from the Bitbucket application page.
 
 1. Save the configuration file.

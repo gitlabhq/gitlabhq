@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if $".include?(File.expand_path('fast_spec_helper.rb', __dir__))
+if $LOADED_FEATURES.include?(File.expand_path('fast_spec_helper.rb', __dir__))
   warn 'Detected fast_spec_helper is loaded first than spec_helper.'
   warn 'If running test files using both spec_helper and fast_spec_helper,'
   warn 'make sure spec_helper is loaded first, or run rspec with `-r spec_helper`.'
@@ -140,7 +140,6 @@ RSpec.configure do |config|
   config.include FixtureHelpers
   config.include NonExistingRecordsHelpers
   config.include GitlabRoutingHelper
-  config.include StubExperiments
   config.include StubGitlabCalls
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
@@ -181,13 +180,15 @@ RSpec.configure do |config|
   config.include RSpec::Benchmark::Matchers, type: :benchmark
   config.include DetailedErrorHelpers
 
+  config.include_context 'when rendered has no HTML escapes', type: :view
+
   include StubFeatureFlags
   include StubSnowplow
   include StubMember
 
   if ENV['CI'] || ENV['RETRIES']
-    # This includes the first try, i.e. tests will be run 4 times before failing.
-    config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
+    # This includes the first try, i.e. tests will be run 2 times before failing.
+    config.default_retry_count = ENV.fetch('RETRIES', 1).to_i + 1
 
     # Do not retry controller tests because rspec-retry cannot properly
     # reset the controller which may contain data from last attempt. See
@@ -310,9 +311,6 @@ RSpec.configure do |config|
       # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
       stub_feature_flags(legacy_merge_request_state_check_for_merged_result_pipelines: false)
 
-      # Will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/369875
-      stub_feature_flags(override_group_level_protected_environment_settings_permission: false)
-
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags
@@ -407,8 +405,7 @@ RSpec.configure do |config|
     with_sidekiq_server_middleware do |chain|
       Gitlab::SidekiqMiddleware.server_configurator(
         metrics: false, # The metrics don't go anywhere in tests
-        arguments_logger: false, # We're not logging the regular messages for inline jobs
-        memory_killer: false # This is not a thing we want to do inline in tests
+        arguments_logger: false # We're not logging the regular messages for inline jobs
       ).call(chain)
       chain.add DisableQueryLimit
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore

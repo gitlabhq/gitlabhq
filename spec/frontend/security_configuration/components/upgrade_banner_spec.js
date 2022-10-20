@@ -79,7 +79,7 @@ describe('UpgradeBanner component', () => {
       expect(wrapperText).toContain('statistics in the merge request');
       expect(wrapperText).toContain('statistics across projects');
       expect(wrapperText).toContain('Runtime security metrics');
-      expect(wrapperText).toContain('More scan types, including Container Scanning,');
+      expect(wrapperText).toContain('More scan types, including DAST,');
     });
 
     describe('when user interacts', () => {

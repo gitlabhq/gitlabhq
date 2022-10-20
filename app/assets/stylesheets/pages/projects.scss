@@ -269,49 +269,27 @@
   color: $gray-200;
 }
 
-pre.light-well {
-  border-color: $well-light-border;
-}
-
 /*
  * Projects list rendered on dashboard and user page
  */
+
+.project-row {
+  .description p {
+    margin-bottom: 0;
+    color: $gl-text-color-secondary;
+  }
+}
+
 .projects-list {
   @include basic-list;
   display: flex;
   flex-direction: column;
-
-  // Disable Flexbox for admin page
-  &.admin-projects,
-  &.group-settings-projects {
-    display: block;
-
-    .project-row {
-      display: block;
-
-      .description > p {
-        margin-bottom: 0;
-      }
-    }
-  }
 
   .project-row {
     @include basic-list-stats;
     display: flex;
     align-items: center;
     padding: $gl-padding-12 0;
-
-    &.no-description {
-      @include media-breakpoint-up(sm) {
-        .avatar-container {
-          align-self: center;
-        }
-
-        .metadata-info {
-          margin-bottom: 0;
-        }
-      }
-    }
   }
 
   h2 {
@@ -634,24 +612,6 @@ pre.light-well {
   }
 }
 
-.clearable-input {
-  position: relative;
-
-  .clear-icon {
-    display: none;
-    position: absolute;
-    right: 9px;
-    top: 9px;
-  }
-
-  &.has-value {
-    .clear-icon {
-      cursor: pointer;
-      display: block;
-    }
-  }
-}
-
 .project-path {
   .form-control {
     min-width: 100px;
@@ -808,12 +768,5 @@ pre.light-well {
     .filtered-search-dropdown {
       width: 100%;
     }
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .fork-filtered-search {
-    width: 100%;
-    margin: $gl-spacing-scale-2 0;
   }
 }

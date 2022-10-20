@@ -8,12 +8,10 @@
 
 .row.gl-mt-3
   .col-lg-12
-    - if @new_impersonation_token
-      = render 'shared/access_tokens/created_container',
-        type: type,
-        new_token_value: @new_impersonation_token
+    #js-new-access-token-app{ data: { access_token_type: type } }
 
     = render 'shared/access_tokens/form',
+        ajax: true,
         type: type,
         title: _('Add an impersonation token'),
         path: admin_user_impersonation_tokens_path,
@@ -22,9 +20,4 @@
         scopes: @scopes,
         help_path: help_page_path('api/index', anchor: 'impersonation-tokens')
 
-    = render 'shared/access_tokens/table',
-        type: type,
-        type_plural: type_plural,
-        impersonation: true,
-        active_tokens: @active_impersonation_tokens,
-        revoke_route_helper: ->(token) { revoke_admin_user_impersonation_token_path(token.user, token) }
+    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_impersonation_tokens.to_json, information: _("To see all the user's personal access tokens you must impersonate them first.") } }

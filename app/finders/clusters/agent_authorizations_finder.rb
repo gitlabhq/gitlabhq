@@ -24,13 +24,21 @@ module Clusters
 
     # rubocop: disable CodeReuse/ActiveRecord
     def project_authorizations
-      ancestor_ids = project.group ? project.ancestors.select(:id) : project.namespace_id
+      namespace_ids = if project.group
+                        if include_descendants?
+                          all_namespace_ids
+                        else
+                          ancestor_namespace_ids
+                        end
+                      else
+                        project.namespace_id
+                      end
 
       Clusters::Agents::ProjectAuthorization
         .where(project_id: project.id)
         .joins(agent: :project)
         .preload(agent: :project)
-        .where(cluster_agents: { projects: { namespace_id: ancestor_ids } })
+        .where(cluster_agents: { projects: { namespace_id: namespace_ids } })
         .with_available_ci_access_fields(project)
         .to_a
     end
@@ -49,17 +57,35 @@ module Clusters
         authorizations[:group_id].eq(ordered_ancestors_cte.table[:id])
       ).join_sources
 
-      Clusters::Agents::GroupAuthorization
+      authorized_groups = Clusters::Agents::GroupAuthorization
         .with(ordered_ancestors_cte.to_arel)
         .joins(cte_join_sources)
         .joins(agent: :project)
-        .where('projects.namespace_id IN (SELECT id FROM ordered_ancestors)')
         .with_available_ci_access_fields(project)
         .order(Arel.sql('agent_id, array_position(ARRAY(SELECT id FROM ordered_ancestors)::bigint[], agent_group_authorizations.group_id)'))
         .select('DISTINCT ON (agent_id) agent_group_authorizations.*')
         .preload(agent: :project)
-        .to_a
+
+      authorized_groups = if include_descendants?
+                            authorized_groups.where(projects: { namespace_id: all_namespace_ids })
+                          else
+                            authorized_groups.where('projects.namespace_id IN (SELECT id FROM ordered_ancestors)')
+                          end
+
+      authorized_groups.to_a
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def ancestor_namespace_ids
+      project.ancestors.select(:id)
+    end
+
+    def all_namespace_ids
+      project.root_ancestor.self_and_descendants.select(:id)
+    end
+
+    def include_descendants?
+      Feature.enabled?(:agent_authorization_include_descendants, project)
+    end
   end
 end

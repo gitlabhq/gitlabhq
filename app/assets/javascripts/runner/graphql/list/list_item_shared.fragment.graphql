@@ -16,4 +16,18 @@ fragment ListItemShared on CiRunner {
     updateRunner
     deleteRunner
   }
+  groups(first: 1) {
+    nodes {
+      id
+      name
+      fullName
+      webUrl
+    }
+  }
+  ownerProject {
+    id
+    name
+    nameWithNamespace
+    webUrl
+  }
 }

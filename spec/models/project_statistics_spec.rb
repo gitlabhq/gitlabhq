@@ -98,6 +98,8 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#refresh!' do
+    subject(:refresh_statistics) { statistics.refresh! }
+
     before do
       allow(statistics).to receive(:update_commit_count)
       allow(statistics).to receive(:update_repository_size)
@@ -111,7 +113,7 @@ RSpec.describe ProjectStatistics do
 
     context "without arguments" do
       before do
-        statistics.refresh!
+        refresh_statistics
       end
 
       it "sums all counters" do
@@ -146,7 +148,7 @@ RSpec.describe ProjectStatistics do
         expect(project.repository.exists?).to be_falsey
         expect(project.wiki.repository.exists?).to be_falsey
 
-        statistics.refresh!
+        refresh_statistics
 
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
@@ -167,14 +169,12 @@ RSpec.describe ProjectStatistics do
       let(:project) { create(:project, :repository, :wiki_repo) }
 
       before do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          FileUtils.rm_rf(project.repository.path)
-          FileUtils.rm_rf(project.wiki.repository.path)
-        end
+        project.repository.remove
+        project.wiki.repository.remove
       end
 
       it 'does not crash' do
-        statistics.refresh!
+        refresh_statistics
 
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
@@ -209,7 +209,7 @@ RSpec.describe ProjectStatistics do
           expect(Namespaces::ScheduleAggregationWorker)
             .to receive(:perform_async)
 
-          statistics.refresh!
+          refresh_statistics
         end
       end
     end
@@ -238,8 +238,12 @@ RSpec.describe ProjectStatistics do
         expect(Namespaces::ScheduleAggregationWorker)
           .not_to receive(:perform_async)
 
-        statistics.refresh!
+        refresh_statistics
       end
+    end
+
+    it_behaves_like 'obtaining lease to update database' do
+      let(:model) { statistics }
     end
   end
 
@@ -408,6 +412,8 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '#refresh_storage_size!' do
+    subject(:refresh_storage_size) { statistics.refresh_storage_size! }
+
     it 'recalculates storage size from its components and save it' do
       statistics.update_columns(
         repository_size: 2,
@@ -422,7 +428,29 @@ RSpec.describe ProjectStatistics do
         storage_size: 0
       )
 
-      expect { statistics.refresh_storage_size! }.to change { statistics.storage_size }.from(0).to(28)
+      expect { refresh_storage_size }.to change { statistics.reload.storage_size }.from(0).to(28)
+    end
+
+    context 'when nullable columns are nil' do
+      before do
+        statistics.update_columns(
+          repository_size: 2,
+          wiki_size: nil,
+          storage_size: 0
+        )
+      end
+
+      it 'does not raise any error' do
+        expect { refresh_storage_size }.not_to raise_error
+      end
+
+      it 'recalculates storage size from its components' do
+        expect { refresh_storage_size }.to change { statistics.reload.storage_size }.from(0).to(2)
+      end
+    end
+
+    it_behaves_like 'obtaining lease to update database' do
+      let(:model) { statistics }
     end
   end
 

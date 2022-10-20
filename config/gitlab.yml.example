@@ -505,6 +505,11 @@ production: &base
   # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
+    # Interval, in seconds, for each Sidekiq process to check for scheduled cron jobs that need to be enqueued. If set
+    # to 0, disable polling for cron jobs entirely. This is useful in setups with multiple Sidekiq processes if you want
+    # to limit which ones perform this task. Note that at least one process in your instance needs to have polling
+    # enabled for cron jobs to be executed.
+    poll_interval: 30
     # Flag stuck CI jobs as failed
     stuck_ci_jobs_worker:
       cron: "0 * * * *"

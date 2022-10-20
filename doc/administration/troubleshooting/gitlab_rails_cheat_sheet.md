@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Rails Console Cheat Sheet **(FREE SELF)**
@@ -60,308 +60,6 @@ n = u.name
 Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
 #
 Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
-```
-
-## Open object in `irb`
-
-Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
-
-```ruby
-Object.define_method(:irb) { binding.irb }
-
-project = Project.last
-# => #<Project id:2537 root/discard>>
-project.irb
-# Notice new context
-irb(#<Project>)> web_url
-# => "https://gitlab-example/root/discard"
-```
-
-## View all keys in cache
-
-```ruby
-Rails.cache.instance_variable_get(:@data).keys
-```
-
-## Profile a page
-
-```ruby
-url = '<url/of/the/page>'
-
-# Before 11.6.0
-logger = Logger.new($stdout)
-admin_token = User.find_by_username('<admin-username>').personal_access_tokens.first.token
-app.get("#{url}/?private_token=#{admin_token}")
-
-# From 11.6.0
-admin = User.find_by_username('<admin-username>')
-Gitlab::Profiler.with_user(admin) { app.get(url) }
-```
-
-## Using the GitLab profiler inside console (used as of 10.5)
-
-```ruby
-logger = Logger.new($stdout)
-admin = User.find_by_username('<admin-username>')
-Gitlab::Profiler.profile('<url/of/the/page>', logger: logger, user: admin)
-```
-
-## Time an operation
-
-```ruby
-# A single operation
-Benchmark.measure { <operation> }
-
-# A breakdown of multiple operations
-Benchmark.bm do |x|
-  x.report(:label1) { <operation_1> }
-  x.report(:label2) { <operation_2> }
-end
-```
-
-## Projects
-
-### Clear a project's cache
-
-```ruby
-ProjectCacheWorker.perform_async(project.id)
-```
-
-### Expire the .exists? cache
-
-```ruby
-project.repository.expire_exists_cache
-```
-
-### Make all projects private
-
-```ruby
-Project.update_all(visibility_level: 0)
-```
-
-### Find projects that are pending deletion
-
-```ruby
-#
-# This section lists all the projects which are pending deletion
-#
-projects = Project.where(pending_delete: true)
-projects.each do |p|
-  puts "Project ID: #{p.id}"
-  puts "Project name: #{p.name}"
-  puts "Repository path: #{p.repository.full_path}"
-end
-
-#
-# Assign a user (the root user does)
-#
-user = User.find_by_username('root')
-
-#
-# For each project listed repeat these two commands
-#
-
-# Find the project, update the xxx-changeme values from above
-project = Project.find_by_full_path('group-changeme/project-changeme')
-
-# Immediately delete the project
-::Projects::DestroyService.new(project, user, {}).execute
-```
-
-### Destroy a project
-
-```ruby
-project = Project.find_by_full_path('<project_path>')
-user = User.find_by_username('<username>')
-ProjectDestroyWorker.perform_async(project.id, user.id, {})
-# or ProjectDestroyWorker.new.perform(project.id, user.id, {})
-# or Projects::DestroyService.new(project, user).execute
-```
-
-If this fails, display why it doesn't work with:
-
-```ruby
-project = Project.find_by_full_path('<project_path>')
-project.delete_error
-```
-
-### Remove fork relationship manually
-
-```ruby
-p = Project.find_by_full_path('<project_path>')
-u = User.find_by_username('<username>')
-::Projects::UnlinkForkService.new(p, u).execute
-```
-
-### Make a project read-only (can only be done in the console)
-
-```ruby
-# Make a project read-only
-project.repository_read_only = true; project.save
-
-# OR
-project.update!(repository_read_only: true)
-```
-
-### Transfer project from one namespace to another
-
-```ruby
-p = Project.find_by_full_path('<project_path>')
-
- # To set the owner of the project
- current_user= p.creator
-
-# Namespace where you want this to be moved.
-namespace = Namespace.find_by_full_path("<new_namespace>")
-
-::Projects::TransferService.new(p, current_user).execute(namespace)
-```
-
-### Bulk update service integration password for _all_ projects
-
-For example, change the Jira user's password for all projects that have the Jira
-integration active:
-
-```ruby
-p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'JiraService' AND s.active = true")
-
-p.each do |project|
-  project.jira_integration.update_attribute(:password, '<your-new-password>')
-end
-```
-
-### Bulk update push rules for _all_ projects
-
-For example, enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes, and create a filter for allowing commits from a specific email domain only:
-
-``` ruby
-Project.find_each do |p|
-  pr = p.push_rule || PushRule.new(project: p)
-  # Check whether the commit author is a GitLab user
-  pr.member_check = true
-  # Do not allow users to remove Git tags with `git push`
-  pr.deny_delete_tag = true
-  # Commit author's email
-  pr.author_email_regex = '@domain\.com$'
-  pr.save!
-end
-```
-
-### Bulk update to change all the Jira integrations to Jira instance-level values
-
-To change all Jira project to use the instance-level integration settings:
-
-1. In a Rails console:
-
-   ```ruby
-   jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
-   Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
-     integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
-   end
-   ```
-
-1. Modify and save again the instance-level integration from the UI to propagate the changes to all the group-level and project-level integrations.
-
-### Check if Jira Cloud is linked to a namespace
-
-```ruby
-JiraConnectSubscription.where(namespace: Namespace.by_path('group/subgroup'))
-```
-
-### Check if Jira Cloud is linked to a project
-
-```ruby
-Project.find_by_full_path('path/to/project').jira_subscription_exists?
-```
-
-### Check if Jira Cloud URL is linked to any namespace
-
-```ruby
-installation = JiraConnectInstallation.find_by_base_url("https://customer_name.atlassian.net")
-installation.subscriptions
-```
-
-### Bulk update to disable the Slack Notification service
-
-To disable notifications for all projects that have Slack service enabled, do:
-
-```ruby
-# Grab all projects that have the Slack notifications enabled
-p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN services s ON p.id = s.project_id WHERE s.type = 'SlackService' AND s.active = true")
-
-# Disable the service on each of the projects that were found.
-p.each do |project|
-  project.slack_service.update_attribute(:active, false)
-end
-```
-
-### Incorrect repository statistics shown in the GUI
-
-After [reducing a repository size with third-party tools](../../user/project/repository/reducing_the_repo_size_using_git.md)
-the displayed size may still show old sizes or commit numbers. To force an update, do:
-
-```ruby
-p = Project.find_by_full_path('<namespace>/<project>')
-pp p.statistics
-p.statistics.refresh!
-pp p.statistics
-# compare with earlier values
-
-# check the total artifact storage space separately
-builds_with_artifacts = p.builds.with_downloadable_artifacts.all
-
-artifact_storage = 0
-builds_with_artifacts.find_each do |build|
-  artifact_storage += build.artifacts_size
-end
-
-puts "#{artifact_storage} bytes"
-```
-
-### Identify deploy keys associated with blocked and non-member users
-
-When the user who created a deploy key is blocked or removed from the project, the key
-can no longer be used to push to protected branches in a private project (see [issue #329742](https://gitlab.com/gitlab-org/gitlab/-/issues/329742)).
-The following script identifies unusable deploy keys:
-
-```ruby
-ghost_user_id = User.ghost.id
-
-DeployKeysProject.with_write_access.find_each do |deploy_key_mapping|
-  project = deploy_key_mapping.project
-  deploy_key = deploy_key_mapping.deploy_key
-  user = deploy_key.user
-
-  access_checker = Gitlab::DeployKeyAccess.new(deploy_key, container: project)
-
-  # can_push_for_ref? tests if deploy_key can push to default branch, which is likely to be protected
-  can_push = access_checker.can_do_action?(:push_code)
-  can_push_to_default = access_checker.can_push_for_ref?(project.repository.root_ref)
-
-  next if access_checker.allowed? && can_push && can_push_to_default
-
-  if user.nil? || user.id == ghost_user_id
-    username = 'none'
-    state = '-'
-  else
-    username = user.username
-    user_state = user.state
-  end
-
-  puts "Deploy key: #{deploy_key.id}, Project: #{project.full_path}, Can push?: " + (can_push ? 'YES' : 'NO') +
-       ", Can push to default branch #{project.repository.root_ref}?: " + (can_push_to_default ? 'YES' : 'NO') +
-       ", User: #{username}, User state: #{user_state}"
-end
-```
-
-### Find projects using an SQL query
-
-Find and store an array of projects based on an SQL query:
-
-```ruby
-# Finds projects that end with '%ject'
-projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
-=> [#<Project id:12 root/my-first-project>>, #<Project id:13 root/my-second-project>>]
 ```
 
 ## Imports and exports
@@ -435,37 +133,6 @@ repeat the above procedure after,
 and report the output to
 [GitLab Support](https://about.gitlab.com/support/).
 
-## Repository
-
-### Search sequence of pushes to a repository
-
-If it seems that a commit has gone "missing", search the sequence of pushes to a repository.
-[This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
-describes how you can end up in this state without a force push. Another cause can be a misconfigured [server hook](../server_hooks.md) that changes a HEAD ref via a `git reset` operation.
-
-If you look at the output from the sample code below for the target branch, you
-see a discontinuity in the from/to commits as you step through the output. The `commit_from` of each new push should equal the `commit_to` of the previous push. A break in that sequence indicates one or more commits have been "lost" from the repository history.
-
-The following example checks the last 100 pushes and prints the `commit_from` and `commit_to` entries:
-
-```ruby
-p = Project.find_by_full_path('u/p')
-p.events.pushed_action.last(100).each do |e|
-  printf "%-20.20s %8s...%8s (%s)
-", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
-end
-```
-
-Example output showing break in sequence at line 4:
-
-```plaintext
-master               f21b07713251e04575908149bdc8ac1f105aabc3...6bc56c1f46244792222f6c85b11606933af171de (root)
-master               6bc56c1f46244792222f6c85b11606933af171de...132da6064f5d3453d445fd7cb452b148705bdc1b (root)
-master               132da6064f5d3453d445fd7cb452b148705bdc1b...a62e1e693150a2e46ace0ce696cd4a52856dfa65 (root)
-master               58b07b719a4b0039fec810efa52f479ba1b84756...f05321a5b5728bd8a89b7bf530aa44043c951dce (root)
-master               f05321a5b5728bd8a89b7bf530aa44043c951dce...7d02e575fd790e76a3284ee435368279a5eb3773 (root)
-```
-
 ## Mirrors
 
 ### Find mirrors with "bad decrypt" errors
@@ -474,36 +141,7 @@ This content has been converted to a Rake task, see [verify database values can 
 
 ### Transfer mirror users and tokens to a single service account
 
-Use case: If you have multiple users using their own GitHub credentials to set up
-repository mirroring, mirroring breaks when people leave the company. Use this
-script to migrate disparate mirroring users and tokens into a single service account:
-
-```ruby
-svc_user = User.find_by(username: 'ourServiceUser')
-token = 'githubAccessToken'
-
-Project.where(mirror: true).each do |project|
-  import_url = project.import_url
-
-  # The url we want is https://token@project/path.git
-  repo_url = if import_url.include?('@')
-               # Case 1: The url is something like https://23423432@project/path.git
-               import_url.split('@').last
-             elsif import_url.include?('//')
-               # Case 2: The url is something like https://project/path.git
-               import_url.split('//').last
-             end
-
-  next unless repo_url
-
-  final_url = "https://#{token}@#{repo_url}"
-
-  project.mirror_user = svc_user
-  project.import_url = final_url
-  project.username_only_import_url = final_url
-  project.save
-end
-```
+This content has been moved to [Troubleshooting Repository mirroring](../../user/project/repository/mirror/index.md#transfer-mirror-users-and-tokens-to-a-single-service-account-in-rails-console).
 
 ## Users
 
@@ -625,147 +263,6 @@ user.max_member_access_for_project project.id
 user = User.find_by_username 'username'
 group = Group.find_by_full_path 'group'
 user.max_member_access_for_group group.id
-```
-
-## Groups
-
-### Transfer group to another location
-
-```ruby
-user = User.find_by_username('<username>')
-group = Group.find_by_name("<group_name>")
-parent_group = Group.find_by(id: "<group_id>")
-service = ::Groups::TransferService.new(group, user)
-service.execute(parent_group)
-```
-
-### Count unique users in a group and subgroups
-
-```ruby
-group = Group.find_by_path_or_name("groupname")
-members = []
-for member in group.members_with_descendants
-   members.push(member.user_name)
-end
-
-members.uniq.length
-```
-
-```ruby
-group = Group.find_by_path_or_name("groupname")
-
-# Count users from subgroup and up (inherited)
-group.members_with_parents.count
-
-# Count users from the parent group and down (specific grants)
-parent.members_with_descendants.count
-```
-
-### Find groups that are pending deletion
-
-```ruby
-#
-# This section lists all the groups which are pending deletion
-#
-Group.all.each do |g|
- if g.marked_for_deletion?
-    puts "Group ID: #{g.id}"
-    puts "Group name: #{g.name}"
-    puts "Group path: #{g.full_path}"
- end
-end
-```
-
-### Delete a group
-
-```ruby
-GroupDestroyWorker.perform_async(group_id, user_id)
-```
-
-### Modify group project creation
-
-```ruby
-# Project creation levels: 0 - No one, 1 - Maintainers, 2 - Developers + Maintainers
-group = Group.find_by_path_or_name('group-name')
-group.project_creation_level=0
-```
-
-### Modify group - disable 2FA requirement
-
-WARNING:
-When disabling the 2FA Requirement on a subgroup, the whole parent group (including all subgroups) is affected by this change.
-
-```ruby
-group = Group.find_by_path_or_name('group-name')
-group.require_two_factor_authentication=false
-group.save
-```
-
-### Check and toggle a feature for all projects in a group
-
-```ruby
-projects = Group.find_by_name('_group_name').projects
-projects.each do |p|
-  state = p.<feature-name>?
-
-  if state
-    puts "#{p.name} has <feature-name> already enabled. Skipping..."
-  else
-    puts "#{p.name} didn't have <feature-name> enabled. Enabling..."
-    p.project_feature.update!(builds_access_level: ProjectFeature::PRIVATE)
-  end
-end
-```
-
-To find features that can be toggled, run `pp p.project_feature`.
-Available permission levels are listed in
-[concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
-
-### Get all error messages associated with groups, subgroups, members, and requesters
-
-Collect error messages associated with groups, subgroups, members, and requesters. This
-captures error messages that may not appear in the Web interface. This can be especially helpful
-for troubleshooting issues with [LDAP group sync](../auth/ldap/ldap_synchronization.md#group-sync)
-and unexpected behavior with users and their membership in groups and subgroups.
-
-```ruby
-# Find the group and subgroup
-group = Group.find_by_full_path("parent_group")
-subgroup = Group.find_by_full_path("parent_group/child_group")
-
-# Group and subgroup errors
-group.valid?
-group.errors.map(&:full_messages)
-
-subgroup.valid?
-subgroup.errors.map(&:full_messages)
-
-# Group and subgroup errors for the members AND requesters
-group.requesters.map(&:valid?)
-group.requesters.map(&:errors).map(&:full_messages)
-group.members.map(&:valid?)
-group.members.map(&:errors).map(&:full_messages)
-group.members_and_requesters.map(&:errors).map(&:full_messages)
-
-subgroup.requesters.map(&:valid?)
-subgroup.requesters.map(&:errors).map(&:full_messages)
-subgroup.members.map(&:valid?)
-subgroup.members.map(&:errors).map(&:full_messages)
-subgroup.members_and_requesters.map(&:errors).map(&:full_messages)
-```
-
-## Routes
-
-### Remove redirecting routes
-
-See <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41758#note_54828133>.
-
-```ruby
-path = 'foo'
-conflicting_permanent_redirects = RedirectRoute.matching_path_and_descendants(path)
-
-# Check that conflicting_permanent_redirects is as expected
-conflicting_permanent_redirects.destroy_all
 ```
 
 ## Merge requests
@@ -972,37 +469,7 @@ License.select(&TYPE).each(&:destroy!)
 
 ### Registry Disk Space Usage by Project
 
-As a GitLab administrator, you may want to reduce disk space consumption.
-A common culprit is Docker Registry images that are no longer in use. To find
-the storage broken down by each project, run the following in the
-[GitLab Rails console](../operations/rails_console.md):
-
-```ruby
-projects_and_size = [["project_id", "creator_id", "registry_size_bytes", "project path"]]
-# You need to specify the projects that you want to look through. You can get these in any manner.
-projects = Project.last(100)
-
-projects.each do |p|
-   project_total_size = 0
-   container_repositories = p.container_repositories
-
-   container_repositories.each do |c|
-       c.tags.each do |t|
-          project_total_size = project_total_size + t.total_size unless t.total_size.nil?
-       end
-   end
-
-   if project_total_size > 0
-      projects_and_size << [p.project_id, p.creator.id, project_total_size, p.full_path]
-   end
-end
-
-# projects_and_size is filled out now
-# maybe print it as comma separated output?
-projects_and_size.each do |ps|
-   puts "%s,%s,%s,%s" % ps
-end
-```
+Find this content in the [Container Registry troubleshooting documentation](../packages/container_registry.md#registry-disk-space-usage-by-project).
 
 ### Run the Cleanup policy now
 
@@ -1011,14 +478,6 @@ Find this content in the [Container Registry troubleshooting documentation](../p
 ## Sidekiq
 
 This content has been moved to [Troubleshooting Sidekiq](sidekiq.md).
-
-## Redis
-
-### Connect to Redis (omnibus)
-
-```shell
-/opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
-```
 
 ## LFS
 
@@ -1124,152 +583,19 @@ There is an [issue to implement this functionality in the Admin UI](https://gitl
 
 ### Artifacts
 
-#### Find failed artifacts
-
-```ruby
-Geo::JobArtifactRegistry.failed
-```
-
-#### Get a count of the synced artifacts
-
-```ruby
-Geo::JobArtifactRegistry.synced.count
-```
-
-#### Find `ID` of synced artifacts that are missing on primary
-
-```ruby
-Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#find-failed-artifacts).
 
 ### Repository verification failures
 
-#### Get the number of verification failed repositories
-
-```ruby
-Geo::ProjectRegistry.verification_failed('repository').count
-```
-
-#### Find the verification failed repositories
-
-```ruby
-Geo::ProjectRegistry.verification_failed('repository')
-```
-
-### Find repositories that failed to sync
-
-```ruby
-Geo::ProjectRegistry.sync_failed('repository')
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#repository-verification-failures).
 
 ### Resync repositories
 
-#### Queue up all repositories for resync. Sidekiq handles each sync
-
-```ruby
-Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
-```
-
-#### Sync individual repository now
-
-```ruby
-project = Project.find_by_full_path('<group/project>')
-
-Geo::RepositorySyncService.new(project).execute
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#resync-repositories).
 
 ### Blob types
 
-- `Ci::JobArtifact`
-- `Ci::PipelineArtifact`
-- `LfsObject`
-- `MergeRequestDiff`
-- `Packages::PackageFile`
-- `PagesDeployment`
-- `Terraform::StateVersion`
-- `Upload`
-
-`Packages::PackageFile` is used in the following examples, but things generally work the same for the other Blob types.
-
-#### The Replicator
-
-The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
-
-```ruby
-model_record = Packages::PackageFile.last
-model_record.replicator.registry.replicator.model_record # just showing that these methods exist
-```
-
-#### Replicate a package file, synchronously, given an ID
-
-```ruby
-model_record = Packages::PackageFile.find(id)
-model_record.replicator.send(:download)
-```
-
-#### Replicate a package file, synchronously, given a registry ID
-
-```ruby
-registry = Geo::PackageFileRegistry.find(registry_id)
-registry.replicator.send(:download)
-```
-
-#### Verify package files on the secondary manually
-
-This iterates over all package files on the secondary, looking at the
-`verification_checksum` stored in the database (which came from the primary)
-and then calculate this value on the secondary to check if they match. This
-does not change anything in the UI:
-
-```ruby
-# Run on secondary
-status = {}
-
-Packages::PackageFile.find_each do |package_file|
-  primary_checksum = package_file.verification_checksum
-  secondary_checksum = Packages::PackageFile.hexdigest(package_file.file.path)
-  verification_status = (primary_checksum == secondary_checksum)
-
-  status[verification_status.to_s] ||= []
-  status[verification_status.to_s] << package_file.id
-end
-
-# Count how many of each value we get
-status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
-
-# See the output in its entirety
-status
-```
-
-### Repository types newer than project/wiki repositories
-
-- `SnippetRepository`
-- `GroupWikiRepository`
-
-`SnippetRepository` is used in the examples below, but things generally work the same for the other Repository types.
-
-#### The Replicator
-
-The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it).
-
-```ruby
-model_record = SnippetRepository.last
-model_record.replicator.registry.replicator.model_record # just showing that these methods exist
-```
-
-#### Replicate a snippet repository, synchronously, given an ID
-
-```ruby
-model_record = SnippetRepository.find(id)
-model_record.replicator.send(:sync_repository)
-```
-
-#### Replicate a snippet repository, synchronously, given a registry ID
-
-```ruby
-registry = Geo::SnippetRepositoryRegistry.find(registry_id)
-registry.replicator.send(:sync_repository)
-```
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#blob-types).
 
 ## Generate Service Ping
 
@@ -1310,4 +636,25 @@ Prints the metrics saved in `conversational_development_index_metrics`.
 
 ```shell
 rake gitlab:usage_data:generate_and_send
+```
+
+## GraphQL
+
+Call a [GraphQL](../../api/graphql/getting_started.md) endpoint through the Rails console:
+
+```ruby
+query = <<~EOQ
+query securityGetProjects($search: String!) {
+  projects(search: $search) {
+    nodes {
+      path
+    }
+  }
+}
+EOQ
+
+variables = { "search": "gitlab" }
+
+result = GitlabSchema.execute(query, variables: variables, context: { current_user: current_user })
+result.to_h
 ```

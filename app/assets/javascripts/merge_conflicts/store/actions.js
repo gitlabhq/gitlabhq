@@ -1,5 +1,5 @@
 import { setCookie } from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { INTERACTIVE_RESOLVE_MODE, EDIT_RESOLVE_MODE } from '../constants';
@@ -33,7 +33,7 @@ export const submitResolvedConflicts = async ({ commit, getters }, resolveConfli
     window.location.assign(data.redirect_to);
   } catch (e) {
     commit(types.SET_SUBMIT_STATE, false);
-    createFlash({ message: __('Failed to save merge conflicts resolutions. Please try again!') });
+    createAlert({ message: __('Failed to save merge conflicts resolutions. Please try again!') });
   }
 };
 

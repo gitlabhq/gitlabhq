@@ -27,7 +27,7 @@ module Gitlab
         end
 
         def id_for_already_imported_cache(event)
-          event.id
+          event[:id]
         end
       end
     end

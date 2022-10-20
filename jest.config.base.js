@@ -144,6 +144,8 @@ module.exports = (path, options = {}) => {
     'three',
     'monaco-editor',
     'monaco-yaml',
+    'monaco-marker-data-provider',
+    'monaco-worker-manager',
     'fast-mersenne-twister',
     'prosemirror-markdown',
     'marked',
@@ -172,7 +174,7 @@ module.exports = (path, options = {}) => {
     restoreMocks: true,
     slowTestThreshold: process.env.CI ? 6000 : 500,
     transform: {
-      '^.+\\.(gql|graphql)$': 'jest-transform-graphql',
+      '^.+\\.(gql|graphql)$': './spec/frontend/__helpers__/graphql_transformer.js',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',
       '^.+\\.js$': 'babel-jest',
       '^.+\\.vue$': '@vue/vue2-jest',

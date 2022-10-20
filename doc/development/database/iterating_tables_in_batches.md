@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Iterating tables in batches
@@ -114,7 +114,7 @@ falling into an endless loop as described in following
 When dealing with data migrations the preferred way to iterate over a large volume of data is using
 `EachBatch`.
 
-A special case of data migration is a [background migration](background_migrations.md#scheduling)
+A special case of data migration is a [batched background migration](batched_background_migrations.md)
 where the actual data modification is executed in a background job. The migration code that
 determines the data ranges (slices) and schedules the background jobs uses `each_batch`.
 
@@ -196,7 +196,7 @@ value is "excluded". The query looks at the index to get the location of the fiv
 rows on the disk and read the rows from the table. The returned array is processed in Ruby.
 
 The first iteration is done. For the next iteration, the last `id` value is reused from the
-previous iteration in order to find out the next end `id` value.
+previous iteration to find out the next end `id` value.
 
 ```sql
 SELECT "users"."id" FROM "users" WHERE "users"."id" >= 302 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5

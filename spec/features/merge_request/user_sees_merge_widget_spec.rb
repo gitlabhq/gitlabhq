@@ -13,13 +13,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
   let(:merge_request) { create(:merge_request, source_project: project) }
   let(:merge_request_in_only_mwps_project) { create(:merge_request, source_project: project_only_mwps) }
 
+  def click_expand_button
+    find('[data-testid="report-section-expand-button"]').click
+  end
+
   before do
     project.add_maintainer(user)
     project_only_mwps.add_maintainer(user)
     sign_in(user)
 
-    stub_feature_flags(refactor_mr_widgets_extensions: false)
-    stub_feature_flags(refactor_mr_widgets_extensions_user: false)
     stub_feature_flags(refactor_mr_widget_test_summary: false)
   end
 
@@ -606,7 +608,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
         it 'shows test reports summary which includes the new failure' do
           within(".js-reports-container") do
-            click_button 'Expand'
+            click_expand_button
 
             expect(page).to have_content('Test summary contained 1 failed out of 2 total tests')
             within(".js-report-section-container") do
@@ -621,7 +623,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
         context 'when user clicks the new failure' do
           it 'shows the test report detail' do
             within(".js-reports-container") do
-              click_button 'Expand'
+              click_expand_button
 
               within(".js-report-section-container") do
                 click_button 'addTest'
@@ -654,7 +656,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
         it 'shows test reports summary which includes the existing failure' do
           within(".js-reports-container") do
-            click_button 'Expand'
+            click_expand_button
 
             expect(page).to have_content('Test summary contained 1 failed out of 2 total tests')
             within(".js-report-section-container") do
@@ -668,7 +670,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
         context 'when user clicks the existing failure' do
           it 'shows test report detail of it' do
             within(".js-reports-container") do
-              click_button 'Expand'
+              click_expand_button
 
               within(".js-report-section-container") do
                 click_button 'Test#sum when a is 1 and b is 3 returns summary'
@@ -701,7 +703,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
         it 'shows test reports summary which includes the resolved failure' do
           within(".js-reports-container") do
-            click_button 'Expand'
+            click_expand_button
 
             expect(page).to have_content('Test summary contained 1 fixed test result out of 2 total tests')
             within(".js-report-section-container") do
@@ -715,7 +717,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
         context 'when user clicks the resolved failure' do
           it 'shows test report detail of it' do
             within(".js-reports-container") do
-              click_button 'Expand'
+              click_expand_button
 
               within(".js-report-section-container") do
                 click_button 'addTest'
@@ -747,7 +749,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
         it 'shows test reports summary which includes the new error' do
           within(".js-reports-container") do
-            click_button 'Expand'
+            click_expand_button
 
             expect(page).to have_content('Test summary contained 1 error out of 2 total tests')
             within(".js-report-section-container") do
@@ -762,7 +764,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
         context 'when user clicks the new error' do
           it 'shows the test report detail' do
             within(".js-reports-container") do
-              click_button 'Expand'
+              click_expand_button
 
               within(".js-report-section-container") do
                 click_button 'addTest'
@@ -794,7 +796,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
         it 'shows test reports summary which includes the existing error' do
           within(".js-reports-container") do
-            click_button 'Expand'
+            click_expand_button
 
             expect(page).to have_content('Test summary contained 1 error out of 2 total tests')
             within(".js-report-section-container") do
@@ -808,7 +810,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
         context 'when user clicks the existing error' do
           it 'shows test report detail of it' do
             within(".js-reports-container") do
-              click_button 'Expand'
+              click_expand_button
 
               within(".js-report-section-container") do
                 click_button 'Test#sum when a is 4 and b is 4 returns summary'
@@ -840,7 +842,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
         it 'shows test reports summary which includes the resolved error' do
           within(".js-reports-container") do
-            click_button 'Expand'
+            click_expand_button
 
             expect(page).to have_content('Test summary contained 1 fixed test result out of 2 total tests')
             within(".js-report-section-container") do
@@ -854,7 +856,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
         context 'when user clicks the resolved error' do
           it 'shows test report detail of it' do
             within(".js-reports-container") do
-              click_button 'Expand'
+              click_expand_button
 
               within(".js-report-section-container") do
                 click_button 'addTest'
@@ -894,7 +896,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
         it 'shows test reports summary which includes the resolved failure' do
           within(".js-reports-container") do
-            click_button 'Expand'
+            click_expand_button
 
             expect(page).to have_content('Test summary contained 20 failed out of 20 total tests')
             within(".js-report-section-container") do

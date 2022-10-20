@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, concepts
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/status_checks.html'
 ---
@@ -28,6 +28,18 @@ You can configure merge request status checks for each individual project. These
 
 To learn more about use cases, feature discovery, and development timelines,
 see the [external status checks epic](https://gitlab.com/groups/gitlab-org/-/epics/3869).
+
+## Block merges of merge requests unless all status checks have passed
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to
+[enable the feature flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. On GitLab.com, this feature is not available.
+
+By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail, enable this feature
+using the [project API](../../../api/projects.md#edit-project). You must also [enable the feature flag](../../../administration/feature_flags.md) named
+`only_allow_merge_if_all_status_checks_passed`.
 
 ## Lifecycle
 
@@ -188,7 +200,7 @@ Unable to fetch branches list, please close the form and try again
 
 An unexpected response was received from the branches retrieval API.
 As suggested, you should close the form and reopen again or refresh the page. This error should be temporary, although
-if it persists please check the [GitLab status page](https://status.gitlab.com/) to see if there is a wider outage.
+if it persists, check the [GitLab status page](https://status.gitlab.com/) to see if there is a wider outage.
 
 ### Failed to load status checks
 

@@ -6,7 +6,6 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { sprintfWorkItem, I18N_WORK_ITEM_ERROR_CREATING } from '../constants';
 import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
-import createWorkItemFromTaskMutation from '../graphql/create_work_item_from_task.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
 
 import ItemTitle from '../components/item_title.vue';
@@ -28,26 +27,6 @@ export default {
       type: String,
       required: false,
       default: '',
-    },
-    issueGid: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockVersion: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    lineNumberStart: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    lineNumberEnd: {
-      type: String,
-      required: false,
-      default: null,
     },
   },
   data() {
@@ -132,28 +111,6 @@ export default {
           },
         } = response;
         this.$router.push({ name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } });
-      } catch {
-        this.error = this.createErrorText;
-      }
-    },
-    async createWorkItemFromTask() {
-      try {
-        const { data } = await this.$apollo.mutate({
-          mutation: createWorkItemFromTaskMutation,
-          variables: {
-            input: {
-              id: this.issueGid,
-              workItemData: {
-                lockVersion: this.lockVersion,
-                title: this.title,
-                lineNumberStart: Number(this.lineNumberStart),
-                lineNumberEnd: Number(this.lineNumberEnd),
-                workItemTypeId: this.selectedWorkItemType,
-              },
-            },
-          },
-        });
-        this.$emit('onCreate', data.workItemCreateFromTask.workItem.descriptionHtml);
       } catch {
         this.error = this.createErrorText;
       }

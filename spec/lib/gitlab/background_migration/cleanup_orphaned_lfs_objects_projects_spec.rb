@@ -40,23 +40,26 @@ RSpec.describe Gitlab::BackgroundMigration::CleanupOrphanedLfsObjectsProjects, s
     it 'lfs_objects_projects without an existing lfs object or project are removed' do
       subject.perform(without_object1.id, without_object3.id)
 
-      expect(lfs_objects_projects.all).to match_array([
-        with_project_and_object1, with_project_and_object2, with_project_and_object3,
-        without_project1, without_project2, without_project_and_object
-      ])
+      expect(lfs_objects_projects.all).to match_array(
+        [
+          with_project_and_object1, with_project_and_object2, with_project_and_object3,
+          without_project1, without_project2, without_project_and_object
+        ])
 
       subject.perform(with_project_and_object1.id, with_project_and_object3.id)
 
-      expect(lfs_objects_projects.all).to match_array([
-        with_project_and_object1, with_project_and_object2, with_project_and_object3,
-        without_project1, without_project2, without_project_and_object
-      ])
+      expect(lfs_objects_projects.all).to match_array(
+        [
+          with_project_and_object1, with_project_and_object2, with_project_and_object3,
+          without_project1, without_project2, without_project_and_object
+        ])
 
       subject.perform(without_project1.id, without_project_and_object.id)
 
-      expect(lfs_objects_projects.all).to match_array([
-        with_project_and_object1, with_project_and_object2, with_project_and_object3
-      ])
+      expect(lfs_objects_projects.all).to match_array(
+        [
+          with_project_and_object1, with_project_and_object2, with_project_and_object3
+        ])
 
       expect(lfs_objects.ids).to contain_exactly(lfs_object.id, another_lfs_object.id)
       expect(projects.ids).to contain_exactly(project.id, another_project.id)

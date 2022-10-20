@@ -1,15 +1,9 @@
+- repo_url_styles = "background: #f5f5f5; padding:10px; border:1px solid #ddd"
+- ssh_url_to_repo = content_tag(:p, "git remote set-url origin #{strip_tags(@project.ssh_url_to_repo)}", style: repo_url_styles)
+- http_url_to_repo = content_tag(:p, "git remote set-url origin #{strip_tags(@project.http_url_to_repo)}", style: repo_url_styles)
 %p
-  Project #{@old_path_with_namespace} was moved to another location
+  = s_('Notify|Project %{old_path_with_namespace} was moved to another location.') % { old_path_with_namespace: @old_path_with_namespace }
 %p
-  The project is now located under
-  = link_to project_url(@project) do
-    = @project.full_name
-%p
-  To update the remote url in your local repository run (for ssh):
-%p{ style: "background: #f5f5f5; padding:10px; border:1px solid #ddd" }
-  git remote set-url origin #{@project.ssh_url_to_repo}
-%p
-  or for http(s):
-%p{ style: "background: #f5f5f5; padding:10px; border:1px solid #ddd" }
-  git remote set-url origin #{@project.http_url_to_repo}
-%br
+  - project_full_name_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: project_url(@project) }
+  = html_escape(s_('Notify|The project is now located under %{project_full_name_link_start}%{project_full_name}%{link_end}.')) % { project_full_name_link_start: project_full_name_link_start, link_end: '</a>'.html_safe, project_full_name: @project.full_name }
+= html_escape(s_('Notify|%{p_start}To update the remote url in your local repository run (for ssh):%{p_end} %{ssh_url_to_repo} %{p_start}or for http(s):%{p_end} %{http_url_to_repo}')) % { p_start: '<p>'.html_safe, p_end: '</p>'.html_safe, ssh_url_to_repo: ssh_url_to_repo, http_url_to_repo: http_url_to_repo }

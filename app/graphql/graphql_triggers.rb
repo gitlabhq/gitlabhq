@@ -13,12 +13,32 @@ module GraphqlTriggers
     GitlabSchema.subscriptions.trigger('issuableTitleUpdated', { issuable_id: issuable.to_gid }, issuable)
   end
 
+  def self.issuable_description_updated(issuable)
+    GitlabSchema.subscriptions.trigger('issuableDescriptionUpdated', { issuable_id: issuable.to_gid }, issuable)
+  end
+
   def self.issuable_labels_updated(issuable)
     GitlabSchema.subscriptions.trigger('issuableLabelsUpdated', { issuable_id: issuable.to_gid }, issuable)
   end
 
   def self.issuable_dates_updated(issuable)
     GitlabSchema.subscriptions.trigger('issuableDatesUpdated', { issuable_id: issuable.to_gid }, issuable)
+  end
+
+  def self.merge_request_reviewers_updated(merge_request)
+    GitlabSchema.subscriptions.trigger(
+      'mergeRequestReviewersUpdated',
+      { issuable_id: merge_request.to_gid },
+      merge_request
+    )
+  end
+
+  def self.merge_request_merge_status_updated(merge_request)
+    GitlabSchema.subscriptions.trigger(
+      'mergeRequestMergeStatusUpdated',
+      { issuable_id: merge_request.to_gid },
+      merge_request
+    )
   end
 end
 

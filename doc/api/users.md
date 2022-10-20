@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Users API **(FREE)**
@@ -106,7 +106,8 @@ GET /users?without_project_bots=true
 
 ### For administrators **(FREE SELF)**
 
-> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 
 ```plaintext
 GET /users
@@ -161,7 +162,8 @@ GET /users
     "private_profile": false,
     "current_sign_in_ip": "196.165.1.102",
     "last_sign_in_ip": "172.127.2.22",
-    "namespace_id": 1
+    "namespace_id": 1,
+    "created_by": null
   },
   {
     "id": 2,
@@ -196,7 +198,8 @@ GET /users
     "private_profile": false,
     "current_sign_in_ip": "10.165.1.102",
     "last_sign_in_ip": "172.127.2.22",
-    "namespace_id": 2
+    "namespace_id": 2,
+    "created_by": null
   }
 ]
 ```
@@ -269,6 +272,13 @@ You can include the users' [custom attributes](custom_attributes.md) in the resp
 GET /users?with_custom_attributes=true
 ```
 
+You can use the `created_by` parameter to see if a user account was created:
+
+- [Manually by an administrator](../user/profile/account/create_accounts.md#create-users-in-admin-area).
+- As a [project bot user](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
+
+If the returned value is `null`, the account was created by a user who registered an account themselves.
+
 ## Single user
 
 Get a single user.
@@ -315,7 +325,8 @@ Parameters:
 
 ### For administrators **(FREE SELF)**
 
-> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 
 ```plaintext
 GET /users/:id
@@ -378,7 +389,8 @@ Example Responses:
   "plan": "gold",
   "trial": true,
   "sign_in_count": 1337,
-  "namespace_id": 1
+  "namespace_id": 1,
+  "created_by": null
 }
 ```
 
@@ -418,6 +430,13 @@ see the `group_saml` option and `provisioned_by_group_id` parameter:
   ...
 }
 ```
+
+Administrators can use the `created_by` parameter to see if a user account was created: 
+
+- [Manually by an administrator](../user/profile/account/create_accounts.md#create-users-in-admin-area).
+- As a [project bot user](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
+
+If the returned value is `null`, the account was created by a user who registered an account themselves.
 
 You can include the user's [custom attributes](custom_attributes.md) in the response with:
 
@@ -505,6 +524,7 @@ Parameters:
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
 | `color_scheme_id`                    | No       | User's color scheme for the file viewer (see [the user preference docs](../user/profile/preferences.md#syntax-highlighting-theme) for more information) |
+| `commit_email`                       | No       | User's commit email. Set to `_private` to use the private commit email. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375148) in GitLab 15.5. |
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
@@ -519,6 +539,7 @@ Parameters:
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true, false (default), or null (is converted to false)                                                                 |
 | `projects_limit`                     | No       | Limit projects each user can create                                                                                                                     |
+| `pronouns`                           | No       | Pronouns                                                                                                                                                |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | Public email of the user (must be already verified)                                                                                                                            |
 | `shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Maximum number of monthly CI/CD minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
@@ -628,7 +649,8 @@ Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see 
 
 ### For administrators **(FREE SELF)**
 
-> The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
+> - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 
 ```plaintext
 GET /user
@@ -681,6 +703,7 @@ Parameters:
   "current_sign_in_ip": "196.165.1.102",
   "last_sign_in_ip": "172.127.2.22",
   "namespace_id": 1,
+  "created_by": null,
   "note": null
 }
 ```

@@ -1,12 +1,9 @@
--# "MaxBuilds" is a runner configuration keyword so it must not be translated.
-- link = link_to 'MaxBuilds', 'https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section', target: '_blank', rel: 'noopener noreferrer'
+- shared_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('ci/runners/runners_scope.md', anchor: 'shared-runners') }
 
 %h4
   = _('Shared runners')
 
 .bs-callout{ data: { testid: 'shared-runners-description' } }
-  %p= _('These runners are shared across this GitLab instance.')
+  %p= s_('Runners|%{link_start}These runners%{link_end} are available to all groups and projects.').html_safe % { link_start: shared_link_start, link_end: '</a>'.html_safe }
   - if Gitlab::CurrentSettings.shared_runners_text.present?
     = markdown(Gitlab::CurrentSettings.current_application_settings.shared_runners_text)
-  - else
-    %p= _('The same shared runner executes code from multiple projects, unless you configure autoscaling with %{link} set to 1 (which it is on GitLab.com).').html_safe % { link: link }

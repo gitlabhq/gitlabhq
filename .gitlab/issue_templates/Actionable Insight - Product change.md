@@ -1,4 +1,4 @@
-<!-- Actionable insights must recommend an action that needs to take place. An actionable insight both defines the insight and clearly calls out action or next step required to improve based on the result of the research observation or data. Actionable insights are tracked over time and will include follow-up. Please follow the tasks outlined in this issue for best results. Learn more in the handbook here: https://about.gitlab.com/handbook/engineering/ux/ux-research-training/research-insights/#actionable-insights 
+<!-- Actionable insights must recommend an action that needs to take place. An actionable insight both defines the insight and clearly calls out action or next step required to improve based on the result of the research observation or data. Actionable insights are tracked over time and will include follow-up. Please follow the tasks outlined in this issue for best results. Learn more in the handbook here: https://about.gitlab.com/handbook/product/ux/ux-research-training/research-insights/#actionable-insights 
 
 This issue template is for an actionable insight that requires a change in the product.-->
 

@@ -37,7 +37,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create do
         let(:args) { {} }
 
         it_behaves_like 'responding with an incident timeline errors',
-          errors: ["Occurred at can't be blank, Note can't be blank, and Note html can't be blank"]
+          errors: ["Occurred at can't be blank and Timeline text can't be blank"]
       end
     end
 

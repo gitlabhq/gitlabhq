@@ -6,17 +6,18 @@
 - note_counter = local_assigns.fetch(:note_counter, 0)
 
 %li.timeline-entry.note-wrapper{ id: dom_id(note),
-  class: ["note", "note-row-#{note.id}", ('system-note' if note.system)],
+  class: ["note", "note-comment", "note-row-#{note.id}", ('system-note' if note.system)],
   data: { author_id: note.author.id,
     editable: note_editable,
     note_id: note.id } }
   .timeline-entry-inner
-    .timeline-icon
-      - if note.system
+    - if note.system
+      .timeline-icon
         = icon_for_system_note(note)
-      - else
+    - else
+      .timeline-avatar.gl-float-left
         %a.image-diff-avatar-link{ href: user_path(note.author) }
-          = image_tag avatar_icon_for_user(note.author), alt: '', class: 'avatar s40'
+          = render Pajamas::AvatarComponent.new(note.author, size: 32, alt: '')
           - if note.is_a?(DiffNote) && note.on_image?
             - if show_image_comment_badge && note_counter == 0
               -# Only show this for the first comment in the discussion
@@ -34,9 +35,9 @@
             %span.note-header-author-name.bold
               = note.author.name
             = user_status(note.author)
-            %span.note-headline-light{ data: { qa_selector: 'note_author_content' } }
+            %spannote-headline-light{ data: { qa_selector: 'note_author_content' } }
               = note.author.to_reference
-          %span.note-headline-light.note-headline-meta
+          %span.note-headline-ligh.note-headline-meta
             - if note.system
               %span.system-note-message
                 = markdown_field(note, :note)

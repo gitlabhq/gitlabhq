@@ -9,7 +9,7 @@ import { stubComponent } from 'helpers/stub_component';
 import DeployKeysTable from '~/admin/deploy_keys/components/table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 
 jest.mock('~/api');
 jest.mock('~/flash');
@@ -243,7 +243,7 @@ describe('DeployKeysTable', () => {
     itRendersTheEmptyState();
 
     it('displays flash', () => {
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: DeployKeysTable.i18n.apiErrorMessage,
         captureError: true,
         error,

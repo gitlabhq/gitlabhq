@@ -108,7 +108,7 @@ module Gitlab
           return self.loaded unless self.loaded.nil?
 
           Gitlab::Redis::Cache.with do |redis|
-            redis.exists(cache_key)
+            redis.exists?(cache_key) # rubocop:disable CodeReuse/ActiveRecord
           end
         end
 

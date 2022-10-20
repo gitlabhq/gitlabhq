@@ -20561,7 +20561,7 @@
       }
     ]
   }
-07_01_00__gitlab_specific_markdown__footnotes__001: |-
+07_01_00__gitlab_official_specification_markdown__footnotes__001: |-
   {
     "type": "doc",
     "content": [
@@ -20601,7 +20601,7 @@
       }
     ]
   }
-07_02_00__gitlab_specific_markdown__task_list_items__001: |-
+07_02_00__gitlab_official_specification_markdown__task_list_items__001: |-
   {
     "type": "doc",
     "content": [
@@ -20634,7 +20634,7 @@
       }
     ]
   }
-07_02_00__gitlab_specific_markdown__task_list_items__002: |-
+07_02_00__gitlab_official_specification_markdown__task_list_items__002: |-
   {
     "type": "doc",
     "content": [
@@ -20667,11 +20667,7 @@
       }
     ]
   }
-07_02_00__gitlab_specific_markdown__task_list_items__003: |-
-  Inapplicable task list items not yet implemented for WYSYWIG
-07_02_00__gitlab_specific_markdown__task_list_items__004: |-
-  Inapplicable task list items not yet implemented for WYSYWIG
-07_03_00__gitlab_specific_markdown__front_matter__001: |-
+07_03_00__gitlab_official_specification_markdown__front_matter__001: |-
   {
     "type": "doc",
     "content": [
@@ -20691,7 +20687,7 @@
       }
     ]
   }
-07_03_00__gitlab_specific_markdown__front_matter__002: |-
+07_03_00__gitlab_official_specification_markdown__front_matter__002: |-
   {
     "type": "doc",
     "content": [
@@ -20711,7 +20707,7 @@
       }
     ]
   }
-07_03_00__gitlab_specific_markdown__front_matter__003: |-
+07_03_00__gitlab_official_specification_markdown__front_matter__003: |-
   {
     "type": "doc",
     "content": [
@@ -20731,7 +20727,7 @@
       }
     ]
   }
-07_03_00__gitlab_specific_markdown__front_matter__004: |-
+07_03_00__gitlab_official_specification_markdown__front_matter__004: |-
   {
     "type": "doc",
     "content": [
@@ -20761,7 +20757,7 @@
       }
     ]
   }
-07_03_00__gitlab_specific_markdown__front_matter__005: |-
+07_03_00__gitlab_official_specification_markdown__front_matter__005: |-
   {
     "type": "doc",
     "content": [
@@ -20782,115 +20778,7 @@
       }
     ]
   }
-07_04_00__gitlab_specific_markdown__audio__001: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "audio",
-            "attrs": {
-              "uploading": false,
-              "src": "audio.oga",
-              "canonicalSrc": "audio.oga",
-              "alt": "audio"
-            }
-          }
-        ]
-      }
-    ]
-  }
-07_04_00__gitlab_specific_markdown__audio__002: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "referenceDefinition",
-        "attrs": {
-          "identifier": "audio",
-          "url": "audio.oga",
-          "title": "audio title"
-        },
-        "content": [
-          {
-            "type": "text",
-            "text": "[audio]: audio.oga \"audio title\""
-          }
-        ]
-      },
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "audio",
-            "attrs": {
-              "uploading": false,
-              "src": "audio.oga",
-              "canonicalSrc": "audio",
-              "alt": "audio"
-            }
-          }
-        ]
-      }
-    ]
-  }
-07_05_00__gitlab_specific_markdown__video__001: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "video",
-            "attrs": {
-              "uploading": false,
-              "src": "video.m4v",
-              "canonicalSrc": "video.m4v",
-              "alt": "video"
-            }
-          }
-        ]
-      }
-    ]
-  }
-07_05_00__gitlab_specific_markdown__video__002: |-
-  {
-    "type": "doc",
-    "content": [
-      {
-        "type": "referenceDefinition",
-        "attrs": {
-          "identifier": "video",
-          "url": "video.mov",
-          "title": "video title"
-        },
-        "content": [
-          {
-            "type": "text",
-            "text": "[video]: video.mov \"video title\""
-          }
-        ]
-      },
-      {
-        "type": "paragraph",
-        "content": [
-          {
-            "type": "video",
-            "attrs": {
-              "uploading": false,
-              "src": "video.mov",
-              "canonicalSrc": "video",
-              "alt": "video"
-            }
-          }
-        ]
-      }
-    ]
-  }
-07_06_00__gitlab_specific_markdown__table_of_contents__001: |-
+07_04_00__gitlab_official_specification_markdown__table_of_contents__001: |-
   {
     "type": "doc",
     "content": [
@@ -20923,7 +20811,7 @@
       }
     ]
   }
-07_06_00__gitlab_specific_markdown__table_of_contents__002: |-
+07_04_00__gitlab_official_specification_markdown__table_of_contents__002: |-
   {
     "type": "doc",
     "content": [
@@ -20956,7 +20844,7 @@
       }
     ]
   }
-07_06_00__gitlab_specific_markdown__table_of_contents__003: |-
+07_04_00__gitlab_official_specification_markdown__table_of_contents__003: |-
   {
     "type": "doc",
     "content": [
@@ -20993,7 +20881,7 @@
       }
     ]
   }
-07_06_00__gitlab_specific_markdown__table_of_contents__004: |-
+07_04_00__gitlab_official_specification_markdown__table_of_contents__004: |-
   {
     "type": "doc",
     "content": [
@@ -21014,15 +20902,111 @@
       }
     ]
   }
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001: |-
-  Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002: |-
-  Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__003: |-
-  Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__004: |-
-  Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__005: |-
-  Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
-08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__006: |-
-  Not yet implemented. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92507#note_1068159236
+08_01_00__gitlab_internal_extension_markdown__audio__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "audio",
+            "attrs": {
+              "uploading": false,
+              "src": "audio.oga",
+              "canonicalSrc": "audio.oga",
+              "alt": "audio"
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_01_00__gitlab_internal_extension_markdown__audio__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "audio",
+          "url": "audio.oga",
+          "title": "audio title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[audio]: audio.oga \"audio title\""
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "audio",
+            "attrs": {
+              "uploading": false,
+              "src": "audio.oga",
+              "canonicalSrc": "audio",
+              "alt": "audio"
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_02_00__gitlab_internal_extension_markdown__video__001: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "video",
+            "attrs": {
+              "uploading": false,
+              "src": "video.m4v",
+              "canonicalSrc": "video.m4v",
+              "alt": "video"
+            }
+          }
+        ]
+      }
+    ]
+  }
+08_02_00__gitlab_internal_extension_markdown__video__002: |-
+  {
+    "type": "doc",
+    "content": [
+      {
+        "type": "referenceDefinition",
+        "attrs": {
+          "identifier": "video",
+          "url": "video.mov",
+          "title": "video title"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "[video]: video.mov \"video title\""
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "video",
+            "attrs": {
+              "uploading": false,
+              "src": "video.mov",
+              "canonicalSrc": "video",
+              "alt": "video"
+            }
+          }
+        ]
+      }
+    ]
+  }

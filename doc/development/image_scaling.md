@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Application Performance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Image scaling guide
@@ -13,7 +13,7 @@ For a general introduction to the history of image scaling at GitLab, you might 
 
 ## Why image scaling?
 
-Since version 13.6, GitLab scales down images on demand in order to reduce the page data footprint.
+Since version 13.6, GitLab scales down images on demand to reduce the page data footprint.
 This both reduces the amount of data "on the wire", but also helps with rendering performance,
 since the browser has less work to do.
 
@@ -68,7 +68,7 @@ controller mixin. Upon receiving a request coming from a client through Workhors
 it should trigger the image scaler as per the criteria mentioned above, and if so, render a special response
 header field (`Gitlab-Workhorse-Send-Data`) with the necessary parameters for Workhorse to carry
 out the scaling request. If Rails decides the request does not constitute a valid image scaling request,
-we simply follow the path we take to serve any ordinary upload.
+we follow the path we take to serve any ordinary upload.
 
 ### Workhorse
 

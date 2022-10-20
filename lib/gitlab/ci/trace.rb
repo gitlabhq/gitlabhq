@@ -140,7 +140,7 @@ module Gitlab
 
       def being_watched?
         Gitlab::Redis::SharedState.with do |redis|
-          redis.exists(being_watched_cache_key)
+          redis.exists?(being_watched_cache_key) # rubocop:disable CodeReuse/ActiveRecord
         end
       end
 

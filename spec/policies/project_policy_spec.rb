@@ -103,6 +103,20 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'when both issues and merge requests are disabled' do
+    let(:current_user) { owner }
+
+    before do
+      project.issues_enabled = false
+      project.merge_requests_enabled = false
+      project.save!
+    end
+
+    it 'does not include the issues permissions' do
+      expect_disallowed :read_cycle_analytics
+    end
+  end
+
   context 'creating_merge_request_in' do
     context 'when the current_user can download_code' do
       before do
@@ -465,15 +479,14 @@ RSpec.describe ProjectPolicy do
   end
 
   context 'owner access' do
-    let!(:owner_user) { create(:user) }
-    let!(:owner_of_different_thing) { create(:user) }
-    let(:stranger) { create(:user) }
+    let_it_be(:owner_user) { owner }
+    let_it_be(:owner_of_different_thing) { create(:user) }
 
     context 'personal project' do
-      let!(:project) { create(:project) }
-      let!(:project2) { create(:project) }
+      let_it_be(:project) { private_project }
+      let_it_be(:project2) { create(:project) }
 
-      before do
+      before_all do
         project.add_guest(guest)
         project.add_reporter(reporter)
         project.add_developer(developer)
@@ -483,7 +496,7 @@ RSpec.describe ProjectPolicy do
 
       it 'allows owner access', :aggregate_failures do
         expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
-        expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
+        expect(described_class.new(non_member, project)).to be_disallowed(:owner_access)
         expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
         expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
         expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
@@ -493,12 +506,12 @@ RSpec.describe ProjectPolicy do
     end
 
     context 'group project' do
-      let(:group) { create(:group) }
-      let!(:group2) { create(:group) }
-      let!(:project) { create(:project, group: group) }
+      let_it_be(:project) { private_project_in_group }
+      let_it_be(:group2) { create(:group) }
+      let_it_be(:group) { project.group }
 
       context 'group members' do
-        before do
+        before_all do
           group.add_guest(guest)
           group.add_reporter(reporter)
           group.add_developer(developer)
@@ -509,7 +522,7 @@ RSpec.describe ProjectPolicy do
 
         it 'allows owner access', :aggregate_failures do
           expect(described_class.new(owner_of_different_thing, project)).to be_disallowed(:owner_access)
-          expect(described_class.new(stranger, project)).to be_disallowed(:owner_access)
+          expect(described_class.new(non_member, project)).to be_disallowed(:owner_access)
           expect(described_class.new(guest, project)).to be_disallowed(:owner_access)
           expect(described_class.new(reporter, project)).to be_disallowed(:owner_access)
           expect(described_class.new(developer, project)).to be_disallowed(:owner_access)
@@ -1692,7 +1705,7 @@ RSpec.describe ProjectPolicy do
       let_it_be(:project_with_analytics_private) { create(:project, :analytics_private) }
       let_it_be(:project_with_analytics_enabled) { create(:project, :analytics_enabled) }
 
-      before do
+      before_all do
         project_with_analytics_disabled.add_guest(guest)
         project_with_analytics_private.add_guest(guest)
         project_with_analytics_enabled.add_guest(guest)
@@ -2424,7 +2437,7 @@ RSpec.describe ProjectPolicy do
       before do
         current_user.set_ci_job_token_scope!(job)
         current_user.external = external_user
-        scope_project.update!(ci_job_token_scope_enabled: token_scope_enabled)
+        scope_project.update!(ci_outbound_job_token_scope_enabled: token_scope_enabled)
       end
 
       it "enforces the expected permissions" do
@@ -2617,28 +2630,14 @@ RSpec.describe ProjectPolicy do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        context 'with runner_registration_control FF disabled' do
+        it { is_expected.to be_allowed(:register_project_runners) }
+
+        context 'with project runner registration disabled' do
           before do
-            stub_feature_flags(runner_registration_control: false)
+            stub_application_setting(valid_runner_registrars: ['group'])
           end
 
           it { is_expected.to be_allowed(:register_project_runners) }
-        end
-
-        context 'with runner_registration_control FF enabled' do
-          before do
-            stub_feature_flags(runner_registration_control: true)
-          end
-
-          it { is_expected.to be_allowed(:register_project_runners) }
-
-          context 'with project runner registration disabled' do
-            before do
-              stub_application_setting(valid_runner_registrars: ['group'])
-            end
-
-            it { is_expected.to be_allowed(:register_project_runners) }
-          end
         end
       end
 
@@ -2652,28 +2651,12 @@ RSpec.describe ProjectPolicy do
 
       it { is_expected.to be_allowed(:register_project_runners) }
 
-      context 'with runner_registration_control FF disabled' do
+      context 'with project runner registration disabled' do
         before do
-          stub_feature_flags(runner_registration_control: false)
+          stub_application_setting(valid_runner_registrars: ['group'])
         end
 
-        it { is_expected.to be_allowed(:register_project_runners) }
-      end
-
-      context 'with runner_registration_control FF enabled' do
-        before do
-          stub_feature_flags(runner_registration_control: true)
-        end
-
-        it { is_expected.to be_allowed(:register_project_runners) }
-
-        context 'with project runner registration disabled' do
-          before do
-            stub_application_setting(valid_runner_registrars: ['group'])
-          end
-
-          it { is_expected.to be_disallowed(:register_project_runners) }
-        end
+        it { is_expected.to be_disallowed(:register_project_runners) }
       end
     end
 
@@ -2758,6 +2741,50 @@ RSpec.describe ProjectPolicy do
             let(:current_user) { inherited_developer }
 
             it { is_expected.to be_allowed(:read_milestone) }
+          end
+        end
+      end
+    end
+  end
+
+  describe 'role_enables_download_code' do
+    using RSpec::Parameterized::TableSyntax
+
+    context 'default roles' do
+      let(:current_user) { public_send(role) }
+
+      context 'public project' do
+        let(:project) { public_project }
+
+        where(:role, :allowed) do
+          :owner      | true
+          :maintainer | true
+          :developer  | true
+          :reporter   | true
+          :guest      | true
+
+          with_them do
+            it do
+              expect(subject.can?(:download_code)).to be(allowed)
+            end
+          end
+        end
+      end
+
+      context 'private project' do
+        let(:project) { private_project }
+
+        where(:role, :allowed) do
+          :owner      | true
+          :maintainer | true
+          :developer  | true
+          :reporter   | true
+          :guest      | false
+        end
+
+        with_them do
+          it do
+            expect(subject.can?(:download_code)).to be(allowed)
           end
         end
       end

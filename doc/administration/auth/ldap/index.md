@@ -2,7 +2,7 @@
 type: reference
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Integrate LDAP with GitLab **(FREE SELF)**
@@ -13,7 +13,7 @@ to support user authentication.
 This integration works with most LDAP-compliant directory servers, including:
 
 - Microsoft Active Directory.
-  [Microsoft Active Directory Trusts](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10))
+  [Microsoft Active Directory Trusts](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10))
   are not supported.
 - Apple Open Directory.
 - Open LDAP.
@@ -98,7 +98,7 @@ gitlab_rails['ldap_servers'] = {
   'main' => {
     'label' => 'LDAP',
     'host' =>  'ldap.mydomain.com',
-    'port' => 389,
+    'port' => 636,
     'uid' => 'sAMAccountName',
     'encryption' => 'simple_tls',
     'verify_certificates' => true,
@@ -312,7 +312,7 @@ To limit access to the nested members of an Active Directory group, use the foll
 ```
 
 For more information about `LDAP_MATCHING_RULE_IN_CHAIN` filters, see
-[Search Filter Syntax](https://docs.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax).
+[Search Filter Syntax](https://learn.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax).
 
 Support for nested members in the user filter shouldn't be confused with
 [group sync nested groups](ldap_synchronization.md#supported-ldap-group-typesattributes) support.

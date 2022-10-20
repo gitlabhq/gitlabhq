@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -165,7 +165,7 @@ This setting limits global search requests as follows:
 | Authenticated user      | 30 |
 | Unauthenticated user    | 10 |
 
-Depending on the number of enabled [scopes](../user/search/advanced_search.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Global search requests that exceed the search rate limit per minute return the following error:
+Depending on the number of enabled [scopes](../user/search/index.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Global search requests that exceed the search rate limit per minute return the following error:
 
 ```plaintext
 This endpoint has been requested too many times. Try again later.
@@ -288,6 +288,29 @@ For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/index
 ### Webhook payload size
 
 The maximum webhook payload size is 25 MB.
+
+### Webhook timeout
+
+The number of seconds GitLab waits for an HTTP response after sending a webhook.
+
+To change the webhook timeout value:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['webhook_timeout'] = 60
+   ```
+
+1. Save the file.
+1. Reconfigure and restart GitLab for the changes to
+   take effect:
+
+   ```shell
+   gitlab-ctl reconfigure
+   gitlab-ctl restart
+   ```
+
+See also [webhook limits for GitLab.com](../user/gitlab_com/index.md#other-limits).
 
 ### Recursive webhooks
 

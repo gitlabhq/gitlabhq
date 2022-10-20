@@ -51,12 +51,13 @@ RSpec.describe ApplicationSettingsHelper do
     end
 
     it 'contains rate limit parameters' do
-      expect(helper.visible_attributes).to include(*%i(
-        issues_create_limit notes_create_limit project_export_limit
-        project_download_export_limit project_export_limit project_import_limit
-        raw_blob_request_limit group_export_limit group_download_export_limit
-        group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
-      ))
+      expect(helper.visible_attributes).to include(
+        *%i(
+          issues_create_limit notes_create_limit project_export_limit
+          project_download_export_limit project_export_limit project_import_limit
+          raw_blob_request_limit group_export_limit group_download_export_limit
+          group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
+        ))
     end
 
     context 'when GitLab.com' do
@@ -233,23 +234,24 @@ RSpec.describe ApplicationSettingsHelper do
     end
 
     it 'returns available formats correctly' do
-      expect(helper.kroki_available_formats).to eq([
-                                             {
-                                               name: 'kroki_formats_blockdiag',
-                                               label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag, and RackDiag)',
-                                               value: true
-                                             },
-                                             {
-                                               name: 'kroki_formats_bpmn',
-                                               label: 'BPMN',
-                                               value: false
-                                             },
-                                             {
-                                               name: 'kroki_formats_excalidraw',
-                                               label: 'Excalidraw',
-                                               value: false
-                                             }
-                                           ])
+      expect(helper.kroki_available_formats).to eq(
+        [
+          {
+            name: 'kroki_formats_blockdiag',
+            label: 'BlockDiag (includes BlockDiag, SeqDiag, ActDiag, NwDiag, PacketDiag, and RackDiag)',
+            value: true
+          },
+          {
+            name: 'kroki_formats_bpmn',
+            label: 'BPMN',
+            value: false
+          },
+          {
+            name: 'kroki_formats_excalidraw',
+            label: 'Excalidraw',
+            value: false
+          }
+        ])
     end
   end
 

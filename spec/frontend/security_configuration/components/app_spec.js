@@ -281,7 +281,7 @@ describe('App component', () => {
         });
       });
 
-      it(shouldRender ? 'renders' : 'does not render', () => {
+      it(`${shouldRender ? 'renders' : 'does not render'}`, () => {
         expect(findAutoDevopsEnabledAlert().exists()).toBe(shouldRender);
       });
     });

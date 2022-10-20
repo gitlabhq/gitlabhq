@@ -1,5 +1,7 @@
 <script>
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
+import { __ } from '~/locale';
+import { reportMessageToSentry } from '../utils';
 import getAdminVariables from '../graphql/queries/variables.query.graphql';
 import {
   ADD_MUTATION_ACTION,
@@ -21,7 +23,11 @@ export default {
   data() {
     return {
       adminVariables: [],
+      hasNextPage: false,
       isInitialLoading: true,
+      isLoadingMoreItems: false,
+      loadingCounter: 0,
+      pageInfo: {},
     };
   },
   apollo: {
@@ -30,8 +36,29 @@ export default {
       update(data) {
         return data?.ciVariables?.nodes || [];
       },
+      result({ data }) {
+        this.pageInfo = data?.ciVariables?.pageInfo || this.pageInfo;
+        this.hasNextPage = this.pageInfo?.hasNextPage || false;
+
+        // Because graphQL has a limit of 100 items,
+        // we batch load all the variables by making successive queries
+        // to keep the same UX. As a safeguard, we make sure that we cannot go over
+        // 20 consecutive API calls, which means 2000 variables loaded maximum.
+        if (!this.hasNextPage) {
+          this.isLoadingMoreItems = false;
+        } else if (this.loadingCounter < 20) {
+          this.hasNextPage = false;
+          this.fetchMoreVariables();
+          this.loadingCounter += 1;
+        } else {
+          createAlert({ message: this.$options.tooManyCallsError });
+          reportMessageToSentry(this.$options.componentName, this.$options.tooManyCallsError, {});
+        }
+      },
       error() {
-        createFlash({ message: variableFetchErrorText });
+        this.isLoadingMoreItems = false;
+        this.hasNextPage = false;
+        createAlert({ message: variableFetchErrorText });
       },
       watchLoading(flag) {
         if (!flag) {
@@ -42,7 +69,10 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.adminVariables.loading && this.isInitialLoading;
+      return (
+        (this.$apollo.queries.adminVariables.loading && this.isInitialLoading) ||
+        this.isLoadingMoreItems
+      );
     },
   },
   methods: {
@@ -51,6 +81,15 @@ export default {
     },
     deleteVariable(variable) {
       this.variableMutation(DELETE_MUTATION_ACTION, variable);
+    },
+    fetchMoreVariables() {
+      this.isLoadingMoreItems = true;
+
+      this.$apollo.queries.adminVariables.fetchMore({
+        variables: {
+          after: this.pageInfo.endCursor,
+        },
+      });
     },
     updateVariable(variable) {
       this.variableMutation(UPDATE_MUTATION_ACTION, variable);
@@ -66,10 +105,9 @@ export default {
           },
         });
 
-        const { errors } = data[currentMutation.name];
-
-        if (errors.length > 0) {
-          createFlash({ message: errors[0] });
+        if (data[currentMutation.name]?.errors?.length) {
+          const { errors } = data[currentMutation.name];
+          createAlert({ message: errors[0] });
         } else {
           // The writing to cache for admin variable is not working
           // because there is no ID in the cache at the top level.
@@ -77,9 +115,13 @@ export default {
           this.$apollo.queries.adminVariables.refetch();
         }
       } catch {
-        createFlash({ message: genericMutationErrorText });
+        createAlert({ message: genericMutationErrorText });
       }
     },
+  },
+  componentName: 'InstanceVariables',
+  i18n: {
+    tooManyCallsError: __('Maximum number of variables loaded (2000)'),
   },
   mutationData: {
     [ADD_MUTATION_ACTION]: { action: addAdminVariable, name: 'addAdminVariable' },

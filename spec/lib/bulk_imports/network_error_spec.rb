@@ -46,6 +46,22 @@ RSpec.describe BulkImports::NetworkError, :clean_gitlab_redis_cache do
         expect(exception.retriable?(tracker)).to eq(false)
       end
     end
+
+    context 'when entity is passed' do
+      it 'increments entity cache key' do
+        entity = create(:bulk_import_entity)
+        exception = described_class.new('Error!')
+
+        allow(exception).to receive(:cause).and_return(SocketError.new('Error!'))
+
+        expect(Gitlab::Cache::Import::Caching)
+          .to receive(:increment)
+          .with("bulk_imports/#{entity.id}/network_error/SocketError")
+          .and_call_original
+
+        exception.retriable?(entity)
+      end
+    end
   end
 
   describe '#retry_delay' do

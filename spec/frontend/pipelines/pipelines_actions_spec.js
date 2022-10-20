@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
@@ -95,7 +95,7 @@ describe('Pipelines Actions dropdown', () => {
 
         await waitForPromises();
         expect(findDropdown().props('loading')).toBe(false);
-        expect(createFlash).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledTimes(1);
       });
     });
 

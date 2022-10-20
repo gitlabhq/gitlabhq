@@ -1,7 +1,7 @@
 <script>
 import { GlIntersectionObserver, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import produce from 'immer';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import eventHub from '~/jobs/components/table/event_hub';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
@@ -42,7 +42,7 @@ export default {
         this.jobsPageInfo = data.project?.pipeline?.jobs?.pageInfo || {};
       },
       error() {
-        createFlash({ message: __('An error occurred while fetching the pipelines jobs.') });
+        createAlert({ message: __('An error occurred while fetching the pipelines jobs.') });
       },
     },
   },

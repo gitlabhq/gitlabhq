@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Labels **(FREE)**
@@ -448,10 +448,10 @@ To learn what happens when you sort by priority or label priority, see
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/357370) in GitLab 15.5.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an
-administrator to [enable the feature flag](../../administration/feature_flags.md) named `realtime_labels`.
+On self-managed GitLab, to prevent updating labels in real-time, you can ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `realtime_labels`.
 On GitLab.com, this feature is available.
 
 Changed labels are immediately visible to other users, without refreshing the page, on the following:

@@ -4,7 +4,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import epicTodoQuery from '~/sidebar/queries/epic_todo.query.graphql';
 import TodoButton from '~/vue_shared/components/sidebar/todo_toggle/todo_button.vue';
@@ -83,7 +83,7 @@ describe('Sidebar Todo Widget', () => {
     });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalled();
   });
 
   describe('collapsed', () => {
@@ -97,13 +97,13 @@ describe('Sidebar Todo Widget', () => {
     });
 
     it('shows add todo icon', () => {
-      expect(wrapper.find(GlIcon).exists()).toBe(true);
+      expect(wrapper.findComponent(GlIcon).exists()).toBe(true);
 
-      expect(wrapper.find(GlIcon).props('name')).toBe('todo-add');
+      expect(wrapper.findComponent(GlIcon).props('name')).toBe('todo-add');
     });
 
     it('sets default tooltip title', () => {
-      expect(wrapper.find(GlButton).attributes('title')).toBe('Add a to do');
+      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Add a to do');
     });
 
     it('when user has a to do', async () => {
@@ -112,12 +112,12 @@ describe('Sidebar Todo Widget', () => {
       });
 
       await waitForPromises();
-      expect(wrapper.find(GlIcon).props('name')).toBe('todo-done');
-      expect(wrapper.find(GlButton).attributes('title')).toBe('Mark as done');
+      expect(wrapper.findComponent(GlIcon).props('name')).toBe('todo-done');
+      expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Mark as done');
     });
 
     it('emits `todoUpdated` event on click on icon', async () => {
-      wrapper.find(GlIcon).vm.$emit('click', event);
+      wrapper.findComponent(GlIcon).vm.$emit('click', event);
 
       await nextTick();
       expect(wrapper.emitted('todoUpdated')).toEqual([[false]]);

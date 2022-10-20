@@ -15,25 +15,15 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          importer = importer_class(project)
-          return skip_to_next_stage(project) if importer.nil?
+          return skip_to_next_stage(project) if import_settings(project).disabled?(:single_endpoint_issue_events_import)
 
+          importer = ::Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
           info(project.id, message: "starting importer", importer: importer.name)
           waiter = importer.new(project, client).execute
           move_to_next_stage(project, { waiter.key => waiter.jobs_remaining })
         end
 
         private
-
-        def importer_class(project)
-          if Feature.enabled?(:github_importer_single_endpoint_issue_events_import, project.group, type: :ops)
-            ::Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
-          elsif Feature.enabled?(:github_importer_issue_events_import, project.group, type: :ops)
-            ::Gitlab::GithubImport::Importer::IssueEventsImporter
-          else
-            nil
-          end
-        end
 
         def skip_to_next_stage(project)
           info(project.id, message: "skipping importer", importer: "IssueEventsImporter")

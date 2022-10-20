@@ -55,6 +55,7 @@
 - Security::FindingsFinder
 - Security::PipelineVulnerabilitiesFinder
 - Security::ScanExecutionPoliciesFinder
+- Security::ScanResultPoliciesFinder
 - Security::TrainingProviders::BaseUrlFinder
 - Security::TrainingUrlsFinder
 - Security::TrainingProviders::KontraUrlFinder

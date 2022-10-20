@@ -68,24 +68,6 @@ RSpec.describe API::Internal::Base do
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
-
-      context 'when gitlab_shell_jwt_token is disabled' do
-        before do
-          stub_feature_flags(gitlab_shell_jwt_token: false)
-        end
-
-        it 'authenticates using a header' do
-          perform_request(headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) })
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        it 'returns 401 when no credentials provided' do
-          get(api("/internal/check"))
-
-          expect(response).to have_gitlab_http_status(:unauthorized)
-        end
-      end
     end
   end
 
@@ -1033,7 +1015,7 @@ RSpec.describe API::Internal::Base do
 
       context 'git push' do
         before do
-          stub_const('Gitlab::QueryLimiting::Transaction::THRESHOLD', 120)
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(120)
         end
 
         subject { push_with_path(key, full_path: path, changes: '_any') }

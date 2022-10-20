@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Installing the agent for Kubernetes **(FREE)**
@@ -48,7 +48,7 @@ For configuration settings, the agent uses a YAML file in the GitLab project. Yo
 To create an agent configuration file:
 
 1. Choose a name for your agent. The agent name follows the
-   [DNS label standard from RFC 1123](https://tools.ietf.org/html/rfc1123). The name must:
+   [DNS label standard from RFC 1123](https://www.rfc-editor.org/rfc/rfc1123). The name must:
 
    - Be unique in the project.
    - Contain at most 63 characters.
@@ -109,6 +109,9 @@ in your cluster. You can either:
 - Or, follow the [advanced installation method](#advanced-installation-method).
 
 If you do not know which one to choose, we recommend starting with Helm.
+
+NOTE:
+To connect to multiple clusters, you must configure, register, and install an agent in each cluster. Make sure to give each agent a unique name.
 
 #### Install the agent with Helm
 

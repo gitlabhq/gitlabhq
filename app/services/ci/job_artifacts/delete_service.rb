@@ -15,13 +15,23 @@ module Ci
             method: 'Ci::JobArtifacts::DeleteService#execute',
             project_id: build.project_id
           )
+          return ServiceResponse.error(
+            message: 'Action temporarily disabled. The project this job belongs to is undergoing stats refresh.',
+            reason: :project_stats_refresh
+          )
         end
 
-        # fix_expire_at is false because in this case we want to explicitly delete the job artifacts
-        # this flag is a workaround that will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/355833
-        Ci::JobArtifacts::DestroyBatchService.new(build.job_artifacts.erasable, fix_expire_at: false).execute
+        result = Ci::JobArtifacts::DestroyBatchService.new(build.job_artifacts.erasable).execute
 
-        ServiceResponse.success
+        if result.fetch(:status) == :success
+          ServiceResponse.success(payload:
+          {
+            destroyed_artifacts_count: result.fetch(:destroyed_artifacts_count),
+            statistics_updates: result.fetch(:statistics_updates)
+          })
+        else
+          ServiceResponse.error(message: result.fetch(:message))
+        end
       end
 
       private

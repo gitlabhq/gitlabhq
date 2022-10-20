@@ -12,22 +12,6 @@ module MarkupHelper
   # https://gitlab.com/gitlab-org/gitlab/-/issues/365358
   RENDER_TIMEOUT = 5.seconds
 
-  def plain?(filename)
-    Gitlab::MarkupHelper.plain?(filename)
-  end
-
-  def markup?(filename)
-    Gitlab::MarkupHelper.markup?(filename)
-  end
-
-  def gitlab_markdown?(filename)
-    Gitlab::MarkupHelper.gitlab_markdown?(filename)
-  end
-
-  def asciidoc?(filename)
-    Gitlab::MarkupHelper.asciidoc?(filename)
-  end
-
   # Use this in places where you would normally use link_to(gfm(...), ...).
   def link_to_markdown(body, url, html_options = {})
     return '' if body.blank?
@@ -88,8 +72,10 @@ module MarkupHelper
     tags = %w(a gl-emoji b strong i em pre code p span)
     tags << 'img' if options[:allow_images]
 
-    text = truncate_visible(md, max_chars || md.length)
-    text = prepare_for_rendering(text, markdown_field_render_context(object, attribute, options))
+    context = markdown_field_render_context(object, attribute, options)
+    context.reverse_merge!(truncate_visible_max_chars: max_chars || md.length)
+
+    text = prepare_for_rendering(md, context)
     text = sanitize(
       text,
       tags: tags,
@@ -146,11 +132,11 @@ module MarkupHelper
     return '' unless text.present?
 
     markup = proc do
-      if gitlab_markdown?(file_name)
+      if Gitlab::MarkupHelper.gitlab_markdown?(file_name)
         markdown_unsafe(text, context)
-      elsif asciidoc?(file_name)
+      elsif Gitlab::MarkupHelper.asciidoc?(file_name)
         asciidoc_unsafe(text, context)
-      elsif plain?(file_name)
+      elsif Gitlab::MarkupHelper.plain?(file_name)
         plain_unsafe(text)
       else
         other_markup_unsafe(file_name, text, context)
@@ -205,55 +191,6 @@ module MarkupHelper
 
   def render_wiki_content_context_container(wiki)
     { project: wiki.container }
-  end
-
-  # Return +text+, truncated to +max_chars+ characters, excluding any HTML
-  # tags.
-  def truncate_visible(text, max_chars)
-    doc = Nokogiri::HTML.fragment(text)
-    content_length = 0
-    truncated = false
-
-    doc.traverse do |node|
-      if node.text? || node.content.empty?
-        if truncated
-          node.remove
-          next
-        end
-
-        # Handle line breaks within a node
-        if node.content.strip.lines.length > 1
-          node.content = "#{node.content.lines.first.chomp}..."
-          truncated = true
-        end
-
-        num_remaining = max_chars - content_length
-        if node.content.length > num_remaining
-          node.content = node.content.truncate(num_remaining)
-          truncated = true
-        end
-
-        content_length += node.content.length
-      end
-
-      truncated = truncate_if_block(node, truncated)
-    end
-
-    doc.to_html
-  end
-
-  # Used by #truncate_visible.  If +node+ is the first block element, and the
-  # text hasn't already been truncated, then append "..." to the node contents
-  # and return true.  Otherwise return false.
-  def truncate_if_block(node, truncated)
-    return true if truncated
-
-    if node.element? && (node.description&.block? || node.matches?('pre > code > .line'))
-      node.inner_html = "#{node.inner_html}..." if node.next_sibling
-      true
-    else
-      truncated
-    end
   end
 
   def strip_empty_link_tags(text)

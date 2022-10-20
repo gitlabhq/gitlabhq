@@ -1,11 +1,11 @@
 .row.gl-mt-3.gl-mb-3
   .col-lg-12
-    .card
-      .card-header
+    = render Pajamas::CardComponent.new do |c|
+      - c.header do
         = _("Manage your project's triggers")
-      .card-body
+      - c.body do
         = render 'projects/triggers/form', btn_text: _('Add trigger')
-        %hr
+        .gl-mb-5
         - if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
           #js-ci-pipeline-triggers-list.triggers-list{ data: { triggers: @triggers_json } }
         - else
@@ -28,11 +28,11 @@
                   %th
                 = render partial: 'projects/triggers/trigger', collection: @triggers, as: :trigger
           - else
-            %p.settings-message.text-center.gl-mb-3{ data: { testid: 'no_triggers_content' } }
-              = _('No triggers exist yet. Use the form above to create one.')
-
-      .card-footer
-
+            = render Pajamas::AlertComponent.new(variant: :warning, show_icon: false, dismissible: false,
+              alert_options: { data: { testid: 'no_triggers_content' }}) do |c|
+              = c.body do
+                = _('No triggers exist yet. Use the form above to create one.')
+      - c.footer do
         %p
           = _("These examples show how to trigger this project's pipeline for a branch or tag.")
 

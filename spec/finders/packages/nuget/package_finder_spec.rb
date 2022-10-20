@@ -7,7 +7,7 @@ RSpec.describe Packages::Nuget::PackageFinder do
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, namespace: subgroup) }
   let_it_be_with_refind(:package1) { create(:nuget_package, project: project) }
-  let_it_be(:package2) { create(:nuget_package, name: package1.name, version: '2.0.0', project: project) }
+  let_it_be(:package2) { create(:nuget_package, name: package1.name, version: '2.0.0-ABC', project: project) }
   let_it_be(:package3) { create(:nuget_package, name: 'Another.Dummy.Package', project: project) }
   let_it_be(:other_package_1) { create(:nuget_package, name: package1.name, version: package1.version) }
   let_it_be(:other_package_2) { create(:nuget_package, name: package1.name, version: package2.version) }
@@ -43,7 +43,13 @@ RSpec.describe Packages::Nuget::PackageFinder do
       end
 
       context 'with valid version' do
-        let(:package_version) { '2.0.0' }
+        let(:package_version) { '2.0.0-ABC' }
+
+        it { is_expected.to match_array([package2]) }
+      end
+
+      context 'with varying case version' do
+        let(:package_version) { '2.0.0-abC' }
 
         it { is_expected.to match_array([package2]) }
       end

@@ -5,11 +5,17 @@ module Gitlab
     class UserFormatter
       attr_reader :client, :raw
 
-      delegate :id, :login, to: :raw, allow_nil: true
-
       def initialize(client, raw)
         @client = client
         @raw = raw
+      end
+
+      def id
+        raw[:id]
+      end
+
+      def login
+        raw[:login]
       end
 
       def gitlab_id
@@ -21,7 +27,7 @@ module Gitlab
       private
 
       def email
-        @email ||= client.user(raw.login).try(:email)
+        @email ||= client.user(raw[:login]).to_h[:email]
       end
 
       def find_by_email

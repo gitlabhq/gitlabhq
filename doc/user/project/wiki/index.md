@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Wiki **(FREE)**
@@ -151,6 +151,8 @@ You need at least the Developer role to edit a wiki page:
    - Select the edit icon (**{pencil}**).
 1. Edit the content.
 1. Select **Save changes**.
+
+Unsaved changes to a wiki page are preserved in local browser storage to prevent accidental data loss.
 
 ### Create a table of contents
 
@@ -387,6 +389,11 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 WARNING:
 This operation deletes all data in the wiki.
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the
+right conditions. We highly recommend running them in a test environment with a backup of the
+instance ready to be restored, just in case.
 
 To clear all data from a project wiki and recreate it in a blank state:
 

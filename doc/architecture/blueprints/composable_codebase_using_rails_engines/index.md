@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 comments: false
 description: 'Making a GitLab codebase composable - allowing to run parts of the application'
 ---
@@ -50,7 +50,7 @@ codebase without clear boundaries results in a number of problems and inefficien
   we usually need to run a whole test suite to confidently know which parts are affected. This to
   some extent can be improved by building a heuristic to aid this process, but it is prone to errors and hard
   to keep accurate at all times
-- All components need to be loaded at all times in order to run only parts of the application
+- All components need to be loaded at all times to run only parts of the application
 - Increased resource usage, as we load parts of the application that are rarely used in a given context
 - The high memory usage results in slowing the whole application as it increases GC cycles duration
   creating significantly longer latency for processing requests or worse cache usage of CPUs
@@ -208,7 +208,7 @@ graph LR
 
 ### Application Layers on GitLab.com
 
-Due to its scale, GitLab.com requires much more attention to run. This is needed in order to better manage resources
+Due to its scale, GitLab.com requires much more attention to run. This is needed to better manage resources
 and provide SLAs for different functional parts. The chart below provides a simplistic view of GitLab.com application layers.
 It does not include all components, like Object Storage nor Gitaly nodes, but shows the GitLab Rails dependencies between
 different components and how they are configured on GitLab.com today:
@@ -543,7 +543,7 @@ Controllers, Serializers, some presenters and some of the Grape:Entities are als
 
 Potential challenges with moving Controllers:
 
-- We needed to extend `Gitlab::Patch::DrawRoute` in order to support `engines/web_engine/config/routes` and `engines/web_engine/ee/config/routes` in case when `web_engine` is loaded. Here is potential [solution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720#note_506957398).
+- We needed to extend `Gitlab::Patch::DrawRoute` to support `engines/web_engine/config/routes` and `engines/web_engine/ee/config/routes` in case when `web_engine` is loaded. Here is potential [solution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720#note_506957398).
 - `Gitlab::Routing.url_helpers` paths are used in models and services, that could be used by Sidekiq (for example `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18)))
 
 ### Packwerk

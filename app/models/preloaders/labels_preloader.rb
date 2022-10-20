@@ -21,8 +21,10 @@ module Preloaders
     def preload_all
       preloader = ActiveRecord::Associations::Preloader.new
 
+      preloader.preload(labels, parent_container: :route)
       preloader.preload(labels.select { |l| l.is_a? ProjectLabel }, { project: [:project_feature, namespace: :route] })
       preloader.preload(labels.select { |l| l.is_a? GroupLabel }, { group: :route })
+
       labels.each do |label|
         label.lazy_subscription(user)
         label.lazy_subscription(user, project) if project.present?

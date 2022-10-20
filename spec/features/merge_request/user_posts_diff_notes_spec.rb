@@ -6,7 +6,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
   include MergeRequestDiffHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:merge_request) { create(:merge_request) }
+  let_it_be(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }
   let(:comment_button_class) { '.add-diff-note' }
@@ -219,7 +219,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
     end
 
     context 'with a match line' do
-      it 'does not allow commenting' do
+      it 'does not allow commenting', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/375024' do
         match_should_not_allow_commenting(find_by_scrolling('.match', match: :first))
       end
     end

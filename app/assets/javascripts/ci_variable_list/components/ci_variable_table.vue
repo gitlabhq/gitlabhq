@@ -75,8 +75,7 @@ export default {
   props: {
     isLoading: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     variables: {
       type: Array,

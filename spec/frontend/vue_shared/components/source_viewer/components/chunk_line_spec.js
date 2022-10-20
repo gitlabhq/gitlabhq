@@ -1,10 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ChunkLine from '~/vue_shared/components/source_viewer/components/chunk_line.vue';
-import {
-  BIDI_CHARS,
-  BIDI_CHARS_CLASS_LIST,
-  BIDI_CHAR_TOOLTIP,
-} from '~/vue_shared/components/source_viewer/constants';
 
 const DEFAULT_PROPS = {
   number: 2,
@@ -31,7 +26,6 @@ describe('Chunk Line component', () => {
   const findLineLink = () => wrapper.find('.file-line-num');
   const findBlameLink = () => wrapper.find('.file-line-blame');
   const findContent = () => wrapper.findByTestId('content');
-  const findWrappedBidiChars = () => wrapper.findAllByTestId('bidi-wrapper');
 
   beforeEach(() => {
     createComponent();
@@ -40,22 +34,6 @@ describe('Chunk Line component', () => {
   afterEach(() => wrapper.destroy());
 
   describe('rendering', () => {
-    it('wraps BiDi characters', () => {
-      const content = `// some content ${BIDI_CHARS.toString()} with BiDi chars`;
-      createComponent({ content });
-      const wrappedBidiChars = findWrappedBidiChars();
-
-      expect(wrappedBidiChars.length).toBe(BIDI_CHARS.length);
-
-      wrappedBidiChars.wrappers.forEach((_, i) => {
-        expect(wrappedBidiChars.at(i).text()).toBe(BIDI_CHARS[i]);
-        expect(wrappedBidiChars.at(i).attributes()).toMatchObject({
-          class: BIDI_CHARS_CLASS_LIST,
-          title: BIDI_CHAR_TOOLTIP,
-        });
-      });
-    });
-
     it('renders a blame link', () => {
       expect(findBlameLink().attributes()).toMatchObject({
         href: `${DEFAULT_PROPS.blamePath}#L${DEFAULT_PROPS.number}`,

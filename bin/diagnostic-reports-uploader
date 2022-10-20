@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'fog/google'
+
+require_relative '../lib/gitlab/memory/reports_uploader'
+require_relative '../lib/gitlab/memory/upload_and_cleanup_reports'
+require_relative '../lib/gitlab/memory/diagnostic_reports_logger'
+
+# Fail fast if the necessary ENV vars are not set.
+reports_path = ENV["GITLAB_DIAGNOSTIC_REPORTS_PATH"].to_s
+raise 'GITLAB_DIAGNOSTIC_REPORTS_PATH dir is missing' unless Dir.exist?(reports_path)
+
+gcs_key = ENV["GITLAB_GCP_KEY_PATH"].to_s
+raise "GCS keyfile not found: #{gcs_key}" unless File.exist?(gcs_key)
+
+gcs_project = ENV["GITLAB_DIAGNOSTIC_REPORTS_PROJECT"].to_s
+raise 'GITLAB_DIAGNOSTIC_REPORTS_PROJECT is missing' unless gcs_project && !gcs_project.empty?
+
+gcs_bucket = ENV["GITLAB_DIAGNOSTIC_REPORTS_BUCKET"].to_s
+raise 'GITLAB_DIAGNOSTIC_REPORTS_BUCKET is missing' unless gcs_bucket && !gcs_bucket.empty?
+
+rails_root = File.expand_path("..", __dir__)
+log_file = File.expand_path('log/diagnostic_reports_json.log', rails_root)
+logger = Gitlab::Memory::DiagnosticReportsLogger.new(log_file)
+
+uploader = Gitlab::Memory::ReportsUploader.new(gcs_key: gcs_key, gcs_project: gcs_project, gcs_bucket: gcs_bucket,
+                                               logger: logger)
+Gitlab::Memory::UploadAndCleanupReports.new(uploader: uploader, reports_path: reports_path, logger: logger).call

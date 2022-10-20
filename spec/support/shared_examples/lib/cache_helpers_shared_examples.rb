@@ -54,31 +54,6 @@ RSpec.shared_examples_for 'object cache helper' do
       allow(Gitlab::ApplicationContext).to receive(:current_context_attribute).with(:caller_id).and_return(caller_id)
     end
 
-    context 'when feature flag is off' do
-      before do
-        stub_feature_flags(add_timing_to_certain_cache_actions: false)
-      end
-
-      it 'does not call increment' do
-        expect(transaction).not_to receive(:increment).with(:cached_object_operations_total, any_args)
-
-        subject
-      end
-
-      it 'does not call histogram' do
-        expect(Gitlab::Metrics).not_to receive(:histogram)
-
-        subject
-      end
-
-      it "is valid JSON" do
-        parsed = Gitlab::Json.parse(subject.to_s)
-
-        expect(parsed).to be_a(Hash)
-        expect(parsed["id"]).to eq(presentable.id)
-      end
-    end
-
     it 'increments the counter' do
       expect(transaction)
         .to receive(:increment)
@@ -155,34 +130,6 @@ RSpec.shared_examples_for 'collection cache helper' do
       allow(::Gitlab::Metrics::WebTransaction).to receive(:current).and_return(transaction)
       allow(transaction).to receive(:increment)
       allow(Gitlab::ApplicationContext).to receive(:current_context_attribute).with(:caller_id).and_return(caller_id)
-    end
-
-    context 'when feature flag is off' do
-      before do
-        stub_feature_flags(add_timing_to_certain_cache_actions: false)
-      end
-
-      it 'does not call increment' do
-        expect(transaction).not_to receive(:increment).with(:cached_object_operations_total, any_args)
-
-        subject
-      end
-
-      it 'does not call histogram' do
-        expect(Gitlab::Metrics).not_to receive(:histogram)
-
-        subject
-      end
-
-      it "is valid JSON" do
-        parsed = Gitlab::Json.parse(subject.to_s)
-
-        expect(parsed).to be_an(Array)
-
-        presentable.each_with_index do |item, i|
-          expect(parsed[i]["id"]).to eq(item.id)
-        end
-      end
     end
 
     context 'when presentable has a group by clause' do

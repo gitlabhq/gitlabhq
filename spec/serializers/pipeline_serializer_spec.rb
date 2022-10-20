@@ -19,7 +19,7 @@ RSpec.describe PipelineSerializer do
       end
 
       context 'when a single object is being serialized' do
-        let(:resource) { create(:ci_empty_pipeline, project: project) }
+        let(:resource) { build_stubbed(:ci_empty_pipeline, project: project) }
 
         it 'serializers the pipeline object' do
           expect(subject[:id]).to eq resource.id
@@ -27,10 +27,11 @@ RSpec.describe PipelineSerializer do
       end
 
       context 'when multiple objects are being serialized' do
-        let(:resource) { create_list(:ci_pipeline, 2, project: project) }
+        let(:resource) { Array.new(2) { build_stubbed(:ci_pipeline, project: project) } }
 
         it 'serializers the array of pipelines' do
           expect(subject).not_to be_empty
+          expect(subject.size).to eq(2)
         end
       end
     end
@@ -41,8 +42,7 @@ RSpec.describe PipelineSerializer do
       let(:query) { {} }
 
       let(:serializer) do
-        described_class.new(current_user: user)
-          .with_pagination(request, response)
+        described_class.new(current_user: user, project: project).with_pagination(request, response)
       end
 
       it 'created a paginated serializer' do
@@ -67,7 +67,7 @@ RSpec.describe PipelineSerializer do
 
         context 'when a single pipeline object is present in relation' do
           before do
-            create(:ci_empty_pipeline)
+            create(:ci_empty_pipeline, project: project)
           end
 
           it 'serializes pipeline relation' do
@@ -77,7 +77,7 @@ RSpec.describe PipelineSerializer do
 
         context 'when a multiple pipeline objects are being serialized' do
           before do
-            create_list(:ci_empty_pipeline, 3)
+            create_list(:ci_empty_pipeline, 3, project: project)
           end
 
           it 'serializes appropriate number of objects' do
@@ -100,28 +100,28 @@ RSpec.describe PipelineSerializer do
 
       let!(:merge_request_1) do
         create(:merge_request,
-          :with_detached_merge_request_pipeline,
-          target_project: project,
-          target_branch: 'master',
-          source_project: project,
-          source_branch: 'feature')
+               :with_detached_merge_request_pipeline,
+               target_project: project,
+               target_branch: 'master',
+               source_project: project,
+               source_branch: 'feature')
       end
 
       let!(:merge_request_2) do
         create(:merge_request,
-          :with_detached_merge_request_pipeline,
-          target_project: project,
-          target_branch: 'master',
-          source_project: project,
-          source_branch: '2-mb-file')
+               :with_detached_merge_request_pipeline,
+               target_project: project,
+               target_branch: 'master',
+               source_project: project,
+               source_branch: '2-mb-file')
       end
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 
       it 'includes merge requests information' do
-        expect(subject.all? { |entry| entry[:merge_request].present? }).to be_truthy
+        expect(subject).to be_all { |entry| entry[:merge_request].present? }
       end
 
       it 'preloads related merge requests' do
@@ -138,7 +138,8 @@ RSpec.describe PipelineSerializer do
 
       let(:resource) { Ci::Pipeline.all }
 
-      before do
+      # Create pipelines only once and change their attributes if needed.
+      before_all do
         # Since RequestStore.active? is true we have to allow the
         # gitaly calls in this block
         # Issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/37772
@@ -151,8 +152,6 @@ RSpec.describe PipelineSerializer do
       end
 
       context 'with the same ref' do
-        let(:ref) { 'feature' }
-
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
           expected_queries = Gitlab.ee? ? 33 : 30
@@ -163,10 +162,11 @@ RSpec.describe PipelineSerializer do
       end
 
       context 'with different refs' do
-        def ref
-          @sequence ||= 0
-          @sequence += 1
-          "feature-#{@sequence}"
+        before do
+          # rubocop:disable Rails/SkipsModelValidations
+          Ci::Pipeline.update_all(%(ref = 'feature-' || id))
+          Ci::Build.update_all(%(ref = 'feature-' || stage_id))
+          # rubocop:enable Rails/SkipsModelValidations
         end
 
         it 'verifies number of queries', :request_store do
@@ -184,8 +184,6 @@ RSpec.describe PipelineSerializer do
       end
 
       context 'with triggered pipelines' do
-        let(:ref) { 'feature' }
-
         before do
           pipeline_1 = create(:ci_pipeline)
           build_1 = create(:ci_build, pipeline: pipeline_1)
@@ -210,8 +208,6 @@ RSpec.describe PipelineSerializer do
       end
 
       context 'with build environments' do
-        let(:ref) { 'feature' }
-
         let_it_be(:production) { create(:environment, :production, project: project) }
         let_it_be(:staging) { create(:environment, :staging, project: project) }
 
@@ -222,13 +218,11 @@ RSpec.describe PipelineSerializer do
           create(:ci_build, :scheduled, pipeline: pipeline, environment: production.name)
           create(:ci_build, :scheduled, pipeline: pipeline, environment: staging.name)
 
-          expect { subject }.not_to exceed_query_limit(1).for_query /SELECT "environments".*/
+          expect { subject }.not_to exceed_query_limit(1).for_query(/SELECT "environments".*/)
         end
       end
 
       context 'with scheduled and manual builds' do
-        let(:ref) { 'feature' }
-
         before do
           create(:ci_build, :scheduled, pipeline: resource.first)
           create(:ci_build, :scheduled, pipeline: resource.second)
@@ -238,7 +232,7 @@ RSpec.describe PipelineSerializer do
 
         it 'sends at most one metadata query for each type of build', :request_store do
           # 1 for the existing failed builds and 2 for the added scheduled and manual builds
-          expect { subject }.not_to exceed_query_limit(1 + 2).for_query /SELECT "ci_builds_metadata".*/
+          expect { subject }.not_to exceed_query_limit(1 + 2).for_query(/SELECT "ci_builds_metadata".*/)
         end
       end
 
@@ -246,25 +240,25 @@ RSpec.describe PipelineSerializer do
         create(:ci_empty_pipeline,
                project: project,
                status: status,
-               ref: ref).tap do |pipeline|
-          Ci::Build::AVAILABLE_STATUSES.each do |status|
-            create_build(pipeline, status, status)
+               ref: 'feature').tap do |pipeline|
+          Ci::Build::AVAILABLE_STATUSES.each do |build_status|
+            create_build(pipeline, status, build_status)
           end
         end
       end
 
       def create_build(pipeline, stage, status)
         create(:ci_build, :tags, :triggered, :artifacts,
-          pipeline: pipeline, stage: stage,
-          name: stage, status: status, ref: pipeline.ref)
+               pipeline: pipeline, stage: stage,
+               name: stage, status: status, ref: pipeline.ref)
       end
     end
   end
 
   describe '#represent_status' do
     context 'when represents only status' do
-      let(:resource) { create(:ci_pipeline) }
-      let(:status) { resource.detailed_status(double('user')) }
+      let(:resource) { build_stubbed(:ci_pipeline) }
+      let(:status) { resource.detailed_status(instance_double('User')) }
 
       subject { serializer.represent_status(resource) }
 

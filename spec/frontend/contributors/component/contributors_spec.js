@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import ContributorsCharts from '~/contributors/components/contributors.vue';
@@ -52,14 +53,14 @@ describe('Contributors charts', () => {
   it('should display loader whiled loading data', async () => {
     wrapper.vm.$store.state.loading = true;
     await nextTick();
-    expect(wrapper.find('.contributors-loader').exists()).toBe(true);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
   it('should render charts when loading completed and there is chart data', async () => {
     wrapper.vm.$store.state.loading = false;
     wrapper.vm.$store.state.chartData = chartData;
     await nextTick();
-    expect(wrapper.find('.contributors-loader').exists()).toBe(false);
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
     expect(wrapper.find('.contributors-charts').exists()).toBe(true);
     expect(wrapper.element).toMatchSnapshot();
   });

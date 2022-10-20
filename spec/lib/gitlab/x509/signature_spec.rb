@@ -30,6 +30,20 @@ RSpec.describe Gitlab::X509::Signature do
       expect(signature.verification_status).to eq(:verified)
     end
 
+    it 'returns a verified signature if email does match, case-insensitively' do
+      signature = described_class.new(
+        X509Helpers::User1.signed_commit_signature,
+        X509Helpers::User1.signed_commit_base_data,
+        X509Helpers::User1.certificate_email.upcase,
+        X509Helpers::User1.signed_commit_time
+      )
+
+      expect(signature.x509_certificate).to have_attributes(certificate_attributes)
+      expect(signature.x509_certificate.x509_issuer).to have_attributes(issuer_attributes)
+      expect(signature.verified_signature).to be_truthy
+      expect(signature.verification_status).to eq(:verified)
+    end
+
     context "if the email matches but isn't confirmed" do
       let!(:user) { create(:user, :unconfirmed, email: X509Helpers::User1.certificate_email) }
 

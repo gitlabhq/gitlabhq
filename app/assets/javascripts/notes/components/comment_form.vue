@@ -5,7 +5,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Autosave from '~/autosave';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { badgeState } from '~/issuable/components/status_box.vue';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
@@ -111,7 +111,10 @@ export default {
       return this.getNoteableData.current_user.can_create_note;
     },
     canSetInternalNote() {
-      return this.getNoteableData.current_user.can_update && (this.isIssue || this.isEpic);
+      return (
+        this.getNoteableData.current_user.can_create_confidential_note &&
+        (this.isIssue || this.isEpic)
+      );
     },
     issueActionButtonTitle() {
       const openOrClose = this.isOpen ? 'close' : 'reopen';
@@ -276,7 +279,7 @@ export default {
         .then(() => badgeState.updateStatus && badgeState.updateStatus())
         .then(refreshUserMergeRequestCounts)
         .catch(() =>
-          createFlash({
+          createAlert({
             message: constants.toggleStateErrorMessage[this.noteableType][this.openState],
           }),
         );

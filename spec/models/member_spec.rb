@@ -178,8 +178,8 @@ RSpec.describe Member do
       end
 
       context 'member role is associated' do
-        let_it_be(:member_role) do
-          create(:member_role, members: [member])
+        let!(:member_role) do
+          create(:member_role, members: [member], base_access_level: Gitlab::Access::DEVELOPER)
         end
 
         context 'member role matches access level' do
@@ -201,7 +201,9 @@ RSpec.describe Member do
             member.access_level = Gitlab::Access::MAINTAINER
 
             expect(member).not_to be_valid
-            expect(member.errors.full_messages).to include( "Access level cannot be changed since member is associated with a custom role")
+            expect(member.errors.full_messages).to include(
+              "Access level cannot be changed since member is associated with a custom role"
+            )
           end
         end
       end
@@ -823,22 +825,6 @@ RSpec.describe Member do
         member.accept_invite!(user)
 
         expect(user.authorized_projects.reload).to include(project)
-      end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(allow_non_blocking_member_refresh: false)
-        end
-
-        it 'successfully completes a blocking refresh', :delete, :sidekiq_inline do
-          member.blocking_refresh = false
-
-          expect(member).to receive(:refresh_member_authorized_projects).with(blocking: true).and_call_original
-
-          member.accept_invite!(user)
-
-          expect(user.authorized_projects.reload).to include(project)
-        end
       end
     end
 

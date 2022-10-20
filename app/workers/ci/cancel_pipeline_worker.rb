@@ -10,6 +10,7 @@ module Ci
     idempotent!
     deduplicate :until_executed
     urgency :high
+    loggable_arguments 1
 
     def perform(pipeline_id, auto_canceled_by_pipeline_id)
       ::Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|

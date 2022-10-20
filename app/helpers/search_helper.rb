@@ -380,6 +380,40 @@ module SearchHelper
     end
   end
 
+  def search_filter_link_json(scope, label, data, search)
+    scope_name = scope.to_s
+    search_params = params.merge(search).merge({ scope: scope_name }).permit(SEARCH_GENERIC_PARAMS)
+    active_scope = @scope == scope_name
+
+    result = { label: label, scope: scope_name, data: data, link: search_path(search_params), active: active_scope }
+    result[:count] =  @search_results.formatted_count(scope_name) if active_scope && !@timeout
+    result[:count_link] = search_count_path(search_params) unless active_scope
+
+    result
+  end
+
+  # search page scope navigation
+  def search_navigation
+    {
+      projects: {       label: _("Projects"),                 data: { qa_selector: 'projects_tab' }, condition: @project.nil? },
+      blobs: {          label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: project_search_tabs?(:blobs) || search_service.show_elasticsearch_tabs? || feature_flag_tab_enabled?(:global_search_code_tab) },
+      issues: {         label: _("Issues"),                   condition: project_search_tabs?(:issues) || feature_flag_tab_enabled?(:global_search_issues_tab) },
+      merge_requests: { label: _("Merge requests"),           condition: project_search_tabs?(:merge_requests) || feature_flag_tab_enabled?(:global_search_merge_requests_tab) },
+      wiki_blobs: {     label: _("Wiki"),                     condition: project_search_tabs?(:wiki) || search_service.show_elasticsearch_tabs? },
+      commits: {        label: _("Commits"),                  condition: project_search_tabs?(:commits) || (search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_commits_tab)) },
+      notes: {          label: _("Comments"),                 condition: project_search_tabs?(:notes) || search_service.show_elasticsearch_tabs? },
+      milestones: {     label: _("Milestones"),               condition: project_search_tabs?(:milestones) || @project.nil? },
+      users: {          label: _("Users"),                    condition: show_user_search_tab? },
+      snippet_titles: { label: _("Titles and Descriptions"),  search: { snippets: true, group_id: nil, project_id: nil }, condition: @show_snippets.present? && @project.nil? }
+    }
+  end
+
+  def search_navigation_json
+    search_navigation.each_with_object({}) do |(key, value), hash|
+      hash[key] = search_filter_link_json(key, value[:label], value[:data], value[:search]) if value[:condition]
+    end.to_json
+  end
+
   def search_filter_input_options(type, placeholder = _('Search or filter results...'))
     opts =
       {

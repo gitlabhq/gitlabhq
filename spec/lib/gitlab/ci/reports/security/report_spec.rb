@@ -140,6 +140,24 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report do
     it { is_expected.to eq(scanner_1) }
   end
 
+  describe '#primary_identifiers' do
+    it 'returns matching identifiers' do
+      scanner_with_identifiers = create(
+        :ci_reports_security_scanner,
+        external_id: 'external_id_1',
+        primary_identifiers: [create(:ci_reports_security_identifier, external_id: 'other_id', name: 'other_scanner')]
+      )
+      scanner_without_identifiers = create(
+        :ci_reports_security_scanner,
+        external_id: 'external_id_2')
+
+      report.add_scanner(scanner_with_identifiers)
+      report.add_scanner(scanner_without_identifiers)
+
+      expect(report.primary_identifiers).to eq(scanner_with_identifiers.primary_identifiers)
+    end
+  end
+
   describe '#add_error' do
     context 'when the message is not given' do
       it 'adds a new error to report with the generic error message' do

@@ -49,6 +49,7 @@ describe('PackageTitle', () => {
   const findPackageSize = () => wrapper.findByTestId('package-size');
   const findPipelineProject = () => wrapper.findByTestId('pipeline-project');
   const findPackageRef = () => wrapper.findByTestId('package-ref');
+  const findPackageLastDownloadedAt = () => wrapper.findByTestId('package-last-downloaded-at');
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPackageBadges = () => wrapper.findAllByTestId('tag-badge');
   const findSubHeaderText = () => wrapper.findByTestId('sub-header');
@@ -224,6 +225,27 @@ describe('PackageTitle', () => {
         text: packagePipelines()[0].project.name,
         icon: 'review-list',
         link: packagePipelines()[0].project.webUrl,
+      });
+    });
+  });
+
+  describe('package last downloaded at', () => {
+    it('does not display the data if missing', async () => {
+      await createComponent({
+        ...packageData(),
+        lastDownloadedAt: null,
+      });
+
+      expect(findPackageLastDownloadedAt().exists()).toBe(false);
+    });
+
+    it('correctly shows the data if present', async () => {
+      await createComponent();
+
+      expect(findPackageLastDownloadedAt().props()).toMatchObject({
+        text: 'Last downloaded Aug 17, 2021',
+        icon: 'download',
+        size: 'm',
       });
     });
   });

@@ -198,7 +198,7 @@ export default {
     label-cols="3"
     label-cols-lg="2"
   >
-    <span v-if="isReadonlyWithNoDates" class="gl-text-gray-400 gl-ml-4">
+    <span v-if="isReadonlyWithNoDates" class="gl-text-secondary gl-ml-4">
       {{ $options.i18n.none }}
     </span>
     <div v-else class="gl-display-flex gl-flex-wrap gl-gap-5">

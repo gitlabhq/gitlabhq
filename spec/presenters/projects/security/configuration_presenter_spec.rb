@@ -6,9 +6,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
   include Gitlab::Routing.url_helpers
   using RSpec::Parameterized::TableSyntax
 
-  let(:project_with_repo) { create(:project, :repository) }
-  let(:project_with_no_repo) { create(:project) }
-  let(:current_user) { create(:user) }
+  let_it_be(:current_user) { build_stubbed(:user) }
+
   let(:presenter) { described_class.new(project, current_user: current_user) }
 
   before do
@@ -19,9 +18,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
     subject(:html_data) { presenter.to_html_data_attribute }
 
     context 'when latest default branch pipeline`s source is not auto devops' do
-      let(:project) { project_with_repo }
+      let_it_be(:project) { create(:project, :repository) }
 
-      let(:pipeline) do
+      let_it_be(:pipeline) do
         create(
           :ci_pipeline,
           project: project,
@@ -119,6 +118,16 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
 
       context 'when the job has more than one report' do
         let(:features) { Gitlab::Json.parse(html_data[:features]) }
+        let(:project) { create(:project, :repository) }
+
+        let(:pipeline) do
+          create(
+            :ci_pipeline,
+            project: project,
+            ref: project.default_branch,
+            sha: project.commit.sha
+          )
+        end
 
         let!(:artifacts) do
           { artifacts: { reports: { other_job: ['gl-other-report.json'], sast: ['gl-sast-report.json'] } } }
@@ -161,6 +170,8 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
       end
 
       context "while retrieving information about gitlab ci file" do
+        let(:project) { create(:project, :repository) }
+
         context 'when a .gitlab-ci.yml file exists' do
           let!(:ci_config) do
             project.repository.create_file(
@@ -189,7 +200,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
     end
 
     context 'when the project is empty' do
-      let(:project) { project_with_no_repo }
+      let(:project) { create(:project) }
 
       it 'includes a blank gitlab_ci history path' do
         expect(html_data[:gitlab_ci_history_path]).to eq('')
@@ -197,7 +208,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
     end
 
     context 'when the project has no default branch set' do
-      let(:project) { project_with_repo }
+      let(:project) { create(:project, :repository) }
 
       it 'includes the path to gitlab_ci history' do
         allow(project).to receive(:default_branch).and_return(nil)
@@ -207,9 +218,9 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
     end
 
     context "when the latest default branch pipeline's source is auto devops" do
-      let(:project) { project_with_repo }
+      let_it_be(:project) { create(:project, :repository) }
 
-      let(:pipeline) do
+      let_it_be(:pipeline) do
         create(
           :ci_pipeline,
           :auto_devops_source,
@@ -256,7 +267,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
     end
 
     context 'when the project has no default branch pipeline' do
-      let(:project) { project_with_repo }
+      let_it_be(:project) { create(:project, :repository) }
 
       it 'reports that auto devops is disabled' do
         expect(html_data[:auto_devops_enabled]).to be_falsy

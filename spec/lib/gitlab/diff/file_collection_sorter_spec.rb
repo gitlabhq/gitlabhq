@@ -33,27 +33,28 @@ RSpec.describe Gitlab::Diff::FileCollectionSorter do
     let(:sorted_files_paths) { subject.sort.map { |file| file.new_path.presence || file.old_path } }
 
     it 'returns list sorted directory first' do
-      expect(sorted_files_paths).to eq([
-        '.dir/test',
-        '1-folder/nested/A-file.ext',
-        '1-folder/nested/M-file.ext',
-        '1-folder/nested/Z-file.ext',
-        '1-folder/A-file.ext',
-        '1-folder/M-file.ext',
-        '1-folder/README',
-        '1-folder/README',
-        '1-folder/Z-file.ext',
-        '2-folder/nested/A-file.ext',
-        '2-folder/A-file.ext',
-        '2-folder/M-file.ext',
-        '2-folder/Z-file.ext',
-        '.file',
-        'A-file.ext',
-        'M-file.ext',
-        'README',
-        'README',
-        'Z-file.ext'
-      ])
+      expect(sorted_files_paths).to eq(
+        [
+          '.dir/test',
+          '1-folder/nested/A-file.ext',
+          '1-folder/nested/M-file.ext',
+          '1-folder/nested/Z-file.ext',
+          '1-folder/A-file.ext',
+          '1-folder/M-file.ext',
+          '1-folder/README',
+          '1-folder/README',
+          '1-folder/Z-file.ext',
+          '2-folder/nested/A-file.ext',
+          '2-folder/A-file.ext',
+          '2-folder/M-file.ext',
+          '2-folder/Z-file.ext',
+          '.file',
+          'A-file.ext',
+          'M-file.ext',
+          'README',
+          'README',
+          'Z-file.ext'
+        ])
     end
   end
 end

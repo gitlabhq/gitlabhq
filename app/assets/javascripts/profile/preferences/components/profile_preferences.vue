@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/flash';
 import { INTEGRATION_VIEW_CONFIGS, i18n } from '../constants';
 import IntegrationView from './integration_view.vue';
 
@@ -94,15 +94,15 @@ export default {
         return;
       }
       updateClasses(this.bodyClasses, this.getSelectedTheme().css_class, this.selectedLayout);
-      const { message = this.$options.i18n.defaultSuccess, type = FLASH_TYPES.NOTICE } =
+      const { message = this.$options.i18n.defaultSuccess, variant = VARIANT_INFO } =
         customEvent?.detail?.[0] || {};
-      createFlash({ message, type });
+      createAlert({ message, variant });
       this.isSubmitEnabled = true;
     },
     handleError(customEvent) {
-      const { message = this.$options.i18n.defaultError, type = FLASH_TYPES.ALERT } =
+      const { message = this.$options.i18n.defaultError, variant = VARIANT_DANGER } =
         customEvent?.detail?.[0] || {};
-      createFlash({ message, type });
+      createAlert({ message, variant });
       this.isSubmitEnabled = true;
     },
   },
@@ -110,7 +110,7 @@ export default {
 </script>
 
 <template>
-  <div class="row gl-mt-3 js-preferences-form">
+  <div class="row gl-mt-3 js-preferences-form js-search-settings-section">
     <div v-if="integrationViews.length" class="col-sm-12">
       <hr data-testid="profile-preferences-integrations-rule" />
     </div>
@@ -131,9 +131,9 @@ export default {
         :message-url="view.message_url"
         :config="$options.integrationViewConfigs[view.name]"
       />
-    </div>
-    <div class="col-sm-12">
       <hr />
+    </div>
+    <div class="col-sm-12 js-hide-when-nothing-matches-search">
       <gl-button
         category="primary"
         variant="confirm"

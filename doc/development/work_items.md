@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 # Work items and work item types
 
@@ -88,8 +88,8 @@ so that in future we can allow users to define custom WITs, we will move the
 to `work_item_types` will involve creating the set of WITs for all root-level groups.
 
 NOTE:
-At first, defining a WIT will only be possible at the root-level group, which would then be inherited by sub-groups.
-We will investigate the possibility of defining new WITs at sub-group levels at a later iteration.
+At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
+We will investigate the possibility of defining new WITs at subgroup levels at a later iteration.
 
 ### Introducing work_item_types table
 
@@ -150,8 +150,27 @@ of widgets.
 In order to customize each WIT with corresponding active widgets we will need a data
 structure to map each WIT to specific widgets.
 
+The intent is for work item types to be highly configurable, both by GitLab for
+implementing various work item schemes for customers (an opinionated GitLab
+workflow, or SAFe 5, etc), and eventually for customers to customize their own
+workflows.
+
+In this case, a work item scheme would be defined as a set of types with
+certain characteristics (some widgets enabled, others not), such as an Epic,
+Story, Bug, and Task, etc.
+
+As we're building a new work item architecture, we want to build the ability to
+define these various types in a very flexible manner. Having GitLab use
+this system first (without introducing customer customization) allows us to
+better build out the initial system.
+
 NOTE:
-The exact structure of the WITs widgets metadata is still to be defined.
+Currently work item's `base_type` is used to define static mapping of what
+widgets are available for each type (current status), this definition should be
+rather stored in database table. The exact structure of the WIT widgets
+metadata is still to be defined. `base_type` was added to help converting other
+types of resources (requirements and incidents) into work items. Eventually (when
+these resources become regular work items), `base_type` will be removed.
 
 ### Custom work item types
 

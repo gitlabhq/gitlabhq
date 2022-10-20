@@ -192,6 +192,6 @@ RSpec.describe Gitlab::BareRepositoryImport::Importer do
 
     cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{source_project} #{repo_path})
 
-    system(git_env, *cmd, chdir: SEED_STORAGE_PATH, out: '/dev/null', err: '/dev/null')
+    system(git_env, *cmd, chdir: base_dir, out: '/dev/null', err: '/dev/null')
   end
 end

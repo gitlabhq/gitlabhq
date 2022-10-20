@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -261,7 +261,7 @@ It also displays the following information:
 
 ## Export your license usage
 
-> Introduced in GitLab 14.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66826) in GitLab 14.2.
 
 If you are an administrator, you can export your license usage into a CSV:
 
@@ -300,7 +300,7 @@ then [renew your GitLab self-managed subscription](#renew-a-subscription).
 
 The [Customers Portal](https://customers.gitlab.com/customers/sign_in) is your
 tool for renewing and modifying your subscription. Before going ahead with renewal,
-log in and verify or update:
+sign in and verify or update:
 
 - The invoice contact details on the **Account details** page.
 - The credit card on file on the **Payment Methods** page.

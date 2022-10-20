@@ -67,11 +67,11 @@ module Gitlab
           end
 
           event :finish do
-            transition any => :finished
+            transition [:paused, :finished, :active, :finalizing] => :finished
           end
 
           event :failure do
-            transition any => :failed
+            transition [:failed, :finalizing, :active] => :failed
           end
 
           event :finalize do

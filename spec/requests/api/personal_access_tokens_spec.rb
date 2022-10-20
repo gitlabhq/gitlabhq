@@ -4,14 +4,34 @@ require 'spec_helper'
 
 RSpec.describe API::PersonalAccessTokens do
   let_it_be(:path) { '/personal_access_tokens' }
-  let_it_be(:token1) { create(:personal_access_token) }
-  let_it_be(:token2) { create(:personal_access_token) }
-  let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: token1.user) }
-  let_it_be(:current_user) { create(:user) }
 
   describe 'GET /personal_access_tokens' do
+    using RSpec::Parameterized::TableSyntax
+
+    def map_id(json_resonse)
+      json_response.map { |pat| pat['id'] }
+    end
+
+    shared_examples 'response as expected' do |params|
+      subject { get api(path, personal_access_token: current_users_token), params: params }
+
+      it "status, count and result as expected" do
+        subject
+
+        if status == :bad_request
+          expect(json_response).to eq(result)
+        elsif status == :ok
+          expect(map_id(json_response)).to a_collection_containing_exactly(*result)
+        end
+
+        expect(response).to have_gitlab_http_status(status)
+        expect(json_response.count).to eq(result_count)
+      end
+    end
+
     context 'logged in as an Administrator' do
       let_it_be(:current_user) { create(:admin) }
+      let_it_be(:current_users_token) { create(:personal_access_token, user: current_user) }
 
       it 'returns all PATs by default' do
         get api(path, current_user)
@@ -21,60 +41,348 @@ RSpec.describe API::PersonalAccessTokens do
       end
 
       context 'filtered with user_id parameter' do
+        let_it_be(:token) { create(:personal_access_token) }
+        let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: token.user) }
+
         it 'returns only PATs belonging to that user' do
-          get api(path, current_user), params: { user_id: token1.user.id }
+          get api(path, current_user), params: { user_id: token.user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response.count).to eq(2)
-          expect(json_response.first['user_id']).to eq(token1.user.id)
+          expect(json_response.first['user_id']).to eq(token.user.id)
           expect(json_response.last['id']).to eq(token_impersonated.id)
         end
       end
 
-      context 'logged in as a non-Administrator' do
-        let_it_be(:current_user) { create(:user) }
-        let_it_be(:user) { create(:user) }
-        let_it_be(:token) { create(:personal_access_token, user: current_user) }
-        let_it_be(:other_token) { create(:personal_access_token, user: user) }
-        let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: current_user) }
+      context 'filter with revoked parameter' do
+        let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
+        let_it_be(:not_revoked_token1) { create(:personal_access_token, revoked: false) }
+        let_it_be(:not_revoked_token2) { create(:personal_access_token, revoked: false) }
 
-        it 'returns all PATs belonging to the signed-in user' do
-          get api(path, current_user, personal_access_token: token)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.count).to eq(1)
-          expect(json_response.map { |r| r['user_id'] }.uniq).to contain_exactly(current_user.id)
+        where(:revoked, :status, :result_count, :result) do
+          true   | :ok          | 1 | lazy { [revoked_token.id] }
+          false  | :ok          | 3 | lazy { [not_revoked_token1.id, not_revoked_token2.id, current_users_token.id] }
+          'asdf' | :bad_request | 1 | { "error" => "revoked is invalid" }
         end
 
-        context 'filtered with user_id parameter' do
-          it 'returns PATs belonging to the specific user' do
-            get api(path, current_user, personal_access_token: token), params: { user_id: current_user.id }
+        with_them do
+          it_behaves_like 'response as expected', revoked: params[:revoked]
+        end
+      end
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response.count).to eq(1)
-            expect(json_response.map { |r| r['user_id'] }.uniq).to contain_exactly(current_user.id)
+      context 'filter with active parameter' do
+        let_it_be(:inactive_token1) { create(:personal_access_token, revoked: true) }
+        let_it_be(:inactive_token2) { create(:personal_access_token, expires_at: Time.new(2022, 01, 01, 00, 00, 00)) }
+        let_it_be(:active_token) { create(:personal_access_token) }
+
+        where(:state, :status, :result_count, :result) do
+          'inactive' | :ok          | 2 | lazy { [inactive_token1.id, inactive_token2.id] }
+          'active'   | :ok          | 2 | lazy { [active_token.id, current_users_token.id] }
+          'asdf'     | :bad_request | 1 | { "error" => "state does not have a valid value" }
+        end
+
+        with_them do
+          it_behaves_like 'response as expected', state: params[:state]
+        end
+      end
+
+      context 'filter with created parameter' do
+        let_it_be(:token1) { create(:personal_access_token, created_at: DateTime.new(2022, 01, 01, 12, 30, 25) ) }
+
+        context 'test created_before' do
+          where(:created_at, :status, :result_count, :result) do
+            '2022-01-02'           | :ok          | 1 | lazy { [token1.id] }
+            '2022-01-01'           | :ok          | 0 | lazy { [] }
+            '2022-01-01T12:30:24'  | :ok          | 0 | lazy { [] }
+            '2022-01-01T12:30:25'  | :ok          | 1 | lazy { [token1.id] }
+            '2022-01-01T:12:30:26' | :ok          | 1 | lazy { [token1.id] }
+            'asdf'                 | :bad_request | 1 | { "error" => "created_before is invalid" }
           end
 
-          it 'is unauthorized if filtered by a user other than current_user' do
-            get api(path, current_user, personal_access_token: token), params: { user_id: user.id }
+          with_them do
+            it_behaves_like 'response as expected', created_before: params[:created_at]
+          end
+        end
 
-            expect(response).to have_gitlab_http_status(:unauthorized)
+        context 'test created_after' do
+          where(:created_at, :status, :result_count, :result) do
+            '2022-01-03'            | :ok          | 1 | lazy { [current_users_token.id] }
+            '2022-01-01'            | :ok          | 2 | lazy { [token1.id, current_users_token.id] }
+            '2022-01-01T12:30:25'   | :ok          | 2 | lazy { [token1.id, current_users_token.id] }
+            '2022-01-01T12:30:26'   | :ok          | 1 | lazy { [current_users_token.id] }
+            (DateTime.now + 1).to_s | :ok          | 0 | lazy { [] }
+            'asdf'                  | :bad_request | 1 | { "error" => "created_after is invalid" }
+          end
+
+          with_them do
+            it_behaves_like 'response as expected', created_after: params[:created_at]
           end
         end
       end
 
-      context 'not authenticated' do
-        it 'is forbidden' do
-          get api(path)
+      context 'filter with last_used parameter' do
+        let_it_be(:token1) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25) ) }
+        let_it_be(:never_used_token) { create(:personal_access_token) }
+
+        context 'test last_used_before' do
+          where(:last_used_at, :status, :result_count, :result) do
+            '2022-01-02'          | :ok          | 1 | lazy { [token1.id] }
+            '2022-01-01'          | :ok          | 0 | lazy { [] }
+            '2022-01-01T12:30:24' | :ok          | 0 | lazy { [] }
+            '2022-01-01T12:30:25' | :ok          | 1 | lazy { [token1.id] }
+            '2022-01-01T12:30:26' | :ok          | 1 | lazy { [token1.id] }
+            'asdf'                | :bad_request | 1 | { "error" => "last_used_before is invalid" }
+          end
+
+          with_them do
+            it_behaves_like 'response as expected', last_used_before: params[:last_used_at]
+          end
+        end
+
+        context 'test last_used_after' do
+          where(:last_used_at, :status, :result_count, :result) do
+            '2022-01-03'            | :ok          | 1 | lazy { [current_users_token.id] }
+            '2022-01-01'            | :ok          | 2 | lazy { [token1.id, current_users_token.id] }
+            '2022-01-01T12:30:26'   | :ok          | 1 | lazy { [current_users_token.id] }
+            '2022-01-01T12:30:25'   | :ok          | 2 | lazy { [token1.id, current_users_token.id] }
+            (DateTime.now + 1).to_s | :ok          | 0 | lazy { [] }
+            'asdf'                  | :bad_request | 1 | { "error" => "last_used_after is invalid" }
+          end
+
+          with_them do
+            it_behaves_like 'response as expected', last_used_after: params[:last_used_at]
+          end
+        end
+      end
+
+      context 'filter with search parameter' do
+        let_it_be(:token1) { create(:personal_access_token, name: 'test_1') }
+        let_it_be(:token2) { create(:personal_access_token, name: 'test_2') }
+        let_it_be(:token3) { create(:personal_access_token, name: '') }
+
+        where(:pattern, :status, :result_count, :result) do
+          'test'   | :ok | 2 | lazy { [token1.id, token2.id] }
+          ''       | :ok | 4 | lazy { [token1.id, token2.id, token3.id, current_users_token.id] }
+          'test_1' | :ok | 1 | lazy { [token1.id] }
+          'asdf'   | :ok | 0 | lazy { [] }
+        end
+
+        with_them do
+          it_behaves_like 'response as expected', search: params[:pattern]
+        end
+      end
+
+      context 'filter created_before/created_after combined with last_used_before/last_used_after' do
+        let_it_be(:date) { DateTime.new(2022, 01, 02) }
+        let_it_be(:token1) { create(:personal_access_token, created_at: date, last_used_at: date) }
+
+        where(:date_before, :date_after, :status, :result_count, :result) do
+          '2022-01-03' | '2022-01-01' | :ok | 1 | lazy { [token1.id] }
+          '2022-01-01' | '2022-01-03' | :ok | 0 | lazy { [] }
+          '2022-01-03' | nil          | :ok | 1 | lazy { [token1.id] }
+          nil          | '2022-01-01' | :ok | 2 | lazy { [token1.id, current_users_token.id] }
+        end
+
+        with_them do
+          it_behaves_like 'response as expected', { created_before: params[:date_before],
+                                                    created_after: params[:date_after] }
+          it_behaves_like 'response as expected', { last_used_before: params[:date_before],
+                                                    last_used_after: params[:date_after] }
+        end
+      end
+
+      context 'filter created_before and created_after combined is valid' do
+        let_it_be(:token1) { create(:personal_access_token, created_at: DateTime.new(2022, 01, 02)) }
+
+        where(:created_before, :created_after, :status, :result) do
+          '2022-01-02' | '2022-01-02' | :ok | lazy { [token1.id] }
+          '2022-01-03' | '2022-01-01' | :ok | lazy { [token1.id] }
+          '2022-01-01' | '2022-01-03' | :ok | lazy { [] }
+          '2022-01-03' | nil          | :ok | lazy { [token1.id] }
+          nil          | '2022-01-01' | :ok | lazy { [token1.id] }
+        end
+
+        with_them do
+          it "returns all valid tokens" do
+            get api(path, personal_access_token: current_users_token),
+            params: { created_before: created_before, created_after: created_after }
+
+            expect(response).to have_gitlab_http_status(status)
+
+            expect(json_response.map { |pat| pat['id'] } ).to include(*result) if status == :ok
+          end
+        end
+      end
+
+      context 'filter last_used_before and last_used_after combined is valid' do
+        let_it_be(:token1) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 02) ) }
+
+        where(:last_used_before, :last_used_after, :status, :result) do
+          '2022-01-02' | '2022-01-02' | :ok | lazy { [token1.id] }
+          '2022-01-03' | '2022-01-01' | :ok | lazy { [token1.id] }
+          '2022-01-01' | '2022-01-03' | :ok | lazy { [] }
+          '2022-01-03' | nil          | :ok | lazy { [token1.id] }
+          nil          | '2022-01-01' | :ok | lazy { [token1.id] }
+        end
+
+        with_them do
+          it "returns all valid tokens" do
+            get api(path, personal_access_token: current_users_token),
+             params: { last_used_before: last_used_before, last_used_after: last_used_after }
+
+            expect(response).to have_gitlab_http_status(status)
+
+            expect(json_response.map { |pat| pat['id'] } ).to include(*result) if status == :ok
+          end
+        end
+      end
+    end
+
+    context 'logged in as a non-Administrator' do
+      let_it_be(:current_user) { create(:user) }
+      let_it_be(:current_users_token) { create(:personal_access_token, user: current_user) }
+
+      it 'returns all PATs belonging to the signed-in user' do
+        get api(path, personal_access_token: current_users_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.count).to eq(1)
+        expect(json_response.map { |r| r['id'] }.uniq).to contain_exactly(current_users_token.id)
+        expect(json_response.map { |r| r['user_id'] }.uniq).to contain_exactly(current_user.id)
+      end
+
+      context 'filtered with user_id parameter' do
+        let_it_be(:user) { create(:user) }
+
+        it 'returns PATs belonging to the specific user' do
+          get api(path, current_user, personal_access_token: current_users_token), params: { user_id: current_user.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.count).to eq(1)
+          expect(json_response.map { |r| r['id'] }.uniq).to contain_exactly(current_users_token.id)
+          expect(json_response.map { |r| r['user_id'] }.uniq).to contain_exactly(current_user.id)
+        end
+
+        it 'is unauthorized if filtered by a user other than current_user' do
+          get api(path, current_user, personal_access_token: current_users_token), params: { user_id: user.id }
 
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
+      end
+
+      context 'filter with revoked parameter' do
+        let_it_be(:users_revoked_token) { create(:personal_access_token, revoked: true, user: current_user) }
+        let_it_be(:not_revoked_token) { create(:personal_access_token, revoked: false) }
+        let_it_be(:oter_revoked_token) { create(:personal_access_token, revoked: true) }
+
+        where(:revoked, :status, :result_count, :result) do
+          true   | :ok          | 1 | lazy { [users_revoked_token.id] }
+          false  | :ok          | 1 | lazy { [current_users_token.id] }
+        end
+
+        with_them do
+          it_behaves_like 'response as expected', revoked: params[:revoked]
+        end
+      end
+
+      context 'filter with active parameter' do
+        let_it_be(:users_inactive_token) { create(:personal_access_token, revoked: true, user: current_user) }
+        let_it_be(:inactive_token) { create(:personal_access_token, expires_at: Time.new(2022, 01, 01, 00, 00, 00)) }
+        let_it_be(:other_active_token) { create(:personal_access_token) }
+
+        where(:state, :status, :result_count, :result) do
+          'inactive' | :ok          | 1 | lazy { [users_inactive_token.id] }
+          'active'   | :ok          | 1 | lazy { [current_users_token.id] }
+        end
+
+        with_them do
+          it_behaves_like 'response as expected', state: params[:state]
+        end
+      end
+
+      # The created_before filter has been extensively tested in the 'logged in as administrator' section.
+      # Here it is only tested whether PATs to which the user has no access right are excluded from the filter function.
+      context 'filter with created parameter' do
+        let_it_be(:token1) do
+          create(:personal_access_token, created_at: DateTime.new(2022, 01, 02, 12, 30, 25), user: current_user )
+        end
+
+        let_it_be(:token2) { create(:personal_access_token, created_at: DateTime.new(2022, 01, 02, 12, 30, 25)) }
+        let_it_be(:status) { :ok }
+
+        context 'created_before' do
+          let_it_be(:result_count) { 1 }
+          let_it_be(:result) { [token1.id] }
+
+          it_behaves_like 'response as expected', created_before: '2022-01-03'
+        end
+
+        context 'created_after' do
+          let_it_be(:result_count) { 2 }
+          let_it_be(:result) { [token1.id, current_users_token.id] }
+
+          it_behaves_like 'response as expected', created_after: '2022-01-01'
+        end
+      end
+
+      # The last_used_before filter has been extensively tested in the 'logged in as administrator' section.
+      # Here it is only tested whether PATs to which the user has no access right are excluded from the filter function.
+      context 'filter with last_used' do
+        let_it_be(:token1) do
+          create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25), user: current_user)
+        end
+
+        let_it_be(:token2) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25) ) }
+        let_it_be(:never_used_token) { create(:personal_access_token) }
+        let_it_be(:status) { :ok }
+
+        context 'last_used_before' do
+          let_it_be(:result_count) { 1 }
+          let_it_be(:result) { [token1.id] }
+
+          it_behaves_like 'response as expected', last_used_before: '2022-01-02'
+        end
+
+        context 'last_used_after' do
+          let_it_be(:result_count) { 2 }
+          let_it_be(:result) { [token1.id, current_users_token.id] }
+
+          it_behaves_like 'response as expected', last_used_after: '2022-01-01'
+        end
+      end
+
+      # The search filter has been extensively tested in the 'logged in as administrator' section.
+      # Here it is only tested whether PATs to which the user has no access right are excluded from the filter function.
+      context 'filter with search parameter' do
+        let_it_be(:token1) { create(:personal_access_token, name: 'test_1', user: current_user) }
+        let_it_be(:token2) { create(:personal_access_token, name: 'test_1') }
+        let_it_be(:token3) { create(:personal_access_token, name: '') }
+
+        where(:pattern, :status, :result_count, :result) do
+          'test'   | :ok | 1 | lazy { [token1.id] }
+          ''       | :ok | 2 | lazy { [token1.id, current_users_token.id] }
+          'test_1' | :ok | 1 | lazy { [token1.id] }
+        end
+
+        with_them do
+          it_behaves_like 'response as expected', search: params[:pattern]
+        end
+      end
+    end
+
+    context 'not authenticated' do
+      it 'is forbidden' do
+        get api(path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end
 
   describe 'GET /personal_access_tokens/:id' do
+    let_it_be(:current_user) { create(:user) }
     let_it_be(:user_token) { create(:personal_access_token, user: current_user) }
+    let_it_be(:token1) { create(:personal_access_token) }
     let_it_be(:user_read_only_token) { create(:personal_access_token, scopes: ['read_repository'], user: current_user) }
     let_it_be(:user_token_path) { "/personal_access_tokens/#{user_token.id}" }
     let_it_be(:invalid_path) { "/personal_access_tokens/#{non_existing_record_id}" }
@@ -136,6 +444,9 @@ RSpec.describe API::PersonalAccessTokens do
   end
 
   describe 'DELETE /personal_access_tokens/:id' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:token1) { create(:personal_access_token) }
+
     let(:path) { "/personal_access_tokens/#{token1.id}" }
 
     context 'when current_user is an administrator', :enable_admin_mode do

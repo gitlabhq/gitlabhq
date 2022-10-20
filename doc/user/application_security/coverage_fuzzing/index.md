@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Coverage-guided fuzz testing **(ULTIMATE)**
@@ -337,14 +337,14 @@ To use coverage fuzzing in an offline environment:
 
 After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 The merge request widget lists the vulnerability and contains a button for downloading the fuzzing
-artifacts. By clicking one of the detected vulnerabilities, you can see its details.
+artifacts. By selecting one of the detected vulnerabilities, you can see its details.
 
 ![Coverage Fuzzing Security Report](img/coverage_fuzzing_report_v13_6.png)
 
 You can also view the vulnerability from the [Security Dashboard](../security_dashboard/index.md),
 which shows an overview of all the security vulnerabilities in your groups, projects, and pipelines.
 
-Clicking the vulnerability opens a modal that provides additional information about the
+Selecting the vulnerability opens a modal that provides additional information about the
 vulnerability:
 
 <!-- vale gitlab.Acronyms = NO -->

@@ -61,6 +61,8 @@ issues:
 - requirement
 - incident_management_issuable_escalation_status
 - incident_management_timeline_events
+- incident_management_timeline_event_tags
+- incident_management_timeline_event_links
 - pending_escalations
 - customer_relations_contacts
 - issue_customer_relations_contacts
@@ -95,6 +97,7 @@ label_links:
 label:
 - subscriptions
 - project
+- parent_container
 - lists
 - label_links
 - issues
@@ -296,6 +299,10 @@ ci_pipelines:
 - package_build_infos
 - package_file_build_infos
 - build_trace_chunks
+- pipeline_metadata
+pipeline_metadata:
+- project
+- pipeline
 ci_refs:
 - project
 - ci_pipelines
@@ -541,6 +548,7 @@ project:
 - path_locks
 - approver_groups
 - repository_state
+- wiki_repository_state
 - source_pipelines
 - sourced_pipelines
 - prometheus_metrics
@@ -567,6 +575,7 @@ project:
 - project_registry
 - packages
 - package_files
+- repository_files
 - packages_cleanup_policy
 - alerting_setting
 - project_setting
@@ -615,6 +624,7 @@ project:
 - incident_management_oncall_rotations
 - incident_management_escalation_policies
 - incident_management_issuable_escalation_statuses
+- incident_management_timeline_event_tags
 - debian_distributions
 - merge_request_metrics
 - security_orchestration_policy_configuration
@@ -632,6 +642,7 @@ project:
 - vulnerability_reads
 - build_artifacts_size_refresh
 - project_callouts
+- pipeline_metadata
 award_emoji:
 - awardable
 - user

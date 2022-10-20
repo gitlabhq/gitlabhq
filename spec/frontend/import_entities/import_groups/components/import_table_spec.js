@@ -5,13 +5,14 @@ import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
 import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
+import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 import { availableNamespacesFixture, generateFakeEntry } from '../graphql/fixtures';
@@ -246,7 +247,7 @@ describe('import table', () => {
     await findImportButtons()[0].trigger('click');
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalledWith(
+    expect(createAlert).toHaveBeenCalledWith(
       expect.objectContaining({
         message: i18n.ERROR_IMPORT,
       }),
@@ -526,6 +527,17 @@ describe('import table', () => {
         },
       });
     });
+  });
+
+  it('renders pagination bar with storage key', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => new Promise(() => {}),
+    });
+    await waitForPromises();
+
+    expect(wrapper.getComponent(PaginationBar).props('storageKey')).toBe(
+      ImportTable.LOCAL_STORAGE_KEY,
+    );
   });
 
   describe('unavailable features warning', () => {

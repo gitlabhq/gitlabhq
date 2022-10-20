@@ -339,4 +339,35 @@ RSpec.describe QA::Runtime::Env do
       end
     end
   end
+
+  describe '.canary_cookie' do
+    subject { described_class.canary_cookie }
+
+    context 'with QA_COOKIES set' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:cookie_value, :result) do
+        'gitlab_canary=true'                      | { gitlab_canary: "true" }
+        'other_cookie=value\;gitlab_canary=true'  | { gitlab_canary: "true" }
+        'gitlab_canary=false'                     | { gitlab_canary: "false" }
+        'gitlab_canary=false\;other_cookie=value' | { gitlab_canary: "false" }
+      end
+
+      with_them do
+        before do
+          stub_env('QA_COOKIES', cookie_value)
+        end
+
+        it { is_expected.to eq(result) }
+      end
+    end
+
+    context 'without QA_COOKIES set' do
+      before do
+        stub_env('QA_COOKIES', nil)
+      end
+
+      it { is_expected.to be_empty }
+    end
+  end
 end

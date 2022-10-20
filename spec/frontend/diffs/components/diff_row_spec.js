@@ -219,7 +219,7 @@ describe('DiffRow', () => {
       shouldRenderDraftRow: jest.fn(),
       hasParallelDraftLeft: jest.fn(),
       hasParallelDraftRight: jest.fn(),
-      draftForLine: jest.fn(),
+      draftsForLine: jest.fn().mockReturnValue([]),
     };
 
     const applyMap = mapParallel(mockDiffContent);

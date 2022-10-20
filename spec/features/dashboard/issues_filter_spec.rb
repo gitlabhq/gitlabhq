@@ -44,7 +44,7 @@ RSpec.describe 'Dashboard Issues filtering', :js do
     it 'updates atom feed link' do
       visit_issues(milestone_title: '', assignee_username: user.username)
 
-      link = find('.nav-controls a[title="Subscribe to RSS feed"]')
+      link = find('[data-testid="rss-feed-link"]')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)

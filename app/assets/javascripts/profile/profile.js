@@ -5,9 +5,6 @@ import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import { Rails } from '~/lib/utils/rails_ujs';
-import TimezoneDropdown, {
-  formatTimezone,
-} from '~/pages/projects/pipeline_schedules/shared/components/timezone_dropdown';
 import UserProfileSetStatusWrapper from '~/set_status_modal/user_profile_set_status_wrapper.vue';
 
 export default class Profile {
@@ -17,21 +14,12 @@ export default class Profile {
     this.setRepoRadio();
     this.bindEvents();
     this.initAvatarGlCrop();
-
-    this.$inputEl = $('#user_timezone');
-
-    this.timezoneDropdown = new TimezoneDropdown({
-      $inputEl: this.$inputEl,
-      $dropdownEl: $('.js-timezone-dropdown'),
-      displayFormat: (selectedItem) => formatTimezone(selectedItem),
-      allowEmpty: true,
-    });
   }
 
   initAvatarGlCrop() {
     const cropOpts = {
       filename: '.js-avatar-filename',
-      previewImage: '.avatar-image .avatar',
+      previewImage: '.avatar-image .gl-avatar',
       modalCrop: '.modal-profile-crop',
       pickImageEl: '.js-choose-user-avatar-button',
       uploadImageBtn: '.js-upload-user-avatar',

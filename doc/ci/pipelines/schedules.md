@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pipelines/schedules.html'
 type: reference, howto
 ---
@@ -38,6 +38,9 @@ To add a pipeline schedule:
    - **Variables**: Add any number of [CI/CD variables](../variables/index.md) to the schedule.
      These variables are available only when the scheduled pipeline runs,
      and not in any other pipeline run.
+
+If the project already has the [maximum number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules),
+you must delete unused schedules before you can add another.
 
 ## Edit a pipeline schedule
 

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Workspace
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Subgroups **(FREE)**
@@ -201,7 +201,7 @@ role on an ancestor group, add the user to the subgroup again with a higher role
 ## Mention subgroups
 
 Mentioning subgroups ([`@<subgroup_name>`](../../discussions/index.md#mentions)) in issues, commits, and merge requests
-notifies all direct members of that group. Inherited members of a sub-group are not notified by mentions. Mentioning works the same as for projects and groups, and you can choose the group
+notifies all direct members of that group. Inherited members of a subgroup are not notified by mentions. Mentioning works the same as for projects and groups, and you can choose the group
 of people to be notified.
 
 <!-- ## Troubleshooting

@@ -1,7 +1,9 @@
 <script>
-import { GlBadge, GlPagination, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlPagination, GlSearchBoxByType, GlTab, GlTabs } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import environmentAppQuery from '../graphql/queries/environment_app.query.graphql';
 import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
 import pageInfoQuery from '../graphql/queries/page_info.query.graphql';
@@ -31,6 +33,7 @@ export default {
     StopEnvironmentModal,
     GlBadge,
     GlPagination,
+    GlSearchBoxByType,
     GlTab,
     GlTabs,
   },
@@ -41,11 +44,10 @@ export default {
         return {
           scope: this.scope,
           page: this.page ?? 1,
+          search: this.search,
         };
       },
-      pollInterval() {
-        return this.interval;
-      },
+      pollInterval: 3000,
     },
     interval: {
       query: pollIntervalQuery,
@@ -80,10 +82,11 @@ export default {
     next: __('Next'),
     prev: __('Prev'),
     goto: (page) => sprintf(__('Go to page %{page}'), { page }),
+    searchPlaceholder: s__('Environments|Search by environment name'),
   },
   modalId: 'enable-review-app-info',
   data() {
-    const { page = '1', scope } = queryToObject(window.location.search);
+    const { page = '1', search = '', scope } = queryToObject(window.location.search);
     return {
       interval: undefined,
       isReviewAppModalVisible: false,
@@ -97,6 +100,7 @@ export default {
       environmentToStop: {},
       environmentToChangeCanary: {},
       weight: 0,
+      search,
     };
   },
   computed: {
@@ -111,6 +115,9 @@ export default {
     },
     hasEnvironments() {
       return this.environments.length > 0 || this.folders.length > 0;
+    },
+    hasSearch() {
+      return Boolean(this.search);
     },
     availableCount() {
       return this.environmentApp?.availableCount;
@@ -152,11 +159,19 @@ export default {
       return this.pageInfo?.perPage;
     },
   },
+  watch: {
+    interval(val) {
+      this.$apollo.queries.environmentApp.stopPolling();
+      this.$apollo.queries.environmentApp.startPolling(val);
+    },
+  },
   mounted() {
     window.addEventListener('popstate', this.syncPageFromQueryParams);
+    window.addEventListener('popstate', this.syncSearchFromQueryParams);
   },
   destroyed() {
     window.removeEventListener('popstate', this.syncPageFromQueryParams);
+    window.removeEventListener('popstate', this.syncSearchFromQueryParams);
     this.$apollo.queries.environmentApp.stopPolling();
   },
   methods: {
@@ -173,23 +188,24 @@ export default {
     moveToPage(page) {
       this.page = page;
       updateHistory({
-        url: setUrlParams({ page: this.page }),
+        url: setUrlParams({ page: this.page, scope: this.scope, search: this.search }),
         title: document.title,
       });
-      this.resetPolling();
     },
+    setSearch: debounce(function setSearch(input) {
+      this.search = input;
+      this.moveToPage(1);
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
     syncPageFromQueryParams() {
       const { page = '1' } = queryToObject(window.location.search);
       this.page = parseInt(page, 10);
     },
-    resetPolling() {
-      this.$apollo.queries.environmentApp.stopPolling();
+    syncSearchFromQueryParams() {
+      const { search = '' } = queryToObject(window.location.search);
+      this.search = search;
+    },
+    refetchEnvironments() {
       this.$apollo.queries.environmentApp.refetch();
-      this.$nextTick(() => {
-        if (this.interval) {
-          this.$apollo.queries.environmentApp.startPolling(this.interval);
-        }
-      });
     },
   },
   ENVIRONMENTS_SCOPE,
@@ -237,12 +253,19 @@ export default {
         </template>
       </gl-tab>
     </gl-tabs>
+    <gl-search-box-by-type
+      class="gl-mb-4"
+      :value="search"
+      :placeholder="$options.i18n.searchPlaceholder"
+      @input="setSearch"
+    />
     <template v-if="hasEnvironments">
       <environment-folder
         v-for="folder in folders"
         :key="folder.name"
         class="gl-mb-3"
         :scope="scope"
+        :search="search"
         :nested-environment="folder"
       />
       <environment-item
@@ -250,10 +273,15 @@ export default {
         :key="environment.name"
         class="gl-mb-3 gl-border-gray-100 gl-border-1 gl-border-b-solid"
         :environment="environment.latest"
-        @change="resetPolling"
+        @change="refetchEnvironments"
       />
     </template>
-    <empty-state v-else :help-path="helpPagePath" :scope="scope" />
+    <empty-state
+      v-else-if="!$apollo.queries.environmentApp.loading"
+      :help-path="helpPagePath"
+      :scope="scope"
+      :has-term="hasSearch"
+    />
     <gl-pagination
       align="center"
       :total-items="totalItems"

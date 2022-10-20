@@ -35,7 +35,7 @@
                 = link_to _('Learn more.'), help_page_path('user/project/repository/mirror/index.md', anchor: 'mirror-only-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
           .panel-footer
-            = f.submit _('Mirror repository'), class: 'gl-button btn btn-confirm js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror
+            = f.submit _('Mirror repository'), class: 'js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror, pajamas_button: true
     - else
       = render Pajamas::AlertComponent.new(dismissible: false) do |c|
         = c.body do

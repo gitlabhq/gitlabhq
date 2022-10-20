@@ -15,7 +15,7 @@ module IncidentManagement
       end
 
       def execute
-        issue = Issues::CreateService.new(
+        create_result = Issues::CreateService.new(
           project: project,
           current_user: current_user,
           params: {
@@ -29,21 +29,15 @@ module IncidentManagement
         ).execute
 
         if alert
-          return error(alert.errors.full_messages.to_sentence, issue) unless alert.valid?
+          return error(alert.errors.full_messages, create_result[:issue]) unless alert.valid?
         end
 
-        return error(issue.errors.full_messages.to_sentence, issue) unless issue.valid?
-
-        success(issue)
+        create_result
       end
 
       private
 
       attr_reader :title, :description, :severity, :alert
-
-      def success(issue)
-        ServiceResponse.success(payload: { issue: issue })
-      end
 
       def error(message, issue = nil)
         ServiceResponse.error(payload: { issue: issue }, message: message)

@@ -69,7 +69,8 @@ module Ci
     end
 
     def has_pipeline_badges?(pipeline)
-      pipeline.child? ||
+      pipeline.schedule? ||
+        pipeline.child? ||
         pipeline.latest? ||
         pipeline.merge_train_pipeline? ||
         pipeline.has_yaml_errors? ||

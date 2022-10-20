@@ -364,19 +364,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
         it 'returns an error about invalid variables:' do
           expect(subject.errors).to include(/variables config should be a hash/)
         end
-
-        context 'when the FF ci_variables_refactoring_to_variable is disabled' do
-          let(:entry_without_ff) { factory.create! }
-
-          before do
-            stub_feature_flags(ci_variables_refactoring_to_variable: false)
-            entry_without_ff.compose!
-          end
-
-          it 'returns an error about invalid variables:' do
-            expect(subject.errors).to include(/variables config should be a hash/)
-          end
-        end
       end
     end
 

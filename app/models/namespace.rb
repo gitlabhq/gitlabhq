@@ -130,6 +130,10 @@ class Namespace < ApplicationRecord
            to: :namespace_settings, allow_nil: true
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
            to: :namespace_settings
+  delegate :maven_package_requests_forwarding,
+           :pypi_package_requests_forwarding,
+           :npm_package_requests_forwarding,
+           to: :package_settings
 
   after_save :reload_namespace_details
 

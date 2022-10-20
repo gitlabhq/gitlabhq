@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Product Intelligence
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Metrics instrumentation guide
@@ -252,6 +252,86 @@ instrumentation_class: MergeUsageCountRedisHLLMetric
 options:
   events:
     - i_quickactions_approve
+```
+
+## Aggregated metrics
+
+The aggregated metrics feature provides insight into the number of data attributes, for example `pseudonymized_user_ids`, that occurred in a collection of events. For example, you can aggregate the number of users who perform multiple actions such as creating a new issue and opening
+a new merge request.
+
+You can use a YAML file to define your aggregated metrics. The following arguments are required:
+
+- `options.events`: List of event names to aggregate into metric data. All events in this list must
+  use the same data source. Additional data source requirements are described in
+  [Database sourced aggregated metrics](implement.md#database-sourced-aggregated-metrics) and
+  [Redis sourced aggregated metrics](implement.md#redis-sourced-aggregated-metrics).
+- `options.aggregate.operator`: Operator that defines how the aggregated metric data is counted. Available operators are:
+  - `OR`: Removes duplicates and counts all entries that triggered any of the listed events.
+  - `AND`: Removes duplicates and counts all elements that were observed triggering all of the following events.
+- `options.aggregate.attribute`: Information pointing to the attribute that is being aggregated across events.
+- `time_frame`: One or more valid time frames. Use these to limit the data included in aggregated metrics to events within a specific date-range. Valid time frames are:
+  - `7d`: The last 7 days of data.
+  - `28d`: The last 28 days of data.
+  - `all`: All historical data, only available for `database` sourced aggregated metrics.
+- `data_source`: Data source used to collect all events data included in the aggregated metrics. Valid data sources are:
+  - [`database`](implement.md#database-sourced-aggregated-metrics)
+  - [`redis_hll`](implement.md#redis-sourced-aggregated-metrics)
+
+Refer to merge request [98206](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98206) for an example of a merge request that adds an `AggregatedMetric` metric.
+
+Count unique `user_ids` that occurred in at least one of the events: `incident_management_alert_status_changed`,
+`incident_management_alert_assigned`, `incident_management_alert_todo`, `incident_management_alert_create_incident`.
+
+```yaml
+time_frame: 28d
+instrumentation_class: AggregatedMetric
+data_source: redis_hll
+options:
+    aggregate:
+        operator: OR
+        attribute: user_id
+    events:
+        - `incident_management_alert_status_changed`
+        - `incident_management_alert_assigned`
+        - `incident_management_alert_todo`
+        - `incident_management_alert_create_incident`
+```
+
+### Availability-restrained Aggregated metrics
+
+If the Aggregated metric should only be available in the report under specific conditions, then you must specify these conditions in a new class that is a child of the `AggregatedMetric` class.
+
+```ruby
+# frozen_string_literal: true
+
+module Gitlab
+  module Usage
+    module Metrics
+      module Instrumentations
+        class MergeUsageCountAggregatedMetric < AggregatedMetric
+          available? { Feature.enabled?(:merge_usage_data_missing_key_paths) }
+        end
+      end
+    end
+  end
+end
+```
+
+You must also use the class's name in the YAML setup.
+
+```yaml
+time_frame: 28d
+instrumentation_class: MergeUsageCountAggregatedMetric
+data_source: redis_hll
+options:
+    aggregate:
+        operator: OR
+        attribute: user_id
+    events:
+        - `incident_management_alert_status_changed`
+        - `incident_management_alert_assigned`
+        - `incident_management_alert_todo`
+        - `incident_management_alert_create_incident`
 ```
 
 ## Numbers metrics

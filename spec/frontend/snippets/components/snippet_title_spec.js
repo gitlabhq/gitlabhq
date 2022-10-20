@@ -39,12 +39,12 @@ describe('Snippet header component', () => {
     createComponent();
 
     expect(wrapper.text().trim()).toContain(title);
-    expect(wrapper.find(SnippetDescription).props('description')).toBe(descriptionHtml);
+    expect(wrapper.findComponent(SnippetDescription).props('description')).toBe(descriptionHtml);
   });
 
   it('does not render recent changes time stamp if there were no updates', () => {
     createComponent();
-    expect(wrapper.find(GlSprintf).exists()).toBe(false);
+    expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
   });
 
   it('does not render recent changes time stamp if the time for creation and updates match', () => {
@@ -57,7 +57,7 @@ describe('Snippet header component', () => {
     });
     createComponent({ props });
 
-    expect(wrapper.find(GlSprintf).exists()).toBe(false);
+    expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
   });
 
   it('renders translated string with most recent changes timestamp if changes were made', () => {
@@ -70,6 +70,6 @@ describe('Snippet header component', () => {
     });
     createComponent({ props });
 
-    expect(wrapper.find(GlSprintf).exists()).toBe(true);
+    expect(wrapper.findComponent(GlSprintf).exists()).toBe(true);
   });
 });

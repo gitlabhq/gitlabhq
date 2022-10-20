@@ -73,19 +73,19 @@ describe('sidebar assignees', () => {
   it('hides assignees until fetched', async () => {
     createComponent();
 
-    expect(wrapper.find(Assigness).exists()).toBe(false);
+    expect(wrapper.findComponent(Assigness).exists()).toBe(false);
 
     wrapper.vm.store.isFetching.assignees = false;
 
     await nextTick();
-    expect(wrapper.find(Assigness).exists()).toBe(true);
+    expect(wrapper.findComponent(Assigness).exists()).toBe(true);
   });
 
   describe('when issuableType is issue', () => {
     it('finds AssigneesRealtime component', () => {
       createComponent();
 
-      expect(wrapper.find(AssigneesRealtime).exists()).toBe(true);
+      expect(wrapper.findComponent(AssigneesRealtime).exists()).toBe(true);
     });
   });
 
@@ -93,7 +93,7 @@ describe('sidebar assignees', () => {
     it('does not find AssigneesRealtime component', () => {
       createComponent({ issuableType: 'MR' });
 
-      expect(wrapper.find(AssigneesRealtime).exists()).toBe(false);
+      expect(wrapper.findComponent(AssigneesRealtime).exists()).toBe(false);
     });
   });
 });

@@ -5,7 +5,7 @@ import {
   historyPushState,
   scrollToElement,
 } from '~/lib/utils/common_utils';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 
@@ -202,6 +202,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
   const worker = new TreeWorker();
   const urlParams = {
     view: 'inline',
+    w: state.showWhitespace ? '0' : '1',
   };
 
   commit(types.SET_LOADING, true);
@@ -246,7 +247,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
       }
     },
     errorCallback: () =>
-      createFlash({
+      createAlert({
         message: __('Something went wrong on our end. Please try again!'),
       }),
   });
@@ -509,7 +510,7 @@ export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
     .then(() => dispatch('updateResolvableDiscussionsCounts', null, { root: true }))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
     .catch(() =>
-      createFlash({
+      createAlert({
         message: s__('MergeRequests|Saving the comment failed'),
       }),
     );
@@ -619,7 +620,7 @@ export const cacheTreeListWidth = (_, size) => {
 
 export const receiveFullDiffError = ({ commit }, filePath) => {
   commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
-  createFlash({
+  createAlert({
     message: s__('MergeRequest|Error loading full diff. Please try again.'),
   });
 };
@@ -757,7 +758,7 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
       commit(types.SET_SHOW_SUGGEST_POPOVER);
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: s__('MergeRequest|Error dismissing suggestion popover. Please try again.'),
       });
     });

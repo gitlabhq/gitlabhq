@@ -66,6 +66,38 @@ RSpec.describe RuboCop::CopTodo do
     end
   end
 
+  describe '#generate?' do
+    subject { cop_todo.generate? }
+
+    context 'when empty todo' do
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when previously disabled' do
+      before do
+        cop_todo.previously_disabled = true
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when in grace period' do
+      before do
+        cop_todo.grace_period = true
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with offenses recorded' do
+      before do
+        cop_todo.record('a.rb', 1)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
   describe '#to_yaml' do
     subject(:yaml) { cop_todo.to_yaml }
 
@@ -77,9 +109,8 @@ RSpec.describe RuboCop::CopTodo do
       specify do
         expect(yaml).to eq(<<~YAML)
           ---
-          # Cop supports --auto-correct.
+          # Cop supports --autocorrect.
           #{cop_name}:
-            Exclude:
         YAML
       end
     end

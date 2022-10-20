@@ -23,6 +23,8 @@ module ContainerRegistry
 
     MAX_TAGS_PAGE_SIZE = 1000
 
+    UnsuccessfulResponseError = Class.new(StandardError)
+
     def self.supports_gitlab_api?
       with_dummy_client(return_value_if_disabled: false) do |client|
         client.supports_gitlab_api?
@@ -105,12 +107,22 @@ module ContainerRegistry
     def tags(path, page_size: 100, last: nil)
       limited_page_size = [page_size, MAX_TAGS_PAGE_SIZE].min
       with_token_faraday do |faraday_client|
-        response = faraday_client.get("/gitlab/v1/repositories/#{path}/tags/list/") do |req|
+        url = "/gitlab/v1/repositories/#{path}/tags/list/"
+        response = faraday_client.get(url) do |req|
           req.params['n'] = limited_page_size
           req.params['last'] = last if last
         end
 
-        break {} unless response.success?
+        unless response.success?
+          Gitlab::ErrorTracking.log_exception(
+            UnsuccessfulResponseError.new,
+            class: self.class.name,
+            url: url,
+            status_code: response.status
+          )
+
+          break {}
+        end
 
         link_parser = Gitlab::Utils::LinkHeaderParser.new(response.headers['link'])
 

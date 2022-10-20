@@ -3,7 +3,7 @@
 module Gitlab
   module Utils
     class ExecutionTracker
-      MAX_RUNTIME = 30.seconds
+      MAX_RUNTIME = 60.seconds
 
       ExecutionTimeOutError = Class.new(StandardError)
 

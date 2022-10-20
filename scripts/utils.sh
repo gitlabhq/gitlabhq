@@ -62,6 +62,22 @@ function bundle_install_script() {
   echo -e "section_end:`date +%s`:bundle-install\r\e[0K"
 }
 
+function yarn_install_script() {
+  echo -e "section_start:`date +%s`:yarn-install[collapsed=true]\r\e[0KInstalling Yarn packages"
+
+  retry yarn install --frozen-lockfile
+
+  echo -e "section_end:`date +%s`:yarn-install\r\e[0K"
+}
+
+function assets_compile_script() {
+  echo -e "section_start:`date +%s`:assets-compile[collapsed=true]\r\e[0KCompiling frontend assets"
+
+  bin/rake gitlab:assets:compile
+
+  echo -e "section_end:`date +%s`:assets-compile\r\e[0K"
+}
+
 function setup_db_user_only() {
   source scripts/create_postgres_user.sh
 }
@@ -77,12 +93,12 @@ function setup_db() {
 }
 
 function install_gitlab_gem() {
-  run_timed_command "gem install httparty --no-document --version 0.18.1"
-  run_timed_command "gem install gitlab --no-document --version 4.17.0"
+  run_timed_command "gem install httparty --no-document --version 0.20.0"
+  run_timed_command "gem install gitlab --no-document --version 4.19.0"
 }
 
 function install_tff_gem() {
-  run_timed_command "gem install test_file_finder --no-document --version 0.1.1"
+  run_timed_command "gem install test_file_finder --no-document --version 0.1.4"
 }
 
 function install_junit_merge_gem() {

@@ -23,7 +23,7 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
    and hide the `AddIssuableForm` area.
 
 */
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
@@ -141,11 +141,11 @@ export default {
           })
           .catch((res) => {
             if (res && res.status !== 404) {
-              createFlash({ message: relatedIssuesRemoveErrorMap[this.issuableType] });
+              createAlert({ message: relatedIssuesRemoveErrorMap[this.issuableType] });
             }
           });
       } else {
-        createFlash({ message: pathIndeterminateErrorMap[this.issuableType] });
+        createAlert({ message: pathIndeterminateErrorMap[this.issuableType] });
       }
     },
     onToggleAddRelatedIssuesForm() {
@@ -174,7 +174,7 @@ export default {
             if (response && response.data && response.data.message) {
               errorMessage = response.data.message;
             }
-            createFlash({ message: errorMessage });
+            createAlert({ message: errorMessage });
           })
           .finally(() => {
             this.isSubmitting = false;
@@ -195,7 +195,7 @@ export default {
         })
         .catch(() => {
           this.store.setRelatedIssues([]);
-          createFlash({ message: __('An error occurred while fetching issues.') });
+          createAlert({ message: __('An error occurred while fetching issues.') });
         })
         .finally(() => {
           this.isFetching = false;
@@ -216,7 +216,7 @@ export default {
             }
           })
           .catch(() => {
-            createFlash({ message: __('An error occurred while reordering issues.') });
+            createAlert({ message: __('An error occurred while reordering issues.') });
           });
       }
     },

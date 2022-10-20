@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project transfer between groups', :reliable do
+    describe 'Project transfer between groups', :reliable, product_group: :workspace do
       let(:source_group) do
         Resource::Group.fabricate_via_api! do |group|
           group.path = "source-group-#{SecureRandom.hex(8)}"
@@ -27,9 +27,7 @@ module QA
       before do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
-          commit.add_files([
-            { file_path: 'README.md', content: readme_content }
-          ])
+          commit.add_files([{ file_path: 'README.md', content: readme_content }])
         end
 
         Flow::Login.sign_in

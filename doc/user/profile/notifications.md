@@ -2,7 +2,7 @@
 disqus_identifier: 'https://docs.gitlab.com/ee/workflow/notifications.html'
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Notification emails **(FREE)**
@@ -285,6 +285,36 @@ then that user is also notified.
 By default, you don't receive notifications for issues, merge requests, or epics created by yourself.
 To always receive notifications on your own issues, merge requests, and so on, turn on
 [notifications about your own activity](#global-notification-settings).
+
+## Notifications for unknown sign-ins
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27211) in GitLab 13.0.
+
+NOTE:
+This feature is enabled by default for self-managed instances. Administrators may disable this feature
+through the [Sign-in restrictions](../admin_area/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
+The feature is always enabled on GitLab.com.
+
+When a user successfully signs in from a previously unknown IP address or device,
+GitLab notifies the user by email. In this way, GitLab proactively alerts users of potentially
+malicious or unauthorized sign-ins.
+
+GitLab uses several methods to identify a known sign-in. All methods must fail for a notification email to be sent.
+
+- Last sign-in IP: The current sign-in IP address is checked against the last sign-in
+  IP address.
+- Current active sessions: If the user has an existing active session from the
+  same IP address. See [Active Sessions](active_sessions.md).
+- Cookie: After successful sign in, an encrypted cookie is stored in the browser.
+  This cookie is set to expire 14 days after the last successful sign in.
+
+## Notifications for attempted sign-in using wrong two-factor authentication codes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
+
+GitLab sends you an email notification if it detects an attempt to sign in to your account using a wrong two-factor
+authentication (2FA) code. This can help you detect that a bad actor gained access to your username and password, and is trying
+to brute force 2FA.
 
 ## Notifications on designs
 

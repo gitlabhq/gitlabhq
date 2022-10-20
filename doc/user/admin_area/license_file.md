@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Provision
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 <!-- To promote the workflow described in license.md, this page is not included in global left nav. -->
@@ -23,6 +23,9 @@ Otherwise, to add your license:
 1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
 1. Select **Add license**.
+
+NOTE:
+For GitLab versions 14.1.x or newer, you can access the **Add License** page directly from the URL, `<YourGitLabURL>/admin/license/new`.
 
 ## Add your license file during installation
 
@@ -71,7 +74,9 @@ and issue creation. Your instance becomes read-only and
 an expiration message displays to all administrators. You have a 14-day grace period
 before this occurs.
 
-To resume functionality, activate a new subscription.
+To resume functionality, [renew your subscription](../../subscriptions/self_managed/index.md#renew-a-subscription).
+
+If the license has been expired for more than 30 days, you must purchase a [new subscription](../../subscriptions/self_managed/index.md) to resume functionality.
 
 To go back to Free features, [delete all expired licenses](#remove-a-license).
 
@@ -138,3 +143,7 @@ rules apply:
 For example, if you purchase a license for 100 users, you can have 110 users when you add
 your license. However, if you have 111 users, you must purchase more users before you can add
 the license.
+
+### `Start GitLab Ultimate trial` still displays after adding license
+
+To fix this issue, restart [Puma or your entire GitLab instance](../../administration/restart_gitlab.md).

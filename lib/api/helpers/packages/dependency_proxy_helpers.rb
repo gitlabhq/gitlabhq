@@ -16,8 +16,8 @@ module API
           maven: 'maven_package_requests_forwarding'
         }.freeze
 
-        def redirect_registry_request(forward_to_registry, package_type, options)
-          if forward_to_registry && redirect_registry_request_available?(package_type) && maven_forwarding_ff_enabled?(package_type, options[:target])
+        def redirect_registry_request(forward_to_registry: false, package_type: nil, target: nil, **options)
+          if forward_to_registry && redirect_registry_request_available?(package_type, target) && maven_forwarding_ff_enabled?(package_type, target)
             ::Gitlab::Tracking.event(self.options[:for].name, "#{package_type}_request_forward")
             redirect(registry_url(package_type, options))
           else
@@ -40,15 +40,19 @@ module API
           end
         end
 
-        def redirect_registry_request_available?(package_type)
+        def redirect_registry_request_available?(package_type, target)
           application_setting_name = APPLICATION_SETTING_NAMES[package_type]
 
           raise ArgumentError, "Can't find application setting for package_type #{package_type}" unless application_setting_name
 
-          ::Gitlab::CurrentSettings
-            .current_application_settings
-            .attributes
-            .fetch(application_setting_name, false)
+          if target.present? && Feature.enabled?(:cascade_package_forwarding_settings, target)
+            target.public_send(application_setting_name) # rubocop:disable GitlabSecurity/PublicSend
+          else
+            ::Gitlab::CurrentSettings
+              .current_application_settings
+              .attributes
+              .fetch(application_setting_name, false)
+          end
         end
 
         private

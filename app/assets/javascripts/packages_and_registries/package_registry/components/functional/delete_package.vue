@@ -1,6 +1,6 @@
 <script>
 import destroyPackageMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package.mutation.graphql';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/flash';
 import { s__ } from '~/locale';
 
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/package_registry/constants';
@@ -39,15 +39,15 @@ export default {
           throw data.destroyPackage.errors[0];
         }
         if (this.showSuccessAlert) {
-          createFlash({
+          createAlert({
             message: this.$options.i18n.successMessage,
-            type: 'success',
+            variant: VARIANT_SUCCESS,
           });
         }
       } catch (error) {
-        createFlash({
+        createAlert({
           message: this.$options.i18n.errorMessage,
-          type: 'warning',
+          variant: VARIANT_WARNING,
           captureError: true,
           error,
         });

@@ -24,8 +24,6 @@ export const COMMON_STR = {
   EDIT_BTN_TITLE: s__('GroupsTree|Edit'),
   REMOVE_BTN_TITLE: s__('GroupsTree|Delete'),
   OPTIONS_DROPDOWN_TITLE: s__('GroupsTree|Options'),
-  GROUP_SEARCH_EMPTY: s__('GroupsTree|No groups matched your search'),
-  GROUP_PROJECT_SEARCH_EMPTY: s__('GroupsTree|No groups or projects matched your search'),
 };
 
 export const ITEM_TYPE = {
@@ -62,3 +60,26 @@ export const VISIBILITY_TYPE_ICON = {
   [VISIBILITY_LEVEL_INTERNAL_STRING]: 'shield',
   [VISIBILITY_LEVEL_PRIVATE_STRING]: 'lock',
 };
+
+export const OVERVIEW_TABS_SORTING_ITEMS = [
+  {
+    label: __('Name'),
+    asc: 'name_asc',
+    desc: 'name_desc',
+  },
+  {
+    label: __('Created'),
+    asc: 'created_asc',
+    desc: 'created_desc',
+  },
+  {
+    label: __('Updated'),
+    asc: 'latest_activity_asc',
+    desc: 'latest_activity_desc',
+  },
+  {
+    label: __('Stars'),
+    asc: 'stars_asc',
+    desc: 'stars_desc',
+  },
+];

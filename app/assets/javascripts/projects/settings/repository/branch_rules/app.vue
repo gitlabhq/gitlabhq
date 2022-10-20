@@ -1,6 +1,6 @@
 <script>
 import { s__ } from '~/locale';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import branchRulesQuery from './graphql/queries/branch_rules.query.graphql';
 import BranchRule from './components/branch_rule.vue';
 
@@ -31,14 +31,13 @@ export default {
         return data.project?.branchRules?.nodes || [];
       },
       error() {
-        createFlash({ message: this.$options.i18n.queryError });
+        createAlert({ message: this.$options.i18n.queryError });
       },
     },
   },
-  props: {
+  inject: {
     projectPath: {
-      type: String,
-      required: true,
+      default: '',
     },
   },
   data() {

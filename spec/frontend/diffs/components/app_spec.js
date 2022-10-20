@@ -152,6 +152,30 @@ describe('diffs/components/app', () => {
     });
   });
 
+  describe('fetch diff with no changes', () => {
+    beforeEach(() => {
+      const fetchResolver = () => {
+        store.state.diffs.retrievingBatches = false;
+        return Promise.resolve({ real_size: null });
+      };
+
+      createComponent();
+      jest.spyOn(wrapper.vm, 'fetchDiffFilesMeta').mockImplementation(fetchResolver);
+
+      return nextTick();
+    });
+
+    it('diff counter to be 0 after fetch', async () => {
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
+      wrapper.vm.fetchData(false);
+
+      await nextTick();
+
+      expect(wrapper.vm.fetchDiffFilesMeta).toHaveBeenCalled();
+      expect(wrapper.vm.diffFilesLength).toEqual(0);
+    });
+  });
+
   describe('codequality diff', () => {
     it('does not fetch code quality data on FOSS', async () => {
       createComponent();

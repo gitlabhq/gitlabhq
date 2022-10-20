@@ -14,5 +14,5 @@
           = link_to new_project_fork_path(@project), class: "gl-button btn btn-default btn-sm fork-btn #{button_class}" do
             = sprite_icon('fork', css_class: 'icon')
             %span= s_('ProjectOverview|Fork')
-      = link_to project_forks_path(@project), title: n_(s_('ProjectOverview|Forks'), s_('ProjectOverview|Forks'), @project.forks_count), class: "gl-button btn btn-default btn-sm count has-tooltip #{count_class}" do
+      = link_to project_forks_path(@project), title: n_(s_('ProjectOverview|Forks'), s_('ProjectOverview|Forks'), @project.forks_count), class: "gl-button btn btn-default btn-sm count has-tooltip fork-count #{count_class}" do
         = @project.forks_count

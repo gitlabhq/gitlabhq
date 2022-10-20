@@ -3,8 +3,9 @@
 %hr
 
 %div
-  = form_for [:admin, @deploy_key], html: { class: 'deploy-key-form' } do |f|
+  = gitlab_ui_form_for [:admin, @deploy_key], html: { class: 'deploy-key-form' } do |f|
     = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
-      = f.submit 'Create', class: 'btn gl-button btn-confirm', data: { qa_selector: "add_deploy_key_button" }
-      = link_to _('Cancel'), admin_deploy_keys_path, class: 'btn gl-button btn-default btn-cancel'
+      = f.submit 'Create', data: { qa_selector: "add_deploy_key_button" }, pajamas_button: true
+      = render Pajamas::ButtonComponent.new(href: admin_deploy_keys_path) do
+        = _('Cancel')

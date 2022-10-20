@@ -106,11 +106,11 @@ describe('Diff Stats Dropdown', () => {
       expectedAddedDeletedExpanded,
       expectedAddedDeletedCollapsed,
     }) => {
-      beforeAll(() => {
+      beforeEach(() => {
         createComponent({ changed, added, deleted });
       });
 
-      afterAll(() => {
+      afterEach(() => {
         wrapper.destroy();
       });
 

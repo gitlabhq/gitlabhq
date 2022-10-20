@@ -2,8 +2,6 @@ import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql
 import { __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
-import boardBlockingIssuesQuery from './graphql/board_blocking_issues.query.graphql';
-import boardBlockingEpicsQuery from './graphql/board_blocking_epics.query.graphql';
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
 import updateBoardListMutation from './graphql/board_list_update.mutation.graphql';
 
@@ -64,15 +62,6 @@ export const flashAnimationDuration = 2000;
 export const listsQuery = {
   [issuableTypes.issue]: {
     query: boardListsQuery,
-  },
-};
-
-export const blockingIssuablesQueries = {
-  [issuableTypes.issue]: {
-    query: boardBlockingIssuesQuery,
-  },
-  [issuableTypes.epic]: {
-    query: boardBlockingEpicsQuery,
   },
 };
 

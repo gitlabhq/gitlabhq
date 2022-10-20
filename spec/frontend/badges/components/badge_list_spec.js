@@ -1,83 +1,96 @@
-import Vue, { nextTick } from 'vue';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import Vue from 'vue';
+import Vuex from 'vuex';
+import { mount } from '@vue/test-utils';
+
 import BadgeList from '~/badges/components/badge_list.vue';
 import { GROUP_BADGE, PROJECT_BADGE } from '~/badges/constants';
-import store from '~/badges/store';
+
+import createState from '~/badges/store/state';
+import mutations from '~/badges/store/mutations';
+import actions from '~/badges/store/actions';
+
 import { createDummyBadge } from '../dummy_badge';
 
+Vue.use(Vuex);
+
+const numberOfDummyBadges = 3;
+const badges = Array.from({ length: numberOfDummyBadges }).map((_, idx) => ({
+  ...createDummyBadge(),
+  id: idx,
+}));
+
 describe('BadgeList component', () => {
-  const Component = Vue.extend(BadgeList);
-  const numberOfDummyBadges = 3;
-  let vm;
+  let wrapper;
 
-  beforeEach(() => {
-    setHTMLFixture('<div id="dummy-element"></div>');
-    const badges = [];
-    for (let id = 0; id < numberOfDummyBadges; id += 1) {
-      badges.push({ id, ...createDummyBadge() });
-    }
-    store.replaceState({
-      ...store.state,
-      badges,
-      kind: PROJECT_BADGE,
-      isLoading: false,
+  const createComponent = (customState) => {
+    const mockedActions = Object.fromEntries(Object.keys(actions).map((name) => [name, jest.fn()]));
+
+    const store = new Vuex.Store({
+      state: {
+        ...createState(),
+        isLoading: false,
+        ...customState,
+      },
+      mutations,
+      actions: mockedActions,
     });
 
-    // Can be removed once GlLoadingIcon no longer throws a warning
-    jest.spyOn(global.console, 'warn').mockImplementation(() => jest.fn());
-
-    vm = mountComponentWithStore(Component, {
-      el: '#dummy-element',
-      store,
-    });
-  });
+    wrapper = mount(BadgeList, { store });
+  };
 
   afterEach(() => {
-    vm.$destroy();
-    resetHTMLFixture();
+    wrapper.destroy();
   });
 
-  it('renders a header with the badge count', () => {
-    const header = vm.$el.querySelector('.card-header');
+  describe('for project badges', () => {
+    it('renders a header with the badge count', () => {
+      createComponent({
+        kind: PROJECT_BADGE,
+        badges,
+      });
 
-    expect(header).toHaveText(new RegExp(`Your badges\\s+${numberOfDummyBadges}`));
-  });
+      const header = wrapper.find('.card-header');
 
-  it('renders a row for each badge', () => {
-    const rows = vm.$el.querySelectorAll('.gl-responsive-table-row');
+      expect(header.text()).toMatchInterpolatedText('Your badges 3');
+    });
 
-    expect(rows).toHaveLength(numberOfDummyBadges);
-  });
+    it('renders a row for each badge', () => {
+      createComponent({
+        kind: PROJECT_BADGE,
+        badges,
+      });
 
-  it('renders a message if no badges exist', async () => {
-    store.state.badges = [];
+      const rows = wrapper.findAll('.gl-responsive-table-row');
 
-    await nextTick();
-    expect(vm.$el.innerText).toMatch('This project has no badges');
-  });
+      expect(rows).toHaveLength(numberOfDummyBadges);
+    });
 
-  it('shows a loading icon when loading', async () => {
-    store.state.isLoading = true;
+    it('renders a message if no badges exist', () => {
+      createComponent({
+        kind: PROJECT_BADGE,
+        badges: [],
+      });
 
-    await nextTick();
-    const loadingIcon = vm.$el.querySelector('.gl-spinner');
+      expect(wrapper.text()).toMatch('This project has no badges');
+    });
 
-    expect(loadingIcon).toBeVisible();
+    it('shows a loading icon when loading', () => {
+      createComponent({ isLoading: true });
+
+      const loadingIcon = wrapper.find('.gl-spinner');
+
+      expect(loadingIcon.isVisible()).toBe(true);
+    });
   });
 
   describe('for group badges', () => {
-    beforeEach(async () => {
-      store.state.kind = GROUP_BADGE;
+    it('renders a message if no badges exist', () => {
+      createComponent({
+        kind: GROUP_BADGE,
+        badges: [],
+      });
 
-      await nextTick();
-    });
-
-    it('renders a message if no badges exist', async () => {
-      store.state.badges = [];
-
-      await nextTick();
-      expect(vm.$el.innerText).toMatch('This group has no badges');
+      expect(wrapper.text()).toMatch('This group has no badges');
     });
   });
 });

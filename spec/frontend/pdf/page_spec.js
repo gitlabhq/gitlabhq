@@ -1,17 +1,16 @@
-import Vue, { nextTick } from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
+import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import PageComponent from '~/pdf/page/index.vue';
 
 jest.mock('pdfjs-dist/webpack', () => {
-  return { default: jest.requireActual('pdfjs-dist/build/pdf') };
+  return { default: jest.requireActual('pdfjs-dist/legacy/build/pdf') };
 });
 
 describe('Page component', () => {
-  const Component = Vue.extend(PageComponent);
-  let vm;
+  let wrapper;
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('renders the page when mounting', async () => {
@@ -20,16 +19,18 @@ describe('Page component', () => {
       getViewport: jest.fn().mockReturnValue({}),
     };
 
-    vm = mountComponent(Component, {
-      page: testPage,
-      number: 1,
+    wrapper = mount(PageComponent, {
+      propsData: {
+        page: testPage,
+        number: 1,
+      },
     });
-
-    expect(vm.rendering).toBe(true);
 
     await nextTick();
 
-    expect(testPage.render).toHaveBeenCalledWith(vm.renderContext);
-    expect(vm.rendering).toBe(false);
+    expect(testPage.render).toHaveBeenCalledWith({
+      canvasContext: wrapper.find('canvas').element.getContext('2d'),
+      viewport: testPage.getViewport(),
+    });
   });
 });

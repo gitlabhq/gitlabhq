@@ -662,6 +662,7 @@ RSpec.describe 'getting an issue list for a project' do
 
       include_examples 'N+1 query check'
     end
+
     context 'when requesting `closed_as_duplicate_of`' do
       let(:requested_fields) { 'closedAsDuplicateOf { id }' }
       let(:issue_a_dup) { create(:issue, project: project) }
@@ -673,6 +674,55 @@ RSpec.describe 'getting an issue list for a project' do
       end
 
       include_examples 'N+1 query check'
+    end
+
+    context 'when award emoji votes' do
+      let(:requested_fields) { [:upvotes, :downvotes] }
+
+      before do
+        create_list(:award_emoji, 2, name: 'thumbsup', awardable: issue_a)
+        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: issue_b)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting participants' do
+      let_it_be(:issue_c) { create(:issue, project: project) }
+
+      let(:search_params) { { iids: [issue_a.iid.to_s, issue_c.iid.to_s] } }
+      let(:requested_fields) { 'participants { nodes { name } }' }
+
+      before do
+        create(:award_emoji, :upvote, awardable: issue_a)
+        create(:award_emoji, :upvote, awardable: issue_b)
+        create(:award_emoji, :upvote, awardable: issue_c)
+
+        note_with_emoji_a = create(:note_on_issue, noteable: issue_a, project: project)
+        note_with_emoji_b = create(:note_on_issue, noteable: issue_b, project: project)
+        note_with_emoji_c = create(:note_on_issue, noteable: issue_c, project: project)
+
+        create(:award_emoji, :upvote, awardable: note_with_emoji_a)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_b)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_c)
+      end
+
+      # Executes 3 extra queries to fetch participant_attrs
+      include_examples 'N+1 query check', threshold: 3
+    end
+
+    context 'when requesting labels' do
+      let(:requested_fields) { ['labels { nodes { id } }'] }
+
+      before do
+        project_labels = create_list(:label, 2, project: project)
+        group_labels = create_list(:group_label, 2, group: group)
+
+        issue_a.update!(labels: [project_labels.first, group_labels.first].flatten)
+        issue_b.update!(labels: [project_labels, group_labels].flatten)
+      end
+
+      include_examples 'N+1 query check', skip_cached: false
     end
   end
 

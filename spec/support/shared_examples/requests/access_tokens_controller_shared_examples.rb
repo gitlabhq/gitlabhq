@@ -2,33 +2,19 @@
 
 RSpec.shared_examples 'GET resource access tokens available' do
   let_it_be(:active_resource_access_token) { create(:personal_access_token, user: bot_user) }
-  let_it_be(:inactive_resource_access_token) { create(:personal_access_token, :revoked, user: bot_user) }
 
   it 'retrieves active resource access tokens' do
     subject
 
-    expect(assigns(:active_resource_access_tokens)).to contain_exactly(active_resource_access_token)
-  end
-
-  it 'retrieves inactive resource access tokens' do
-    subject
-
-    expect(assigns(:inactive_resource_access_tokens)).to contain_exactly(inactive_resource_access_token)
+    token_entities = assigns(:active_resource_access_tokens)
+    expect(token_entities.length).to eq(1)
+    expect(token_entities[0][:name]).to eq(active_resource_access_token.name)
   end
 
   it 'lists all available scopes' do
     subject
 
     expect(assigns(:scopes)).to eq(Gitlab::Auth.resource_bot_scopes)
-  end
-
-  it 'retrieves newly created personal access token value' do
-    token_value = 'random-value'
-    allow(PersonalAccessToken).to receive(:redis_getdel).with("#{user.id}:#{resource.id}").and_return(token_value)
-
-    subject
-
-    expect(assigns(:new_resource_access_token)).to eq(token_value)
   end
 end
 
@@ -37,10 +23,13 @@ RSpec.shared_examples 'POST resource access tokens available' do
     PersonalAccessToken.order(:created_at).last
   end
 
-  it 'returns success message' do
+  it 'renders JSON with a token' do
     subject
 
-    expect(flash[:notice]).to match('Your new access token has been created.')
+    parsed_body = Gitlab::Json.parse(response.body)
+    expect(parsed_body['new_token']).not_to be_blank
+    expect(parsed_body['errors']).to be_blank
+    expect(response).to have_gitlab_http_status(:success)
   end
 
   it 'creates resource access token' do
@@ -57,12 +46,6 @@ RSpec.shared_examples 'POST resource access tokens available' do
     subject
 
     expect(created_token.user).to be_project_bot
-  end
-
-  it 'stores newly created token redis store' do
-    expect(PersonalAccessToken).to receive(:redis_store!)
-
-    subject
   end
 
   it { expect { subject }.to change { User.count }.by(1) }
@@ -87,10 +70,13 @@ RSpec.shared_examples 'POST resource access tokens available' do
       expect { subject }.not_to change { User.count }
     end
 
-    it 'shows a failure alert' do
+    it 'renders JSON with an error' do
       subject
 
-      expect(flash[:alert]).to match("Failed to create new access token: Failed!")
+      parsed_body = Gitlab::Json.parse(response.body)
+      expect(parsed_body['new_token']).to be_blank
+      expect(parsed_body['errors']).to contain_exactly('Failed!')
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
   end
 end

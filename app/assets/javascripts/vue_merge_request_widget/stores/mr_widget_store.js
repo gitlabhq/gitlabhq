@@ -219,6 +219,7 @@ export default class MergeRequestStore {
     this.shouldBeRebased = mergeRequest.shouldBeRebased;
     this.draft = mergeRequest.draft;
     this.mergeRequestState = mergeRequest.state;
+    this.detailedMergeStatus = mergeRequest.detailedMergeStatus;
 
     this.setState();
   }
@@ -291,6 +292,7 @@ export default class MergeRequestStore {
     this.suggestPipelineFeatureId = data.suggest_pipeline_feature_id;
     this.isDismissedSuggestPipeline = data.is_dismissed_suggest_pipeline;
     this.securityReportsDocsPath = data.security_reports_docs_path;
+    this.securityConfigurationPath = data.security_configuration_path;
 
     // code quality
     const blobPath = data.blob_path || {};

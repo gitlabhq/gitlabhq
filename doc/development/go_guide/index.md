@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Go standards and style guidelines
@@ -357,7 +357,7 @@ Every binary ideally must have structured (JSON) logging in place as it helps
 with searching and filtering the logs. At GitLab we use structured logging in
 JSON format, as all our infrastructure assumes that. When using
 [Logrus](https://github.com/sirupsen/logrus) you can turn on structured
-logging simply by using the build in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
+logging by using the build in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
 same logging type we use in our [Ruby applications](../logging.md#use-structured-json-logging).
 
 #### How to use Logrus
@@ -435,6 +435,25 @@ packages separately from external ones. See
 of the Code Review Comments page on the Go wiki for more details.
 Most editors/IDEs allow you to run commands before/after saving a file, you can set it
 up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every file when saving.
+
+### Naming branches
+
+Only use the characters `a-z`, `0-9` or `-` in branch names. This restriction is due to the fact that `go get` doesn't work as expected when a branch name contains certain characters, such as a slash `/`:
+
+```shell
+$ go get -u gitlab.com/gitlab-org/security-products/analyzers/report/v3@some-user/some-feature
+
+go get: gitlab.com/gitlab-org/security-products/analyzers/report/v3@some-user/some-feature: invalid version: version "some-user/some-feature" invalid: disallowed version string
+```
+
+If a branch name contains a slash, it forces us to refer to the commit SHA instead, which is less flexible. For example:
+
+```shell
+$ go get -u gitlab.com/gitlab-org/security-products/analyzers/report/v3@5c9a4279fa1263755718cf069d54ba8051287954
+
+go: downloading gitlab.com/gitlab-org/security-products/analyzers/report/v3 v3.15.3-0.20221012172609-5c9a4279fa12
+...
+```
 
 ### Initializing slices
 

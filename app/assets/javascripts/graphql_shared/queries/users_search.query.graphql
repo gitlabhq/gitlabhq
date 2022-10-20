@@ -9,6 +9,7 @@ query projectUsersSearch($search: String!, $fullPath: ID!, $after: String, $firs
       relations: [DIRECT, INHERITED, INVITED_GROUPS]
       first: $first
       after: $after
+      sort: USER_FULL_NAME_ASC
     ) {
       pageInfo {
         hasNextPage

@@ -86,7 +86,7 @@ tasks:
         printf "$(date) – GitLab is up (took ~%.1f minutes)\n" "$((10*$SECONDS/60))e-1" | tee -a /workspace/startup.log
         gp preview $(gp url 3000) || true
         PREBUILD_LOG=(/workspace/.gitpod/prebuild-log-*)
-        [[ -f /workspace/gitpod_start_time.sh ]] && printf "Took %.1f minutes from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitpod.yml being executed through to completion %s\n" "$((10*(($(date +%s)-${START_TIME_IN_SECONDS}))/60))e-1" "$([[ -f "$PREBUILD_LOG" ]] && echo "With Prebuilds")"    
+        [[ -f /workspace/gitpod_start_time.sh ]] && printf "Took %.1f minutes from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitpod.yml being executed through to completion %s\n" "$((10*(($(date +%s)-${START_TIME_IN_SECONDS}))/60))e-1" "$([[ -f "$PREBUILD_LOG" ]] && echo "With Prebuilds")"
       )
 
 ports:
@@ -111,10 +111,10 @@ ports:
 
 vscode:
   extensions:
-    - rebornix.ruby@0.28.0
-    - wingrunr21.vscode-ruby@0.27.0
-    - karunamurti.haml@1.3.1
-    - octref.vetur@0.34.1
-    - dbaeumer.vscode-eslint@2.1.8
-    - gitlab.gitlab-workflow@3.24.0
-    - DavidAnson.vscode-markdownlint@0.44.4
+    - rebornix.ruby@0.28.1
+    - wingrunr21.vscode-ruby@0.28.0
+    - karunamurti.haml@1.4.1
+    - octref.vetur@0.36.0
+    - dbaeumer.vscode-eslint@2.2.6
+    - GitLab.gitlab-workflow@3.48.1
+    - DavidAnson.vscode-markdownlint@0.47.0

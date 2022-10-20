@@ -90,13 +90,7 @@ module BulkImports
       def feature_flag_enabled?
         destination_namespace = @bulk_import_entity.destination_namespace
 
-        if destination_namespace.present?
-          root_ancestor = Namespace.find_by_full_path(destination_namespace)&.root_ancestor
-
-          ::Feature.enabled?(:bulk_import_projects, root_ancestor)
-        else
-          ::Feature.enabled?(:bulk_import_projects)
-        end
+        BulkImports::Features.project_migration_enabled?(destination_namespace)
       end
     end
   end

@@ -46,7 +46,8 @@ module API
         optional :description, type: String, desc: 'Override the project description'
         optional :upload, type: Hash do
           optional :url, type: String, desc: 'The URL to upload the project'
-          optional :http_method, type: String, default: 'PUT', desc: 'HTTP method to upload the exported project'
+          optional :http_method, type: String, default: 'PUT', values: %w[PUT POST],
+                                 desc: 'HTTP method to upload the exported project'
         end
       end
       post ':id/export' do

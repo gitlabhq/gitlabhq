@@ -14,7 +14,7 @@ module QA
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar, required: true
           element :canary_badge_link
-          element :user_avatar, required: !QA::Runtime::Env.mobile_layout?
+          element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
           element :user_menu, required: !QA::Runtime::Env.mobile_layout?
           element :stop_impersonation_link
           element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
@@ -184,11 +184,11 @@ module QA
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
-          has_element?(:user_avatar, wait: wait)
+          has_element?(:user_avatar_content, wait: wait)
         end
 
         def has_no_personal_area?(wait: Capybara.default_max_wait_time)
-          has_no_element?(:user_avatar, wait: wait)
+          has_no_element?(:user_avatar_content, wait: wait)
         end
 
         def has_admin_area_link?(wait: Capybara.default_max_wait_time)
@@ -227,7 +227,7 @@ module QA
 
         def within_user_menu(&block)
           within_top_menu do
-            click_element :user_avatar unless has_element?(:user_profile_link, wait: 1)
+            click_element :user_avatar_content unless has_element?(:user_profile_link, wait: 1)
 
             within_element(:user_menu, &block)
           end

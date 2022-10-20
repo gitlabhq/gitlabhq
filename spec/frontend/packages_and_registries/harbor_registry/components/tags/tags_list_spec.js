@@ -8,9 +8,9 @@ import { defaultConfig, harborTagsResponse } from '../../mock_data';
 describe('Harbor Tags List', () => {
   let wrapper;
 
-  const findTagsLoader = () => wrapper.find(TagsLoader);
+  const findTagsLoader = () => wrapper.findComponent(TagsLoader);
   const findTagsListRows = () => wrapper.findAllComponents(TagsListRow);
-  const findRegistryList = () => wrapper.find(RegistryList);
+  const findRegistryList = () => wrapper.findComponent(RegistryList);
 
   const mountComponent = ({ propsData, config = defaultConfig }) => {
     wrapper = shallowMount(TagsList, {

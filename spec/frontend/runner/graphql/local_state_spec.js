@@ -4,6 +4,13 @@ import { createLocalState } from '~/runner/graphql/list/local_state';
 import getCheckedRunnerIdsQuery from '~/runner/graphql/list/checked_runner_ids.query.graphql';
 import { RUNNER_TYPENAME } from '~/runner/constants';
 
+const makeRunner = (id, deleteRunner = true) => ({
+  id,
+  userPermissions: {
+    deleteRunner,
+  },
+});
+
 describe('~/runner/graphql/list/local_state', () => {
   let localState;
   let apolloClient;
@@ -57,16 +64,21 @@ describe('~/runner/graphql/list/local_state', () => {
     });
 
     it('returns checked runners that have a reference in the cache', () => {
-      addMockRunnerToCache('a');
-      localState.localMutations.setRunnerChecked({ runner: { id: 'a' }, isChecked: true });
+      const id = 'a';
+
+      addMockRunnerToCache(id);
+      localState.localMutations.setRunnerChecked({
+        runner: makeRunner(id),
+        isChecked: true,
+      });
 
       expect(queryCheckedRunnerIds()).toEqual(['a']);
     });
 
     it('return checked runners that are not dangling references', () => {
       addMockRunnerToCache('a'); // 'b' is missing from the cache, perhaps because it was deleted
-      localState.localMutations.setRunnerChecked({ runner: { id: 'a' }, isChecked: true });
-      localState.localMutations.setRunnerChecked({ runner: { id: 'b' }, isChecked: true });
+      localState.localMutations.setRunnerChecked({ runner: makeRunner('a'), isChecked: true });
+      localState.localMutations.setRunnerChecked({ runner: makeRunner('b'), isChecked: true });
 
       expect(queryCheckedRunnerIds()).toEqual(['a']);
     });
@@ -81,7 +93,7 @@ describe('~/runner/graphql/list/local_state', () => {
     beforeEach(() => {
       inputs.forEach(([id, isChecked]) => {
         addMockRunnerToCache(id);
-        localState.localMutations.setRunnerChecked({ runner: { id }, isChecked });
+        localState.localMutations.setRunnerChecked({ runner: makeRunner(id), isChecked });
       });
     });
     it(`for inputs="${inputs}" has a ids="[${expected}]"`, () => {
@@ -102,7 +114,7 @@ describe('~/runner/graphql/list/local_state', () => {
         ids.forEach(addMockRunnerToCache);
 
         localState.localMutations.setRunnersChecked({
-          runners: ids.map((id) => ({ id })),
+          runners: ids.map((id) => makeRunner(id)),
           isChecked,
         });
       });
@@ -117,12 +129,37 @@ describe('~/runner/graphql/list/local_state', () => {
     it('clears all checked items', () => {
       ['a', 'b', 'c'].forEach((id) => {
         addMockRunnerToCache(id);
-        localState.localMutations.setRunnerChecked({ runner: { id }, isChecked: true });
+        localState.localMutations.setRunnerChecked({ runner: makeRunner(id), isChecked: true });
       });
 
       expect(queryCheckedRunnerIds()).toEqual(['a', 'b', 'c']);
 
       localState.localMutations.clearChecked();
+
+      expect(queryCheckedRunnerIds()).toEqual([]);
+    });
+  });
+
+  describe('when some runners cannot be deleted', () => {
+    beforeEach(() => {
+      addMockRunnerToCache('a');
+      addMockRunnerToCache('b');
+    });
+
+    it('setRunnerChecked does not check runner that cannot be deleted', () => {
+      localState.localMutations.setRunnerChecked({
+        runner: makeRunner('a', false),
+        isChecked: true,
+      });
+
+      expect(queryCheckedRunnerIds()).toEqual([]);
+    });
+
+    it('setRunnersChecked does not check runner that cannot be deleted', () => {
+      localState.localMutations.setRunnersChecked({
+        runners: [makeRunner('a', false), makeRunner('b', false)],
+        isChecked: true,
+      });
 
       expect(queryCheckedRunnerIds()).toEqual([]);
     });

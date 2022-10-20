@@ -2,7 +2,7 @@
 type: index, howto
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # User account **(FREE)**
@@ -24,19 +24,6 @@ To access your user settings:
 
 1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
-
-## Change your password
-
-To change your password:
-
-1. On the top bar, in the top-right corner, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **Password**.
-1. In the **Current password** text box, enter your current password.
-1. In the **New password** and **Password confirmation** text box, enter your new password.
-1. Select **Save password**.
-
-If you don't know your current password, select the **I forgot my password** link. A password reset email is sent to the account's **primary** email address.
 
 ## Change your username
 
@@ -223,12 +210,12 @@ To set the busy status indicator, either:
 - Set it directly:
   1. On the top bar, in the top-right corner, select your avatar.
   1. Select **Set status** or, if you have already set a status, **Edit status**.
-  1. Select the **Busy** checkbox.
+  1. Select the **Set yourself as busy** checkbox.
 
 - Set it on your profile:
   1. On the top bar, in the top-right corner, select your avatar.
   1. Select **Edit profile**.
-  1. In the **Current status** section, select the **Busy** checkbox.
+  1. In the **Current status** section, select the **Set yourself as busy** checkbox.
 
   The busy status is displayed in the user interface.
 
@@ -329,6 +316,9 @@ GitLab tracks user contribution activity. You can follow or unfollow other users
 - Their [user profiles](#access-your-user-profile).
 - The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
   in GitLab 15.0).
+
+In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
+the maximum number of users you can follow is 300.
 
 To view a user's activity in a top-level Activity view:
 
@@ -472,7 +462,10 @@ Without the `config.extend_remember_period` flag, you would be forced to sign in
 
 - [Create users](account/create_accounts.md)
 - [Sign in to your GitLab account](../../topics/authentication/index.md)
-- [Receive emails for sign-ins from unknown IP addresses or devices](unknown_sign_in_notification.md)
+- [Change your password](user_passwords.md)
+- Receive emails for:
+  - [Sign-ins from unknown IP addresses or devices](notifications.md#notifications-for-unknown-sign-ins)
+  - [Attempted sign-ins using wrong two-factor authentication codes](notifications.md#notifications-for-attempted-sign-in-using-wrong-two-factor-authentication-codes)
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Manage [SSH keys](../ssh.md) to access your account via SSH

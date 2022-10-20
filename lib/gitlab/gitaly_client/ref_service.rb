@@ -270,15 +270,13 @@ module Gitlab
       end
 
       def consume_find_local_branches_response(response)
-        if Feature.enabled?(:gitaly_simplify_find_local_branches_response, type: :undefined)
-          response.flat_map do |message|
+        response.flat_map do |message|
+          if message.local_branches.present?
             message.local_branches.map do |branch|
               target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
               Gitlab::Git::Branch.new(@repository, branch.name, branch.target_commit.id, target_commit)
             end
-          end
-        else
-          response.flat_map do |message|
+          else
             message.branches.map do |gitaly_branch|
               Gitlab::Git::Branch.new(
                 @repository,

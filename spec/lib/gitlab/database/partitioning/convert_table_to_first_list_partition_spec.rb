@@ -153,6 +153,21 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
       expect(parent_model.pluck(:id)).to match_array([1, 2, 3])
     end
 
+    context 'when the existing table is owned by a different user' do
+      before do
+        connection.execute(<<~SQL)
+          CREATE USER other_user SUPERUSER;
+          ALTER TABLE #{table_name} OWNER TO other_user;
+        SQL
+      end
+
+      let(:current_user) { model.connection.select_value('select current_user') }
+
+      it 'partitions without error' do
+        expect { partition }.not_to raise_error
+      end
+    end
+
     context 'when an error occurs during the conversion' do
       def fail_first_time
         # We can't directly use a boolean here, as we need something that will be passed by-reference to the proc

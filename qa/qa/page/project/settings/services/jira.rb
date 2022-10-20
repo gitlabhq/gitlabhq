@@ -41,10 +41,7 @@ module QA
 
               yield self if block_given?
 
-              click_save_changes_button
-              wait_until(reload: false) do
-                has_element?(:save_changes_button, wait: 1) ? !find_element(:save_changes_button).disabled? : true
-              end
+              click_save_changes_and_wait
             end
 
             def enable_jira_issues
@@ -53,6 +50,13 @@ module QA
 
             def set_jira_project_key(key)
               fill_element(:service_jira_project_key_field, key)
+            end
+
+            def click_save_changes_and_wait
+              click_save_changes_button
+              wait_until(reload: false) do
+                has_element?(:save_changes_button, wait: 1) ? !find_element(:save_changes_button).disabled? : true
+              end
             end
 
             private
@@ -94,3 +98,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Settings::Services::Jira.prepend_mod_with('Page::Project::Settings::Services::Jira', namespace: QA)

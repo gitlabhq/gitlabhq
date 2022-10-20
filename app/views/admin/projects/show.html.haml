@@ -2,7 +2,6 @@
 - add_to_breadcrumbs _("Projects"), admin_projects_path
 - breadcrumb_title @project.full_name
 - page_title @project.full_name, _("Projects")
-- @content_class = "admin-projects"
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
 %h1.page-title.gl-font-size-h-display

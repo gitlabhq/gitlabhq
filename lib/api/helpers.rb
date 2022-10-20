@@ -18,6 +18,7 @@ module API
     API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
+    INTEGER_ID_REGEX = /^-?\d+$/.freeze
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)
@@ -139,7 +140,7 @@ module API
 
       projects = Project.without_deleted.not_hidden
 
-      if id.is_a?(Integer) || id =~ /^\d+$/
+      if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
         projects.find_by(id: id)
       elsif id.include?("/")
         projects.find_by_full_path(id)
@@ -168,7 +169,7 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
-      if id.to_s =~ /^\d+$/
+      if id.to_s =~ INTEGER_ID_REGEX
         Group.find_by(id: id)
       else
         Group.find_by_full_path(id)
@@ -203,7 +204,7 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
-      if id.to_s =~ /^\d+$/
+      if id.to_s =~ INTEGER_ID_REGEX
         Namespace.without_project_namespaces.find_by(id: id)
       else
         find_namespace_by_path(id)
@@ -286,22 +287,11 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      if Feature.enabled?(:gitlab_shell_jwt_token)
-        begin
-          payload, _ = JSONWebToken::HMACToken.decode(headers[GITLAB_SHELL_API_HEADER], secret_token)
-          unauthorized! unless payload['iss'] == GITLAB_SHELL_JWT_ISSUER
-        rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
-          Gitlab::ErrorTracking.track_exception(ex)
-          unauthorized!
-        end
-      else
-        input = params['secret_token']
-        input ||= Base64.decode64(headers[GITLAB_SHARED_SECRET_HEADER]) if headers.key?(GITLAB_SHARED_SECRET_HEADER)
-
-        input&.chomp!
-
-        unauthorized! unless Devise.secure_compare(secret_token, input)
-      end
+      payload, _ = JSONWebToken::HMACToken.decode(headers[GITLAB_SHELL_API_HEADER], secret_token)
+      unauthorized! unless payload['iss'] == GITLAB_SHELL_JWT_ISSUER
+    rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
+      Gitlab::ErrorTracking.track_exception(ex)
+      unauthorized!
     end
 
     def authenticated_with_can_read_all_resources!
@@ -602,23 +592,33 @@ module API
       end
     end
 
-    def present_artifacts_file!(file, **args)
+    def present_artifacts_file!(file, project:, **args)
       log_artifacts_filesize(file&.model)
 
-      present_carrierwave_file!(file, **args)
+      present_carrierwave_file!(file, project: project, **args)
     end
 
-    def present_carrierwave_file!(file, supports_direct_download: true)
+    def present_carrierwave_file!(file, project: nil, supports_direct_download: true)
       return not_found! unless file&.exists?
 
       if file.file_storage?
         present_disk_file!(file.path, file.filename)
       elsif supports_direct_download && file.class.direct_download_enabled?
-        redirect(file.url)
+        redirect(cdn_fronted_url(file, project))
       else
         header(*Gitlab::Workhorse.send_url(file.url))
         status :ok
         body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
+      end
+    end
+
+    def cdn_fronted_url(file, project)
+      if file.respond_to?(:cdn_enabled_url)
+        result = file.cdn_enabled_url(project, ip_address)
+        Gitlab::ApplicationContext.push(artifact_used_cdn: result.used_cdn)
+        result.url
+      else
+        file.url
       end
     end
 
@@ -732,13 +732,7 @@ module API
     end
 
     def secret_token
-      if Feature.enabled?(:gitlab_shell_jwt_token)
-        strong_memoize(:secret_token) do
-          File.read(Gitlab.config.gitlab_shell.secret_file)
-        end
-      else
-        Gitlab::Shell.secret_token
-      end
+      Gitlab::Shell.secret_token
     end
 
     def authenticate_non_public?

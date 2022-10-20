@@ -1,31 +1,14 @@
 ---
 stage: Growth
 group: Acquisition
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Free user limit **(FREE SAAS)**
 
-From October 19, 2022, namespaces in GitLab.com on the Free tier
-will be limited to five (5) members per [namespace](namespace/index.md).
-This limit applies to top-level private groups.
+From October 19, 2022, a five-user limit will apply to top-level [namespaces](namespace/index.md) with private visibility on GitLab SaaS. These limits will roll out gradually, and impacted users will be notified in GitLab.com at least 60 days before the limit is applied.
 
-On the transition date, if your namespace has six or more unique members:
-
-- Five members will keep a status of `Active`.
-- Remaining members will get a status of `Over limit` and lose access to the
-  group.
-- Members invited through a group or project invitation outside of the namespace
-  will be removed. You can add these members back by inviting them through their
-  username or email address on the **Members** page for your group or project.
-
-## How active members are determined
-
-On the transition date, we'll automatically select the members who keep their `Active` status
-in the following order, until we reach a total of five:
-
-1. Members with the Owner or Maintainer role.
-1. The most recently active members.
+When the five-user limit is applied, top-level private namespaces exceeding the user limit are placed in a read-only state. These namespaces cannot write new data to repositories, Git Large File Storage (LFS), packages, or registries.
 
 ## Manage members in your namespace
 
@@ -43,7 +26,7 @@ Prerequisite:
 1. To remove a member, select **Remove user**.
 
 If you need more time to manage your members, or to try GitLab features
-with a team of more than five members, you can [start a trial](https://about.gitlab.com/free-trial/).
+with a team of more than five members, you can [start a trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit).
 A trial lasts for 30 days and includes an unlimited number of members.
 
 ## Related topics

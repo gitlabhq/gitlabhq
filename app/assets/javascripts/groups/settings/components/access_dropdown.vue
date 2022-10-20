@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem, GlDropdownSectionHeader, GlSearchBoxByType } from '@gitlab/ui';
 import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __, s__, n__ } from '~/locale';
 import { getSubGroups } from '../api/access_dropdown_api';
 import { LEVEL_TYPES } from '../constants';
@@ -98,7 +98,7 @@ export default {
             this.consolidateData(groupsResponse.data);
             this.setSelected({ initial });
           })
-          .catch(() => createFlash({ message: __('Failed to load groups.') }))
+          .catch(() => createAlert({ message: __('Failed to load groups.') }))
           .finally(() => {
             this.initialLoading = false;
             this.loading = false;

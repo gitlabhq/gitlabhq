@@ -81,7 +81,7 @@ module StubConfiguration
     messages['default'] ||= Gitlab.config.repositories.storages.default
     messages.each do |storage_name, storage_hash|
       if !storage_hash.key?('path') || storage_hash['path'] == Gitlab::GitalyClient::StorageSettings::Deprecated
-        storage_hash['path'] = TestEnv.repos_path
+        storage_hash['path'] = Gitlab::GitalyClient::StorageSettings.allow_disk_access { TestEnv.repos_path }
       end
 
       messages[storage_name] = Gitlab::GitalyClient::StorageSettings.new(storage_hash.to_h)

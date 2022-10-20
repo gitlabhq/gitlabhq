@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Certify
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Service Desk **(FREE)**
@@ -264,7 +264,7 @@ Graph API instead of IMAP. Follow the [documentation in the incoming email secti
   }
   ```
 
-For Microsoft Cloud for US Government or [other Azure deployments](https://docs.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
 
 - Example for Microsoft Cloud for US Government:
 

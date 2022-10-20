@@ -42,3 +42,8 @@ spec:
 minitest:
   script:
     - crystal test/spec_test.cr  # change to the file(s) you execute for tests
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

@@ -10,7 +10,7 @@
       %p.settings-message.text-center
         - link_start = '<a href="%{url}">'.html_safe % { url: help_page_path('ci/variables/index', anchor: 'protected-cicd-variables') }
         = s_('Environment variables on this GitLab instance are configured to be %{link_start}protected%{link_end} by default.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
-    #js-instance-variables{ data: { endpoint: admin_ci_variables_path, group: 'true', maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
+    #js-instance-variables{ data: { endpoint: admin_ci_variables_path, maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
 
 %section.settings.as-ci-cd.no-animate#js-ci-cd-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
@@ -38,12 +38,11 @@
     .settings-content
       = render 'registry'
 
-- if Feature.enabled?(:runner_registration_control)
-  %section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = s_('Runners|Runner registration')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded_by_default? ? 'Collapse' : 'Expand'
-    .settings-content
-      = render 'runner_registrars_form'
+%section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('Runners|Runner registration')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? 'Collapse' : 'Expand'
+  .settings-content
+    = render 'runner_registrars_form'

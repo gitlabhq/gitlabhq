@@ -1,14 +1,13 @@
 %hr
-.card#webhooks-index
-  .card-header
-    %h5
-      = hook_class.underscore.humanize.titleize.pluralize
-      (#{hooks.size})
-
-  - if hooks.any?
-    %ul.content-list
-      - hooks.each do |hook|
-        = render 'shared/web_hooks/hook', hook: hook
-  - else
-    %p.text-center.gl-mt-3.gl-mb-3
-      = _('No webhooks enabled. Select trigger events above.')
+= render Pajamas::CardComponent.new(card_options: { id: 'webhooks-index' }, body_options: { class: 'gl-py-0'}) do |c|
+  - c.header do
+    = hook_class.underscore.humanize.titleize.pluralize
+    (#{hooks.size})
+  - c.body do
+    - if hooks.any?
+      %ul.content-list
+        - hooks.each do |hook|
+          = render 'shared/web_hooks/hook', hook: hook
+    - else
+      %p.text-center.gl-mt-3.gl-mb-3
+        = _('No webhooks enabled. Select trigger events above.')

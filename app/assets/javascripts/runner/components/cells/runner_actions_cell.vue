@@ -52,11 +52,6 @@ export default {
       :compact="true"
       @toggledPaused="onToggledPaused"
     />
-    <runner-delete-button
-      :disabled="!canDelete"
-      :runner="runner"
-      :compact="true"
-      @deleted="onDeleted"
-    />
+    <runner-delete-button v-if="canDelete" :runner="runner" :compact="true" @deleted="onDeleted" />
   </gl-button-group>
 </template>

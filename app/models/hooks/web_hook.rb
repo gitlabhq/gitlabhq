@@ -7,7 +7,7 @@ class WebHook < ApplicationRecord
 
   MAX_FAILURES = 100
   FAILURE_THRESHOLD = 3 # three strikes
-  INITIAL_BACKOFF = 10.minutes
+  INITIAL_BACKOFF = 1.minute
   MAX_BACKOFF = 1.day
   BACKOFF_GROWTH_FACTOR = 2.0
 
@@ -53,18 +53,24 @@ class WebHook < ApplicationRecord
     where('recent_failures > ? OR disabled_until >= ?', FAILURE_THRESHOLD, Time.current)
   end
 
+  def self.web_hooks_disable_failed?(hook)
+    Feature.enabled?(:web_hooks_disable_failed, hook.parent)
+  end
+
   def executable?
     !temporarily_disabled? && !permanently_disabled?
   end
 
   def temporarily_disabled?
     return false unless web_hooks_disable_failed?
+    return false if recent_failures <= FAILURE_THRESHOLD
 
     disabled_until.present? && disabled_until >= Time.current
   end
 
   def permanently_disabled?
     return false unless web_hooks_disable_failed?
+    return false if disabled_until.present?
 
     recent_failures > FAILURE_THRESHOLD
   end
@@ -112,17 +118,26 @@ class WebHook < ApplicationRecord
     save(validate: false)
   end
 
+  # Don't actually back-off until FAILURE_THRESHOLD failures have been seen
+  # we mark the grace-period using the recent_failures counter
   def backoff!
     return if permanently_disabled? || (backoff_count >= MAX_FAILURES && temporarily_disabled?)
 
-    assign_attributes(disabled_until: next_backoff.from_now, backoff_count: backoff_count.succ.clamp(0, MAX_FAILURES))
+    attrs = { recent_failures: recent_failures + 1 }
+
+    if recent_failures >= FAILURE_THRESHOLD
+      attrs[:backoff_count] = backoff_count.succ.clamp(1, MAX_FAILURES)
+      attrs[:disabled_until] = next_backoff.from_now
+    end
+
+    assign_attributes(attrs)
     save(validate: false)
   end
 
   def failed!
     return unless recent_failures < MAX_FAILURES
 
-    assign_attributes(recent_failures: recent_failures + 1)
+    assign_attributes(disabled_until: nil, backoff_count: 0, recent_failures: recent_failures + 1)
     save(validate: false)
   end
 
@@ -186,7 +201,7 @@ class WebHook < ApplicationRecord
   private
 
   def web_hooks_disable_failed?
-    Feature.enabled?(:web_hooks_disable_failed)
+    self.class.web_hooks_disable_failed?(self)
   end
 
   def initialize_url_variables

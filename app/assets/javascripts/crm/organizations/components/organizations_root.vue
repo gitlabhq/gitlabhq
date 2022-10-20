@@ -137,7 +137,7 @@ export default {
     editButtonLabel: __('Edit'),
     title: s__('Crm|Customer relations organizations'),
     newOrganization: s__('Crm|New organization'),
-    errorText: __('Something went wrong. Please try again.'),
+    errorMsg: __('Something went wrong. Please try again.'),
   },
   EDIT_ROUTE_NAME,
   NEW_ROUTE_NAME,
@@ -167,7 +167,7 @@ export default {
   <div>
     <paginated-table-with-search-and-tabs
       :show-items="true"
-      :show-error-msg="false"
+      :show-error-msg="error"
       :i18n="$options.i18n"
       :items="organizations.list"
       :page-info="organizations.pageInfo"
@@ -238,10 +238,7 @@ export default {
           </template>
 
           <template #empty>
-            <span v-if="error">
-              {{ $options.i18n.errorText }}
-            </span>
-            <span v-else>
+            <span>
               {{ $options.i18n.emptyText }}
             </span>
           </template>

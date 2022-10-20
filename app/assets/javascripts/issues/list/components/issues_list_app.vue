@@ -247,8 +247,8 @@ export default {
     },
     defaultWorkItemTypes() {
       return this.isWorkItemsEnabled
-        ? defaultWorkItemTypes.concat(WORK_ITEM_TYPE_ENUM_TASK)
-        : defaultWorkItemTypes;
+        ? defaultWorkItemTypes
+        : defaultWorkItemTypes.filter((type) => type !== WORK_ITEM_TYPE_ENUM_TASK);
     },
     typeTokenOptions() {
       return this.isWorkItemsEnabled
@@ -563,7 +563,8 @@ export default {
       if (!this.hasInitBulkEdit) {
         const bulkUpdateSidebar = await import('~/issuable/bulk_update_sidebar');
         bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
-        bulkUpdateSidebar.initIssueStatusSelect();
+        bulkUpdateSidebar.initStatusDropdown();
+        bulkUpdateSidebar.initSubscriptionsDropdown();
 
         const usersSelect = await import('~/users_select');
         const UsersSelect = usersSelect.default;

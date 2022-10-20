@@ -11,6 +11,10 @@ RSpec.describe 'Pipeline Schedules', :js do
   let(:scope) { nil }
   let!(:user) { create(:user) }
 
+  before do
+    stub_feature_flags(pipeline_schedules_vue: false)
+  end
+
   context 'logged in as the pipeline schedule owner' do
     before do
       project.add_developer(user)

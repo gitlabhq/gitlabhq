@@ -11,10 +11,27 @@ RSpec.describe Projects::UpdateService do
     create(:project, creator: user, namespace: user.namespace)
   end
 
+  shared_examples 'publishing Projects::ProjectAttributesChangedEvent' do |params:, attributes:|
+    it "publishes Projects::ProjectAttributesChangedEvent" do
+      expect { update_project(project, user, params) }
+        .to publish_event(Projects::ProjectAttributesChangedEvent)
+        .with(
+          project_id: project.id,
+          namespace_id: project.namespace_id,
+          root_namespace_id: project.root_namespace.id,
+          attributes: attributes
+        )
+    end
+  end
+
   describe '#execute' do
     let(:admin) { create(:admin) }
 
     context 'when changing visibility level' do
+      it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
+        params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL },
+        attributes: %w[updated_at visibility_level]
+
       context 'when visibility_level changes to INTERNAL' do
         it 'updates the project to internal' do
           expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
@@ -290,7 +307,7 @@ RSpec.describe Projects::UpdateService do
 
     context 'when we update project but not enabling a wiki' do
       it 'does not try to create an empty wiki' do
-        TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
+        project.wiki.repository.raw.remove
 
         result = update_project(project, user, { name: 'test1' })
 
@@ -311,7 +328,7 @@ RSpec.describe Projects::UpdateService do
     context 'when enabling a wiki' do
       it 'creates a wiki' do
         project.project_feature.update!(wiki_access_level: ProjectFeature::DISABLED)
-        TestEnv.rm_storage_dir(project.repository_storage, project.wiki.path)
+        project.wiki.repository.raw.remove
 
         result = update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
 
@@ -323,7 +340,7 @@ RSpec.describe Projects::UpdateService do
       it 'logs an error and creates a metric when wiki can not be created' do
         project.project_feature.update!(wiki_access_level: ProjectFeature::DISABLED)
 
-        expect_any_instance_of(ProjectWiki).to receive(:wiki).and_raise(Wiki::CouldNotCreateWikiError)
+        expect_any_instance_of(ProjectWiki).to receive(:create_wiki_repository).and_raise(Wiki::CouldNotCreateWikiError)
         expect_any_instance_of(described_class).to receive(:log_error).with("Could not create wiki for #{project.full_name}")
 
         counter = double(:counter)
@@ -348,7 +365,37 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
+    context 'when changes project features' do
+      # Using some sample features for testing.
+      # Not using all the features because some of them must be enabled/disabled together
+      %w[issues wiki forking].each do |feature_name|
+        let(:feature) { "#{feature_name}_access_level" }
+        let(:params) do
+          { project_feature_attributes: { feature => ProjectFeature::ENABLED } }
+        end
+
+        before do
+          project.project_feature.update!(feature => ProjectFeature::DISABLED)
+        end
+
+        it 'publishes Projects::ProjectFeaturesChangedEvent' do
+          expect { update_project(project, user, params) }
+            .to publish_event(Projects::ProjectFeaturesChangedEvent)
+            .with(
+              project_id: project.id,
+              namespace_id: project.namespace_id,
+              root_namespace_id: project.root_namespace.id,
+              features: ["updated_at", feature]
+            )
+        end
+      end
+    end
+
     context 'when archiving a project' do
+      it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
+        params: { archived: true },
+        attributes: %w[updated_at archived]
+
       it 'publishes a ProjectTransferedEvent' do
         expect { update_project(project, user, archived: true) }
           .to publish_event(Projects::ProjectArchivedEvent)

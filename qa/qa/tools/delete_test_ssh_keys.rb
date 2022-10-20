@@ -12,7 +12,7 @@
 
 module QA
   module Tools
-    class DeleteTestSSHKeys
+    class DeleteTestSshKeys
       include Support::API
 
       ITEMS_PER_PAGE = '100'

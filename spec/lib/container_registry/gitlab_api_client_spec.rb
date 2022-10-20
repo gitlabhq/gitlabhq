@@ -307,7 +307,16 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
         stub_tags(path, page_size: page_size, status_code: 404)
       end
 
-      it { is_expected.to eq({}) }
+      it 'logs an error and returns an empty hash' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:log_exception).with(
+            instance_of(described_class::UnsuccessfulResponseError),
+            class: described_class.name,
+            url: "/gitlab/v1/repositories/#{path}/tags/list/",
+            status_code: 404
+          )
+        expect(subject).to eq({})
+      end
     end
   end
 

@@ -22,7 +22,7 @@ describe('MemberList', () => {
     wrapper.destroy();
   });
 
-  test.each`
+  it.each`
     memberType                    | member           | expectedComponent | expectedComponentName
     ${MEMBER_TYPES.user}          | ${memberMock}    | ${UserAvatar}     | ${'UserAvatar'}
     ${MEMBER_TYPES.group}         | ${group}         | ${GroupAvatar}    | ${'GroupAvatar'}

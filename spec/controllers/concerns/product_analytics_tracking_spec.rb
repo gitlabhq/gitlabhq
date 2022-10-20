@@ -51,15 +51,21 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
     end
   end
 
-  def expect_tracking(user: self.user)
+  def expect_redis_hll_tracking
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event)
                                                             .with('g_analytics_valuestream', values: instance_of(String))
+  end
+
+  def expect_snowplow_tracking(user)
+    context = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'g_analytics_valuestream')
+                                                  .to_context.to_json
 
     expect_snowplow_event(
       category: anything,
       action: 'g_analytics_valuestream',
       namespace: group,
-      user: user
+      user: user,
+      context: [context]
     )
   end
 
@@ -77,7 +83,8 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
     it 'tracks the event' do
       get :index
 
-      expect_tracking
+      expect_redis_hll_tracking
+      expect_snowplow_tracking(user)
     end
 
     context 'when FF is disabled' do
@@ -97,7 +104,8 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
 
       get :index
 
-      expect_tracking
+      expect_redis_hll_tracking
+      expect_snowplow_tracking(user)
     end
 
     it 'does not track the event if DNT is enabled' do
@@ -137,7 +145,8 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
 
       get :show, params: { id: 1 }
 
-      expect_tracking(user: nil)
+      expect_redis_hll_tracking
+      expect_snowplow_tracking(nil)
     end
   end
 
@@ -151,21 +160,24 @@ RSpec.describe ProductAnalyticsTracking, :snowplow do
     it 'tracks the event when there is custom id' do
       get :show, params: { id: 1 }
 
-      expect_tracking(user: nil)
+      expect_redis_hll_tracking
+      expect_snowplow_tracking(nil)
     end
 
-    it 'does not track the HLL event when there is no custom id' do
-      allow(controller).to receive(:get_custom_id).and_return(nil)
+    context 'when there is no custom_id set' do
+      before do
+        allow(controller).to receive(:get_custom_id).and_return(nil)
 
-      get :show, params: { id: 2 }
+        get :show, params: { id: 2 }
+      end
 
-      expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-      expect_snowplow_event(
-        category: anything,
-        action: 'g_analytics_valuestream',
-        namespace: group,
-        user: nil
-      )
+      it 'does not track the HLL event' do
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+      end
+
+      it 'tracks Snowplow event' do
+        expect_snowplow_tracking(nil)
+      end
     end
   end
 end

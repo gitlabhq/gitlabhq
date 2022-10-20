@@ -36,7 +36,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       cluster_agent cluster_agents agent_configurations
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
-      timelog_categories fork_targets branch_rules ci_config_variables
+      timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -506,20 +506,6 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::Ci::JobTokenScopeType) }
     it { is_expected.to have_graphql_resolver(Resolvers::Ci::JobTokenScopeResolver) }
-  end
-
-  describe 'branch_rules field' do
-    subject { described_class.fields['branchRules'] }
-
-    let(:br_resolver) { Resolvers::Projects::BranchRulesResolver }
-
-    specify do
-      is_expected.to have_graphql_type(
-        Types::Projects::BranchRuleType.connection_type
-      )
-    end
-
-    specify { is_expected.to have_graphql_resolver(br_resolver) }
   end
 
   describe 'agent_configurations' do

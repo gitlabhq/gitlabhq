@@ -245,9 +245,10 @@ RSpec.describe 'Getting designs related to an issue' do
         end
 
         it 'only returns one version record for the design (the original version)' do
-          expect(version_nodes).to eq([
-            [{ 'node' => { 'id' => global_id(version) } }]
-          ])
+          expect(version_nodes).to eq(
+            [
+              [{ 'node' => { 'id' => global_id(version) } }]
+            ])
         end
       end
 
@@ -289,10 +290,11 @@ RSpec.describe 'Getting designs related to an issue' do
         end
 
         it 'returns the correct versions records for both designs' do
-          expect(version_nodes).to eq([
-            [{ 'node' => { 'id' => global_id(design.versions.first) } }],
-            [{ 'node' => { 'id' => global_id(second_design.versions.first) } }]
-          ])
+          expect(version_nodes).to eq(
+            [
+              [{ 'node' => { 'id' => global_id(design.versions.first) } }],
+              [{ 'node' => { 'id' => global_id(second_design.versions.first) } }]
+            ])
         end
       end
 
@@ -341,15 +343,16 @@ RSpec.describe 'Getting designs related to an issue' do
         end
 
         it 'returns all versions records for the designs' do
-          expect(version_nodes).to eq([
+          expect(version_nodes).to eq(
             [
-              { 'node' => { 'id' => global_id(design.versions.first) } }
-            ],
-            [
-              { 'node' => { 'id' => global_id(second_design.versions.second) } },
-              { 'node' => { 'id' => global_id(second_design.versions.first) } }
-            ]
-          ])
+              [
+                { 'node' => { 'id' => global_id(design.versions.first) } }
+              ],
+              [
+                { 'node' => { 'id' => global_id(second_design.versions.second) } },
+                { 'node' => { 'id' => global_id(second_design.versions.first) } }
+              ]
+            ])
         end
       end
     end

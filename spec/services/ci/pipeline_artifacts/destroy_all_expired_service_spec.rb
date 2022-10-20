@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService do
+RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_shared_state do
   let(:service) { described_class.new }
 
   describe '.execute' do
@@ -83,6 +83,36 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService do
 
       it 'reports the number of destroyed artifacts' do
         is_expected.to eq(0)
+      end
+    end
+
+    context 'with unlocked pipeline artifacts' do
+      let_it_be(:not_expired_artifact) { create(:ci_pipeline_artifact, :artifact_unlocked, expire_at: 2.days.from_now) }
+
+      before do
+        create_list(:ci_pipeline_artifact, 2, :artifact_unlocked, expire_at: 1.week.ago)
+        allow(service).to receive(:legacy_destroy_pipeline_artifacts)
+      end
+
+      it 'destroys all expired artifacts' do
+        expect { subject }.to change { Ci::PipelineArtifact.count }.by(-2)
+        expect(not_expired_artifact.reload).to be_present
+      end
+
+      context 'when the loop limit is reached' do
+        before do
+          stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::LOOP_LIMIT', 1)
+          stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::BATCH_SIZE', 1)
+        end
+
+        it 'destroys one artifact' do
+          expect { subject }.to change { Ci::PipelineArtifact.count }.by(-1)
+          expect(not_expired_artifact.reload).to be_present
+        end
+
+        it 'reports the number of destroyed artifacts' do
+          is_expected.to eq(1)
+        end
       end
     end
   end

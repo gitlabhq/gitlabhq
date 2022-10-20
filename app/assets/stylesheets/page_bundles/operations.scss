@@ -1,0 +1,80 @@
+@import 'mixins_and_variables_and_functions';
+
+.dashboard-cards {
+  margin-right: -$gl-padding-8;
+  margin-left: -$gl-padding-8;
+}
+
+.dashboard-card {
+  @include gl-cursor-grab;
+
+  &-header {
+    &-warning {
+      background-color: var(--orange-100, $orange-100);
+    }
+  }
+
+  &-body {
+    min-height: 120px;
+
+    &-warning {
+      background-color: var(--orange-50, $orange-50);
+    }
+
+    &-failed {
+      background-color: var(--red-50, $red-50);
+    }
+  }
+
+  &-icon {
+    color: var(--gray-300, $gray-300);
+  }
+
+  &-footer {
+    border-radius: $gl-padding;
+    height: $gl-padding-32;
+
+    &-arrow {
+      color: var(--gray-200, $gray-200);
+    }
+
+    &-downstream {
+      margin-right: -$gl-padding-8;
+    }
+
+    &-extra {
+      background-color: var(--gray-200, $gray-200);
+      font-size: 10px;
+      line-height: $gl-line-height;
+      width: $gl-padding;
+    }
+  }
+
+  &-header {
+    &-failed {
+      background-color: var(--red-100, $red-100);
+    }
+  }
+
+  &-skeleton-info {
+    border-radius: $gl-padding;
+    height: $gl-padding;
+    overflow: hidden;
+
+    &::after {
+      content: ' ';
+      display: block;
+      animation: blockTextShine 1s linear infinite forwards;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: linear-gradient(to right,
+      var(--gray-50, $gray-50) 0%,
+      var(--gray-10, $gray-10) 20%,
+      var(--gray-50, $gray-50) 40%,
+      var(--gray-50, $gray-50) 100%);
+      border-radius: $gl-padding;
+      height: $gl-padding;
+      margin-top: -$gl-padding-8;
+    }
+  }
+}

@@ -67,7 +67,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
     describe 'Packages Registry' do
       let(:item_id) { :packages_registry }
 
-      shared_examples 'when user can read packages' do
+      context 'when user can read packages' do
         context 'when config package setting is disabled' do
           it 'the menu item is not added to list of menu items' do
             stub_config(packages: { enabled: false })
@@ -85,24 +85,12 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
         end
       end
 
-      shared_examples 'when user cannot read packages' do
+      context 'when user cannot read packages' do
         let(:user) { nil }
 
         it 'the menu item is not added to list of menu items' do
           is_expected.to be_nil
         end
-      end
-
-      it_behaves_like 'when user can read packages'
-      it_behaves_like 'when user cannot read packages'
-
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(read_package_policy_rule: false)
-        end
-
-        it_behaves_like 'when user can read packages'
-        it_behaves_like 'when user cannot read packages'
       end
     end
 
@@ -176,6 +164,15 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu do
           stub_feature_flags(harbor_registry_integration: true)
 
           is_expected.not_to be_nil
+        end
+      end
+
+      context 'when config harbor registry setting is not activated' do
+        it 'does not add the menu item to the list' do
+          stub_feature_flags(harbor_registry_integration: true)
+          project.harbor_integration.update!(active: false)
+
+          is_expected.to be_nil
         end
       end
     end

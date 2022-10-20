@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Application settings API **(FREE SELF)**
@@ -216,7 +216,8 @@ Example response:
   "admin_mode": false,
   "external_pipeline_validation_service_timeout": null,
   "external_pipeline_validation_service_token": null,
-  "external_pipeline_validation_service_url": null
+  "external_pipeline_validation_service_url": null,
+  "can_create_group": false
 }
 ```
 
@@ -266,6 +267,7 @@ listed in the descriptions of the relevant settings.
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It automatically builds, tests, and deploys applications based on a predefined CI/CD configuration. |
 | `automatic_purchased_storage_allocation` | boolean          | no                                   | Enabling this permits automatic allocation of purchased storage in a namespace. |
+| `can_create_group` | boolean | no | Indicates whether users can create top-level groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5. Defaults to `true`. |
 | `check_namespace_plan` **(PREMIUM)**     | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_expiration_policies_enable_historic_entries`  | boolean | no                            | Enable [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#enable-the-cleanup-policy) for all projects. |
@@ -352,7 +354,7 @@ listed in the descriptions of the relevant settings.
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
 | `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled in GitLab versions 13.0 and later, configuration is scheduled for removal in 14.0) |
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
-| `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page and help dropdown. |
+| `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page and help dropdown list. |
 | `help_page_text`                         | string           | no                                   | Custom text displayed on the help page. |
 | `help_text` **(PREMIUM)**                | string           | no                                   | GitLab server administrator information. |
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties in GitLab. |

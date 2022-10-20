@@ -107,11 +107,11 @@ class SessionsController < Devise::SessionsController
   end
 
   def captcha_enabled?
-    request.headers[CAPTCHA_HEADER] && Gitlab::Recaptcha.enabled?
+    request.headers[CAPTCHA_HEADER] && helpers.recaptcha_enabled?
   end
 
   def captcha_on_login_required?
-    Gitlab::Recaptcha.enabled_on_login? && unverified_anonymous_user?
+    helpers.recaptcha_enabled_on_login? && unverified_anonymous_user?
   end
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Use-Recaptcha-with-Devise#devisepasswordscontroller

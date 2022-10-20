@@ -26,6 +26,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::AssignPartition,
                 Gitlab::Ci::Pipeline::Chain::Seed,
                 Gitlab::Ci::Pipeline::Chain::Limit::Size,
+                Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs,
                 Gitlab::Ci::Pipeline::Chain::Limit::Deployments,
                 Gitlab::Ci::Pipeline::Chain::Validate::External,
                 Gitlab::Ci::Pipeline::Chain::Populate,
@@ -36,7 +37,6 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::CreateDeployments,
                 Gitlab::Ci::Pipeline::Chain::CreateCrossDatabaseAssociations,
                 Gitlab::Ci::Pipeline::Chain::Limit::Activity,
-                Gitlab::Ci::Pipeline::Chain::Limit::JobActivity,
                 Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines,
                 Gitlab::Ci::Pipeline::Chain::Metrics,
                 Gitlab::Ci::Pipeline::Chain::TemplateUsage,
@@ -140,7 +140,7 @@ module Ci
     end
 
     def create_namespace_onboarding_action
-      Namespaces::OnboardingPipelineCreatedWorker.perform_async(project.namespace_id)
+      Onboarding::PipelineCreatedWorker.perform_async(project.namespace_id)
     end
 
     def extra_options(content: nil, dry_run: false)

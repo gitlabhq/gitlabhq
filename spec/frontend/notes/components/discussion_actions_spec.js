@@ -81,7 +81,7 @@ describe('DiscussionActions', () => {
         });
       });
 
-      it(shouldRender ? 'renders resolve buttons' : 'does not render resolve buttons', () => {
+      it(`${shouldRender ? 'renders' : 'does not render'} resolve buttons`, () => {
         expect(wrapper.findComponent(ResolveDiscussionButton).exists()).toBe(shouldRender);
         expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(shouldRender);
       });

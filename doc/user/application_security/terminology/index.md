@@ -1,20 +1,21 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
-# Secure and Protect terminology **(FREE)**
+# Secure and Govern terminology **(FREE)**
 
-This terminology list for GitLab Secure and Protect aims to:
+The glossary of terms aims to achieve the following:
 
-- Promote a ubiquitous language for discussing application security.
-- Improve the effectiveness of communication regarding GitLab application security features.
-- Get new contributors up to speed faster.
+- Promote a ubiquitous language that can be used everywhere - with customers, on issues, in Slack, in code.
+- Improve the effectiveness of communication between team members.
+- Reduce the potential for miscommunication.
+- Bring new team members and community contributors up to speed faster, reducing the time to productivity.
 
-This document defines application security terms in the specific context of GitLab Secure and
-Protect features. Terms may therefore have different meanings outside that context.
+The definitions of the terms outlined in this document are in the context of the GitLab
+products. Therefore, a term may have a different meaning to users outside of GitLab.
 
 ## Terms
 
@@ -28,9 +29,7 @@ an artifact after the job is complete. GitLab ingests this report, allowing user
 manage found vulnerabilities. For more information, see [Security Scanner Integration](../../../development/integrations/secure.md).
 
 Many GitLab analyzers follow a standard approach using Docker to run a wrapped scanner. For example,
-the Docker image `bandit-sast` is an analyzer that wraps the scanner `Bandit`. You can optionally
-use the [Common library](https://gitlab.com/gitlab-org/security-products/analyzers/common)
-to assist in building an Analyzer.
+the image `semgrep` is an analyzer that wraps the scanner `Semgrep`.
 
 ### Attack surface
 
@@ -43,6 +42,12 @@ example, SAST uses files and line numbers, and DAST uses URLs.
 The set of meaningful test cases that are generated while the fuzzer is running. Each meaningful
 test case produces new coverage in the tested program. It's advised to re-use the corpus and pass it
 to subsequent runs.
+
+### CNA
+
+[CVE](#cve) Numbering Authorities (CNAs) are organizations from around the world that are authorized by
+the [Mitre Corporation](https://cve.mitre.org/) to assign [CVE](#cve)s to vulnerabilities in products or
+services within their respective scope. [GitLab is a CNA](https://about.gitlab.com/security/cve/).
 
 ### CVE
 
@@ -62,6 +67,11 @@ vulnerabilities, or other errors in software or hardware implementation, code, d
 architecture. If left unaddressed, weaknesses could result in systems, networks, or hardware being
 vulnerable to attack. The CWE List and associated classification taxonomy serve as a language that
 you can use to identify and describe these weaknesses in terms of CWEs.
+
+### Deduplication
+
+When a category's process deems findings to be the same, or if they are similar enough that a noise reduction is
+required, only one finding is kept and the others are eliminated. Read more about the [deduplication process](../vulnerability_report/pipeline.md#deduplication-process).
 
 ### Duplicate finding
 
@@ -86,6 +96,13 @@ applications, and infrastructure.
 
 Findings are all potential vulnerability items scanners identify in MRs/feature branches. Only after merging to default does a finding become a [vulnerability](#vulnerability).
 
+### Grouping
+
+A flexible and non-destructive way to visually organize vulnerabilities in groups when there are multiple findings
+that are likely related but do not qualify for deduplication. For example, you can include findings that should be
+evaluated together, would be fixed by the same action, or come from the same source. Grouping behavior for vulnerabilities is
+under development and tracked in issue [267588](https://gitlab.com/gitlab-org/gitlab/-/issues/267588).
+
 ### Insignificant finding
 
 A legitimate finding that a particular customer doesn't care about.
@@ -93,16 +110,18 @@ A legitimate finding that a particular customer doesn't care about.
 ### Location fingerprint
 
 A finding's location fingerprint is a text value that's unique for each location on the attack
-surface. Each Secure product defines this according to its type of attack surface. For example, SAST
+surface. Each security product defines this according to its type of attack surface. For example, SAST
 incorporates file path and line number.
 
-### Package managers
+### Package managers and package types
 
-A Package manager is a system that manages your project dependencies.
+#### Package managers
+
+A package manager is a system that manages your project dependencies.
 
 The package manager provides a method to install new dependencies (also referred to as "packages"), manage where packages are stored on your file system, and offer capabilities for you to publish your own packages.
 
-### Package types
+#### Package types
 
 Each package manager, platform, type, or ecosystem has its own conventions and protocols to identify, locate, and provision software packages.
 
@@ -200,9 +219,26 @@ table.package-managers-and-types ul {
 
 A page that displays findings discovered in the associated CI pipeline.
 
+### Post-filter
+
+Post-filters help reduce noise in the scanner results and automate manual tasks. You can specify criteria that updates
+or modifies vulnerability data based on scanner results. For example, you can flag findings as likely False Positives
+and automatically resolve vulnerabilities that are no longer detected. These are not permanent actions and can be changed.
+
+Support for automatically resolving findings is tracked in epic [7478](https://gitlab.com/groups/gitlab-org/-/epics/7478) and
+support for cheap scan is proposed in issue [349926](https://gitlab.com/gitlab-org/gitlab/-/issues/349926).
+
+### Pre-filter
+
+An irreversible action that is done to filter out target(s) before analysis occurs. This is usually provided to allow
+the user to reduce scope and noise as well as speed up the analysis. This should not be done if a record is needed as
+we currently do not store anything related to the skipped/excluded code or assets.
+
+Examples: `DS_EXCLUDED_PATHS` should `Exclude files and directories from the scan based on the paths provided.`
+
 ### Primary identifier
 
-A finding's primary identifier is a value unique to that finding. The external type and external ID
+A finding's primary identifier is a value that is unique to each finding. The external type and external ID
 of the finding's [first identifier](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/v2.4.0-rc1/dist/sast-report-format.json#L228)
 combine to create the value.
 
@@ -218,14 +254,18 @@ once it's imported into the database.
 
 ### Scan type (report type)
 
-The type of scan. This must be one of the following:
+Describes the type of scan. This must be one of the following:
 
+- `api_fuzzing`
 - `cluster_image_scanning`
 - `container_scanning`
+- `coverage_fuzzing`
 - `dast`
 - `dependency_scanning`
 - `sast`
 - `secret_detection`
+
+This list is subject to change as scanners are added.
 
 ### Scanner
 
@@ -235,9 +275,12 @@ Software that can scan for vulnerabilities. The resulting scan report is typical
 ### Secure product
 
 A group of features related to a specific area of application security with first-class support by
-GitLab. Products include Container Scanning, Dependency Scanning, Dynamic Application Security
-Testing (DAST), Secret Detection, Static Application Security Testing (SAST), and Fuzz Testing. Each
-of these products typically include one or more analyzers.
+GitLab.
+
+Products include Container Scanning, Dependency Scanning, Dynamic Application Security
+Testing (DAST), Secret Detection, Static Application Security Testing (SAST), and Fuzz Testing.
+
+Each of these products typically include one or more analyzers.
 
 ### Secure report format
 
@@ -267,6 +310,7 @@ is listed as GitLab.
 
 A flaw that has a negative impact on the security of its environment. Vulnerabilities describe the
 error or weakness, and don't describe where the error is located (see [finding](#finding)).
+
 Each vulnerability maps to a unique finding.
 
 Vulnerabilities exist in the default branch. Findings (see [finding](#finding)) are all potential vulnerability items scanners identify in MRs/feature branches. Only after merging to default does a finding become a vulnerability.
@@ -280,8 +324,9 @@ When a [report finding](#report-finding) is stored to the database, it becomes a
 
 Deals with the responsibility of matching findings across scans so that a finding's life cycle can
 be understood. Engineers and security teams use this information to decide whether to merge code
-changes, and to see unresolved findings and when they were introduced. Vulnerabilities are tracked
-by comparing the location fingerprint, primary identifier, and report type.
+changes, and to see unresolved findings and when they were introduced.
+
+Vulnerabilities are tracked by comparing the location fingerprint, primary identifier, and report type.
 
 ### Vulnerability occurrence
 

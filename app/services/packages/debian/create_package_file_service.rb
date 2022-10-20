@@ -5,18 +5,20 @@ module Packages
     class CreatePackageFileService
       include ::Packages::FIPS
 
-      def initialize(package, params)
+      def initialize(package:, current_user:, params: {})
         @package = package
+        @current_user = current_user
         @params = params
       end
 
       def execute
         raise DisabledError, 'Debian registry is not FIPS compliant' if Gitlab::FIPS.enabled?
         raise ArgumentError, "Invalid package" unless package.present?
+        raise ArgumentError, "Invalid user" unless current_user.present?
 
         # Debian package file are first uploaded to incoming with empty metadata,
         # and are moved later by Packages::Debian::ProcessChangesService
-        package.package_files.create!(
+        package_file = package.package_files.create!(
           file: params[:file],
           size: params[:file]&.size,
           file_name: params[:file_name],
@@ -29,11 +31,17 @@ module Packages
             fields: nil
           }
         )
+
+        if params[:file_name].end_with? '.changes'
+          ::Packages::Debian::ProcessChangesWorker.perform_async(package_file.id, current_user.id)
+        end
+
+        package_file
       end
 
       private
 
-      attr_reader :package, :params
+      attr_reader :package, :current_user, :params
     end
   end
 end

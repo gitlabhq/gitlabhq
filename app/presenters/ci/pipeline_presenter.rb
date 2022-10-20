@@ -92,7 +92,7 @@ module Ci
       if all_related_merge_requests.none?
         _("No related merge requests found.")
       else
-        _("%{count} related %{pluralized_subject}: %{links}" % {
+        (_("%{count} related %{pluralized_subject}: %{links}") % {
           count: all_related_merge_requests.count,
           pluralized_subject: n_('merge request', 'merge requests', all_related_merge_requests.count),
           links: all_related_merge_request_links(limit: limit).join(', ')

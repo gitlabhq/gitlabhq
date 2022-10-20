@@ -1,5 +1,5 @@
 ---
-info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
@@ -139,7 +139,7 @@ To remove a page:
    ---
    stage: Data Stores
    group: Global Search
-   info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+   info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
    remove_date: '2022-08-02'
    redirect_to: '../newpath/to/file/index.md'
    ---
@@ -154,7 +154,7 @@ To remove a page:
 1. Remove the page's entry from the global navigation by editing [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`.
 
 This content is removed from the documentation as part of the Technical Writing team's
-[regularly scheduled tasks](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#regularly-scheduled-tasks).
+[regularly scheduled tasks](https://about.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
 ### Remove a topic
 
@@ -179,7 +179,7 @@ To remove a topic:
    ```
 
 This content is removed from the documentation as part of the Technical Writing team's
-[regularly scheduled tasks](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#regularly-scheduled-tasks).
+[regularly scheduled tasks](https://about.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
 ## Which versions are removed
 

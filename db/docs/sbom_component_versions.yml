@@ -3,9 +3,7 @@ table_name: sbom_component_versions
 classes:
 - Sbom::ComponentVersion
 feature_categories:
-- container_scanning
-- dependency_scanning
-- license_compliance
+- dependency_management
 description: Stores version information for software components produced by a Software Bill of Materials (SBoM)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90809
 milestone: '15.2'

@@ -55,13 +55,6 @@ class ProjectHook < WebHook
       redis.set(key, time) if !prev || prev < time
     end
   end
-
-  private
-
-  override :web_hooks_disable_failed?
-  def web_hooks_disable_failed?
-    Feature.enabled?(:web_hooks_disable_failed, project)
-  end
 end
 
 ProjectHook.prepend_mod_with('ProjectHook')

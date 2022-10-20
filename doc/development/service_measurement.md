@@ -1,12 +1,12 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Developers Guide to service measurement
 
-You can enable service measurement in order to debug any slow service's execution time, number of SQL calls, garbage collection stats, memory usage, etc.
+You can enable service measurement to debug any slow service's execution time, number of SQL calls, garbage collection stats, memory usage, etc.
 
 ## Measuring module
 
@@ -43,7 +43,7 @@ DummyService.prepend(Measurable)
 
 In case when you are prepending a module from the `EE` namespace with EE features, you need to prepend Measurable after prepending the `EE` module.
 
-This way, `Measurable` is at the bottom of the ancestor chain, in order to measure execution of `EE` features as well:
+This way, `Measurable` is at the bottom of the ancestor chain, to measure execution of `EE` features as well:
 
 ```ruby
 class DummyService

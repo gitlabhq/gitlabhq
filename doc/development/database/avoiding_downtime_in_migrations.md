@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Avoiding downtime in migrations
@@ -296,7 +296,7 @@ when migrating a column in a large table (for example, `issues`). Background
 migrations spread the work / load over a longer time period, without slowing
 down deployments.
 
-For more information, see [the documentation on cleaning up background migrations](background_migrations.md#cleaning-up).
+For more information, see [the documentation on cleaning up batched background migrations](batched_background_migrations.md#cleaning-up).
 
 ## Adding Indexes
 

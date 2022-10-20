@@ -14,7 +14,7 @@ module Ci
     include Presentable
     include EachBatch
 
-    add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration, expiration_enforced?: :token_expiration_enforced?
+    add_authentication_token_field :token, encrypted: :optional, expires_at: :compute_token_expiration
 
     enum access_level: {
       not_protected: 0,
@@ -99,27 +99,26 @@ module Ci
     }
 
     scope :belonging_to_group, -> (group_id) {
-      joins(:runner_namespaces)
-        .where(ci_runner_namespaces: { namespace_id: group_id })
+      joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
     }
 
     scope :belonging_to_group_or_project_descendants, -> (group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
-      group_runners = joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_ids })
-      project_runners = joins(:runner_projects).where(ci_runner_projects: { project_id: project_ids })
+      group_runners = belonging_to_group(group_ids)
+      project_runners = belonging_to_project(project_ids).distinct
 
-      union_sql = ::Gitlab::SQL::Union.new([group_runners, project_runners]).to_sql
-
-      from("(#{union_sql}) #{table_name}")
+      from_union(
+        [group_runners, project_runners],
+        remove_duplicates: false
+      )
     }
 
     scope :belonging_to_group_and_ancestors, -> (group_id) {
       group_self_and_ancestors_ids = ::Group.find_by(id: group_id)&.self_and_ancestor_ids
 
-      joins(:runner_namespaces)
-        .where(ci_runner_namespaces: { namespace_id: group_self_and_ancestors_ids })
+      belonging_to_group(group_self_and_ancestors_ids)
     }
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
@@ -147,6 +146,17 @@ module Ci
       from_union(
         [
           belonging_to_group_and_ancestors(group.id),
+          group.shared_runners
+        ],
+        remove_duplicates: false
+      )
+    end
+
+    scope :usable_from_scope, -> (group) do
+      from_union(
+        [
+          belonging_to_group(group.ancestor_ids),
+          belonging_to_group_or_project_descendants(group.id),
           group.shared_runners
         ],
         remove_duplicates: false
@@ -205,7 +215,7 @@ module Ci
 
     validates :maintenance_note, length: { maximum: 1024 }
 
-    alias_attribute :maintenance_note, :maintainer_note
+    alias_attribute :maintenance_note, :maintainer_note # NOTE: Need to keep until REST v5 is implemented
 
     # Searches for runners matching the given query.
     #
@@ -335,7 +345,7 @@ module Ci
     end
 
     # DEPRECATED
-    # TODO Remove in %16.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+    # TODO Remove in v5 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
     def deprecated_rest_status
       return :stale if stale?
 
@@ -468,10 +478,6 @@ module Ci
       when 'project_type'
         compute_token_expiration_project
       end
-    end
-
-    def self.token_expiration_enforced?
-      Feature.enabled?(:enforce_runner_token_expires_at)
     end
 
     private

@@ -61,7 +61,7 @@ feature for all reviews. Reviewers will `approve` the MR and remove themselves f
 - [ ] (Recommended) PMM
 - [ ] (Optional) Product Designer
 - [ ] (Optional) Group Manager or Director
-- [ ] Required review and approval: [Technical Writer designated to the corresponding DevOps stage/group](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments).
+- [ ] Required review and approval: [Technical Writer designated to the corresponding DevOps stage/group](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
 ### Tech writer review
 

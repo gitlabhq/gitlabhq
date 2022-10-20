@@ -20,22 +20,24 @@ RSpec.describe Gitlab::Diff::CharDiff do
       it 'treats nil values as blank strings' do
         changes = subject.generate_diff
 
-        expect(changes).to eq([
-          [:insert, "Hello \n World"]
-        ])
+        expect(changes).to eq(
+          [
+            [:insert, "Hello \n World"]
+          ])
       end
     end
 
     it 'generates an array of changes' do
       changes = subject.generate_diff
 
-      expect(changes).to eq([
-        [:equal, "Hel"],
-        [:insert, "l"],
-        [:equal, "o \n Worl"],
-        [:delete, "l"],
-        [:equal, "d"]
-      ])
+      expect(changes).to eq(
+        [
+          [:equal, "Hel"],
+          [:insert, "l"],
+          [:equal, "o \n Worl"],
+          [:delete, "l"],
+          [:equal, "d"]
+        ])
     end
   end
 

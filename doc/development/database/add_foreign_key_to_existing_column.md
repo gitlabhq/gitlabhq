@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Add a foreign key constraint to an existing column
@@ -126,7 +126,7 @@ Validating the foreign key scans the whole table and makes sure that each relati
 Fortunately, this does not lock the source table (`users`) while running.
 
 NOTE:
-When using [background migrations](background_migrations.md), foreign key validation should happen in the next GitLab release.
+When using [batched background migrations](batched_background_migrations.md), foreign key validation should happen in the next GitLab release.
 
 Migration file for validating the foreign key:
 

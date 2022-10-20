@@ -20,6 +20,7 @@ export const initAccessTokenTableApp = () => {
   const {
     accessTokenType,
     accessTokenTypePlural,
+    information,
     initialActiveAccessTokens: initialActiveAccessTokensJson,
     noActiveTokensMessage: noTokensMessage,
   } = el.dataset;
@@ -30,12 +31,7 @@ export const initAccessTokenTableApp = () => {
     sprintf(__('This user has no active %{accessTokenTypePlural}.'), { accessTokenTypePlural });
   const showRole = 'showRole' in el.dataset;
 
-  const initialActiveAccessTokens = convertObjectPropsToCamelCase(
-    JSON.parse(initialActiveAccessTokensJson),
-    {
-      deep: true,
-    },
-  );
+  const initialActiveAccessTokens = JSON.parse(initialActiveAccessTokensJson);
 
   return new Vue({
     el,
@@ -43,6 +39,7 @@ export const initAccessTokenTableApp = () => {
     provide: {
       accessTokenType,
       accessTokenTypePlural,
+      information,
       initialActiveAccessTokens,
       noActiveTokensMessage,
       showRole,
@@ -103,7 +100,7 @@ export const initNewAccessTokenApp = () => {
 export const initTokensApp = () => {
   const el = document.getElementById('js-tokens-app');
 
-  if (!el) return false;
+  if (!el) return null;
 
   const tokensData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.tokensData), {
     deep: true,

@@ -2,14 +2,21 @@ import { shallowMount } from '@vue/test-utils';
 import RequestWarning from '~/performance_bar/components/request_warning.vue';
 
 describe('request warning', () => {
+  let wrapper;
   const htmlId = 'request-123';
 
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
   describe('when the request has warnings', () => {
-    const wrapper = shallowMount(RequestWarning, {
-      propsData: {
-        htmlId,
-        warnings: ['gitaly calls: 30 over 10', 'gitaly duration: 1500 over 1000'],
-      },
+    beforeEach(() => {
+      wrapper = shallowMount(RequestWarning, {
+        propsData: {
+          htmlId,
+          warnings: ['gitaly calls: 30 over 10', 'gitaly duration: 1500 over 1000'],
+        },
+      });
     });
 
     it('adds a warning emoji with the correct ID', () => {
@@ -19,11 +26,13 @@ describe('request warning', () => {
   });
 
   describe('when the request does not have warnings', () => {
-    const wrapper = shallowMount(RequestWarning, {
-      propsData: {
-        htmlId,
-        warnings: [],
-      },
+    beforeEach(() => {
+      wrapper = shallowMount(RequestWarning, {
+        propsData: {
+          htmlId,
+          warnings: [],
+        },
+      });
     });
 
     it('does nothing', () => {

@@ -12,6 +12,13 @@ RSpec.describe 'search/_results' do
     controller.params[:action] = 'show'
     controller.params[:search] = term
 
+    allow(self).to receive(:current_user).and_return(user)
+    allow(@search_results).to receive(:formatted_count).with(scope).and_return(10)
+    allow(self).to receive(:search_count_path).with(any_args).and_return("test count link")
+    allow(self).to receive(:search_path).with(any_args).and_return("link test")
+
+    stub_feature_flags(search_page_vertical_nav: false)
+
     create_list(:issue, 3)
 
     @search_objects = search_objects
@@ -147,7 +154,7 @@ RSpec.describe 'search/_results' do
         it 'does not render the sidebar' do
           render
 
-          expect(rendered).not_to have_selector('#js-search-sidebar')
+          expect(rendered).not_to have_selector('form.search-sidebar')
         end
       end
     end

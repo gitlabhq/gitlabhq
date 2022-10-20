@@ -4,6 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import eventHub from '~/ide/eventhub';
 import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
+import { createAlert } from '~/flash';
 import {
   init,
   stageAllChanges,
@@ -29,6 +30,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
 }));
+jest.mock('~/flash');
 
 describe('Multi-file store actions', () => {
   let store;
@@ -138,7 +140,7 @@ describe('Multi-file store actions', () => {
           name: 'testing/test',
           type: 'tree',
         });
-        expect(tree.tree[0].tempFile).toBeTruthy();
+        expect(tree.tree[0].tempFile).toBe(true);
         expect(tree.tree[0].name).toBe('test');
         expect(tree.tree[0].type).toBe('tree');
       });
@@ -158,7 +160,7 @@ describe('Multi-file store actions', () => {
           type: 'tree',
         });
         expect(store.state.entries[tree.path].tempFile).toEqual(false);
-        expect(document.querySelector('.flash-alert')).not.toBeNull();
+        expect(createAlert).toHaveBeenCalled();
       });
     });
 
@@ -173,7 +175,7 @@ describe('Multi-file store actions', () => {
         });
         const f = store.state.entries[name];
 
-        expect(f.tempFile).toBeTruthy();
+        expect(f.tempFile).toBe(true);
         expect(f.mimeType).toBe('test/mime');
         expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
       });
@@ -216,8 +218,10 @@ describe('Multi-file store actions', () => {
           name: 'test',
           type: 'blob',
         });
-        expect(document.querySelector('.flash-alert')?.textContent.trim()).toEqual(
-          `The name "${f.name}" is already taken in this directory.`,
+        expect(createAlert).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: `The name "${f.name}" is already taken in this directory.`,
+          }),
         );
       });
     });
@@ -930,7 +934,7 @@ describe('Multi-file store actions', () => {
         );
 
         expect(dispatch.mock.calls).toHaveLength(0);
-        expect(document.querySelector('.flash-alert')).not.toBeNull();
+        expect(createAlert).toHaveBeenCalled();
       });
     });
   });

@@ -350,7 +350,7 @@ class Snippet < ApplicationRecord
   end
 
   def can_cache_field?(field)
-    field != :content || MarkupHelper.gitlab_markdown?(file_name)
+    field != :content || Gitlab::MarkupHelper.gitlab_markdown?(file_name)
   end
 
   def hexdigest

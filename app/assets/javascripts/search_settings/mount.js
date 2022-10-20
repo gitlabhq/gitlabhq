@@ -11,6 +11,7 @@ const mountSearch = ({ el }) =>
         props: {
           searchRoot: document.querySelector('#content-body'),
           sectionSelector: '.js-search-settings-section, section.settings',
+          hideWhenEmptySelector: '.js-hide-when-nothing-matches-search',
           isExpandedFn: isExpanded,
         },
         on: {

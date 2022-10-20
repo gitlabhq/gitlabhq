@@ -57,36 +57,39 @@ RSpec.describe BackfillEscalationPoliciesForOncallSchedules do
       expect(new_polices).to all have_attributes(name: 'On-call Escalation Policy')
       expect(new_policy_b1.description).to eq('Immediately notify Schedule B1')
       expect(new_policy_c1.description).to eq('Immediately notify Schedule C1')
-      expect(policies.pluck(:project_id)).to eq([
-        project_d.id,
-        project_e.id,
-        project_f.id,
-        project_f.id,
-        project_b.id,
-        project_c.id
-      ])
+      expect(policies.pluck(:project_id)).to eq(
+        [
+          project_d.id,
+          project_e.id,
+          project_f.id,
+          project_f.id,
+          project_b.id,
+          project_c.id
+        ])
 
       expect(new_rules).to all have_attributes(status: 1, elapsed_time_seconds: 0)
-      expect(rules.pluck(:policy_id)).to eq([
-        rule_d1.policy_id,
-        rule_e1.policy_id,
-        rule_f1.policy_id,
-        rule_f2.policy_id,
-        rule_f3.policy_id,
-        new_policy_b1.id,
-        new_policy_c1.id,
-        new_policy_c1.id
-      ])
-      expect(rules.pluck(:oncall_schedule_id)).to eq([
-        rule_d1.oncall_schedule_id,
-        rule_e1.oncall_schedule_id,
-        rule_f1.oncall_schedule_id,
-        rule_f2.oncall_schedule_id,
-        rule_f3.oncall_schedule_id,
-        schedule_b1.id,
-        schedule_c1.id,
-        schedule_c2.id
-      ])
+      expect(rules.pluck(:policy_id)).to eq(
+        [
+          rule_d1.policy_id,
+          rule_e1.policy_id,
+          rule_f1.policy_id,
+          rule_f2.policy_id,
+          rule_f3.policy_id,
+          new_policy_b1.id,
+          new_policy_c1.id,
+          new_policy_c1.id
+        ])
+      expect(rules.pluck(:oncall_schedule_id)).to eq(
+        [
+          rule_d1.oncall_schedule_id,
+          rule_e1.oncall_schedule_id,
+          rule_f1.oncall_schedule_id,
+          rule_f2.oncall_schedule_id,
+          rule_f3.oncall_schedule_id,
+          schedule_b1.id,
+          schedule_c1.id,
+          schedule_c2.id
+        ])
     end
   end
 

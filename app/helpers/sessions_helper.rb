@@ -49,6 +49,6 @@ module SessionsHelper
     match = regex.match(email)
     return email unless match
 
-    match[1] + '*' * match[2].length + match[3] + '*' * match[4].length + match[5]
+    match[1] + '*' * (match[2] || '').length + match[3] + '*' * (match[4] || '').length + match[5]
   end
 end

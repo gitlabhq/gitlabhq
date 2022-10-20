@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # PostgreSQL **(FREE SELF)**
@@ -109,7 +109,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - Deploying PostgreSQL on Azure Database for PostgreSQL - Flexible Server may result in an error stating `extension "btree_gist" is not allow-listed for "azure_pg_admin" users in Azure Database for PostgreSQL`
 
-  To resolve the above error, [allow-list the extension](https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions) prior to install.
+  To resolve the above error, [allow-list the extension](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions) prior to install.
 
 ## Support topics
 

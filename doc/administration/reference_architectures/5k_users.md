@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Reference architecture: up to 5,000 users **(PREMIUM SELF)**
@@ -24,29 +24,36 @@ costly-to-operate environment by using the
 > - **Validation and test results:** The Quality Engineering team does [regular smoke and performance tests](index.md#validation-and-test-results) to ensure the reference architectures remain compliant
 >   - **Test requests per second (RPS) rates:** API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS
 >   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)**
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
 
-| Service                                   | Nodes | Configuration           | GCP             | AWS          | Azure    |
-|-------------------------------------------|-------|-------------------------|-----------------|--------------|----------|
-| External load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Redis<sup>2</sup>                         | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL<sup>1</sup>                    | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Gitaly<sup>5</sup>                        | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge` | `D8s v3` |
-| Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Sidekiq                                   | 4     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| GitLab Rails                              | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` | `F16s v2`|
-| Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage<sup>4</sup>                | -     | -                       | -               | -            | -        |
-| NFS server (non-Gitaly)                   | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  | `F4s v2` |
+| Service                                   | Nodes | Configuration           | GCP             | AWS          |
+|-------------------------------------------|-------|-------------------------|-----------------|--------------|
+| External load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
+| Redis<sup>2</sup>                         | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   |
+| Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
+| PostgreSQL<sup>1</sup>                    | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  |
+| PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
+| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
+| Gitaly<sup>5</sup>                        | 3     | 8 vCPU, 30 GB memory    | `n1-standard-8` | `m5.2xlarge` |
+| Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
+| Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
+| Sidekiq                                   | 4     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   |
+| GitLab Rails                              | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` |
+| Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
+| Object storage<sup>4</sup>                | -     | -                       | -               | -            |
+| NFS server (non-Gitaly)                   | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
-3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+    - [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work.
+    - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
+    - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440).
+    - Consul is primarily used for Omnibus PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+    - [Google Memorystore](https://cloud.google.com/memorystore) and [Amazon ElastiCache](https://aws.amazon.com/elasticache/) are known to work.
+3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+    - [Google Cloud Load Balancing](https://cloud.google.com/load-balancing) and [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing/) are known to work.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->
@@ -154,13 +161,9 @@ Any "burstable" instance types are not recommended due to inconsistent performan
 
 ### Supported infrastructure
 
-As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP, Azure) and their services, or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section. However, this does not constitute a guarantee for every potential permutation.
+As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP) and their services, or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section. However, this does not constitute a guarantee for every potential permutation.
 
-Be aware of the following specific call outs:
-
-- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible. See [14.4.0](../../update/index.md#1440) for more details.
-- [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/#:~:text=Azure%20Database%20for%20PostgreSQL%20is,high%20availability%2C%20and%20dynamic%20scalability.) is [not recommended](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61) due to known performance issues or missing features.
-- [Azure Blob Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/) is recommended to be configured with [Premium accounts](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium) to ensure consistent performance.
+See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 
 ### Praefect PostgreSQL
 
@@ -293,7 +296,7 @@ for details on managing SSL certificates and configuring NGINX.
 
 Ensure the external load balancer only routes to working services with built
 in monitoring endpoints. The [readiness checks](../../user/admin_area/monitoring/health_check.md)
-all require [additional configuration](../monitoring/ip_whitelist.md)
+all require [additional configuration](../monitoring/ip_allowlist.md)
 on the nodes being checked, otherwise, the external load balancer is not able to
 connect.
 
@@ -786,7 +789,7 @@ cluster to be used with GitLab.
 If you're hosting GitLab on a cloud provider, you can optionally use a
 managed service for PostgreSQL.
 
-A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
+A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
@@ -1218,7 +1221,7 @@ you are using Geo, where separate database instances are required for handling r
 In this setup, the specs of the main database setup shouldn't need to be changed as the impact should be
 minimal.
 
-A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61).
+A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 
 Once the database is set up, follow the [post configuration](#praefect-postgresql-post-configuration).
 
@@ -1633,7 +1636,9 @@ To configure Praefect with TLS:
 
 Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
-[Object storage](#configure-the-object-storage) is also required to be configured.
+Since it's recommended to use [Object storage](#configure-the-object-storage)
+over [NFS](#configure-nfs-optional) for data objects, the following examples
+include the Object storage configuration.
 
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
@@ -1799,34 +1804,11 @@ run [multiple Sidekiq processes](../operations/extra_sidekiq_processes.md).
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
-[Object storage](#configure-the-object-storage) is also required to be configured.
+Since it's recommended to use [Object storage](#configure-the-object-storage)
+over [NFS](#configure-nfs-optional) for data objects, the following examples
+include the Object storage configuration.
 
 On each node perform the following:
-
-1. If you're [using NFS](#configure-nfs-optional):
-
-   1. If necessary, install the NFS client utility packages using the following
-      commands:
-
-      ```shell
-      # Ubuntu/Debian
-      apt-get install nfs-common
-
-      # CentOS/Red Hat
-      yum install nfs-utils nfs-utils-lib
-      ```
-
-   1. Specify the necessary NFS mounts in `/etc/fstab`.
-      The exact contents of `/etc/fstab` depends on how you chose
-      to configure your NFS server. See the [NFS documentation](../nfs.md)
-      for examples and the various options.
-
-   1. Create the shared directories. These may be different depending on your NFS
-      mount locations.
-
-      ```shell
-      mkdir -p /var/opt/gitlab/.ssh /var/opt/gitlab/gitlab-rails/uploads /var/opt/gitlab/gitlab-rails/shared /var/opt/gitlab/gitlab-ci/builds /var/opt/gitlab/git-data
-      ```
 
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
@@ -1978,7 +1960,10 @@ On each node perform the following:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
+1. [Enable incremental logging](#enable-incremental-logging), unless you are using [NFS](#configure-nfs-optional).
+
 1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the node can connect to Gitaly.
+
 1. Tail the logs to see the requests:
 
    ```shell
@@ -2128,7 +2113,6 @@ GitLab has been tested on a number of object storage providers:
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift (S3 compatibility mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
-- [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
 There are two ways of specifying object storage configuration in GitLab:
@@ -2257,9 +2241,15 @@ services where applicable):
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440), and Azure Database for PostgreSQL is **not recommended** due to [performance issues](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/61). Consul is primarily used for PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS ElastiCache are known to work.
-3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+    - [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal) and [Amazon RDS](https://aws.amazon.com/rds/) are known to work.
+    - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB clusters](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
+    - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is **incompatible** with load balancing enabled by default in [14.4.0](../../update/index.md#1440).
+    - Consul is primarily used for Omnibus PostgreSQL high availability so can be ignored when using a PostgreSQL PaaS setup. However, Consul is also used optionally by Prometheus for Omnibus auto host discovery.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+    - [Google Memorystore](https://cloud.google.com/memorystore) and [Amazon ElastiCache](https://aws.amazon.com/elasticache/) are known to work.
+3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+    - [Google Cloud Load Balancing](https://cloud.google.com/load-balancing) and [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing/) are known to work.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
 <!-- markdownlint-enable MD029 -->

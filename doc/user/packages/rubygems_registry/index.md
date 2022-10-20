@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Ruby gems in the Package Registry **(FREE)**
@@ -76,7 +76,7 @@ https://gitlab.example.com/api/v4/projects/<project_id>/packages/rubygems: '<you
 ### Authenticate with a CI job token
 
 To work with RubyGems commands within [GitLab CI/CD](../../../ci/index.md),
-you can use `CI_JOB_TOKEN` instead of a personal access token or deploy token.
+you can use the [`CI_JOB_TOKEN`](../../../ci/jobs/ci_job_token.md) predefined environment variable instead of a personal access token or deploy token.
 
 For example:
 

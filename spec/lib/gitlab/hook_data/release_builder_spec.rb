@@ -13,12 +13,12 @@ RSpec.describe Gitlab::HookData::ReleaseBuilder do
 
     it 'includes safe attribute' do
       %w[
-          id
-          created_at
-          description
-          name
-          released_at
-          tag
+        id
+        created_at
+        description
+        name
+        released_at
+        tag
       ].each do |key|
         expect(data).to include(key)
       end

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # FIPS compliance
@@ -67,7 +67,7 @@ listed here that also do not work properly in FIPS mode:
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
-- Advanced Search is currently not included in FIPS mode. It must not be enabled in order to be FIPS-compliant.  
+- Advanced Search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.  
 - [Gravatar or Libravatar-based profile images](../administration/libravatar.md) are not FIPS-compliant.
 
 Additionally, these package repositories are disabled in FIPS mode:
@@ -417,7 +417,7 @@ In this environment, OpenSSL refuses to perform cryptographic operations
 forbidden by the FIPS standards. This enables you to reproduce FIPS-related bugs,
 and validate fixes.
 
-You should be able to open a web browser inside the virtual machine and log in
+You should be able to open a web browser inside the virtual machine and sign in
 to the GitLab instance.
 
 You can disable FIPS mode again by running this command, then restarting the

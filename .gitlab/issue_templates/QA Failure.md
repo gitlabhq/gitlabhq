@@ -56,6 +56,9 @@ If you include multiple screenshots it can be helpful to hide all but the first 
 <!-- Base labels. -->
 /label ~Quality ~QA ~test
 
+<!-- Work classification type label, please apply ignore type label until the investigation is complete and an [issue type](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification) is determined.-->
+/label ~"type::ignore" 
+
 <!-- Test failure type label, please use just one.-->
 /label ~"failure::broken-test" ~"failure::flaky-test" ~"failure::stale-test" ~"failure::test-environment" ~"failure::investigating" ~"failure::new"
 

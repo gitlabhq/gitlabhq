@@ -5,7 +5,7 @@ module Gitlab
     class Config
       module Entry
         ##
-        # Entry that represents the interrutible value.
+        # Entry that represents the interruptible value.
         #
         class Timeout < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable

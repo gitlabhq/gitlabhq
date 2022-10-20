@@ -1,4 +1,4 @@
-import { sanitize } from '~/lib/dompurify';
+import { sanitize, defaultConfig } from '~/lib/dompurify';
 
 // GDK
 const rootGon = {
@@ -45,7 +45,7 @@ const invalidProtocolUrls = [
 /* eslint-enable no-script-url */
 const validProtocolUrls = ['slack://open', 'x-devonthink-item://90909', 'x-devonthink-item:90909'];
 
-const forbiddenDataAttrs = ['data-remote', 'data-url', 'data-type', 'data-method'];
+const forbiddenDataAttrs = defaultConfig.FORBID_ATTR;
 const acceptedDataAttrs = ['data-random', 'data-custom'];
 
 describe('~/lib/dompurify', () => {

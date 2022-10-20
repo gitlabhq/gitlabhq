@@ -3,12 +3,20 @@ import { Document } from 'yaml';
 import YamlEditor from '~/pipeline_wizard/components/editor.vue';
 
 describe('Pages Yaml Editor wrapper', () => {
+  let wrapper;
+
   const defaultOptions = {
     propsData: { doc: new Document({ foo: 'bar' }), filename: 'foo.yml' },
   };
 
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
   describe('mount hook', () => {
-    const wrapper = mount(YamlEditor, defaultOptions);
+    beforeEach(() => {
+      wrapper = mount(YamlEditor, defaultOptions);
+    });
 
     it('editor is mounted', () => {
       expect(wrapper.vm.editor).not.toBeUndefined();
@@ -19,14 +27,9 @@ describe('Pages Yaml Editor wrapper', () => {
   describe('watchers', () => {
     describe('doc', () => {
       const doc = new Document({ baz: ['bar'] });
-      let wrapper;
 
       beforeEach(() => {
         wrapper = mount(YamlEditor, defaultOptions);
-      });
-
-      afterEach(() => {
-        wrapper.destroy();
       });
 
       it("causes the editor's value to be set to the stringified document", async () => {
@@ -48,7 +51,10 @@ describe('Pages Yaml Editor wrapper', () => {
 
     describe('highlight', () => {
       const highlight = 'foo';
-      const wrapper = mount(YamlEditor, defaultOptions);
+
+      beforeEach(() => {
+        wrapper = mount(YamlEditor, defaultOptions);
+      });
 
       it('calls editor.highlight(path, keep=true)', async () => {
         const highlightSpy = jest.spyOn(wrapper.vm.yamlEditorExtension.obj, 'highlight');

@@ -149,20 +149,20 @@ describe('Pipeline editor home wrapper', () => {
 
         await nextTick();
 
-        expect(findCommitSection().exists()).toBe(shouldShow);
+        expect(findCommitSection().isVisible()).toBe(shouldShow);
       },
     );
 
     it('shows the commit form again when coming back to the create tab', async () => {
-      expect(findCommitSection().exists()).toBe(true);
+      expect(findCommitSection().isVisible()).toBe(true);
 
       findPipelineEditorTabs().vm.$emit('set-current-tab', MERGED_TAB);
       await nextTick();
-      expect(findCommitSection().exists()).toBe(false);
+      expect(findCommitSection().isVisible()).toBe(false);
 
       findPipelineEditorTabs().vm.$emit('set-current-tab', CREATE_TAB);
       await nextTick();
-      expect(findCommitSection().exists()).toBe(true);
+      expect(findCommitSection().isVisible()).toBe(true);
     });
 
     describe('rendering with tab params', () => {
@@ -178,7 +178,7 @@ describe('Pipeline editor home wrapper', () => {
           setWindowLocation(`https://gitlab.test/ci/editor/?tab=${TABS_INDEX[tab]}`);
           await createComponent({ stubs: { PipelineEditorTabs } });
 
-          expect(findCommitSection().exists()).toBe(shouldShow);
+          expect(findCommitSection().isVisible()).toBe(shouldShow);
         },
       );
     });

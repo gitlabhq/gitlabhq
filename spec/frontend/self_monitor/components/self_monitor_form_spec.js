@@ -42,7 +42,7 @@ describe('self monitor component', () => {
       it('renders as an expand button by default', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
-        const button = wrapper.find(GlButton);
+        const button = wrapper.findComponent(GlButton);
 
         expect(button.text()).toBe('Expand');
       });
@@ -79,7 +79,7 @@ describe('self monitor component', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
         expect(
-          wrapper.find({ ref: 'selfMonitoringFormText' }).find('a').attributes('href'),
+          wrapper.findComponent({ ref: 'selfMonitoringFormText' }).find('a').attributes('href'),
         ).toEqual(`${TEST_HOST}/instance-administrators-random/gitlab-self-monitoring`);
       });
 

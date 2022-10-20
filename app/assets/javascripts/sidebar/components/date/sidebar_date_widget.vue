@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlDatepicker, GlTooltipDirective, GlLink, GlPopover } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
@@ -92,7 +92,7 @@ export default {
         this.$emit(`${this.dateType}Updated`, data.workspace?.issuable?.[this.dateType]);
       },
       error() {
-        createFlash({
+        createAlert({
           message: sprintf(
             __('Something went wrong while setting %{issuableType} %{dateType} date.'),
             {
@@ -205,7 +205,7 @@ export default {
             },
           }) => {
             if (errors.length) {
-              createFlash({
+              createAlert({
                 message: errors[0],
               });
             } else {
@@ -214,7 +214,7 @@ export default {
           },
         )
         .catch(() => {
-          createFlash({
+          createAlert({
             message: sprintf(
               __('Something went wrong while setting %{issuableType} %{dateType} date.'),
               {

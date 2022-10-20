@@ -7,70 +7,74 @@ RSpec.describe Gitlab::Ci::Ansi2json do
 
   describe 'lines' do
     it 'prints non-ansi as-is' do
-      expect(convert_json('Hello')).to eq([
-        { offset: 0, content: [{ text: 'Hello' }] }
-      ])
+      expect(convert_json('Hello')).to eq([{ offset: 0, content: [{ text: 'Hello' }] }])
     end
 
     context 'new lines' do
       it 'adds new line when encountering \n' do
-        expect(convert_json("Hello\nworld")).to eq([
-          { offset: 0, content: [{ text: 'Hello' }] },
-          { offset: 6, content: [{ text: 'world' }] }
-        ])
+        expect(convert_json("Hello\nworld")).to eq(
+          [
+            { offset: 0, content: [{ text: 'Hello' }] },
+            { offset: 6, content: [{ text: 'world' }] }
+          ])
       end
 
       it 'adds new line when encountering \r\n' do
-        expect(convert_json("Hello\r\nworld")).to eq([
-          { offset: 0, content: [{ text: 'Hello' }] },
-          { offset: 7, content: [{ text: 'world' }] }
-        ])
+        expect(convert_json("Hello\r\nworld")).to eq(
+          [
+            { offset: 0, content: [{ text: 'Hello' }] },
+            { offset: 7, content: [{ text: 'world' }] }
+          ])
       end
 
       it 'ignores empty newlines' do
-        expect(convert_json("Hello\n\nworld")).to eq([
-          { offset: 0, content: [{ text: 'Hello' }] },
-          { offset: 7, content: [{ text: 'world' }] }
-        ])
-        expect(convert_json("Hello\r\n\r\nworld")).to eq([
-          { offset: 0, content: [{ text: 'Hello' }] },
-          { offset: 9, content: [{ text: 'world' }] }
-        ])
+        expect(convert_json("Hello\n\nworld")).to eq(
+          [
+            { offset: 0, content: [{ text: 'Hello' }] },
+            { offset: 7, content: [{ text: 'world' }] }
+          ])
+        expect(convert_json("Hello\r\n\r\nworld")).to eq(
+          [
+            { offset: 0, content: [{ text: 'Hello' }] },
+            { offset: 9, content: [{ text: 'world' }] }
+          ])
       end
 
       it 'replace the current line when encountering \r' do
-        expect(convert_json("Hello\rworld")).to eq([
-          { offset: 0, content: [{ text: 'world' }] }
-        ])
+        expect(convert_json("Hello\rworld")).to eq([{ offset: 0, content: [{ text: 'world' }] }])
       end
     end
 
     it 'recognizes color changing ANSI sequences' do
-      expect(convert_json("\e[31mHello\e[0m")).to eq([
-        { offset: 0, content: [{ text: 'Hello', style: 'term-fg-red' }] }
-      ])
+      expect(convert_json("\e[31mHello\e[0m")).to eq(
+        [
+          { offset: 0, content: [{ text: 'Hello', style: 'term-fg-red' }] }
+        ])
     end
 
     it 'recognizes color changing ANSI sequences across multiple lines' do
-      expect(convert_json("\e[31mHello\nWorld\e[0m")).to eq([
-        { offset: 0, content: [{ text: 'Hello', style: 'term-fg-red' }] },
-        { offset: 11, content: [{ text: 'World', style: 'term-fg-red' }] }
-      ])
+      expect(convert_json("\e[31mHello\nWorld\e[0m")).to eq(
+        [
+          { offset: 0, content: [{ text: 'Hello', style: 'term-fg-red' }] },
+          { offset: 11, content: [{ text: 'World', style: 'term-fg-red' }] }
+        ])
     end
 
     it 'recognizes background and foreground colors' do
-      expect(convert_json("\e[31;44mHello")).to eq([
-        { offset: 0, content: [{ text: 'Hello', style: 'term-fg-red term-bg-blue' }] }
-      ])
+      expect(convert_json("\e[31;44mHello")).to eq(
+        [
+          { offset: 0, content: [{ text: 'Hello', style: 'term-fg-red term-bg-blue' }] }
+        ])
     end
 
     it 'recognizes style changes within the same line' do
-      expect(convert_json("\e[31;44mHello\e[0m world")).to eq([
-        { offset: 0, content: [
-          { text: 'Hello', style: 'term-fg-red term-bg-blue' },
-          { text: ' world' }
-        ] }
-      ])
+      expect(convert_json("\e[31;44mHello\e[0m world")).to eq(
+        [
+          { offset: 0, content: [
+            { text: 'Hello', style: 'term-fg-red term-bg-blue' },
+            { text: ' world' }
+          ] }
+        ])
     end
 
     context 'with section markers' do
@@ -82,119 +86,8 @@ RSpec.describe Gitlab::Ci::Ansi2json do
       let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K" }
 
       it 'marks the first line of the section as header' do
-        expect(convert_json("Hello#{section_start}world!")).to eq([
-          {
-            offset: 0,
-            content: [{ text: 'Hello' }]
-          },
-          {
-            offset: 5,
-            content: [{ text: 'world!' }],
-            section: 'prepare-script',
-            section_header: true
-          }
-        ])
-      end
-
-      it 'does not marks the other lines of the section as header' do
-        expect(convert_json("outside section#{section_start}Hello\nworld!")).to eq([
-          {
-            offset: 0,
-            content: [{ text: 'outside section' }]
-          },
-          {
-            offset: 15,
-            content: [{ text: 'Hello' }],
-            section: 'prepare-script',
-            section_header: true
-          },
-          {
-            offset: 65,
-            content: [{ text: 'world!' }],
-            section: 'prepare-script'
-          }
-        ])
-      end
-
-      it 'marks the last line of the section as footer' do
-        expect(convert_json("#{section_start}Good\nmorning\nworld!#{section_end}")).to eq([
-          {
-            offset: 0,
-            content: [{ text: 'Good' }],
-            section: 'prepare-script',
-            section_header: true
-          },
-          {
-            offset: 49,
-            content: [{ text: 'morning' }],
-            section: 'prepare-script'
-          },
-          {
-            offset: 57,
-            content: [{ text: 'world!' }],
-            section: 'prepare-script'
-          },
-          {
-            offset: 63,
-            content: [],
-            section_duration: '01:03',
-            section: 'prepare-script'
-          }
-        ])
-      end
-
-      it 'marks the first line as header and footer if is the only line in the section' do
-        expect(convert_json("#{section_start}Hello world!#{section_end}")).to eq([
-          {
-            offset: 0,
-            content: [{ text: 'Hello world!' }],
-            section: 'prepare-script',
-            section_header: true
-          },
-          {
-            offset: 56,
-            content: [],
-            section: 'prepare-script',
-            section_duration: '01:03'
-          }
-        ])
-      end
-
-      it 'does not add sections attribute to lines after the section is closed' do
-        expect(convert_json("#{section_start}Hello#{section_end}world")).to eq([
-          {
-            offset: 0,
-            content: [{ text: 'Hello' }],
-            section: 'prepare-script',
-            section_header: true
-          },
-          {
-            offset: 49,
-            content: [],
-            section: 'prepare-script',
-            section_duration: '01:03'
-          },
-          {
-            offset: 91,
-            content: [{ text: 'world' }]
-          }
-        ])
-      end
-
-      it 'ignores section_end marker if no section_start exists' do
-        expect(convert_json("Hello #{section_end}world")).to eq([
-          {
-            offset: 0,
-            content: [{ text: 'Hello world' }]
-          }
-        ])
-      end
-
-      context 'when section name contains .-_ and capital letters' do
-        let(:section_name) { 'a.Legit-SeCtIoN_namE' }
-
-        it 'sanitizes the section name' do
-          expect(convert_json("Hello#{section_start}world!")).to eq([
+        expect(convert_json("Hello#{section_start}world!")).to eq(
+          [
             {
               offset: 0,
               content: [{ text: 'Hello' }]
@@ -202,10 +95,128 @@ RSpec.describe Gitlab::Ci::Ansi2json do
             {
               offset: 5,
               content: [{ text: 'world!' }],
-              section: 'a-legit-section-name',
+              section: 'prepare-script',
               section_header: true
             }
           ])
+      end
+
+      it 'does not marks the other lines of the section as header' do
+        expect(convert_json("outside section#{section_start}Hello\nworld!")).to eq(
+          [
+            {
+              offset: 0,
+              content: [{ text: 'outside section' }]
+            },
+            {
+              offset: 15,
+              content: [{ text: 'Hello' }],
+              section: 'prepare-script',
+              section_header: true
+            },
+            {
+              offset: 65,
+              content: [{ text: 'world!' }],
+              section: 'prepare-script'
+            }
+          ])
+      end
+
+      it 'marks the last line of the section as footer' do
+        expect(convert_json("#{section_start}Good\nmorning\nworld!#{section_end}")).to eq(
+          [
+            {
+              offset: 0,
+              content: [{ text: 'Good' }],
+              section: 'prepare-script',
+              section_header: true
+            },
+            {
+              offset: 49,
+              content: [{ text: 'morning' }],
+              section: 'prepare-script'
+            },
+            {
+              offset: 57,
+              content: [{ text: 'world!' }],
+              section: 'prepare-script'
+            },
+            {
+              offset: 63,
+              content: [],
+              section_duration: '01:03',
+              section: 'prepare-script'
+            }
+          ])
+      end
+
+      it 'marks the first line as header and footer if is the only line in the section' do
+        expect(convert_json("#{section_start}Hello world!#{section_end}")).to eq(
+          [
+            {
+              offset: 0,
+              content: [{ text: 'Hello world!' }],
+              section: 'prepare-script',
+              section_header: true
+            },
+            {
+              offset: 56,
+              content: [],
+              section: 'prepare-script',
+              section_duration: '01:03'
+            }
+          ])
+      end
+
+      it 'does not add sections attribute to lines after the section is closed' do
+        expect(convert_json("#{section_start}Hello#{section_end}world")).to eq(
+          [
+            {
+              offset: 0,
+              content: [{ text: 'Hello' }],
+              section: 'prepare-script',
+              section_header: true
+            },
+            {
+              offset: 49,
+              content: [],
+              section: 'prepare-script',
+              section_duration: '01:03'
+            },
+            {
+              offset: 91,
+              content: [{ text: 'world' }]
+            }
+          ])
+      end
+
+      it 'ignores section_end marker if no section_start exists' do
+        expect(convert_json("Hello #{section_end}world")).to eq(
+          [
+            {
+              offset: 0,
+              content: [{ text: 'Hello world' }]
+            }
+          ])
+      end
+
+      context 'when section name contains .-_ and capital letters' do
+        let(:section_name) { 'a.Legit-SeCtIoN_namE' }
+
+        it 'sanitizes the section name' do
+          expect(convert_json("Hello#{section_start}world!")).to eq(
+            [
+              {
+                offset: 0,
+                content: [{ text: 'Hello' }]
+              },
+              {
+                offset: 5,
+                content: [{ text: 'world!' }],
+                section: 'a-legit-section-name',
+                section_header: true
+              }
+            ])
         end
       end
 
@@ -213,12 +224,13 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         let(:section_name) { 'my_$ection' }
 
         it 'ignores the section' do
-          expect(convert_json("#{section_start}hello")).to eq([
-            {
-              offset: 0,
-              content: [{ text: 'hello' }]
-            }
-          ])
+          expect(convert_json("#{section_start}hello")).to eq(
+            [
+              {
+                offset: 0,
+                content: [{ text: 'hello' }]
+              }
+            ])
         end
       end
 
@@ -226,31 +238,33 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         let(:section_name) { '<a_tag>' }
 
         it 'ignores the section' do
-          expect(convert_json("#{section_start}hello")).to eq([
-            {
-              offset: 0,
-              content: [{ text: 'hello' }]
-            }
-          ])
+          expect(convert_json("#{section_start}hello")).to eq(
+            [
+              {
+                offset: 0,
+                content: [{ text: 'hello' }]
+              }
+            ])
         end
       end
 
       it 'prints HTML tags as is' do
         trace = "#{section_start}section_end:1:2<div>hello</div>#{section_end}"
-        expect(convert_json(trace)).to eq([
-          {
-            offset: 0,
-            content: [{ text: 'section_end:1:2<div>hello</div>' }],
-            section: 'prepare-script',
-            section_header: true
-          },
-          {
-            offset: 75,
-            content: [],
-            section: 'prepare-script',
-            section_duration: '01:03'
-          }
-        ])
+        expect(convert_json(trace)).to eq(
+          [
+            {
+              offset: 0,
+              content: [{ text: 'section_end:1:2<div>hello</div>' }],
+              section: 'prepare-script',
+              section_header: true
+            },
+            {
+              offset: 75,
+              content: [],
+              section: 'prepare-script',
+              section_duration: '01:03'
+            }
+          ])
       end
 
       context 'with nested section' do
@@ -264,7 +278,8 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         it 'adds multiple sections to the lines inside the nested section' do
           trace = "Hello#{section_start}foo#{nested_section_start}bar#{nested_section_end}baz#{section_end}world"
 
-          expect(convert_json(trace)).to eq([
+          expect(convert_json(trace)).to eq(
+            [
               {
                 offset: 0,
                 content: [{ text: 'Hello' }]
@@ -308,7 +323,8 @@ RSpec.describe Gitlab::Ci::Ansi2json do
         it 'adds multiple sections to the lines inside the nested section and closes all sections together' do
           trace = "Hello#{section_start}\e[91mfoo\e[0m#{nested_section_start}bar#{nested_section_end}#{section_end}"
 
-          expect(convert_json(trace)).to eq([
+          expect(convert_json(trace)).to eq(
+            [
               {
                 offset: 0,
                 content: [{ text: 'Hello' }]
@@ -346,24 +362,25 @@ RSpec.describe Gitlab::Ci::Ansi2json do
 
         it 'provides section options when set' do
           trace = "#{option_section_start}hello#{section_end}"
-          expect(convert_json(trace)).to eq([
-            {
-              offset: 0,
-              content: [{ text: 'hello' }],
-              section: 'prepare-script',
-              section_header: true,
-              section_options: {
-                'collapsed' => 'true',
-                'unused_option' => '123'
+          expect(convert_json(trace)).to eq(
+            [
+              {
+                offset: 0,
+                content: [{ text: 'hello' }],
+                section: 'prepare-script',
+                section_header: true,
+                section_options: {
+                  'collapsed' => 'true',
+                  'unused_option' => '123'
+                }
+              },
+              {
+                offset: 83,
+                content: [],
+                section: 'prepare-script',
+                section_duration: '01:03'
               }
-            },
-            {
-              offset: 83,
-              content: [],
-              section: 'prepare-script',
-              section_duration: '01:03'
-            }
-          ])
+            ])
         end
       end
     end

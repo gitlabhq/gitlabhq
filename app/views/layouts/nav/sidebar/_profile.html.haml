@@ -2,8 +2,7 @@
   .nav-sidebar-inner-scroll
     .context-header
       = link_to profile_path, title: _('Profile Settings'), class: 'has-tooltip', data: { container: 'body', placement: 'right' } do
-        %span{ class: ['avatar-container', 'settings-avatar', 's32'] }
-          = image_tag avatar_icon_for_user(current_user, 32), class: ['avatar', 'avatar-tile', 'js-sidebar-user-avatar', 's32', 'gl-rounded-full!'], alt: current_user.name, data: { testid: 'sidebar-user-avatar' }
+        = render Pajamas::AvatarComponent.new(current_user, size: 32, alt: current_user.name, class: 'gl-mr-3 js-sidebar-user-avatar', avatar_options: { data: { testid: 'sidebar-user-avatar' } })
         %span.sidebar-context-title= _('User Settings')
     %ul.sidebar-top-level-items
       = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
@@ -52,17 +51,18 @@
             = link_to profile_chat_names_path do
               %strong.fly-out-top-item-name
                 = _('Chat')
-      = nav_link(controller: :personal_access_tokens) do
-        = link_to profile_personal_access_tokens_path do
-          .nav-icon-container
-            = sprite_icon('token')
-          %span.nav-item-name
-            = _('Access Tokens')
-        %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :personal_access_tokens, html_options: { class: "fly-out-top-item" } ) do
-            = link_to profile_personal_access_tokens_path do
-              %strong.fly-out-top-item-name
-                = _('Access Tokens')
+      - unless Gitlab::CurrentSettings.personal_access_tokens_disabled?
+        = nav_link(controller: :personal_access_tokens) do
+          = link_to profile_personal_access_tokens_path do
+            .nav-icon-container
+              = sprite_icon('token')
+            %span.nav-item-name
+              = _('Access Tokens')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: :personal_access_tokens, html_options: { class: "fly-out-top-item" } ) do
+              = link_to profile_personal_access_tokens_path do
+                %strong.fly-out-top-item-name
+                  = _('Access Tokens')
       = nav_link(controller: :emails) do
         = link_to profile_emails_path, data: { qa_selector: 'profile_emails_link' } do
           .nav-icon-container

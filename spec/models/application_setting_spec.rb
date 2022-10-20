@@ -203,6 +203,17 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value([]).for(:valid_runner_registrars) }
     it { is_expected.to allow_value(%w(project group)).for(:valid_runner_registrars) }
 
+    context 'when deactivate_dormant_users is enabled' do
+      before do
+        stub_application_setting(deactivate_dormant_users: true)
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:deactivate_dormant_users_period) }
+      it { is_expected.to allow_value(90).for(:deactivate_dormant_users_period) }
+      it { is_expected.to allow_value(365).for(:deactivate_dormant_users_period) }
+      it { is_expected.not_to allow_value(89).for(:deactivate_dormant_users_period) }
+    end
+
     context 'help_page_documentation_base_url validations' do
       it { is_expected.to allow_value(nil).for(:help_page_documentation_base_url) }
       it { is_expected.to allow_value('https://docs.gitlab.com').for(:help_page_documentation_base_url) }
@@ -257,11 +268,12 @@ RSpec.describe ApplicationSetting do
           subject.grafana_url = ' ' + http
           expect(subject.save).to be false
 
-          expect(subject.errors[:grafana_url]).to eq([
-            'must be a valid relative or absolute URL. ' \
-            'Please check your Grafana URL setting in ' \
-            'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
-          ])
+          expect(subject.errors[:grafana_url]).to eq(
+            [
+              'must be a valid relative or absolute URL. ' \
+              'Please check your Grafana URL setting in ' \
+              'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+            ])
         end
       end
 
@@ -270,11 +282,12 @@ RSpec.describe ApplicationSetting do
           subject.grafana_url = javascript
           expect(subject.save).to be false
 
-          expect(subject.errors[:grafana_url]).to eq([
-            'is blocked: Only allowed schemes are http, https. Please check your ' \
-            'Grafana URL setting in ' \
-            'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
-          ])
+          expect(subject.errors[:grafana_url]).to eq(
+            [
+              'is blocked: Only allowed schemes are http, https. Please check your ' \
+              'Grafana URL setting in ' \
+              'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+            ])
         end
       end
     end
@@ -1451,6 +1464,12 @@ RSpec.describe ApplicationSetting do
   context 'personal accesss token prefix' do
     it 'sets the correct default value' do
       expect(setting.personal_access_token_prefix).to eql('glpat-')
+    end
+  end
+
+  describe '.personal_access_tokens_disabled?' do
+    it 'is false' do
+      expect(setting.personal_access_tokens_disabled?).to eq(false)
     end
   end
 end

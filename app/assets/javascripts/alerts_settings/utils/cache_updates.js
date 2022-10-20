@@ -1,5 +1,5 @@
 import produce from 'immer';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 
 import { DELETE_INTEGRATION_ERROR, ADD_INTEGRATION_ERROR } from './error_messages';
 
@@ -59,7 +59,7 @@ const addIntegrationToStore = (
 };
 
 const onError = (data, message) => {
-  createFlash({ message });
+  createAlert({ message });
   throw new Error(data.errors);
 };
 

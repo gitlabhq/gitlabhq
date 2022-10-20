@@ -285,6 +285,13 @@ describe('Flash', () => {
             expect(document.querySelector('.gl-alert')).toBeNull();
           });
 
+          it('does not crash if calling .dismiss() twice', () => {
+            alert = createAlert({ message: mockMessage });
+
+            alert.dismiss();
+            expect(() => alert.dismiss()).not.toThrow();
+          });
+
           it('calls onDismiss when dismissed', () => {
             const dismissHandler = jest.fn();
 

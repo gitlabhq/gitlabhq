@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { createStore as createMrStore } from '~/mr_notes/stores';
 import createStore from '~/notes/stores';
 import EditFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
@@ -129,7 +129,7 @@ describe('EditFormButtons', () => {
           });
 
           it('does not flash an error message', () => {
-            expect(createFlash).not.toHaveBeenCalled();
+            expect(createAlert).not.toHaveBeenCalled();
           });
         });
 
@@ -162,7 +162,7 @@ describe('EditFormButtons', () => {
           });
 
           it('calls flash with the correct message', () => {
-            expect(createFlash).toHaveBeenCalledWith({
+            expect(createAlert).toHaveBeenCalledWith({
               message: `Something went wrong trying to change the locked state of this ${issuableDisplayName}`,
             });
           });

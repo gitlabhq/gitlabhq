@@ -11,7 +11,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
         key = described_class.key_for('123')
 
         with_redis do |redis|
-          expect(redis.exists(key)).to eq(true)
+          expect(redis.exists?(key)).to eq(true)
           expect(redis.ttl(key) > 0).to eq(true)
           expect(redis.get(key)).to eq('1')
         end
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
         key = described_class.key_for('123')
 
         with_redis do |redis|
-          expect(redis.exists(key)).to eq(true)
+          expect(redis.exists?(key)).to eq(true)
           expect(redis.ttl(key) > described_class::DEFAULT_EXPIRATION).to eq(true)
           expect(redis.get(key)).to eq('1')
         end
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
         key = described_class.key_for('123')
 
         with_redis do |redis|
-          expect(redis.exists(key)).to eq(false)
+          expect(redis.exists?(key)).to eq(false)
         end
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
         key = described_class.key_for('123')
 
         with_redis do |redis|
-          expect(redis.exists(key)).to eq(false)
+          expect(redis.exists?(key)).to eq(false)
         end
       end
     end

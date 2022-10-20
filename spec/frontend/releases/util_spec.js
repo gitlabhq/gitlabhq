@@ -115,8 +115,18 @@ describe('releases/util.js', () => {
             author: {
               id: expect.any(String),
             },
+            evidences: [
+              {
+                id: expect.any(String),
+                filepath: expect.any(String),
+              },
+            ],
           },
         ],
+        paginationInfo: {
+          startCursor: expect.any(String),
+          endCursor: expect.any(String),
+        },
       });
     });
   });
@@ -128,6 +138,12 @@ describe('releases/util.js', () => {
           author: {
             id: expect.any(String),
           },
+          evidences: [
+            {
+              id: expect.any(String),
+              filepath: expect.any(String),
+            },
+          ],
         },
       });
     });

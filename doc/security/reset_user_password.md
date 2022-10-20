@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -13,6 +13,8 @@ You can reset user passwords by using a Rake task, a Rails console, or the
 ## Prerequisites
 
 To reset a user password, you must be an administrator of a self-managed GitLab instance.
+
+The user's new password must meet all [password requirements](../user/profile/user_passwords.md#password-requirements).
 
 ## Use a Rake task
 
@@ -120,6 +122,11 @@ To reset the root password, follow the steps listed previously.
 
 ## Troubleshooting
 
+Use the following information to troubleshoot issues when resetting a
+user's password.
+
+### Email confirmation issues
+
 If the new password doesn't work, it might be [an email confirmation issue](../user/upgrade_email_bypass.md). You can
 attempt to fix this issue in a Rails console. For example, if a new `root` password isn't working:
 
@@ -132,3 +139,9 @@ attempt to fix this issue in a Rails console. For example, if a new `root` passw
     ```
 
 1. Attempt to sign in again.
+
+### Unmet password requirements
+
+The password might be too short, too weak, or not meet complexity
+requirements. Ensure the password you are attempting to set meets all
+[password requirements](../user/profile/user_passwords.md#password-requirements).

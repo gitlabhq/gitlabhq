@@ -71,7 +71,7 @@ class Environment < ApplicationRecord
   validate :safe_external_url
   validate :merge_request_not_changed
 
-  delegate :manual_actions, :other_manual_actions, to: :last_deployment, allow_nil: true
+  delegate :manual_actions, to: :last_deployment, allow_nil: true
   delegate :auto_rollback_enabled?, to: :project
 
   scope :available, -> { with_state(:available) }
@@ -332,9 +332,9 @@ class Environment < ApplicationRecord
   end
 
   def actions_for(environment)
-    return [] unless other_manual_actions
+    return [] unless manual_actions
 
-    other_manual_actions.select do |action|
+    manual_actions.select do |action|
       action.expanded_environment_name == environment
     end
   end
@@ -441,11 +441,15 @@ class Environment < ApplicationRecord
   end
 
   def auto_stop_in=(value)
-    return unless value
+    if value.nil?
+      # Handles edge case when auto_stop_at is already set and the new value is nil.
+      # Possible by setting `auto_stop_in: null` in the CI configuration yml.
+      self.auto_stop_at = nil
+
+      return
+    end
 
     parser = ::Gitlab::Ci::Build::DurationParser.new(value)
-
-    return if parser.seconds_from_now.nil? && auto_stop_at.nil?
 
     self.auto_stop_at = parser.seconds_from_now
   rescue ChronicDuration::DurationParseError => ex
@@ -540,7 +544,7 @@ class Environment < ApplicationRecord
       self.class.tiers[:development]
     when /(test|tst|int|ac(ce|)pt|qa|qc|control|quality)/i
       self.class.tiers[:testing]
-    when /(st(a|)g|mod(e|)l|pre|demo)/i
+    when /(st(a|)g|mod(e|)l|pre|demo|non)/i
       self.class.tiers[:staging]
     when /(pr(o|)d|live)/i
       self.class.tiers[:production]

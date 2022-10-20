@@ -441,7 +441,8 @@ module ApplicationSettingsHelper
       :group_runner_token_expiration_interval,
       :project_runner_token_expiration_interval,
       :pipeline_limit_per_project_user_sha,
-      :invitation_flow_enforcement
+      :invitation_flow_enforcement,
+      :can_create_group
     ].tap do |settings|
       next if Gitlab.com?
 

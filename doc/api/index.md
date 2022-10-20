@@ -1,7 +1,7 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Integrations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # API Docs **(FREE)**
@@ -29,7 +29,7 @@ For an introduction and basic steps, see
 ## SCIM API **(PREMIUM SAAS)**
 
 GitLab provides a [SCIM API](scim.md) that both implements
-[the RFC7644 protocol](https://tools.ietf.org/html/rfc7644) and provides the
+[the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644) and provides the
 `/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
 
 ## GraphQL API

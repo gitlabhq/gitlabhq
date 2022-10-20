@@ -74,7 +74,7 @@ describe('TermsApp', () => {
 
       expect(findButton(defaultProvide.paths.accept).attributes('disabled')).toBe('disabled');
 
-      wrapper.find(GlIntersectionObserver).vm.$emit('appear');
+      wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
       await nextTick();
 

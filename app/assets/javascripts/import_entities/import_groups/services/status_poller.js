@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 import { s__ } from '~/locale';
@@ -15,7 +15,7 @@ export class StatusPoller {
         statuses.forEach((status) => updateImportStatus(status));
       },
       errorCallback: () =>
-        createFlash({
+        createAlert({
           message: s__('BulkImport|Update of import statuses with realtime changes failed'),
         }),
     });

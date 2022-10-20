@@ -3,8 +3,8 @@
 module Releases
   class DestroyService < Releases::BaseService
     def execute
-      return error('Release does not exist', 404) unless release
-      return error('Access Denied', 403) unless allowed?
+      return error(_('Release does not exist'), 404) unless release
+      return error(_('Access Denied'), 403) unless allowed?
 
       if release.destroy
         success(tag: existing_tag, release: release)

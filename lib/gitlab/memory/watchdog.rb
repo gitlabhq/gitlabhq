@@ -2,25 +2,10 @@
 
 module Gitlab
   module Memory
-    # A background thread that observes Ruby heap fragmentation and calls
-    # into a handler when the Ruby heap has been fragmented for an extended
-    # period of time.
-    #
-    # See Gitlab::Metrics::Memory for how heap fragmentation is defined.
-    #
-    # To decide whether a given fragmentation level is being exceeded,
-    # the watchdog regularly polls the GC. Whenever a violation occurs
-    # a strike is issued. If the maximum number of strikes are reached,
-    # a handler is invoked to deal with the situation.
-    #
-    # The duration for which a process may be above a given fragmentation
-    # threshold is computed as `max_strikes * sleep_time_seconds`.
+    # A background thread that monitors Ruby memory and calls
+    # into a handler when the Ruby process violates defined limits
+    # for an extended period of time.
     class Watchdog
-      DEFAULT_SLEEP_TIME_SECONDS = 60 * 5
-      DEFAULT_MAX_HEAP_FRAG = 0.5
-      DEFAULT_MAX_MEM_GROWTH = 3.0
-      DEFAULT_MAX_STRIKES = 5
-
       # This handler does nothing. It returns `false` to indicate to the
       # caller that the situation has not been dealt with so it will
       # receive calls repeatedly if fragmentation remains high.
@@ -62,73 +47,27 @@ module Gitlab
         end
       end
 
-      # max_heap_fragmentation:
-      #   The degree to which the Ruby heap is allowed to be fragmented. Range [0,1].
-      # max_mem_growth:
-      #   A multiplier for how much excess private memory a worker can map compared to a reference process
-      #   (itself or the primary in a pre-fork server.)
-      # max_strikes:
-      #   How many times the process is allowed to be above max_heap_fragmentation before
-      #   a handler is invoked.
-      # sleep_time_seconds:
-      #   Used to control the frequency with which the watchdog will wake up and poll the GC.
-      def initialize(
-        handler: NullHandler.instance,
-        logger: Logger.new($stdout),
-        max_heap_fragmentation: ENV['GITLAB_MEMWD_MAX_HEAP_FRAG']&.to_f || DEFAULT_MAX_HEAP_FRAG,
-        max_mem_growth: ENV['GITLAB_MEMWD_MAX_MEM_GROWTH']&.to_f || DEFAULT_MAX_MEM_GROWTH,
-        max_strikes: ENV['GITLAB_MEMWD_MAX_STRIKES']&.to_i || DEFAULT_MAX_STRIKES,
-        sleep_time_seconds: ENV['GITLAB_MEMWD_SLEEP_TIME_SEC']&.to_i || DEFAULT_SLEEP_TIME_SECONDS,
-        **options)
-        super(**options)
-
-        @handler = handler
-        @logger = logger
-        @sleep_time_seconds = sleep_time_seconds
-        @max_strikes = max_strikes
-        @stats = {
-          heap_frag: {
-            max: max_heap_fragmentation,
-            strikes: 0
-          },
-          mem_growth: {
-            max: max_mem_growth,
-            strikes: 0
-          }
-        }
-
+      def initialize
+        @configuration = Configuration.new
         @alive = true
 
-        init_prometheus_metrics(max_heap_fragmentation)
+        init_prometheus_metrics
       end
 
-      attr_reader :max_strikes, :sleep_time_seconds
-
-      def max_heap_fragmentation
-        @stats[:heap_frag][:max]
-      end
-
-      def max_mem_growth
-        @stats[:mem_growth][:max]
-      end
-
-      def strikes(stat)
-        @stats[stat][:strikes]
+      def configure
+        yield @configuration
       end
 
       def call
-        @logger.info(log_labels.merge(message: 'started'))
+        logger.info(log_labels.merge(message: 'started'))
 
         while @alive
-          sleep(@sleep_time_seconds)
+          sleep(sleep_time_seconds)
 
-          next unless Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
-
-          monitor_heap_fragmentation
-          monitor_memory_growth
+          monitor if Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
         end
 
-        @logger.info(log_labels.merge(message: 'stopped'))
+        logger.info(log_labels.merge(message: 'stopped'))
       end
 
       def stop
@@ -137,71 +76,24 @@ module Gitlab
 
       private
 
-      def monitor_memory_condition(stat_key)
-        return unless @alive
+      def monitor
+        @configuration.monitors.call_each do |result|
+          break unless @alive
 
-        stat = @stats[stat_key]
+          next unless result.threshold_violated?
 
-        ok, labels = yield(stat)
+          @counter_violations.increment(reason: result.monitor_name)
 
-        if ok
-          stat[:strikes] = 0
-        else
-          stat[:strikes] += 1
-          @counter_violations.increment(reason: stat_key.to_s)
-        end
+          next unless result.strikes_exceeded?
 
-        if stat[:strikes] > @max_strikes
-          @alive = !memory_limit_exceeded_callback(stat_key, labels)
-          stat[:strikes] = 0
+          @alive = !memory_limit_exceeded_callback(result.monitor_name, result.payload)
         end
       end
 
-      def monitor_heap_fragmentation
-        monitor_memory_condition(:heap_frag) do |stat|
-          heap_fragmentation = Gitlab::Metrics::Memory.gc_heap_fragmentation
-          [
-            heap_fragmentation <= stat[:max],
-            {
-              message: 'heap fragmentation limit exceeded',
-              memwd_cur_heap_frag: heap_fragmentation,
-              memwd_max_heap_frag: stat[:max]
-            }
-          ]
-        end
-      end
-
-      def monitor_memory_growth
-        monitor_memory_condition(:mem_growth) do |stat|
-          worker_uss = Gitlab::Metrics::System.memory_usage_uss_pss[:uss]
-          reference_uss = reference_mem[:uss]
-          memory_limit = stat[:max] * reference_uss
-          [
-            worker_uss <= memory_limit,
-            {
-              message: 'memory limit exceeded',
-              memwd_uss_bytes: worker_uss,
-              memwd_ref_uss_bytes: reference_uss,
-              memwd_max_uss_bytes: memory_limit
-            }
-          ]
-        end
-      end
-
-      # On pre-fork systems this would be the primary process memory from which workers fork.
-      # Otherwise it is the current process' memory.
-      #
-      # We initialize this lazily because in the initializer the application may not have
-      # finished booting yet, which would yield an incorrect baseline.
-      def reference_mem
-        @reference_mem ||= Gitlab::Metrics::System.memory_usage_uss_pss(pid: Gitlab::Cluster::PRIMARY_PID)
-      end
-
-      def memory_limit_exceeded_callback(stat_key, handler_labels)
-        all_labels = log_labels.merge(handler_labels)
-          .merge(memwd_cur_strikes: strikes(stat_key))
-        @logger.warn(all_labels)
-        @counter_violations_handled.increment(reason: stat_key.to_s)
+      def memory_limit_exceeded_callback(monitor_name, monitor_payload)
+        all_labels = log_labels.merge(monitor_payload)
+        logger.warn(all_labels)
+        @counter_violations_handled.increment(reason: monitor_name)
 
         handler.call
       end
@@ -211,7 +103,15 @@ module Gitlab
         # all that happens is we collect logs and Prometheus events for fragmentation violations.
         return NullHandler.instance unless Feature.enabled?(:enforce_memory_watchdog, type: :ops)
 
-        @handler
+        @configuration.handler
+      end
+
+      def logger
+        @configuration.logger
+      end
+
+      def sleep_time_seconds
+        @configuration.sleep_time_seconds
       end
 
       def log_labels
@@ -219,27 +119,20 @@ module Gitlab
           pid: $$,
           worker_id: worker_id,
           memwd_handler_class: handler.class.name,
-          memwd_sleep_time_s: @sleep_time_seconds,
-          memwd_max_strikes: @max_strikes,
+          memwd_sleep_time_s: sleep_time_seconds,
           memwd_rss_bytes: process_rss_bytes
         }
-      end
-
-      def worker_id
-        ::Prometheus::PidProvider.worker_id
       end
 
       def process_rss_bytes
         Gitlab::Metrics::System.memory_usage_rss
       end
 
-      def init_prometheus_metrics(max_heap_fragmentation)
-        @heap_frag_limit = Gitlab::Metrics.gauge(
-          :gitlab_memwd_heap_frag_limit,
-          'The configured limit for how fragmented the Ruby heap is allowed to be'
-        )
-        @heap_frag_limit.set({}, max_heap_fragmentation)
+      def worker_id
+        ::Prometheus::PidProvider.worker_id
+      end
 
+      def init_prometheus_metrics
         default_labels = { pid: worker_id }
         @counter_violations = Gitlab::Metrics.counter(
           :gitlab_memwd_violations_total,

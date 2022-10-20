@@ -15,7 +15,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
@@ -369,9 +369,9 @@ describe('SidebarDropdownWidget', () => {
                   findDropdownItemWithText('title').vm.$emit('click');
                 });
 
-                it(`calls createFlash with "${expectedMsg}"`, async () => {
+                it(`calls createAlert with "${expectedMsg}"`, async () => {
                   await nextTick();
-                  expect(createFlash).toHaveBeenCalledWith({
+                  expect(createAlert).toHaveBeenCalledWith({
                     message: expectedMsg,
                     captureError: true,
                     error: expectedMsg,
@@ -455,14 +455,14 @@ describe('SidebarDropdownWidget', () => {
         describe('milestones', () => {
           let projectMilestonesSpy;
 
-          it('should call createFlash if milestones query fails', async () => {
+          it('should call createAlert if milestones query fails', async () => {
             await createComponentWithApollo({
               projectMilestonesSpy: jest.fn().mockRejectedValue(error),
             });
 
             await clickEdit();
 
-            expect(createFlash).toHaveBeenCalledWith({
+            expect(createAlert).toHaveBeenCalledWith({
               message: wrapper.vm.i18n.listFetchError,
               captureError: true,
               error: expect.any(Error),
@@ -514,12 +514,12 @@ describe('SidebarDropdownWidget', () => {
       });
 
       describe('currentAttributes', () => {
-        it('should call createFlash if currentAttributes query fails', async () => {
+        it('should call createAlert if currentAttributes query fails', async () => {
           await createComponentWithApollo({
             currentMilestoneSpy: jest.fn().mockRejectedValue(error),
           });
 
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: wrapper.vm.i18n.currentFetchError,
             captureError: true,
             error: expect.any(Error),

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto, tutorial
 description: "Introduction to using Git through the command line."
 ---
@@ -37,7 +37,7 @@ prompt, command shell, and command line). Here are some options:
   - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
 - For Windows users:
   - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
-  - [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7).
+  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7).
   - Git Bash. It is built into [Git for Windows](https://gitforwindows.org/).
 - For Linux users:
   - Built-in [Linux Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).
@@ -147,10 +147,14 @@ between your computer and GitLab.
    git clone https://gitlab.com/gitlab-tests/sample-project.git
    ```
 
-1. GitLab requests your username and password:
-   - If you have 2FA enabled for your account, you must [clone using a token](#clone-using-a-token)
-     with `read_repository` or `write_repository` permissions instead of your account's password.
-   - If you don't have 2FA enabled, use your account's password.
+1. GitLab requests your username and password.
+
+   If you have enabled two-factor authentication (2FA) on your account, you cannot use your account password. Instead, you can do one of the following:
+
+   - [Clone using a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
+   - Install [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager).
+
+   If you have not enabled 2FA, use your account password.
 
 1. To view the files, go to the new directory:
 

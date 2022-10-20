@@ -74,6 +74,24 @@ RSpec.describe 'Merge request > Batch comments', :js do
     expect(page).to have_selector('.draft-note-component', text: 'Testing update')
   end
 
+  context 'multiple times on the same diff line' do
+    it 'shows both drafts at once' do
+      write_diff_comment
+
+      # All of the Diff helpers like click_diff_line (or write_diff_comment)
+      #     fail very badly when run a second time.
+      # This recreates the relevant logic.
+      line = find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
+      line.hover
+      line.find('.js-add-diff-note-button').click
+
+      write_comment(text: 'A second draft!', button_text: 'Add to review')
+
+      expect(page).to have_text('Line is wrong')
+      expect(page).to have_text('A second draft!')
+    end
+  end
+
   context 'with image and file draft note' do
     let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project) }
     let!(:draft_on_text) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user, path: 'README.md', note: 'Lorem ipsum on text...') }

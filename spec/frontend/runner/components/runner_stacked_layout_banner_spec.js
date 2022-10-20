@@ -29,6 +29,8 @@ describe('RunnerStackedLayoutBanner', () => {
   });
 
   it('Does not display a banner when dismissed', async () => {
+    createComponent();
+
     findLocalStorageSync().vm.$emit('input', true);
 
     await nextTick();

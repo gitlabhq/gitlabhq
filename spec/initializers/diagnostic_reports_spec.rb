@@ -21,25 +21,33 @@ RSpec.describe 'diagnostic reports' do
       stub_env('GITLAB_DIAGNOSTIC_REPORTS_ENABLED', true)
     end
 
-    context 'when run in application context' do
+    context 'when run in Puma context' do
       before do
-        allow(::Gitlab::Runtime).to receive(:application?).and_return(true)
+        allow(::Gitlab::Runtime).to receive(:puma?).and_return(true)
       end
 
-      it 'modifies worker startup hooks' do
-        report_daemon = instance_double(Gitlab::Memory::ReportsDaemon)
+      let(:report_daemon) { instance_double(Gitlab::Memory::ReportsDaemon) }
 
+      it 'modifies worker startup hooks, starts Gitlab::Memory::ReportsDaemon' do
         expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start).and_call_original
-        expect(Gitlab::Memory::ReportsDaemon).to receive(:instance).and_return(report_daemon)
-        expect(report_daemon).to receive(:start)
+
+        expect_next_instance_of(Gitlab::Memory::ReportsDaemon) do |daemon|
+          expect(daemon).to receive(:start).and_call_original
+
+          # make sleep no-op
+          allow(daemon).to receive(:sleep).and_return(nil)
+
+          # let alive return 3 times: true, true, false
+          allow(daemon).to receive(:alive).and_return(true, true, false)
+        end
 
         load_initializer
       end
     end
 
-    context 'when run in non-application context, such as rails console or tests' do
+    context 'when run in non-Puma context, such as rails console, tests, Sidekiq' do
       before do
-        allow(::Gitlab::Runtime).to receive(:application?).and_return(false)
+        allow(::Gitlab::Runtime).to receive(:puma?).and_return(false)
       end
 
       include_examples 'does not modify worker startup hooks'
@@ -48,7 +56,7 @@ RSpec.describe 'diagnostic reports' do
 
   context 'when GITLAB_DIAGNOSTIC_REPORTS_ENABLED is not set' do
     before do
-      allow(::Gitlab::Runtime).to receive(:application?).and_return(true)
+      allow(::Gitlab::Runtime).to receive(:puma?).and_return(true)
     end
 
     include_examples 'does not modify worker startup hooks'
@@ -57,7 +65,7 @@ RSpec.describe 'diagnostic reports' do
   context 'when GITLAB_DIAGNOSTIC_REPORTS_ENABLED is set to false' do
     before do
       stub_env('GITLAB_DIAGNOSTIC_REPORTS_ENABLED', false)
-      allow(::Gitlab::Runtime).to receive(:application?).and_return(true)
+      allow(::Gitlab::Runtime).to receive(:puma?).and_return(true)
     end
 
     include_examples 'does not modify worker startup hooks'

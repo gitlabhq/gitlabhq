@@ -26,8 +26,29 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
 
     RSpec.shared_examples 'updating the namespace package setting' do
       it_behaves_like 'updating the namespace package setting attributes',
-        from: { maven_duplicates_allowed: true, maven_duplicate_exception_regex: 'SNAPSHOT', generic_duplicates_allowed: true, generic_duplicate_exception_regex: 'foo' },
-        to: { maven_duplicates_allowed: false, maven_duplicate_exception_regex: 'RELEASE', generic_duplicates_allowed: false, generic_duplicate_exception_regex: 'bar' }
+        from: {
+          maven_duplicates_allowed: true,
+          maven_duplicate_exception_regex: 'SNAPSHOT',
+          generic_duplicates_allowed: true,
+          generic_duplicate_exception_regex: 'foo',
+          maven_package_requests_forwarding: nil,
+          lock_maven_package_requests_forwarding: false,
+          npm_package_requests_forwarding: nil,
+          lock_npm_package_requests_forwarding: false,
+          pypi_package_requests_forwarding: nil,
+          lock_pypi_package_requests_forwarding: false
+        }, to: {
+          maven_duplicates_allowed: false,
+          maven_duplicate_exception_regex: 'RELEASE',
+          generic_duplicates_allowed: false,
+          generic_duplicate_exception_regex: 'bar',
+          maven_package_requests_forwarding: true,
+          lock_maven_package_requests_forwarding: true,
+          npm_package_requests_forwarding: true,
+          lock_npm_package_requests_forwarding: true,
+          pypi_package_requests_forwarding: true,
+          lock_pypi_package_requests_forwarding: true
+        }
 
       it_behaves_like 'returning a success'
 
@@ -59,11 +80,19 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update do
     context 'with existing namespace package setting' do
       let_it_be(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
       let_it_be(:params) do
-        { namespace_path: namespace.full_path,
+        {
+          namespace_path: namespace.full_path,
           maven_duplicates_allowed: false,
           maven_duplicate_exception_regex: 'RELEASE',
           generic_duplicates_allowed: false,
-          generic_duplicate_exception_regex: 'bar' }
+          generic_duplicate_exception_regex: 'bar',
+          maven_package_requests_forwarding: true,
+          lock_maven_package_requests_forwarding: true,
+          npm_package_requests_forwarding: true,
+          lock_npm_package_requests_forwarding: true,
+          pypi_package_requests_forwarding: true,
+          lock_pypi_package_requests_forwarding: true
+        }
       end
 
       where(:user_role, :shared_examples_name) do

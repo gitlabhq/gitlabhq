@@ -154,22 +154,48 @@ RSpec.describe Projects::AutocompleteService do
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:contact_1) { create(:contact, group: group) }
     let_it_be(:contact_2) { create(:contact, group: group) }
+    let_it_be(:contact_3) { create(:contact, :inactive, group: group) }
 
-    subject { described_class.new(project, user).contacts.as_json }
+    let(:issue) { nil }
+
+    subject { described_class.new(project, user).contacts(issue).as_json }
 
     before do
       group.add_developer(user)
     end
 
-    it 'returns contact data correctly' do
+    it 'returns CRM contacts from group' do
       expected_contacts = [
         { 'id' => contact_1.id, 'email' => contact_1.email,
-          'first_name' => contact_1.first_name, 'last_name' => contact_1.last_name },
+          'first_name' => contact_1.first_name, 'last_name' => contact_1.last_name, 'state' => contact_1.state },
         { 'id' => contact_2.id, 'email' => contact_2.email,
-          'first_name' => contact_2.first_name, 'last_name' => contact_2.last_name }
+          'first_name' => contact_2.first_name, 'last_name' => contact_2.last_name, 'state' => contact_2.state },
+        { 'id' => contact_3.id, 'email' => contact_3.email,
+          'first_name' => contact_3.first_name, 'last_name' => contact_3.last_name, 'state' => contact_3.state }
       ]
 
       expect(subject).to match_array(expected_contacts)
+    end
+
+    context 'some contacts are already assigned to the issue' do
+      let(:issue) { create(:issue, project: project) }
+
+      before do
+        issue.customer_relations_contacts << [contact_2, contact_3]
+      end
+
+      it 'marks already assigned contacts as set' do
+        expected_contacts = [
+          { 'id' => contact_1.id, 'email' => contact_1.email,
+            'first_name' => contact_1.first_name, 'last_name' => contact_1.last_name, 'state' => contact_1.state, 'set' => false },
+          { 'id' => contact_2.id, 'email' => contact_2.email,
+            'first_name' => contact_2.first_name, 'last_name' => contact_2.last_name, 'state' => contact_2.state, 'set' => true },
+          { 'id' => contact_3.id, 'email' => contact_3.email,
+            'first_name' => contact_3.first_name, 'last_name' => contact_3.last_name, 'state' => contact_3.state, 'set' => true }
+        ]
+
+        expect(subject).to match_array(expected_contacts)
+      end
     end
   end
 

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Migration Style Guide
@@ -175,6 +175,14 @@ git checkout origin/master db/structure.sql
 VERSION=<migration ID> bundle exec rails db:migrate:main
 ```
 
+### Adding new tables to GitLab Schema
+
+GitLab connects to two different Postgres databases: `main` and `ci`. New tables should be defined in [`lib/gitlab/database/gitlab_schemas.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/gitlab_schemas.yml) with the databases they need to be added to.
+
+   ```yaml
+   <TABLE_NAME>: :gitlab_main
+   ```
+
 ## Avoiding downtime
 
 The document ["Avoiding downtime in migrations"](database/avoiding_downtime_in_migrations.md) specifies
@@ -267,7 +275,7 @@ in that limit. Singular query timings should fit within the [standard limit](dat
 In case you need to insert, update, or delete a significant amount of data, you:
 
 - Must disable the single transaction with `disable_ddl_transaction!`.
-- Should consider doing it in a [Background Migration](database/background_migrations.md).
+- Should consider doing it in a [batched background migration](database/batched_background_migrations.md).
 
 ## Migration helpers and versioning
 
@@ -604,7 +612,7 @@ Note that it is not necessary to check if the index exists prior to
 removing it, however it is required to specify the name of the
 index that is being removed. This can be done either by passing the name
 as an option to the appropriate form of `remove_index` or `remove_concurrent_index`,
-or more simply by using the `remove_concurrent_index_by_name` method. Explicitly
+or by using the `remove_concurrent_index_by_name` method. Explicitly
 specifying the name is important to ensure the correct index is removed.
 
 For a small table (such as an empty one or one with less than `1,000` records),
@@ -982,6 +990,43 @@ NOTE:
 `add_sequence` should be avoided for columns with foreign keys.
 Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
 
+## Swapping primary key
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.
+
+Swapping the primary key is required to partition a table as the **partition key must be included in the primary key**.
+
+You can use the `swap_primary_key` method provided by the database team.
+
+Under the hood, it works like this:
+
+- Drop the primary key constraint.
+- Add the primary key using the index defined beforehand.
+
+```ruby
+class SwapPrimaryKey < Gitlab::Database::Migration[2.0]
+  TABLE_NAME = :table_name
+  PRIMARY_KEY = :table_name_pkey
+  OLD_INDEX_NAME = :old_index_name
+  NEW_INDEX_NAME = :new_index_name
+
+  def up
+    swap_primary_key(TABLE_NAME, PRIMARY_KEY, NEW_INDEX_NAME)
+  end
+
+  def down
+    add_concurrent_index(TABLE_NAME, :id, unique: true, name: OLD_INDEX_NAME)
+    add_concurrent_index(TABLE_NAME, [:id, :partition_id], unique: true, name: NEW_INDEX_NAME)
+
+    unswap_primary_key(TABLE_NAME, PRIMARY_KEY, OLD_INDEX_NAME)
+  end
+end
+```
+
+NOTE:
+Make sure to introduce the new index beforehand in a separate migration in order
+to swap the primary key.
+
 ## Integer column type
 
 By default, an integer column can hold up to a 4-byte (32-bit) number. That is
@@ -1221,7 +1266,7 @@ by an integer. For example: `users` would turn into `users0`
 ## Using models in migrations (discouraged)
 
 The use of models in migrations is generally discouraged. As such models are
-[contraindicated for background migrations](database/background_migrations.md#isolation),
+[contraindicated for batched background migrations](database/batched_background_migrations.md#isolation),
 the model needs to be declared in the migration.
 
 If using a model in the migrations, you should first
@@ -1236,7 +1281,7 @@ in a previous migration.
 
 ### Example: Add a column `my_column` to the users table
 
-It is important not to leave out the `User.reset_column_information` command, in order to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
+It is important not to leave out the `User.reset_column_information` command, to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
 
 ```ruby
 class AddAndSeedMyColumn < Gitlab::Database::Migration[2.0]

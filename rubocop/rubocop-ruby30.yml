@@ -1,0 +1,16 @@
+# RuboCop configuration adjustments during the transition time from Ruby 2.7 to Ruby 3.0.
+# This configuration should be removed after the transition has been completed.
+
+# Disable cops for now since their behavior changed in Ruby 3.0.
+# See https://gitlab.com/gitlab-org/gitlab/-/jobs/3068345492
+#
+# Migration plan:
+# * Generate TODOs for these cops (with Ruby 3.0) right before the switch to Ruby 3.0
+# * Put these cops back in "grace period" to ensure `master` stability
+# * Remove "grace period" after the switch
+# * Incrementally fix TODOs
+#
+Style/MutableConstant:
+  Enabled: false
+Style/RedundantFreeze:
+  Enabled: false

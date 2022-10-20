@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Design Anti-patterns
@@ -146,7 +146,7 @@ Even in these scenarios, consider avoiding the Singleton pattern.
 
 #### Utility Functions
 
-When no state needs to be managed, we can simply export utility functions from a module without
+When no state needs to be managed, we can export utility functions from a module without
 messing with any class instantiation.
 
 ```javascript

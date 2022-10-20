@@ -41,7 +41,7 @@ module Types
                                                     deprecated: {
                                                       reason: :renamed,
                                                       replacement: 'internal',
-                                                      milestone: '15.3'
+                                                      milestone: '15.5'
                                                     }
 
       field :internal, GraphQL::Types::Boolean, null: true,

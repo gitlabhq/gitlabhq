@@ -176,22 +176,22 @@ RSpec.describe 'Query.ciConfig' do
                   "jobs" =>
                     {
                       "nodes" => [
-                      {
-                        "name" => "docker",
-                        "groupName" => "docker",
-                        "stage" => "test",
-                        "script" => ["curl http://dockerhub/URL"],
-                        "beforeScript" => ["bundle install", "bundle exec rake db:create"],
-                        "afterScript" => ["echo 'run this after'"],
-                        "allowFailure" => true,
-                        "only" => { "refs" => %w[branches tags] },
-                        "when" => "manual",
-                        "except" => { "refs" => ["branches"] },
-                        "environment" => nil,
-                        "tags" => [],
-                        "needs" => { "nodes" => [{ "name" => "spinach" }, { "name" => "rspec 0 1" }] }
-                      }
-                    ]
+                        {
+                          "name" => "docker",
+                          "groupName" => "docker",
+                          "stage" => "test",
+                          "script" => ["curl http://dockerhub/URL"],
+                          "beforeScript" => ["bundle install", "bundle exec rake db:create"],
+                          "afterScript" => ["echo 'run this after'"],
+                          "allowFailure" => true,
+                          "only" => { "refs" => %w[branches tags] },
+                          "when" => "manual",
+                          "except" => { "refs" => ["branches"] },
+                          "environment" => nil,
+                          "tags" => [],
+                          "needs" => { "nodes" => [{ "name" => "spinach" }, { "name" => "rspec 0 1" }] }
+                        }
+                      ]
                   }
                 }
               ]
@@ -209,22 +209,22 @@ RSpec.describe 'Query.ciConfig' do
                   "jobs" =>
                     {
                       "nodes" => [
-                      {
-                        "name" => "deploy_job",
-                        "groupName" => "deploy_job",
-                        "stage" => "deploy",
-                        "script" => ["echo 'done'"],
-                        "beforeScript" => ["bundle install", "bundle exec rake db:create"],
-                        "afterScript" => ["echo 'run this after'"],
-                        "allowFailure" => false,
-                        "only" => { "refs" => %w[branches tags] },
-                        "when" => "on_success",
-                        "except" => nil,
-                        "environment" => "production",
-                        "tags" => [],
-                        "needs" => { "nodes" => [] }
-                      }
-                    ]
+                        {
+                          "name" => "deploy_job",
+                          "groupName" => "deploy_job",
+                          "stage" => "deploy",
+                          "script" => ["echo 'done'"],
+                          "beforeScript" => ["bundle install", "bundle exec rake db:create"],
+                          "afterScript" => ["echo 'run this after'"],
+                          "allowFailure" => false,
+                          "only" => { "refs" => %w[branches tags] },
+                          "when" => "on_success",
+                          "except" => nil,
+                          "environment" => "production",
+                          "tags" => [],
+                          "needs" => { "nodes" => [] }
+                        }
+                      ]
                   }
                 }
               ]

@@ -60,17 +60,6 @@ class Admin::GroupsController < Admin::ApplicationController
     end
   end
 
-  def members_update
-    member_params = params.permit(:user_id, :access_level, :expires_at)
-    result = Members::CreateService.new(current_user, member_params.merge(limit: -1, source: @group, invite_source: 'admin-group-page')).execute
-
-    if result[:status] == :success
-      redirect_to [:admin, @group], notice: _('Users were successfully added.')
-    else
-      redirect_to [:admin, @group], alert: result[:message]
-    end
-  end
-
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 

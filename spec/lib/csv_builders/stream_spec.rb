@@ -25,18 +25,20 @@ RSpec.describe CsvBuilders::Stream do
     end
 
     it 'returns all rows up to default max value' do
-      expect(builder.render.to_a).to eq([
-        "Title,Description\n",
-        "Added salt,A teaspoon\n",
-        "Added sugar,Just a pinch\n"
-      ])
+      expect(builder.render.to_a).to eq(
+        [
+          "Title,Description\n",
+          "Added salt,A teaspoon\n",
+          "Added sugar,Just a pinch\n"
+        ])
     end
 
     it 'truncates to max rows' do
-      expect(builder.render(1).to_a).to eq([
-        "Title,Description\n",
-        "Added salt,A teaspoon\n"
-      ])
+      expect(builder.render(1).to_a).to eq(
+        [
+          "Title,Description\n",
+          "Added salt,A teaspoon\n"
+        ])
     end
   end
 end

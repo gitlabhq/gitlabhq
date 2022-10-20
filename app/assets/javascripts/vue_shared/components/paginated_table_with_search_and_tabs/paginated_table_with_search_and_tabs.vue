@@ -275,7 +275,7 @@ export default {
 <template>
   <div class="incident-management-list">
     <gl-alert v-if="showErrorMsg" variant="danger" @dismiss="$emit('error-alert-dismissed')">
-      <p v-safe-html="serverErrorMessage || i18n.errorMsg"></p>
+      <span v-safe-html="serverErrorMessage || i18n.errorMsg"></span>
     </gl-alert>
 
     <div

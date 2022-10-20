@@ -7,7 +7,7 @@ module Gitlab
         class CountBulkImportsEntitiesMetric < DatabaseMetric
           operation :count
 
-          def initialize(time_frame:, options: {})
+          def initialize(metric_definition)
             super
 
             if source_type.present? && !source_type.in?(allowed_source_types)

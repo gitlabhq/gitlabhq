@@ -5,19 +5,27 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import store from '~/mr_notes/stores';
 import discussionNavigator from '../notes/components/discussion_navigator.vue';
 import NotesApp from '../notes/components/notes_app.vue';
+import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
 import initWidget from '../vue_merge_request_widget';
 
 export default () => {
+  const el = document.getElementById('js-vue-mr-discussions');
+  if (!el) {
+    return;
+  }
+
+  const notesFilterProps = getNotesFilterData(el);
+
   // eslint-disable-next-line no-new
   new Vue({
-    el: '#js-vue-mr-discussions',
+    el,
     name: 'MergeRequestDiscussions',
     components: {
       NotesApp,
     },
     store,
     data() {
-      const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
+      const notesDataset = el.dataset;
       const noteableData = JSON.parse(notesDataset.noteableData);
       noteableData.noteableType = notesDataset.noteableType;
       noteableData.targetType = notesDataset.targetType;
@@ -95,6 +103,7 @@ export default () => {
             userData: this.currentUserData,
             shouldShow: this.isShowTabActive,
             helpPagePath: this.helpPagePath,
+            ...notesFilterProps,
           },
         }),
       ]);

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe IdeController do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:reporter) { create(:user) }
 
   let_it_be(:project) do
@@ -13,6 +15,8 @@ RSpec.describe IdeController do
 
   let_it_be(:creator) { project.creator }
   let_it_be(:other_user) { create(:user) }
+
+  let_it_be(:top_nav_partial) { 'layouts/header/_default' }
 
   let(:user) { creator }
   let(:branch) { '' }
@@ -230,6 +234,33 @@ RSpec.describe IdeController do
             subject
 
             expect_no_snowplow_event
+          end
+        end
+      end
+
+      # This indirectly tests that `minimal: true` was passed to the fullscreen layout
+      describe 'layout' do
+        where(:ff_state, :use_legacy_web_ide, :expect_top_nav) do
+          false | false | true
+          false | true  | true
+          true  | true  | true
+          true  | false | false
+        end
+
+        with_them do
+          before do
+            stub_feature_flags(vscode_web_ide: ff_state)
+            allow(user).to receive(:use_legacy_web_ide).and_return(use_legacy_web_ide)
+
+            subject
+          end
+
+          it 'handles rendering top nav' do
+            if expect_top_nav
+              expect(response).to render_template(top_nav_partial)
+            else
+              expect(response).not_to render_template(top_nav_partial)
+            end
           end
         end
       end

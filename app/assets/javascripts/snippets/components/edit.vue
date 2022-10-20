@@ -2,7 +2,7 @@
 import { GlButton, GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
 
 import eventHub from '~/blob/components/eventhub';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { redirectTo, joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import {
@@ -145,7 +145,7 @@ export default {
       const defaultErrorMsg = this.newSnippet
         ? SNIPPET_CREATE_MUTATION_ERROR
         : SNIPPET_UPDATE_MUTATION_ERROR;
-      createFlash({
+      createAlert({
         message: sprintf(defaultErrorMsg, { err }),
       });
       this.isUpdating = false;

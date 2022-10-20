@@ -10,6 +10,9 @@ module DiffViewer
     end
 
     def prepare!
+      return if Feature.enabled?(:disable_load_entire_blob_for_diff_viewer, diff_file.repository.project)
+
+      # TODO: remove this after resolving #342703
       diff_file.old_blob&.load_all_data!
       diff_file.new_blob&.load_all_data!
     end

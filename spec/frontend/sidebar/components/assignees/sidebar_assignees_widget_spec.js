@@ -5,7 +5,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import SidebarAssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import IssuableAssignees from '~/sidebar/components/assignees/issuable_assignees.vue';
@@ -167,7 +167,7 @@ describe('Sidebar assignees widget', () => {
       });
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while fetching participants.',
       });
     });
@@ -333,7 +333,7 @@ describe('Sidebar assignees widget', () => {
 
       await waitForPromises();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while updating assignees.',
       });
     });

@@ -18,22 +18,23 @@ RSpec.describe Ci::DailyBuildGroupReportResultSerializer do
     let(:json) { Gitlab::Json.parse(serializer.to_json) }
 
     it 'returns an array of group results' do
-      expect(json).to eq([
-        {
-          'group_name' => 'rspec',
-          'data' => [
-            { 'date' => '2020-05-20', 'coverage' => 79.1 },
-            { 'date' => '2020-05-19', 'coverage' => 77.1 }
-          ]
-        },
-        {
-          'group_name' => 'karma',
-          'data' => [
-            { 'date' => '2020-05-20', 'coverage' => 90.1 },
-            { 'date' => '2020-05-19', 'coverage' => 89.1 }
-          ]
-        }
-      ])
+      expect(json).to eq(
+        [
+          {
+            'group_name' => 'rspec',
+            'data' => [
+              { 'date' => '2020-05-20', 'coverage' => 79.1 },
+              { 'date' => '2020-05-19', 'coverage' => 77.1 }
+            ]
+          },
+          {
+            'group_name' => 'karma',
+            'data' => [
+              { 'date' => '2020-05-20', 'coverage' => 90.1 },
+              { 'date' => '2020-05-19', 'coverage' => 89.1 }
+            ]
+          }
+        ])
     end
   end
 end

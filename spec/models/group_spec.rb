@@ -2293,10 +2293,11 @@ RSpec.describe Group do
         it 'clears both self and descendant cache when the parent value is updated' do
           expect(Rails.cache).to receive(:delete_multi)
             .with(
-              match_array([
-                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{parent.id}"),
-                start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{group.id}")
-              ])
+              match_array(
+                [
+                  start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{parent.id}"),
+                  start_with("namespaces:{#{parent.traversal_ids.first}}:first_auto_devops_config:#{group.id}")
+                ])
             )
 
           parent.update!(auto_devops_enabled: true)
@@ -3311,16 +3312,6 @@ RSpec.describe Group do
     it 'returns wrapper' do
       expect(group.packages_policy_subject).to be_a(Packages::Policies::Group)
       expect(group.packages_policy_subject.group).to eq(group)
-    end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(read_package_policy_rule: false)
-      end
-
-      it 'returns group' do
-        expect(group.packages_policy_subject).to eq(group)
-      end
     end
   end
 

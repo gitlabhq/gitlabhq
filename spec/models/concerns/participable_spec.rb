@@ -186,6 +186,9 @@ RSpec.describe Participable do
         expect(instance.visible_participants(user1)).to match_array [user1, user2]
       end
     end
+
+    it_behaves_like 'visible participants for issuable with read ability', :issue
+    it_behaves_like 'visible participants for issuable with read ability', :merge_request
   end
 
   describe '#participant?' do

@@ -1,7 +1,7 @@
 <script>
 import { GlToast, GlTooltipDirective, GlSafeHtmlDirective, GlModal } from '@gitlab/ui';
 import Vue from 'vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
@@ -89,7 +89,7 @@ export default {
       window.location.reload();
     },
     onUpdateFail() {
-      createFlash({
+      createAlert({
         message: s__(
           "SetStatusModal|Sorry, we weren't able to set your status. Please try again later.",
         ),

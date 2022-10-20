@@ -1,0 +1,3 @@
+include:
+  - project: 'slug#'
+    file: '/templates/.gitlab-ci-template.yml'

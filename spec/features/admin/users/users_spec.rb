@@ -366,7 +366,7 @@ RSpec.describe 'Admin::Users' do
       expect(user.projects_limit)
         .to eq(Gitlab.config.gitlab.default_projects_limit)
       expect(user.can_create_group)
-        .to eq(Gitlab.config.gitlab.default_can_create_group)
+        .to eq(Gitlab::CurrentSettings.can_create_group)
     end
 
     it 'creates user with valid data' do
@@ -481,14 +481,14 @@ RSpec.describe 'Admin::Users' do
     end
 
     it 'lists groups' do
-      within(:css, '.gl-mb-3 + .card') do
+      within(:css, '.gl-mb-3 + .gl-card') do
         expect(page).to have_content 'Groups'
         expect(page).to have_link group.name, href: admin_group_path(group)
       end
     end
 
     it 'allows navigation to the group details' do
-      within(:css, '.gl-mb-3 + .card') do
+      within(:css, '.gl-mb-3 + .gl-card') do
         click_link group.name
       end
       expect(page).to have_content "Group: #{group.name}"
@@ -496,7 +496,7 @@ RSpec.describe 'Admin::Users' do
     end
 
     it 'shows the group access level' do
-      within(:css, '.gl-mb-3 + .card') do
+      within(:css, '.gl-mb-3 + .gl-card') do
         expect(page).to have_content 'Developer'
       end
     end

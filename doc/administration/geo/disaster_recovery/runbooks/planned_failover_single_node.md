@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
 ---
 
@@ -106,7 +106,7 @@ follow these steps to avoid unnecessary data loss:
       ```
 
       From this point, users are unable to view their data or make changes on the
-      **primary** site. They are also unable to log in to the **secondary** site.
+      **primary** site. They are also unable to sign in to the **secondary** site.
       However, existing sessions need to work for the remainder of the maintenance period, and
       so public data is accessible throughout.
 

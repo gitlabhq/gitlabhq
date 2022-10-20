@@ -23,7 +23,7 @@ describe('Merge Request Collapsible Extension', () => {
 
   const findTitle = () => wrapper.find('[data-testid="mr-collapsible-title"]');
   const findErrorMessage = () => wrapper.find('.js-error-state');
-  const findIcon = () => wrapper.find(GlIcon);
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
   afterEach(() => {
     wrapper.destroy();
@@ -77,7 +77,7 @@ describe('Merge Request Collapsible Extension', () => {
     });
 
     it('renders loading spinner', () => {
-      expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
+      expect(wrapper.findComponent(GlLoadingIcon).isVisible()).toBe(true);
     });
   });
 

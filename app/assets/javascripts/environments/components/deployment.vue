@@ -10,7 +10,7 @@ import {
 import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import deploymentDetails from '../graphql/queries/deployment_details.query.graphql';
 import DeploymentStatusBadge from './deployment_status_badge.vue';
 import Commit from './commit.vue';
@@ -119,7 +119,7 @@ export default {
         return data?.project?.deployment?.tags;
       },
       error(error) {
-        createFlash({
+        createAlert({
           message: this.$options.i18n.LOAD_ERROR_MESSAGE,
           captureError: true,
           error,

@@ -14,6 +14,7 @@ import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { upgradeStatusTokenConfig } from 'ee_else_ce/runner/components/search_tokens/upgrade_status_token_config';
+import { createLocalState } from '~/runner/graphql/list/local_state';
 
 import RunnerStackedLayoutBanner from '~/runner/components/runner_stacked_layout_banner.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
@@ -24,6 +25,7 @@ import RunnerStats from '~/runner/components/stat/runner_stats.vue';
 import RunnerActionsCell from '~/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
+import RunnerMembershipToggle from '~/runner/components/runner_membership_toggle.vue';
 
 import {
   CREATED_ASC,
@@ -36,9 +38,12 @@ import {
   GROUP_TYPE,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
+  PARAM_KEY_TAG,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
+  MEMBERSHIP_ALL_AVAILABLE,
+  MEMBERSHIP_DESCENDANTS,
   RUNNER_PAGE_SIZE,
   I18N_EDIT,
 } from '~/runner/constants';
@@ -89,15 +94,23 @@ describe('GroupRunnersApp', () => {
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationNext = () => findRunnerPagination().findByText(s__('Pagination|Next'));
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
+  const findRunnerMembershipToggle = () => wrapper.findComponent(RunnerMembershipToggle);
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
+  const createComponent = ({
+    props = {},
+    provide = {},
+    mountFn = shallowMountExtended,
+    ...options
+  } = {}) => {
+    const { cacheConfig, localMutations } = createLocalState();
+
     const handlers = [
       [groupRunnersQuery, mockGroupRunnersHandler],
       [groupRunnersCountQuery, mockGroupRunnersCountHandler],
     ];
 
     wrapper = mountFn(GroupRunnersApp, {
-      apolloProvider: createMockApollo(handlers),
+      apolloProvider: createMockApollo(handlers, {}, cacheConfig),
       propsData: {
         registrationToken: mockRegistrationToken,
         groupFullPath: mockGroupFullPath,
@@ -105,10 +118,12 @@ describe('GroupRunnersApp', () => {
         ...props,
       },
       provide: {
+        localMutations,
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
         emptyStateSvgPath,
         emptyStateFilteredSvgPath,
+        ...provide,
       },
       ...options,
     });
@@ -147,19 +162,50 @@ describe('GroupRunnersApp', () => {
     expect(findRegistrationDropdown().props('type')).toBe(GROUP_TYPE);
   });
 
+  describe('show all available runners toggle', () => {
+    it('shows the membership toggle', () => {
+      createComponent();
+      expect(findRunnerMembershipToggle().exists()).toBe(true);
+    });
+
+    it('sets the membership toggle', () => {
+      setWindowLocation(`?membership[]=${MEMBERSHIP_ALL_AVAILABLE}`);
+
+      createComponent();
+
+      expect(findRunnerMembershipToggle().props('value')).toBe(MEMBERSHIP_ALL_AVAILABLE);
+    });
+
+    it('requests filter', async () => {
+      createComponent();
+      findRunnerMembershipToggle().vm.$emit('input', MEMBERSHIP_ALL_AVAILABLE);
+
+      await waitForPromises();
+
+      expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          membership: MEMBERSHIP_ALL_AVAILABLE,
+        }),
+      );
+    });
+  });
+
   it('shows total runner counts', async () => {
     await createComponent({ mountFn: mountExtended });
 
     expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
       status: STATUS_ONLINE,
+      membership: MEMBERSHIP_DESCENDANTS,
       groupFullPath: mockGroupFullPath,
     });
     expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
       status: STATUS_OFFLINE,
+      membership: MEMBERSHIP_DESCENDANTS,
       groupFullPath: mockGroupFullPath,
     });
     expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
       status: STATUS_STALE,
+      membership: MEMBERSHIP_DESCENDANTS,
       groupFullPath: mockGroupFullPath,
     });
 
@@ -183,6 +229,7 @@ describe('GroupRunnersApp', () => {
       groupFullPath: mockGroupFullPath,
       status: undefined,
       type: undefined,
+      membership: MEMBERSHIP_DESCENDANTS,
       sort: DEFAULT_SORT,
       first: RUNNER_PAGE_SIZE,
     });
@@ -202,6 +249,10 @@ describe('GroupRunnersApp', () => {
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
       }),
+      expect.objectContaining({
+        type: PARAM_KEY_TAG,
+        suggestionsDisabled: true,
+      }),
       upgradeStatusTokenConfig,
     ]);
   });
@@ -213,7 +264,7 @@ describe('GroupRunnersApp', () => {
     const { id: graphqlId, shortSha } = node;
     const id = getIdFromGraphQLId(graphqlId);
     const COUNT_QUERIES = 6; // Smart queries that display a filtered count of runners
-    const FILTERED_COUNT_QUERIES = 3; // Smart queries that display a count of runners in tabs
+    const FILTERED_COUNT_QUERIES = 6; // Smart queries that display a count of runners in tabs and single stats
 
     beforeEach(async () => {
       await createComponent({ mountFn: mountExtended });
@@ -266,6 +317,7 @@ describe('GroupRunnersApp', () => {
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
         runnerType: INSTANCE_TYPE,
+        membership: MEMBERSHIP_DESCENDANTS,
         filters: [{ type: 'status', value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: 'CREATED_DESC',
         pagination: {},
@@ -277,6 +329,7 @@ describe('GroupRunnersApp', () => {
         groupFullPath: mockGroupFullPath,
         status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
+        membership: MEMBERSHIP_DESCENDANTS,
         sort: DEFAULT_SORT,
         first: RUNNER_PAGE_SIZE,
       });
@@ -286,6 +339,7 @@ describe('GroupRunnersApp', () => {
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
         groupFullPath: mockGroupFullPath,
         type: INSTANCE_TYPE,
+        membership: MEMBERSHIP_DESCENDANTS,
         status: STATUS_ONLINE,
       });
     });
@@ -297,6 +351,7 @@ describe('GroupRunnersApp', () => {
 
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
+        membership: MEMBERSHIP_DESCENDANTS,
         filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
@@ -315,6 +370,7 @@ describe('GroupRunnersApp', () => {
       expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
         status: STATUS_ONLINE,
+        membership: MEMBERSHIP_DESCENDANTS,
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });
@@ -324,6 +380,7 @@ describe('GroupRunnersApp', () => {
       expect(mockGroupRunnersCountHandler).toHaveBeenCalledWith({
         groupFullPath: mockGroupFullPath,
         status: STATUS_ONLINE,
+        membership: MEMBERSHIP_DESCENDANTS,
       });
     });
   });
@@ -332,6 +389,11 @@ describe('GroupRunnersApp', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
     expect(findRunnerPagination().attributes('disabled')).toBe('true');
+  });
+
+  it('runners cannot be deleted in bulk', () => {
+    createComponent();
+    expect(findRunnerList().props('checkable')).toBe(false);
   });
 
   describe('when no runners are found', () => {
@@ -395,6 +457,7 @@ describe('GroupRunnersApp', () => {
 
       expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
         groupFullPath: mockGroupFullPath,
+        membership: MEMBERSHIP_DESCENDANTS,
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
         after: pageInfo.endCursor,

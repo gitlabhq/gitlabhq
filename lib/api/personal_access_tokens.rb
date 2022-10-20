@@ -11,7 +11,15 @@ module API
       success Entities::PersonalAccessToken
     end
     params do
-      optional :user_id, type: Integer, desc: 'User ID'
+      optional :user_id, type: Integer, desc: 'Filter PATs by User ID'
+      optional :revoked, type: Boolean, desc: 'Filter PATs where revoked state matches parameter'
+      optional :state, type: String, desc: 'Filter PATs which are either active or not',
+                       values: %w[active inactive]
+      optional :created_before, type: DateTime, desc: 'Filter PATs which were created before given datetime'
+      optional :created_after, type: DateTime, desc: 'Filter PATs which were created after given datetime'
+      optional :last_used_before, type: DateTime, desc: 'Filter PATs which were used before given datetime'
+      optional :last_used_after, type: DateTime, desc: 'Filter PATs which were used after given datetime'
+      optional :search, type: String, desc: 'Filters PATs by its name'
 
       use :pagination
     end

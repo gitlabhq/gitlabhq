@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
@@ -7,7 +7,7 @@ export default class Star {
   constructor(containerSelector = '.project-home-panel') {
     const container = document.querySelector(containerSelector);
     const starToggle = container.querySelector('.toggle-star');
-    starToggle.addEventListener('click', function toggleStarClickCallback() {
+    starToggle?.addEventListener('click', function toggleStarClickCallback() {
       const starSpan = starToggle.querySelector('span');
       const starIcon = starToggle.querySelector('svg');
       const iconClasses = Array.from(starIcon.classList.values());
@@ -34,7 +34,7 @@ export default class Star {
           }
         })
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Star toggle failed. Try again later.'),
           }),
         );

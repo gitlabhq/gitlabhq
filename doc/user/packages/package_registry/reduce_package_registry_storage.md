@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Reduce Package Registry Storage **(FREE)**
@@ -71,9 +71,9 @@ To access these project settings, you must be at least a maintainer on the relat
 
 ### Available rules
 
-- `Number of duplicated assets to keep`. The number of duplicated assets to keep. Some package formats allow you
+- `Number of duplicated assets to keep`: The number of duplicated assets to keep. Some package formats allow you
   to upload more than one copy of an asset. You can limit the number of duplicated assets to keep and automatically
-  delete the oldest assets once the limit is reached.
+  delete the oldest assets once the limit is reached. Unique filenames, such as those produced by Maven snapshots, are not considered when evaluating the number of duplicated assets to keep.
 
 ### Set cleanup limits to conserve resources
 

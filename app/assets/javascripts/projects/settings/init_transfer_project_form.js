@@ -12,6 +12,7 @@ export default () => {
   Vue.use(VueApollo);
 
   const {
+    projectId,
     targetFormId = null,
     targetHiddenInputId = null,
     buttonText: confirmButtonText = '',
@@ -26,6 +27,7 @@ export default () => {
     }),
     provide: {
       confirmDangerMessage,
+      projectId,
     },
     render(createElement) {
       return createElement(TransferProjectForm, {

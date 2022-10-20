@@ -15,6 +15,8 @@ module Namespaces
       enable :read_statistics
       enable :create_jira_connect_subscription
       enable :admin_package
+      enable :read_billing
+      enable :edit_billing
     end
 
     rule { ~can_create_personal_project }.prevent :create_projects

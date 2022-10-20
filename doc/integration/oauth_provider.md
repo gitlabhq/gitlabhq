@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure GitLab as an OAuth 2.0 authentication identity provider
@@ -126,7 +126,7 @@ application can perform. Available scopes are depicted in the following table.
 | `profile`          |  Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            |  Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 
-At any time you can revoke any access by clicking **Revoke**.
+At any time you can revoke any access by selecting **Revoke**.
 
 ## Hashed OAuth application secrets
 
@@ -137,3 +137,17 @@ On self-managed GitLab, by default, this feature is not available. To make it av
 On GitLab.com, this feature is not available.
 
 By default, OAuth application secrets are stored as plain text in the database. When enabled, OAuth application secrets are stored in the database in hashed format and are only available to users immediately after creating OAuth applications.
+
+## Hashed OAuth tokens
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364110) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `hash_oauth_tokens`. Enabled on GitLab.com. Disabled by default for self-managed.
+> - [Enabled by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 15.5.
+
+FLAG:
+On self-managed GitLab, by default, this feature is enabled. If you detect a problem, ask an administrator to
+[disable the feature flag](../administration/feature_flags.md) named `hash_oauth_tokens`. If the feature flag is disabled, any tokens that were stored
+in encrypted format are inaccessible. Users must reauthorize applications.
+On GitLab.com, this feature is enabled.
+
+By default, OAuth access tokens are stored in the database in PBKDF2+SHA512 format. GitLab administrators can disable this and OAuth access tokens are
+then stored in plaintext in the database.

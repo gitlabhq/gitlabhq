@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -270,10 +270,12 @@ To [Create a new group](../group/manage.md#create-a-group) select **New group**.
 
 ### Administering Topics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
+- > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
+- > Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
-You can administer all [topics](../project/working_with_projects.md#explore-topics) in the
-GitLab instance from the Admin Area's Topics page.
+[Topics](../project/working_with_projects.md#explore-topics) are used to categorize and find similar projects.
+
+You can administer all topics in the GitLab instance from the Admin Area's Topics page.
 
 To access the Topics page:
 
@@ -295,7 +297,7 @@ insensitive and applies partial matching.
 
 NOTE:
 The assigned topics are visible only to everyone with access to the project,
-but everyone can see which topics exist at all on the GitLab instance.
+but everyone can see which topics exist on the GitLab instance.
 Do not include sensitive information in the name of a topic.
 
 ### Administering Jobs
@@ -351,10 +353,8 @@ You can also filter runners by status, type, and tag. To filter:
 
 #### Bulk delete runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370241) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `admin_runners_bulk_delete`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `admin_runners_bulk_delete`. On GitLab.com, this feature is not available but can be enabled by GitLab.com administrators.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370241) in GitLab 15.4.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353981) in GitLab 15.5.
 
 You can delete multiple runners at the same time.
 

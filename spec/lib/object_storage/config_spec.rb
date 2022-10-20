@@ -136,7 +136,6 @@ RSpec.describe ObjectStorage::Config do
     let(:credentials) do
       {
         provider: 'Google',
-        google_client_email: 'foo@gcp-project.example.com',
         google_json_key_location: '/path/to/gcp.json'
       }
     end

@@ -181,6 +181,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         end
 
         accept_pending_invitations(user: user) if new_user
+        persist_accepted_terms_if_required(user) if new_user
+
         store_after_sign_up_path_for_user if intent_to_register?
         sign_in_and_redirect(user, event: :authentication)
       end
@@ -299,6 +301,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def fail_admin_mode_invalid_credentials
     redirect_to new_admin_session_path, alert: _('Invalid login or password')
+  end
+
+  def persist_accepted_terms_if_required(user)
+    return unless Feature.enabled?(:update_oauth_registration_flow)
+    return unless user.persisted?
+    return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
+
+    terms = ApplicationSetting::Term.latest
+    Users::RespondToTermsService.new(user, terms).execute(accepted: true)
   end
 
   def store_after_sign_up_path_for_user

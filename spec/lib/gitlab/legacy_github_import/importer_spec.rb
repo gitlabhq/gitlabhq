@@ -59,23 +59,23 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
     end
 
     let(:label1) do
-      double(
+      {
         name: 'Bug',
         color: 'ff0000',
         url: "#{api_root}/repos/octocat/Hello-World/labels/bug"
-      )
+      }
     end
 
     let(:label2) do
-      double(
+      {
         name: nil,
         color: 'ff0000',
         url: "#{api_root}/repos/octocat/Hello-World/labels/bug"
-      )
+      }
     end
 
     let(:milestone) do
-      double(
+      {
         id: 1347, # For Gitea
         number: 1347,
         state: 'open',
@@ -86,11 +86,11 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
         updated_at: updated_at,
         closed_at: nil,
         url: "#{api_root}/repos/octocat/Hello-World/milestones/1"
-      )
+      }
     end
 
     let(:issue1) do
-      double(
+      {
         number: 1347,
         milestone: nil,
         state: 'open',
@@ -104,12 +104,12 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
         updated_at: updated_at,
         closed_at: nil,
         url: "#{api_root}/repos/octocat/Hello-World/issues/1347",
-        labels: [double(name: 'Label #1')]
-      )
+        labels: [{ name: 'Label #1' }]
+      }
     end
 
     let(:issue2) do
-      double(
+      {
         number: 1348,
         milestone: nil,
         state: 'open',
@@ -123,12 +123,12 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
         updated_at: updated_at,
         closed_at: nil,
         url: "#{api_root}/repos/octocat/Hello-World/issues/1348",
-        labels: [double(name: 'Label #2')]
-      )
+        labels: [{ name: 'Label #2' }]
+      }
     end
 
     let(:release1) do
-      double(
+      {
         tag_name: 'v1.0.0',
         name: 'First release',
         body: 'Release v1.0.0',
@@ -137,11 +137,11 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
         published_at: created_at,
         updated_at: updated_at,
         url: "#{api_root}/repos/octocat/Hello-World/releases/1"
-      )
+      }
     end
 
     let(:release2) do
-      double(
+      {
         tag_name: 'v1.1.0',
         name: 'Second release',
         body: nil,
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
         published_at: created_at,
         updated_at: updated_at,
         url: "#{api_root}/repos/octocat/Hello-World/releases/2"
-      )
+      }
     end
 
     subject { described_class.new(project) }
@@ -210,18 +210,18 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
   end
 
   let(:project) { create(:project, :repository, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
-  let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
+  let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:credentials) { { user: 'joe' } }
 
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
-  let(:repository) { double(id: 1, fork: false) }
+  let(:repository) { { id: 1, fork: false } }
   let(:source_sha) { create(:commit, project: project).id }
-  let(:source_branch) { double(ref: 'branch-merged', repo: repository, sha: source_sha, user: octocat) }
+  let(:source_branch) { { ref: 'branch-merged', repo: repository, sha: source_sha, user: octocat } }
   let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
-  let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha, user: octocat) }
+  let(:target_branch) { { ref: 'master', repo: repository, sha: target_sha, user: octocat } }
   let(:pull_request) do
-    double(
+    {
       number: 1347,
       milestone: nil,
       state: 'open',
@@ -236,12 +236,12 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       closed_at: nil,
       merged_at: nil,
       url: "#{api_root}/repos/octocat/Hello-World/pulls/1347",
-      labels: [double(name: 'Label #2')]
-    )
+      labels: [{ name: 'Label #2' }]
+    }
   end
 
   let(:closed_pull_request) do
-    double(
+    {
       number: 1347,
       milestone: nil,
       state: 'closed',
@@ -256,8 +256,8 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer do
       closed_at: updated_at,
       merged_at: nil,
       url: "#{api_root}/repos/octocat/Hello-World/pulls/1347",
-      labels: [double(name: 'Label #2')]
-    )
+      labels: [{ name: 'Label #2' }]
+    }
   end
 
   context 'when importing a Gitea project' do

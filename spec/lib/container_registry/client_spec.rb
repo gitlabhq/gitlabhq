@@ -423,6 +423,22 @@ RSpec.describe ContainerRegistry::Client do
     end
   end
 
+  describe '#repository_tags' do
+    let(:path) { 'repository/path' }
+
+    subject { client.repository_tags(path) }
+
+    before do
+      stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+    end
+
+    it 'returns a successful response' do
+      stub_registry_tags_list(query_params: { n: described_class::DEFAULT_TAGS_PAGE_SIZE }, tags: %w[t1 t2])
+
+      expect(subject).to eq('tags' => %w[t1 t2])
+    end
+  end
+
   describe '.registry_info' do
     subject { described_class.registry_info }
 
@@ -456,6 +472,22 @@ RSpec.describe ContainerRegistry::Client do
         body: '',
         headers: { 'Allow' => 'DELETE' }
       )
+  end
+
+  def stub_registry_tags_list(query_params: {}, status: 200, tags: ['test_tag'])
+    url = "#{registry_api_url}/v2/#{path}/tags/list"
+
+    unless query_params.empty?
+      url += "?"
+      url += query_params.map { |k, v| "#{k}=#{v}" }.join(',')
+    end
+
+    stub_request(:get, url)
+      .with(headers: { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') })
+      .to_return(
+        status: status,
+        body: Gitlab::Json.dump(tags: tags),
+        headers: { 'Content-Type' => 'application/json' })
   end
 
   def expect_new_faraday(times: 1, timeout: true)

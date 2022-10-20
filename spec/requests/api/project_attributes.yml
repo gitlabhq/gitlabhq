@@ -90,11 +90,10 @@ ci_cd_settings:
     - id
     - project_id
     - group_runners_enabled
-    - merge_pipelines_enabled
     - merge_trains_enabled
     - merge_pipelines_enabled
-    - merge_trains_enabled
     - auto_rollback_enabled
+    - inbound_job_token_scope_enabled
   remapped_attributes:
     default_git_depth: ci_default_git_depth
     forward_deployment_enabled: ci_forward_deployment_enabled
@@ -129,7 +128,6 @@ project_feature:
     - infrastructure_access_level
     - feature_flags_access_level
     - environments_access_level
-    - releases_access_level
     - project_id
     - updated_at
   computed_attributes:
@@ -149,6 +147,7 @@ project_setting:
     - has_vulnerabilities
     - legacy_open_source_license_available
     - prevent_merge_without_jira_issue
+    - only_allow_merge_if_all_status_checks_passed
     - warn_about_potentially_unwanted_characters
     - previous_default_branch
     - project_id
@@ -161,6 +160,8 @@ project_setting:
     - target_platforms
     - selective_code_owner_removals
     - show_diff_preview_in_email
+    - suggested_reviewers_enabled
+    - jitsu_key
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

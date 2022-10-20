@@ -46,12 +46,14 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
   .flash-notice,
   .flash-success,
   .flash-warning {
-    padding: $gl-padding $gl-padding-32 $gl-padding ($gl-padding + $gl-padding-4);
-    margin-top: 10px;
+    &:not(.gl-alert) {
+      padding: $gl-padding $gl-padding-32 $gl-padding ($gl-padding + $gl-padding-4);
+      margin-top: 10px;
 
-    .container-fluid,
-    .container-fluid.container-limited {
-      background: transparent;
+      .container-fluid,
+      .container-fluid.container-limited {
+        background: transparent;
+      }
     }
   }
 
@@ -78,6 +80,19 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
 
   .gl-alert {
     @include gl-my-4;
+  }
+
+  &.flash-container-no-margin {
+    .gl-alert {
+      @include gl-my-0;
+    }
+
+    .flash-alert,
+    .flash-notice,
+    .flash-success,
+    .flash-warning {
+      @include gl-mt-0;
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Workspace
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Groups API **(FREE)**
@@ -125,12 +125,15 @@ GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_valu
 
 ## List a group's subgroups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15142) in GitLab 10.3.
-
 Get a list of visible direct subgroups in this group.
-When accessed without authentication, only public groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](index.md#pagination).
+
+If you request this list as:
+
+- An unauthenticated user, the response returns only public groups.
+- An authenticated user, the response returns only the groups you're
+a member of and does not include public groups.
 
 Parameters:
 
@@ -284,7 +287,7 @@ Parameters:
 | `order_by`                             | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` (1), or `last_activity_at` fields. Default is `created_at` |
 | `sort`                                 | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                               | string         | no       | Return list of authorized projects matching the search criteria |
-| `simple`                               | boolean        | no       | Return only the ID, URL, name, and path of each project |
+| `simple`                               | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `owned`                                | boolean        | no       | Limit by projects owned by the current user |
 | `starred`                              | boolean        | no       | Limit by projects starred by the current user |
 | `with_issues_enabled`                  | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
@@ -367,7 +370,7 @@ Parameters:
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                      | string         | no       | Return list of authorized projects matching the search criteria |
-| `simple`                      | boolean        | no       | Return only the ID, URL, name, and path of each project |
+| `simple`                      | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `starred`                     | boolean        | no       | Limit by projects starred by the current user |
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |

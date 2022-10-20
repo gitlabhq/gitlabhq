@@ -12,7 +12,7 @@ module Gitlab
         self.new(build, ttl: build.metadata_timeout).encoded
       end
 
-      def initialize(build, ttl: nil)
+      def initialize(build, ttl:)
         @build = build
         @ttl = ttl
       end

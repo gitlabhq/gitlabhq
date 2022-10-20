@@ -5,12 +5,13 @@ module WorkItems
     class BaseService < ::BaseService
       WidgetError = Class.new(StandardError)
 
-      attr_reader :widget, :work_item, :current_user
+      attr_reader :widget, :work_item, :current_user, :service_params
 
-      def initialize(widget:, current_user:)
+      def initialize(widget:, current_user:, service_params: {})
         @widget = widget
         @work_item = widget.work_item
         @current_user = current_user
+        @service_params = service_params
       end
 
       private

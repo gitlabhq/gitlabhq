@@ -22,11 +22,10 @@ module AccessTokensActions
 
     if token_response.success?
       @resource_access_token = token_response.payload[:access_token]
-      PersonalAccessToken.redis_store!(key_identity, @resource_access_token.token)
-
-      redirect_to resource_access_tokens_path, notice: _("Your new access token has been created.")
+      render json: { new_token: @resource_access_token.token,
+                     active_access_tokens: active_resource_access_tokens }, status: :ok
     else
-      redirect_to resource_access_tokens_path, alert: _("Failed to create new access token: %{token_response_message}") % { token_response_message: token_response.message }
+      render json: { errors: token_response.errors }, status: :unprocessable_entity
     end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -63,11 +62,14 @@ module AccessTokensActions
     resource.members.load
 
     @scopes = Gitlab::Auth.resource_bot_scopes
-    @active_resource_access_tokens = finder(state: 'active').execute.preload_users
-    @inactive_resource_access_tokens = finder(state: 'inactive', sort: 'expires_at_asc').execute.preload_users
-    @new_resource_access_token = PersonalAccessToken.redis_getdel(key_identity)
+    @active_resource_access_tokens = active_resource_access_tokens
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def active_resource_access_tokens
+    tokens = finder(state: 'active', sort: 'expires_at_asc_id_desc').execute.preload_users
+    represent(tokens)
+  end
 
   def finder(options = {})
     PersonalAccessTokensFinder.new({ user: bot_users, impersonation: false }.merge(options))

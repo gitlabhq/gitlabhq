@@ -1,121 +1,109 @@
-import Vue from 'vue';
-
-import mountComponent from 'helpers/vue_mount_component_helper';
-import stackedProgressBarComponent from '~/vue_shared/components/stacked_progress_bar.vue';
-
-const createComponent = (config) => {
-  const Component = Vue.extend(stackedProgressBarComponent);
-  const defaultConfig = {
-    successLabel: 'Synced',
-    failureLabel: 'Failed',
-    neutralLabel: 'Out of sync',
-    successCount: 25,
-    failureCount: 10,
-    totalCount: 5000,
-    ...config,
-  };
-
-  return mountComponent(Component, defaultConfig);
-};
+import { mount } from '@vue/test-utils';
+import StackedProgressBarComponent from '~/vue_shared/components/stacked_progress_bar.vue';
 
 describe('StackedProgressBarComponent', () => {
-  let vm;
+  let wrapper;
 
-  beforeEach(() => {
-    vm = createComponent();
-  });
+  const createComponent = (config) => {
+    const defaultConfig = {
+      successLabel: 'Synced',
+      failureLabel: 'Failed',
+      neutralLabel: 'Out of sync',
+      successCount: 25,
+      failureCount: 10,
+      totalCount: 5000,
+      ...config,
+    };
+
+    wrapper = mount(StackedProgressBarComponent, { propsData: defaultConfig });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
-  const findSuccessBarText = (wrapper) =>
-    wrapper.$el.querySelector('.status-green').innerText.trim();
-  const findNeutralBarText = (wrapper) =>
-    wrapper.$el.querySelector('.status-neutral').innerText.trim();
-  const findFailureBarText = (wrapper) => wrapper.$el.querySelector('.status-red').innerText.trim();
-  const findUnavailableBarText = (wrapper) =>
-    wrapper.$el.querySelector('.status-unavailable').innerText.trim();
-
-  describe('computed', () => {
-    describe('neutralCount', () => {
-      it('returns neutralCount based on totalCount, successCount and failureCount', () => {
-        expect(vm.neutralCount).toBe(4965); // 5000 - 25 - 10
-      });
-    });
-  });
+  const findSuccessBar = () => wrapper.find('.status-green');
+  const findNeutralBar = () => wrapper.find('.status-neutral');
+  const findFailureBar = () => wrapper.find('.status-red');
+  const findUnavailableBar = () => wrapper.find('.status-unavailable');
 
   describe('template', () => {
     it('renders container element', () => {
-      expect(vm.$el.classList.contains('stacked-progress-bar')).toBeTruthy();
+      createComponent();
+
+      expect(wrapper.classes()).toContain('stacked-progress-bar');
     });
 
     it('renders empty state when count is unavailable', () => {
-      const vmX = createComponent({ totalCount: 0, successCount: 0, failureCount: 0 });
+      createComponent({ totalCount: 0, successCount: 0, failureCount: 0 });
 
-      expect(findUnavailableBarText(vmX)).not.toBeUndefined();
+      expect(findUnavailableBar()).not.toBeUndefined();
     });
 
     it('renders bar elements when count is available', () => {
-      expect(findSuccessBarText(vm)).not.toBeUndefined();
-      expect(findNeutralBarText(vm)).not.toBeUndefined();
-      expect(findFailureBarText(vm)).not.toBeUndefined();
+      createComponent();
+
+      expect(findSuccessBar().exists()).toBe(true);
+      expect(findNeutralBar().exists()).toBe(true);
+      expect(findFailureBar().exists()).toBe(true);
     });
 
     describe('getPercent', () => {
       it('returns correct percentages from provided count based on `totalCount`', () => {
-        vm = createComponent({ totalCount: 100, successCount: 25, failureCount: 10 });
+        createComponent({ totalCount: 100, successCount: 25, failureCount: 10 });
 
-        expect(findSuccessBarText(vm)).toBe('25%');
-        expect(findNeutralBarText(vm)).toBe('65%');
-        expect(findFailureBarText(vm)).toBe('10%');
+        expect(findSuccessBar().text()).toBe('25%');
+        expect(findNeutralBar().text()).toBe('65%');
+        expect(findFailureBar().text()).toBe('10%');
       });
 
       it('returns percentage with decimal place when decimal is greater than 1', () => {
-        vm = createComponent({ successCount: 67 });
+        createComponent({ successCount: 67 });
 
-        expect(findSuccessBarText(vm)).toBe('1.3%');
+        expect(findSuccessBar().text()).toBe('1.3%');
       });
 
       it('returns percentage as `< 1%` from provided count based on `totalCount` when evaluated value is less than 1', () => {
-        vm = createComponent({ successCount: 10 });
+        createComponent({ successCount: 10 });
 
-        expect(findSuccessBarText(vm)).toBe('< 1%');
+        expect(findSuccessBar().text()).toBe('< 1%');
       });
 
       it('returns not available if totalCount is falsy', () => {
-        vm = createComponent({ totalCount: 0 });
+        createComponent({ totalCount: 0 });
 
-        expect(findUnavailableBarText(vm)).toBe('Not available');
+        expect(findUnavailableBar().text()).toBe('Not available');
       });
 
       it('returns 99.9% when numbers are extreme decimals', () => {
-        vm = createComponent({ totalCount: 1000000 });
+        createComponent({ totalCount: 1000000 });
 
-        expect(findNeutralBarText(vm)).toBe('99.9%');
+        expect(findNeutralBar().text()).toBe('99.9%');
       });
     });
 
-    describe('barStyle', () => {
-      it('returns style string based on percentage provided', () => {
-        expect(vm.barStyle(50)).toBe('width: 50%;');
+    describe('bar style', () => {
+      it('renders width based on percentage provided', () => {
+        createComponent({ totalCount: 100, successCount: 25 });
+
+        expect(findSuccessBar().element.style.width).toBe('25%');
       });
     });
 
-    describe('getTooltip', () => {
+    describe('tooltip', () => {
       describe('when hideTooltips is false', () => {
         it('returns label string based on label and count provided', () => {
-          expect(vm.getTooltip('Synced', 10)).toBe('Synced: 10');
+          createComponent({ successCount: 10, successLabel: 'Synced', hideTooltips: false });
+
+          expect(findSuccessBar().attributes('title')).toBe('Synced: 10');
         });
       });
 
       describe('when hideTooltips is true', () => {
-        beforeEach(() => {
-          vm = createComponent({ hideTooltips: true });
-        });
-
         it('returns an empty string', () => {
-          expect(vm.getTooltip('Synced', 10)).toBe('');
+          createComponent({ successCount: 10, successLabel: 'Synced', hideTooltips: true });
+
+          expect(findSuccessBar().attributes('title')).toBe('');
         });
       });
     });

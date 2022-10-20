@@ -56,7 +56,12 @@ module API
         packages = Packages::Pypi::PackagesFinder.new(current_user, group_or_project, { package_name: params[:package_name] }).execute
         empty_packages = packages.empty?
 
-        redirect_registry_request(empty_packages, :pypi, package_name: params[:package_name]) do
+        redirect_registry_request(
+          forward_to_registry: empty_packages,
+          package_type: :pypi,
+          target: group_or_project,
+          package_name: params[:package_name]
+        ) do
           not_found!('Package') if empty_packages
           presenter = ::Packages::Pypi::SimplePackageVersionsPresenter.new(packages, group_or_project)
 

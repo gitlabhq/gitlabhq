@@ -19,18 +19,69 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
     end
 
     context 'when the import succeeds' do
-      it 'schedules the importing of the base data' do
-        client = double(:client)
+      context 'with issues' do
+        it 'schedules the importing of the base data' do
+          client = double(:client)
+          options = { state: 'all', sort: 'number', direction: 'desc', per_page: '1' }
 
-        expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
-          expect(instance).to receive(:execute).and_return(true)
+          expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
+            expect(instance).to receive(:execute).and_return(true)
+          end
+
+          expect(InternalId).to receive(:exists?).and_return(false)
+          expect(client).to receive(:each_object).with(
+            :issues, project.import_source, options
+          ).and_return([{ number: 5 }].each)
+
+          expect(Issue).to receive(:track_project_iid!).with(project, 5)
+
+          expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
+            .to receive(:perform_async)
+            .with(project.id)
+
+          worker.import(client, project)
         end
+      end
 
-        expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
-          .to receive(:perform_async)
-          .with(project.id)
+      context 'without issues' do
+        it 'schedules the importing of the base data' do
+          client = double(:client)
+          options = { state: 'all', sort: 'number', direction: 'desc', per_page: '1' }
 
-        worker.import(client, project)
+          expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
+            expect(instance).to receive(:execute).and_return(true)
+          end
+
+          expect(InternalId).to receive(:exists?).and_return(false)
+          expect(client).to receive(:each_object).with(:issues, project.import_source, options).and_return([nil].each)
+          expect(Issue).not_to receive(:track_project_iid!)
+
+          expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
+            .to receive(:perform_async)
+            .with(project.id)
+
+          worker.import(client, project)
+        end
+      end
+
+      context 'when retrying' do
+        it 'does not allocate internal ids' do
+          client = double(:client)
+
+          expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
+            expect(instance).to receive(:execute).and_return(true)
+          end
+
+          expect(InternalId).to receive(:exists?).and_return(true)
+          expect(client).not_to receive(:each_object)
+          expect(Issue).not_to receive(:track_project_iid!)
+
+          expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
+            .to receive(:perform_async)
+            .with(project.id)
+
+          worker.import(client, project)
+        end
       end
     end
 
@@ -42,6 +93,10 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
         expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
           expect(instance).to receive(:execute).and_raise(exception_class)
         end
+
+        expect(InternalId).to receive(:exists?).and_return(false)
+        expect(client).to receive(:each_object).and_return([nil].each)
+        expect(Issue).not_to receive(:track_project_iid!)
 
         expect(Gitlab::Import::ImportFailureService).to receive(:track)
                                                           .with(

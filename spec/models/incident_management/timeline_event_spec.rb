@@ -13,6 +13,12 @@ RSpec.describe IncidentManagement::TimelineEvent do
     it { is_expected.to belong_to(:incident) }
     it { is_expected.to belong_to(:updated_by_user) }
     it { is_expected.to belong_to(:promoted_from_note) }
+    it { is_expected.to have_many(:timeline_event_tag_links).class_name('IncidentManagement::TimelineEventTagLink') }
+
+    it do
+      is_expected.to have_many(:timeline_event_tags)
+      .class_name('IncidentManagement::TimelineEventTag').through(:timeline_event_tag_links)
+    end
   end
 
   describe 'validations' do
@@ -22,7 +28,6 @@ RSpec.describe IncidentManagement::TimelineEvent do
     it { is_expected.to validate_presence_of(:incident) }
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_length_of(:note).is_at_most(10_000) }
-    it { is_expected.to validate_presence_of(:note_html) }
     it { is_expected.to validate_length_of(:note_html).is_at_most(10_000) }
     it { is_expected.to validate_presence_of(:occurred_at) }
     it { is_expected.to validate_presence_of(:action) }

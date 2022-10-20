@@ -1,0 +1,26 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+default:
+  image: "ruby:${RUBY_VERSION}"
+
+rspec:
+  cache:
+    key: attr_encrypted-ruby
+    paths:
+      - vendor/gems/attr_encrypted/vendor/ruby
+  before_script:
+    - cd vendor/gems/attr_encrypted
+    - ruby -v # Print out ruby version for debugging
+    - gem install bundler --no-document         # Bundler is not installed with the image
+    - bundle config set --local path 'vendor'   # Install dependencies into ./vendor/ruby
+    - bundle config set with 'development'      # This is set to 'deployment' otherwise
+    - bundle config set --local frozen 'true'   # Disallow Gemfile.lock changes on CI
+    - bundle config                             # Show bundler configuration
+    - bundle install -j $(nproc)
+  script:
+    - bundle exec rake test
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["2.7", "3.0"]

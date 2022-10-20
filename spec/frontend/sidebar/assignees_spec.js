@@ -33,7 +33,7 @@ describe('Assignee component', () => {
     it('displays no assignee icon when collapsed', () => {
       createWrapper();
       const collapsedChildren = findCollapsedChildren();
-      const userIcon = collapsedChildren.at(0).find(GlIcon);
+      const userIcon = collapsedChildren.at(0).findComponent(GlIcon);
 
       expect(collapsedChildren.length).toBe(1);
       expect(collapsedChildren.at(0).attributes('aria-label')).toBe('None');

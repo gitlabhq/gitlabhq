@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if $".include?(File.expand_path('spec_helper.rb', __dir__))
+if $LOADED_FEATURES.include?(File.expand_path('spec_helper.rb', __dir__))
   # There's no need to load anything here if spec_helper is already loaded
   # because spec_helper is more extensive than fast_spec_helper
   return

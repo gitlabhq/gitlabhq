@@ -25,6 +25,7 @@ RSpec.describe 'factories' do
       [:issue_customer_relations_contact, :for_contact],
       [:issue_customer_relations_contact, :for_issue],
       [:package_file, :object_storage],
+      [:rpm_repository_file, :object_storage],
       [:pages_domain, :without_certificate],
       [:pages_domain, :without_key],
       [:pages_domain, :with_missing_chain],
@@ -79,7 +80,6 @@ RSpec.describe 'factories' do
     member_task
     milestone_release
     namespace
-    project_broken_repo
     project_namespace
     project_repository
     prometheus_alert

@@ -5,7 +5,8 @@
 .js-csv-import-export-buttons{ data: { show_export_button: "true", issuable_type: issuable_type, issuable_count: issuables_count_for_state(issuable_type.to_sym, params[:state]), email: notification_email, export_csv_path: export_csv_project_merge_requests_path(@project, request.query_parameters), container_class: 'gl-mr-3' } }
 
 - if @can_bulk_update
-  = button_tag _("Edit merge requests"), class: "gl-button btn btn-default gl-mr-3 js-bulk-update-toggle"
+  = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-mr-3 js-bulk-update-toggle' }) do
+    = _("Edit merge requests")
 - if merge_project
-  = link_to new_merge_request_path, class: "gl-button btn btn-confirm", title: _("New merge request") do
-    = _('New merge request')
+  = render Pajamas::ButtonComponent.new(href: new_merge_request_path, variant: :confirm) do
+    = _("New merge request")

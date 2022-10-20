@@ -135,6 +135,19 @@ RSpec.describe 'Pipeline Editor', :js do
     end
   end
 
+  describe 'Commit Form' do
+    it 'is preserved when changing tabs' do
+      find('#commit-message').set('message', clear: :backspace)
+      find('#source-branch-field').set('new_branch', clear: :backspace)
+
+      click_link 'Validate'
+      click_link 'Edit'
+
+      expect(find('#commit-message').value).to eq('message')
+      expect(find('#source-branch-field').value).to eq('new_branch')
+    end
+  end
+
   describe 'Editor content' do
     it 'user can reset their CI configuration' do
       page.within('#source-editor-') do

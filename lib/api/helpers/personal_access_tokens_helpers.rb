@@ -4,11 +4,14 @@ module API
   module Helpers
     module PersonalAccessTokensHelpers
       def finder_params(current_user)
-        if current_user.can_admin_all_resources?
-          { user: user(params[:user_id]) }
-        else
-          { user: current_user, impersonation: false }
-        end
+        user_param =
+          if current_user.can_admin_all_resources?
+            { user: user(params[:user_id]) }
+          else
+            { user: current_user, impersonation: false }
+          end
+
+        declared(params, include_missing: false).merge(user_param)
       end
 
       def user(user_id)

@@ -70,7 +70,8 @@ RSpec.describe API::ImportGithub do
         target_namespace: user.namespace_path,
         personal_access_token: token,
         repo_id: non_existing_record_id,
-        github_hostname: "https://github.somecompany.com/"
+        github_hostname: "https://github.somecompany.com/",
+        optional_stages: { attachments_import: true }
       }
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response).to be_a Hash
@@ -87,6 +88,44 @@ RSpec.describe API::ImportGithub do
       }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+  end
+
+  describe "POST /import/github/cancel" do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://fake.url') }
+
+    context 'when project import was canceled' do
+      before do
+        allow(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project, user)
+          .and_return(double(execute: { status: :success, project: project }))
+      end
+
+      it 'returns success' do
+        post api("/import/github/cancel", user), params: {
+          project_id: project.id
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when project import was not canceled' do
+      before do
+        allow(Import::Github::CancelProjectImportService)
+          .to receive(:new).with(project, user)
+          .and_return(double(execute: { status: :error, message: 'The import cannot be canceled because it is finished', http_status: :bad_request }))
+      end
+
+      it 'returns error' do
+        post api("/import/github/cancel", user), params: {
+          project_id: project.id
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('The import cannot be canceled because it is finished')
+      end
     end
   end
 end

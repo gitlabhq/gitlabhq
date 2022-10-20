@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
@@ -379,7 +379,7 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 - If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 - If a stage is defined but no jobs use it, the stage is not visible in the pipeline,
-  which can help [compliance pipeline configurations](../../user/project/settings/index.md#compliance-pipeline-configuration):
+  which can help [compliance pipeline configurations](../../user/group/manage.md#configure-a-compliance-pipeline):
   - Stages can be defined in the compliance configuration but remain hidden if not used.
   - The defined stages become visible when developers use them in job definitions.
 
@@ -397,6 +397,30 @@ Use [`workflow`](workflow.md) to control pipeline behavior.
 
 - [`workflow: rules` examples](workflow.md#workflow-rules-examples)
 - [Switch between branch pipelines and merge request pipelines](workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
+
+#### `workflow:name`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `pipeline_name`.
+The feature is not ready for production use.
+
+You can use `name` in `workflow:` to define a name for pipelines.
+
+All pipelines are assigned the defined name. Any leading or trailing spaces in the name are removed.
+
+**Possible inputs**:
+
+- A string.
+
+**Example of `workflow:name`**:
+
+```yaml
+workflow:
+  name: 'Pipeline name'
+```
 
 #### `workflow:rules`
 
@@ -1238,7 +1262,11 @@ is not found, the prefix is added to `default`, so the key in the example would 
 
 #### `cache:untracked`
 
-Use `untracked: true` to cache all files that are untracked in your Git repository:
+Use `untracked: true` to cache all files that are untracked in your Git repository.
+Untracked files include files that are:
+
+- Ignored due to [`.gitignore` configuration](https://git-scm.com/docs/gitignore).
+- Created, but not added to the checkout with [`git add`](https://git-scm.com/docs/git-add).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1259,7 +1287,7 @@ rspec:
 **Additional details**:
 
 - You can combine `cache:untracked` with `cache:paths` to cache all untracked files
-  as well as files in the configured paths. For example:
+  as well as files in the configured paths. This is useful for including files that are not tracked because of a `.gitignore` configuration. For example:
 
   ```yaml
   rspec:
@@ -2161,7 +2189,7 @@ This example creates four paths of execution:
   explicitly defined for all jobs that use the `needs` keyword, or are referenced
   in a job's `needs` section.
 - In GitLab 13.9 and older, if `needs` refers to a job that might not be added to
-  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.
+  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. In GitLab 13.10 and later, use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
 
 #### `needs:artifacts`
 
@@ -3260,8 +3288,19 @@ branch or merge request pipelines.
 
 **Possible inputs**:
 
-- An array of file paths. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
-- Alternatively, the array of file paths can be in [`rules:changes:paths`](#ruleschangespaths).
+An array including any number of:
+
+- Paths to files. In GitLab 13.6 and later, [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+  A file path array can also be in [`rules:changes:paths`](#ruleschangespaths).
+- Wildcard paths for:
+  - Single directories, for example `path/to/directory/*`.
+  - A directory and all its subdirectories, for example `path/to/directory/**/*`.
+- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
+  with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
+  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  for the supported syntax list.
+- Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
+  For example `"*.json"` or `"**/*.json"`.
 
 **Example of `rules:changes`**:
 
@@ -3332,7 +3371,8 @@ In this example, both jobs have the same behavior.
 
 ##### `rules:changes:compare_to`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366412) in GitLab 15.5. Feature flag `ci_rules_changes_compare` removed.
 
 Use `rules:changes:compare_to` to specify which ref to compare against for changes to the files
 listed under [`rules:changes:paths`](#ruleschangespaths).
@@ -3938,7 +3978,7 @@ trigger-multi-project-pipeline:
 
 **Related topics**:
 
-- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-from-a-job-in-your-gitlab-ciyml-file).
+- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
 - To run a pipeline for a specific branch, tag, or commit, you can use a [trigger token](../triggers/index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
@@ -3966,7 +4006,7 @@ trigger-child-pipeline:
 
 **Related topics**:
 
-- [Child pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-parent-child-pipeline).
+- [Child pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
 
 #### `trigger:project`
 
@@ -4002,7 +4042,7 @@ trigger-multi-project-pipeline:
 
 **Related topics**:
 
-- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-from-a-job-in-your-gitlab-ciyml-file).
+- [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
 - To run a pipeline for a specific branch, tag, or commit, you can also use a [trigger token](../triggers/index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
@@ -4160,9 +4200,9 @@ deploy_review_job:
 Use the `description` keyword to define a [pipeline-level (global) variable that is prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
 
-Must be used with `value`, for the variable value.
+If used with `value`, the variable value is also prefilled when running a pipeline manually.
 
-**Keyword type**: Global keyword. You cannot set job-level variables to be pre-filled when you run a pipeline manually.
+**Keyword type**: Global keyword. You cannot use it for job-level variables.
 
 **Possible inputs**:
 
@@ -4173,9 +4213,14 @@ Must be used with `value`, for the variable value.
 ```yaml
 variables:
   DEPLOY_ENVIRONMENT:
-    value: "staging"
     description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+    value: "staging"
 ```
+
+**Additional details**:
+
+- A global variable defined with `value` but no `description` behaves the same as
+  [`variables`](#variables).
 
 ### `when`
 

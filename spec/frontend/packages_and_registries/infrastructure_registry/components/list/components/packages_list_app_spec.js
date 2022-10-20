@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import createFlash from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import * as commonUtils from '~/lib/utils/common_utils';
 import PackageListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/infrastructure_registry/list/constants';
@@ -222,9 +222,9 @@ describe('packages_list_app', () => {
     it(`creates a flash if the query string contains ${SHOW_DELETE_SUCCESS_ALERT}`, () => {
       mountComponent();
 
-      expect(createFlash).toHaveBeenCalledWith({
+      expect(createAlert).toHaveBeenCalledWith({
         message: DELETE_PACKAGE_SUCCESS_MESSAGE,
-        type: 'notice',
+        variant: VARIANT_INFO,
       });
     });
 
@@ -238,7 +238,7 @@ describe('packages_list_app', () => {
       setWindowLocation('?');
       mountComponent();
 
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
       expect(commonUtils.historyReplaceState).not.toHaveBeenCalled();
     });
   });

@@ -84,11 +84,6 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-- name: incident_management_incident_published
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
-  feature_flag: usage_data_incident_management_incident_published
 - name: incident_management_incident_relate
   redis_slot: incident_management
   category: incident_management
@@ -114,28 +109,10 @@
   redis_slot: incident_management
   category: incident_management
   aggregation: weekly
-# Incident management linked resources
-- name: incident_management_issuable_resource_link_created
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
-- name: incident_management_issuable_resource_link_deleted
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
-- name: incident_management_issuable_resource_link_visited
-  redis_slot: incident_management
-  category: incident_management
-  aggregation: weekly
 # Incident management alerts
 - name: incident_management_alert_create_incident
   redis_slot: incident_management
   category: incident_management_alerts
-  aggregation: weekly
-# Incident management on-call
-- name: i_incident_management_oncall_notification_sent
-  redis_slot: incident_management
-  category: incident_management_oncall
   aggregation: weekly
 # Testing category
 - name: i_testing_test_case_parsed
@@ -150,7 +127,6 @@
   category: testing
   redis_slot: testing
   aggregation: weekly
-  feature_flag: usage_data_ci_i_testing_test_report_uploaded
 # Project Management group
 - name: g_project_management_issue_title_changed
   category: issues_edit
@@ -192,14 +168,6 @@
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
-- name: g_project_management_issue_iteration_changed
-  category: issues_edit
-  redis_slot: project_management
-  aggregation: daily
-- name: g_project_management_issue_weight_changed
-  category: issues_edit
-  redis_slot: project_management
-  aggregation: daily
 - name: g_project_management_issue_cross_referenced
   category: issues_edit
   redis_slot: project_management
@@ -225,18 +193,6 @@
   redis_slot: project_management
   aggregation: daily
 - name: g_project_management_issue_unlocked
-  category: issues_edit
-  redis_slot: project_management
-  aggregation: daily
-- name: g_project_management_issue_added_to_epic
-  category: issues_edit
-  redis_slot: project_management
-  aggregation: daily
-- name: g_project_management_issue_removed_from_epic
-  category: issues_edit
-  redis_slot: project_management
-  aggregation: daily
-- name: g_project_management_issue_changed_epic
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
@@ -276,20 +232,11 @@
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
-- name: g_project_management_issue_health_status_changed
-  category: issues_edit
-  redis_slot: project_management
-  aggregation: daily
 - name: g_project_management_issue_cloned
   category: issues_edit
   redis_slot: project_management
   aggregation: daily
 # Secrets Management
-- name: i_ci_secrets_management_vault_build_created
-  category: ci_secrets_management
-  redis_slot: ci_secrets_management
-  aggregation: weekly
-  feature_flag: usage_data_i_ci_secrets_management_vault_build_created
 - name: i_snippets_show
   category: snippets
   redis_slot: snippets
@@ -342,11 +289,6 @@
   category: geo
   redis_slot: geo
   aggregation: daily
-# Growth
-- name: users_clicking_registration_features_offer
-  category: growth
-  redis_slot: users
-  aggregation: weekly
 # Manage
 - name: unique_active_user
   category: manage

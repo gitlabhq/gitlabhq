@@ -160,16 +160,6 @@ RSpec.describe 'Runners' do
     end
 
     context 'shared runner text' do
-      context 'when application settings have no shared_runners_text' do
-        it 'user sees default shared runners description' do
-          visit project_runners_path(project)
-
-          page.within("[data-testid='shared-runners-description']") do
-            expect(page).to have_content('The same shared runner executes code from multiple projects')
-          end
-        end
-      end
-
       context 'when application settings have shared_runners_text' do
         let(:shared_runners_text) { 'custom **shared** runners description' }
         let(:shared_runners_html) { 'custom shared runners description' }

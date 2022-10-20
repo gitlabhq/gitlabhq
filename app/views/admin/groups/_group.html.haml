@@ -1,7 +1,6 @@
 - group = local_assigns.fetch(:group)
-- css_class = "gl-display-flex!#{' no-description' if group.description.blank?}"
 
-%li.group-row.gl-py-3.gl-align-items-center{ class: css_class, data: { qa_selector: 'group_row_content' } }
+%li.group-row.gl-py-3.gl-align-items-center{ class: 'gl-display-flex!', data: { qa_selector: 'group_row_content' } }
   .avatar-container.rect-avatar.s40.gl-flex-shrink-0
     = group_icon(group, class: "avatar s40")
 

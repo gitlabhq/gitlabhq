@@ -1,6 +1,6 @@
 <!-- A majority of the work designers do will be on themes in the (Now) Next 1-3 milestone column. These themes are comprised of high-confidence outcomes and validated needs. The UX theme issue is where collaboration should occur, including plans and discussion on subthemes, research, and design feedback. Related issues for design exploration and solution validation should stem from the theme issue. 
 
-One of the advantages of working with UX themes is that it allows us to think and design holistically by designing the theme as a whole as opposed to a single issue at a time trying to piece them together as you go. For more details please refer to this section of the handbook when creating UX Themes: https://about.gitlab.com/handbook/engineering/ux/product-design/ux-roadmaps/#theme-structure -->
+One of the advantages of working with UX themes is that it allows us to think and design holistically by designing the theme as a whole as opposed to a single issue at a time trying to piece them together as you go. For more details please refer to this section of the handbook when creating UX Themes: https://about.gitlab.com/handbook/product/ux/product-design/ux-roadmaps/#theme-structure -->
 
 ### UX Theme 
 <!-- A theme is written as a statement that combines the beneficiary, their need, and the expected outcome when the work is delivered. Well-defined statements are concise without sacrificing the substance of the theme so that anyone can understand it at a glance. (For instance; Reduce the effort for security teams to identify and escalate business-critical risks) 
@@ -37,7 +37,7 @@ One of the advantages of working with UX themes is that it allows us to think an
 
 
 #### Confidence
-<!-- How well do we understand the user's problem and their need? Refer to https://about.gitlab.com/handbook/engineering/ux/product-design/ux-roadmaps/#confidence to assess confidence -->
+<!-- How well do we understand the user's problem and their need? Refer to https://about.gitlab.com/handbook/product/ux/product-design/ux-roadmaps/#confidence to assess confidence -->
 
 
 | Confidence | Research | 
@@ -55,7 +55,7 @@ Note: This is not a backlog. If the subthemes can not be delivered in the theme 
 
 Note: if feature issues already exist then you can add them to this table. Keep in mind that subthemes require validation if they are assumptive 
 
-Refer to https://about.gitlab.com/handbook/engineering/ux/product-designer/#ux-issue-weights for calculating UX weights.
+Refer to https://about.gitlab.com/handbook/product/ux/product-designer/#ux-issue-weights for calculating UX weights.
 --> 
 
 | Issue | UX Weight |  

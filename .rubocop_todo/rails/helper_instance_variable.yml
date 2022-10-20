@@ -1,8 +1,6 @@
 ---
 Rails/HelperInstanceVariable:
-  # Offense count: 671
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/helpers/admin/user_actions_helper.rb'
     - 'app/helpers/application_helper.rb'
@@ -29,7 +27,6 @@ Rails/HelperInstanceVariable:
     - 'app/helpers/icons_helper.rb'
     - 'app/helpers/ide_helper.rb'
     - 'app/helpers/import_helper.rb'
-    - 'app/helpers/integrations_helper.rb'
     - 'app/helpers/issuables_description_templates_helper.rb'
     - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/issues_helper.rb'
@@ -40,6 +37,7 @@ Rails/HelperInstanceVariable:
     - 'app/helpers/nav_helper.rb'
     - 'app/helpers/notes_helper.rb'
     - 'app/helpers/operations_helper.rb'
+    - 'app/helpers/packages_helper.rb'
     - 'app/helpers/page_layout_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/releases_helper.rb'
@@ -59,11 +57,13 @@ Rails/HelperInstanceVariable:
     - 'app/helpers/webpack_helper.rb'
     - 'app/helpers/wiki_helper.rb'
     - 'ee/app/helpers/ee/application_helper.rb'
+    - 'ee/app/helpers/ee/application_settings_helper.rb'
     - 'ee/app/helpers/ee/boards_helper.rb'
     - 'ee/app/helpers/ee/feature_flags_helper.rb'
     - 'ee/app/helpers/ee/form_helper.rb'
     - 'ee/app/helpers/ee/graph_helper.rb'
     - 'ee/app/helpers/ee/groups/group_members_helper.rb'
+    - 'ee/app/helpers/ee/groups/settings_helper.rb'
     - 'ee/app/helpers/ee/groups_helper.rb'
     - 'ee/app/helpers/ee/integrations_helper.rb'
     - 'ee/app/helpers/ee/kerberos_helper.rb'
@@ -77,7 +77,8 @@ Rails/HelperInstanceVariable:
     - 'ee/app/helpers/ee/projects_helper.rb'
     - 'ee/app/helpers/ee/search_helper.rb'
     - 'ee/app/helpers/ee/selects_helper.rb'
+    - 'ee/app/helpers/ee/sorting_helper.rb'
     - 'ee/app/helpers/ee/subscribable_banner_helper.rb'
     - 'ee/app/helpers/ee/wiki_helper.rb'
     - 'ee/app/helpers/path_locks_helper.rb'
-    - 'ee/app/helpers/projects/security/discover_helper.rb'
+    - 'ee/app/helpers/seat_count_alert_helper.rb'

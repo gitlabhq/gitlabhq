@@ -50,6 +50,11 @@ RSpec.describe BulkImports::CreateService do
       expect(last_bulk_import.user).to eq(user)
       expect(last_bulk_import.source_version).to eq(source_version.to_s)
       expect(last_bulk_import.user).to eq(user)
+      expect_snowplow_event(
+        category: 'BulkImports::CreateService',
+        action: 'create',
+        label: 'bulk_import_group'
+      )
     end
 
     it 'creates bulk import entities' do

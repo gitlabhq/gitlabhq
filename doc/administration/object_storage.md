@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Object storage **(FREE SELF)**
@@ -20,7 +20,7 @@ GitLab has been tested by vendors and customers on a number of object storage pr
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
 - [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift (S3 compatible mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
-- [Azure Blob storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
+- [Azure Blob storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors, whose list is not officially established.
 - MinIO. We have [a guide to deploying this](https://docs.gitlab.com/charts/advanced/external-object-storage/minio.html) within our Helm Chart documentation.
 
@@ -247,9 +247,9 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `aws_signature_version`                     | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
 | `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`.       | `true` |
 | `region`                                    | AWS region.                        | |
-| `host`                                      | S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
-| `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. | (optional) |
-| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as `false` for AWS S3. | `false`. |
+| `host`                                      | DEPRECATED: Use `endpoint` instead. S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
+| `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
+| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false`. |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
 | `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) when using temporary credentials in IAM. | `15` |
 
@@ -277,9 +277,12 @@ Here are the valid connection parameters for GCS:
 |------------------------------|-------------------|---------|
 | `provider`                   | Provider name.    | `Google` |
 | `google_project`             | GCP project name. | `gcp-project-12345` |
-| `google_client_email`        | Email address of the service account. | `foo@gcp-project-12345.iam.gserviceaccount.com` |
 | `google_json_key_location`   | JSON key path.    | `/path/to/gcp-project-12345-abcde.json` |
+| `google_json_key_string`     | JSON key string.  | `{ "type": "service_account", "project_id": "example-project-382839", ... }` |
 | `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. | |
+
+GitLab reads the value of `google_json_key_location`, then `google_json_key_string`, and finally, `google_application_default`.
+It uses the first of these settings that has a value.
 
 The service account must have permission to access the bucket. Learn more
 in Google's
@@ -296,7 +299,6 @@ For Omnibus installations, this is an example of the `connection` setting:
 gitlab_rails['object_store']['connection'] = {
   'provider' => 'Google',
   'google_project' => '<GOOGLE PROJECT>',
-  'google_client_email' => '<GOOGLE CLIENT EMAIL>',
   'google_json_key_location' => '<FILENAME>'
 }
 ```
@@ -342,7 +344,7 @@ containers. The [storage-specific form](#storage-specific-configuration)
 is not supported. For more details, see [how to transition to consolidated form](#transition-to-consolidated-form).
 
 The following are the valid connection parameters for Azure. Read the
-[Azure Blob storage documentation](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
+[Azure Blob storage documentation](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 to learn more.
 
 | Setting                      | Description    | Example   |

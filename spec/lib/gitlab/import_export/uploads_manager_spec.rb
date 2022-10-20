@@ -78,16 +78,30 @@ RSpec.describe Gitlab::ImportExport::UploadsManager do
     context 'when upload is in object storage' do
       before do
         stub_uploads_object_storage(FileUploader)
-        allow(manager).to receive(:download_or_copy_upload).and_raise(Errno::ENAMETOOLONG)
       end
 
-      it 'ignores problematic upload and logs exception' do
-        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(Errno::ENAMETOOLONG), project_id: project.id)
+      shared_examples 'export with invalid upload' do
+        it 'ignores problematic upload and logs exception' do
+          allow(manager).to receive(:download_or_copy_upload).and_raise(exception)
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(exception), project_id: project.id)
 
-        manager.save # rubocop:disable Rails/SaveBang
+          manager.save # rubocop:disable Rails/SaveBang
 
-        expect(shared.errors).to be_empty
-        expect(File).not_to exist(exported_file_path)
+          expect(shared.errors).to be_empty
+          expect(File).not_to exist(exported_file_path)
+        end
+      end
+
+      context 'when filename is too long' do
+        let(:exception) { Errno::ENAMETOOLONG }
+
+        include_examples 'export with invalid upload'
+      end
+
+      context 'when network exception occurs' do
+        let(:exception) { Net::OpenTimeout }
+
+        include_examples 'export with invalid upload'
       end
     end
   end

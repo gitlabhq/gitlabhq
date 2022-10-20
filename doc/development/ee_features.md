@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Guidelines for implementing Enterprise Edition features
@@ -72,7 +72,7 @@ To guard your licensed feature:
    ```
 
 1. Optional. If your global feature is also available to namespaces with a paid plan, combine two
-feature identifiers to allow both admins and group users. For example:
+feature identifiers to allow both administrators and group users. For example:
 
     ```ruby
     License.feature_available?(:my_feature_name) || group.licensed_feature_available?(:my_feature_name_for_namespace) # Both admins and group members can see this EE feature
@@ -176,11 +176,18 @@ This works because for every path that is present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52).
 This also applies to views.
 
-#### Testing EE-only features
+#### Testing EE-only backend features
 
 To test an EE class that doesn't exist in CE, create the spec file as you normally
 would in the `ee/spec` directory, but without the second `ee/` subdirectory.
 For example, a class `ee/app/models/vulnerability.rb` would have its tests in `ee/spec/models/vulnerability_spec.rb`.
+
+By default, licensed features are disabled while specs are running. To effectively test your feature
+you must explicitly enable the feature using the `stub_licensed_features` helper, for example:
+
+```ruby
+  stub_licensed_features(my_awesome_feature_name: true)
+```
 
 ### Extend CE features with EE backend code
 
@@ -817,7 +824,7 @@ end
 
 Sometimes we need EE-specific behavior in some of the APIs. Normally we could
 use EE methods to override CE methods, however API routes are not methods and
-therefore can't be simply overridden. We need to extract them into a standalone
+therefore cannot be overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE
 route. Something like this:
 
@@ -868,8 +875,8 @@ end
 
 #### EE `route_setting`
 
-It's very hard to extend this in an EE module, and this is simply storing
-some meta-data for a particular route. Given that, we could simply leave the
+It's very hard to extend this in an EE module, and this is storing
+some meta-data for a particular route. Given that, we could leave the
 EE `route_setting` in CE as it doesn't hurt and we don't use
 those meta-data in CE.
 
@@ -1047,7 +1054,7 @@ FactoryBot.define do
 end
 ```
 
-## Separate of EE code in the frontend
+## Separation of EE code in the frontend
 
 To separate EE-specific JS-files, move the files into an `ee` folder.
 
@@ -1089,9 +1096,12 @@ ee/app/assets/javascripts/ee_only_feature/index.js
 Feature guarding `licensed_feature_available?` and `License.feature_available?` typical
 occurs in the controller, as described in the [backend guide](#ee-only-features).
 
-#### Test EE-only features
+#### Testing EE-only frontend features
 
 Add your EE tests to `ee/spec/frontend/` following the same directory structure you use for CE.
+
+Check the note under [Testing EE-only backend features](#testing-ee-only-backend-features) regarding
+enabling licensed features.
 
 ### Extend CE features with EE frontend code
 
@@ -1406,5 +1416,5 @@ to avoid conflicts during CE to EE merge.
 ### GitLab-svgs
 
 Conflicts in `app/assets/images/icons.json` or `app/assets/images/icons.svg` can
-be resolved simply by regenerating those assets with
+be resolved by regenerating those assets with
 [`yarn run svg`](https://gitlab.com/gitlab-org/gitlab-svgs).

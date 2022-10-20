@@ -48,7 +48,7 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when the wiki repository cannot be created' do
       before do
         expect(Wiki).to receive(:for_container).and_return(wiki)
-        expect(wiki).to receive(:wiki) { raise Wiki::CouldNotCreateWikiError }
+        expect(wiki).to receive(:create_wiki_repository) { raise Wiki::CouldNotCreateWikiError }
       end
 
       it 'redirects to the wiki container and displays an error message' do
@@ -200,7 +200,7 @@ RSpec.shared_examples 'wiki controller actions' do
       context 'the sidebar fails to load' do
         before do
           allow(Wiki).to receive(:for_container).and_return(wiki)
-          wiki.wiki
+          wiki.create_wiki_repository
           expect(wiki).to receive(:find_sidebar) do
             raise ::Gitlab::Git::CommandTimedOut, 'Deadline Exceeded'
           end
@@ -288,7 +288,7 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when page is a file' do
       include WikiHelpers
 
-      where(:file_name) { ['dk.png', 'unsanitized.svg', 'git-cheat-sheet.pdf'] }
+      where(:file_name) { ['dk.png', 'unsanitized.svg', 'sample.pdf'] }
 
       with_them do
         let(:id) { upload_file_to_wiki(wiki, user, file_name) }
@@ -300,7 +300,7 @@ RSpec.shared_examples 'wiki controller actions' do
           expect(response.headers['Content-Disposition']).to match(/^inline/)
           expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq('true')
           expect(response.cache_control[:public]).to be(false)
-          expect(response.headers['Cache-Control']).to eq('max-age=60, private')
+          expect(response.headers['Cache-Control']).to eq('max-age=60, private, must-revalidate, stale-while-revalidate=60, stale-if-error=300, s-maxage=60')
         end
       end
     end

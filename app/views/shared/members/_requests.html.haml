@@ -5,7 +5,7 @@
 
 - return if requesters.empty?
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-3 gl-mb-5', data: { testid: 'access-requests' } }, body_options: { class: 'gl-p-0' }) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5', data: { testid: 'access-requests' } }, body_options: { class: 'gl-p-0' }) do |c|
   - c.header do
     = _('Users requesting access to')
     %strong= membership_source.name

@@ -1,7 +1,10 @@
 import fs from 'fs';
 import jsYaml from 'js-yaml';
 import { memoize } from 'lodash';
+import MockAdapter from 'axios-mock-adapter';
+import axios from 'axios';
 import { createContentEditor } from '~/content_editor';
+import httpStatus from '~/lib/utils/http_status';
 
 const getFocusedMarkdownExamples = memoize(
   () => process.env.FOCUSED_MARKDOWN_EXAMPLES?.split(',') || [],
@@ -42,6 +45,11 @@ const loadMarkdownApiExamples = (markdownYamlPath) => {
 };
 
 const testSerializesHtmlToMarkdownForElement = async ({ markdown, html }) => {
+  const mock = new MockAdapter(axios);
+
+  // Ignore any API requests from the suggestions plugin
+  mock.onGet().reply(httpStatus.OK, []);
+
   const contentEditor = createContentEditor({
     // Overwrite renderMarkdown to always return this specific html
     renderMarkdown: () => html,
@@ -55,6 +63,8 @@ const testSerializesHtmlToMarkdownForElement = async ({ markdown, html }) => {
   // Assert that the markdown we ended up with after sending it through all the ContentEditor
   // plumbing matches the original markdown from the YAML.
   expect(serializedContent.trim()).toBe(markdown.trim());
+
+  mock.restore();
 };
 
 // describeMarkdownProcesssing
@@ -74,7 +84,7 @@ export const describeMarkdownProcessing = (description, markdownYamlPath) => {
         return;
       }
 
-      it(exampleName, async () => {
+      it(`${exampleName}`, async () => {
         await testSerializesHtmlToMarkdownForElement(example);
       });
     });

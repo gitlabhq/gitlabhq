@@ -20,8 +20,6 @@ import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerStackedLayoutBanner from '~/runner/components/runner_stacked_layout_banner.vue';
 import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
-import RunnerBulkDelete from '~/runner/components/runner_bulk_delete.vue';
-import RunnerBulkDeleteCheckbox from '~/runner/components/runner_bulk_delete_checkbox.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerListEmptyState from '~/runner/components/runner_list_empty_state.vue';
 import RunnerStats from '~/runner/components/stat/runner_stats.vue';
@@ -45,6 +43,7 @@ import {
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
   STATUS_ONLINE,
+  DEFAULT_MEMBERSHIP,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
 import allRunnersQuery from 'ee_else_ce/runner/graphql/list/all_runners.query.graphql';
@@ -83,8 +82,6 @@ const COUNT_QUERIES = 7; // 4 tabs + 3 status queries
 
 describe('AdminRunnersApp', () => {
   let wrapper;
-  let cacheConfig;
-  let localMutations;
   let showToast;
 
   const findRunnerStackedLayoutBanner = () => wrapper.findComponent(RunnerStackedLayoutBanner);
@@ -92,8 +89,6 @@ describe('AdminRunnersApp', () => {
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
-  const findRunnerBulkDelete = () => wrapper.findComponent(RunnerBulkDelete);
-  const findRunnerBulkDeleteCheckbox = () => wrapper.findComponent(RunnerBulkDeleteCheckbox);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
@@ -106,7 +101,7 @@ describe('AdminRunnersApp', () => {
     provide,
     ...options
   } = {}) => {
-    ({ cacheConfig, localMutations } = createLocalState());
+    const { cacheConfig, localMutations } = createLocalState();
 
     const handlers = [
       [allRunnersQuery, mockRunnersHandler],
@@ -195,7 +190,7 @@ describe('AdminRunnersApp', () => {
     const { id, shortSha } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
 
-    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').findComponent(GlLink);
 
     expect(runnerLink.text()).toBe(`#${numericId} (${shortSha})`);
     expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${numericId}`);
@@ -204,7 +199,9 @@ describe('AdminRunnersApp', () => {
   it('renders runner actions for each runner', async () => {
     await createComponent({ mountFn: mountExtended });
 
-    const runnerActions = wrapper.find('tr [data-testid="td-actions"]').find(RunnerActionsCell);
+    const runnerActions = wrapper
+      .find('tr [data-testid="td-actions"]')
+      .findComponent(RunnerActionsCell);
     const runner = mockRunners[0];
 
     expect(runnerActions.props()).toEqual({
@@ -219,6 +216,7 @@ describe('AdminRunnersApp', () => {
     expect(mockRunnersHandler).toHaveBeenLastCalledWith({
       status: undefined,
       type: undefined,
+      membership: DEFAULT_MEMBERSHIP,
       sort: DEFAULT_SORT,
       first: RUNNER_PAGE_SIZE,
     });
@@ -255,7 +253,7 @@ describe('AdminRunnersApp', () => {
     });
 
     it('Links to the runner page', async () => {
-      const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+      const runnerLink = wrapper.find('tr [data-testid="td-summary"]').findComponent(GlLink);
 
       expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
       expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);
@@ -288,6 +286,7 @@ describe('AdminRunnersApp', () => {
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
         runnerType: INSTANCE_TYPE,
+        membership: DEFAULT_MEMBERSHIP,
         filters: [
           { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
           { type: PARAM_KEY_PAUSED, value: { data: 'true', operator: '=' } },
@@ -301,6 +300,7 @@ describe('AdminRunnersApp', () => {
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
         type: INSTANCE_TYPE,
+        membership: DEFAULT_MEMBERSHIP,
         paused: true,
         sort: DEFAULT_SORT,
         first: RUNNER_PAGE_SIZE,
@@ -310,6 +310,7 @@ describe('AdminRunnersApp', () => {
     it('fetches count results for requested status', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledWith({
         type: INSTANCE_TYPE,
+        membership: DEFAULT_MEMBERSHIP,
         status: STATUS_ONLINE,
         paused: true,
       });
@@ -322,6 +323,7 @@ describe('AdminRunnersApp', () => {
 
       findRunnerFilteredSearchBar().vm.$emit('input', {
         runnerType: null,
+        membership: DEFAULT_MEMBERSHIP,
         filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
         sort: CREATED_ASC,
       });
@@ -339,6 +341,7 @@ describe('AdminRunnersApp', () => {
     it('requests the runners with filters', () => {
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
         status: STATUS_ONLINE,
+        membership: DEFAULT_MEMBERSHIP,
         sort: CREATED_ASC,
         first: RUNNER_PAGE_SIZE,
       });
@@ -347,6 +350,7 @@ describe('AdminRunnersApp', () => {
     it('fetches count results for requested status', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledWith({
         status: STATUS_ONLINE,
+        membership: DEFAULT_MEMBERSHIP,
       });
     });
   });
@@ -357,65 +361,26 @@ describe('AdminRunnersApp', () => {
     expect(findRunnerPagination().attributes('disabled')).toBe('true');
   });
 
-  describe('when bulk delete is enabled', () => {
+  describe('Bulk delete', () => {
     describe('Before runners are deleted', () => {
       beforeEach(async () => {
-        await createComponent({
-          mountFn: mountExtended,
-          provide: {
-            glFeatures: { adminRunnersBulkDelete: true },
-          },
-        });
-      });
-
-      it('runner bulk delete is available', () => {
-        expect(findRunnerBulkDelete().props('runners')).toEqual(mockRunners);
-      });
-
-      it('runner bulk delete checkbox is available', () => {
-        expect(findRunnerBulkDeleteCheckbox().props('runners')).toEqual(mockRunners);
+        await createComponent({ mountFn: mountExtended });
       });
 
       it('runner list is checkable', () => {
         expect(findRunnerList().props('checkable')).toBe(true);
       });
-
-      it('responds to checked items by updating the local cache', () => {
-        const setRunnerCheckedMock = jest
-          .spyOn(localMutations, 'setRunnerChecked')
-          .mockImplementation(() => {});
-
-        const runner = mockRunners[0];
-
-        expect(setRunnerCheckedMock).toHaveBeenCalledTimes(0);
-
-        findRunnerList().vm.$emit('checked', {
-          runner,
-          isChecked: true,
-        });
-
-        expect(setRunnerCheckedMock).toHaveBeenCalledTimes(1);
-        expect(setRunnerCheckedMock).toHaveBeenCalledWith({
-          runner,
-          isChecked: true,
-        });
-      });
     });
 
     describe('When runners are deleted', () => {
       beforeEach(async () => {
-        await createComponent({
-          mountFn: mountExtended,
-          provide: {
-            glFeatures: { adminRunnersBulkDelete: true },
-          },
-        });
+        await createComponent({ mountFn: mountExtended });
       });
 
       it('count data is refetched', async () => {
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
-        findRunnerBulkDelete().vm.$emit('deleted', { message: 'Runners deleted' });
+        findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
 
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES * 2);
       });
@@ -423,7 +388,7 @@ describe('AdminRunnersApp', () => {
       it('toast is shown', async () => {
         expect(showToast).toHaveBeenCalledTimes(0);
 
-        findRunnerBulkDelete().vm.$emit('deleted', { message: 'Runners deleted' });
+        findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
 
         expect(showToast).toHaveBeenCalledTimes(1);
         expect(showToast).toHaveBeenCalledWith('Runners deleted');
@@ -457,6 +422,7 @@ describe('AdminRunnersApp', () => {
       beforeEach(async () => {
         findRunnerFilteredSearchBar().vm.$emit('input', {
           runnerType: null,
+          membership: DEFAULT_MEMBERSHIP,
           filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } }],
           sort: CREATED_ASC,
         });
@@ -504,6 +470,7 @@ describe('AdminRunnersApp', () => {
       await findRunnerPaginationNext().trigger('click');
 
       expect(mockRunnersHandler).toHaveBeenLastCalledWith({
+        membership: DEFAULT_MEMBERSHIP,
         sort: CREATED_DESC,
         first: RUNNER_PAGE_SIZE,
         after: pageInfo.endCursor,

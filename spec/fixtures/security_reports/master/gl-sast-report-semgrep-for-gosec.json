@@ -62,6 +62,13 @@
       },
       "version": "0.82.0"
     },
+    "primary_identifiers": [
+      {
+        "type": "semgrep_id",
+        "name": "gosec.G106-1",
+        "value": "gosec.G106-1"
+      }
+    ],
     "type": "sast",
     "start_time": "2022-03-15T20:36:58",
     "end_time": "2022-03-15T20:37:05",

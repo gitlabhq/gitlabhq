@@ -80,7 +80,7 @@ export default {
 
 <template>
   <div class="mr-version-controls">
-    <div class="mr-version-menus-container content-block">
+    <div class="mr-version-menus-container gl-px-5 gl-pt-3 gl-pb-2">
       <gl-button
         v-if="hasChanges"
         v-gl-tooltip.hover

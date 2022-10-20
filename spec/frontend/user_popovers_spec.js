@@ -188,8 +188,8 @@ describe('User Popovers', () => {
       });
 
       it('removes title attribute from user links', () => {
-        expect(userLink.getAttribute('title')).toBeFalsy();
-        expect(userLink.dataset.originalTitle).toBeFalsy();
+        expect(userLink.getAttribute('title')).toBe('');
+        expect(userLink.dataset.originalTitle).toBe('');
       });
 
       it('fetches user info and status from the user cache', () => {

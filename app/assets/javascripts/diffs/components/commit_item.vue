@@ -128,7 +128,7 @@ export default {
             :img-src="authorAvatar"
             :img-alt="authorName"
             :img-size="32"
-            class="avatar-cell d-none d-sm-block"
+            class="avatar-cell d-none d-sm-block gl-my-2 gl-mr-4"
           />
         </div>
         <div
@@ -172,7 +172,7 @@ export default {
         v-if="commit.description_html"
         v-safe-html:[$options.safeHtmlConfig]="commitDescription"
         :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
-        class="commit-row-description gl-mb-3 gl-text-body"
+        class="commit-row-description gl-mb-3 gl-text-body gl-white-space-pre-line"
       ></pre>
     </div>
   </li>

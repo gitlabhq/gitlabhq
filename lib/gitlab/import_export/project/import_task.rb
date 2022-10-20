@@ -64,7 +64,7 @@ module Gitlab
         end
 
         def execute_sidekiq_job
-          Sidekiq::Worker.drain_all
+          Sidekiq::Worker.drain_all # rubocop:disable Cop/SidekiqApiUsage
         end
 
         def full_path

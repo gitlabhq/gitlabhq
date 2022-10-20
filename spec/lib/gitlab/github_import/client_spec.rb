@@ -148,7 +148,25 @@ RSpec.describe Gitlab::GithubImport::Client do
         .to receive(:branch_protection).with('org/repo', 'bar')
       expect(client).to receive(:with_rate_limit).and_yield
 
-      client.branch_protection('org/repo', 'bar')
+      branch_protection = client.branch_protection('org/repo', 'bar')
+
+      expect(branch_protection).to be_a(Hash)
+    end
+  end
+
+  describe '#each_object' do
+    it 'converts each object into a hash' do
+      client = described_class.new('foo')
+
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      stub_request(:get, 'https://api.github.com/repos/foo/bar/releases?per_page=100')
+        .to_return(status: 200, body: [{ id: 1 }].to_json, headers: { 'Content-Type' => 'application/json' })
+
+      client.each_object(:releases, 'foo/bar') do |release|
+        expect(release).to eq({ id: 1 })
+      end
     end
   end
 
@@ -575,11 +593,11 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe 'search' do
     let(:client) { described_class.new('foo') }
-    let(:user) { double(:user, login: 'user') }
-    let(:org1) { double(:org, login: 'org1') }
-    let(:org2) { double(:org, login: 'org2') }
-    let(:repo1) { double(:repo, full_name: 'repo1') }
-    let(:repo2) { double(:repo, full_name: 'repo2') }
+    let(:user) { { login: 'user' } }
+    let(:org1) { { login: 'org1' } }
+    let(:org2) { { login: 'org2' } }
+    let(:repo1) { { full_name: 'repo1' } }
+    let(:repo2) { { full_name: 'repo2' } }
 
     before do
       allow(client)

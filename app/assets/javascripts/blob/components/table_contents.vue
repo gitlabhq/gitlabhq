@@ -26,6 +26,8 @@ export default {
       } else if (blobViewerAttr('data-loaded') === 'true') {
         this.isHidden = false;
         this.generateHeaders();
+
+        this.observer.disconnect();
       }
     });
 
@@ -47,13 +49,11 @@ export default {
       if (headers.length) {
         const firstHeader = getHeaderNumber(headers[0]);
 
-        headers.forEach((el) => {
-          this.items.push({
-            text: el.textContent.trim(),
-            anchor: el.querySelector('a').getAttribute('id'),
-            spacing: Math.max((getHeaderNumber(el) - firstHeader) * 8, 0),
-          });
-        });
+        this.items = headers.map((el) => ({
+          text: el.textContent.trim(),
+          anchor: el.querySelector('a').getAttribute('id'),
+          spacing: Math.max((getHeaderNumber(el) - firstHeader) * 8, 0),
+        }));
       }
     },
   },

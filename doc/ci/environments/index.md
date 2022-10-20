@@ -1,7 +1,7 @@
 ---
 stage: Release
 group: Release
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 disqus_identifier: 'https://docs.gitlab.com/ee/ci/environments.html'
 ---
@@ -42,6 +42,18 @@ To view a list of environments and deployments:
    ![Deployments list](img/deployments_list.png)
 
 Deployments show up in this list only after a deployment job has created them.
+
+## Search environments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
+
+To search environments by name:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. In the search bar, enter your search term. Matching applies from the
+   beginning of the environment name. For example, `devel` matches the
+   environment name `development`, but `elop` does not.
 
 ## Types of environments
 

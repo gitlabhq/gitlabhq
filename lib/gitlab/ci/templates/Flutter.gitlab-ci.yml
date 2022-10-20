@@ -35,3 +35,8 @@ test:
       - $CI_PROJECT_DIR/coverage
     reports:
       junit: report.xml
+
+deploy:
+  stage: deploy
+  script: echo "Define your deployment script!"
+  environment: production

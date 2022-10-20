@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Set and configure Git protocol v2"
 ---
 
@@ -15,7 +15,7 @@ configuration is required by an administrator.
 
 More details about the new features and improvements are available in
 the [Google Open Source Blog](https://opensource.googleblog.com/2018/05/introducing-git-protocol-version-2.html)
-and the [protocol documentation](https://github.com/git/git/blob/master/Documentation/technical/protocol-v2.txt).
+and the [protocol documentation](https://github.com/git/git/blob/master/Documentation/gitprotocol-v2.txt).
 
 ## Requirements
 

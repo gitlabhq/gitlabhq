@@ -39,13 +39,13 @@ describe('Snippet Visibility Edit component', () => {
     });
   }
 
-  const findLink = () => wrapper.find('label').find(GlLink);
-  const findRadios = () => wrapper.find(GlFormRadioGroup).findAllComponents(GlFormRadio);
+  const findLink = () => wrapper.find('label').findComponent(GlLink);
+  const findRadios = () => wrapper.findComponent(GlFormRadioGroup).findAllComponents(GlFormRadio);
   const findRadiosData = () =>
     findRadios().wrappers.map((x) => {
       return {
         value: x.find('input').attributes('value'),
-        icon: x.find(GlIcon).props('name'),
+        icon: x.findComponent(GlIcon).props('name'),
         description: x.find('.help-text').text(),
         text: x.find('.js-visibility-option').text(),
       };
@@ -147,7 +147,7 @@ describe('Snippet Visibility Edit component', () => {
 
       createComponent({ propsData: { value } });
 
-      expect(wrapper.find(GlFormRadioGroup).attributes('checked')).toBe(value);
+      expect(wrapper.findComponent(GlFormRadioGroup).attributes('checked')).toBe(value);
     });
   });
 });

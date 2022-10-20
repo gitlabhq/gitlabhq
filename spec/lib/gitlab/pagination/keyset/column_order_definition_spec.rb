@@ -23,10 +23,11 @@ RSpec.describe Gitlab::Pagination::Keyset::ColumnOrderDefinition do
 
   let_it_be(:project_calculated_column_expression) do
     # COALESCE("projects"."description", 'No Description')
-    Arel::Nodes::NamedFunction.new('COALESCE', [
-      Project.arel_table[:description],
-      Arel.sql("'No Description'")
-    ])
+    Arel::Nodes::NamedFunction.new('COALESCE',
+      [
+        Project.arel_table[:description],
+        Arel.sql("'No Description'")
+      ])
   end
 
   let_it_be(:project_calculated_column) do

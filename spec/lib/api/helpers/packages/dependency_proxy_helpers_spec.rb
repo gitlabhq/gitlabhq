@@ -7,12 +7,23 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
 
   describe '#redirect_registry_request' do
     using RSpec::Parameterized::TableSyntax
+    include_context 'dependency proxy helpers context'
 
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be_with_reload(:package_setting) { create(:namespace_package_setting, namespace: group) }
 
+    let(:target) { project }
     let(:options) { {} }
 
-    subject { helper.redirect_registry_request(forward_to_registry, package_type, options) { helper.fallback } }
+    subject do
+      helper.redirect_registry_request(
+        forward_to_registry: forward_to_registry,
+        package_type: package_type,
+        target: target,
+        options: options
+      ) { helper.fallback }
+    end
 
     before do
       allow(helper).to receive(:options).and_return(for: described_class)
@@ -42,32 +53,57 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
 
     %i[maven npm pypi].each do |forwardable_package_type|
       context "with #{forwardable_package_type} packages" do
-        include_context 'dependency proxy helpers context'
-
         let(:package_type) { forwardable_package_type }
-        let(:options) { { project: project } }
 
-        where(:application_setting, :forward_to_registry, :example_name) do
-          true  | true  | 'executing redirect'
-          true  | false | 'executing fallback'
-          false | true  | 'executing fallback'
-          false | false | 'executing fallback'
+        where(:application_setting, :group_setting, :forward_to_registry, :example_name) do
+          true  | nil   | true  | 'executing redirect'
+          true  | nil   | false | 'executing fallback'
+          false | nil   | true  | 'executing fallback'
+          false | nil   | false | 'executing fallback'
+          true  | false | true  | 'executing fallback'
+          true  | false | false | 'executing fallback'
+          false | true  | true  | 'executing redirect'
+          false | true  | false | 'executing fallback'
         end
 
         with_them do
           before do
-            allow_fetch_application_setting(attribute: "#{forwardable_package_type}_package_requests_forwarding", return_value: application_setting)
+            allow_fetch_cascade_application_setting(attribute: "#{forwardable_package_type}_package_requests_forwarding", return_value: application_setting)
+            package_setting.update!("#{forwardable_package_type}_package_requests_forwarding" => group_setting)
           end
 
           it_behaves_like params[:example_name]
         end
       end
 
+      context 'when cascade_package_forwarding_settings is disabled' do
+        let(:package_type) { forwardable_package_type }
+        let(:forward_to_registry) { true }
+
+        before do
+          stub_feature_flags(cascade_package_forwarding_settings: false)
+          allow_fetch_cascade_application_setting(attribute: "#{forwardable_package_type}_package_requests_forwarding", return_value: true)
+          package_setting.update!("#{forwardable_package_type}_package_requests_forwarding" => false)
+        end
+
+        it_behaves_like 'executing redirect'
+      end
+
+      context 'when no target is present' do
+        let(:package_type) { forwardable_package_type }
+        let(:forward_to_registry) { true }
+        let(:target) { nil }
+
+        before do
+          allow_fetch_cascade_application_setting(attribute: "#{forwardable_package_type}_package_requests_forwarding", return_value: true)
+          package_setting.update!("#{forwardable_package_type}_package_requests_forwarding" => false)
+        end
+
+        it_behaves_like 'executing redirect'
+      end
+
       context 'when maven_central_request_forwarding is disabled' do
         let(:package_type) { :maven }
-        let(:options) { { project: project } }
-
-        include_context 'dependency proxy helpers context'
 
         where(:application_setting, :forward_to_registry) do
           true  | true
@@ -79,7 +115,7 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
         with_them do
           before do
             stub_feature_flags(maven_central_request_forwarding: false)
-            allow_fetch_application_setting(attribute: "maven_package_requests_forwarding", return_value: application_setting)
+            allow_fetch_cascade_application_setting(attribute: "maven_package_requests_forwarding", return_value: application_setting)
           end
 
           it_behaves_like 'executing fallback'

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, howto
 ---
 
@@ -282,8 +282,8 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
   configuration JSON manually. Open a terminal and execute the following command:
 
   ```shell
-  # The use of "-n" - prevents encoding a newline in the password.
-  echo -n "my_username:my_password" | base64
+  # The use of printf (as opposed to echo) prevents encoding a newline in the password.
+  printf "my_username:my_password" | openssl base64 -A
 
   # Example output to copy
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
@@ -402,7 +402,7 @@ pulling from Docker Hub fails. Docker daemon tries to use the same credentials f
 > Introduced in GitLab Runner 12.0.
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
-image. This image is private and requires you to log in into a private container registry.
+image. This image is private and requires you to sign in to a private container registry.
 
 To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follow these steps:
 

@@ -144,4 +144,14 @@ RSpec.describe ResourceLabelEvent, type: :model do
       create(:resource_label_event, issue: issue, label: label)
     end
   end
+
+  describe '#discussion_id' do
+    it 'generates different discussion ID for events created milliseconds apart' do
+      now = Time.current
+      event_1 = create(:resource_label_event, issue: issue, label: label, user: issue.author, created_at: now)
+      event_2 = create(:resource_label_event, issue: issue, label: label, user: issue.author, created_at: now.advance(seconds: 0.001))
+
+      expect(event_1.discussion_id).not_to eq(event_2.discussion_id)
+    end
+  end
 end

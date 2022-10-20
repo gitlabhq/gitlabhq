@@ -904,11 +904,7 @@ class Group < Namespace
   end
 
   def packages_policy_subject
-    if Feature.enabled?(:read_package_policy_rule, self)
-      ::Packages::Policies::Group.new(self)
-    else
-      self
-    end
+    ::Packages::Policies::Group.new(self)
   end
 
   def update_two_factor_requirement_for_members

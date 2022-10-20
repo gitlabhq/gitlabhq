@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configuring runners **(FREE)**
@@ -198,7 +198,7 @@ To make a runner pick untagged jobs:
 1. Select **Save changes** for the changes to take effect.
 
 NOTE:
-The runner tags list can not be empty when it's not allowed to pick untagged jobs.
+The runner tags list cannot be empty when it's not allowed to pick untagged jobs.
 
 Below are some example scenarios of different variations.
 
@@ -302,6 +302,7 @@ globally or for individual jobs:
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
+- [`GIT_SUBMODULE_PATHS`](#git-submodule-paths)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
 - [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
@@ -487,6 +488,32 @@ git fetch origin $REFSPECS --depth 50  --prune
 ```
 
 Where `$REFSPECS` is a value provided to the runner internally by GitLab.
+
+### Git submodule paths
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
+
+Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
+You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+
+This variable can be very useful for projects which have a large number of submodules which not all of them
+need to be synced or updated in all CI jobs.
+
+The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
+
+- To sync and update specific paths:
+
+   ```yaml
+   variables:
+      GIT_SUBMODULE_PATHS: submoduleA submoduleB
+   ```
+
+- To exclude specific paths:
+
+   ```yaml
+   variables:
+      GIT_SUBMODULE_PATHS: :(exclude)submoduleA :(exclude)submoduleB
+   ```
 
 ### Git submodule update flags
 
@@ -915,12 +942,8 @@ To determine which runners need to be upgraded:
 
 ## Authentication token security
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
-[enable the feature flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`.
-On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
 
 Each runner has an [authentication token](../../api/runners.md#registration-and-authentication-tokens)
 to connect with the GitLab instance.

@@ -854,7 +854,6 @@ Layout/ArgumentAlignment:
     - 'spec/rubocop/cop/rspec/be_success_matcher_spec.rb'
     - 'spec/serializers/feature_flag_entity_spec.rb'
     - 'spec/serializers/feature_flag_serializer_spec.rb'
-    - 'spec/serializers/pipeline_serializer_spec.rb'
     - 'spec/services/auto_merge/merge_when_pipeline_succeeds_service_spec.rb'
     - 'spec/services/award_emojis/destroy_service_spec.rb'
     - 'spec/services/bulk_update_integration_service_spec.rb'

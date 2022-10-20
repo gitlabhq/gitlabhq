@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Maintenance Rake tasks **(FREE SELF)**
@@ -308,6 +308,12 @@ To check the status of specific migrations, you can use the following Rake task:
 
 ```shell
 sudo gitlab-rake db:migrate:status
+```
+
+To check the [tracking database on a Geo secondary site](../geo/setup/external_database.md#configure-the-tracking-database), you can use the following Rake task:
+
+```shell
+sudo gitlab-rake db:migrate:status:geo
 ```
 
 This outputs a table with a `Status` of `up` or `down` for

@@ -1,13 +1,15 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Package Registry Development
 
 Development and Architectural documentation for the package registry
 
+- [Debian repository structure](debian_repository.md)
+- [Dependency proxy structure](dependency_proxy.md)
 - [Developing a new format](new_format_development.md)
 - [Settings](settings.md)
 - [Structure / Schema](structure.md)

@@ -11,7 +11,7 @@ class ProjectAccessTokenEntity < AccessTokenEntityBase
 
     revoke_namespace_project_settings_access_token_path(
       id: token,
-      namespace_id: project.namespace.path,
+      namespace_id: project.namespace.full_path,
       project_id: project.path)
   end
 

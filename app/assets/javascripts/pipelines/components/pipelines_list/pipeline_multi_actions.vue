@@ -55,6 +55,9 @@ export default {
     };
   },
   computed: {
+    hasArtifacts() {
+      return this.artifacts.length > 0;
+    },
     filteredArtifacts() {
       return this.searchQuery.length > 0
         ? fuzzaldrinPlus.filter(this.artifacts, this.searchQuery, { key: 'name' })
@@ -86,7 +89,9 @@ export default {
         });
     },
     handleDropdownShown() {
-      this.$refs.searchInput.focusInput();
+      if (this.hasArtifacts) {
+        this.$refs.searchInput.focusInput();
+      }
     },
   },
 };
@@ -112,12 +117,12 @@ export default {
 
     <gl-loading-icon v-else-if="isLoading" size="sm" />
 
-    <gl-dropdown-item v-else-if="!artifacts.length" data-testid="artifacts-empty-message">
+    <gl-dropdown-item v-else-if="!hasArtifacts" data-testid="artifacts-empty-message">
       {{ $options.i18n.emptyArtifactsMessage }}
     </gl-dropdown-item>
 
     <template #header>
-      <gl-search-box-by-type v-if="artifacts.length" ref="searchInput" v-model.trim="searchQuery" />
+      <gl-search-box-by-type v-if="hasArtifacts" ref="searchInput" v-model.trim="searchQuery" />
     </template>
 
     <gl-dropdown-item

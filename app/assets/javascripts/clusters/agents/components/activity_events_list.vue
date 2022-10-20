@@ -132,11 +132,7 @@ export default {
         :key="key"
         class="agent-activity-list issuable-discussion"
       >
-        <h4
-          class="gl-pb-4 gl-ml-5"
-          :class="$options.borderClasses"
-          data-testid="activity-section-title"
-        >
+        <h4 class="gl-pb-4" :class="$options.borderClasses" data-testid="activity-section-title">
           {{ key }}
         </h4>
 

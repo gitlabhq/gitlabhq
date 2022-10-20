@@ -44,12 +44,6 @@
   }
 }
 
-.div-dropzone-alert {
-  margin-top: 5px;
-  margin-bottom: 0;
-  transition: opacity 200ms ease-in-out;
-}
-
 .md-header {
   .nav-links {
     a {
@@ -155,8 +149,16 @@
 .md-suggestion-diff {
   display: table !important;
   border: 1px solid $border-color !important;
-  width: 100% !important;
-  font-family: $monospace-font !important;
+
+  td {
+    border: 0 !important;
+  }
+
+  tr.old {
+    td {
+      border-radius: 0 !important;
+    }
+  }
 }
 
 .suggestions.md > .markdown-code-block {
@@ -164,23 +166,12 @@
 }
 
 .md-suggestion-header {
-  height: $suggestion-header-height;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: $gray-light;
   border: 1px solid $border-color;
-  padding: $gl-padding;
   border-radius: $border-radius-default $border-radius-default 0 0;
-
-  svg {
-    vertical-align: middle;
-    margin-bottom: 3px;
-  }
-
-  .dropdown-chevron {
-    margin-bottom: 0;
-  }
 }
 
 @include media-breakpoint-down(xs) {

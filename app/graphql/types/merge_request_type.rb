@@ -75,8 +75,12 @@ module Types
           null: false, calls_gitaly: true,
           method: :diverged_from_target_branch?,
           description: 'Indicates if the source branch is behind the target branch.'
-    field :downvotes, GraphQL::Types::Int, null: false,
-                                           description: 'Number of downvotes for the merge request.'
+
+    field :downvotes, GraphQL::Types::Int,
+          null: false,
+          description: 'Number of downvotes for the merge request.',
+          resolver: Resolvers::DownVotesCountResolver
+
     field :force_remove_source_branch, GraphQL::Types::Boolean, method: :force_remove_source_branch?, null: true,
                                                                 description: 'Indicates if the project settings will lead to source branch deletion after merge.'
     field :in_progress_merge_commit_sha, GraphQL::Types::String, null: true,
@@ -118,8 +122,12 @@ module Types
           null: false, calls_gitaly: true,
           method: :target_branch_exists?,
           description: 'Indicates if the target branch of the merge request exists.'
-    field :upvotes, GraphQL::Types::Int, null: false,
-                                         description: 'Number of upvotes for the merge request.'
+
+    field :upvotes, GraphQL::Types::Int,
+          null: false,
+          description: 'Number of upvotes for the merge request.',
+          resolver: Resolvers::UpVotesCountResolver
+
     field :user_discussions_count, GraphQL::Types::Int, null: true,
                                                         description: 'Number of user discussions in the merge request.',
                                                         resolver: Resolvers::UserDiscussionsCountResolver
@@ -150,8 +158,11 @@ module Types
                                                         description: 'Human-readable time estimate of the merge request.'
     field :human_total_time_spent, GraphQL::Types::String, null: true,
                                                            description: 'Human-readable total time reported as spent on the merge request.'
-    field :labels, Types::LabelType.connection_type, null: true, complexity: 5,
-                                                     description: 'Labels of the merge request.'
+    field :labels, Types::LabelType.connection_type,
+          null: true, complexity: 5,
+          description: 'Labels of the merge request.',
+          resolver: Resolvers::BulkLabelsResolver
+
     field :milestone, Types::MilestoneType, null: true,
                                             description: 'Milestone of the merge request.'
     field :participants, Types::MergeRequests::ParticipantType.connection_type, null: true, complexity: 15,

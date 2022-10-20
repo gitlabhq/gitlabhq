@@ -105,10 +105,6 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:can?).with(user, :admin_issue_board, project).and_return(false)
       end
 
-      it 'returns a board_lists_path as lists_endpoint' do
-        expect(helper.board_data[:lists_endpoint]).to eq(board_lists_path(project_board))
-      end
-
       it 'returns board type as parent' do
         expect(helper.board_data[:parent]).to eq('project')
       end
@@ -187,16 +183,6 @@ RSpec.describe BoardsHelper do
           expect(helper.board_data[:can_admin_list]).to eq('true')
         end
       end
-    end
-  end
-
-  describe '#current_board_json' do
-    let(:board_json) { helper.current_board_json }
-
-    it 'can serialise with a basic set of attributes' do
-      assign(:board, project_board)
-
-      expect(board_json).to match_schema('current-board')
     end
   end
 end

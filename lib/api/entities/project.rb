@@ -80,6 +80,7 @@ module API
       expose(:analytics_access_level) { |project, options| project_feature_string_access_level(project, :analytics) }
       expose(:container_registry_access_level) { |project, options| project_feature_string_access_level(project, :container_registry) }
       expose(:security_and_compliance_access_level) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
+      expose(:releases_access_level) { |project, options| project_feature_string_access_level(project, :releases) }
 
       expose :emails_disabled
       expose :shared_runners_enabled
@@ -103,7 +104,7 @@ module API
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :ci_default_git_depth
       expose :ci_forward_deployment_enabled
-      expose :ci_job_token_scope_enabled
+      expose(:ci_job_token_scope_enabled) { |p, _| p.ci_outbound_job_token_scope_enabled? }
       expose :ci_separated_caches
       expose :ci_opt_in_jwt
       expose :ci_allow_fork_pipelines_to_run_in_parent_project

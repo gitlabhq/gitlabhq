@@ -3,7 +3,7 @@ import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { debounce, unescape } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import GLForm from '~/gl_form';
 import axios from '~/lib/utils/axios_utils';
 import { stripHtml } from '~/lib/utils/text_utility';
@@ -272,7 +272,7 @@ export default {
         this.fetchMarkdown()
           .then((data) => this.renderMarkdown(data))
           .catch(() =>
-            createFlash({
+            createAlert({
               message: __('Error loading markdown preview'),
             }),
           );
@@ -315,7 +315,7 @@ export default {
       this.$nextTick()
         .then(() => $(this.$refs['markdown-preview']).renderGFM())
         .catch(() =>
-          createFlash({
+          createAlert({
             message: __('Error rendering Markdown preview'),
           }),
         );

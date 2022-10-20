@@ -2,7 +2,8 @@
 FactoryBot.define do
   factory :ml_experiments, class: '::Ml::Experiment' do
     sequence(:name) { |n| "experiment#{n}" }
-    association :project
-    association :user
+
+    project
+    user
   end
 end

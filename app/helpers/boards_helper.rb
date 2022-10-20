@@ -2,18 +2,15 @@
 
 module BoardsHelper
   def board
-    @board ||= @board || @boards.first
+    @board
   end
 
   def board_data
     {
-      boards_endpoint: @boards_endpoint,
-      lists_endpoint: board_lists_path(board),
       board_id: board.id,
       disabled: board.disabled_for?(current_user).to_s,
       root_path: root_path,
       full_path: full_path,
-      bulk_update_path: @bulk_issues_path,
       can_update: can_update?.to_s,
       can_admin_list: can_admin_list?.to_s,
       can_admin_board: can_admin_board?.to_s,
@@ -94,14 +91,6 @@ module BoardsHelper
     !multiple_boards_available? && current_board_parent.boards.size > 1
   end
 
-  def current_board_path(board)
-    @current_board_path ||= if board.group_board?
-                              group_board_path(current_board_parent, board)
-                            else
-                              project_board_path(current_board_parent, board)
-                            end
-  end
-
   def current_board_parent
     @current_board_parent ||= @group || @project
   end
@@ -120,18 +109,6 @@ module BoardsHelper
 
   def can_admin_board?
     can?(current_user, :admin_issue_board, current_board_parent)
-  end
-
-  def can_admin_issue?
-    can?(current_user, :admin_issue, current_board_parent)
-  end
-
-  def serializer
-    CurrentBoardSerializer.new
-  end
-
-  def current_board_json
-    serializer.represent(board).as_json
   end
 end
 

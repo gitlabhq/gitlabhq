@@ -33,11 +33,15 @@ module Gitlab
         end
 
         def id_for_already_imported_cache(issue)
-          issue.number
+          issue[:number]
         end
 
         def collection_options
           { state: 'all', sort: 'created', direction: 'asc' }
+        end
+
+        def increment_object_counter?(object)
+          object[:pull_request].nil?
         end
 
         private

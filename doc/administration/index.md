@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
 ---
 
@@ -194,7 +194,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Monitoring GitLab](monitoring/index.md):
   - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-  - [IP allowlist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
+  - [IP allowlist](monitoring/ip_allowlist.md): Monitor endpoints that provide health check information when probed.
   - [Monitoring GitHub imports](monitoring/github_imports.md): The GitLab GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 
 ### Performance Monitoring

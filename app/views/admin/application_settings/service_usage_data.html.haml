@@ -5,25 +5,26 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - payload_class = 'js-service-ping-payload'
 
-%h3= name
+%section.js-search-settings-section
+  %h3= name
 
-- if @service_ping_data_present
-  = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger gl-mr-2', data: { payload_selector: ".#{payload_class}" } } ) do
-    = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
-    %span.js-text.gl-display-inline= _('Preview payload')
-  = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-download-trigger gl-mr-2', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } } ) do
-    = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
-    %span.js-text.gl-display-inline= _('Download payload')
-  %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
-- else
-  = render Pajamas::AlertComponent.new(variant: :warning,
-    dismissible: false,
-    title: _('Service Ping payload not found in the application cache')) do |c|
+  - if @service_ping_data_present
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger gl-mr-2', data: { payload_selector: ".#{payload_class}" } } ) do
+      = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+      %span.js-text.gl-display-inline= _('Preview payload')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-download-trigger gl-mr-2', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } } ) do
+      = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+      %span.js-text.gl-display-inline= _('Download payload')
+    %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
+  - else
+    = render Pajamas::AlertComponent.new(variant: :warning,
+      dismissible: false,
+      title: _('Service Ping payload not found in the application cache')) do |c|
 
-    = c.body do
-      - enable_service_ping_link_url = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'enable-or-disable-usage-statistics')
-      - enable_service_ping_link = '<a href="%{url}">'.html_safe % { url: enable_service_ping_link_url }
-      - generate_manually_link_url = help_page_path('administration/troubleshooting/gitlab_rails_cheat_sheet', anchor: 'generate-service-ping')
-      - generate_manually_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: generate_manually_link_url }
+      = c.body do
+        - enable_service_ping_link_url = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'enable-or-disable-usage-statistics')
+        - enable_service_ping_link = '<a href="%{url}">'.html_safe % { url: enable_service_ping_link_url }
+        - generate_manually_link_url = help_page_path('administration/troubleshooting/gitlab_rails_cheat_sheet', anchor: 'generate-service-ping')
+        - generate_manually_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: generate_manually_link_url }
 
-      = html_escape(s_('%{enable_service_ping_link_start}Enable%{link_end} or %{generate_manually_link_start}generate%{link_end} Service Ping to preview and download service usage data payload.')) % { enable_service_ping_link_start: enable_service_ping_link, generate_manually_link_start: generate_manually_link, link_end: '</a>'.html_safe }
+        = html_escape(s_('%{enable_service_ping_link_start}Enable%{link_end} or %{generate_manually_link_start}generate%{link_end} Service Ping to preview and download service usage data payload.')) % { enable_service_ping_link_start: enable_service_ping_link, generate_manually_link_start: generate_manually_link, link_end: '</a>'.html_safe }

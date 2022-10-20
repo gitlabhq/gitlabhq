@@ -229,7 +229,7 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header-actions gl-display-flex">
+  <div class="detail-page-header-actions gl-display-flex gl-align-self-start">
     <gl-dropdown
       v-if="hasMobileDropdown"
       class="gl-sm-display-none! w-100"

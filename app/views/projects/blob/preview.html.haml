@@ -1,4 +1,4 @@
-- if markup?(@blob.name)
+- if Gitlab::MarkupHelper.markup?(@blob.name)
   .file-content.md
     = markup(@blob.name, @content)
 - else

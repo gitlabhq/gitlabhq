@@ -51,7 +51,7 @@ describe('Work Item type component', () => {
       });
 
       it('renders the icon in gray color', () => {
-        expect(findIcon().classes()).toContain('gl-text-gray-500');
+        expect(findIcon().classes()).toContain('gl-text-secondary');
       });
 
       it('shows tooltip on hover when props passed', () => {

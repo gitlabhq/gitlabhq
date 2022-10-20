@@ -112,6 +112,8 @@ module Ci
 
     has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
 
+    has_one :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :pipeline
+
     has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult', foreign_key: :last_pipeline_id
     has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
     has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :pipeline, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -119,6 +121,7 @@ module Ci
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :full_path, to: :project, prefix: true
+    delegate :title, to: :pipeline_metadata, allow_nil: true
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
@@ -614,6 +617,15 @@ module Ci
     # auto_canceled_by_pipeline_id - store the pipeline_id of the pipeline that triggered cancellation
     # execute_async - if true cancel the children asyncronously
     def cancel_running(retries: 1, cascade_to_children: true, auto_canceled_by_pipeline_id: nil, execute_async: true)
+      Gitlab::AppJsonLogger.info(
+        event: 'pipeline_cancel_running',
+        pipeline_id: id,
+        auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id,
+        cascade_to_children: cascade_to_children,
+        execute_async: execute_async,
+        **Gitlab::ApplicationContext.current
+      )
+
       update(auto_canceled_by_id: auto_canceled_by_pipeline_id) if auto_canceled_by_pipeline_id
 
       cancel_jobs(cancelable_statuses, retries: retries, auto_canceled_by_pipeline_id: auto_canceled_by_pipeline_id)
@@ -760,8 +772,14 @@ module Ci
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
     # them using the +Gitlab::ImportExport::Project::RelationFactory+ class.
-    def notes=(notes)
-      notes.each do |note|
+    def notes=(notes_to_save)
+      notes_to_save.reject! do |note_to_save|
+        notes.any? do |note|
+          [note_to_save.note, note_to_save.created_at.to_i] == [note.note, note.created_at.to_i]
+        end
+      end
+
+      notes_to_save.each do |note|
         note[:id] = nil
         note[:commit_id] = sha
         note[:noteable_id] = self['id']
@@ -850,7 +868,6 @@ module Ci
           variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
           variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
           variables.append(key: 'CI_COMMIT_BRANCH', value: ref) if branch?
-          variables.append(key: 'CI_COMMIT_TAG', value: ref) if tag?
           variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
           variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
           variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
@@ -863,7 +880,8 @@ module Ci
           variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
           variables.append(key: 'CI_BUILD_REF_NAME', value: source_ref)
           variables.append(key: 'CI_BUILD_REF_SLUG', value: source_ref_slug)
-          variables.append(key: 'CI_BUILD_TAG', value: ref) if tag?
+
+          variables.concat(predefined_commit_tag_variables)
         end
       end
     end
@@ -884,6 +902,20 @@ module Ci
           end
 
           variables.concat(merge_request.predefined_variables)
+        end
+      end
+    end
+
+    def predefined_commit_tag_variables
+      strong_memoize(:predefined_commit_ref_variables) do
+        Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          next variables unless tag?
+
+          variables.append(key: 'CI_COMMIT_TAG', value: ref)
+          variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: project.repository.find_tag(ref).message)
+
+          # legacy variable
+          variables.append(key: 'CI_BUILD_TAG', value: ref)
         end
       end
     end
@@ -972,8 +1004,8 @@ module Ci
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       expanded_environment_names =
         builds_in_self_and_project_descendants.joins(:metadata)
-                                      .where.not('ci_builds_metadata.expanded_environment_name' => nil)
-                                      .distinct('ci_builds_metadata.expanded_environment_name')
+                                      .where.not(Ci::BuildMetadata.table_name => { expanded_environment_name: nil })
+                                      .distinct("#{Ci::BuildMetadata.quoted_table_name}.expanded_environment_name")
                                       .limit(100)
                                       .pluck(:expanded_environment_name)
 
@@ -1162,6 +1194,10 @@ module Ci
       complete? && builds.latest.with_exposed_artifacts.exists?
     end
 
+    def has_erasable_artifacts?
+      complete? && builds.latest.with_erasable_artifacts.exists?
+    end
+
     def branch_updated?
       strong_memoize(:branch_updated) do
         push_details.branch_updated?
@@ -1328,9 +1364,9 @@ module Ci
       self.builds.latest.build_matchers(project)
     end
 
-    def authorized_cluster_agents
-      strong_memoize(:authorized_cluster_agents) do
-        ::Clusters::AgentAuthorizationsFinder.new(project).execute.map(&:agent)
+    def cluster_agent_authorizations
+      strong_memoize(:cluster_agent_authorizations) do
+        ::Clusters::AgentAuthorizationsFinder.new(project).execute
       end
     end
 

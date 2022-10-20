@@ -59,9 +59,12 @@ module IssuableCollectionsAction
   end
 
   def finder_options
+    issue_types = Issue::TYPES_FOR_LIST
+    issue_types = issue_types.excluding('task') unless Feature.enabled?(:work_items)
+
     super.merge(
       non_archived: true,
-      issue_types: Issue::TYPES_FOR_LIST
+      issue_types: issue_types
     )
   end
 end

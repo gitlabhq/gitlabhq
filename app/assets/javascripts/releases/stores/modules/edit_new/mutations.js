@@ -10,6 +10,7 @@ export default {
   [types.INITIALIZE_EMPTY_RELEASE](state) {
     state.release = {
       tagName: state.tagName,
+      tagMessage: '',
       name: '',
       description: '',
       milestones: [],
@@ -39,6 +40,9 @@ export default {
 
   [types.UPDATE_RELEASE_TAG_NAME](state, tagName) {
     state.release.tagName = tagName;
+  },
+  [types.UPDATE_RELEASE_TAG_MESSAGE](state, tagMessage) {
+    state.release.tagMessage = tagMessage;
   },
   [types.UPDATE_CREATE_FROM](state, createFrom) {
     state.createFrom = createFrom;

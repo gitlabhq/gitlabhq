@@ -90,7 +90,7 @@ RSpec.describe Projects::GraphsController do
         let(:target_id) { 'p_analytics_repo' }
       end
 
-      it_behaves_like 'Snowplow event tracking' do
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject do
           sign_in(user)
           get :charts, params: request_params, format: :html

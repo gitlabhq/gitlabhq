@@ -5,6 +5,8 @@ class PersonalAccessToken < ApplicationRecord
   include TokenAuthenticatable
   include Sortable
   include EachBatch
+  include CreatedAtFilterable
+  include Gitlab::SQL::Pattern
   extend ::Gitlab::Utils::Override
 
   add_authentication_token_field :token, digest: true
@@ -24,7 +26,6 @@ class PersonalAccessToken < ApplicationRecord
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
   scope :expired_today_and_not_notified, -> { where(["revoked = false AND expires_at = CURRENT_DATE AND after_expiry_notification_delivered = false"]) }
   scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
-  scope :created_before, -> (date) { where("personal_access_tokens.created_at < :date", date: date) }
   scope :last_used_before_or_unused, -> (date) { where("personal_access_tokens.created_at < :date AND (last_used_at < :date OR last_used_at IS NULL)", date: date) }
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }
@@ -38,6 +39,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
   scope :project_access_token, -> { includes(:user).where(user: { user_type: :project_bot }) }
   scope :owner_is_human, -> { includes(:user).where(user: { user_type: :human }) }
+  scope :last_used_before, -> (date) { where("last_used_at <= ?", date) }
+  scope :last_used_after, -> (date) { where("last_used_at >= ?", date) }
 
   validates :scopes, presence: true
   validate :validate_scopes
@@ -88,6 +91,10 @@ class PersonalAccessToken < ApplicationRecord
 
   def self.token_prefix
     Gitlab::CurrentSettings.current_application_settings.personal_access_token_prefix
+  end
+
+  def self.search(query)
+    fuzzy_search(query, [:name])
   end
 
   override :format_token

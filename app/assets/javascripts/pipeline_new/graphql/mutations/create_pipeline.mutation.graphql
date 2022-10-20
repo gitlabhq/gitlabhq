@@ -1,0 +1,9 @@
+mutation createPipeline($endpoint: String, $ref: String, $variablesAttributes: Array) {
+  createPipeline(endpoint: $endpoint, ref: $ref, variablesAttributes: $variablesAttributes)
+    @client {
+    id
+    errors
+    totalWarnings
+    warnings
+  }
+}

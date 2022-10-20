@@ -25,6 +25,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
       loggable_data = {
         'expensive_operation_duration_s' => {
           'count' => 1,
+          'sum' => a_kind_of(Numeric),
           'avg' => a_kind_of(Numeric),
           'max' => a_kind_of(Numeric),
           'min' => a_kind_of(Numeric)
@@ -62,6 +63,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
         accumulator[key] = {
           'count' => count,
           'avg' => a_kind_of(Numeric),
+          'sum' => a_kind_of(Numeric),
           'max' => a_kind_of(Numeric),
           'min' => a_kind_of(Numeric)
         }
@@ -71,6 +73,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
         data['expensive_operation_db_count']['max'] = db_count
         data['expensive_operation_db_count']['min'] = db_count
         data['expensive_operation_db_count']['avg'] = db_count
+        data['expensive_operation_db_count']['sum'] = count * db_count
       end
 
       data
@@ -131,7 +134,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
     it 'records durations of observed operations' do
       loggable_data = {
         'pipeline_creation_duration_s' => {
-          'avg' => 30, 'count' => 1, 'max' => 30, 'min' => 30
+          'avg' => 30, 'sum' => 30, 'count' => 1, 'max' => 30, 'min' => 30
         }
       }
 
@@ -165,10 +168,10 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
           'pipeline_creation_caller' => 'source',
           'pipeline_source' => pipeline.source,
           'pipeline_save_duration_s' => {
-            'avg' => 60, 'count' => 1, 'max' => 60, 'min' => 60
+            'avg' => 60, 'sum' => 60, 'count' => 1, 'max' => 60, 'min' => 60
           },
           'pipeline_creation_duration_s' => {
-            'avg' => 20, 'count' => 2, 'max' => 30, 'min' => 10
+            'avg' => 20, 'sum' => 40, 'count' => 2, 'max' => 30, 'min' => 10
           }
         }
       end
@@ -215,10 +218,10 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
             'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
             'pipeline_creation_caller' => 'source',
             'pipeline_save_duration_s' => {
-              'avg' => 60, 'count' => 1, 'max' => 60, 'min' => 60
+              'avg' => 60, 'sum' => 60, 'count' => 1, 'max' => 60, 'min' => 60
             },
             'pipeline_creation_duration_s' => {
-              'avg' => 20, 'count' => 2, 'max' => 30, 'min' => 10
+              'avg' => 20, 'sum' => 40, 'count' => 2, 'max' => 30, 'min' => 10
             }
           }
         end

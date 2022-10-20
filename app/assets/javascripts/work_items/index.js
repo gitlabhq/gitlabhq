@@ -6,7 +6,13 @@ import { createRouter } from './router';
 
 export const initWorkItemsRoot = () => {
   const el = document.querySelector('#js-work-items');
-  const { fullPath, hasIssueWeightsFeature, issuesListPath } = el.dataset;
+  const {
+    fullPath,
+    hasIssueWeightsFeature,
+    issuesListPath,
+    projectNamespace,
+    hasIterationsFeature,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -17,6 +23,8 @@ export const initWorkItemsRoot = () => {
       fullPath,
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       issuesListPath,
+      projectNamespace,
+      hasIterationsFeature: parseBoolean(hasIterationsFeature),
     },
     render(createElement) {
       return createElement(App);

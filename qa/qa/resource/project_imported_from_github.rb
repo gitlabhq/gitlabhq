@@ -3,6 +3,8 @@
 module QA
   module Resource
     class ProjectImportedFromGithub < Resource::Project
+      attr_accessor :issue_events_import, :full_notes_import, :attachments_import
+
       attribute :github_repo_id do
         github_client.repository(github_repository_path).id
       end
@@ -51,7 +53,12 @@ module QA
           new_name: name,
           target_namespace: @personal_namespace || group.full_path,
           personal_access_token: github_personal_access_token,
-          ci_cd_only: false
+          ci_cd_only: false,
+          optional_stages: {
+            single_endpoint_issue_events_import: issue_events_import,
+            single_endpoint_notes_import: full_notes_import,
+            attachments_import: attachments_import
+          }
         }
       end
 

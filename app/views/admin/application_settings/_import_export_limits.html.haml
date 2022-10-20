@@ -1,4 +1,4 @@
-= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-import-export-limits-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-import-export-limits-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -35,4 +35,4 @@
       = f.label :group_download_export_limit, _('Maximum group export download requests per minute'), class: 'label-bold'
       = f.number_field :group_download_export_limit, class: 'form-control gl-form-input'
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), data: { qa_selector: 'save_changes_button' }, pajamas_button: true

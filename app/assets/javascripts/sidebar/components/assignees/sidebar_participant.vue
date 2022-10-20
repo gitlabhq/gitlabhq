@@ -58,7 +58,7 @@ export default {
         v-if="hasCannotMergeIcon"
         name="warning-solid"
         aria-hidden="true"
-        class="merge-icon gl-left-6 gl-bottom-0"
+        class="merge-icon"
         :size="12"
       />
     </template>

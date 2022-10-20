@@ -6,8 +6,8 @@ product_stage: secure
 product_group: static_analysis
 product_category: SAST
 value_type: number
-status: active
-milestone: "15.3"
+status: removed
+milestone: '15.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91956
 time_frame: 28d
 data_source: redis_hll
@@ -23,3 +23,5 @@ tier:
 options:
   events:
   - p_ci_templates_implicit_security_fortify_fod_sast
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90163
+milestone_removed: '15.5'

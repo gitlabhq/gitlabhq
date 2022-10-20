@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage' do
+  RSpec.describe 'Manage', product_group: :workspace do
     shared_examples 'loads all images' do |admin|
       let(:api_client) { Runtime::API::Client.as_admin }
 

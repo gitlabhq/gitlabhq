@@ -41,8 +41,6 @@ class MergeRequest < ApplicationRecord
     'Ci::CompareCodequalityReportsService' => ->(project) { true }
   }.freeze
 
-  MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 100
-
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
@@ -72,6 +70,11 @@ class MergeRequest < ApplicationRecord
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
+
+  # method overriden in EE
+  def suggested_reviewer_users
+    User.none
+  end
 
   # This is the same as latest_merge_request_diff unless:
   # 1. There are arguments - in which case we might be trying to force-reload.
@@ -238,6 +241,12 @@ class MergeRequest < ApplicationRecord
       Gitlab::Timeless.timeless(merge_request, &block)
     end
 
+    after_transition any => [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
+      if Feature.enabled?(:trigger_mr_subscription_on_merge_status_change, merge_request.project)
+        GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      end
+    end
+
     # rubocop: disable CodeReuse/ServiceClass
     after_transition [:unchecked, :checking] => :cannot_be_merged do |merge_request, transition|
       if merge_request.notify_conflict?
@@ -269,7 +278,7 @@ class MergeRequest < ApplicationRecord
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
   validate :validate_fork, unless: :closed_or_merged_without_fork?
   validate :validate_target_project, on: :create
-  validate :validate_reviewer_and_assignee_size_length, unless: :importing?
+  validate :validate_reviewer_size_length, unless: :importing?
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -438,6 +447,7 @@ class MergeRequest < ApplicationRecord
   # we'd eventually rename the column for avoiding confusions, but in the mean time
   # please use `auto_merge_enabled` alias instead of `merge_when_pipeline_succeeds`.
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
+  alias_attribute :issuing_parent_id, :target_project_id
   alias_method :issuing_parent, :target_project
 
   delegate :builds_with_coverage, to: :head_pipeline, prefix: true, allow_nil: true
@@ -602,7 +612,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.participant_includes
-    [:reviewers, :award_emoji] + super
+    [:assignees, :reviewers] + super
   end
 
   def committers
@@ -988,18 +998,12 @@ class MergeRequest < ApplicationRecord
                'Source project is not a fork of the target project'
   end
 
-  def self.max_number_of_assignees_or_reviewers_message
-    # Assignees will be included in https://gitlab.com/gitlab-org/gitlab/-/issues/368936
-    _("total must be less than or equal to %{size}") % { size: MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS }
-  end
-
-  def validate_reviewer_and_assignee_size_length
-    # Assigness will be added in a subsequent MR https://gitlab.com/gitlab-org/gitlab/-/issues/368936
+  def validate_reviewer_size_length
     return true unless Feature.enabled?(:limit_reviewer_and_assignee_size)
     return true unless reviewers.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
     errors.add :reviewers,
-      -> (_object, _data) { MergeRequest.max_number_of_assignees_or_reviewers_message }
+      -> (_object, _data) { self.class.max_number_of_assignees_or_reviewers_message }
   end
 
   def merge_ongoing?
@@ -1987,6 +1991,10 @@ class MergeRequest < ApplicationRecord
     # rubocop: disable CodeReuse/ServiceClass
     MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: params).execute
     # rubocop: enable CodeReuse/ServiceClass
+  end
+
+  def can_suggest_reviewers?
+    false # overridden in EE
   end
 
   private

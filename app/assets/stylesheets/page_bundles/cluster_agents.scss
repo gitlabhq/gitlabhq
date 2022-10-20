@@ -1,0 +1,13 @@
+@import 'mixins_and_variables_and_functions';
+
+.agent-activity-list {
+  .system-note .timeline-entry-inner {
+    .timeline-icon {
+      @include gl-mt-1;
+    }
+  }
+
+  .timeline-entry::before {
+    @include gl-mt-4;
+  }
+}

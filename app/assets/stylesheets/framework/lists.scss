@@ -109,12 +109,6 @@ ul.content-list {
     color: $gl-text-color;
     word-break: break-word;
 
-    &.no-description {
-      .title {
-        line-height: $list-text-height;
-      }
-    }
-
     .title {
       font-weight: $gl-font-weight-bold;
     }
@@ -221,6 +215,7 @@ ul.content-list {
   }
 }
 
+ul.content-list.content-list-items-padding > li,
 ul.content-list.issuable-list > li,
 ul.content-list.todos-list > li,
 .card > .content-list > li {

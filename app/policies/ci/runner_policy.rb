@@ -20,8 +20,8 @@ module Ci
     end
 
     with_options scope: :user, score: 5
-    condition(:any_developer_groups_inheriting_shared_runners) do
-      @user.developer_groups.with_shared_runners_enabled.any?
+    condition(:any_developer_maintainer_owned_groups_inheriting_shared_runners) do
+      @user.developer_maintainer_owned_groups.with_shared_runners_enabled.any?
     end
 
     with_options scope: :user, score: 5
@@ -31,7 +31,7 @@ module Ci
 
     with_options score: 10
     condition(:any_associated_projects_in_group_runner_inheriting_group_runners) do
-      # Check if any projects where user is a developer are inheriting group runners
+      # Check if any projects where user is a developer+ are inheriting group runners
       @subject.groups&.any? do |group|
         group.all_projects
              .with_group_runners_enabled
@@ -48,13 +48,10 @@ module Ci
 
     rule { admin | owned_runner }.policy do
       enable :read_builds
-    end
-
-    rule { admin | owned_runner }.policy do
       enable :read_runner
     end
 
-    rule { is_instance_runner & any_developer_groups_inheriting_shared_runners }.policy do
+    rule { is_instance_runner & any_developer_maintainer_owned_groups_inheriting_shared_runners }.policy do
       enable :read_runner
     end
 

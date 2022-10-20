@@ -154,12 +154,8 @@ function disable_sign_ups() {
     true
   fi
 
-  # Create the root token
-  local set_token_rb="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end"
-  retry "run_task \"${set_token_rb}\""
-
-  # Disable sign-ups
-  local disable_signup_rb="Gitlab::CurrentSettings.current_application_settings.update!(signup_enabled: false)"
+  # Create the root token + Disable sign-ups
+  local disable_signup_rb="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end; Gitlab::CurrentSettings.current_application_settings.update!(signup_enabled: false)"
   if (retry "run_task \"${disable_signup_rb}\""); then
     echoinfo "Sign-ups have been disabled successfully."
   else
@@ -239,16 +235,21 @@ function create_application_secret() {
 }
 
 function download_chart() {
-  echoinfo "Downloading the GitLab chart..." true
+  # If the requirements.lock is present, it means we got everything we need from the cache.
+  if [[ -f "gitlab-${GITLAB_HELM_CHART_REF}/requirements.lock" ]]; then
+    echosuccess "Downloading/Building chart dependencies skipped. Using the chart ${gitlab-${GITLAB_HELM_CHART_REF}} local folder'..."
+  else
+    echoinfo "Downloading the GitLab chart..." true
 
-  curl --location -o gitlab.tar.bz2 "https://gitlab.com/gitlab-org/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
-  tar -xjf gitlab.tar.bz2
+    curl --location -o gitlab.tar.bz2 "https://gitlab.com/gitlab-org/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
+    tar -xjf gitlab.tar.bz2
 
-  echoinfo "Adding the gitlab repo to Helm..."
-  helm repo add gitlab https://charts.gitlab.io
+    echoinfo "Adding the gitlab repo to Helm..."
+    helm repo add gitlab https://charts.gitlab.io
 
-  echoinfo "Building the gitlab chart's dependencies..."
-  helm dependency build "gitlab-${GITLAB_HELM_CHART_REF}"
+    echoinfo "Building the gitlab chart's dependencies..."
+    helm dependency build "gitlab-${GITLAB_HELM_CHART_REF}"
+  fi
 }
 
 function base_config_changed() {

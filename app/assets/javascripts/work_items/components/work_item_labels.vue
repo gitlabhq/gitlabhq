@@ -1,16 +1,22 @@
 <script>
 import { GlTokenSelector, GlLabel, GlSkeletonLoader } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, uniqueId, without } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
 import LabelItem from '~/vue_shared/components/sidebar/labels_select_widget/label_item.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { isScopedLabel, scopedLabelKey } from '~/lib/utils/common_utils';
+import { isScopedLabel } from '~/lib/utils/common_utils';
+import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
 import workItemQuery from '../graphql/work_item.query.graphql';
-import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 
-import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_LABELS } from '../constants';
+import {
+  i18n,
+  I18N_WORK_ITEM_ERROR_FETCHING_LABELS,
+  TRACKING_CATEGORY_SHOW,
+  WIDGET_TYPE_LABELS,
+} from '../constants';
 
 function isTokenSelectorElement(el) {
   return el?.classList.contains('gl-label-close') || el?.classList.contains('dropdown-item');
@@ -52,6 +58,8 @@ export default {
       localLabels: [],
       searchKey: '',
       searchLabels: [],
+      addLabelIds: [],
+      removeLabelIds: [],
     };
   },
   apollo: {
@@ -68,13 +76,21 @@ export default {
       error() {
         this.$emit('error', i18n.fetchError);
       },
+      subscribeToMore: {
+        document: workItemLabelsSubscription,
+        variables() {
+          return {
+            issuableId: this.workItemId,
+          };
+        },
+      },
     },
     searchLabels: {
       query: labelSearchQuery,
       variables() {
         return {
           fullPath: this.fullPath,
-          search: this.searchKey,
+          searchTerm: this.searchKey,
         };
       },
       skip() {
@@ -84,11 +100,14 @@ export default {
         return data.workspace?.labels?.nodes.map((node) => addClass({ ...node, ...node.label }));
       },
       error() {
-        this.$emit('error', i18n.fetchError);
+        this.$emit('error', I18N_WORK_ITEM_ERROR_FETCHING_LABELS);
       },
     },
   },
   computed: {
+    labelsTitleId() {
+      return uniqueId('labels-title-');
+    },
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -97,10 +116,7 @@ export default {
       };
     },
     allowScopedLabels() {
-      return this.labelsWidget.allowScopedLabels;
-    },
-    listEmpty() {
-      return this.labels.length === 0;
+      return this.labelsWidget?.allowsScopedLabels;
     },
     containerClass() {
       return !this.isEditing ? 'gl-shadow-none!' : '';
@@ -109,10 +125,10 @@ export default {
       return this.$apollo.queries.searchLabels.loading;
     },
     labelsWidget() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
     },
     labels() {
-      return this.labelsWidget?.nodes || [];
+      return this.labelsWidget?.labels?.nodes || [];
     },
   },
   watch: {
@@ -131,44 +147,74 @@ export default {
     },
     removeLabel({ id }) {
       this.localLabels = this.localLabels.filter((label) => label.id !== id);
+      this.removeLabelIds.push(id);
+      this.setLabels();
     },
-    setLabels(event) {
+    async setLabels() {
+      if (this.addLabelIds.length === 0 && this.removeLabelIds.length === 0) return;
+
       this.searchKey = '';
-      if (isTokenSelectorElement(event.relatedTarget) || !this.isEditing) return;
       this.isEditing = false;
-      this.$apollo
-        .mutate({
-          mutation: localUpdateWorkItemMutation,
+      try {
+        const {
+          data: {
+            workItemUpdate: { errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
           variables: {
             input: {
               id: this.workItemId,
-              labels: this.localLabels,
+              labelsWidget: {
+                addLabelIds: this.addLabelIds,
+                removeLabelIds: this.removeLabelIds,
+              },
             },
           },
-        })
-        .catch((e) => {
-          this.$emit('error', e);
         });
-      this.track('updated_labels');
+
+        if (errors.length > 0) {
+          this.throwUpdateError();
+          return;
+        }
+
+        this.addLabelIds = [];
+        this.removeLabelIds = [];
+
+        this.track('updated_labels');
+      } catch {
+        this.throwUpdateError();
+      }
+    },
+    throwUpdateError() {
+      this.$emit('error', i18n.updateError);
+      // If mutation is rejected, we're rolling back to initial state
+      this.localLabels = this.labels.map(addClass);
+      this.addLabelIds = [];
+      this.removeLabelIds = [];
+    },
+    handleBlur(event) {
+      if (isTokenSelectorElement(event.relatedTarget) || !this.isEditing) return;
+      this.setLabels();
     },
     handleFocus() {
       this.isEditing = true;
       this.searchStarted = true;
     },
     async focusTokenSelector(labels) {
-      if (this.allowScopedLabels) {
-        const newLabel = labels[labels.length - 1];
-        const existingLabels = labels.slice(0, labels.length - 1);
+      const labelsToAdd = without(labels, ...this.localLabels).map((label) => label.id);
+      const labelsToRemove = without(this.localLabels, ...labels).map((label) => label.id);
 
-        const newLabelKey = scopedLabelKey(newLabel);
-
-        const removeLabelsWithSameScope = existingLabels.filter((label) => {
-          const sameKey = newLabelKey === scopedLabelKey(label);
-          return !sameKey;
-        });
-
-        this.localLabels = [...removeLabelsWithSameScope, newLabel];
+      if (labelsToAdd.length > 0) {
+        this.addLabelIds.push(...labelsToAdd);
       }
+
+      if (labelsToRemove.length > 0) {
+        this.removeLabelIds.push(...labelsToRemove);
+      }
+
+      this.localLabels = labels;
+
       this.handleFocus();
       await this.$nextTick();
       this.$refs.tokenSelector.focusTextInput();
@@ -194,13 +240,15 @@ export default {
 <template>
   <div class="form-row gl-mb-5 work-item-labels gl-relative gl-flex-nowrap">
     <span
+      :id="labelsTitleId"
       class="gl-font-weight-bold gl-mt-2 col-lg-2 col-3 gl-pt-2 min-w-fit-content gl-overflow-wrap-break"
       data-testid="labels-title"
       >{{ __('Labels') }}</span
     >
     <gl-token-selector
       ref="tokenSelector"
-      v-model="localLabels"
+      :selected-tokens="localLabels"
+      :aria-labelledby="labelsTitleId"
       :container-class="containerClass"
       :dropdown-items="searchLabels"
       :loading="isLoading"
@@ -210,13 +258,13 @@ export default {
       @input="focusTokenSelector"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"
-      @blur="setLabels"
+      @blur="handleBlur"
       @mouseover.native="handleMouseOver"
       @mouseout.native="handleMouseOut"
     >
       <template #empty-placeholder>
         <div
-          class="add-labels gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-gray-400 gl-pr-4 gl-top-2"
+          class="add-labels gl-min-w-fit-content gl-display-flex gl-align-items-center gl-text-secondary gl-pr-4 gl-top-2"
           data-testid="empty-state"
         >
           <span v-if="canUpdate" class="gl-ml-2">{{ __('Add labels') }}</span>

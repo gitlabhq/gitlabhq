@@ -84,6 +84,10 @@
         iframe.twitter-share-button {
           vertical-align: bottom;
         }
+
+        .gl-label-scoped.gl-label-sm {
+          --label-inset-border: inset 0 0 0 1px currentColor;
+        }
       }
 
       code {

@@ -11,10 +11,6 @@
   placeholder: _('Search milestones'), footer_content: project.present?, data: { show_no: true, show_menu_above: show_menu_above, show_any: show_any, show_upcoming: show_upcoming, show_started: show_started, field_name: name, selected: selected_text, project_id: project.try(:id), default_label: _('Milestone'), qa_selector: "issuable_milestone_dropdown", testid: "issuable-milestone-dropdown" } }) do
   - if project
     %ul.dropdown-footer-list
-      - if can? current_user, :admin_milestone, project
-        %li
-          = link_to new_project_milestone_path(project), title: _('New Milestone') do
-            = _('Create new')
       %li
         = link_to project_milestones_path(project) do
           - if can? current_user, :admin_milestone, project

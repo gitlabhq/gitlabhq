@@ -190,7 +190,7 @@ export default {
         <gl-form-radio name="error-tracking-integrated" :value="true">
           {{ __('GitLab') }}
           <template #help>
-            {{ __('Uses GitLab as a lightweight alternative to Sentry.') }}
+            {{ __('Uses GitLab as an alternative to Sentry.') }}
           </template>
         </gl-form-radio>
       </gl-form-radio-group>

@@ -1,19 +1,16 @@
-import Vue, { nextTick } from 'vue';
-import { mountComponentWithStore } from 'helpers/vue_mount_component_helper';
+import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import Bar from '~/ide/components/file_templates/bar.vue';
 import { createStore } from '~/ide/stores';
 import { file } from '../../helpers';
 
 describe('IDE file templates bar component', () => {
-  let Component;
-  let vm;
-
-  beforeAll(() => {
-    Component = Vue.extend(Bar);
-  });
+  let wrapper;
+  let store;
 
   beforeEach(() => {
-    const store = createStore();
+    store = createStore();
+    jest.spyOn(store, 'dispatch').mockImplementation();
 
     store.state.openFiles.push({
       ...file('file'),
@@ -21,24 +18,22 @@ describe('IDE file templates bar component', () => {
       active: true,
     });
 
-    vm = mountComponentWithStore(Component, { store });
+    wrapper = mount(Bar, { store });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('template type dropdown', () => {
     it('renders dropdown component', () => {
-      expect(vm.$el.querySelector('.dropdown').textContent).toContain('Choose a type');
+      expect(wrapper.find('.dropdown').text()).toContain('Choose a type');
     });
 
-    it('calls setSelectedTemplateType when clicking item', () => {
-      jest.spyOn(vm, 'setSelectedTemplateType').mockImplementation();
+    it('calls setSelectedTemplateType when clicking item', async () => {
+      await wrapper.find('.dropdown-menu button').trigger('click');
 
-      vm.$el.querySelector('.dropdown-menu button').click();
-
-      expect(vm.setSelectedTemplateType).toHaveBeenCalledWith({
+      expect(store.dispatch).toHaveBeenCalledWith('fileTemplates/setSelectedTemplateType', {
         name: '.gitlab-ci.yml',
         key: 'gitlab_ci_ymls',
       });
@@ -46,60 +41,52 @@ describe('IDE file templates bar component', () => {
   });
 
   describe('template dropdown', () => {
-    beforeEach(async () => {
-      vm.$store.state.fileTemplates.templates = [
+    beforeEach(() => {
+      store.state.fileTemplates.templates = [
         {
           name: 'test',
         },
       ];
-      vm.$store.state.fileTemplates.selectedTemplateType = {
+      store.state.fileTemplates.selectedTemplateType = {
         name: '.gitlab-ci.yml',
         key: 'gitlab_ci_ymls',
       };
-
-      await nextTick();
     });
 
     it('renders dropdown component', () => {
-      expect(vm.$el.querySelectorAll('.dropdown')[1].textContent).toContain('Choose a template');
+      expect(wrapper.findAll('.dropdown').at(1).text()).toContain('Choose a template');
     });
 
-    it('calls fetchTemplate on dropdown open', () => {
-      jest.spyOn(vm, 'fetchTemplate').mockImplementation();
+    it('calls fetchTemplate on dropdown open', async () => {
+      await wrapper.findAll('.dropdown-menu').at(1).find('button').trigger('click');
 
-      vm.$el.querySelectorAll('.dropdown-menu')[1].querySelector('button').click();
-
-      expect(vm.fetchTemplate).toHaveBeenCalledWith({
+      expect(store.dispatch).toHaveBeenCalledWith('fileTemplates/fetchTemplate', {
         name: 'test',
       });
     });
   });
 
+  const findUndoButton = () => wrapper.find('.btn-default-secondary');
   it('shows undo button if updateSuccess is true', async () => {
-    vm.$store.state.fileTemplates.updateSuccess = true;
-
+    store.state.fileTemplates.updateSuccess = true;
     await nextTick();
-    expect(vm.$el.querySelector('.btn-default').style.display).not.toBe('none');
+
+    expect(findUndoButton().isVisible()).toBe(true);
   });
 
-  it('calls undoFileTemplate when clicking undo button', () => {
-    jest.spyOn(vm, 'undoFileTemplate').mockImplementation();
+  it('calls undoFileTemplate when clicking undo button', async () => {
+    await findUndoButton().trigger('click');
 
-    vm.$el.querySelector('.btn-default-secondary').click();
-
-    expect(vm.undoFileTemplate).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith('fileTemplates/undoFileTemplate', undefined);
   });
 
   it('calls setSelectedTemplateType if activeFile name matches a template', async () => {
     const fileName = '.gitlab-ci.yml';
-
-    jest.spyOn(vm, 'setSelectedTemplateType').mockImplementation(() => {});
-    vm.$store.state.openFiles[0].name = fileName;
-
-    vm.setInitialType();
+    store.state.openFiles = [{ ...file(fileName), opened: true, active: true }];
 
     await nextTick();
-    expect(vm.setSelectedTemplateType).toHaveBeenCalledWith({
+
+    expect(store.dispatch).toHaveBeenCalledWith('fileTemplates/setSelectedTemplateType', {
       name: fileName,
       key: 'gitlab_ci_ymls',
     });

@@ -53,37 +53,4 @@ RSpec.shared_examples 'User views wiki pages' do
       end
     end
   end
-
-  context 'ordered by created_at' do
-    let(:pages_ordered_by_created_at) { [wiki_page1, wiki_page2, wiki_page3] }
-
-    before do
-      page.within('.wiki-sort-dropdown') do
-        click_button('Title')
-        click_button('Created date')
-      end
-    end
-
-    context 'asc' do
-      it 'pages are displayed in direct order' do
-        pages.each.with_index do |page_title, index|
-          expect(page_title.text).to eq(pages_ordered_by_created_at[index].title)
-        end
-      end
-    end
-
-    context 'desc' do
-      before do
-        page.within('.wiki-sort-dropdown') do
-          page.find('.rspec-reverse-sort').click
-        end
-      end
-
-      it 'pages are displayed in reversed order' do
-        pages.reverse_each.with_index do |page_title, index|
-          expect(page_title.text).to eq(pages_ordered_by_created_at[index].title)
-        end
-      end
-    end
-  end
 end

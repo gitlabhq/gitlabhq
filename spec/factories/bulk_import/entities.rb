@@ -9,6 +9,7 @@ FactoryBot.define do
 
     sequence(:destination_namespace) { |n| "destination-path-#{n}" }
     destination_name { 'Imported Entity' }
+    sequence(:source_xid)
 
     trait(:group_entity) do
       source_type { :group_entity }

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
 
@@ -254,7 +254,7 @@ after merging does not retarget open merge requests. This improvement is
 
 For a software developer working in a team:
 
-1. You checkout a new branch, and submit your changes through a merge request.
+1. You check out a new branch, and submit your changes through a merge request.
 1. You gather feedback from your team.
 1. You work on the implementation optimizing code with [Code Quality reports](../../../ci/testing/code_quality.md).
 1. You verify your changes with [Unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
@@ -269,7 +269,7 @@ For a software developer working in a team:
 
 For a web developer writing a webpage for your company's website:
 
-1. You checkout a new branch and submit a new page through a merge request.
+1. You check out a new branch and submit a new page through a merge request.
 1. You gather feedback from your reviewers.
 1. You preview your changes with [Review Apps](../../../ci/review_apps/index.md).
 1. You request your web designers for their implementation.

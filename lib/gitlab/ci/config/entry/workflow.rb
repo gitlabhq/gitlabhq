@@ -6,12 +6,17 @@ module Gitlab
       module Entry
         class Workflow < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Configurable
+          include ::Gitlab::Config::Entry::Validatable
+          include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[rules].freeze
+          ALLOWED_KEYS = %i[rules name].freeze
+
+          attributes :name
 
           validations do
             validates :config, type: Hash
             validates :config, allowed_keys: ALLOWED_KEYS
+            validates :name, allow_nil: true, length: { minimum: 1, maximum: 255 }
           end
 
           entry :rules, Entry::Rules,

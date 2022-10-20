@@ -5,8 +5,9 @@ import Vuex from 'vuex';
 import Api from '~/api';
 import DeployFreezeModal from '~/deploy_freeze/components/deploy_freeze_modal.vue';
 import createStore from '~/deploy_freeze/store';
-import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown.vue';
-import { freezePeriodsFixture, timezoneDataFixture } from '../helpers';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
+import { freezePeriodsFixture } from '../helpers';
+import { timezoneDataFixture } from '../../vue_shared/components/timezone_dropdown/helpers';
 
 jest.mock('~/api');
 
@@ -52,7 +53,7 @@ describe('Deploy freeze modal', () => {
 
   describe('Basic interactions', () => {
     it('button is disabled when freeze period is invalid', () => {
-      expect(submitDeployFreezeButton().attributes('disabled')).toBeTruthy();
+      expect(submitDeployFreezeButton().attributes('disabled')).toBe('true');
     });
   });
 
@@ -92,7 +93,7 @@ describe('Deploy freeze modal', () => {
       });
 
       it('disables the add deploy freeze button', () => {
-        expect(submitDeployFreezeButton().attributes('disabled')).toBeTruthy();
+        expect(submitDeployFreezeButton().attributes('disabled')).toBe('true');
       });
     });
 
@@ -103,7 +104,7 @@ describe('Deploy freeze modal', () => {
       });
 
       it('does not disable the submit button', () => {
-        expect(submitDeployFreezeButton().attributes('disabled')).toBeFalsy();
+        expect(submitDeployFreezeButton().attributes('disabled')).toBeUndefined();
       });
     });
   });

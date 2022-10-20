@@ -2,7 +2,7 @@
 
 require 'sidekiq/api'
 
-Sidekiq::Worker.extend ActiveSupport::Concern
+Sidekiq::Worker.extend ActiveSupport::Concern # rubocop:disable Cop/SidekiqApiUsage
 
 module ApplicationWorker
   extend ActiveSupport::Concern
@@ -134,10 +134,6 @@ module ApplicationWorker
       @log_bulk_perform_async = true
     end
 
-    def queue_size
-      Sidekiq::Queue.new(queue).size
-    end
-
     def bulk_perform_async(args_list)
       if log_bulk_perform_async?
         Sidekiq.logger.info('class' => self.name, 'args_list' => args_list, 'args_list_count' => args_list.length, 'message' => 'Inserting multiple jobs')
@@ -177,7 +173,7 @@ module ApplicationWorker
       end
 
       in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch) # rubocop:disable Cop/SidekiqApiUsage
       end
     end
 
@@ -185,7 +181,7 @@ module ApplicationWorker
 
     def do_push_bulk(args_list)
       in_safe_limit_batches(args_list) do |args_batch, _|
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch) # rubocop:disable Cop/SidekiqApiUsage
       end
     end
 

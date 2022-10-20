@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
 import httpStatus from '~/lib/utils/http_status';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { I18N_COMMIT_DATA_FETCH_ERROR } from '~/repository/constants';
 
 jest.mock('~/flash');
@@ -65,13 +65,13 @@ describe('commits service', () => {
     expect(isRequested(300)).toBe(false);
   });
 
-  it('calls `createFlash` when the request fails', async () => {
+  it('calls `createAlert` when the request fails', async () => {
     const invalidPath = '/#@ some/path';
     const invalidUrl = `${url}${invalidPath}`;
     mock.onGet(invalidUrl).replyOnce(httpStatus.INTERNAL_SERVER_ERROR, [], {});
 
     await requestCommits(1, 'my-project', invalidPath);
 
-    expect(createFlash).toHaveBeenCalledWith({ message: I18N_COMMIT_DATA_FETCH_ERROR });
+    expect(createAlert).toHaveBeenCalledWith({ message: I18N_COMMIT_DATA_FETCH_ERROR });
   });
 });

@@ -36,7 +36,10 @@
   - data[:multi_select] = true
   - data['dropdown-title'] = title
   - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
-  - data['max-select'] = dropdown_max_select(dropdown_options[:data])
+  - data[:suggested_reviewers_header] = dropdown_options[:data][:suggested_reviewers_header]
+  - data[:all_members_header] = dropdown_options[:data][:all_members_header]
+  - data[:show_suggested] = dropdown_options[:data][:show_suggested]
+  - data['max-select'] = dropdown_max_select(dropdown_options[:data], :limit_reviewer_and_assignee_size)
   - options[:data].merge!(data)
 
   = render 'shared/issuable/sidebar_user_dropdown',

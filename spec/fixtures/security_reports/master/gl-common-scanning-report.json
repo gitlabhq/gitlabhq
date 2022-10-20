@@ -12,7 +12,15 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "location": {},
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
       "identifiers": [
         {
           "type": "GitLab",
@@ -27,18 +35,8 @@
       ],
       "details": {
         "commit": {
-          "name": [
-            {
-              "lang": "en",
-              "value": "The Commit"
-            }
-          ],
-          "description": [
-            {
-              "lang": "en",
-              "value": "Commit where the vulnerability was identified"
-            }
-          ],
+          "name": "the commit",
+          "description": "description",
           "type": "commit",
           "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
         }
@@ -56,7 +54,15 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "location": {},
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
       "identifiers": [
         {
           "type": "GitLab",
@@ -71,18 +77,8 @@
       ],
       "details": {
         "commit": {
-          "name": [
-            {
-              "lang": "en",
-              "value": "The Commit"
-            }
-          ],
-          "description": [
-            {
-              "lang": "en",
-              "value": "Commit where the vulnerability was identified"
-            }
-          ],
+          "name": "the commit",
+          "description": "description",
           "type": "commit",
           "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
         }
@@ -100,7 +96,15 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "location": {},
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
       "identifiers": [
         {
           "type": "GitLab",
@@ -115,18 +119,8 @@
       ],
       "details": {
         "commit": {
-          "name": [
-            {
-              "lang": "en",
-              "value": "The Commit"
-            }
-          ],
-          "description": [
-            {
-              "lang": "en",
-              "value": "Commit where the vulnerability was identified"
-            }
-          ],
+          "name": "the commit",
+          "description": "description",
           "type": "commit",
           "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
         }
@@ -144,7 +138,15 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "location": {},
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
       "identifiers": [
         {
           "type": "GitLab",
@@ -159,18 +161,8 @@
       ],
       "details": {
         "commit": {
-          "name": [
-            {
-              "lang": "en",
-              "value": "The Commit"
-            }
-          ],
-          "description": [
-            {
-              "lang": "en",
-              "value": "Commit where the vulnerability was identified"
-            }
-          ],
+          "name": "the commit",
+          "description": "description",
           "type": "commit",
           "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
         }
@@ -258,7 +250,15 @@
           }
         ]
       },
-      "location": {},
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
       "identifiers": [
         {
           "type": "GitLab",
@@ -273,18 +273,8 @@
       ],
       "details": {
         "commit": {
-          "name": [
-            {
-              "lang": "en",
-              "value": "The Commit"
-            }
-          ],
-          "description": [
-            {
-              "lang": "en",
-              "value": "Commit where the vulnerability was identified"
-            }
-          ],
+          "name": "the commit",
+          "description": "description",
           "type": "commit",
           "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
         }
@@ -373,7 +363,15 @@
           }
         ]
       },
-      "location": {},
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
       "identifiers": [
         {
           "type": "GitLab",
@@ -400,8 +398,22 @@
         "id": "gemnasium",
         "name": "Gemnasium"
       },
-      "location": {},
-      "identifiers": [],
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "GitLab",
+          "name": "Foo vulnerability",
+          "value": "foo"
+        }
+      ],
       "links": []
     }
   ],
@@ -442,8 +454,8 @@
           "cve": "CVE-1020"
         }
       ],
-      "summary": "",
-      "diff": ""
+      "summary": "this fixes CVE-1020",
+      "diff": "dG90YWxseSBsZWdpdGltYXRlIGRpZmYsIDEwLzEwIHdvdWxkIGFwcGx5"
     },
     {
       "fixes": [
@@ -452,8 +464,8 @@
           "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d3"
         }
       ],
-      "summary": "",
-      "diff": ""
+      "summary": "this fixes CVE",
+      "diff": "dG90YWxseSBsZWdpdGltYXRlIGRpZmYsIDEwLzEwIHdvdWxkIGFwcGx5"
     },
     {
       "fixes": [
@@ -462,8 +474,8 @@
           "id": "bb2fbeb1b71ea360ce3f86f001d4e84823c3ffe1a1f7d41ba7466b14cfa953d3"
         }
       ],
-      "summary": "",
-      "diff": ""
+      "summary": "this fixed CVE",
+      "diff": "dG90YWxseSBsZWdpdGltYXRlIGRpZmYsIDEwLzEwIHdvdWxkIGFwcGx5"
     },
     {
       "fixes": [
@@ -472,8 +484,8 @@
           "cve": "CVE-1"
         }
       ],
-      "summary": "",
-      "diff": ""
+      "summary": "this fixes CVE-1",
+      "diff": "dG90YWxseSBsZWdpdGltYXRlIGRpZmYsIDEwLzEwIHdvdWxkIGFwcGx5"
     }
   ],
   "dependency_files": [],
@@ -497,8 +509,8 @@
       "version": "2.18.0"
     },
     "type": "dependency_scanning",
-    "start_time": "placeholder-value",
-    "end_time": "placeholder-value",
+    "start_time": "2022-08-10T21:37:00",
+    "end_time": "2022-08-10T21:38:00",
     "status": "success"
   },
   "version": "14.0.2"

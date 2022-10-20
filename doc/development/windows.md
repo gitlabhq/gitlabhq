@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
 ---
 
@@ -76,7 +76,7 @@ Build a Google Cloud image with the above shared runners repository by doing the
 1. Copy and save the password as it is not shown again.
 1. Select **RDP** down arrow.
 1. Select **Download the RDP file**.
-1. Open the downloaded RDP file with the Windows remote desktop app (<https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients>).
+1. Open the downloaded RDP file with the Windows remote desktop app (<https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/remote-desktop-clients>).
 1. Select **Continue** to accept the certificate.
 1. Enter the password and select **Next**.
 

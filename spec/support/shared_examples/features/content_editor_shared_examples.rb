@@ -35,6 +35,34 @@ RSpec.shared_examples 'edits content using the content editor' do
     attach_file('content_editor_image', Rails.root.join('spec', 'fixtures', fixture_name), make_visible: true)
   end
 
+  def wait_until_hidden_field_is_updated(value)
+    expect(page).to have_field('wiki[content]', with: value, type: 'hidden')
+  end
+
+  it 'saves page content in local storage if the user navigates away' do
+    switch_to_content_editor
+
+    expect(page).to have_css(content_editor_testid)
+
+    type_in_content_editor ' Typing text in the content editor'
+
+    wait_until_hidden_field_is_updated /Typing text in the content editor/
+
+    refresh
+
+    expect(page).to have_text('Typing text in the content editor')
+
+    refresh # also retained after second refresh
+
+    expect(page).to have_text('Typing text in the content editor')
+
+    click_link 'Cancel' # draft is deleted on cancel
+
+    page.go_back
+
+    expect(page).not_to have_text('Typing text in the content editor')
+  end
+
   describe 'formatting bubble menu' do
     it 'shows a formatting bubble menu for a regular paragraph and headings' do
       switch_to_content_editor
@@ -187,6 +215,103 @@ RSpec.shared_examples 'edits content using the content editor' do
         expect(find('svg').text).to include('JohnDoe12')
         expect(find('svg').text).to include('HelloWorld34')
       end
+    end
+  end
+
+  describe 'autocomplete suggestions' do
+    let(:suggestions_dropdown) { '[data-testid="content-editor-suggestions-dropdown"]' }
+
+    before do
+      if defined?(project)
+        create(:issue, project: project, title: 'My Cool Linked Issue')
+        create(:merge_request, source_project: project, title: 'My Cool Merge Request')
+        create(:label, project: project, title: 'My Cool Label')
+        create(:milestone, project: project, title: 'My Cool Milestone')
+
+        project.add_maintainer(create(:user, name: 'abc123', username: 'abc123'))
+      else # group wikis
+        project = create(:project, group: group)
+
+        create(:issue, project: project, title: 'My Cool Linked Issue')
+        create(:merge_request, source_project: project, title: 'My Cool Merge Request')
+        create(:group_label, group: group, title: 'My Cool Label')
+        create(:milestone, group: group, title: 'My Cool Milestone')
+
+        project.add_maintainer(create(:user, name: 'abc123', username: 'abc123'))
+      end
+
+      switch_to_content_editor
+
+      type_in_content_editor :enter
+    end
+
+    it 'shows suggestions for members with descriptions' do
+      type_in_content_editor '@a'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+      expect(find(suggestions_dropdown)).to have_text('all')
+      expect(find(suggestions_dropdown)).to have_text('Group Members (2)')
+
+      send_keys [:arrow_down, :enter]
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('@abc123')
+    end
+
+    it 'shows suggestions for merge requests' do
+      type_in_content_editor '!'
+
+      expect(find(suggestions_dropdown)).to have_text('My Cool Merge Request')
+
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('!1')
+    end
+
+    it 'shows suggestions for issues' do
+      type_in_content_editor '#'
+
+      expect(find(suggestions_dropdown)).to have_text('My Cool Linked Issue')
+
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('#1')
+    end
+
+    it 'shows suggestions for milestones' do
+      type_in_content_editor '%'
+
+      expect(find(suggestions_dropdown)).to have_text('My Cool Milestone')
+
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('%My Cool Milestone')
+    end
+
+    it 'shows suggestions for emojis' do
+      type_in_content_editor ':smile'
+
+      expect(find(suggestions_dropdown)).to have_text('🙂 slight_smile')
+      expect(find(suggestions_dropdown)).to have_text('😸 smile_cat')
+
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+
+      expect(page).to have_text('🙂')
+    end
+
+    it 'doesn\'t show suggestions dropdown if there are no suggestions to show' do
+      type_in_content_editor '%'
+
+      expect(find(suggestions_dropdown)).to have_text('My Cool Milestone')
+
+      type_in_content_editor 'x'
+
+      expect(page).not_to have_css(suggestions_dropdown)
     end
   end
 end

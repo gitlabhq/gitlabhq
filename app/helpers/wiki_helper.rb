@@ -59,14 +59,16 @@ module WikiHelper
     end
   end
 
-  def wiki_sort_controls(wiki, sort, direction)
-    sort ||= Wiki::TITLE_ORDER
+  def wiki_sort_controls(wiki, direction)
     link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort'
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
+    title = direction == 'desc' ? _('Sort direction: Descending') : _('Sort direction: Ascending')
 
-    link_to(wiki_path(wiki, action: :pages, sort: sort, direction: reversed_direction),
-      type: 'button', class: link_class, title: _('Sort direction')) do
+    link_options = { action: :pages, direction: reversed_direction }
+
+    link_to(wiki_path(wiki, **link_options),
+      type: 'button', class: link_class, title: title) do
       sprite_icon("sort-#{icon_class}")
     end
   end

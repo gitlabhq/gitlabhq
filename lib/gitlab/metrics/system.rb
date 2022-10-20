@@ -14,11 +14,13 @@ module Gitlab
       PROC_SMAPS_ROLLUP_PATH = '/proc/%s/smaps_rollup'
       PROC_LIMITS_PATH = '/proc/self/limits'
       PROC_FD_GLOB = '/proc/self/fd/*'
+      PROC_MEM_INFO = '/proc/meminfo'
 
       PRIVATE_PAGES_PATTERN = /^(Private_Clean|Private_Dirty|Private_Hugetlb):\s+(?<value>\d+)/.freeze
       PSS_PATTERN = /^Pss:\s+(?<value>\d+)/.freeze
       RSS_PATTERN = /VmRSS:\s+(?<value>\d+)/.freeze
       MAX_OPEN_FILES_PATTERN = /Max open files\s*(?<value>\d+)/.freeze
+      MEM_TOTAL_PATTERN = /^MemTotal:\s+(?<value>\d+) (.+)/.freeze
 
       def summary
         proportional_mem = memory_usage_uss_pss
@@ -43,6 +45,10 @@ module Gitlab
       def memory_usage_uss_pss(pid: 'self')
         sum_matches(PROC_SMAPS_ROLLUP_PATH % pid, uss: PRIVATE_PAGES_PATTERN, pss: PSS_PATTERN)
           .transform_values(&:kilobytes)
+      end
+
+      def memory_total
+        sum_matches(PROC_MEM_INFO, memory_total: MEM_TOTAL_PATTERN)[:memory_total].kilobytes
       end
 
       def file_descriptor_count

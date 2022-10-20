@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Projects API **(FREE)**
@@ -61,7 +61,7 @@ GET /projects
 | `repository_storage`                       | string   | **{dotted-circle}** No | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
 | `search_namespaces`                        | boolean  | **{dotted-circle}** No | Include ancestor namespaces when matching search criteria. Default is `false`. |
 | `search`                                   | string   | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                                     | string   | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
@@ -336,7 +336,7 @@ GET /users/:user_id/projects
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
@@ -591,7 +591,7 @@ GET /users/:user_id/starred_projects
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
@@ -1014,6 +1014,19 @@ can also see the `approvals_before_merge` parameter:
 }
 ```
 
+Users of [GitLab Ultimate](https://about.gitlab.com/pricing/)
+can also see the `only_allow_merge_if_all_status_checks_passed`
+parameters using GitLab 15.5 and later:
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "only_allow_merge_if_all_status_checks_passed": false,
+  ...
+}
+```
+
 If the project is a fork, the `forked_from_project` field appears in the response.
 For this field, if the upstream project is private, a valid token for authentication must be provided.
 The field `mr_default_target_self` appears as well. If this value is `false`, then all merge requests
@@ -1188,6 +1201,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `name`                                                      | string  | **{check-circle}** Yes (if path isn't provided) | The name of the new project. Equals path if not provided. |
 | `path`                                                      | string  | **{check-circle}** Yes (if name isn't provided) | Repository name for new project. Generated based on name if not provided (generated as lowercase with dashes). Starting with GitLab 14.9, path must not start or end with a special character and must not contain consecutive special characters. |
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
@@ -1229,6 +1243,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `pages_access_level`                                        | string  | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
+| `releases_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrator only)_ |
@@ -1266,6 +1281,7 @@ POST /projects/user/:user_id
 | `user_id`                                                   | integer | **{check-circle}** Yes | The user ID of the project owner. |
 | `name`                                                      | string  | **{check-circle}** Yes | The name of the new project. |
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
@@ -1307,6 +1323,7 @@ POST /projects/user/:user_id
 | `path`                                                      | string  | **{dotted-circle}** No | Custom repository name for new project. By default generated based on name. |
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project-members. |
+| `releases_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |
@@ -1355,6 +1372,7 @@ Supported attributes:
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `id`                                                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
+| `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string         | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
 | `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This isn't a boolean, but enabled/disabled. |
@@ -1408,6 +1426,7 @@ Supported attributes:
 | `path`                                                      | string         | **{dotted-circle}** No | Custom repository name for the project. By default generated based on name. |
 | `printing_merge_request_link_enabled`                       | boolean        | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean        | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
+| `releases_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean        | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string         | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |
@@ -1473,7 +1492,7 @@ GET /projects/:id/forks
 | `order_by`                    | string         | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean        | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string         | **{dotted-circle}** No | Return list of projects matching the search criteria. |
-| `simple`                      | boolean        | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
+| `simple`                      | boolean        | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string         | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean        | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                  | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |

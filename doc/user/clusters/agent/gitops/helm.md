@@ -1,7 +1,7 @@
 ---
 stage: Configure
 group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Using Helm charts to update a Kubernetes cluster (Alpha) **(FREE)**
@@ -13,7 +13,7 @@ with your charts and values. To do this, you use the pull-based GitOps features 
 Kubernetes.
 
 This feature is in Alpha and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/7938)
-to track future work. Please tell us about your use cases by leaving comments in the epic.
+to track future work. Tell us about your use cases by leaving comments in the epic.
 
 NOTE:
 This feature is Alpha. In future releases, to accommodate new features, the configuration format might change without notice.
@@ -58,7 +58,7 @@ gitops:
 
 | Keyword | Description |
 |--|--|
-| `charts` | List of charts you want to be applied in your cluster. Charts are applied concurrently. All charts must be in the same directory. |
+| `charts` | List of charts you want to be applied in your cluster. Charts are applied concurrently. |
 | `release_name` | Required. Name of the release to use when applying the chart. |
 | `id` | Required. ID of the project where Helm chart is committed. No authentication mechanisms are currently supported. |
 | `path` | Optional. Path of the chart in the project repository. Root of the repository is used by default. This is the directory with the `Chart.yaml` file. |
@@ -69,7 +69,6 @@ gitops:
 
 Drift happens when the current configuration of an infrastructure resource differs from its desired configuration.
 Typically, drift is caused by manually editing resources directly, rather than by editing the code that describes the desired state. Minimizing the risk of drift helps to ensure configuration consistency and successful operations.
-mechanism. Minimizing the risk of drift helps to ensure configuration consistency and successful operations.
 
 In GitLab, the agent for Kubernetes regularly compares the desired state from the chart source with
 the actual state from the Kubernetes cluster. Deviations from the desired state are fixed at every check. These checks

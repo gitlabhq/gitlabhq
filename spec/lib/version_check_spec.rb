@@ -9,6 +9,20 @@ RSpec.describe VersionCheck do
     end
   end
 
+  context 'reactive cache properties' do
+    describe '.reactive_cache_refresh_interval' do
+      it 'returns 12.hours' do
+        expect(described_class.reactive_cache_refresh_interval).to eq(12.hours)
+      end
+    end
+
+    describe '.reactive_cache_lifetime' do
+      it 'returns 7.days' do
+        expect(described_class.reactive_cache_lifetime).to eq(7.days)
+      end
+    end
+  end
+
   describe '#calculate_reactive_cache' do
     context 'response code is 200' do
       before do

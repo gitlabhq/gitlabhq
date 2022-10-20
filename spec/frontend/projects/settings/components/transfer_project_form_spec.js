@@ -1,41 +1,65 @@
 import Vue, { nextTick } from 'vue';
+import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import searchNamespacesWhereUserCanTransferProjectsQueryResponsePage1 from 'test_fixtures/graphql/projects/settings/search_namespaces_where_user_can_transfer_projects_page_1.query.graphql.json';
-import searchNamespacesWhereUserCanTransferProjectsQueryResponsePage2 from 'test_fixtures/graphql/projects/settings/search_namespaces_where_user_can_transfer_projects_page_2.query.graphql.json';
-import {
-  groupNamespaces,
-  userNamespaces,
-} from 'jest/vue_shared/components/namespace_select/mock_data';
+import currentUserNamespaceQueryResponse from 'test_fixtures/graphql/projects/settings/current_user_namespace.query.graphql.json';
+import transferLocationsResponsePage1 from 'test_fixtures/api/projects/transfer_locations_page_1.json';
+import transferLocationsResponsePage2 from 'test_fixtures/api/projects/transfer_locations_page_2.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TransferProjectForm from '~/projects/settings/components/transfer_project_form.vue';
-import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select.vue';
+import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select_deprecated.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
-import searchNamespacesWhereUserCanTransferProjectsQuery from '~/projects/settings/graphql/queries/search_namespaces_where_user_can_transfer_projects.query.graphql';
+import currentUserNamespaceQuery from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';
+import { getTransferLocations } from '~/api/projects_api';
 import waitForPromises from 'helpers/wait_for_promises';
+
+jest.mock('~/api/projects_api', () => ({
+  getTransferLocations: jest.fn(),
+}));
 
 describe('Transfer project form', () => {
   let wrapper;
 
+  const projectId = '1';
   const confirmButtonText = 'Confirm';
   const confirmationPhrase = 'You must construct additional pylons!';
 
-  const runDebounce = () => jest.runAllTimers();
-
   Vue.use(VueApollo);
 
-  const defaultQueryHandler = jest
-    .fn()
-    .mockResolvedValue(searchNamespacesWhereUserCanTransferProjectsQueryResponsePage1);
+  const defaultQueryHandler = jest.fn().mockResolvedValue(currentUserNamespaceQueryResponse);
+  const mockResolvedGetTransferLocations = ({
+    data = transferLocationsResponsePage1,
+    page = '1',
+    nextPage = '2',
+    prevPage = null,
+  } = {}) => {
+    getTransferLocations.mockResolvedValueOnce({
+      data,
+      headers: {
+        'x-per-page': '2',
+        'x-page': page,
+        'x-total': '4',
+        'x-total-pages': '2',
+        'x-next-page': nextPage,
+        'x-prev-page': prevPage,
+      },
+    });
+  };
+  const mockRejectedGetTransferLocations = () => {
+    const error = new Error();
+
+    getTransferLocations.mockRejectedValueOnce(error);
+  };
 
   const createComponent = ({
-    requestHandlers = [[searchNamespacesWhereUserCanTransferProjectsQuery, defaultQueryHandler]],
+    requestHandlers = [[currentUserNamespaceQuery, defaultQueryHandler]],
   } = {}) => {
     wrapper = shallowMountExtended(TransferProjectForm, {
+      provide: {
+        projectId,
+      },
       propsData: {
-        userNamespaces,
-        groupNamespaces,
         confirmButtonText,
         confirmationPhrase,
       },
@@ -44,7 +68,12 @@ describe('Transfer project form', () => {
   };
 
   const findNamespaceSelect = () => wrapper.findComponent(NamespaceSelect);
+  const showNamespaceSelect = async () => {
+    findNamespaceSelect().vm.$emit('show');
+    await waitForPromises();
+  };
   const findConfirmDanger = () => wrapper.findComponent(ConfirmDanger);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   afterEach(() => {
     wrapper.destroy();
@@ -69,66 +98,113 @@ describe('Transfer project form', () => {
   });
 
   describe('with a selected namespace', () => {
-    const [selectedItem] = groupNamespaces;
+    const [selectedItem] = transferLocationsResponsePage1;
 
-    beforeEach(() => {
+    const arrange = async () => {
+      mockResolvedGetTransferLocations();
       createComponent();
-
+      await showNamespaceSelect();
       findNamespaceSelect().vm.$emit('select', selectedItem);
-    });
+    };
 
-    it('emits the `selectNamespace` event when a namespace is selected', () => {
+    it('emits the `selectNamespace` event when a namespace is selected', async () => {
+      await arrange();
+
       const args = [selectedItem.id];
 
       expect(wrapper.emitted('selectNamespace')).toEqual([args]);
     });
 
-    it('enables the confirm button', () => {
+    it('enables the confirm button', async () => {
+      await arrange();
+
       expect(findConfirmDanger().attributes('disabled')).toBeUndefined();
     });
 
-    it('clicking the confirm button emits the `confirm` event', () => {
+    it('clicking the confirm button emits the `confirm` event', async () => {
+      await arrange();
+
       findConfirmDanger().vm.$emit('confirm');
 
       expect(wrapper.emitted('confirm')).toBeDefined();
     });
   });
 
-  it('passes correct props to `NamespaceSelect` component', async () => {
-    createComponent();
+  describe('when `NamespaceSelect` is opened', () => {
+    it('fetches user and group namespaces and passes correct props to `NamespaceSelect` component', async () => {
+      mockResolvedGetTransferLocations();
+      createComponent();
+      await showNamespaceSelect();
 
-    runDebounce();
-    await waitForPromises();
+      const { namespace } = currentUserNamespaceQueryResponse.data.currentUser;
 
-    const {
-      namespace,
-      groups,
-    } = searchNamespacesWhereUserCanTransferProjectsQueryResponsePage1.data.currentUser;
+      expect(findNamespaceSelect().props()).toMatchObject({
+        userNamespaces: [
+          {
+            id: getIdFromGraphQLId(namespace.id),
+            humanName: namespace.fullName,
+          },
+        ],
+        groupNamespaces: transferLocationsResponsePage1.map(({ id, full_name: humanName }) => ({
+          id,
+          humanName,
+        })),
+        hasNextPageOfGroups: true,
+        isLoading: false,
+        isSearchLoading: false,
+        shouldFilterNamespaces: false,
+      });
+    });
 
-    expect(findNamespaceSelect().props()).toMatchObject({
-      userNamespaces: [
-        {
-          id: getIdFromGraphQLId(namespace.id),
-          humanName: namespace.fullName,
-        },
-      ],
-      groupNamespaces: groups.nodes.map((node) => ({
-        id: getIdFromGraphQLId(node.id),
-        humanName: node.fullName,
-      })),
-      hasNextPageOfGroups: true,
-      isLoadingMoreGroups: false,
-      isSearchLoading: false,
-      shouldFilterNamespaces: false,
+    describe('when namespaces have already been fetched', () => {
+      beforeEach(async () => {
+        mockResolvedGetTransferLocations();
+        createComponent();
+        await showNamespaceSelect();
+      });
+
+      it('does not fetch namespaces', async () => {
+        getTransferLocations.mockClear();
+        defaultQueryHandler.mockClear();
+
+        await showNamespaceSelect();
+
+        expect(getTransferLocations).not.toHaveBeenCalled();
+        expect(defaultQueryHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when `getTransferLocations` API call fails', () => {
+      it('displays error alert', async () => {
+        mockRejectedGetTransferLocations();
+        createComponent();
+        await showNamespaceSelect();
+
+        expect(findAlert().exists()).toBe(true);
+      });
+    });
+
+    describe('when `currentUser` GraphQL query fails', () => {
+      it('displays error alert', async () => {
+        mockResolvedGetTransferLocations();
+        const error = new Error();
+        createComponent({
+          requestHandlers: [[currentUserNamespaceQuery, jest.fn().mockRejectedValueOnce(error)]],
+        });
+        await showNamespaceSelect();
+
+        expect(findAlert().exists()).toBe(true);
+      });
     });
   });
 
   describe('when `search` event is fired', () => {
     const arrange = async () => {
+      mockResolvedGetTransferLocations();
       createComponent();
-
+      await showNamespaceSelect();
+      mockResolvedGetTransferLocations();
       findNamespaceSelect().vm.$emit('search', 'foo');
-
       await nextTick();
     };
 
@@ -138,87 +214,106 @@ describe('Transfer project form', () => {
       expect(findNamespaceSelect().props('isSearchLoading')).toBe(true);
     });
 
-    it('passes `search` variable to query', async () => {
+    it('passes `search` param to API call', async () => {
       await arrange();
 
-      runDebounce();
       await waitForPromises();
 
-      expect(defaultQueryHandler).toHaveBeenCalledWith(expect.objectContaining({ search: 'foo' }));
+      expect(getTransferLocations).toHaveBeenCalledWith(
+        projectId,
+        expect.objectContaining({ search: 'foo' }),
+      );
+    });
+
+    describe('when `getTransferLocations` API call fails', () => {
+      it('displays dismissible error alert', async () => {
+        mockResolvedGetTransferLocations();
+        createComponent();
+        await showNamespaceSelect();
+        mockRejectedGetTransferLocations();
+        findNamespaceSelect().vm.$emit('search', 'foo');
+        await waitForPromises();
+
+        const alert = findAlert();
+
+        expect(alert.exists()).toBe(true);
+
+        alert.vm.$emit('dismiss');
+        await nextTick();
+
+        expect(alert.exists()).toBe(false);
+      });
     });
   });
 
   describe('when `load-more-groups` event is fired', () => {
-    let queryHandler;
-
     const arrange = async () => {
-      queryHandler = jest.fn();
-      queryHandler.mockResolvedValueOnce(
-        searchNamespacesWhereUserCanTransferProjectsQueryResponsePage1,
-      );
-      queryHandler.mockResolvedValueOnce(
-        searchNamespacesWhereUserCanTransferProjectsQueryResponsePage2,
-      );
+      mockResolvedGetTransferLocations();
+      createComponent();
+      await showNamespaceSelect();
 
-      createComponent({
-        requestHandlers: [[searchNamespacesWhereUserCanTransferProjectsQuery, queryHandler]],
+      mockResolvedGetTransferLocations({
+        data: transferLocationsResponsePage2,
+        page: '2',
+        nextPage: null,
+        prevPage: '1',
       });
-
-      runDebounce();
-      await waitForPromises();
 
       findNamespaceSelect().vm.$emit('load-more-groups');
       await nextTick();
     };
 
-    it('sets `isLoadingMoreGroups` prop to `true`', async () => {
+    it('sets `isLoading` prop to `true`', async () => {
       await arrange();
 
-      expect(findNamespaceSelect().props('isLoadingMoreGroups')).toBe(true);
+      expect(findNamespaceSelect().props('isLoading')).toBe(true);
     });
 
-    it('passes `after` and `first` variables to query', async () => {
+    it('passes `page` param to API call', async () => {
       await arrange();
 
-      runDebounce();
       await waitForPromises();
 
-      expect(queryHandler).toHaveBeenCalledWith(
-        expect.objectContaining({
-          first: 25,
-          after:
-            searchNamespacesWhereUserCanTransferProjectsQueryResponsePage1.data.currentUser.groups
-              .pageInfo.endCursor,
-        }),
+      expect(getTransferLocations).toHaveBeenCalledWith(
+        projectId,
+        expect.objectContaining({ page: 2 }),
       );
     });
 
     it('updates `groupNamespaces` prop with new groups', async () => {
       await arrange();
 
-      runDebounce();
       await waitForPromises();
 
-      expect(findNamespaceSelect().props('groupNamespaces')).toEqual(
-        [
-          ...searchNamespacesWhereUserCanTransferProjectsQueryResponsePage1.data.currentUser.groups
-            .nodes,
-          ...searchNamespacesWhereUserCanTransferProjectsQueryResponsePage2.data.currentUser.groups
-            .nodes,
-        ].map((node) => ({
-          id: getIdFromGraphQLId(node.id),
-          humanName: node.fullName,
-        })),
+      expect(findNamespaceSelect().props('groupNamespaces')).toMatchObject(
+        [...transferLocationsResponsePage1, ...transferLocationsResponsePage2].map(
+          ({ id, full_name: humanName }) => ({
+            id,
+            humanName,
+          }),
+        ),
       );
     });
 
     it('updates `hasNextPageOfGroups` prop', async () => {
       await arrange();
 
-      runDebounce();
       await waitForPromises();
 
       expect(findNamespaceSelect().props('hasNextPageOfGroups')).toBe(false);
+    });
+
+    describe('when `getTransferLocations` API call fails', () => {
+      it('displays error alert', async () => {
+        mockResolvedGetTransferLocations();
+        createComponent();
+        await showNamespaceSelect();
+        mockRejectedGetTransferLocations();
+        findNamespaceSelect().vm.$emit('load-more-groups');
+        await waitForPromises();
+
+        expect(findAlert().exists()).toBe(true);
+      });
     });
   });
 });

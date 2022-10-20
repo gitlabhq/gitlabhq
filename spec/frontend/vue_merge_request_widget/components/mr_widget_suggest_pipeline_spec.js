@@ -57,7 +57,7 @@ describe('MRWidgetSuggestPipeline', () => {
       });
 
       it('renders widget icon', () => {
-        const icon = wrapper.find(MrWidgetIcon);
+        const icon = wrapper.findComponent(MrWidgetIcon);
 
         expect(icon.exists()).toBe(true);
         expect(icon.props()).toEqual(
@@ -115,7 +115,7 @@ describe('MRWidgetSuggestPipeline', () => {
     });
 
     describe('dismissible', () => {
-      const findDismissContainer = () => wrapper.find(dismissibleContainer);
+      const findDismissContainer = () => wrapper.findComponent(dismissibleContainer);
 
       beforeEach(() => {
         wrapper = shallowMount(suggestPipelineComponent, { propsData: suggestProps });

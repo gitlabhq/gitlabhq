@@ -46,18 +46,6 @@ RSpec.describe 'Developer creates tag' do
       end
     end
 
-    it 'with multiline release notes parses the release note as Markdown' do
-      create_tag_in_form(tag: 'v4.0', ref: 'master', desc: "Awesome release notes\n\n- hello\n- world")
-
-      expect(page).to have_current_path(
-        project_tag_path(project, 'v4.0'), ignore_query: true)
-      expect(page).to have_content 'v4.0'
-      page.within '.description' do
-        expect(page).to have_content 'Awesome release notes'
-        expect(page).to have_selector('ul li', count: 2)
-      end
-    end
-
     it 'opens dropdown for ref', :js do
       click_link 'New tag'
       ref_row = find('.form-group:nth-of-type(2) .col-sm-12')
@@ -70,19 +58,6 @@ RSpec.describe 'Developer creates tag' do
 
         expect(find('.dropdown-menu')).to have_content 'empty-branch'
       end
-    end
-  end
-
-  context 'from new tag page' do
-    before do
-      visit new_project_tag_path(project)
-    end
-
-    it 'description has emoji autocomplete', :js do
-      find('#release_description').native.send_keys('')
-      fill_in 'release_description', with: ':'
-
-      expect(page).to have_selector('.atwho-view')
     end
   end
 

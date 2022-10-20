@@ -28,7 +28,7 @@ RSpec.describe Deployment do
     let(:deployment) { create(:deployment) }
 
     it 'delegates to environment_manual_actions' do
-      expect(deployment.deployable).to receive(:environment_manual_actions).and_call_original
+      expect(deployment.deployable).to receive(:other_manual_actions).and_call_original
 
       deployment.manual_actions
     end
@@ -38,7 +38,7 @@ RSpec.describe Deployment do
     let(:deployment) { create(:deployment) }
 
     it 'delegates to environment_scheduled_actions' do
-      expect(deployment.deployable).to receive(:environment_scheduled_actions).and_call_original
+      expect(deployment.deployable).to receive(:other_scheduled_actions).and_call_original
 
       deployment.scheduled_actions
     end
@@ -171,8 +171,19 @@ RSpec.describe Deployment do
       end
 
       it 'executes Deployments::DropOlderDeploymentsWorker asynchronously' do
+        stub_feature_flags(prevent_outdated_deployment_jobs: false)
+
         expect(Deployments::DropOlderDeploymentsWorker)
             .to receive(:perform_async).once.with(deployment.id)
+
+        deployment.run!
+      end
+
+      it 'does not execute Deployments::DropOlderDeploymentsWorker when FF enabled' do
+        stub_feature_flags(prevent_outdated_deployment_jobs: true)
+
+        expect(Deployments::DropOlderDeploymentsWorker)
+          .not_to receive(:perform_async).with(deployment.id)
 
         deployment.run!
       end

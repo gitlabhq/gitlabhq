@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Compliance report **(ULTIMATE)**
@@ -72,7 +72,7 @@ The following is a list of violations that are either:
 When you select a row, a drawer is shown that provides further details about the merge
 request:
 
-- Project name and [compliance framework label](../../project/settings/index.md#compliance-frameworks),
+- Project name and [compliance framework label](../../project/settings/index.md#add-a-compliance-framework-to-a-project),
   if the project has one assigned.
 - Link to the merge request.
 - The merge request's branch path in the format `[source] into [target]`.

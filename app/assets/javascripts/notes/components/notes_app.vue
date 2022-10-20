@@ -1,7 +1,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
@@ -19,10 +19,12 @@ import DiscussionFilterNote from './discussion_filter_note.vue';
 import NoteableDiscussion from './noteable_discussion.vue';
 import NoteableNote from './noteable_note.vue';
 import SidebarSubscription from './sidebar_subscription.vue';
+import NotesActivityHeader from './notes_activity_header.vue';
 
 export default {
   name: 'NotesApp',
   components: {
+    NotesActivityHeader,
     NoteableNote,
     NoteableDiscussion,
     SystemNote,
@@ -45,6 +47,15 @@ export default {
     notesData: {
       type: Object,
       required: true,
+    },
+    notesFilters: {
+      type: Array,
+      required: true,
+    },
+    notesFilterValue: {
+      type: Number,
+      default: undefined,
+      required: false,
     },
     userData: {
       type: Object,
@@ -221,7 +232,7 @@ export default {
         .catch(() => {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
-          createFlash({
+          createAlert({
             message: __('Something went wrong while fetching comments. Please try again.'),
           });
         });
@@ -281,6 +292,7 @@ export default {
 <template>
   <div v-show="shouldShow" id="notes">
     <sidebar-subscription :iid="noteableData.iid" :noteable-data="noteableData" />
+    <notes-activity-header :notes-filters="notesFilters" :notes-filter-value="notesFilterValue" />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <comment-form
@@ -292,7 +304,11 @@ export default {
       <template #comments>
         <ul id="notes-list" class="notes main-notes-list timeline">
           <template v-for="discussion in allDiscussions">
-            <skeleton-loading-container v-if="discussion.isSkeletonNote" :key="discussion.id" />
+            <skeleton-loading-container
+              v-if="discussion.isSkeletonNote"
+              :key="discussion.id"
+              class="note-skeleton"
+            />
             <timeline-entry-item v-else-if="discussion.isDraft" :key="discussion.id">
               <draft-note :draft="discussion" />
             </timeline-entry-item>
@@ -327,7 +343,7 @@ export default {
               :help-page-path="helpPagePath"
             />
           </template>
-          <discussion-filter-note v-show="commentsDisabled" />
+          <discussion-filter-note v-if="commentsDisabled" />
         </ul>
       </template>
     </ordered-layout>

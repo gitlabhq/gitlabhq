@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Container Registry **(FREE)**
@@ -101,12 +101,14 @@ registry.example.com/mynamespace/myproject/my/image:rc1
 
 ## Authenticate with the Container Registry
 
-To authenticate with the Container Registry, you can use:
+To authenticate with the Container Registry, you can use a:
 
-- A [personal access token](../../profile/personal_access_tokens.md).
-- A [deploy token](../../project/deploy_tokens/index.md).
+- [Personal access token](../../profile/personal_access_tokens.md).
+- [Deploy token](../../project/deploy_tokens/index.md).
+- [Project access token](../../project/settings/project_access_tokens.md).
+- [Group access token](../../group/settings/group_access_tokens.md).
 
-Both of these require the minimum scope to be:
+All of these require the minimum scope to be:
 
 - For read (pull) access, `read_registry`.
 - For write (push) access, `write_registry` & `read_registry`.
@@ -397,10 +399,10 @@ To delete images from within GitLab:
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 
-   - Deleting the entire repository, and all the tags it contains, by clicking
+   - Deleting the entire repository, and all the tags it contains, by selecting
      the red **{remove}** **Trash** icon.
    - Navigating to the repository, and deleting tags individually or in bulk
-     by clicking the red **{remove}** **Trash** icon next to the tag you want
+     by selecting the red **{remove}** **Trash** icon next to the tag you want
      to delete.
 
 1. In the dialog box, select **Remove tag**.
@@ -601,7 +603,7 @@ You can then tag the manifest list with `mygroup/myapp:1.0.0`.
 ### Troubleshoot as a GitLab server administrator
 
 Troubleshooting the GitLab Container Registry, most of the times, requires
-you to log in to GitLab server with administrator access.
+you to sign in to GitLab server with administrator access.
 
 [Read how to troubleshoot the Container Registry](../../../administration/packages/container_registry.md#troubleshooting).
 
@@ -711,7 +713,7 @@ Follow [this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/55
 GitLab is [migrating to the next generation of the Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523).
 During the migration, you may encounter difficulty deleting tags.
 If you encounter an error, it's likely that your image repository is in the process of being migrated.
-Please wait a few minutes and try again.
+Wait a few minutes and try again.
 
 ### `unauthorized: authentication required` when pushing large images
 

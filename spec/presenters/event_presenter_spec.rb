@@ -51,6 +51,14 @@ RSpec.describe EventPresenter do
     it 'returns milestone for a milestone event' do
       expect(group_event.present).to have_attributes(target_type_name: 'milestone')
     end
+
+    it 'returns the issue_type for issue events' do
+      expect(build(:event, :for_issue, :created).present).to have_attributes(target_type_name: 'issue')
+    end
+
+    it 'returns the issue_type for work item events' do
+      expect(build(:event, :for_work_item, :created).present).to have_attributes(target_type_name: 'task')
+    end
   end
 
   describe '#note_target_type_name' do

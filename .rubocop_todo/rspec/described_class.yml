@@ -69,7 +69,6 @@ RSpec/DescribedClass:
     - 'ee/spec/services/resource_access_tokens/create_service_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/update_vulnerability_uuids_spec.rb'
     - 'ee/spec/services/users/captcha_challenge_service_spec.rb'
-    - 'ee/spec/services/vulnerabilities/create_from_security_finding_service_spec.rb'
     - 'ee/spec/workers/concerns/elastic/indexing_control_spec.rb'
     - 'ee/spec/workers/elastic/migration_worker_spec.rb'
     - 'ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb'

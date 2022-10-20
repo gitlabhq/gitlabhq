@@ -23,6 +23,7 @@ module MergeRequests
         cleanup_environments(merge_request)
         abort_auto_merge(merge_request, 'merge request was closed')
         cleanup_refs(merge_request)
+        trigger_merge_request_merge_status_updated(merge_request)
       end
 
       merge_request
@@ -37,6 +38,10 @@ module MergeRequests
         close_event = event_service.close_mr(merge_request, current_user)
         merge_request_metrics_service(merge_request).close(close_event)
       end
+    end
+
+    def trigger_merge_request_merge_status_updated(merge_request)
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
   end
 end

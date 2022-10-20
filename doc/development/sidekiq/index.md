@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Sidekiq guides
@@ -186,3 +186,9 @@ default weight, which is 1.
 
 Each Sidekiq worker must be tested using RSpec, just like any other class. These
 tests should be placed in `spec/workers`.
+
+## Interacting with Sidekiq Redis and APIs
+
+The application should minimise interaction with of any `Sidekiq.redis` and Sidekiq [APIs](https://github.com/mperham/sidekiq/blob/main/lib/sidekiq/api.rb). Such interactions in generic application logic should be abstracted to a [Sidekiq middleware](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/sidekiq_middleware) for re-use across teams. By decoupling application logic from Sidekiq's datastore, it allows for greater freedom when horizontally scaling the GitLab background processing setup.
+
+Some exceptions to this rule would be migration-related logic or administration operations.

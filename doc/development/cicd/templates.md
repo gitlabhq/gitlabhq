@@ -1,13 +1,13 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, concepts, howto
 ---
 
 # Development guide for GitLab CI/CD templates **(FREE)**
 
-This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md).
+This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md#cicd-templates).
 
 ## Requirements for CI/CD templates
 
@@ -391,7 +391,7 @@ This is useful information for reviewers to make sure the template is safe to be
 ### Make sure the new template can be selected in UI
 
 Templates located under some directories are also [selectable in the **New file** UI](#template-directories).
-When you add a template into one of those directories, make sure that it correctly appears in the dropdown:
+When you add a template into one of those directories, make sure that it correctly appears in the dropdown list:
 
 ![CI/CD template selection](img/ci_template_selection_v13_1.png)
 

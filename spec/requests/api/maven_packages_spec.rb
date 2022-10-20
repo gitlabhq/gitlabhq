@@ -254,7 +254,7 @@ RSpec.describe API::MavenPackages do
         let(:package_name) { package_in_project ? package_file.file_name : 'foo' }
 
         before do
-          allow_fetch_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
+          allow_fetch_cascade_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
         end
 
         it_behaves_like params[:shared_examples_name]
@@ -273,7 +273,7 @@ RSpec.describe API::MavenPackages do
 
           before do
             stub_feature_flags(maven_central_request_forwarding: false)
-            allow_fetch_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
+            allow_fetch_cascade_application_setting(attribute: 'maven_package_requests_forwarding', return_value: forward)
           end
 
           it_behaves_like params[:shared_examples_name]
@@ -438,21 +438,7 @@ RSpec.describe API::MavenPackages do
       it_behaves_like 'processing HEAD requests', instance_level: true
     end
 
-    context 'with check_maven_path_first enabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: true)
-      end
-
-      it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
-    end
-
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
-      end
-
-      it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
-    end
+    it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
   end
 
   describe 'GET /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
@@ -668,21 +654,7 @@ RSpec.describe API::MavenPackages do
     let(:path) { package.maven_metadatum.path }
     let(:url) { "/groups/#{group.id}/-/packages/maven/#{path}/#{package_file.file_name}" }
 
-    context 'with check_maven_path_first enabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: true)
-      end
-
-      it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
-    end
-
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
-      end
-
-      it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
-    end
+    it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
   end
 
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
@@ -774,21 +746,7 @@ RSpec.describe API::MavenPackages do
     let(:path) { package.maven_metadatum.path }
     let(:url) { "/projects/#{project.id}/packages/maven/#{path}/#{package_file.file_name}" }
 
-    context 'with check_maven_path_first enabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: true)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
-
-    context 'with check_maven_path_first disabled' do
-      before do
-        stub_feature_flags(check_maven_path_first: false)
-      end
-
-      it_behaves_like 'processing HEAD requests'
-    end
+    it_behaves_like 'processing HEAD requests'
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name/authorize' do
