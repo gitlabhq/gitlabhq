@@ -61,6 +61,8 @@ describe('RunnerJobsTable', () => {
         __('Project'),
         __('Commit'),
         s__('Job|Finished at'),
+        s__('Job|Duration'),
+        s__('Job|Queued'),
         s__('Runners|Tags'),
       ]);
     });
@@ -106,6 +108,22 @@ describe('RunnerJobsTable', () => {
       createComponent({ props: { jobs: mockJobsCopy } }, mountExtended);
 
       expect(findCell({ field: 'finished_at' }).text()).toBe('1 hour ago');
+    });
+
+    it('Formats duration time', () => {
+      mockJobsCopy[0].duration = 60;
+
+      createComponent({ props: { jobs: mockJobsCopy } }, mountExtended);
+
+      expect(findCell({ field: 'duration' }).text()).toBe('00:01:00');
+    });
+
+    it('Formats queued time', () => {
+      mockJobsCopy[0].queuedDuration = 30;
+
+      createComponent({ props: { jobs: mockJobsCopy } }, mountExtended);
+
+      expect(findCell({ field: 'queued' }).text()).toBe('00:00:30');
     });
 
     it('Formats tags', () => {

@@ -97,6 +97,13 @@ Whenever a project is forked, it copies the settings of the jobs that relate
 to it. This means that if you have shared runners set up for a project and
 someone forks that project, the shared runners serve jobs of this project.
 
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364303), you might encounter the message `An error occurred while forking the project. Please try again.` if the runner settings of the project you are forking does not match the new project namespace.
+
+To work around this issue, you should make sure that the shared runner settings are consistent in the forked project and the new namespace.
+
+- If shared runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
+- If shared runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
+
 ### Attack vectors in runners
 
 Mentioned briefly earlier, but the following things of runners can be exploited.

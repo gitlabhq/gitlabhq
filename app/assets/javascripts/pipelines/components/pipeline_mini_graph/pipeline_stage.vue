@@ -27,6 +27,7 @@ export default {
   },
   dropdownPopperOpts: {
     placement: 'bottom',
+    positionFixed: true,
   },
   components: {
     CiIcon,

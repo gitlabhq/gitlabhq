@@ -23312,6 +23312,9 @@ msgstr ""
 msgid "Job|Download"
 msgstr ""
 
+msgid "Job|Duration"
+msgstr ""
+
 msgid "Job|Erase job log and artifacts"
 msgstr ""
 
@@ -23349,6 +23352,9 @@ msgid "Job|Pending"
 msgstr ""
 
 msgid "Job|Preparing"
+msgstr ""
+
+msgid "Job|Queued"
 msgstr ""
 
 msgid "Job|Retry"

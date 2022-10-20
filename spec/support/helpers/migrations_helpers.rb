@@ -87,6 +87,8 @@ module MigrationsHelpers
     [ApplicationSetting, SystemHook].each do |model|
       model.define_attribute_methods
     end
+
+    Gitlab.ee { License.define_attribute_methods }
   end
 
   def reset_column_information(klass)

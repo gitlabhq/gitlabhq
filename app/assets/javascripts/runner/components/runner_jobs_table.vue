@@ -2,6 +2,7 @@
 import { GlTableLite } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { durationTimeFormatted } from '~/lib/utils/datetime_utility';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 import RunnerTags from '~/runner/components/runner_tags.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -47,6 +48,14 @@ export default {
     commitPath(job) {
       return job.commitPath;
     },
+    duration(job) {
+      const { duration } = job;
+      return duration ? durationTimeFormatted(duration) : '';
+    },
+    queued(job) {
+      const { queuedDuration } = job;
+      return queuedDuration ? durationTimeFormatted(queuedDuration) : '';
+    },
   },
   fields: [
     tableField({ key: 'status', label: s__('Job|Status') }),
@@ -54,6 +63,8 @@ export default {
     tableField({ key: 'project', label: __('Project') }),
     tableField({ key: 'commit', label: __('Commit') }),
     tableField({ key: 'finished_at', label: s__('Job|Finished at') }),
+    tableField({ key: 'duration', label: s__('Job|Duration') }),
+    tableField({ key: 'queued', label: s__('Job|Queued') }),
     tableField({ key: 'tags', label: s__('Runners|Tags') }),
   ],
 };
@@ -84,12 +95,20 @@ export default {
       <link-cell :href="commitPath(item)"> {{ commitShortSha(item) }}</link-cell>
     </template>
 
-    <template #cell(tags)="{ item = {} }">
-      <runner-tags :tag-list="item.tags" />
-    </template>
-
     <template #cell(finished_at)="{ item = {} }">
       <time-ago v-if="item.finishedAt" :time="item.finishedAt" />
+    </template>
+
+    <template #cell(duration)="{ item = {} }">
+      {{ duration(item) }}
+    </template>
+
+    <template #cell(queued)="{ item = {} }">
+      {{ queued(item) }}
+    </template>
+
+    <template #cell(tags)="{ item = {} }">
+      <runner-tags :tag-list="item.tags" />
     </template>
   </gl-table-lite>
 </template>

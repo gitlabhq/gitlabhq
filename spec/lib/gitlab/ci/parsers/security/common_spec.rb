@@ -400,28 +400,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         end
 
         describe 'parsing tracking' do
-          let(:tracking_data) do
-            {
-            'type' => 'source',
-            'items' => [
-              'signatures' => [
-                { 'algorithm' => 'hash', 'value' => 'hash_value' },
-                { 'algorithm' => 'location', 'value' => 'location_value' },
-                { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
-              ]
-            ]
-            }
-          end
-
-          context 'with valid tracking information' do
-            it 'creates signatures for each algorithm' do
-              finding = report.findings.first
-              expect(finding.signatures.size).to eq(3)
-              expect(finding.signatures.map(&:algorithm_type).to_set).to eq(Set['hash', 'location', 'scope_offset'])
-            end
-          end
-
           context 'with invalid tracking information' do
+            let(:finding) { report.findings.first }
+            let(:number_of_findings) { report.findings.length }
             let(:tracking_data) do
               {
               'type' => 'source',
@@ -435,14 +416,26 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
               }
             end
 
-            it 'ignores invalid algorithm types' do
-              finding = report.findings.first
+            it 'ignores invalid algorithm types and logs warning' do
               expect(finding.signatures.size).to eq(2)
               expect(finding.signatures.map(&:algorithm_type).to_set).to eq(Set['hash', 'location'])
             end
           end
 
           context 'with valid tracking information' do
+            let(:tracking_data) do
+              {
+              'type' => 'source',
+              'items' => [
+                'signatures' => [
+                  { 'algorithm' => 'hash', 'value' => 'hash_value' },
+                  { 'algorithm' => 'location', 'value' => 'location_value' },
+                  { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
+                ]
+              ]
+              }
+            end
+
             it 'creates signatures for each signature algorithm' do
               finding = report.findings.first
               expect(finding.signatures.size).to eq(3)

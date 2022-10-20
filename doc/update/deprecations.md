@@ -47,6 +47,22 @@ sole discretion of GitLab Inc.
 
 ## Announced in 15.5
 
+<div class="deprecation removal-157 breaking-change">
+
+### File Type variable expansion in `.gitlab-ci.yml`
+
+Planned removal: GitLab <span class="removal-milestone">15.7</span> ()
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, variables that referenced or applied alias file variables expanded the value of the `File` type variable. For example, the file contents. This behavior was incorrect because it did not comply with typical shell variable expansion rules. To leak secrets or sensitive information stored in `File` type variables, a user could run an $echo command with the variable as an input parameter.
+
+This breaking change fixes this issue but could disrupt user workflows that work around the behavior. With this change, job variable expansions that reference or apply alias file variables, expand to the file name or path of the `File` type variable, instead of its value, such as the file contents.
+
+</div>
+
 <div class="deprecation removal-160 breaking-change">
 
 ### GraphQL field `confidential` changed to `internal` on notes

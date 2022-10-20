@@ -36,11 +36,22 @@ class WebHook < ApplicationRecord
   validates :url, public_url: true, unless: ->(hook) { hook.is_a?(SystemHook) }
 
   validates :token, format: { without: /\n/ }
-  validates :push_events_branch_filter, branch_filter: true
+  after_initialize :initialize_url_variables
+  before_validation :set_branch_filter_nil, \
+    if: -> { branch_filter_strategy_all_branches? && enhanced_webhook_support_regex? }
+  validates :push_events_branch_filter, \
+    untrusted_regexp: true, if: -> { branch_filter_strategy_regex? && enhanced_webhook_support_regex? }
+  validates :push_events_branch_filter, \
+    "web_hooks/wildcard_branch_filter": true, if: -> { branch_filter_strategy_wildcard? }
+
   validates :url_variables, json_schema: { filename: 'web_hooks_url_variables' }
   validate :no_missing_url_variables
 
-  after_initialize :initialize_url_variables
+  enum branch_filter_strategy: {
+    wildcard: 0,
+    regex: 1,
+    all_branches: 2
+  }, _prefix: true
 
   scope :executable, -> do
     next all unless Feature.enabled?(:web_hooks_disable_failed)
@@ -223,5 +234,13 @@ class WebHook < ApplicationRecord
     return if missing.empty?
 
     errors.add(:url, "Invalid URL template. Missing keys: #{missing}")
+  end
+
+  def enhanced_webhook_support_regex?
+    Feature.enabled?(:enhanced_webhook_support_regex)
+  end
+
+  def set_branch_filter_nil
+    self.push_events_branch_filter = nil
   end
 end

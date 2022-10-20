@@ -157,13 +157,7 @@ module Gitlab
                 signature_value: value
               )
 
-              if signature.valid?
-                signature
-              else
-                e = SecurityReportParserError.new("Vulnerability tracking signature is not valid: #{signature}")
-                Gitlab::ErrorTracking.track_exception(e)
-                nil
-              end
+              signature if signature.valid?
             end.compact
           end
 

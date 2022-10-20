@@ -45,7 +45,7 @@ module API
 
           raise ArgumentError, "Can't find application setting for package_type #{package_type}" unless application_setting_name
 
-          if target.present? && Feature.enabled?(:cascade_package_forwarding_settings, target)
+          if target.present?
             target.public_send(application_setting_name) # rubocop:disable GitlabSecurity/PublicSend
           else
             ::Gitlab::CurrentSettings

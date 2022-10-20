@@ -20,7 +20,7 @@ module WebHooks
 
       unless hook.valid?
         self.hooks = relation.select(&:persisted?)
-        flash[:alert] = hook.errors.full_messages.join.html_safe
+        flash[:alert] = hook.errors.full_messages.to_sentence.html_safe
       end
 
       redirect_to action: :index
@@ -64,7 +64,9 @@ module WebHooks
     end
 
     def hook_param_names
-      %i[enable_ssl_verification token url push_events_branch_filter]
+      param_names = %i[enable_ssl_verification token url push_events_branch_filter]
+      param_names.push(:branch_filter_strategy) if Feature.enabled?(:enhanced_webhook_support_regex)
+      param_names
     end
 
     def destroy_hook(hook)
