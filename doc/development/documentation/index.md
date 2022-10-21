@@ -181,32 +181,30 @@ To prepare an update to the `CODEOWNERS` file:
    bundle exec rake tw:codeowners > ~/Desktop/updates.md
    ```
 
-1. Open the file you just created (`~/Desktop/updates.md` in this example), and prepare the output:
-   - Find and replace `./` with `/`.
-   - Sort the lines in alphabetical (ascending) order. If you use VS Code, you can
-     select everything, press <kbd>F1</kbd>, type `sort`, and select **Sort lines (ascending, case insensitive**.
-1. Create a new branch for your `CODEOWNERS` updates.
-1. Replace the documentation-related lines in the `^[Documentation Pages]` section
-   with the output you prepared.
-
-   WARNING:
-   The documentation section is not the last section of the `CODEOWNERS` file. Don't
-   delete data that isn't ours!
-
-1. Create a commit with the raw changes.
-1. From the command line, run `git diff master`.
-1. In the diff, look for directory-level assignments to manually restore to the
-   `CODEOWNERS` file. If all files in a single directory are assigned to the same
-   technical writer, we simplify these entries. Remove all the lines for the individual
-   files, and leave a single entry for the directory, for example: `/doc/directory/ @tech.writer`.
-1. In the diff, look for changes that don't match your expectations:
+1. Open the file you just created (`~/Desktop/updates.md` in this example). Check
+   that the lines are in alphabetical (ascending) order. If you have to sort
+   the lines and you use VS Code, you can select everything, press <kbd>F1</kbd>,
+   type `sort`, and select **Sort lines (ascending, case insensitive)**.
+1. In the output, look for changes that don't match your expectations:
    - New pages, or newly moved pages, show up as added lines.
    - Deleted pages, and pages that are now redirects, show up as deleted lines.
    - If you see an unusual number of changes to pages that all seem related,
      check the metadata for the pages. A group might have been renamed and the Rake task
      must be updated to match.
-1. Create another commit with your manual changes, and create a second merge request
-   with your changes to the `CODEOWNERS` file. Assign it to a technical writing manager for review.
+   - If all files in a single directory are assigned to the same
+     technical writer, simplify these entries. Remove all the lines for the individual
+     files, and leave a single entry for the directory, for example: `/doc/directory/ @tech.writer`.
+1. When you are happy with the output, create a new branch to update the
+   [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)
+   file. Replace the documentation-related lines in the `^[Documentation Pages]`
+   section with the output you prepared.
+
+   WARNING:
+   The documentation section is not the last section of the `CODEOWNERS` file. Don't
+   delete data that isn't ours!
+
+1. Create a merge request from this branch with your changes to the `CODEOWNERS` file.
+   Assign it to a technical writing manager for review.
 
 ## Move, rename, or delete a page
 

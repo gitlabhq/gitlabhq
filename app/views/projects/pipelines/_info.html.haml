@@ -45,7 +45,7 @@
       - if @pipeline.stuck?
         = gl_badge_tag s_('Pipelines|stuck'), { variant: :warning, size: :sm }, { class: 'js-pipeline-url-stuck has-tooltip' }
 
-  .well-segment.branch-info
+  .well-segment
     .icon-container.commit-icon
       = sprite_icon('commit', css_class: 'gl-top-0!')
     = link_to commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha"

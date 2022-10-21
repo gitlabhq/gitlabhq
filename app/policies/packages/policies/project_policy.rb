@@ -52,3 +52,5 @@ module Packages
     end
   end
 end
+
+Packages::Policies::ProjectPolicy.prepend_mod_with('Packages::Policies::ProjectPolicy')

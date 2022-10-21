@@ -82,6 +82,9 @@
 .if-merge-request-labels-pipeline-revert: &if-merge-request-labels-pipeline-revert
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:revert/'
 
+.if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
+  if: '$CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -845,6 +848,7 @@
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-automated-merge-request
@@ -861,10 +865,10 @@
     - !reference [".frontend:rules:minimal-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
       when: never
-    - changes: *core-frontend-patterns
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
       when: never
     - <<: *if-merge-request
-      changes: *ci-patterns
+      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns

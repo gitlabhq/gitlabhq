@@ -262,6 +262,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/alert_management_settings.css"
     config.assets.precompile << "page_bundles/billings.css"
     config.assets.precompile << "page_bundles/boards.css"
+    config.assets.precompile << "page_bundles/branches.css"
     config.assets.precompile << "page_bundles/build.css"
     config.assets.precompile << "page_bundles/ci_status.css"
     config.assets.precompile << "page_bundles/cluster_agents.css"

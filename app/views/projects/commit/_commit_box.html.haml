@@ -30,7 +30,7 @@
       = preserve(markdown_field(@commit, :description))
 
 .info-well.js-commit-box-info{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
-  .well-segment.branch-info
+  .well-segment
     .icon-container.commit-icon
       = custom_icon("icon_commit")
     %span.cgray= n_('parent', 'parents', @commit.parents.count)

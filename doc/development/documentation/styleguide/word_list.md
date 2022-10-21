@@ -77,9 +77,9 @@ Instead of:
 - The documentation is written by contributors.
 
 NOTE:
-If you can add the phrase "by zombies" to the end of the sentence,
+If you can add the phrase "by zombies" to the phrase,
 the construction is passive. For example, `The button is selected by zombies`
-is passive. `Select the button` is active.
+is passive. `Zombies select the button` is active.
 
 ## administrator
 

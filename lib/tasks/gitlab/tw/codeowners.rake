@@ -66,7 +66,7 @@ namespace :tw do
       CodeOwnerRule.new('Redirect', 'Redirect'),
       CodeOwnerRule.new('Release', '@rdickenson'),
       CodeOwnerRule.new('Respond', '@msedlakjakubowski'),
-      CodeOwnerRule.new('Runner', '@sselhorn'),
+      CodeOwnerRule.new('Runner', '@fneill'),
       CodeOwnerRule.new('Pods', '@jglassman1'),
       CodeOwnerRule.new('Security Policies', '@claytoncornell'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
