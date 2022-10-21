@@ -39,9 +39,9 @@ module QA
       let(:invalid_content) do
         <<~YAML
 
-        job3:
-        stage: stage_foo
-        script: echo 'Done.'
+          job3:
+          stage: stage_foo
+          script: echo 'Done.'
         YAML
       end
 
@@ -102,6 +102,10 @@ module QA
               expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')
 
               show.go_to_view_merged_yaml_tab
+
+              # TODO: remove this retry when
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/378536 is resolved
+              show.retry_until(max_attempts: 2, reload: true, sleep_interval: 1) { show.has_no_alert? }
               expect(show).to have_source_editor
 
               expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')

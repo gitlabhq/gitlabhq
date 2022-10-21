@@ -148,6 +148,11 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
+    shouldEnableBulkDelete() {
+      // Feature flag for `runners_group_bulk_delete`
+      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/378090
+      return this.glFeatures?.runnersGroupBulkDelete;
+    },
   },
   watch: {
     search: {
@@ -246,7 +251,12 @@ export default {
       :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
-      <runner-list :runners="runners.items" :loading="runnersLoading" @deleted="onDeleted">
+      <runner-list
+        :runners="runners.items"
+        :checkable="shouldEnableBulkDelete"
+        :loading="runnersLoading"
+        @deleted="onDeleted"
+      >
         <template #runner-name="{ runner }">
           <gl-link :href="webUrl(runner)">
             <runner-name :runner="runner" />

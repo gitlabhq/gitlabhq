@@ -94,9 +94,7 @@ Our criteria for the separation of duties is as follows:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
 > - Chain of Custody reports sent using email [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342594) in GitLab 15.3 with a flag named `async_chain_of_custody_report`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default sending Chain of Custody reports through email is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `async_chain_of_custody_report`. On GitLab.com, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370100) in GitLab 15.5. Feature flag `async_chain_of_custody_report` removed.
 
 The Chain of Custody report allows customers to export a list of merge commits within the group.
 The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
@@ -112,7 +110,7 @@ To generate the Chain of Custody report:
 The Chain of Custody report is either:
 
 - Available for download.
-- Sent through email. Requires GitLab 15.3 and later with `async_chain_of_custody_report` feature flag enabled.
+- Sent through email. Requires GitLab 15.5 and later.
 
 ### Commit-specific Chain of Custody report
 
@@ -131,7 +129,7 @@ Authenticated group owners can generate a commit-specific Chain of Custody repor
 The Chain of Custody report is either:
 
 - Available for download.
-- Sent through email. Requires GitLab 15.3 and later with `async_chain_of_custody_report` feature flag enabled.
+- Sent through email. Requires GitLab 15.5 and later.
 
 - Using a direct link: `https://gitlab.com/groups/<group-name>/-/security/merge_commit_reports.csv?commit_sha={optional_commit_sha}`, passing in an optional value to the
   `commit_sha` query parameter.

@@ -384,9 +384,24 @@ describe('GroupRunnersApp', () => {
     expect(findRunnerPagination().attributes('disabled')).toBe('true');
   });
 
-  it('runners cannot be deleted in bulk', () => {
-    createComponent();
-    expect(findRunnerList().props('checkable')).toBe(false);
+  describe('when runners_group_bulk_delete is disabled', () => {
+    beforeEach(() => {
+      createComponent({ provide: { glFeatures: { runnersGroupBulkDelete: false } } });
+    });
+
+    it('runners cannot be deleted in bulk', () => {
+      expect(findRunnerList().props('checkable')).toBe(false);
+    });
+  });
+
+  describe('when runners_group_bulk_delete is enabled', () => {
+    beforeEach(() => {
+      createComponent({ provide: { glFeatures: { runnersGroupBulkDelete: true } } });
+    });
+
+    it('runners can be deleted in bulk', () => {
+      expect(findRunnerList().props('checkable')).toBe(true);
+    });
   });
 
   describe('when no runners are found', () => {

@@ -263,6 +263,112 @@ To disable the feature, run this command:
 Feature.disable(:github_importer_lower_per_page_limit, group)
 ```
 
+## Import from GitHub Enterprise on an internal network
+
+If your GitHub Enterprise instance is on a internal network that is unaccessible to the internet, you can use a reverse proxy
+to allow GitLab.com to access the instance.
+
+The proxy needs to:
+
+- Forward requests to the GitHub Enterprise instance.
+- Convert to the public proxy hostname all occurrences of the internal hostname in:
+  - The API response body.
+  - The API response `Link` header.
+
+GitHub API uses the `Link` header for pagination.
+
+After configuring the proxy, test it by making API requests. Below there are some examples of commands to test the API:
+
+```shell
+curl --header "Authorization: Bearer <YOUR-TOKEN>" "https://{PROXY_HOSTNAME}/user"
+
+### URLs in the response body should use the proxy hostname
+
+{
+  "login": "example_username",
+  "id": 1,
+  "url": "https://{PROXY_HOSTNAME}/users/example_username",
+  "html_url": "https://{PROXY_HOSTNAME}/example_username",
+  "followers_url": "https://{PROXY_HOSTNAME}/api/v3/users/example_username/followers",
+  ...
+  "created_at": "2014-02-11T17:03:25Z",
+  "updated_at": "2022-10-18T14:36:27Z"
+}
+```
+
+```shell
+curl --head --header "Authorization: Bearer <YOUR-TOKEN>" "https://{PROXY_DOMAIN}/api/v3/repos/{repository_path}/pulls?states=all&sort=created&direction=asc"
+
+### Link header should use the proxy hostname
+
+HTTP/1.1 200 OK
+Date: Tue, 18 Oct 2022 21:42:55 GMT
+Server: GitHub.com
+Content-Type: application/json; charset=utf-8
+Cache-Control: private, max-age=60, s-maxage=60
+...
+X-OAuth-Scopes: repo
+X-Accepted-OAuth-Scopes:
+github-authentication-token-expiration: 2022-11-22 18:13:46 UTC
+X-GitHub-Media-Type: github.v3; format=json
+X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4997
+X-RateLimit-Reset: 1666132381
+X-RateLimit-Used: 3
+X-RateLimit-Resource: core
+Link: <https://{PROXY_DOMAIN}/api/v3/repositories/1/pulls?page=2>; rel="next", <https://{PROXY_DOMAIN}/api/v3/repositories/1/pulls?page=11>; rel="last"
+```
+
+Also test that cloning the repository using the proxy does not fail:
+
+```shell
+git clone -c http.extraHeader="Authorization: basic <base64 encode YOUR-TOKEN>" --mirror https://{PROXY_DOMAIN}/{REPOSITORY_PATH}.git
+```
+
+### Sample reverse proxy configuration
+
+The following configuration is an example on how to configure Apache HTTP Server as a reverse proxy
+
+WARNING:
+For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that
+configuration. See [sample Apache TLS/SSL configuration](https://ssl-config.mozilla.org/#server=apache&version=2.4.41&config=intermediate&openssl=1.1.1k&guideline=5.6).
+
+```plaintext
+# Required modules
+LoadModule filter_module lib/httpd/modules/mod_filter.so
+LoadModule reflector_module lib/httpd/modules/mod_reflector.so
+LoadModule substitute_module lib/httpd/modules/mod_substitute.so
+LoadModule deflate_module lib/httpd/modules/mod_deflate.so
+LoadModule headers_module lib/httpd/modules/mod_headers.so
+LoadModule proxy_module lib/httpd/modules/mod_proxy.so
+LoadModule proxy_connect_module lib/httpd/modules/mod_proxy_connect.so
+LoadModule proxy_http_module lib/httpd/modules/mod_proxy_http.so
+LoadModule ssl_module lib/httpd/modules/mod_ssl.so
+
+<VirtualHost GITHUB_ENTERPRISE_HOSTNAME:80>
+  ServerName GITHUB_ENTERPRISE_HOSTNAME
+
+  # Enables reverse-proxy configuration with SSL support
+  SSLProxyEngine On
+  ProxyPass "/" "https://GITHUB_ENTERPRISE_HOSTNAME/"
+  ProxyPassReverse "/" "https://GITHUB_ENTERPRISE_HOSTNAME/"
+
+  # Replaces occurrences of the local GitHub Enterprise URL with the Proxy URL
+  # GitHub Enterprise compresses the responses, the filters INFLATE and DEFLATE needs to be used to
+  # decompress and compress the response back
+  AddOutputFilterByType INFLATE;SUBSTITUTE;DEFLATE application/json
+  Substitute "s|https://GITHUB_ENTERPRISE_HOSTNAME|https://PROXY_HOSTNAME|ni"
+  SubstituteMaxLineLength 50M
+
+  # GitHub API uses the response header "Link" for the API pagination
+  # For example:
+  #   <https://example.com/api/v3/repositories/1/issues?page=2>; rel="next", <https://example.com/api/v3/repositories/1/issues?page=3>; rel="last"
+  # The directive below replaces all occurrences of the GitHub Enterprise URL with the Proxy URL if the
+  # response header Link is present
+  Header edit* Link "https://GITHUB_ENTERPRISE_HOSTNAME" "https://PROXY_HOSTNAME"
+</VirtualHost>
+```
+
 ## Automate group and project import **(PREMIUM)**
 
 For information on automating user, group, and project import API calls, see
@@ -279,8 +385,8 @@ repository to be imported manually. Administrators can manually import the repos
 1. Run the following series of commands in the console:
 
    ```ruby
-   project_id = <PROJECT_ID> 
-   github_access_token =  <GITHUB_ACCESS_TOKEN> 
+   project_id = <PROJECT_ID>
+   github_access_token =  <GITHUB_ACCESS_TOKEN>
    github_repository_path = '<GROUP>/<REPOSITORY>'
 
    github_repository_url = "https://#{github_access_token}@github.com/#{github_repository_path}.git"

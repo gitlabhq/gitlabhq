@@ -4455,9 +4455,6 @@ msgstr ""
 msgid "An error occurred while trying to follow this user, please try again."
 msgstr ""
 
-msgid "An error occurred while trying to generate the report. Please try again later."
-msgstr ""
-
 msgid "An error occurred while trying to render the content editor. Please try again."
 msgstr ""
 
@@ -42864,6 +42861,12 @@ msgid "Two-factor authentication has been disabled for this user"
 msgstr ""
 
 msgid "Two-factor authentication has been disabled for your GitLab account."
+msgstr ""
+
+msgid "Two-factor authentication has been disabled successfully for %{user_email}!"
+msgstr ""
+
+msgid "Two-factor authentication has been disabled successfully for %{username}!"
 msgstr ""
 
 msgid "Two-factor authentication has been disabled successfully!"

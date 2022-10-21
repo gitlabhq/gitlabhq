@@ -3,7 +3,7 @@
 module TwoFactor
   class DestroyService < ::TwoFactor::BaseService
     def execute
-      return error(_('You are not authorized to perform this action')) unless can?(current_user, :disable_two_factor, user)
+      return error(_('You are not authorized to perform this action')) unless authorized?
       return error(_('Two-factor authentication is not enabled for this user')) unless user.two_factor_enabled?
 
       result = disable_two_factor
@@ -14,6 +14,10 @@ module TwoFactor
     end
 
     private
+
+    def authorized?
+      can?(current_user, :disable_two_factor, user)
+    end
 
     def disable_two_factor
       ::Users::UpdateService.new(current_user, user: user).execute do |user|
