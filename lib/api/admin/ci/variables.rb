@@ -43,6 +43,7 @@ module API
               desc 'Create a new instance-level variable' do
                 success Entities::Ci::Variable
               end
+              route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
               params do
                 requires :key,
                   type: String,
@@ -80,6 +81,7 @@ module API
               desc 'Update an existing instance-variable' do
                 success Entities::Ci::Variable
               end
+              route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
               params do
                 optional :key,
                   type: String,

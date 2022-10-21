@@ -43,6 +43,7 @@ module API
       desc 'Create a new variable in a group' do
         success Entities::Ci::Variable
       end
+      route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
       params do
         requires :key, type: String, desc: 'The key of the variable'
         requires :value, type: String, desc: 'The value of the variable'
@@ -74,6 +75,7 @@ module API
       desc 'Update an existing variable from a group' do
         success Entities::Ci::Variable
       end
+      route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
       params do
         optional :key, type: String, desc: 'The key of the variable'
         optional :value, type: String, desc: 'The value of the variable'

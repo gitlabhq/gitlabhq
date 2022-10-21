@@ -83,6 +83,15 @@ RSpec.describe ::API::Admin::Ci::Variables do
         expect(json_response['variable_type']).to eq('env_var')
       end
 
+      it 'masks the new value when logging' do
+        masked_params = { 'key' => 'VAR_KEY', 'value' => '[FILTERED]', 'protected' => 'true', 'masked' => 'true' }
+
+        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+        post api("/admin/ci/variables", user),
+          params: { key: 'VAR_KEY', value: 'SENSITIVE', protected: true, masked: true }
+      end
+
       it 'creates variable with optional attributes', :aggregate_failures do
         expect do
           post api('/admin/ci/variables', admin),
@@ -161,6 +170,15 @@ RSpec.describe ::API::Admin::Ci::Variables do
         expect(variable.reload).to be_protected
         expect(json_response['variable_type']).to eq('file')
         expect(json_response['masked']).to be_truthy
+      end
+
+      it 'masks the new value when logging' do
+        masked_params = { 'value' => '[FILTERED]', 'protected' => 'true', 'masked' => 'true' }
+
+        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+        put api("/admin/ci/variables/#{variable.key}", admin),
+          params: { value: 'SENSITIVE', protected: true, masked: true }
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

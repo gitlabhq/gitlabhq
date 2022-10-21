@@ -101,7 +101,7 @@ To avoid this scenario:
 1. Select the **Prevent outdated deployment jobs** checkbox.
 1. Select **Save changes**.
 
-For more information, see [Deployment safety](../environments/deployment_safety.md).
+For more information, see [Deployment safety](../environments/deployment_safety.md#prevent-outdated-deployment-jobs).
 
 ## Specify a custom CI/CD configuration file
 

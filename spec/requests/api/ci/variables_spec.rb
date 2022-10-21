@@ -126,9 +126,18 @@ RSpec.describe API::Ci::Variables do
         expect(json_response['variable_type']).to eq('env_var')
       end
 
+      it 'masks the new value when logging' do
+        masked_params = { 'key' => 'VAR_KEY', 'value' => '[FILTERED]', 'protected' => 'true', 'masked' => 'true' }
+
+        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+        post api("/projects/#{project.id}/variables", user),
+          params: { key: 'VAR_KEY', value: 'SENSITIVE', protected: true, masked: true }
+      end
+
       it 'creates variable with optional attributes' do
         expect do
-          post api("/projects/#{project.id}/variables", user), params: { variable_type: 'file',  key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
+          post api("/projects/#{project.id}/variables", user), params: { variable_type: 'file', key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
         end.to change { project.variables.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
@@ -204,6 +213,15 @@ RSpec.describe API::Ci::Variables do
         expect(updated_variable.value).to eq('VALUE_1_UP')
         expect(updated_variable).to be_protected
         expect(updated_variable.variable_type).to eq('file')
+      end
+
+      it 'masks the new value when logging' do
+        masked_params = { 'value' => '[FILTERED]', 'protected' => 'true' }
+
+        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+        put api("/projects/#{project.id}/variables/#{variable.key}", user),
+          params: { value: 'SENSITIVE', protected: true }
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

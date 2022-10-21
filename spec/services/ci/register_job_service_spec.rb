@@ -14,25 +14,29 @@ module Ci
     let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
     describe '#execute' do
-      context 'checks database loadbalancing stickiness' do
-        subject { described_class.new(shared_runner).execute }
+      subject { described_class.new(shared_runner).execute }
 
+      context 'checks database loadbalancing stickiness' do
         before do
           project.update!(shared_runners_enabled: false)
         end
 
-        it 'result is valid if replica did caught-up' do
+        it 'result is valid if replica did caught-up', :aggregate_failures do
           expect(ApplicationRecord.sticking).to receive(:all_caught_up?)
             .with(:runner, shared_runner.id) { true }
 
           expect(subject).to be_valid
+          expect(subject.build).to be_nil
+          expect(subject.build_json).to be_nil
         end
 
-        it 'result is invalid if replica did not caught-up' do
+        it 'result is invalid if replica did not caught-up', :aggregate_failures do
           expect(ApplicationRecord.sticking).to receive(:all_caught_up?)
             .with(:runner, shared_runner.id) { false }
 
           expect(subject).not_to be_valid
+          expect(subject.build).to be_nil
+          expect(subject.build_json).to be_nil
         end
       end
 
@@ -954,6 +958,7 @@ module Ci
 
         expect(result).not_to be_valid
         expect(result.build).to be_nil
+        expect(result.build_json).to be_nil
       end
     end
 

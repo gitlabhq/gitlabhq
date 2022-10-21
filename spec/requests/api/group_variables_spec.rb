@@ -102,6 +102,15 @@ RSpec.describe API::GroupVariables do
         expect(json_response['environment_scope']).to eq('*')
       end
 
+      it 'masks the new value when logging' do
+        masked_params = { 'key' => 'VAR_KEY', 'value' => '[FILTERED]', 'protected' => 'true', 'masked' => 'true' }
+
+        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+        post api("/groups/#{group.id}/variables", user),
+          params: { key: 'VAR_KEY', value: 'SENSITIVE', protected: true, masked: true }
+      end
+
       it 'creates variable with optional attributes' do
         expect do
           post api("/groups/#{group.id}/variables", user), params: { variable_type: 'file', key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
@@ -162,6 +171,15 @@ RSpec.describe API::GroupVariables do
         expect(updated_variable).to be_protected
         expect(json_response['variable_type']).to eq('file')
         expect(json_response['masked']).to be_truthy
+      end
+
+      it 'masks the new value when logging' do
+        masked_params = { 'value' => '[FILTERED]', 'protected' => 'true', 'masked' => 'true' }
+
+        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+        put api("/groups/#{group.id}/variables/#{variable.key}", user),
+          params: { value: 'SENSITIVE', protected: true, masked: true }
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
