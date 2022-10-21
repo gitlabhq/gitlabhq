@@ -73,7 +73,7 @@ module GoogleCloud
       includes << { 'remote' => include_url }
       gitlab_ci_yml['include'] = includes.uniq
 
-      gitlab_ci_yml.to_yaml
+      gitlab_ci_yml.deep_stringify_keys.to_yaml
     end
   end
 end

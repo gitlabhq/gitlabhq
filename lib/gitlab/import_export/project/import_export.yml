@@ -585,7 +585,7 @@ included_attributes:
     - :target_sha
   pipeline_metadata:
     - :project_id
-    - :title
+    - :name
   stages:
     - :name
     - :status

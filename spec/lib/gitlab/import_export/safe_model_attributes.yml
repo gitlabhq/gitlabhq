@@ -336,7 +336,7 @@ Ci::PipelineMetadata:
 - id
 - project_id
 - pipeline_id
-- title
+- name
 Ci::Stage:
 - id
 - name

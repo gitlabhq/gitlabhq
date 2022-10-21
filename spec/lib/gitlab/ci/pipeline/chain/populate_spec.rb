@@ -262,7 +262,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
       it 'builds pipeline_metadata' do
         run_chain
 
-        expect(pipeline.pipeline_metadata.title).to eq('Pipeline name')
+        expect(pipeline.pipeline_metadata.name).to eq('Pipeline name')
         expect(pipeline.pipeline_metadata.project).to eq(pipeline.project)
       end
 

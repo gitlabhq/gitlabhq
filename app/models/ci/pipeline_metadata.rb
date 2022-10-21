@@ -9,6 +9,6 @@ module Ci
 
     validates :pipeline, presence: true
     validates :project, presence: true
-    validates :title, presence: true, length: { minimum: 1, maximum: 255 }
+    validates :name, presence: true, length: { minimum: 1, maximum: 255 }
   end
 end

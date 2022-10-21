@@ -352,7 +352,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         resources :alert_management, only: [:index] do
-          get 'details', on: :member
+          member do
+            get 'details(/*page)', to: 'alert_management#details', as: 'details'
+          end
         end
 
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'

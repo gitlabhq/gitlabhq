@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 
 export default function createRouter(base) {
   return new VueRouter({
-    mode: 'hash',
+    mode: 'history',
     base: joinPaths(gon.relative_url_root || '', base),
     routes: [{ path: '/:tabId', name: 'tab' }],
   });

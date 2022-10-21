@@ -23,7 +23,7 @@ module Gitlab
 
           def validate_self_monitoring_project_exists(result)
             unless project_created? || self_monitoring_project_id.present?
-              return error(_('Self monitoring project does not exist'))
+              return error(_('Self-monitoring project does not exist'))
             end
 
             success(result)

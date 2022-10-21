@@ -15,9 +15,17 @@ Vue.use(VueApollo);
 
 export default (selector) => {
   const domEl = document.querySelector(selector);
-  const { alertId, projectPath, projectIssuesPath, projectId, page, canUpdate } = domEl.dataset;
+  const {
+    alertId,
+    projectPath,
+    projectIssuesPath,
+    projectAlertManagementDetailsPath,
+    projectId,
+    page,
+    canUpdate,
+  } = domEl.dataset;
   const iid = alertId;
-  const router = createRouter();
+  const router = createRouter(projectAlertManagementDetailsPath);
 
   const resolvers = {
     Mutation: {

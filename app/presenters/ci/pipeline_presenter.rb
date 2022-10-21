@@ -53,6 +53,7 @@ module Ci
       }.freeze
     end
 
+    delegator_override :name
     def name
       # Currently, `merge_request_event_type` is the only source to name pipelines
       # but this could be extended with the other types in the future.

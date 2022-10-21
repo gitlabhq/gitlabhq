@@ -110,6 +110,7 @@ RSpec.describe Projects::AlertManagementHelper do
   describe '#alert_management_detail_data' do
     let(:alert_id) { 1 }
     let(:issues_path) { project_issues_path(project) }
+    let(:details_alert_management_path) { details_project_alert_management_path(project, alert_id) }
     let(:can_update_alert) { true }
 
     before do
@@ -125,6 +126,7 @@ RSpec.describe Projects::AlertManagementHelper do
         'project-path' => project_path,
         'project-id' => project_id,
         'project-issues-path' => issues_path,
+        'project-alert-management-details-path' => details_alert_management_path,
         'page' => 'OPERATIONS',
         'can-update' => 'true'
       )

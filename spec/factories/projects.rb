@@ -467,6 +467,10 @@ FactoryBot.define do
     end
   end
 
+  trait :in_group do
+    namespace factory: [:group]
+  end
+
   trait :in_subgroup do
     namespace factory: [:group, :nested]
   end

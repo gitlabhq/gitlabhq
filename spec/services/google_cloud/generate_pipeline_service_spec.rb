@@ -67,7 +67,7 @@ RSpec.describe GoogleCloud::GeneratePipelineService do
       let_it_be(:service_params) { { action: GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN } }
       let_it_be(:service) { described_class.new(project, maintainer, service_params) }
 
-      before do
+      before_all do
         project.add_maintainer(maintainer)
 
         file_name = '.gitlab-ci.yml'
@@ -102,6 +102,15 @@ EOF
         expect(pipeline[:stages]).to eq(%w[build test deploy])
         expect(pipeline[:include]).to be_present
         expect(gitlab_ci_yml).to include('https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library/-/raw/main/gcp/cloud-run.gitlab-ci.yml')
+      end
+
+      it 'stringifies keys from the existing pipelines' do
+        response = service.execute
+
+        branch_name = response[:branch_name]
+        gitlab_ci_yml = project.repository.gitlab_ci_yml_for(branch_name)
+
+        expect(YAML.safe_load(gitlab_ci_yml).keys).to eq(%w[stages build-java test-java include])
       end
     end
 

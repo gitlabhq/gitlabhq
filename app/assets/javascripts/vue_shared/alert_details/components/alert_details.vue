@@ -149,7 +149,9 @@ export default {
       },
       set(tabIdx) {
         const tabId = this.$options.tabsConfig[tabIdx].id;
-        this.$router.replace({ name: 'tab', params: { tabId } });
+        if (this.$route.params?.tabId !== tabId) {
+          this.$router.push({ name: 'tab', params: { tabId } });
+        }
       },
     },
     environmentName() {

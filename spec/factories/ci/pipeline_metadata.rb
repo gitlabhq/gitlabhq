@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :ci_pipeline_metadata, class: 'Ci::PipelineMetadata' do
-    title { 'Pipeline title' }
+    name { 'Pipeline name' }
 
     pipeline factory: :ci_empty_pipeline
     project

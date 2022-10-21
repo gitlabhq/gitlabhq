@@ -42,7 +42,7 @@ module Gitlab
 
             name = @command.yaml_processor_result.workflow_name
 
-            pipeline.build_pipeline_metadata(project: pipeline.project, title: name)
+            pipeline.build_pipeline_metadata(project: pipeline.project, name: name)
           end
 
           def stage_names

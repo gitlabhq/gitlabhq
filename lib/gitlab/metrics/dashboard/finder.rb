@@ -78,7 +78,7 @@ module Gitlab
           end
 
           def predefined_dashboard_services_for(project)
-            # Only list the self monitoring dashboard on the self monitoring project,
+            # Only list the self-monitoring dashboard on the self-monitoring project,
             # since it is the only dashboard (at time of writing) that shows data
             # about GitLab itself.
             if project.self_monitoring?
