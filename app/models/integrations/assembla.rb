@@ -12,6 +12,7 @@ module Integrations
       required: true
 
     field :subdomain,
+      exposes_secrets: true,
       placeholder: ''
 
     def title

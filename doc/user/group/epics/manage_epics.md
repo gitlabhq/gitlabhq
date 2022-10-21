@@ -339,9 +339,8 @@ automatically added to the epic.
 
 #### Add an existing issue to an epic
 
-You can add existing issues to an epic, including issues in a project in an epic's group, or any of
-the epic's subgroups. Newly added issues appear at the top of the list of
-issues in the **Epics and Issues** tab.
+You can add existing issues to an epic, including issues in a project from a [different group hierarchy](index.md#child-issues-from-different-group-hierarchies).
+Newly added issues appear at the top of the list of issues in the **Epics and Issues** tab.
 
 An epic contains a list of issues and an issue can be associated with at most one epic.
 When you add a new issue that's already linked to an epic, the issue is automatically unlinked from its
@@ -359,7 +358,8 @@ To add an existing issue to an epic:
 1. Identify the issue to be added, using either of the following methods:
    - Paste the link of the issue.
    - Search for the desired issue by entering part of the issue's title, then selecting the desired
-     match ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9126) in GitLab 12.5).
+     match ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9126) in GitLab 12.5). Issues
+     from different group hierarchies do not appear in search results. To add such an issue, enter its full URL.
 
    If there are multiple issues to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.

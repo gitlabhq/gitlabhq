@@ -9,6 +9,7 @@ module Integrations
       title: -> { s_('BambooService|Bamboo URL') },
       placeholder: -> { s_('https://bamboo.example.com') },
       help: -> { s_('BambooService|Bamboo service root URL.') },
+      exposes_secrets: true,
       required: true
 
     field :build_key,
@@ -36,14 +37,6 @@ module Integrations
       if: ->(service) { service.activated? && service.username }
 
     attr_accessor :response
-
-    before_validation :reset_password
-
-    def reset_password
-      if bamboo_url_changed? && !password_touched?
-        self.password = nil
-      end
-    end
 
     def title
       s_('BambooService|Atlassian Bamboo')

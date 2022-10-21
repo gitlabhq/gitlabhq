@@ -13,6 +13,7 @@ module Integrations
     field :project_url,
       title: -> { _('Pipeline URL') },
       placeholder: "#{ENDPOINT}/example-org/test-pipeline",
+      exposes_secrets: true,
       required: true
 
     field :token,

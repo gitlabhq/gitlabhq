@@ -7628,9 +7628,6 @@ msgstr ""
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
 msgstr ""
 
-msgid "Cannot assign an issue that does not belong under the same group (or descendant) as the epic."
-msgstr ""
-
 msgid "Cannot be merged automatically"
 msgstr ""
 

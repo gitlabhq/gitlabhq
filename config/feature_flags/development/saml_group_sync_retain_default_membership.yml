@@ -1,8 +1,0 @@
----
-name: saml_group_sync_retain_default_membership
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88064
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364144
-milestone: '15.1'
-type: development
-group: group::authentication and authorization
-default_enabled: false

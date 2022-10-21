@@ -431,8 +431,6 @@ RSpec.describe Event do
         include_examples 'visibility examples' do
           let(:visibility) { visible_to_none_except(:member) }
         end
-
-        include_examples 'visible to author', true
       end
 
       context 'private project' do

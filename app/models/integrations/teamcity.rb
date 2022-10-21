@@ -11,6 +11,7 @@ module Integrations
     field :teamcity_url,
       title: -> { s_('ProjectService|TeamCity server URL') },
       placeholder: 'https://teamcity.example.com',
+      exposes_secrets: true,
       required: true
 
     field :build_type,
@@ -36,8 +37,6 @@ module Integrations
 
     attr_accessor :response
 
-    before_validation :reset_password
-
     class << self
       def to_param
         'teamcity'
@@ -45,12 +44,6 @@ module Integrations
 
       def supported_events
         %w(push merge_request)
-      end
-    end
-
-    def reset_password
-      if teamcity_url_changed? && !password_touched?
-        self.password = nil
       end
     end
 

@@ -23,7 +23,7 @@ class NotePolicy < BasePolicy
   # Should be matched with IssuablePolicy#read_internal_note
   # and EpicPolicy#read_internal_note
   condition(:can_read_confidential) do
-    access_level >= Gitlab::Access::REPORTER || @subject.noteable_assignee_or_author?(@user) || admin?
+    access_level >= Gitlab::Access::REPORTER || admin?
   end
 
   rule { ~editable }.prevent :admin_note

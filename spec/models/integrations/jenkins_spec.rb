@@ -23,6 +23,10 @@ RSpec.describe Integrations::Jenkins do
     }
   end
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { jenkins_integration }
+  end
+
   include_context Integrations::EnableSslVerification do
     let(:integration) { jenkins_integration }
   end
@@ -38,7 +42,7 @@ RSpec.describe Integrations::Jenkins do
     expect(jenkins_integration.tag_push_events).to eq(false)
   end
 
-  describe 'username validation' do
+  describe 'Validations' do
     let(:jenkins_integration) do
       described_class.create!(
         active: active,
@@ -57,28 +61,44 @@ RSpec.describe Integrations::Jenkins do
     context 'when the integration is active' do
       let(:active) { true }
 
-      context 'when password was not touched' do
-        before do
-          allow(subject).to receive(:password_touched?).and_return(false)
+      describe '#username' do
+        context 'when password was not touched' do
+          before do
+            allow(subject).to receive(:password_touched?).and_return(false)
+          end
+
+          it { is_expected.not_to validate_presence_of :username }
         end
 
-        it { is_expected.not_to validate_presence_of :username }
-      end
+        context 'when password was touched' do
+          before do
+            allow(subject).to receive(:password_touched?).and_return(true)
+          end
 
-      context 'when password was touched' do
-        before do
-          allow(subject).to receive(:password_touched?).and_return(true)
+          it { is_expected.to validate_presence_of :username }
         end
 
-        it { is_expected.to validate_presence_of :username }
+        context 'when password is blank' do
+          it 'does not validate the username' do
+            expect(subject).not_to validate_presence_of :username
+
+            subject.password = ''
+            subject.save!
+          end
+        end
       end
 
-      context 'when password is blank' do
-        it 'does not validate the username' do
-          expect(subject).not_to validate_presence_of :username
+      describe '#password' do
+        it 'does not validate the presence of password if username is nil' do
+          subject.username = nil
 
-          subject.password = ''
-          subject.save!
+          expect(subject).not_to validate_presence_of(:password)
+        end
+
+        it 'validates the presence of password if username is present' do
+          subject.username = 'john'
+
+          expect(subject).to validate_presence_of(:password)
         end
       end
     end
@@ -87,6 +107,7 @@ RSpec.describe Integrations::Jenkins do
       let(:active) { false }
 
       it { is_expected.not_to validate_presence_of :username }
+      it { is_expected.not_to validate_presence_of :password }
     end
   end
 
@@ -188,82 +209,6 @@ RSpec.describe Integrations::Jenkins do
         a_request(:post, 'http://jenkins.example.com/project/my_project')
           .with(headers: { 'Authorization' => jenkins_authorization })
       ).to have_been_made.once
-    end
-  end
-
-  describe 'Stored password invalidation' do
-    context 'when a password was previously set' do
-      let(:jenkins_integration) do
-        described_class.create!(
-          project: project,
-          properties: {
-            jenkins_url: 'http://jenkins.example.com/',
-            username: 'jenkins',
-            password: 'password'
-          }
-        )
-      end
-
-      it 'resets password if url changed' do
-        jenkins_integration.jenkins_url = 'http://jenkins-edited.example.com/'
-        jenkins_integration.valid?
-
-        expect(jenkins_integration.password).to be_nil
-      end
-
-      it 'resets password if username is blank' do
-        jenkins_integration.username = ''
-        jenkins_integration.valid?
-
-        expect(jenkins_integration.password).to be_nil
-      end
-
-      it 'does not reset password if username changed' do
-        jenkins_integration.username = 'some_name'
-        jenkins_integration.valid?
-
-        expect(jenkins_integration.password).to eq('password')
-      end
-
-      it 'does not reset password if new url is set together with password, even if it\'s the same password' do
-        jenkins_integration.jenkins_url = 'http://jenkins_edited.example.com/'
-        jenkins_integration.password = 'password'
-        jenkins_integration.valid?
-
-        expect(jenkins_integration.password).to eq('password')
-        expect(jenkins_integration.jenkins_url).to eq('http://jenkins_edited.example.com/')
-      end
-
-      it 'resets password if url changed, even if setter called multiple times' do
-        jenkins_integration.jenkins_url = 'http://jenkins1.example.com/'
-        jenkins_integration.jenkins_url = 'http://jenkins1.example.com/'
-        jenkins_integration.valid?
-
-        expect(jenkins_integration.password).to be_nil
-      end
-    end
-
-    context 'when no password was previously set' do
-      let(:jenkins_integration) do
-        described_class.create!(
-          project: project,
-          properties: {
-            jenkins_url: 'http://jenkins.example.com/',
-            username: 'jenkins'
-          }
-        )
-      end
-
-      it 'saves password if new url is set together with password' do
-        jenkins_integration.jenkins_url = 'http://jenkins_edited.example.com/'
-        jenkins_integration.password = 'password'
-        jenkins_integration.save!
-
-        expect(jenkins_integration.reload).to have_attributes(
-          jenkins_url: 'http://jenkins_edited.example.com/',
-          password: 'password'
-        )
-      end
     end
   end
 end

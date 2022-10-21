@@ -58,11 +58,7 @@ describe('Chunk component', () => {
     it('renders simplified line numbers and content if isHighlighted is false', () => {
       expect(findLineNumbers().length).toBe(DEFAULT_PROPS.totalLines);
 
-      expect(findLineNumbers().at(0).attributes()).toMatchObject({
-        'data-line-number': `${DEFAULT_PROPS.startingFrom + 1}`,
-        href: `#L${DEFAULT_PROPS.startingFrom + 1}`,
-        id: `L${DEFAULT_PROPS.startingFrom + 1}`,
-      });
+      expect(findLineNumbers().at(0).attributes('id')).toBe(`L${DEFAULT_PROPS.startingFrom + 1}`);
 
       expect(findContent().text()).toBe(DEFAULT_PROPS.content);
     });

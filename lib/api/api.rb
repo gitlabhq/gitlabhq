@@ -169,13 +169,13 @@ module API
 
       # Mount endpoints to include in the OpenAPI V2 documentation here
       namespace do
+        mount ::API::AccessRequests
         mount ::API::Metadata
 
         add_open_api_documentation!
       end
 
       # Keep in alphabetical order
-      mount ::API::AccessRequests
       mount ::API::Admin::BatchedBackgroundMigrations
       mount ::API::Admin::Ci::Variables
       mount ::API::Admin::InstanceClusters

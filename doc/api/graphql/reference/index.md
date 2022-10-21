@@ -9437,6 +9437,29 @@ The edge type for [`TreeEntry`](#treeentry).
 | <a id="treeentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="treeentryedgenode"></a>`node` | [`TreeEntry`](#treeentry) | The item at the end of the edge. |
 
+#### `UnprotectAccessLevelConnection`
+
+The connection type for [`UnprotectAccessLevel`](#unprotectaccesslevel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="unprotectaccesslevelconnectionedges"></a>`edges` | [`[UnprotectAccessLevelEdge]`](#unprotectaccessleveledge) | A list of edges. |
+| <a id="unprotectaccesslevelconnectionnodes"></a>`nodes` | [`[UnprotectAccessLevel]`](#unprotectaccesslevel) | A list of nodes. |
+| <a id="unprotectaccesslevelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `UnprotectAccessLevelEdge`
+
+The edge type for [`UnprotectAccessLevel`](#unprotectaccesslevel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="unprotectaccessleveledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="unprotectaccessleveledgenode"></a>`node` | [`UnprotectAccessLevel`](#unprotectaccesslevel) | The item at the end of the edge. |
+
 #### `UploadRegistryConnection`
 
 The connection type for [`UploadRegistry`](#uploadregistry).
@@ -10333,6 +10356,7 @@ Branch protection details for a branch rule.
 | <a id="branchprotectioncodeownerapprovalrequired"></a>`codeOwnerApprovalRequired` | [`Boolean!`](#boolean) | Enforce code owner approvals before allowing a merge. |
 | <a id="branchprotectionmergeaccesslevels"></a>`mergeAccessLevels` | [`MergeAccessLevelConnection`](#mergeaccesslevelconnection) | Details about who can merge when this branch is the source branch. (see [Connections](#connections)) |
 | <a id="branchprotectionpushaccesslevels"></a>`pushAccessLevels` | [`PushAccessLevelConnection`](#pushaccesslevelconnection) | Details about who can push when this branch is the source branch. (see [Connections](#connections)) |
+| <a id="branchprotectionunprotectaccesslevels"></a>`unprotectAccessLevels` | [`UnprotectAccessLevelConnection`](#unprotectaccesslevelconnection) | Details about who can unprotect this branch. (see [Connections](#connections)) |
 
 ### `BranchRule`
 
@@ -14172,7 +14196,7 @@ Maven metadata.
 
 ### `MergeAccessLevel`
 
-Represents the merge access level of a branch protection.
+Defines which user roles, users, or groups can merge into a protected branch.
 
 #### Fields
 
@@ -17665,7 +17689,7 @@ Which group, user or role is allowed to execute deployments to the environment.
 
 ### `PushAccessLevel`
 
-Represents the push access level of a branch protection.
+Defines which user roles, users, or groups can push to a protected branch.
 
 #### Fields
 
@@ -18894,6 +18918,19 @@ Represents a directory.
 | <a id="treeentrytype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="treeentrywebpath"></a>`webPath` | [`String`](#string) | Web path for the tree entry (directory). |
 | <a id="treeentryweburl"></a>`webUrl` | [`String`](#string) | Web URL for the tree entry (directory). |
+
+### `UnprotectAccessLevel`
+
+Defines which user roles, users, or groups can unprotect a protected branch.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="unprotectaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
+| <a id="unprotectaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
+| <a id="unprotectaccesslevelgroup"></a>`group` | [`Group`](#group) | Group associated with this access level. |
+| <a id="unprotectaccessleveluser"></a>`user` | [`UserCore`](#usercore) | User associated with this access level. |
 
 ### `UploadRegistry`
 

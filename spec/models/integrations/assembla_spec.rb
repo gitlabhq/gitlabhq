@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Integrations::Assembla do
   include StubRequests
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { described_class.new }
+  end
+
   describe "Execute" do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }

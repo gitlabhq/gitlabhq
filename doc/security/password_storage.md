@@ -45,9 +45,7 @@ library to hash user passwords. Created password hashes have these attributes:
 ## OAuth access token storage
 
 > - PBKDF2+SHA512 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364110) in GitLab 15.3 [with flag](../administration/feature_flags.md) named `hash_oauth_tokens`.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98242) in GitLab 15.5.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.5.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.6.
 
-Depending on your version of GitLab and configuration, OAuth access tokens are stored in the database in PBKDF2+SHA512 format. For version information, see
-the relevant [OAuth provider documentation](../integration/oauth_provider.md#hashed-oauth-tokens).
-
-As with PBKDF2+SHA512 password storage, access token values are [stretched](https://en.wikipedia.org/wiki/Key_stretching) 20,000 times to harden against brute-force attacks.
+OAuth access tokens are stored in the database in PBKDF2+SHA512 format. As with PBKDF2+SHA512 password storage, access token values are [stretched](https://en.wikipedia.org/wiki/Key_stretching) 20,000 times to harden against brute-force attacks.

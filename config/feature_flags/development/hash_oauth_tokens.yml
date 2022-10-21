@@ -1,8 +1,0 @@
----
-name: hash_oauth_tokens
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91501
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367570
-milestone: '15.3'
-type: development
-group: group::authentication and authorization
-default_enabled: true

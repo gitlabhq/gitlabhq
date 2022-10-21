@@ -384,6 +384,12 @@ Database/MultipleDatabases:
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/database/**/*.rb'
 
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
+Gitlab/RSpec/AvoidSetup:
+  Enabled: true
+  Include:
+    - 'ee/spec/features/registrations/saas/**/*'
+
 Gitlab/DuplicateSpecLocation:
   Enabled: true
 

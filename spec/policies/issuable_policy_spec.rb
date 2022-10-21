@@ -31,8 +31,8 @@ RSpec.describe IssuablePolicy, models: true do
         expect(policies).to be_allowed(:resolve_note)
       end
 
-      it 'allows reading internal notes' do
-        expect(policies).to be_allowed(:read_internal_note)
+      it 'does not allow reading internal notes' do
+        expect(policies).to be_disallowed(:read_internal_note)
       end
 
       context 'when user is able to read project' do
@@ -94,8 +94,8 @@ RSpec.describe IssuablePolicy, models: true do
       let(:issue) { create(:issue, project: project, assignees: [user]) }
       let(:policies) { described_class.new(user, issue) }
 
-      it 'allows reading internal notes' do
-        expect(policies).to be_allowed(:read_internal_note)
+      it 'does not allow reading internal notes' do
+        expect(policies).to be_disallowed(:read_internal_note)
       end
     end
 

@@ -167,12 +167,9 @@ If an issue or merge request is locked and closed, you cannot reopen it.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
 > - [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
+> - [Changed] permissions in GitLab 15.5 to at least the Reporter role. In GitLab 15.4 and earlier, issue or epic authors and assignees could also read and create internal notes.
 
-You can add an internal note **to an issue or an epic**. It's then visible only to the following people:
-
-- Project members who have at least the Reporter role
-- Issue or epic author
-- Users assigned to the issue or epic
+You can add an internal note **to an issue or an epic**. It's then visible only to project members who have at least the Reporter role.
 
 Keep in mind:
 
@@ -181,10 +178,7 @@ Keep in mind:
 
 Prerequisites:
 
-- You must either:
-  - Have at least the Reporter role for the project.
-  - Be the issue or epic assignee.
-  - Be the issue or epic author.
+- You must have at least the Reporter role for the project.
 
 To add an internal note:
 

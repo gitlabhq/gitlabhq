@@ -21,8 +21,7 @@ RSpec.describe 'getting list of branch rules for a project' do
 
   let(:branch_rules_data) { graphql_data_at('project', 'branchRules', 'edges') }
   let(:variables) { { path: project.full_path } }
-  # fields must use let as the all_graphql_fields_for also configures some spies
-  let(:fields) { all_graphql_fields_for('BranchRule') }
+  let(:fields) { all_graphql_fields_for('BranchRule', max_depth: 2) }
   let(:query) do
     <<~GQL
     query($path: ID!, $n: Int, $cursor: String) {

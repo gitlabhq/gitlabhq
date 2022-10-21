@@ -23,6 +23,13 @@ In addition to this page, the following resources can help you craft and contrib
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 - [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
 
+## The GitLab voice
+
+At GitLab, we strive to be concise, direct, and precise.
+Our goal is to provide information that's easy to search and scan.
+
+We want to be conversational but brief, friendly but succinct.
+
 ## Documentation is the single source of truth (SSOT)
 
 The GitLab documentation is the SSOT for all
@@ -124,6 +131,22 @@ the team is happy to review and improve upon your content. Review the
 Maintaining a knowledge base separate from the documentation would
 be against the documentation-first methodology, because the content would overlap with
 the documentation.
+
+## Writing for localization
+
+The GitLab documentation is not localized, but we follow guidelines that
+help benefit translation. For example, we:
+
+- Write in [active voice](word_list.md#active-voice).
+- Write in [present tense](word_list.md#future-tense).
+- Avoid words that can be translated incorrectly, like:
+  - [since and because](word_list.md#since)
+  - [once and after](word_list.md#once)
+- Avoid [ing](word_list.md#-ing-words) words.
+
+[The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly,
+and with translation in mind. [The word list](word_list.md) and our Vale rules
+also aid in consistency, which is important for localization.
 
 ## Markdown
 

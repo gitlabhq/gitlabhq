@@ -347,7 +347,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /data/removals/ @gl-docsteam
 
 ^[Documentation Pages]
-/doc/administration/application_settings_cache.md @sselhorn
+/doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/audit_event_streaming.md @eread
 /doc/administration/audit_events.md @eread
 /doc/administration/audit_reports.md @eread
@@ -396,11 +396,11 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/merge_request_diffs.md @ashrafkhamis
 /doc/administration/monitoring/ @msedlakjakubowski
 /doc/administration/monitoring/gitlab_self_monitoring_project/ @msedlakjakubowski
-/doc/administration/monitoring/ip_allowlist.md @sselhorn
+/doc/administration/monitoring/ip_allowlist.md @jglassman1
 /doc/administration/monitoring/performance/ @msedlakjakubowski
 /doc/administration/monitoring/prometheus/ @msedlakjakubowski
 /doc/administration/monitoring/prometheus/index.md @axil
-/doc/administration/monitoring/prometheus/web_exporter.md @sselhorn
+/doc/administration/monitoring/prometheus/web_exporter.md @jglassman1
 /doc/administration/nfs.md @axil
 /doc/administration/object_storage.md @axil
 /doc/administration/operations/ @axil
@@ -426,7 +426,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/restart_gitlab.md @axil
 /doc/administration/server_hooks.md @eread
 /doc/administration/sidekiq/ @axil
-/doc/administration/sidekiq/sidekiq_memory_killer.md @sselhorn
+/doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
 /doc/administration/smime_signing_email.md @axil
 /doc/administration/snippets/ @ashrafkhamis
 /doc/administration/static_objects_external_storage.md @ashrafkhamis
@@ -654,7 +654,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/backend/create_source_code_be/ @aqualls
 /doc/development/build_test_package.md @axil
 /doc/development/bulk_import.md @eread
-/doc/development/cached_queries.md @sselhorn
+/doc/development/cached_queries.md @jglassman1
 /doc/development/cascading_settings.md @jglassman1
 /doc/development/chatops_on_gitlabcom.md @phillipwells
 /doc/development/cicd/ @marcel.amirault
@@ -662,7 +662,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/contributing/ @sselhorn
 /doc/development/database/ @aqualls
 /doc/development/database/filtering_by_label.md @msedlakjakubowski
-/doc/development/database/multiple_databases.md @sselhorn
+/doc/development/database/multiple_databases.md @jglassman1
 /doc/development/database_review.md @aqualls
 /doc/development/developing_with_solargraph.md @aqualls
 /doc/development/development_processes.md @sselhorn
@@ -694,7 +694,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/graphql_guide/ @ashrafkhamis
 /doc/development/graphql_guide/batchloader.md @aqualls
 /doc/development/i18n/ @eread
-/doc/development/image_scaling.md @sselhorn
+/doc/development/image_scaling.md @jglassman1
 /doc/development/import_export.md @eread
 /doc/development/index.md @sselhorn
 /doc/development/integrations/codesandbox.md @sselhorn
