@@ -1,8 +1,9 @@
+import { flatten } from 'lodash';
 import { hideFlash } from '~/flash';
 import dateFormat from '~/lib/dateformat';
 import { slugify } from '~/lib/utils/text_utility';
 import { urlQueryToFilter } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
-import { dateFormats } from './constants';
+import { dateFormats, METRICS_POPOVER_CONTENT } from './constants';
 
 export const filterBySearchTerm = (data = [], searchTerm = '', filterByKey = 'name') => {
   if (!searchTerm?.length) return data;
@@ -96,3 +97,28 @@ export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
       description: popoverContent[metricIdentifier]?.description || '',
     };
   });
+
+const requestData = ({ request, endpoint, requestPath, params, name }) => {
+  return request({ endpoint, params, requestPath })
+    .then(({ data }) => data)
+    .catch(() => {
+      throw new Error(name);
+    });
+};
+
+/**
+ * Takes a configuration array of metrics requests (key metrics and DORA) and returns
+ * a flat array of all the responses. Different metrics are retrieved from different endpoints
+ * additionally we only support certain metrics for FOSS users.
+ *
+ * @param {Array} requests - array of metric api requests to be made
+ * @param {String} requestPath - path for the group / project we are requesting
+ * @param {Object} params - optional parameters to filter, including `created_after` and `created_before` dates
+ * @returns a flat array of metrics
+ */
+export const fetchMetricsData = (requests = [], requestPath, params) => {
+  const promises = requests.map((r) => requestData({ ...r, requestPath, params }));
+  return Promise.all(promises).then((responses) =>
+    prepareTimeMetricsData(flatten(responses), METRICS_POPOVER_CONTENT),
+  );
+};

@@ -7,6 +7,7 @@ class WebHook < ApplicationRecord
 
   MAX_FAILURES = 100
   FAILURE_THRESHOLD = 3 # three strikes
+  EXCEEDED_FAILURE_THRESHOLD = FAILURE_THRESHOLD + 1
   INITIAL_BACKOFF = 1.minute
   MAX_BACKOFF = 1.day
   BACKOFF_GROWTH_FACTOR = 2.0
@@ -119,7 +120,7 @@ class WebHook < ApplicationRecord
   def disable!
     return if permanently_disabled?
 
-    update_attribute(:recent_failures, FAILURE_THRESHOLD + 1)
+    update_attribute(:recent_failures, EXCEEDED_FAILURE_THRESHOLD)
   end
 
   def enable!
@@ -134,10 +135,10 @@ class WebHook < ApplicationRecord
   def backoff!
     return if permanently_disabled? || (backoff_count >= MAX_FAILURES && temporarily_disabled?)
 
-    attrs = { recent_failures: recent_failures + 1 }
+    attrs = { recent_failures: next_failure_count }
 
     if recent_failures >= FAILURE_THRESHOLD
-      attrs[:backoff_count] = backoff_count.succ.clamp(1, MAX_FAILURES)
+      attrs[:backoff_count] = next_backoff_count
       attrs[:disabled_until] = next_backoff.from_now
     end
 
@@ -148,7 +149,7 @@ class WebHook < ApplicationRecord
   def failed!
     return unless recent_failures < MAX_FAILURES
 
-    assign_attributes(disabled_until: nil, backoff_count: 0, recent_failures: recent_failures + 1)
+    assign_attributes(disabled_until: nil, backoff_count: 0, recent_failures: next_failure_count)
     save(validate: false)
   end
 
@@ -210,6 +211,14 @@ class WebHook < ApplicationRecord
   end
 
   private
+
+  def next_failure_count
+    recent_failures.succ.clamp(1, MAX_FAILURES)
+  end
+
+  def next_backoff_count
+    backoff_count.succ.clamp(1, MAX_FAILURES)
+  end
 
   def web_hooks_disable_failed?
     self.class.web_hooks_disable_failed?(self)

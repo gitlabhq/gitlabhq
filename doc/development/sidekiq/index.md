@@ -36,6 +36,31 @@ with back-off between each retry. 25 retries means that the last retry
 would happen around three weeks after the first attempt (assuming all 24
 prior retries failed).
 
+This means that a lot can happen in between the job being scheduled
+and its execution. Therefore, we must guard workers so they don't
+fail 25 times when the state changes after they are scheduled. For
+example, a job should not fail when the project it was scheduled for
+is deleted.
+
+Instead of:
+
+```ruby
+def perform(project_id)
+  project = Project.find(project_id)
+  # ...
+end
+```
+
+Do this:
+
+```ruby
+def perform(project_id)
+  project = Project.find_by_id(project_id)
+  return unless project
+  # ...
+end
+```
+
 For most workers - especially [idempotent workers](idempotent_jobs.md) -
 the default of 25 retries is more than sufficient. Many of our older
 workers declare 3 retries, which used to be the default within the

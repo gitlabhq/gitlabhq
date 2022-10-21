@@ -18,5 +18,16 @@ RSpec.describe 'layouts/header/_gitlab_version' do
         'a[data-testid="gitlab-version-container"][href="/help/update/index"]'
       )
     end
+
+    it 'renders the container with correct data-tracking attributes' do
+      expect(rendered).to have_selector(
+        'a[data-testid="gitlab-version-container"][data-track-action="click_version_help_dropdown"]'
+      )
+
+      expect(rendered).to have_selector(
+        'a[data-testid="gitlab-version-container"]' \
+        "[data-track-label=\"#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}\"]"
+      )
+    end
   end
 end

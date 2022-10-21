@@ -54,4 +54,21 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceOnIssues do
 
     expect { perform_migration }.to change { migration.batch_metrics.timings }
   end
+
+  context 'when database timeouts' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(error_class: [ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled])
+
+    with_them do
+      it 'retries on timeout error' do
+        expect(migration).to receive(:update_batch).exactly(3).times.and_raise(error_class)
+        expect(migration).to receive(:sleep).with(5).twice
+
+        expect do
+          perform_migration
+        end.to raise_error(error_class)
+      end
+    end
+  end
 end

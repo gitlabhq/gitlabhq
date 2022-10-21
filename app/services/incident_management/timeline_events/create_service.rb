@@ -49,6 +49,16 @@ module IncidentManagement
           new(incident, user, note: note, occurred_at: occurred_at, action: action, auto_created: true).execute
         end
 
+        def change_severity(incident, user)
+          return if Feature.disabled?(:incident_timeline_events_for_severity, incident.project)
+
+          note = "@#{user.username} changed the incident severity to **#{incident.severity.humanize}**"
+          occurred_at = incident.updated_at
+          action = 'severity'
+
+          new(incident, user, note: note, occurred_at: occurred_at, action: action, auto_created: true).execute
+        end
+
         def change_labels(incident, user, added_labels: [], removed_labels: [])
           return if Feature.disabled?(:incident_timeline_events_from_labels, incident.project)
 

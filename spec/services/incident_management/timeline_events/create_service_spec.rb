@@ -229,6 +229,27 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       it_behaves_like 'successfully created timeline event'
     end
 
+    describe '.change_severity' do
+      subject(:execute) { described_class.change_severity(incident, current_user) }
+
+      let_it_be(:severity) { create(:issuable_severity, severity: :critical, issue: incident) }
+
+      let(:expected_note) { "@#{current_user.username} changed the incident severity to **Critical**" }
+      let(:expected_action) { 'severity' }
+
+      it_behaves_like 'successfully created timeline event'
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(incident_timeline_events_for_severity: false)
+        end
+
+        it 'does not create new timeline event' do
+          expect { execute }.not_to change { incident.incident_management_timeline_events.count }
+        end
+      end
+    end
+
     describe '.change_labels' do
       subject(:execute) do
         described_class.change_labels(incident, current_user, added_labels: added, removed_labels: removed)

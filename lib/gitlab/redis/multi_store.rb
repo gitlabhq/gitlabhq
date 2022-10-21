@@ -52,6 +52,7 @@ module Gitlab
         del
         flushdb
         rpush
+        eval
       ).freeze
 
       PIPELINED_COMMANDS = %i(

@@ -1,32 +1,10 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { flatten, isEqual, keyBy } from 'lodash';
+import { isEqual, keyBy } from 'lodash';
 import { createAlert } from '~/flash';
 import { sprintf, s__ } from '~/locale';
-import { METRICS_POPOVER_CONTENT } from '../constants';
-import { removeFlash, prepareTimeMetricsData } from '../utils';
+import { fetchMetricsData, removeFlash } from '../utils';
 import MetricTile from './metric_tile.vue';
-
-const requestData = ({ request, endpoint, path, params, name }) => {
-  return request({ endpoint, params, requestPath: path })
-    .then(({ data }) => data)
-    .catch(() => {
-      const message = sprintf(
-        s__(
-          'ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data.',
-        ),
-        { requestTypeName: name },
-      );
-      createAlert({ message });
-    });
-};
-
-const fetchMetricsData = (reqs = [], path, params) => {
-  const promises = reqs.map((r) => requestData({ ...r, path, params }));
-  return Promise.all(promises).then((responses) =>
-    prepareTimeMetricsData(flatten(responses), METRICS_POPOVER_CONTENT),
-  );
-};
 
 const extractMetricsGroupData = (keyList = [], data = []) => {
   if (!keyList.length || !data.length) return [];
@@ -111,7 +89,15 @@ export default {
 
           this.isLoading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          const message = sprintf(
+            s__(
+              'ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data.',
+            ),
+            { requestTypeName: err.message },
+          );
+
+          createAlert({ message });
           this.isLoading = false;
         });
     },

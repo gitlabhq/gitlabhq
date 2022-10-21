@@ -21,7 +21,6 @@ module Gitlab
 
         DEFAULT_DUPLICATE_KEY_TTL = 6.hours
         WAL_LOCATION_TTL = 60.seconds
-        MAX_REDIS_RETRIES = 5
         DEFAULT_STRATEGY = :until_executing
         STRATEGY_NONE = :none
         DEDUPLICATED_FLAG_VALUE = 1
@@ -60,37 +59,20 @@ module Gitlab
 
         # This method will return the jid that was set in redis
         def check!(expiry = duplicate_key_ttl)
-          read_jid = nil
-          read_wal_locations = {}
-
-          with_redis do |redis|
-            redis.multi do |multi|
-              multi.set(idempotency_key, jid, ex: expiry, nx: true)
-              read_wal_locations = check_existing_wal_locations!(multi, expiry)
-              read_jid = multi.get(idempotency_key)
-            end
+          if Feature.enabled?(:duplicate_jobs_cookie)
+            check_cookie!(expiry)
+          else
+            check_multi!(expiry)
           end
-
-          job['idempotency_key'] = idempotency_key
-
-          # We need to fetch values since the read_wal_locations and read_jid were obtained inside transaction, under redis.multi command.
-          self.existing_wal_locations = read_wal_locations.transform_values(&:value)
-          self.existing_jid = read_jid.value
         end
 
         def update_latest_wal_location!
           return unless job_wal_locations.present?
 
-          with_redis do |redis|
-            redis.multi do |multi|
-              job_wal_locations.each do |connection_name, location|
-                multi.eval(
-                  LUA_SET_WAL_SCRIPT,
-                  keys: [wal_location_key(connection_name)],
-                  argv: [location, pg_wal_lsn_diff(connection_name).to_i, WAL_LOCATION_TTL]
-                )
-              end
-            end
+          if Feature.enabled?(:duplicate_jobs_cookie)
+            update_latest_wal_location_cookie!
+          else
+            update_latest_wal_location_multi!
           end
         end
 
@@ -98,25 +80,24 @@ module Gitlab
           return {} unless job_wal_locations.present?
 
           strong_memoize(:latest_wal_locations) do
-            read_wal_locations = {}
-
-            with_redis do |redis|
-              redis.multi do |multi|
-                job_wal_locations.keys.each do |connection_name|
-                  read_wal_locations[connection_name] = multi.lindex(wal_location_key(connection_name), 0)
-                end
-              end
+            if Feature.enabled?(:duplicate_jobs_cookie)
+              latest_wal_locations_cookie
+            else
+              latest_wal_locations_multi
             end
-            read_wal_locations.transform_values(&:value).compact
           end
         end
 
         def delete!
-          Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-            with_redis do |redis|
-              redis.multi do |multi|
-                multi.del(idempotency_key, deduplicated_flag_key)
-                delete_wal_locations!(multi)
+          if Feature.enabled?(:duplicate_jobs_cookie)
+            cookie.del
+          else
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              with_redis do |redis|
+                redis.multi do |multi|
+                  multi.del(idempotency_key, deduplicated_flag_key)
+                  delete_wal_locations!(multi)
+                end
               end
             end
           end
@@ -141,16 +122,24 @@ module Gitlab
         def set_deduplicated_flag!(expiry = duplicate_key_ttl)
           return unless reschedulable?
 
-          with_redis do |redis|
-            redis.set(deduplicated_flag_key, DEDUPLICATED_FLAG_VALUE, ex: expiry, nx: true)
+          if Feature.enabled?(:duplicate_jobs_cookie)
+            cookie.append({ 'deduplicated' => '1' })
+          else
+            with_redis do |redis|
+              redis.set(deduplicated_flag_key, DEDUPLICATED_FLAG_VALUE, ex: expiry, nx: true)
+            end
           end
         end
 
         def should_reschedule?
           return false unless reschedulable?
 
-          with_redis do |redis|
-            redis.get(deduplicated_flag_key).present?
+          if Feature.enabled?(:duplicate_jobs_cookie)
+            cookie.get['deduplicated'].present?
+          else
+            with_redis do |redis|
+              redis.get(deduplicated_flag_key).present?
+            end
           end
         end
 
@@ -182,6 +171,102 @@ module Gitlab
         attr_reader :queue_name, :job
         attr_writer :existing_jid
 
+        def check_cookie!(expiry)
+          my_cookie = { 'jid' => jid }
+          job_wal_locations.each do |connection_name, location|
+            my_cookie["existing_wal_location:#{connection_name}"] = location
+          end
+
+          actual_cookie = cookie.set(my_cookie, expiry) ? my_cookie : cookie.get
+
+          job['idempotency_key'] = idempotency_key
+
+          self.existing_wal_locations = filter_prefix(actual_cookie, 'existing_wal_location:')
+          self.existing_jid = actual_cookie['jid']
+        end
+
+        def check_multi!(expiry)
+          read_jid = nil
+          read_wal_locations = {}
+
+          with_redis do |redis|
+            redis.multi do |multi|
+              multi.set(idempotency_key, jid, ex: expiry, nx: true)
+              read_wal_locations = check_existing_wal_locations!(multi, expiry)
+              read_jid = multi.get(idempotency_key)
+            end
+          end
+
+          job['idempotency_key'] = idempotency_key
+
+          # We need to fetch values since the read_wal_locations and read_jid were obtained inside transaction, under redis.multi command.
+          self.existing_wal_locations = read_wal_locations.transform_values(&:value)
+          self.existing_jid = read_jid.value
+        end
+
+        def update_latest_wal_location_cookie!
+          new_wal_locations = {}
+          job_wal_locations.each do |connection_name, location|
+            offset = pg_wal_lsn_diff(connection_name).to_i
+            new_wal_locations["wal_location:#{connection_name}:#{offset}"] = location
+          end
+
+          cookie.append(new_wal_locations)
+        end
+
+        def update_latest_wal_location_multi!
+          with_redis do |redis|
+            redis.multi do |multi|
+              job_wal_locations.each do |connection_name, location|
+                multi.eval(
+                  LUA_SET_WAL_SCRIPT,
+                  keys: [wal_location_key(connection_name)],
+                  argv: [location, pg_wal_lsn_diff(connection_name).to_i, WAL_LOCATION_TTL]
+                )
+              end
+            end
+          end
+        end
+
+        def latest_wal_locations_cookie
+          wal_locations = {}
+          offsets = {}
+          filter_prefix(cookie.get, 'wal_location:').each do |key, value|
+            connection, offset = key.split(':', 2)
+            offset = offset.to_i
+            if !offsets[connection] || offsets[connection] < offset
+              offsets[connection] = offset
+              wal_locations[connection] = value
+            end
+          end
+
+          wal_locations
+        end
+
+        def latest_wal_locations_multi
+          read_wal_locations = {}
+
+          with_redis do |redis|
+            redis.multi do |multi|
+              job_wal_locations.keys.each do |connection_name|
+                read_wal_locations[connection_name] = multi.lindex(wal_location_key(connection_name), 0)
+              end
+            end
+          end
+          read_wal_locations.transform_values(&:value).compact
+        end
+
+        # Filter_prefix extracts a sub-hash from a Ruby hash. For example, with
+        # input h = { 'foo:a' => '1', 'foo:b' => '2', 'bar' => '3' }, the output
+        # of filter_prefix(h, 'foo:') is { 'a' => '1', 'b' => '2' }.
+        def filter_prefix(hash, prefix)
+          out = {}
+          hash.each do |k, v|
+            out[k.delete_prefix(prefix)] = v if k.start_with?(prefix)
+          end
+          out
+        end
+
         def worker_klass
           @worker_klass ||= worker_class_name.to_s.safe_constantize
         end
@@ -210,7 +295,7 @@ module Gitlab
         end
 
         def pg_wal_lsn_diff(connection_name)
-          model = Gitlab::Database.database_base_models[connection_name]
+          model = Gitlab::Database.database_base_models[connection_name.to_sym]
 
           model.connection.load_balancer.wal_diff(
             job_wal_locations[connection_name],
@@ -244,6 +329,10 @@ module Gitlab
 
         def wal_location_key(connection_name)
           "#{idempotency_key}:#{connection_name}:wal_location"
+        end
+
+        def cookie
+          @cookie ||= Cookie.new("#{idempotency_key}:cookie")
         end
 
         def idempotency_key

@@ -374,6 +374,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
     let_it_be(:svalues2) { [value1] }
     let_it_be(:skey_value1) { [skey, value1] }
     let_it_be(:skey_value2) { [skey, value2] }
+    let_it_be(:script) { %(redis.call("set", "#{key1}", "#{value1}")) }
 
     where(:case_name, :name, :args, :expected_value, :verification_name, :verification_args) do
       'execute :set command'       | :set      | ref(:key1_value1)      | ref(:value1)      | :get      | ref(:key1)
@@ -383,6 +384,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
       'execute :srem command'      | :srem     | ref(:skey_value1)      | []                | :smembers | ref(:skey)
       'execute :del command'       | :del      | ref(:key2)             | nil               | :get      | ref(:key2)
       'execute :flushdb command'   | :flushdb  | nil                    | 0                 | :dbsize   | nil
+      'execute :eval command'      | :eval     | ref(:script)           | ref(:value1)      | :get      | ref(:key1)
     end
 
     before do

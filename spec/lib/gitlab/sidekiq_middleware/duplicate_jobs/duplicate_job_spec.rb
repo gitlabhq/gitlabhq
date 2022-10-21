@@ -11,8 +11,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
   let(:wal_locations) do
     {
-      main: '0/D525E3A8',
-      ci: 'AB/12345'
+      'main' => '0/D525E3A8',
+      'ci' => 'AB/12345'
     }
   end
 
@@ -22,10 +22,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
   let(:idempotency_key) do
     hash = Digest::SHA256.hexdigest("#{job['class']}:#{Sidekiq.dump_json(job['args'])}")
     "#{Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE}:duplicate:#{queue}:#{hash}"
-  end
-
-  let(:deduplicated_flag_key) do
-    "#{idempotency_key}:deduplicate_flag"
   end
 
   describe '#schedule' do
@@ -81,7 +77,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     end
   end
 
-  shared_examples 'tracking duplicates in redis' do
+  shared_examples 'with multiple Redis keys' do
+    let(:deduplicated_flag_key) do
+      "#{idempotency_key}:deduplicate_flag"
+    end
+
     describe '#check!' do
       context 'when there was no job in the queue yet' do
         it { expect(duplicate_job.check!).to eq('123') }
@@ -97,12 +97,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
           context 'when wal locations is not empty' do
             it "adds an existing wal locations key with correct ttl" do
               expect { duplicate_job.check! }
-                .to change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, :main)) }
+                .to change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, 'main')) }
                       .from([nil, -2])
-                      .to([wal_locations[:main], be_within(1).of(expected_ttl)])
-                .and change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, :ci)) }
+                      .to([wal_locations['main'], be_within(1).of(expected_ttl)])
+                .and change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, 'ci')) }
                       .from([nil, -2])
-                      .to([wal_locations[:ci], be_within(1).of(expected_ttl)])
+                      .to([wal_locations['ci'], be_within(1).of(expected_ttl)])
             end
           end
         end
@@ -146,10 +146,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
         it "does not change the existing wal locations key's TTL" do
           expect { duplicate_job.check! }
-            .to not_change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, :main)) }
-                  .from([wal_locations[:main], -1])
-            .and not_change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, :ci)) }
-                  .from([wal_locations[:ci], -1])
+            .to not_change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, 'main')) }
+                  .from([wal_locations['main'], -1])
+            .and not_change { read_idempotency_key_with_ttl(existing_wal_location_key(idempotency_key, 'ci')) }
+                  .from([wal_locations['ci'], -1])
         end
 
         it 'sets the existing jid' do
@@ -166,8 +166,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
           { main: ::ActiveRecord::Base,
             ci: ::ActiveRecord::Base })
 
-        set_idempotency_key(existing_wal_location_key(idempotency_key, :main), existing_wal[:main])
-        set_idempotency_key(existing_wal_location_key(idempotency_key, :ci), existing_wal[:ci])
+        set_idempotency_key(existing_wal_location_key(idempotency_key, 'main'), existing_wal['main'])
+        set_idempotency_key(existing_wal_location_key(idempotency_key, 'ci'), existing_wal['ci'])
 
         # read existing_wal_locations
         duplicate_job.check!
@@ -176,16 +176,16 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
       context "when the key doesn't exists in redis" do
         let(:existing_wal) do
           {
-            main: '0/D525E3A0',
-            ci: 'AB/12340'
+            'main' => '0/D525E3A0',
+            'ci' => 'AB/12340'
           }
         end
 
         let(:new_wal_location_with_offset) do
           {
             # offset is relative to `existing_wal`
-            main: ['0/D525E3A8', '8'],
-            ci: ['AB/12345', '5']
+            'main' => ['0/D525E3A8', '8'],
+            'ci' => ['AB/12345', '5']
           }
         end
 
@@ -193,19 +193,19 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
         it 'stores a wal location to redis with an offset relative to existing wal location' do
           expect { duplicate_job.update_latest_wal_location! }
-            .to change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
+            .to change { read_range_from_redis(wal_location_key(idempotency_key, 'main')) }
                   .from([])
-                  .to(new_wal_location_with_offset[:main])
-            .and change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
+                  .to(new_wal_location_with_offset['main'])
+            .and change { read_range_from_redis(wal_location_key(idempotency_key, 'ci')) }
                   .from([])
-                  .to(new_wal_location_with_offset[:ci])
+                  .to(new_wal_location_with_offset['ci'])
         end
       end
 
       context "when the key exists in redis" do
         before do
-          rpush_to_redis_key(wal_location_key(idempotency_key, :main), *stored_wal_location_with_offset[:main])
-          rpush_to_redis_key(wal_location_key(idempotency_key, :ci), *stored_wal_location_with_offset[:ci])
+          rpush_to_redis_key(wal_location_key(idempotency_key, 'main'), *stored_wal_location_with_offset['main'])
+          rpush_to_redis_key(wal_location_key(idempotency_key, 'ci'), *stored_wal_location_with_offset['ci'])
         end
 
         let(:wal_locations) { new_wal_location_with_offset.transform_values(&:first) }
@@ -213,68 +213,68 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
         context "when the new offset is bigger then the existing one" do
           let(:existing_wal) do
             {
-              main: '0/D525E3A0',
-              ci: 'AB/12340'
+              'main' => '0/D525E3A0',
+              'ci' => 'AB/12340'
             }
           end
 
           let(:stored_wal_location_with_offset) do
             {
               # offset is relative to `existing_wal`
-              main: ['0/D525E3A3', '3'],
-              ci: ['AB/12342', '2']
+              'main' => ['0/D525E3A3', '3'],
+              'ci' => ['AB/12342', '2']
             }
           end
 
           let(:new_wal_location_with_offset) do
             {
               # offset is relative to `existing_wal`
-              main: ['0/D525E3A8', '8'],
-              ci: ['AB/12345', '5']
+              'main' => ['0/D525E3A8', '8'],
+              'ci' => ['AB/12345', '5']
             }
           end
 
           it 'updates a wal location to redis with an offset' do
             expect { duplicate_job.update_latest_wal_location! }
-              .to change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
-                    .from(stored_wal_location_with_offset[:main])
-                    .to(new_wal_location_with_offset[:main])
-              .and change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
-                    .from(stored_wal_location_with_offset[:ci])
-                    .to(new_wal_location_with_offset[:ci])
+              .to change { read_range_from_redis(wal_location_key(idempotency_key, 'main')) }
+                    .from(stored_wal_location_with_offset['main'])
+                    .to(new_wal_location_with_offset['main'])
+              .and change { read_range_from_redis(wal_location_key(idempotency_key, 'ci')) }
+                    .from(stored_wal_location_with_offset['ci'])
+                    .to(new_wal_location_with_offset['ci'])
           end
         end
 
         context "when the old offset is not bigger then the existing one" do
           let(:existing_wal) do
             {
-              main: '0/D525E3A0',
-              ci: 'AB/12340'
+              'main' => '0/D525E3A0',
+              'ci' => 'AB/12340'
             }
           end
 
           let(:stored_wal_location_with_offset) do
             {
               # offset is relative to `existing_wal`
-              main: ['0/D525E3A8', '8'],
-              ci: ['AB/12345', '5']
+              'main' => ['0/D525E3A8', '8'],
+              'ci' => ['AB/12345', '5']
             }
           end
 
           let(:new_wal_location_with_offset) do
             {
               # offset is relative to `existing_wal`
-              main: ['0/D525E3A2', '2'],
-              ci: ['AB/12342', '2']
+              'main' => ['0/D525E3A2', '2'],
+              'ci' => ['AB/12342', '2']
             }
           end
 
           it "does not update a wal location to redis with an offset" do
             expect { duplicate_job.update_latest_wal_location! }
-              .to not_change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
-                    .from(stored_wal_location_with_offset[:main])
-              .and not_change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
-                    .from(stored_wal_location_with_offset[:ci])
+              .to not_change { read_range_from_redis(wal_location_key(idempotency_key, 'main')) }
+                    .from(stored_wal_location_with_offset['main'])
+              .and not_change { read_range_from_redis(wal_location_key(idempotency_key, 'ci')) }
+                    .from(stored_wal_location_with_offset['ci'])
           end
         end
       end
@@ -283,8 +283,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     describe '#latest_wal_locations' do
       context 'when job was deduplicated and wal locations were already persisted' do
         before do
-          rpush_to_redis_key(wal_location_key(idempotency_key, :main), wal_locations[:main], 1024)
-          rpush_to_redis_key(wal_location_key(idempotency_key, :ci), wal_locations[:ci], 1024)
+          rpush_to_redis_key(wal_location_key(idempotency_key, 'main'), wal_locations['main'], 1024)
+          rpush_to_redis_key(wal_location_key(idempotency_key, 'ci'), wal_locations['ci'], 1024)
         end
 
         it { expect(duplicate_job.latest_wal_locations).to eq(wal_locations) }
@@ -339,23 +339,23 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
           end
 
           it_behaves_like 'deleting keys from redis', 'existing wal location keys for main database' do
-            let(:key) { existing_wal_location_key(idempotency_key, :main) }
-            let(:from_value) { wal_locations[:main] }
+            let(:key) { existing_wal_location_key(idempotency_key, 'main') }
+            let(:from_value) { wal_locations['main'] }
           end
 
           it_behaves_like 'deleting keys from redis', 'existing wal location keys for ci database' do
-            let(:key) { existing_wal_location_key(idempotency_key, :ci) }
-            let(:from_value) { wal_locations[:ci] }
+            let(:key) { existing_wal_location_key(idempotency_key, 'ci') }
+            let(:from_value) { wal_locations['ci'] }
           end
 
           it_behaves_like 'deleting keys from redis', 'latest wal location keys for main database' do
-            let(:key) { wal_location_key(idempotency_key, :main) }
-            let(:from_value) { wal_locations[:main] }
+            let(:key) { wal_location_key(idempotency_key, 'main') }
+            let(:from_value) { wal_locations['main'] }
           end
 
           it_behaves_like 'deleting keys from redis', 'latest wal location keys for ci database' do
-            let(:key) { wal_location_key(idempotency_key, :ci) }
-            let(:from_value) { wal_locations[:ci] }
+            let(:key) { wal_location_key(idempotency_key, 'ci') }
+            let(:from_value) { wal_locations['ci'] }
           end
         end
 
@@ -485,39 +485,323 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     end
   end
 
-  context 'with multi-store feature flags turned on' do
+  context 'with duplicate_jobs_cookie disabled' do
+    before do
+      stub_feature_flags(duplicate_jobs_cookie: false)
+    end
+
+    context 'with multi-store feature flags turned on' do
+      def with_redis(&block)
+        Gitlab::Redis::DuplicateJobs.with(&block)
+      end
+
+      it 'use Gitlab::Redis::DuplicateJobs.with' do
+        expect(Gitlab::Redis::DuplicateJobs).to receive(:with).and_call_original
+        expect(Sidekiq).not_to receive(:redis)
+
+        duplicate_job.check!
+      end
+
+      it_behaves_like 'with multiple Redis keys'
+    end
+
+    context 'when both multi-store feature flags are off' do
+      def with_redis(&block)
+        Sidekiq.redis(&block)
+      end
+
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_duplicate_jobs: false)
+        stub_feature_flags(use_primary_store_as_default_for_duplicate_jobs: false)
+      end
+
+      it 'use Sidekiq.redis' do
+        expect(Sidekiq).to receive(:redis).and_call_original
+        expect(Gitlab::Redis::DuplicateJobs).not_to receive(:with)
+
+        duplicate_job.check!
+      end
+
+      it_behaves_like 'with multiple Redis keys'
+    end
+  end
+
+  context 'with Redis cookies' do
+    let(:cookie_key) do
+      "#{idempotency_key}:cookie"
+    end
+
     def with_redis(&block)
       Gitlab::Redis::DuplicateJobs.with(&block)
     end
 
-    it 'use Gitlab::Redis::DuplicateJobs.with' do
-      expect(Gitlab::Redis::DuplicateJobs).to receive(:with).and_call_original
-      expect(Sidekiq).not_to receive(:redis)
+    describe '#check!' do
+      context 'when there was no job in the queue yet' do
+        it { expect(duplicate_job.check!).to eq('123') }
 
-      duplicate_job.check!
+        shared_examples 'sets Redis keys with correct TTL' do
+          it "adds an idempotency key with correct ttl" do
+            expected_cookie = <<~COOKIE
+              jid=123
+              existing_wal_location:main=#{wal_locations['main']}
+              existing_wal_location:ci=#{wal_locations['ci']}
+            COOKIE
+            expect { duplicate_job.check! }
+              .to change { read_idempotency_key_with_ttl(cookie_key) }
+                    .from([nil, -2])
+                    .to([expected_cookie, be_within(1).of(expected_ttl)])
+          end
+        end
+
+        context 'when TTL option is not set' do
+          let(:expected_ttl) { described_class::DEFAULT_DUPLICATE_KEY_TTL }
+
+          it_behaves_like 'sets Redis keys with correct TTL'
+        end
+
+        context 'when TTL option is set' do
+          let(:expected_ttl) { 5.minutes }
+
+          before do
+            allow(duplicate_job).to receive(:options).and_return({ ttl: expected_ttl })
+          end
+
+          it_behaves_like 'sets Redis keys with correct TTL'
+        end
+
+        it "adds the idempotency key to the jobs payload" do
+          expect { duplicate_job.check! }.to change { job['idempotency_key'] }.from(nil).to(idempotency_key)
+        end
+      end
+
+      context 'when there was already a job with same arguments in the same queue' do
+        before do
+          set_idempotency_key(cookie_key, "jid=existing-jid\n")
+        end
+
+        it { expect(duplicate_job.check!).to eq('existing-jid') }
+
+        it "does not change the existing key's TTL" do
+          expect { duplicate_job.check! }
+            .not_to change { read_idempotency_key_with_ttl(cookie_key) }
+                  .from(["jid=existing-jid\n", -1])
+        end
+
+        it 'sets the existing jid' do
+          duplicate_job.check!
+
+          expect(duplicate_job.existing_jid).to eq('existing-jid')
+        end
+      end
     end
 
-    it_behaves_like 'tracking duplicates in redis'
-  end
+    describe '#update_latest_wal_location!' do
+      before do
+        allow(Gitlab::Database).to receive(:database_base_models).and_return(
+          { main: ::ActiveRecord::Base,
+            ci: ::ActiveRecord::Base })
 
-  context 'when both multi-store feature flags are off' do
-    def with_redis(&block)
-      Sidekiq.redis(&block)
+        set_idempotency_key(cookie_key, initial_cookie)
+
+        # read existing_wal_locations
+        duplicate_job.check!
+      end
+
+      let(:initial_cookie) do
+        <<~COOKIE
+          jid=foobar
+          existing_wal_location:main=0/D525E3A0
+          existing_wal_location:ci=AB/12340
+        COOKIE
+      end
+
+      let(:new_wal) do
+        {
+          # offset is relative to `existing_wal`
+          'main' => { location: '0/D525E3A8', offset: '8' },
+          'ci' => { location: 'AB/12345', offset: '5' }
+        }
+      end
+
+      let(:wal_locations) { new_wal.transform_values { |v| v[:location] } }
+
+      it 'stores a wal location to redis with an offset relative to existing wal location' do
+        expected_cookie = initial_cookie + <<~COOKIE
+          wal_location:main:#{new_wal['main'][:offset]}=#{new_wal['main'][:location]}
+          wal_location:ci:#{new_wal['ci'][:offset]}=#{new_wal['ci'][:location]}
+        COOKIE
+
+        expect { duplicate_job.update_latest_wal_location! }
+          .to change { read_idempotency_key_with_ttl(cookie_key) }
+                .from([initial_cookie, -1])
+                .to([expected_cookie, -1])
+      end
     end
 
-    before do
-      stub_feature_flags(use_primary_and_secondary_stores_for_duplicate_jobs: false)
-      stub_feature_flags(use_primary_store_as_default_for_duplicate_jobs: false)
+    describe '#latest_wal_locations' do
+      context 'when job was deduplicated and wal locations were already persisted' do
+        before do
+          cookie = <<~COOKIE
+            jid=foobar
+            wal_location:main:1=main1
+            wal_location:ci:2:=ci2
+            wal_location:main:5=main5
+            wal_location:ci:6=ci6
+            wal_location:main:3=main3
+            wal_location:ci:4=ci4
+          COOKIE
+          set_idempotency_key(cookie_key, cookie)
+        end
+
+        it { expect(duplicate_job.latest_wal_locations).to eq({ 'main' => 'main5', 'ci' => 'ci6' }) }
+      end
+
+      context 'when job is not deduplication and wal locations were not persisted' do
+        it { expect(duplicate_job.latest_wal_locations).to be_empty }
+      end
     end
 
-    it 'use Sidekiq.redis' do
-      expect(Sidekiq).to receive(:redis).and_call_original
-      expect(Gitlab::Redis::DuplicateJobs).not_to receive(:with)
+    describe '#delete!' do
+      context "when we didn't track the definition" do
+        it { expect { duplicate_job.delete! }.not_to raise_error }
+      end
 
-      duplicate_job.check!
+      context 'when the key exists in redis' do
+        before do
+          set_idempotency_key(cookie_key, "jid=existing-jid\n")
+        end
+
+        shared_examples 'deleting the duplicate job' do
+          shared_examples 'deleting keys from redis' do |key_name|
+            it "removes the #{key_name} from redis" do
+              expect { duplicate_job.delete! }
+                .to change { read_idempotency_key_with_ttl(key) }
+                      .from([from_value, -1])
+                      .to([nil, -2])
+            end
+          end
+
+          shared_examples 'does not delete key from redis' do |key_name|
+            it "does not remove the #{key_name} from redis" do
+              expect { duplicate_job.delete! }
+                .to not_change { read_idempotency_key_with_ttl(key) }
+                      .from([from_value, -1])
+            end
+          end
+
+          it_behaves_like 'deleting keys from redis', 'cookie key' do
+            let(:key) { cookie_key }
+            let(:from_value) { "jid=existing-jid\n" }
+          end
+        end
+
+        context 'when the idempotency key is not part of the job' do
+          it_behaves_like 'deleting the duplicate job'
+
+          it 'recalculates the idempotency hash' do
+            expect(duplicate_job).to receive(:idempotency_hash).and_call_original
+
+            duplicate_job.delete!
+          end
+        end
+
+        context 'when the idempotency key is part of the job' do
+          let(:idempotency_key) { 'not the same as what we calculate' }
+          let(:job) { super().merge('idempotency_key' => idempotency_key) }
+
+          it_behaves_like 'deleting the duplicate job'
+
+          it 'does not recalculate the idempotency hash' do
+            expect(duplicate_job).not_to receive(:idempotency_hash)
+
+            duplicate_job.delete!
+          end
+        end
+      end
     end
 
-    it_behaves_like 'tracking duplicates in redis'
+    describe '#set_deduplicated_flag!' do
+      context 'when the job is reschedulable' do
+        before do
+          duplicate_job.check! # ensure cookie exists
+          allow(duplicate_job).to receive(:reschedulable?) { true }
+        end
+
+        it 'sets the key in Redis' do
+          duplicate_job.set_deduplicated_flag!
+
+          cookie = with_redis { |redis| redis.get(cookie_key) }
+          expect(cookie).to include("\ndeduplicated=1\n")
+        end
+
+        it 'sets, gets and cleans up the deduplicated flag' do
+          expect(duplicate_job.should_reschedule?).to eq(false)
+
+          duplicate_job.set_deduplicated_flag!
+          expect(duplicate_job.should_reschedule?).to eq(true)
+
+          duplicate_job.delete!
+          expect(duplicate_job.should_reschedule?).to eq(false)
+        end
+      end
+
+      context 'when the job is not reschedulable' do
+        before do
+          allow(duplicate_job).to receive(:reschedulable?) { false }
+        end
+
+        it 'does not set the key in Redis' do
+          duplicate_job.check!
+          duplicate_job.set_deduplicated_flag!
+
+          cookie = with_redis { |redis| redis.get(cookie_key) }
+
+          expect(cookie).not_to include('deduplicated=')
+        end
+
+        it 'does not set the deduplicated flag' do
+          expect(duplicate_job.should_reschedule?).to eq(false)
+
+          duplicate_job.set_deduplicated_flag!
+          expect(duplicate_job.should_reschedule?).to eq(false)
+
+          duplicate_job.delete!
+          expect(duplicate_job.should_reschedule?).to eq(false)
+        end
+      end
+    end
+
+    describe '#duplicate?' do
+      it "raises an error if the check wasn't performed" do
+        expect { duplicate_job.duplicate? }.to raise_error /Call `#check!` first/
+      end
+
+      it 'returns false if the existing jid equals the job jid' do
+        duplicate_job.check!
+
+        expect(duplicate_job.duplicate?).to be(false)
+      end
+
+      it 'returns true if the existing jid is different from the job jid' do
+        set_idempotency_key(cookie_key, "jid=a different jid\n")
+        duplicate_job.check!
+
+        expect(duplicate_job.duplicate?).to be(true)
+      end
+    end
+
+    def set_idempotency_key(key, value)
+      with_redis { |r| r.set(key, value) }
+    end
+
+    def read_idempotency_key_with_ttl(key)
+      with_redis do |redis|
+        redis.pipelined do |p|
+          p.get(key)
+          p.ttl(key)
+        end
+      end
+    end
   end
 
   describe '#scheduled?' do
@@ -562,6 +846,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
       context 'with deduplicated flag' do
         before do
+          duplicate_job.check! # ensure cookie exists
           duplicate_job.set_deduplicated_flag!
         end
 
@@ -578,6 +863,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
 
       context 'with deduplicated flag' do
         before do
+          duplicate_job.check! # ensure cookie exists
           duplicate_job.set_deduplicated_flag!
         end
 

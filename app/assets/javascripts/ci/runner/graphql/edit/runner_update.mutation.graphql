@@ -1,0 +1,13 @@
+#import "ee_else_ce/ci/runner/graphql/edit/runner_fields.fragment.graphql"
+
+# Mutation for updates from the runner form, loads
+# attributes shown in the runner details.
+
+mutation runnerUpdate($input: RunnerUpdateInput!) {
+  runnerUpdate(input: $input) {
+    runner {
+      ...RunnerFields
+    }
+    errors
+  }
+}

@@ -446,7 +446,7 @@ RSpec.describe WebHook do
     end
   end
 
-  describe 'backoff!' do
+  describe '#backoff!' do
     context 'when we have not backed off before' do
       it 'does not disable the hook' do
         expect { hook.backoff! }.not_to change(hook, :executable?).from(true)
@@ -454,6 +454,26 @@ RSpec.describe WebHook do
 
       it 'increments the recent_failures count' do
         expect { hook.backoff! }.to change(hook, :recent_failures).by(1)
+      end
+    end
+
+    context 'when the recent failure value is the max value of a smallint' do
+      before do
+        hook.update!(recent_failures: 32767, disabled_until: 1.hour.ago)
+      end
+
+      it 'reduces to MAX_FAILURES' do
+        expect { hook.backoff! }.to change(hook, :recent_failures).to(described_class::MAX_FAILURES)
+      end
+    end
+
+    context 'when the recent failure value is MAX_FAILURES' do
+      before do
+        hook.update!(recent_failures: described_class::MAX_FAILURES, disabled_until: 1.hour.ago)
+      end
+
+      it 'does not change recent_failures' do
+        expect { hook.backoff! }.not_to change(hook, :recent_failures)
       end
     end
 
@@ -516,9 +536,19 @@ RSpec.describe WebHook do
     end
   end
 
-  describe 'failed!' do
+  describe '#failed!' do
     it 'increments the failure count' do
       expect { hook.failed! }.to change(hook, :recent_failures).by(1)
+    end
+
+    context 'when the recent failure value is the max value of a smallint' do
+      before do
+        hook.update!(recent_failures: 32767)
+      end
+
+      it 'does not change recent_failures' do
+        expect { hook.failed! }.not_to change(hook, :recent_failures)
+      end
     end
 
     it 'does not update the hook if the the failure count exceeds the maximum value' do

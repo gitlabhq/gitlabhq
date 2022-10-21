@@ -27,6 +27,7 @@ echo "Building QA image for destinations: ${DESTINATIONS}"
   --dockerfile="${CI_PROJECT_DIR}/qa/Dockerfile" \
   --build-arg=CHROME_VERSION="${CHROME_VERSION}" \
   --build-arg=DOCKER_VERSION="${DOCKER_VERSION}" \
+  --build-arg=RUBY_VERSION="${RUBY_VERSION}" \
   --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET:-qa}" \
   --cache=true \
   ${DESTINATIONS}

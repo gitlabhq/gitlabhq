@@ -7736,6 +7736,9 @@ msgstr ""
 msgid "Certificate Subject"
 msgstr ""
 
+msgid "Change"
+msgstr ""
+
 msgid "Change Failure Rate"
 msgstr ""
 
@@ -11948,6 +11951,9 @@ msgstr ""
 msgid "DORA4Metrics|%{startDate} - %{endDate}"
 msgstr ""
 
+msgid "DORA4Metrics|30 days before that"
+msgstr ""
+
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
@@ -11955,6 +11961,9 @@ msgid "DORA4Metrics|Change failure rate"
 msgstr ""
 
 msgid "DORA4Metrics|Change failure rate (percentage)"
+msgstr ""
+
+msgid "DORA4Metrics|DORA metrics for %{groupName} group"
 msgstr ""
 
 msgid "DORA4Metrics|Date"
@@ -11967,6 +11976,9 @@ msgid "DORA4Metrics|Days from merge to deploy"
 msgstr ""
 
 msgid "DORA4Metrics|Deployment frequency"
+msgstr ""
+
+msgid "DORA4Metrics|Last 30 days"
 msgstr ""
 
 msgid "DORA4Metrics|Lead time for changes"
@@ -16036,6 +16048,9 @@ msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
 msgid "Execution time"
+msgstr ""
+
+msgid "Executive Dashboard"
 msgstr ""
 
 msgid "Existing branch name, tag, or commit SHA"
@@ -25649,6 +25664,9 @@ msgid "Method"
 msgstr ""
 
 msgid "Method call threshold (ms)"
+msgstr ""
+
+msgid "Metric"
 msgstr ""
 
 msgid "Metric was successfully added."

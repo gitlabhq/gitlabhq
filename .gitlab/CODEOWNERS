@@ -155,7 +155,7 @@ Dangerfile @gl-quality/eng-prod
 /app/assets/javascripts/ci_variable_list/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/pipeline_editor/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/runner/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/ci/runner/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/ci_minutes_usage/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/usage_quotas/ci_minutes_usage/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend
@@ -1011,9 +1011,9 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/assets/javascripts/pipelines/components/pipelines_list/tokens/pipeline_tag_name_token.vue @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/projects/settings/topics/components/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/related_issues/components/issue_token.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/runner/components/registration/registration_token.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/runner/components/registration/registration_token_reset_dropdown_item.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/runner/components/search_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
+/app/assets/javascripts/ci/runner/components/registration/registration_token.vue @gitlab-org/manage/authentication-and-authorization/approvers
+/app/assets/javascripts/ci/runner/components/registration/registration_token_reset_dropdown_item.vue @gitlab-org/manage/authentication-and-authorization/approvers
+/app/assets/javascripts/ci/runner/components/search_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/token_access/components/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/token_access/index.js @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/stylesheets/page_bundles/profile_two_factor_auth.scss @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1144,7 +1144,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/assets/javascripts/password/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/pipelines/components/pipelines_list/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/requirements/components/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/runner/components/search_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
+/ee/app/assets/javascripts/ci/runner/components/search_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/saml_providers/scim_token_service.js @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/saml_sso/components/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/vue_merge_request_widget/components/approvals/approvals_auth.vue @gitlab-org/manage/authentication-and-authorization/approvers
