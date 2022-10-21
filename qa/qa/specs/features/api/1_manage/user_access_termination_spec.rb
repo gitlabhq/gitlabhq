@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'User', :requires_admin, :reliable do
+    describe 'User', :requires_admin, :reliable, product_group: :authentication_and_authorization do
       before(:all) do
         admin_api_client = Runtime::API::Client.as_admin
 

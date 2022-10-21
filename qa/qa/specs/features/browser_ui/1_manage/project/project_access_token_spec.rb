@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project access tokens', :reliable do
+    describe 'Project access tokens', :reliable, product_group: :authentication_and_authorization do
       let(:project_access_token) { QA::Resource::ProjectAccessToken.fabricate_via_browser_ui! }
 
       it(

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage' do
-    describe 'Project access token' do
+    describe 'Project access token', product_group: :authentication_and_authorization do
       before(:all) do
         @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
           pat.project = Resource::ReusableProject.fabricate_via_api!

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', only: { subdomain: %i[staging staging-canary] }, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/344213', type: :stale } do
-    describe 'basic user' do
+    describe 'basic user', product_group: :authentication_and_authorization do
       it 'remains logged in when redirected from canary to non-canary node', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347626' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 

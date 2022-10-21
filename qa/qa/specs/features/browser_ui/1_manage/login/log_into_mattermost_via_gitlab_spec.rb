@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :orchestrated, :mattermost do
+  RSpec.describe 'Manage', :orchestrated, :mattermost, product_group: :authentication_and_authorization do
     describe 'Mattermost login' do
       it 'user logs into Mattermost using GitLab OAuth', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347891' do
         Flow::Login.sign_in

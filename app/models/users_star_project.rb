@@ -12,6 +12,7 @@ class UsersStarProject < ApplicationRecord
 
   alias_attribute :starred_since, :created_at
 
+  scope :with_active_user, -> { joins(:user).merge(User.active) }
   scope :order_user_name_asc, -> { joins(:user).merge(User.order_name_asc) }
   scope :order_user_name_desc, -> { joins(:user).merge(User.order_name_desc) }
   scope :by_project, -> (project) { where(project_id: project.id) }

@@ -8,6 +8,7 @@ stages:
   - deploy:production
 
 staging:
+  environment: staging
   image: python:2
   stage: deploy:staging
   script:
@@ -18,6 +19,7 @@ staging:
       - $CI_DEFAULT_BRANCH == $CI_COMMIT_BRANCH
 
 production:
+  environment: production
   image: python:2
   stage: deploy:production
   script:

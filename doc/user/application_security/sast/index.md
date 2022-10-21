@@ -207,14 +207,14 @@ To configure SAST for a project you can:
 ### Configure SAST manually
 
 To enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
-the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
+the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
 provided as a part of your GitLab installation.
 
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 The included template creates SAST jobs in your CI/CD pipeline and scans

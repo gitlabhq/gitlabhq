@@ -461,7 +461,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/deploy_tokens.md @rdickenson
 /doc/api/deployments.md @rdickenson
 /doc/api/discussions.md @aqualls
-/doc/api/dora/ @fneill
+/doc/api/dora/ @lciutacu
 /doc/api/environments.md @rdickenson
 /doc/api/epic_issues.md @msedlakjakubowski
 /doc/api/epic_links.md @msedlakjakubowski
@@ -484,8 +484,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/graphql/sample_issue_boards.md @msedlakjakubowski
 /doc/api/graphql/users_example.md @jglassman1
 /doc/api/group_access_tokens.md @jglassman1
-/doc/api/group_activity_analytics.md @fneill
-/doc/api/group_badges.md @fneill
+/doc/api/group_activity_analytics.md @lciutacu
+/doc/api/group_badges.md @lciutacu
 /doc/api/group_boards.md @msedlakjakubowski
 /doc/api/group_clusters.md @phillipwells
 /doc/api/group_import_export.md @eread
@@ -498,7 +498,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/group_releases.md @rdickenson
 /doc/api/group_repository_storage_moves.md @ashrafkhamis
 /doc/api/group_wikis.md @ashrafkhamis
-/doc/api/groups.md @fneill
+/doc/api/groups.md @lciutacu
 /doc/api/import.md @eread
 /doc/api/index.md @ashrafkhamis
 /doc/api/instance_clusters.md @phillipwells
@@ -588,7 +588,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/templates/gitlab_ci_ymls.md @marcel.amirault
 /doc/api/templates/licenses.md @rdickenson
 /doc/api/todos.md @msedlakjakubowski
-/doc/api/topics.md @fneill
+/doc/api/topics.md @lciutacu
 /doc/api/usage_data.md @claytoncornell
 /doc/api/users.md @jglassman1
 /doc/api/version.md @phillipwells
@@ -718,7 +718,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/permissions.md @jglassman1
 /doc/development/policies.md @jglassman1
 /doc/development/product_qualified_lead_guide/ @phillipwells
-/doc/development/project_templates.md @fneill
+/doc/development/project_templates.md @lciutacu
 /doc/development/prometheus_metrics.md @msedlakjakubowski
 /doc/development/real_time.md @msedlakjakubowski
 /doc/development/sec/ @rdickenson
@@ -730,8 +730,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/testing_guide/ @sselhorn
 /doc/development/testing_guide/contract/ @sselhorn
 /doc/development/testing_guide/end_to_end/ @sselhorn
-/doc/development/value_stream_analytics.md @fneill
-/doc/development/value_stream_analytics/ @fneill
+/doc/development/value_stream_analytics.md @lciutacu
+/doc/development/value_stream_analytics/ @lciutacu
 /doc/development/wikis.md @ashrafkhamis
 /doc/development/work_items.md @msedlakjakubowski
 /doc/development/work_items_widgets.md @msedlakjakubowski
@@ -798,7 +798,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/update/mysql_to_postgresql.md @aqualls
 /doc/update/package/ @axil
 /doc/update/upgrading_postgresql_using_slony.md @aqualls
-/doc/user/admin_area/analytics/ @fneill
+/doc/user/admin_area/analytics/ @lciutacu
 /doc/user/admin_area/broadcast_messages.md @phillipwells
 /doc/user/admin_area/credentials_inventory.md @jglassman1
 /doc/user/admin_area/custom_project_templates.md @eread
@@ -833,10 +833,10 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/admin_area/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
 /doc/user/admin_area/settings/rate_limit_on_pipelines_creation.md @marcel.amirault
 /doc/user/admin_area/settings/rate_limit_on_users_api.md @jglassman1
-/doc/user/admin_area/settings/third_party_offers.md @fneill
+/doc/user/admin_area/settings/third_party_offers.md @lciutacu
 /doc/user/admin_area/settings/usage_statistics.md @claytoncornell
 /doc/user/admin_area/settings/visibility_and_access_controls.md @aqualls
-/doc/user/analytics/ @fneill
+/doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @rdickenson
 /doc/user/application_security/api_fuzzing/ @rdickenson
 /doc/user/application_security/configuration/ @rdickenson
@@ -873,14 +873,14 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/discussions/ @aqualls
 /doc/user/feature_flags.md @sselhorn
 /doc/user/free_user_limit.md @phillipwells
-/doc/user/group/ @fneill
+/doc/user/group/ @lciutacu
 /doc/user/group/clusters/ @phillipwells
-/doc/user/group/contribution_analytics/ @fneill
+/doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @eread
-/doc/user/group/devops_adoption/ @fneill
+/doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @eread
-/doc/user/group/insights/ @fneill
+/doc/user/group/insights/ @lciutacu
 /doc/user/group/issues_analytics/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/planning_hierarchy/ @msedlakjakubowski
@@ -889,8 +889,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/group/saml_sso/ @jglassman1
 /doc/user/group/settings/group_access_tokens.md @jglassman1
 /doc/user/group/settings/import_export.md @eread
-/doc/user/group/subgroups/ @fneill
-/doc/user/group/value_stream_analytics/ @fneill
+/doc/user/group/subgroups/ @lciutacu
+/doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/ @phillipwells
 /doc/user/infrastructure/clusters/ @phillipwells
 /doc/user/infrastructure/clusters/connect/ @phillipwells
@@ -900,7 +900,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @sselhorn
 /doc/user/infrastructure/iac/ @phillipwells
 /doc/user/markdown.md @aqualls
-/doc/user/namespace/ @fneill
+/doc/user/namespace/ @lciutacu
 /doc/user/packages/ @claytoncornell
 /doc/user/packages/composer_repository/ @claytoncornell
 /doc/user/packages/conan_repository/ @claytoncornell
@@ -933,8 +933,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/description_templates.md @msedlakjakubowski
 /doc/user/project/import/ @eread
 /doc/user/project/import/jira.md @msedlakjakubowski
-/doc/user/project/index.md @fneill
-/doc/user/project/insights/ @fneill
+/doc/user/project/index.md @lciutacu
+/doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @ashrafkhamis
 /doc/user/project/integrations/prometheus.md @msedlakjakubowski
 /doc/user/project/integrations/prometheus_library/ @msedlakjakubowski
@@ -942,7 +942,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @eread
 /doc/user/project/labels.md @msedlakjakubowski
-/doc/user/project/members/ @fneill
+/doc/user/project/members/ @lciutacu
 /doc/user/project/merge_requests/ @aqualls
 /doc/user/project/merge_requests/approvals/ @aqualls
 /doc/user/project/merge_requests/csv_export.md @eread
@@ -969,14 +969,14 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk.md @msedlakjakubowski
 /doc/user/project/settings/import_export.md @eread
-/doc/user/project/settings/index.md @fneill
+/doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/wiki/ @ashrafkhamis
-/doc/user/project/working_with_projects.md @fneill
-/doc/user/public_access.md @fneill
-/doc/user/reserved_names.md @fneill
+/doc/user/project/working_with_projects.md @lciutacu
+/doc/user/public_access.md @lciutacu
+/doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
 /doc/user/search/global_search/ @ashrafkhamis
 /doc/user/shortcuts.md @ashrafkhamis
@@ -985,7 +985,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
-/doc/user/workspace/ @fneill
+/doc/user/workspace/ @lciutacu
 
 [Authentication and Authorization]
 /app/assets/javascripts/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
