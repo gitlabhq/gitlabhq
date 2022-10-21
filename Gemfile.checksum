@@ -259,7 +259,7 @@
 {"name":"hana","version":"1.3.7","platform":"ruby","checksum":"5425db42d651fea08859811c29d20446f16af196308162894db208cac5ce9b0d"},
 {"name":"hangouts-chat","version":"0.0.5","platform":"ruby","checksum":"bdbeb6c6e4abc98f395cb273f53b39911b3aa9e248fbbf063242b021ced8b6b6"},
 {"name":"hashdiff","version":"1.0.1","platform":"ruby","checksum":"2cd4d04f5080314ecc8403c4e2e00dbaa282dff395e2d031bc16c8d501bdd6db"},
-{"name":"hashie","version":"4.1.0","platform":"ruby","checksum":"7890dcb9ec18a4b66acec797018c73824b89cef5eb8cda36e8e8501845e87a09"},
+{"name":"hashie","version":"5.0.0","platform":"ruby","checksum":"9d6c4e51f2a36d4616cbc8a322d619a162d8f42815a792596039fc95595603da"},
 {"name":"hashie-forbidden_attributes","version":"0.1.1","platform":"ruby","checksum":"3a6ed37f3a314e4fb1dd1e2df6eb7721bcadd023a30bc0b951b2b5285a790fb2"},
 {"name":"health_check","version":"3.1.0","platform":"ruby","checksum":"10146508237dc54ed7e24c292d8ba7fb8f9590cf26c66e325b947438c4103b57"},
 {"name":"heapy","version":"0.2.0","platform":"ruby","checksum":"74141e845d61ffc7c1e8bf8b127c8cf94544ec7a1181aec613288682543585ea"},

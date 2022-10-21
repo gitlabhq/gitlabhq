@@ -32,7 +32,7 @@ For error tracking to work, you need two pieces:
 
 ### Deploying Sentry
 
-You can sign up to the cloud hosted [Sentry](https://sentry.io), deploy your own [on-premise instance](https://github.com/getsentry/onpremise/), or use GitLab to [install Sentry to a Kubernetes cluster](../user/infrastructure/clusters/manage/management_project_applications/sentry.md).
+You can sign up to the cloud hosted [Sentry](https://sentry.io) or deploy your own [on-premise instance](https://github.com/getsentry/onpremise/).
 
 ### Enabling Sentry
 
@@ -156,11 +156,11 @@ You can find the feature configuration at **Settings > Monitor > Error Tracking*
 
 1. Select **GitLab** as the error tracking backend for your project:
 
-    ![Error Tracking Settings](img/error_tracking_setting_v14_3.png)
+   ![Error Tracking Settings](img/error_tracking_setting_v14_3.png)
 
 1. Select **Save changes**. After page reload you should see a text field with the DSN string. Copy it.
 
-    ![Error Tracking Settings DSN](img/error_tracking_setting_dsn_v14_4.png)
+   ![Error Tracking Settings DSN](img/error_tracking_setting_dsn_v14_4.png)
 
 1. Take the DSN from the previous step and configure your Sentry SDK with it. Errors are now
    reported to the GitLab collector and are visible in the [GitLab UI](#error-tracking-list).

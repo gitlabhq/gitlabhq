@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :smoke do
+  RSpec.describe 'Plan', :smoke, product_group: :project_management do
     describe 'Issue creation' do
       let(:project) { Resource::Project.fabricate_via_api! }
       let(:closed_issue) { Resource::Issue.fabricate_via_api! { |issue| issue.project = project } }

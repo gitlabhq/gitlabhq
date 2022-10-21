@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -euo pipefail
 #
 # This script runs the LicenseFinder gem to verify that all licenses are
 # compliant. However, bundler v2.2+ and LicenseFinder do not play well

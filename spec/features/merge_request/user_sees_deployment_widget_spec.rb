@@ -18,6 +18,11 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
     let(:build) { create(:ci_build, :with_deployment, environment: environment.name, pipeline: pipeline) }
     let!(:deployment) { build.deployment }
 
+    def assert_env_widget(text, env_name)
+      expect(find('.js-deploy-env-name')[:title]).to have_text(env_name)
+      expect(page).to have_content(text)
+    end
+
     before do
       merge_request.update!(merge_commit_sha: sha)
       project.add_member(user, role)
@@ -33,7 +38,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 
-        expect(page).to have_content("Deployed to #{environment.name}")
+        assert_env_widget("Deployed to", environment.name)
         expect(find('.js-deploy-time')['title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
       end
 
@@ -47,8 +52,8 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
           wait_for_requests
 
           expect(page).to have_selector('.js-deployment-info', count: 1)
-          expect(page).to have_content("#{environment.name}")
-          expect(page).not_to have_content("#{environment2.name}")
+          expect(find('.js-deploy-env-name')[:title]).to have_text(environment.name)
+          expect(find('.js-deploy-env-name')[:title]).not_to have_text(environment2.name)
         end
       end
     end
@@ -62,7 +67,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 
-        expect(page).to have_content("Failed to deploy to #{environment.name}")
+        assert_env_widget("Failed to deploy to", environment.name)
         expect(page).not_to have_css('.js-deploy-time')
       end
     end
@@ -76,7 +81,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 
-        expect(page).to have_content("Deploying to #{environment.name}")
+        assert_env_widget("Deploying to", environment.name)
         expect(page).not_to have_css('.js-deploy-time')
       end
     end
@@ -89,7 +94,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 
-        expect(page).to have_content("Will deploy to #{environment.name}")
+        assert_env_widget("Will deploy to", environment.name)
         expect(page).not_to have_css('.js-deploy-time')
       end
     end
@@ -103,7 +108,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 
-        expect(page).to have_content("Canceled deployment to #{environment.name}")
+        assert_env_widget("Canceled deployment to", environment.name)
         expect(page).not_to have_css('.js-deploy-time')
       end
     end

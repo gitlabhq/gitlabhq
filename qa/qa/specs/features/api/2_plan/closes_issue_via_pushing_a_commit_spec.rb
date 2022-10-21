@@ -6,7 +6,7 @@ module QA
   RSpec.describe 'Plan' do
     include Support::API
 
-    describe 'Issue' do
+    describe 'Issue', product_group: :project_management do
       let(:issue) do
         Resource::Issue.fabricate_via_api!
       end

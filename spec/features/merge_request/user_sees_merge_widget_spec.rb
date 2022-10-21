@@ -64,7 +64,8 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
       wait_for_requests
 
       page.within('.js-pre-deployment') do
-        expect(page).to have_content("Deployed to #{environment.name}")
+        expect(find('.js-deploy-env-name')[:title]).to have_text(environment.name)
+        expect(page).to have_content("Deployed to")
         expect(find('.js-deploy-url')[:href]).to include(environment.formatted_external_url)
       end
     end

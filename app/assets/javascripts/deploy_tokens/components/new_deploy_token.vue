@@ -109,10 +109,11 @@ export default {
     writePackageRegistryHelp: s__(
       'DeployTokens|Allows read and write access to the package registry.',
     ),
+    createTokenFailedAlert: s__('DeployTokens|Failed to create a new deployment token'),
   },
   computed: {
     formattedExpiryDate() {
-      return formatDate(this.expiresAt, 'yyyy-mm-dd');
+      return this.expiresAt ? formatDate(this.expiresAt, 'yyyy-mm-dd') : '';
     },
     newTokenCreatedMessage() {
       return this.tokenType === 'group'
@@ -129,6 +130,9 @@ export default {
             name: this.name,
             read_repository: this.readRepository,
             read_registry: this.readRegistry,
+            write_registry: this.writeRegistry,
+            read_package_registry: this.readPackageRegistry,
+            write_package_registry: this.writePackageRegistry,
             username: this.username,
           },
         })
@@ -142,7 +146,8 @@ export default {
         })
         .catch((error) => {
           createAlert({
-            message: error.response.data.message,
+            message:
+              error?.response?.data?.message || this.$options.translations.createTokenFailedAlert,
           });
         });
     },

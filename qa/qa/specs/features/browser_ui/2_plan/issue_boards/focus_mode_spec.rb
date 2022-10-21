@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :reliable do
+  RSpec.describe 'Plan', :reliable, product_group: :project_management do
     describe 'Issue board focus mode' do
       let(:project) do
         QA::Resource::Project.fabricate_via_api! do |project|

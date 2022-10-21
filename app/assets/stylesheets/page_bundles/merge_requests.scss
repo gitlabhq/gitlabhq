@@ -391,6 +391,10 @@ $tabs-holder-z-index: 250;
     text-overflow: ellipsis;
     min-width: 100px;
 
+    display: grid;
+    grid-template-columns: max-content minmax(0, max-content) max-content;
+    grid-gap: $gl-spacing-scale-2;
+
     @include media-breakpoint-up(xs) {
       min-width: 0;
       max-width: 100%;
@@ -404,6 +408,7 @@ $tabs-holder-z-index: 250;
 
 .deploy-heading,
 .merge-train-position-indicator {
+  padding: $gl-padding-8;
   @include media-breakpoint-up(md) {
     padding: $gl-padding-8 $gl-padding;
   }
@@ -637,7 +642,6 @@ $tabs-holder-z-index: 250;
     word-break: break-all;
   }
 
-  .deploy-link,
   .label-branch {
     &.label-truncate {
       // NOTE: This selector targets its children because some of the HTML comes from
