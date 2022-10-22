@@ -44,7 +44,7 @@ GitLab support is unable to continue with the investigation if both:
 - The date of the request is on or after the release of GitLab version 15.6.
 - Support Engineers and Management determine that all reasonable non-NFS root causes have been exhausted.
 
-If the issue is reproducible, or if it happens intermittently but regularly, GitLab Support can investigate providing the issue reproduces without the use of NFS. In order to reproduce without NFS, the affected repositories should be migrated to a different Gitaly shard, such as Gitaly cluster or a standalone Gitaly VM, backed with block storage.
+If the issue is reproducible, or if it happens intermittently but regularly, GitLab Support can investigate providing the issue reproduces without the use of NFS. To reproduce without NFS, the affected repositories should be migrated to a different Gitaly shard, such as Gitaly cluster or a standalone Gitaly VM, backed with block storage.
 
 ### Why remove NFS for Git repository data
 

@@ -31,7 +31,7 @@ a job is complete, the trace file contents are sent to the object store.
 New architecture writes data to Redis instead of writing build logs into a
 file.
 
-In order to make this performant and resilient enough, we implemented a chunked
+To make this performant and resilient enough, we implemented a chunked
 I/O mechanism - we store data in Redis in chunks, and migrate them to an object
 store once we reach a desired chunk size.
 

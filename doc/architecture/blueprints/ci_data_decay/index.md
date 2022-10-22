@@ -67,7 +67,7 @@ When a build gets archived it will not be possible to retry it, but we still do
 keep all the processing metadata in the database, and it consumes resources
 that are scarce in the primary database.
 
-In order to improve performance and make it easier to scale CI/CD data storage
+To improve performance and make it easier to scale CI/CD data storage
 we might want to follow these three tracks described below.
 
 ![pipeline data time decay](pipeline_data_time_decay.png)
@@ -210,7 +210,7 @@ We accept the possible necessity of building a separate API endpoint /
 endpoints needed to access pipeline data through the API.
 
 In the new API users might need to provide a time range in which the data has
-been created to search through their pipelines / builds. In order to make it
+been created to search through their pipelines / builds. To make it
 efficient it might be necessary to restrict access to querying data residing in
 more than two partitions at once. We can do that by supporting time ranges
 spanning the duration that equals to the builds archival policy.

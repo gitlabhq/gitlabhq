@@ -17,7 +17,7 @@ in the project's default branch.
 
 ## Change the issue closing pattern
 
-In order to change the pattern you need to have access to the server that GitLab
+To change the pattern, you must have access to the server that GitLab
 is installed on.
 
 The default pattern can be located in [`gitlab.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)

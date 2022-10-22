@@ -469,7 +469,7 @@ This happens because the PostgreSQL certificate that the Omnibus GitLab package 
 the Common Name `PostgreSQL`, but the replication is connecting to a different host and GitLab attempts to use
 the `verify-full` SSL mode by default.
 
-In order to fix this, you can either:
+To fix this issue, you can either:
 
 - Use the `--sslmode=verify-ca` argument with the `replicate-geo-database` command.
 - For an already replicated database, change `sslmode=verify-full` to `sslmode=verify-ca`

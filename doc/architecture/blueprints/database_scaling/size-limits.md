@@ -117,7 +117,7 @@ limit 30;
 NOTE:
 In PostgreSQL context, a **physical table** is either a regular table or a partition of a partitioned table.
 
-In order to maintain and improve operational stability and lessen development burden, we target a **table size less than 100 GB for a physical table on GitLab.com** (including its indexes). This has numerous benefits:
+To maintain and improve operational stability and lessen development burden, we target a **table size less than 100 GB for a physical table on GitLab.com** (including its indexes). This has numerous benefits:
 
 1. Improved query performance and more stable query plans
 1. Significantly reduce vacuum run times and increase frequency of vacuum runs to maintain a healthy state - reducing overhead on the database primary

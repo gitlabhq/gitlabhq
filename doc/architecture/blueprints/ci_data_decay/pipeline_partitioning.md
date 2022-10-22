@@ -269,7 +269,7 @@ table, it is possible to have many logical partitions per one physical partition
 
 ## Storing partitions metadata in the database
 
-In order to build an efficient mechanism that will be responsible for creating
+To build an efficient mechanism that will be responsible for creating
 new partitions, and to implement time decay we want to introduce a partitioning
 metadata table, called `ci_partitions`. In that table we would store metadata
 about all the logical partitions, with many pipelines per partition. We may
