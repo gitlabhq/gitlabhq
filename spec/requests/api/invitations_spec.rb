@@ -348,6 +348,14 @@ RSpec.describe API::Invitations do
 
       it 'returns 400 when the email list is not a valid format' do
         post invitations_url(source, maintainer),
+             params: { email: %w[email1@example.com not-an-email], access_level: Member::MAINTAINER }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('email contains an invalid email address')
+      end
+
+      it 'returns 400 when the comma-separated email list is not a valid format' do
+        post invitations_url(source, maintainer),
              params: { email: 'email1@example.com,not-an-email', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)

@@ -9,7 +9,12 @@ module API
 
           return unless value
 
-          return if value.split(',').map { |v| ValidateEmail.valid?(v) }.all?
+          case value
+          when String
+            return if value.split(',').map { |v| ValidateEmail.valid?(v) }.all?
+          when Array
+            return if value.map { |v| ValidateEmail.valid?(v) }.all?
+          end
 
           raise Grape::Exceptions::Validation.new(
             params: [@scope.full_name(attr_name)],
