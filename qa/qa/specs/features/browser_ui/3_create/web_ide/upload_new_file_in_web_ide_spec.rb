@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', product_group: :editor do
     describe 'Upload a file in Web IDE' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', file_name)) }
 

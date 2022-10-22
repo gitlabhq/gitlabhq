@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :skip_live_env, except: { job: 'review-qa-*' } do
+  RSpec.describe 'Create', :skip_live_env, except: { job: 'review-qa-*' }, product_group: :editor do
     describe 'Git Server Hooks' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', 'README.md')) }
 
