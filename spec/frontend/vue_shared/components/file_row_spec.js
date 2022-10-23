@@ -106,7 +106,7 @@ describe('File row component', () => {
       level: 2,
     });
 
-    expect(wrapper.find('.file-row-name').element.style.marginLeft).toBe('32px');
+    expect(wrapper.find('.file-row-name').element.style.marginLeft).toBe('16px');
   });
 
   it('renders header for file', () => {

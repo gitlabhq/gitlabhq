@@ -45,7 +45,7 @@ export default {
     },
     levelIndentation() {
       return {
-        marginLeft: this.level ? `${this.level * 16}px` : null,
+        marginLeft: this.level ? `${this.level * 8}px` : null,
       };
     },
     fileClass() {
