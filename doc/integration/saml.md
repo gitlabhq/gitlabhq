@@ -660,7 +660,7 @@ balancer and include sensitive details in assertions that you do not want appear
 in logs. Most organizations should not need additional encryption at this layer.
 
 The SAML integration supports EncryptedAssertion. You should define the private
-key and the public certificate of your GitLab instance in the SAML settings:
+key and the public certificate of your GitLab instance in the SAML settings. When you define the key and certificate, replace all line feeds in the key file with `\n`. This makes the key file one long string with no line feeds.
 
 ```yaml
 args: {
@@ -669,12 +669,8 @@ args: {
   idp_sso_target_url: 'https://login.example.com/idp',
   issuer: 'https://gitlab.example.com',
   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-  certificate: '-----BEGIN CERTIFICATE-----
-    <redacted>
-    -----END CERTIFICATE-----',
-  private_key: '-----BEGIN PRIVATE KEY-----
-    <redacted>
-    -----END PRIVATE KEY-----'
+  certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----',
+  private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----'
 }
 ```
 
@@ -703,12 +699,8 @@ args: {
   idp_sso_target_url: 'https://login.example.com/idp',
   issuer: 'https://gitlab.example.com',
   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-  certificate: '-----BEGIN CERTIFICATE-----
-    <redacted>
-    -----END CERTIFICATE-----',
-  private_key: '-----BEGIN PRIVATE KEY-----
-    <redacted>
-    -----END PRIVATE KEY-----',
+  certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----',
+  private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----',
   security: {
     authn_requests_signed: true,  # enable signature on AuthNRequest
     want_assertions_signed: true,  # enable the requirement of signed assertion
