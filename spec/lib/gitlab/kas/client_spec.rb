@@ -111,11 +111,16 @@ RSpec.describe Gitlab::Kas::Client do
 
     describe 'with grpcs' do
       let(:stub) { instance_double(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub) }
+      let(:credentials) { instance_double(GRPC::Core::ChannelCredentials) }
       let(:kas_url) { 'grpcs://example.kas.internal' }
 
-      it 'uses a ChannelCredentials object' do
+      it 'uses a ChannelCredentials object with the correct certificates' do
+        expect(GRPC::Core::ChannelCredentials).to receive(:new)
+          .with(Gitlab::X509::Certificate.ca_certs_bundle)
+          .and_return(credentials)
+
         expect(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub).to receive(:new)
-          .with('example.kas.internal', instance_of(GRPC::Core::ChannelCredentials), timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', credentials, timeout: described_class::TIMEOUT)
           .and_return(stub)
 
         allow(stub).to receive(:list_agent_config_files)

@@ -1,0 +1,79 @@
+- name: "Deploy apps to Google Cloud with GitLab Cloud Seed"
+  description: |
+    Cloud Seed allows GitLab and Google Cloud customers to migrate to the cloud using a single platform, consolidating their tech stack without slowing down their cloud adoption process. Cloud Seed is built into the GitLab web UI and leverages CI/CD pipeline capabilities. It is specifically tailored to offer a frictionless developer experience for consuming Google Cloud services, supporting [Service Accounts](https://docs.gitlab.com/ee/cloud_seed/index.html#set-up-deployment-credentials), [Regions](https://docs.gitlab.com/ee/cloud_seed/index.html#configure-your-preferred-gcp-region), [Cloud Run](https://docs.gitlab.com/ee/cloud_seed/index.html#deploy-to-google-cloud-run), and [Cloud SQL](https://docs.gitlab.com/ee/cloud_seed/index.html#provision-cloud-sql-databases).
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/cloud_seed/index.html'
+  image_url: 'https://img.youtube.com/vi/zDMGCyAgCPY/hqdefault.jpg'
+  published_at: 2022-10-22
+  release: 15.5
+- name: "Autocomplete suggestions in the Content Editor"
+  description: |
+    GitLab Flavored Markdown provides convenient shortcuts for referencing GitLab-specific items like users, issues, epics, and even emojis in your content. For example, you can type `#35266` to link to that issue or `:thumb` to see a list of thumb emojis. Now when you use the Content Editor, you get access to the same powerful autocomplete suggestions.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/markdown.html#gitlab-specific-references'
+  image_url: 'https://about.gitlab.com/images/15_5/content-editor-suggestions.png'
+  published_at: 2022-10-22
+  release: 15.5
+- name: "Rule Mode for Scan Execution Policies"
+  description: |
+    GitLab now supports editing scan execution policies through the UI in `Rule Mode` in addition to the `Yaml Mode` that was available previously. This new visual editor makes it easy to construct a policy, even for non-technical users. Policies can be used to require security scans to run on a schedule or as part of a project pipeline. To get started, have a Project Owner link an associated security policy project on the **Security & Compliance > Policies** page.
+  stage: Govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html'
+  image_url: 'https://about.gitlab.com/images/15_5/govern-scan-execution-policy-rule-mode.png'
+  published_at: 2022-10-22
+  release: 15.5
+- name: "Email notification when two-factor OTP attempt is wrong"
+  description: |
+    On accounts with two-factor authentication (2FA) enabled, bad actors that enter correct usernames and passwords must still enter a
+    correct one-time password (OTP) to access the account. However, users would not know incorrect codes are being entered. Now users are
+    immediately sent an email when an incorrect OTP is entered, improving security by notifying them that their account might be compromised.
+  stage: Manage
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/profile/notifications.html#notifications-for-attempted-sign-in-using-wrong-two-factor-authentication-codes'
+  image_url: 'https://about.gitlab.com/images/15_5/manage-otp-email.png'
+  published_at: 2022-10-22
+  release: 15.5
+- name: "Error Tracking Open Beta"
+  description: |
+    In GitLab 15.5, we are re-enabling GitLab [integrated error tracking](https://docs.gitlab.com/ee/operations/error_tracking.html#integrated-error-tracking) for GitLab.com in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta). We've reworked the architecture so it uses our new Observability backend, leveraging the ClickHouse database. This improvement will enable scaling and a more performant system for the user. In addition, this sets the groundwork to have errors in the same database as other observability data such as metrics, traces, and logs. We want to allow users to see errors on the same dashboard as other observability data, and enable them to be embedded into issues and incidents.
+  stage: Monitor
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/operations/error_tracking.html#integrated-error-tracking'
+  image_url: "https://about.gitlab.com/images/15_5/feature_error_tracking.png"
+  published_at: 2022-10-22
+  release: 15.5
+- name: "Search by environment name in the Environments overview page"
+  description: |
+    You can now search the list of environments in the Environments page by name. Previously, there was no search functionality. This sometimes required you to scroll through many pages to find a specific environment and its latest deployment. Now you can easily find an environment by typing in the name into the search bar. Please note you can search for an exact or partial match of the environment name. Wildcards are not yet supported.
+  stage: Release
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/environments/#view-environments-and-deployments'
+  image_url: 'https://about.gitlab.com/images/15_5/release-env-search.png'
+  published_at: 2022-10-22
+  release: 15.5
+- name: "Operational container scanning"
+  description: |
+    GitLab now officially supports vulnerability scanning of container images in operational or production Kubernetes environments. You can set up scanning either through the [configuration file](https://docs.gitlab.com/ee/user/clusters/agent/vulnerabilities.html#enable-operational-container-scanning) for your GitLab Agent for Kubernetes or by creating a [scan execution policy](https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html) to require scans to run on a regular cadence.
+  stage: Secure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/clusters/agent/vulnerabilities.html'
+  image_url: 'https://about.gitlab.com/images/15_5/secure-operational-vulnerabilities.png'
+  published_at: 2022-10-22
+  release: 15.5

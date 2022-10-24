@@ -64,7 +64,7 @@ module Gitlab
 
       def credentials
         if URI(Gitlab::Kas.internal_url).scheme == 'grpcs'
-          GRPC::Core::ChannelCredentials.new
+          GRPC::Core::ChannelCredentials.new(::Gitlab::X509::Certificate.ca_certs_bundle)
         else
           :this_channel_is_insecure
         end

@@ -26,11 +26,8 @@ For each scanner, an analyzer:
 
 SAST supports the following official analyzers:
 
-- [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit)
 - [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman)
-- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript and React))
 - [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder)
-- [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec)
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) (Kubesec)
 - [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF (beta))
 - [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan)
@@ -40,6 +37,12 @@ SAST supports the following official analyzers:
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) (Semgrep)
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
+
+SAST has used other analyzers in previous versions. These analyzers reached End of Support status and do not receive updates:
+
+- [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
+- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript and React)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
+- [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
 
 ## SAST analyzer features
 
@@ -126,19 +129,11 @@ You can see how Semgrep-based scanning will work in your projects before the Git
 We recommend that you test this change in a merge request but continue using the Stable template in your default branch pipeline configuration.
 
 In GitLab 15.3, we [activated a feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/362179) to migrate security findings on the default branch from other analyzers to Semgrep.
-We plan to [plan to remove the deprecated analyzers](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) from the Stable CI/CD template in GitLab 15.4.
+In GitLab 15.4, we [removed the deprecated analyzers](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) from the Stable CI/CD template.
 
-To preview the upcoming changes to the CI/CD configuration:
+To preview the upcoming changes to the CI/CD configuration in GitLab 15.3 or earlier:
 
 1. Open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yaml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yaml`.
-    - On GitLab.com, use the latest template directly:
-
-      ```yaml
-      include:
-        template: 'SAST.latest.gitlab-ci.yaml'
-      ```
-
-    - On a Self-Managed instance, download the template from GitLab.com:
 
       ```yaml
       include:
@@ -169,8 +164,8 @@ This variable affects all Secure analyzers, not just the analyzers for SAST.
 To have GitLab download the analyzers' images from a custom Docker registry, define the prefix with
 the `SECURE_ANALYZERS_PREFIX` CI/CD variable.
 
-For example, the following instructs SAST to pull `my-docker-registry/gitlab-images/bandit` instead
-of `registry.gitlab.com/security-products/bandit`:
+For example, the following instructs SAST to pull `my-docker-registry/gitlab-images/semgrep` instead
+of `registry.gitlab.com/security-products/semgrep`:
 
 ```yaml
 include:
@@ -206,14 +201,14 @@ source code languages detected. However, you can disable select analyzers.
 To disable select analyzers, set the CI/CD variable `SAST_EXCLUDED_ANALYZERS` to a comma-delimited
 string listing the analyzers that you want to prevent running.
 
-For example, to disable the `eslint` analyzer:
+For example, to disable the `spotbugs` analyzer:
 
 ```yaml
 include:
   - template: Security/SAST.gitlab-ci.yml
 
 variables:
-  SAST_EXCLUDED_ANALYZERS: "eslint"
+  SAST_EXCLUDED_ANALYZERS: "spotbugs"
 ```
 
 ### Custom analyzers
@@ -249,25 +244,27 @@ Each analyzer provides data about the vulnerabilities it detects. The following 
 data available from each analyzer. The values provided by these tools are heterogeneous so they are sometimes
 normalized into common values, for example, `severity` and `confidence`.
 
-| Property / tool                | Apex | Bandit | Brakeman | ESLint security | SpotBugs | Flawfinder | Gosec | Kubesec Scanner | MobSF | NodeJsScan | PHP CS Security Audit | Security code Scan (.NET) | Semgrep | Sobelow |
+| Property / tool                | Apex | Bandit<sup>1</sup> | Brakeman | ESLint security<sup>1</sup> | SpotBugs | Flawfinder | Gosec<sup>1</sup> | Kubesec Scanner | MobSF | NodeJsScan | PHP CS Security Audit | Security code Scan (.NET) | Semgrep | Sobelow |
 |--------------------------------|------|--------|----------|-----------------|----------|------------|-------|-----------------|-------|------------|-----------------------|---------------------------|---------|---------|
 | Affected item (for example, class or package) | ✓ | ✗ | ✓ | ✗               | ✓        | ✓          | ✗     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| Confidence                     | ✗    | ✓      | ✓        | ✗               | ✓        | x          | ✓     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✓       |
-| Description                    | ✓    | ✗      | ✗        | ✓               | ✓        | ✗          | ✗     | ✓               | ✓     | ✓          | ✗                     | ✗                         | ✓       | ✓       |
-| End column                     | ✓    | ✗      | ✗        | ✓               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| End line                       | ✓    | ✓      | ✗        | ✓               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| External ID (for example, CVE) | ✗    | ✗      | ⚠        | ✗               | ⚠        | ✓          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
-| File                           | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| Internal doc/explanation       | ✓    | ⚠      | ✓        | ✗               | ✓        | ✗          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✓       |
-| Internal ID                    | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✓       |
-| Severity                       | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✗                         | ⚠       | ✗       |
-| Solution                       | ✓    | ✗      | ✗        | ✗               | ⚠        | ✓          | ✗     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
-| Source code extract            | ✗    | ✓      | ✓        | ✓               | ✗        | ✓          | ✓     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| Start column                   | ✓    | ✗      | ✗        | ✓               | ✓        | ✓          | ✓     | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✗       |
-| Start line                     | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✗               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| Title                          | ✓    | ✓      | ✓        | ✓               | ✓        | ✓          | ✓     | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| URLs                           | ✓    | ✗      | ✓        | ✗               | ⚠        | ✗          | ⚠     | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| Confidence                     | ✗    | ✓                  | ✓        | ✗                           | ✓        | x          | ✓                 | ✓               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✓       |
+| Description                    | ✓    | ✗                  | ✗        | ✓                           | ✓        | ✗          | ✗                 | ✓               | ✓     | ✓          | ✗                     | ✗                         | ✓       | ✓       |
+| End column                     | ✓    | ✗                  | ✗        | ✓                           | ✓        | ✗          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| End line                       | ✓    | ✓                  | ✗        | ✓                           | ✓        | ✗          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| External ID (for example, CVE) | ✗    | ✗                  | ⚠        | ✗                           | ⚠        | ✓          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
+| File                           | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
+| Internal doc/explanation       | ✓    | ⚠                  | ✓        | ✗                           | ✓        | ✗          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✓       |
+| Internal ID                    | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✓       |
+| Severity                       | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✓               | ✓     | ✓          | ✓                     | ✗                         | ⚠       | ✗       |
+| Solution                       | ✓    | ✗                  | ✗        | ✗                           | ⚠        | ✓          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
+| Source code extract            | ✗    | ✓                  | ✓        | ✓                           | ✗        | ✓          | ✓                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
+| Start column                   | ✓    | ✗                  | ✗        | ✓                           | ✓        | ✓          | ✓                 | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✗       |
+| Start line                     | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✗               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
+| Title                          | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
+| URLs                           | ✓    | ✗                  | ✓        | ✗                           | ⚠        | ✗          | ⚠                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
 
 - ✓ => Data is available.
 - ⚠ => Data is available, but it's partially reliable, or it has to be extracted from unstructured content.
 - ✗ => Data is not available or it would require specific, inefficient or unreliable, logic to obtain it.
+
+1. This analyzer has reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support). For more information, see the [SAST analyzers](#sast-analyzers) section.
