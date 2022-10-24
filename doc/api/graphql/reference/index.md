@@ -15696,6 +15696,7 @@ Represents a package with pipelines in the Package Registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="package_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
 | <a id="packagecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
 | <a id="packagecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
@@ -15717,6 +15718,7 @@ Represents a package in the Package Registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="packagebase_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
 | <a id="packagebasecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
 | <a id="packagebasecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
@@ -15775,6 +15777,7 @@ Represents a package details in the Package Registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="packagedetailstype_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
 | <a id="packagedetailstypecandestroy"></a>`canDestroy` | [`Boolean!`](#boolean) | Whether the user can destroy the package. |
 | <a id="packagedetailstypecomposerconfigrepositoryurl"></a>`composerConfigRepositoryUrl` | [`String`](#string) | Url of the Composer setup endpoint. |
 | <a id="packagedetailstypecomposerurl"></a>`composerUrl` | [`String`](#string) | Url of the Composer endpoint. |
@@ -15892,6 +15895,16 @@ Represents the contents of a Helm Chart.yml file.
 | <a id="packagehelmmetadatatypetags"></a>`tags` | [`String`](#string) | Tags for the chart. |
 | <a id="packagehelmmetadatatypetype"></a>`type` | [`String`](#string) | Type of the chart. |
 | <a id="packagehelmmetadatatypeversion"></a>`version` | [`String!`](#string) | Version of the chart. |
+
+### `PackageLinks`
+
+Represents links to perform actions on the package.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagelinkswebpath"></a>`webPath` | [`String`](#string) | Path to the package details page. |
 
 ### `PackageSettings`
 

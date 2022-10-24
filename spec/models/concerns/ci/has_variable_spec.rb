@@ -84,6 +84,7 @@ RSpec.describe Ci::HasVariable do
           key: subject.key,
           value: subject.value,
           public: false,
+          raw: false,
           masked: false
         }
       end

@@ -3,6 +3,7 @@
 module Ci
   class PipelineScheduleVariable < Ci::ApplicationRecord
     include Ci::HasVariable
+    include Ci::RawVariable
 
     belongs_to :pipeline_schedule
 

@@ -215,6 +215,42 @@ def down
 end
 ```
 
+## Indexes for partitioned tables
+
+Indexes [cannot be created](https://www.postgresql.org/docs/15/ddl-partitioning.html#DDL-PARTITIONING-DECLARATIVE-MAINTENANCE)
+**concurrently** on a partitioned table. You must use `CONCURRENTLY` to avoid service disruption in a hot system.
+
+To create an index on a partitioned table, use `add_concurrent_partitioned_index`, provided by the database team.
+
+Under the hood, `add_concurrent_partitioned_index`:
+
+1. Creates indexes on each partition using `CONCURRENTLY`.
+1. Creates an index on the parent table.
+
+A Rails migration example:
+
+```ruby
+# in db/post_migrate/
+
+class AddIndexToPartitionedTable < Gitlab::Database::Migration[2.0]
+  include Gitlab::Database::PartitioningMigrationHelpers
+
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  COLUMN_NAMES = [:partition_id, :id]
+  INDEX_NAME = :index_name
+
+  def up
+    add_concurrent_partitioned_index(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME)
+  end
+
+  def down
+    remove_concurrent_partitioned_index_by_name(TABLE_NAME, INDEX_NAME)
+  end
+end
+```
+
 ## Create indexes asynchronously
 
 For very large tables, index creation can be a challenge to manage.

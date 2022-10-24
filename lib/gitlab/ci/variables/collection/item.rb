@@ -48,9 +48,8 @@ module Gitlab
           end
 
           ##
-          # If `file: true` has been provided we expose it, otherwise we
-          # don't expose `file` attribute at all (stems from what the runner
-          # expects).
+          # If `file: true` or `raw: true` has been provided we expose it, otherwise we
+          # don't expose `file` and `raw` attributes at all (stems from what the runner expects).
           #
           def to_runner_variable
             @variable.reject do |hash_key, hash_value|

@@ -56,6 +56,7 @@ RSpec.describe Gitlab::UrlBuilder do
       :discussion_note_on_project_snippet  | ->(note) { "/#{note.project.full_path}/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :discussion_note_on_personal_snippet | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :note_on_personal_snippet            | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :package                             | ->(package) { "/#{package.project.full_path}/-/packages/#{package.id}" }
     end
 
     with_them do
@@ -192,6 +193,18 @@ RSpec.describe Gitlab::UrlBuilder do
           url = subject.wiki_page_url(wiki, 'foo', action: :edit)
 
           expect(url).to eq "#{Gitlab.config.gitlab.url}/#{wiki.project.full_path}/-/wikis/foo/edit"
+        end
+      end
+    end
+
+    context 'when passing Packages::Package' do
+      let(:package) { build_stubbed(:terraform_module_package) }
+
+      context 'with infrastructure package' do
+        it 'returns the url for infrastucture registry' do
+          url = subject.build(package)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{package.project.full_path}/-/infrastructure_registry/#{package.id}"
         end
       end
     end

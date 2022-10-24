@@ -52,6 +52,8 @@ module Gitlab
           wiki_page_url(object.wiki, object, **options)
         when ::DesignManagement::Design
           design_url(object, **options)
+        when ::Packages::Package
+          package_url(object, **options)
         else
           raise NotImplementedError, "No URL builder defined for #{object.inspect}"
         end
@@ -132,6 +134,17 @@ module Gitlab
         else
           instance.project_design_management_designs_raw_image_url(design.project, design, ref, **options)
         end
+      end
+
+      def package_url(package, **options)
+        project = package.project
+
+        if package.infrastructure_package?
+          return instance.project_infrastructure_registry_url(project, package,
+**options)
+        end
+
+        instance.project_package_url(project, package, **options)
       end
     end
   end

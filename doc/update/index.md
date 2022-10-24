@@ -376,6 +376,8 @@ Upgrading across multiple GitLab versions in one go is *only possible by accepti
 The following examples assume downtime is acceptable while upgrading.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
+For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/) maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
+
 Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
@@ -391,8 +393,6 @@ be fixes for issues relating to the upgrade process.
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
 Additional steps between the mentioned versions are possible. We list the minimally necessary steps only.
-
-For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/). The Upgrade Path tool is maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). Share feedback and help improve the tool by raising an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
 
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
