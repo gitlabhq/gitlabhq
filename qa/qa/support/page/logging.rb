@@ -54,16 +54,23 @@ module QA
           elements
         end
 
-        def check_element(name, click_by_js = nil)
-          log("checking :#{highlight_element(name)}", :info)
+        def check_element(name, click_by_js = false, **kwargs)
+          log_by_js("checking", name, click_by_js, **kwargs)
 
           super
         end
 
-        def uncheck_element(name, click_by_js = nil)
-          log("unchecking :#{highlight_element(name)}", :info)
+        def uncheck_element(name, click_by_js = false, **kwargs)
+          log_by_js("unchecking", name, click_by_js, **kwargs)
 
           super
+        end
+
+        def log_by_js(action, name, click_by_js, **kwargs)
+          msg = action
+          msg += " via JS" if click_by_js
+          msg += " :#{highlight_element(name)} with args #{kwargs}"
+          log(msg, :info)
         end
 
         def click_element_coordinates(name, **kwargs)
