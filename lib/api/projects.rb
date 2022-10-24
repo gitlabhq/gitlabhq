@@ -424,7 +424,7 @@ module API
       end
 
       desc 'Check pages access of this project'
-      get ':id/pages_access', feature_category: :pages do
+      get ':id/pages_access', urgency: :low, feature_category: :pages do
         authorize! :read_pages_content, user_project unless user_project.public_pages?
         status 200
       end

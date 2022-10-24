@@ -28,8 +28,18 @@ RSpec.describe Projects::Settings::AccessTokensController do
   end
 
   describe 'GET /:namespace/:project/-/settings/access_tokens' do
-    subject do
+    let(:get_access_tokens) do
       get project_settings_access_tokens_path(resource)
+      response
+    end
+
+    let(:get_access_tokens_json) do
+      get project_settings_access_tokens_path(resource), params: { format: :json }
+      response
+    end
+
+    subject(:get_access_tokens_with_page) do
+      get project_settings_access_tokens_path(resource), params: { page: 1 }
       response
     end
 

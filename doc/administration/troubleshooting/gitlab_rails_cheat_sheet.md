@@ -295,7 +295,7 @@ Find this content in the [Container Registry troubleshooting documentation](../p
 
 ## Sidekiq
 
-This content has been moved to [Troubleshooting Sidekiq](sidekiq.md).
+This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_troubleshooting.md).
 
 ## Geo
 

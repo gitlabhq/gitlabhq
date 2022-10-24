@@ -2,15 +2,6 @@
 
 module Database
   module MultipleDatabases
-    def run_and_cleanup(example)
-      # Each example may call `migrate!`, so we must ensure we are migrated down every time
-      schema_migrate_down!
-
-      example.run
-
-      delete_from_all_tables!(except: deletion_except_tables)
-    end
-
     def skip_if_multiple_databases_not_setup
       skip 'Skipping because multiple databases not set up' unless Gitlab::Database.has_config?(:ci)
     end
@@ -40,10 +31,15 @@ module Database
             config_model: base_model
           )
 
-          schema_migrate_up!
           delete_from_all_tables!(except: deletion_except_tables)
+          schema_migrate_up!
         end
       end
+
+      # ActiveRecord::Base.clear_all_connections! disconnects and clears attribute methods
+      # Force a refresh to avoid schema failures.
+      reset_column_in_all_models
+      refresh_attribute_methods
     end
 
     # The usage of this method switches temporarily used `connection_handler`
@@ -152,10 +148,10 @@ RSpec.configure do |config|
           config_model: base_model
         )
 
-        run_and_cleanup(example)
+        example.run
       end
     else
-      run_and_cleanup(example)
+      example.run
     end
 
     self.class.use_transactional_tests = true

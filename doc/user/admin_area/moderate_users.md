@@ -54,7 +54,7 @@ To approve or reject a user sign up:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Approve** or **Reject**.
 
 Approving a user:
@@ -78,7 +78,7 @@ by removing them in LDAP, or directly from the Admin Area. To do this:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Block**.
 
 A blocked user:
@@ -102,7 +102,7 @@ A blocked user can be unblocked from the Admin Area. To do this:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Blocked** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Unblock**.
 
 The user's state is set to active and they consume a
@@ -156,7 +156,7 @@ A user can be deactivated from the Admin Area. To do this:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Deactivate**.
 
 For the deactivation option to be visible to an administrator, the user:
@@ -203,7 +203,7 @@ To do this:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Deactivated** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Activate**.
 
 The user's state is set to active and they consume a

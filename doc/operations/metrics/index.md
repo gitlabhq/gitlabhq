@@ -148,7 +148,7 @@ suggested if this feature is used.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208976) in GitLab 12.9.
 
 You can edit existing additional custom metrics for your dashboard by selecting the
-**{ellipsis_v}** **More actions** dropdown and selecting **Edit metric**.
+**{ellipsis_v}** **More actions** dropdown list and selecting **Edit metric**.
 
 ![Edit metric](img/prometheus_dashboard_edit_metric_link_v_12_9.png)
 
@@ -158,7 +158,7 @@ You can edit existing additional custom metrics for your dashboard by selecting 
 
 You can use keyboard shortcuts to interact more quickly with your currently-focused
 chart panel. To activate keyboard shortcuts, use keyboard tabs to highlight the
-**{ellipsis_v}** **More actions** dropdown menu, or hover over the dropdown menu
+**{ellipsis_v}** **More actions** dropdown list, or hover over the dropdown list
 with your mouse, then press the key corresponding to your desired action:
 
 - **Expand panel** - <kbd>e</kbd>

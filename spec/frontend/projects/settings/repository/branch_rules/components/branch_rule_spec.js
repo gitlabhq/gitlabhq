@@ -2,7 +2,11 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BranchRule, {
   i18n,
 } from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
-import { branchRuleProvideMock, branchRulePropsMock } from '../mock_data';
+import {
+  branchRuleProvideMock,
+  branchRulePropsMock,
+  branchRuleWithoutDetailsPropsMock,
+} from '../mock_data';
 
 describe('Branch rule', () => {
   let wrapper;
@@ -45,17 +49,13 @@ describe('Branch rule', () => {
   });
 
   it('does not render the protection details list of no details are present', () => {
-    createComponent({ approvalDetails: null });
+    createComponent(branchRuleWithoutDetailsPropsMock);
     expect(findProtectionDetailsList().exists()).toBe(false);
   });
 
   it('renders the protection details list items', () => {
-    expect(findProtectionDetailsListItems().at(0).text()).toBe(
-      branchRulePropsMock.approvalDetails[0],
-    );
-    expect(findProtectionDetailsListItems().at(1).text()).toBe(
-      branchRulePropsMock.approvalDetails[1],
-    );
+    expect(findProtectionDetailsListItems().at(0).text()).toBe(wrapper.vm.approvalDetails[0]);
+    expect(findProtectionDetailsListItems().at(1).text()).toBe(wrapper.vm.approvalDetails[1]);
   });
 
   it('renders a detail button with the correct href', () => {

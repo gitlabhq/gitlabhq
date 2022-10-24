@@ -77,15 +77,6 @@ microservices-based distributed systems - and displays results within GitLab.
 
 - [Trace the performance and health](tracing.md) of a deployed application.
 
-<!--- start_remove The following content will be removed on remove_date: '2022-10-18'--->
-
-## Aggregate and store logs (removed) **(FREE SELF)**
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346485) in GitLab 14.7
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/360193) in GitLab 15.2.
-
-<!--- end_remove -->
-
 ## Manage your infrastructure in code
 
 GitLab stores and executes your infrastructure as code, whether it's

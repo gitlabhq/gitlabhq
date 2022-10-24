@@ -27,8 +27,18 @@ RSpec.describe Groups::Settings::AccessTokensController do
   end
 
   describe 'GET /:namespace/-/settings/access_tokens' do
-    subject do
+    let(:get_access_tokens) do
       get group_settings_access_tokens_path(resource)
+      response
+    end
+
+    let(:get_access_tokens_json) do
+      get group_settings_access_tokens_path(resource), params: { format: :json }
+      response
+    end
+
+    subject(:get_access_tokens_with_page) do
+      get group_settings_access_tokens_path(resource), params: { page: 1 }
       response
     end
 

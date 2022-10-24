@@ -21,7 +21,7 @@ module Gitlab
         # Note: This diverges from the Sidekiq implementation in 6.4.2 to address a bug where the poll interval wouldn't
         # scale properly when the process count changes, and to take into account the `cron_poll_interval` setting. See
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99030#note_1117078517 for more details
-        Sidekiq.options[:cron_poll_interval] || Sidekiq.options[:poll_interval_average] || scaled_poll_interval
+        Gitlab.config.cron_jobs.poll_interval || Sidekiq.options[:poll_interval_average] || scaled_poll_interval
       end
     end
   end

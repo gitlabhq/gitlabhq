@@ -325,6 +325,9 @@ Use case: If you have multiple users using their own GitHub credentials to set u
 repository mirroring, mirroring breaks when people leave the company. Use this
 script to migrate disparate mirroring users and tokens into a single service account:
 
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
 ```ruby
 svc_user = User.find_by(username: 'ourServiceUser')
 token = 'githubAccessToken'

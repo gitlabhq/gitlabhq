@@ -159,7 +159,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 
    1. Navigate to your project's **Settings > Repository** and
    expand **Protected branches**.
-   1. Select the default branch from the **Branch** dropdown menu,
+   1. Select the default branch from the **Branch** dropdown list,
    and set up the
    **Allowed to push** and **Allowed to merge** rules.
    1. Select **Protect**.

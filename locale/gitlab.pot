@@ -6843,6 +6843,9 @@ msgstr ""
 msgid "BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}."
 msgstr ""
 
+msgid "BranchRules|Allowed to force push"
+msgstr ""
+
 msgid "BranchRules|Allowed to merge"
 msgstr ""
 
@@ -6916,6 +6919,9 @@ msgid "BranchRules|Require approval from code owners."
 msgstr ""
 
 msgid "BranchRules|Required approvals (%{total})"
+msgstr ""
+
+msgid "BranchRules|Requires CODEOWNERS approval"
 msgstr ""
 
 msgid "BranchRules|Roles"
@@ -37684,7 +37690,7 @@ msgstr ""
 msgid "Showing all issues"
 msgstr ""
 
-msgid "Showing data for workflow items created in this date range. Date range limited to %{maxDateRange} days."
+msgid "Showing data for workflow items completed in this date range. Date range limited to %{maxDateRange} days."
 msgstr ""
 
 msgid "Showing graphs based on events of the last %{timerange} days."
@@ -40742,7 +40748,7 @@ msgstr ""
 msgid "The specified tab is invalid, please select another"
 msgstr ""
 
-msgid "The start date must be ealier than the end date."
+msgid "The start date must be earlier than the end date."
 msgstr ""
 
 msgid "The subject will be used as the title of the new issue, and the message will be the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."

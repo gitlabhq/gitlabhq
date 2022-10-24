@@ -49,7 +49,7 @@ export default {
     return {
       maxDateRangeTooltip: sprintf(
         __(
-          'Showing data for workflow items created in this date range. Date range limited to %{maxDateRange} days.',
+          'Showing data for workflow items completed in this date range. Date range limited to %{maxDateRange} days.',
         ),
         {
           maxDateRange: this.maxDateRange,

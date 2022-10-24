@@ -5,6 +5,7 @@ module API
   module Internal
     class Pages < ::API::Base
       feature_category :pages
+      urgency :low
 
       before do
         authenticate_gitlab_pages_request!

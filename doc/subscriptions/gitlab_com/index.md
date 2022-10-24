@@ -309,6 +309,10 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 ### Purchase more storage and transfer
 
+Prerequisite:
+
+- You must have at least the Owner role.
+
 You can purchase a storage subscription for your personal or group namespace.
 
 NOTE:
@@ -324,9 +328,9 @@ You can [cancel the subscription](#enable-or-disable-automatic-subscription-rene
 1. Select **Purchase more storage** and you are taken to the Customers Portal.
 1. Select **Add new subscription**.
 1. Scroll to **Purchase add-on subscriptions** and select **Buy storage subscription**.
-1. In the **Subscription details** section select the name of the user or group from the dropdown.
+1. In the **Subscription details** section select the name of the user or group from the dropdown list.
 1. Enter the desired quantity of storage packs.
-1. In the **Billing information** section select the payment method from the dropdown.
+1. In the **Billing information** section select the payment method from the dropdown list.
 1. Select the **Privacy Policy** and **Terms of Service** checkbox.
 1. Select **Buy subscription**.
 1. Sign out of the Customers Portal.

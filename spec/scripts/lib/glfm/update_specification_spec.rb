@@ -113,8 +113,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
   before do
     # Mock default ENV var values
-    allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_MD').and_return(nil)
-    allow(ENV).to receive(:[]).and_call_original
+    stub_env('UPDATE_GHFM_SPEC_MD')
 
     # We mock out the URI and local file IO objects with real StringIO, instead of just mock
     # objects. This gives better and more realistic coverage, while still avoiding
@@ -166,7 +165,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       let(:ghfm_spec_txt_local_io) { StringIO.new }
 
       before do
-        allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_MD').and_return('true')
+        stub_env('UPDATE_GHFM_SPEC_MD', 'true')
         allow(File).to receive(:open).with(ghfm_spec_md_path, 'w') { ghfm_spec_txt_local_io }
       end
 

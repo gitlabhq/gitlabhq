@@ -315,7 +315,7 @@ Dangerfile @gl-quality/eng-prod
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers
 
 ^[Workhorse]
-/workhorse/ @jacobvosmaer-gitlab @nolith @patrickbajao
+/workhorse/ @jacobvosmaer-gitlab @nolith @patrickbajao @igor.drozdov
 
 [Application Security]
 /app/assets/javascripts/lib/dompurify.js @gitlab-com/gl-security/appsec

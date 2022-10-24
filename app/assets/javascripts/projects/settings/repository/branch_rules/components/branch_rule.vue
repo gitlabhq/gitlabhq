@@ -6,6 +6,8 @@ export const i18n = {
   defaultLabel: s__('BranchRules|default'),
   protectedLabel: s__('BranchRules|protected'),
   detailsButtonLabel: s__('BranchRules|Details'),
+  allowForcePush: s__('BranchRules|Allowed to force push'),
+  codeOwnerApprovalRequired: s__('BranchRules|Requires CODEOWNERS approval'),
 };
 
 export default {
@@ -35,18 +37,28 @@ export default {
       required: false,
       default: false,
     },
-    approvalDetails: {
-      type: Array,
+    branchProtection: {
+      type: Object,
       required: false,
-      default: () => [],
+      default: () => {},
     },
   },
   computed: {
     hasApprovalDetails() {
-      return this.approvalDetails && this.approvalDetails.length;
+      return this.approvalDetails.length;
     },
     detailsPath() {
       return `${this.branchRulesPath}?branch=${this.name}`;
+    },
+    approvalDetails() {
+      const approvalDetails = [];
+      if (this.branchProtection.allowForcePush) {
+        approvalDetails.push(this.$options.i18n.allowForcePush);
+      }
+      if (this.branchProtection.codeOwnerApprovalRequired) {
+        approvalDetails.push(this.$options.i18n.codeOwnerApprovalRequired);
+      }
+      return approvalDetails;
     },
   },
 };
@@ -69,6 +81,8 @@ export default {
         <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
       </ul>
     </div>
-    <gl-button :href="detailsPath"> {{ $options.i18n.detailsButtonLabel }}</gl-button>
+    <gl-button class="gl-align-self-start" :href="detailsPath">
+      {{ $options.i18n.detailsButtonLabel }}</gl-button
+    >
   </div>
 </template>

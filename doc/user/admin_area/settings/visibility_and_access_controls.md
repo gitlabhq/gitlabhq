@@ -45,7 +45,7 @@ By default both administrators and anyone with the **Owner** role can delete a p
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
    - (GitLab 15.1 and later) **Allowed to delete projects**, and select **Administrators**.
-   - (GitLab 15.0 and earlier) **Default project deletion projection** and select **Only admins can delete project**.
+   - (GitLab 15.0 and earlier) **Default project deletion protection** and select **Only admins can delete project**.
 1. Select **Save changes**.
 
 ## Deletion protection **(PREMIUM SELF)**
@@ -82,8 +82,8 @@ To configure delayed project deletion:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
-   - (GitLab 15.1 and later) **Deletion projection** and select keep deleted groups and projects, and select a retention period.
-   - (GitLab 15.0 and earlier) **Default delayed project projection** and select **Enable delayed project deletion by
+   - (GitLab 15.1 and later) **Deletion protection** and select keep deleted groups and projects, and select a retention period.
+   - (GitLab 15.0 and earlier) **Default delayed project protection** and select **Enable delayed project deletion by
      default for newly-created groups.** Then set a retention period in **Default deletion delay**.
 1. Select **Save changes**.
 

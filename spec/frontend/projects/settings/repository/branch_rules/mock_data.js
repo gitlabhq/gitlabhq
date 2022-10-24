@@ -8,10 +8,18 @@ export const branchRulesMockResponse = {
         nodes: [
           {
             name: 'main',
+            branchProtection: {
+              allowForcePush: true,
+              codeOwnerApprovalRequired: true,
+            },
             __typename: 'BranchRule',
           },
           {
             name: 'test-*',
+            branchProtection: {
+              allowForcePush: false,
+              codeOwnerApprovalRequired: false,
+            },
             __typename: 'BranchRule',
           },
         ],
@@ -32,5 +40,18 @@ export const branchRulePropsMock = {
   name: 'main',
   isDefault: true,
   isProtected: true,
-  approvalDetails: ['requires approval from TEST', '2 status checks'],
+  branchProtection: {
+    allowForcePush: true,
+    codeOwnerApprovalRequired: true,
+  },
+};
+
+export const branchRuleWithoutDetailsPropsMock = {
+  name: 'main',
+  isDefault: false,
+  isProtected: false,
+  branchProtection: {
+    allowForcePush: false,
+    codeOwnerApprovalRequired: false,
+  },
 };

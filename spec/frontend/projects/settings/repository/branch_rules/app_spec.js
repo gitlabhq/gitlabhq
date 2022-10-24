@@ -52,6 +52,10 @@ describe('Branch rules app', () => {
 
     expect(findAllBranchRules().at(0).props('name')).toBe(nodes[0].name);
 
+    expect(findAllBranchRules().at(0).props('branchProtection')).toEqual(nodes[0].branchProtection);
+
     expect(findAllBranchRules().at(1).props('name')).toBe(nodes[1].name);
+
+    expect(findAllBranchRules().at(1).props('branchProtection')).toEqual(nodes[1].branchProtection);
   });
 });
