@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.5.1 (2022-10-24)
+
+### Fixed (2 changes)
+
+- [Batch records when preloading for indexing](gitlab-org/gitlab@43f0f24d5985ab2d731ab022aa5a498cfee5789b) ([merge request](gitlab-org/gitlab!101927)) **GitLab Enterprise Edition**
+- [Specify certificates when connecting to KAS using TLS](gitlab-org/gitlab@f445f3f11d93eef56793fc116c7b2f1a4d030701) ([merge request](gitlab-org/gitlab!101927))
+
 ## 15.5.0 (2022-10-21)
 
 ### Added (159 changes)
