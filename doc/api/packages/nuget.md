@@ -99,7 +99,7 @@ PUT projects/:id/packages/nuget
 curl --request PUT \
      --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
      --user <username>:<personal_access_token> \
-     "https://gitlab.example.com/api/v4/projects/1/packages/nuget"
+     "https://gitlab.example.com/api/v4/projects/1/packages/nuget/"
 ```
 
 ## Upload a symbol package file

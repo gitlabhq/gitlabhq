@@ -2777,7 +2777,6 @@ RSpec/ContextWording:
     - 'spec/routing/project_routing_spec.rb'
     - 'spec/rubocop/cop/gitlab/change_timezone_spec.rb'
     - 'spec/rubocop/cop/gitlab/const_get_inherit_false_spec.rb'
-    - 'spec/rubocop/cop/gitlab/duplicate_spec_location_spec.rb'
     - 'spec/rubocop/cop/gitlab/event_store_subscriber_spec.rb'
     - 'spec/rubocop/cop/gitlab/feature_available_usage_spec.rb'
     - 'spec/rubocop/cop/gitlab/mark_used_feature_flags_spec.rb'

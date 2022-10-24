@@ -8,10 +8,6 @@ module QA
           include QA::Page::Component::ConfirmModal
           include Component::NamespaceSelect
 
-          view 'app/assets/javascripts/vue_shared/components/confirm_danger/confirm_danger.vue' do
-            element :confirm_danger_button
-          end
-
           view 'app/views/projects/edit.html.haml' do
             element :project_path_field
             element :change_path_button
@@ -20,13 +16,20 @@ module QA
           view 'app/views/projects/settings/_archive.html.haml' do
             element :archive_project_link
             element :unarchive_project_link
-            element :archive_project_content
           end
 
           view 'app/views/projects/_export.html.haml' do
             element :export_project_link
             element :download_export_link
             element :export_project_content
+          end
+
+          view 'app/views/projects/_transfer.html.haml' do
+            element :transfer_project_content
+          end
+
+          view 'app/assets/javascripts/projects/settings/components/transfer_project_form.vue' do
+            element :transfer_project_button
           end
 
           def update_project_path_to(path)
@@ -45,13 +48,18 @@ module QA
           def transfer_project!(project_name, namespace)
             QA::Runtime::Logger.info "Transferring project: #{project_name} to namespace: #{namespace}"
 
-            click_element_coordinates(:archive_project_content)
+            scroll_to_transfer_project_content
 
             # Workaround for a failure to search when there are no spaces around the /
             # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
             select_namespace(namespace.gsub(%r{([^\s])/([^\s])}, '\1 / \2'))
 
-            click_element(:confirm_danger_button)
+            retry_until(sleep_interval: 1, message: 'Waiting for transfer project button to be enabled') do
+              has_element?(:transfer_project_button, disabled: false, wait: 3)
+            end
+
+            click_element :transfer_project_button
+
             fill_confirmation_text(project_name)
             confirm_transfer
           end
@@ -76,6 +84,16 @@ module QA
           def unarchive_project
             click_element :unarchive_project_link
             click_confirmation_ok_button
+          end
+
+          private
+
+          def scroll_to_transfer_project_content
+            retry_until(sleep_interval: 1, message: 'Waiting for transfer project content to display') do
+              has_element?(:transfer_project_content, wait: 3)
+            end
+
+            scroll_to_element :transfer_project_content
           end
         end
       end

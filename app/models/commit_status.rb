@@ -9,11 +9,9 @@ class CommitStatus < Ci::ApplicationRecord
   include EnumWithNil
   include BulkInsertableAssociations
   include TaggableQueries
-  include IgnorableColumns
 
   self.table_name = 'ci_builds'
   partitionable scope: :pipeline
-  ignore_column :trace, remove_with: '15.6', remove_after: '2022-10-22'
 
   belongs_to :user
   belongs_to :project

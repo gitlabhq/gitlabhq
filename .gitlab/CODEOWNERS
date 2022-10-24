@@ -1055,6 +1055,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/models/token_with_iv.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/models/webauthn_registration.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/policies/personal_access_token_policy.rb @gitlab-org/manage/authentication-and-authorization/approvers
+/app/serializers/access_token_entity_base.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/serializers/group_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/serializers/group_access_token_serializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/serializers/impersonation_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1108,6 +1109,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/views/notify/access_token_created_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/notify/access_token_expired_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/notify/access_token_expired_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
+/app/views/notify/access_token_revoked_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
+/app/views/notify/access_token_revoked_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/profiles/passwords/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/profiles/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/profiles/two_factor_auths/ @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1132,6 +1135,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /config/initializers/webauthn.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /config/initializers_before_autoloader/100_patch_omniauth_oauth2.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /config/initializers_before_autoloader/100_patch_omniauth_saml.rb @gitlab-org/manage/authentication-and-authorization/approvers
+/config/weak_password_digests.yml @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/audit_events/components/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/assets/javascripts/audit_events/token_utils.js @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1167,6 +1171,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/models/ee/project_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/models/scim_oauth_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/serializers/scim_oauth_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
+/ee/app/services/arkose/token_verification_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/ee/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/ee/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/ee/resource_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1192,7 +1197,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/lib/ee/gitlab/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/lib/ee/gitlab/omniauth_initializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/lib/gitlab/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/gitlab/auth_logger.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/lib/gitlab/authority_analyzer.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/lib/gitlab/geo/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/lib/gitlab/kerberos/ @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1203,12 +1207,13 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /lib/api/entities/impersonation_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/entities/impersonation_token_with_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/entities/personal_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/entities/personal_access_token_with_details.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/entities/personal_access_token_with_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/entities/resource_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/entities/resource_access_token_with_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/helpers/authentication.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/helpers/packages/basic_auth_helpers.rb @gitlab-org/manage/authentication-and-authorization/approvers
+/lib/api/helpers/personal_access_tokens_helpers.rb @gitlab-org/manage/authentication-and-authorization/approvers
+/lib/api/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/personal_access_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/resource_access_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/api/support/token_with_expiration.rb @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1223,7 +1228,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /lib/gitlab/background_migration/update_users_where_two_factor_auth_required_from_group.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/gitlab/chat_name_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/gitlab/ci/pipeline/expression/token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/cleanup/unused_personal_access_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
+/lib/gitlab/cleanup/personal_access_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/gitlab/external_authorization/ @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/gitlab/external_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/gitlab/grape_logging/loggers/token_logger.rb @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1236,6 +1241,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /lib/gitlab/project_authorizations.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/json_web_token/ @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/omni_auth/ @gitlab-org/manage/authentication-and-authorization/approvers
+/lib/security/weak_passwords.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/system_check/app/authorized_keys_permission_check.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/system_check/incoming_email/imap_authentication_check.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/tasks/gitlab/password.rake @gitlab-org/manage/authentication-and-authorization/approvers

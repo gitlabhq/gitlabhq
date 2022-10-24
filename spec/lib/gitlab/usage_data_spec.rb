@@ -757,33 +757,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe '.usage_data_counters' do
-    subject { described_class.usage_data_counters }
-
-    it { is_expected.to all(respond_to :totals) }
-    it { is_expected.to all(respond_to :fallback_totals) }
-
-    describe 'the results of calling #totals on all objects in the array' do
-      subject { described_class.usage_data_counters.map(&:totals) }
-
-      it { is_expected.to all(be_a Hash) }
-      it { is_expected.to all(have_attributes(keys: all(be_a Symbol), values: all(be_a Integer))) }
-    end
-
-    describe 'the results of calling #fallback_totals on all objects in the array' do
-      subject { described_class.usage_data_counters.map(&:fallback_totals) }
-
-      it { is_expected.to all(be_a Hash) }
-      it { is_expected.to all(have_attributes(keys: all(be_a Symbol), values: all(eq(-1)))) }
-    end
-
-    it 'does not have any conflicts' do
-      all_keys = subject.flat_map { |counter| counter.totals.keys }
-
-      expect(all_keys.size).to eq all_keys.to_set.size
-    end
-  end
-
   describe '.license_usage_data' do
     subject { described_class.license_usage_data }
 

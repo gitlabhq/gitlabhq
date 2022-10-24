@@ -390,7 +390,7 @@ Gitlab/RSpec/AvoidSetup:
   Include:
     - 'ee/spec/features/registrations/saas/**/*'
 
-Gitlab/DuplicateSpecLocation:
+RSpec/DuplicateSpecLocation:
   Enabled: true
 
 Gitlab/PolicyRuleBoolean:

@@ -110,7 +110,7 @@ RSpec.describe Gitlab::SQL::Pattern do
     context 'with a word equal to 3 chars' do
       let(:query) { 'foo' }
 
-      it 'returns array cotaining a word' do
+      it 'returns array containing a word' do
         expect(select_fuzzy_words).to match_array(['foo'])
       end
     end

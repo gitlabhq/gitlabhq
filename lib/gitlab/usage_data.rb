@@ -157,7 +157,6 @@ module Gitlab
           }.merge(
             runners_usage,
             integrations_usage,
-            usage_counters,
             user_preferences_usage,
             container_expiration_policies_usage,
             service_desk_counts,
@@ -259,16 +258,6 @@ module Gitlab
           grafana_link_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.grafana_enabled? },
           gitpod_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.gitpod_enabled? }
         }
-      end
-
-      # @return [Hash<Symbol, Integer>]
-      def usage_counters
-        usage_data_counters.map { |counter| redis_usage_data(counter) }.reduce({}, :merge)
-      end
-
-      # @return [Array<#totals>] An array of objects that respond to `#totals`
-      def usage_data_counters
-        Gitlab::UsageDataCounters.unmigrated_counters
       end
 
       def components_usage_data

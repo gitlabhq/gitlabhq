@@ -37,6 +37,8 @@ module StubFeatureFlags
   #   Enable `ci_live_trace` feature flag only on the specified projects.
   def stub_feature_flags(features)
     features.each do |feature_name, actors|
+      warn "Invalid Feature Flag #{feature_name} stubbed" unless Feature::Definition.get(feature_name)
+
       # Remove feature flag overwrite
       feature = Feature.get(feature_name) # rubocop:disable Gitlab/AvoidFeatureGet
       feature.remove

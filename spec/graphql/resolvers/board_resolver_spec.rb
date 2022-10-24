@@ -54,7 +54,7 @@ RSpec.describe Resolvers::BoardResolver do
     end
 
     context 'when project boards' do
-      let(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
+      let(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
 
       it_behaves_like 'group and project boards resolver'
     end

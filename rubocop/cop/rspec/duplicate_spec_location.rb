@@ -5,7 +5,7 @@ require 'rubocop/cop/rspec/mixin/top_level_group'
 
 module RuboCop
   module Cop
-    module Gitlab
+    module RSpec
       # Cop that detects duplicate EE spec files
       #
       # There should not be files in both ee/spec/*/ee/my_spec.rb and ee/spec/*/my_spec.rb
@@ -29,9 +29,9 @@ module RuboCop
           path = file_path_for_node(node.send_node).sub(%r{\A#{rails_root}/}, '')
           duplicate_path = find_duplicate_path(path)
 
-          if duplicate_path && File.exist?(File.join(rails_root, duplicate_path))
-            add_offense(node.send_node, message: format(MSG, path: duplicate_path))
-          end
+          return unless duplicate_path && File.exist?(File.join(rails_root, duplicate_path))
+
+          add_offense(node.send_node, message: format(MSG, path: duplicate_path))
         end
 
         private

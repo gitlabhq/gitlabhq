@@ -35,15 +35,15 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
       end
     end
 
-    context 'when the existing column has a default value' do
+    context 'when the existing column has a default function' do
       before do
-        migration.change_column_default :_test_table, existing_column, 'default value'
+        migration.change_column_default :_test_table, existing_column, -> { 'now()' }
       end
 
       it 'raises an error' do
         expect do
           migration.public_send(operation, :_test_table, :original, :renamed)
-        end.to raise_error("#{operation} does not currently support columns with default values")
+        end.to raise_error("#{operation} does not currently support columns with default functions")
       end
     end
 
@@ -64,6 +64,94 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
 
           migration.public_send(operation, :_test_table, :original, :renamed, batch_column_name: :status)
         end
+      end
+    end
+
+    context 'when the existing column has a default value' do
+      before do
+        migration.change_column_default :_test_table, existing_column, 'default value'
+      end
+
+      it 'creates the renamed column, syncing existing data' do
+        existing_record_1 = model.create!(status: 0, existing_column => 'existing')
+        existing_record_2 = model.create!(status: 0)
+
+        migration.send(operation, :_test_table, :original, :renamed)
+        model.reset_column_information
+
+        expect(migration.column_exists?(:_test_table, added_column)).to eq(true)
+
+        expect(existing_record_1.reload).to have_attributes(status: 0, original: 'existing', renamed: 'existing')
+        expect(existing_record_2.reload).to have_attributes(status: 0, original: 'default value', renamed: 'default value')
+      end
+
+      it 'installs triggers to sync new data' do
+        migration.public_send(operation, :_test_table, :original, :renamed)
+        model.reset_column_information
+
+        new_record_1 = model.create!(status: 1, original: 'first')
+        new_record_2 = model.create!(status: 1, renamed: 'second')
+        new_record_3 = model.create!(status: 1)
+        new_record_4 = model.create!(status: 1)
+
+        expect(new_record_1.reload).to have_attributes(status: 1, original: 'first', renamed: 'first')
+        expect(new_record_2.reload).to have_attributes(status: 1, original: 'second', renamed: 'second')
+        expect(new_record_3.reload).to have_attributes(status: 1, original: 'default value', renamed: 'default value')
+        expect(new_record_4.reload).to have_attributes(status: 1, original: 'default value', renamed: 'default value')
+
+        new_record_1.update!(original: 'updated')
+        new_record_2.update!(renamed: nil)
+        new_record_3.update!(renamed: 'update renamed')
+        new_record_4.update!(original: 'update original')
+
+        expect(new_record_1.reload).to have_attributes(status: 1, original: 'updated', renamed: 'updated')
+        expect(new_record_2.reload).to have_attributes(status: 1, original: nil, renamed: nil)
+        expect(new_record_3.reload).to have_attributes(status: 1, original: 'update renamed', renamed: 'update renamed')
+        expect(new_record_4.reload).to have_attributes(status: 1, original: 'update original', renamed: 'update original')
+      end
+    end
+
+    context 'when the existing column has a default value that evaluates to NULL' do
+      before do
+        migration.change_column_default :_test_table, existing_column, -> { "('test' || null)" }
+      end
+
+      it 'creates the renamed column, syncing existing data' do
+        existing_record_1 = model.create!(status: 0, existing_column => 'existing')
+        existing_record_2 = model.create!(status: 0)
+
+        migration.send(operation, :_test_table, :original, :renamed)
+        model.reset_column_information
+
+        expect(migration.column_exists?(:_test_table, added_column)).to eq(true)
+
+        expect(existing_record_1.reload).to have_attributes(status: 0, original: 'existing', renamed: 'existing')
+        expect(existing_record_2.reload).to have_attributes(status: 0, original: nil, renamed: nil)
+      end
+
+      it 'installs triggers to sync new data' do
+        migration.public_send(operation, :_test_table, :original, :renamed)
+        model.reset_column_information
+
+        new_record_1 = model.create!(status: 1, original: 'first')
+        new_record_2 = model.create!(status: 1, renamed: 'second')
+        new_record_3 = model.create!(status: 1)
+        new_record_4 = model.create!(status: 1)
+
+        expect(new_record_1.reload).to have_attributes(status: 1, original: 'first', renamed: 'first')
+        expect(new_record_2.reload).to have_attributes(status: 1, original: 'second', renamed: 'second')
+        expect(new_record_3.reload).to have_attributes(status: 1, original: nil, renamed: nil)
+        expect(new_record_4.reload).to have_attributes(status: 1, original: nil, renamed: nil)
+
+        new_record_1.update!(original: 'updated')
+        new_record_2.update!(renamed: nil)
+        new_record_3.update!(renamed: 'update renamed')
+        new_record_4.update!(original: 'update original')
+
+        expect(new_record_1.reload).to have_attributes(status: 1, original: 'updated', renamed: 'updated')
+        expect(new_record_2.reload).to have_attributes(status: 1, original: nil, renamed: nil)
+        expect(new_record_3.reload).to have_attributes(status: 1, original: 'update renamed', renamed: 'update renamed')
+        expect(new_record_4.reload).to have_attributes(status: 1, original: 'update original', renamed: 'update original')
       end
     end
 

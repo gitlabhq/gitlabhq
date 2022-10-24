@@ -17,6 +17,7 @@ module Projects
       return unless project
 
       create_prometheus_integration(project)
+      create_incident_management_timeline_event_tags(project)
     end
 
     private
@@ -32,6 +33,20 @@ module Projects
 
       integration.save!
     rescue ActiveRecord::RecordInvalid => e
+      Gitlab::ErrorTracking.track_exception(e, extra: { project_id: project.id })
+    end
+
+    def create_incident_management_timeline_event_tags(project)
+      tags = project.incident_management_timeline_event_tags.pluck_names
+      start_time_name = ::IncidentManagement::TimelineEventTag::START_TIME_TAG_NAME
+      end_time_name = ::IncidentManagement::TimelineEventTag::END_TIME_TAG_NAME
+
+      project.incident_management_timeline_event_tags.new(name: start_time_name) unless tags.include?(start_time_name)
+
+      project.incident_management_timeline_event_tags.new(name: end_time_name) unless tags.include?(end_time_name)
+
+      project.save!
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, extra: { project_id: project.id })
     end
   end

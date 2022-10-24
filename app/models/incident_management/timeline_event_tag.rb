@@ -4,6 +4,9 @@ module IncidentManagement
   class TimelineEventTag < ApplicationRecord
     self.table_name = 'incident_management_timeline_event_tags'
 
+    START_TIME_TAG_NAME = 'Start time'
+    END_TIME_TAG_NAME = 'End time'
+
     belongs_to :project, inverse_of: :incident_management_timeline_event_tags
 
     has_many :timeline_event_tag_links,
@@ -16,5 +19,9 @@ module IncidentManagement
     validates :name, presence: true, format: { with: /\A[^,]+\z/ }
     validates :name, uniqueness: { scope: :project_id }
     validates :name, length: { maximum: 255 }
+
+    def self.pluck_names
+      pluck(:name)
+    end
   end
 end

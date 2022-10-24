@@ -51,6 +51,7 @@ export default {
       :disabled="!hasSelectedNamespace"
       :phrase="confirmationPhrase"
       :button-text="confirmButtonText"
+      button-qa-selector="transfer_project_button"
       @confirm="$emit('confirm')"
     />
   </div>

@@ -443,7 +443,7 @@ export default {
         block
         @shown="setFocus"
       >
-        <gl-search-box-by-type ref="search" v-model="searchTerm" />
+        <gl-search-box-by-type ref="search" v-model="searchTerm" :placeholder="__('Search')" />
         <gl-dropdown-item
           :data-testid="`no-${formatIssuableAttribute.kebab}-item`"
           is-check-item

@@ -11,6 +11,6 @@ RSpec.describe Mutations::Security::CiConfiguration::BaseSecurityAnalyzer do
     project = create(:project, :public, :repository)
     project.add_developer(user)
 
-    expect { mutation.resolve(project_path: project.full_path ) }.to raise_error(NotImplementedError)
+    expect { mutation.resolve(project_path: project.full_path) }.to raise_error(NotImplementedError)
   end
 end

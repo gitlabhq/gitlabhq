@@ -25,4 +25,18 @@ RSpec.describe IncidentManagement::TimelineEventTag do
     it { is_expected.not_to allow_value('').for(:name) }
     it { is_expected.not_to allow_value('s' * 256).for(:name) }
   end
+
+  describe '.pluck_names' do
+    it 'returns the names of the tags' do
+      tag1 = create(:incident_management_timeline_event_tag)
+      tag2 = create(:incident_management_timeline_event_tag)
+
+      expect(described_class.pluck_names).to contain_exactly(tag1.name, tag2.name)
+    end
+  end
+
+  describe 'constants' do
+    it { expect(described_class::START_TIME_TAG_NAME).to eq('Start time') }
+    it { expect(described_class::END_TIME_TAG_NAME).to eq('End time') }
+  end
 end

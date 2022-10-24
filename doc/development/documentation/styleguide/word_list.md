@@ -757,6 +757,7 @@ Use:
 Instead of:
 
 - You need to set the variable.
+- We recommend that you set the variable.
 
 ## note that
 

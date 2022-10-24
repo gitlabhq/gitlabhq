@@ -7,7 +7,7 @@
 - return if menu_sections.empty?
 
 %li.header-new.gl-flex-grow-1.gl-flex-shrink-1.dropdown{ class: top_class, data: { track_label: "new_dropdown", track_action: "click_dropdown" } }
-  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip gl-display-inline-block!", id: "js-onboarding-new-project-link", title: title, ref: 'tooltip', aria: { label: title }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body', display: 'static', qa_selector: 'new_menu_toggle' } do
+  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip gl-display-flex", id: "js-onboarding-new-project-link", title: title, ref: 'tooltip', aria: { label: title }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body', display: 'static', qa_selector: 'new_menu_toggle' } do
     = sprite_icon('plus-square')
     = sprite_icon('chevron-down', css_class: 'caret-down')
   .dropdown-menu.dropdown-menu-right.dropdown-extended-height

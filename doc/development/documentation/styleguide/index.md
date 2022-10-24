@@ -25,10 +25,13 @@ In addition to this page, the following resources can help you craft and contrib
 
 ## The GitLab voice
 
-At GitLab, we strive to be concise, direct, and precise.
-Our goal is to provide information that's easy to search and scan.
+The GitLab brand guidelines define the
+[voice used by the larger organization](https://design.gitlab.com/brand/overview#tone-of-voice).
 
-We want to be conversational but brief, friendly but succinct.
+Building on that guidance, the voice in the GitLab documentation strives to be concise,
+direct, and precise. The goal is to provide information that's easy to search and scan.
+
+The voice in the documentation should be conversational but brief, friendly but succinct.
 
 ## Documentation is the single source of truth (SSOT)
 

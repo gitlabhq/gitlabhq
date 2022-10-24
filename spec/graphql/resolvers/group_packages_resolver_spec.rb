@@ -21,10 +21,10 @@ RSpec.describe 'Resolvers::GroupPackagesResolver' do
 
     describe 'project_path sorting' do
       let_it_be(:project2) { create(:project, :public, group: group, path: 'b') }
-      let_it_be(:package) { create(:package, project: project ) }
-      let_it_be(:package2) { create(:package, project: project2 ) }
-      let_it_be(:package3) { create(:package, project: project ) }
-      let_it_be(:package4) { create(:package, project: project2 ) }
+      let_it_be(:package) { create(:package, project: project) }
+      let_it_be(:package2) { create(:package, project: project2) }
+      let_it_be(:package3) { create(:package, project: project) }
+      let_it_be(:package4) { create(:package, project: project2) }
 
       context 'filter by package_name' do
         let(:args) { { sort: 'PROJECT_PATH_DESC' } }

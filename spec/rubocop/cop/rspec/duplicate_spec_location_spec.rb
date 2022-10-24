@@ -2,16 +2,16 @@
 
 require 'rubocop_spec_helper'
 
-require_relative '../../../../rubocop/cop/gitlab/duplicate_spec_location'
+require_relative '../../../../rubocop/cop/rspec/duplicate_spec_location'
 
-RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation, type: :rubocop_rspec do
+RSpec.describe RuboCop::Cop::RSpec::DuplicateSpecLocation do
   let(:rails_root) { '../../../../' }
 
   def full_path(path)
     File.expand_path(File.join(rails_root, path), __dir__)
   end
 
-  context 'Non-EE spec file' do
+  context 'for a non-EE spec file' do
     it 'registers no offenses' do
       expect_no_offenses(<<~SOURCE, full_path('spec/foo_spec.rb'))
         describe 'Foo' do
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation, type: :rubocop_rspec
     end
   end
 
-  context 'Non-EE application file' do
+  context 'for a non-EE application file' do
     it 'registers no offenses' do
       expect_no_offenses(<<~SOURCE, full_path('app/models/blog_post.rb'))
         class BlogPost
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation, type: :rubocop_rspec
     end
   end
 
-  context 'EE application file' do
+  context 'for an EE application file' do
     it 'registers no offenses' do
       expect_no_offenses(<<~SOURCE, full_path('ee/app/models/blog_post.rb'))
         class BlogPost
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation, type: :rubocop_rspec
     end
   end
 
-  context 'EE spec file for EE only code' do
+  context 'for an EE spec file for EE only code' do
     let(:spec_file_path) { full_path('ee/spec/controllers/foo_spec.rb') }
 
     it 'registers no offenses' do
@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation, type: :rubocop_rspec
       SOURCE
     end
 
-    context 'there is a duplicate file' do
+    context 'when there is a duplicate file' do
       before do
         allow(File).to receive(:exist?).and_call_original
 
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation, type: :rubocop_rspec
     end
   end
 
-  context 'EE spec file for EE extension' do
+  context 'for an EE spec file for EE extension' do
     let(:spec_file_path) { full_path('ee/spec/controllers/ee/foo_spec.rb') }
 
     it 'registers no offenses' do
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Gitlab::DuplicateSpecLocation, type: :rubocop_rspec
       SOURCE
     end
 
-    context 'there is a duplicate file' do
+    context 'when there is a duplicate file' do
       before do
         allow(File).to receive(:exist?).and_call_original
 

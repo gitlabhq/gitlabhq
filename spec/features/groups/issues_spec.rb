@@ -161,6 +161,8 @@ RSpec.describe 'Group issues page' do
       visit issues_group_path(group)
       select_manual_sort
 
+      wait_for_requests
+
       drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
 
       expect_issue_order
@@ -175,6 +177,8 @@ RSpec.describe 'Group issues page' do
       wait_for_requests
       visit issues_group_path(group)
       select_manual_sort
+
+      wait_for_requests
 
       drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
 
