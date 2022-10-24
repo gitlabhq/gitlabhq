@@ -256,6 +256,13 @@ options:
 
 ## Aggregated metrics
 
+<div class="video-fallback">
+  See the video from: <a href="https://www.youtube.com/embed/22LbYqHwtUQ">Product Intelligence Office Hours Oct 6th</a> for an aggregated metrics walk-through.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/22LbYqHwtUQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
 The aggregated metrics feature provides insight into the number of data attributes, for example `pseudonymized_user_ids`, that occurred in a collection of events. For example, you can aggregate the number of users who perform multiple actions such as creating a new issue and opening
 a new merge request.
 

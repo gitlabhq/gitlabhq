@@ -304,10 +304,12 @@ RSpec.describe 'Admin updates settings' do
         it 'changes the setting' do
           page.within('#js-jira_connect-settings') do
             fill_in 'Jira Connect Application ID', with: '1234'
+            fill_in 'Jira Connect Proxy URL', with: 'https://example.com'
             click_button 'Save changes'
           end
 
           expect(current_settings.jira_connect_application_key).to eq('1234')
+          expect(current_settings.jira_connect_proxy_url).to eq('https://example.com')
           expect(page).to have_content "Application settings saved successfully"
         end
       end

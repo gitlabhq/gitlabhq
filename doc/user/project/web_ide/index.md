@@ -202,12 +202,12 @@ left.
 ## Switching merge requests
 
 To switch between your authored and assigned merge requests, select the
-dropdown in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
+dropdown list in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
 request.
 
 ## Switching branches
 
-To switch between branches of the current project repository, select the dropdown
+To switch between branches of the current project repository, select the dropdown list
 in the top of the sidebar to open a list of branches.
 You must commit or discard all your changes before switching to a
 different branch.

@@ -112,7 +112,7 @@ RSpec.describe Projects::ReleasesController do
       it "returns the project's releases as JSON, ordered by released_at" do
         get_index
 
-        expect(json_response.map { |release| release["id"] } ).to eq([release_2.id, release_1.id])
+        expect(json_response.map { |release| release["id"] }).to eq([release_2.id, release_1.id])
       end
 
       it_behaves_like 'common access controls'

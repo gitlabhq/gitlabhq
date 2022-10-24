@@ -176,7 +176,7 @@ Include in the MR description:
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
 - Provide a public link to the plan from either:
   - [postgres.ai](https://postgres.ai/): Follow the link in `#database-lab` and generate a shareable, public link
-    by clicking **Share** in the upper right corner.
+    by selecting **Share** in the upper right corner.
   - [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com): Paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,

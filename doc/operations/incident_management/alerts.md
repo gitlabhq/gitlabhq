@@ -153,7 +153,7 @@ There are different actions available in GitLab to help triage and respond to al
 **Triggered** is the default status for new alerts. For users with the Developer role or higher, the
 alert status can be updated from these locations:
 
-- [Alert list](#alert-list): select the status dropdown corresponding to an alert, then select an
+- [Alert list](#alert-list): select the status dropdown list corresponding to an alert, then select an
   alternate status.
 - [Alert details page](#alert-details-page): select **Edit** in the right-hand side bar, then select
   an alternate status.
@@ -213,7 +213,7 @@ To assign an alert:
    GitLab creates a [to-do item](../../user/todos.md) for each user.
 
 After completing their portion of investigating or fixing the alert, users can
-unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
+unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown list
 and clear the user from the list of assignees, or select **Unassigned**.
 
 ### Create a to-do item from an alert

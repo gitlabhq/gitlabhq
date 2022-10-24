@@ -16,13 +16,14 @@ module Gitlab
         )
       SQL
 
+      operation_name :delete_orphaned_operational_vulnerabilities
       scope_to ->(relation) do
         relation
           .where(report_type: [REPORT_TYPES[:cluster_image_scanning], REPORT_TYPES[:custom]])
       end
 
       def perform
-        each_sub_batch(operation_name: :delete_orphaned_operational_vulnerabilities) do |sub_batch|
+        each_sub_batch do |sub_batch|
           sub_batch
             .where(NOT_EXISTS_SQL)
             .delete_all

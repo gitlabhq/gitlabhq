@@ -1291,7 +1291,7 @@ RSpec.describe Projects::IssuesController do
           let!(:last_spam_log) { spam_logs.last }
 
           def post_verified_issue
-            post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': 'abc123' } )
+            post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': 'abc123' })
           end
 
           before do
@@ -1311,7 +1311,7 @@ RSpec.describe Projects::IssuesController do
           it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
             spam_log = create(:spam_log)
 
-            expect { post_new_issue({}, { spam_log_id: spam_log.id, 'g-recaptcha-response': true } ) }
+            expect { post_new_issue({}, { spam_log_id: spam_log.id, 'g-recaptcha-response': true }) }
               .not_to change { last_spam_log.recaptcha_verified }
           end
         end

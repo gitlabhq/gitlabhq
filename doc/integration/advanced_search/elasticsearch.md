@@ -251,7 +251,7 @@ any subgroups and projects belonging to those subgroups to be indexed as well.
 
 Advanced Search only provides cross-group code/commit search (global) if all name-spaces are indexed. In this particular scenario where only a subset of namespaces are indexed, a global search does not provide a code or commit scope. This is possible only in the scope of an indexed namespace. There is no way to code/commit search in multiple indexed namespaces (when only a subset of namespaces has been indexed). For example if two groups are indexed, there is no way to run a single code search on both. You can only run a code search on the first group and then on the second.
 
-You can filter the selection dropdown by writing part of the namespace or project name you're interested in.
+You can filter the selection dropdown list by writing part of the namespace or project name you're interested in.
 
 ![limit namespace filter](img/limit_namespace_filter.png)
 

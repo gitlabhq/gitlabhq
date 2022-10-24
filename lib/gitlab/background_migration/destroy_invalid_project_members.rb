@@ -4,9 +4,10 @@ module Gitlab
   module BackgroundMigration
     class DestroyInvalidProjectMembers < Gitlab::BackgroundMigration::BatchedMigrationJob # rubocop:disable Style/Documentation
       scope_to ->(relation) { relation.where(source_type: 'Project') }
+      operation_name :delete_all
 
       def perform
-        each_sub_batch(operation_name: :delete_all) do |sub_batch|
+        each_sub_batch do |sub_batch|
           invalid_project_members = sub_batch
                                       .joins('LEFT OUTER JOIN projects ON members.source_id = projects.id')
                                       .where(projects: { id: nil })

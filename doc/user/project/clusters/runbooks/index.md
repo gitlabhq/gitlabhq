@@ -166,11 +166,11 @@ the components outlined above and the pre-loaded demo runbook.
    [GitLab Access Token](../../../profile/personal_access_tokens.md)
    and your Project ID in the **Setup** section of the demo runbook:
 
-   1. Double-click the **DevOps-Runbook-Demo** folder located on the left panel.
+   1. Select the **DevOps-Runbook-Demo** folder located on the left panel.
 
       ![demo runbook](img/demo-runbook.png)
 
-   1. Double-click the `Nurtch-DevOps-Demo.ipynb` runbook.
+   1. Select the `Nurtch-DevOps-Demo.ipynb` runbook.
 
       ![sample runbook](img/sample-runbook.png)
 

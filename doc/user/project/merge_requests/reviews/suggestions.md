@@ -12,7 +12,7 @@ type: index, reference
 
 As a reviewer, you're able to suggest code changes with a Markdown syntax in merge request
 diff threads. Then, the merge request author (or other users with appropriate
-[permission](../../../permissions.md)) can apply these suggestions with a click.
+[permission](../../../permissions.md)) can apply these suggestions.
 This action generates a commit in the merge request, authored by the user that suggested the changes.
 
 1. Choose a line of code to be changed, add a new comment, then select

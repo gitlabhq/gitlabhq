@@ -23000,6 +23000,9 @@ msgstr ""
 msgid "JiraConnect|Jira Connect Application ID"
 msgstr ""
 
+msgid "JiraConnect|Jira Connect Proxy URL"
+msgstr ""
+
 msgid "JiraConnect|New branch was successfully created."
 msgstr ""
 

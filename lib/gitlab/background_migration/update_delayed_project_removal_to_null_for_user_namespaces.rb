@@ -10,10 +10,10 @@ module Gitlab
         self.table_name = 'namespace_settings'
       end
 
+      operation_name :set_delayed_project_removal_to_null_for_user_namespace
+
       def perform
-        each_sub_batch(
-          operation_name: :set_delayed_project_removal_to_null_for_user_namespace
-        ) do |sub_batch|
+        each_sub_batch do |sub_batch|
           set_delayed_project_removal_to_null_for_user_namespace(sub_batch)
         end
       end

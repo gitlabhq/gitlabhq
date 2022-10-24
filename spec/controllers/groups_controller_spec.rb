@@ -672,7 +672,7 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
 
     context 'when there is a conflicting group path' do
-      let!(:conflict_group) { create(:group, path: SecureRandom.hex(12) ) }
+      let!(:conflict_group) { create(:group, path: SecureRandom.hex(12)) }
       let!(:old_name) { group.name }
 
       it 'does not render references to the conflicting group' do

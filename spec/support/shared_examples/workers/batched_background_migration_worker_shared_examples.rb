@@ -236,10 +236,10 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
     let(:migration_class) do
       Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
         job_arguments :matching_status
+        operation_name :update_all
 
         def perform
           each_sub_batch(
-            operation_name: :update_all,
             batching_scope: -> (relation) { relation.where(status: matching_status) }
           ) do |sub_batch|
             sub_batch.update_all(some_column: 0)

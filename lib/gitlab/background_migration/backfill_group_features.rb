@@ -5,10 +5,10 @@ module Gitlab
     # Backfill group_features for an array of groups
     class BackfillGroupFeatures < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       job_arguments :batch_size
+      operation_name :upsert_group_features
 
       def perform
         each_sub_batch(
-          operation_name: :upsert_group_features,
           batching_arguments: { order_hint: :type },
           batching_scope: ->(relation) { relation.where(type: 'Group') }
         ) do |sub_batch|

@@ -6,9 +6,10 @@ module Gitlab
     class BackfillProjectNamespaceOnIssues < BatchedMigrationJob
       MAX_UPDATE_RETRIES = 3
 
+      operation_name :update_all
+
       def perform
         each_sub_batch(
-          operation_name: :update_all,
           batching_scope: -> (relation) {
             relation.joins("INNER JOIN projects ON projects.id = issues.project_id")
               .select("issues.id AS issue_id, projects.project_namespace_id").where(issues: { namespace_id: nil })

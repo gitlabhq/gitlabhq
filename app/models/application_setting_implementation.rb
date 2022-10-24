@@ -103,6 +103,7 @@ module ApplicationSettingImplementation
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_application_key: nil,
+        jira_connect_proxy_url: nil,
         local_markdown_version: 0,
         login_recaptcha_protection_enabled: false,
         mailgun_signing_key: nil,

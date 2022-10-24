@@ -16,7 +16,8 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric do
     let(:jwt_headers) { { kid: public_key_id } }
     let(:jwt) { JWT.encode(jwt_claims, private_key, 'RS256', jwt_headers) }
     let(:public_key) { private_key.public_key }
-    let(:install_keys_url) { "https://connect-install-keys.atlassian.com/#{public_key_id}" }
+    let(:stub_asymmetric_jwt_cdn) { 'https://connect-install-keys.atlassian.com' }
+    let(:install_keys_url) { "#{stub_asymmetric_jwt_cdn}/#{public_key_id}" }
     let(:qsh) do
       Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/installed', 'POST', 'https://gitlab.test')
     end
@@ -84,6 +85,38 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric do
       let(:verification_claims) { { aud: jwt_claims[:aud], iss: client_key, qsh: 'some other qsh' } }
 
       it { is_expected.not_to be_valid }
+    end
+
+    context 'with jira_connect_proxy_url setting' do
+      let(:stub_asymmetric_jwt_cdn) { 'https://example.com/-/jira_connect/public_keys' }
+
+      before do
+        stub_application_setting(jira_connect_proxy_url: 'https://example.com')
+      end
+
+      it 'requests the settings CDN' do
+        expect(JWT).to receive(:decode).twice.and_call_original
+
+        expect(asymmetric_jwt).to be_valid
+
+        expect(WebMock).to have_requested(:get, "https://example.com/-/jira_connect/public_keys/#{public_key_id}")
+      end
+
+      context 'when jira_connect_oauth_self_managed disabled' do
+        let(:stub_asymmetric_jwt_cdn) { 'https://connect-install-keys.atlassian.com' }
+
+        before do
+          stub_feature_flags(jira_connect_oauth_self_managed: false)
+        end
+
+        it 'requests the default CDN' do
+          expect(JWT).to receive(:decode).twice.and_call_original
+
+          expect(asymmetric_jwt).to be_valid
+
+          expect(WebMock).to have_requested(:get, install_keys_url)
+        end
+      end
     end
   end
 

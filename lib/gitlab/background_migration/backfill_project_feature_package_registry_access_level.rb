@@ -17,8 +17,10 @@ module Gitlab
         self.table_name = 'project_features'
       end
 
+      operation_name :update_all
+
       def perform
-        each_sub_batch(operation_name: :update_all) do |sub_batch|
+        each_sub_batch do |sub_batch|
           ProjectFeature.connection.execute(
             <<~SQL
             UPDATE project_features pf

@@ -10,7 +10,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
     let(:additional_info) { {} }
 
     before do
-      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, extern_uid, user.email, additional_info: additional_info )
+      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, extern_uid, user.email, additional_info: additional_info)
       stub_omniauth_provider(provider, context: request)
     end
 

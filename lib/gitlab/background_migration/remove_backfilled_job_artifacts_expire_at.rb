@@ -6,6 +6,8 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47723.
     # These job artifacts will not be deleted and will have their `expire_at` removed.
     class RemoveBackfilledJobArtifactsExpireAt < BatchedMigrationJob
+      operation_name :update_all
+
       # The migration would have backfilled `expire_at`
       # to midnight on the 22nd of the month of the local timezone,
       # storing it as UTC time in the database.
@@ -32,9 +34,7 @@ module Gitlab
       }
 
       def perform
-        each_sub_batch(
-          operation_name: :update_all
-        ) do |sub_batch|
+        each_sub_batch do |sub_batch|
           sub_batch.update_all(expire_at: nil)
         end
       end

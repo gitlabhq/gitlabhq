@@ -301,7 +301,7 @@ I/O. It instead inspects the metadata file which contains all the relevant
 information. This is especially important when there is a lot of artifacts, or
 an archive is a very large file.
 
-When clicking on a specific file, [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) extracts it
+When selecting a specific file, [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) extracts it
 from the archive and the download begins. This implementation saves space,
 memory and disk I/O.
 

@@ -4,8 +4,10 @@ module Gitlab
   module BackgroundMigration
     # A job to nullify duplicate token_encrypted values in ci_runners table in batches
     class ResetDuplicateCiRunnersTokenEncryptedValues < BatchedMigrationJob
+      operation_name :nullify_duplicate_ci_runner_token_encrypted_values
+
       def perform
-        each_sub_batch(operation_name: :nullify_duplicate_ci_runner_token_encrypted_values) do |sub_batch|
+        each_sub_batch do |sub_batch|
           # Reset duplicate runner encrypted tokens that would prevent creating an unique index.
           nullify_duplicate_ci_runner_token_encrypted_values(sub_batch)
         end

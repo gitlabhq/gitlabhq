@@ -5,14 +5,6 @@ module Gitlab
     module RedisInterceptor
       APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax xread xreadgroup].freeze
 
-      class MysteryRedisDurationError < StandardError
-        attr_reader :backtrace
-
-        def initialize(backtrace)
-          @backtrace = backtrace
-        end
-      end
-
       def call(command)
         instrument_call([command]) do
           super

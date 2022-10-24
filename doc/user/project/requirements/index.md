@@ -120,8 +120,8 @@ You can search for a requirement from the requirements list page based on the fo
 To search for a requirement:
 
 1. In a project, go to **Issues > Requirements > List**.
-1. Select the **Search or filter results** field. A dropdown menu appears.
-1. Select the requirement author or status from the dropdown or enter plain text to search by requirement title.
+1. Select the **Search or filter results** field. A dropdown list appears.
+1. Select the requirement author or status from the dropdown list or enter plain text to search by requirement title.
 1. Press <kbd>Enter</kbd> on your keyboard to filter the list.
 
 You can also sort the requirements list by:

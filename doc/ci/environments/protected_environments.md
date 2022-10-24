@@ -26,7 +26,7 @@ Maintainer role.
 
 Prerequisites:
 
-- When granting the **Allowed to deploy** permission to a group or subgroup, the user configuring the protected environment must be a **direct member** of the group or subgroup to be added. Otherwise, the group or subgroup will not show up in the dropdown. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
+- When granting the **Allowed to deploy** permission to a group or subgroup, the user configuring the protected environment must be a **direct member** of the group or subgroup to be added. Otherwise, the group or subgroup will not show up in the dropdown list. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
 
 To protect an environment:
 
@@ -147,7 +147,7 @@ Maintainers can:
 
 - Update existing protected environments at any time by changing the access in the
   **Allowed to Deploy** dropdown list.
-- Unprotect a protected environment by clicking the **Unprotect** button for that environment.
+- Unprotect a protected environment by selecting the **Unprotect** button for that environment.
 
 After an environment is unprotected, all access entries are deleted and must
 be re-entered if the environment is re-protected.

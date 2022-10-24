@@ -178,7 +178,7 @@ deploy_prod:
 The `when: manual` action:
 
 - Exposes a play button for the job in the GitLab UI, with the text **Can be manually deployed to &lt;environment&gt;**.
-- Means the `deploy_prod` job is only triggered when the play button is clicked.
+- Means the `deploy_prod` job is only triggered when the play button is selected.
 
 You can find the play button in the pipelines, environments, deployments, and jobs views.
 

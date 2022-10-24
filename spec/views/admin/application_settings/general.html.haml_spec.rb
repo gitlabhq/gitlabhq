@@ -69,8 +69,8 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
     end
   end
 
-  describe 'jira connect application key' do
-    it 'shows the jira connect application key section' do
+  describe 'jira connect settings' do
+    it 'shows the jira connect settings section' do
       render
 
       expect(rendered).to have_css('#js-jira_connect-settings')
@@ -81,7 +81,7 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
         stub_feature_flags(jira_connect_oauth_self_managed_setting: false)
       end
 
-      it 'does not show the jira connect application key section' do
+      it 'does not show the jira connect settings section' do
         render
 
         expect(rendered).not_to have_css('#js-jira_connect-settings')

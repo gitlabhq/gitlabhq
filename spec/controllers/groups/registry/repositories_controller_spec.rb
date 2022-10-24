@@ -117,7 +117,7 @@ RSpec.describe Groups::Registry::RepositoriesController do
         it_behaves_like 'a package tracking event', described_class.name, 'list_repositories'
 
         context 'with project in subgroup' do
-          let_it_be(:test_group) { create(:group, parent: group ) }
+          let_it_be(:test_group) { create(:group, parent: group) }
 
           it_behaves_like 'renders a list of repositories'
 

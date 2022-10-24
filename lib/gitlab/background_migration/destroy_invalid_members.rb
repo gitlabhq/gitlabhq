@@ -4,9 +4,10 @@ module Gitlab
   module BackgroundMigration
     class DestroyInvalidMembers < Gitlab::BackgroundMigration::BatchedMigrationJob # rubocop:disable Style/Documentation
       scope_to ->(relation) { relation.where(member_namespace_id: nil) }
+      operation_name :delete_all
 
       def perform
-        each_sub_batch(operation_name: :delete_all) do |sub_batch|
+        each_sub_batch do |sub_batch|
           deleted_members_data = sub_batch.map do |m|
             { id: m.id, source_id: m.source_id, source_type: m.source_type }
           end

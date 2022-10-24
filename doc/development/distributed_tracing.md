@@ -91,7 +91,7 @@ Once the performance bar is enabled, select **Trace** in the performance bar to 
 the Jaeger UI.
 
 The Jaeger search UI returns a query for the `Correlation-ID` of the current request. Normally,
-this search should return a single trace result. Clicking this result shows the detail of the
+this search should return a single trace result. Selecting this result shows the detail of the
 trace in a hierarchical time-line.
 
 ![Jaeger Search UI](img/distributed_tracing_jaeger_ui.png)

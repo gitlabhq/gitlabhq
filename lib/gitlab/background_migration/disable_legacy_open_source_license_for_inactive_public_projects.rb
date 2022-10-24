@@ -8,6 +8,8 @@ module Gitlab
       PUBLIC = 20
       LAST_ACTIVITY_DATE = '2021-07-01'
 
+      operation_name :disable_legacy_open_source_license_available
+
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord
         self.table_name = 'project_settings'
@@ -15,7 +17,6 @@ module Gitlab
 
       def perform
         each_sub_batch(
-          operation_name: :disable_legacy_open_source_license_available,
           batching_scope: ->(relation) {
             relation.where(visibility_level: PUBLIC).where('last_activity_at < ?', LAST_ACTIVITY_DATE)
           }

@@ -37,7 +37,7 @@ independently from each other.
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 
-Clicking an individual job shows you its job log, and allows you to:
+Selecting an individual job shows you its job log, and allows you to:
 
 - Cancel the job.
 - Retry the job.

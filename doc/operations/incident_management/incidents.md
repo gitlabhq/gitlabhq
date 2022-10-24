@@ -35,7 +35,7 @@ To create an incident from the Issues List:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230857) in GitLab 13.4.
 
 1. Go to **Issues > List**, and select **New issue**.
-1. In the **Type** dropdown, select **Incident**. Only fields relevant to
+1. In the **Type** dropdown list, select **Incident**. Only fields relevant to
    incidents are displayed on the page.
 1. Create the incident as needed, and select **Create issue** to save the
    incident.

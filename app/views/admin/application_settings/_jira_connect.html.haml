@@ -18,4 +18,10 @@
         .form-group
           = f.label :jira_connect_application_key, s_('JiraConnect|Jira Connect Application ID'), class: 'label-bold'
           = f.text_field :jira_connect_application_key, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.label :jira_connect_proxy_url, s_('JiraConnect|Jira Connect Proxy URL'), class: 'label-bold'
+          = f.text_field :jira_connect_proxy_url, class: 'form-control gl-form-input'
+
       = f.submit _('Save changes'), pajamas_button: true

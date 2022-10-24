@@ -137,7 +137,7 @@ RSpec.describe Projects::Registry::RepositoriesController do
     end
   end
 
-  def go_to_index(format: :html, params: {} )
+  def go_to_index(format: :html, params: {})
     get :index, params: params.merge({
                   namespace_id: project.namespace,
                   project_id: project

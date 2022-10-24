@@ -400,9 +400,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         end
 
         describe 'parsing tracking' do
+          let(:finding) { report.findings.first }
+
           context 'with invalid tracking information' do
-            let(:finding) { report.findings.first }
-            let(:number_of_findings) { report.findings.length }
             let(:tracking_data) do
               {
               'type' => 'source',
@@ -416,7 +416,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
               }
             end
 
-            it 'ignores invalid algorithm types and logs warning' do
+            it 'ignores invalid algorithm types' do
               expect(finding.signatures.size).to eq(2)
               expect(finding.signatures.map(&:algorithm_type).to_set).to eq(Set['hash', 'location'])
             end
@@ -437,7 +437,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             end
 
             it 'creates signatures for each signature algorithm' do
-              finding = report.findings.first
               expect(finding.signatures.size).to eq(3)
               expect(finding.signatures.map(&:algorithm_type)).to eq(%w[hash location scope_offset])
 
@@ -449,7 +448,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             end
 
             it 'sets the uuid according to the higest priority signature' do
-              finding = report.findings.first
               highest_signature = finding.signatures.max_by(&:priority)
 
               identifiers = if signatures_enabled

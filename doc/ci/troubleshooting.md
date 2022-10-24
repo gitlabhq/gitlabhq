@@ -285,14 +285,14 @@ has failed or been canceled.
 
 If a merge request pipeline or merged result pipeline was canceled or failed, you can:
 
-- Re-run the entire pipeline by clicking **Run pipeline** in the pipeline tab in the merge request.
+- Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request.
 - [Retry only the jobs that failed](pipelines/index.md#view-pipelines). If you re-run the entire pipeline, this is not necessary.
 - Push a new commit to fix the failure.
 
 If the merge train pipeline has failed, you can:
 
 - Check the failure and determine if you can use the [`/merge` quick action](../user/project/quick_actions.md) to immediately add the merge request to the train again.
-- Re-run the entire pipeline by clicking **Run pipeline** in the pipeline tab in the merge request, then add the merge request to the train again.
+- Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request, then add the merge request to the train again.
 - Push a commit to fix the failure, then add the merge request to the train again.
 
 If the merge train pipeline was canceled before the merge request was merged, without a failure, you can:

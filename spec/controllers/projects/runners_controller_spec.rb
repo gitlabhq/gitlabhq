@@ -25,7 +25,7 @@ RSpec.describe Projects::RunnersController do
       new_desc = runner.description.swapcase
 
       expect do
-        post :update, params: params.merge(runner: { description: new_desc } )
+        post :update, params: params.merge(runner: { description: new_desc })
       end.to change { runner.ensure_runner_queue_value }
 
       runner.reload

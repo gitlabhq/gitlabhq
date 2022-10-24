@@ -5,9 +5,10 @@ module Gitlab
     # This syncs the data to `internal` from `confidential` as we rename the column.
     class BackfillInternalOnNotes < BatchedMigrationJob
       scope_to -> (relation) { relation.where(confidential: true) }
+      operation_name :update_all
 
       def perform
-        each_sub_batch(operation_name: :update_all) do |sub_batch|
+        each_sub_batch do |sub_batch|
           sub_batch.update_all(internal: true)
         end
       end

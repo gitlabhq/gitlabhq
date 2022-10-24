@@ -219,6 +219,7 @@ In this example, `copy_from` returns `name`, and `copy_to` returns `name_convert
 ```ruby
 class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
   job_arguments :copy_from, :copy_to
+  operation_name :update_all
 
   def perform
     from_column = connection.quote_column_name(copy_from)
@@ -226,7 +227,7 @@ class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
 
     assignment_clause = "#{to_column} = #{from_column}"
 
-    each_sub_batch(operation_name: :update_all) do |relation|
+    each_sub_batch do |relation|
       relation.update_all(assignment_clause)
     end
   end
@@ -267,9 +268,10 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
    ```ruby
    class BackfillNamespaceType < BatchedMigrationJob
      scope_to ->(relation) { relation.where(type: nil) }
+     operation_name :update_all
 
      def perform
-       each_sub_batch(operation_name: :update_all) do |sub_batch|
+       each_sub_batch do |sub_batch|
          sub_batch.update_all(type: 'User')
        end
      end
@@ -327,9 +329,10 @@ background migration.
      #   self.table_name = 'routes'
      # end
 
+     operation_name :update_all
+
      def perform
        each_sub_batch(
-         operation_name: :update_all,
          batching_scope: -> (relation) { relation.where("source_type <> 'UnusedType'") }
        ) do |sub_batch|
          sub_batch.update_all('namespace_id = source_id')
@@ -483,8 +486,10 @@ module Gitlab
     class BatchProjectsWithIssues < Gitlab::BackgroundMigration::BatchedMigrationJob
       include Gitlab::Database::DynamicModelHelpers
 
+      operation_name :backfill_issues
+
       def perform
-        distinct_each_batch(operation_name: :backfill_issues) do |batch|
+        distinct_each_batch do |batch|
           project_ids = batch.pluck(batch_column)
           # do something with the distinct project_ids
         end

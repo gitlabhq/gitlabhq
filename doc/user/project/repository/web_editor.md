@@ -10,13 +10,13 @@ Sometimes it's easier to make quick changes directly from the GitLab interface
 than to clone the project and use the Git command-line tool. In this feature
 highlight, we look at how you can create a new file, directory, branch, or
 tag from the file browser. All of these actions are available from a single
-dropdown menu.
+dropdown list.
 
 ## Create a file
 
 From a project's files page, select the '+' button to the right of the branch selector.
-Choose **New file** from the dropdown.
-![New file dropdown menu](img/web_editor_new_file_dropdown_v14_1.png)
+Choose **New file** from the dropdown list.
+![New file dropdown list](img/web_editor_new_file_dropdown_v14_1.png)
 
 Enter a filename in the **Filename** box. Then, add file content in the editor
 area. Add a descriptive commit message and choose a branch. The branch field
@@ -85,7 +85,7 @@ this case, you need to upload a file.
 From a project's files page, select the '+' button to the right of the branch
 selector. Choose **Upload file** from the dropdown:
 
-![Upload file dropdown menu](img/web_editor_upload_file_dropdown_v14_1.png)
+![Upload file dropdown list](img/web_editor_upload_file_dropdown_v14_1.png)
 
 After the upload dialog pops up, there are two ways to upload your file. Either
 drag and drop a file on the popup or use the **click to upload** link. After you
@@ -104,7 +104,7 @@ directory.
 From a project's files page, select the plus button (`+`) to the right of the branch selector.
 Choose **New directory** from the dropdown.
 
-![New directory dropdown](img/web_editor_new_directory_dropdown_v14_1.png)
+![New directory dropdown list](img/web_editor_new_directory_dropdown_v14_1.png)
 
 In the new directory dialog, enter a directory name, a commit message, and choose
 the target branch. Select **Create directory** to finish.
@@ -177,9 +177,9 @@ merge request is merged.
 If you want to make changes to several files before creating a new merge
 request, you can create a new branch upfront.
 
-1. From a project's files page, choose **New branch** from the dropdown.
+1. From a project's files page, choose **New branch** from the dropdown list.
 
-   ![New branch dropdown](img/web_editor_new_branch_dropdown_v14_1.png)
+   ![New branch dropdown list](img/web_editor_new_branch_dropdown_v14_1.png)
 
 1. Enter a new **Branch name**.
 1. Optional. Change the **Create from** field to choose which branch, tag, or
@@ -202,9 +202,9 @@ Tags help you mark major milestones such as production releases and
 release candidates. You can create a tag from a branch or a commit
 SHA:
 
-1. From a project's files page, choose **New tag** from the dropdown.
+1. From a project's files page, choose **New tag** from the dropdown list.
 
-   ![New tag dropdown](img/web_editor_new_tag_dropdown.png)
+   ![New tag dropdown list](img/web_editor_new_tag_dropdown.png)
 
 1. Give the tag a name such as `v1.0.0`.
 1. Choose the branch or SHA from which you want to create this new tag.

@@ -55,7 +55,7 @@ least Maintainer [permissions](../user/permissions.md) to enable the Sentry inte
    1. Ensure the **Active** checkbox is selected.
 1. In the **Sentry API URL** box, enter your Sentry hostname. For example, enter `https://sentry.example.com`. For the SaaS version of Sentry, the hostname is `https://sentry.io`.
 1. In the **Auth Token** box, enter the token you previously generated.
-1. To test the connection to Sentry and populate the **Project** dropdown, select **Connect**.
+1. To test the connection to Sentry and populate the **Project** dropdown list, select **Connect**.
 1. From the **Project** list, choose a Sentry project to link to your GitLab project.
 1. Select **Save changes**.
 
@@ -131,12 +131,13 @@ If another event occurs, the error reverts to unresolved.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) in GitLab 14.4.
 > - [Disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/353639) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `integrated_error_tracking`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7586) in GitLab 15.6.
 
 FLAG:
 By default this feature is not available. To make it available on self-managed GitLab, ask an
 administrator to [enable the feature flag](../administration/feature_flags.md)
 named `integrated_error_tracking`. The feature is not ready for production use.
-On GitLab.com, please follow [our user guide](https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/docs/guides/user/error_tracking.md) to get started.
+On GitLab.com, this feature is available.
 
 Integrated error tracking is a lightweight alternative to Sentry backend.
 You still use Sentry SDK with your application. But you don't need to deploy Sentry
@@ -147,6 +148,14 @@ GitLab does the same. You should be able to find a DSN for your project in the G
 settings. By using a GitLab-provided DSN, your application connects to GitLab to report an error.
 Those errors are stored in the GitLab database and rendered by the GitLab UI, in the same way as
 Sentry integration.
+
+In GitLab 15.6 and later, the integrated error tracking is available as an
+[open Beta](../policy/alpha-beta-support.md#beta-features).
+It now uses a new backend based on the ClickHouse database that enables better scalability.
+Integrated error tracking remains limited in comparison to the Sentry backend, as only a small subset of the
+Sentry API is implemented.
+
+Changing the GitLab error UI to use the GitLab Observability UI is tracked in epic [19](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/32).
 
 ### Project settings
 

@@ -4,8 +4,10 @@ module Gitlab
   module BackgroundMigration
     # Backfill namespace_details for a range of namespaces
     class BackfillNamespaceDetails < ::Gitlab::BackgroundMigration::BatchedMigrationJob
+      operation_name :backfill_namespace_details
+
       def perform
-        each_sub_batch(operation_name: :backfill_namespace_details) do |sub_batch|
+        each_sub_batch do |sub_batch|
           upsert_namespace_details(sub_batch)
         end
       end
