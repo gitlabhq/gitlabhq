@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../../lib/gitlab/json'
-
 module RuboCop
   module Cop
     module Gitlab
@@ -11,6 +9,8 @@ module RuboCop
         MSG = <<~EOL
           Prefer `Gitlab::Json` over calling `JSON` or `to_json` directly. See https://docs.gitlab.com/ee/development/json.html
         EOL
+
+        AVAILABLE_METHODS = %i[parse parse! load decode dump generate encode pretty_generate].to_set.freeze
 
         def_node_matcher :json_node?, <<~PATTERN
           (send (const {nil? | (const nil? :ActiveSupport)} :JSON) $_ $...)
@@ -37,12 +37,12 @@ module RuboCop
           method_name, arg_nodes = json_node?(node)
 
           # Only match if the method is implemented by Gitlab::Json
-          if method_name && ::Gitlab::Json.methods(false).include?(method_name)
+          if method_name && AVAILABLE_METHODS.include?(method_name)
             return [method_name, arg_nodes.map(&:source).join(', ')]
           end
 
           receiver = to_json_call?(node)
-          return [:generate, receiver.source] if receiver
+          return [:dump, receiver.source] if receiver
 
           nil
         end

@@ -168,11 +168,6 @@ export default {
   },
   methods: {
     toggleCollapsed() {
-      // Because the top-level div is always clickable, we need to check if we can collapse.
-      if (!this.isCollapsible) {
-        return;
-      }
-
       if (this.trackAction) {
         api.trackRedisHllUserEvent(this.trackAction);
       }
@@ -187,7 +182,7 @@ export default {
 </script>
 <template>
   <section class="media-section">
-    <div class="media" :class="{ 'gl-cursor-pointer': isCollapsible }" @click="toggleCollapsed">
+    <div class="media">
       <status-icon :status="statusIconName" :size="24" class="align-self-center" />
       <div class="media-body gl-display-flex gl-align-items-flex-start gl-flex-direction-row!">
         <div
@@ -218,7 +213,7 @@ export default {
             category="tertiary"
             size="small"
             :icon="isExpanded ? 'chevron-lg-up' : 'chevron-lg-down'"
-            @click.stop="toggleCollapsed"
+            @click="toggleCollapsed"
           />
         </div>
       </div>

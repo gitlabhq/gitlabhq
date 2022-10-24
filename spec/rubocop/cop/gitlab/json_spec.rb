@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Gitlab::Json do
       expect_correction(<<~RUBY)
         class Foo
           def bar
-            Gitlab::Json.generate({ foo: "bar" })
+            Gitlab::Json.dump({ foo: "bar" })
           end
         end
       RUBY

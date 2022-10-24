@@ -7,20 +7,26 @@ module ProtectedBranches
     CACHE_EXPIRE_IN = 1.day
     CACHE_LIMIT = 1000
 
-    def fetch(ref_name, dry_run: false)
+    def fetch(ref_name, dry_run: false, &block)
       record = OpenSSL::Digest::SHA256.hexdigest(ref_name)
 
       Gitlab::Redis::Cache.with do |redis|
         cached_result = redis.hget(redis_key, record)
 
-        decoded_result = Gitlab::Redis::Boolean.decode(cached_result) unless cached_result.nil?
+        if cached_result.nil?
+          metrics.increment_cache_miss
+        else
+          metrics.increment_cache_hit
+
+          decoded_result = Gitlab::Redis::Boolean.decode(cached_result)
+        end
 
         # If we're dry-running, don't break because we need to check against
         # the real value to ensure the cache is working properly.
         # If the result is nil we'll need to run the block, so don't break yet.
         break decoded_result unless dry_run || decoded_result.nil?
 
-        calculated_value = yield
+        calculated_value = metrics.observe_cache_generation(&block)
 
         check_and_log_discrepancy(decoded_result, calculated_value, ref_name) if dry_run
 
@@ -63,6 +69,15 @@ module ProtectedBranches
 
     def redis_key
       @redis_key ||= [CACHE_ROOT_KEY, @project.id].join(':')
+    end
+
+    def metrics
+      @metrics ||= Gitlab::Cache::Metrics.new(
+        caller_id: Gitlab::ApplicationContext.current_context_attribute(:caller_id),
+        cache_identifier: "#{self.class}#fetch",
+        feature_category: :source_code_management,
+        backing_resource: :cpu
+      )
     end
   end
 end

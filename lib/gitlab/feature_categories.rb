@@ -31,6 +31,14 @@ module Gitlab
       category
     end
 
+    def get!(feature_category)
+      return feature_category if valid?(feature_category)
+
+      raise "Unknown feature category: #{feature_category}" if Gitlab.dev_or_test_env?
+
+      FEATURE_CATEGORY_DEFAULT
+    end
+
     def valid?(category)
       categories.include?(category.to_s)
     end

@@ -137,7 +137,7 @@ You can include the following options for your default dashboard view:
 
 ### Group overview content
 
-The **Group overview content** dropdown allows you to choose what information is
+The **Group overview content** dropdown list allows you to choose what information is
 displayed on a group's home page.
 
 You can choose between 2 options:

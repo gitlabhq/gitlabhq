@@ -257,7 +257,7 @@ To filter:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics**.
 1. Select the field **Search or filter results**.
-1. From the dropdown menu, select the scope or enter plain text to search by epic title or description.
+1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
 1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
 
 ## Sort the list of epics
@@ -282,10 +282,10 @@ You can reverse the default order and interact with the activity feed sorted by 
 at the top. Your preference is saved via local storage and automatically applied to every epic and issue
 you view.
 
-To change the activity sort order, select the **Oldest first** dropdown menu and select either oldest
+To change the activity sort order, select the **Oldest first** dropdown list and select either oldest
 or newest items to be shown first.
 
-![Issue activity sort order dropdown button](img/epic_activity_sort_order_v13_2.png)
+![Issue activity sort order dropdown list](img/epic_activity_sort_order_v13_2.png)
 
 ## Make an epic confidential
 

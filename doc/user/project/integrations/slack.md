@@ -45,7 +45,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 1. Optional. In **Username**, enter the username of the Slack bot that sends
    the notifications.
 1. Select the **Notify only broken pipelines** checkbox to notify only on failures.
-1. In the **Branches for which notifications are to be sent** dropdown, select which types of branches
+1. In the **Branches for which notifications are to be sent** dropdown list, select which types of branches
    to send notifications for.
 1. Leave the **Labels to be notified** field blank to get all notifications, or
    add labels that the issue or merge request must have to trigger a

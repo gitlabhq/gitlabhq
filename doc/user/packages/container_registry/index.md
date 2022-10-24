@@ -523,7 +523,7 @@ for more details about the permissions that this setting grants to users.
 
 1. Go to your project's **Settings > General** page.
 1. Expand the section **Visibility, project features, permissions**.
-1. Under **Container Registry**, select an option from the dropdown:
+1. Under **Container Registry**, select an option from the dropdown list:
 
    - **Everyone With Access** (Default): The Container Registry is visible to everyone with access
    to the project. If the project is public, the Container Registry is also public. If the project
