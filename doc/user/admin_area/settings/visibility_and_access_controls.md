@@ -262,7 +262,7 @@ These options specify the permitted types and lengths for SSH keys.
 
 To specify a restriction for each key type:
 
-1. Select the desired option from the dropdown.
+1. Select the desired option from the dropdown list.
 1. Select **Save changes**.
 
 For more details, see [SSH key restrictions](../../../security/ssh_keys_restrictions.md).

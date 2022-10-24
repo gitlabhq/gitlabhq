@@ -235,7 +235,7 @@ Users can be banned using the Admin Area. To do this:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Ban user**.
 
 The banned user does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
@@ -248,7 +248,7 @@ A banned user can be unbanned using the Admin Area. To do this:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Unban user**.
 
 The user's state is set to active and they consume a

@@ -201,7 +201,7 @@ For issues and merge requests with many comments, you can filter the page to sho
    - **Show comments only**: Display only user comments.
    - **Show history only**: Display only activity notes.
 
-![Notes filters dropdown options](img/index_notes_filters.png)
+![Notes filters dropdown list options](img/index_notes_filters.png)
 
 GitLab saves your preference, so it persists when you visit the same page again
 from any device you're logged into.

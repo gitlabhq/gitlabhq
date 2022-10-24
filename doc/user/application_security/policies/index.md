@@ -57,7 +57,7 @@ project and a project that you would like to designate as the security policy pr
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Policies**.
 1. Select **Edit Policy Project**, and search for and select the
-   project you would like to link from the dropdown menu.
+   project you would like to link from the dropdown list.
 1. Select **Save**.
 
 To unlink a security policy project, follow the same steps but instead select the trash can icon in

@@ -43,7 +43,7 @@ You can choose from the following three periods:
 - Last month
 - Last three months
 
-Select the desired period from the calendar dropdown.
+Select the desired period from the calendar dropdown list.
 
 ![Contribution analytics choose period](img/group_stats_cal.png)
 

@@ -1070,9 +1070,9 @@ To run an on-demand scan either at a scheduled date or frequency, read
    sidebar.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** fields.
-1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown.
-1. In **Scanner profile**, select a scanner profile from the dropdown.
-1. In **Site profile**, select a site profile from the dropdown.
+1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown list.
+1. In **Scanner profile**, select a scanner profile from the dropdown list.
+1. In **Site profile**, select a site profile from the dropdown list.
 1. To run the on-demand scan immediately, select **Save and run scan**. Otherwise, select
    **Save scan** to [run](#run-a-saved-on-demand-scan) it later.
 

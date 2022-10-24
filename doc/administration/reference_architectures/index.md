@@ -43,11 +43,6 @@ The following Cloud Native Hybrid reference architectures, where select recommen
 - [Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 - [Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 
-A GitLab [Premium or Ultimate](https://about.gitlab.com/pricing/#self-managed) license is required
-to get assistance from Support with troubleshooting the [2,000 users](2k_users.md)
-and higher reference architectures.
-[Read more about our definition of scaled architectures](https://about.gitlab.com/support/definitions/#definition-of-scaled-architecture).
-
 ## Deciding which architecture to use
 
 The Reference Architectures are designed to strike a balance between two important factors--performance and resilience.

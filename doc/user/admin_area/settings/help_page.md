@@ -56,7 +56,7 @@ GitLab marketing-related entries are occasionally shown on the Help page. To hid
 
 You can specify a custom URL to which users are directed when they:
 
-- Select **Support** from the Help dropdown.
+- Select **Support** from the Help dropdown list.
 - Select **See our website for help** on the Help page.
 
 1. On the top bar, select **Main menu > Admin**.

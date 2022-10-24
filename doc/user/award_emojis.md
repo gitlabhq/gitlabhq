@@ -20,7 +20,7 @@ For information on the relevant API, see [Award Emoji API](../api/award_emoji.md
 ## Sort issues and merge requests on vote count
 
 You can quickly sort issues and merge requests by the number of votes they
-have received. The sort options can be found in the dropdown menu as "Most
+have received. The sort options can be found in the dropdown list as "Most
 popular" and "Least popular".
 
 ![Votes sort options](img/award_emoji_votes_sort_options.png)
