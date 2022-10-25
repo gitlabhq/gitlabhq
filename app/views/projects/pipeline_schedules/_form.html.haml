@@ -9,10 +9,10 @@
       = f.label :cron, _('Interval Pattern'), class: 'label-bold'
       #interval-pattern-input{ data: { initial_interval: @schedule.cron, daily_limit: @schedule.daily_limit } }
   .form-group.row
-    .col-md-9
-      = f.label :cron_timezone, _('Cron Timezone'), class: 'label-bold'
-      = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'gl-button btn btn-default js-timezone-dropdown w-100', dropdown_class: 'w-100', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
-      = f.text_field :cron_timezone, value: @schedule.cron_timezone, id: 'schedule_cron_timezone', class: 'hidden', name: 'schedule[cron_timezone]', required: true
+    .col-md-9{ data: { testid: 'schedule-timezone' } }
+      = f.label :cron_timezone, _("Cron Timezone")
+      .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @schedule.cron_timezone, name: 'schedule[cron_timezone]' } }
+
   .form-group.row
     .col-md-9
       = f.label :ref, _('Target branch or tag'), class: 'label-bold'

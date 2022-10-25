@@ -62,7 +62,7 @@
       %p= s_("Profiles|Set your local time zone.")
     .col-lg-8
       = f.label :user_timezone, _("Time zone")
-      .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone } }
+      .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
     .col-lg-12
       %hr
   .row.js-search-settings-section

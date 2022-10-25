@@ -1618,8 +1618,10 @@
   rules:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
+    # Run code_quality on master until https://gitlab.com/gitlab-org/gitlab/-/issues/363747 is resolved
+    - <<: *if-default-branch-refs
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-qa-patterns
 
 .reports:rules:brakeman-sast:
   rules:

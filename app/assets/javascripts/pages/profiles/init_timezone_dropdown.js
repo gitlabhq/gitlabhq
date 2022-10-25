@@ -8,7 +8,7 @@ export const initTimezoneDropdown = () => {
     return null;
   }
 
-  const { timezoneData, initialValue } = el.dataset;
+  const { timezoneData, initialValue, name } = el.dataset;
   const timezones = JSON.parse(timezoneData);
 
   const timezoneDropdown = new Vue({
@@ -23,7 +23,7 @@ export const initTimezoneDropdown = () => {
         props: {
           value: this.value,
           timezoneData: timezones,
-          name: 'user[timezone]',
+          name,
         },
         class: 'gl-md-form-input-lg',
       });

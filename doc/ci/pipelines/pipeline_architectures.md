@@ -23,6 +23,11 @@ own advantages. These methods can be mixed and matched if needed:
 - [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines): Good for larger products that require cross-project interdependencies,
   like those with a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
 
+  For example, you might deploy your web application from three different GitLab projects.
+  With multi-project pipelines you can trigger a pipeline in each project, where each
+  has its own build, test, and deploy process. You can visualize the connected pipelines
+  in one place, including all cross-project interdependencies.
+
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an overview, see the [Multi-project pipelines demo](https://www.youtube.com/watch?v=g_PIwBM1J84).
 

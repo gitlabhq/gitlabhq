@@ -54,10 +54,12 @@ This process adds the `gitlab` user you created to a new group named `gitlab-dev
 1. To add the `gitlab` user to the `gitlab-developers` group, select **Edit members**.
    The `gitlab-developers` group should be listed in the leftmost box as a
    selected group.
+<!-- vale gitlab.BadPlurals = NO -->
 1. In the **Add members to selected group(s)** section, enter `gitlab`.
 1. Select **Add selected users**.
    The `gitlab` user appears in the **Group member(s)**
    section.
+<!-- vale gitlab.BadPlurals = YES -->
 
    ![Jira added user to group](img/jira_added_user_to_group.png)
 

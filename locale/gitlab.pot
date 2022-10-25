@@ -1729,9 +1729,6 @@ msgstr ""
 msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
-msgid "A platform value can be web, mob or app."
-msgstr ""
-
 msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools"
 msgstr ""
 
@@ -10863,9 +10860,6 @@ msgstr ""
 msgid "Copy source branch name"
 msgstr ""
 
-msgid "Copy the code below to implement tracking in your application:"
-msgstr ""
-
 msgid "Copy this registration token."
 msgstr ""
 
@@ -18791,9 +18785,6 @@ msgstr ""
 msgid "GraphViewType|Stage"
 msgstr ""
 
-msgid "Graphs"
-msgstr ""
-
 msgid "Gravatar"
 msgstr ""
 
@@ -23766,9 +23757,6 @@ msgstr ""
 msgid "Last event"
 msgstr ""
 
-msgid "Last item before this page loaded in your browser:"
-msgstr ""
-
 msgid "Last modified"
 msgstr ""
 
@@ -27841,9 +27829,6 @@ msgstr ""
 msgid "Number of events"
 msgstr ""
 
-msgid "Number of events for this project: %{total_count}."
-msgstr ""
-
 msgid "Number of files touched"
 msgstr ""
 
@@ -27866,9 +27851,6 @@ msgid "Oct"
 msgstr ""
 
 msgid "October"
-msgstr ""
-
-msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
 msgid "Off"
@@ -30879,9 +30861,6 @@ msgid "Problem with %{name} command: %{message}."
 msgstr ""
 
 msgid "Proceed"
-msgstr ""
-
-msgid "Product Analytics"
 msgstr ""
 
 msgid "ProductAnalytics|Audience"
@@ -36891,9 +36870,6 @@ msgstr ""
 msgid "Select a template type"
 msgstr ""
 
-msgid "Select a timezone"
-msgstr ""
-
 msgid "Select all"
 msgstr ""
 
@@ -37439,9 +37415,6 @@ msgstr ""
 msgid "Settings|Unable to load the merge request options settings. Try reloading the page."
 msgstr ""
 
-msgid "Setup"
-msgstr ""
-
 msgid "Severity"
 msgstr ""
 
@@ -37697,9 +37670,6 @@ msgid "Showing all issues"
 msgstr ""
 
 msgid "Showing data for workflow items completed in this date range. Date range limited to %{maxDateRange} days."
-msgstr ""
-
-msgid "Showing graphs based on events of the last %{timerange} days."
 msgstr ""
 
 msgid "Showing last %{size} of log -"
@@ -40811,9 +40781,6 @@ msgstr ""
 msgid "Theme"
 msgstr ""
 
-msgid "There are currently no events."
-msgstr ""
-
 msgid "There are currently no mirrored repositories."
 msgstr ""
 
@@ -41652,9 +41619,6 @@ msgid "This only applies to repository indexing operations."
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
-msgstr ""
-
-msgid "This page sends a payload. Go back to the events page to see a newly created event."
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{b_open}Auto DevOps.%{b_close}"

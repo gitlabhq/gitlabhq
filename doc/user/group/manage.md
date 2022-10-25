@@ -310,9 +310,7 @@ for the group's projects to meet your group's needs.
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
-you can share a group with another group. To invite a group, you must be a member of it. Members get direct access
-to the shared group. This includes members who inherited group membership from a parent group.
-
+you can share a group with another group. To invite a group, you must be a member of it.
 To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
 
@@ -327,7 +325,7 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
-- All members of the `Engineering` group have access to the `Frontend` group. The same access levels of the members apply up to the maximum access level selected when sharing the group.
+- All direct members of the `Engineering` group have access to the `Frontend` group. Direct members of `Engineering` that gain access to the `Frontend` group keep their same access level as in `Engineering`, but up to the maximum access level selected when sharing the group. Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
 
 ## Transfer a group
 

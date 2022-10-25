@@ -74,3 +74,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::SubMenus::Issues.prepend_mod_with('Page::Project::SubMenus::Issues', namespace: QA)

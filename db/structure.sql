@@ -28460,10 +28460,6 @@ CREATE INDEX index_ci_runners_on_locked ON ci_runners USING btree (locked);
 
 CREATE INDEX index_ci_runners_on_runner_type ON ci_runners USING btree (runner_type);
 
-CREATE INDEX index_ci_runners_on_token ON ci_runners USING btree (token);
-
-CREATE INDEX index_ci_runners_on_token_encrypted ON ci_runners USING btree (token_encrypted);
-
 CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners USING btree (token_expires_at, id DESC);
 
 CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ci_runners USING btree (token_expires_at DESC, id DESC);
@@ -30667,6 +30663,10 @@ CREATE UNIQUE INDEX index_trending_projects_on_project_id ON trending_projects U
 CREATE INDEX index_u2f_registrations_on_key_handle ON u2f_registrations USING btree (key_handle);
 
 CREATE INDEX index_u2f_registrations_on_user_id ON u2f_registrations USING btree (user_id);
+
+CREATE UNIQUE INDEX index_uniq_ci_runners_on_token ON ci_runners USING btree (token);
+
+CREATE UNIQUE INDEX index_uniq_ci_runners_on_token_encrypted ON ci_runners USING btree (token_encrypted);
 
 CREATE UNIQUE INDEX index_uniq_im_issuable_escalation_statuses_on_issue_id ON incident_management_issuable_escalation_statuses USING btree (issue_id);
 

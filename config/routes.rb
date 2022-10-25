@@ -2,7 +2,6 @@
 
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
-require 'product_analytics/collector_app'
 
 InitializerConnections.with_disabled_database_connections do
   Rails.application.routes.draw do
@@ -216,9 +215,6 @@ InitializerConnections.with_disabled_database_connections do
       # Deprecated route for permanent failures
       # https://gitlab.com/gitlab-org/gitlab/-/issues/362606
       post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
-
-      # Product analytics collector
-      match '/collector/i', to: ProductAnalytics::CollectorApp.new, via: :all
     end
     # End of the /-/ scope.
 

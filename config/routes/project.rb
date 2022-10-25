@@ -380,14 +380,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resources :projects, only: :index
         end
 
-        resources :product_analytics, only: [:index] do
-          collection do
-            get :setup
-            get :test
-            get :graphs
-          end
-        end
-
         resources :error_tracking, only: [:index], controller: :error_tracking do
           collection do
             get ':issue_id/details',

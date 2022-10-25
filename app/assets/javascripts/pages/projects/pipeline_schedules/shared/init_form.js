@@ -6,8 +6,8 @@ import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import setupNativeFormVariableList from '~/ci_variable_list/native_form_variable_list';
 import GlFieldErrors from '~/gl_field_errors';
 import Translate from '~/vue_shared/translate';
+import { initTimezoneDropdown } from '../../../profiles/init_timezone_dropdown';
 import IntervalPatternInput from './components/interval_pattern_input.vue';
-import TimezoneDropdown from './components/timezone_dropdown';
 
 Vue.use(Translate);
 
@@ -81,13 +81,6 @@ export default () => {
 
   const formElement = document.getElementById('new-pipeline-schedule-form');
 
-  gl.timezoneDropdown = new TimezoneDropdown({
-    $dropdownEl: $('.js-timezone-dropdown'),
-    $inputEl: $('#schedule_cron_timezone'),
-    onSelectTimezone: () => {
-      gl.pipelineScheduleFieldErrors.updateFormValidityState();
-    },
-  });
   gl.pipelineScheduleFieldErrors = new GlFieldErrors(formElement);
 
   initTargetRefDropdown();
@@ -97,3 +90,5 @@ export default () => {
     formField: 'schedule',
   });
 };
+
+initTimezoneDropdown();

@@ -64,7 +64,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures do
       expect(page).not_to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).not_to have_link('Product Analytics', href: project_product_analytics_path(project))
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
@@ -119,7 +118,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures do
       expect(page).not_to have_link('Metrics', href: project_metrics_dashboard_path(project))
       expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).not_to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).not_to have_link('Product Analytics', href: project_product_analytics_path(project))
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
@@ -135,7 +133,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures do
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link('Product Analytics', href: project_product_analytics_path(project))
 
       expect(page).not_to have_link('Alerts', href: project_alert_management_index_path(project))
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
@@ -154,7 +151,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures do
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link('Product Analytics', href: project_product_analytics_path(project))
       expect(page).to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
@@ -171,7 +167,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures do
       expect(page).to have_link('Incidents', href: project_incidents_path(project))
       expect(page).to have_link('Environments', href: project_environments_path(project))
       expect(page).to have_link('Error Tracking', href: project_error_tracking_index_path(project))
-      expect(page).to have_link('Product Analytics', href: project_product_analytics_path(project))
       expect(page).to have_link('Kubernetes', href: project_clusters_path(project))
     end
 

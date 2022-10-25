@@ -90,6 +90,10 @@ module QA
             # code_owner_approval_required: true
           }
         )
+
+        # GitHub branch protection rule "Require signed commits" is mapped to the
+        # "Reject unsigned commits" push rule
+        expect(imported_project.push_rules[:reject_unsigned_commits]).to be_truthy
       end
 
       def verify_commits_import

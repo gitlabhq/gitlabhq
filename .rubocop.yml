@@ -471,7 +471,9 @@ RSpec/FactoriesInMigrationSpecs:
 RSpec/FactoryBot/AvoidCreate:
   Enabled: true
   Include:
+    - 'spec/presenters/**/*.rb'
     - 'spec/serializers/**/*.rb'
+    - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
 
 Cop/IncludeSidekiqWorker:

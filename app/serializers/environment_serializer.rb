@@ -43,7 +43,7 @@ class EnvironmentSerializer < BaseSerializer
     # immediately.
     items = @paginator.paginate(items) if paginated?
 
-    environments = batch_load(resource.where(id: items.map(&:last_id)))
+    environments = batch_load(Environment.where(id: items.map(&:last_id)))
     environments_by_id = environments.index_by(&:id)
 
     items.map do |item|

@@ -31,7 +31,7 @@ gem 'responders', '~> 3.0'
 
 gem 'sprockets', '~> 3.7.0'
 
-gem 'view_component', '~> 2.71.0'
+gem 'view_component', '~> 2.74.1'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.4.0'
@@ -134,7 +134,7 @@ gem 'hashie', '~> 5.0.0'
 gem 'hashie-forbidden_attributes'
 
 # Pagination
-gem 'kaminari', '~> 1.0'
+gem 'kaminari', '~> 1.2.2'
 
 # HAML
 gem 'hamlit', '~> 2.15.0'
