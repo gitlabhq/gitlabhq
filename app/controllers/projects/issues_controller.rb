@@ -435,7 +435,11 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 if issue.task? && !project.work_items_feature_flag_enabled?
     return unless issue.task?
 
-    redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
+    if Feature.enabled?(:use_iid_in_work_items_path, project.group)
+      redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
+    else
+      redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
+    end
   end
 end
 

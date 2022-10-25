@@ -1616,7 +1616,7 @@ class Project < ApplicationRecord
   end
 
   def all_clusters
-    group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto } )
+    group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto })
     instance_clusters = Clusters::Cluster.instance_type
 
     Clusters::Cluster.from_union([clusters, group_clusters, instance_clusters])

@@ -188,3 +188,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::PipelineEditor::Show.prepend_mod_with('Page::Project::PipelineEditor::Show', namespace: QA)

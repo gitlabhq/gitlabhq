@@ -5,8 +5,9 @@
     href: help_page_path('update/index'),
     data: {
       testid: 'gitlab-version-container',
-      track_action: 'click_version_help_dropdown',
-      track_label: "#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}"
+      track_action: 'click_link',
+      track_label: 'version_help_dropdown',
+      track_property: "#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}"
     }
   }
   %span

@@ -68,7 +68,7 @@ module Ci
       Gitlab::ErrorTracking
         .track_and_raise_for_dev_exception(error,
                           issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
-                          job_id: job.id )
+                          job_id: job.id)
     end
   end
 end

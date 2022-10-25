@@ -1023,6 +1023,7 @@ Settings.monitoring.sidekiq_health_checks['port'] ||= 8092
 
 Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false
+Settings.monitoring.web_exporter['log_enabled'] ||= true
 Settings.monitoring.web_exporter['address'] ||= 'localhost'
 Settings.monitoring.web_exporter['port'] ||= 8083
 Settings.monitoring.web_exporter['tls_enabled'] ||= false

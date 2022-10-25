@@ -3,7 +3,7 @@
 #
 # Checks for incorrect spacing (no spaces, or more than one space) around punctuation.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: '"%s" must contain one and only one space.'
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#punctuation

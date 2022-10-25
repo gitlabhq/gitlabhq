@@ -207,17 +207,7 @@ RSpec.shared_examples 'wiki model' do
       end
     end
 
-    context 'list pages with legacy wiki rpcs' do
-      before do
-        stub_feature_flags(wiki_list_page_with_normal_repository_rpcs: false)
-      end
-
-      it_behaves_like 'wiki model #list_pages'
-    end
-
-    context 'list pages with normal repository rpcs' do
-      it_behaves_like 'wiki model #list_pages'
-    end
+    it_behaves_like 'wiki model #list_pages'
   end
 
   describe '#sidebar_entries' do

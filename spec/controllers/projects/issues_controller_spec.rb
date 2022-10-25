@@ -170,37 +170,56 @@ RSpec.describe Projects::IssuesController do
 
       context 'when work_items feature flag is enabled' do
         shared_examples 'redirects to show work item page' do
-          it 'redirects to work item page' do
-            expect(response).to redirect_to(project_work_items_path(project, task.id, query))
+          context 'when use_iid_in_work_items_path feature flag is disabled' do
+            before do
+              stub_feature_flags(use_iid_in_work_items_path: false)
+            end
+
+            it 'redirects to work item page' do
+              make_request
+
+              expect(response).to redirect_to(project_work_items_path(project, task.id, query))
+            end
+          end
+
+          it 'redirects to work item page using iid' do
+            make_request
+
+            expect(response).to redirect_to(project_work_items_path(project, task.iid, query.merge(iid_path: true)))
           end
         end
 
         context 'show action' do
           let(:query) { { query: 'any' } }
 
-          before do
-            get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+          it_behaves_like 'redirects to show work item page' do
+            subject(:make_request) do
+              get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+            end
           end
-
-          it_behaves_like 'redirects to show work item page'
         end
 
         context 'edit action' do
           let(:query) { { query: 'any' } }
 
-          before do
-            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+          it_behaves_like 'redirects to show work item page' do
+            subject(:make_request) do
+              get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
+            end
           end
-
-          it_behaves_like 'redirects to show work item page'
         end
 
         context 'update action' do
-          before do
-            put :update, params: { namespace_id: project.namespace, project_id: project, id: task.iid, issue: { title: 'New title' } }
+          it_behaves_like 'redirects to show work item page' do
+            subject(:make_request) do
+              put :update, params: {
+                namespace_id: project.namespace,
+                project_id: project,
+                id: task.iid,
+                issue: { title: 'New title' }
+              }
+            end
           end
-
-          it_behaves_like 'redirects to show work item page'
         end
       end
 

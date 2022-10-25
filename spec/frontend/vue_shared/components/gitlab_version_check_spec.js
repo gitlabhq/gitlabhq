@@ -115,8 +115,9 @@ describe('GitlabVersionCheck', () => {
         });
 
         it(`tracks rendered_version_badge with label ${expectedUI.title}`, () => {
-          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'rendered_version_badge', {
-            label: expectedUI.title,
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'render', {
+            label: 'version_badge',
+            property: expectedUI.title,
           });
         });
 
@@ -127,8 +128,9 @@ describe('GitlabVersionCheck', () => {
         it(`tracks click_version_badge with label ${expectedUI.title} when badge is clicked`, async () => {
           await findGlBadgeClickWrapper().trigger('click');
 
-          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_version_badge', {
-            label: expectedUI.title,
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
+            label: 'version_badge',
+            property: expectedUI.title,
           });
         });
       });
@@ -144,8 +146,9 @@ describe('GitlabVersionCheck', () => {
       });
 
       it('tracks rendered_version_badge correctly', () => {
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'rendered_version_badge', {
-          label: 'Up to date',
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'render', {
+          label: 'version_badge',
+          property: 'Up to date',
         });
       });
 
@@ -156,8 +159,9 @@ describe('GitlabVersionCheck', () => {
       it('does not track click_version_badge', async () => {
         await findGlBadgeClickWrapper().trigger('click');
 
-        expect(trackingSpy).not.toHaveBeenCalledWith(undefined, 'click_version_badge', {
-          label: 'Up to date',
+        expect(trackingSpy).not.toHaveBeenCalledWith(undefined, 'click_link', {
+          label: 'version_badge',
+          property: 'Up to date',
         });
       });
     });

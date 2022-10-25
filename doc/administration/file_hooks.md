@@ -7,10 +7,8 @@ type: reference
 
 # File hooks **(FREE SELF)**
 
-> Renamed feature from Plugins to File hooks in GitLab 12.8.
-
-With custom file hooks, GitLab administrators can introduce custom integrations
-without modifying the GitLab source code.
+Use custom file hooks (not to be confused with [server hooks](server_hooks.md) or [system hooks](system_hooks.md)),
+to introduce custom integrations without modifying the GitLab source code.
 
 A file hook runs on each event. You can filter events or projects
 in a file hook's code, and create many file hooks as you need. Each file hook is

@@ -51,8 +51,20 @@ RSpec.describe LinkedProjectIssueEntity do
         related_issue.update!(issue_type: :task, work_item_type: WorkItems::Type.default_by_type(:task))
       end
 
-      it 'returns a work items path' do
-        expect(serialized_entity).to include(path: project_work_items_path(related_issue.project, related_issue.id))
+      context 'when use_iid_in_work_items_path feature flag is disabled' do
+        before do
+          stub_feature_flags(use_iid_in_work_items_path: false)
+        end
+
+        it 'returns a work items path' do
+          expect(serialized_entity).to include(path: project_work_items_path(related_issue.project, related_issue.id))
+        end
+      end
+
+      it 'returns a work items path using iid' do
+        expect(serialized_entity).to include(
+          path: project_work_items_path(related_issue.project, related_issue.iid, iid_path: true)
+        )
       end
     end
   end

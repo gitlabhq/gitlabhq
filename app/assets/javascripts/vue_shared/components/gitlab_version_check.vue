@@ -64,8 +64,9 @@ export default {
           if (res.data) {
             this.status = res.data.severity;
 
-            this.track('rendered_version_badge', {
-              label: this.title,
+            this.track('render', {
+              label: 'version_badge',
+              property: this.title,
             });
           }
         })
@@ -77,7 +78,10 @@ export default {
     onClick() {
       if (!this.actionable) return;
 
-      this.track('click_version_badge', { label: this.title });
+      this.track('click_link', {
+        label: 'version_badge',
+        property: this.title,
+      });
     },
   },
   UPGRADE_DOCS_URL,

@@ -69,7 +69,7 @@ module ProjectsHelper
     if opts[:name]
       inject_classes.concat(["js-user-link", opts[:mobile_classes]])
     else
-      inject_classes.append( "has-tooltip" )
+      inject_classes.append("has-tooltip")
     end
 
     inject_classes = inject_classes.compact.join(" ")

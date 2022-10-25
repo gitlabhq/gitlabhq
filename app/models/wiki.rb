@@ -552,7 +552,7 @@ class Wiki
   def fetch_pages_content!(pages)
     blobs =
       repository
-      .blobs_at(pages.map { |page| [default_branch, page.path] } )
+      .blobs_at(pages.map { |page| [default_branch, page.path] })
       .to_h { |blob| [blob.path, blob.data] }
 
     pages.each do |page|

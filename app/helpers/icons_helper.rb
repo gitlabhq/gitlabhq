@@ -42,7 +42,7 @@ module IconsHelper
 
       content_tag(
         :svg,
-        content_tag(:use, '', { 'href' => "#{sprite_icon_path}##{icon_name}" } ),
+        content_tag(:use, '', { 'href' => "#{sprite_icon_path}##{icon_name}" }),
         class: css_classes.empty? ? nil : css_classes.join(' '),
         data: { testid: "#{icon_name}-icon" }
       )

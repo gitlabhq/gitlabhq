@@ -1,34 +1,10 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Layout/SpaceInsideParens:
   # Offense count: 701
   # Temporarily disabled due to too many offenses
   Enabled: false
   Exclude:
-    - 'app/controllers/projects/environments_controller.rb'
-    - 'app/controllers/projects/pipeline_schedules_controller.rb'
-    - 'app/graphql/mutations/ci/job/base.rb'
-    - 'app/helpers/icons_helper.rb'
-    - 'app/helpers/projects_helper.rb'
-    - 'app/helpers/reminder_emails_helper.rb'
-    - 'app/models/alert_management/alert.rb'
-    - 'app/models/ci/build_metadata.rb'
-    - 'app/models/concerns/milestoneable.rb'
-    - 'app/models/concerns/mirror_authentication.rb'
-    - 'app/models/concerns/protected_ref_access.rb'
-    - 'app/models/cycle_analytics/project_level_stage_adapter.rb'
-    - 'app/models/merge_request.rb'
-    - 'app/models/pages_domain.rb'
-    - 'app/models/project.rb'
-    - 'app/services/ci/archive_trace_service.rb'
-    - 'app/services/jira_import/start_import_service.rb'
-    - 'app/services/labels/transfer_service.rb'
-    - 'app/services/packages/debian/create_distribution_service.rb'
-    - 'app/services/packages/debian/update_distribution_service.rb'
-    - 'app/services/packages/npm/create_package_service.rb'
-    - 'app/services/personal_access_tokens/revoke_service.rb'
-    - 'app/services/snippets/create_service.rb'
-    - 'app/services/spam/spam_verdict_service.rb'
     - 'config/initializers/wikicloth_redos_patch.rb'
     - 'db/post_migrate/20210722042939_update_issuable_slas_where_issue_closed.rb'
     - 'ee/app/graphql/resolvers/external_issue_resolver.rb'

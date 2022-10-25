@@ -532,6 +532,11 @@ module Types
           description: "Branch rules configured for the project.",
           resolver: Resolvers::Projects::BranchRulesResolver
 
+    field :languages, [Types::Projects::RepositoryLanguageType],
+          null: true,
+          description: "Programming languages used in the project.",
+          calls_gitaly: true
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end
@@ -607,6 +612,10 @@ module Types
       return unless Ability.allowed?(current_user, :admin_issue, project)
 
       object.service_desk_address
+    end
+
+    def languages
+      ::Projects::RepositoryLanguagesService.new(project, current_user).execute
     end
 
     private

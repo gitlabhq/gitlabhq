@@ -3,7 +3,7 @@
 #
 # Do not refer to the default branch as the "master" branch, if possible.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: 'Use "default branch" or `main` instead of `master`, when possible.'
 level: warning

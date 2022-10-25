@@ -43,3 +43,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::SubMenus::CiCd.prepend_mod_with('Page::Project::SubMenus::CiCd', namespace: QA)

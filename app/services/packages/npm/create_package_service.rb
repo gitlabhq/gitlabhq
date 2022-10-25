@@ -81,7 +81,7 @@ module Packages
           # - https://blog.aaronlenoir.com/2017/11/10/get-original-length-from-base-64-string/
           # - https://en.wikipedia.org/wiki/Base64#Decoding_Base64_with_padding
           encoded_data = attachment['data']
-          ((encoded_data.length * 0.75 ) - encoded_data[-2..].count('=')).to_i
+          ((encoded_data.length * 0.75) - encoded_data[-2..].count('=')).to_i
         end
       end
 

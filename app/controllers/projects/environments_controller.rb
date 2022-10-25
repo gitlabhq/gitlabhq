@@ -183,7 +183,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def metrics
     respond_to do |format|
       format.html do
-        redirect_to project_metrics_dashboard_path(project, environment: environment )
+        redirect_to project_metrics_dashboard_path(project, environment: environment)
       end
       format.json do
         # Currently, this acts as a hint to load the metrics details into the cache

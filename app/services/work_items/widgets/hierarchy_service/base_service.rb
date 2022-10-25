@@ -65,7 +65,7 @@ module WorkItems
         end
 
         def invalid_args_error(params)
-          error(_("One or more arguments are invalid: %{args}." % { args: params.keys.to_sentence } ))
+          error(_("One or more arguments are invalid: %{args}." % { args: params.keys.to_sentence }))
         end
 
         def service_response!(result)

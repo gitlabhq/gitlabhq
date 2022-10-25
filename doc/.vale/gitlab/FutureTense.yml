@@ -3,7 +3,7 @@
 #
 # Checks for use of future tense in sentences. Present tense is strongly preferred.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: 'Avoid using future tense: "%s". Use present tense instead.'
 ignorecase: true

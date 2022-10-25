@@ -3,7 +3,7 @@
 #
 # Checks for words implying ease of use, to avoid cognitive dissonance for frustrated users.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: 'Avoid words like "%s" that imply ease of use, because the user may find this action hard.'
 level: suggestion

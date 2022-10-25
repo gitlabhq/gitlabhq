@@ -9,7 +9,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
 
-Server hooks run custom logic on the GitLab server. Users can use them to run Git-related tasks such as:
+Server hooks (not to be confused with [system hooks](system_hooks.md) or [file hooks](file_hooks.md)) run custom logic
+on the GitLab server. You can use them to run Git-related tasks such as:
 
 - Enforcing specific commit policies.
 - Performing tasks based on the state of the repository.

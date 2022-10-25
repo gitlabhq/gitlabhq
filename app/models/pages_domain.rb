@@ -50,7 +50,7 @@ class PagesDomain < ApplicationRecord
 
   scope :for_project, ->(project) { where(project: project) }
 
-  scope :enabled, -> { where('enabled_until >= ?', Time.current ) }
+  scope :enabled, -> { where('enabled_until >= ?', Time.current) }
   scope :needs_verification, -> do
     verified_at = arel_table[:verified_at]
     enabled_until = arel_table[:enabled_until]

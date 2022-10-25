@@ -129,6 +129,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::PipelineSchedulesPipeline,
             stage: 5
           },
+          references: {
+            pipeline: BulkImports::Projects::Pipelines::ReferencesPipeline,
+            stage: 5
+          },
           finisher: {
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
             stage: 6

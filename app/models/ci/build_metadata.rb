@@ -51,7 +51,7 @@ module Ci
     end
 
     def set_cancel_gracefully
-      runtime_runner_features.merge!( { cancel_gracefully: true } )
+      runtime_runner_features.merge!({ cancel_gracefully: true })
     end
 
     def cancel_gracefully?

@@ -28,12 +28,28 @@ RSpec.describe Projects::IssueLinksController do
     context 'when linked issue is a task' do
       let(:issue_b) { create :issue, :task, project: project }
 
-      it 'returns a work item path for the linked task' do
+      context 'when the use_iid_in_work_items_path feature flag is disabled' do
+        before do
+          stub_feature_flags(use_iid_in_work_items_path: false)
+        end
+
+        it 'returns a work item path for the linked task' do
+          get namespace_project_issue_links_path(issue_links_params)
+
+          expect(json_response.count).to eq(1)
+          expect(json_response.first).to include(
+            'path' => project_work_items_path(issue_b.project, issue_b.id),
+            'type' => 'TASK'
+          )
+        end
+      end
+
+      it 'returns a work item path for the linked task using the iid in the path' do
         get namespace_project_issue_links_path(issue_links_params)
 
         expect(json_response.count).to eq(1)
         expect(json_response.first).to include(
-          'path' => project_work_items_path(issue_b.project, issue_b.id),
+          'path' => project_work_items_path(issue_b.project, issue_b.iid, iid_path: true),
           'type' => 'TASK'
         )
       end

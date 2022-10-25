@@ -58,7 +58,7 @@ module Packages
         update_objects(distribution.architectures, architectures, error_label: 'Architecture')
       end
 
-      def update_objects(objects, object_names_from_params, error_label: )
+      def update_objects(objects, object_names_from_params, error_label:)
         current_object_names = objects.map(&:name)
         missing_object_names = object_names_from_params - current_object_names
         extra_object_names = current_object_names - object_names_from_params
