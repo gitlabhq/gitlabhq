@@ -129,6 +129,8 @@ export default {
           v-gl-tooltip.hover="toggleVisibilityLabel"
           :aria-label="toggleVisibilityLabel"
           :icon="toggleVisibilityIcon"
+          data-testid="toggle-visibility-button"
+          data-qa-selector="toggle_visibility_button"
           @click.stop="handleToggleVisibilityButtonClick"
         />
         <clipboard-button

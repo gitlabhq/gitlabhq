@@ -27,8 +27,7 @@
           = todo_target_title(todo)
 
         %span.title-item.todo-project.todo-label
-          at
-          = todo_parent_path(todo)
+          = s_('Todo|at %{todo_parent_path}').html_safe % { todo_parent_path: todo_parent_path(todo) }
 
         - if todo.self_assigned?
           %span.title-item.action-name

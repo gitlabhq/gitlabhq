@@ -4,6 +4,30 @@ require 'spec_helper'
 
 RSpec.describe EventsHelper do
   include Gitlab::Routing
+  include Banzai::Filter::OutputSafety
+
+  describe '#link_to_author' do
+    let(:user) { create(:user) }
+    let(:event) { create(:event, author: user) }
+
+    it 'returns a link to the author' do
+      name = user.name
+      expect(helper.link_to_author(event)).to eq(link_to(name, user_path(user.username), title: name))
+    end
+
+    it 'returns the author name if the author is not present' do
+      event.author = nil
+
+      expect(helper.link_to_author(event)).to eq(escape_once(event.author_name))
+    end
+
+    it 'returns "You" if the author is the current user' do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      name = _('You')
+      expect(helper.link_to_author(event, self_added: true)).to eq(link_to(name, user_path(user.username), title: name))
+    end
+  end
 
   describe '#event_target_path' do
     subject { helper.event_target_path(event.present) }

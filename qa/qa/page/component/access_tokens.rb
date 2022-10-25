@@ -28,7 +28,12 @@ module QA
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/new_access_token_app.vue' do
+            element :access_token_section
             element :created_access_token_field
+          end
+
+          base.view 'app/assets/javascripts/vue_shared/components/form/input_copy_toggle_visibility.vue' do
+            element :toggle_visibility_button
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
@@ -49,7 +54,10 @@ module QA
         end
 
         def created_access_token
-          find_element(:created_access_token_field, wait: 30).value
+          within_element(:access_token_section) do
+            click_element(:toggle_visibility_button, wait: 30)
+            find_element(:created_access_token_field).value
+          end
         end
 
         def fill_expiry_date(date)

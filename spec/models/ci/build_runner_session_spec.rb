@@ -72,7 +72,7 @@ RSpec.describe Ci::BuildRunnerSession, model: true do
     let(:specification) { subject.service_specification(service: service, port: port, path: path, subprotocols: subprotocols) }
 
     it 'returns service proxy url' do
-      expect(specification[:url]).to eq "https://localhost/proxy/#{service}/#{port}/#{path}"
+      expect(specification[:url]).to eq "https://gitlab.example.com/proxy/#{service}/#{port}/#{path}"
     end
 
     it 'returns default service proxy websocket subprotocol' do
@@ -89,7 +89,7 @@ RSpec.describe Ci::BuildRunnerSession, model: true do
       let(:port) { nil }
 
       it 'uses the default port name' do
-        expect(specification[:url]).to eq "https://localhost/proxy/#{service}/default_port/#{path}"
+        expect(specification[:url]).to eq "https://gitlab.example.com/proxy/#{service}/default_port/#{path}"
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe Ci::BuildRunnerSession, model: true do
       let(:service) { '' }
 
       it 'uses the service name "build" as default' do
-        expect(specification[:url]).to eq "https://localhost/proxy/build/#{port}/#{path}"
+        expect(specification[:url]).to eq "https://gitlab.example.com/proxy/build/#{port}/#{path}"
       end
     end
 

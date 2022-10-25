@@ -97,7 +97,8 @@ RSpec.describe Banzai::Filter::MathFilter do
   describe 'block display math using $$\n...\n$$ syntax' do
     context 'with valid syntax' do
       where(:text, :result_template) do
-        "$$\n2+2\n$$" | "<math>2+2</math>"
+        "$$\n2+2\n$$"      | "<math>2+2</math>"
+        "$$\n2+2\n3+4\n$$" | "<math>2+2\n3+4</math>"
       end
 
       with_them do

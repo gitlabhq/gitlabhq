@@ -4,21 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Profile > Personal Access Tokens', :js do
   include Spec::Support::Helpers::ModalHelpers
+  include Spec::Support::Helpers::AccessTokenHelpers
 
   let(:user) { create(:user) }
   let(:pat_create_service) { double('PersonalAccessTokens::CreateService', execute: ServiceResponse.error(message: 'error', payload: { personal_access_token: PersonalAccessToken.new })) }
-
-  def active_personal_access_tokens
-    find("[data-testid='active-tokens']")
-  end
-
-  def created_personal_access_token
-    find_field('new-access-token').value
-  end
-
-  def feed_token_description
-    "Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs."
-  end
 
   before do
     sign_in(user)
@@ -43,11 +32,11 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       click_on "Create personal access token"
       wait_for_all_requests
 
-      expect(active_personal_access_tokens).to have_text(name)
-      expect(active_personal_access_tokens).to have_text('in')
-      expect(active_personal_access_tokens).to have_text('read_api')
-      expect(active_personal_access_tokens).to have_text('read_user')
-      expect(created_personal_access_token).not_to be_empty
+      expect(active_access_tokens).to have_text(name)
+      expect(active_access_tokens).to have_text('in')
+      expect(active_access_tokens).to have_text('read_api')
+      expect(active_access_tokens).to have_text('read_user')
+      expect(created_access_token).to match(/[\w-]{20}/)
     end
 
     context "when creation fails" do
@@ -73,8 +62,8 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
     it 'only shows personal access tokens' do
       visit profile_personal_access_tokens_path
 
-      expect(active_personal_access_tokens).to have_text(personal_access_token.name)
-      expect(active_personal_access_tokens).not_to have_text(impersonation_token.name)
+      expect(active_access_tokens).to have_text(personal_access_token.name)
+      expect(active_access_tokens).not_to have_text(impersonation_token.name)
     end
 
     context 'when User#time_display_relative is false' do
@@ -85,7 +74,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       it 'shows absolute times for expires_at' do
         visit profile_personal_access_tokens_path
 
-        expect(active_personal_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %-d'))
+        expect(active_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %-d'))
       end
     end
   end
@@ -97,14 +86,14 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
       visit profile_personal_access_tokens_path
       accept_gl_confirm(button_text: 'Revoke') { click_on "Revoke" }
 
-      expect(active_personal_access_tokens).to have_text("This user has no active personal access tokens.")
+      expect(active_access_tokens).to have_text("This user has no active personal access tokens.")
     end
 
     it "removes expired tokens from 'active' section" do
       personal_access_token.update!(expires_at: 5.days.ago)
       visit profile_personal_access_tokens_path
 
-      expect(active_personal_access_tokens).to have_text("This user has no active personal access tokens.")
+      expect(active_access_tokens).to have_text("This user has no active personal access tokens.")
     end
 
     context "when revocation fails" do
@@ -115,12 +104,16 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
         visit profile_personal_access_tokens_path
 
         accept_gl_confirm(button_text: "Revoke") { click_on "Revoke" }
-        expect(active_personal_access_tokens).to have_text(personal_access_token.name)
+        expect(active_access_tokens).to have_text(personal_access_token.name)
       end
     end
   end
 
   describe "feed token" do
+    def feed_token_description
+      "Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs."
+    end
+
     context "when enabled" do
       it "displays feed token" do
         allow(Gitlab::CurrentSettings).to receive(:disable_feed_token).and_return(false)

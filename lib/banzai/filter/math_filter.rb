@@ -32,7 +32,7 @@ module Banzai
       # Corresponds to the $$\n...\n$$ syntax
       DOLLAR_DISPLAY_BLOCK_PATTERN = %r{
         ^(?<matched>\$\$\ *\n(?<math>.*)\n\$\$\ *)$
-      }x.freeze
+      }mx.freeze
 
       # Order dependent. Handle the `$$` syntax before the `$` syntax
       DOLLAR_MATH_PIPELINE = [

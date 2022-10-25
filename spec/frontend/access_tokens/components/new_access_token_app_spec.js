@@ -73,7 +73,6 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       expect(InputCopyToggleVisibilityComponent.props('copyButtonTitle')).toBe(
         sprintf(__('Copy %{accessTokenType}'), { accessTokenType }),
       );
-      expect(InputCopyToggleVisibilityComponent.props('initialVisibility')).toBe(true);
       expect(InputCopyToggleVisibilityComponent.attributes('label')).toBe(
         sprintf(__('Your new %{accessTokenType}'), { accessTokenType }),
       );

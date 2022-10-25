@@ -9,13 +9,7 @@ RSpec.shared_examples 'resource access tokens missing access rights' do
 end
 
 RSpec.shared_examples 'resource access tokens creation' do |resource_type|
-  def active_resource_access_tokens
-    find("[data-testid='active-tokens']")
-  end
-
-  def created_resource_access_token
-    find_field('new-access-token').value
-  end
+  include Spec::Support::Helpers::AccessTokenHelpers
 
   it 'allows creation of an access token', :aggregate_failures do
     name = 'My access token'
@@ -34,12 +28,12 @@ RSpec.shared_examples 'resource access tokens creation' do |resource_type|
 
     click_on "Create #{resource_type} access token"
 
-    expect(active_resource_access_tokens).to have_text(name)
-    expect(active_resource_access_tokens).to have_text('in')
-    expect(active_resource_access_tokens).to have_text('read_api')
-    expect(active_resource_access_tokens).to have_text('read_repository')
-    expect(active_resource_access_tokens).to have_text('Guest')
-    expect(created_resource_access_token).not_to be_empty
+    expect(active_access_tokens).to have_text(name)
+    expect(active_access_tokens).to have_text('in')
+    expect(active_access_tokens).to have_text('read_api')
+    expect(active_access_tokens).to have_text('read_repository')
+    expect(active_access_tokens).to have_text('Guest')
+    expect(created_access_token).to match(/[\w-]{20}/)
   end
 end
 
