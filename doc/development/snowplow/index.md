@@ -80,7 +80,7 @@ sequenceDiagram
 
 For more details about the architecture, see [Snowplow infrastructure](infrastructure.md).
 
-## Structured event taxonomy
+## Event schema
 
 Click events must be consistent. If each feature captures events differently, it can be difficult
 to perform analysis.

@@ -259,18 +259,6 @@ Once a lifetime for access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
-<!-- start_remove The following content will be removed on remove_date: '2022-08-22' -->
-## Allow expired access tokens to be used (removed) **(ULTIMATE SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab 13.1.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296881) in GitLab 13.9.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 14.8.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 15.0.
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 14.8.
-This feature was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/351962) in GitLab 15.0.
-<!-- end_remove -->
-
 ## Disable user profile name changes **(PREMIUM SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24605) in GitLab 12.7.

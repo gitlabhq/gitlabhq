@@ -20,7 +20,12 @@ const MERGEREQUESTS_ALIAS = 'mergerequests';
 const LABELS_ALIAS = 'labels';
 const SNIPPETS_ALIAS = 'snippets';
 const CONTACTS_ALIAS = 'contacts';
+
 export const AT_WHO_ACTIVE_CLASS = 'at-who-active';
+export const CONTACT_STATE_ACTIVE = 'active';
+export const CONTACTS_ADD_COMMAND = '/add_contacts';
+export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
+
 /**
  * Escapes user input before we pass it to at.js, which
  * renders it as HTML in the autocomplete dropdown.
@@ -666,6 +671,9 @@ class GfmAutoComplete {
   }
 
   setupContacts($input) {
+    const fetchData = this.fetchData.bind(this);
+    let command = '';
+
     $input.atwho({
       at: '[contact:',
       suffix: ']',
@@ -694,8 +702,43 @@ class GfmAutoComplete {
               firstName: m.first_name,
               lastName: m.last_name,
               search: `${m.email}`,
+              state: m.state,
+              set: m.set,
             };
           });
+        },
+        matcher(flag, subtext) {
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
+
+          command = subtextNodes.find((node) => {
+            if (node === CONTACTS_ADD_COMMAND || node === CONTACTS_REMOVE_COMMAND) {
+              return node;
+            }
+            return null;
+          });
+
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
+          return match?.length ? match[1] : null;
+        },
+        filter(query, data, searchKey) {
+          if (GfmAutoComplete.isLoading(data)) {
+            fetchData(this.$inputor, this.at);
+            return data;
+          }
+
+          if (data === GfmAutoComplete.defaultLoadingData) {
+            return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
+          }
+
+          if (command === CONTACTS_ADD_COMMAND) {
+            // Return contacts that are active and not already on the issue
+            return data.filter((contact) => contact.state === CONTACT_STATE_ACTIVE && !contact.set);
+          } else if (command === CONTACTS_REMOVE_COMMAND) {
+            // Return contacts already on the issue
+            return data.filter((contact) => contact.set);
+          }
+
+          return data;
         },
       },
     });

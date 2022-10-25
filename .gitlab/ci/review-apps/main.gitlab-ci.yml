@@ -113,11 +113,11 @@ review-deploy:
     - echo "QA_GITLAB_URL=${CI_ENVIRONMENT_URL}" > environment.env
     - *base-before_script
   script:
-    - check_kube_domain
-    - download_chart
-    - deploy || (display_deployment_debug && exit 1)
-    - verify_deploy || exit 1
-    - disable_sign_ups || (delete_release && exit 1)
+    - run_timed_command "check_kube_domain"
+    - run_timed_command "download_chart"
+    - run_timed_command "deploy" || (display_deployment_debug && exit 1)
+    - run_timed_command "verify_deploy" || exit 1
+    - run_timed_command "disable_sign_ups" || (delete_release && exit 1)
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.

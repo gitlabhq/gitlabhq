@@ -143,7 +143,7 @@ function run_task() {
   local ruby_cmd="${1}"
   local toolbox_pod=$(get_pod "toolbox")
 
-  kubectl exec --namespace "${namespace}" "${toolbox_pod}" -- gitlab-rails runner "${ruby_cmd}"
+  run_timed_command "kubectl exec --namespace \"${namespace}\" \"${toolbox_pod}\" -- gitlab-rails runner \"${ruby_cmd}\""
 }
 
 function disable_sign_ups() {
@@ -363,7 +363,7 @@ EOF
   echoinfo "Deploying with:"
   echoinfo "${HELM_CMD}"
 
-  eval "${HELM_CMD}"
+  run_timed_command "eval \"${HELM_CMD}\""
 }
 
 function verify_deploy() {

@@ -13,6 +13,9 @@ Cloud Seed is an open-source program led
 by [GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/) in collaboration with
 [Google Cloud](https://cloud.google.com/).
 
+Cloud Seed combines Heroku-like ease-of-use with hyper-cloud flexibility. We do this by using OAuth 2 to provision
+services on a hyper-cloud based on a foundation of Terraform and infrastructure-as-code to enable day 2 operations.
+
 ## Purpose
 
 We believe that it should be **trivial** to deploy web applications (and other workloads) from GitLab to major cloud

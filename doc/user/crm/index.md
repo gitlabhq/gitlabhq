@@ -79,6 +79,21 @@ To edit an existing contact:
 You can also [edit](../../api/graphql/reference/index.md#mutationcustomerrelationscontactupdate)
 contacts using the GraphQL API.
 
+#### Change the state of a contact
+
+Each contact can be in one of two states:
+
+- **Active**: contacts in this state can be added to an issue.
+- **Inactive**: contacts in this state cannot be added to an issue.
+
+To change the state of a contact:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Customer relations > Contacts**.
+1. Next to the contact you wish to edit, select **Edit** (**{pencil}**).
+1. Select or clear the **Active** checkbox.
+1. Select **Save changes**.
+
 ## Organizations
 
 ### View organizations
@@ -153,7 +168,7 @@ API.
 
 ### Add contacts to an issue
 
-To add contacts to an issue use the `/add_contacts [contact:address@example.com]`
+To add [active](#change-the-state-of-a-contact) contacts to an issue use the `/add_contacts [contact:address@example.com]`
 [quick action](../project/quick_actions.md).
 
 You can also add, remove, or replace issue contacts using the
@@ -175,10 +190,15 @@ API.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.2. [Feature flag `contacts_autocomplete`](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) removed.
 
-When you use the `/add_contacts` or `/remove_contacts` quick actions, follow them with `[contact:` and an autocomplete list appears:
+When you use the `/add_contacts` quick action, follow it with `[contact:` and an autocomplete list with the [active](#change-the-state-of-a-contact) contacts appears:
 
 ```plaintext
 /add_contacts [contact:
+```
+
+When you use the `/remove_contacts` quick action, follow it with `[contact:` and an autocomplete list with the contacts added to the issue appears:
+
+```plaintext
 /remove_contacts [contact:
 ```
 

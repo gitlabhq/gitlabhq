@@ -42,14 +42,14 @@ and the custom `extra` object. You can modify this object for any subsequent
 structured event that fires, although this is not recommended.
 
 Tracking implementations must have an `action` and a `category`. You can provide additional
-properties from the [structured event taxonomy](index.md#structured-event-taxonomy), in
+properties from the [event schema](index.md#event-schema), in
 addition to an `extra` object that accepts key-value pairs.
 
-| Property      | Type   | Default value              | Description                                                                                                                                                                                                    |
-|:-----------|:-------|:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `category` | string | `document.body.dataset.page` | Page or subsection of a page in which events are captured.                                                                                                                                            |
+| Property      | Type   | Default value              | Description                                                                                                                                                                                 |
+|:-----------|:-------|:---------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `category` | string | `document.body.dataset.page` | Page or subsection of a page in which events are captured.                                                                                                                                  |
 | `action`   | string | `'generic'`                  | Action the user is taking. Clicks must be `click` and activations must be `activate`. For example, focusing a form field is `activate_form_input`, and clicking a button is `click_button`. |
-| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value` as described in [Structured event taxonomy](index.md#structured-event-taxonomy), `context` for custom contexts, and `extra` (key-value pairs object). |
+| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value` as described in [Event schema](index.md#event-schema), `context` for custom contexts, and `extra` (key-value pairs object).            |
 
 ### Usage recommendations
 

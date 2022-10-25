@@ -1,0 +1,23 @@
+---
+key_path: deactivate_dormant_users_period
+description: The value of the dormant users period being used
+product_section: fulfillment
+product_stage: fulfillment
+product_group: utilization
+product_category: subscription_cost_management
+value_type: boolean
+status: active
+milestone: "15.6"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101125
+time_frame: none
+data_source: database
+data_category: optional
+instrumentation_class: DormantUserPeriodSettingMetric
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

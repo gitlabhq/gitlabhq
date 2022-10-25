@@ -1337,6 +1337,7 @@ It renders on the GitLab documentation site as:
 > - Second item in the list
 
 ## Tabs
+<!-- markdownlint-disable tabs-blank-lines -->
 
 On the docs site, you can format text so it's displayed as tabs.
 
@@ -1355,6 +1356,7 @@ Here's some other content in tab two.
 
 ::EndTabs
 ```
+<!-- markdownlint-enable tabs-blank-lines -->
 
 This code renders on the GitLab documentation site as:
 
