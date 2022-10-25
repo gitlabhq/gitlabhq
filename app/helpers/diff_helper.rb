@@ -109,11 +109,11 @@ module DiffHelper
   end
 
   def inline_diff_btn
-    diff_btn('Inline', 'inline', diff_view == :inline)
+    diff_btn(s_('Diffs|Inline'), 'inline', diff_view == :inline)
   end
 
   def parallel_diff_btn
-    diff_btn('Side-by-side', 'parallel', diff_view == :parallel)
+    diff_btn(s_('Diffs|Side-by-side'), 'parallel', diff_view == :parallel)
   end
 
   def submodule_link(blob, ref, repository = @repository)
@@ -283,7 +283,8 @@ module DiffHelper
 
   def toggle_whitespace_link(url, options)
     options[:class] = [*options[:class], 'btn gl-button btn-default'].join(' ')
-    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
+    toggle_text = hide_whitespace? ? s_('Diffs|Show whitespace changes') : s_('Diffs|Hide whitespace changes')
+    link_to toggle_text, url, class: options[:class]
   end
 
   def code_navigation_path(diffs)

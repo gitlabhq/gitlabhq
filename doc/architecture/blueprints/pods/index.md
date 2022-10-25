@@ -111,8 +111,8 @@ Users are available globally and not restricted to a single Pod. Users can be me
 - Users can create multiple top-level namespaces
 - Users can be a member of multiple top-level namespaces
 - Users can be a member of multiple organizations
-- Users can administrate organizations
-- User activity is aggregated within an organization
+- Users can administer organizations
+- User activity is aggregated in an organization
 - Every user has one personal namespace
 
 ## Goals

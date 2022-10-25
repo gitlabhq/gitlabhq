@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::Mergeability::RunChecksService do
+RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redis_cache do
   subject(:run_checks) { described_class.new(merge_request: merge_request, params: {}) }
 
   describe '#execute' do
@@ -161,11 +161,11 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
     let_it_be(:merge_request) { create(:merge_request) }
 
     context 'when the execute method has been executed' do
-      before do
-        run_checks.execute
-      end
-
       context 'when all the checks succeed' do
+        before do
+          run_checks.execute
+        end
+
         it 'returns nil' do
           expect(failure_reason).to eq(nil)
         end

@@ -43,7 +43,7 @@ To point a domain to your remote machine, create an `A` record from `example.rem
 
 #### Install Certbot
 
-[Certbot](https://certbot.eff.org/) is a free and open-source software tool that automatically uses Let's Encrypt certificates on manually administrated websites to enable HTTPS.
+[Certbot](https://certbot.eff.org/) is a free and open-source software tool that automatically uses Let's Encrypt certificates on manually administered websites to enable HTTPS.
 
 To install Certbot, run the following command:
 

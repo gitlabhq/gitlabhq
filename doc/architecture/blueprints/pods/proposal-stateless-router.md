@@ -187,10 +187,10 @@ load any global pages like `/dashboard` and will end up being redirected to
 for legacy APIs and such users may only ever be able to use APIs scoped to a
 organization.
 
-## Detailed explanation of admin settings
+## Detailed explanation of Admin Area settings
 
-We believe that maintaining and synchronizing admin settings will be
-frustrating and painful so to avoid this we will decompose and share all admin
+We believe that maintaining and synchronizing Admin Area settings will be
+frustrating and painful so to avoid this we will decompose and share all Admin Area
 settings in the `gitlab_admin` schema. This should be safe (similar to other
 shared schemas) because these receive very little write traffic.
 
@@ -582,11 +582,11 @@ TODO
 
 1. Router picks a random pod `Pod US0`
 1. Pod US0 redirects user to `/admin/pods/podus0`
-1. Pod US0 renders an admin page and also returns a cache header to cache `/admin/podss/podus0/* => Pod US0`. The admin page contains a dropdown showing other pods they could select and it changes the query parameter.
+1. Pod US0 renders an Admin Area page and also returns a cache header to cache `/admin/podss/podus0/* => Pod US0`. The Admin Area page contains a dropdown list showing other pods they could select and it changes the query parameter.
 
-Admin settings are in Postgres are all shared across all pods to avoid
+Admin Area settings in Postgres are all shared across all pods to avoid
 divergence but we still make it clear in the URL and UI which pod is serving
-the admin page as there is dynamic data being generated from these pages and
+the Admin Area page as there is dynamic data being generated from these pages and
 the operator may want to view a specific pod.
 
 ## More Technical Problems To Solve

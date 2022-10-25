@@ -329,7 +329,7 @@ A similar thing can be done for all Models handled by the [Geo Self-Service Fram
 
 NOTE:
 `GroupWikiRepository` is not in the previous list since verification is not implemented.
-There is an [issue to implement this functionality in the Admin UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
 ### Artifacts
 

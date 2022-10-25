@@ -1,6 +1,8 @@
 # Default variables for package-and-test
 
 variables:
+  REGISTRY_HOST: "registry.gitlab.com"
+  REGISTRY_GROUP: "gitlab-org"
   SKIP_REPORT_IN_ISSUES: "true"
   OMNIBUS_GITLAB_CACHE_UPDATE: "false"
   OMNIBUS_GITLAB_RUBY3_BUILD: "false"

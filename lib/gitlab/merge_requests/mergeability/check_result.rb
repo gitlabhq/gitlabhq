@@ -22,8 +22,8 @@ module Gitlab
 
         def self.from_hash(data)
           new(
-            status: data.fetch('status').to_sym,
-            payload: data.fetch('payload'))
+            status: data.fetch(:status).to_sym,
+            payload: data.fetch(:payload))
         end
 
         def initialize(status:, payload: {})

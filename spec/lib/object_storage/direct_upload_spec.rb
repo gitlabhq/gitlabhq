@@ -192,11 +192,28 @@ RSpec.describe ObjectStorage::DirectUpload do
       end
     end
 
-    shared_examples 'a valid Google upload' do
+    shared_examples 'a valid Google upload' do |use_workhorse_client: true|
+      let(:gocloud_url) { "gs://#{bucket_name}" }
+
       it_behaves_like 'a valid upload'
 
-      it 'does not set Workhorse client data' do
-        expect(subject.keys).not_to include(:UseWorkhorseClient, :RemoteTempObjectID, :ObjectStorage)
+      if use_workhorse_client
+        it 'enables the Workhorse client' do
+          expect(subject[:UseWorkhorseClient]).to be true
+          expect(subject[:RemoteTempObjectID]).to eq(object_name)
+          expect(subject[:ObjectStorage][:Provider]).to eq('Google')
+          expect(subject[:ObjectStorage][:GoCloudConfig]).to eq({ URL: gocloud_url })
+        end
+      end
+
+      context 'with workhorse_google_client disabled' do
+        before do
+          stub_feature_flags(workhorse_google_client: false)
+        end
+
+        it 'does not set Workhorse client data' do
+          expect(subject.keys).not_to include(:UseWorkhorseClient, :RemoteTempObjectID, :ObjectStorage)
+        end
       end
     end
 
@@ -411,28 +428,88 @@ RSpec.describe ObjectStorage::DirectUpload do
     end
 
     context 'when Google is used' do
-      let(:credentials) do
-        {
-          provider: 'Google',
-          google_storage_access_key_id: 'GOOGLE_ACCESS_KEY_ID',
-          google_storage_secret_access_key: 'GOOGLE_SECRET_ACCESS_KEY'
-        }
+      let(:consolidated_settings) { true }
+
+      # We need to use fog mocks as using google_application_default
+      # will trigger network requests which we don't want in this spec.
+      # In turn, using fog mocks will don't use a specific storage endpoint,
+      # hence the storage_url with the empty host.
+      let(:storage_url) { 'https:///uploads/' }
+
+      before do
+        Fog.mock!
       end
 
-      let(:storage_url) { 'https://storage.googleapis.com/uploads/' }
+      context 'with google_application_default' do
+        let(:credentials) do
+          {
+            provider: 'Google',
+            google_project: 'GOOGLE_PROJECT',
+            google_application_default: true
+          }
+        end
 
-      context 'when length is known' do
-        let(:has_length) { true }
+        context 'when length is known' do
+          let(:has_length) { true }
 
-        it_behaves_like 'a valid Google upload'
-        it_behaves_like 'a valid upload without multipart data'
+          it_behaves_like 'a valid Google upload'
+          it_behaves_like 'a valid upload without multipart data'
+        end
+
+        context 'when length is unknown' do
+          let(:has_length) { false }
+
+          it_behaves_like 'a valid Google upload'
+          it_behaves_like 'a valid upload without multipart data'
+        end
       end
 
-      context 'when length is unknown' do
-        let(:has_length) { false }
+      context 'with google_json_key_location' do
+        let(:credentials) do
+          {
+            provider: 'Google',
+            google_project: 'GOOGLE_PROJECT',
+            google_json_key_location: 'LOCATION'
+          }
+        end
 
-        it_behaves_like 'a valid Google upload'
-        it_behaves_like 'a valid upload without multipart data'
+        context 'when length is known' do
+          let(:has_length) { true }
+
+          it_behaves_like 'a valid Google upload', use_workhorse_client: true
+          it_behaves_like 'a valid upload without multipart data'
+        end
+
+        context 'when length is unknown' do
+          let(:has_length) { false }
+
+          it_behaves_like 'a valid Google upload', use_workhorse_client: true
+          it_behaves_like 'a valid upload without multipart data'
+        end
+      end
+
+      context 'with google_json_key_string' do
+        let(:credentials) do
+          {
+            provider: 'Google',
+            google_project: 'GOOGLE_PROJECT',
+            google_json_key_string: 'STRING'
+          }
+        end
+
+        context 'when length is known' do
+          let(:has_length) { true }
+
+          it_behaves_like 'a valid Google upload', use_workhorse_client: true
+          it_behaves_like 'a valid upload without multipart data'
+        end
+
+        context 'when length is unknown' do
+          let(:has_length) { false }
+
+          it_behaves_like 'a valid Google upload', use_workhorse_client: true
+          it_behaves_like 'a valid upload without multipart data'
+        end
       end
     end
 
@@ -464,6 +541,40 @@ RSpec.describe ObjectStorage::DirectUpload do
 
         it_behaves_like 'a valid AzureRM upload'
       end
+    end
+  end
+
+  describe '#use_workhorse_google_client?' do
+    let(:direct_upload) { described_class.new(config, object_name, has_length: true) }
+
+    subject { direct_upload.use_workhorse_google_client? }
+
+    context 'with consolidated_settings' do
+      let(:consolidated_settings) { true }
+
+      [
+        { google_application_default: true },
+        { google_json_key_string: 'TEST' },
+        { google_json_key_location: 'PATH' }
+      ].each do |google_config|
+        context "with #{google_config.each_key.first}" do
+          let(:credentials) { google_config }
+
+          it { is_expected.to be_truthy }
+        end
+      end
+
+      context 'without any google setting' do
+        let(:credentials) { {} }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'without consolidated_settings' do
+      let(:consolidated_settings) { true }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

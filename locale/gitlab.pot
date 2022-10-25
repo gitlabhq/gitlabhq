@@ -13983,6 +13983,12 @@ msgstr[1] ""
 msgid "Diffs|Expand all lines"
 msgstr ""
 
+msgid "Diffs|Hide whitespace changes"
+msgstr ""
+
+msgid "Diffs|Inline"
+msgstr ""
+
 msgid "Diffs|Next 20 lines"
 msgstr ""
 
@@ -13998,10 +14004,16 @@ msgstr ""
 msgid "Diffs|Show all unchanged lines"
 msgstr ""
 
+msgid "Diffs|Show whitespace changes"
+msgstr ""
+
 msgid "Diffs|Showing %{dropdownStart}%{count} changed file%{dropdownEnd}"
 msgid_plural "Diffs|Showing %{dropdownStart}%{count} changed files%{dropdownEnd}"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Diffs|Side-by-side"
+msgstr ""
 
 msgid "Diffs|Something went wrong while fetching diff lines."
 msgstr ""

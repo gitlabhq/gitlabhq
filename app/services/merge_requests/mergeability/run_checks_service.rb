@@ -38,7 +38,7 @@ module MergeRequests
       def failure_reason
         raise 'Execute needs to be called before' if results.nil?
 
-        results.find(&:failed?)&.payload&.fetch(:reason)
+        results.find(&:failed?)&.payload&.fetch(:reason)&.to_sym
       end
 
       private

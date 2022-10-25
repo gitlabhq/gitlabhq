@@ -14,7 +14,7 @@ module Gitlab
 
         def retrieve_check(merge_check:)
           Gitlab::Redis::Cache.with do |redis|
-            Gitlab::Json.parse(redis.get(merge_check.cache_key + ":#{VERSION}"))
+            Gitlab::Json.parse(redis.get(merge_check.cache_key + ":#{VERSION}"), symbolize_keys: true)
           end
         end
       end

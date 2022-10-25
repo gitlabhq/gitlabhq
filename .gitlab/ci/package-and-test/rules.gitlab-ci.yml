@@ -28,6 +28,9 @@
 .process-test-results: &process-test-results
   if: $PROCESS_TEST_RESULTS == "true"
 
+.not-canonical-project: &not-canonical-project
+  if: '$CI_PROJECT_PATH != "gitlab-org/gitlab" && $CI_PROJECT_PATH != "gitlab-cn/gitlab"'
+
 # Selective test execution against omnibus instance have following execution scenarios:
 #   * only e2e spec files changed - runs only changed specs
 #   * qa framework changes - runs full test suite
@@ -52,6 +55,12 @@
 .rules:omnibus-build:
   rules:
     - if: $SKIP_OMNIBUS_TRIGGER == "true"
+      when: never
+    - when: always
+
+.rules:update-cache:
+  rules:
+    - <<: *not-canonical-project
       when: never
     - when: always
 
@@ -124,4 +133,6 @@
 
 .rules:report:process-results:
   rules:
+    - <<: *not-canonical-project
+      when: never
     - *process-test-results
