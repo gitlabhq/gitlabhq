@@ -22137,9 +22137,6 @@ msgstr ""
 msgid "Invite \"%{email}\" by email"
 msgstr ""
 
-msgid "Invite \"%{trimmed}\" by email"
-msgstr ""
-
 msgid "Invite Members"
 msgstr ""
 
@@ -35685,9 +35682,6 @@ msgid "Search for a LDAP group"
 msgstr ""
 
 msgid "Search for a group"
-msgstr ""
-
-msgid "Search for a user"
 msgstr ""
 
 msgid "Search for an emoji"

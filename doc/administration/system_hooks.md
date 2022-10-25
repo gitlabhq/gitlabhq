@@ -134,7 +134,7 @@ X-Gitlab-Event: System Hook
 ```
 
 Note that `project_rename` is not triggered if the namespace changes.
-Please refer to `group_rename` and `user_rename` for that case.
+Refer to `group_rename` and `user_rename` for that case.
 
 **Project transferred:**
 

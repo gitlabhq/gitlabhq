@@ -104,7 +104,7 @@ class Projects::GraphsController < Projects::ApplicationController
       }
     end
 
-    render json: @log.to_json
+    render json: Gitlab::Json.dump(@log)
   end
 
   def tracking_namespace_source

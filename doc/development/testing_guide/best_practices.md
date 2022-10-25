@@ -282,7 +282,7 @@ end
 
 #### Stubbing methods within factories
 
-You should avoid using `allow(object).to receive(:method)` in factories, as this makes the factory unable to be used with `let_it_be`.
+You should avoid using `allow(object).to receive(:method)` in factories, as this makes the factory unable to be used with `let_it_be`, as described in [common test setup](#common-test-setup).
 
 Instead, you can use `stub_method` to stub the method:
 
@@ -921,13 +921,16 @@ them unspecified, and look up the value after the row is created.
 #### Redis
 
 GitLab stores two main categories of data in Redis: cached items, and Sidekiq
-jobs.
+jobs. [View the full list of `Gitlab::Redis::Wrapper` descendants](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/redis.rb) that are backed by
+a separate Redis instance.
 
 In most specs, the Rails cache is actually an in-memory store. This is replaced
 between specs, so calls to `Rails.cache.read` and `Rails.cache.write` are safe.
 However, if a spec makes direct Redis calls, it should mark itself with the
 `:clean_gitlab_redis_cache`, `:clean_gitlab_redis_shared_state` or
-`:clean_gitlab_redis_queues` traits as appropriate.
+`:clean_gitlab_redis_queues` traits as appropriate. To avoid triggering rate
+limiting in specs, mark the spec with the `:clean_gitlab_redis_rate_limiting`
+trait.
 
 #### Background jobs / Sidekiq
 

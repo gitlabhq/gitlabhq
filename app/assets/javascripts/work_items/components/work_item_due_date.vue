@@ -134,12 +134,12 @@ export default {
     async clickShowDueDate() {
       this.showDueDateInput = true;
       await this.$nextTick();
-      this.$refs.dueDatePicker.calendar.show();
+      this.$refs.dueDatePicker.show();
     },
     async clickShowStartDate() {
       this.showStartDateInput = true;
       await this.$nextTick();
-      this.$refs.startDatePicker.calendar.show();
+      this.$refs.startDatePicker.show();
     },
     handleStartDateInput() {
       if (this.dirtyDueDate && this.dirtyStartDate > this.dirtyDueDate) {

@@ -940,10 +940,8 @@ RSpec.describe Gitlab::Git::Repository do
         let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
         def commit_files(commit)
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            commit.deltas.flat_map do |delta|
-              [delta.old_path, delta.new_path].uniq.compact
-            end
+          commit.deltas.flat_map do |delta|
+            [delta.old_path, delta.new_path].uniq.compact
           end
         end
 

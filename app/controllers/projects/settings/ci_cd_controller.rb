@@ -23,9 +23,11 @@ module Projects
 
       def show
         if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
-          @triggers_json = ::Ci::TriggerSerializer.new.represent(
+          triggers = ::Ci::TriggerSerializer.new.represent(
             @project.triggers, current_user: current_user, project: @project
-          ).to_json
+          )
+
+          @triggers_json = Gitlab::Json.dump(triggers)
         end
 
         render

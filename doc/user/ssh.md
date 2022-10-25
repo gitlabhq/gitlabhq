@@ -499,4 +499,4 @@ You can troubleshoot this by trying the following:
 - Verify your IDO/U2F hardware security key supports
   the key type provided.
 - Verify the version of OpenSSH is 8.2 or greater by
-  running `ssh -v`.
+  running `ssh -V`.

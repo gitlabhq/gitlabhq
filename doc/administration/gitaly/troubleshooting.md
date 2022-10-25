@@ -359,7 +359,7 @@ necessary because [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/252
 If this error occurs even though file permissions are correct, it's likely that the Gitaly node is
 experiencing [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
 
-Please ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
+Ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
 server to keep them synchronized if possible.
 
 ### Health check warnings

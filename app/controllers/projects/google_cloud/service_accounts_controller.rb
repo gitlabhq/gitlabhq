@@ -14,7 +14,7 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
         refs: refs,
         cancelPath: project_google_cloud_configuration_path(project)
       }
-      @js_data = js_data.to_json
+      @js_data = Gitlab::Json.dump(js_data)
 
       track_event(:render_form)
     end

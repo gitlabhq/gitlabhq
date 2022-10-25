@@ -140,7 +140,7 @@ describe('WorkItemDueDate component', () => {
 
             beforeEach(() => {
               createComponent({ canUpdate: true, dueDate: '2022-12-31', startDate: '2022-12-31' });
-              datePickerOpenSpy = jest.spyOn(wrapper.vm.$refs.dueDatePicker.calendar, 'show');
+              datePickerOpenSpy = jest.spyOn(wrapper.vm.$refs.dueDatePicker, 'show');
               findStartDatePicker().vm.$emit('input', startDate);
               findStartDatePicker().vm.$emit('close');
             });

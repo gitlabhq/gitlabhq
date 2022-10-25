@@ -141,7 +141,7 @@ These actions pose a temporary vulnerability while your old Grafana data is in u
 Deciding to take any of these actions should be weighed carefully with your need to access
 existing data and dashboards.
 
-For more information and further mitigation details, please refer to our
+For more information and further mitigation details, refer to our
 [blog post on the security release](https://about.gitlab.com/releases/2019/08/12/critical-security-release-gitlab-12-dot-1-dot-6-released/).
 
 Read more on:

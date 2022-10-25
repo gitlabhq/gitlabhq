@@ -15,7 +15,7 @@ module Projects
           gcpRegions: gcp_regions,
           revokeOauthUrl: revoke_oauth_url
         }
-        @js_data = js_data.to_json
+        @js_data = Gitlab::Json.dump(js_data)
         track_event(:render_page)
       end
 

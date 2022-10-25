@@ -331,7 +331,7 @@ However, you cannot mix the wrapping tags:
 ```
 
 If your diff includes words in `` `code` `` font, make sure to escape each backtick `` ` `` with a
-backslash `\`. Otherwise the diff highlight does not render correctly:
+backslash <code>&#92;</code>. Otherwise the diff highlight does not render correctly:
 
 ```markdown
 - {+ Just regular text +}

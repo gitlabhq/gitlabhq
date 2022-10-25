@@ -183,7 +183,7 @@ module Ci
       false
     end
 
-    def prevent_rollback_deployment?
+    def outdated_deployment?
       false
     end
 

@@ -36,3 +36,4 @@ Development and architectural documentation for the container registry
 - [Dependency proxy structure](dependency_proxy.md)
 - [Settings](settings.md)
 - [Structure / Schema](structure.md)
+- [Cleanup policies](cleanup_policies.md)

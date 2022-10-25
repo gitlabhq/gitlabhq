@@ -159,7 +159,6 @@ func (c *Config) RegisterGoCloudURLOpeners() error {
 		if err != nil {
 			return err
 		}
-
 		c.ObjectStorageConfig.URLMux.RegisterBucket(azureblob.Scheme, urlOpener)
 	}
 
@@ -168,14 +167,13 @@ func (c *Config) RegisterGoCloudURLOpeners() error {
 		if err != nil {
 			return err
 		}
-
 		c.ObjectStorageConfig.URLMux.RegisterBucket(gcsblob.Scheme, urlOpener)
 	}
 
 	return nil
 }
 
-func (creds *AzureCredentials) getURLOpener() (*azureURLOpener, error) {
+func (creds *AzureCredentials) getURLOpener() (*azureblob.URLOpener, error) {
 	accountName := azureblob.AccountName(creds.AccountName)
 	accountKey := azureblob.AccountKey(creds.AccountKey)
 
@@ -184,14 +182,10 @@ func (creds *AzureCredentials) getURLOpener() (*azureURLOpener, error) {
 		return nil, fmt.Errorf("error creating Azure credentials: %w", err)
 	}
 
-	pipeline := azureblob.NewPipeline(credential, azblob.PipelineOptions{})
-
-	return &azureURLOpener{
-		&azureblob.URLOpener{
-			AccountName: accountName,
-			Pipeline:    pipeline,
-			Options:     azureblob.Options{Credential: credential},
-		},
+	return &azureblob.URLOpener{
+		AccountName: accountName,
+		Pipeline:    azureblob.NewPipeline(credential, azblob.PipelineOptions{}),
+		Options:     azureblob.Options{Credential: credential},
 	}, nil
 }
 

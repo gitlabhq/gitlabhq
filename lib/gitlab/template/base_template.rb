@@ -47,6 +47,8 @@ module Gitlab
         { key: key, name: name, content: content }
       end
 
+      alias_method :as_json, :to_json
+
       def <=>(other)
         name <=> other.name
       end

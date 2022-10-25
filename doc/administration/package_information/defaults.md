@@ -68,7 +68,7 @@ over a network which will require, based on implementation, ports `111` and
 `2049` to be open.
 
 NOTE:
-In some cases, the GitLab Registry will be automatically enabled by default. Please see [our documentation](../packages/container_registry.md) for more details
+In some cases, the GitLab Registry will be automatically enabled by default. See [our documentation](../packages/container_registry.md) for more details.
 
  [^Consul-notes]: If using additional Consul functionality, more ports may need to be opened. See the [official documentation](https://www.consul.io/docs/install/ports#ports-table) for the list.
 

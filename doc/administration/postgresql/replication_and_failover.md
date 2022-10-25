@@ -606,7 +606,7 @@ Here is a list and description of each machine and the assigned IP:
 - `10.6.0.33`: PostgreSQL 3
 - `10.6.0.41`: GitLab application
 
-All passwords are set to `toomanysecrets`. Please do not use this password or derived hashes and the `external_url` for GitLab is `http://gitlab.example.com`.
+All passwords are set to `toomanysecrets`. Do not use this password or derived hashes and the `external_url` for GitLab is `http://gitlab.example.com`.
 
 After the initial configuration, if a failover occurs, the PostgresSQL leader node changes to one of the available secondaries until it is failed back.
 
@@ -957,7 +957,7 @@ For further details, see [Patroni documentation on this subject](https://patroni
 ### Switching from repmgr to Patroni
 
 WARNING:
-Switching from repmgr to Patroni is straightforward, the other way around is *not*. Rolling back from Patroni to repmgr can be complicated and may involve deletion of data directory. If you need to do that, please contact GitLab support.
+Switching from repmgr to Patroni is straightforward, the other way around is *not*. Rolling back from Patroni to repmgr can be complicated and may involve deletion of data directory. If you need to do that, contact GitLab support.
 
 You can switch an exiting database cluster to use Patroni instead of repmgr with the following steps:
 

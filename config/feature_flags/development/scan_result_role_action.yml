@@ -1,0 +1,8 @@
+---
+name: scan_result_role_action
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101464
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377866
+milestone: '15.6'
+type: development
+group: group::security policies
+default_enabled: false

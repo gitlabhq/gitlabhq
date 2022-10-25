@@ -124,7 +124,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
         @diffs_count = get_diffs_count
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
-        @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity).to_json
+        @current_user_data = Gitlab::Json.dump(UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity))
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
         @file_by_file_default = current_user&.view_diffs_file_by_file
         @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
@@ -536,7 +536,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
       render json: '', status: :no_content
     when :parsed
-      render json: report_comparison[:data].to_json, status: :ok
+      render json: Gitlab::Json.dump(report_comparison[:data]), status: :ok
     when :error
       render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
     else

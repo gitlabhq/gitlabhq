@@ -445,9 +445,10 @@ module Ci
       manual? && starts_environment? && deployment&.blocked?
     end
 
-    def prevent_rollback_deployment?
-      strong_memoize(:prevent_rollback_deployment) do
+    def outdated_deployment?
+      strong_memoize(:outdated_deployment) do
         starts_environment? &&
+          incomplete? &&
           project.ci_forward_deployment_enabled? &&
           deployment&.older_than_last_successful_deployment?
       end

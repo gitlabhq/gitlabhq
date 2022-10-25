@@ -343,7 +343,7 @@ class ProjectsController < Projects::ApplicationController
       options['Commits'] = [ref]
     end
 
-    render json: options.to_json
+    render json: Gitlab::Json.dump(options)
   rescue Gitlab::Git::CommandError
     render json: { error: _('Unable to load refs') }, status: :service_unavailable
   end

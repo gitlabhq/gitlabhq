@@ -45,7 +45,7 @@ repository storage is either:
 ## Before deploying Gitaly Cluster
 
 Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-Before deploying Gitaly Cluster, please review:
+Before deploying Gitaly Cluster, review:
 
 - Existing [known issues](#known-issues).
 - [Snapshot limitations](#snapshot-backup-and-recovery-limitations).
@@ -66,7 +66,7 @@ Contact your Technical Account Manager or customer support if you have any quest
 ### Known issues
 
 The following table outlines current known issues impacting the use of Gitaly Cluster. For
-the current status of these issues, please refer to the referenced issues and epics.
+the current status of these issues, refer to the referenced issues and epics.
 
 | Issue                                                                                 | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | How to avoid |
 |:--------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
@@ -83,11 +83,11 @@ during a restore, we recommend using the [official backup and restore Rake tasks
 The [incremental backup method](../../raketasks/backup_gitlab.md#incremental-repository-backups)
 can be used to speed up Gitaly Cluster backups.
 
-If you are unable to use either method, please contact customer support for restoration help.
+If you are unable to use either method, contact customer support for restoration help.
 
 ### What to do if you are on Gitaly Cluster experiencing an issue or limitation
 
-Please contact customer support for immediate help in restoration or recovery.
+Contact customer support for immediate help in restoration or recovery.
 
 ## Directly accessing repositories
 
@@ -410,7 +410,7 @@ relative path of the repository in the metadata store.
 ### Moving beyond NFS
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting
-November 22, 2022. Please see our [statement of support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
+November 22, 2022. See our [statement of support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
 for more details.
 
 [Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
@@ -718,4 +718,4 @@ The second facet presents the only real solution. For this, we developed
 ## NFS deprecation notice
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
-unavailable beginning November 22, 2022. For further information, please see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.
+unavailable beginning November 22, 2022. For further information, see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.

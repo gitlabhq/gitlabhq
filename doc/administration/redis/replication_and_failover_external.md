@@ -64,7 +64,7 @@ settings outlined in
 We cannot stress enough the importance of reading the
 [replication and failover](replication_and_failover.md) documentation of the
 Omnibus Redis HA as it provides some invaluable information to the configuration
-of Redis. Please proceed to read it before going forward with this guide.
+of Redis. Read it before going forward with this guide.
 
 Before proceeding on setting up the new Redis instances, here are some
 requirements:

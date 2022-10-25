@@ -538,13 +538,15 @@ export default {
         <div class="media-body">
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
             <template v-if="shouldShowMergeControls">
-              <div class="gl-display-flex gl-align-items-center gl-flex-wrap gl-w-full gl-mb-5">
+              <div
+                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap gl-w-full gl-md-pb-5"
+              >
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
-                  class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5"
+                  class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5 gl-mb-3 gl-md-mb-0"
                 >
                   {{ __('Delete source branch') }}
                 </gl-form-checkbox>
@@ -555,36 +557,17 @@ export default {
                   v-model="squashBeforeMerge"
                   :help-path="mr.squashBeforeMergeHelpPath"
                   :is-disabled="isSquashReadOnly"
-                  class="gl-mr-5"
+                  class="gl-mr-5 gl-mb-3 gl-md-mb-0"
                 />
 
                 <gl-form-checkbox
                   v-if="shouldShowSquashEdit || shouldShowMergeEdit"
                   v-model="editCommitMessage"
                   data-testid="widget_edit_commit_message"
-                  class="gl-display-flex gl-align-items-center"
+                  class="gl-display-flex gl-align-items-center gl-mb-3 gl-md-mb-0"
                 >
                   {{ __('Edit commit message') }}
                 </gl-form-checkbox>
-              </div>
-              <div class="gl-w-full gl-text-gray-500 gl-mb-5">
-                <added-commit-message
-                  :is-squash-enabled="squashBeforeMerge"
-                  :is-fast-forward-enabled="!shouldShowMergeEdit"
-                  :commits-count="commitsCount"
-                  :target-branch="stateData.targetBranch"
-                />
-                <template v-if="mr.relatedLinks">
-                  &middot;
-                  <related-links
-                    :state="mr.state"
-                    :related-links="mr.relatedLinks"
-                    :show-assign-to-me="false"
-                    :diverged-commits-count="mr.divergedCommitsCount"
-                    :target-branch-path="mr.targetBranchPath"
-                    class="mr-ready-merge-related-links gl-display-inline"
-                  />
-                </template>
               </div>
               <div v-if="editCommitMessage" class="gl-w-full" data-testid="edit_commit_message">
                 <ul class="border-top commits-list flex-list gl-list-style-none gl-p-0 gl-pt-4">
@@ -624,6 +607,25 @@ export default {
                     </p>
                   </li>
                 </ul>
+              </div>
+              <div class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5">
+                <added-commit-message
+                  :is-squash-enabled="squashBeforeMerge"
+                  :is-fast-forward-enabled="!shouldShowMergeEdit"
+                  :commits-count="commitsCount"
+                  :target-branch="stateData.targetBranch"
+                />
+                <template v-if="mr.relatedLinks">
+                  &middot;
+                  <related-links
+                    :state="mr.state"
+                    :related-links="mr.relatedLinks"
+                    :show-assign-to-me="false"
+                    :diverged-commits-count="mr.divergedCommitsCount"
+                    :target-branch-path="mr.targetBranchPath"
+                    class="mr-ready-merge-related-links gl-display-inline"
+                  />
+                </template>
               </div>
               <gl-button-group class="gl-align-self-start">
                 <gl-button

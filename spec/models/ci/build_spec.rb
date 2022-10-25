@@ -605,8 +605,8 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe '#prevent_rollback_deployment?' do
-    subject { build.prevent_rollback_deployment? }
+  describe '#outdated_deployment?' do
+    subject { build.outdated_deployment? }
 
     let(:build) { create(:ci_build, :created, :with_deployment, project: project, environment: 'production') }
 
@@ -624,20 +624,32 @@ RSpec.describe Ci::Build do
       it { expect(subject).to be_falsey }
     end
 
-    context 'when deployment cannot rollback' do
+    context 'when build is not an outdated deployment' do
       before do
-        expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
+        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
       end
 
       it { expect(subject).to be_falsey }
     end
 
-    context 'when build can prevent rollback deployment' do
+    context 'when build is older than the latest deployment and still pending status' do
       before do
-        expect(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
+        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
       end
 
       it { expect(subject).to be_truthy }
+    end
+
+    context 'when build is older than the latest deployment but succeeded once' do
+      let(:build) { create(:ci_build, :success, :with_deployment, project: project, environment: 'production') }
+
+      before do
+        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
+      end
+
+      it 'returns false for allowing rollback' do
+        expect(subject).to be_falsey
+      end
     end
   end
 

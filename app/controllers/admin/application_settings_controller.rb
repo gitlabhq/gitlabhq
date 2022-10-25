@@ -84,7 +84,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       format.json do
         Gitlab::UsageDataCounters::ServiceUsageDataCounter.count(:download_payload_click)
 
-        render json: service_ping_data.to_json
+        render json: Gitlab::Json.dump(service_ping_data)
       end
     end
   end

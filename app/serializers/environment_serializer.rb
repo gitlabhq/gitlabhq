@@ -52,15 +52,13 @@ class EnvironmentSerializer < BaseSerializer
   end
 
   def batch_load(resource)
-    temp_deployment_associations = deployment_associations
-
     resource = resource.preload(environment_associations)
 
     Preloaders::Environments::DeploymentPreloader.new(resource)
-      .execute_with_union(:last_deployment, temp_deployment_associations)
+      .execute_with_union(:last_deployment, deployment_associations)
 
     Preloaders::Environments::DeploymentPreloader.new(resource)
-      .execute_with_union(:upcoming_deployment, temp_deployment_associations)
+      .execute_with_union(:upcoming_deployment, deployment_associations)
 
     resource.to_a.tap do |environments|
       environments.each do |environment|

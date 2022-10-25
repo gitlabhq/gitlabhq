@@ -1,11 +1,3 @@
-export const AJAX_USERS_SELECT_OPTIONS_MAP = {
-  projectId: 'projectId',
-  groupId: 'groupId',
-  showCurrentUser: 'currentUser',
-  authorId: 'authorId',
-  skipUsers: 'skipUsers',
-};
-
 export const AJAX_USERS_SELECT_PARAMS_MAP = {
   project_id: 'projectId',
   group_id: 'groupId',

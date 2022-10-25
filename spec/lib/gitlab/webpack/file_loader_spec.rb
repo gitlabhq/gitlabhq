@@ -31,8 +31,8 @@ RSpec.describe Gitlab::Webpack::FileLoader do
       stub_request(:get, "http://hostname:2000/public_path/#{error_file_path}").to_raise(StandardError)
     end
 
-    it "returns content when respondes succesfully" do
-      expect(Gitlab::Webpack::FileLoader.load(file_path)).to be(file_contents)
+    it "returns content when responds successfully" do
+      expect(Gitlab::Webpack::FileLoader.load(file_path)).to eq(file_contents)
     end
 
     it "raises error when 404" do

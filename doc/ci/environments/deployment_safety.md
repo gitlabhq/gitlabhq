@@ -91,12 +91,13 @@ can be prevented in some circumstances.
 
 ### How to rollback to an outdated deployment
 
-In some cases, you need to rollback to an outdated deployment. Current workarounds are:
+> In GitLab 15.6, [rollback via job retry was introduced back](https://gitlab.com/gitlab-org/gitlab/-/issues/378359).
 
-- Temporarily disable this feature, rollback and re-enable.
-- Run a new pipeline with previous commit. It contains newer deployment jobs than the latest deployment.
+In some cases, you need to rollback to an outdated deployment.
+This feature explicitly allows rollback via [Environment Rollback](index.md#environment-rollback),
+so that you can quickly rollback in an urgent case.
 
-Please see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/378359) for more information about improving the usability.
+Alternatively, you can run a new pipeline with a previous commit. It contains newer deployment jobs than the latest deployment.
 
 ### Example
 

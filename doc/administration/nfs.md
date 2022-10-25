@@ -52,7 +52,7 @@ If the issue is reproducible, or if it happens intermittently but regularly, Git
 
 NFS is not well-suited to a workload consisting of many small files, like Git repositories. NFS does provide a number of configuration options designed to improve performance. However, over time, a number of these mount options have proven to result in inconsistencies across multiple nodes mounting the NFS volume, up to and including data loss. Addressing these inconsistencies consume extraordinary development and support engineer time that hamper our ability to develop [Gitaly Cluster](gitaly/praefect.md), our purpose-built solution to addressing the deficiencies of NFS in this environment.
 
-Please note that Gitaly Cluster provides highly-available Git repository storage. If this is not a requirement, single-node Gitaly backed by block storage is a suitable substitute.
+Gitaly Cluster provides highly-available Git repository storage. If this is not a requirement, single-node Gitaly backed by block storage is a suitable substitute.
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
 unavailable from GitLab 15.0. No further enhancements are planned for this feature.

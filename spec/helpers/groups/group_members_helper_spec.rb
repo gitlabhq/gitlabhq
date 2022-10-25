@@ -7,16 +7,6 @@ RSpec.describe Groups::GroupMembersHelper do
 
   let_it_be(:group) { create(:group) }
 
-  describe '.group_member_select_options' do
-    before do
-      helper.instance_variable_set(:@group, group)
-    end
-
-    it 'returns an options hash' do
-      expect(helper.group_member_select_options).to include(multiple: true, scope: :all, email_user: true)
-    end
-  end
-
   describe '#group_members_app_data' do
     include_context 'group_group_link'
 

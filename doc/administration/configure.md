@@ -30,7 +30,7 @@ The tables lists features on the left and provides their capabilities to the rig
 
 ## Geo Capabilities
 
-If your availability needs to span multiple zones or multiple locations, please read about [Geo](geo/index.md).
+If your availability needs to span multiple zones or multiple locations, read about [Geo](geo/index.md).
 
 | | Availability | Recoverability | Data Resiliency | Performance | Risks/Trade-offs|
 |-|--------------|----------------|-----------------|-------------|-----------------|

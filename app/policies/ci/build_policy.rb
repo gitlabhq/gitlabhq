@@ -27,8 +27,8 @@ module Ci
       false
     end
 
-    condition(:prevent_rollback) do
-      @subject.prevent_rollback_deployment?
+    condition(:outdated_deployment) do
+      @subject.outdated_deployment?
     end
 
     condition(:owner_of_job) do
@@ -77,11 +77,13 @@ module Ci
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | protected_ref | protected_environment | prevent_rollback) }.policy do
+    rule { ~can?(:jailbreak) & (archived | protected_ref | protected_environment) }.policy do
       prevent :update_build
       prevent :update_commit_status
       prevent :erase_build
     end
+
+    rule { outdated_deployment }.prevent :update_build
 
     rule { can?(:admin_build) | (can?(:update_build) & owner_of_job & unprotected_ref) }.enable :erase_build
 

@@ -110,6 +110,10 @@ module Ci
       COMPLETED_STATUSES.include?(status)
     end
 
+    def incomplete?
+      COMPLETED_STATUSES.exclude?(status)
+    end
+
     def blocked?
       BLOCKED_STATUS.include?(status)
     end

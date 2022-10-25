@@ -1413,7 +1413,7 @@ Parameters:
 
 ## Group members
 
-Please consult the [Group Members](members.md) documentation.
+See the [Group Members](members.md) documentation.
 
 ## LDAP Group Links
 

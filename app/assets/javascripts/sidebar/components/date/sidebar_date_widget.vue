@@ -170,7 +170,7 @@ export default {
       this.$emit('closeForm');
     },
     openDatePicker() {
-      this.$refs.datePicker.calendar.show();
+      this.$refs.datePicker.show();
     },
     setFixedDate(isFixed) {
       const date = this.issuable[dateFields[this.dateType].dateFixed];

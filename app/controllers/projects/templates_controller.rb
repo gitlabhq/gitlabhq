@@ -12,7 +12,7 @@ class Projects::TemplatesController < Projects::ApplicationController
     templates = @template_type.template_subsets(project)
 
     respond_to do |format|
-      format.json { render json: templates.to_json }
+      format.json { render json: Gitlab::Json.dump(templates) }
     end
   end
 
@@ -20,7 +20,7 @@ class Projects::TemplatesController < Projects::ApplicationController
     template = @template_type.find(params[:key], project)
 
     respond_to do |format|
-      format.json { render json: template.to_json }
+      format.json { render json: Gitlab::Json.dump(template) }
     end
   end
 

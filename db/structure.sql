@@ -21098,8 +21098,7 @@ CREATE TABLE sbom_sources (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     source_type smallint NOT NULL,
-    source jsonb DEFAULT '{}'::jsonb NOT NULL,
-    fingerprint bytea
+    source jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE sbom_sources_id_seq

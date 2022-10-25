@@ -25,7 +25,7 @@ module Ci
     end
 
     def enqueue(build)
-      return build.drop!(:failed_outdated_deployment_job) if build.prevent_rollback_deployment?
+      return build.drop!(:failed_outdated_deployment_job) if build.outdated_deployment?
 
       build.enqueue
     end

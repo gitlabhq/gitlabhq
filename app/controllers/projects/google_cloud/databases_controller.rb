@@ -17,7 +17,8 @@ module Projects
           cloudsqlInstances: ::GoogleCloud::GetCloudsqlInstancesService.new(project).execute,
           emptyIllustrationUrl: ActionController::Base.helpers.image_path('illustrations/pipelines_empty.svg')
         }
-        @js_data = js_data.to_json
+
+        @js_data = Gitlab::Json.dump(js_data)
 
         track_event(:render_page)
       end
@@ -27,7 +28,7 @@ module Projects
 
         @title = title(product)
 
-        @js_data = {
+        js_data = {
           gcpProjects: gcp_projects,
           refs: refs,
           cancelPath: project_google_cloud_databases_path(project),
@@ -35,7 +36,9 @@ module Projects
           formDescription: description(product),
           databaseVersions: Projects::GoogleCloud::CloudsqlHelper::VERSIONS[product],
           tiers: Projects::GoogleCloud::CloudsqlHelper::TIERS
-        }.to_json
+        }
+
+        @js_data = Gitlab::Json.dump(js_data)
 
         track_event(:render_form)
         render template: 'projects/google_cloud/databases/cloudsql_form', formats: :html

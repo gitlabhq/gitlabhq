@@ -108,7 +108,7 @@ class SearchController < ApplicationController
     @ref = params[:project_ref] if params[:project_ref].present?
     @filter = params[:filter]
 
-    render json: search_autocomplete_opts(term, filter: @filter).to_json
+    render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter))
   end
 
   def opensearch

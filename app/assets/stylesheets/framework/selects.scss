@@ -1,15 +1,3 @@
-.ajax-users-select {
-  width: 400px;
-
-  &.input-large {
-    width: 210px;
-  }
-
-  &.input-clamp {
-    max-width: 100%;
-  }
-}
-
 .group-result {
   .group-image {
     float: left;
@@ -48,8 +36,4 @@
       line-height: 24px;
     }
   }
-}
-
-.ajax-users-dropdown {
-  min-width: 250px !important;
 }

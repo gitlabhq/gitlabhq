@@ -734,7 +734,7 @@ GEM
     http-form_data (2.3.0)
     http-parser (1.2.3)
       ffi-compiler (>= 1.0, < 2.0)
-    httparty (0.16.4)
+    httparty (0.20.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
@@ -1666,7 +1666,7 @@ DEPENDENCIES
   health_check (~> 3.0)
   html-pipeline (~> 2.13.2)
   html2text
-  httparty (~> 0.16.4)
+  httparty (~> 0.20.0)
   icalendar
   invisible_captcha (~> 1.1.0)
   ipaddr (= 1.2.2)
