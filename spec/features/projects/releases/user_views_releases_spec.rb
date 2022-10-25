@@ -15,7 +15,7 @@ RSpec.describe 'User views releases', :js do
   let_it_be(:guest) { create(:user) }
 
   let_it_be(:internal_link) { create(:release_link, release: release_v1, name: 'An internal link', url: "#{project.web_url}/-/jobs/1/artifacts/download", filepath: nil) }
-  let_it_be(:internal_link_with_redirect) { create(:release_link, release: release_v1, name: 'An internal link with a redirect', url: "#{project.web_url}/-/jobs/2/artifacts/download", filepath: '/binaries/linux-amd64' ) }
+  let_it_be(:internal_link_with_redirect) { create(:release_link, release: release_v1, name: 'An internal link with a redirect', url: "#{project.web_url}/-/jobs/2/artifacts/download", filepath: '/binaries/linux-amd64') }
   let_it_be(:external_link) { create(:release_link, release: release_v1, name: 'An external link', url: "https://example.com/an/external/link", filepath: nil) }
 
   before do

@@ -181,20 +181,51 @@ module SearchHelper
     options
   end
 
-  # search_context exposes a bit too much data to the frontend, this controls what data we share and when.
+  def search_group
+    # group gets derived from the Project in the project's scope
+    @group || @project&.group
+  end
+
+  def search_has_group?
+    search_group&.present? && search_group&.persisted?
+  end
+
+  def search_has_project?
+    @project&.present? && @project&.persisted?
+  end
+
   def header_search_context
     {}.tap do |hash|
-      hash[:group] = { id: search_context.group.id, name: search_context.group.name, full_name: search_context.group.full_name } if search_context.for_group?
-      hash[:group_metadata] = search_context.group_metadata if search_context.for_group?
+      if search_has_group?
+        hash[:group] = { id: search_group.id, name: search_group.name, full_name: search_group.full_name }
+        hash[:group_metadata] = { issues_path: issues_group_path(search_group), mr_path: merge_requests_group_path(search_group) }
+      end
 
-      hash[:project] = { id: search_context.project.id, name: search_context.project.name } if search_context.for_project?
-      hash[:project_metadata] = search_context.project_metadata if search_context.for_project?
+      if search_has_project?
+        hash[:project] = { id: @project.id, name: @project.name }
+        hash[:project_metadata] = { issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project) }
+        hash[:code_search] = search_scope.nil?
+        hash[:ref] = @ref if @ref && can?(current_user, :download_code, @project)
+      end
 
-      hash[:scope] = search_context.scope if search_context.for_project? || search_context.for_group?
-      hash[:code_search] = search_context.code_search? if search_context.for_project? || search_context.for_group?
+      hash[:scope] = search_scope if search_has_project? || search_has_group?
+      hash[:for_snippets] = @snippet&.present? || @snippets&.any?
+    end
+  end
 
-      hash[:ref] = search_context.ref if can?(current_user, :download_code, search_context.project)
-      hash[:for_snippets] = search_context.for_snippets?
+  def search_scope
+    if current_controller?(:issues)
+      'issues'
+    elsif current_controller?(:merge_requests)
+      'merge_requests'
+    elsif current_controller?(:wikis)
+      'wiki_blobs'
+    elsif current_controller?(:commits)
+      'commits'
+    elsif current_controller?(:groups)
+      if %w(issues merge_requests).include?(controller.action_name)
+        controller.action_name
+      end
     end
   end
 

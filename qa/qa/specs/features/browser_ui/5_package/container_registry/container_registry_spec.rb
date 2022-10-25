@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Container Registry', only: { subdomain: %i[staging staging-canary pre] } do
+    describe 'Container Registry', only: { subdomain: %i[staging staging-canary pre] }, product_group: :container_registry do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-registry'

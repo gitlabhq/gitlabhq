@@ -6,7 +6,7 @@ module QA
     name: 'maven_central_request_forwarding',
     scope: :global
   } do
-    describe 'Maven project level endpoint' do
+    describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures
 
       let(:group_id) { 'com.gitlab.qa' }

@@ -23,7 +23,7 @@ While any events could trigger an Audit Event, not all events should. In general
 - Are tracking information for product feature adoption.
 - Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/manage/compliance/audit-events/#what-is-not-planned-right-now).
 
-If you have any questions, please reach out to `@gitlab-org/manage/compliance` to see if an Audit Event, or some other approach, may be best for your event.
+If you have any questions, please reach out to `@gitlab-org/govern/compliance` to see if an Audit Event, or some other approach, may be best for your event.
 
 ## Audit Event Schemas
 
@@ -120,7 +120,7 @@ end
 Because every audit event is persisted to the database, consider the amount of data we expect to generate, and the rate of generation, for new
 audit events. For new audit events that will produce a lot of data in the database, consider adding a
 [streaming-only audit event](#event-streaming) instead. If you have questions about this, feel free to ping
-`@gitlab-org/manage/compliance/backend` in an issue or merge request.
+`@gitlab-org/govern/compliance/backend` in an issue or merge request.
 
 ## Audit Event instrumentation flows
 

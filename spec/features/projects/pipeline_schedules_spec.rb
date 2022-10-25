@@ -6,7 +6,7 @@ RSpec.describe 'Pipeline Schedules', :js do
   include Spec::Support::Helpers::ModalHelpers
 
   let!(:project) { create(:project, :repository) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
+  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
   let(:scope) { nil }
   let!(:user) { create(:user) }

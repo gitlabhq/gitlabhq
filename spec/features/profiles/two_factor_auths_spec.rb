@@ -13,7 +13,7 @@ RSpec.describe 'Two factor auths' do
     end
 
     context 'when user has two-factor authentication disabled' do
-      let_it_be(:user) { create(:user ) }
+      let_it_be(:user) { create(:user) }
 
       it 'requires the current password to set up two factor authentication', :js do
         visit profile_two_factor_auth_path

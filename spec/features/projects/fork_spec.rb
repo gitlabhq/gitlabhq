@@ -134,7 +134,7 @@ RSpec.describe 'Project fork' do
   context 'fork form', :js do
     let(:group) { create(:group) }
     let(:group2) { create(:group) }
-    let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+    let(:user) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
     def submit_form(group_obj = group)
       find('[data-testid="select_namespace_dropdown"]').click
@@ -180,7 +180,7 @@ RSpec.describe 'Project fork' do
 
     context 'with cache_home_panel feature flag' do
       before do
-        create(:group_member, :maintainer, user: user, group: group2 )
+        create(:group_member, :maintainer, user: user, group: group2)
       end
 
       context 'when caching is enabled' do

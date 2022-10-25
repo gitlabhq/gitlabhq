@@ -6,7 +6,7 @@ RSpec.describe 'Group Issue Boards', :js do
   include BoardHelpers
 
   let(:group)            { create(:group) }
-  let(:user)             { create(:group_member, user: create(:user), group: group ).user }
+  let(:user)             { create(:group_member, user: create(:user), group: group).user }
   let!(:project_1)       { create(:project, :public, group: group) }
   let!(:project_2)       { create(:project, :public, group: group) }
   let!(:project_1_label) { create(:label, project: project_1, name: 'Development 1') }

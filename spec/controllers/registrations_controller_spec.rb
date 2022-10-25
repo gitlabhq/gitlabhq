@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe RegistrationsController do
   include TermsHelper
+  include FullNameHelper
 
   before do
     stub_application_setting(require_admin_approval_after_user_signup: false)
@@ -463,7 +464,7 @@ RSpec.describe RegistrationsController do
 
       expect(User.last.first_name).to eq(base_user_params[:first_name])
       expect(User.last.last_name).to eq(base_user_params[:last_name])
-      expect(User.last.name).to eq("#{base_user_params[:first_name]} #{base_user_params[:last_name]}")
+      expect(User.last.name).to eq full_name(base_user_params[:first_name], base_user_params[:last_name])
     end
 
     it 'sets the caller_id in the context' do

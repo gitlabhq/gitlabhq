@@ -1,8 +1,9 @@
-import { GlAlert, GlKeysetPagination, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
@@ -35,15 +36,10 @@ describe('packages_list', () => {
   };
 
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
-  const GlModalStub = {
-    name: GlModal.name,
-    template: '<div><slot></slot></div>',
-    methods: { show: jest.fn() },
-  };
 
   const findPackagesListLoader = () => wrapper.findComponent(PackagesListLoader);
   const findPackageListPagination = () => wrapper.findComponent(GlKeysetPagination);
-  const findPackageListDeleteModal = () => wrapper.findComponent(GlModalStub);
+  const findPackageListDeleteModal = () => wrapper.findComponent(DeletePackageModal);
   const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
   const findErrorPackageAlert = () => wrapper.findComponent(GlAlert);
@@ -55,7 +51,7 @@ describe('packages_list', () => {
         ...props,
       },
       stubs: {
-        GlModal: GlModalStub,
+        DeletePackageModal,
         GlSprintf,
       },
       slots: {
@@ -63,10 +59,6 @@ describe('packages_list', () => {
       },
     });
   };
-
-  beforeEach(() => {
-    GlModalStub.methods.show.mockReset();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -111,10 +103,10 @@ describe('packages_list', () => {
       expect(findPackageListPagination().exists()).toBe(true);
     });
 
-    it('contains a modal component', () => {
+    it("doesn't contain a visible modal component", () => {
       mountComponent();
 
-      expect(findPackageListDeleteModal().exists()).toBe(true);
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
     });
 
     it('does not have an error alert displayed', () => {
@@ -125,31 +117,25 @@ describe('packages_list', () => {
   });
 
   describe('when the user can destroy the package', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mountComponent();
-      findPackagesListRow().vm.$emit('packageToDelete', firstPackage);
-      return nextTick();
+      await findPackagesListRow().vm.$emit('packageToDelete', firstPackage);
     });
 
-    it('deleting a package opens the modal', () => {
-      expect(findPackageListDeleteModal().text()).toContain(firstPackage.name);
+    it('passes itemToBeDeleted to the modla', () => {
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(firstPackage);
     });
 
-    it('confirming on the modal emits package:delete', async () => {
-      findPackageListDeleteModal().vm.$emit('ok');
-
-      await nextTick();
+    it('emits package:delete when modal confirms', async () => {
+      await findPackageListDeleteModal().vm.$emit('ok');
 
       expect(wrapper.emitted('package:delete')[0]).toEqual([firstPackage]);
     });
 
-    it('closing the modal resets itemToBeDeleted', async () => {
-      // triggering the v-model
-      findPackageListDeleteModal().vm.$emit('input', false);
+    it.each(['ok', 'cancel'])('resets itemToBeDeleted when modal emits %s', async (event) => {
+      await findPackageListDeleteModal().vm.$emit(event);
 
-      await nextTick();
-
-      expect(findPackageListDeleteModal().text()).not.toContain(firstPackage.name);
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
     });
   });
 

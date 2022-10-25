@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, product_group: :package_registry do
     describe 'PyPI Repository' do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

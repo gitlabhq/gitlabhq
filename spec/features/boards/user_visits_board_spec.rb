@@ -21,7 +21,7 @@ RSpec.describe 'User visits issue boards', :js do
 
   let_it_be(:label1) { create(:group_label, group: group, name: label_name1) }
   let_it_be(:label2) { create(:group_label, group: group, name: label_name2) }
-  let_it_be(:assignee) { create_default(:group_member, :maintainer, user: create(:user, username: assignee_username), group: group ).user }
+  let_it_be(:assignee) { create_default(:group_member, :maintainer, user: create(:user, username: assignee_username), group: group).user }
   let_it_be(:milestone) { create_default(:milestone, project: project, start_date: Date.today - 1, due_date: 7.days.from_now) }
 
   before_all do

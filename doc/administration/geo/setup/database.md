@@ -476,7 +476,13 @@ data before running `pg_basebackup`.
 
    WARNING:
    Each Geo **secondary** site must have its own unique replication slot name.
-   Using the same slot name between two secondaries breaks PostgreSQL replication.
+   Using the same slot name between two secondaries breaks PostgreSQL replication. 
+
+   NOTE:
+   Replication slot names must only contain lowercase letters, numbers, and the underscore character.
+
+   When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
+   user in the first step.
 
    ```shell
    gitlab-ctl replicate-geo-database \
@@ -484,12 +490,6 @@ data before running `pg_basebackup`.
       --host=<primary_site_ip> \
       --sslmode=verify-ca
    ```
-
-   NOTE:
-   Replication slot names must only contain lowercase letters, numbers, and the underscore character.
-
-   When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
-   user in the first step.
 
    NOTE:
    If you have generated custom PostgreSQL certificates, you will want to use

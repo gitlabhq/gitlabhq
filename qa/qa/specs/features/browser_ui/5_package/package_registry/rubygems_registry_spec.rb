@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Package', :orchestrated, :packages, :object_storage,
                             feature_flag: { name: 'rubygem_packages', scope: :project } do
-    describe 'RubyGems Repository' do
+    describe 'RubyGems Repository', product_group: :package_registry do
       include Runtime::Fixtures
 
       let(:project) do

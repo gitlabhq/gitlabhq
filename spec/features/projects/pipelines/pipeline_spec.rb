@@ -363,7 +363,7 @@ RSpec.describe 'Pipeline', :js do
           project: downstream_project,
           ref: 'master',
           sha: downstream_project.commit.id,
-          child_of: pipeline )
+          child_of: pipeline)
         end
 
         let!(:build) { create(:ci_build, status, pipeline: downstream_pipeline, user: user) }

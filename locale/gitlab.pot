@@ -11634,9 +11634,6 @@ msgstr ""
 msgid "Current Project"
 msgstr ""
 
-msgid "Current forks will keep their visibility level."
-msgstr ""
-
 msgid "Current node must be the primary node or you will be locking yourself out"
 msgstr ""
 
@@ -28284,9 +28281,6 @@ msgstr ""
 msgid "Once removed, the fork relationship cannot be restored. This project will no longer be able to receive or send merge requests to the source project or other forks."
 msgstr ""
 
-msgid "Once you confirm and press \"Reduce project visibility\":"
-msgstr ""
-
 msgid "One more item"
 msgid_plural "%d more items"
 msgstr[0] ""
@@ -33387,9 +33381,6 @@ msgid "Reduce project visibility"
 msgstr ""
 
 msgid "Reduce risk and triage fewer vulnerabilities with security training"
-msgstr ""
-
-msgid "Reduce this project’s visibility?"
 msgstr ""
 
 msgid "Reference"
@@ -42168,9 +42159,6 @@ msgstr ""
 msgid "To complete registration, we need additional details from you."
 msgstr ""
 
-msgid "To confirm, type %{phrase_code}"
-msgstr ""
-
 msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to connect."
 msgstr ""
 
@@ -46931,6 +46919,9 @@ msgid "Your account is locked."
 msgstr ""
 
 msgid "Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO."
+msgstr ""
+
+msgid "Your action has been rejected because the namespace storage limit has been reached. For more information, visit %{doc_url}."
 msgstr ""
 
 msgid "Your action succeeded."

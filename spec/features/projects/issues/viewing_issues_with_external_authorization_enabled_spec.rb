@@ -41,7 +41,7 @@ RSpec.describe 'viewing an issue with cross project references' do
   let(:issue) do
     create(:issue,
            project: project,
-           description: description_referencing_other_issue )
+           description: description_referencing_other_issue)
   end
 
   let(:confidential_issue) do
