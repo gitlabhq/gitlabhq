@@ -1,5 +1,5 @@
 <script>
-import { GlButtonGroup, GlButton, GlBadge } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlBadge, GlFriendlyWrap } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { I18N_EXPIRED, I18N_DOWNLOAD, I18N_DELETE } from '../constants';
 
@@ -9,6 +9,7 @@ export default {
     GlButtonGroup,
     GlButton,
     GlBadge,
+    GlFriendlyWrap,
   },
   props: {
     artifact: {
@@ -48,8 +49,11 @@ export default {
     :class="{ 'gl-border-b-solid gl-border-b-1 gl-border-gray-100': !isLastRow }"
   >
     <div class="gl-display-inline-flex gl-align-items-center gl-w-full">
-      <span class="gl-w-half gl-pl-8 gl-display-flex" data-testid="job-artifact-row-name">
-        {{ artifact.name }}
+      <span
+        class="gl-w-half gl-pl-8 gl-display-flex gl-align-items-center"
+        data-testid="job-artifact-row-name"
+      >
+        <gl-friendly-wrap :text="artifact.name" />
         <gl-badge size="sm" variant="neutral" class="gl-ml-2">
           {{ artifact.fileType.toLowerCase() }}
         </gl-badge>

@@ -2,7 +2,7 @@
 table_name: external_approval_rules_protected_branches
 classes: []
 feature_categories:
-- source_code_management
-description: TODO
+- compliance_management
+description: Keeps relation between protected branches and external approval rules
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54002
 milestone: '13.10'

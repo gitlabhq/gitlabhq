@@ -4,6 +4,6 @@ classes:
 - ProtectedTag
 feature_categories:
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1a416a42f1c1b876ecd96687e41696bc915cc2c2
+description: Keeps a list of protected tags by project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10356
 milestone: '9.1'

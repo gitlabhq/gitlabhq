@@ -4,6 +4,6 @@ classes:
 - ProjectAlias
 feature_categories:
 - source_code_management
-description: TODO
+description: Stores aliases of projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14108
 milestone: '12.1'

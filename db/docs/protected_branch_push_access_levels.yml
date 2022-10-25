@@ -4,6 +4,6 @@ classes:
 - ProtectedBranch::PushAccessLevel
 feature_categories:
 - source_code_management
-description: TODO
+description: Stores push access settings for protected branches
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081
 milestone: '8.11'

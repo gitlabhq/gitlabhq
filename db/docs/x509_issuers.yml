@@ -4,6 +4,6 @@ classes:
 - X509Issuer
 feature_categories:
 - source_code_management
-description: TODO
+description: Stores data about issuer of X.509 certificate
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17773
 milestone: '12.8'

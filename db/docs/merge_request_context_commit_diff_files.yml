@@ -3,7 +3,7 @@ table_name: merge_request_context_commit_diff_files
 classes:
 - MergeRequestContextCommitDiffFile
 feature_categories:
-- source_code_management
-description: TODO
+- code_review
+description: Stores diffs data for merge request context commits
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23701
 milestone: '12.8'

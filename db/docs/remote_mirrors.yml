@@ -4,6 +4,6 @@ classes:
 - RemoteMirror
 feature_categories:
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/ab83917c25c5d1f7dd29c82c91c699008292bc1d
+description: Stores push mirrors and their update statuses
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249
 milestone: '8.7'

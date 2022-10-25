@@ -2,7 +2,7 @@
 table_name: external_status_checks_protected_branches
 classes: []
 feature_categories:
-- source_code_management
-description: TODO
+- compliance_management
+description: Keeps relation between protected branches and external status checks
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62186
 milestone: '14.0'

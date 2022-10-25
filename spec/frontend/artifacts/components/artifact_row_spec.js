@@ -1,4 +1,4 @@
-import { GlBadge, GlButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlFriendlyWrap } from '@gitlab/ui';
 import mockGetJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,7 +23,7 @@ describe('ArtifactRow component', () => {
         isLoading: false,
         isLastRow: false,
       },
-      stubs: { GlBadge, GlButton },
+      stubs: { GlBadge, GlButton, GlFriendlyWrap },
     });
   };
 

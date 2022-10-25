@@ -222,7 +222,7 @@ Parameters:
 
 | Attribute      | Type           | Required               | Description |
 |:---------------|:---------------|:-----------------------|:------------|
-| `id`           | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `id`           | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
 | `active`       | boolean        | **{dotted-circle}** No | Limit by active status. |
 
 Example request:

@@ -4,6 +4,6 @@ classes:
 - TrendingProject
 feature_categories:
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/237c8f66e6608420629503280aaea555ee980022
+description: Stores the list of trending projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6749
 milestone: '8.13'

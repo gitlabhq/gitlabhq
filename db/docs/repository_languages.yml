@@ -4,6 +4,6 @@ classes:
 - RepositoryLanguage
 feature_categories:
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/79a5d76801a45696db629e1f543f2e1d6fa4784f
+description: Keeps relation between projects and repository languages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19480
 milestone: '11.2'

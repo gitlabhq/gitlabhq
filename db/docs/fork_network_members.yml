@@ -4,6 +4,6 @@ classes:
 - ForkNetworkMember
 feature_categories:
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3098
+description: Keeps track of fork relations between projects.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62186
 milestone: '10.1'

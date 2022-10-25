@@ -130,7 +130,7 @@ export GITLAB_SIMULATE_SAAS=1
 There are many ways to pass an environment variable to your local GitLab instance.
 For example, you can create a `env.runit` file in the root of your GDK with the above snippet.
 
-#### Allow use of licensed EE feature
+#### Enable plans per namespace
 
 To enable plans per namespace turn on the `Allow use of licensed EE features` option from the settings page.
 This will make licensed EE features available to projects only if the project namespace's plan includes the feature

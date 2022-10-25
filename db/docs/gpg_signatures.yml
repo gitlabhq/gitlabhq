@@ -4,6 +4,6 @@ classes:
 - CommitSignatures::GpgSignature
 feature_categories:
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8236b12dff3df6d223888664c820ae54b4e0eaf7
+description: Stores GPG signatures
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9546
 milestone: '9.5'

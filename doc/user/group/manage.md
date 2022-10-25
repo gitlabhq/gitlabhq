@@ -816,7 +816,8 @@ Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
 If transferring a group doesn't work through the UI or API, you may want to attempt the transfer in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 user = User.find_by_username('<username>')
@@ -847,7 +848,8 @@ At times, a group deletion may get stuck. If needed, in a [Rails console session
 you can attempt to delete a group using the following command:
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 GroupDestroyWorker.new.perform(group_id, user_id)

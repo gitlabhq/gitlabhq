@@ -4,6 +4,6 @@ classes:
 - ApprovalProjectRulesProtectedBranch
 feature_categories:
 - source_code_management
-description: TODO
+description: Keeps relation between approval project rules and protected branches.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22673
 milestone: '12.7'

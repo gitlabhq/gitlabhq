@@ -134,7 +134,8 @@ To disable notifications for all projects that have Slack integration enabled,
 [start a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and use a script similar to the following:
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 # Grab all projects that have the Slack notifications enabled
