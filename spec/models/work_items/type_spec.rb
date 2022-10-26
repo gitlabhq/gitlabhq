@@ -69,7 +69,8 @@ RSpec.describe WorkItems::Type do
         ::WorkItems::Widgets::Hierarchy,
         ::WorkItems::Widgets::Labels,
         ::WorkItems::Widgets::Assignees,
-        ::WorkItems::Widgets::StartAndDueDate
+        ::WorkItems::Widgets::StartAndDueDate,
+        ::WorkItems::Widgets::Milestone
       )
     end
   end

@@ -44,6 +44,7 @@ export default {
     'signupEnabled',
     'requireAdminApprovalAfterUserSignup',
     'sendUserConfirmationEmail',
+    'emailConfirmationSetting',
     'minimumPasswordLength',
     'minimumPasswordLengthMin',
     'minimumPasswordLengthMax',
@@ -66,6 +67,7 @@ export default {
         signupEnabled: this.signupEnabled,
         requireAdminApproval: this.requireAdminApprovalAfterUserSignup,
         sendConfirmationEmail: this.sendUserConfirmationEmail,
+        emailConfirmationSetting: this.emailConfirmationSetting,
         minimumPasswordLength: this.minimumPasswordLength,
         minimumPasswordLengthMin: this.minimumPasswordLengthMin,
         minimumPasswordLengthMax: this.minimumPasswordLengthMax,
@@ -199,6 +201,15 @@ export default {
     signupEnabledLabel: s__('ApplicationSettings|Sign-up enabled'),
     requireAdminApprovalLabel: s__('ApplicationSettings|Require admin approval for new sign-ups'),
     sendConfirmationEmailLabel: s__('ApplicationSettings|Send confirmation email on sign-up'),
+    emailConfirmationSettingsLabel: s__('ApplicationSettings|Email confirmation settings'),
+    emailConfirmationSettingsOffLabel: s__('ApplicationSettings|Off'),
+    emailConfirmationSettingsOffHelpText: s__(
+      'ApplicationSettings|New users can sign up without confirming their email address.',
+    ),
+    emailConfirmationSettingsHardLabel: s__('ApplicationSettings|Hard'),
+    emailConfirmationSettingsHardHelpText: s__(
+      'ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in.',
+    ),
     minimumPasswordLengthLabel: s__(
       'ApplicationSettings|Minimum password length (number of characters)',
     ),
@@ -275,6 +286,24 @@ export default {
         name="application_setting[send_user_confirmation_email]"
         :label="$options.i18n.sendConfirmationEmailLabel"
       />
+
+      <gl-form-group :label="$options.i18n.emailConfirmationSettingsLabel">
+        <gl-form-radio-group
+          v-model="form.emailConfirmationSetting"
+          name="application_setting[email_confirmation_setting]"
+        >
+          <gl-form-radio value="hard">
+            {{ $options.i18n.emailConfirmationSettingsHardLabel }}
+
+            <template #help> {{ $options.i18n.emailConfirmationSettingsHardHelpText }} </template>
+          </gl-form-radio>
+          <gl-form-radio value="off">
+            {{ $options.i18n.emailConfirmationSettingsOffLabel }}
+
+            <template #help> {{ $options.i18n.emailConfirmationSettingsOffHelpText }} </template>
+          </gl-form-radio>
+        </gl-form-radio-group>
+      </gl-form-group>
 
       <gl-form-group
         :label="$options.i18n.userCapLabel"

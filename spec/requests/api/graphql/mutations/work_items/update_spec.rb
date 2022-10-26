@@ -5,8 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Update a work item' do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
   let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let_it_be(:reporter) { create(:user).tap { |user| project.add_reporter(user) } }
+  let_it_be(:guest) { create(:user).tap { |user| project.add_guest(user) } }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project) }
 
   let(:work_item_event) { 'CLOSE' }
@@ -540,6 +543,91 @@ RSpec.describe 'Update a work item' do
             }
           }
         )
+      end
+    end
+
+    context 'when updating milestone' do
+      let_it_be(:project_milestone) { create(:milestone, project: project) }
+      let_it_be(:group_milestone) { create(:milestone, project: project) }
+
+      let(:input) { { 'milestoneWidget' => { 'milestoneId' => new_milestone&.to_global_id&.to_s } } }
+
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetMilestone {
+              milestone {
+                id
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      shared_examples "work item's milestone is updated" do
+        it "updates the work item's milestone" do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            work_item.reload
+          end.to change(work_item, :milestone).from(old_milestone).to(new_milestone)
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+
+      shared_examples "work item's milestone is not updated" do
+        it "ignores the update request" do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            work_item.reload
+          end.to not_change(work_item, :milestone)
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+
+      context 'when user cannot set work item metadata' do
+        let(:current_user) { guest }
+        let(:old_milestone) { nil }
+
+        it_behaves_like "work item's milestone is not updated" do
+          let(:new_milestone) { project_milestone }
+        end
+      end
+
+      context 'when user can set work item metadata' do
+        let(:current_user) { reporter }
+
+        context 'when assigning a project milestone' do
+          it_behaves_like "work item's milestone is updated" do
+            let(:old_milestone) { nil }
+            let(:new_milestone) { project_milestone }
+          end
+        end
+
+        context 'when assigning a group milestone' do
+          it_behaves_like "work item's milestone is updated" do
+            let(:old_milestone) { nil }
+            let(:new_milestone) { group_milestone }
+          end
+        end
+
+        context "when unsetting the work item's milestone" do
+          it_behaves_like "work item's milestone is updated" do
+            let(:old_milestone) { group_milestone }
+            let(:new_milestone) { nil }
+
+            before do
+              work_item.update!(milestone: old_milestone)
+            end
+          end
+        end
       end
     end
 

@@ -22,6 +22,9 @@ module Mutations
       argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
                required: false,
                description: 'Input for hierarchy widget.'
+      argument :milestone_widget, ::Types::WorkItems::Widgets::MilestoneInputType,
+               required: false,
+               description: 'Input for milestone widget.'
       argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Full path of the project the work item is associated with.'

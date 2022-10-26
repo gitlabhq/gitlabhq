@@ -161,9 +161,10 @@ RSpec.shared_examples 'wiki model' do
       let(:wiki_pages) { subject.list_pages }
 
       before do
-        subject.create_page('index', 'This is an index')
+        # The order is intentional
         subject.create_page('index2', 'This is an index2')
-        subject.create_page('an index3', 'This is an index3')
+        subject.create_page('index', 'This is an index')
+        subject.create_page('index3', 'This is an index3')
       end
 
       it 'returns an array of WikiPage instances' do
@@ -183,13 +184,47 @@ RSpec.shared_examples 'wiki model' do
 
       context 'with limit option' do
         it 'returns limited set of pages' do
-          expect(subject.list_pages(limit: 1).count).to eq(1)
+          expect(
+            subject.list_pages(limit: 1).map(&:title)
+          ).to eql(%w[index])
+        end
+
+        it 'returns all set of pages if limit is more than the total pages' do
+          expect(subject.list_pages(limit: 4).count).to eq(3)
+        end
+
+        it 'returns all set of pages if limit is 0' do
+          expect(subject.list_pages(limit: 0).count).to eq(3)
+        end
+      end
+
+      context 'with offset option' do
+        it 'returns offset-ed set of pages' do
+          expect(
+            subject.list_pages(offset: 1).map(&:title)
+          ).to eq(%w[index2 index3])
+
+          expect(
+            subject.list_pages(offset: 2).map(&:title)
+          ).to eq(["index3"])
+          expect(subject.list_pages(offset: 3).count).to eq(0)
+          expect(subject.list_pages(offset: 4).count).to eq(0)
+        end
+
+        it 'returns all set of pages if offset is 0' do
+          expect(subject.list_pages(offset: 0).count).to eq(3)
+        end
+
+        it 'can combines with limit' do
+          expect(
+            subject.list_pages(offset: 1, limit: 1).map(&:title)
+          ).to eq(["index2"])
         end
       end
 
       context 'with sorting options' do
         it 'returns pages sorted by title by default' do
-          pages = ['an index3', 'index', 'index2']
+          pages = %w[index index2 index3]
 
           expect(subject.list_pages.map(&:title)).to eq(pages)
           expect(subject.list_pages(direction: 'desc').map(&:title)).to eq(pages.reverse)
@@ -200,9 +235,9 @@ RSpec.shared_examples 'wiki model' do
         let(:pages) { subject.list_pages(load_content: true) }
 
         it 'loads WikiPage content' do
-          expect(pages.first.content).to eq('This is an index3')
-          expect(pages.second.content).to eq('This is an index')
-          expect(pages.third.content).to eq('This is an index2')
+          expect(pages.first.content).to eq('This is an index')
+          expect(pages.second.content).to eq('This is an index2')
+          expect(pages.third.content).to eq('This is an index3')
         end
       end
     end

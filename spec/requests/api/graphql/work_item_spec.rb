@@ -298,6 +298,40 @@ RSpec.describe 'Query.work_item(id)' do
           )
         end
       end
+
+      describe 'milestone widget' do
+        let_it_be(:milestone) { create(:milestone, project: project) }
+
+        let(:work_item) { create(:work_item, project: project, milestone: milestone) }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetMilestone {
+                milestone {
+                  id
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'MILESTONE',
+                'milestone' => {
+                  'id' => work_item.milestone.to_gid.to_s
+                }
+              )
+            )
+          )
+        end
+      end
     end
 
     context 'when an Issue Global ID is provided' do

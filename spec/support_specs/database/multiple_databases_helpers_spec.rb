@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Database::MultipleDatabases' do
+RSpec.describe 'Database::MultipleDatabasesHelpers' do
   let(:query) do
     <<~SQL
       WITH cte AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (SELECT 1) SELECT 1;
@@ -72,7 +72,8 @@ RSpec.describe 'Database::MultipleDatabases' do
       context 'when reconnect is false' do
         it 'does raise exception' do
           with_reestablished_active_record_base(reconnect: false) do
-            expect { ApplicationRecord.connection.execute("SELECT 1") }.to raise_error(ActiveRecord::ConnectionNotEstablished)
+            expect { ApplicationRecord.connection.execute("SELECT 1") }
+              .to raise_error(ActiveRecord::ConnectionNotEstablished)
           end
         end
       end

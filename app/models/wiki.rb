@@ -190,7 +190,7 @@ class Wiki
   end
 
   def empty?
-    !repository_exists? || list_page_paths.empty?
+    !repository_exists? || list_page_paths(limit: 1).empty?
   end
 
   def exists?
@@ -207,9 +207,9 @@ class Wiki
   #
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def list_pages(limit: 0, direction: DIRECTION_ASC, load_content: false)
+  def list_pages(direction: DIRECTION_ASC, load_content: false, limit: 0, offset: 0)
     create_wiki_repository unless repository_exists?
-    list_pages_with_repository_rpcs(limit: limit, direction: direction, load_content: load_content)
+    list_pages_with_repository_rpcs(direction: direction, load_content: load_content, limit: limit, offset: offset)
   end
 
   def sidebar_entries(limit: Gitlab::WikiPages::MAX_SIDEBAR_PAGES, **options)
@@ -457,7 +457,7 @@ class Wiki
     escaped_path = RE2::Regexp.escape(sluggified_title(title))
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{file_extension_regexp})$")
 
-    matched_files = repository.search_files_by_regexp(path_regexp, version)
+    matched_files = repository.search_files_by_regexp(path_regexp, version, limit: 1)
     return if matched_files.blank?
 
     Gitlab::EncodingHelper.encode_utf8_no_detect(matched_files.first)
@@ -509,15 +509,15 @@ class Wiki
     path.sub(/\.[^.]+\z/, "")
   end
 
-  def list_page_paths
+  def list_page_paths(limit: 0, offset: 0)
     return [] if repository.empty?
 
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)\\.(#{file_extension_regexp})$")
-    repository.search_files_by_regexp(path_regexp, default_branch)
+    repository.search_files_by_regexp(path_regexp, default_branch, limit: limit, offset: offset)
   end
 
-  def list_pages_with_repository_rpcs(limit:, direction:, load_content:)
-    paths = list_page_paths
+  def list_pages_with_repository_rpcs(direction:, load_content:, limit:, offset:)
+    paths = list_page_paths(limit: limit, offset: offset)
     return [] if paths.empty?
 
     pages = paths.map do |path|

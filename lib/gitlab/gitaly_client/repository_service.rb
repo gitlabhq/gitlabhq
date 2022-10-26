@@ -303,8 +303,8 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :get_raw_changes, request, timeout: GitalyClient.fast_timeout)
       end
 
-      def search_files_by_name(ref, query)
-        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+      def search_files_by_name(ref, query, limit: 0, offset: 0)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query, limit: limit, offset: offset)
         GitalyClient.call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
       end
 
@@ -314,8 +314,8 @@ module Gitlab
         search_results_from_response(response, options)
       end
 
-      def search_files_by_regexp(ref, filter)
-        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: '.', filter: filter)
+      def search_files_by_regexp(ref, filter, limit: 0, offset: 0)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: '.', filter: filter, limit: limit, offset: offset)
         GitalyClient.call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
       end
 

@@ -213,6 +213,7 @@ class ProjectPolicy < BasePolicy
     environments
     feature_flags
     releases
+    infrastructure
   ]
 
   features.each do |f|
@@ -407,6 +408,14 @@ class ProjectPolicy < BasePolicy
     prevent(:metrics_dashboard)
     prevent(*create_read_update_admin_destroy(:sentry_issue))
     prevent(*create_read_update_admin_destroy(:alert_management_alert))
+  end
+
+  rule { split_operations_visibility_permissions & infrastructure_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:terraform_state))
+    prevent(*create_read_update_admin_destroy(:cluster))
+    prevent(:read_pod_logs)
+    prevent(:read_prometheus)
+    prevent(:admin_project_google_cloud)
   end
 
   rule { can?(:metrics_dashboard) }.policy do

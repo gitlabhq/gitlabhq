@@ -20,6 +20,7 @@ class ApplicationSetting < ApplicationRecord
     'Admin Area > Settings > General > Kroki'
 
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
+  enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token

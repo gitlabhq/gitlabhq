@@ -16,14 +16,42 @@ RSpec.configure do |config|
     schema_migrate_down!
   end
 
+  config.after(:context, :migration) do
+    Gitlab::CurrentSettings.clear_in_memory_application_settings!
+  end
+
+  config.append_after(:context, :migration) do
+    recreate_databases_and_seed_if_needed || ensure_schema_and_empty_tables
+  end
+
+  config.around(:each, :migration) do |example|
+    self.class.use_transactional_tests = false
+
+    migration_schema = example.metadata[:migration]
+    migration_schema = :gitlab_main if migration_schema == true
+    base_model = Gitlab::Database.schemas_to_base_models.fetch(migration_schema).first
+
+    # Migration require an `ActiveRecord::Base` to point to desired database
+    if base_model != ActiveRecord::Base
+      with_reestablished_active_record_base do
+        reconfigure_db_connection(
+          model: ActiveRecord::Base,
+          config_model: base_model
+        )
+
+        example.run
+      end
+    else
+      example.run
+    end
+
+    self.class.use_transactional_tests = true
+  end
+
   # Each example may call `migrate!`, so we must ensure we are migrated down every time
   config.before(:each, :migration) do
     use_fake_application_settings
 
     schema_migrate_down!
-  end
-
-  config.after(:context, :migration) do
-    Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 end

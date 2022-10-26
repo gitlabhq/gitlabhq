@@ -1054,19 +1054,19 @@ module Gitlab
         end
       end
 
-      def search_files_by_name(query, ref)
+      def search_files_by_name(query, ref, limit: 0, offset: 0)
         safe_query = query.sub(%r{^/*}, "")
         ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        gitaly_repository_client.search_files_by_name(ref, safe_query).map do |file|
+        gitaly_repository_client.search_files_by_name(ref, safe_query, limit: limit, offset: offset).map do |file|
           Gitlab::EncodingHelper.encode_utf8(file)
         end
       end
 
-      def search_files_by_regexp(filter, ref = 'HEAD')
-        gitaly_repository_client.search_files_by_regexp(ref, filter).map do |file|
+      def search_files_by_regexp(filter, ref = 'HEAD', limit: 0, offset: 0)
+        gitaly_repository_client.search_files_by_regexp(ref, filter, limit: limit, offset: offset).map do |file|
           Gitlab::EncodingHelper.encode_utf8(file)
         end
       end

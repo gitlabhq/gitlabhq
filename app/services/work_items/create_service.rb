@@ -30,6 +30,13 @@ module WorkItems
       error(e.message, :unprocessable_entity)
     end
 
+    def before_create(work_item)
+      execute_widgets(work_item: work_item, callback: :before_create_callback,
+                      widget_params: @widget_params)
+
+      super
+    end
+
     def transaction_create(work_item)
       super.tap do |save_result|
         if save_result

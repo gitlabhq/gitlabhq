@@ -862,6 +862,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to delegate_method(:environments_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:feature_flags_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:releases_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:infrastructure_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }

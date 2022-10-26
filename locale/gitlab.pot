@@ -4717,6 +4717,9 @@ msgstr ""
 msgid "ApplicationSettings|Domain denylist"
 msgstr ""
 
+msgid "ApplicationSettings|Email confirmation settings"
+msgstr ""
+
 msgid "ApplicationSettings|Email restrictions"
 msgstr ""
 
@@ -4735,7 +4738,16 @@ msgstr ""
 msgid "ApplicationSettings|Enter denylist manually"
 msgstr ""
 
+msgid "ApplicationSettings|Hard"
+msgstr ""
+
 msgid "ApplicationSettings|Minimum password length (number of characters)"
+msgstr ""
+
+msgid "ApplicationSettings|New users can sign up without confirming their email address."
+msgstr ""
+
+msgid "ApplicationSettings|Off"
 msgstr ""
 
 msgid "ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Use separate lines for multiple entries. Example: domain.com, *.domain.com"
@@ -4763,6 +4775,9 @@ msgid "ApplicationSettings|Save changes"
 msgstr ""
 
 msgid "ApplicationSettings|See %{linkStart}password policy guidelines%{linkEnd}."
+msgstr ""
+
+msgid "ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in."
 msgstr ""
 
 msgid "ApplicationSettings|Send confirmation email on sign-up"

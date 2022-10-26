@@ -2,8 +2,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_record_base do
-  include Database::MultipleDatabases
-
   let(:base_result_dir) { Pathname.new(Dir.mktmpdir) }
 
   let(:migration_runs) { [] } # This list gets populated as the runner tries to run migrations

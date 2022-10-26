@@ -21,11 +21,13 @@ module WorkItems
     }.freeze
 
     WIDGETS_FOR_TYPE = {
-      issue: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate],
+      issue: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate,
+              Widgets::Milestone],
       incident: [Widgets::Description, Widgets::Hierarchy],
       test_case: [Widgets::Description],
       requirement: [Widgets::Description],
-      task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate]
+      task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate,
+             Widgets::Milestone]
     }.freeze
 
     WI_TYPES_WITH_CREATED_HEADER = %w[issue incident].freeze
