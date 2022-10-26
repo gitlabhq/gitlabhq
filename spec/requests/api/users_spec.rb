@@ -4395,6 +4395,74 @@ RSpec.describe API::Users do
     end
   end
 
+  describe 'GET /users/:id/associations_count' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, group: group) }
+    let(:associations) do
+      {
+        groups_count: 1,
+        projects_count: 1,
+        issues_count: 2,
+        merge_requests_count: 1
+      }.as_json
+    end
+
+    before :all do
+      group.add_member(user, Gitlab::Access::OWNER)
+      project.add_member(user, Gitlab::Access::OWNER)
+      create(:merge_request, source_project: project, source_branch: "my-personal-branch-1", author: user)
+      create_list(:issue, 2, project: project, author: user)
+    end
+
+    context 'as an unauthorized user' do
+      it 'returns 401 unauthorized' do
+        get api("/users/#{user.id}/associations_count", nil)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'as a non-admin user' do
+      context 'with a different user id' do
+        it 'returns 403 Forbidden' do
+          get api("/users/#{omniauth_user.id}/associations_count", user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with the current user id' do
+        it 'returns valid JSON response' do
+          get api("/users/#{user.id}/associations_count", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_a Hash
+          expect(json_response).to match(associations)
+        end
+      end
+    end
+
+    context 'as an admin user' do
+      context 'with invalid user id' do
+        it 'returns 404 User Not Found' do
+          get api("/users/#{non_existing_record_id}/associations_count", admin)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'with valid user id' do
+        it 'returns valid JSON response' do
+          get api("/users/#{user.id}/associations_count", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_a Hash
+          expect(json_response).to match(associations)
+        end
+      end
+    end
+  end
+
   it_behaves_like 'custom attributes endpoints', 'users' do
     let(:attributable) { user }
     let(:other_attributable) { admin }

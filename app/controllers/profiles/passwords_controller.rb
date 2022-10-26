@@ -94,3 +94,5 @@ class Profiles::PasswordsController < Profiles::ApplicationController
     }
   end
 end
+
+Profiles::PasswordsController.prepend_mod

@@ -1733,15 +1733,18 @@ there are no problems we need to inform the user of.
 
 #### Failure (relevant to the user)
 
-An error that affects the **user** occurred. We refer to these as _mutation errors_. In
-this case there is typically no `thing` to return:
+An error that affects the **user** occurred. We refer to these as _mutation errors_.
+
+In a _create_ mutation there is typically no `thing` to return.
+
+In an _update_ mutation we return the current true state of `thing`. Developers may need to call `#reset` on the `thing` instance to ensure this happens.
 
 ```javascript
 {
   data: {
     doTheThing: {
       errors: ["you cannot touch the thing"],
-      thing: null
+      thing: { .. }
     }
   }
 }

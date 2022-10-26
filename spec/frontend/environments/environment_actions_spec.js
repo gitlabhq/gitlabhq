@@ -10,11 +10,7 @@ import actionMutation from '~/environments/graphql/mutations/action.mutation.gra
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
-jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
-  return {
-    confirmAction: jest.fn(),
-  };
-});
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 const scheduledJobAction = {
   name: 'scheduled action',

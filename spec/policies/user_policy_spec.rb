@@ -84,6 +84,50 @@ RSpec.describe UserPolicy do
     end
   end
 
+  describe "reading a user's associations count" do
+    context 'when current_user is not an admin' do
+      context 'fetching their own data' do
+        subject { described_class.new(current_user, current_user) }
+
+        context 'when current_user is not blocked' do
+          it { is_expected.to be_allowed(:get_user_associations_count ) }
+        end
+
+        context 'when current_user is blocked' do
+          let(:current_user) { create(:user, :blocked) }
+
+          it { is_expected.not_to be_allowed(:get_user_associations_count) }
+        end
+      end
+
+      context "fetching a different user's data" do
+        it { is_expected.not_to be_allowed(:get_user_associations_count) }
+      end
+    end
+
+    context 'when current_user is an admin' do
+      let(:current_user) { admin }
+
+      context 'fetching their own data', :enable_admin_mode do
+        subject { described_class.new(current_user, current_user) }
+
+        context 'when current_user is not blocked' do
+          it { is_expected.to be_allowed(:get_user_associations_count ) }
+        end
+
+        context 'when current_user is blocked' do
+          let(:current_user) { create(:admin, :blocked) }
+
+          it { is_expected.not_to be_allowed(:get_user_associations_count) }
+        end
+      end
+
+      context "fetching a different user's data", :enable_admin_mode do
+        it { is_expected.to be_allowed(:get_user_associations_count) }
+      end
+    end
+  end
+
   shared_examples 'changing a user' do |ability|
     context "when a regular user tries to destroy another regular user" do
       it { is_expected.not_to be_allowed(ability) }

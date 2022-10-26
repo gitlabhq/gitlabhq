@@ -59,7 +59,11 @@ module Gitlab
       routing_rules_queues = mappings.values.uniq
       logger&.info("List of queues based on routing rules: #{routing_rules_queues}")
       Sidekiq.redis do |conn|
-        conn.scan_each(match: "queue:*", type: 'list') do |key|
+        # Redis 6 supports conn.scan_each(match: "queue:*", type: 'list')
+        conn.scan_each(match: "queue:*") do |key|
+          # Redis 5 compatibility
+          next unless conn.type(key) == 'list'
+
           queue_from = key.split(':', 2).last
           next if routing_rules_queues.include?(queue_from)
 

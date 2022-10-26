@@ -271,33 +271,4 @@ RSpec.describe Groups::CreateService, '#execute' do
       end
     end
   end
-
-  describe 'logged_out_marketing_header experiment', :experiment do
-    let(:service) { described_class.new(user, group_params) }
-
-    subject { service.execute }
-
-    before do
-      stub_experiments(logged_out_marketing_header: :candidate)
-    end
-
-    it 'tracks signed_up event' do
-      expect(experiment(:logged_out_marketing_header)).to track(
-        :namespace_created,
-        namespace: an_instance_of(Group)
-      ).on_next_instance.with_context(actor: user)
-
-      subject
-    end
-
-    context 'when group has not been persisted' do
-      let(:service) { described_class.new(user, group_params.merge(name: '<script>alert("Attack!")</script>')) }
-
-      it 'does not track signed_up event' do
-        expect(experiment(:logged_out_marketing_header)).not_to track(:namespace_created)
-
-        subject
-      end
-    end
-  end
 end

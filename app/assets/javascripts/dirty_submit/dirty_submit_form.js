@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { memoize, throttle } from 'lodash';
 import createEventHub from '~/helpers/event_hub_factory';
 
@@ -34,7 +33,6 @@ class DirtySubmitForm {
 
     this.form.addEventListener('input', throttledUpdateDirtyInput);
     this.form.addEventListener('change', throttledUpdateDirtyInput);
-    $(this.form).on('change.select2', throttledUpdateDirtyInput);
     this.form.addEventListener('submit', (event) => this.formSubmit(event));
   }
 

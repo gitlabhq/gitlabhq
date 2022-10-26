@@ -23,11 +23,7 @@ import {
 
 jest.mock('~/flash');
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
-  return {
-    confirmAction: jest.fn(),
-  };
-});
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 describe('DeploymentAction component', () => {
   let wrapper;

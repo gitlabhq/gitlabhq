@@ -10,13 +10,17 @@ module Gitlab
 
         attr_reader :partitioning_column, :table_name, :parent_table_name, :zero_partition_value
 
-        def initialize(migration_context:, table_name:, parent_table_name:, partitioning_column:, zero_partition_value:)
+        def initialize(
+          migration_context:, table_name:, parent_table_name:, partitioning_column:,
+          zero_partition_value:, lock_tables: [])
+
           @migration_context = migration_context
           @connection = migration_context.connection
           @table_name = table_name
           @parent_table_name = parent_table_name
           @partitioning_column = partitioning_column
           @zero_partition_value = zero_partition_value
+          @lock_tables = Array.wrap(lock_tables)
         end
 
         def prepare_for_partitioning
@@ -35,7 +39,12 @@ module Gitlab
           create_parent_table
           attach_foreign_keys_to_parent
 
-          migration_context.with_lock_retries(raise_on_exhaustion: true) do
+          lock_args = {
+            raise_on_exhaustion: true,
+            timing_configuration: lock_timing_configuration
+          }
+
+          migration_context.with_lock_retries(**lock_args) do
             migration_context.execute(sql_to_convert_table)
           end
         end
@@ -74,6 +83,7 @@ module Gitlab
           # but they acquire the same locks so it's much faster to incude them
           # here.
           [
+            lock_tables_statement,
             attach_table_to_parent_statement,
             alter_sequence_statements(old_table: table_name, new_table: parent_table_name),
             remove_constraint_statement
@@ -162,6 +172,16 @@ module Gitlab
           end
         end
 
+        def lock_tables_statement
+          return if @lock_tables.empty?
+
+          table_names = @lock_tables.map { |name| quote_table_name(name) }.join(', ')
+
+          <<~SQL
+            LOCK #{table_names} IN ACCESS EXCLUSIVE MODE
+          SQL
+        end
+
         def attach_table_to_parent_statement
           <<~SQL
               ALTER TABLE #{quote_table_name(parent_table_name)}
@@ -234,6 +254,13 @@ module Gitlab
           <<~SQL.chomp
             ALTER TABLE #{connection.quote_table_name(table_name)} OWNER TO CURRENT_USER
           SQL
+        end
+
+        def lock_timing_configuration
+          iterations = Gitlab::Database::WithLockRetries::DEFAULT_TIMING_CONFIGURATION
+          aggressive_iterations = Array.new(5) { [10.seconds, 1.minute] }
+
+          iterations + aggressive_iterations
         end
       end
     end

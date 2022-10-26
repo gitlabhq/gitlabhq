@@ -315,7 +315,7 @@ module ApplicationHelper
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << system_message_class
-    class_names << marketing_header_experiment_class
+    class_names << 'logged-out-marketing-header' unless current_user
     class_names
   end
 
@@ -455,18 +455,6 @@ module ApplicationHelper
 
   def appearance
     ::Appearance.current
-  end
-
-  def marketing_header_experiment_class
-    return if current_user
-
-    experiment(:logged_out_marketing_header, actor: nil) do |e|
-      html_class = 'logged-out-marketing-header-candidate'
-      e.candidate { html_class }
-      e.variant(:trial_focused) { html_class }
-      e.control {}
-      e.run
-    end
   end
 end
 

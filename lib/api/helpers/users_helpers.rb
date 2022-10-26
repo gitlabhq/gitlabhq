@@ -18,6 +18,13 @@ module API
           error_messages[:bio] = error_messages.delete(:"user_detail.bio") if error_messages.has_key?(:"user_detail.bio")
         end
       end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def find_user_by_id(params)
+        id = params[:user_id] || params[:id]
+        User.find_by(id: id) || not_found!('User')
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

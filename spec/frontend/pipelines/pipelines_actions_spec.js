@@ -13,11 +13,7 @@ import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 
 jest.mock('~/flash');
-jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
-  return {
-    confirmAction: jest.fn(),
-  };
-});
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 describe('Pipelines Actions dropdown', () => {
   let wrapper;

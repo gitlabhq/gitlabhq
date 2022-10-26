@@ -18,11 +18,7 @@ import {
   workItemQueryResponse,
 } from '../mock_data';
 
-jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
-  return {
-    confirmAction: jest.fn(),
-  };
-});
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/autosave');
 
 const workItemId = workItemQueryResponse.data.workItem.id;
