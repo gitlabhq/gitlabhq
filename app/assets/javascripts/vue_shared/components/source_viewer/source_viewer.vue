@@ -65,6 +65,9 @@ export default {
         !supportedLanguages.includes(this.blob.language?.toLowerCase())
       );
     },
+    totalChunks() {
+      return Object.keys(this.chunks).length;
+    },
   },
   async created() {
     addBlobLinksTracking();
@@ -217,6 +220,7 @@ export default {
       :chunk-index="index"
       :language="chunk.language"
       :blame-path="blob.blamePath"
+      :total-chunks="totalChunks"
       @appear="highlightChunk"
     />
   </div>

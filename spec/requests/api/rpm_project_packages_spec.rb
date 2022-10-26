@@ -9,7 +9,8 @@ RSpec.describe API::RpmProjectPackages do
 
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public, group: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
@@ -133,16 +134,19 @@ RSpec.describe API::RpmProjectPackages do
   end
 
   describe 'GET /api/v4/projects/:id/packages/rpm/:package_file_id/:filename' do
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group } }
     let(:url) { "/projects/#{project.id}/packages/rpm/#{package_file_id}/#{package_name}" }
 
     subject { get api(url), headers: headers }
 
+    it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
     it_behaves_like 'a job token for RPM requests'
     it_behaves_like 'a deploy token for RPM requests'
     it_behaves_like 'a user token for RPM requests'
   end
 
   describe 'POST /api/v4/projects/:project_id/packages/rpm' do
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group, user: user } }
     let(:url) { "/projects/#{project.id}/packages/rpm" }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm') }
 
@@ -150,25 +154,25 @@ RSpec.describe API::RpmProjectPackages do
 
     context 'with user token' do
       context 'with valid project' do
-        where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-          'PUBLIC'  | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
-          'PUBLIC'  | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden
-          'PUBLIC'  | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
-          'PUBLIC'  | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
-          'PUBLIC'  | :developer  | false | true  | 'rejects rpm packages access'          | :not_found
-          'PUBLIC'  | :guest      | false | true  | 'rejects rpm packages access'          | :not_found
-          'PUBLIC'  | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized
-          'PUBLIC'  | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
-          'PUBLIC'  | :anonymous  | false | true  | 'rejects rpm packages access'          | :unauthorized
-          'PRIVATE' | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
-          'PRIVATE' | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden
-          'PRIVATE' | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
-          'PRIVATE' | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
-          'PRIVATE' | :developer  | false | true  | 'rejects rpm packages access'          | :not_found
-          'PRIVATE' | :guest      | false | true  | 'rejects rpm packages access'          | :not_found
-          'PRIVATE' | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized
-          'PRIVATE' | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
-          'PRIVATE' | :anonymous  | false | true  | 'rejects rpm packages access'          | :unauthorized
+        where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status, :tracked) do
+          'PUBLIC'  | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found    | true
+          'PUBLIC'  | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden    | false
+          'PUBLIC'  | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PUBLIC'  | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PUBLIC'  | :developer  | false | true  | 'rejects rpm packages access'          | :not_found    | false
+          'PUBLIC'  | :guest      | false | true  | 'rejects rpm packages access'          | :not_found    | false
+          'PUBLIC'  | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PUBLIC'  | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PUBLIC'  | :anonymous  | false | true  | 'rejects rpm packages access'          | :unauthorized | false
+          'PRIVATE' | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found    | true
+          'PRIVATE' | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden    | false
+          'PRIVATE' | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PRIVATE' | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PRIVATE' | :developer  | false | true  | 'rejects rpm packages access'          | :not_found    | false
+          'PRIVATE' | :guest      | false | true  | 'rejects rpm packages access'          | :not_found    | false
+          'PRIVATE' | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PRIVATE' | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized | false
+          'PRIVATE' | :anonymous  | false | true  | 'rejects rpm packages access'          | :unauthorized | false
         end
 
         with_them do
@@ -180,6 +184,8 @@ RSpec.describe API::RpmProjectPackages do
             project.send("add_#{user_role}", user) if member && user_role != :anonymous
           end
 
+          tracking_example = params[:tracked] ? 'a package tracking event' : 'not a package tracking event'
+          it_behaves_like tracking_example, described_class.name, 'push_package'
           it_behaves_like params[:shared_examples_name], params[:expected_status]
         end
       end

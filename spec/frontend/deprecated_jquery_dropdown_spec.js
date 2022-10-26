@@ -193,16 +193,18 @@ describe('deprecatedJQueryDropdown', () => {
     });
 
     it('should not focus search input while remote task is not complete', () => {
-      expect($(document.activeElement)).not.toEqual($(SEARCH_INPUT_SELECTOR));
+      expect(document.activeElement).toBeDefined();
+      expect(document.activeElement).not.toEqual(document.querySelector(SEARCH_INPUT_SELECTOR));
       remoteCallback();
 
-      expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
+      expect(document.activeElement).toEqual(document.querySelector(SEARCH_INPUT_SELECTOR));
     });
 
     it('should focus search input after remote task is complete', () => {
       remoteCallback();
 
-      expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
+      expect(document.activeElement).toBeDefined();
+      expect(document.activeElement).toEqual(document.querySelector(SEARCH_INPUT_SELECTOR));
     });
 
     it('should focus on input when opening for the second time after transition', () => {
@@ -215,7 +217,8 @@ describe('deprecatedJQueryDropdown', () => {
       test.dropdownButtonElement.click();
       test.dropdownContainerElement.trigger('transitionend');
 
-      expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
+      expect(document.activeElement).toBeDefined();
+      expect(document.activeElement).toEqual(document.querySelector(SEARCH_INPUT_SELECTOR));
     });
   });
 
@@ -225,7 +228,8 @@ describe('deprecatedJQueryDropdown', () => {
       test.dropdownButtonElement.click();
       test.dropdownContainerElement.trigger('transitionend');
 
-      expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
+      expect(document.activeElement).toBeDefined();
+      expect(document.activeElement).toEqual(document.querySelector(SEARCH_INPUT_SELECTOR));
     });
   });
 

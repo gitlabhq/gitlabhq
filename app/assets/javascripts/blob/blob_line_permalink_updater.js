@@ -1,4 +1,5 @@
 import { getLocationHash } from '../lib/utils/url_utility';
+import { getPageParamValue, getPageSearchString } from './utils';
 
 const lineNumberRe = /^(L|LC)[0-9]+/;
 
@@ -16,7 +17,10 @@ const updateLineNumbersOnBlobPermalinks = (linksToUpdate) => {
           permalinkButton.dataset.originalHref = href;
           return href;
         })();
-      permalinkButton.setAttribute('href', `${baseHref}${hashUrlString}`);
+      const lineNum = parseInt(hash.split('L')[1], 10);
+      const page = getPageParamValue(lineNum);
+      const searchString = getPageSearchString(baseHref, page);
+      permalinkButton.setAttribute('href', `${baseHref}${searchString}${hashUrlString}`);
     });
   }
 };

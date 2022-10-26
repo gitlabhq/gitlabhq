@@ -976,6 +976,24 @@ module Gitlab
       rescue ArgumentError
       end
 
+      # Remove any instances of deprecated job classes lingering in queues.
+      #
+      # rubocop:disable Cop/SidekiqApiUsage
+      def sidekiq_remove_jobs(job_klass:)
+        Sidekiq::Queue.new(job_klass.queue).each do |job|
+          job.delete if job.klass == job_klass.to_s
+        end
+
+        Sidekiq::RetrySet.new.each do |retri|
+          retri.delete if retri.klass == job_klass.to_s
+        end
+
+        Sidekiq::ScheduledSet.new.each do |scheduled|
+          scheduled.delete if scheduled.klass == job_klass.to_s
+        end
+      end
+      # rubocop:enable Cop/SidekiqApiUsage
+
       def sidekiq_queue_migrate(queue_from, to:)
         while sidekiq_queue_length(queue_from) > 0
           Sidekiq.redis do |conn|

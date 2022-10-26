@@ -6,7 +6,7 @@
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 
-#tree-holder.tree-holder.clearfix
+#tree-holder.tree-holder.clearfix.js-per-page{ data: { blame_per_page: Projects::BlameService::PER_PAGE } }
   .nav-block.gl-display-flex.gl-xs-flex-direction-column.gl-align-items-stretch
     = render 'projects/tree/tree_header', tree: @tree, is_project_overview: is_project_overview
 

@@ -1,0 +1,25 @@
+---
+data_category: optional
+key_path: redis_hll_counters.deploy_token_packages.i_package_rpm_deploy_token_weekly
+description: A weekly count of RPM packages published to the registry using a deploy token
+product_section: ops
+product_stage: package
+product_group: package
+product_category: package_registry
+value_type: number
+status: active
+milestone: '15.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97133
+time_frame: 7d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - i_package_rpm_deploy_token
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

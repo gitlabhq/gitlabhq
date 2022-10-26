@@ -56,17 +56,6 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching do
       end
     end
 
-    context 'when an ambiguous branch name is provided' do
-      let(:branches) { { 'ambiguous/test' => 'master', 'ambiguous' => 'master' } }
-
-      it 'returns an error that branch could not be created' do
-        err_msg = 'Failed to create branch \'ambiguous\': 13:reference is ambiguous.'
-
-        expect(subject[:status]).to eq(:error)
-        expect(subject[:message]).to match_array([err_msg])
-      end
-    end
-
     context 'when PreReceiveError exception' do
       let(:branches) { { 'error' => 'master' } }
 
@@ -178,18 +167,6 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching do
       it 'returns an error with a reference name' do
         err_msg = 'Failed to create branch \'new-feature\': invalid reference name \'unknown\''
         result = service.execute('new-feature', 'unknown')
-
-        expect(result[:status]).to eq(:error)
-        expect(result[:message]).to eq(err_msg)
-      end
-    end
-
-    context 'when an ambiguous branch name is provided' do
-      it 'returns an error that branch could not be created' do
-        err_msg = 'Failed to create branch \'feature\': 13:reference is ambiguous.'
-
-        service.execute('feature/widget', 'master')
-        result = service.execute('feature', 'master')
 
         expect(result[:status]).to eq(:error)
         expect(result[:message]).to eq(err_msg)

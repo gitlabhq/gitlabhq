@@ -208,25 +208,6 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
     end
 
     context 'retried jobs' do
-      let(:set_name) { 'retry' }
-      # Account for Sidekiq retry jitter
-      # https://github.com/mperham/sidekiq/blob/3575ccb44c688dd08bfbfd937696260b12c622fb/lib/sidekiq/job_retry.rb#L217
-      let(:schedule_jitter) { 10 }
-
-      # Try to mimic as closely as possible what Sidekiq will actually
-      # do to retry a job.
-      def retry_in(klass, time, args)
-        message = { 'class' => klass.name, 'args' => [args], 'retry' => true }.to_json
-
-        allow(klass).to receive(:sidekiq_retry_in_block).and_return(proc { time })
-
-        begin
-          Sidekiq::JobRetry.new.local(klass, message, klass.queue) { raise 'boom' }
-        rescue Sidekiq::JobRetry::Skip
-          # Sidekiq scheduled the retry
-        end
-      end
-
       def create_jobs(include_post_receive: true)
         retry_in(AuthorizedProjectsWorker, 1.hour, 0)
         retry_in(AuthorizedProjectsWorker, 2.hours, 1)
@@ -234,6 +215,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
         retry_in(AuthorizedProjectsWorker, 4.hours, 3)
       end
 
+      include_context 'when handling retried jobs'
       it_behaves_like 'processing a set'
     end
   end

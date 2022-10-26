@@ -174,7 +174,7 @@ For installations from source:
 RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:lfs:migrate
 ```
 
-You can optionally track progress and verify that all packages migrated successfully using the
+You can optionally track progress and verify that all LFS objects migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
 - `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.

@@ -14,7 +14,7 @@ import WebIdeLink from '~/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
-import addBlameLink from '~/blob/blob_blame_link';
+import { addBlameLink } from '~/blob/blob_blame_link';
 import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
 import userInfoQuery from '../queries/user_info.query.graphql';

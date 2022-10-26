@@ -2,7 +2,7 @@
 module Packages
   module Rpm
     module RepositoryMetadata
-      class BuildRepomdXml
+      class BuildRepomdXmlService
         attr_reader :data
 
         ROOT_ATTRIBUTES = {

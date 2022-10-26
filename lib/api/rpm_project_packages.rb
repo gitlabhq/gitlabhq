@@ -39,6 +39,13 @@ module API
           requires :file_name, type: String, desc: 'RPM package file name'
         end
         get '*package_file_id/*file_name', requirements: { file_name: API::NO_SLASH_URL_PART_REGEX } do
+          track_package_event(
+            'pull_package',
+            :rpm,
+            category: self.class.name,
+            project: authorized_user_project,
+            namespace: authorized_user_project.namespace
+          )
           not_found!
         end
 
@@ -49,6 +56,15 @@ module API
           if authorized_user_project.actual_limits.exceeded?(:rpm_max_file_size, params[:file].size)
             bad_request!('File is too large')
           end
+
+          track_package_event(
+            'push_package',
+            :rpm,
+            user: current_user,
+            category: self.class.name,
+            project: authorized_user_project,
+            namespace: authorized_user_project.namespace
+          )
 
           not_found!
         end

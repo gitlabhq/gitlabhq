@@ -170,6 +170,51 @@ RSpec.describe UnnestedInFilters::Rewriter do
       end
     end
 
+    context 'when the combined attributes include the primary key' do
+      let(:relation) { User.where(user_type: %i(support_bot alert_bot)).order(id: :desc).limit(2) }
+
+      let(:expected_query) do
+        <<~SQL
+          SELECT
+              "users".*
+          FROM
+              "users"
+          WHERE
+              "users"."id" IN (
+                  SELECT
+                      "users"."id"
+                  FROM
+                      unnest('{1,2}' :: smallint []) AS "user_types"("user_type"),
+                      LATERAL (
+                          SELECT
+                              "users"."user_type",
+                              "users"."id"
+                          FROM
+                              "users"
+                          WHERE
+                              (users."user_type" = "user_types"."user_type")
+                          ORDER BY
+                              "users"."id" DESC
+                          LIMIT
+                              2
+                      ) AS users
+                  ORDER BY
+                      "users"."id" DESC
+                  LIMIT
+                      2
+              )
+          ORDER BY
+              "users"."id" DESC
+          LIMIT
+              2
+        SQL
+      end
+
+      it 'changes the query' do
+        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+      end
+    end
+
     describe 'logging' do
       subject(:load_reload) { rewriter.rewrite }
 

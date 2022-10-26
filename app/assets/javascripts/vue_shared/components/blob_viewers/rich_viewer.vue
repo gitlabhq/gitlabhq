@@ -15,8 +15,14 @@ export default {
   mounted() {
     handleBlobRichViewer(this.$refs.content, this.type);
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['copy-code'],
+  },
 };
 </script>
 <template>
-  <markdown-field-view ref="content" v-safe-html="richViewer || content" />
+  <markdown-field-view
+    ref="content"
+    v-safe-html:[$options.safeHtmlConfig]="richViewer || content"
+  />
 </template>

@@ -27,6 +27,7 @@ options:
   - i_package_pypi_deploy_token
   - i_package_rubygems_deploy_token
   - i_package_terraform_module_deploy_token
+  - i_package_rpm_deploy_token
 distribution:
 - ee
 - ce

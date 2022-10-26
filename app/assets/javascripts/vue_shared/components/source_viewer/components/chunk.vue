@@ -1,5 +1,6 @@
 <script>
 import { GlIntersectionObserver, GlSafeHtmlDirective } from '@gitlab/ui';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import ChunkLine from './chunk_line.vue';
 
 /*
@@ -46,6 +47,11 @@ export default {
       required: false,
       default: 0,
     },
+    totalChunks: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     language: {
       type: String,
       required: false,
@@ -56,10 +62,26 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
   computed: {
     lines() {
       return this.content.split('\n');
     },
+  },
+
+  created() {
+    window.requestIdleCallback(() => {
+      this.isLoading = false;
+      const { hash } = this.$route;
+      if (hash && this.totalChunks > 0 && this.totalChunks === this.chunkIndex + 1) {
+        // when the last chunk is loaded scroll to the hash
+        scrollToElement(hash, { behavior: 'auto' });
+      }
+    });
   },
   methods: {
     handleChunkAppear() {
@@ -85,17 +107,18 @@ export default {
         :blame-path="blamePath"
       />
     </div>
-    <div v-else class="gl-display-flex gl-text-transparent">
+    <div v-else-if="!isLoading" class="gl-display-flex gl-text-transparent">
       <div class="gl-display-flex gl-flex-direction-column content-visibility-auto">
         <span
           v-for="(n, index) in totalLines"
+          v-once
           :id="`L${calculateLineNumber(index)}`"
           :key="index"
           data-testid="line-number"
           v-text="calculateLineNumber(index)"
         ></span>
       </div>
-      <div class="gl-white-space-pre-wrap!" data-testid="content" v-text="content"></div>
+      <div v-once class="gl-white-space-pre-wrap!" data-testid="content">{{ content }}</div>
     </div>
   </gl-intersection-observer>
 </template>

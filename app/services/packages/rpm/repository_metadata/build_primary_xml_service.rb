@@ -2,7 +2,7 @@
 module Packages
   module Rpm
     module RepositoryMetadata
-      class BuildPrimaryXml < ::Packages::Rpm::RepositoryMetadata::BaseBuilder
+      class BuildPrimaryXmlService
         ROOT_TAG = 'metadata'
         ROOT_ATTRIBUTES = {
           xmlns: 'http://linux.duke.edu/metadata/common',
@@ -11,19 +11,19 @@ module Packages
         }.freeze
 
         # Nodes that have only text without attributes
-        REQUIRED_BASE_ATTRIBUTES = %i[name arch summary description].freeze
-        NOT_REQUIRED_BASE_ATTRIBUTES = %i[url packager].freeze
+        BASE_ATTRIBUTES = %i[name arch summary description url packager].freeze
         FORMAT_NODE_BASE_ATTRIBUTES = %i[license vendor group buildhost sourcerpm].freeze
 
-        private
+        def initialize(data)
+          @data = data
+        end
 
-        def build_new_node
+        def execute
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.package(type: :rpm, 'xmlns:rpm': 'http://linux.duke.edu/metadata/rpm') do
-              build_required_base_attributes(xml)
-              build_not_required_base_attributes(xml)
+              build_base_attributes(xml)
               xml.version epoch: data[:epoch], ver: data[:version], rel: data[:release]
-              xml.checksum data[:checksum], type: 'sha256', pkgid: 'YES'
+              xml.checksum data[:pkgid], type: 'sha256', pkgid: 'YES'
               xml.size package: data[:packagesize], installed: data[:installedsize], archive: data[:archivesize]
               xml.time file: data[:filetime], build: data[:buildtime]
               xml.location href: data[:location] if data[:location].present?
@@ -34,14 +34,12 @@ module Packages
           Nokogiri::XML(builder.to_xml).at('package')
         end
 
-        def build_required_base_attributes(xml)
-          REQUIRED_BASE_ATTRIBUTES.each do |attribute|
-            xml.method_missing(attribute, data[attribute])
-          end
-        end
+        private
 
-        def build_not_required_base_attributes(xml)
-          NOT_REQUIRED_BASE_ATTRIBUTES.each do |attribute|
+        attr_reader :data
+
+        def build_base_attributes(xml)
+          BASE_ATTRIBUTES.each do |attribute|
             xml.method_missing(attribute, data[attribute]) if data[attribute].present?
           end
         end
