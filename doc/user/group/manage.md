@@ -66,6 +66,7 @@ This action removes the group. It also adds a background job to delete all proje
 Specifically:
 
 - In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+
 - In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
 deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
@@ -261,6 +262,12 @@ before you proceed.
 If you are changing the path so it can be claimed by another group or user,
 you must rename the group too. Both names and paths must
 be unique.
+
+After you change the group path, the new group path is a new namespace and you must update the existing project URL in the following resources:
+
+- [Include statements](../../ci/yaml/includes.md#include-a-single-configuration-file).
+- Docker image references in CI files.
+- Variables that specify a project or namespace.
 
 To retain ownership of the original namespace and protect the URL redirects,
 create a new group and transfer projects to it instead.

@@ -177,9 +177,13 @@ that the request is legitimate.
 
 ## Filter push events by branch
 
-Push events can be filtered by branch using a branch name or wildcard pattern
-to limit which push events are sent to your webhook endpoint. By default,
-all push events are sent to your webhook endpoint. You can configure branch filtering
+You can filter push events by branch. Use one of the following options to filter which push events are sent to your webhook endpoint:
+
+- **All branches**: push events from all branches.
+- **Wildcard pattern**: push events from a branch that matches a wildcard pattern (for example, `*-stable` or `production/*`).
+- **Regular expression**: push events from a branch that matches a regular expression (for example, `(feature|hotfix)/*`).
+
+You can configure branch filtering
 in the [webhook settings](#configure-a-webhook-in-gitlab) in your project.
 
 ## How image URLs are displayed in the webhook body

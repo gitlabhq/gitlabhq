@@ -15,6 +15,13 @@ def webmock_allowed_hosts
   end.compact.uniq
 end
 
+def with_net_connect_allowed
+  WebMock.allow_net_connect!
+  yield
+ensure
+  webmock_enable!
+end
+
 # This prevents Selenium/WebMock from spawning thousands of connections
 # while waiting for an element to appear via Capybara's find:
 # https://github.com/teamcapybara/capybara/issues/2322#issuecomment-619321520
