@@ -655,7 +655,6 @@ Layout/ArgumentAlignment:
     - 'spec/features/merge_request/user_sees_versions_spec.rb'
     - 'spec/features/merge_requests/user_lists_merge_requests_spec.rb'
     - 'spec/features/merge_requests/user_views_open_merge_requests_spec.rb'
-    - 'spec/features/projects/branches_spec.rb'
     - 'spec/features/projects/commit/mini_pipeline_graph_spec.rb'
     - 'spec/features/projects/environments/environment_spec.rb'
     - 'spec/features/projects/environments/environments_spec.rb'

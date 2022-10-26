@@ -370,7 +370,7 @@ group :development do
   gem 'solargraph', '~> 0.47.2', require: false
 
   gem 'letter_opener_web', '~> 2.0.0'
-  gem 'lookbook', '~> 1.0', '>= 1.0.8'
+  gem 'lookbook', '~> 1.2', '>= 1.2.1'
 
   # Better errors handler
   gem 'better_errors', '~> 2.9.1'

@@ -26,7 +26,7 @@ gem 'octokit', '~> 5.6.1'
 gem "faraday-retry", "~> 2.0"
 gem 'webdrivers', '~> 5.2'
 gem 'zeitwerk', '~> 2.4'
-gem 'influxdb-client', '~> 1.17'
+gem 'influxdb-client', '~> 2.7'
 gem 'terminal-table', '~> 3.0.2', require: false
 gem 'slack-notifier', '~> 2.4', require: false
 gem 'fog-google', '~> 1.19', require: false
