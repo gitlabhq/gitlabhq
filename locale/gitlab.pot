@@ -22424,10 +22424,16 @@ msgstr ""
 msgid "Is using seat"
 msgstr ""
 
+msgid "IssuableEvents|assigned to"
+msgstr ""
+
 msgid "IssuableEvents|removed review request for"
 msgstr ""
 
 msgid "IssuableEvents|requested review from"
+msgstr ""
+
+msgid "IssuableEvents|unassigned"
 msgstr ""
 
 msgid "IssuableStatus|%{wi_type} created %{created_at} by "

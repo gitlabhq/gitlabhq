@@ -23,8 +23,6 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def dependent_jobs
-      return legacy_dependent_jobs unless ::Feature.enabled?(:ci_requeue_with_dag_object_hierarchy, project)
-
       ordered_by_dag(
         @processable.pipeline.processables
           .from_union(needs_dependent_jobs, stage_dependent_jobs)
@@ -48,24 +46,6 @@ module Ci
       ::Gitlab::Ci::ProcessableObjectHierarchy.new(
         ::Ci::Processable.where(id: @processable.id)
       ).descendants
-    end
-
-    def legacy_skipped_jobs
-      @legacy_skipped_jobs ||= @processable.pipeline.processables.skipped
-    end
-
-    def legacy_dependent_jobs
-      ordered_by_dag(
-        legacy_stage_dependent_jobs.or(legacy_needs_dependent_jobs).ordered_by_stage.preload(:needs)
-      )
-    end
-
-    def legacy_stage_dependent_jobs
-      legacy_skipped_jobs.after_stage(@processable.stage_idx)
-    end
-
-    def legacy_needs_dependent_jobs
-      legacy_skipped_jobs.scheduling_type_dag.with_needs([@processable.name])
     end
 
     def ordered_by_dag(jobs)

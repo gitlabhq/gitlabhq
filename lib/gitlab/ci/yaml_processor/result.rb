@@ -7,7 +7,7 @@ module Gitlab
     class YamlProcessor
       class Result
         attr_reader :errors, :warnings,
-                    :root_variables, :root_variables_with_data,
+                    :root_variables, :root_variables_with_prefill_data,
                     :stages, :jobs,
                     :workflow_rules, :workflow_name
 
@@ -64,8 +64,13 @@ module Gitlab
         private
 
         def assign_valid_attributes
-          @root_variables = transform_to_array(@ci_config.variables)
-          @root_variables_with_data = @ci_config.variables_with_data
+          @root_variables = if YamlProcessor::FeatureFlags.enabled?(:ci_raw_variables_in_yaml_config)
+                              transform_to_array(@ci_config.variables_with_data)
+                            else
+                              transform_to_array(@ci_config.variables)
+                            end
+
+          @root_variables_with_prefill_data = @ci_config.variables_with_prefill_data
 
           @stages = @ci_config.stages
           @jobs = @ci_config.normalized_jobs

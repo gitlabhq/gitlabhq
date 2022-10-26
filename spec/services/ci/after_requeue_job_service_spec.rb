@@ -120,26 +120,6 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       )
     end
 
-    context 'when the FF ci_requeue_with_dag_object_hierarchy is disabled' do
-      before do
-        stub_feature_flags(ci_requeue_with_dag_object_hierarchy: false)
-      end
-
-      it 'marks subsequent skipped jobs as processable but leaves a3 created' do
-        execute_after_requeue_service(a1)
-
-        check_jobs_statuses(
-          a1: 'pending',
-          a2: 'created',
-          a3: 'skipped',
-          b1: 'success',
-          b2: 'created',
-          c1: 'created',
-          c2: 'created'
-        )
-      end
-    end
-
     context 'when executed by a different user than the original owner' do
       let(:retryer) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:service) { described_class.new(project, retryer) }
@@ -311,22 +291,6 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
         b: 'created',
         c: 'created'
       )
-    end
-
-    context 'when the FF ci_requeue_with_dag_object_hierarchy is disabled' do
-      before do
-        stub_feature_flags(ci_requeue_with_dag_object_hierarchy: false)
-      end
-
-      it 'marks the next subsequent skipped job as processable but leaves c skipped' do
-        execute_after_requeue_service(a)
-
-        check_jobs_statuses(
-          a: 'pending',
-          b: 'created',
-          c: 'skipped'
-        )
-      end
     end
   end
 

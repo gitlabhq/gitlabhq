@@ -33,8 +33,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         .not_to include(:merge_requests_users)
       expect(subject[:usage_activity_by_stage_monthly][:create])
         .to include(:merge_requests_users)
-      expect(subject[:counts_weekly]).to include(:aggregated_metrics)
-      expect(subject[:counts_monthly]).to include(:aggregated_metrics)
     end
 
     it 'clears memoized values' do
@@ -1204,23 +1202,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
         expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
       end
-    end
-  end
-
-  describe '.aggregated_metrics_data' do
-    it 'uses ::Gitlab::Usage::Metrics::Aggregates::Aggregate methods', :aggregate_failures do
-      expected_payload = {
-        counts_weekly: { aggregated_metrics: { global_search_gmau: 123 } },
-        counts_monthly: { aggregated_metrics: { global_search_gmau: 456 } },
-        counts: { aggregate_global_search_gmau: 789 }
-      }
-
-      expect_next_instance_of(::Gitlab::Usage::Metrics::Aggregates::Aggregate) do |instance|
-        expect(instance).to receive(:weekly_data).and_return(global_search_gmau: 123)
-        expect(instance).to receive(:monthly_data).and_return(global_search_gmau: 456)
-        expect(instance).to receive(:all_time_data).and_return(global_search_gmau: 789)
-      end
-      expect(described_class.aggregated_metrics_data).to eq(expected_payload)
     end
   end
 

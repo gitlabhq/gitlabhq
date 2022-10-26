@@ -92,6 +92,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
         describe '#value_with_data' do
           subject(:value_with_data) { entry.value_with_data }
 
+          it { is_expected.to eq(value: 'value') }
+        end
+
+        describe '#value_with_prefill_data' do
+          subject(:value_with_prefill_data) { entry.value_with_prefill_data }
+
           it { is_expected.to eq(value: 'value', description: 'description') }
         end
 
@@ -106,6 +112,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
 
           describe '#value_with_data' do
             subject(:value_with_data) { entry.value_with_data }
+
+            it { is_expected.to eq(value: 'value') }
+          end
+
+          describe '#value_with_prefill_data' do
+            subject(:value_with_prefill_data) { entry.value_with_prefill_data }
 
             it { is_expected.to eq(value: 'value', description: 'description') }
           end
@@ -123,6 +135,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
           describe '#value_with_data' do
             subject(:value_with_data) { entry.value_with_data }
 
+            it { is_expected.to eq(value: '123') }
+          end
+
+          describe '#value_with_prefill_data' do
+            subject(:value_with_prefill_data) { entry.value_with_prefill_data }
+
             it { is_expected.to eq(value: '123', description: 'description') }
           end
         end
@@ -138,6 +156,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
 
           describe '#value_with_data' do
             subject(:value_with_data) { entry.value_with_data }
+
+            it { is_expected.to eq(value: 'value') }
+          end
+
+          describe '#value_with_prefill_data' do
+            subject(:value_with_prefill_data) { entry.value_with_prefill_data }
 
             it { is_expected.to eq(value: 'value', description: :description) }
           end
@@ -192,6 +216,94 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
 
           it { is_expected.to eq(value: 'value') }
         end
+
+        describe '#value_with_prefill_data' do
+          subject(:value_with_prefill_data) { entry.value_with_prefill_data }
+
+          it { is_expected.to eq(value: 'value') }
+        end
+      end
+    end
+
+    context 'when config is a hash with expand' do
+      let(:config) { { value: 'value', expand: false } }
+
+      context 'when metadata allowed_value_data is not provided' do
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          subject(:errors) { entry.errors }
+
+          it { is_expected.to include 'var1 config must be a string' }
+        end
+      end
+
+      context 'when metadata allowed_value_data is (value, expand)' do
+        let(:metadata) { { allowed_value_data: %i[value expand] } }
+
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
+
+        describe '#value' do
+          subject(:value) { entry.value }
+
+          it { is_expected.to eq('value') }
+        end
+
+        describe '#value_with_data' do
+          subject(:value_with_data) { entry.value_with_data }
+
+          it { is_expected.to eq(value: 'value', raw: true) }
+
+          context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
+            before do
+              stub_feature_flags(ci_raw_variables_in_yaml_config: false)
+            end
+
+            it { is_expected.to eq(value: 'value') }
+          end
+        end
+
+        context 'when config expand is true' do
+          let(:config) { { value: 'value', expand: true } }
+
+          describe '#value_with_data' do
+            subject(:value_with_data) { entry.value_with_data }
+
+            it { is_expected.to eq(value: 'value', raw: false) }
+          end
+        end
+
+        context 'when config expand is a string' do
+          let(:config) { { value: 'value', expand: "true" } }
+
+          describe '#valid?' do
+            it { is_expected.not_to be_valid }
+          end
+
+          describe '#errors' do
+            subject(:errors) { entry.errors }
+
+            it { is_expected.to include 'var1 config expand should be a boolean value' }
+          end
+        end
+      end
+
+      context 'when metadata allowed_value_data is (value, xyz)' do
+        let(:metadata) { { allowed_value_data: %i[value xyz] } }
+
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          subject(:errors) { entry.errors }
+
+          it { is_expected.to include 'var1 config uses invalid data keys: expand' }
+        end
       end
     end
   end
@@ -228,6 +340,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variable do
 
       describe '#value_with_data' do
         subject(:value_with_data) { entry.value_with_data }
+
+        it { is_expected.to eq(value: 'value') }
+      end
+
+      describe '#value_with_prefill_data' do
+        subject(:value_with_prefill_data) { entry.value_with_prefill_data }
 
         it { is_expected.to eq(value: 'value', description: 'description', value_options: %w[value value2]) }
       end

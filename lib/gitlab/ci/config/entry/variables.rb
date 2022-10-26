@@ -29,6 +29,12 @@ module Gitlab
             end
           end
 
+          def value_with_prefill_data
+            @entries.to_h do |key, entry|
+              [key.to_s, entry.value_with_prefill_data]
+            end
+          end
+
           private
 
           def composable_class(_name, _config)

@@ -4,6 +4,10 @@ def feature_mr?
   (helper.mr_labels & %w[feature::addition feature::enhancement]).any?
 end
 
+def doc_path_to_url(path)
+  path.sub("doc/", "https://docs.gitlab.com/ee/").sub("index.md", "").sub(".md", "/")
+end
+
 DOCUMENTATION_UPDATE_MISSING = <<~MSG
 ~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider adding a documentation update or confirming the documentation plan with the [Technical Writer counterpart](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
@@ -31,7 +35,7 @@ markdown(<<~MARKDOWN)
 
   The following files require a review from a technical writer:
 
-  * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
+  * #{docs_paths_to_review.map { |path| "`#{path}` ([Link to current live version](#{doc_path_to_url(path)}))" }.join("\n* ")}
 
   The review does not need to block merging this merge request. See the:
 

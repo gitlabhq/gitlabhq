@@ -37,6 +37,7 @@ query getJobArtifacts(
         shortSha
         commitPath
         finishedAt
+        browseArtifactsPath
         artifacts {
           nodes {
             id

@@ -249,6 +249,10 @@ module MergeRequests
     def trigger_merge_request_reviewers_updated(merge_request)
       GraphqlTriggers.merge_request_reviewers_updated(merge_request)
     end
+
+    def trigger_merge_request_merge_status_updated(merge_request)
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+    end
   end
 end
 

@@ -16,6 +16,8 @@ module SystemNotes
 
     def self.issuable_events
       {
+        assigned: s_('IssuableEvents|assigned to'),
+        unassigned: s_('IssuableEvents|unassigned'),
         review_requested: s_('IssuableEvents|requested review from'),
         review_request_removed: s_('IssuableEvents|removed review request for')
       }.freeze
@@ -83,7 +85,7 @@ module SystemNotes
     #
     #   "assigned to @user1 additionally to @user2"
     #
-    #   "assigned to @user1, @user2 and @user3 and unassigned from @user4 and @user5"
+    #   "assigned to @user1, @user2 and @user3 and unassigned @user4 and @user5"
     #
     #   "assigned to @user1 and @user2"
     #
@@ -94,8 +96,8 @@ module SystemNotes
       text_parts = []
 
       Gitlab::I18n.with_default_locale do
-        text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
-        text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
+        text_parts << "#{self.class.issuable_events[:assigned]} #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
+        text_parts << "#{self.class.issuable_events[:unassigned]} #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
       end
 
       body = text_parts.join(' and ')

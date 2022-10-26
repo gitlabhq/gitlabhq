@@ -33,6 +33,10 @@ RSpec.describe MergeRequests::ApprovalService do
         service.execute(merge_request)
       end
 
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { service.execute(merge_request) }
+      end
+
       it 'does not publish MergeRequests::ApprovedEvent' do
         expect { service.execute(merge_request) }.not_to publish_event(MergeRequests::ApprovedEvent)
       end
@@ -45,6 +49,10 @@ RSpec.describe MergeRequests::ApprovalService do
 
       it 'does not create an approval' do
         expect { service.execute(merge_request) }.not_to change { merge_request.approvals.size }
+      end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { service.execute(merge_request) }
       end
     end
 
@@ -67,6 +75,10 @@ RSpec.describe MergeRequests::ApprovalService do
           .to publish_event(MergeRequests::ApprovedEvent)
           .with(current_user_id: user.id, merge_request_id: merge_request.id)
       end
+
+      it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { service.execute(merge_request) }
+      end
     end
 
     context 'user cannot update the merge request' do
@@ -76,6 +88,10 @@ RSpec.describe MergeRequests::ApprovalService do
 
       it 'does not update approvals' do
         expect { service.execute(merge_request) }.not_to change { merge_request.approvals.size }
+      end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { service.execute(merge_request) }
       end
     end
   end

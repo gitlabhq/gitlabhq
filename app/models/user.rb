@@ -83,7 +83,10 @@ class User < ApplicationRecord
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-         :validatable, :omniauthable, :confirmable, :registerable, :pbkdf2_encryptable
+         :validatable, :omniauthable, :confirmable, :registerable
+
+  # Must be included after `devise`
+  include EncryptedUserPassword
 
   include AdminChangedPasswordNotifier
 
@@ -937,26 +940,14 @@ class User < ApplicationRecord
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
-  def authenticatable_salt
-    return encrypted_password[0, 29] unless Feature.enabled?(:pbkdf2_password_encryption)
-    return super if password_strategy == :pbkdf2_sha512
-
-    encrypted_password[0, 29]
-  end
-
   # Overwrites valid_password? from Devise::Models::DatabaseAuthenticatable
   # In constant-time, check both that the password isn't on a denylist AND
   # that the password is the user's password
   def valid_password?(password)
     return false unless password_allowed?(password)
     return false if password_automatically_set?
-    return super if Feature.enabled?(:pbkdf2_password_encryption)
 
-    Devise::Encryptor.compare(self.class, encrypted_password, password)
-  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
-    validate_and_migrate_bcrypt_password(password)
-  rescue ::BCrypt::Errors::InvalidHash
-    false
+    super
   end
 
   def generate_otp_backup_codes!
@@ -972,27 +963,6 @@ class User < ApplicationRecord
       invalidate_otp_backup_code_pdkdf2!(code)
     else
       super(code)
-    end
-  end
-
-  # This method should be removed once the :pbkdf2_password_encryption feature flag is removed.
-  def password=(new_password)
-    if Feature.enabled?(:pbkdf2_password_encryption) && Feature.enabled?(:pbkdf2_password_encryption_write, self)
-      super
-    else
-      # Copied from Devise DatabaseAuthenticatable.
-      @password = new_password
-      self.encrypted_password = Devise::Encryptor.digest(self.class, new_password) if new_password.present?
-    end
-  end
-
-  def password_strategy
-    super
-  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
-    begin
-      return :bcrypt if BCrypt::Password.new(encrypted_password)
-    rescue BCrypt::Errors::InvalidHash
-      :unknown
     end
   end
 
@@ -2439,15 +2409,6 @@ class User < ApplicationRecord
       .shortest_traversal_ids_prefixes
 
     Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
-  end
-
-  def validate_and_migrate_bcrypt_password(password)
-    return false unless Devise::Encryptor.compare(self.class, encrypted_password, password)
-    return true unless Feature.enabled?(:pbkdf2_password_encryption_write, self)
-
-    update_attribute(:password, password)
-  rescue ::BCrypt::Errors::InvalidHash
-    false
   end
 end
 

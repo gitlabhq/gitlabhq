@@ -1,8 +1,0 @@
----
-name: ci_requeue_with_dag_object_hierarchy
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97156
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373148
-milestone: '15.4'
-type: development
-group: group::pipeline authoring
-default_enabled: true

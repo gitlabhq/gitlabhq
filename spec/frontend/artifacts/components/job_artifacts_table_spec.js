@@ -60,6 +60,11 @@ describe('JobArtifactsTable component', () => {
     data: { project: { jobs: { nodes: enoughJobsToPaginate } } },
   };
 
+  const job = getJobArtifactsResponse.data.project.jobs.nodes[0];
+  const archiveArtifact = job.artifacts.nodes.find(
+    (artifact) => artifact.fileType === ARCHIVE_FILE_TYPE,
+  );
+
   const createComponent = (
     handlers = {
       getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
@@ -109,11 +114,6 @@ describe('JobArtifactsTable component', () => {
   });
 
   describe('job details', () => {
-    const job = getJobArtifactsResponse.data.project.jobs.nodes[0];
-    const archiveArtifact = job.artifacts.nodes.find(
-      (artifact) => artifact.fileType === ARCHIVE_FILE_TYPE,
-    );
-
     beforeEach(async () => {
       createComponent();
 
@@ -163,10 +163,66 @@ describe('JobArtifactsTable component', () => {
     it('shows the created time', () => {
       expect(findCreated().text()).toBe('5 years ago');
     });
+  });
 
-    it('shows the download, browse, and delete buttons', () => {
+  describe('download button', () => {
+    it('is a link to the download path for the archive artifact', async () => {
+      createComponent();
+
+      await waitForPromises();
+
       expect(findDownloadButton().attributes('href')).toBe(archiveArtifact.downloadPath);
+    });
+
+    it('is disabled when there is no download path', async () => {
+      const jobWithoutDownloadPath = {
+        ...job,
+        archive: { downloadPath: null },
+      };
+
+      createComponent(
+        { getJobArtifactsQuery: jest.fn() },
+        { jobArtifacts: { nodes: [jobWithoutDownloadPath] } },
+      );
+
+      await waitForPromises();
+
+      expect(findDownloadButton().attributes('disabled')).toBe('disabled');
+    });
+  });
+
+  describe('browse button', () => {
+    it('is a link to the browse path for the job', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findBrowseButton().attributes('href')).toBe(job.browseArtifactsPath);
+    });
+
+    it('is disabled when there is no browse path', async () => {
+      const jobWithoutBrowsePath = {
+        ...job,
+        browseArtifactsPath: null,
+      };
+
+      createComponent(
+        { getJobArtifactsQuery: jest.fn() },
+        { jobArtifacts: { nodes: [jobWithoutBrowsePath] } },
+      );
+
+      await waitForPromises();
+
       expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+    });
+  });
+
+  describe('delete button', () => {
+    it('shows a disabled delete button for now (coming soon)', async () => {
+      createComponent();
+
+      await waitForPromises();
+
       expect(findDeleteButton().attributes('disabled')).toBe('disabled');
     });
   });

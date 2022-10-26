@@ -6,9 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # IP whitelist **(FREE SELF)**
 
-NOTE:
-We intend to [rename IP whitelist as `IP allowlist`](https://gitlab.com/groups/gitlab-org/-/epics/3478).
-
 GitLab provides some [monitoring endpoints](../../user/admin_area/monitoring/health_check.md)
 that provide health check information when probed.
 

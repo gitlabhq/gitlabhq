@@ -39,12 +39,10 @@ module Gitlab
           def parse_body(issue_event, assignee_id)
             assignee = User.find(assignee_id).to_reference
 
-            Gitlab::I18n.with_default_locale do
-              if issue_event.event == "unassigned"
-                "unassigned #{assignee}"
-              else
-                "assigned to #{assignee}"
-              end
+            if issue_event.event == 'unassigned'
+              "#{SystemNotes::IssuablesService.issuable_events[:unassigned]} #{assignee}"
+            else
+              "#{SystemNotes::IssuablesService.issuable_events[:assigned]} #{assignee}"
             end
           end
         end

@@ -193,3 +193,11 @@ A response of `{"message":"404 Not Found"}` when triggering a pipeline might be 
 by using a [personal access token](../../user/profile/personal_access_tokens.md)
 instead of a trigger token. [Create a new trigger token](#create-a-trigger-token)
 and use it instead of the personal access token.
+
+### `The requested URL returned error: 400` when triggering a pipeline
+
+If you attempt to trigger a pipeline by using a `ref` that is a branch name that
+doesn't exist, GitLab returns `The requested URL returned error: 400`.
+
+For example, you might accidentally use `main` for the branch name in a project that
+uses a different branch name for its default branch.

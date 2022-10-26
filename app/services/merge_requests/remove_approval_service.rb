@@ -17,6 +17,7 @@ module MergeRequests
         reset_approvals_cache(merge_request)
         create_note(merge_request)
         merge_request_activity_counter.track_unapprove_mr_action(user: current_user)
+        trigger_merge_request_merge_status_updated(merge_request)
       end
 
       success

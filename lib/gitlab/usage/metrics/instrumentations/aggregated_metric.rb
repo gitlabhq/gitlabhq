@@ -25,7 +25,7 @@ module Gitlab
 
           def initialize(metric_definition)
             super
-            @source = parse_data_source_to_legacy_value(metric_definition)
+            @source = metric_definition[:data_source]
             @aggregate = options.fetch(:aggregate, {})
           end
 
@@ -47,15 +47,6 @@ module Gitlab
           private
 
           attr_accessor :source, :aggregate
-
-          # TODO: This method is a temporary measure that
-          # handles backwards compatibility until
-          # point 5 from is resolved https://gitlab.com/gitlab-org/gitlab/-/issues/370963#implementation
-          def parse_data_source_to_legacy_value(metric_definition)
-            return 'redis' if metric_definition[:data_source] == 'redis_hll'
-
-            metric_definition[:data_source]
-          end
 
           def aggregate_config
             {

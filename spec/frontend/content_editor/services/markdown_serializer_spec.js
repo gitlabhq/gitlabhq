@@ -1,4 +1,3 @@
-import Audio from '~/content_editor/extensions/audio';
 import Blockquote from '~/content_editor/extensions/blockquote';
 import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
@@ -16,7 +15,6 @@ import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
-import HTMLMarks from '~/content_editor/extensions/html_marks';
 import HTMLNodes from '~/content_editor/extensions/html_nodes';
 import Image from '~/content_editor/extensions/image';
 import InlineDiff from '~/content_editor/extensions/inline_diff';
@@ -34,53 +32,12 @@ import TableHeader from '~/content_editor/extensions/table_header';
 import TableRow from '~/content_editor/extensions/table_row';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
-import Video from '~/content_editor/extensions/video';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTiptapEditor, createDocBuilder } from '../test_utils';
 
 jest.mock('~/emoji');
-
-const tiptapEditor = createTestEditor({
-  extensions: [
-    Audio,
-    Blockquote,
-    Bold,
-    BulletList,
-    Code,
-    CodeBlockHighlight,
-    DescriptionItem,
-    DescriptionList,
-    Details,
-    DetailsContent,
-    Emoji,
-    FootnoteDefinition,
-    FootnoteReference,
-    Figure,
-    FigureCaption,
-    HardBreak,
-    Heading,
-    HorizontalRule,
-    Image,
-    InlineDiff,
-    Italic,
-    Link,
-    ListItem,
-    OrderedList,
-    ReferenceDefinition,
-    Sourcemap,
-    Strike,
-    Table,
-    TableCell,
-    TableHeader,
-    TableRow,
-    TaskItem,
-    TaskList,
-    Video,
-    ...HTMLMarks,
-    ...HTMLNodes,
-  ],
-});
+const tiptapEditor = createTiptapEditor([Sourcemap]);
 
 const {
   builders: {

@@ -1,31 +1,52 @@
 # frozen_string_literal: true
+require 'labkit/logging'
 
 module Gitlab
-  class JsonLogger < ::Gitlab::Logger
-    def self.file_name_noext
-      raise NotImplementedError
-    end
-
-    def format_message(severity, timestamp, progname, message)
-      data = default_attributes
-      data[:severity] = severity
-      data[:time] = timestamp.utc.iso8601(3)
-      data[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
-
-      case message
-      when String
-        data[:message] = message
-      when Hash
-        data.merge!(message)
+  class JsonLogger < ::Labkit::Logging::JsonLogger
+    class << self
+      def file_name_noext
+        raise NotImplementedError, "JsonLogger implementations must provide file_name_noext implementation"
       end
 
-      Gitlab::Json.dump(data) + "\n"
+      def file_name
+        file_name_noext + ".log"
+      end
+
+      def debug(message)
+        build.debug(message)
+      end
+
+      def error(message)
+        build.error(message)
+      end
+
+      def warn(message)
+        build.warn(message)
+      end
+
+      def info(message)
+        build.info(message)
+      end
+
+      def build
+        Gitlab::SafeRequestStore[cache_key] ||=
+          new(full_log_path, level: log_level)
+      end
+
+      def cache_key
+        "logger:" + full_log_path.to_s
+      end
+
+      def full_log_path
+        Rails.root.join("log", file_name)
+      end
     end
 
-    protected
+    private
 
-    def default_attributes
-      {}
+    # Override Labkit's default impl, which uses the default Ruby platform json module.
+    def dump_json(data)
+      Gitlab::Json.dump(data)
     end
   end
 end

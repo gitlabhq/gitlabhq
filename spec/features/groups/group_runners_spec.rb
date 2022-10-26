@@ -201,18 +201,32 @@ RSpec.describe "Group Runners" do
   end
 
   describe "Group runner edit page", :js do
-    let!(:group_runner) do
-      create(:ci_runner, :group, groups: [group])
+    context 'when updating a group runner' do
+      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+
+      before do
+        visit edit_group_runner_path(group, group_runner)
+        wait_for_requests
+      end
+
+      it_behaves_like 'submits edit runner form' do
+        let(:runner) { group_runner }
+        let(:runner_page_path) { group_runner_path(group, group_runner) }
+      end
     end
 
-    before do
-      visit edit_group_runner_path(group, group_runner)
-      wait_for_requests
-    end
+    context 'when updating a project runner' do
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
 
-    it_behaves_like 'submits edit runner form' do
-      let(:runner) { group_runner }
-      let(:runner_page_path) { group_runner_path(group, group_runner) }
+      before do
+        visit edit_group_runner_path(group, project_runner)
+        wait_for_requests
+      end
+
+      it_behaves_like 'submits edit runner form' do
+        let(:runner) { project_runner }
+        let(:runner_page_path) { group_runner_path(group, project_runner) }
+      end
     end
   end
 end

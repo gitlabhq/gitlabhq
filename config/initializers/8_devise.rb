@@ -178,14 +178,6 @@ Devise.setup do |config|
   # reset. Defaults to true, so a user is signed in automatically after a reset.
   config.sign_in_after_reset_password = false
 
-  # ==> Configuration for :encryptable
-  # Allow you to use another encryption algorithm besides bcrypt (default). You can use
-  # :sha1, :sha512 or encryptors from others authentication tools as :clearance_sha1,
-  # :authlogic_sha512 (then you should set stretches above to 20 for default behavior)
-  # and :restful_authentication_sha1 (then you should set stretches to 10, and copy
-  # REST_AUTH_SITE_KEY to pepper)
-  config.encryptor = :pbkdf2_sha512
-
   # Authentication through token does not store user in session and needs
   # to be supplied on each request. Useful if you are using the token as API token.
   config.skip_session_storage << :token_auth

@@ -1,87 +1,8 @@
 import { DOMSerializer } from 'prosemirror-model';
-// TODO: DRY up duplication with spec/frontend/content_editor/services/markdown_serializer_spec.js
-//  See https://gitlab.com/groups/gitlab-org/-/epics/7719#plan
-import Audio from '~/content_editor/extensions/audio';
-import Blockquote from '~/content_editor/extensions/blockquote';
-import Bold from '~/content_editor/extensions/bold';
-import BulletList from '~/content_editor/extensions/bullet_list';
-import Code from '~/content_editor/extensions/code';
-import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
-import DescriptionItem from '~/content_editor/extensions/description_item';
-import DescriptionList from '~/content_editor/extensions/description_list';
-import Details from '~/content_editor/extensions/details';
-import DetailsContent from '~/content_editor/extensions/details_content';
-import Emoji from '~/content_editor/extensions/emoji';
-import Figure from '~/content_editor/extensions/figure';
-import FigureCaption from '~/content_editor/extensions/figure_caption';
-import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
-import FootnoteReference from '~/content_editor/extensions/footnote_reference';
-import FootnotesSection from '~/content_editor/extensions/footnotes_section';
-import Frontmatter from '~/content_editor/extensions/frontmatter';
-import HardBreak from '~/content_editor/extensions/hard_break';
-import Heading from '~/content_editor/extensions/heading';
-import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
-import HTMLNodes from '~/content_editor/extensions/html_nodes';
-import Image from '~/content_editor/extensions/image';
-import InlineDiff from '~/content_editor/extensions/inline_diff';
-import Italic from '~/content_editor/extensions/italic';
-import Link from '~/content_editor/extensions/link';
-import ListItem from '~/content_editor/extensions/list_item';
-import OrderedList from '~/content_editor/extensions/ordered_list';
-import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
-import Strike from '~/content_editor/extensions/strike';
-import Table from '~/content_editor/extensions/table';
-import TableCell from '~/content_editor/extensions/table_cell';
-import TableHeader from '~/content_editor/extensions/table_header';
-import TableRow from '~/content_editor/extensions/table_row';
-import TableOfContents from '~/content_editor/extensions/table_of_contents';
-import TaskItem from '~/content_editor/extensions/task_item';
-import TaskList from '~/content_editor/extensions/task_list';
-import Video from '~/content_editor/extensions/video';
 import createMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
-import { createTestEditor } from 'jest/content_editor/test_utils';
+import { createTiptapEditor } from 'jest/content_editor/test_utils';
 
-const tiptapEditor = createTestEditor({
-  extensions: [
-    Audio,
-    Blockquote,
-    Bold,
-    BulletList,
-    Code,
-    CodeBlockHighlight,
-    DescriptionItem,
-    DescriptionList,
-    Details,
-    DetailsContent,
-    Emoji,
-    FootnoteDefinition,
-    FootnoteReference,
-    FootnotesSection,
-    Frontmatter,
-    Figure,
-    FigureCaption,
-    HardBreak,
-    Heading,
-    HorizontalRule,
-    ...HTMLNodes,
-    Image,
-    InlineDiff,
-    Italic,
-    Link,
-    ListItem,
-    OrderedList,
-    ReferenceDefinition,
-    Strike,
-    Table,
-    TableCell,
-    TableHeader,
-    TableRow,
-    TableOfContents,
-    TaskItem,
-    TaskList,
-    Video,
-  ],
-});
+const tiptapEditor = createTiptapEditor();
 
 export const IMPLEMENTATION_ERROR_MSG = 'Error - check implementation';
 

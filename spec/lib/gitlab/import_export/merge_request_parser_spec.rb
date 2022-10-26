@@ -23,9 +23,7 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser do
   end
 
   after do
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      FileUtils.rm_rf(project.repository.path_to_repo)
-    end
+    project.repository.remove
   end
 
   it 'has a source branch' do

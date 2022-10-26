@@ -1071,6 +1071,7 @@ module Gitlab
 
         let(:build) { execute.builds.first }
         let(:job_variables) { build[:job_variables] }
+        let(:root_variables) { execute.root_variables }
         let(:root_variables_inheritance) { build[:root_variables_inheritance] }
 
         context 'when global variables are defined' do
@@ -1191,6 +1192,78 @@ module Gitlab
               { key: 'VAR3', value: '123' }
             )
             expect(root_variables_inheritance).to eq(true)
+          end
+        end
+
+        context 'when variables have data other than value' do
+          let(:config) do
+            <<~YAML
+            variables:
+              VAR1: value1
+              VAR2:
+                value: value2
+                description: description2
+              VAR3:
+                value: value3
+                expand: false
+
+            rspec:
+              script: rspec
+              variables:
+                VAR4: value4
+                VAR5:
+                  value: value5
+                  expand: false
+                VAR6:
+                  value: value6
+                  expand: true
+            YAML
+          end
+
+          it 'returns variables' do
+            expect(job_variables).to contain_exactly(
+              { key: 'VAR4', value: 'value4' },
+              { key: 'VAR5', value: 'value5', raw: true },
+              { key: 'VAR6', value: 'value6', raw: false }
+            )
+
+            expect(execute.root_variables).to contain_exactly(
+              { key: 'VAR1', value: 'value1' },
+              { key: 'VAR2', value: 'value2' },
+              { key: 'VAR3', value: 'value3', raw: true }
+            )
+
+            expect(execute.root_variables_with_prefill_data).to eq(
+              'VAR1' => { value: 'value1' },
+              'VAR2' => { value: 'value2', description: 'description2' },
+              'VAR3' => { value: 'value3', raw: true }
+            )
+          end
+
+          context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
+            before do
+              stub_feature_flags(ci_raw_variables_in_yaml_config: false)
+            end
+
+            it 'returns variables without description and raw' do
+              expect(job_variables).to contain_exactly(
+                { key: 'VAR4', value: 'value4' },
+                { key: 'VAR5', value: 'value5' },
+                { key: 'VAR6', value: 'value6' }
+              )
+
+              expect(execute.root_variables).to contain_exactly(
+                { key: 'VAR1', value: 'value1' },
+                { key: 'VAR2', value: 'value2' },
+                { key: 'VAR3', value: 'value3' }
+              )
+
+              expect(execute.root_variables_with_prefill_data).to eq(
+                'VAR1' => { value: 'value1' },
+                'VAR2' => { value: 'value2', description: 'description2' },
+                'VAR3' => { value: 'value3' }
+              )
+            end
           end
         end
       end

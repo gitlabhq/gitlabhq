@@ -73,6 +73,10 @@ module Gitlab
         root.variables_entry.value_with_data
       end
 
+      def variables_with_prefill_data
+        root.variables_entry.value_with_prefill_data
+      end
+
       def stages
         root.stages_value
       end

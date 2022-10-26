@@ -74,13 +74,12 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
   end
 
   describe '#with_instrumentation_class' do
-    let(:metric_status) { 'active' }
     let(:all_definitions) do
       metrics_definitions = [
-        { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', status: 'data_available' },
-        { key_path: 'metric2', instrumentation_class: 'RedisHLLMetric', status: 'implemented' },
-        { key_path: 'metric3', instrumentation_class: 'RedisHLLMetric', status: 'deprecated' },
-        { key_path: 'metric4', instrumentation_class: 'RedisHLLMetric', status: metric_status },
+        { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', status: 'active' },
+        { key_path: 'metric2', instrumentation_class: 'RedisHLLMetric', status: 'broken' },
+        { key_path: 'metric3', instrumentation_class: 'RedisHLLMetric', status: 'active' },
+        { key_path: 'metric4', instrumentation_class: 'RedisHLLMetric', status: 'removed' },
         { key_path: 'metric5', status: 'active' },
         { key_path: 'metric_missing_status' }
       ]
@@ -92,7 +91,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     end
 
     it 'includes definitions with instrumentation_class' do
-      expect(described_class.with_instrumentation_class.count).to eq(4)
+      expect(described_class.with_instrumentation_class.count).to eq(3)
     end
 
     context 'with removed metric' do
@@ -201,9 +200,9 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     using RSpec::Parameterized::TableSyntax
 
     where(:status, :skip_validation?) do
-      'deprecated'     | true
-      'removed'        | true
       'active'         | false
+      'broken'         | false
+      'removed'        | true
     end
 
     with_them do

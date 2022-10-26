@@ -29,10 +29,8 @@ RSpec.describe Gitlab::ImportExport::DesignRepoRestorer do
 
     after do
       FileUtils.rm_rf(export_path)
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        FileUtils.rm_rf(project_with_design_repo.design_repository.path_to_repo)
-        FileUtils.rm_rf(project.design_repository.path_to_repo)
-      end
+      project_with_design_repo.design_repository.remove
+      project.design_repository.remove
     end
 
     it 'restores the repo successfully' do
