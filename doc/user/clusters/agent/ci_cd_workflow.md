@@ -58,7 +58,8 @@ Authorization configuration can take one or two minutes to propagate.
 
 ### Authorize the agent to access your projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
 
 To authorize the agent to access the GitLab project where you keep Kubernetes manifests:
 
@@ -72,7 +73,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
        - id: path/to/project
    ```
 
-   - The Kubernetes projects must be in the same group hierarchy as the project where the agent's configuration is.
+   - Authorized projects must have the same root group as the agent's configuration project.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - You can authorize up to 100 projects.
 
@@ -81,7 +82,8 @@ Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 ### Authorize the agent to access projects in your groups
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
 
 To authorize the agent to access all of the GitLab projects in a group or subgroup:
 
@@ -95,7 +97,7 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
        - id: path/to/group/subgroup
    ```
 
-   - The Kubernetes projects must be in the same group hierarchy as the project where the agent's configuration is.
+   - Authorized groups must have the same root group as the agent's configuration project.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - All of the subgroups of an authorized group also have access to the same agent (without being specified individually).
    - You can authorize up to 100 groups.

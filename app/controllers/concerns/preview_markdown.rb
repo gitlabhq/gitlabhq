@@ -41,7 +41,7 @@ module PreviewMarkdown
     case controller_name
     when 'wikis'           then { pipeline: :wiki, wiki: wiki, page_slug: params[:id] }
     when 'snippets'        then { skip_project_check: true }
-    when 'groups'          then { group: group }
+    when 'groups'          then { group: group, issuable_reference_expansion_enabled: true }
     when 'projects'        then projects_filter_params
     when 'timeline_events' then timeline_events_filter_params
     else {}

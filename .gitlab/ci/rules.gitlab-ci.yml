@@ -850,6 +850,8 @@
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
+      changes: ["{package.json,yarn.lock}"]
+    - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
@@ -868,6 +870,9 @@
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       when: never
     - <<: *if-merge-request
+      changes: ["{package.json,yarn.lock}"]
+      when: never
+    - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
       when: never
     - <<: *if-merge-request
@@ -878,6 +883,8 @@
     - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request
+      changes: ["{package.json,yarn.lock}"]
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
 
@@ -886,6 +893,9 @@
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:minimal-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
+      when: never
+    - <<: *if-merge-request
+      changes: ["{package.json,yarn.lock}"]
       when: never
     - <<: *if-fork-merge-request
       when: never

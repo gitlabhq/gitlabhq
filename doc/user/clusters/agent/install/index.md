@@ -45,6 +45,8 @@ For configuration settings, the agent uses a YAML file in the GitLab project. Yo
 - You use [a GitOps workflow](../gitops.md#gitops-workflow-steps).
 - You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#gitlab-cicd-workflow-steps) and want to authorize a different project to use the agent.
 
+Otherwise it is optional.
+
 To create an agent configuration file:
 
 1. Choose a name for your agent. The agent name follows the
