@@ -226,7 +226,7 @@ module Ci
       log_artifacts_context(build)
       log_build_dependencies_size(presented_build)
 
-      build_json = ::API::Entities::Ci::JobRequest::Response.new(presented_build).to_json
+      build_json = Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
       Result.new(build, build_json, true)
     end
 

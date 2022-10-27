@@ -25,17 +25,17 @@
           = render_if_exists 'projects/mirrors/table_pull_row'
           - @project.remote_mirrors.each_with_index do |mirror, index|
             - next if mirror.new_record?
-            %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { qa_selector: 'mirrored_repository_row' } }
-              %td{ data: { qa_selector: 'mirror_repository_url_cell' } }= mirror.safe_url || _('Invalid URL')
+            %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { qa_selector: 'mirrored_repository_row_container' } }
+              %td{ data: { qa_selector: 'mirror_repository_url_content' } }= mirror.safe_url || _('Invalid URL')
               %td= _('Push')
               %td
                 = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')
-              %td{ data: { qa_selector: 'mirror_last_update_at_cell' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
+              %td{ data: { qa_selector: 'mirror_last_update_at_content' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
               %td
                 - if mirror.disabled?
                   = render 'projects/mirrors/disabled_mirror_badge'
                 - if mirror.last_error.present?
-                  = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', qa_selector: 'mirror_error_badge' }, title: html_escape(mirror.last_error.try(:strip)) }
+                  = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', qa_selector: 'mirror_error_badge_content' }, title: html_escape(mirror.last_error.try(:strip)) }
               %td.gl-display-flex
                 - if mirror_settings_enabled
                   .btn-group.mirror-actions-group{ role: 'group' }
@@ -44,4 +44,4 @@
                     = render 'shared/remote_mirror_update_button', remote_mirror: mirror
                     = render Pajamas::ButtonComponent.new(variant: :danger,
                       icon: 'remove',
-                      button_options: { class: 'js-delete-mirror qa-delete-mirror rspec-delete-mirror', title: _('Remove'), data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' } })
+                      button_options: { class: 'js-delete-mirror rspec-delete-mirror', title: _('Remove'), data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' } })

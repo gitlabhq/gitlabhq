@@ -6,25 +6,25 @@ module QA
       module Settings
         class MirroringRepositories < Page::Base
           view 'app/views/projects/mirrors/_authentication_method.html.haml' do
-            element :authentication_method
-            element :password
+            element :authentication_method_field
+            element :password_field
           end
 
           view 'app/views/projects/mirrors/_mirror_repos.html.haml' do
-            element :mirror_repository_url_input
+            element :mirror_repository_url_field
             element :mirror_repository_button
           end
 
           view 'app/views/projects/mirrors/_mirror_repos_list.html.haml' do
-            element :mirror_repository_url_cell
-            element :mirror_last_update_at_cell
-            element :mirror_error_badge
-            element :mirrored_repository_row
+            element :mirror_repository_url_content
+            element :mirror_last_update_at_content
+            element :mirror_error_badge_content
+            element :mirrored_repository_row_container
             element :copy_public_key_button
           end
 
           view 'app/views/projects/mirrors/_mirror_repos_form.html.haml' do
-            element :mirror_direction
+            element :mirror_direction_field
           end
 
           view 'app/views/shared/_remote_mirror_update_button.html.haml' do
@@ -37,28 +37,23 @@ module QA
             element :fingerprints_list
           end
 
-          view 'app/views/projects/mirrors/_authentication_method.html.haml' do
-            element :authentication_method
-            element :password
-          end
-
           def repository_url=(value)
-            fill_element :mirror_repository_url_input, value
+            fill_element :mirror_repository_url_field, value
           end
 
           def password=(value)
-            fill_element :password, value
+            fill_element :password_field, value
           end
 
           def mirror_direction=(value)
             raise ArgumentError, "Mirror direction must be 'Push' or 'Pull'" unless %w[Push Pull].include?(value)
 
-            select_element(:mirror_direction, value)
+            select_element(:mirror_direction_field, value)
 
             # Changing the mirror direction causes the fields below to change,
             # and that change is animated, so we need to wait for the animation
             # to complete otherwise changes to those fields could fail
-            wait_for_animated_element :authentication_method
+            wait_for_animated_element :authentication_method_field
           end
 
           def authentication_method=(value)
@@ -66,13 +61,13 @@ module QA
               raise ArgumentError, "Authentication method must be 'SSH public key', 'Password', or 'None'"
             end
 
-            select_element(:authentication_method, value)
+            select_element(:authentication_method_field, value)
           end
 
           def public_key(url)
             row_index = find_repository_row_index url
 
-            within_element_by_index(:mirrored_repository_row, row_index) do
+            within_element_by_index(:mirrored_repository_row_container, row_index) do
               find_element(:copy_public_key_button)['data-clipboard-text']
             end
           end
@@ -92,7 +87,7 @@ module QA
           def update(url)
             row_index = find_repository_row_index(url)
 
-            within_element_by_index(:mirrored_repository_row, row_index) do
+            within_element_by_index(:mirrored_repository_row_container, row_index) do
               # When a repository is first mirrored, the update process might
               # already be started, so the button is already "clicked"
               click_element :update_now_button unless has_element? :updating_button
@@ -105,16 +100,16 @@ module QA
             row_index = find_repository_row_index(url)
 
             wait_until(sleep_interval: 1) do
-              within_element_by_index(:mirrored_repository_row, row_index) do
-                last_update = find_element(:mirror_last_update_at_cell, wait: 0)
+              within_element_by_index(:mirrored_repository_row_container, row_index) do
+                last_update = find_element(:mirror_last_update_at_content, wait: 0)
                 last_update.has_text?('just now') || last_update.has_text?('seconds')
               end
             end
 
             # Fail early if the page still shows that there has been no update
-            within_element_by_index(:mirrored_repository_row, row_index) do
-              find_element(:mirror_last_update_at_cell, wait: 0).assert_no_text('Never')
-              assert_no_element(:mirror_error_badge)
+            within_element_by_index(:mirrored_repository_row_container, row_index) do
+              find_element(:mirror_last_update_at_content, wait: 0).assert_no_text('Never')
+              assert_no_element(:mirror_error_badge_content)
             end
           end
 
@@ -122,7 +117,7 @@ module QA
 
           def find_repository_row_index(target_url)
             wait_until(max_duration: 5, reload: false) do
-              all_elements(:mirror_repository_url_cell, minimum: 1).index do |url|
+              all_elements(:mirror_repository_url_content, minimum: 1).index do |url|
                 # The url might be a sanitized url but the target_url won't be so
                 # we compare just the paths instead of the full url
                 URI.parse(url.text).path == target_url.path

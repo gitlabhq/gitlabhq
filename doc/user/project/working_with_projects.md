@@ -516,7 +516,6 @@ If a project or repository has been updated but the state is not reflected in th
 You can do so through [a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and one of the following:
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
@@ -546,7 +545,6 @@ end
 If a project cannot be deleted, you can attempt to delete it through [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
@@ -571,7 +569,6 @@ To toggle a specific feature, you can [start a Rails console session](../../admi
 and run the following function:
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby

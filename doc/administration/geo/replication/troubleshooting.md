@@ -317,7 +317,6 @@ sudo gitlab-rake gitlab:geo:check
 to gather the following, basic troubleshooting information.
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 #### Get the number of verification failed repositories
@@ -855,7 +854,6 @@ therefore short-circuited. `last_sync_failure` is now set to `The file is missin
 examples, but things generally work the same for the other types.
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 #### The Replicator

@@ -11,7 +11,7 @@ module QA
         include Shared::Editor
 
         view 'app/views/projects/blob/_editor.html.haml' do
-          element :file_name, "text_field_tag 'file_name'" # rubocop:disable QA/ElementWithPattern
+          element :file_name_field
         end
 
         view 'app/views/projects/blob/_template_selectors.html.haml' do
@@ -23,7 +23,7 @@ module QA
         end
 
         def add_name(name)
-          fill_in 'file_name', with: name
+          fill_element(:file_name_field, with: name)
         end
 
         def select_template(template_type, template)

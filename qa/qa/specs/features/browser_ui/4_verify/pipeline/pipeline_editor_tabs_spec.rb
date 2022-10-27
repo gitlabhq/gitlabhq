@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline editor', :reliable do
+    describe 'Pipeline editor', :reliable, product_group: :pipeline_authoring do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pipeline-editor-project'

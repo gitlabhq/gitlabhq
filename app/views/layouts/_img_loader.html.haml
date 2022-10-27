@@ -12,6 +12,7 @@
         img.src = imgUrl;
         img.removeAttribute('data-src');
         img.classList.remove('lazy');
-        img.classList.add('js-lazy-loaded', 'qa-js-lazy-loaded');
+        img.classList.add('js-lazy-loaded');
+        img.dataset.qa_selector = 'js_lazy_loaded_content';
       });
     }

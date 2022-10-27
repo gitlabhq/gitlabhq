@@ -38,7 +38,7 @@ module QA
           # webdriver to miss the hit so we wait for the svg to load before
           # clicking the button.
           within_element(:svg_content) do
-            has_element?(:js_lazy_loaded)
+            has_element?(:js_lazy_loaded_content)
           end
 
           click_element(:create_first_page_link)

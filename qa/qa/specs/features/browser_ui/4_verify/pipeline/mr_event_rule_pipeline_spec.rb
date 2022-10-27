@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     context 'When job is configured to only run on merge_request_events' do
       let(:mr_only_job_name) { 'mr_only_job' }
       let(:non_mr_only_job_name) { 'non_mr_only_job' }

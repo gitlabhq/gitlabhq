@@ -1,7 +1,16 @@
+---
+title: GitLab Flavored Markdown (GLFM) Spec
+version: alpha
+...
+# Introduction
+
+TODO: Write a GitLab-specific version of the GitHub Flavored Markdown intro section.
+
+<!-- BEGIN TESTS -->
 # GitLab Official Specification Markdown
 
 Currently, only some of the GitLab-specific markdown features are
-listed in this section. We will eventually add all
+listed in this section. We may eventually add all
 GitLab-specific features currently listed as supported in the
 [user-facing documentation for GitLab Flavored Markdown](https://docs.gitlab.com/ee/user/markdown.html).
 
@@ -275,3 +284,4 @@ A table of contents can be indented with up to three spaces.
 </nav>
 <h1>Heading 1</h1>
 ````````````````````````````````
+<!-- END TESTS -->

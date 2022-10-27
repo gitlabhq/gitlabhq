@@ -70,8 +70,8 @@ POST /projects/:id/feature_flags_user_lists
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
-| `name`              | string           | yes        | The name of the feature flag. |
-| `user_xids`         | string           | yes        | A comma-separated list of user IDs. |
+| `name`              | string           | yes        | The name of the list. |
+| `user_xids`         | string           | yes        | A comma-separated list of external user IDs. |
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists" \
@@ -142,8 +142,8 @@ PUT /projects/:id/feature_flags_user_lists/:iid
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).       |
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
-| `name`              | string           | no         | The name of the feature flag.                                                          |
-| `user_xids`         | string           | no         | A comma-separated list of user IDs.                                                    |
+| `name`              | string           | no         | The name of the list.                                                          |
+| `user_xids`         | string           | no         | A comma-separated list of external user IDs.                                                    |
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1" \

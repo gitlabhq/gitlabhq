@@ -150,11 +150,16 @@ RSpec.describe Git::BaseHooksService do
     end
 
     shared_examples 'creates pipeline with params and expected variables' do
+      let(:pipeline_service) { double(execute: service_response) }
+      let(:service_response) { double(error?: false, payload: pipeline, message: "Error") }
+      let(:pipeline) { double(persisted?: true) }
+
       it 'calls the create pipeline service' do
         expect(Ci::CreatePipelineService)
           .to receive(:new)
           .with(project, user, pipeline_params)
-          .and_return(double(execute!: true))
+          .and_return(pipeline_service)
+        expect(subject).not_to receive(:log_pipeline_errors)
 
         subject.execute
       end
@@ -237,6 +242,143 @@ RSpec.describe Git::BaseHooksService do
       end
 
       it_behaves_like 'creates pipeline with params and expected variables'
+    end
+  end
+
+  describe "Pipeline creation" do
+    context "when refactored_create_pipeline_execution_method feature flag is disabled" do
+      before do
+        stub_feature_flags(refactored_create_pipeline_execution_method: false)
+      end
+
+      let(:pipeline_params) do
+        {
+          after: newrev,
+          before: oldrev,
+          checkout_sha: checkout_sha,
+          push_options: push_options,
+          ref: ref,
+          variables_attributes: variables_attributes
+        }
+      end
+
+      let(:push_options) { {} }
+      let(:variables_attributes) { [] }
+
+      context 'creates pipeline with params and expected variables' do
+        it 'calls the create pipeline service' do
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+            .with(project, user, pipeline_params)
+            .and_return(double(execute!: true))
+
+          subject.execute
+        end
+      end
+
+      context 'when logs pipeline errors' do
+        let(:pipeline) { double(persisted?: false) }
+        let(:service_response) { double(error?: true, payload: pipeline, message: "Error") }
+        let(:create_error_string) { Ci::CreatePipelineService::CreateError.new.to_s }
+
+        before do
+          allow(Ci::CreatePipelineService).to receive(:new) { raise Ci::CreatePipelineService::CreateError }
+        end
+
+        it 'raises an error' do
+          expect(subject)
+          .to receive(:log_pipeline_errors)
+          .with(create_error_string)
+          .and_call_original
+
+          subject.execute
+        end
+      end
+    end
+
+    context "when refactored_create_pipeline_execution_method feature flag is enabled" do
+      before do
+        stub_feature_flags(refactored_create_pipeline_execution_method: project)
+      end
+
+      let(:pipeline_params) do
+        {
+          after: newrev,
+          before: oldrev,
+          checkout_sha: checkout_sha,
+          push_options: push_options,
+          ref: ref,
+          variables_attributes: variables_attributes
+        }
+      end
+
+      let(:pipeline_service) { double(execute: service_response) }
+      let(:push_options) { {} }
+      let(:variables_attributes) { [] }
+
+      context "when the pipeline is persisted" do
+        let(:pipeline) { double(persisted?: true) }
+
+        context "and there are no errors" do
+          let(:service_response) { double(error?: false, payload: pipeline, message: "Error") }
+
+          it "returns success" do
+            expect(Ci::CreatePipelineService)
+              .to receive(:new)
+              .with(project, user, pipeline_params)
+              .and_return(pipeline_service)
+
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
+
+        context "and there are errors" do
+          let(:service_response) { double(error?: true, payload: pipeline, message: "Error") }
+
+          it "does not log errors and returns success" do
+            # This behaviour is due to the save_on_errors: true setting that is the default in the execute method.
+            expect(Ci::CreatePipelineService)
+              .to receive(:new)
+              .with(project, user, pipeline_params)
+              .and_return(pipeline_service)
+            expect(subject).not_to receive(:log_pipeline_errors).with(service_response.message)
+
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
+      end
+
+      context "when the pipeline wasnt persisted" do
+        let(:pipeline) { double(persisted?: false) }
+
+        context "and there are no errors" do
+          let(:service_response) { double(error?: false, payload: pipeline, message: nil) }
+
+          it "returns success" do
+            expect(Ci::CreatePipelineService)
+              .to receive(:new)
+              .with(project, user, pipeline_params)
+              .and_return(pipeline_service)
+            expect(subject).to receive(:log_pipeline_errors).with(service_response.message)
+
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
+
+        context "and there are errors" do
+          let(:service_response) { double(error?: true, payload: pipeline, message: "Error") }
+
+          it "logs errors and returns success" do
+            expect(Ci::CreatePipelineService)
+              .to receive(:new)
+              .with(project, user, pipeline_params)
+              .and_return(pipeline_service)
+            expect(subject).to receive(:log_pipeline_errors).with(service_response.message)
+
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
+      end
     end
   end
 end

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# DEPRECATED
+#
+# To be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/366573
 class ClusterConfigureIstioWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
@@ -10,9 +13,5 @@ class ClusterConfigureIstioWorker # rubocop:disable Scalability/IdempotentWorker
 
   worker_has_external_dependencies!
 
-  def perform(cluster_id)
-    Clusters::Cluster.find_by_id(cluster_id).try do |cluster|
-      Clusters::Kubernetes::ConfigureIstioIngressService.new(cluster: cluster).execute
-    end
-  end
+  def perform(cluster_id); end
 end

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Add or Remove CI variable via UI', :smoke do
+    describe 'Add or Remove CI variable via UI', :smoke, product_group: :pipeline_authoring do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project-with-ci-variables'

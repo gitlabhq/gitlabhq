@@ -5,10 +5,10 @@
   = f.label :auth_method, _('Authentication method'), class: 'label-bold'
   = f.select :auth_method,
       options_for_select(auth_options, mirror.auth_method),
-      {}, { class: "custom-select gl-form-select js-mirror-auth-type qa-authentication-method" }
+      {}, { class: "custom-select gl-form-select js-mirror-auth-type", data: { qa_selector: 'authentication_method_field' } }
   = f.hidden_field :auth_method, value: "password", class: "js-hidden-mirror-auth-type"
 
 .form-group
   .well-password-auth.collapse.js-well-password-auth
     = f.label :password, _("Password"), class: "label-bold"
-    = f.password_field :password, class: 'form-control gl-form-input qa-password js-mirror-password-field', autocomplete: 'off'
+    = f.password_field :password, class: 'form-control gl-form-input js-mirror-password-field', autocomplete: 'off', data: { qa_selector: 'password_field' }

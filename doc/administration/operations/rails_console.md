@@ -736,7 +736,6 @@ ApplicationSetting.current
 ### Open object in `irb`
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:

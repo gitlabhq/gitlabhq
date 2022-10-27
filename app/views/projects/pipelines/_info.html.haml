@@ -19,7 +19,7 @@
       = s_("Pipelines|(queued for %{queued_duration})") % { queued_duration: time_interval_in_words(@pipeline.queued_duration)}
 
   - if has_pipeline_badges?(@pipeline)
-    .well-segment.qa-pipeline-badges
+    .well-segment
       .icon-container
         = sprite_icon('flag', css_class: 'gl-top-0!')
       - if @pipeline.schedule?

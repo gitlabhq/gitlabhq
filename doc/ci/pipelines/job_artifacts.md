@@ -396,7 +396,19 @@ a project, you can disable this behavior to save space:
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
-## Troubleshooting job artifacts
+## Troubleshooting
+
+### Job does not retrieve certain artifacts
+
+By default, jobs fetch all artifacts from previous stages, but jobs using `dependencies`
+or `needs` do not fetch artifacts from all jobs by default.
+
+If you use these keywords, artifacts are fetched from only a subset of jobs. Review
+the keyword reference for information on how to fetch artifacts with these keywords:
+
+- [`dependencies`](../yaml/index.md#dependencies)
+- [`needs`](../yaml/index.md#needs)
+- [`needs:artifacts`](../yaml/index.md#needsartifacts)
 
 ### Error message `No files to upload`
 

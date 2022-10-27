@@ -95,10 +95,12 @@ module Projects
       end
 
       def request_body(oids)
-        {
+        body = {
           operation: DOWNLOAD_ACTION,
           objects: oids.map { |oid, size| { oid: oid, size: size } }
-        }.to_json
+        }
+
+        Gitlab::Json.dump(body)
       end
 
       def headers

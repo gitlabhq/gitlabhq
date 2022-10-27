@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Update CI file with pipeline editor' do
+    describe 'Update CI file with pipeline editor', product_group: :pipeline_authoring do
       let(:random_test_string) { SecureRandom.hex(10) }
 
       let(:project) do

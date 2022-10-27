@@ -1,3 +1,4 @@
+<!-- BEGIN TESTS -->
 # GitLab Internal Extension Markdown
 
 ## Audio
@@ -109,3 +110,4 @@ also requires an EE license enabling the `group_wikis` feature:
 .
 <p><a href="group-wikis-test-file">group-wikis-test-file</a></p>
 ````````````````````````````````
+<!-- END TESTS -->

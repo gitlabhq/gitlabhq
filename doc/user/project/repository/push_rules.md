@@ -304,7 +304,6 @@ For example, to enable **Check whether the commit author is a GitLab user** and 
 and create a filter for allowing commits from a specific email domain only through rails console:
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ``` ruby

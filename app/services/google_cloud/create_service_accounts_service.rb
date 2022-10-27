@@ -10,8 +10,8 @@ module GoogleCloud
       service_accounts_service.add_for_project(
         environment_name,
         service_account.project_id,
-        service_account.to_json,
-        service_account_key.to_json,
+        Gitlab::Json.dump(service_account),
+        Gitlab::Json.dump(service_account_key),
         ProtectedBranch.protected?(project, environment_name) || ProtectedTag.protected?(project, environment_name)
       )
 

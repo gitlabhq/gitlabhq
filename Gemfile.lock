@@ -321,7 +321,7 @@ GEM
       gitlab (~> 4.2, >= 4.2.0)
     database_cleaner (1.7.0)
     dead_end (3.1.1)
-    deckar01-task_list (2.3.1)
+    deckar01-task_list (2.3.2)
       html-pipeline
     declarative (0.0.20)
     declarative-option (0.1.0)
@@ -1584,7 +1584,7 @@ DEPENDENCIES
   crystalball (~> 0.7.0)
   cvss-suite (~> 3.0.1)
   database_cleaner (~> 1.7.0)
-  deckar01-task_list (= 2.3.1)
+  deckar01-task_list (= 2.3.2)
   declarative_policy (~> 1.1.0)
   default_value_for (~> 3.4.0)
   deprecation_toolkit (~> 1.5.1)

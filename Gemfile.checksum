@@ -97,7 +97,7 @@
 {"name":"danger-gitlab","version":"8.0.0","platform":"ruby","checksum":"497dd7d0f6513913de651019223d8058cf494df10acbd17de92b175dfa04a3a8"},
 {"name":"database_cleaner","version":"1.7.0","platform":"ruby","checksum":"bdf833c197afac7054015bcde2567c3834c366bbfe6a377c30151ca984b32016"},
 {"name":"dead_end","version":"3.1.1","platform":"ruby","checksum":"1011df7f7c0149be004e11cbbc37747760227c55305cd902fd3c06e1394b2f5b"},
-{"name":"deckar01-task_list","version":"2.3.1","platform":"ruby","checksum":"205a08c22a8f05c063d43c452aeada4214b58fdce1e55e92ec709e2cfb9e7ca1"},
+{"name":"deckar01-task_list","version":"2.3.2","platform":"ruby","checksum":"5a19092548d24309d8b2c2704d64cdc08a4a615823c9a722f4142edec1de8805"},
 {"name":"declarative","version":"0.0.20","platform":"ruby","checksum":"8021dd6cb17ab2b61233c56903d3f5a259c5cf43c80ff332d447d395b17d9ff9"},
 {"name":"declarative-option","version":"0.1.0","platform":"ruby","checksum":"17508349f51c5631e5ad4158c29f78a4b2de618abffa066d76c11953705f91bc"},
 {"name":"declarative_policy","version":"1.1.0","platform":"ruby","checksum":"9af4cf299ade03f2bbf63908f2ce6a117d132fc714c39a128596667fb13331cb"},

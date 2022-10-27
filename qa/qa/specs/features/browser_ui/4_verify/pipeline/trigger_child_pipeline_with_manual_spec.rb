@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
     describe "Trigger child pipeline with 'when:manual'" do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
 

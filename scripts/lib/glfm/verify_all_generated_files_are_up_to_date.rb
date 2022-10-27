@@ -12,7 +12,7 @@ module Glfm
     include Shared
 
     def process
-      verify_cmd = "git status --porcelain #{GLFM_SPEC_OUTPUT_PATH} #{EXAMPLE_SNAPSHOTS_PATH}"
+      verify_cmd = "git status --porcelain #{GLFM_OUTPUT_SPEC_PATH} #{ES_OUTPUT_EXAMPLE_SNAPSHOTS_PATH}"
       verify_cmd_output = run_external_cmd(verify_cmd)
       unless verify_cmd_output.empty?
         msg = "ERROR: Cannot run `#{__FILE__}` because `#{verify_cmd}` shows the following uncommitted changes:\n" \

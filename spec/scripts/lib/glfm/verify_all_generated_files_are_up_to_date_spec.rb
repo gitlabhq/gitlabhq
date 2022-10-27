@@ -9,8 +9,8 @@ require_relative '../../../../scripts/lib/glfm/verify_all_generated_files_are_up
 RSpec.describe Glfm::VerifyAllGeneratedFilesAreUpToDate, '#process' do
   subject { described_class.new }
 
-  let(:output_path) { described_class::GLFM_SPEC_OUTPUT_PATH }
-  let(:snapshots_path) { described_class::EXAMPLE_SNAPSHOTS_PATH }
+  let(:output_path) { described_class::GLFM_OUTPUT_SPEC_PATH }
+  let(:snapshots_path) { described_class::ES_OUTPUT_EXAMPLE_SNAPSHOTS_PATH }
   let(:verify_cmd) { "git status --porcelain #{output_path} #{snapshots_path}" }
 
   before do

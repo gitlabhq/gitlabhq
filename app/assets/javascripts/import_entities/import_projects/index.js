@@ -39,7 +39,7 @@ export function initStoreFromElement(element) {
 
 export function initPropsFromElement(element) {
   return {
-    providerTitle: element.dataset.provider,
+    providerTitle: element.dataset.providerTitle,
     filterable: parseBoolean(element.dataset.filterable),
     paginatable: parseBoolean(element.dataset.paginatable),
     optionalStages: JSON.parse(element.dataset.optionalStages),

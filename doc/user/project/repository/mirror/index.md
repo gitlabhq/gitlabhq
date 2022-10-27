@@ -326,7 +326,6 @@ repository mirroring, mirroring breaks when people leave the company. Use this
 script to migrate disparate mirroring users and tokens into a single service account:
 
 WARNING:
-
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby

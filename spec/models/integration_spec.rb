@@ -15,6 +15,23 @@ RSpec.describe Integration do
     it { is_expected.to have_one(:jira_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:integration_id).class_name('Integrations::JiraTrackerData') }
   end
 
+  describe 'default values' do
+    it { is_expected.to be_alert_events }
+    it { is_expected.to be_commit_events }
+    it { is_expected.to be_confidential_issues_events }
+    it { is_expected.to be_confidential_note_events }
+    it { is_expected.to be_issues_events }
+    it { is_expected.to be_job_events }
+    it { is_expected.to be_merge_requests_events }
+    it { is_expected.to be_note_events }
+    it { is_expected.to be_pipeline_events }
+    it { is_expected.to be_push_events }
+    it { is_expected.to be_tag_push_events }
+    it { is_expected.to be_wiki_page_events }
+    it { is_expected.not_to be_active }
+    it { expect(subject.category).to eq(:common) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:type) }
     it { is_expected.to validate_exclusion_of(:type).in_array(described_class::BASE_CLASSES) }

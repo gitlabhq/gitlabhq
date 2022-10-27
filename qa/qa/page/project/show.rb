@@ -32,7 +32,7 @@ module QA
         end
 
         view 'app/views/projects/_last_push.html.haml' do
-          element :create_merge_request
+          element :create_merge_request_button
         end
 
         view 'app/views/projects/_home_panel.html.haml' do
@@ -54,7 +54,7 @@ module QA
         end
 
         view 'app/views/projects/empty.html.haml' do
-          element :quick_actions
+          element :quick_actions_container
         end
 
         view 'app/assets/javascripts/repository/components/breadcrumbs.vue' do
@@ -72,7 +72,7 @@ module QA
         end
 
         view 'app/views/projects/blob/viewers/_loading.html.haml' do
-          element :spinner
+          element :spinner_placeholder
         end
 
         view 'app/views/projects/buttons/_download.html.haml' do
@@ -80,11 +80,11 @@ module QA
         end
 
         def wait_for_viewers_to_load
-          has_no_element?(:spinner, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+          has_no_element?(:spinner_placeholder, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
         end
 
         def create_first_new_file!
-          within_element(:quick_actions) do
+          within_element(:quick_actions_container) do
             click_link_with_text 'New file'
           end
         end
@@ -122,7 +122,7 @@ module QA
         end
 
         def has_create_merge_request_button?
-          has_css?(element_selector_css(:create_merge_request))
+          has_css?(element_selector_css(:create_merge_request_button))
         end
 
         def has_file?(name)
@@ -152,7 +152,7 @@ module QA
             has_create_merge_request_button?
           end
 
-          click_element :create_merge_request
+          click_element :create_merge_request_button
         end
 
         def open_web_ide!

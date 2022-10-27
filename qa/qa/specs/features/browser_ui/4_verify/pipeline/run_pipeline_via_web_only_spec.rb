@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Run pipeline', :reliable do
+    describe 'Run pipeline', :reliable, product_group: :pipeline_execution do
       context 'with web only rule' do
         let(:job_name) { 'test_job' }
         let(:project) do

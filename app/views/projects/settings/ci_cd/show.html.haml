@@ -57,7 +57,7 @@
     .settings-content
       #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/pipelines/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
 
-%section.qa-variables-settings.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
+%section.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
   .settings-header
     = render 'ci/variables/header', expanded: expanded
   .settings-content

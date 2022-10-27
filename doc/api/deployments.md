@@ -23,7 +23,7 @@ GET /projects/:id/deployments
 | `updated_after`  | datetime       | no       | Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime       | no       | Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `environment`    | string         | no       | The [name of the environment](../ci/environments/index.md) to filter deployments by.       |
-| `status`         | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, `blocked`.
+| `status`         | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"
@@ -487,7 +487,11 @@ curl --request "DELETE" --header "PRIVATE-TOKEN: <your_access_token>" "https://g
 Example responses:
 
 ```json
-{ "message": "202 Accepted" }
+{ "message": "204 Deployment destroyed" }
+```
+
+```json
+{ "message": "403 Forbidden" }
 ```
 
 ```json

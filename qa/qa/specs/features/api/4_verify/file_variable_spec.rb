@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, feature_flag: {
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring, feature_flag: {
     name: 'ci_stop_expanding_file_vars_for_runners',
     scope: :project
   } do

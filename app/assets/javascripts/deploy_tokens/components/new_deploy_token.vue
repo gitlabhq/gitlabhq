@@ -233,13 +233,7 @@ export default {
       :description="$options.translations.addTokenNameDescription"
       label-for="deploy_token_name"
     >
-      <gl-form-input
-        id="deploy_token_name"
-        v-model="name"
-        name="deploy_token_name"
-        class="qa-deploy-token-name"
-        data-qa-selector="deploy_token_name_field"
-      />
+      <gl-form-input id="deploy_token_name" v-model="name" name="deploy_token_name" />
     </gl-form-group>
     <gl-form-group
       :label="$options.translations.addTokenExpiryLabel"

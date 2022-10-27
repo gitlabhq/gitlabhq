@@ -18081,6 +18081,7 @@ Counts of requirements by their state.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="runnerpermissionsassignrunner"></a>`assignRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `assign_runner` on this resource. |
 | <a id="runnerpermissionsdeleterunner"></a>`deleteRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_runner` on this resource. |
 | <a id="runnerpermissionsreadrunner"></a>`readRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `read_runner` on this resource. |
 | <a id="runnerpermissionsupdaterunner"></a>`updateRunner` | [`Boolean!`](#boolean) | Indicates the user can perform `update_runner` on this resource. |

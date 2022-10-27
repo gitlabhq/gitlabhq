@@ -121,3 +121,13 @@ To resolve this, ensure that:
 - If you have set the `TF_HTTP_PASSWORD` CI/CD variable, make sure that you either:
   - Set the same value as `TF_PASSWORD`
   - Remove `TF_HTTP_PASSWORD` variable if your CI/CD job does not explicitly use it.
+
+### Enable Developer role access to destructive commands
+
+To permit a user with the Developer role to run destructive commands, you need a workaround:
+
+1. [Create a project access token](../../project/settings/project_access_tokens.md#create-a-project-access-token) with `api` scope.
+1. Add `TF_USERNAME` and `TF_PASSWORD` to your CI/CD variables:
+   1. Set the value of `TF_USERNAME` to the username of your project access token.
+   1. Set the value of `TF_PASSWORD` to the password of your project access token.
+   1. Optional. Protect the variables to make them only available in pipelines that run on protected branches or protected tags.
