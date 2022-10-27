@@ -54,7 +54,7 @@ RSpec.describe Experiment do
       end
 
       context 'with an existing context' do
-        let(:experiment_subject) { create(:experiment_subject, experiment: experiment, user: user, converted_at: 2.days.ago, context: { b: 1 } ) }
+        let(:experiment_subject) { create(:experiment_subject, experiment: experiment, user: user, converted_at: 2.days.ago, context: { b: 1 }) }
 
         it 'merges the context' do
           expect { record_conversion }.to change { experiment_subject.reload.context }.to('a' => 42, 'b' => 1)

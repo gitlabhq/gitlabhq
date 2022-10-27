@@ -4173,7 +4173,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let(:pipeline) { create(:ci_pipeline) }
     let!(:old_job) { create(:ci_build, name: 'rspec', retried: true, pipeline: pipeline) }
     let!(:job_without_artifacts) { create(:ci_build, name: 'rspec', pipeline: pipeline) }
-    let!(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline ) }
+    let!(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline) }
     let!(:different_job) { create(:ci_build, name: 'deploy', pipeline: pipeline) }
 
     subject { pipeline.find_job_with_archive_artifacts('rspec') }

@@ -108,7 +108,7 @@ RSpec.describe PersonalAccessToken do
     describe '.last_used_before' do
       context 'last_used_*' do
         let_it_be(:date) { DateTime.new(2022, 01, 01) }
-        let_it_be(:token) { create(:personal_access_token, last_used_at: date ) }
+        let_it_be(:token) { create(:personal_access_token, last_used_at: date) }
         # This token should never occur in the following tests and indicates that filtering was done correctly with it
         let_it_be(:never_used_token) { create(:personal_access_token) }
 

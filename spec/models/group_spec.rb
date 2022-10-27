@@ -2556,7 +2556,7 @@ RSpec.describe Group do
       end
 
       context 'when parent does not allow' do
-        let_it_be(:parent, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false ) }
+        let_it_be(:parent, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false) }
         let_it_be(:group, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent: parent) }
 
         it 'raises exception' do

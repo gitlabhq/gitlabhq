@@ -309,7 +309,7 @@ RSpec.describe Ci::Bridge do
       end
 
       context 'when the pipeline runs from a pipeline schedule' do
-        let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
+        let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
         let(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
 
         let(:options) do

@@ -152,6 +152,33 @@ RSpec.describe 'Profile > Password' do
       it_behaves_like 'user enters an incorrect current password'
     end
 
+    context 'when the password is too weak' do
+      let(:new_password) { 'password' }
+
+      subject do
+        page.within '.update-password' do
+          fill_in "user_password", with: user.password
+          fill_passwords(new_password, new_password)
+        end
+      end
+
+      it 'tracks the error and does not change the password', :aggregate_failures do
+        expect { subject }.not_to change { user.reload.valid_password?(new_password) }
+        expect(user.failed_attempts).to eq(0)
+
+        page.within '.gl-alert-danger' do
+          expect(page).to have_content('must not contain commonly used combinations of words and letters')
+        end
+
+        expect_snowplow_event(
+          category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+          action: 'track_weak_password_error',
+          controller: 'Profiles::PasswordsController',
+          method: 'update'
+        )
+      end
+    end
+
     context 'when the password reset is successful' do
       subject do
         page.within '.update-password' do
@@ -193,6 +220,23 @@ RSpec.describe 'Profile > Password' do
       click_button 'Set new password'
 
       expect(page).to have_current_path new_user_session_path, ignore_query: true
+    end
+
+    it 'tracks weak password error' do
+      visit edit_profile_password_path
+
+      expect(page).to have_current_path new_profile_password_path, ignore_query: true
+
+      fill_in :user_password,      with: user.password
+      fill_in :user_new_password,  with: "password"
+      fill_in :user_password_confirmation, with: "password"
+      click_button 'Set new password'
+      expect_snowplow_event(
+        category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+        action: 'track_weak_password_error',
+        controller: 'Profiles::PasswordsController',
+        method: 'create'
+      )
     end
 
     context 'when global require_two_factor_authentication is enabled' do

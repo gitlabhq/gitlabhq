@@ -3,7 +3,6 @@
 # Accessible as Project#external_issue_tracker
 module Integrations
   class Jira < BaseIssueTracker
-    extend ::Gitlab::Utils::Override
     include Gitlab::Routing
     include ApplicationHelper
     include ActionView::Helpers::AssetUrlHelper

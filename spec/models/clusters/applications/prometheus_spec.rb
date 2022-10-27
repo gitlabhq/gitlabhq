@@ -130,7 +130,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     end
 
     context 'with knative installed' do
-      let(:knative) { create(:clusters_applications_knative, :updated ) }
+      let(:knative) { create(:clusters_applications_knative, :updated) }
       let(:prometheus) { create(:clusters_applications_prometheus, cluster: knative.cluster) }
 
       subject { prometheus.install_command }
@@ -161,7 +161,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     end
 
     describe '#predelete' do
-      let(:knative) { create(:clusters_applications_knative, :updated ) }
+      let(:knative) { create(:clusters_applications_knative, :updated) }
       let(:prometheus) { create(:clusters_applications_prometheus, cluster: knative.cluster) }
 
       subject { prometheus.uninstall_command.predelete }

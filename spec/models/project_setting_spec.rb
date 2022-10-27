@@ -70,7 +70,7 @@ RSpec.describe ProjectSetting, type: :model do
 
   describe '#show_diff_preview_in_email?' do
     context 'when a project is a top-level namespace' do
-      let(:project_settings ) { create(:project_setting, show_diff_preview_in_email: false) }
+      let(:project_settings) { create(:project_setting, show_diff_preview_in_email: false) }
       let(:project) { create(:project, project_setting: project_settings) }
 
       context 'when show_diff_preview_in_email is disabled' do
@@ -80,7 +80,7 @@ RSpec.describe ProjectSetting, type: :model do
       end
 
       context 'when show_diff_preview_in_email is enabled' do
-        let(:project_settings ) { create(:project_setting, show_diff_preview_in_email: true) }
+        let(:project_settings) { create(:project_setting, show_diff_preview_in_email: true) }
 
         it 'returns true' do
           settings = create(:project_setting, show_diff_preview_in_email: true)

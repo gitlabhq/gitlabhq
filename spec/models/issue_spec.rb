@@ -654,7 +654,7 @@ RSpec.describe Issue do
     let_it_be(:authorized_issue_a) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_b) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_c) { create(:issue, project: authorized_project2) }
-    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project ) }
+    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project) }
 
     let_it_be(:unauthorized_issue) { create(:issue, project: unauthorized_project) }
 

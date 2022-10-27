@@ -3,7 +3,6 @@
 module Integrations
   class Datadog < Integration
     include HasWebHook
-    extend Gitlab::Utils::Override
 
     DEFAULT_DOMAIN = 'datadoghq.com'
     URL_TEMPLATE = 'https://webhook-intake.%{datadog_domain}/api/v2/webhook'

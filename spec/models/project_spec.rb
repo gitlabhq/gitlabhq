@@ -4508,7 +4508,7 @@ RSpec.describe Project, factory_default: :keep do
       project_2 = create(:project, :public, :merge_requests_disabled)
       project_3 = create(:project, :public, :issues_disabled)
       project_4 = create(:project, :public)
-      project_4.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE )
+      project_4.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE)
 
       project_ids = described_class.ids_with_issuables_available_for(user).pluck(:id)
 
@@ -7125,7 +7125,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#export_in_progress?' do
     let(:project) { build(:project) }
-    let!(:project_export_job ) { create(:project_export_job, project: project) }
+    let!(:project_export_job) { create(:project_export_job, project: project) }
 
     context 'when project export is enqueued' do
       it { expect(project.export_in_progress?).to be false }
@@ -7150,7 +7150,7 @@ RSpec.describe Project, factory_default: :keep do
 
   describe '#export_status' do
     let(:project) { build(:project) }
-    let!(:project_export_job ) { create(:project_export_job, project: project) }
+    let!(:project_export_job) { create(:project_export_job, project: project) }
 
     context 'when project export is enqueued' do
       it { expect(project.export_status).to eq :queued }
@@ -7174,7 +7174,7 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'when project export is being regenerated' do
-      let!(:new_project_export_job ) { create(:project_export_job, project: project) }
+      let!(:new_project_export_job) { create(:project_export_job, project: project) }
 
       before do
         finish_job(project_export_job)

@@ -427,7 +427,7 @@ RSpec.describe DeployToken do
   end
 
   describe '.gitlab_deploy_token' do
-    let(:project) { create(:project ) }
+    let(:project) { create(:project) }
 
     subject { project.deploy_tokens.gitlab_deploy_token }
 

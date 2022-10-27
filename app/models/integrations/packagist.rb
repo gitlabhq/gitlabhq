@@ -3,7 +3,6 @@
 module Integrations
   class Packagist < Integration
     include HasWebHook
-    extend Gitlab::Utils::Override
 
     field :username,
       title: -> { s_('Username') },

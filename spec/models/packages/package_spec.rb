@@ -969,12 +969,12 @@ RSpec.describe Packages::Package, type: :model do
   end
 
   context 'sorting' do
-    let_it_be(:project) { create(:project, name: 'aaa' ) }
-    let_it_be(:project2) { create(:project, name: 'bbb' ) }
-    let_it_be(:package1) { create(:package, project: project ) }
-    let_it_be(:package2) { create(:package, project: project2 ) }
-    let_it_be(:package3) { create(:package, project: project2 ) }
-    let_it_be(:package4) { create(:package, project: project ) }
+    let_it_be(:project) { create(:project, name: 'aaa') }
+    let_it_be(:project2) { create(:project, name: 'bbb') }
+    let_it_be(:package1) { create(:package, project: project) }
+    let_it_be(:package2) { create(:package, project: project2) }
+    let_it_be(:package3) { create(:package, project: project2) }
+    let_it_be(:package4) { create(:package, project: project) }
 
     it 'orders packages by their projects name ascending' do
       expect(Packages::Package.order_project_name).to eq([package1, package4, package2, package3])

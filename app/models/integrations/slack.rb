@@ -3,7 +3,6 @@
 module Integrations
   class Slack < BaseChatNotification
     include SlackMattermostNotifier
-    extend ::Gitlab::Utils::Override
 
     SUPPORTED_EVENTS_FOR_USAGE_LOG = %w[
       push issue confidential_issue merge_request note confidential_note

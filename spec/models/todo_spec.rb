@@ -498,7 +498,7 @@ RSpec.describe Todo do
 
   describe '.for_internal_notes' do
     it 'returns todos created from internal notes' do
-      internal_note = create(:note, confidential: true )
+      internal_note = create(:note, confidential: true)
       todo = create(:todo, note: internal_note)
       create(:todo)
 

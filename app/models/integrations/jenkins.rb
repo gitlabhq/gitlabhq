@@ -5,7 +5,6 @@ module Integrations
     include HasWebHook
 
     prepend EnableSslVerification
-    extend Gitlab::Utils::Override
 
     field :jenkins_url,
       title: -> { s_('ProjectService|Jenkins server URL') },

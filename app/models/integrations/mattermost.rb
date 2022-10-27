@@ -3,7 +3,6 @@
 module Integrations
   class Mattermost < BaseChatNotification
     include SlackMattermostNotifier
-    extend ::Gitlab::Utils::Override
 
     def title
       s_('Mattermost notifications')

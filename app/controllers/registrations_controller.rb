@@ -9,6 +9,7 @@ class RegistrationsController < Devise::RegistrationsController
   include BizibleCSP
   include GoogleAnalyticsCSP
   include RegistrationsTracking
+  include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
   layout 'devise'
 
@@ -41,6 +42,7 @@ class RegistrationsController < Devise::RegistrationsController
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
       send_custom_confirmation_instructions(new_user, token)
+      track_weak_password_error(new_user, self.class.name, 'create')
 
       if pending_approval?
         NotificationService.new.new_instance_access_request(new_user)

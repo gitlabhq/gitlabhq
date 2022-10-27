@@ -38,9 +38,9 @@ RSpec.describe Ci::BuildTrace do
     let(:data) { StringIO.new("UTF-8 dashes here: ───\n🐤🐤🐤🐤\xF0\x9F\x90\n") }
 
     it 'returns valid UTF-8 data', :aggregate_failures do
-      expect(subject.lines[0]).to eq({ offset: 0, content: [{ text: 'UTF-8 dashes here: ───' }] } )
+      expect(subject.lines[0]).to eq({ offset: 0, content: [{ text: 'UTF-8 dashes here: ───' }] })
       # Each of the dashes is 3 bytes, so we get 19 + 9 + 1 = 29
-      expect(subject.lines[1]).to eq({ offset: 29, content: [{ text: '🐤🐤🐤🐤�' }] } )
+      expect(subject.lines[1]).to eq({ offset: 29, content: [{ text: '🐤🐤🐤🐤�' }] })
     end
   end
 end

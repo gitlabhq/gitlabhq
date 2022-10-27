@@ -6,7 +6,6 @@ module Integrations
   class Buildkite < BaseCi
     include HasWebHook
     include ReactivelyCached
-    extend Gitlab::Utils::Override
 
     ENDPOINT = "https://buildkite.com"
 

@@ -26,7 +26,7 @@ RSpec.describe Integrations::Jira do
   end
 
   before do
-    WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json )
+    WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json)
   end
 
   it_behaves_like Integrations::ResetSecretFields do

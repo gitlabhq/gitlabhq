@@ -1291,6 +1291,20 @@ RSpec.describe API::Users do
         .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
+    it 'tracks weak password errors' do
+      attributes = attributes_for(:user).merge({ password: "password" })
+      post api('/users', admin), params: attributes
+
+      expect(json_response['message']['password'])
+        .to eq(['must not contain commonly used combinations of words and letters'])
+      expect_snowplow_event(
+        category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+        action: 'track_weak_password_error',
+        controller: 'API::Users',
+        method: 'create'
+      )
+    end
+
     it "is not available for non admin users" do
       post api("/users", user), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(:forbidden)
@@ -1490,6 +1504,21 @@ RSpec.describe API::Users do
         it 'does not enqueue the `password changed` email' do
           expect { update_password(user, admin) }
             .not_to have_enqueued_mail(DeviseMailer, :password_change)
+        end
+      end
+
+      context 'with a weak password' do
+        it 'tracks weak password errors' do
+          update_password(user, admin, "password")
+
+          expect(json_response['message']['password'])
+            .to eq(['must not contain commonly used combinations of words and letters'])
+          expect_snowplow_event(
+            category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+            action: 'track_weak_password_error',
+            controller: 'API::Users',
+            method: 'update'
+          )
         end
       end
     end

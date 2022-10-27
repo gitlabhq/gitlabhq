@@ -29,6 +29,7 @@ module API
       end
 
       helpers Helpers::UsersHelpers
+      helpers Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
       helpers do
         # rubocop: disable CodeReuse/ActiveRecord
@@ -306,6 +307,8 @@ module API
             .by_username(user.username)
             .any?
 
+          track_weak_password_error(user, 'API::Users', 'create')
+
           render_validation_error!(user)
         end
       end
@@ -351,6 +354,7 @@ module API
         if result[:status] == :success
           present user, with: Entities::UserWithAdmin, current_user: current_user
         else
+          track_weak_password_error(user, 'API::Users', 'update')
           render_validation_error!(user)
         end
       end

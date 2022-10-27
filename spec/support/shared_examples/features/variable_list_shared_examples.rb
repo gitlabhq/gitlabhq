@@ -31,8 +31,8 @@ RSpec.shared_examples 'variable list' do |is_admin|
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('key')
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Protected"] svg[data-testid="mobile-issue-close-icon"]')).to be_present
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Protected'))
     end
   end
 
@@ -46,26 +46,26 @@ RSpec.shared_examples 'variable list' do |is_admin|
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('key')
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Masked"] svg[data-testid="close-icon"]')).to be_present
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
   it 'reveals and hides variables' do
     page.within('[data-testid="ci-variable-table"]') do
       expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
-      expect(page).to have_content('*' * 17)
+      expect(page).to have_content('*' * 5)
 
       click_button('Reveal value')
 
       expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
       expect(first('.js-ci-variable-row td[data-label="Value"]').text).to eq(variable.value)
-      expect(page).not_to have_content('*' * 17)
+      expect(page).not_to have_content('*' * 5)
 
       click_button('Hide value')
 
       expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
-      expect(page).to have_content('*' * 17)
+      expect(page).to have_content('*' * 5)
     end
   end
 
@@ -116,7 +116,8 @@ RSpec.shared_examples 'variable list' do |is_admin|
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Masked"] svg[data-testid="close-icon"]')).to be_present
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Protected'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -144,7 +145,7 @@ RSpec.shared_examples 'variable list' do |is_admin|
     end
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Masked"] svg[data-testid="mobile-issue-close-icon"]')).to be_present
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Options')}']")).to have_content(s_('CiVariables|Masked'))
     end
   end
 

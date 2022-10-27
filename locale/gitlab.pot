@@ -8403,6 +8403,9 @@ msgstr ""
 msgid "CiVariables|Masked"
 msgstr ""
 
+msgid "CiVariables|Options"
+msgstr ""
+
 msgid "CiVariables|Protected"
 msgstr ""
 

@@ -306,9 +306,11 @@ To migrate users to a new email domain, users must:
 
 ## User access and management
 
-> SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
+> - SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an **Enterprise** badge in the **Members** view.
 
-Once Group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard. If [SCIM](scim_setup.md) is configured, see the [user access and linking setup section on the SCIM page](scim_setup.md#user-access-and-linking-setup).
+After group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard.
+If [SCIM](scim_setup.md) is configured, see [user access](scim_setup.md#user-access) on the SCIM page.
 
 When a user tries to sign in with Group SSO, GitLab attempts to find or create a user based on the following:
 
@@ -422,7 +424,7 @@ To rescind a user's access to the group when only SAML SSO is configured, either
   1. The GitLab.com group.
 - Use Group Sync at the top-level of your group to [automatically remove the user](group_sync.md#automatic-member-removal).
 
-To rescind a user's access to the group when also using SCIM, refer to [Blocking access](scim_setup.md#blocking-access).
+To rescind a user's access to the group when also using SCIM, refer to [Remove access](scim_setup.md#remove-access).
 
 ### Unlinking accounts
 
