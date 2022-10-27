@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'gitlab'
-require 'optparse'
+
 require_relative 'default_options'
 
 class PipelineFailedJobs

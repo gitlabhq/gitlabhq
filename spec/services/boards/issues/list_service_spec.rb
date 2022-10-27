@@ -27,7 +27,7 @@ RSpec.describe Boards::Issues::ListService do
 
       let_it_be(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
       let_it_be(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
-      let_it_be(:reopened_issue1) { create(:issue, :opened, project: project, title: 'Reopened Issue 1' ) }
+      let_it_be(:reopened_issue1) { create(:issue, :opened, project: project, title: 'Reopened Issue 1') }
 
       let_it_be(:list1_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [p2, development]) }
       let_it_be(:list1_issue2) { create(:labeled_issue, project: project, milestone: m2, labels: [development]) }
@@ -110,7 +110,7 @@ RSpec.describe Boards::Issues::ListService do
       let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
       let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2, p2_project]) }
       let!(:opened_issue3) { create(:labeled_issue, project: project_archived, milestone: m1, title: 'Issue 3', labels: [bug]) }
-      let!(:reopened_issue1) { create(:issue, state: 'opened', project: project, title: 'Reopened Issue 1', closed_at: Time.current ) }
+      let!(:reopened_issue1) { create(:issue, state: 'opened', project: project, title: 'Reopened Issue 1', closed_at: Time.current) }
 
       let!(:list1_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [p2, p2_project, development]) }
       let!(:list1_issue2) { create(:labeled_issue, project: project, milestone: m2, labels: [development]) }

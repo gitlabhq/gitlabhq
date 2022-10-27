@@ -245,7 +245,7 @@ RSpec.describe Notes::UpdateService do
     context 'for a personal snippet' do
       let_it_be(:snippet) { create(:personal_snippet, :public) }
 
-      let(:note) { create(:note, project: nil, noteable: snippet, author: user, note: "Note on a snippet with reference #{issue.to_reference}" ) }
+      let(:note) { create(:note, project: nil, noteable: snippet, author: user, note: "Note on a snippet with reference #{issue.to_reference}") }
 
       it 'does not create todos' do
         expect { update_note({ note: "Mentioning user #{user2}" }) }.not_to change { note.todos.count }

@@ -225,7 +225,7 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
 
       let!(:build) do
         create(:ci_build, :created, pipeline: pipeline, ref: ref,
-                                    name: 'build', ci_stage: build_stage )
+                                    name: 'build', ci_stage: build_stage)
       end
 
       let!(:test) do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::FileUpload, :aggregate_failures do
-  let(:file) { UploadedFile.new( File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') ) }
+  let(:file) { UploadedFile.new(File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz')) }
 
   describe 'validation' do
     it 'validates presence of file' do

@@ -235,7 +235,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService do
 
           aggregate_failures do
             expect { service.execute }.to(
-              raise_error(Users::MigrateRecordsToGhostUserService::DestroyError, 'foo' ))
+              raise_error(Users::MigrateRecordsToGhostUserService::DestroyError, 'foo'))
             expect(snippet.reload).not_to be_nil
             expect(
               gitlab_shell.repository_exists?(snippet.repository_storage,

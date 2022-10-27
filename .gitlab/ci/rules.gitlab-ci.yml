@@ -997,6 +997,18 @@
     - <<: *if-default-refs
       changes: *code-patterns
 
+##########
+# Notify #
+##########
+.notify:rules:notify-pipeline-failure:
+  rules:
+    # Don't report child pipeline failures
+    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
+      when: never
+    - if: '$CI_SLACK_WEBHOOK_URL && $NOTIFY_PIPELINE_FAILURE_CHANNEL'
+      when: on_failure
+      allow_failure: true
+
 ###############
 # Pages rules #
 ###############

@@ -146,7 +146,7 @@ RSpec.describe Groups::DestroyService do
       end
 
       expect { destroy_group(group, user, false) }
-        .to raise_error(Groups::DestroyService::DestroyError, "Project #{project.id} can't be deleted" )
+        .to raise_error(Groups::DestroyService::DestroyError, "Project #{project.id} can't be deleted")
     end
   end
 

@@ -185,7 +185,7 @@ RSpec.describe Issues::ExportCsvService do
 
         labeled_rows = csv.select { |entry| labeled_issues.map(&:iid).include?(entry['Issue ID'].to_i) }
         expect(labeled_rows.count).to eq(2)
-        expect(labeled_rows.map { |entry| entry['Labels'] }).to all( eq("Feature,Idea") )
+        expect(labeled_rows.map { |entry| entry['Labels'] }).to all(eq("Feature,Idea"))
       end
     end
   end

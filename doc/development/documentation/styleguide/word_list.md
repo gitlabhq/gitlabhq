@@ -612,6 +612,21 @@ Use lowercase for **issue board**.
 
 Use lowercase for **issue weights**.
 
+## it
+
+When you use the word **it**, ensure the word it refers to is obvious.
+If it's not obvious, repeat the word rather than using **it**.
+
+Use:
+
+- The field returns a connection. The field accepts four arguments.
+
+Instead of:
+
+- The field returns a connection. It accepts four arguments.
+
+See also [this, these, that, those](#this-these-that-those).
+
 ## job
 
 Do not use **build** to be synonymous with **job**. A job is defined in the `.gitlab-ci.yml` file and runs as part of a pipeline.

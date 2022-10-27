@@ -1,8 +1,0 @@
----
-name: ci_stop_expanding_file_vars_for_runners
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94198
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369907
-milestone: '15.3'
-type: development
-group: group::pipeline authoring
-default_enabled: true

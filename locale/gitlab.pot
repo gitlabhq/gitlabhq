@@ -24768,6 +24768,9 @@ msgstr ""
 msgid "March"
 msgstr ""
 
+msgid "MardownDrawer|Could not fetch help contents."
+msgstr ""
+
 msgid "Mark as done"
 msgstr ""
 

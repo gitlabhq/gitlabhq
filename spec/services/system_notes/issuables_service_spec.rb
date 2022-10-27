@@ -175,7 +175,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
     it 'builds a correct phrase when one reviewer removed from a set' do
       expect(build_note([reviewer, reviewer1, reviewer2], [reviewer, reviewer1])).to(
-        eq( "removed review request for @#{reviewer2.username}")
+        eq("removed review request for @#{reviewer2.username}")
       )
     end
 
@@ -681,7 +681,7 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
         it 'tracks usage' do
           expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
-            .to receive(:track_issue_cloned_action).with(author: author, project: project )
+            .to receive(:track_issue_cloned_action).with(author: author, project: project)
 
           subject
         end

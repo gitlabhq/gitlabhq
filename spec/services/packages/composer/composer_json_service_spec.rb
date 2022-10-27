@@ -9,7 +9,7 @@ RSpec.describe Packages::Composer::ComposerJsonService do
     subject { described_class.new(project, target).execute }
 
     context 'with an existing file' do
-      let(:project) { create(:project, :custom_repo, files: { 'composer.json' => json } ) }
+      let(:project) { create(:project, :custom_repo, files: { 'composer.json' => json }) }
 
       context 'with a valid file' do
         let(:json) { '{ "name": "package-name"}' }

@@ -129,7 +129,7 @@ RSpec.describe Users::DestroyService do
 
             expect { service.execute(user) }
               .to raise_error(Users::DestroyService::DestroyError,
-                              "Project #{project.id} can't be deleted" )
+                              "Project #{project.id} can't be deleted")
           end
         end
       end
@@ -243,7 +243,7 @@ RSpec.describe Users::DestroyService do
 
             aggregate_failures do
               expect { service.execute(user) }
-                .to raise_error(Users::DestroyService::DestroyError, 'foo' )
+                .to raise_error(Users::DestroyService::DestroyError, 'foo')
               expect(snippet.reload).not_to be_nil
               expect(
                 gitlab_shell.repository_exists?(snippet.repository_storage,
@@ -546,7 +546,7 @@ RSpec.describe Users::DestroyService do
         end.to(
           change do
             Users::GhostUserMigration.where(user: other_user,
-                                            initiator_user: user )
+                                            initiator_user: user)
                                      .exists?
           end.from(false).to(true))
       end

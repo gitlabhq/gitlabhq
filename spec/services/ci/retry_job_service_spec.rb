@@ -153,7 +153,7 @@ RSpec.describe Ci::RetryJobService do
 
     context 'when the pipeline has other jobs' do
       let!(:stage2) { create(:ci_stage, project: project, pipeline: pipeline, name: 'deploy') }
-      let!(:build2) { create(:ci_build, pipeline: pipeline, ci_stage: stage ) }
+      let!(:build2) { create(:ci_build, pipeline: pipeline, ci_stage: stage) }
       let!(:deploy) { create(:ci_build, pipeline: pipeline, ci_stage: stage2) }
       let!(:deploy_needs_build2) { create(:ci_build_need, build: deploy, name: build2.name) }
 

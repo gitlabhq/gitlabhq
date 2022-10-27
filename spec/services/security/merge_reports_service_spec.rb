@@ -219,10 +219,10 @@ RSpec.describe Security::MergeReportsService, '#execute' do
 
     let(:finding_id_1) { build(:ci_reports_security_finding, identifiers: [identifier_bandit, identifier_cve], scanner: bandit_scanner, report_type: :sast) }
     let(:finding_id_2) { build(:ci_reports_security_finding, identifiers: [identifier_cve], scanner: semgrep_scanner, report_type: :sast) }
-    let(:finding_id_3) { build(:ci_reports_security_finding, identifiers: [identifier_semgrep], scanner: semgrep_scanner, report_type: :sast ) }
+    let(:finding_id_3) { build(:ci_reports_security_finding, identifiers: [identifier_semgrep], scanner: semgrep_scanner, report_type: :sast) }
 
     let(:bandit_report) do
-      build( :ci_reports_security_report,
+      build(:ci_reports_security_report,
         type: :sast,
         scanners: [bandit_scanner],
         findings: [finding_id_1],

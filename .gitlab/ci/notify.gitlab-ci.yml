@@ -1,8 +1,12 @@
-.notify-slack:
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine/curl
+.notify-defaults:
   stage: notify
   dependencies: []
   cache: {}
+
+.notify-slack:
+  extends:
+    - .notify-defaults
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine/curl
   variables:
     MERGE_REQUEST_URL: ${CI_MERGE_REQUEST_PROJECT_URL}/-/merge_requests/${CI_MERGE_REQUEST_IID}
   before_script:
@@ -34,28 +38,31 @@ notify-security-pipeline:
     - scripts/slack ${NOTIFY_CHANNEL} "<!subteam^S0127FU8PDE> ☠️  Pipeline for merged result failed! ☠️ See ${CI_PIPELINE_URL} (triggered from ${MERGE_REQUEST_URL})" ci_failing "GitLab Release Tools Bot"
 
 notify-pipeline-failure:
-  extends: .notify-slack
+  extends:
+    - .notify-defaults
+    - .notify:rules:notify-pipeline-failure
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
-  rules:
-    # Don't report child pipeline failures
-    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
-      when: never
-    - if: '$CI_SLACK_WEBHOOK_URL && $NOTIFY_PIPELINE_FAILURE_CHANNEL'
-      when: on_failure
-      allow_failure: true
   variables:
+    BROKEN_MASTER_INCIDENTS_PROJECT: "gitlab-org/quality/engineering-productivity/master-broken-incidents"
+    BROKEN_MASTER_INCIDENT_JSON: "${CI_PROJECT_DIR}/incident.json"
     SLACK_CHANNEL: "${NOTIFY_PIPELINE_FAILURE_CHANNEL}"
-    FAILED_PIPELINE_REPORT_FILE: "failed_pipeline_report.json"
+    FAILED_PIPELINE_SLACK_MESSAGE_FILE: "${CI_PROJECT_DIR}/failed_pipeline_slack_message.json"
   before_script:
     - source scripts/utils.sh
     - apt-get update && apt-get install -y jq
     - install_gitlab_gem
   script:
-    - scripts/generate-failed-pipeline-slack-message.rb
     - |
-      curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_REPORT_FILE} "$CI_SLACK_WEBHOOK_URL"
+      if [[ "${CREATE_INCIDENT_FOR_PIPELINE_FAILURE}" == "true" ]]; then
+        scripts/create-pipeline-failure-incident.rb -p ${BROKEN_MASTER_INCIDENTS_PROJECT} -f ${BROKEN_MASTER_INCIDENT_JSON} -t ${BROKEN_MASTER_INCIDENTS_PROJECT_TOKEN};
+        echosuccess "Created incident $(jq '.web_url' ${BROKEN_MASTER_INCIDENT_JSON})";
+      fi
+    - |
+      scripts/generate-failed-pipeline-slack-message.rb -i ${BROKEN_MASTER_INCIDENT_JSON} -f ${FAILED_PIPELINE_SLACK_MESSAGE_FILE};
+      curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_SLACK_MESSAGE_FILE} "$CI_SLACK_WEBHOOK_URL";
   artifacts:
     paths:
-      - ${FAILED_PIPELINE_REPORT_FILE}
+      - ${BROKEN_MASTER_INCIDENT_JSON}
+      - ${FAILED_PIPELINE_SLACK_MESSAGE_FILE}
     when: always
     expire_in: 2 days

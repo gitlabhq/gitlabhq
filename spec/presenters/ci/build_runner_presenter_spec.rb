@@ -359,23 +359,6 @@ RSpec.describe Ci::BuildRunnerPresenter do
 
         runner_variables
       end
-
-      context 'when the FF ci_stop_expanding_file_vars_for_runners is disabled' do
-        before do
-          stub_feature_flags(ci_stop_expanding_file_vars_for_runners: false)
-        end
-
-        it 'returns variables with expanded' do
-          expect(runner_variables).to include(
-            { key: 'regular_var', value: 'value 1',
-              public: false, masked: false },
-            { key: 'file_var', value: 'value 2',
-              public: false, masked: false, file: true },
-            { key: 'var_with_variables', value: 'value 3 and value 1 and value 2 and $undefined_var',
-              public: false, masked: false }
-          )
-        end
-      end
     end
   end
 

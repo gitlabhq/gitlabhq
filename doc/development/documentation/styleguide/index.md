@@ -145,6 +145,7 @@ help benefit translation. For example, we:
 - Avoid words that can be translated incorrectly, like:
   - [since and because](word_list.md#since)
   - [once and after](word_list.md#once)
+  - [it](word_list.md#it)
 - Avoid [ing](word_list.md#-ing-words) words.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly,

@@ -1,4 +1,4 @@
-- if can?(current_user, :create_deployment, deployment)
+- if can?(current_user, :read_deployment, deployment)
   - actions = deployment.manual_actions
   - if actions.present?
     .btn-group
@@ -8,7 +8,7 @@
           = sprite_icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-right
           - actions.each do |action|
-            - next unless can?(current_user, :update_build, action)
+            - next unless can?(current_user, :play_job, action)
             %li
               = link_to [:play, @project, action], method: :post, rel: 'nofollow' do
                 %span= action.name

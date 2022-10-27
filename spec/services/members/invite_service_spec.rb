@@ -12,7 +12,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
   let(:params) { {} }
   let(:base_params) { { access_level: Gitlab::Access::GUEST, source: project, invite_source: '_invite_source_' } }
 
-  subject(:result) { described_class.new(user, base_params.merge(params) ).execute }
+  subject(:result) { described_class.new(user, base_params.merge(params)).execute }
 
   context 'when there is a valid member invited' do
     let(:params) { { email: 'email@example.org' } }

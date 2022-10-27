@@ -93,7 +93,7 @@ RSpec.describe MergeRequests::BuildService do
 
   shared_examples 'with a Default.md template' do
     let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
-    let(:project) { create(:project, :custom_repo, files: files ) }
+    let(:project) { create(:project, :custom_repo, files: files) }
 
     it 'the template description is preferred' do
       expect(merge_request.description).to eq('Default template contents')
@@ -306,7 +306,7 @@ RSpec.describe MergeRequests::BuildService do
 
           context 'a Default.md template is defined' do
             let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
-            let(:project) { create(:project, :custom_repo, files: files ) }
+            let(:project) { create(:project, :custom_repo, files: files) }
 
             it 'appends the closing description to a Default.md template' do
               expected_description = ['Default template contents', closing_message].compact.join("\n\n")
@@ -386,7 +386,7 @@ RSpec.describe MergeRequests::BuildService do
 
         context 'a Default.md template is defined' do
           let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
-          let(:project) { create(:project, :custom_repo, files: files ) }
+          let(:project) { create(:project, :custom_repo, files: files) }
 
           it 'keeps the description from the initial params' do
             expect(merge_request.description).to eq(description)
@@ -425,7 +425,7 @@ RSpec.describe MergeRequests::BuildService do
 
           context 'a Default.md template is defined' do
             let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
-            let(:project) { create(:project, :custom_repo, files: files ) }
+            let(:project) { create(:project, :custom_repo, files: files) }
 
             it 'appends the closing description to a Default.md template' do
               expected_description = ['Default template contents', closing_message].compact.join("\n\n")
@@ -486,7 +486,7 @@ RSpec.describe MergeRequests::BuildService do
 
           context 'a Default.md template is defined' do
             let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
-            let(:project) { create(:project, :custom_repo, files: files ) }
+            let(:project) { create(:project, :custom_repo, files: files) }
 
             it 'appends the closing description to a Default.md template' do
               expected_description = ['Default template contents', closing_message].compact.join("\n\n")
@@ -715,7 +715,7 @@ RSpec.describe MergeRequests::BuildService do
     context 'when a Default template is found' do
       context 'when its contents cannot be retrieved' do
         let(:files) { { '.gitlab/merge_request_templates/OtherTemplate.md' => 'Other template contents' } }
-        let(:project) { create(:project, :custom_repo, files: files ) }
+        let(:project) { create(:project, :custom_repo, files: files) }
 
         it 'does not modify the merge request description' do
           allow(TemplateFinder).to receive(:all_template_names).and_return({
@@ -732,7 +732,7 @@ RSpec.describe MergeRequests::BuildService do
 
       context 'when its contents can be retrieved' do
         let(:files) { { '.gitlab/merge_request_templates/Default.md' => 'Default template contents' } }
-        let(:project) { create(:project, :custom_repo, files: files ) }
+        let(:project) { create(:project, :custom_repo, files: files) }
 
         it 'modifies the merge request description' do
           merge_request.description = nil
