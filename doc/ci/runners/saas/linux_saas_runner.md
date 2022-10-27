@@ -116,7 +116,7 @@ The `CI_PRE_CLONE_SCRIPT` variable does not work on GitLab SaaS Windows or macOS
 This example was used in the `gitlab-org/gitlab` project until November 2021.
 The project no longer uses this optimization because the
 [pack-objects cache](../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
-lets Gitaly serve the full CI/CD fetch traffic. See [Git fetch caching](../../../development/pipelines.md#git-fetch-caching).
+lets Gitaly serve the full CI/CD fetch traffic. See [Git fetch caching](../../../development/pipelines/performance.md#git-fetch-caching).
 
 The `CI_PRE_CLONE_SCRIPT` was defined as a project CI/CD variable:
 

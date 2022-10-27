@@ -839,7 +839,7 @@ When writing about the Owner role:
   - Instead of: if you are an owner
 
 Do not use bold.
- 
+
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
 An Owner is the highest role a user can have.
 
@@ -1230,6 +1230,20 @@ Use:
 Instead of:
 
 - Users can configure a pipeline.
+
+## you can
+
+When possible, start sentences with an active verb instead of **you can**.
+For example:
+
+- Use code review analytics to view merge request data.
+- Create a board to organize your team tasks.
+- Configure variables to restrict pushes to a repository.
+
+Use **you can** for optional actions. For example:
+
+- Use code review analytics to view metrics per merge request. You can also use the API.
+- Enter the name and value pairs. You can add up to 20 pairs per streaming destination.
 
 <!-- vale on -->
 <!-- markdownlint-enable -->

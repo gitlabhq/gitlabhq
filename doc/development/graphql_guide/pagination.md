@@ -20,7 +20,7 @@ See the [general pagination guidelines section](../database/pagination_guideline
 
 This is the traditional, page-by-page pagination, that is most common,
 and used across much of GitLab. You can recognize it by
-a list of page numbers near the bottom of a page, which, when clicked,
+a list of page numbers near the bottom of a page, which, when selected,
 take you to that page of results.
 
 For example, when you select **Page 100**, we send `100` to the

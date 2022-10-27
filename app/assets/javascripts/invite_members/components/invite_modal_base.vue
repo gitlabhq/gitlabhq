@@ -8,7 +8,6 @@ import {
   GlLink,
   GlSprintf,
   GlFormInput,
-  GlIcon,
 } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import { sprintf } from '~/locale';
@@ -20,11 +19,8 @@ import {
   INVITE_BUTTON_TEXT,
   INVITE_BUTTON_TEXT_DISABLED,
   CANCEL_BUTTON_TEXT,
-  CANCEL_BUTTON_TEXT_DISABLED,
   HEADER_CLOSE_LABEL,
   ON_SHOW_TRACK_LABEL,
-  ON_CLOSE_TRACK_LABEL,
-  ON_SUBMIT_TRACK_LABEL,
 } from '../constants';
 
 const DEFAULT_SLOT = 'default';
@@ -48,7 +44,6 @@ export default {
     GlDropdownItem,
     GlSprintf,
     GlFormInput,
-    GlIcon,
     ContentTransition,
   },
   mixins: [Tracking.mixin()],
@@ -131,16 +126,6 @@ export default {
       required: false,
       default: false,
     },
-    closeToLimit: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    reachedLimit: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     usersLimitDataset: {
       type: Object,
       required: false,
@@ -175,20 +160,17 @@ export default {
     },
     actionPrimary() {
       return {
-        text: this.reachedLimit ? INVITE_BUTTON_TEXT_DISABLED : this.submitButtonText,
+        text: this.submitButtonText,
         attributes: {
           variant: 'confirm',
-          disabled: this.reachedLimit ? false : this.submitDisabled,
-          loading: this.reachedLimit ? false : this.isLoading,
+          disabled: this.submitDisabled,
+          loading: this.isLoading,
           'data-qa-selector': 'invite_button',
-          ...(this.reachedLimit && { href: this.usersLimitDataset.membersPath }),
         },
       };
     },
     actionCancel() {
-      if (this.reachedLimit && this.usersLimitDataset.userNamespace) return undefined;
-
-      if (this.closeToLimit && this.usersLimitDataset.userNamespace) {
+      if (this.usersLimitDataset.closeToDashboardLimit && this.usersLimitDataset.userNamespace) {
         return {
           text: INVITE_BUTTON_TEXT_DISABLED,
           attributes: {
@@ -200,12 +182,8 @@ export default {
       }
 
       return {
-        text: this.reachedLimit ? CANCEL_BUTTON_TEXT_DISABLED : this.cancelButtonText,
-        ...(this.reachedLimit && { attributes: { href: this.usersLimitDataset.purchasePath } }),
+        text: this.cancelButtonText,
       };
-    },
-    selectLabelClass() {
-      return `col-form-label ${this.reachedLimit ? 'gl-text-gray-500' : ''}`;
     },
   },
   watch: {
@@ -226,23 +204,19 @@ export default {
       this.$emit('reset');
     },
     onShowModal() {
-      if (this.reachedLimit) {
+      if (this.usersLimitDataset.reachedLimit) {
         this.track('render', { category: 'default', label: ON_SHOW_TRACK_LABEL });
       }
     },
     onCloseModal(e) {
-      if (this.preventCancelDefault || this.reachedLimit) {
+      if (this.preventCancelDefault) {
         e.preventDefault();
       } else {
         this.onReset();
         this.$refs.modal.hide();
       }
 
-      if (this.reachedLimit) {
-        this.track('click_button', { category: 'default', label: ON_CLOSE_TRACK_LABEL });
-      } else {
-        this.$emit('cancel');
-      }
+      this.$emit('cancel');
     },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
@@ -251,14 +225,10 @@ export default {
       // We never want to hide when submitting
       e.preventDefault();
 
-      if (this.reachedLimit) {
-        this.track('click_button', { category: 'default', label: ON_SUBMIT_TRACK_LABEL });
-      } else {
-        this.$emit('submit', {
-          accessLevel: this.selectedAccessLevel,
-          expiresAt: this.selectedDate,
-        });
-      }
+      this.$emit('submit', {
+        accessLevel: this.selectedAccessLevel,
+        expiresAt: this.selectedDate,
+      });
     },
   },
   HEADER_CLOSE_LABEL,
@@ -311,71 +281,63 @@ export default {
         <gl-form-group
           :invalid-feedback="invalidFeedbackMessage"
           :state="exceptionState"
+          :description="formGroupDescription"
           data-testid="members-form-group"
         >
-          <template #description>
-            <gl-icon v-if="reachedLimit" name="lock" />
-            {{ formGroupDescription }}
-          </template>
-
-          <label :id="selectLabelId" :class="selectLabelClass">{{ labelSearchField }}</label>
-          <gl-form-input v-if="reachedLimit" data-testid="disabled-input" disabled />
-          <slot v-else name="select" v-bind="{ exceptionState, labelId: selectLabelId }"></slot>
+          <label :id="selectLabelId" class="col-form-label">{{ labelSearchField }}</label>
+          <slot name="select" v-bind="{ exceptionState, labelId: selectLabelId }"></slot>
         </gl-form-group>
 
-        <template v-if="!reachedLimit">
-          <label class="gl-font-weight-bold">{{ $options.ACCESS_LEVEL }}</label>
+        <label class="gl-font-weight-bold">{{ $options.ACCESS_LEVEL }}</label>
+        <div class="gl-mt-2 gl-w-half gl-xs-w-full">
+          <gl-dropdown
+            class="gl-shadow-none gl-w-full"
+            data-qa-selector="access_level_dropdown"
+            v-bind="$attrs"
+            :text="selectedRoleName"
+          >
+            <template v-for="(key, item) in accessLevels">
+              <gl-dropdown-item
+                :key="key"
+                active-class="is-active"
+                is-check-item
+                :is-checked="key === selectedAccessLevel"
+                @click="changeSelectedItem(key)"
+              >
+                <div>{{ item }}</div>
+              </gl-dropdown-item>
+            </template>
+          </gl-dropdown>
+        </div>
 
-          <div class="gl-mt-2 gl-w-half gl-xs-w-full">
-            <gl-dropdown
-              class="gl-shadow-none gl-w-full"
-              data-qa-selector="access_level_dropdown"
-              v-bind="$attrs"
-              :text="selectedRoleName"
-            >
-              <template v-for="(key, item) in accessLevels">
-                <gl-dropdown-item
-                  :key="key"
-                  active-class="is-active"
-                  is-check-item
-                  :is-checked="key === selectedAccessLevel"
-                  @click="changeSelectedItem(key)"
-                >
-                  <div>{{ item }}</div>
-                </gl-dropdown-item>
-              </template>
-            </gl-dropdown>
-          </div>
+        <div class="gl-mt-2 gl-w-half gl-xs-w-full">
+          <gl-sprintf :message="$options.READ_MORE_TEXT">
+            <template #link="{ content }">
+              <gl-link :href="helpLink" target="_blank">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </div>
 
-          <div class="gl-mt-2 gl-w-half gl-xs-w-full">
-            <gl-sprintf :message="$options.READ_MORE_TEXT">
-              <template #link="{ content }">
-                <gl-link :href="helpLink" target="_blank">{{ content }}</gl-link>
-              </template>
-            </gl-sprintf>
-          </div>
-
-          <label class="gl-mt-5 gl-display-block" for="expires_at">{{
-            $options.ACCESS_EXPIRE_DATE
-          }}</label>
-          <div class="gl-mt-2 gl-w-half gl-xs-w-full gl-display-inline-block">
-            <gl-datepicker
-              v-model="selectedDate"
-              class="gl-display-inline!"
-              :min-date="minDate"
-              :target="null"
-            >
-              <template #default="{ formattedDate }">
-                <gl-form-input
-                  class="gl-w-full"
-                  :value="formattedDate"
-                  :placeholder="__(`YYYY-MM-DD`)"
-                />
-              </template>
-            </gl-datepicker>
-          </div>
-          <slot name="form-after"></slot>
-        </template>
+        <label class="gl-mt-5 gl-display-block" for="expires_at">{{
+          $options.ACCESS_EXPIRE_DATE
+        }}</label>
+        <div class="gl-mt-2 gl-w-half gl-xs-w-full gl-display-inline-block">
+          <gl-datepicker
+            v-model="selectedDate"
+            class="gl-display-inline!"
+            :min-date="minDate"
+            :target="null"
+          >
+            <template #default="{ formattedDate }">
+              <gl-form-input
+                class="gl-w-full"
+                :value="formattedDate"
+                :placeholder="__(`YYYY-MM-DD`)"
+              />
+            </template>
+          </gl-datepicker>
+        </div>
+        <slot name="form-after"></slot>
       </template>
 
       <template v-for="{ key } in extraSlots" #[key]>

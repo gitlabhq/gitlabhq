@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Systems' do
-    describe 'Praefect connectivity commands', :orchestrated, :gitaly_cluster do
+    describe 'Praefect connectivity commands', :orchestrated, :gitaly_cluster, product_group: :gitaly do
       praefect_manager = Service::PraefectManager.new
 
       before do

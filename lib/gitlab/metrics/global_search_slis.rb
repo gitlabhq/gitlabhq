@@ -5,12 +5,12 @@ module Gitlab
     module GlobalSearchSlis
       class << self
         # The following targets are the 99.95th percentile of code searches
-        # gathered on 24-08-2022
+        # gathered on 25-10-2022
         # from https://log.gprd.gitlab.net/goto/0c89cd80-23af-11ed-8656-f5f2137823ba (internal only)
-        BASIC_CONTENT_TARGET_S = 7.031
-        BASIC_CODE_TARGET_S = 21.903
-        ADVANCED_CONTENT_TARGET_S = 4.865
-        ADVANCED_CODE_TARGET_S = 13.546
+        BASIC_CONTENT_TARGET_S = 8.812
+        BASIC_CODE_TARGET_S = 27.538
+        ADVANCED_CONTENT_TARGET_S = 2.452
+        ADVANCED_CODE_TARGET_S = 15.52
 
         def initialize_slis!
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:global_search, possible_labels)

@@ -33,7 +33,7 @@ On the left side we have the events that can trigger a pipeline based on various
 
 - A `git push` is the most common event that triggers a pipeline.
 - The [Web API](../../api/pipelines.md#create-a-new-pipeline).
-- A user clicking the "Run pipeline" button in the UI.
+- A user selecting the "Run pipeline" button in the UI.
 - When a [merge request is created or updated](../../ci/pipelines/merge_request_pipelines.md).
 - When an MR is added to a [Merge Train](../../ci/pipelines/merge_trains.md#merge-trains).
 - A [scheduled pipeline](../../ci/pipelines/schedules.md).

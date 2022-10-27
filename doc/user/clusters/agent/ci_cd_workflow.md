@@ -127,6 +127,30 @@ deploy:
 If you are not sure what your agent's context is, open a terminal and connect to your cluster.
 Run `kubectl config get-contexts`.
 
+### Environments that use Auto DevOps
+
+If Auto DevOps is enabled, you must define the CI/CD variable `KUBE_CONTEXT`.
+Set the value of `KUBE_CONTEXT` to the context of the agent you want Auto DevOps to use:
+
+```yaml
+deploy:
+  variables:
+    KUBE_CONTEXT: <path_to_agent_config_repository>:<agent_name>
+```
+
+You can assign different agents to separate Auto DevOps jobs. For instance,
+Auto DevOps can use one agent for `staging` jobs, and another agent for `production` jobs.
+To use multiple agents, define an [environment-scoped CI/CD variable](../../../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable)
+for each agent. For example:
+
+1. Define two variables named `KUBE_CONTEXT`.
+1. For the first variable:
+   1. Set the `environment` to `staging`.
+   1. Set the value to the context of your staging agent.
+1. For the second variable:
+   1. Set the `environment` to `production`.
+   1. Set the value to the context of your production agent.
+
 ### Environments with both certificate-based and agent-based connections
 
 When you deploy to an environment that has both a
@@ -157,20 +181,6 @@ deploy:
     - kubectl config use-context "$KUBE_CONTEXT"
   # ... rest of your job configuration
 ```
-
-### Using the agent with Auto DevOps
-
-If Auto DevOps is enabled, you must define the `KUBE_CONTEXT` CI/CD variable. Set the value of `KUBE_CONTEXT` to the context of the agent you want to use in your Auto DevOps pipeline jobs (`<PATH_TO_AGENT_CONFIG_REPOSITORY>:<AGENT_NAME>`).
-
-You can also use different agents for different Auto DevOps jobs. For instance, you can use one agent for `staging` jobs and a different agent for `production` jobs. To use multiple agents, define a unique CI/CD variable for each agent.
-
-For example:
-
-1. Add two [environment-scoped CI/CD variables](../../../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable) and name both `KUBE_CONTEXT`.
-1. Set the `environment` of the first variable to `staging`. Set the value of the variable to `<PATH_TO_AGENT_CONFIGURATION_PROJECT>:<STAGING_AGENT_NAME>`.
-1. Set the `environment` of the second variable to `production`. Set the value of the variable to `<PATH_TO_AGENT_CONFIGURATION_PROJECT>:<PRODUCTION_AGENT_NAME>`.
-
-When the `staging` job runs, it will connect to the cluster via the agent named `<STAGING_AGENT_NAME>`, and when the `production` job runs it will connect to the cluster via the agent named `<PRODUCTION_AGENT_NAME>`.
 
 ## Restrict project and group access by using impersonation **(PREMIUM)**
 

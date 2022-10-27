@@ -14,7 +14,7 @@ The [Deploy Job template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib
 - `staging`
 - `production`
 
-These environments are tied to jobs using [Auto Deploy](stages.md#auto-deploy), so they must have different deployment domains. You must define separate [`KUBE_CONTEXT`](../../user/clusters/agent/ci_cd_workflow.md#using-the-agent-with-auto-devops) and [`KUBE_INGRESS_BASE_DOMAIN`](requirements.md#auto-devops-base-domain) variables for each of the three environments.
+These environments are tied to jobs using [Auto Deploy](stages.md#auto-deploy), so they must have different deployment domains. You must define separate [`KUBE_CONTEXT`](../../user/clusters/agent/ci_cd_workflow.md#environments-that-use-auto-devops) and [`KUBE_INGRESS_BASE_DOMAIN`](requirements.md#auto-devops-base-domain) variables for each of the three environments.
 
 ## Deploy to different clusters
 

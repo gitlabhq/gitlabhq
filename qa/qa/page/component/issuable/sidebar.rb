@@ -86,6 +86,24 @@ module QA
             end
           end
 
+          def has_reviewer?(username)
+            wait_reviewers_block_finish_loading do
+              has_text?(username)
+            end
+          end
+
+          def has_no_reviewer?(username)
+            wait_reviewers_block_finish_loading do
+              has_no_text?(username)
+            end
+          end
+
+          def has_no_reviewers?
+            wait_reviewers_block_finish_loading do
+              has_text?('None')
+            end
+          end
+
           def has_avatar_image_count?(count)
             wait_assignees_block_finish_loading do
               all_elements(:avatar_image, count: count)
@@ -133,10 +151,66 @@ module QA
             click_element(:more_assignees_link)
           end
 
+          def toggle_reviewers_edit
+            click_element(:reviewers_edit_button)
+          end
+
+          def suggested_reviewer_usernames
+            within_element(:reviewers_block_container) do
+              wait_for_requests
+
+              click_element(:reviewers_edit_button)
+              wait_for_requests
+
+              list = find_element(:dropdown_list_content)
+              suggested_reviewers = list.find_all('li[data-user-suggested="true"')
+              raise ElementNotFound, 'No suggested reviewers found' if suggested_reviewers.nil?
+
+              suggested_reviewers.map do |reviewer|
+                info = reviewer.text.split('@')
+                {
+                  name: info[0].chomp,
+                  username: info[1].chomp
+                }
+              end.compact
+            end
+          end
+
+          def unassign_reviewers
+            within_element(:reviewers_block_container) do
+              wait_for_requests
+
+              click_element(:reviewers_edit_button)
+              wait_for_requests
+            end
+
+            select_reviewer('Unassigned')
+          end
+
+          def select_reviewer(username)
+            within_element(:reviewers_block_container) do
+              within_element(:dropdown_list_content) do
+                click_on username
+              end
+
+              click_element(:reviewers_edit_button)
+              wait_for_requests
+            end
+          end
+
           private
 
           def wait_assignees_block_finish_loading
             within_element(:assignee_block_container) do
+              wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
+                finished_loading_block?
+                yield
+              end
+            end
+          end
+
+          def wait_reviewers_block_finish_loading
+            within_element(:reviewers_block_container) do
               wait_until(reload: false, max_duration: 10, sleep_interval: 1) do
                 finished_loading_block?
                 yield

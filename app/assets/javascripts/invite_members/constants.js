@@ -1,6 +1,5 @@
 import { s__ } from '~/locale';
 
-export const CLOSE_TO_LIMIT_COUNT = 2;
 export const SEARCH_DELAY = 200;
 export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
 export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
@@ -40,9 +39,6 @@ export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
 );
 export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username or email address');
 export const MEMBERS_PLACEHOLDER = s__('InviteMembersModal|Select members or type email addresses');
-export const MEMBERS_PLACEHOLDER_DISABLED = s__(
-  'InviteMembersModal|This feature is disabled until this group has space for more members.',
-);
 export const MEMBERS_TASKS_TO_BE_DONE_TITLE = s__(
   'InviteMembersModal|Create issues for your new team member to work on (optional)',
 );
@@ -110,7 +106,6 @@ export const MEMBER_MODAL_LABELS = {
   },
   searchField: MEMBERS_SEARCH_FIELD,
   placeHolder: MEMBERS_PLACEHOLDER,
-  placeHolderDisabled: MEMBERS_PLACEHOLDER_DISABLED,
   tasksToBeDone: {
     title: MEMBERS_TASKS_TO_BE_DONE_TITLE,
     noProjects: MEMBERS_TASKS_TO_BE_DONE_NO_PROJECTS,
@@ -139,9 +134,7 @@ export const GROUP_MODAL_LABELS = {
 };
 
 export const LEARN_GITLAB = 'learn_gitlab';
-export const ON_SHOW_TRACK_LABEL = 'locked_modal_viewed';
-export const ON_CLOSE_TRACK_LABEL = 'explore_paid_plans_clicked';
-export const ON_SUBMIT_TRACK_LABEL = 'manage_members_clicked';
+export const ON_SHOW_TRACK_LABEL = 'over_limit_modal_viewed';
 
 export const WARNING_ALERT_TITLE = s__(
   'InviteMembersModal|You only have space for %{count} more %{members} in %{name}',
@@ -150,13 +143,16 @@ export const DANGER_ALERT_TITLE = s__(
   "InviteMembersModal|You've reached your %{count} %{members} limit for %{name}",
 );
 
+export const REACHED_LIMIT_VARIANT = 'reached';
+export const CLOSE_TO_LIMIT_VARIANT = 'close';
+
 export const REACHED_LIMIT_MESSAGE = s__(
-  'InviteMembersModal|You cannot add more members, but you can remove members who no longer need access.',
+  'InviteMembersModal|To invite new users to this namespace, you must remove existing users. You can still add existing namespace users.',
 );
 
 export const REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE = REACHED_LIMIT_MESSAGE.concat(
   s__(
-    'InviteMembersModal| To get more members and access to additional paid features, an owner of the group can start a trial or upgrade to a paid tier.',
+    'InviteMembersModal| To get more members, the owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier.',
   ),
 );
 

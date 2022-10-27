@@ -67,8 +67,8 @@ module API
 
         Gitlab::Metrics::GlobalSearchSlis.record_apdex(
           elapsed: @search_duration_s,
-          search_type: search_type,
-          search_level: search_service.level,
+          search_type: search_type(additional_params),
+          search_level: search_service(additional_params).level,
           search_scope: search_scope
         )
 
@@ -81,7 +81,7 @@ module API
         # with a 200 status code, but an empty @search_duration_s.
         Gitlab::Metrics::GlobalSearchSlis.record_error_rate(
           error: @search_duration_s.nil? || (status < 200 || status >= 400),
-          search_type: search_type,
+          search_type: search_type(additional_params),
           search_level: search_service(additional_params).level,
           search_scope: search_scope
         )

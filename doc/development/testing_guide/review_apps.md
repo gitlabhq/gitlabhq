@@ -172,7 +172,7 @@ subgraph "CNG-mirror pipeline"
    job [triggers a pipeline](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657)
    in the [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror) project.
    - The `review-build-cng` job automatically starts only if your MR includes
-     [CI or frontend changes](../pipelines.md#changes-patterns). In other cases, the job is manual.
+     [CI or frontend changes](../pipelines/internals.md#changes-patterns). In other cases, the job is manual.
    - The [`CNG-mirror`](https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657) pipeline creates the Docker images of
      each component (for example, `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
      based on the commit from the [GitLab pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) and stores

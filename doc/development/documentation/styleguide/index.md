@@ -400,21 +400,30 @@ You can use italics when you are introducing a term for the first time. Otherwis
 
 ### Punctuation
 
-Follow these guidelines for punctuation:
+Follow these guidelines for punctuation.
 
 <!-- vale gitlab.Repetition = NO -->
 
 - End full sentences with a period.
-- Use one space between sentences.
-- Do not use semicolons. Use two sentences instead.
-- Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).)
-- Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
-- Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key.
 - Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).)
-- Avoid dashes. Use separate sentences, or commas, instead.
-- Do not use typographer's ("curly") quotes. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).)
 
 <!-- vale gitlab.Repetition = YES -->
+
+When spacing content:
+
+- Use one space between sentences. (Use of more than one space is tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).)
+- Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
+- Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the <kbd>Tab</kbd> key.
+
+<!-- vale gitlab.NonStandardQuotes = NO -->
+
+Do not use these punctuation characters:
+
+- `;` (semicolon): Use two sentences instead.
+- `–` (en dash) or `—` (em dash): Use separate sentences, or commas, instead.
+- `“` `”` `‘` `’`: Double or single typographer's ("curly") quotation marks. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).)
+
+<!-- vale gitlab.NonStandardQuotes = YES -->
 
 ### Placeholder text
 

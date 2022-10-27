@@ -147,7 +147,7 @@ FOSS context as well.
 
 To run pipelines in both contexts, add the `~"pipeline:run-as-if-foss"` label to the merge request.
 
-See the [As-if-FOSS jobs](pipelines.md#as-if-foss-jobs) pipelines documentation for more information.
+See the [As-if-FOSS jobs](pipelines/index.md#as-if-foss-jobs) pipelines documentation for more information.
 
 ## Separation of EE code in the backend
 

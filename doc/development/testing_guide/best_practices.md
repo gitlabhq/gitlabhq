@@ -110,7 +110,7 @@ If the specs fail the check they must be fixed before than can run in random ord
 
 ### Test speed
 
-GitLab has a massive test suite that, without [parallelization](../pipelines.md#test-suite-parallelization), can take hours
+GitLab has a massive test suite that, without [parallelization](../pipelines/index.md#test-suite-parallelization), can take hours
 to run. It's important that we make an effort to write tests that are accurate
 and effective _as well as_ fast.
 

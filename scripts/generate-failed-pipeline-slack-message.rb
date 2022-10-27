@@ -93,7 +93,11 @@ class SlackReporter
   end
 
   def source
-    "`#{ENV['CI_PIPELINE_SOURCE']}`"
+    "`#{ENV['CI_PIPELINE_SOURCE']}#{schedule_type}`"
+  end
+
+  def schedule_type
+    ENV['CI_PIPELINE_SOURCE'] == 'schedule' ? ": #{ENV['SCHEDULE_TYPE']}" : ''
   end
 
   def project_link

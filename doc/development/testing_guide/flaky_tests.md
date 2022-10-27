@@ -62,7 +62,7 @@ For example, `FLAKY_RSPEC_GENERATE_REPORT=1 bin/rspec ...`.
 
 The `rspec/flaky/report-suite.json` report is:
 
-- Used for [automatically skipping known flaky tests](../pipelines.md#automatic-skipping-of-flaky-tests).
+- Used for [automatically skipping known flaky tests](../pipelines/index.md#automatic-skipping-of-flaky-tests).
 - [Imported into Snowflake](https://gitlab.com/gitlab-data/analytics/-/blob/master/extract/gitlab_flaky_tests/upload.py)
   once per day, for monitoring with the [internal dashboard](https://app.periscopedata.com/app/gitlab/888968/EP---Flaky-tests).
 

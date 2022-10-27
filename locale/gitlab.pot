@@ -22212,7 +22212,7 @@ msgstr ""
 msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr ""
 
-msgid "InviteMembersModal| To get more members and access to additional paid features, an owner of the group can start a trial or upgrade to a paid tier."
+msgid "InviteMembersModal| To get more members, the owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
 msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions"
@@ -22292,19 +22292,16 @@ msgid_plural "InviteMembersModal|The following %d members couldn't be invited"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "InviteMembersModal|This feature is disabled until this group has space for more members."
-msgstr ""
-
 msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
 msgstr ""
 
 msgid "InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
-msgid "InviteMembersModal|Username or email address"
+msgid "InviteMembersModal|To invite new users to this namespace, you must remove existing users. You can still add existing namespace users."
 msgstr ""
 
-msgid "InviteMembersModal|You cannot add more members, but you can remove members who no longer need access."
+msgid "InviteMembersModal|Username or email address"
 msgstr ""
 
 msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"
@@ -36129,6 +36126,9 @@ msgstr ""
 msgid "SecurityOrchestration| or "
 msgstr ""
 
+msgid "SecurityOrchestration|%{agent} for %{namespaces}"
+msgstr ""
+
 msgid "SecurityOrchestration|%{branches} %{plural}"
 msgstr ""
 
@@ -36354,10 +36354,10 @@ msgstr ""
 msgid "SecurityOrchestration|Scan result policy"
 msgstr ""
 
-msgid "SecurityOrchestration|Scan to be performed %{cadence}"
+msgid "SecurityOrchestration|Scan to be performed %{cadence} on the %{branches}"
 msgstr ""
 
-msgid "SecurityOrchestration|Scan to be performed %{cadence} on the %{branches}"
+msgid "SecurityOrchestration|Scan to be performed by the agent named %{agents} %{cadence}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan to be performed on every pipeline on the %{branches}"
@@ -36465,6 +36465,9 @@ msgstr ""
 msgid "SecurityOrchestration|all branches"
 msgstr ""
 
+msgid "SecurityOrchestration|all namespaces"
+msgstr ""
+
 msgid "SecurityOrchestration|an"
 msgstr ""
 
@@ -36481,6 +36484,12 @@ msgid "SecurityOrchestration|scanners find"
 msgstr ""
 
 msgid "SecurityOrchestration|the %{branches}"
+msgstr ""
+
+msgid "SecurityOrchestration|the %{namespaces} %{plural}"
+msgstr ""
+
+msgid "SecurityOrchestration|the %{namespaces} and %{lastNamespace} %{plural}"
 msgstr ""
 
 msgid "SecurityOrchestration|vulnerabilities"
@@ -39853,6 +39862,9 @@ msgid "TagsPage|protected"
 msgstr ""
 
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
+msgstr ""
+
+msgid "Target"
 msgstr ""
 
 msgid "Target Branch"
@@ -47857,6 +47869,9 @@ msgstr ""
 msgid "committed"
 msgstr ""
 
+msgid "complete"
+msgstr ""
+
 msgid "compliance violation has already been recorded"
 msgstr ""
 
@@ -47914,6 +47929,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "days"
+msgstr ""
+
+msgid "default"
 msgstr ""
 
 msgid "default branch"
@@ -48173,6 +48191,9 @@ msgid "internal note"
 msgstr ""
 
 msgid "invalid milestone state `%{state}`"
+msgstr ""
+
+msgid "invalidated"
 msgstr ""
 
 msgid "is"
@@ -48743,6 +48764,11 @@ msgstr ""
 msgid "my-topic"
 msgstr ""
 
+msgid "namespace"
+msgid_plural "namespaces"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "needs to be between 10 minutes and 1 month"
 msgstr ""
 
@@ -48976,6 +49002,9 @@ msgid "repository:"
 msgstr ""
 
 msgid "role's base access level does not match the access level of the membership"
+msgstr ""
+
+msgid "running"
 msgstr ""
 
 msgid "satisfied"

@@ -5,9 +5,10 @@ import { n__, sprintf } from '~/locale';
 import {
   WARNING_ALERT_TITLE,
   DANGER_ALERT_TITLE,
-  REACHED_LIMIT_MESSAGE,
   REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
+  REACHED_LIMIT_VARIANT,
   CLOSE_TO_LIMIT_MESSAGE,
+  CLOSE_TO_LIMIT_VARIANT,
 } from '../constants';
 
 export default {
@@ -15,87 +16,71 @@ export default {
   components: { GlAlert, GlSprintf, GlLink },
   inject: ['name'],
   props: {
-    closeToLimit: {
-      type: Boolean,
-      required: true,
-    },
-    reachedLimit: {
-      type: Boolean,
+    limitVariant: {
+      type: String,
       required: true,
     },
     usersLimitDataset: {
       type: Object,
-      required: false,
-      default: () => ({}),
+      required: true,
     },
   },
   computed: {
-    freeUsersLimit() {
-      return this.usersLimitDataset.freeUsersLimit;
-    },
-    membersCount() {
-      return this.usersLimitDataset.membersCount;
-    },
-    newTrialRegistrationPath() {
-      return this.usersLimitDataset.newTrialRegistrationPath;
-    },
-    purchasePath() {
-      return this.usersLimitDataset.purchasePath;
-    },
-    warningAlertTitle() {
-      return sprintf(WARNING_ALERT_TITLE, {
-        count: this.freeUsersLimit - this.membersCount,
-        members: this.pluralMembers(this.freeUsersLimit - this.membersCount),
-        name: this.name,
-      });
-    },
-    dangerAlertTitle() {
-      return sprintf(DANGER_ALERT_TITLE, {
-        count: this.freeUsersLimit,
-        members: this.pluralMembers(this.freeUsersLimit),
-        name: this.name,
-      });
-    },
-    variant() {
-      return this.reachedLimit ? 'danger' : 'warning';
-    },
-    title() {
-      return this.reachedLimit ? this.dangerAlertTitle : this.warningAlertTitle;
-    },
-    message() {
-      if (this.reachedLimit) {
-        return this.$options.i18n.reachedLimitUpgradeSuggestionMessage;
-      }
-
-      return this.$options.i18n.closeToLimitMessage;
+    limitAttributes() {
+      return {
+        [CLOSE_TO_LIMIT_VARIANT]: {
+          variant: 'warning',
+          title: this.title(WARNING_ALERT_TITLE, this.usersLimitDataset.remainingSeats),
+          message: CLOSE_TO_LIMIT_MESSAGE,
+        },
+        [REACHED_LIMIT_VARIANT]: {
+          variant: 'danger',
+          title: this.title(DANGER_ALERT_TITLE, this.usersLimitDataset.freeUsersLimit),
+          message: REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
+        },
+      };
     },
   },
   methods: {
-    pluralMembers(count) {
-      return n__('member', 'members', count);
+    title(titleTemplate, count) {
+      return sprintf(titleTemplate, {
+        count,
+        members: n__('member', 'members', count),
+        name: this.name,
+      });
     },
-  },
-  i18n: {
-    reachedLimitMessage: REACHED_LIMIT_MESSAGE,
-    reachedLimitUpgradeSuggestionMessage: REACHED_LIMIT_UPGRADE_SUGGESTION_MESSAGE,
-    closeToLimitMessage: CLOSE_TO_LIMIT_MESSAGE,
   },
 };
 </script>
 
 <template>
   <gl-alert
-    v-if="reachedLimit || closeToLimit"
-    :variant="variant"
+    :variant="limitAttributes[limitVariant].variant"
     :dismissible="false"
-    :title="title"
+    :title="limitAttributes[limitVariant].title"
   >
-    <gl-sprintf :message="message">
+    <gl-sprintf :message="limitAttributes[limitVariant].message">
       <template #trialLink="{ content }">
-        <gl-link :href="newTrialRegistrationPath" class="gl-label-link">{{ content }}</gl-link>
+        <gl-link
+          :href="usersLimitDataset.newTrialRegistrationPath"
+          class="gl-label-link"
+          data-track-action="click_link"
+          :data-track-label="`start_trial_user_limit_notification_${limitVariant}`"
+          data-testid="trial-link"
+        >
+          {{ content }}
+        </gl-link>
       </template>
       <template #upgradeLink="{ content }">
-        <gl-link :href="purchasePath" class="gl-label-link">{{ content }}</gl-link>
+        <gl-link
+          :href="usersLimitDataset.purchasePath"
+          class="gl-label-link"
+          data-track-action="click_link"
+          :data-track-label="`upgrade_user_limit_notification_${limitVariant}`"
+          data-testid="upgrade-link"
+        >
+          {{ content }}
+        </gl-link>
       </template>
     </gl-sprintf>
   </gl-alert>

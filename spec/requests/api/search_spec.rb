@@ -29,6 +29,19 @@ RSpec.describe API::Search do
     end
   end
 
+  shared_examples 'apdex recorded' do |scope:, level:, search: ''|
+    it 'increments the custom search sli apdex' do
+      expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_apdex).with(
+        elapsed: a_kind_of(Numeric),
+        search_scope: scope,
+        search_type: 'basic',
+        search_level: level
+      )
+
+      get api(endpoint, user), params: { scope: scope, search: search }
+    end
+  end
+
   shared_examples 'orderable by created_at' do |scope:|
     it 'allows ordering results by created_at asc' do
       get api(endpoint, user), params: { scope: scope, search: 'sortable', order_by: 'created_at', sort: 'asc' }
@@ -172,6 +185,8 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :projects
 
         it_behaves_like 'ping counters', scope: :projects
+
+        it_behaves_like 'apdex recorded', scope: 'projects', level: 'global'
       end
 
       context 'for issues scope' do
@@ -185,6 +200,8 @@ RSpec.describe API::Search do
           it_behaves_like 'response is correct', schema: 'public_api/v4/issues'
 
           it_behaves_like 'ping counters', scope: :issues
+
+          it_behaves_like 'apdex recorded', scope: 'issues', level: 'global'
 
           it_behaves_like 'issues orderable by created_at'
 
@@ -248,6 +265,8 @@ RSpec.describe API::Search do
 
           it_behaves_like 'ping counters', scope: :merge_requests
 
+          it_behaves_like 'apdex recorded', scope: 'merge_requests', level: 'global'
+
           it_behaves_like 'merge_requests orderable by created_at'
 
           describe 'pagination' do
@@ -293,6 +312,8 @@ RSpec.describe API::Search do
 
           it_behaves_like 'ping counters', scope: :milestones
 
+          it_behaves_like 'apdex recorded', scope: 'milestones', level: 'global'
+
           describe 'pagination' do
             before do
               create(:milestone, project: project, title: 'another milestone')
@@ -330,6 +351,8 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :users
 
         it_behaves_like 'ping counters', scope: :users
+
+        it_behaves_like 'apdex recorded', scope: 'users', level: 'global'
       end
 
       context 'for snippet_titles scope' do
@@ -343,6 +366,8 @@ RSpec.describe API::Search do
 
         it_behaves_like 'ping counters', scope: :snippet_titles
 
+        it_behaves_like 'apdex recorded', scope: 'snippet_titles', level: 'global'
+
         describe 'pagination' do
           before do
             create(:snippet, :public, title: 'another snippet', content: 'snippet content')
@@ -350,17 +375,6 @@ RSpec.describe API::Search do
 
           include_examples 'pagination', scope: :snippet_titles
         end
-      end
-
-      it 'increments the custom search sli apdex' do
-        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_apdex).with(
-          elapsed: a_kind_of(Numeric),
-          search_scope: 'issues',
-          search_type: 'basic',
-          search_level: 'global'
-        )
-
-        get api(endpoint, user), params: { scope: 'issues', search: 'john doe' }
       end
 
       it 'increments the custom search sli error rate with error false if no error occurred' do
@@ -466,6 +480,8 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :projects
 
         it_behaves_like 'ping counters', scope: :projects
+
+        it_behaves_like 'apdex recorded', scope: 'projects', level: 'group'
       end
 
       context 'for issues scope' do
@@ -478,6 +494,8 @@ RSpec.describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/issues'
 
         it_behaves_like 'ping counters', scope: :issues
+
+        it_behaves_like 'apdex recorded', scope: 'issues', level: 'group'
 
         it_behaves_like 'issues orderable by created_at'
 
@@ -501,6 +519,8 @@ RSpec.describe API::Search do
 
         it_behaves_like 'ping counters', scope: :merge_requests
 
+        it_behaves_like 'apdex recorded', scope: 'merge_requests', level: 'group'
+
         it_behaves_like 'merge_requests orderable by created_at'
 
         describe 'pagination' do
@@ -522,6 +542,8 @@ RSpec.describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
 
         it_behaves_like 'ping counters', scope: :milestones
+
+        it_behaves_like 'apdex recorded', scope: 'milestones', level: 'group'
 
         describe 'pagination' do
           before do
@@ -555,6 +577,8 @@ RSpec.describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
 
         it_behaves_like 'ping counters', scope: :users
+
+        it_behaves_like 'apdex recorded', scope: 'users', level: 'group'
 
         describe 'pagination' do
           before do
@@ -645,6 +669,8 @@ RSpec.describe API::Search do
 
         it_behaves_like 'issues orderable by created_at'
 
+        it_behaves_like 'apdex recorded', scope: 'issues', level: 'project'
+
         describe 'pagination' do
           before do
             create(:issue, project: project, title: 'another issue')
@@ -677,6 +703,8 @@ RSpec.describe API::Search do
 
         it_behaves_like 'merge_requests orderable by created_at'
 
+        it_behaves_like 'apdex recorded', scope: 'merge_requests', level: 'project'
+
         describe 'pagination' do
           before do
             create(:merge_request, source_project: repo_project, title: 'another mr', target_branch: 'another_branch')
@@ -699,6 +727,8 @@ RSpec.describe API::Search do
           it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
 
           it_behaves_like 'ping counters', scope: :milestones
+
+          it_behaves_like 'apdex recorded', scope: 'milestones', level: 'project'
 
           describe 'pagination' do
             before do
@@ -737,6 +767,8 @@ RSpec.describe API::Search do
 
         it_behaves_like 'ping counters', scope: :users
 
+        it_behaves_like 'apdex recorded', scope: 'users', level: 'project'
+
         describe 'pagination' do
           before do
             create(:project_member, :developer, project: project)
@@ -756,6 +788,8 @@ RSpec.describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/notes'
 
         it_behaves_like 'ping counters', scope: :notes
+
+        it_behaves_like 'apdex recorded', scope: 'notes', level: 'project'
 
         describe 'pagination' do
           before do
@@ -780,6 +814,8 @@ RSpec.describe API::Search do
 
         it_behaves_like 'ping counters', scope: :wiki_blobs
 
+        it_behaves_like 'apdex recorded', scope: 'wiki_blobs', level: 'project'
+
         describe 'pagination' do
           before do
             create(:wiki_page, wiki: wiki, title: 'home 2', content: 'Another page')
@@ -801,6 +837,8 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :commits, search: 'merge'
 
         it_behaves_like 'ping counters', scope: :commits
+
+        it_behaves_like 'apdex recorded', scope: 'commits', level: 'project'
 
         describe 'pipeline visibility' do
           shared_examples 'pipeline information visible' do
@@ -899,6 +937,8 @@ RSpec.describe API::Search do
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/commits_details'
+
+        it_behaves_like 'apdex recorded', scope: 'commits', level: 'project'
       end
 
       context 'for blobs scope' do
@@ -913,6 +953,8 @@ RSpec.describe API::Search do
         it_behaves_like 'pagination', scope: :blobs, search: 'monitors'
 
         it_behaves_like 'ping counters', scope: :blobs
+
+        it_behaves_like 'apdex recorded', scope: 'blobs', level: 'project'
 
         context 'filters' do
           it 'by filename' do

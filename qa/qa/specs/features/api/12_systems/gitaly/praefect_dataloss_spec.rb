@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Systems' do
-    describe 'Praefect dataloss commands', :orchestrated, :gitaly_cluster do
+    describe 'Praefect dataloss commands', :orchestrated, :gitaly_cluster, product_group: :gitaly do
       let(:praefect_manager) { Service::PraefectManager.new }
 
       let(:project) do

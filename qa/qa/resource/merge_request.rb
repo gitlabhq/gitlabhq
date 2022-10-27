@@ -11,7 +11,8 @@ module QA
                     :milestone,
                     :labels,
                     :file_name,
-                    :file_content
+                    :file_content,
+                    :reviewer_ids
 
       attr_writer :no_preparation,
                   :wait_for_merge,
@@ -22,7 +23,8 @@ module QA
                  :description,
                  :merge_when_pipeline_succeeds,
                  :merge_status,
-                 :state
+                 :state,
+                 :reviewers
 
       attribute :project do
         Project.fabricate_via_api! do |resource|
@@ -121,12 +123,17 @@ module QA
         "/projects/#{project.id}/merge_requests"
       end
 
+      def api_reviewers_path
+        "#{api_get_path}/reviewers"
+      end
+
       def api_post_body
         {
           description: description,
           source_branch: source_branch,
           target_branch: target_branch,
-          title: title
+          title: title,
+          reviewer_ids: reviewer_ids
         }
       end
 

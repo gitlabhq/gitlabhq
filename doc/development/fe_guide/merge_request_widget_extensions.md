@@ -85,7 +85,7 @@ special formatting is required. When the extension receives this data,
 it is set to `collapsedData`. You can access `collapsedData` in any computed property or
 method.
 
-When the user clicks **Expand**, the `fetchFullData` method is called. This method
+When the user selects **Expand**, the `fetchFullData` method is called. This method
 also gets called with the props as an argument. This method **must** also return
 the full data. However, this data must be correctly formatted to match the format
 mentioned in the data structure section.
