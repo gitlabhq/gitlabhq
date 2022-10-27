@@ -43,12 +43,14 @@ Example response:
     "name": "master",
     "push_access_levels": [
       {
+        "id":  1,
         "access_level": 40,
         "access_level_description": "Maintainers"
       }
     ],
     "merge_access_levels": [
       {
+        "id":  1,
         "access_level": 40,
         "access_level_description": "Maintainers"
       }
@@ -61,12 +63,14 @@ Example response:
     "name": "release/*",
     "push_access_levels": [
       {
+        "id":  1,
         "access_level": 40,
         "access_level_description": "Maintainers"
       }
     ],
     "merge_access_levels": [
       {
+        "id":  1,
         "access_level": 40,
         "access_level_description": "Maintainers"
       }
@@ -90,6 +94,7 @@ Example response:
     "name": "master",
     "push_access_levels": [
       {
+        "id":  1,
         "access_level": 40,
         "user_id": null,
         "group_id": null,
@@ -98,6 +103,7 @@ Example response:
     ],
     "merge_access_levels": [
       {
+        "id":  1,
         "access_level": null,
         "user_id": null,
         "group_id": 1234,
@@ -136,12 +142,14 @@ Example response:
   "name": "master",
   "push_access_levels": [
     {
+      "id":  1,
       "access_level": 40,
       "access_level_description": "Maintainers"
     }
   ],
   "merge_access_levels": [
     {
+      "id":  1,
       "access_level": 40,
       "access_level_description": "Maintainers"
     }
@@ -162,6 +170,7 @@ Example response:
   "name": "master",
   "push_access_levels": [
     {
+      "id":  1,
       "access_level": 40,
       "user_id": null,
       "group_id": null,
@@ -170,6 +179,7 @@ Example response:
   ],
   "merge_access_levels": [
     {
+      "id":  1,
       "access_level": null,
       "user_id": null,
       "group_id": 1234,
@@ -215,18 +225,21 @@ Example response:
   "name": "*-stable",
   "push_access_levels": [
     {
+      "id":  1,
       "access_level": 30,
       "access_level_description": "Developers + Maintainers"
     }
   ],
   "merge_access_levels": [
     {
+      "id":  1,
       "access_level": 30,
       "access_level_description": "Developers + Maintainers"
     }
   ],
   "unprotect_access_levels": [
     {
+      "id":  1,
       "access_level": 40,
       "access_level_description": "Maintainers"
     }
@@ -247,6 +260,7 @@ Example response:
   "name": "*-stable",
   "push_access_levels": [
     {
+      "id":  1,
       "access_level": 30,
       "user_id": null,
       "group_id": null,
@@ -255,6 +269,7 @@ Example response:
   ],
   "merge_access_levels": [
     {
+      "id":  1,
       "access_level": 30,
       "user_id": null,
       "group_id": null,
@@ -263,6 +278,7 @@ Example response:
   ],
   "unprotect_access_levels": [
     {
+      "id":  1,
       "access_level": 40,
       "user_id": null,
       "group_id": null,
@@ -291,6 +307,7 @@ Example response:
   "name": "*-stable",
   "push_access_levels": [
     {
+      "id":  1,
       "access_level": null,
       "user_id": 1,
       "group_id": null,
@@ -299,6 +316,7 @@ Example response:
   ],
   "merge_access_levels": [
     {
+      "id":  1,
       "access_level": 40,
       "user_id": null,
       "group_id": null,
@@ -307,6 +325,7 @@ Example response:
   ],
   "unprotect_access_levels": [
     {
+      "id":  1,
       "access_level": 40,
       "user_id": null,
       "group_id": null,
@@ -348,6 +367,7 @@ Example response:
     "name": "master",
     "push_access_levels": [
         {
+            "id": 1,  
             "access_level": 30,
             "access_level_description": "Developers + Maintainers",
             "user_id": null,
@@ -356,12 +376,14 @@ Example response:
     ],
     "merge_access_levels": [
         {
+            "id": 1,  
             "access_level": 30,
             "access_level_description": "Developers + Maintainers",
             "user_id": null,
             "group_id": null
         },
         {
+            "id": 2,  
             "access_level": 40,
             "access_level_description": "Maintainers",
             "user_id": null,
@@ -370,6 +392,7 @@ Example response:
     ],
     "unprotect_access_levels": [
         {
+            "id": 1,  
             "access_level": 40,
             "access_level_description": "Maintainers",
             "user_id": null,

@@ -3,6 +3,7 @@
 module API
   module Entities
     class ProtectedRefAccess < Grape::Entity
+      expose :id
       expose :access_level
       expose :access_level_description do |protected_ref_access|
         protected_ref_access.humanize

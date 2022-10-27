@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "push_access_levels",
+    "merge_access_levels",
+    "allow_force_push"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "push_access_levels": {
+      "type": "array",
+      "items": {
+        "$ref": "entities/protected_ref_access.json"
+      }
+    },
+    "merge_access_levels": {
+      "type": "array",
+      "items": {
+        "$ref": "entities/protected_ref_access.json"
+      }
+    },
+    "allow_force_push": {
+      "type": "boolean"
+    }
+  }
+}

@@ -34,11 +34,11 @@ export const describeMarkdownSnapshots = (description, glfmSpecificationDir) => 
     path.join(glfmSpecificationDir, 'input', 'gitlab_flavored_markdown'),
     'glfm_example_status.yml',
   );
-  const glfmExampleSnapshotsDir = path.join(glfmSpecificationDir, 'example_snapshots');
-  const markdownExamples = loadExamples(glfmExampleSnapshotsDir, 'markdown.yml');
-  const expectedHtmlExamples = loadExamples(glfmExampleSnapshotsDir, 'html.yml');
+  const outputExampleSnapshotsDir = path.join(glfmSpecificationDir, 'output_example_snapshots');
+  const markdownExamples = loadExamples(outputExampleSnapshotsDir, 'markdown.yml');
+  const expectedHtmlExamples = loadExamples(outputExampleSnapshotsDir, 'html.yml');
   const expectedProseMirrorJsonExamples = loadExamples(
-    glfmExampleSnapshotsDir,
+    outputExampleSnapshotsDir,
     'prosemirror_json.yml',
   );
 

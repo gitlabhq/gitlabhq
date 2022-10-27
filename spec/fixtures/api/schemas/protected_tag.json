@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": [
+    "name",
+    "create_access_levels"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "create_access_levels": {
+      "type": "array",
+      "items": {
+        "$ref": "entities/protected_ref_access.json"
+      }
+    },
+    "additionalProperties": false
+  }
+}
