@@ -335,6 +335,9 @@
           "$.body.pipelines[*].details.name": {
             "match": "type"
           },
+          "$.body.pipelines[*].details.event_type_name": {
+            "match": "type"
+          },
           "$.body.pipelines[*].details.manual_actions": {
             "min": 1
           },

@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def execute
-        raise "Cannot truncate legacy tables in single-db setup" unless Gitlab::Database.has_config?(:ci)
+        raise "Cannot truncate legacy tables in single-db setup" if single_database_setup?
         raise "database is not supported" unless %w[main ci].include?(database_name)
 
         logger&.info "DRY RUN:" if dry_run
@@ -90,6 +90,13 @@ module Gitlab
             sql_statements.each { |sql_statement| connection.execute(sql_statement) }
           end
         end
+      end
+
+      def single_database_setup?
+        return true unless Gitlab::Database.has_config?(:ci)
+
+        ci_base_model = Gitlab::Database.database_base_models[:ci]
+        !!Gitlab::Database.db_config_share_with(ci_base_model.connection_db_config)
       end
     end
   end

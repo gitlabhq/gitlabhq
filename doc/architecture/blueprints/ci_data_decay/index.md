@@ -1,8 +1,11 @@
 ---
-stage: none
-group: unassigned
-comments: false
-description: 'CI/CD data time decay'
+status: ready
+creation-date: "2021-09-10"
+authors: [ "@grzesiek" ]
+coach: "@kamil"
+approvers: [ "@jporter", "@cheryl.li" ]
+owning-stage: "~devops::verify"
+participating-stages: []
 ---
 
 # CI/CD data time decay
@@ -246,35 +249,3 @@ In progress.
 - 2022-04-30: Additional [benchmarking started](https://gitlab.com/gitlab-org/gitlab/-/issues/361019) to evaluate impact.
 - 2022-06-31: [Pipeline partitioning design](pipeline_partitioning.md) document [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87683) merged.
 - 2022-09-01: Engineering effort started to implement partitioning.
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Grzegorz Bizon          |
-| Engineering Leader           | Cheryl Li               |
-| Product Manager              | Jackie Porter           |
-| Architecture Evolution Coach | Kamil Trzciński         |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | Cheryl Li              |
-| Product                      | Jackie Porter          |
-| Engineering                  | Grzegorz Bizon         |
-
-Domain experts:
-
-| Area                         | Who
-|------------------------------|------------------------|
-| Verify / Pipeline execution  | Fabio Pitino           |
-| Verify / Pipeline execution  | Marius Bobin           |
-| Verify / Pipeline insights   | Maxime Orefice         |
-| PostgreSQL Database          | Andreas Brandl         |
-
-<!-- vale gitlab.Spelling = YES -->

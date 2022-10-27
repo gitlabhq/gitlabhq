@@ -92,7 +92,7 @@ You must register an agent before you can install the agent in your cluster. To 
    - If you already have an [agent configuration file](#create-an-agent-configuration-file), select it from the list.
 1. Select **Register an agent**.
 1. GitLab generates an access token for the agent. You need this token to install the agent
-   in your cluster and to [update the agent](#update-the-agent-version) to another version.
+   in your cluster.
 
    WARNING:
    Securely store the agent access token. A bad actor can use this token to access source code in the agent's configuration project, access source code in any public project on the GitLab instance, or even, under very specific conditions, obtain a Kubernetes manifest.

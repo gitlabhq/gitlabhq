@@ -1,11 +1,12 @@
 ---
-stage: Stage
-group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'Create a catalog of shareable pipeline constructs'
+status: proposed
+creation-date: "2022-09-14"
+authors: [ "@fabio", "@grzesiek" ]
+coach: "@kamil"
+approvers: [ "@dov" ]
+owning-stage: "~devops::verify"
+participating-stages: []
 ---
-
 
 # CI/CD pipeline components catalog
 
@@ -187,35 +188,3 @@ Some limits we could consider adding:
     - Allow self-managed administrators to populate their self-managed catalog by importing/updating
       components from GitLab.com or from repository exports.
     - Iterate on feedback.
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Fabio Pitino            |
-| Engineering Leader           | ?                       |
-| Product Manager              | Dov Hershkovitch        |
-| Architecture Evolution Coach | Kamil Trzciński         |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | ?                      |
-| Product                      | Dov Hershkovitch       |
-| Engineering                  | ?                      |
-| UX                           | Nadia Sotnikova        |
-
-Domain experts:
-
-| Area                         | Who
-|------------------------------|------------------------|
-| Verify / Pipeline authoring  | Avielle Wolfe          |
-| Verify / Pipeline authoring  | Furkan Ayhan           |
-| Verify / Pipeline execution  | Fabio Pitino           |
-
-<!-- vale gitlab.Spelling = YES -->

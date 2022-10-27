@@ -63,8 +63,21 @@ export default {
     commit() {
       return this.job?.pipeline?.commit || {};
     },
+    selectedStageData() {
+      return this.stages.find((val) => val.name === this.selectedStage);
+    },
     shouldShowJobRetryForwardDeploymentModal() {
       return this.job.retry_path && this.hasForwardDeploymentFailure;
+    },
+  },
+  watch: {
+    job(value, oldValue) {
+      const hasNewStatus = value.status.text !== oldValue.status.text;
+      const isCurrentStage = value?.stage === this.selectedStage;
+
+      if (hasNewStatus && isCurrentStage) {
+        this.fetchJobsForStage(this.selectedStageData);
+      }
     },
   },
   methods: {

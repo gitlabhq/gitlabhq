@@ -29,6 +29,11 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
     }[data_store]
   end
 
+  describe 'default attributes' do
+    it { expect(described_class.new.data_store).to eq('redis_trace_chunks') }
+    it { expect(described_class.new(data_store: :fog).data_store).to eq('fog') }
+  end
+
   describe 'chunk creation' do
     let(:metrics) { spy('metrics') }
 

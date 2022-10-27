@@ -2,7 +2,7 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElement, contentTop } from '~/lib/utils/common_utils';
 
 function getAllDiscussionElements() {
-  const containerEl = window.mrTabs?.currentAction === 'diffs' ? '.diffs' : '.notes';
+  const containerEl = window.mrTabs?.currentAction === 'diffs' ? '.diffs' : '.tab-pane.notes';
   return Array.from(
     document.querySelectorAll(
       `${containerEl} div[data-discussion-id]:not([data-discussion-resolved])`,

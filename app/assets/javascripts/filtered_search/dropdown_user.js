@@ -1,3 +1,4 @@
+import { ACTIVE_AND_BLOCKED_USER_STATES } from '~/users_select/constants';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
 import DropdownAjaxFilter from './dropdown_ajax_filter';
 
@@ -14,7 +15,7 @@ export default class DropdownUser extends DropdownAjaxFilter {
     return {
       ...super.ajaxFilterConfig(),
       params: {
-        active: true,
+        states: ACTIVE_AND_BLOCKED_USER_STATES,
         group_id: this.getGroupId(),
         project_id: this.getProjectId(),
         current_user: true,

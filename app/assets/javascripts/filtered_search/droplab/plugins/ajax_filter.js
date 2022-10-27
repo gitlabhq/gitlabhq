@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import AjaxCache from '~/lib/utils/ajax_cache';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 const AjaxFilter = {
   init: function (hook) {
@@ -62,7 +63,7 @@ const AjaxFilter = {
     this.loading = true;
     var params = config.params || {};
     params[config.searchKey] = searchValue;
-    var url = config.endpoint + this.buildParams(params);
+    var url = mergeUrlParams(params, config.endpoint, { spreadArrays: true });
     return AjaxCache.retrieve(url)
       .then((data) => {
         this._loadData(data, config);

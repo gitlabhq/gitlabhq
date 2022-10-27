@@ -20,7 +20,8 @@ module API
         params do
           requires :ref, type: String, desc: 'The commit sha or name of a branch or tag', allow_blank: false
           requires :token, type: String, desc: 'The unique token of trigger or job token'
-          optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
+          optional :variables, type: Hash, desc: 'The list of variables to be injected into build',
+                               documentation: { type: Object, additional_properties: String }
         end
         post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20758')

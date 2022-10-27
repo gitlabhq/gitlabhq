@@ -17,8 +17,12 @@ class MergeRequests::PipelineEntity < Grape::Entity
   expose :commit, using: CommitEntity
 
   expose :details do
-    expose :name do |pipeline|
-      pipeline.present.name
+    expose :event_type_name do |pipeline|
+      pipeline.present.event_type_name
+    end
+
+    expose :name do |pipeline| # To be removed in 15.7
+      pipeline.present.event_type_name
     end
 
     expose :artifacts do |pipeline, options|

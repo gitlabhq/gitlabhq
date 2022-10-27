@@ -414,12 +414,33 @@ All pipelines are assigned the defined name. Any leading or trailing spaces in t
 **Possible inputs**:
 
 - A string.
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- A combination of both.
 
-**Example of `workflow:name`**:
+**Examples of `workflow:name`**:
+
+A simple pipeline name with a predefined variable:
 
 ```yaml
 workflow:
-  name: 'Pipeline name'
+  name: 'Pipeline for branch: $CI_COMMIT_BRANCH'
+```
+
+A configuration with different pipeline names depending on the pipeline conditions:
+
+```yaml
+variables:
+  PIPELINE_NAME: 'Default pipeline name'
+
+workflow:
+  name: '$PIPELINE_NAME'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        PIPELINE_NAME: 'MR pipeline: $CI_COMMIT_BRANCH'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
+      variables:
+        PIPELINE_NAME: 'Ruby 3 pipeline'
 ```
 
 #### `workflow:rules`

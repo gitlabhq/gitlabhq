@@ -1251,8 +1251,9 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
     rubocop-rspec (2.12.1)
       rubocop (~> 1.31)
-    ruby-fogbugz (0.2.1)
+    ruby-fogbugz (0.3.0)
       crack (~> 0.4)
+      multipart-post (~> 2.0)
     ruby-magic (0.5.4)
       mini_portile2 (~> 2.6)
     ruby-progressbar (1.11.0)
@@ -1773,7 +1774,7 @@ DEPENDENCIES
   rspec_junit_formatter
   rspec_profiling (~> 0.0.6)
   rubocop
-  ruby-fogbugz (~> 0.2.1)
+  ruby-fogbugz (~> 0.3.0)
   ruby-magic (~> 0.5)
   ruby-progressbar (~> 1.10)
   ruby-saml (~> 1.13.0)

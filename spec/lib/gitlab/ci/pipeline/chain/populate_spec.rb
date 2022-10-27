@@ -277,6 +277,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
           expect(pipeline.pipeline_metadata).to be_nil
         end
       end
+
+      context 'with variables' do
+        let(:config) do
+          {
+            variables: { ROOT_VAR: 'value $WORKFLOW_VAR1' },
+            workflow: {
+              name: 'Pipeline $ROOT_VAR $WORKFLOW_VAR2 $UNKNOWN_VAR',
+              rules: [{ variables: { WORKFLOW_VAR1: 'value1', WORKFLOW_VAR2: 'value2' } }]
+            },
+            rspec: { script: 'rspec' }
+          }
+        end
+
+        it 'substitutes variables' do
+          run_chain
+
+          expect(pipeline.pipeline_metadata.name).to eq('Pipeline value value1 value2 ')
+        end
+      end
     end
   end
 end

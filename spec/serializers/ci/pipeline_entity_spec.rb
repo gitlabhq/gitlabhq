@@ -31,10 +31,15 @@ RSpec.describe Ci::PipelineEntity do
       end
 
       it 'contains details' do
+        allow(pipeline).to receive(:merge_request_event_type).and_return(:merged_result)
+
         expect(subject).to include :details
         expect(subject[:details])
-          .to include :duration, :finished_at, :name
+          .to include :duration, :finished_at, :name, :event_type_name
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label, :tooltip
+
+        expect(subject[:details][:event_type_name]).to eq('Merged result pipeline')
+        expect(subject[:details][:name]).to eq('Merged result pipeline')
       end
 
       it 'contains flags' do

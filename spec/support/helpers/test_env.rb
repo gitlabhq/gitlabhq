@@ -43,7 +43,7 @@ module TestEnv
     'video' => '8879059',
     'crlf-diff' => '5938907',
     'conflict-start' => '824be60',
-    'conflict-resolvable' => '1450cd6',
+    'conflict-resolvable' => '1450cd639e0bc6721eb02800169e464f212cde06',
     'conflict-binary-file' => '259a6fb',
     'conflict-contains-conflict-markers' => '78a3086',
     'conflict-missing-side' => 'eb227b3',

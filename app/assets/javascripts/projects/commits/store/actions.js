@@ -3,6 +3,7 @@ import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { ACTIVE_AND_BLOCKED_USER_STATES } from '~/users_select/constants';
 import * as types from './mutation_types';
 
 export default {
@@ -23,7 +24,7 @@ export default {
       .get(joinPaths(gon.relative_url_root || '', '/-/autocomplete/users.json'), {
         params: {
           project_id: projectId,
-          active: true,
+          states: ACTIVE_AND_BLOCKED_USER_STATES,
           search: author,
         },
       })

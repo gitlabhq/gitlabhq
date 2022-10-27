@@ -1,9 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: Consolidating groups and projects
+status: proposed
+creation-date: "2021-02-07"
+authors: [ "@alexpooley", "@ifarkas" ]
+coach: "@grzesiek"
+approvers: [ "@m_gill", "@mushakov" ]
+owning-stage: "~devops::plan"
+participating-stages: []
 ---
 
 # Consolidating Groups and Projects
@@ -142,34 +144,6 @@ The initial iteration will provide a framework to house features under `Namespac
    - Think big: This analysis provides a great opportunity to zoom out and consider the feature UX as a whole. How could you make this feature lovable based on the new structure, inheritance, and capabilities afforded by `Namespaces`? Is there any UI which doesn't comply with Pajamas?
    - Start small: What are the product changes that need to be made to assist with the migration?
    - Move fast: Prioritise these solution ideas, document in issues, and create a roadmap for implementation.
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------------------|
-| Author                       | Alex Pooley, Imre Farkas            |
-| Architecture Evolution Coach | Dmitriy Zaporozhets, Grzegorz Bizon |
-| Engineering Leader           | Michelle Gill                       |
-| Domain Expert                | Jan Provaznik                       |
-
-<!-- vale gitlab.Spelling = YES -->
-
-DRIs:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Product                      | Melissa Ushakov        |
-| Leadership                   | Michelle Gill          |
-| Engineering                  | Imre Farkas            |
-| Design                       | Nick Post              |
-
-<!-- vale gitlab.Spelling = YES -->
 
 ## Related topics
 

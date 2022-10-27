@@ -1,9 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'Making a GitLab codebase composable - allowing to run parts of the application'
+status: proposed
+creation-date: "2021-05-19"
+authors: [ "@kamil", "@mkaeppler" ]
+coach: "@glopezfernandez"
+approvers: []
+owning-stage: "~devops::non_devops"
+participating-stages: []
 ---
 
 NOTE:
@@ -585,33 +587,3 @@ to be created to ensure that we do not have explosion of engines.
 - [Use nested structure to organize CI classes](https://gitlab.com/gitlab-org/gitlab/-/issues/209745)
 - [WIP: Make it simple to build and use "Decoupled Services"](https://gitlab.com/gitlab-org/gitlab/-/issues/31121)
 - [Rails takes awhile to boot, let's see if we can improve this](https://gitlab.com/gitlab-org/gitlab/-/issues/213992)
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       |    Kamil Trzciński      |
-| Architecture Evolution Coach |    ?                    |
-| Engineering Leader           |    ?                    |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Product                      |    ?                   |
-| Leadership                   |    Craig Gomes         |
-| Engineering                  |    ?                   |
-
-Domain Experts:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Domain Expert                | Nikola Milojevic       |
-| Domain Expert                |    ?                   |
-| Domain Expert                |    ?                   |
-
-<!-- vale gitlab.Spelling = YES -->

@@ -1425,5 +1425,43 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         it_behaves_like 'comparing file changes with workflow rules'
       end
     end
+
+    context 'workflow name with rules' do
+      let(:ref) { 'refs/heads/feature' }
+
+      let(:variables) do
+        [{ key: 'SOME_VARIABLE', secret_value: 'SOME_VAL' }]
+      end
+
+      let(:pipeline) do
+        execute_service do |pipeline|
+          pipeline.variables.build(variables)
+        end.payload
+      end
+
+      let(:config) do
+        <<-EOY
+          workflow:
+            name: '$PIPELINE_NAME $SOME_VARIABLE'
+            rules:
+              - if: $CI_COMMIT_REF_NAME =~ /master/
+                variables:
+                  PIPELINE_NAME: 'Name 1'
+              - if: $CI_COMMIT_REF_NAME =~ /feature/
+                variables:
+                  PIPELINE_NAME: 'Name 2'
+
+          job:
+            stage: test
+            script: echo 'hello'
+        EOY
+      end
+
+      it 'substitutes variables in pipeline name' do
+        expect(response).not_to be_error
+        expect(pipeline).to be_persisted
+        expect(pipeline.name).to eq('Name 2 SOME_VAL')
+      end
+    end
   end
 end

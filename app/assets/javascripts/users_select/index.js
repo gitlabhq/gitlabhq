@@ -29,27 +29,29 @@ function UsersSelect(currentUser, els, options = {}) {
     }
   }
 
-  const { handleClick } = options;
+  const { handleClick, states } = options;
 
   $els.each((i, dropdown) => {
     const userSelect = this;
-    const options = {};
     const $dropdown = $(dropdown);
-    options.projectId = $dropdown.data('projectId');
-    options.groupId = $dropdown.data('groupId');
-    options.showCurrentUser = $dropdown.data('currentUser');
-    options.todoFilter = $dropdown.data('todoFilter');
-    options.todoStateFilter = $dropdown.data('todoStateFilter');
-    options.iid = $dropdown.data('iid');
-    options.issuableType = $dropdown.data('issuableType');
-    options.targetBranch = $dropdown.data('targetBranch');
-    options.showSuggested = $dropdown.data('showSuggested');
+    const options = {
+      states,
+      projectId: $dropdown.data('projectId'),
+      groupId: $dropdown.data('groupId'),
+      showCurrentUser: $dropdown.data('currentUser'),
+      todoFilter: $dropdown.data('todoFilter'),
+      todoStateFilter: $dropdown.data('todoStateFilter'),
+      iid: $dropdown.data('iid'),
+      issuableType: $dropdown.data('issuableType'),
+      targetBranch: $dropdown.data('targetBranch'),
+      authorId: $dropdown.data('authorId'),
+      showSuggested: $dropdown.data('showSuggested'),
+    };
     const showNullUser = $dropdown.data('nullUser');
     const defaultNullUser = $dropdown.data('nullUserDefault');
     const showMenuAbove = $dropdown.data('showMenuAbove');
     const showAnyUser = $dropdown.data('anyUser');
     const firstUser = $dropdown.data('firstUser');
-    options.authorId = $dropdown.data('authorId');
     const defaultLabel = $dropdown.data('defaultLabel');
     const issueURL = $dropdown.data('issueUpdate');
     const $selectbox = $dropdown.closest('.selectbox');

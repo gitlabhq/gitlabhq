@@ -1,14 +1,14 @@
 ---
-stage: enablement
-group: pods
-comments: false
-description: 'Pods'
+status: accepted
+creation-date: "2022-09-07"
+authors: [ "@fzimmer", "@DylanGriffith" ]
+coach: "@kamil"
+approvers: [ "@fzimmer" ]
+owning-stage: "~devops::enablement"
+participating-stages: []
 ---
 
 # Pods
-
-DISCLAIMER:
-This page may contain information related to upcoming products, features and functionality. It is important to note that the information presented is for informational purposes only, so please do not rely on the information for purchasing or planning purposes. Just like with all projects, the items mentioned on the page are subject to change or delay, and the development, release, and timing of any products, features, or functionality remain at the sole discretion of GitLab Inc.
 
 This document is a work-in-progress and represents a very early state of the Pods design. Significant aspects are not documented, though we expect to add them in the future.
 
@@ -265,21 +265,3 @@ This section links all different technical proposals that are being evaluated.
 - [Database Group investigation](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/doc/root-namespace-sharding.html)
 - [Shopify Pods architecture](https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale)
 - [Opstrace architecture](https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/docs/architecture/overview.md)
-
-## Who
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Fabian Zimmer           |
-| Architecture Evolution Coach | Kamil Trzciński         |
-| Engineering Leader           | TBD                     |
-| Product Manager              | Fabian Zimmer           |
-| Domain Expert / Database     | TBD                     |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | TBD                    |
-| Product                      | Fabian Zimmer          |
-| Engineering                  | Thong Kuah |

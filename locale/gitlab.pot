@@ -4674,7 +4674,7 @@ msgstr ""
 msgid "ApplicationSettings|After sign-up text"
 msgstr ""
 
-msgid "ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for unlimited."
+msgid "ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{projectSharingLinkStart}project sharing%{projectSharingLinkEnd} and %{groupSharingLinkStart}group sharing%{groupSharingLinkEnd}."
 msgstr ""
 
 msgid "ApplicationSettings|Allowed domains for sign-ups"
@@ -7659,6 +7659,9 @@ msgid "Cannot create the abuse report. This user has been blocked."
 msgstr ""
 
 msgid "Cannot delete %{profile_name} referenced in security policy"
+msgstr ""
+
+msgid "Cannot delete the default framework"
 msgstr ""
 
 msgid "Cannot have multiple Jira imports running at the same time"

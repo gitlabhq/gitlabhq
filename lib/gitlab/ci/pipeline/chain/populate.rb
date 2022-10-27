@@ -41,8 +41,14 @@ module Gitlab
               @command.yaml_processor_result.workflow_name.blank?
 
             name = @command.yaml_processor_result.workflow_name
+            name = ExpandVariables.expand(name, -> { global_context.variables.sort_and_expand_all })
 
             pipeline.build_pipeline_metadata(project: pipeline.project, name: name)
+          end
+
+          def global_context
+            Gitlab::Ci::Build::Context::Global.new(
+              pipeline, yaml_variables: @command.pipeline_seed.root_variables)
           end
 
           def stage_names

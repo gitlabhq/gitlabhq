@@ -1,8 +1,11 @@
 ---
-stage: none
-group: unassigned
-comments: false
-description: 'Next Rate Limiting Architecture'
+status: ready
+creation-date: "2022-09-08"
+authors: [ "@grzesiek", "@marshall007", "@fabiopitino", "@hswimelar" ]
+coach: "@andrewn"
+approvers: [ "@sgoldstein" ]
+owning-stage:
+participating-stages: []
 ---
 
 # Next Rate Limiting Architecture
@@ -398,40 +401,3 @@ Request For Comments.
 - 2022-07-06: A fourth, [consolidated proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/364524#note_1017640650), has been submitted.
 - 2022-07-12: Started working on the design document following [Architecture Evolution Workflow](https://about.gitlab.com/handbook/engineering/architecture/workflow/).
 - 2022-09-08: The initial version of the blueprint has been merged.
-- 2022-09-21: Plan for phases and iterations has been established.
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Grzegorz Bizon          |
-| Author                       | Fabio Pitino            |
-| Author                       | Marshall Cottrell       |
-| Author                       | Hayley Swimelar         |
-| Engineering Leader           | Sam Goldstein           |
-| Product Manager              |                         |
-| Architecture Evolution Coach | Andrew Newdigate        |
-| Recommender                  |                         |
-| Recommender                  |                         |
-| Recommender                  |                         |
-| Recommender                  |                         |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   |                        |
-| Product                      |                        |
-| Engineering                  |                        |
-
-Domain experts:
-
-| Area                         | Who
-|------------------------------|------------------------|
-|                              |                        |
-
-<!-- vale gitlab.Spelling = YES -->

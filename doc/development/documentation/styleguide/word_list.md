@@ -477,6 +477,10 @@ Do not use **foo** in product documentation. You can use it in our API and contr
 
 When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
 
+## GB, gigabytes
+
+For **GB** and **MB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+
 ## Geo
 
 Use title case for **Geo**.
@@ -717,6 +721,10 @@ Do not use `master`. Use `main` when you need a sample [default branch name](#de
 ## may, might
 
 **Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**.
+
+## MB, megabytes
+
+For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
 
 ## me, myself, mine
 

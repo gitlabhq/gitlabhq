@@ -1,8 +1,11 @@
 ---
-stage: none
-group: unassigned
-comments: false
-description: 'Next Runner Auto-scaling Architecture'
+status: accepted
+creation-date: "2022-01-19"
+authors: [ "@grzesiek", "@tmaczukin", "@josephburnett" ]
+coach: "@kamil"
+approvers: [ "@DarrenEastman" ]
+owning-stage: "~devops::verify"
+participating-stages: []
 ---
 
 # Next Runner Auto-scaling Architecture

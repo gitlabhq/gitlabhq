@@ -6,7 +6,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
-  let(:seed_context) { Gitlab::Ci::Pipeline::Seed::Context.new(pipeline, root_variables: []) }
+  let(:root_variables) { [] }
+
+  let(:seed_context) { Gitlab::Ci::Pipeline::Seed::Context.new(pipeline, root_variables: root_variables) }
 
   let(:stages_attributes) do
     [
@@ -73,6 +75,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
   describe '#deployments_count' do
     it 'counts the jobs having an environment associated' do
       expect(seed.deployments_count).to eq(2)
+    end
+  end
+
+  describe '#root_variables' do
+    let(:root_variables) { %w[var1 value1] }
+
+    it 'returns root_variables' do
+      expect(seed.root_variables).to eq(root_variables)
     end
   end
 end

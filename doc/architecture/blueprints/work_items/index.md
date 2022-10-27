@@ -1,8 +1,11 @@
 ---
-stage: Plan
-group: Project Management
-comments: false
-description: 'Work Items'
+status: accepted
+creation-date: "2022-09-28"
+authors: [ "@ntepluhina" ]
+coach: "@kamil"
+approvers: [ "@gweaver" ]
+owning-stage: "~devops::plan"
+participating-stages: []
 ---
 
 # Work Items
@@ -107,24 +110,3 @@ Work Item architecture is designed with making all the features for all the type
 - [Tasks roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103?_gl=1*zqatx*_ga*NzUyOTc3NTc1LjE2NjEzNDcwMDQ.*_ga_ENFH3X7M5Y*MTY2MjU0MDQ0MC43LjEuMTY2MjU0MDc2MC4wLjAuMA..)
 - [Work Item "Vision" Prototype](https://gitlab.com/gitlab-org/gitlab/-/issues/368607)
 - [Work Item Discussions](https://gitlab.com/groups/gitlab-org/-/epics/7060)
-
-### Who
-
-| Role                         | Who
-|------------------------------|-----------------------------|
-| Author                       | Natalia Tepluhina           |
-| Architecture Evolution Coach | Kamil Trzciński             |
-| Engineering Leader           | TBD                         |
-| Product Manager              | Gabe Weaver                 |
-| Domain Expert / Frontend     | Natalia Tepluhina           |
-| Domain Expert / Backend      | Heinrich Lee Yu             |
-| Domain Expert / Backend      | Jan Provaznik               |
-| Domain Expert / Backend      | Mario Celi                  |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | TBD                    |
-| Product                      | Gabe Weaver            |
-| Engineering                  | TBD                    |

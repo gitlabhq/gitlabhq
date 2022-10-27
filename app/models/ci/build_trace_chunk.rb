@@ -10,7 +10,7 @@ module Ci
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
-    default_value_for :data_store, :redis_trace_chunks
+    attribute :data_store, default: :redis_trace_chunks
 
     after_create { metrics.increment_trace_operation(operation: :chunked) }
 

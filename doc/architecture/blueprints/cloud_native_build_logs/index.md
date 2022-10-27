@@ -1,9 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'Next iteration of build logs architecture at GitLab'
+status: implemented
+creation-date: "2020-08-26"
+authors: [ "@grzesiek" ]
+coach: "@kamil"
+approvers: [ "@thaoyeager", "@darbyfrey" ]
+owning-stage: "~devops::release"
+participating-stages: []
 ---
 
 # Cloud Native Build Logs
@@ -121,27 +123,3 @@ Enabling this feature on GitLab.com is a subtask of
 This change has been implemented and enabled on GitLab.com.
 
 We are working on [an epic to make this feature more resilient and observable](https://gitlab.com/groups/gitlab-org/-/epics/4860).
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       |     Grzegorz Bizon      |
-| Architecture Evolution Coach | Gerardo Lopez-Fernandez |
-| Engineering Leader           |       Darby Frey        |
-| Domain Expert                |     Kamil Trzciński     |
-| Domain Expert                |      Sean McGivern      |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Product                      |      Thao Yeager       |
-| Leadership                   |       Darby Frey       |
-| Engineering                  |     Grzegorz Bizon     |
-
-<!-- vale gitlab.Spelling = YES -->

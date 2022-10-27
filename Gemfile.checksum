@@ -501,7 +501,7 @@
 {"name":"rubocop-performance","version":"1.14.3","platform":"ruby","checksum":"ee45ae3e40388ff809d9c5e2ef6ef9d59dc86c59c97110f96d5540267f860751"},
 {"name":"rubocop-rails","version":"2.15.2","platform":"ruby","checksum":"1891ab46a6eaf36b841ad27c9c8a22e77a2c3ae85bc334111d3f8075e417643c"},
 {"name":"rubocop-rspec","version":"2.12.1","platform":"ruby","checksum":"9278d22d4525261caf30d591eef3d47910a125e74f75f41ffa470acd208423f9"},
-{"name":"ruby-fogbugz","version":"0.2.1","platform":"ruby","checksum":"15b2e7fe7e95b021a94ee6e9d8bb32fdad6ae44e820c2ce0dc312fe6e77d40ca"},
+{"name":"ruby-fogbugz","version":"0.3.0","platform":"ruby","checksum":"5e04cde474648f498a71cf1e1a7ab42c66b953862fbe224f793ec0a7a1d5f657"},
 {"name":"ruby-magic","version":"0.5.4","platform":"ruby","checksum":"2c17b185130d10a83791f63a40baa358c4b138af37da3f4dab53690121c421d5"},
 {"name":"ruby-progressbar","version":"1.11.0","platform":"ruby","checksum":"cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a"},
 {"name":"ruby-saml","version":"1.13.0","platform":"ruby","checksum":"d31cbdf5fb8fdd6aa3187e48dba3085cfeb751af30276a5739aa3659a66f069c"},

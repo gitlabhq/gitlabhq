@@ -178,7 +178,7 @@ export function mergeUrlParams(params, url, options = {}) {
   const mergedKeys = sort ? Object.keys(merged).sort() : Object.keys(merged);
 
   const newQuery = mergedKeys
-    .filter((key) => merged[key] !== null)
+    .filter((key) => merged[key] !== null && merged[key] !== undefined)
     .map((key) => {
       let value = merged[key];
       const encodedKey = encodeURIComponent(key);

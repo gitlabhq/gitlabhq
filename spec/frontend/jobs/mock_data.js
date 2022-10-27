@@ -925,6 +925,7 @@ export default {
     locked: false,
   },
   name: 'test',
+  stage: 'build',
   build_path: '/root/ci-mock/-/jobs/4757',
   retry_path: '/root/ci-mock/-/jobs/4757/retry',
   cancel_path: '/root/ci-mock/-/jobs/4757/cancel',

@@ -10,6 +10,9 @@ describe('AjaxFilter', () => {
     dummyConfig = {
       endpoint: 'dummy endpoint',
       searchKey: 'dummy search key',
+      searchValueFunction() {
+        return 'test';
+      },
     };
     dummyList = {
       data: [],
@@ -40,7 +43,7 @@ describe('AjaxFilter', () => {
 
     it('calls onLoadingFinished after loading data', async () => {
       ajaxSpy = (url) => {
-        expect(url).toBe('dummy endpoint?dummy search key=');
+        expect(url).toBe('dummy endpoint?dummy%20search%20key=test');
         return Promise.resolve(dummyData);
       };
 
@@ -51,7 +54,7 @@ describe('AjaxFilter', () => {
     it('does not call onLoadingFinished if Ajax call fails', async () => {
       const dummyError = new Error('My dummy is sick! :-(');
       ajaxSpy = (url) => {
-        expect(url).toBe('dummy endpoint?dummy search key=');
+        expect(url).toBe('dummy endpoint?dummy%20search%20key=test');
         return Promise.reject(dummyError);
       };
 

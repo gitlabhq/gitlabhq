@@ -171,6 +171,7 @@ module API
       namespace do
         mount ::API::AccessRequests
         mount ::API::Metadata
+        mount ::API::UserCounts
 
         add_open_api_documentation!
       end
@@ -322,7 +323,6 @@ module API
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
       mount ::API::UsageDataQueries
-      mount ::API::UserCounts
       mount ::API::Users
       mount ::API::Wikis
       mount ::API::Ml::Mlflow

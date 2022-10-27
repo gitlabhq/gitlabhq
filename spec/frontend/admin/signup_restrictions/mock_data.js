@@ -23,6 +23,8 @@ export const rawMockData = {
   passwordLowercaseRequired: 'true',
   passwordUppercaseRequired: 'true',
   passwordSymbolRequired: 'true',
+  projectSharingHelpLink: 'project-sharing/help/link',
+  groupSharingHelpLink: 'group-sharing/help/link',
 };
 
 export const mockData = {
@@ -50,4 +52,6 @@ export const mockData = {
   passwordLowercaseRequired: true,
   passwordUppercaseRequired: true,
   passwordSymbolRequired: true,
+  projectSharingHelpLink: 'project-sharing/help/link',
+  groupSharingHelpLink: 'group-sharing/help/link',
 };

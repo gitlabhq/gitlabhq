@@ -12,7 +12,7 @@ const buildUrl = (urlRoot, url) => {
   return newUrl;
 };
 
-export const getUsers = (query) => {
+export const getUsers = (query, states) => {
   return axios.get(buildUrl(gon.relative_url_root || '', USERS_PATH), {
     params: {
       search: query,
@@ -20,6 +20,7 @@ export const getUsers = (query) => {
       active: true,
       project_id: gon.current_project_id,
       push_code: true,
+      states,
     },
   });
 };
