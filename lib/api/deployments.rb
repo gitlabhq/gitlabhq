@@ -11,19 +11,38 @@ module API
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The project ID'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get all deployments of the project' do
-        detail 'This feature was introduced in GitLab 8.11.'
+      desc 'List project deployments' do
+        detail 'Get a list of deployments in a project. This feature was introduced in GitLab 8.11.'
         success Entities::Deployment
+        is_array true
+        tags %w[deployments]
       end
       params do
         use :pagination
-        optional :order_by, type: String, values: DeploymentsFinder::ALLOWED_SORT_VALUES, default: DeploymentsFinder::DEFAULT_SORT_VALUE, desc: 'Return deployments ordered by specified value'
-        optional :sort, type: String, values: DeploymentsFinder::ALLOWED_SORT_DIRECTIONS, default: DeploymentsFinder::DEFAULT_SORT_DIRECTION, desc: 'Sort by asc (ascending) or desc (descending)'
-        optional :updated_after, type: DateTime, desc: 'Return deployments updated after the specified date'
-        optional :updated_before, type: DateTime, desc: 'Return deployments updated before the specified date'
+
+        optional :order_by,
+          type: String,
+          values: DeploymentsFinder::ALLOWED_SORT_VALUES,
+          default: DeploymentsFinder::DEFAULT_SORT_VALUE,
+          desc: 'Return deployments ordered by either one of `id`, `iid`, `created_at`, `updated_at` or `ref` fields. Default is `id`'
+
+        optional :sort,
+          type: String,
+          values: DeploymentsFinder::ALLOWED_SORT_DIRECTIONS,
+          default: DeploymentsFinder::DEFAULT_SORT_DIRECTION,
+          desc: 'Return deployments sorted in `asc` or `desc` order. Default is `asc`'
+
+        optional :updated_after,
+          type: DateTime,
+          desc: 'Return deployments updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
+
+        optional :updated_before,
+          type: DateTime,
+          desc: 'Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
+
         optional :environment,
           type: String,
           desc: 'The name of the environment to filter deployments by'
@@ -31,7 +50,7 @@ module API
         optional :status,
           type: String,
           values: Deployment.statuses.keys,
-          desc: 'The status to filter deployments by'
+          desc: 'The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`'
       end
 
       get ':id/deployments' do
@@ -46,12 +65,13 @@ module API
         bad_request!(e.message)
       end
 
-      desc 'Gets a specific deployment' do
+      desc 'Get a specific deployment' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::DeploymentExtended
+        tags %w[deployments]
       end
       params do
-        requires :deployment_id, type: Integer, desc: 'The deployment ID'
+        requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
       end
       get ':id/deployments/:deployment_id' do
         authorize! :read_deployment, user_project
@@ -61,30 +81,31 @@ module API
         present deployment, with: Entities::DeploymentExtended
       end
 
-      desc 'Creates a new deployment' do
-        detail 'This feature was introduced in GitLab 12.4'
+      desc 'Create a deployment' do
+        detail 'This feature was introduced in GitLab 12.4.'
         success Entities::DeploymentExtended
+        tags %w[deployments]
       end
       params do
         requires :environment,
           type: String,
-          desc: 'The name of the environment to deploy to'
+          desc: 'The name of the environment to create the deployment for'
 
         requires :sha,
           type: String,
-          desc: 'The SHA of the commit that was deployed'
+          desc: 'The SHA of the commit that is deployed'
 
         requires :ref,
           type: String,
-          desc: 'The name of the branch or tag that was deployed'
+          desc: 'The name of the branch or tag that is deployed'
 
         requires :tag,
           type: Boolean,
-          desc: 'A boolean indicating if the deployment ran for a tag'
+          desc: 'A boolean that indicates if the deployed ref is a tag (`true`) or not (`false`)'
 
         requires :status,
           type: String,
-          desc: 'The status of the deployment',
+          desc: 'The status to filter deployments by. One of `running`, `success`, `failed`, or `canceled`',
           values: %w[running success failed canceled]
       end
       post ':id/deployments' do
@@ -113,14 +134,15 @@ module API
         end
       end
 
-      desc 'Updates an existing deployment' do
-        detail 'This feature was introduced in GitLab 12.4'
+      desc 'Update a deployment' do
+        detail 'This feature was introduced in GitLab 12.4.'
         success Entities::DeploymentExtended
+        tags %w[deployments]
       end
       params do
         requires :status,
                  type: String,
-                 desc: 'The new status of the deployment',
+                 desc: 'The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`',
                  values: %w[running success failed canceled]
       end
       put ':id/deployments/:deployment_id' do
@@ -143,12 +165,17 @@ module API
         end
       end
 
-      desc 'Deletes an existing deployment' do
-        detail 'This feature was introduced in GitLab 15.3'
-        http_codes [[204, 'Deployment was deleted'], [403, 'Forbidden'], [400, 'Cannot destroy']]
+      desc 'Delete a specific deployment' do
+        detail 'Delete a specific deployment that is not currently the last deployment for an environment or in a running state. This feature was introduced in GitLab 15.3.'
+        http_codes [
+          [204, 'Deployment destroyed'],
+          [403, 'Forbidden'],
+          [400, '"Cannot destroy running deployment" or "Deployment currently deployed to environment"']
+        ]
+        tags %w[deployments]
       end
       params do
-        requires :deployment_id, type: Integer, desc: 'The deployment ID'
+        requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
       end
       delete ':id/deployments/:deployment_id' do
         deployment = user_project.deployments.find(params[:deployment_id])
@@ -166,13 +193,16 @@ module API
 
       helpers Helpers::MergeRequestsHelpers
 
-      desc 'Get all merge requests of a deployment' do
-        detail 'This feature was introduced in GitLab 12.7.'
+      desc 'List of merge requests associated with a deployment' do
+        detail 'Retrieves the list of merge requests shipped with a given deployment. This feature was introduced in GitLab 12.7.'
         success Entities::MergeRequestBasic
+        tags %w[deployments]
       end
       params do
         use :pagination
-        requires :deployment_id, type: Integer, desc: 'The deployment ID'
+
+        requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
+
         use :merge_requests_base_params
       end
 

@@ -18,3 +18,5 @@ metadata:
     description: Operations related to metadata of the GitLab instance
   - name: access_requests
     description: Operations related to access requests
+  - name: deployments
+    description: Operations related to deployments

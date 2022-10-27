@@ -41,10 +41,11 @@ gitlab:
   migrations:
     resources:
       requests:
-        cpu: 350m
-        memory: 200M
+        cpu: 200m
+        memory: 450M
       limits:
-        cpu: 700m
+        cpu: 400m
+        memory: 900M
   gitlab-shell:
     resources:
       requests:
@@ -164,7 +165,7 @@ postgresql:
       memory: 1000M
     limits:
       cpu: 1300m
-      memory: 1500M
+      memory: 1600M
   master:
     nodeSelector:
       preemptible: "false"

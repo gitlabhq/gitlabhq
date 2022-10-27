@@ -3,7 +3,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - deploy_token_description = s_('DeployTokens|Deploy tokens allow access to packages, your repository, and registry images.')
 
-= render "projects/default_branch/show"
+= render "projects/branch_defaults/show"
 - if Feature.enabled?(:branch_rules, @project)
   = render "projects/branch_rules/show"
 = render_if_exists "projects/push_rules/index"

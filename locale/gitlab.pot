@@ -1648,9 +1648,6 @@ msgstr ""
 msgid "A confidential work item cannot have a parent that already has non-confidential children."
 msgstr ""
 
-msgid "A default branch cannot be chosen for an empty project."
-msgstr ""
-
 msgid "A deleted user"
 msgstr ""
 
@@ -5731,9 +5728,6 @@ msgstr ""
 msgid "Auto-cancel redundant pipelines"
 msgstr ""
 
-msgid "Auto-close referenced issues on default branch"
-msgstr ""
-
 msgid "AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}"
 msgstr ""
 
@@ -6823,6 +6817,9 @@ msgid "Branch already exists"
 msgstr ""
 
 msgid "Branch changed"
+msgstr ""
+
+msgid "Branch defaults"
 msgstr ""
 
 msgid "Branch has been updated since the merge was requested."
@@ -31484,6 +31481,9 @@ msgstr ""
 msgid "Project security status help page"
 msgstr ""
 
+msgid "Project settings were successfully updated."
+msgstr ""
+
 msgid "Project slug"
 msgstr ""
 
@@ -31766,10 +31766,16 @@ msgstr ""
 msgid "ProjectSettings|%{link_start}What variables can I use?%{link_end}"
 msgstr ""
 
+msgid "ProjectSettings|A default branch cannot be chosen for an empty project."
+msgstr ""
+
 msgid "ProjectSettings|Additional options"
 msgstr ""
 
 msgid "ProjectSettings|Additional settings that influence how and when merges are done."
+msgstr ""
+
+msgid "ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
 msgid "ProjectSettings|All threads must be resolved"
@@ -31782,6 +31788,9 @@ msgid "ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons
 msgstr ""
 
 msgid "ProjectSettings|Analytics"
+msgstr ""
+
+msgid "ProjectSettings|Auto-close referenced issues on default branch"
 msgstr ""
 
 msgid "ProjectSettings|Automatically resolve merge request diff threads when they become outdated"
@@ -32046,6 +32055,9 @@ msgid "ProjectSettings|Security & Compliance"
 msgstr ""
 
 msgid "ProjectSettings|Security & Compliance for this project"
+msgstr ""
+
+msgid "ProjectSettings|Select the default branch for this project, and configure the template for branch names."
 msgstr ""
 
 msgid "ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests."
@@ -37282,9 +37294,6 @@ msgid "Set the Draft status"
 msgstr ""
 
 msgid "Set the Ready status"
-msgstr ""
-
-msgid "Set the default branch for this project. All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
 msgid "Set the default expiration time for job artifacts in all projects. Set to %{code_open}0%{code_close} to never expire artifacts by default. If no unit is written, it defaults to seconds. For example, these are all equivalent: %{code_open}3600%{code_close}, %{code_open}60 minutes%{code_close}, or %{code_open}one hour%{code_close}."

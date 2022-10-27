@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class DefaultBranch < Page::Base
-          view 'app/views/projects/default_branch/_show.html.haml' do
+          view 'app/views/projects/branch_defaults/_show.html.haml' do
             element :save_changes_button
           end
 

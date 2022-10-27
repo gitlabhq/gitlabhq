@@ -10,7 +10,7 @@ module Projects
         push_frontend_feature_flag(:ajax_new_deploy_token, @project)
       end
 
-      feature_category :source_code_management, [:show, :cleanup]
+      feature_category :source_code_management, [:show, :cleanup, :update]
       feature_category :continuous_delivery, [:create_deploy_token]
       urgency :low, [:show, :create_deploy_token]
 
@@ -60,6 +60,19 @@ module Projects
         end
       end
 
+      def update
+        result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+
+        if result[:status] == :success
+          flash[:notice] = _("Project settings were successfully updated.")
+        else
+          flash[:alert] = result[:message]
+          @project.reset
+        end
+
+        redirect_to project_settings_repository_path(project)
+      end
+
       private
 
       def render_show
@@ -95,6 +108,17 @@ module Projects
 
       def deploy_token_params
         params.require(:deploy_token).permit(:name, :expires_at, :read_repository, :read_registry, :write_registry, :read_package_registry, :write_package_registry, :username)
+      end
+
+      def project_params
+        params.require(:project).permit(project_params_attributes)
+      end
+
+      def project_params_attributes
+        [
+          :default_branch,
+          :autoclose_referenced_issues
+        ]
       end
 
       def access_levels_options

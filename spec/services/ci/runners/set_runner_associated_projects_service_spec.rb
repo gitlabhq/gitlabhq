@@ -67,6 +67,19 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute' do
           expect(runner.projects.ids).to match_array([owner_project.id] + project_ids)
         end
       end
+
+      context 'when disassociating all projects' do
+        let(:project_ids) { [] }
+
+        it 'reassigns associated projects and returns success response' do
+          expect(execute).to be_success
+
+          runner.reload
+
+          expect(runner.owner_project).to eq(owner_project)
+          expect(runner.projects.ids).to contain_exactly(owner_project.id)
+        end
+      end
     end
 
     context 'with failing assign_to requests' do

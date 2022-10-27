@@ -17,7 +17,7 @@ module Ci
           return ServiceResponse.error(message: 'user not allowed to assign runner', http_status: :forbidden)
         end
 
-        return ServiceResponse.success if project_ids.blank?
+        return ServiceResponse.success if project_ids.nil?
 
         set_associated_projects
       end

@@ -7,9 +7,9 @@ module API
         expose :id, :status, :stage, :name, :ref, :tag, :coverage, :allow_failure
         expose :created_at, :started_at, :finished_at
         expose :duration,
-               documentation: { type: 'Floating', desc: 'Time spent running' }
+               documentation: { type: 'number', format: 'float', desc: 'Time spent running' }
         expose :queued_duration,
-               documentation: { type: 'Floating', desc: 'Time spent enqueued' }
+               documentation: { type: 'number', format: 'float', desc: 'Time spent enqueued' }
         expose :user, with: ::API::Entities::User
         expose :commit, with: ::API::Entities::Commit
         expose :pipeline, with: ::API::Entities::Ci::PipelineBasic

@@ -25,11 +25,11 @@ RSpec.describe 'Projects > Settings > User changes default branch' do
       fill_in 'Search branch', with: 'fix'
       click_button 'fix'
 
-      page.within '#default-branch-settings' do
+      page.within '#branch-defaults-settings' do
         click_button 'Save changes'
       end
 
-      expect(find("#{dropdown_selector} input", visible: false).value).to eq 'fix'
+      expect(find(dropdown_selector)).to have_text 'fix'
     end
   end
 

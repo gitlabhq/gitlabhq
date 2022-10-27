@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Settings::RepositoryController do
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
+  let(:base_params) { { namespace_id: project.namespace, project_id: project } }
 
   before do
     project.add_maintainer(user)
@@ -13,7 +14,7 @@ RSpec.describe Projects::Settings::RepositoryController do
 
   describe 'GET show' do
     it 'renders show with 200 status code' do
-      get :show, params: { namespace_id: project.namespace, project_id: project }
+      get :show, params: base_params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:show)
@@ -29,7 +30,7 @@ RSpec.describe Projects::Settings::RepositoryController do
         .with(project, user, anything)
         .and_return(status: :success)
 
-      put :cleanup, params: { namespace_id: project.namespace, project_id: project, project: { bfg_object_map: object_map } }
+      put :cleanup, params: base_params.merge({ project: { bfg_object_map: object_map } })
 
       expect(response).to redirect_to project_settings_repository_path(project)
     end
@@ -41,7 +42,7 @@ RSpec.describe Projects::Settings::RepositoryController do
           .with(project, user, anything)
           .and_return(status: :error, message: 'error message')
 
-        put :cleanup, params: { namespace_id: project.namespace, project_id: project, project: { bfg_object_map: object_map } }
+        put :cleanup, params: base_params.merge({ project: { bfg_object_map: object_map } })
 
         expect(controller).to set_flash[:alert].to('error message')
         expect(response).to redirect_to project_settings_repository_path(project)
@@ -57,7 +58,7 @@ RSpec.describe Projects::Settings::RepositoryController do
 
       it_behaves_like 'a created deploy token' do
         let(:entity) { project }
-        let(:create_entity_params) { { namespace_id: project.namespace, project_id: project } }
+        let(:create_entity_params) { base_params }
         let(:deploy_token_type) { DeployToken.deploy_token_types[:project_type] }
       end
     end
@@ -73,13 +74,7 @@ RSpec.describe Projects::Settings::RepositoryController do
         }
       end
 
-      let(:request_params) do
-        {
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
-          deploy_token: deploy_token_params
-        }
-      end
+      let(:request_params) { base_params.merge({ deploy_token: deploy_token_params }) }
 
       subject { post :create_deploy_token, params: request_params, format: :json }
 
@@ -127,6 +122,49 @@ RSpec.describe Projects::Settings::RepositoryController do
 
         it 'raises a validation error' do
           expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
+    end
+  end
+
+  describe 'PUT update' do
+    let(:project) { create(:project, :repository) }
+
+    context 'when updating default branch' do
+      let!(:previous_default_branch) { project.default_branch }
+
+      let(:new_default_branch) { 'feature' }
+      let(:request_params) { base_params.merge({ project: project_params_attributes }) }
+
+      subject { put :update, params: request_params }
+
+      context('with a good request') do
+        let(:project_params_attributes) { { default_branch: new_default_branch } }
+
+        it "updates default branch and redirect to project_settings_repository_path" do
+          expect do
+            subject
+          end.to change {
+            Project.find(project.id).default_branch # refind to reset the default branch cache
+          }.from(previous_default_branch).to(new_default_branch)
+
+          expect(response).to redirect_to project_settings_repository_path(project)
+          expect(controller).to set_flash[:notice].to("Project settings were successfully updated.")
+        end
+      end
+
+      context('with a bad input') do
+        let(:project_params_attributes) { { default_branch: 'non_existent_branch' } }
+
+        it "does not update default branch and shows an alert" do
+          expect do
+            subject
+          end.not_to change {
+            Project.find(project.id).default_branch # refind to reset the default branch cache
+          }
+
+          expect(response).to redirect_to project_settings_repository_path(project)
+          expect(controller).to set_flash[:alert].to("Could not set the default branch")
         end
       end
     end
