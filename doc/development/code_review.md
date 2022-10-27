@@ -518,6 +518,9 @@ settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:
 - [Prevent editing approval rules in merge requests](../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests).
 - [Remove all approvals when commits are added to the source branch](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)
 
+To update the code owners in the `CODEOWNERS` file for `gitlab-org/gitlab`, follow
+the process explained in the [code owners approvals handbook section](https://about.gitlab.com/handbook/engineering/workflow/code-review/#code-owner-approvals).
+
   There are scenarios such as rebasing locally or applying suggestions that are considered
   the same as adding a commit and could reset existing approvals. Approvals are not removed
   when rebasing from the UI or with the [`/rebase` quick action](../user/project/quick_actions.md).

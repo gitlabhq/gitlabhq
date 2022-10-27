@@ -237,6 +237,7 @@ Use this regex for commonly used test tools.
 - Simplecov (Ruby). Example: `/\(\d+.\d+\%\) covered/`.
 - pytest-cov (Python). Example: `/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/`.
 - Scoverage (Scala). Example: `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/`.
+- `pest --coverage --colors=never` (PHP). Example: `/^\s*Cov:\s*\d+\.\d+?%$/`.
 - `phpunit --coverage-text --colors=never` (PHP). Example: `/^\s*Lines:\s*\d+.\d+\%/`.
 - gcovr (C/C++). Example: `/^TOTAL.*\s+(\d+\%)$/`.
 - `tap --coverage-report=text-summary` (NodeJS). Example: `/^Statements\s*:\s*([^%]+)/`.

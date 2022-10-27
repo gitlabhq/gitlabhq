@@ -301,6 +301,9 @@ preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be tagged accordingly.
 
+Review the [deployment safety](../environments/deployment_safety.md)
+page for additional security recommendations for securing your pipelines.
+
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
