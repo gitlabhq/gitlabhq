@@ -1055,6 +1055,22 @@ RSpec.describe Issuable do
     end
   end
 
+  describe '#supports_confidentiality?' do
+    where(:issuable_type, :supports_confidentiality) do
+      :issue         | true
+      :incident      | true
+      :merge_request | false
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.supports_confidentiality? }
+
+      it { is_expected.to eq(supports_confidentiality) }
+    end
+  end
+
   describe '#severity' do
     subject { issuable.severity }
 

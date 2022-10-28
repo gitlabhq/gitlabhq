@@ -272,7 +272,7 @@ class Issue < ApplicationRecord
     end
 
     override :pg_full_text_search
-    def pg_full_text_search(search_term)
+    def pg_full_text_search(query, matched_columns: [])
       super.where('issue_search_data.project_id = issues.project_id')
     end
   end
@@ -652,6 +652,10 @@ class Issue < ApplicationRecord
   def expire_etag_cache
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
+  def supports_confidentiality?
+    true
   end
 
   private

@@ -182,4 +182,26 @@ RSpec.describe Ci::BuildMetadata do
       end
     end
   end
+
+  describe 'routing table switch' do
+    context 'with ff disabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_builds_metadata_routing_table: false)
+      end
+
+      it 'uses the legacy table' do
+        expect(described_class.table_name).to eq('ci_builds_metadata')
+      end
+    end
+
+    context 'with ff enabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_builds_metadata_routing_table: true)
+      end
+
+      it 'uses the routing table' do
+        expect(described_class.table_name).to eq('p_ci_builds_metadata')
+      end
+    end
+  end
 end

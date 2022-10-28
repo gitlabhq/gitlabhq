@@ -5,6 +5,7 @@ module Ci
   # Data that should be persisted forever, should be stored with Ci::Build model.
   class BuildMetadata < Ci::ApplicationRecord
     BuildTimeout = Struct.new(:value, :source)
+    ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_builds_metadata_routing_table
 
     include Ci::Partitionable
     include Presentable
@@ -14,7 +15,11 @@ module Ci
     self.table_name = 'ci_builds_metadata'
     self.primary_key = 'id'
     self.sequence_name = 'ci_builds_metadata_id_seq'
-    partitionable scope: :build
+
+    partitionable scope: :build, through: {
+      table: :p_ci_builds_metadata,
+      flag: ROUTING_FEATURE_FLAG
+    }
 
     belongs_to :build, class_name: 'CommitStatus'
     belongs_to :project

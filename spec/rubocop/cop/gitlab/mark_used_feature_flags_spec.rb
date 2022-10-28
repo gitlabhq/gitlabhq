@@ -194,6 +194,10 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     include_examples 'sets flag as used', 'FEATURE_FLAG = :foo', 'foo'
   end
 
+  describe 'ROUTING_FEATURE_FLAG = :foo' do
+    include_examples 'sets flag as used', 'ROUTING_FEATURE_FLAG = :foo', 'foo'
+  end
+
   describe 'Worker `data_consistency` method' do
     include_examples 'sets flag as used', 'data_consistency :delayed, feature_flag: :foo', 'foo'
     include_examples 'does not set any flags as used', 'data_consistency :delayed'

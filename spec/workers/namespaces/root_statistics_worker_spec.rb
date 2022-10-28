@@ -89,4 +89,12 @@ RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
         .not_to change { Namespace::AggregationSchedule.count }
     end
   end
+
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
+  it 'has an option to reschedule once if deduplicated' do
+    expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once })
+  end
 end

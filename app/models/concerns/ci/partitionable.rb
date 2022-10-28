@@ -57,9 +57,14 @@ module Ci
     end
 
     class_methods do
-      private
+      def partitionable(scope:, through: nil)
+        if through
+          define_singleton_method(:routing_table_name) { through[:table] }
+          define_singleton_method(:routing_table_name_flag) { through[:flag] }
 
-      def partitionable(scope:)
+          include Partitionable::Switch
+        end
+
         define_method(:partition_scope_value) do
           strong_memoize(:partition_scope_value) do
             next Ci::Pipeline.current_partition_value if respond_to?(:importing?) && importing?

@@ -340,6 +340,12 @@ associated SSH key can download the project in question by using a `git fetch` o
 - `params`: Key-value pairs passed in a query string or HTTP body (sensitive parameters, such as passwords and tokens, are filtered out)
 - `ua`: The User-Agent of the requester
 
+NOTE:
+As of [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4,
+the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119).
+Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
+process on Redis or external HTTP, not only the serialization process.
+
 ## `application.log`
 
 Depending on your installation method, this file is located at:

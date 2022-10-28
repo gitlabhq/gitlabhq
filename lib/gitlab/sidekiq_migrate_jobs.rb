@@ -34,7 +34,7 @@ module Gitlab
 
           next unless job.match?(source_queues_regex)
 
-          job_hash = Sidekiq.load_json(job)
+          job_hash = Gitlab::Json.load(job)
           destination_queue = mappings[job_hash['class']]
 
           next unless mappings.has_key?(job_hash['class'])
@@ -77,12 +77,12 @@ module Gitlab
               end
 
               job = conn.rpop "queue:#{queue_from}"
-              job_hash = Sidekiq.load_json job
+              job_hash = Gitlab::Json.load(job)
               next unless mappings.has_key?(job_hash['class'])
 
               destination_queue = mappings[job_hash['class']]
               job_hash['queue'] = destination_queue
-              conn.lpush("queue:#{destination_queue}", Sidekiq.dump_json(job_hash))
+              conn.lpush("queue:#{destination_queue}", Gitlab::Json.dump(job_hash))
               migrated += 1
             rescue JSON::ParserError
               logger&.error("Unmarshal JSON payload from SidekiqMigrateJobs failed. Job: #{job}")
@@ -101,7 +101,7 @@ module Gitlab
         removed = connection.zrem(sidekiq_set, job)
 
         if removed
-          connection.zadd(sidekiq_set, score, Sidekiq.dump_json(job_hash))
+          connection.zadd(sidekiq_set, score, Gitlab::Json.dump(job_hash))
 
           1
         else

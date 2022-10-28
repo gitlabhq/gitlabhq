@@ -311,6 +311,8 @@ To make an epic confidential:
 - **In an existing epic:** on the right sidebar, select **Edit** next to **Confidentiality**, and then
   select **Turn on**.
 
+In GitLab 15.6 and later, you can also use the `/confidential` [quick action](../../../user/project/quick_actions.md).
+
 ## Manage issues assigned to an epic
 
 This section collects instructions for all the things you can do with [issues](../../project/issues/index.md)

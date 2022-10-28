@@ -22,7 +22,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
 
       let(:set_after) do
         Sidekiq.redis { |c| c.zrange(set_name, 0, -1, with_scores: true) }
-          .map { |item, score| [Sidekiq.load_json(item), score] }
+          .map { |item, score| [Gitlab::Json.load(item), score] }
       end
 
       context 'when the set is empty' do
@@ -233,7 +233,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
 
     def list_jobs(queue_name)
       Sidekiq.redis { |conn| conn.lrange("queue:#{queue_name}", 0, -1) }
-             .map { |item| Sidekiq.load_json item }
+             .map { |item| Gitlab::Json.load(item) }
     end
 
     def pre_migrate_checks; end

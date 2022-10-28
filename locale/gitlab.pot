@@ -24645,7 +24645,7 @@ msgstr ""
 msgid "MRDiff|Show full file"
 msgstr ""
 
-msgid "Made this issue confidential."
+msgid "Made this %{type} confidential."
 msgstr ""
 
 msgid "Mailgun"
@@ -24666,6 +24666,9 @@ msgstr ""
 msgid "Maintenance mode"
 msgstr ""
 
+msgid "Make %{type} confidential"
+msgstr ""
+
 msgid "Make adjustments to how your GitLab instance is set up."
 msgstr ""
 
@@ -24673,9 +24676,6 @@ msgid "Make and review changes in the browser with the Web IDE"
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
-msgstr ""
-
-msgid "Make issue confidential"
 msgstr ""
 
 msgid "Make sure you choose a strong, unique password."
@@ -24687,7 +24687,7 @@ msgstr ""
 msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
-msgid "Makes this issue confidential."
+msgid "Makes this %{type} confidential."
 msgstr ""
 
 msgid "Manage %{workspace} labels"

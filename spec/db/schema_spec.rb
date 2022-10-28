@@ -214,6 +214,7 @@ RSpec.describe 'Database schema' do
     "ApplicationSetting" => %w[repository_storages_weighted],
     "AlertManagement::Alert" => %w[payload],
     "Ci::BuildMetadata" => %w[config_options config_variables],
+    "Ci::BuildMetadata::Partitioned" => %w[config_options config_variables id_tokens runtime_runner_features secrets],
     "ExperimentSubject" => %w[context],
     "ExperimentUser" => %w[context],
     "Geo::Event" => %w[payload],

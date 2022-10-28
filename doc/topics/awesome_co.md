@@ -1,5 +1,5 @@
 ---
-stage: Ecosystem
+stage: Manage
 group: Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: AwesomeCo test data harness created by the Test Data Working Group https://about.gitlab.com/company/team/structure/working-groups/demo-test-data/

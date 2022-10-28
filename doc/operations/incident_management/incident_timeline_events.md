@@ -74,6 +74,21 @@ To create a timeline event from a comment on the incident:
 
 The comment is shown on the incident timeline as a timeline event.
 
+### When incident severity changes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375280) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_for_severity`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is unavailable. To show the feature per user,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_for_severity`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+A new timeline event is created when someone [changes the severity](incidents.md#change-severity)
+of an incident.
+
+![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)
+
 ## Delete an event
 
 You can also delete timeline events.

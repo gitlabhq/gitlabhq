@@ -104,14 +104,14 @@ RSpec.describe Gitlab::SQL::Pattern do
     end
   end
 
-  describe '.select_fuzzy_words' do
-    subject(:select_fuzzy_words) { Issue.select_fuzzy_words(query) }
+  describe '.select_fuzzy_terms' do
+    subject(:select_fuzzy_terms) { Issue.select_fuzzy_terms(query) }
 
     context 'with a word equal to 3 chars' do
       let(:query) { 'foo' }
 
       it 'returns array containing a word' do
-        expect(select_fuzzy_words).to match_array(['foo'])
+        expect(select_fuzzy_terms).to match_array(['foo'])
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'fo' }
 
       it 'returns empty array' do
-        expect(select_fuzzy_words).to match_array([])
+        expect(select_fuzzy_terms).to match_array([])
       end
     end
 
@@ -127,7 +127,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo baz' }
 
       it 'returns array containing two words' do
-        expect(select_fuzzy_words).to match_array(%w[foo baz])
+        expect(select_fuzzy_terms).to match_array(%w[foo baz])
       end
     end
 
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo  baz' }
 
       it 'returns array containing two words' do
-        expect(select_fuzzy_words).to match_array(%w[foo baz])
+        expect(select_fuzzy_terms).to match_array(%w[foo baz])
       end
     end
 
@@ -143,7 +143,19 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo ba' }
 
       it 'returns array containing a word' do
-        expect(select_fuzzy_words).to match_array(['foo'])
+        expect(select_fuzzy_terms).to match_array(['foo'])
+      end
+    end
+  end
+
+  describe '.split_query_to_search_terms' do
+    subject(:split_query_to_search_terms) { described_class.split_query_to_search_terms(query) }
+
+    context 'with words separated by spaces' do
+      let(:query) { 'really bar  baz' }
+
+      it 'returns array containing individual words' do
+        expect(split_query_to_search_terms).to match_array(%w[really bar baz])
       end
     end
 
@@ -151,15 +163,15 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { '"really bar"' }
 
       it 'returns array containing a multi-word' do
-        expect(select_fuzzy_words).to match_array(['really bar'])
+        expect(split_query_to_search_terms).to match_array(['really bar'])
       end
     end
 
     context 'with a multi-word surrounded by double quote and two words' do
       let(:query) { 'foo "really bar" baz' }
 
-      it 'returns array containing a multi-word and tow words' do
-        expect(select_fuzzy_words).to match_array(['foo', 'really bar', 'baz'])
+      it 'returns array containing a multi-word and two words' do
+        expect(split_query_to_search_terms).to match_array(['foo', 'really bar', 'baz'])
       end
     end
 
@@ -167,7 +179,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo"really bar"' }
 
       it 'returns array containing two words with double quote' do
-        expect(select_fuzzy_words).to match_array(['foo"really', 'bar"'])
+        expect(split_query_to_search_terms).to match_array(['foo"really', 'bar"'])
       end
     end
 
@@ -175,15 +187,15 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { '"really bar"baz' }
 
       it 'returns array containing two words with double quote' do
-        expect(select_fuzzy_words).to match_array(['"really', 'bar"baz'])
+        expect(split_query_to_search_terms).to match_array(['"really', 'bar"baz'])
       end
     end
 
     context 'with two multi-word surrounded by double quote and two words' do
       let(:query) { 'foo "really bar" baz "awesome feature"' }
 
-      it 'returns array containing two multi-words and tow words' do
-        expect(select_fuzzy_words).to match_array(['foo', 'really bar', 'baz', 'awesome feature'])
+      it 'returns array containing two multi-words and two words' do
+        expect(split_query_to_search_terms).to match_array(['foo', 'really bar', 'baz', 'awesome feature'])
       end
     end
   end

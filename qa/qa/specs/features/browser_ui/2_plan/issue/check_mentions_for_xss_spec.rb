@@ -5,7 +5,7 @@ module QA
     let!(:user) do
       Resource::User.fabricate_via_api! do |user|
         user.name = "QA User <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;"
-        user.password = "test1234"
+        user.password = "pw_#{SecureRandom.hex(12)}"
         user.api_client = Runtime::API::Client.as_admin
       end
     end

@@ -177,6 +177,7 @@ module API
         mount ::API::UserCounts
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::SnippetRepositoryStorageMoves
+        mount ::API::Statistics
 
         add_open_api_documentation!
       end
@@ -307,7 +308,6 @@ module API
       mount ::API::Settings
       mount ::API::SidekiqMetrics
       mount ::API::Snippets
-      mount ::API::Statistics
       mount ::API::Submodules
       mount ::API::Subscriptions
       mount ::API::Suggestions

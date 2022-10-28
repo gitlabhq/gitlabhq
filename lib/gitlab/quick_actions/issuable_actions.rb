@@ -12,16 +12,13 @@ module Gitlab
       included do
         # Issue, MergeRequest, Epic: quick actions definitions
         desc do
-          _('Close this %{quick_action_target}') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+          _('Close this %{quick_action_target}') % { quick_action_target: target_issuable_name }
         end
         explanation do
-          _('Closes this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+          _('Closes this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
         end
         execution_message do
-          _('Closed this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+          _('Closed this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
         end
         types ::Issuable
         condition do
@@ -35,15 +32,15 @@ module Gitlab
 
         desc do
           _('Reopen this %{quick_action_target}') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+            { quick_action_target: target_issuable_name }
         end
         explanation do
           _('Reopens this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+            { quick_action_target: target_issuable_name }
         end
         execution_message do
           _('Reopened this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+            { quick_action_target: target_issuable_name }
         end
         types ::Issuable
         condition do
@@ -170,12 +167,10 @@ module Gitlab
 
         desc { _('Subscribe') }
         explanation do
-          _('Subscribes to this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+          _('Subscribes to this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
         end
         execution_message do
-          _('Subscribed to this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+          _('Subscribed to this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
         end
         types ::Issuable
         condition do
@@ -188,12 +183,10 @@ module Gitlab
 
         desc { _('Unsubscribe') }
         explanation do
-          _('Unsubscribes from this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+          _('Unsubscribes from this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
         end
         execution_message do
-          _('Unsubscribed from this %{quick_action_target}.') %
-            { quick_action_target: quick_action_target.to_ability_name.humanize(capitalize: false) }
+          _('Unsubscribed from this %{quick_action_target}.') % { quick_action_target: target_issuable_name }
         end
         types ::Issuable
         condition do
@@ -266,6 +259,16 @@ module Gitlab
           end
         end
 
+        desc { _("Make %{type} confidential") % { type: target_issuable_name } }
+        explanation { _("Makes this %{type} confidential.") % { type: target_issuable_name } }
+        types ::Issuable
+        condition { quick_action_target.supports_confidentiality? && can_make_confidential? }
+        command :confidential do
+          @updates[:confidential] = true
+
+          @execution_message[:confidential] = confidential_execution_message
+        end
+
         private
 
         def find_severity(severity_param)
@@ -314,6 +317,29 @@ module Gitlab
           else
             _('Removed all labels.')
           end
+        end
+
+        def target_issuable_name
+          quick_action_target.to_ability_name.humanize(capitalize: false)
+        end
+
+        def can_make_confidential?
+          confidentiality_not_supported = quick_action_target.respond_to?(:issue_type_supports?) &&
+            !quick_action_target.issue_type_supports?(:confidentiality)
+
+          return false if confidentiality_not_supported
+
+          !quick_action_target.confidential? && current_user.can?(:set_confidentiality, quick_action_target)
+        end
+
+        def confidential_execution_message
+          confidential_error_message.presence || _("Made this %{type} confidential.") % { type: target_issuable_name }
+        end
+
+        def confidential_error_message
+          return unless quick_action_target.respond_to?(:confidentiality_errors)
+
+          quick_action_target.confidentiality_errors.join("\n")
         end
       end
     end

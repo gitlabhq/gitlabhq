@@ -11,6 +11,7 @@ module Namespaces
     queue_namespace :update_namespace_statistics
     feature_category :source_code_management
     idempotent!
+    deduplicate :until_executed, if_deduplicated: :reschedule_once
 
     def perform(namespace_id)
       namespace = Namespace.find(namespace_id)

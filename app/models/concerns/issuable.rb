@@ -217,6 +217,10 @@ module Issuable
       false
     end
 
+    def supports_confidentiality?
+      false
+    end
+
     def severity
       return IssuableSeverity::DEFAULT unless supports_severity?
 
