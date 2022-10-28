@@ -41,7 +41,7 @@ We have built a domain-specific language (DSL) to define the metrics instrumenta
 You can use database metrics to track data kept in the database, for example, a count of issues that exist on a given instance.
 
 - `operation`: Operations for the given `relation`, one of `count`, `distinct_count`, `sum`, and `average`.
-- `relation`: `ActiveRecord::Relation` for the objects we want to perform the `operation`.
+- `relation`: Assigns lambda that returns the `ActiveRecord::Relation` for the objects we want to perform the `operation`. The assigned lambda can accept up to one parameter. The parameter is hashed and stored under the `options` key in the metric definition.
 - `start`: Specifies the start value of the batch counting, by default is `relation.minimum(:id)`.
 - `finish`: Specifies the end value of the batch counting, by default is `relation.maximum(:id)`.
 - `cache_start_and_finish_as`: Specifies the cache key for `start` and `finish` values and sets up caching them. Use this call when `start` and `finish` are expensive queries that should be reused between different metric calculations.
@@ -55,10 +55,10 @@ module Gitlab
   module Usage
     module Metrics
       module Instrumentations
-        class CountBoardsMetric < DatabaseMetric
+        class CountIssuesMetric < DatabaseMetric
           operation :count
 
-          relation { Board }
+          relation ->(options) { Issue.where(confidential: options[:confidential]) }
         end
       end
     end

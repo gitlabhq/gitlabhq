@@ -130,18 +130,6 @@ RSpec.describe 'getting a work item list for a project' do
     end
   end
 
-  context 'when work_items flag is disabled' do
-    before do
-      stub_feature_flags(work_items: false)
-    end
-
-    it 'returns an empty list' do
-      post_graphql(query)
-
-      expect(items_data).to eq([])
-    end
-  end
-
   it 'returns only items visible to user' do
     post_graphql(query, current_user: current_user)
 

@@ -15,24 +15,10 @@ RSpec.describe 'Work Items' do
       sign_in(developer)
     end
 
-    context 'when the work_items feature flag is enabled' do
-      it 'renders index' do
-        get project_work_items_url(work_item.project, work_items_path: work_item.id)
+    it 'renders index' do
+      get project_work_items_url(work_item.project, work_items_path: work_item.id)
 
-        expect(response).to have_gitlab_http_status(:ok)
-      end
-    end
-
-    context 'when the work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it 'returns 404' do
-        get project_work_items_url(work_item.project, work_items_path: work_item.id)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 end

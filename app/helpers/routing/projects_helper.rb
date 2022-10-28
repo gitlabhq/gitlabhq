@@ -96,7 +96,7 @@ module Routing
     private
 
     def use_work_items_path?(issue)
-      issue.issue_type == 'task' && issue.project.work_items_feature_flag_enabled?
+      issue.issue_type == 'task'
     end
   end
 end

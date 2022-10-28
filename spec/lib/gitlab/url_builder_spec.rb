@@ -72,18 +72,6 @@ RSpec.describe Gitlab::UrlBuilder do
       end
     end
 
-    context 'when work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it 'returns an issue path for an issue of type task' do
-        task = create(:issue, :task)
-
-        expect(subject.build(task, only_path: true)).to eq("/#{task.project.full_path}/-/issues/#{task.iid}")
-      end
-    end
-
     context 'when passing a compare' do
       # NOTE: The Compare requires an actual repository, which isn't available
       # with the `build_stubbed` strategy used by the table tests above

@@ -4,7 +4,7 @@ module Gitlab
   module Usage
     module Metrics
       module Instrumentations
-        class DistinctCountProjectsWithExpirationPolicyDisabledMetric < DatabaseMetric
+        class DistinctCountProjectsWithExpirationPolicyMetric < DatabaseMetric
           operation :distinct_count, column: :project_id
 
           start { Project.minimum(:id) }
@@ -12,7 +12,7 @@ module Gitlab
 
           cache_start_and_finish_as :project_id
 
-          relation { ::ContainerExpirationPolicy.where(enabled: false) }
+          relation ->(options) { ::ContainerExpirationPolicy.where(enabled: options[:enabled]) }
         end
       end
     end

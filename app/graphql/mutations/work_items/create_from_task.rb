@@ -7,8 +7,7 @@ module Mutations
 
       include Mutations::SpamProtection
 
-      description "Creates a work item from a task in another work item's description." \
-                  " Available only when feature flag `work_items` is enabled."
+      description "Creates a work item from a task in another work item's description."
 
       authorize :update_work_item
 
@@ -30,10 +29,6 @@ module Mutations
 
       def resolve(id:, work_item_data:)
         work_item = authorized_find!(id: id)
-
-        unless work_item.project.work_items_feature_flag_enabled?
-          return { errors: ['`work_items` feature flag disabled for this project'] }
-        end
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
 

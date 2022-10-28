@@ -629,17 +629,7 @@ RSpec.describe ProjectPolicy do
     context 'when user is member of the project' do
       let(:current_user) { developer }
 
-      context 'when work_items feature flag is enabled' do
-        it { expect_allowed(:create_task) }
-      end
-
-      context 'when work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        it { expect_disallowed(:create_task) }
-      end
+      it { expect_allowed(:create_task) }
     end
   end
 

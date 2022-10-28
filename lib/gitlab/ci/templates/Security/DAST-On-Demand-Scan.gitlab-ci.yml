@@ -2,6 +2,9 @@
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-On-Demand-Scan.gitlab-ci.yml
+# NOTE: This template is intended for internal GitLab use only and likely will not work properly
+# in any other project. Do not include it in your pipeline configuration.
+# For information on how to set up and use DAST, visit https://docs.gitlab.com/ee/user/application_security/dast/
 
 stages:
   - build

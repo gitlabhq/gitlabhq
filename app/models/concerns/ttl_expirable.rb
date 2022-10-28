@@ -4,8 +4,8 @@ module TtlExpirable
   extend ActiveSupport::Concern
 
   included do
+    attribute :read_at, default: -> { Time.zone.now }
     validates :status, presence: true
-    default_value_for :read_at, Time.zone.now
 
     enum status: { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 

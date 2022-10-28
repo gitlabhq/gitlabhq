@@ -31,19 +31,5 @@ RSpec.describe 'Delete a work item' do
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['project']).to include('id' => work_item.project.to_global_id.to_s)
     end
-
-    context 'when the work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it 'does not delete the work item' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to not_change(WorkItem, :count)
-
-        expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
-      end
-    end
   end
 end

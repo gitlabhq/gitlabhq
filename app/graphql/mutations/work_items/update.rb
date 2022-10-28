@@ -4,8 +4,7 @@ module Mutations
   module WorkItems
     class Update < BaseMutation
       graphql_name 'WorkItemUpdate'
-      description "Updates a work item by Global ID." \
-                  " Available only when feature flag `work_items` is enabled."
+      description "Updates a work item by Global ID."
 
       include Mutations::SpamProtection
       include Mutations::WorkItems::UpdateArguments
@@ -19,10 +18,6 @@ module Mutations
 
       def resolve(id:, **attributes)
         work_item = authorized_find!(id: id)
-
-        unless work_item.project.work_items_feature_flag_enabled?
-          return { errors: ['`work_items` feature flag disabled for this project'] }
-        end
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
         widget_params = extract_widget_params!(work_item.work_item_type, attributes)

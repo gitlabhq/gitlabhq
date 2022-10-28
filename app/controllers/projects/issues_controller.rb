@@ -405,7 +405,6 @@ class Projects::IssuesController < Projects::ApplicationController
     options = super
 
     options[:issue_types] = Issue::TYPES_FOR_LIST
-    options[:issue_types] = options[:issue_types].excluding('task') unless project.work_items_feature_flag_enabled?
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }
@@ -432,7 +431,6 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 
   def redirect_if_task
-    return render_404 if issue.task? && !project.work_items_feature_flag_enabled?
     return unless issue.task?
 
     if Feature.enabled?(:use_iid_in_work_items_path, project.group)

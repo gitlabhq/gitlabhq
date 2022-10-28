@@ -5,9 +5,9 @@ require "spec_helper"
 RSpec.describe "User comments on issue", :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  let(:project) { create(:project_empty_repo, :public) }
-  let(:issue) { create(:issue, project: project) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_guest(user)

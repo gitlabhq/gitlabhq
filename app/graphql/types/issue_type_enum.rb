@@ -10,7 +10,7 @@ module Types
     end
 
     value 'TASK', value: 'task',
-                  description: 'Task issue type. Available only when feature flag `work_items` is enabled.',
+                  description: 'Task issue type.',
                   alpha: { milestone: '15.2' }
   end
 end

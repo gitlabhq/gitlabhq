@@ -18,7 +18,7 @@ describe('NoteHeader component', () => {
   const findActionText = () => wrapper.findComponent({ ref: 'actionText' });
   const findTimestampLink = () => wrapper.findComponent({ ref: 'noteTimestampLink' });
   const findTimestamp = () => wrapper.findComponent({ ref: 'noteTimestamp' });
-  const findInternalNoteIndicator = () => wrapper.findByTestId('internalNoteIndicator');
+  const findInternalNoteIndicator = () => wrapper.findByTestId('internal-note-indicator');
   const findSpinner = () => wrapper.findComponent({ ref: 'spinner' });
 
   const statusHtml =

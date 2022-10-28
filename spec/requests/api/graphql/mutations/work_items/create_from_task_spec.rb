@@ -71,19 +71,5 @@ RSpec.describe "Create a work item from a task in a work item's description" do
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::WorkItems::CreateFromTask }
     end
-
-    context 'when the work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it 'does nothing and returns and error' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to not_change(WorkItem, :count)
-
-        expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
-      end
-    end
   end
 end

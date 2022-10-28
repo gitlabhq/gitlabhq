@@ -120,24 +120,25 @@ To do so:
 
 ### Simulate a SaaS instance
 
-If you're developing locally and need your instance to act like the SaaS version of the product,
-you can simulate SaaS by exporting an environment variable:
+If you're developing locally and need your instance to simulate the SaaS (GitLab.com)
+version of the product:
 
-```shell
-export GITLAB_SIMULATE_SAAS=1
-```
+1. Export this environment variable:
 
-There are many ways to pass an environment variable to your local GitLab instance.
-For example, you can create a `env.runit` file in the root of your GDK with the above snippet.
+   ```shell
+   export GITLAB_SIMULATE_SAAS=1
+   ```
 
-#### Enable plans per namespace
+   There are many ways to pass an environment variable to your local GitLab instance.
+   For example, you can create an `env.runit` file in the root of your GDK with the above snippet.
 
-To enable plans per namespace turn on the `Allow use of licensed EE features` option from the settings page.
-This will make licensed EE features available to projects only if the project namespace's plan includes the feature
-or if the project is public. To enable it:
+1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
+   only if the project namespace's plan includes the feature.
 
-1. If you are developing locally, follow the steps in [Simulate a SaaS instance](#simulate-a-saas-instance) to make the option available.
-1. Visit Admin > Settings > General > "Account and limit" and enable "Allow use of licensed EE features".
+   1. Visit **Admin > Settings > General**.
+   1. Expand **Account and limit**.
+   1. Select the **Allow use of licensed EE features** checkbox.
+   1. Click **Save changes**.
 
 ### Run CI pipelines in a FOSS context
 

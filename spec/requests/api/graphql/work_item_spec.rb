@@ -357,16 +357,4 @@ RSpec.describe 'Query.work_item(id)' do
       )
     end
   end
-
-  context 'when the work_items feature flag is disabled' do
-    before do
-      stub_feature_flags(work_items: false)
-    end
-
-    it 'returns nil' do
-      post_graphql(query)
-
-      expect(work_item_data).to be_nil
-    end
-  end
 end

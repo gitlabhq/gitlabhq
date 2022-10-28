@@ -11858,6 +11858,24 @@ CREATE SEQUENCE audit_events_id_seq
 
 ALTER SEQUENCE audit_events_id_seq OWNED BY audit_events.id;
 
+CREATE TABLE audit_events_streaming_event_type_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_audit_event_destination_id bigint NOT NULL,
+    audit_event_type text NOT NULL,
+    CONSTRAINT check_d20c8e5a51 CHECK ((char_length(audit_event_type) <= 255))
+);
+
+CREATE SEQUENCE audit_events_streaming_event_type_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_streaming_event_type_filters_id_seq OWNED BY audit_events_streaming_event_type_filters.id;
+
 CREATE TABLE audit_events_streaming_headers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23397,6 +23415,8 @@ ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_
 
 ALTER TABLE ONLY audit_events_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_external_audit_event_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_event_type_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
 
 ALTER TABLE ONLY authentication_events ALTER COLUMN id SET DEFAULT nextval('authentication_events_id_seq'::regclass);
@@ -25065,6 +25085,9 @@ ALTER TABLE ONLY audit_events_external_audit_event_destinations
 
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);
+
+ALTER TABLE ONLY audit_events_streaming_event_type_filters
+    ADD CONSTRAINT audit_events_streaming_event_type_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_streaming_headers
     ADD CONSTRAINT audit_events_streaming_headers_pkey PRIMARY KEY (id);
@@ -31162,6 +31185,8 @@ CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_re
 
 CREATE UNIQUE INDEX unique_projects_on_name_namespace_id ON projects USING btree (name, namespace_id);
 
+CREATE UNIQUE INDEX unique_streaming_event_type_filters_destination_id ON audit_events_streaming_event_type_filters USING btree (external_audit_event_destination_id, audit_event_type);
+
 CREATE UNIQUE INDEX unique_vuln_merge_request_link_vuln_id_and_mr_id ON vulnerability_merge_request_links USING btree (vulnerability_id, merge_request_id);
 
 CREATE INDEX user_follow_users_followee_id_idx ON user_follow_users USING btree (followee_id);
@@ -34948,6 +34973,9 @@ ALTER TABLE ONLY dast_site_tokens
 
 ALTER TABLE ONLY group_deploy_keys_groups
     ADD CONSTRAINT fk_rails_e87145115d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_streaming_event_type_filters
+    ADD CONSTRAINT fk_rails_e8bd011129 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY description_versions
     ADD CONSTRAINT fk_rails_e8f4caf9c7 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;

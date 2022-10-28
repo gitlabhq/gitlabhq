@@ -513,9 +513,7 @@ module Types
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
           resolver: Resolvers::WorkItems::TypesResolver,
-          description: 'Work item types available to the project.' \
-                       ' Returns `null` if `work_items` feature flag is disabled.' \
-                       ' This flag is disabled by default, because the feature is experimental and is subject to change without notice.'
+          description: 'Work item types available to the project.'
 
     field :timelog_categories, Types::TimeTracking::TimelogCategoryType.connection_type,
           null: true,

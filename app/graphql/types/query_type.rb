@@ -92,7 +92,7 @@ module Types
           null: true,
           resolver: Resolvers::WorkItemResolver,
           alpha: { milestone: '15.1' },
-          description: 'Find a work item. Returns `null` if `work_items` feature flag is disabled.'
+          description: 'Find a work item.'
 
     field :merge_request, Types::MergeRequestType,
           null: true,

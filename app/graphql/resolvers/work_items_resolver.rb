@@ -26,7 +26,7 @@ module Resolvers
              required: false
 
     def resolve_with_lookahead(**args)
-      return WorkItem.none if resource_parent.nil? || !resource_parent.work_items_feature_flag_enabled?
+      return WorkItem.none if resource_parent.nil?
 
       finder = ::WorkItems::WorkItemsFinder.new(current_user, prepare_finder_params(args))
 

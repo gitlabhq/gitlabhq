@@ -644,20 +644,5 @@ RSpec.describe 'Update a work item' do
       it_behaves_like 'a mutation that returns top-level errors',
         errors: ["Following widget keys are not supported by some_test_case_name type: [:hierarchy_widget]"]
     end
-
-    context 'when the work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it 'does not update the work item and returns and error' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-          work_item.reload
-        end.to not_change(work_item, :title)
-
-        expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
-      end
-    end
   end
 end

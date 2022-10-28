@@ -4,8 +4,7 @@ module Mutations
   module WorkItems
     class Delete < BaseMutation
       graphql_name 'WorkItemDelete'
-      description "Deletes a work item." \
-                  " Available only when feature flag `work_items` is enabled."
+      description "Deletes a work item."
 
       authorize :delete_work_item
 
@@ -19,10 +18,6 @@ module Mutations
 
       def resolve(id:)
         work_item = authorized_find!(id: id)
-
-        unless work_item.project.work_items_feature_flag_enabled?
-          return { errors: ['`work_items` feature flag disabled for this project'] }
-        end
 
         result = ::WorkItems::DeleteService.new(
           project: work_item.project,

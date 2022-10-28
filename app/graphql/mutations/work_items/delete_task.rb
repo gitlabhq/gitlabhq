@@ -5,8 +5,7 @@ module Mutations
     class DeleteTask < BaseMutation
       graphql_name 'WorkItemDeleteTask'
 
-      description "Deletes a task in a work item's description." \
-                  ' Available only when feature flag `work_items` is enabled.'
+      description "Deletes a task in a work item's description."
 
       authorize :update_work_item
 
@@ -28,10 +27,6 @@ module Mutations
       def resolve(id:, lock_version:, task_data:)
         work_item = authorized_find!(id: id)
         task_data[:task] = authorized_find_task!(task_data[:id])
-
-        unless work_item.project.work_items_feature_flag_enabled?
-          return { errors: ['`work_items` feature flag disabled for this project'] }
-        end
 
         result = ::WorkItems::DeleteTaskService.new(
           work_item: work_item,

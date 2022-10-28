@@ -6,6 +6,16 @@ class Appearance < ApplicationRecord
   include ObjectStorage::BackgroundMove
   include WithUploads
 
+  attribute :title, default: ''
+  attribute :description, default: ''
+  attribute :new_project_guidelines, default: ''
+  attribute :profile_image_guidelines, default: ''
+  attribute :header_message, default: ''
+  attribute :footer_message, default: ''
+  attribute :message_background_color, default: '#E75E40'
+  attribute :message_font_color, default: '#FFFFFF'
+  attribute :email_header_and_footer_enabled, default: false
+
   cache_markdown_field :description
   cache_markdown_field :new_project_guidelines
   cache_markdown_field :profile_image_guidelines
@@ -19,16 +29,6 @@ class Appearance < ApplicationRecord
   validates :profile_image_guidelines, length: { maximum: 4096 }
 
   validate :single_appearance_row, on: :create
-
-  default_value_for :title, ''
-  default_value_for :description, ''
-  default_value_for :new_project_guidelines, ''
-  default_value_for :profile_image_guidelines, ''
-  default_value_for :header_message, ''
-  default_value_for :footer_message, ''
-  default_value_for :message_background_color, '#E75E40'
-  default_value_for :message_font_color, '#FFFFFF'
-  default_value_for :email_header_and_footer_enabled, false
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader

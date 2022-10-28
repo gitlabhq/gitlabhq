@@ -3006,7 +3006,7 @@ class Project < ApplicationRecord
   end
 
   def work_items_create_from_markdown_feature_flag_enabled?
-    work_items_feature_flag_enabled? && (group&.work_items_create_from_markdown_feature_flag_enabled? || Feature.enabled?(:work_items_create_from_markdown))
+    group&.work_items_create_from_markdown_feature_flag_enabled? || Feature.enabled?(:work_items_create_from_markdown)
   end
 
   def enqueue_record_project_target_platforms

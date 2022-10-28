@@ -226,7 +226,7 @@ func TestUploadHandlerSendingToExternalStorageAndSupportRequestTimeout(t *testin
 		RemoteObject: api.RemoteObject{
 			StoreURL: storeServer.URL + "/url/put",
 			ID:       "store-id",
-			Timeout:  0.001,
+			Timeout:  0.1,
 		},
 	}
 

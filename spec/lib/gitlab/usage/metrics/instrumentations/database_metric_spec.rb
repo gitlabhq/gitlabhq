@@ -7,8 +7,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
     described_class.tap do |metric_class|
       metric_class.relation { Issue }
       metric_class.operation :count
-      metric_class.start { metric_class.relation.minimum(:id) }
-      metric_class.finish { metric_class.relation.maximum(:id) }
+      metric_class.start { Issue.minimum(:id) }
+      metric_class.finish { Issue.maximum(:id) }
     end.new(time_frame: 'all')
   end
 
@@ -41,8 +41,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
         described_class.tap do |metric_class|
           metric_class.relation { Issue }
           metric_class.operation :count
-          metric_class.start { metric_class.relation.minimum(:id) }
-          metric_class.finish { metric_class.relation.maximum(:id) }
+          metric_class.start { Issue.minimum(:id) }
+          metric_class.finish { Issue.maximum(:id) }
           metric_class.metric_options { { batch_size: 12345 } }
         end.new(time_frame: 'all')
       end
@@ -103,8 +103,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
         described_class.tap do |metric_class|
           metric_class.relation { Issue }
           metric_class.operation :count
-          metric_class.start { metric_class.relation.minimum(:id) }
-          metric_class.finish { metric_class.relation.maximum(:id) }
+          metric_class.start { Issue.minimum(:id) }
+          metric_class.finish { Issue.maximum(:id) }
           metric_class.cache_start_and_finish_as :special_issue_count
         end.new(time_frame: 'all')
       end
@@ -126,8 +126,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
         described_class.tap do |metric_class|
           metric_class.relation { Issue }
           metric_class.operation(:estimate_batch_distinct_count)
-          metric_class.start { metric_class.relation.minimum(:id) }
-          metric_class.finish { metric_class.relation.maximum(:id) }
+          metric_class.start { Issue.minimum(:id) }
+          metric_class.finish { Issue.maximum(:id) }
         end.new(time_frame: 'all')
       end
 
@@ -144,8 +144,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
             metric_class.operation(:estimate_batch_distinct_count) do |result|
               result.foo
             end
-            metric_class.start { metric_class.relation.minimum(:id) }
-            metric_class.finish { metric_class.relation.maximum(:id) }
+            metric_class.start { Issue.minimum(:id) }
+            metric_class.finish { Issue.maximum(:id) }
           end.new(time_frame: 'all')
         end
 
@@ -188,6 +188,22 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
       it 'calculates a correct result' do
         create(:issue, last_edited_at: 5.days.ago)
         create(:issue, created_at: 5.days.ago)
+
+        expect(subject.value).to eq(1)
+      end
+    end
+
+    context 'with additional parameters passed via options' do
+      subject do
+        described_class.tap do |metric_class|
+          metric_class.relation ->(options) { Issue.where(confidential: options[:confidential]) }
+          metric_class.operation :count
+        end.new(time_frame: '28d', options: { confidential: true })
+      end
+
+      it 'calculates a correct result' do
+        create(:issue, last_edited_at: 5.days.ago, confidential: true)
+        create(:issue, last_edited_at: 5.days.ago, confidential: false)
 
         expect(subject.value).to eq(1)
       end

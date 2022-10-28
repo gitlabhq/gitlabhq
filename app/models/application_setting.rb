@@ -75,9 +75,9 @@ class ApplicationSetting < ApplicationRecord
   cache_markdown_field :shared_runners_text, pipeline: :plain_markdown
   cache_markdown_field :after_sign_up_text
 
-  default_value_for :id, 1
-  default_value_for :repository_storages_weighted, {}
-  default_value_for :kroki_formats, {}
+  attribute :id, default: 1
+  attribute :repository_storages_weighted, default: -> { {} }
+  attribute :kroki_formats, default: -> { {} }
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 

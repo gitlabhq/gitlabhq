@@ -595,7 +595,7 @@ Returns [`Vulnerability`](#vulnerability).
 
 ### `Query.workItem`
 
-Find a work item. Returns `null` if `work_items` feature flag is disabled.
+Find a work item.
 
 WARNING:
 **Introduced** in 15.1.
@@ -5777,7 +5777,7 @@ Input type: `VulnerabilityRevertToDetectedInput`
 
 ### `Mutation.workItemCreate`
 
-Creates a work item. Available only when feature flag `work_items` is enabled.
+Creates a work item.
 
 WARNING:
 **Introduced** in 15.1.
@@ -5808,7 +5808,7 @@ Input type: `WorkItemCreateInput`
 
 ### `Mutation.workItemCreateFromTask`
 
-Creates a work item from a task in another work item's description. Available only when feature flag `work_items` is enabled.
+Creates a work item from a task in another work item's description.
 
 WARNING:
 **Introduced** in 15.1.
@@ -5835,7 +5835,7 @@ Input type: `WorkItemCreateFromTaskInput`
 
 ### `Mutation.workItemDelete`
 
-Deletes a work item. Available only when feature flag `work_items` is enabled.
+Deletes a work item.
 
 WARNING:
 **Introduced** in 15.1.
@@ -5860,7 +5860,7 @@ Input type: `WorkItemDeleteInput`
 
 ### `Mutation.workItemDeleteTask`
 
-Deletes a task in a work item's description. Available only when feature flag `work_items` is enabled.
+Deletes a task in a work item's description.
 
 WARNING:
 **Introduced** in 15.1.
@@ -5887,7 +5887,7 @@ Input type: `WorkItemDeleteTaskInput`
 
 ### `Mutation.workItemUpdate`
 
-Updates a work item by Global ID. Available only when feature flag `work_items` is enabled.
+Updates a work item by Global ID.
 
 WARNING:
 **Introduced** in 15.1.
@@ -5924,7 +5924,7 @@ Input type: `WorkItemUpdateInput`
 
 ### `Mutation.workItemUpdateTask`
 
-Updates a work item's task by Global ID. Available only when feature flag `work_items` is enabled.
+Updates a work item's task by Global ID.
 
 WARNING:
 **Introduced** in 15.1.
@@ -13585,7 +13585,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 ##### `Group.workItemTypes`
 
-Work item types available to the group. Returns `null` if `work_items` feature flag is disabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Work item types available to the group.
 
 Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
@@ -17521,7 +17521,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 ##### `Project.workItemTypes`
 
-Work item types available to the project. Returns `null` if `work_items` feature flag is disabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Work item types available to the project.
 
 Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
@@ -21052,7 +21052,7 @@ Issue type.
 | <a id="issuetypeincident"></a>`INCIDENT` | Incident issue type. |
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
-| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is in Alpha. It can be changed or removed at any time. Task issue type. Available only when feature flag `work_items` is enabled. |
+| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is in Alpha. It can be changed or removed at any time. Task issue type. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
 
 ### `IterationSearchableField`

@@ -23,8 +23,8 @@ class BroadcastMessage < ApplicationRecord
   validates :color, allow_blank: true, color: true
   validates :font,  allow_blank: true, color: true
 
-  default_value_for :color, '#E75E40'
-  default_value_for :font,  '#FFFFFF'
+  attribute :color, default: '#E75E40'
+  attribute :font, default: '#FFFFFF'
 
   CACHE_KEY = 'broadcast_message_current_json'
   BANNER_CACHE_KEY = 'broadcast_message_current_banner_json'

@@ -57,15 +57,4 @@ RSpec.describe 'getting a list of work item types for a project' do
       expect(graphql_data).to eq('project' => nil)
     end
   end
-
-  context 'when the work_items feature flag is disabled' do
-    before do
-      stub_feature_flags(work_items: false)
-      post_graphql(query, current_user: current_user)
-    end
-
-    it 'returns null' do
-      expect(graphql_data.dig('project', 'workItemTypes')).to be_nil
-    end
-  end
 end

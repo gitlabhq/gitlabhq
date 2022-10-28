@@ -9,8 +9,4 @@ class Projects::WorkItemsController < Projects::ApplicationController
 
   feature_category :team_planning
   urgency :low
-
-  def index
-    render_404 unless project&.work_items_feature_flag_enabled?
-  end
 end

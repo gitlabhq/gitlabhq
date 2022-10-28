@@ -11,10 +11,7 @@ module Resolvers
     argument :id, ::Types::GlobalIDType[::WorkItem], required: true, description: 'Global ID of the work item.'
 
     def resolve(id:)
-      work_item = authorized_find!(id: id)
-      return unless work_item.project.work_items_feature_flag_enabled?
-
-      work_item
+      authorized_find!(id: id)
     end
 
     private
