@@ -29,6 +29,22 @@ RSpec.describe Projects::HooksController do
       { namespace_id: project.namespace, project_id: project, id: hook.id }
     end
 
+    context 'with an existing token' do
+      hook_params = {
+        token: WebHook::SECRET_MASK,
+        url: "http://example.com"
+      }
+
+      it 'does not change a token' do
+        expect do
+          post :update, params: params.merge({ hook: hook_params })
+        end.not_to change { hook.reload.token }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(flash[:alert]).to be_blank
+      end
+    end
+
     it 'adds, updates and deletes URL variables' do
       hook.update!(url_variables: { 'a' => 'bar', 'b' => 'woo' })
 

@@ -21,7 +21,12 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
     end
 
-    desc 'Return all deploy keys'
+    desc 'List all deploy keys' do
+      detail 'Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires administrator access and is not available on GitLab.com.'
+      success Entities::DeployKey
+      is_array true
+      tags %w[deploy_keys]
+    end
     params do
       use :pagination
       optional :public, type: Boolean, default: false, desc: "Only return deploy keys that are public"
@@ -35,13 +40,16 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of the project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authorize_admin_project }
 
-      desc "Get a specific project's deploy keys" do
+      desc 'List deploy keys for project' do
+        detail "Get a list of a project's deploy keys."
         success Entities::DeployKeysProject
+        is_array true
+        tags %w[deploy_keys]
       end
       params do
         use :pagination
@@ -54,8 +62,10 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get single deploy key' do
+      desc 'Get a single deploy key' do
+        detail 'Get a single key.'
         success Entities::DeployKeysProject
+        tags %w[deploy_keys]
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
@@ -66,12 +76,14 @@ module API
         present key, with: Entities::DeployKeysProject
       end
 
-      desc 'Add new deploy key to a project' do
+      desc 'Add deploy key' do
+        detail "Creates a new deploy key for a project. If the deploy key already exists in another project, it's joined to the current project only if the original one is accessible by the same user."
         success Entities::DeployKeysProject
+        tags %w[deploy_keys]
       end
       params do
-        requires :key, type: String, desc: 'The new deploy key'
-        requires :title, type: String, desc: 'The name of the deploy key'
+        requires :key, type: String, desc: 'New deploy key'
+        requires :title, type: String, desc: "New deploy key's title"
         optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
       end
       # rubocop: disable CodeReuse/ActiveRecord
@@ -109,12 +121,14 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Update an existing deploy key for a project' do
+      desc 'Update deploy key' do
+        detail 'Updates a deploy key for a project.'
         success Entities::DeployKey
+        tags %w[deploy_keys]
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
-        optional :title, type: String, desc: 'The name of the deploy key'
+        optional :title, type: String, desc: "New deploy key's title"
         optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
         at_least_one_of :title, :can_push
       end
@@ -143,9 +157,10 @@ module API
         end
       end
 
-      desc 'Enable a deploy key for a project' do
-        detail 'This feature was added in GitLab 8.11'
+      desc 'Enable a deploy key' do
+        detail 'Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful. This feature was added in GitLab 8.11.'
         success Entities::DeployKey
+        tags %w[deploy_keys]
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
@@ -161,7 +176,10 @@ module API
         end
       end
 
-      desc 'Delete deploy key for a project'
+      desc 'Delete deploy key' do
+        detail "Removes a deploy key from the project. If the deploy key is used only for this project, it's deleted from the system."
+        tags %w[deploy_keys]
+      end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end

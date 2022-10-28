@@ -24,86 +24,52 @@ describe('AccessRequestActionButtons', () => {
     wrapper.destroy();
   });
 
-  describe('when user has `canRemove` permissions', () => {
-    beforeEach(() => {
+  it('renders remove member button', () => {
+    createComponent();
+
+    expect(findRemoveMemberButton().exists()).toBe(true);
+  });
+
+  it('sets props correctly on remove member button', () => {
+    createComponent();
+
+    expect(findRemoveMemberButton().props()).toMatchObject({
+      memberId: member.id,
+      title: 'Deny access',
+      isAccessRequest: true,
+      isInvite: false,
+      icon: 'close',
+    });
+  });
+
+  describe('when member is the current user', () => {
+    it('sets `message` prop correctly', () => {
+      createComponent();
+
+      expect(findRemoveMemberButton().props('message')).toBe(
+        `Are you sure you want to withdraw your access request for "${member.source.fullName}"`,
+      );
+    });
+  });
+
+  describe('when member is not the current user', () => {
+    it('sets `message` prop correctly', () => {
       createComponent({
+        isCurrentUser: false,
         permissions: {
           canRemove: true,
         },
       });
-    });
 
-    it('renders remove member button', () => {
-      expect(findRemoveMemberButton().exists()).toBe(true);
-    });
-
-    it('sets props correctly', () => {
-      expect(findRemoveMemberButton().props()).toMatchObject({
-        memberId: member.id,
-        title: 'Deny access',
-        isAccessRequest: true,
-        isInvite: false,
-        icon: 'close',
-      });
-    });
-
-    describe('when member is the current user', () => {
-      it('sets `message` prop correctly', () => {
-        expect(findRemoveMemberButton().props('message')).toBe(
-          `Are you sure you want to withdraw your access request for "${member.source.fullName}"`,
-        );
-      });
-    });
-
-    describe('when member is not the current user', () => {
-      it('sets `message` prop correctly', () => {
-        createComponent({
-          isCurrentUser: false,
-          permissions: {
-            canRemove: true,
-          },
-        });
-
-        expect(findRemoveMemberButton().props('message')).toBe(
-          `Are you sure you want to deny ${member.user.name}'s request to join "${member.source.fullName}"`,
-        );
-      });
+      expect(findRemoveMemberButton().props('message')).toBe(
+        `Are you sure you want to deny ${member.user.name}'s request to join "${member.source.fullName}"`,
+      );
     });
   });
 
-  describe('when user does not have `canRemove` permissions', () => {
-    it('does not render remove member button', () => {
-      createComponent({
-        permissions: {
-          canRemove: false,
-        },
-      });
+  it('renders the approve button', () => {
+    createComponent();
 
-      expect(findRemoveMemberButton().exists()).toBe(false);
-    });
-  });
-
-  describe('when user has `canUpdate` permissions', () => {
-    it('renders the approve button', () => {
-      createComponent({
-        permissions: {
-          canUpdate: true,
-        },
-      });
-
-      expect(findApproveButton().exists()).toBe(true);
-    });
-  });
-
-  describe('when user does not have `canUpdate` permissions', () => {
-    it('does not render the approve button', () => {
-      createComponent({
-        permissions: {
-          canUpdate: false,
-        },
-      });
-
-      expect(findApproveButton().exists()).toBe(false);
-    });
+    expect(findApproveButton().exists()).toBe(true);
   });
 });

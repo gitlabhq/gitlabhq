@@ -11,6 +11,7 @@ class WebHook < ApplicationRecord
   INITIAL_BACKOFF = 1.minute
   MAX_BACKOFF = 1.day
   BACKOFF_GROWTH_FACTOR = 2.0
+  SECRET_MASK = '************'
 
   attr_encrypted :token,
                  mode: :per_attribute_iv,
@@ -208,6 +209,10 @@ class WebHook < ApplicationRecord
 
   def update_last_failure
     # Overridden in child classes.
+  end
+
+  def masked_token
+    token.present? ? SECRET_MASK : nil
   end
 
   private

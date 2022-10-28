@@ -48,6 +48,10 @@ module Members
     def authorized?(member, destroy_bot)
       return can_destroy_bot_member?(member) if destroy_bot
 
+      if member.request?
+        return can_destroy_member_access_request?(member) || can_withdraw_member_access_request?(member)
+      end
+
       can_destroy_member?(member)
     end
 
@@ -104,6 +108,14 @@ module Members
 
     def can_destroy_bot_member?(member)
       can?(current_user, destroy_bot_member_permission(member), member)
+    end
+
+    def can_destroy_member_access_request?(member)
+      can?(current_user, :admin_member_access_request, member.source)
+    end
+
+    def can_withdraw_member_access_request?(member)
+      can?(current_user, :withdraw_member_access_request, member)
     end
 
     def destroying_member_with_owner_access_level?(member)

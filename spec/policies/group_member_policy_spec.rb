@@ -83,6 +83,31 @@ RSpec.describe GroupMemberPolicy do
     specify { expect_allowed(:read_group) }
   end
 
+  context 'for access requests' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+
+    let(:current_user) { user }
+
+    context 'for own access request' do
+      let(:membership) { create(:group_member, :access_request, group: group, user: user) }
+
+      specify { expect_allowed(:withdraw_member_access_request) }
+    end
+
+    context "for another user's access request" do
+      let(:membership) { create(:group_member, :access_request, group: group, user: create(:user)) }
+
+      specify { expect_disallowed(:withdraw_member_access_request) }
+    end
+
+    context 'for own, valid membership' do
+      let(:membership) { create(:group_member, :developer, group: group, user: user) }
+
+      specify { expect_disallowed(:withdraw_member_access_request) }
+    end
+  end
+
   context 'with bot user' do
     let(:current_user) { create(:user, :project_bot) }
 

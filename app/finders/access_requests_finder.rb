@@ -24,6 +24,6 @@ class AccessRequestsFinder
   private
 
   def can_see_access_requests?(current_user)
-    source && Ability.allowed?(current_user, :"admin_#{source.class.to_s.underscore}", source)
+    source && Ability.allowed?(current_user, :admin_member_access_request, source)
   end
 end

@@ -239,7 +239,7 @@ gem 'ruby-progressbar', '~> 1.10'
 gem 'settingslogic', '~> 2.0.9'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.5.0'
+gem 're2', '~> 1.6.0'
 
 # Misc
 

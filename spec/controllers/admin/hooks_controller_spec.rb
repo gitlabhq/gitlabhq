@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Admin::HooksController do
-  let(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     sign_in(admin)
@@ -33,7 +33,23 @@ RSpec.describe Admin::HooksController do
   end
 
   describe 'POST #update' do
-    let!(:hook) { create(:system_hook) }
+    let_it_be_with_reload(:hook) { create(:system_hook) }
+
+    context 'with an existing token' do
+      hook_params = {
+        token: WebHook::SECRET_MASK,
+        url: "http://example.com"
+      }
+
+      it 'does not change a token' do
+        expect do
+          post :update, params: { id: hook.id, hook: hook_params }
+        end.not_to change { hook.reload.token }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(flash[:alert]).to be_blank
+      end
+    end
 
     it 'sets all parameters' do
       hook.update!(url_variables: { 'foo' => 'bar', 'baz' => 'woo' })
@@ -61,8 +77,8 @@ RSpec.describe Admin::HooksController do
   end
 
   describe 'DELETE #destroy' do
-    let!(:hook) { create(:system_hook) }
-    let!(:log) { create(:web_hook_log, web_hook: hook) }
+    let_it_be(:hook) { create(:system_hook) }
+    let_it_be(:log) { create(:web_hook_log, web_hook: hook) }
     let(:params) { { id: hook } }
 
     it_behaves_like 'Web hook destroyer'

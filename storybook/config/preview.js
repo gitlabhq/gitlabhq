@@ -3,10 +3,6 @@ import Vue from 'vue';
 import { createMockServer } from 'test_helpers/mock_server';
 import translateMixin from '~/vue_shared/translate';
 
-// fixing toJSON error
-// https://github.com/storybookjs/storybook/issues/14933
-Vue.prototype.toJSON = () => {};
-
 const stylesheetsRequireCtx = require.context(
   '../../app/assets/stylesheets',
   true,

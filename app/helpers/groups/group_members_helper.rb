@@ -12,7 +12,8 @@ module Groups::GroupMembersHelper
       invite: group_members_list_data(group, invited.nil? ? [] : invited, { param_name: :invited_members_page, params: { page: nil } }),
       access_request: group_members_list_data(group, access_requests.nil? ? [] : access_requests),
       source_id: group.id,
-      can_manage_members: can?(current_user, :admin_group_member, group)
+      can_manage_members: can?(current_user, :admin_group_member, group),
+      can_manage_access_requests: can?(current_user, :admin_member_access_request, group)
     }
   end
 

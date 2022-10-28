@@ -77,7 +77,7 @@ RSpec.describe Members::DestroyService do
     end
   end
 
-  shared_examples 'a service destroying an access requester' do
+  shared_examples 'a service destroying an access request of another user' do
     it_behaves_like 'a service destroying a member'
 
     it 'calls Member#after_decline_request' do
@@ -85,12 +85,16 @@ RSpec.describe Members::DestroyService do
 
       described_class.new(current_user).execute(member, **opts)
     end
+  end
+
+  shared_examples 'a service destroying an access request of self' do
+    it_behaves_like 'a service destroying a member'
 
     context 'when current user is the member' do
       it 'does not call Member#after_decline_request' do
         expect_any_instance_of(NotificationService).not_to receive(:decline_access_request).with(member)
 
-        described_class.new(member_user).execute(member, **opts)
+        described_class.new(current_user).execute(member, **opts)
       end
     end
   end
@@ -277,11 +281,24 @@ RSpec.describe Members::DestroyService do
         group.add_owner(current_user)
       end
 
-      it_behaves_like 'a service destroying an access requester' do
+      it_behaves_like 'a service destroying an access request of another user' do
         let(:member) { group_project.requesters.find_by(user_id: member_user.id) }
       end
 
-      it_behaves_like 'a service destroying an access requester' do
+      it_behaves_like 'a service destroying an access request of another user' do
+        let(:member) { group.requesters.find_by(user_id: member_user.id) }
+      end
+    end
+
+    context 'on withdrawing their own access request' do
+      let(:opts) { { skip_subresources: true } }
+      let(:current_user) { member_user }
+
+      it_behaves_like 'a service destroying an access request of self' do
+        let(:member) { group_project.requesters.find_by(user_id: member_user.id) }
+      end
+
+      it_behaves_like 'a service destroying an access request of self' do
         let(:member) { group.requesters.find_by(user_id: member_user.id) }
       end
     end

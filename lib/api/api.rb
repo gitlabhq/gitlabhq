@@ -171,11 +171,13 @@ module API
       namespace do
         mount ::API::AccessRequests
         mount ::API::Appearance
+        mount ::API::DeployKeys
         mount ::API::Deployments
         mount ::API::Metadata
         mount ::API::MergeRequestDiffs
         mount ::API::UserCounts
         mount ::API::ProjectRepositoryStorageMoves
+        mount ::API::Release::Links
         mount ::API::SnippetRepositoryStorageMoves
         mount ::API::Statistics
 
@@ -219,7 +221,6 @@ module API
       mount ::API::DebianGroupPackages
       mount ::API::DebianProjectPackages
       mount ::API::DependencyProxy
-      mount ::API::DeployKeys
       mount ::API::DeployTokens
       mount ::API::Discussions
       mount ::API::Environments
@@ -294,7 +295,6 @@ module API
       mount ::API::ProtectedBranches
       mount ::API::ProtectedTags
       mount ::API::PypiPackages
-      mount ::API::Release::Links
       mount ::API::Releases
       mount ::API::RemoteMirrors
       mount ::API::Repositories

@@ -24768,9 +24768,6 @@ msgstr ""
 msgid "March"
 msgstr ""
 
-msgid "MardownDrawer|Could not fetch help contents."
-msgstr ""
-
 msgid "Mark as done"
 msgstr ""
 
@@ -45517,7 +45514,7 @@ msgstr ""
 msgid "Webhooks|URL preview"
 msgstr ""
 
-msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token HTTP%{code_end} header."
+msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token%{code_end} HTTP header."
 msgstr ""
 
 msgid "Webhooks|Webhook disabled"

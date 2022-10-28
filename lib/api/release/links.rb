@@ -14,17 +14,19 @@ module API
       urgency :low
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, type: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
-          requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
+          requires :tag_name, type: String, desc: 'The tag associated with the release', as: :tag
         end
         resource 'releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
           resource :assets do
-            desc 'Get a list of links of a release' do
-              detail 'This feature was introduced in GitLab 11.7.'
+            desc 'List links of a release' do
+              detail 'Get assets as links from a release. This feature was introduced in GitLab 11.7.'
               success Entities::Releases::Link
+              is_array true
+              tags %w[release_links]
             end
             params do
               use :pagination
@@ -36,16 +38,20 @@ module API
               present paginate(release.links.sorted), with: Entities::Releases::Link
             end
 
-            desc 'Create a link of a release' do
-              detail 'This feature was introduced in GitLab 11.7.'
+            desc 'Create a release link' do
+              detail 'Create an asset as a link from a release. This feature was introduced in GitLab 11.7.'
               success Entities::Releases::Link
+              tags %w[release_links]
             end
             params do
-              requires :name, type: String, desc: 'The name of the link'
-              requires :url, type: String, desc: 'The URL of the link'
-              optional :filepath, type: String, desc: 'The filepath of the link'
-              optional :link_type, type: String, values: %w[other runbook image package], default: 'other',
-                                   desc: 'The link type, one of: "runbook", "image", "package" or "other"'
+              requires :name, type: String, desc: 'The name of the link. Link names must be unique in the release'
+              requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique in the release.'
+              optional :filepath, type: String, desc: 'Optional path for a direct asset link'
+              optional :link_type,
+                type: String,
+                values: %w[other runbook image package],
+                default: 'other',
+                desc: 'The type of the link: `other`, `runbook`, `image`, or `package`. Defaults to `other`'
             end
             route_setting :authentication, job_token_allowed: true
             post 'links' do
@@ -61,12 +67,13 @@ module API
             end
 
             params do
-              requires :link_id, type: String, desc: 'The ID of the link'
+              requires :link_id, type: Integer, desc: 'The ID of the link'
             end
             resource 'links/:link_id' do
-              desc 'Get a link detail of a release' do
-                detail 'This feature was introduced in GitLab 11.7.'
+              desc 'Get a release link' do
+                detail 'Get an asset as a link from a release. This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
+                tags %w[release_links]
               end
               route_setting :authentication, job_token_allowed: true
               get do
@@ -75,16 +82,21 @@ module API
                 present link, with: Entities::Releases::Link
               end
 
-              desc 'Update a link of a release' do
-                detail 'This feature was introduced in GitLab 11.7.'
+              desc 'Update a release link' do
+                detail 'Update an asset as a link from a release. This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
+                tags %w[release_links]
               end
               params do
                 optional :name, type: String, desc: 'The name of the link'
                 optional :url, type: String, desc: 'The URL of the link'
-                optional :filepath, type: String, desc: 'The filepath of the link'
-                optional :link_type, type: String, values: %w[other runbook image package], default: 'other',
-                                     desc: 'The link type, one of: "runbook", "image", "package" or "other"'
+                optional :filepath, type: String, desc: 'Optional path for a direct asset link'
+                optional :link_type,
+                  type: String,
+                  values: %w[other runbook image package],
+                  default: 'other',
+                  desc: 'The type of the link: `other`, `runbook`, `image`, or `package`. Defaults to `other`'
+
                 at_least_one_of :name, :url
               end
               route_setting :authentication, job_token_allowed: true
@@ -98,9 +110,10 @@ module API
                 end
               end
 
-              desc 'Delete a link of a release' do
-                detail 'This feature was introduced in GitLab 11.7.'
+              desc 'Delete a release link' do
+                detail 'Deletes an asset as a link from a release. This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
+                tags %w[release_links]
               end
               route_setting :authentication, job_token_allowed: true
               delete do

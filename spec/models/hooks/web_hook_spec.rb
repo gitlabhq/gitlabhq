@@ -299,7 +299,7 @@ RSpec.describe WebHook do
   end
 
   describe '#executable?' do
-    let(:web_hook) { create(:project_hook, project: project) }
+    let_it_be_with_reload(:web_hook) { create(:project_hook, project: project) }
 
     where(:recent_failures, :not_until, :executable) do
       [
@@ -755,6 +755,16 @@ RSpec.describe WebHook do
   describe '#update_last_failure' do
     it 'is a method of this class' do
       expect { described_class.new.update_last_failure }.not_to raise_error
+    end
+  end
+
+  describe '#masked_token' do
+    it { expect(hook.masked_token).to be_nil }
+
+    context 'with a token' do
+      let(:hook) { build(:project_hook, :token, project: project) }
+
+      it { expect(hook.masked_token).to eq described_class::SECRET_MASK }
     end
   end
 end
