@@ -131,7 +131,6 @@ describe('CE IssuesListApp component', () => {
   const mountComponent = ({
     provide = {},
     data = {},
-    workItems = false,
     issuesQueryResponse = mockIssuesQueryResponse,
     issuesCountsQueryResponse = mockIssuesCountsQueryResponse,
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
@@ -150,9 +149,6 @@ describe('CE IssuesListApp component', () => {
       apolloProvider: createMockApollo(requestHandlers),
       router,
       provide: {
-        glFeatures: {
-          workItems,
-        },
         ...defaultProvide,
         ...provide,
       },
@@ -1060,45 +1056,23 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('fetching issues', () => {
-    describe('when work_items feature flag is disabled', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ workItems: false });
-        jest.runOnlyPendingTimers();
-      });
-
-      it('fetches issue, incident, and test case types', () => {
-        const types = [
-          WORK_ITEM_TYPE_ENUM_ISSUE,
-          WORK_ITEM_TYPE_ENUM_INCIDENT,
-          WORK_ITEM_TYPE_ENUM_TEST_CASE,
-        ];
-
-        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
-        expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
-          expect.objectContaining({ types }),
-        );
-      });
+    beforeEach(() => {
+      wrapper = mountComponent();
+      jest.runOnlyPendingTimers();
     });
 
-    describe('when work_items feature flag is enabled', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ workItems: true });
-        jest.runOnlyPendingTimers();
-      });
+    it('fetches issue, incident, test case, and task types', () => {
+      const types = [
+        WORK_ITEM_TYPE_ENUM_ISSUE,
+        WORK_ITEM_TYPE_ENUM_INCIDENT,
+        WORK_ITEM_TYPE_ENUM_TEST_CASE,
+        WORK_ITEM_TYPE_ENUM_TASK,
+      ];
 
-      it('fetches issue, incident, test case, and task types', () => {
-        const types = [
-          WORK_ITEM_TYPE_ENUM_ISSUE,
-          WORK_ITEM_TYPE_ENUM_INCIDENT,
-          WORK_ITEM_TYPE_ENUM_TEST_CASE,
-          WORK_ITEM_TYPE_ENUM_TASK,
-        ];
-
-        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
-        expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
-          expect.objectContaining({ types }),
-        );
-      });
+      expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
+      expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
+        expect.objectContaining({ types }),
+      );
     });
   });
 });

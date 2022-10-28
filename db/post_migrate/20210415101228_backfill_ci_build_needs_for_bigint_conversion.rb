@@ -20,7 +20,7 @@ class BackfillCiBuildNeedsForBigintConversion < ActiveRecord::Migration[6.0]
     Gitlab::Database::BackgroundMigration::BatchedMigration
       .where(job_class_name: 'CopyColumnUsingBackgroundMigrationJob')
       .where(table_name: 'ci_build_needs', column_name: 'build_id')
-      .where(job_arguments: %w[build_id build_id_convert_to_bigint].to_json)
+      .where(job_arguments: Gitlab::Json.dump(%w[build_id build_id_convert_to_bigint]))
       .delete_all
   end
 

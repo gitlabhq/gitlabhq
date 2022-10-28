@@ -10,7 +10,7 @@ class CreateDastProfileSchedule < ActiveRecord::Migration[6.1]
       owner: 'group::dynamic analysis', description: 'Scheduling for scans using DAST Profiles'
     }
 
-    create_table_with_constraints :dast_profile_schedules, comment: table_comment.to_json do |t|
+    create_table_with_constraints :dast_profile_schedules, comment: Gitlab::Json.dump(table_comment) do |t|
       t.bigint :project_id, null: false
       t.bigint :dast_profile_id, null: false
       t.bigint :user_id

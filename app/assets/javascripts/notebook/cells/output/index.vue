@@ -3,6 +3,9 @@ import CodeOutput from '../code/index.vue';
 import HtmlOutput from './html.vue';
 import ImageOutput from './image.vue';
 import LatexOutput from './latex.vue';
+import MarkdownOutput from './markdown.vue';
+
+const TEXT_MARKDOWN = 'text/markdown';
 
 export default {
   props: {
@@ -35,6 +38,8 @@ export default {
         return 'text/latex';
       } else if (output.data['image/svg+xml']) {
         return 'image/svg+xml';
+      } else if (output.data[TEXT_MARKDOWN]) {
+        return TEXT_MARKDOWN;
       }
 
       return 'text/plain';
@@ -42,7 +47,7 @@ export default {
     dataForType(output, type) {
       let data = output.data[type];
 
-      if (typeof data === 'object') {
+      if (typeof data === 'object' && this.outputType(output) !== TEXT_MARKDOWN) {
         data = data.join('');
       }
 
@@ -61,6 +66,8 @@ export default {
         return LatexOutput;
       } else if (output.data['image/svg+xml']) {
         return HtmlOutput;
+      } else if (output.data[TEXT_MARKDOWN]) {
+        return MarkdownOutput;
       }
 
       return CodeOutput;

@@ -43,11 +43,13 @@ module Integrations
     private
 
     def notify(message, opts)
-      response = Gitlab::HTTP.post(webhook, body: {
+      body = {
         subject: message.project_name,
         text: message.summary,
         markdown: true
-      }.to_json)
+      }
+
+      response = Gitlab::HTTP.post(webhook, body: Gitlab::Json.dump(body))
 
       response if response.success?
     end

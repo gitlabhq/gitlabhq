@@ -39364,7 +39364,13 @@ msgstr ""
 msgid "SuggestedReviewers|Get suggestions for reviewers based on GitLab's machine learning tool."
 msgstr ""
 
+msgid "SuggestedReviewers|Learn about suggested reviewers"
+msgstr ""
+
 msgid "SuggestedReviewers|Suggested reviewers"
+msgstr ""
+
+msgid "SuggestedReviewers|Suggested reviewers help link"
 msgstr ""
 
 msgid "SuggestedReviewers|Suggestions appear in the Reviewer section of the right sidebar"

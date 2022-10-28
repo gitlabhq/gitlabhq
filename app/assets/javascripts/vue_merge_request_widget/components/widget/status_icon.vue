@@ -34,8 +34,8 @@ export default {
     iconAriaLabel() {
       return `${capitalizeFirstCharacter(this.iconName)} ${this.name}`;
     },
-    iconSize() {
-      return this.level === 1 ? 16 : 12;
+    iconClassNameText() {
+      return this.$options.EXTENSION_ICON_CLASS[this.iconName];
     },
   },
   EXTENSION_ICON_NAMES,
@@ -44,24 +44,22 @@ export default {
 </script>
 
 <template>
-  <div :class="[$options.EXTENSION_ICON_CLASS[iconName]]" class="gl-mr-3">
+  <div
+    :class="{
+      [iconClassNameText]: !isLoading,
+      [`mr-widget-status-icon-level-${level}`]: !isLoading,
+      'gl-mr-3': level === 1,
+    }"
+    class="gl-relative gl-w-6 gl-h-6 gl-rounded-full gl--flex-center"
+  >
     <gl-loading-icon v-if="isLoading" size="md" inline />
-    <div
+    <gl-icon
       v-else
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-rounded-full gl-bg-gray-10"
-      :class="{
-        'gl-p-2': level === 1,
-      }"
-    >
-      <div class="gl-rounded-full gl-bg-white">
-        <gl-icon
-          :name="$options.EXTENSION_ICON_NAMES[iconName]"
-          :size="iconSize"
-          :aria-label="iconAriaLabel"
-          :data-qa-selector="`status_${iconName}_icon`"
-          class="gl-display-block"
-        />
-      </div>
-    </div>
+      :name="$options.EXTENSION_ICON_NAMES[iconName]"
+      :size="12"
+      :aria-label="iconAriaLabel"
+      :data-qa-selector="`status_${iconName}_icon`"
+      class="gl-relative gl-z-index-1"
+    />
   </div>
 </template>

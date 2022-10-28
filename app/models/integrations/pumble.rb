@@ -51,7 +51,7 @@ module Integrations
 
     def notify(message, opts)
       header = { 'Content-Type' => 'application/json' }
-      response = Gitlab::HTTP.post(webhook, headers: header, body: { text: message.summary }.to_json)
+      response = Gitlab::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump({ text: message.summary }))
 
       response if response.success?
     end

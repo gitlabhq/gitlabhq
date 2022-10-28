@@ -25,7 +25,7 @@ export default {
     workItemTypes() {
       return this.workItemHierarchy.reduce(
         (itemTypes, item) => {
-          const skipItem = workItemTypes[item.type].isWorkItem && !window.gon?.features?.workItems;
+          const skipItem = workItemTypes[item.type].isWorkItem;
 
           if (skipItem) {
             return itemTypes;

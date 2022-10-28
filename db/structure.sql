@@ -21594,7 +21594,6 @@ CREATE TABLE sprints (
     updated_at timestamp with time zone NOT NULL,
     start_date date,
     due_date date,
-    project_id bigint,
     group_id bigint,
     iid integer NOT NULL,
     cached_markdown_version integer,
@@ -21605,7 +21604,6 @@ CREATE TABLE sprints (
     state_enum smallint DEFAULT 1 NOT NULL,
     iterations_cadence_id integer,
     sequence integer,
-    CONSTRAINT sprints_must_belong_to_project_or_group CHECK ((((project_id <> NULL::bigint) AND (group_id IS NULL)) OR ((group_id <> NULL::bigint) AND (project_id IS NULL)))),
     CONSTRAINT sprints_title CHECK ((char_length(title) <= 255))
 );
 
@@ -25862,9 +25860,6 @@ ALTER TABLE ONLY issues_self_managed_prometheus_alert_events
 
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT iteration_start_and_due_date_iterations_cadence_id_constraint EXCLUDE USING gist (iterations_cadence_id WITH =, daterange(start_date, due_date, '[]'::text) WITH &&) WHERE ((group_id IS NOT NULL)) DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE ONLY sprints
-    ADD CONSTRAINT iteration_start_and_due_daterange_project_id_constraint EXCLUDE USING gist (project_id WITH =, daterange(start_date, due_date, '[]'::text) WITH &&) WHERE ((project_id IS NOT NULL));
 
 ALTER TABLE ONLY iterations_cadences
     ADD CONSTRAINT iterations_cadences_pkey PRIMARY KEY (id);
@@ -30569,8 +30564,6 @@ CREATE INDEX index_sprints_on_due_date ON sprints USING btree (due_date);
 
 CREATE INDEX index_sprints_on_group_id ON sprints USING btree (group_id);
 
-CREATE UNIQUE INDEX index_sprints_on_project_id_and_iid ON sprints USING btree (project_id, iid);
-
 CREATE INDEX index_sprints_on_title ON sprints USING btree (title);
 
 CREATE INDEX index_sprints_on_title_trigram ON sprints USING gin (title gin_trgm_ops);
@@ -33404,9 +33397,6 @@ ALTER TABLE ONLY namespaces
 
 ALTER TABLE ONLY fork_networks
     ADD CONSTRAINT fk_e7b436b2b5 FOREIGN KEY (root_project_id) REFERENCES projects(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY sprints
-    ADD CONSTRAINT fk_e8206c9686 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY application_settings
     ADD CONSTRAINT fk_e8a145f3a7 FOREIGN KEY (instance_administrators_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;

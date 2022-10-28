@@ -257,9 +257,9 @@ export default {
 
       <asset-links-form />
 
-      <div class="d-flex pt-3">
+      <div class="d-flex gl-gap-x-3 pt-3">
         <gl-button
-          class="mr-auto js-no-auto-disable"
+          class="js-no-auto-disable"
           category="primary"
           variant="confirm"
           type="submit"

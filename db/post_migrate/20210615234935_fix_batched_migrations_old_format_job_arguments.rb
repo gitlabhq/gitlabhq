@@ -17,8 +17,8 @@ class FixBatchedMigrationsOldFormatJobArguments < ActiveRecord::Migration[6.1]
 
       # rubocop:disable Rails/WhereEquals
       base_scope
-        .where('job_arguments = ?', legacy_job_arguments.to_json)
-        .where('NOT EXISTS (?)', base_scope.select('1').where('job_arguments = ?', current_job_arguments.to_json))
+        .where('job_arguments = ?', Gitlab::Json.dump(legacy_job_arguments))
+        .where('NOT EXISTS (?)', base_scope.select('1').where('job_arguments = ?', Gitlab::Json.dump(current_job_arguments)))
         .update_all(job_arguments: current_job_arguments)
       # rubocop:enable Rails/WhereEquals
     end

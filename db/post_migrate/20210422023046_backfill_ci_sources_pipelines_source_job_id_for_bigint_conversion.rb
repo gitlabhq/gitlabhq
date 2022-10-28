@@ -18,7 +18,7 @@ class BackfillCiSourcesPipelinesSourceJobIdForBigintConversion < ActiveRecord::M
     Gitlab::Database::BackgroundMigration::BatchedMigration
       .where(job_class_name: 'CopyColumnUsingBackgroundMigrationJob')
       .where(table_name: 'ci_sources_pipelines', column_name: 'id')
-      .where(job_arguments: [%w[source_job_id], %w[source_job_id_convert_to_bigint]].to_json)
+      .where(job_arguments: Gitlab::Json.dump([%w[source_job_id], %w[source_job_id_convert_to_bigint]]))
       .delete_all
   end
 

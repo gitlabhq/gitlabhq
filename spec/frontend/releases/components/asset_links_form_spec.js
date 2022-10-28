@@ -292,6 +292,42 @@ describe('Release edit component', () => {
     });
   });
 
+  describe('remove button state', () => {
+    describe('when there is only one link', () => {
+      beforeEach(() => {
+        factory({
+          release: {
+            ...release,
+            assets: {
+              links: release.assets.links.slice(0, 1),
+            },
+          },
+        });
+      });
+
+      it('remove asset link button should not be present', () => {
+        expect(wrapper.find('.remove-button').exists()).toBe(false);
+      });
+    });
+
+    describe('when there are multiple links', () => {
+      beforeEach(() => {
+        factory({
+          release: {
+            ...release,
+            assets: {
+              links: release.assets.links.slice(0, 2),
+            },
+          },
+        });
+      });
+
+      it('remove asset link button should be visible', () => {
+        expect(wrapper.find('.remove-button').exists()).toBe(true);
+      });
+    });
+  });
+
   describe('empty state', () => {
     describe('when the release fetched from the API has no links', () => {
       beforeEach(() => {
@@ -324,12 +360,6 @@ describe('Release edit component', () => {
 
       it('does not call the addEmptyAssetLink store method when the component is created', () => {
         expect(actions.addEmptyAssetLink).not.toHaveBeenCalled();
-      });
-
-      it('calls addEmptyAssetLink when the final link is deleted by the user', () => {
-        wrapper.find('.remove-button').vm.$emit('click');
-
-        expect(actions.addEmptyAssetLink).toHaveBeenCalledTimes(1);
       });
     });
   });

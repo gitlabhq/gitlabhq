@@ -1085,6 +1085,31 @@ $tabs-holder-z-index: 250;
   border-top: 0;
 }
 
+.mr-widget-status-icon-level-1::before {
+  @include gl-content-empty;
+  @include gl-absolute;
+  @include gl-left-0;
+  @include gl-top-0;
+  @include gl-bottom-0;
+  @include gl-right-0;
+  @include gl-opacity-3;
+  @include gl-rounded-full;
+  @include gl-border-solid;
+  @include gl-border-4;
+}
+
+.mr-widget-status-icon-level-1::after {
+  @include gl-content-empty;
+  @include gl-absolute;
+  @include gl-rounded-full;
+  @include gl-border-solid;
+  @include gl-border-4;
+  @include gl-left-2;
+  @include gl-right-2;
+  @include gl-top-2;
+  @include gl-bottom-2;
+}
+
 .memory-graph-container {
   background: var(--white, $white);
   border: 1px solid var(--gray-100, $gray-100);

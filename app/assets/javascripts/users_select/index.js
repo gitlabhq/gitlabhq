@@ -67,6 +67,22 @@ function UsersSelect(currentUser, els, options = {}) {
     let assigneeTemplate;
     let collapsedAssigneeTemplate;
 
+    const suggestedReviewersHelpPath = $dropdown.data('suggestedReviewersHelpPath');
+    const suggestedReviewersHeaderTemplate = template(
+      `<div class="gl-display-flex gl-align-items-center">
+         <%- header %>
+         <a
+           title="${s__('SuggestedReviewers|Learn about suggested reviewers')}"
+           href="${suggestedReviewersHelpPath}"
+           rel="noopener"
+           target="_blank"
+           aria-label="${s__('SuggestedReviewers|Suggested reviewers help link')}"
+           class="gl-hover-bg-transparent! gl-p-0! has-tooltip">
+           ${spriteIcon('question-o', 'gl-ml-3 gl-icon s16')}
+         </a>
+       </div>`,
+    );
+
     if (selectedId === undefined) {
       selectedId = selectedIdDefault;
     }
@@ -383,7 +399,12 @@ function UsersSelect(currentUser, els, options = {}) {
         if (!suggestedUsers.length) return [];
 
         const items = [
-          { type: 'header', content: $dropdown.data('suggestedReviewersHeader') },
+          {
+            type: 'header',
+            content: suggestedReviewersHeaderTemplate({
+              header: $dropdown.data('suggestedReviewersHeader'),
+            }),
+          },
           ...suggestedUsers,
           { type: 'header', content: $dropdown.data('allMembersHeader') },
         ];

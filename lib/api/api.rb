@@ -173,6 +173,7 @@ module API
         mount ::API::Appearance
         mount ::API::Deployments
         mount ::API::Metadata
+        mount ::API::MergeRequestDiffs
         mount ::API::UserCounts
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::SnippetRepositoryStorageMoves
@@ -260,7 +261,6 @@ module API
       mount ::API::MavenPackages
       mount ::API::Members
       mount ::API::MergeRequestApprovals
-      mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
       mount ::API::Metrics::Dashboard::Annotations
       mount ::API::Metrics::UserStarredDashboards

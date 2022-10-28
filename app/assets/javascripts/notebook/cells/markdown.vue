@@ -148,6 +148,11 @@ export default {
       type: Object,
       required: true,
     },
+    hidePrompt: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     markdown() {
@@ -163,7 +168,7 @@ export default {
 
 <template>
   <div class="cell text-cell">
-    <prompt />
+    <prompt v-if="!hidePrompt" />
     <div v-safe-html:[$options.markdownConfig]="markdown" class="markdown"></div>
   </div>
 </template>

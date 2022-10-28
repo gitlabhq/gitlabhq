@@ -1978,19 +1978,8 @@
     }
     ]]>
     <p>okay</p>
-  static: |-
-    &lt;![CDATA[
-    function matchwo(a,b)
-    {
-      if (a &lt; b &amp;&amp; a &lt; 0) then {
-        return 1;
+  static: |2-
 
-      } else {
-
-        return 0;
-      }
-    }
-    ]]&gt;
     <p data-sourcepos="13:1-13:4" dir="auto">okay</p>
   wysiwyg: |-
     <p>okay</p>
@@ -7424,14 +7413,14 @@
   canonical: |
     <p>foo <!ELEMENT br EMPTY></p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto">foo &lt;!ELEMENT br EMPTY&gt;</p>
+    <p data-sourcepos="1:1-1:23" dir="auto">foo </p>
   wysiwyg: |-
     <p>foo </p>
 06_11_00__inlines__raw_html__018:
   canonical: |
     <p>foo <![CDATA[>&<]]></p>
   static: |-
-    <p data-sourcepos="1:1-1:19" dir="auto">foo &lt;![CDATA[&gt;&amp;&lt;]]&gt;</p>
+    <p data-sourcepos="1:1-1:19" dir="auto">foo &amp;&lt;]]&gt;</p>
   wysiwyg: |-
     <p>foo &amp;&lt;]]&gt;</p>
 06_11_00__inlines__raw_html__019:

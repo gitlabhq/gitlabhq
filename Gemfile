@@ -130,8 +130,6 @@ gem 'graphql-docs', '~> 2.1.0', group: [:development, :test]
 gem 'graphlient', '~> 0.5.0' # Used by BulkImport feature (group::import)
 
 gem 'hashie', '~> 5.0.0'
-# Disable strong_params so that Mash does not respond to :permitted?
-gem 'hashie-forbidden_attributes'
 
 # Pagination
 gem 'kaminari', '~> 1.2.2'
@@ -193,7 +191,7 @@ gem 'asciidoctor-kroki', '~> 0.5.0', require: false
 gem 'rouge', '~> 3.30.0'
 gem 'truncato', '~> 0.7.12'
 gem 'bootstrap_form', '~> 4.2.0'
-gem 'nokogiri', '~> 1.13.8'
+gem 'nokogiri', '~> 1.13.9'
 
 # Calendar rendering
 gem 'icalendar'

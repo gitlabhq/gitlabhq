@@ -311,6 +311,34 @@ RSpec.describe WorkItems::UpdateService do
           end
         end
       end
+
+      context 'for milestone widget' do
+        let_it_be(:milestone) { create(:milestone, project: project) }
+
+        let(:widget_params) { { milestone_widget: { milestone_id: milestone.id } } }
+
+        context 'when milestone is updated' do
+          it "triggers 'issuableMilestoneUpdated'" do
+            expect(work_item.milestone).to eq(nil)
+            expect(GraphqlTriggers).to receive(:issuable_milestone_updated).with(work_item).and_call_original
+
+            update_work_item
+          end
+        end
+
+        context 'when milestone remains unchanged' do
+          before do
+            update_work_item
+          end
+
+          it "does not trigger 'issuableMilestoneUpdated'" do
+            expect(work_item.milestone).to eq(milestone)
+            expect(GraphqlTriggers).not_to receive(:issuable_milestone_updated)
+
+            update_work_item
+          end
+        end
+      end
     end
 
     describe 'label updates' do
