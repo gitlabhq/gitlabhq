@@ -137,7 +137,7 @@ module ApplicationSettingsHelper
       }
     end
 
-    options.to_json
+    Gitlab::Json.dump(options)
   end
 
   def external_authorization_description

@@ -170,6 +170,7 @@ module API
       # Mount endpoints to include in the OpenAPI V2 documentation here
       namespace do
         mount ::API::AccessRequests
+        mount ::API::Appearance
         mount ::API::Deployments
         mount ::API::Metadata
         mount ::API::UserCounts
@@ -186,7 +187,6 @@ module API
       mount ::API::Admin::PlanLimits
       mount ::API::Admin::Sidekiq
       mount ::API::AlertManagementAlerts
-      mount ::API::Appearance
       mount ::API::Applications
       mount ::API::Avatar
       mount ::API::AwardEmoji

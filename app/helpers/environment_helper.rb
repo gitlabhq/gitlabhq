@@ -91,6 +91,6 @@ module EnvironmentHelper
   end
 
   def environments_detail_data_json(user, project, environment)
-    environments_detail_data(user, project, environment).to_json
+    Gitlab::Json.dump(environments_detail_data(user, project, environment))
   end
 end

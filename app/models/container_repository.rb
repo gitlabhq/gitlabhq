@@ -224,6 +224,13 @@ class ContainerRepository < ApplicationRecord
     end
   end
 
+  # Container Repository model and the code that makes API calls
+  # are tied. Sometimes (mainly in Geo) we need to work with Registry
+  # when Container Repository record doesn't even exist.
+  # The ability to create a not-persisted record with a certain "path" parameter
+  # is very useful
+  attr_writer :path
+
   def self.exists_by_path?(path)
     where(
       project: path.repository_project,

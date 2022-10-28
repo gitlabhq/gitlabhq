@@ -73,10 +73,9 @@ module IssuablesHelper
                          MergeRequestSerializer
                        end
 
-    serializer_klass
+    Gitlab::Json.dump(serializer_klass
       .new(current_user: current_user, project: issuable.project)
-      .represent(issuable, opts)
-      .to_json
+      .represent(issuable, opts))
   end
 
   def users_dropdown_label(selected_users)
@@ -441,7 +440,7 @@ module IssuablesHelper
       labels_manage_path: project_labels_path(project),
       project_issues_path: issuable_sidebar[:project_issuables_path],
       project_path: project.full_path,
-      selected_labels: issuable_sidebar[:labels].to_json
+      selected_labels: Gitlab::Json.dump(issuable_sidebar[:labels])
     }
   end
 

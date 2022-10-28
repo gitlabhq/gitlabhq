@@ -112,7 +112,7 @@ module Gitlab
         end
 
         def can_split?(exception)
-          attempts >= MAX_ATTEMPTS && TIMEOUT_EXCEPTIONS.include?(exception&.class) && batch_size > sub_batch_size && batch_size > 1
+          attempts >= MAX_ATTEMPTS && timeout_exception?(exception&.class) && batch_size > sub_batch_size && batch_size > 1
         end
 
         def split_and_retry!
@@ -160,6 +160,15 @@ module Gitlab
               new_record.save!
             end
           end
+        end
+
+        private
+
+        def timeout_exception?(exception_class)
+          return false unless exception_class
+
+          TIMEOUT_EXCEPTIONS.include?(exception_class) ||
+            (Feature.enabled?(:split_background_migration_on_query_canceled) && exception_class == ActiveRecord::QueryCanceled)
         end
       end
     end

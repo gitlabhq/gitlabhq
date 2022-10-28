@@ -56,7 +56,7 @@ module IdeHelper
   def convert_to_project_entity_json(project)
     return unless project
 
-    API::Entities::Project.represent(project, current_user: current_user).to_json
+    Gitlab::Json.dump(API::Entities::Project.represent(project, current_user: current_user))
   end
 
   def enable_environments_guidance?

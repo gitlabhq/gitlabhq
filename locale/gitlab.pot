@@ -3976,6 +3976,9 @@ msgstr ""
 msgid "Allow group owners to manage LDAP-related settings"
 msgstr ""
 
+msgid "Allow new users to create top-level groups"
+msgstr ""
+
 msgid "Allow non-administrators access to the performance bar"
 msgstr ""
 
@@ -4010,9 +4013,6 @@ msgid "Allow this key to push to this repository"
 msgstr ""
 
 msgid "Allow use of licensed EE features"
-msgstr ""
-
-msgid "Allow users to create top-level groups"
 msgstr ""
 
 msgid "Allow users to dismiss the broadcast message"

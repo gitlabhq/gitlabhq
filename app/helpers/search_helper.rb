@@ -440,9 +440,9 @@ module SearchHelper
   end
 
   def search_navigation_json
-    search_navigation.each_with_object({}) do |(key, value), hash|
+    Gitlab::Json.dump(search_navigation.each_with_object({}) do |(key, value), hash|
       hash[key] = search_filter_link_json(key, value[:label], value[:data], value[:search]) if value[:condition]
-    end.to_json
+    end)
   end
 
   def search_filter_input_options(type, placeholder = _('Search or filter results...'))

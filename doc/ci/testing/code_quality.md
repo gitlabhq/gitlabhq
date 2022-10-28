@@ -339,6 +339,20 @@ This example is specific to GitLab Code Quality. For more general
 instructions on how to configure DinD with a registry mirror, see the
 relevant [documentation](../docker/using_docker_build.md#enable-registry-mirror-for-dockerdind-service).
 
+#### List of images to be stored in the private container registry
+
+The following images are needed for the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template):
+
+- `codeclimate/codeclimate-structure:latest`
+- `codeclimate/codeclimate-csslint:latest`
+- `codeclimate/codeclimate-coffeelint:latest`
+- `codeclimate/codeclimate-duplication:latest`
+- `codeclimate/codeclimate-eslint:latest`
+- `codeclimate/codeclimate-fixme:latest`
+- `codeclimate/codeclimate-rubocop:rubocop-0-92`
+
+If you are using a custom `.codeclimate.yml` configuration file, you must add the specified plugins in your private container registry.
+
 #### Configure Code Quality to use the Dependency Proxy
 
 Prerequisite:

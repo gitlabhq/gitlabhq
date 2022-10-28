@@ -31078,6 +31078,8 @@ CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestr
 
 CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
 
+CREATE INDEX scan_finding_approval_mr_rule_index_id ON approval_merge_request_rules USING btree (id) WHERE (report_type = 4);
+
 CREATE INDEX scan_finding_approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id) WHERE (report_type = 4);
 
 CREATE INDEX scan_finding_approval_project_rule_index_created_at_project_id ON approval_project_rules USING btree (created_at, project_id) WHERE (report_type = 4);

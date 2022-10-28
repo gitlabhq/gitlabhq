@@ -272,7 +272,21 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
       context 'when is a timeout exception' do
         let(:exception) { ActiveRecord::StatementTimeout.new }
 
-        it { expect(subject).to be_truthy  }
+        it { expect(subject).to be_truthy }
+      end
+
+      context 'when is a QueryCanceled exception' do
+        let(:exception) { ActiveRecord::QueryCanceled.new }
+
+        it { expect(subject).to be_truthy }
+
+        context 'when split_background_migration_on_query_canceled feature flag is disabled' do
+          before do
+            stub_feature_flags(split_background_migration_on_query_canceled: false)
+          end
+
+          it { expect(subject).to be_falsey }
+        end
       end
 
       context 'when is not a timeout exception' do

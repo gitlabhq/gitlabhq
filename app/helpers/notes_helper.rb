@@ -22,12 +22,14 @@ module NotesHelper
   end
 
   def noteable_json(noteable)
-    {
+    data = {
       id: noteable.id,
       class: noteable.class.name,
       resources: noteable.class.table_name,
       project_id: noteable.project.id
-    }.to_json
+    }
+
+    Gitlab::Json.dump(data)
   end
 
   def diff_view_data

@@ -119,7 +119,7 @@ module GroupsHelper
       { id: group.id, text: group.human_name }
     end
 
-    groups.to_json
+    Gitlab::Json.dump(groups)
   end
 
   def render_setting_to_allow_project_access_token_creation?(group)

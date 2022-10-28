@@ -276,11 +276,11 @@ When this ability is disabled, GitLab administrators can still use the
 [Admin Area](../index.md#administering-users) or the
 [API](../../../api/users.md#user-modification) to update usernames.
 
-## Prevent users from creating top-level groups
+## Prevent new users from creating top-level groups
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5.
 
-By default, new users can create top-level groups. GitLab administrators can prevent users from creating top-level groups:
+By default, new users can create top-level groups. GitLab administrators can prevent new users from creating top-level groups:
 
 - In GitLab 15.5 and later, using either:
   - The GitLab UI using the steps in this section.
@@ -289,7 +289,7 @@ By default, new users can create top-level groups. GitLab administrators can pre
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
-1. Clear the **Allow users to create top-level groups** checkbox.
+1. Clear the **Allow new users to create top-level groups** checkbox.
 
 ## Troubleshooting
 

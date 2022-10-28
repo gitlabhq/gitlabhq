@@ -9,7 +9,7 @@ module AccessTokensHelper
   end
 
   def tokens_app_data
-    {
+    data = {
       feed_token: {
         enabled: !Gitlab::CurrentSettings.disable_feed_token,
         token: current_user.feed_token,
@@ -25,7 +25,9 @@ module AccessTokensHelper
         token: current_user.enabled_static_object_token,
         reset_path: reset_static_object_token_profile_path
       }
-    }.to_json
+    }
+
+    Gitlab::Json.dump(data)
   end
 
   def expires_at_field_data
