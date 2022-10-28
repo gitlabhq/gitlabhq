@@ -409,6 +409,11 @@ RSpec.describe 'getting an issue list for a project' do
           alertManagementAlert {
             title
           }
+          alertManagementAlerts {
+            nodes {
+              title
+            }
+          }
         }
       }
       QUERY
@@ -432,6 +437,17 @@ RSpec.describe 'getting an issue list for a project' do
 
       alert_titles = issues_data.map { |issue| issue.dig('node', 'alertManagementAlert', 'title') }
       expected_titles = issues.map { |issue| issue.alert_management_alert&.title }
+
+      expect(alert_titles).to contain_exactly(*expected_titles)
+    end
+
+    it 'returns the alerts data' do
+      post_graphql(query, current_user: current_user)
+
+      alert_titles = issues_data.map { |issue| issue.dig('node', 'alertManagementAlerts', 'nodes') }
+      expected_titles = issues.map do |issue|
+        issue.alert_management_alerts.map { |alert| { 'title' => alert.title } }
+      end
 
       expect(alert_titles).to contain_exactly(*expected_titles)
     end

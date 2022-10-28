@@ -18,6 +18,11 @@ module QA
 
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(github_personal_access_token)
+
+          import_page.select_advanced_option(:single_endpoint_issue_events_import) if issue_events_import
+          import_page.select_advanced_option(:single_endpoint_notes_import) if full_notes_import
+          import_page.select_advanced_option(:attachments_import) if attachments_import
+
           import_page.import!(github_repository_path, group.full_path, name)
           import_page.wait_for_success(github_repository_path, wait: 240)
         end

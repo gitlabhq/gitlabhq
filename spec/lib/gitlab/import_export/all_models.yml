@@ -52,6 +52,7 @@ issues:
 - user_mentions
 - system_note_metadata
 - alert_management_alert
+- alert_management_alerts
 - status_page_published_incident
 - namespace
 - note_authors

@@ -123,7 +123,15 @@ module Types
     field :alert_management_alert,
           Types::AlertManagement::AlertType,
           null: true,
-          description: 'Alert associated to this issue.'
+          description: 'Alert associated to this issue.',
+          deprecated: { reason: 'Use `alert_management_alerts`', milestone: '15.6' }
+
+    field :alert_management_alerts,
+          Types::AlertManagement::AlertType.connection_type,
+          null: true,
+          description: 'Alert Management alerts associated to this issue.',
+          extras: [:lookahead],
+          resolver: Resolvers::AlertManagement::AlertResolver
 
     field :severity, Types::IssuableSeverityEnum, null: true,
                                                   description: 'Severity level of the incident.'

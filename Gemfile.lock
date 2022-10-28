@@ -716,7 +716,7 @@ GEM
       railties (>= 5.0)
     heapy (0.2.0)
       thor
-    html-pipeline (2.13.2)
+    html-pipeline (2.14.3)
       activesupport (>= 2)
       nokogiri (>= 1.4)
     html2text (0.2.0)
@@ -1667,7 +1667,7 @@ DEPENDENCIES
   hashie (~> 5.0.0)
   hashie-forbidden_attributes
   health_check (~> 3.0)
-  html-pipeline (~> 2.13.2)
+  html-pipeline (~> 2.14.3)
   html2text
   httparty (~> 0.20.0)
   icalendar

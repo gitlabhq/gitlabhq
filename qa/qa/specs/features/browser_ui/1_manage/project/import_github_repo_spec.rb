@@ -25,6 +25,18 @@ module QA
         end
       end
 
+      let(:imported_issue) do
+        Resource::Issue.init do |resource|
+          resource.project = imported_project
+          resource.iid = imported_project.issues.first[:iid]
+          resource.api_client = api_client
+        end.reload!
+      end
+
+      let(:imported_issue_events) do
+        imported_issue.label_events.map { |e| { name: "#{e[:action]}_label", label: e.dig(:label, :name) } }
+      end
+
       before do
         group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
@@ -43,6 +55,11 @@ module QA
       it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347877' do
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(Runtime::Env.github_access_token)
+
+          import_page.select_advanced_option(:single_endpoint_issue_events_import)
+          import_page.select_advanced_option(:single_endpoint_notes_import)
+          import_page.select_advanced_option(:attachments_import)
+
           import_page.import!(github_repo, group.full_path, imported_project.name)
 
           aggregate_failures do
@@ -60,6 +77,15 @@ module QA
             expect(project).to have_content('Project for github import test')
           end
         end
+
+        # Validate :single_endpoint_issue_events_import option was triggered correctly and imported the events
+        expect(imported_issue_events).to match_array(
+          [
+            { name: "add_label", label: "question" },
+            { name: "add_label", label: "good first issue" },
+            { name: "add_label", label: "help wanted" }
+          ]
+        )
       end
     end
   end

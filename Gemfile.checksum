@@ -263,7 +263,7 @@
 {"name":"hashie-forbidden_attributes","version":"0.1.1","platform":"ruby","checksum":"3a6ed37f3a314e4fb1dd1e2df6eb7721bcadd023a30bc0b951b2b5285a790fb2"},
 {"name":"health_check","version":"3.1.0","platform":"ruby","checksum":"10146508237dc54ed7e24c292d8ba7fb8f9590cf26c66e325b947438c4103b57"},
 {"name":"heapy","version":"0.2.0","platform":"ruby","checksum":"74141e845d61ffc7c1e8bf8b127c8cf94544ec7a1181aec613288682543585ea"},
-{"name":"html-pipeline","version":"2.13.2","platform":"ruby","checksum":"a1de83f7bd2d3464f3a068e391b661983fc6099d194c8d9ceb91ace02dadb803"},
+{"name":"html-pipeline","version":"2.14.3","platform":"ruby","checksum":"8a1d4d7128b2141913387cac0f8ba898bb6812557001acc0c2b46910f59413a0"},
 {"name":"html2text","version":"0.2.0","platform":"ruby","checksum":"31c2f0be9ab7aa4fc780b07d5f84882ebc22a9024c29a45f4f5adfe42e92ad4f"},
 {"name":"htmlbeautifier","version":"1.4.2","platform":"ruby","checksum":"9de0c98480fe80d795ed5734a11f183563cd969686f25a04609c0f5a446fa5f8"},
 {"name":"htmlentities","version":"4.3.4","platform":"ruby","checksum":"125a73c6c9f2d1b62100b7c3c401e3624441b663762afa7fe428476435a673da"},

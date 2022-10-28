@@ -20,6 +20,65 @@ Do not manually execute Git commands to perform housekeeping in Git
 repositories that are controlled by GitLab. Doing so may lead to corrupt
 repositories and data loss.
 
+## Housekeeping strategy
+
+Gitaly can perform housekeeping tasks in a Git repository in two ways:
+
+- [Eager housekeeping](#eager-housekeeping) executes specific housekeeping tasks
+  independent of the state a repository is in.
+- [Heuristical housekeeping](#heuristical-housekeeping) executes housekeeping
+  tasks based on a set of heuristics that determine what housekeeping tasks need
+  to be executed based on the repository state.
+
+### Eager housekeeping
+
+The "eager" housekeeping strategy executes housekeeping tasks in a repository
+independent of the repository state. This is the default strategy as used by the
+[manual trigger](#manual-trigger) and the [push-based trigger](#push-based-trigger).
+
+The eager housekeeping strategy is controlled by the GitLab application.
+Depending on the trigger that caused the housekeeping job to run, GitLab asks
+Gitaly to perform specific housekeeping tasks. Gitaly performs these tasks even
+if the repository is in an optimized state. As a result, this strategy can be
+inefficient in large repositories where performing the housekeeping tasks may
+be slow.
+
+### Heuristical housekeeping
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 14.9 for the [manual trigger](#manual-trigger) and the [push-based trigger](#push-based-trigger) [with a flag](feature_flags.md) named `optimized_housekeeping`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/353607) in GitLab 14.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available for the [manual trigger](#manual-trigger) and the [push-based trigger](#push-based-trigger).
+To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named `optimized_housekeeping`.
+
+The heuristical (or "opportunistic") housekeeping strategy analyzes the
+repository's state and executes housekeeping tasks only when it finds one or
+more data structures are insufficiently optimized. This is the strategy used by
+[scheduled housekeeping](#scheduled-housekeeping). It can optionally be enabled
+for the [manual trigger](#manual-trigger) and the [push-based trigger](#push-based-trigger)
+by enabling the `optimized_housekeeping` feature flag.
+
+Heuristical housekeeping uses the following information to decide on the tasks
+it needs to run:
+
+- The number of loose and stale objects.
+- The number of packfiles that contain already-compressed objects.
+- The number of loose references.
+- The presence of a commit-graph.
+
+The decision whether any of the analyzed data structures need to be optimized is
+based on the size of the repository:
+
+- Objects are repacked frequently the bigger the total size of all objects.
+- References are repacked less frequently the more references there are in
+  total.
+
+Gitaly does this to offset the fact that optimizing those data structures takes
+more time the bigger they get. It is especially important in large
+monorepositories (which receive a lot of traffic) to avoid optimizing them too
+frequently.
+
 ## Running housekeeping tasks
 
 There are different ways in which GitLab runs housekeeping tasks:

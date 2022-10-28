@@ -12278,7 +12278,7 @@ Relationship between an epic and an issue.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicissuealertmanagementalert"></a>`alertManagementAlert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert associated to this issue. |
+| <a id="epicissuealertmanagementalert"></a>`alertManagementAlert` **{warning-solid}** | [`AlertManagementAlert`](#alertmanagementalert) | **Deprecated** in 15.6. Use `alert_management_alerts`. |
 | <a id="epicissueassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the issue. (see [Connections](#connections)) |
 | <a id="epicissueauthor"></a>`author` | [`UserCore!`](#usercore) | User that created the issue. |
 | <a id="epicissueblocked"></a>`blocked` | [`Boolean!`](#boolean) | Indicates the issue is blocked. |
@@ -12345,6 +12345,27 @@ Relationship between an epic and an issue.
 | <a id="epicissueweight"></a>`weight` | [`Int`](#int) | Weight of the issue. |
 
 #### Fields with arguments
+
+##### `EpicIssue.alertManagementAlerts`
+
+Alert Management alerts associated to this issue.
+
+Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epicissuealertmanagementalertsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of a user assigned to the issue. |
+| <a id="epicissuealertmanagementalertsdomain"></a>`domain` | [`AlertManagementDomainFilter!`](#alertmanagementdomainfilter) | Filter query for given domain. |
+| <a id="epicissuealertmanagementalertsiid"></a>`iid` | [`String`](#string) | IID of the alert. For example, "1". |
+| <a id="epicissuealertmanagementalertssearch"></a>`search` | [`String`](#string) | Search query for title, description, service, or monitoring_tool. |
+| <a id="epicissuealertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by this criteria. |
+| <a id="epicissuealertmanagementalertsstatuses"></a>`statuses` | [`[AlertManagementStatus!]`](#alertmanagementstatus) | Alerts with the specified statues. For example, `[TRIGGERED]`. |
 
 ##### `EpicIssue.currentUserTodos`
 
@@ -13845,7 +13866,7 @@ Describes an issuable resource link for incident issues.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="issuealertmanagementalert"></a>`alertManagementAlert` | [`AlertManagementAlert`](#alertmanagementalert) | Alert associated to this issue. |
+| <a id="issuealertmanagementalert"></a>`alertManagementAlert` **{warning-solid}** | [`AlertManagementAlert`](#alertmanagementalert) | **Deprecated** in 15.6. Use `alert_management_alerts`. |
 | <a id="issueassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the issue. (see [Connections](#connections)) |
 | <a id="issueauthor"></a>`author` | [`UserCore!`](#usercore) | User that created the issue. |
 | <a id="issueblocked"></a>`blocked` | [`Boolean!`](#boolean) | Indicates the issue is blocked. |
@@ -13910,6 +13931,27 @@ Describes an issuable resource link for incident issues.
 | <a id="issueweight"></a>`weight` | [`Int`](#int) | Weight of the issue. |
 
 #### Fields with arguments
+
+##### `Issue.alertManagementAlerts`
+
+Alert Management alerts associated to this issue.
+
+Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issuealertmanagementalertsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of a user assigned to the issue. |
+| <a id="issuealertmanagementalertsdomain"></a>`domain` | [`AlertManagementDomainFilter!`](#alertmanagementdomainfilter) | Filter query for given domain. |
+| <a id="issuealertmanagementalertsiid"></a>`iid` | [`String`](#string) | IID of the alert. For example, "1". |
+| <a id="issuealertmanagementalertssearch"></a>`search` | [`String`](#string) | Search query for title, description, service, or monitoring_tool. |
+| <a id="issuealertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by this criteria. |
+| <a id="issuealertmanagementalertsstatuses"></a>`statuses` | [`[AlertManagementStatus!]`](#alertmanagementstatus) | Alerts with the specified statues. For example, `[TRIGGERED]`. |
 
 ##### `Issue.currentUserTodos`
 

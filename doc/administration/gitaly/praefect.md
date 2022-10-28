@@ -155,6 +155,14 @@ We note in the instructions below where these secrets are required.
 NOTE:
 Omnibus GitLab installations can use `gitlab-secrets.json` for `GITLAB_SHELL_SECRET_TOKEN`.
 
+### Customize time server setting
+
+By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org` for time synchronization checks. You can customize this setting by adding the
+following to `gitlab.rb` on each node:
+
+- `gitaly['env'] = { "NTP_HOST" => "ntp.example.com" }`, for Gitaly nodes.
+- `praefect['env'] = { "NTP_HOST" => "ntp.example.com" }`, for Praefect nodes.
+
 ### PostgreSQL
 
 NOTE:
