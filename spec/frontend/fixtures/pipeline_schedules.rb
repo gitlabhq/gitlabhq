@@ -7,7 +7,7 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
   include GraphqlHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.first_owner }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }

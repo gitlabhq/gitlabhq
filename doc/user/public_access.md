@@ -18,6 +18,11 @@ for your GitLab instance). For example, <https://gitlab.com/public>.
 You can control the visibility of individual features with
 [project feature settings](permissions.md#project-features).
 
+The visibility setting of a project must be the same as or less restrictive
+than the visibility of its parent group.
+For example, a private group can include only private projects,
+while a public group can include private, internal, and public projects.
+
 ## Public projects and groups
 
 Public projects can be cloned **without any** authentication over HTTPS.

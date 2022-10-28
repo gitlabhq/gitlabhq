@@ -316,7 +316,6 @@ RSpec.describe 'Pipelines', :js do
         end
 
         before do
-          stub_feature_flags(bootstrap_confirmation_modals: false)
           visit_project_pipelines
         end
 

@@ -277,7 +277,7 @@ To delete a project:
 1. In the "Delete project" section, select **Delete project**.
 1. Confirm the action when asked to.
 
-This action deletes a project including all associated resources (issues, merge requests, and so on).
+This action deletes a project including all associated resources (such as issues and merge requests).
 
 WARNING:
 The default deletion behavior for projects was changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)

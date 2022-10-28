@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Sandboxed Mermaid rendering', :js do
   let_it_be(:project) { create(:project, :public) }
 
-  before do
-    stub_feature_flags(sandboxed_mermaid: true)
-  end
-
   it 'includes mermaid frame correctly' do
     description = <<~MERMAID
       ```mermaid

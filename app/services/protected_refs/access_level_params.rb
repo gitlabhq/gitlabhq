@@ -4,9 +4,9 @@ module ProtectedRefs
   class AccessLevelParams
     attr_reader :type, :params
 
-    def initialize(type, params)
+    def initialize(type, params, with_defaults: true)
       @type = type
-      @params = params_with_default(params)
+      @params = with_defaults ? params_with_default(params) : params
     end
 
     def access_levels

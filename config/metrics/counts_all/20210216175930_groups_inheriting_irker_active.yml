@@ -3,7 +3,7 @@ data_category: optional
 key_path: counts.groups_inheriting_irker_active
 description: Count of active groups inheriting integrations for Irker
 product_section: dev
-product_stage: ecosystem
+product_stage: manage
 product_group: integrations
 product_category: integrations
 value_type: number

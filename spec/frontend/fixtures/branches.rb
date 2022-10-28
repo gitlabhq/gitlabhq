@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Branches (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
   let_it_be(:user) { project.first_owner }
 

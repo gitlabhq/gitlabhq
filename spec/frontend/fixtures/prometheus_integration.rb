@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Settings::IntegrationsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'integrations-project') }
   let!(:integration) { create(:prometheus_integration, project: project) }
   let(:user) { project.first_owner }

@@ -406,10 +406,15 @@ RSpec.describe Users::DestroyService do
         described_class.new(user).execute(other_user, skip_authorization: true)
       end
 
-      it 'nullifies issues and resource associations', :aggregate_failures do
+      it 'nullifies associations marked as `dependent: :nullify` and'\
+         'destroys the associations marked as `dependent: :destroy`, in batches', :aggregate_failures do
+        # associations to be nullified
         issue = create(:issue, closed_by: other_user, updated_by: other_user)
         resource_label_event = create(:resource_label_event, user: other_user)
         resource_state_event = create(:resource_state_event, user: other_user)
+        created_project = create(:project, creator: other_user)
+
+        # associations to be destroyed
         todos = create_list(:todo, 2, project: issue.project, user: other_user, author: other_user, target: issue)
         event = create(:event, project: issue.project, author: other_user)
 
@@ -420,11 +425,13 @@ RSpec.describe Users::DestroyService do
         issue.reload
         resource_label_event.reload
         resource_state_event.reload
+        created_project.reload
 
         expect(issue.closed_by).to be_nil
-        expect(issue.updated_by).to be_nil
-        expect(resource_label_event.user).to be_nil
-        expect(resource_state_event.user).to be_nil
+        expect(issue.updated_by_id).to be_nil
+        expect(resource_label_event.user_id).to be_nil
+        expect(resource_state_event.user_id).to be_nil
+        expect(created_project.creator_id).to be_nil
         expect(other_user.authored_todos).to be_empty
         expect(other_user.todos).to be_empty
         expect(other_user.authored_events).to be_empty
@@ -433,7 +440,8 @@ RSpec.describe Users::DestroyService do
           nullify_in_batches_regexp(:issues, :updated_by_id, other_user),
           nullify_in_batches_regexp(:issues, :closed_by_id, other_user),
           nullify_in_batches_regexp(:resource_label_events, :user_id, other_user),
-          nullify_in_batches_regexp(:resource_state_events, :user_id, other_user)
+          nullify_in_batches_regexp(:resource_state_events, :user_id, other_user),
+          nullify_in_batches_regexp(:projects, :creator_id, other_user)
         ]
 
         expected_queries += delete_in_batches_regexps(:todos, :user_id, other_user, todos)

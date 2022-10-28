@@ -139,8 +139,7 @@ module API
           resource :runs do
             desc 'Creates a Run.' do
               success Entities::Ml::Mlflow::Run
-              detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#create-run',
-                       'MLFlow Runs map to GitLab Candidates']
+              detail 'MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/1.28.0/rest-api.html#create-run'
             end
             params do
               requires :experiment_id, type: Integer,
@@ -170,8 +169,7 @@ module API
 
             desc 'Updates a Run.' do
               success Entities::Ml::Mlflow::UpdateRun
-              detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#update-run',
-                       'MLFlow Runs map to GitLab Candidates']
+              detail 'MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/1.28.0/rest-api.html#update-run'
             end
             params do
               requires :run_id, type: String, desc: 'UUID of the candidate.'

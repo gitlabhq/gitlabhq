@@ -86,6 +86,32 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Update a protected branch' do
+        success ::API::Entities::ProtectedBranch
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the branch'
+        optional :allow_force_push, type: Boolean,
+                                    desc: 'Allow force push for all users with push access.'
+
+        use :optional_params_ee
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      patch ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
+        protected_branch = user_project.protected_branches.find_by!(name: params[:name])
+
+        declared_params = declared_params(include_missing: false)
+        api_service = ::ProtectedBranches::ApiService.new(user_project, current_user, declared_params)
+        protected_branch = api_service.update(protected_branch)
+
+        if protected_branch.valid?
+          present protected_branch, with: Entities::ProtectedBranch, project: user_project
+        else
+          render_api_error!(protected_branch.errors.full_messages, 422)
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       desc 'Unprotect a single branch'
       params do
         requires :name, type: String, desc: 'The name of the protected branch'

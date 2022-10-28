@@ -254,6 +254,49 @@ RSpec.describe API::ProtectedBranches do
     end
   end
 
+  describe 'PATCH /projects/:id/protected_branches/:name' do
+    let(:route) { "/projects/#{project.id}/protected_branches/#{branch_name}" }
+
+    context 'when authenticated as a maintainer' do
+      let(:user) { maintainer }
+
+      it "updates a single branch" do
+        expect do
+          patch api(route, user), params: { allow_force_push: true }
+        end.to change { protected_branch.reload.allow_force_push }.from(false).to(true)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when returned protected branch is invalid' do
+      let(:user) { maintainer }
+
+      before do
+        allow_next_found_instance_of(ProtectedBranch) do |instance|
+          allow(instance).to receive(:valid?).and_return(false)
+        end
+      end
+
+      it "returns a 422" do
+        expect do
+          patch api(route, user), params: { allow_force_push: true }
+        end.not_to change { protected_branch.reload.allow_force_push }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'when authenticated as a guest' do
+      let(:user) { guest }
+
+      it "returns a 403 error" do
+        patch api(route, user), params: { allow_force_push: true }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe "DELETE /projects/:id/protected_branches/unprotect/:branch" do
     let(:user) { maintainer }
     let(:delete_endpoint) { api("/projects/#{project.id}/protected_branches/#{branch_name}", user) }

@@ -7,7 +7,7 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
   include JavaScriptFixturesHelpers
 
   let_it_be(:admin) { create(:admin, name: 'root') }
-  let_it_be(:namespace) { create(:namespace, name: 'gitlab-test' ) }
+  let_it_be(:namespace) { create(:namespace, name: 'gitlab-test') }
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
   let_it_be(:early_mrs) do
     4.times { |i| create(:merge_request, source_project: project, source_branch: "branch-#{i}") }

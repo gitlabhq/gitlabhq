@@ -7,7 +7,7 @@ RSpec.describe API::Projects, '(JavaScript fixtures)', type: :request do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin, name: 'root') }
-  let(:namespace) { create(:namespace, name: 'gitlab-test' ) }
+  let(:namespace) { create(:namespace, name: 'gitlab-test') }
   let(:project) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
   let(:project_empty) { create(:project_empty_repo, namespace: namespace, path: 'lorem-ipsum-empty') }
 

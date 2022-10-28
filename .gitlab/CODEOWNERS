@@ -165,7 +165,7 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf
-/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/govern/security-policies-backend
+/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
 
 ^[Project Alias]
 /ee/app/models/project_alias.rb @patrickbajao
@@ -186,6 +186,8 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/policies/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
 /ee/spec/policies/vulnerability*.rb @gitlab-org/govern/threat-insights-backend-team
 /ee/spec/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/app/assets/javascripts/license_compliance/components/detected_licenses_table.vue @gitlab-org/govern/threat-insights-frontend-team
+/ee/spec/frontend/license_compliance/components/detected_licenses_table_spec.js @gitlab-org/govern/threat-insights-frontend-team
 
 ^[Secure]
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
@@ -196,24 +198,120 @@ Dangerfile @gl-quality/eng-prod
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
 /ee/app/services/app_sec/dast/ @gitlab-org/secure/dynamic-analysis-be
 
-^[Container Security]
-/ee/app/views/projects/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
-/ee/app/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/pages/projects/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/threat_monitoring/** @gitlab-org/govern/security-policies-frontend
+^[Security Policies]
+/ee/app/assets/javascripts/approvals/components/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/approvals/stores/modules/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/pages/projects/licenses/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/pages/projects/pipelines/licenses/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/pages/projects/pipelines/show/license_report.js
+/ee/app/assets/javascripts/vue_merge_request_widget/extensions/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/vue_shared/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/app/views/projects/licenses/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/approvals/components/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/approvals/stores/modules/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/vue_merge_request_widget/extensions/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/vue_shared/license_compliance/** @gitlab-org/govern/security-policies-frontend
 
-/ee/app/controllers/projects/threat_monitoring_controller.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/controllers/projects/threat_monitoring_controller_spec.rb @gitlab-org/govern/container-security-backend
-/ee/app/controllers/projects/security/policies_controller.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/requests/projects/security/policies_controller_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/app/models/security/orchestration_policy_configuration.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/models/security/orchestration_policy_configuration_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/app/assets/javascripts/approvals/components/security_orchestration/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/approvals/stores/modules/security_orchestration/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/pages/groups/security/policies/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/pages/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/security_orchestration/** @gitlab-org/govern/security-policies-frontend
+/ee/app/views/groups/security/policies @gitlab-org/govern/security-policies-frontend
+/ee/app/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/approvals/components/security_orchestration/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/approvals/stores/modules/security_orchestration/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/frontend/security_orchestration/** @gitlab-org/govern/security-policies-frontend
+/ee/spec/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
+
 /app/models/clusters/applications/cilium.rb @gitlab-org/govern/security-policies-backend
-/spec/models/clusters/applications/cilium_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/app/controllers/groups/security/policies_controller.rb @gitlab-org/govern/security-policies-backend
+/ee/app/controllers/projects/security/policies_controller.rb @gitlab-org/govern/security-policies-backend
+/ee/app/graphql/mutations/concerns/mutations/finds_project_or_group_for_security_policies.rb @gitlab-org/govern/security-policies-backend
+/ee/app/graphql/mutations/security_policy/** @gitlab-org/govern/security-policies-backend
+/ee/app/graphql/resolvers/concerns/resolves_orchestration_policy.rb @gitlab-org/govern/security-policies-backend
+/ee/app/graphql/resolvers/security_orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/app/graphql/types/security_orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/app/helpers/ee/security_orchestration_helper.rb @gitlab-org/govern/security-policies-backend
+/ee/app/models/security/orchestration_policy_configuration.rb @gitlab-org/govern/security-policies-backend
+/ee/app/models/security/orchestration_policy_rule_schedule.rb @gitlab-org/govern/security-policies-backend
 /ee/app/services/security/orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/app/services/security/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
+/ee/app/validators/json_schemas/security_orchestration_policy.json @gitlab-org/govern/security-policies-backend
+/ee/app/workers/concerns/update_orchestration_policy_configuration.rb @gitlab-org/govern/security-policies-backend
+/ee/app/workers/security/create_orchestration_policy_worker.rb @gitlab-org/govern/security-policies-backend
+/ee/app/workers/security/orchestration_policy_rule_schedule_namespace_worker.rb @gitlab-org/govern/security-policies-backend
+/ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb @gitlab-org/govern/security-policies-backend
+/ee/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb @gitlab-org/govern/security-policies-backend
+/ee/lib/gitlab/ci/config/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
+/ee/lib/gitlab/graphql/aggregations/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
+/ee/spec/controllers/groups/security/policies_controller_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/factories/security_orchestration_policy_configurations.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/factories/security_orchestration_policy_rule_schedules.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/factories/security/policies.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/graphql/mutations/security_policy/** @gitlab-org/govern/security-policies-backend
+/ee/spec/graphql/resolvers/security_orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/spec/graphql/types/security_orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/spec/helpers/ee/security_orchestration_helper_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/lib/gitlab/ci/config/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
+/ee/spec/lib/gitlab/graphql/aggregations/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
+/ee/spec/models/security/orchestration_policy_configuration_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/models/security/orchestration_policy_rule_schedule_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/requests/api/graphql/mutations/security_policy/** @gitlab-org/govern/security-policies-backend
+/ee/spec/requests/api/graphql/project/security_orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/spec/requests/projects/security/policies_controller_spec.rb @gitlab-org/govern/security-policies-backend
 /ee/spec/services/security/orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/spec/services/security/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
+/ee/spec/support/shared_contexts/graphql/resolvers/security_orchestration/** @gitlab-org/govern/security-policies-backend
+/ee/spec/views/projects/security/policies/index.html.haml_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/workers/security/create_orchestration_policy_worker_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/workers/security/orchestration_policy_rule_schedule_namespace_worker_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/workers/security/orchestration_policy_rule_schedule_worker_spec.rb @gitlab-org/govern/security-policies-backend
+/lib/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb @gitlab-org/govern/security-policies-backend
+/spec/models/clusters/applications/cilium_spec.rb @gitlab-org/govern/security-policies-backend
+
+/app/finders/security/license_compliance_jobs_finder.rb @gitlab-org/govern/security-policies-backend
+/ee/app/controllers/projects/licenses_controller.rb @gitlab-org/govern/security-policies-backend
+/ee/app/finders/software_license_policies_finder.rb @gitlab-org/govern/security-policies-backend
+/ee/app/models/sca/license_compliance.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
+/ee/app/models/sca/license_policy.rb @gitlab-org/govern/security-policies-backend
+/ee/app/models/software_license_policy.rb @gitlab-org/govern/security-policies-backend
+/ee/app/models/software_license.rb @gitlab-org/govern/security-policies-backend
+/ee/app/serializers/license_compliance/** @gitlab-org/govern/security-policies-backend
+/ee/app/serializers/license_entity.rb @gitlab-org/govern/security-policies-backend
+/ee/app/serializers/license_serializer.rb @gitlab-org/govern/security-policies-backend
+/ee/app/serializers/licenses_list_entity.rb @gitlab-org/govern/security-policies-backend
+/ee/app/serializers/licenses_list_serializer.rb @gitlab-org/govern/security-policies-backend
+/ee/app/serializers/security/license_policy_entity.rb @gitlab-org/govern/security-policies-backend
+/ee/app/services/ci/compare_license_scanning_reports_collapsed_service.rb @gitlab-org/govern/security-policies-backend
+/ee/app/services/ci/compare_license_scanning_reports_service.rb @gitlab-org/govern/security-policies-backend
+/ee/app/services/projects/licenses/** @gitlab-org/govern/security-policies-backend
+/ee/app/services/software_license_policies/** @gitlab-org/govern/security-policies-backend
+/ee/app/services/software_license_policies/update_service.rb @gitlab-org/govern/security-policies-backend
+/ee/app/workers/refresh_license_compliance_checks_worker.rb @gitlab-org/govern/security-policies-backend
+/ee/lib/api/managed_licenses.rb @gitlab-org/govern/security-policies-backend
+/ee/lib/ee/api/entities/managed_license.rb @gitlab-org/govern/security-policies-backend
+/ee/lib/gitlab/spdx/license.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/factories/software_license_policy.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/factories/software_license.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/factories/spdx_license.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/finders/software_license_policies_finder_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/lib/gitlab/ci/parsers/license_compliance/** @gitlab-org/govern/security-policies-backend
+/ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
+/ee/spec/models/sca/license_policy_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/models/software_license_policy_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/models/software_license_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/requests/api/managed_licenses_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/serializers/license_compliance/** @gitlab-org/govern/security-policies-backend
+/ee/spec/services/ci/compare_license_scanning_reports_collapsed_service_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb @gitlab-org/govern/security-policies-backend
+/ee/spec/services/projects/licenses/** @gitlab-org/govern/security-policies-backend
+/ee/spec/services/software_license_policies/** @gitlab-org/govern/security-policies-backend
+/spec/finders/security/license_compliance_jobs_finder_spec.rb @gitlab-org/govern/security-policies-backend
 
 ^[Code Owners]
 /ee/lib/gitlab/code_owners.rb @reprazent @kerrizor @garyh

@@ -734,7 +734,7 @@ This includes projects shared with the group, but it **excludes** projects in
 subgroups or parent groups of the group being configured.
 
 You can configure this feature for both subgroups and immediate parent groups. A project
-in a subgroup has access to the templates for that subgroup, as well as
+in a subgroup has access to the templates for that subgroup and
 any immediate parent groups.
 
 To learn how to create templates for issues and merge requests, see

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SnippetsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
   let(:user) { project.first_owner }
   let(:snippet) { create(:personal_snippet, :public, title: 'snippet.md', content: '# snippet', file_name: 'snippet.md', author: user) }
