@@ -20,6 +20,7 @@ RSpec.describe ProjectSetting, type: :model do
   describe 'validations' do
     it { is_expected.not_to allow_value(nil).for(:target_platforms) }
     it { is_expected.to allow_value([]).for(:target_platforms) }
+    it { is_expected.to validate_length_of(:issue_branch_template).is_at_most(255) }
 
     it { is_expected.not_to allow_value(nil).for(:suggested_reviewers_enabled) }
     it { is_expected.to allow_value(true).for(:suggested_reviewers_enabled) }

@@ -289,3 +289,76 @@ For a web developer writing a webpage for your company's website:
 - [Commits](commits.md)
 - [CI/CD pipelines](../../../ci/index.md)
 - [Push options](../push_options.md) for merge requests
+
+## Troubleshooting
+
+### Rebase a merge request from the Rails console **(FREE SELF)**
+
+In addition to the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics),
+users with access to the [Rails console](../../../administration/operations/rails_console.md)
+can rebase a merge request from the Rails console. Replace `<username>`,
+`<namespace/project>`, and `<iid>` with appropriate values:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly,
+or under the right conditions. We highly recommend running them in a test environment
+with a backup of the instance ready to be restored, just in case.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::RebaseService.new(project: m.target_project, current_user: u).execute(m)
+```
+
+### Fix incorrect merge request status **(FREE SELF)**
+
+If a merge request remains **Open** after its changes are merged,
+users with access to the [Rails console](../../../administration/operations/rails_console.md)
+can correct the merge request's status. Replace `<username>`, `<namespace/project>`,
+and `<iid>` with appropriate values:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly,
+or under the right conditions. We highly recommend running them in a test environment
+with a backup of the instance ready to be restored, just in case.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
+```
+
+Running this command against a merge request with unmerged changes causes the
+merge request to display an incorrect message: `merged into <branch-name>`.
+
+### Close a merge request from the Rails console **(FREE SELF)**
+
+If closing a merge request doesn't work through the UI or API, you may want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
+```
+
+### Delete a merge request from the Rails console **(FREE SELF)**
+
+If deleting a merge request doesn't work through the UI or API, you may want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly,
+or under the right conditions. We highly recommend running them in a test environment
+with a backup of the instance ready to be restored, just in case.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+Issuable::DestroyService.new(project: m.project, current_user: u).execute(m)
+```

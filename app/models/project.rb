@@ -491,6 +491,7 @@ class Project < ApplicationRecord
     to: :project_setting
   delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
   delegate :squash_commit_template, :squash_commit_template=, to: :project_setting, allow_nil: true
+  delegate :issue_branch_template, :issue_branch_template=, to: :project_setting, allow_nil: true
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 

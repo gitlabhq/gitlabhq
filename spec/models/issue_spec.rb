@@ -864,7 +864,7 @@ RSpec.describe Issue do
 
   describe '.to_branch_name' do
     it 'parameterizes arguments and joins with dashes' do
-      expect(described_class.to_branch_name(123, 'foo bar', '!@#$%', 'f!o@o#b$a%r^')).to eq('123-foo-bar-f-o-o-b-a-r')
+      expect(described_class.to_branch_name(123, 'foo bar!@#$%f!o@o#b$a%r^')).to eq('123-foo-bar-f-o-o-b-a-r')
     end
 
     it 'preserves the case in the first argument' do
@@ -872,7 +872,7 @@ RSpec.describe Issue do
     end
 
     it 'truncates branch name to at most 100 characters' do
-      expect(described_class.to_branch_name('a' * 101)).to eq('a' * 100)
+      expect(described_class.to_branch_name('a' * 101, 'a')).to eq('a' * 100)
     end
 
     it 'truncates dangling parts of the branch name' do
@@ -883,6 +883,13 @@ RSpec.describe Issue do
 
       # 100 characters would've got us "999-lorem...lacus-custom-fri".
       expect(branch_name).to eq('999-lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-mauris-sit-amet-ipsum-id-lacus-custom')
+    end
+
+    it 'takes issue branch template into account' do
+      project = create(:project)
+      project.project_setting.update!(issue_branch_template: 'feature-%{id}-%{title}')
+
+      expect(described_class.to_branch_name(123, 'issue title', project: project)).to eq('feature-123-issue-title')
     end
   end
 

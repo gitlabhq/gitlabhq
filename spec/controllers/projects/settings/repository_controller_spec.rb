@@ -168,5 +168,37 @@ RSpec.describe Projects::Settings::RepositoryController do
         end
       end
     end
+
+    context 'when updating branch names template from issues' do
+      let(:branch_name_template) { 'feat/GL-%{id}-%{title}' }
+
+      let(:request_params) { base_params.merge({ project: project_params_attributes }) }
+
+      subject { put :update, params: request_params }
+
+      context('with a good request') do
+        let(:project_params_attributes) { { issue_branch_template: branch_name_template } }
+
+        it "updates issue_branch_template and redirect to project_settings_repository_path" do
+          subject
+
+          expect(response).to redirect_to project_settings_repository_path(project)
+          expect(controller).to set_flash[:notice].to("Project settings were successfully updated.")
+          expect(project.reload.issue_branch_template).to eq(branch_name_template)
+        end
+      end
+
+      context('with a bad input') do
+        let(:project_params_attributes) { { issue_branch_template: 'a' * 260 } }
+
+        it "updates issue_branch_template and redirect to project_settings_repository_path" do
+          subject
+
+          expect(response).to redirect_to project_settings_repository_path(project)
+          expect(controller).to set_flash[:alert].to("Project setting issue branch template is too long (maximum is 255 characters)")
+          expect(project.reload.issue_branch_template).to eq(nil)
+        end
+      end
+    end
   end
 end

@@ -39,6 +39,7 @@ class Issue < ApplicationRecord
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
   SORTING_PREFERENCE_FIELD = :issues_sort
+  MAX_BRANCH_TEMPLATE = 255
 
   # Types of issues that should be displayed on issue lists across the app
   # for example, project issues list, group issues list, and issues dashboard.
@@ -394,10 +395,21 @@ class Issue < ApplicationRecord
     )
   end
 
-  def self.to_branch_name(*args)
-    branch_name = args.map(&:to_s).each_with_index.map do |arg, i|
-      arg.parameterize(preserve_case: i == 0).presence
-    end.compact.join('-')
+  def self.to_branch_name(id, title, project: nil)
+    params = {
+      'id' => id.to_s.parameterize(preserve_case: true),
+      'title' => title.to_s.parameterize
+    }
+    template = project&.issue_branch_template
+
+    branch_name =
+      if template.present?
+        Gitlab::StringPlaceholderReplacer.replace_string_placeholders(template, /(#{params.keys.join('|')})/) do |arg|
+          params[arg]
+        end
+      else
+        params.values.select(&:present?).join('-')
+      end
 
     if branch_name.length > 100
       truncated_string = branch_name[0, 100]
@@ -475,7 +487,7 @@ class Issue < ApplicationRecord
     if self.confidential?
       "#{iid}-confidential-issue"
     else
-      self.class.to_branch_name(iid, title)
+      self.class.to_branch_name(iid, title, project: project)
     end
   end
 

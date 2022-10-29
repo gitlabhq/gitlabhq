@@ -6831,6 +6831,9 @@ msgstr ""
 msgid "Branch name"
 msgstr ""
 
+msgid "Branch name template"
+msgstr ""
+
 msgid "Branch not loaded - %{branchId}"
 msgstr ""
 
@@ -31796,6 +31799,9 @@ msgstr ""
 msgid "ProjectSettings|Badges"
 msgstr ""
 
+msgid "ProjectSettings|Branches created from issues follow this pattern."
+msgstr ""
+
 msgid "ProjectSettings|Build, test, and deploy your changes."
 msgstr ""
 
@@ -45617,6 +45623,9 @@ msgid "What is squashing?"
 msgstr ""
 
 msgid "What templates can I create?"
+msgstr ""
+
+msgid "What variables can I use?"
 msgstr ""
 
 msgid "What will you use this group for?"

@@ -568,6 +568,7 @@ Project:
 - suggestion_commit_message
 - merge_commit_template
 - squash_commit_template
+- issue_branch_template
 Author:
 - name
 ProjectFeature:

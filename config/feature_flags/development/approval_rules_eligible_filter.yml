@@ -1,8 +1,0 @@
----
-name: approval_rules_eligible_filter
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100192
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/376331
-milestone: '15.5'
-type: development
-group: group::source code
-default_enabled: false

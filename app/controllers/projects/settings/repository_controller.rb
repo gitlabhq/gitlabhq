@@ -116,6 +116,7 @@ module Projects
 
       def project_params_attributes
         [
+          :issue_branch_template,
           :default_branch,
           :autoclose_referenced_issues
         ]
