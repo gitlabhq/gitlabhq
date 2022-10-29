@@ -71,7 +71,7 @@ describe('New project push tip popover', () => {
 
   it('displays a link to open the push command help page reference', () => {
     expect(findHelpLink().attributes().href).toBe(
-      `${workingWithProjectsHelpPath}#push-to-create-a-new-project`,
+      `${workingWithProjectsHelpPath}#create-a-new-project-with-git-push`,
     );
   });
 });

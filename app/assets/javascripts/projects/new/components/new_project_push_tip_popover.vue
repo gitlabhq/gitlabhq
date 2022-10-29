@@ -56,7 +56,7 @@ export default {
     </p>
     <p>
       <a
-        :href="`${workingWithProjectsHelpPath}#push-to-create-a-new-project`"
+        :href="`${workingWithProjectsHelpPath}#create-a-new-project-with-git-push`"
         class="gl-font-sm"
         target="_blank"
         >{{ $options.i18n.helpLinkText }}</a
