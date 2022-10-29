@@ -182,6 +182,14 @@ a branch pipeline instead.
 It's also possible that your [`workflow: rules`](yaml/index.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
+### Pipeline with many jobs fails to start
+
+A Pipeline that has more jobs than the instance's defined [CI/CD limits](../user/admin_area/settings/continuous_integration.md#set-cicd-limits)
+fails to start.
+
+To reduce the number of jobs in your pipeline, you can split your `.gitlab-ci.yml`
+configuration using [parent-child pipelines](../ci/pipelines/pipeline_architectures.md#parent-child-pipelines).
+
 ### A job runs unexpectedly
 
 A common reason a job is added to a pipeline unexpectedly is because the `changes`
