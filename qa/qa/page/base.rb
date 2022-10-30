@@ -39,7 +39,8 @@ module QA
       def inspect
         # For prettier failure messages
         # Eg.: "expected QA::Page::File::Show not to have file "QA Test - File name"
-        # Instead of "expected #<QA::Page::File::Show:0x000055c6511e07b8 @retry_later_backoff=60> not to have file "QA Test - File name"
+        # Instead of "expected #<QA::Page::File::Show:0x000055c6511e07b8 @retry_later_backoff=60>
+        # not to have file "QA Test - File name"
         self.class.to_s
       end
 
@@ -185,7 +186,7 @@ module QA
         end
 
         retry_until(sleep_interval: 1) do
-          click_checkbox_or_radio(name, click_by_js, kwargs)
+          click_checkbox_or_radio(name, click_by_js, **kwargs)
           unchecked = !find_element(name, **kwargs).checked?
 
           QA::Runtime::Logger.debug(unchecked ? "#{name} was unchecked" : "#{name} was not unchecked")
@@ -371,19 +372,15 @@ module QA
         sleep 1
       end
 
-      def within_element(name, **kwargs)
+      def within_element(name, **kwargs, &block)
         wait_for_requests(skip_finished_loading_check: kwargs.delete(:skip_finished_loading_check))
         text = kwargs.delete(:text)
 
-        page.within(element_selector_css(name, kwargs), text: text) do
-          yield
-        end
+        page.within(element_selector_css(name, kwargs), text: text, &block)
       end
 
-      def within_element_by_index(name, index)
-        page.within all_elements(name, minimum: index + 1)[index] do
-          yield
-        end
+      def within_element_by_index(name, index, &block)
+        page.within(all_elements(name, minimum: index + 1)[index], &block)
       end
 
       def scroll_to_element(name, *kwargs)
@@ -410,15 +407,14 @@ module QA
 
       def wait_if_retry_later
         return if @retry_later_backoff > QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME * 5
+        return unless has_css?('body', text: 'Retry later', wait: 0)
 
-        if has_css?('body', text: 'Retry later', wait: 0)
-          QA::Runtime::Logger.warn("`Retry later` error occurred. Sleeping for #{@retry_later_backoff} seconds...")
-          sleep @retry_later_backoff
-          refresh
-          @retry_later_backoff += QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
+        QA::Runtime::Logger.warn("`Retry later` error occurred. Sleeping for #{@retry_later_backoff} seconds...")
+        sleep @retry_later_backoff
+        refresh
+        @retry_later_backoff += QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
 
-          wait_if_retry_later
-        end
+        wait_if_retry_later
       end
 
       def current_host
@@ -487,7 +483,12 @@ module QA
         click_by_js ? page.execute_script("arguments[0].click();", box) : box.click
       end
 
-      def feature_flag_controlled_element(feature_flag, element_when_flag_enabled, element_when_flag_disabled, visibility = true)
+      def feature_flag_controlled_element(
+        feature_flag,
+        element_when_flag_enabled,
+        element_when_flag_disabled,
+        visibility = true
+      )
         # Feature flags can change the UI elements shown, but we need admin access to get feature flag values, which
         # prevents us running the tests on production. Instead we detect the UI element that should be shown when the
         # feature flag is enabled and otherwise use the element that should be displayed when the feature flag is
