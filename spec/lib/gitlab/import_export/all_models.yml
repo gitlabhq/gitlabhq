@@ -540,6 +540,7 @@ project:
 - jenkins_integration
 - index_status
 - feature_usage
+- regular_or_any_approver_approval_rules
 - approval_rules
 - approval_merge_request_rules
 - approval_merge_request_rule_sources

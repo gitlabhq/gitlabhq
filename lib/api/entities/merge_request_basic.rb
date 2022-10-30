@@ -58,6 +58,7 @@ module API
         merge_request.check_mergeability(async: true) unless options[:skip_merge_status_recheck]
         merge_request.public_merge_status
       end
+      expose :detailed_merge_status
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :squash_commit_sha
@@ -93,6 +94,12 @@ module API
       expose :task_completion_status
       expose :cannot_be_merged?, as: :has_conflicts
       expose :mergeable_discussions_state?, as: :blocking_discussions_resolved
+
+      private
+
+      def detailed_merge_status
+        ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: object).execute
+      end
     end
   end
 end

@@ -160,6 +160,7 @@ Supported attributes:
     },
     "merge_when_pipeline_succeeds": true,
     "merge_status": "can_be_merged",
+    "detailed_merge_status": "not_open",
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "squash_commit_sha": null,
@@ -360,6 +361,7 @@ Supported attributes:
     },
     "merge_when_pipeline_succeeds": true,
     "merge_status": "can_be_merged",
+    "detailed_merge_status": "not_open",
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "squash_commit_sha": null,
@@ -547,6 +549,7 @@ Supported attributes:
     },
     "merge_when_pipeline_succeeds": true,
     "merge_status": "can_be_merged",
+    "detailed_merge_status": "not_open",
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "squash_commit_sha": null,
@@ -655,6 +658,7 @@ Supported attributes:
   "milestone": null,
   "merge_when_pipeline_succeeds": false,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "can_be_merged",
   "sha": "e82eb4a098e32c796079ca3915e07487fc4db24c",
   "merge_commit_sha": null,
   "squash_commit_sha": null,
@@ -766,12 +770,6 @@ the `approvals_before_merge` parameter:
 
 ### Single merge request response notes
 
-- The `merge_status` field may hold one of the following values:
-  - `unchecked`: This merge request has not yet been checked.
-  - `checking`: This merge request is currently being checked to see if it can be merged.
-  - `can_be_merged`: This merge request can be merged without conflict.
-  - `cannot_be_merged`: There are merge conflicts between the source and target branches.
-  - `cannot_be_merged_recheck`: Currently unchecked. Before the current changes, there were conflicts.
 - The `diff_refs` in the response correspond to the latest diff version of the merge request.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29984) in GitLab 12.8, the mergeability (`merge_status`)
   of each merge request is checked asynchronously when a request is made to this endpoint. Poll this API endpoint
@@ -786,6 +784,31 @@ the `approvals_before_merge` parameter:
   Field `merged_by` (user who merged this merge request or `null`) has been deprecated.
 - `pipeline` is an old parameter and should not be used. Use `head_pipeline` instead,
   as it is faster and returns more information.
+
+### Merge status
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
+
+- The `merge_status` field may hold one of the following values:
+  - `unchecked`: This merge request has not yet been checked.
+  - `checking`: This merge request is currently being checked to see if it can be merged.
+  - `can_be_merged`: This merge request can be merged without conflict.
+  - `cannot_be_merged`: There are merge conflicts between the source and target branches.
+  - `cannot_be_merged_recheck`: Currently unchecked. Before the current changes, there were conflicts.
+- The `detailed_merge_status` field may hold one of the following values:
+  - `blocked_status`: Merge request is blocked by another merge request.
+  - `broken_status`: Can not merge the source into the target branch, potential conflict.
+  - `checking`: currently checking for mergeability.
+  - `ci_must_pass`: Pipeline must succeed before merging.
+  - `ci_still_running`: Pipeline is still running.
+  - `discussions_not_resolved`: Discussions must be resolved before merging.
+  - `draft_status`: Merge request must not be draft before merging.
+  - `external_status_checks`: Status checks must pass.
+  - `mergeable`: branch can be merged.
+  - `not_approved`: Merge request must be approved before merging.
+  - `not_open`: merge request must be open before merging.
+  - `policies_denied`: There are denied policies for the merge request.
+  - `unchecked`: merge status has not been checked.
 
 ## Get single MR participants
 
@@ -994,6 +1017,7 @@ Supported attributes:
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
@@ -1211,6 +1235,7 @@ If `approvals_before_merge` is not provided, it inherits the value from the targ
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "not_open",
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
@@ -1392,6 +1417,7 @@ Must include at least one non-required attribute from above.
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "not_open",
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
@@ -1580,6 +1606,7 @@ Supported attributes:
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "not_open",
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
@@ -1792,6 +1819,7 @@ Supported attributes:
   },
   "merge_when_pipeline_succeeds": false,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "not_open",
   "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
@@ -2124,6 +2152,7 @@ Example response:
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "not_open",
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "squash_commit_sha": null,
@@ -2294,6 +2323,7 @@ Example response:
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "detailed_merge_status": "not_open",
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "squash_commit_sha": null,
@@ -2479,6 +2509,7 @@ Example response:
     },
     "merge_when_pipeline_succeeds": false,
     "merge_status": "unchecked",
+    "detailed_merge_status": "not_open",
     "subscribed": true,
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
