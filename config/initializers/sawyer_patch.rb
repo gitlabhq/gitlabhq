@@ -6,47 +6,21 @@ module SawyerClassPatch
   def attr_accessor(*attrs)
     attrs.each do |attribute|
       class_eval do
-        # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        if method_defined?(attribute) || method_defined?("#{attribute}=") || method_defined?("#{attribute}?")
-          define_method attribute do
-            raise Sawyer::Error,
-              "Sawyer method \"#{attribute}\" overlaps Ruby method. Convert to a hash to access the attribute."
-          end
+        define_method attribute do
+          raise Sawyer::Error,
+            "Sawyer method \"#{attribute}\" access is forbidden. Convert to a hash to access the attribute."
+        end
 
-          define_method "#{attribute}=" do |value|
-            raise Sawyer::Error,
-              "Sawyer method \"#{attribute}\" overlaps Ruby method. Convert to a hash to access the attribute."
-          end
+        define_method "#{attribute}=" do |value|
+          raise Sawyer::Error,
+            "Sawyer method \"#{attribute}=\" access is forbidden. Convert to a hash to access the attribute."
+        end
 
-          define_method "#{attribute}?" do
-            raise Sawyer::Error,
-              "Sawyer method \"#{attribute}\" overlaps Ruby method. Convert to a hash to access the attribute."
-          end
-        else
-          define_method attribute do
-            Gitlab::Import::Logger.warn(
-              Gitlab::ApplicationContext.current.merge(
-                {
-                  message: 'Sawyer attribute called',
-                  attribute: attribute,
-                  caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
-                }
-              )
-            )
-
-            @attrs[attribute.to_sym]
-          end
-
-          define_method "#{attribute}=" do |value|
-            @attrs[attribute.to_sym] = value
-          end
-
-          define_method "#{attribute}?" do
-            !!@attrs[attribute.to_sym]
-          end
+        define_method "#{attribute}?" do
+          raise Sawyer::Error,
+            "Sawyer method \"#{attribute}?\" overlaps Ruby method. Convert to a hash to access the attribute."
         end
       end
-      # rubocop:enable Gitlab/ModuleWithInstanceVariables
     end
   end
 end

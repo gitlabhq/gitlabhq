@@ -18,7 +18,7 @@ If there is no relevant deprecation issue, hit pause and:
 
 Removals must be [announced as deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) at least 2 milestones in advance of the planned removal date.
 
-If the removal creates a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes-deprecations-and-removing-features), it can only be removed in a major "XX.0" release.
+If the removal creates a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecations-removals-and-breaking-changes), it can only be removed in a major "XX.0" release.
 
 **By the 10th**: Assign this MR to these team members as reviewers, and for approval:
 

@@ -85,7 +85,7 @@ process would pose significant risk.
 ### Deprecation and removal process
 
 The deprecation and removal process for the GitLab GraphQL API aligns with the wider GitLab
-[deprecation process](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes-deprecations-and-removing-features).
+[deprecation process](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecations-removals-and-breaking-changes).
 
 Parts of the schema marked for removal from the GitLab GraphQL API are first
 [deprecated](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecation)
