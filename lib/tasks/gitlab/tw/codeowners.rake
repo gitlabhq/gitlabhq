@@ -37,7 +37,6 @@ namespace :tw do
       CodeOwnerRule.new('Distribution (Omnibus)', '@axil'),
       CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Ecosystem', '@kpaizee'),
       CodeOwnerRule.new('Editor', '@ashrafkhamis'),
       CodeOwnerRule.new('Foundations', '@rdickenson'),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),

@@ -2,7 +2,7 @@
 
 exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have correct elements 1`] = `
 <div
-  class="mr-widget-body media"
+  class="mr-widget-body media mr-widget-body-line-height-1 gl-line-height-normal"
 >
   <div
     class="gl-w-6 gl-h-6 gl-display-flex gl-align-self-start gl-mr-3"
@@ -179,7 +179,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
 
 exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have correct elements 1`] = `
 <div
-  class="mr-widget-body media"
+  class="mr-widget-body media mr-widget-body-line-height-1 gl-line-height-normal"
 >
   <div
     class="gl-w-6 gl-h-6 gl-display-flex gl-align-self-start gl-mr-3"

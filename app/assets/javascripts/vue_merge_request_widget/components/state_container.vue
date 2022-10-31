@@ -50,7 +50,11 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-body media" :class="wrapperClasses" v-on="$listeners">
+  <div
+    class="mr-widget-body media mr-widget-body-line-height-1 gl-line-height-normal"
+    :class="wrapperClasses"
+    v-on="$listeners"
+  >
     <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
       <slot name="loading">
         <div class="gl-display-flex">
@@ -67,7 +71,10 @@ export default {
       </slot>
       <div class="gl-display-flex gl-w-full">
         <div
-          :class="{ 'gl-display-flex': actions.length, 'gl-md-display-flex': !actions.length }"
+          :class="{
+            'gl-display-flex': actions.length,
+            'gl-md-display-flex gl-align-items-center': !actions.length,
+          }"
           class="media-body"
         >
           <slot></slot>

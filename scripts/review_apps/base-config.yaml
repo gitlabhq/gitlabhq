@@ -42,10 +42,10 @@ gitlab:
     resources:
       requests:
         cpu: 200m
-        memory: 450Mi
+        memory: 500Mi
       limits:
         cpu: 400m
-        memory: 900Mi
+        memory: 1000Mi
   gitlab-shell:
     resources:
       requests:

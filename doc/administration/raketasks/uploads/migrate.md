@@ -42,7 +42,7 @@ gitlab-rake "gitlab:uploads:migrate:all"
 sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate:all
 ```
 
-You can optionally track progress and verify that all packages migrated successfully using the
+You can optionally track progress and verify that all uploads migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
 - `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.

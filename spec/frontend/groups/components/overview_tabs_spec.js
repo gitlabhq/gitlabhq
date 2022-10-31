@@ -67,6 +67,7 @@ describe('OverviewTabs', () => {
   const findTabPanels = () => wrapper.findAllComponents(GlTab);
   const findTab = (name) => wrapper.findByRole('tab', { name });
   const findSelectedTab = () => wrapper.findByRole('tab', { selected: true });
+  const findSearchInput = () => wrapper.findByPlaceholderText(OverviewTabs.i18n.searchPlaceholder);
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
@@ -244,18 +245,39 @@ describe('OverviewTabs', () => {
     };
 
     describe('when search is typed in', () => {
-      const search = 'Foo bar';
+      describe('when search is greater than or equal to 3 characters', () => {
+        const search = 'Foo bar';
 
-      beforeEach(async () => {
-        await setup();
-        await wrapper.findByPlaceholderText(OverviewTabs.i18n.searchPlaceholder).setValue(search);
+        beforeEach(async () => {
+          await setup();
+          await findSearchInput().setValue(search);
+        });
+
+        it('updates query string with `filter` key', () => {
+          expect(routerMock.push).toHaveBeenCalledWith({ query: { filter: search } });
+        });
+
+        sharedAssertions({ search, sort: defaultProvide.initialSort });
       });
 
-      it('updates query string with `filter` key', () => {
-        expect(routerMock.push).toHaveBeenCalledWith({ query: { filter: search } });
-      });
+      describe('when search is less than 3 characters', () => {
+        const search = 'Fo';
 
-      sharedAssertions({ search, sort: defaultProvide.initialSort });
+        beforeEach(async () => {
+          await setup();
+          await findSearchInput().setValue(search);
+        });
+
+        it('does not emit `fetchFilteredAndSortedGroups` event from `eventHub`', () => {
+          expect(eventHub.$emit).not.toHaveBeenCalledWith(
+            `${ACTIVE_TAB_SUBGROUPS_AND_PROJECTS}fetchFilteredAndSortedGroups`,
+            {
+              filterGroupsBy: search,
+              sortBy: defaultProvide.initialSort,
+            },
+          );
+        });
+      });
     });
 
     describe('when sort is changed', () => {
@@ -306,6 +328,16 @@ describe('OverviewTabs', () => {
         expect(
           wrapper.findByPlaceholderText(OverviewTabs.i18n.searchPlaceholder).element.value,
         ).toBe('Foo bar');
+      });
+
+      describe('when search is cleared', () => {
+        it('removes `filter` key from query string', async () => {
+          await findSearchInput().setValue('');
+
+          expect(routerMock.push).toHaveBeenCalledWith({
+            query: { sort: SORTING_ITEM_UPDATED.desc },
+          });
+        });
       });
 
       it('sets sort dropdown', () => {

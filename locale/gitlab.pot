@@ -27129,9 +27129,6 @@ msgstr ""
 msgid "No matching results for \"%{query}\""
 msgstr ""
 
-msgid "No matching results..."
-msgstr ""
-
 msgid "No members found"
 msgstr ""
 
@@ -28104,12 +28101,6 @@ msgstr ""
 msgid "OnDemandScans|Could not run the scan. Please try again."
 msgstr ""
 
-msgid "OnDemandScans|Create new scanner profile"
-msgstr ""
-
-msgid "OnDemandScans|Create new site profile"
-msgstr ""
-
 msgid "OnDemandScans|DAST configuration"
 msgstr ""
 
@@ -28155,12 +28146,6 @@ msgstr ""
 msgid "OnDemandScans|Keep editing"
 msgstr ""
 
-msgid "OnDemandScans|Manage scanner profiles"
-msgstr ""
-
-msgid "OnDemandScans|Manage site profiles"
-msgstr ""
-
 msgid "OnDemandScans|My daily scan"
 msgstr ""
 
@@ -28180,12 +28165,6 @@ msgid "OnDemandScans|New scan"
 msgstr ""
 
 msgid "OnDemandScans|No %{profileType} profiles found for DAST"
-msgstr ""
-
-msgid "OnDemandScans|No profile yet. In order to create a new scan, you need to have at least one completed scanner profile."
-msgstr ""
-
-msgid "OnDemandScans|No profile yet. In order to create a new scan, you need to have at least one completed site profile."
 msgstr ""
 
 msgid "OnDemandScans|On-demand Scans"
@@ -28230,15 +28209,6 @@ msgstr ""
 msgid "OnDemandScans|Scan type"
 msgstr ""
 
-msgid "OnDemandScans|Scanner profile"
-msgstr ""
-
-msgid "OnDemandScans|Select one of the existing profiles"
-msgstr ""
-
-msgid "OnDemandScans|Site profile"
-msgstr ""
-
 msgid "OnDemandScans|Start by creating a new profile. Profiles make it easy to save and reuse configuration details for GitLab’s security tools."
 msgstr ""
 
@@ -28267,12 +28237,6 @@ msgid "OnDemandScans|There are no scheduled scans."
 msgstr ""
 
 msgid "OnDemandScans|Timezone"
-msgstr ""
-
-msgid "OnDemandScans|Use existing scanner profile"
-msgstr ""
-
-msgid "OnDemandScans|Use existing site profile"
 msgstr ""
 
 msgid "OnDemandScans|View results"

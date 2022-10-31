@@ -4106,6 +4106,8 @@ successfully complete before starting.
   shows **pending** (**{status_pending}**) if the downstream pipeline status is
   **waiting for manual action** (**{status_manual}**) due to manual jobs. By default,
   jobs in later stages do not start until the trigger job completes.
+- If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
+  the downstream pipeline is considered successful and the trigger job shows **success**.
 
 #### `trigger:forward`
 
