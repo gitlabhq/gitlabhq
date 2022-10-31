@@ -115,6 +115,14 @@ a test request to re-enable a [disabled webhook](#re-enable-disabled-webhooks).
 
 For example, to test `push events`, your project should have at least one commit. The webhook uses this commit in the webhook.
 
+NOTE:
+Testing is not supported for some types of events for project and groups webhooks.
+Read more in [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
+
+Prerequisite:
+
+- To test group webhooks, you must have administrator access for your instance.
+
 To test a webhook:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
@@ -236,6 +244,10 @@ Webhook requests to your endpoint include the following headers:
 
 GitLab records the history of each webhook request.
 You can view requests made in the last 2 days in the **Recent events** table.
+
+Prerequisite:
+
+- To troubleshoot group webhooks, you must have administrator access for your instance.
 
 To view the table:
 

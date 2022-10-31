@@ -18,9 +18,10 @@ module API
         end
         resource ':id/cluster_agents/:agent_id' do
           resource :tokens do
-            desc 'List agent tokens' do
-              detail 'This feature was introduced in GitLab 15.0.'
+            desc 'List tokens for an agent' do
+              detail 'This feature was introduced in GitLab 15.0. Returns a list of tokens for an agent.'
               success Entities::Clusters::AgentTokenBasic
+              tags %w[cluster_agents]
             end
             params do
               use :pagination
@@ -32,8 +33,9 @@ module API
             end
 
             desc 'Get a single agent token' do
-              detail 'This feature was introduced in GitLab 15.0.'
+              detail 'This feature was introduced in GitLab 15.0. Gets a single agent token.'
               success Entities::Clusters::AgentToken
+              tags %w[cluster_agents]
             end
             params do
               requires :token_id, type: Integer, desc: 'The ID of the agent token'
@@ -47,8 +49,9 @@ module API
             end
 
             desc 'Create an agent token' do
-              detail 'This feature was introduced in GitLab 15.0.'
+              detail 'This feature was introduced in GitLab 15.0. Creates a new token for an agent.'
               success Entities::Clusters::AgentTokenWithToken
+              tags %w[cluster_agents]
             end
             params do
               requires :name, type: String, desc: 'The name for the token'
@@ -71,7 +74,8 @@ module API
             end
 
             desc 'Revoke an agent token' do
-              detail 'This feature was introduced in GitLab 15.0.'
+              detail 'This feature was introduced in GitLab 15.0. Revokes an agent token.'
+              tags %w[cluster_agents]
             end
             params do
               requires :token_id, type: Integer, desc: 'The ID of the agent token'

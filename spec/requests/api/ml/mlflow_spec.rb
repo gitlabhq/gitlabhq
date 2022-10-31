@@ -253,7 +253,7 @@ RSpec.describe API::Ml::Mlflow do
 
     it 'creates the experiment', :aggregate_failures do
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to include('experiment_id' )
+      expect(json_response).to include('experiment_id')
     end
 
     describe 'Error States' do

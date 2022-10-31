@@ -462,7 +462,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             request_job info: { 'config' => { 'gpus' => 'all', 'ignored' => 'hello' } }
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(runner.reload.config).to eq( { 'gpus' => 'all' } )
+            expect(runner.reload.config).to eq({ 'gpus' => 'all' })
           end
 
           it "sets the runner's ip_address" do

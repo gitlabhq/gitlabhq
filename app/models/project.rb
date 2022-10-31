@@ -1706,7 +1706,11 @@ class Project < ApplicationRecord
   end
 
   def has_active_integrations?(hooks_scope = :push_hooks)
-    integrations.public_send(hooks_scope).any? # rubocop:disable GitlabSecurity/PublicSend
+    @has_active_integrations ||= {} # rubocop: disable Gitlab/PredicateMemoization
+
+    return @has_active_integrations[hooks_scope] if @has_active_integrations.key?(hooks_scope)
+
+    @has_active_integrations[hooks_scope] = integrations.public_send(hooks_scope).any? # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def feature_usage

@@ -419,7 +419,7 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
     end
 
     before do
-      create(:ci_sources_pipeline, source_pipeline: upstream_pipeline, pipeline: pipeline )
+      create(:ci_sources_pipeline, source_pipeline: upstream_pipeline, pipeline: pipeline)
 
       post_graphql(query, current_user: user)
     end
@@ -441,10 +441,10 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
 
         pipeline_2 = create(:ci_pipeline, project: project, user: user)
         upstream_pipeline_2 = create(:ci_pipeline, project: upstream_project, user: user)
-        create(:ci_sources_pipeline, source_pipeline: upstream_pipeline_2, pipeline: pipeline_2 )
+        create(:ci_sources_pipeline, source_pipeline: upstream_pipeline_2, pipeline: pipeline_2)
         pipeline_3 = create(:ci_pipeline, project: project, user: user)
         upstream_pipeline_3 = create(:ci_pipeline, project: upstream_project, user: user)
-        create(:ci_sources_pipeline, source_pipeline: upstream_pipeline_3, pipeline: pipeline_3 )
+        create(:ci_sources_pipeline, source_pipeline: upstream_pipeline_3, pipeline: pipeline_3)
 
         expect do
           post_graphql(query, current_user: second_user)

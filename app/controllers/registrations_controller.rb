@@ -34,14 +34,14 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     set_user_state
-    token = set_custom_confirmation_token
+    set_custom_confirmation_token
 
     super do |new_user|
       accept_pending_invitations if new_user.persisted?
 
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
-      send_custom_confirmation_instructions(new_user, token)
+      send_custom_confirmation_instructions
       track_weak_password_error(new_user, self.class.name, 'create')
 
       if pending_approval?
@@ -128,7 +128,7 @@ class RegistrationsController < Devise::RegistrationsController
     # after user confirms and comes back, he will be redirected
     store_location_for(:redirect, users_sign_up_welcome_path(glm_tracking_params))
 
-    return identity_verification_redirect_path if custom_confirmation_enabled?(resource)
+    return identity_verification_redirect_path if custom_confirmation_enabled?
 
     users_almost_there_path(email: resource.email)
   end
@@ -244,7 +244,7 @@ class RegistrationsController < Devise::RegistrationsController
     # overridden by EE module
   end
 
-  def custom_confirmation_enabled?(resource)
+  def custom_confirmation_enabled?
     # overridden by EE module
   end
 
@@ -252,7 +252,7 @@ class RegistrationsController < Devise::RegistrationsController
     # overridden by EE module
   end
 
-  def send_custom_confirmation_instructions(user, token)
+  def send_custom_confirmation_instructions
     # overridden by EE module
   end
 end

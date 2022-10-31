@@ -398,5 +398,5 @@ compile-storybook as-if-foss:
     - .as-if-foss
     - .frontend:rules:default-frontend-jobs-as-if-foss
   needs:
-    - !reference [.compile-storybook-base, needs]
+    - job: "graphql-schema-dump as-if-foss"
     - job: "rspec-all frontend_fixture as-if-foss"

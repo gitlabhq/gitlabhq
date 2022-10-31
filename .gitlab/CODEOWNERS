@@ -351,10 +351,25 @@ Dangerfile @gl-quality/eng-prod
 /spec/frontend/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
 
 ^[Product Intelligence]
-/ee/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
-/ee/lib/ee/gitlab/usage_data.rb @gitlab-org/growth/product-intelligence/engineers
-/lib/gitlab/usage_data.rb @gitlab-org/growth/product_intelligence/engineers
-/lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
+/ee/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/lib/ee/gitlab/usage_data.rb  @gitlab-org/analytics-section/product-intelligence/engineers
+/lib/gitlab/usage_data.rb  @gitlab-org/analytics-section/product-intelligence/engineers
+/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
+/lib/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/lib/ee/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/lib/ee/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
+/config/metrics/ @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/config/metrics/ @gitlab-org/analytics-section/product-intelligence/engineers
+/app/workers/gitlab_service_ping_worker.rb @gitlab-org/analytics-section/product-intelligence/engineers
+/spec/workers/gitlab_service_ping_worker_spec.rb @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/spec/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/spec/lib/ee/gitlab/usage_data_spec.rb  @gitlab-org/analytics-section/product-intelligence/engineers
+/spec/lib/gitlab/usage_data_spec.rb  @gitlab-org/analytics-section/product-intelligence/engineers
+/spec/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
+/spec/lib/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/spec/lib/ee/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/spec/lib/ee/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/spec/config/metrics/ @gitlab-org/analytics-section/product-intelligence/engineers
 
 ^[Growth Experiments]
 /app/experiments/ @gitlab-org/growth/experiment-devs

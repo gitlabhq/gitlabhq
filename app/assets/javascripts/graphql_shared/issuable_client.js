@@ -57,7 +57,9 @@ export const config = {
                 return incoming;
               }
               return existing.map((existingWidget) => {
-                const incomingWidget = incoming.find((w) => w.type === existingWidget.type);
+                const incomingWidget = incoming.find(
+                  (w) => w.type && w.type === existingWidget.type,
+                );
                 return incomingWidget || existingWidget;
               });
             },

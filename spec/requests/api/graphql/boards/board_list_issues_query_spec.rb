@@ -7,7 +7,7 @@ RSpec.describe 'get board lists' do
 
   let_it_be(:user)           { create(:user) }
   let_it_be(:unauth_user)    { create(:user) }
-  let_it_be(:project)        { create(:project, creator_id: user.id, namespace: user.namespace ) }
+  let_it_be(:project)        { create(:project, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:group)          { create(:group, :private) }
   let_it_be(:project_label)  { create(:label, project: project, name: 'Development') }
   let_it_be(:project_label2) { create(:label, project: project, name: 'Testing') }

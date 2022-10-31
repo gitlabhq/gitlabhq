@@ -102,6 +102,8 @@ Items are marked as deprecated in:
 NOTE:
 If you use the GraphQL API, we recommend you remove the deprecated schema from your GraphQL
 API calls as soon as possible to avoid experiencing breaking changes.
+To verify your API calls against the schema without the deprecated schema items, you can add a
+`?remove_deprecated=true` query parameter. You should only use this parameter for verification purposes.
 
 The deprecation message provides an alternative for the deprecated schema item,
 if applicable.

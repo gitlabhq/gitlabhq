@@ -325,7 +325,7 @@ RSpec.describe API::Deployments do
     context 'as non member' do
       it 'returns a 404 status code' do
         post(
-          api( "/projects/#{project.id}/deployments", non_member),
+          api("/projects/#{project.id}/deployments", non_member),
           params: {
             environment: 'production',
             sha: '123',

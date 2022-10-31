@@ -3255,7 +3255,8 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 - If no `if` statements are true, do not add the job to the pipeline.
 
 `if` clauses are evaluated based on the values of [predefined CI/CD variables](../variables/predefined_variables.md)
-or [custom CI/CD variables](../variables/index.md#custom-cicd-variables).
+or [custom CI/CD variables](../variables/index.md#custom-cicd-variables), with
+[some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
 to configure the job behavior, or with [`workflow`](#workflow) to configure the pipeline behavior.

@@ -190,7 +190,8 @@ class GraphqlController < ApplicationController
       current_user: current_user,
       is_sessionless_user: api_user,
       request: request,
-      scope_validator: ::Gitlab::Auth::ScopeValidator.new(api_user, request_authenticator)
+      scope_validator: ::Gitlab::Auth::ScopeValidator.new(api_user, request_authenticator),
+      remove_deprecated: Gitlab::Utils.to_boolean(params[:remove_deprecated], default: false)
     }
   end
 

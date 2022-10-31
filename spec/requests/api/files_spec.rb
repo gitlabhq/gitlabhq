@@ -11,7 +11,7 @@ RSpec.describe API::Files do
   let_it_be(:inherited_reporter) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }
 
-  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
+  let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { 'files%2Fruby%2Fpopen%2Erb' }
   let(:file_name) { 'popen.rb' }
@@ -935,7 +935,7 @@ RSpec.describe API::Files do
           end
 
           context 'and the repo is empty' do
-            let!(:project) { create(:project_empty_repo, namespace: user.namespace ) }
+            let!(:project) { create(:project_empty_repo, namespace: user.namespace) }
 
             it_behaves_like 'creates a new file in the project repo' do
               let(:current_user) { user }

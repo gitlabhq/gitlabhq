@@ -3022,7 +3022,7 @@ RSpec.describe API::MergeRequests do
   describe "PUT /projects/:id/merge_requests/:merge_request_iid" do
     context 'updates force_remove_source_branch properly' do
       it 'sets to false' do
-        merge_request.update!(merge_params: { 'force_remove_source_branch' => true } )
+        merge_request.update!(merge_params: { 'force_remove_source_branch' => true })
 
         expect(merge_request.force_remove_source_branch?).to be_truthy
 
@@ -3034,7 +3034,7 @@ RSpec.describe API::MergeRequests do
       end
 
       it 'sets to true' do
-        merge_request.update!(merge_params: { 'force_remove_source_branch' => false } )
+        merge_request.update!(merge_params: { 'force_remove_source_branch' => false })
 
         expect(merge_request.force_remove_source_branch?).to be false
 

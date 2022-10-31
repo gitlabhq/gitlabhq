@@ -5799,7 +5799,7 @@ RSpec.describe Project, factory_default: :keep do
   end
 
   describe '#has_active_integrations?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:project) { create(:project) }
 
     it { expect(project.has_active_integrations?).to eq(false) }
 
@@ -5808,6 +5808,20 @@ RSpec.describe Project, factory_default: :keep do
 
       expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
       expect(project.has_active_integrations?).to eq(true)
+    end
+
+    it 'caches matching integrations' do
+      create(:custom_issue_tracker_integration, push_events: true, merge_requests_events: false, project: project)
+
+      expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
+      expect(project.has_active_integrations?).to eq(true)
+
+      count = ActiveRecord::QueryRecorder.new do
+        expect(project.has_active_integrations?(:merge_request_hooks)).to eq(false)
+        expect(project.has_active_integrations?).to eq(true)
+      end.count
+
+      expect(count).to eq(0)
     end
   end
 

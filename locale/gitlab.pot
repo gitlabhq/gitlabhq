@@ -38095,6 +38095,9 @@ msgstr ""
 msgid "Someone edited this test case at the same time you did. The description has been updated and you will need to make your changes again."
 msgstr ""
 
+msgid "Someone signed in to your %{host} account from a new location"
+msgstr ""
+
 msgid "Someone, hopefully you, has requested to reset the password for your GitLab account on %{link_to_gitlab}."
 msgstr ""
 
@@ -46227,6 +46230,9 @@ msgstr ""
 msgid "You are not allowed to create this tag as it is protected."
 msgstr ""
 
+msgid "You are not allowed to download code from this project."
+msgstr ""
+
 msgid "You are not allowed to log in using password"
 msgstr ""
 
@@ -46847,9 +46853,6 @@ msgid "YouTube"
 msgstr ""
 
 msgid "Your %{group} membership will now expire in %{days}."
-msgstr ""
-
-msgid "Your %{host} account was signed in to from a new location"
 msgstr ""
 
 msgid "Your %{spammable_entity_type} has been recognized as spam and has been discarded."

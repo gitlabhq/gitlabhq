@@ -238,7 +238,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
         context 'authorization token is invalid' do
           it 'responds with forbidden' do
-            authorize_artifacts(token: 'invalid', filesize: 100 )
+            authorize_artifacts(token: 'invalid', filesize: 100)
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end

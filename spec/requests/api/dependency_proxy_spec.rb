@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::DependencyProxy, api: true do
   let_it_be(:user) { create(:user) }
-  let_it_be(:blob) { create(:dependency_proxy_blob ) }
+  let_it_be(:blob) { create(:dependency_proxy_blob) }
   let_it_be(:group, reload: true) { blob.group }
 
   before do
