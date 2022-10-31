@@ -16125,7 +16125,13 @@ msgstr ""
 msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
+msgid "Experiment Candidates"
+msgstr ""
+
 msgid "ExperimentSubject|Must have exactly one of User, Namespace, or Project."
+msgstr ""
+
+msgid "Experiments"
 msgstr ""
 
 msgid "Expiration"
@@ -16852,6 +16858,9 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid "Feedback and Updates"
 msgstr ""
 
 msgid "Fetch and check out this merge request's feature branch:"
@@ -18177,6 +18186,9 @@ msgid "GitLab for Jira Cloud"
 msgstr ""
 
 msgid "GitLab group: %{source_link}"
+msgstr ""
+
+msgid "GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited"
 msgstr ""
 
 msgid "GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}"
@@ -24591,6 +24603,9 @@ msgstr ""
 msgid "MERGED"
 msgstr ""
 
+msgid "ML Experiments"
+msgstr ""
+
 msgid "MR widget|Back to the merge request"
 msgstr ""
 
@@ -24625,6 +24640,12 @@ msgid "MRDiff|Show changes only"
 msgstr ""
 
 msgid "MRDiff|Show full file"
+msgstr ""
+
+msgid "Machine Learning Experiment Tracking is in Incubating Phase"
+msgstr ""
+
+msgid "Machine Learning Experiments"
 msgstr ""
 
 msgid "Made this %{type} confidential."
@@ -26301,6 +26322,9 @@ msgid "MissingSSHKeyWarningLink|You can't push or pull repositories using SSH un
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
+msgstr ""
+
+msgid "MlExperimentsEmptyState|No Experiments to Show"
 msgstr ""
 
 msgid "ModalButton|Add projects"
@@ -41160,6 +41184,9 @@ msgid "This %{viewer} could not be displayed because %{reason}. You can %{option
 msgstr ""
 
 msgid "This Cron pattern is invalid"
+msgstr ""
+
+msgid "This Experiment has no logged Candidates"
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area."

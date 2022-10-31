@@ -61,6 +61,9 @@ function update_tests_metadata() {
 
   export FLAKY_RSPEC_GENERATE_REPORT="true"
   scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ${rspec_flaky_folder_path}all_*.json
+
+  # Prune flaky tests that weren't flaky in the last 7 days, *after* updating the flaky tests detected
+  # in this pipeline, so that first_flaky_at for tests that are still flaky is maintained.
   scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
 
   if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then

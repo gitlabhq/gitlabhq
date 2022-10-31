@@ -25,9 +25,11 @@ module API
       end
     end
 
-    desc 'Return all deploy tokens' do
-      detail 'This feature was introduced in GitLab 12.9.'
+    desc 'List all deploy tokens' do
+      detail 'Get a list of all deploy tokens across the GitLab instance. This endpoint requires administrator access. This feature was introduced in GitLab 12.9.'
       success Entities::DeployToken
+      is_array true
+      tags %w[deploy_tokens]
     end
     params do
       use :pagination
@@ -46,16 +48,18 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         use :pagination
         use :filter_params
       end
-      desc 'List deploy tokens for a project' do
-        detail 'This feature was introduced in GitLab 12.9'
+      desc 'List project deploy tokens' do
+        detail "Get a list of a project's deploy tokens. This feature was introduced in GitLab 12.9."
         success Entities::DeployToken
+        is_array true
+        tags %w[deploy_tokens]
       end
       get ':id/deploy_tokens' do
         authorize!(:read_deploy_token, user_project)
@@ -75,13 +79,14 @@ module API
                  type: Array[String],
                  coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                  values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-                 desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository", "read_registry", "write_registry", "read_package_registry", or "write_package_registry".'
-        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
+                 desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`.'
+        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).'
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
       desc 'Create a project deploy token' do
-        detail 'This feature was introduced in GitLab 12.9'
+        detail 'Creates a new deploy token for a project. This feature was introduced in GitLab 12.9.'
         success Entities::DeployTokenWithToken
+        tags %w[deploy_tokens]
       end
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_project)
@@ -98,11 +103,12 @@ module API
       end
 
       desc 'Get a project deploy token' do
-        detail 'This feature was introduced in GitLab 14.9'
+        detail "Get a single project's deploy token by ID. This feature was introduced in GitLab 14.9."
         success Entities::DeployToken
+        tags %w[deploy_tokens]
       end
       params do
-        requires :token_id, type: Integer, desc: 'The deploy token ID'
+        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
       get ':id/deploy_tokens/:token_id' do
         authorize!(:read_deploy_token, user_project)
@@ -113,10 +119,11 @@ module API
       end
 
       desc 'Delete a project deploy token' do
-        detail 'This feature was introduced in GitLab 12.9'
+        detail 'This feature was introduced in GitLab 12.9.'
+        tags %w[deploy_tokens]
       end
       params do
-        requires :token_id, type: Integer, desc: 'The deploy token ID'
+        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
       delete ':id/deploy_tokens/:token_id' do
         authorize!(:destroy_deploy_token, user_project)
@@ -130,16 +137,18 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, types: [Integer, String], desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         use :pagination
         use :filter_params
       end
-      desc 'List deploy tokens for a group' do
-        detail 'This feature was introduced in GitLab 12.9'
+      desc 'List group deploy tokens' do
+        detail "Get a list of a group's deploy tokens. This feature was introduced in GitLab 12.9."
         success Entities::DeployToken
+        is_array true
+        tags %w[deploy_tokens]
       end
       get ':id/deploy_tokens' do
         authorize!(:read_deploy_token, user_group)
@@ -154,18 +163,19 @@ module API
       end
 
       params do
-        requires :name, type: String, desc: 'The name of the deploy token'
+        requires :name, type: String, desc: "New deploy token's name"
         requires :scopes,
                  type: Array[String],
                  coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
                  values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-                 desc: 'Indicates the deploy token scopes. Must be at least one of "read_repository", "read_registry", "write_registry", "read_package_registry", or "write_package_registry".'
-        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided.'
+                 desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`'
+        optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
       desc 'Create a group deploy token' do
-        detail 'This feature was introduced in GitLab 12.9'
+        detail 'Creates a new deploy token for a group. This feature was introduced in GitLab 12.9.'
         success Entities::DeployTokenWithToken
+        tags %w[deploy_tokens]
       end
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_group)
@@ -182,11 +192,12 @@ module API
       end
 
       desc 'Get a group deploy token' do
-        detail 'This feature was introduced in GitLab 14.9'
+        detail "Get a single group's deploy token by ID. This feature was introduced in GitLab 14.9. "
         success Entities::DeployToken
+        tags %w[deploy_tokens]
       end
       params do
-        requires :token_id, type: Integer, desc: 'The deploy token ID'
+        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
       get ':id/deploy_tokens/:token_id' do
         authorize!(:read_deploy_token, user_group)
@@ -197,10 +208,11 @@ module API
       end
 
       desc 'Delete a group deploy token' do
-        detail 'This feature was introduced in GitLab 12.9'
+        detail 'Removes a deploy token from the group. This feature was introduced in GitLab 12.9.'
+        tags %w[deploy_tokens]
       end
       params do
-        requires :token_id, type: Integer, desc: 'The deploy token ID'
+        requires :token_id, type: Integer, desc: 'The ID of the deploy token'
       end
       delete ':id/deploy_tokens/:token_id' do
         authorize!(:destroy_deploy_token, user_group)

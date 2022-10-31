@@ -29,7 +29,7 @@ The Environments dashboard displays a paginated list of projects that includes
 up to three environments per project.
 
 The listed environments for each project are unique, such as
-"production", "staging", and so on. Review apps and other grouped
+"production" and "staging". Review apps and other grouped
 environments are not displayed.
 
 ## Adding a project to the dashboard

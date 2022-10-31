@@ -164,13 +164,17 @@ define these various types in a very flexible manner. Having GitLab use
 this system first (without introducing customer customization) allows us to
 better build out the initial system.
 
-NOTE:
-Currently work item's `base_type` is used to define static mapping of what
+Work item's `base_type` is used to define static mapping of what
 widgets are available for each type (current status), this definition should be
-rather stored in database table. The exact structure of the WIT widgets
-metadata is still to be defined. `base_type` was added to help converting other
-types of resources (requirements and incidents) into work items. Eventually (when
-these resources become regular work items), `base_type` will be removed.
+rather stored in a database table. The exact structure of the WIT widgets metadata
+is [still to be defined](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
+`base_type` was added to help convert other types of resources (requirements
+and incidents) into work items. Eventually (when these resources become regular
+work items), `base_type` will be removed.
+
+Until the architecture of WIT widgets is finalized, we are holding off on the creation of new work item
+types. If a new work item type is absolutely necessary, please reach out to a
+member of the [Project Management Engineering Team](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
 
 ### Custom work item types
 

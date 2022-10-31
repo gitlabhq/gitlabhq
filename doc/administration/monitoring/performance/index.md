@@ -41,7 +41,7 @@ Two types of metrics are collected:
 
 Transaction metrics are metrics that can be associated with a single
 transaction. This includes statistics such as the transaction duration, timings
-of any executed SQL queries, time spent rendering HAML views, and so on. These metrics
+of any executed SQL queries, and time spent rendering HAML views. These metrics
 are collected for every Rack request and Sidekiq job processed.
 
 ### Sampled Metrics

@@ -3599,7 +3599,7 @@ Use `secrets:vault` to specify secrets provided by a [HashiCorp Vault](https://w
 
 **Example of `secrets:vault`**:
 
-To specify all details explicitly and use the [KV-V2](https://www.vaultproject.io/docs/secrets/kv/kv-v2) secrets engine:
+To specify all details explicitly and use the [KV-V2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2) secrets engine:
 
 ```yaml
 job:

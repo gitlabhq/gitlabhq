@@ -5,7 +5,8 @@ module Packages
       class UpdateXmlService
         BUILDERS = {
           other: ::Packages::Rpm::RepositoryMetadata::BuildOtherXmlService,
-          primary: ::Packages::Rpm::RepositoryMetadata::BuildPrimaryXmlService
+          primary: ::Packages::Rpm::RepositoryMetadata::BuildPrimaryXmlService,
+          filelist: ::Packages::Rpm::RepositoryMetadata::BuildFilelistXmlService
         }.freeze
 
         def initialize(filename:, xml: nil, data: {})

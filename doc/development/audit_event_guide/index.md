@@ -21,7 +21,7 @@ While any events could trigger an Audit Event, not all events should. In general
 - Not attributable to one specific user.
 - Not of specific interest to an administrator or owner persona.
 - Are tracking information for product feature adoption.
-- Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/manage/compliance/audit-events/#what-is-not-planned-right-now).
+- Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/govern/compliance/audit-events/#what-is-not-planned-right-now).
 
 If you have any questions, please reach out to `@gitlab-org/govern/compliance` to see if an Audit Event, or some other approach, may be best for your event.
 

@@ -249,5 +249,5 @@ Shortly after that, the client agents should rejoin as well.
 
 If you have taken advantage of Consul to store other data and want to restore
 the failed node, follow the
-[Consul guide](https://learn.hashicorp.com/tutorials/consul/recovery-outage)
+[Consul guide](https://developer.hashicorp.com/consul/tutorials/datacenter-operations/recovery-outage)
 to recover a failed cluster.

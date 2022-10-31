@@ -46,4 +46,26 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
       it { is_expected.to be_nil }
     end
   end
+
+  describe "#latest_metrics" do
+    let_it_be(:candidate2) { create(:ml_candidates, experiment: candidate.experiment) }
+    let!(:metric1) { create(:ml_candidate_metrics, candidate: candidate2) }
+    let!(:metric2) { create(:ml_candidate_metrics, candidate: candidate2 ) }
+    let!(:metric3) { create(:ml_candidate_metrics, name: metric1.name, candidate: candidate2) }
+
+    subject { candidate2.latest_metrics }
+
+    it 'fetches only the last metric for the name' do
+      expect(subject).to match_array([metric2, metric3] )
+    end
+  end
+
+  describe "#including_metrics_and_params" do
+    subject { described_class.including_metrics_and_params.find_by(id: candidate.id) }
+
+    it 'loads latest metrics and params', :aggregate_failures do
+      expect(subject.association_cached?(:latest_metrics)).to be(true)
+      expect(subject.association_cached?(:params)).to be(true)
+    end
+  end
 end

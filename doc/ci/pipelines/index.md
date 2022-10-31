@@ -80,7 +80,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 ### Ref specs for runners
 
 When a runner picks a pipeline job, GitLab provides that job's metadata. This includes the [Git refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec),
-which indicate which ref (branch, tag, and so on) and commit (SHA1) are checked out from your
+which indicate which ref (such as branch or tag) and commit (SHA1) are checked out from your
 project repository.
 
 This table lists the refspecs injected for each pipeline type:
@@ -158,7 +158,7 @@ The pipeline now executes the jobs as configured.
 You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
 keywords to define [pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually. Use the description to explain
-what the variable is used for, what the acceptable values are, and so on.
+information such as what the variable is used for, and what the acceptable values are.
 
 Job-level variables cannot be pre-filled.
 

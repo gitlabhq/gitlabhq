@@ -24,7 +24,7 @@ module Gitlab
           'frame_src' => ContentSecurityPolicy::Directives.frame_src,
           'img_src' => "'self' data: blob: http: https:",
           'manifest_src' => "'self'",
-          'media_src' => "'self' data:",
+          'media_src' => "'self' data: http: https:",
           'script_src' => ContentSecurityPolicy::Directives.script_src,
           'style_src' => "'self' 'unsafe-inline'",
           'worker_src' => "#{Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'assets/')} blob: data:",

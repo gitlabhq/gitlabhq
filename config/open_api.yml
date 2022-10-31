@@ -22,9 +22,13 @@ metadata:
     description: Operations related to merge requests
   - name: deploy_keys
     description: Operations related to deploy keys
+  - name: deploy_tokens
+    description: Operations related to deploy tokens
   - name: deployments
     description: Operations related to deployments
   - name: features
     description: Operations related to managing Flipper-based feature flags
+  - name: freeze_periods
+    description: Operations related to deploy freeze periods
   - name: release_links
     description: Operations related to release assets (links)

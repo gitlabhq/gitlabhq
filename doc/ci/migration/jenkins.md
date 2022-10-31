@@ -49,8 +49,8 @@ things we have found that help this:
   your users understand why the effort is worth it. The value is clear when
   the work is done, but people need to be aware while it's in progress too.
 - Sponsorship and alignment from the relevant leadership team helps with the point above.
-- Spending time educating your users on what's different, sharing this document with them,
-  and so on helps ensure you are successful.
+- Spending time educating your users on what's different and sharing this document
+  with them helps ensure you are successful.
 - Finding ways to sequence or delay parts of the migration can help a lot, but you
   don't want to leave things in a non-migrated (or partially-migrated) state for too
   long. To gain all the benefits of GitLab, moving your existing Jenkins setup over
@@ -67,7 +67,7 @@ of transition, by letting you delay the migration of less urgent pipelines for a
 If you are interested in helping GitLab test the wrapper, join our [public testing issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215675) for instructions and to provide your feedback.
 
 NOTE:
-If you have a paid GitLab subscription, note that the JenkinsFile Wrapper is not packaged as part of GitLab, and falls outside of the scope of support. For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support.html).
+If you have a paid GitLab subscription, note that the JenkinsFile Wrapper is not packaged as part of GitLab, and falls outside of the scope of support. For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
 
 ## Important product differences
 
@@ -197,7 +197,7 @@ can leverage. You can see the complete list of packaging features in the
 
 ## Integrated features
 
-Where you may have used plugins to get things like code quality, unit tests, security scanning, and so on working in Jenkins,
+Where you may have used plugins to get things like code quality, unit tests, and security scanning working in Jenkins,
 GitLab takes advantage of our connected ecosystem to automatically pull these kinds of results into
 your merge requests, pipeline details pages, and other locations. You may find that you actually don't
 need to configure anything to have these appear.

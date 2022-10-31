@@ -47,7 +47,7 @@ All these operations put all files into a `build` folder, which is ready to be d
 
 ## How to transfer files to a live server
 
-You have multiple options: rsync, SCP, SFTP, and so on. For now, use SCP.
+You have multiple options such as rsync, SCP, or SFTP. For now, use SCP.
 
 To make this work, you must add a GitLab CI/CD Variable (accessible on `gitlab.example/your-project-name/variables`). Name this variable `STAGING_PRIVATE_KEY` and set it to the **private** SSH key of your server.
 

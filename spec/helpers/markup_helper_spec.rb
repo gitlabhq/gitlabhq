@@ -332,8 +332,8 @@ RSpec.describe MarkupHelper do
     context 'when file is Markdown' do
       let(:extension) { 'md' }
 
-      it 'renders using #markdown_unsafe helper method' do
-        expect(helper).to receive(:markdown_unsafe).with('wiki content', context)
+      it 'renders using CommonMark method' do
+        expect(Banzai).to receive(:render).with('wiki content', context)
 
         helper.render_wiki_content(wiki_page)
       end
@@ -377,24 +377,16 @@ RSpec.describe MarkupHelper do
       end
     end
 
-    context 'when file is Kramdown' do
+    context 'when file is R Markdown' do
       let(:extension) { 'rmd' }
-      let(:content) do
-        <<-EOF
-{::options parse_block_html="true" /}
+      let(:content) { '## Header' }
 
-<div>
-FooBar
-</div>
-        EOF
-      end
-
-      it 'renders using #markdown_unsafe helper method' do
-        expect(helper).to receive(:markdown_unsafe).with(content, context)
+      it 'renders using CommonMark method' do
+        expect(Markup::RenderingService).to receive(:new).and_call_original
 
         result = helper.render_wiki_content(wiki_page)
 
-        expect(result).to be_empty
+        expect(result).to include('Header</h2>')
       end
     end
 
@@ -424,23 +416,9 @@ FooBar
       expect(helper.markup('foo.rst', content).encoding.name).to eq('UTF-8')
     end
 
-    it 'delegates to #markdown_unsafe when file name corresponds to Markdown' do
-      expect(Gitlab::MarkupHelper).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
-      expect(helper).to receive(:markdown_unsafe).and_return('NOEL')
-
-      expect(helper.markup('foo.md', content)).to eq('NOEL')
-    end
-
-    it 'delegates to #asciidoc_unsafe when file name corresponds to AsciiDoc' do
-      expect(Gitlab::MarkupHelper).to receive(:asciidoc?).with('foo.adoc').and_return(true)
-      expect(helper).to receive(:asciidoc_unsafe).and_return('NOEL')
-
-      expect(helper.markup('foo.adoc', content)).to eq('NOEL')
-    end
-
     it 'uses passed in rendered content' do
       expect(Gitlab::MarkupHelper).not_to receive(:gitlab_markdown?)
-      expect(helper).not_to receive(:markdown_unsafe)
+      expect(Markup::RenderingService).not_to receive(:execute)
 
       expect(helper.markup('foo.md', content, rendered: '<p>NOEL</p>')).to eq('<p>NOEL</p>')
     end
@@ -448,113 +426,18 @@ FooBar
     it 'defaults to CommonMark' do
       expect(helper.markup('foo.md', 'x^2')).to include('x^2')
     end
-  end
 
-  describe '#markup_unsafe' do
-    subject { helper.markup_unsafe(file_name, text, context) }
+    it 'sets additional context for Asciidoc' do
+      context = {}
+      assign(:commit, commit)
+      assign(:ref, 'ref')
+      assign(:path, 'path')
 
-    let_it_be(:project_base) { create(:project, :repository) }
-    let_it_be(:context) { { project: project_base } }
+      expect(Gitlab::Asciidoc).to receive(:render)
 
-    let(:file_name) { 'foo.bar' }
-    let(:text) { 'Noël' }
+      helper.markup('foo.adoc', content, context)
 
-    context 'when text is missing' do
-      let(:text) { nil }
-
-      it 'returns an empty string' do
-        is_expected.to eq('')
-      end
-    end
-
-    context 'when rendering takes too long' do
-      before do
-        stub_const("MarkupHelper::RENDER_TIMEOUT", 0.1)
-        allow(Gitlab::OtherMarkup).to receive(:render) { sleep(0.2) }
-      end
-
-      it 'times out' do
-        expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          instance_of(Timeout::Error),
-          project_id: project.id, file_name: file_name
-        )
-
-        subject
-      end
-
-      context 'when markup_rendering_timeout is disabled' do
-        it 'waits until the execution completes' do
-          stub_feature_flags(markup_rendering_timeout: false)
-
-          expect(Gitlab::RenderTimeout).not_to receive(:timeout)
-
-          subject
-        end
-      end
-    end
-
-    context 'when file is a markdown file' do
-      let(:file_name) { 'foo.md' }
-
-      it 'returns html (rendered by Banzai)' do
-        expected_html = '<p data-sourcepos="1:1-1:5" dir="auto">Noël</p>'
-
-        expect(Banzai).to receive(:render).with(text, context) { expected_html }
-
-        is_expected.to eq(expected_html)
-      end
-
-      context 'when renderer returns an error' do
-        before do
-          allow(Banzai).to receive(:render).and_raise(StandardError, "An error")
-        end
-
-        it 'returns html (rendered by ActionView:TextHelper)' do
-          is_expected.to eq('<p>Noël</p>')
-        end
-
-        it 'logs the error' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-            instance_of(StandardError),
-            project_id: project.id, file_name: 'foo.md'
-          )
-
-          subject
-        end
-      end
-    end
-
-    context 'when file is asciidoc file' do
-      let(:file_name) { 'foo.adoc' }
-
-      it 'returns html (rendered by Gitlab::Asciidoc)' do
-        expected_html = "<div>\n<p>Noël</p>\n</div>"
-
-        expect(Gitlab::Asciidoc).to receive(:render).with(text, context) { expected_html }
-
-        is_expected.to eq(expected_html)
-      end
-    end
-
-    context 'when file is a regular text file' do
-      let(:file_name) { 'foo.txt' }
-
-      it 'returns html (rendered by ActionView::TagHelper)' do
-        is_expected.to eq('<pre class="plain-readme">Noël</pre>')
-      end
-    end
-
-    context 'when file has an unknown type' do
-      let(:file_name) { 'foo.tex' }
-
-      it 'returns html (rendered by Gitlab::OtherMarkup)' do
-        expected_html = 'Noël'
-
-        expect(Gitlab::OtherMarkup).to receive(:render).with(file_name, text, context) { expected_html }
-
-        is_expected.to eq(expected_html)
-      end
+      expect(context).to include(commit: commit, ref: 'ref', requested_path: 'path')
     end
   end
 

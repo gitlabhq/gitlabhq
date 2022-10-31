@@ -1,14 +1,21 @@
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
+import { defaultDataIdFromObject } from '@apollo/client/core';
 import { concatPagination } from '@apollo/client/utilities';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import { WIDGET_TYPE_MILESTONE } from '~/work_items/constants';
 
-export const temporaryConfig = {
+export const config = {
   typeDefs,
   cacheConfig: {
+    // included temporarily until Vuex is removed from boards app
+    dataIdFromObject: (object) => {
+      // eslint-disable-next-line no-underscore-dangle
+      return object.__typename === 'BoardList' ? object.iid : defaultDataIdFromObject(object);
+    },
+
     possibleTypes: {
       LocalWorkItemWidget: ['LocalWorkItemMilestone'],
     },
@@ -78,7 +85,7 @@ export const resolvers = {
   },
 };
 
-export const defaultClient = createDefaultClient(resolvers, temporaryConfig);
+export const defaultClient = createDefaultClient(resolvers, config);
 
 export const apolloProvider = new VueApollo({
   defaultClient,

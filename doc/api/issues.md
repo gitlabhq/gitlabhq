@@ -1506,8 +1506,8 @@ Please use `iid` of the `epic` attribute instead.
 Clone the issue to given project. If the user has insufficient permissions,
 an error message with status code `400` is returned.
 
-Copies as much data as possible as long as the target project contains equivalent labels, milestones,
-and so on.
+Copies as much data as possible as long as the target project contains equivalent
+criteria such as labels or milestones.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/clone

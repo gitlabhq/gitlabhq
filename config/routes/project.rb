@@ -471,6 +471,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
         end
+
+        namespace :ml do
+          resources :experiments, only: [:index, :show], controller: 'experiments'
+        end
       end
       # End of the /-/ scope.
 

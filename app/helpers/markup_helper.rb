@@ -6,12 +6,6 @@ module MarkupHelper
   include ActionView::Helpers::TextHelper
   include ActionView::Context
 
-  # Let's increase the render timeout
-  # For a smaller one, a test that renders the blob content statically fails
-  # We can consider removing this custom timeout when markup_rendering_timeout FF is removed:
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/365358
-  RENDER_TIMEOUT = 5.seconds
-
   # Use this in places where you would normally use link_to(gfm(...), ...).
   def link_to_markdown(body, url, html_options = {})
     return '' if body.blank?
@@ -97,8 +91,9 @@ module MarkupHelper
     context[:project] ||= @project
     context[:group] ||= @group
 
-    html = markdown_unsafe(text, context)
-    prepare_for_rendering(html, context)
+    html = Markup::RenderingService.new(text, context: context, postprocess_context: postprocess_context).execute
+
+    Hamlit::RailsHelpers.preserve(html)
   end
 
   def markdown_field(object, field, context = {})
@@ -114,8 +109,13 @@ module MarkupHelper
   def markup(file_name, text, context = {})
     context[:project] ||= @project
     context[:text_source] ||= :blob
-    html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
-    prepare_for_rendering(html, context)
+    prepare_asciidoc_context(file_name, context)
+
+    html = Markup::RenderingService
+      .new(text, file_name: file_name, context: context, postprocess_context: postprocess_context)
+      .execute
+
+    Hamlit::RailsHelpers.preserve(html)
   end
 
   def render_wiki_content(wiki_page, context = {})
@@ -123,35 +123,13 @@ module MarkupHelper
     return '' unless text.present?
 
     context = render_wiki_content_context(wiki_page.wiki, wiki_page, context)
-    html = markup_unsafe(wiki_page.path, text, context)
+    prepare_asciidoc_context(wiki_page.path, context)
 
-    prepare_for_rendering(html, context)
-  end
+    html = Markup::RenderingService
+      .new(text, file_name: wiki_page.path, context: context, postprocess_context: postprocess_context)
+      .execute
 
-  def markup_unsafe(file_name, text, context = {})
-    return '' unless text.present?
-
-    markup = proc do
-      if Gitlab::MarkupHelper.gitlab_markdown?(file_name)
-        markdown_unsafe(text, context)
-      elsif Gitlab::MarkupHelper.asciidoc?(file_name)
-        asciidoc_unsafe(text, context)
-      elsif Gitlab::MarkupHelper.plain?(file_name)
-        plain_unsafe(text)
-      else
-        other_markup_unsafe(file_name, text, context)
-      end
-    end
-
-    if Feature.enabled?(:markup_rendering_timeout, @project)
-      Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT, &markup)
-    else
-      markup.call
-    end
-  rescue StandardError => e
-    Gitlab::ErrorTracking.track_exception(e, project_id: @project&.id, file_name: file_name)
-
-    simple_format(text)
+    Hamlit::RailsHelpers.preserve(html)
   end
 
   # Returns the text necessary to reference `entity` across projects
@@ -214,29 +192,6 @@ module MarkupHelper
     end
   end
 
-  def markdown_unsafe(text, context = {})
-    Banzai.render(text, context)
-  end
-
-  def asciidoc_unsafe(text, context = {})
-    context.reverse_merge!(
-      commit: @commit,
-      ref: @ref,
-      requested_path: @path
-    )
-    Gitlab::Asciidoc.render(text, context)
-  end
-
-  def plain_unsafe(text)
-    content_tag :pre, class: 'plain-readme' do
-      text
-    end
-  end
-
-  def other_markup_unsafe(file_name, text, context = {})
-    Gitlab::OtherMarkup.render(file_name, text, context)
-  end
-
   def render_markdown_field(object, field, context = {})
     post_process = context.delete(:post_process)
     post_process = true if post_process.nil?
@@ -257,7 +212,15 @@ module MarkupHelper
   def prepare_for_rendering(html, context = {})
     return '' unless html.present?
 
-    context.reverse_merge!(
+    context.reverse_merge!(postprocess_context)
+
+    html = Banzai.post_process(html, context)
+
+    Hamlit::RailsHelpers.preserve(html)
+  end
+
+  def postprocess_context
+    {
       current_user: (current_user if defined?(current_user)),
 
       # RepositoryLinkFilter and UploadLinkFilter
@@ -265,11 +228,13 @@ module MarkupHelper
       wiki: @wiki,
       ref: @ref,
       requested_path: @path
-    )
+    }
+  end
 
-    html = Banzai.post_process(html, context)
+  def prepare_asciidoc_context(file_name, context)
+    return unless Gitlab::MarkupHelper.asciidoc?(file_name)
 
-    Hamlit::RailsHelpers.preserve(html)
+    context.reverse_merge!(commit: @commit, ref: @ref, requested_path: @path)
   end
 
   extend self

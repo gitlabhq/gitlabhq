@@ -2,7 +2,7 @@
 module Packages
   module Rpm
     module RepositoryMetadata
-      class BuildPrimaryXmlService
+      class BuildPrimaryXmlService < BuildXmlBaseService
         ROOT_TAG = 'metadata'
         ROOT_ATTRIBUTES = {
           xmlns: 'http://linux.duke.edu/metadata/common',
@@ -14,12 +14,8 @@ module Packages
         BASE_ATTRIBUTES = %i[name arch summary description url packager].freeze
         FORMAT_NODE_BASE_ATTRIBUTES = %i[license vendor group buildhost sourcerpm].freeze
 
-        def initialize(data)
-          @data = data
-        end
-
         def execute
-          builder = Nokogiri::XML::Builder.new do |xml|
+          super do |xml|
             xml.package(type: :rpm, 'xmlns:rpm': 'http://linux.duke.edu/metadata/rpm') do
               build_base_attributes(xml)
               xml.version epoch: data[:epoch], ver: data[:version], rel: data[:release]
@@ -30,13 +26,9 @@ module Packages
               build_format_node(xml)
             end
           end
-
-          Nokogiri::XML(builder.to_xml).at('package')
         end
 
         private
-
-        attr_reader :data
 
         def build_base_attributes(xml)
           BASE_ATTRIBUTES.each do |attribute|

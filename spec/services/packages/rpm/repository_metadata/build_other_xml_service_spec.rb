@@ -5,24 +5,22 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::BuildOtherXmlService do
   describe '#execute' do
     subject { described_class.new(data).execute }
 
-    context 'when updating existing xml' do
-      include_context 'with rpm package data'
+    include_context 'with rpm package data'
 
-      let(:data) { xml_update_params }
-      let(:changelog_xpath) { "//package/changelog" }
+    let(:data) { xml_update_params }
+    let(:changelog_xpath) { "//package/changelog" }
 
-      it 'adds all changelog nodes' do
-        result = subject
+    it 'adds all changelog nodes' do
+      result = subject
 
-        expect(result.xpath(changelog_xpath).count).to eq(data[:changelogs].count)
-      end
+      expect(result.xpath(changelog_xpath).count).to eq(data[:changelogs].count)
+    end
 
-      it 'set required date attribute' do
-        result = subject
+    it 'set required date attribute' do
+      result = subject
 
-        data[:changelogs].each do |changelog|
-          expect(result.at("#{changelog_xpath}[@date=\"#{changelog[:changelogtime]}\"]")).not_to be_nil
-        end
+      data[:changelogs].each do |changelog|
+        expect(result.at("#{changelog_xpath}[@date=\"#{changelog[:changelogtime]}\"]")).not_to be_nil
       end
     end
   end

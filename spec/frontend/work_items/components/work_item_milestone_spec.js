@@ -9,7 +9,7 @@ import {
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
-import { resolvers, temporaryConfig } from '~/graphql_shared/issuable_client';
+import { resolvers, config } from '~/graphql_shared/issuable_client';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -72,7 +72,7 @@ describe('WorkItemMilestone component', () => {
       [[projectMilestonesQuery, searchQueryHandler]],
       resolvers,
       {
-        typePolicies: temporaryConfig.cacheConfig.typePolicies,
+        typePolicies: config.cacheConfig.typePolicies,
       },
     );
 

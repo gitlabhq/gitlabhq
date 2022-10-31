@@ -1,0 +1,16 @@
+@import '../page_bundles/mixins_and_variables_and_functions';
+
+.ml-experiment-row {
+  .title {
+    margin-bottom: $gl-spacing-scale-1;
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .ml-experiment-info {
+    color: $gl-text-color-secondary;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+}

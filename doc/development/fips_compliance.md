@@ -203,7 +203,7 @@ This [GitHub pull request](https://github.com/awslabs/amazon-eks-ami/pull/898) m
 it possible to create an Amazon Linux 2 EKS AMI with FIPS enabled for Kubernetes v1.21.
 To build an image:
 
-1. [Install Packer](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli).
+1. [Install Packer](https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli).
 1. Run the following:
 
    ```shell

@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Polling interval multiplier **(FREE SELF)**
 
-The GitLab UI polls for updates for different resources (issue notes, issue titles, pipeline
-statuses, and so on) on a schedule appropriate to the resource.
+The GitLab UI polls for updates for different resources (such as issue notes, issue titles, and pipeline
+statuses) on a schedule appropriate to the resource.
 
 Adjust the multiplier on these schedules to adjust how frequently the GitLab UI polls for updates. If
 you set the multiplier to:

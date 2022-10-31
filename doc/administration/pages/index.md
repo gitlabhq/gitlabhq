@@ -820,8 +820,8 @@ database encryption. Proceed with caution.
 
 It's possible to run GitLab Pages on multiple servers if you wish to distribute
 the load. You can do this through standard load balancing practices such as
-configuring your DNS server to return multiple IPs for your Pages server,
-configuring a load balancer to work at the IP level, and so on. If you wish to
+configuring your DNS server to return multiple IPs for your Pages server, or
+configuring a load balancer to work at the IP level. If you wish to
 set up GitLab Pages on multiple servers, perform the above procedure for each
 Pages server.
 

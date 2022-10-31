@@ -1,0 +1,11 @@
+- breadcrumb_title _('ML Experiments')
+- page_title _('ML Experiments')
+
+.page-title-holder.d-flex.align-items-center
+  %h1.page-title.gl-font-size-h-display= _('Machine Learning Experiments')
+
+= render "incubation_banner"
+
+%div{ class: container_class }
+  .content-list.builds-content-list
+    = render "experiment_list", experiments: @experiments, project: @project

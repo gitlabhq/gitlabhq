@@ -20,11 +20,11 @@ required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/
 for more information about the syntax.
 
 GitLab has selected [Vault by HashiCorp](https://www.vaultproject.io) as the
-first supported provider, and [KV-V2](https://www.vaultproject.io/docs/secrets/kv/kv-v2)
+first supported provider, and [KV-V2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)
 as the first supported secrets engine.
 
 GitLab authenticates using Vault's
-[JSON Web Token (JWT) authentication method](https://www.vaultproject.io/docs/auth/jwt#jwt-authentication), using
+[JSON Web Token (JWT) authentication method](https://developer.hashicorp.com/vault/docs/auth/jwt#jwt-authentication), using
 the [JSON Web Token](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) (`CI_JOB_JWT`)
 introduced in GitLab 12.10.
 
@@ -88,10 +88,10 @@ To configure your Vault server:
    - `VAULT_SERVER_URL` - The URL of your Vault server, such as `https://vault.example.com:8200`.
      Required.
    - `VAULT_AUTH_ROLE` - Optional. The role to use when attempting to authenticate.
-     If no role is specified, Vault uses the [default role](https://www.vaultproject.io/api-docs/auth/jwt#default_role)
+     If no role is specified, Vault uses the [default role](https://developer.hashicorp.com/vault/api-docs/auth/jwt#default_role)
      specified when the authentication method was configured.
    - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted, default is `jwt`.
-   - `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://www.vaultproject.io/docs/enterprise/namespaces) to use for reading secrets and authentication.
+   - `VAULT_NAMESPACE` - Optional. The [Vault Enterprise namespace](https://developer.hashicorp.com/vault/docs/enterprise/namespaces) to use for reading secrets and authentication.
      If no namespace is specified, Vault uses the `root` ("`/`") namespace.
      The setting is ignored by Vault Open Source.
 
@@ -142,7 +142,7 @@ When a CI job attempts to authenticate, it specifies a role. You can use roles t
 different policies together. If authentication is successful, these policies are
 attached to the resulting Vault token.
 
-[Bound claims](https://www.vaultproject.io/docs/auth/jwt#bound-claims) are predefined
+[Bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims) are predefined
 values that are matched to the JWT's claims. With bounded claims, you can restrict access
 to specific GitLab users, specific projects, or even jobs running for specific Git
 references. You can have as many bounded claims you need, but they must *all* match
@@ -183,7 +183,7 @@ For a full list of `CI_JOB_JWT` claims, read the
 
 You can also specify some attributes for the resulting Vault tokens, such as time-to-live,
 IP address range, and number of uses. The full list of options is available in
-[Vault's documentation on creating roles](https://www.vaultproject.io/api-docs/auth/jwt#create-role)
+[Vault's documentation on creating roles](https://developer.hashicorp.com/vault/api-docs/auth/jwt#create-role)
 for the JSON web token method.
 
 ## Using a self-signed Vault server

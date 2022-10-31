@@ -29,7 +29,7 @@ import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subs
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
-import { temporaryConfig } from '~/graphql_shared/issuable_client';
+import { config } from '~/graphql_shared/issuable_client';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockParent,
@@ -101,7 +101,7 @@ describe('WorkItemDetail component', () => {
         handlers,
         {},
         {
-          typePolicies: includeWidgets ? temporaryConfig.cacheConfig.typePolicies : {},
+          typePolicies: includeWidgets ? config.cacheConfig.typePolicies : {},
         },
       ),
       propsData: { isModal, workItemId },

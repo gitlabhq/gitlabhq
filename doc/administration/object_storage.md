@@ -88,8 +88,8 @@ Object storage for <object type> must have a bucket specified
 If you want to use local storage for specific object types, you can
 [selectively disable object storages](#selectively-disabling-object-storage).
 
-Most types of objects, such as CI artifacts, LFS files, upload
-attachments, and so on can be saved in object storage by specifying a single
+Most types of objects, such as CI artifacts, LFS files, and upload
+attachments can be saved in object storage by specifying a single
 credential for object storage with multiple buckets.
 
 When the consolidated form is:
@@ -492,7 +492,7 @@ To migrate existing local data to object storage see the following guides:
 Prior to GitLab 13.2:
 
 - Object storage configuration for all types of objects such as CI/CD artifacts, LFS
-  files, upload attachments, and so on had to be configured independently.
+  files, and upload attachments had to be configured independently.
 - Object store connection parameters such as passwords and endpoint URLs had to be
   duplicated for each type.
 

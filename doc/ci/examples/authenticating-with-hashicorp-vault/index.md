@@ -29,7 +29,7 @@ You must replace the `vault.example.com` URL below with the URL of your Vault se
 
 ## How it works
 
-Each job has JSON Web Token (JWT) provided as CI/CD variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt#jwt-authentication) method.
+Each job has JSON Web Token (JWT) provided as CI/CD variable named `CI_JOB_JWT`. This JWT can be used to authenticate with Vault using the [JWT Auth](https://developer.hashicorp.com/vault/docs/auth/jwt#jwt-authentication) method.
 
 The following fields are included in the JWT:
 
@@ -90,7 +90,7 @@ The JWT is encoded by using RS256 and signed with a dedicated private key. The e
 
 You can use this JWT and your instance's JWKS endpoint (`https://gitlab.example.com/-/jwks`) to authenticate with a Vault server that is configured to allow the JWT Authentication method for authentication.
 
-When configuring roles in Vault, you can use [bound_claims](https://www.vaultproject.io/docs/auth/jwt#bound-claims) to match against the JWT's claims and restrict which secrets each CI job has access to.
+When configuring roles in Vault, you can use [bound_claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims) to match against the JWT's claims and restrict which secrets each CI job has access to.
 
 To communicate with Vault, you can use either its CLI client or perform API requests (using `curl` or another client).
 
@@ -109,7 +109,7 @@ $ vault kv get -field=password secret/myproject/production/db
 real-pa$$w0rd
 ```
 
-To configure your Vault server, start by enabling the [JWT Auth](https://www.vaultproject.io/docs/auth/jwt) method:
+To configure your Vault server, start by enabling the [JWT Auth](https://developer.hashicorp.com/vault/docs/auth/jwt) method:
 
 ```shell
 $ vault auth enable jwt
@@ -180,17 +180,17 @@ $ vault write auth/jwt/role/myproject-production - <<EOF
 EOF
 ```
 
-This example uses [bound_claims](https://www.vaultproject.io/api-docs/auth/jwt#bound_claims) to specify that only a JWT with matching values for the specified claims is allowed to authenticate.
+This example uses [bound_claims](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims) to specify that only a JWT with matching values for the specified claims is allowed to authenticate.
 
 Combined with [protected branches](../../../user/project/protected_branches.md), you can restrict who is able to authenticate and read the secrets.
 
-[`token_explicit_max_ttl`](https://www.vaultproject.io/api-docs/auth/jwt#token_explicit_max_ttl) specifies that the token issued by Vault, upon successful authentication, has a hard lifetime limit of 60 seconds.
+[`token_explicit_max_ttl`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#token_explicit_max_ttl) specifies that the token issued by Vault, upon successful authentication, has a hard lifetime limit of 60 seconds.
 
-[`user_claim`](https://www.vaultproject.io/api-docs/auth/jwt#user_claim) specifies the name for the Identity alias created by Vault upon a successful login.
+[`user_claim`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#user_claim) specifies the name for the Identity alias created by Vault upon a successful login.
 
-[`bound_claims_type`](https://www.vaultproject.io/api-docs/auth/jwt#bound_claims_type) configures the interpretation of the `bound_claims` values. If set to `glob`, the values are interpreted as globs, with `*` matching any number of characters.
+[`bound_claims_type`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims_type) configures the interpretation of the `bound_claims` values. If set to `glob`, the values are interpreted as globs, with `*` matching any number of characters.
 
-The claim fields listed in [the table above](#how-it-works) can also be accessed for [Vault's policy path templating](https://learn.hashicorp.com/tutorials/vault/policy-templating?in=vault/policies) purposes by using the accessor name of the JWT auth within Vault. The [mount accessor name](https://learn.hashicorp.com/tutorials/vault/identity#step-1-create-an-entity-with-alias) (`ACCESSOR_NAME` in the example below) can be retrieved by running `vault auth list`.
+The claim fields listed in [the table above](#how-it-works) can also be accessed for [Vault's policy path templating](https://developer.hashicorp.com/vault/tutorials/policies/policy-templating?in=vault%2Fpolicies) purposes by using the accessor name of the JWT auth within Vault. The [mount accessor name](https://developer.hashicorp.com/vault/tutorials/auth-methods/identity#step-1-create-an-entity-with-alias) (`ACCESSOR_NAME` in the example below) can be retrieved by running `vault auth list`.
 
 Policy template example making use of a named metadata field named `project_path`:
 
@@ -200,7 +200,7 @@ path "secret/data/{{identity.entity.aliases.ACCESSOR_NAME.metadata.project_path}
 }
 ```
 
-Role example to support the templated policy above, mapping the claim field `project_path` as a metadata field through use of [`claim_mappings`](https://www.vaultproject.io/api-docs/auth/jwt#claim_mappings) configuration:
+Role example to support the templated policy above, mapping the claim field `project_path` as a metadata field through use of [`claim_mappings`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#claim_mappings) configuration:
 
 ```plaintext
 {
@@ -212,7 +212,7 @@ Role example to support the templated policy above, mapping the claim field `pro
 }
 ```
 
-For the full list of options, see Vault's [Create Role documentation](https://www.vaultproject.io/api-docs/auth/jwt#create-role).
+For the full list of options, see Vault's [Create Role documentation](https://developer.hashicorp.com/vault/api-docs/auth/jwt#create-role).
 
 WARNING:
 Always restrict your roles to project or namespace by using one of the provided claims (for example, `project_id` or `namespace_id`). Otherwise any JWT generated by this instance may be allowed to authenticate using this role.
@@ -225,9 +225,9 @@ $ vault write auth/jwt/config \
     bound_issuer="gitlab.example.com"
 ```
 
-[bound_issuer](https://www.vaultproject.io/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the JWKS endpoint (`https://gitlab.example.com/-/jwks`) should be used to validate the token.
+[bound_issuer](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the JWKS endpoint (`https://gitlab.example.com/-/jwks`) should be used to validate the token.
 
-For the full list of available configuration options, see Vault's [API documentation](https://www.vaultproject.io/api-docs/auth/jwt#configure).
+For the full list of available configuration options, see Vault's [API documentation](https://developer.hashicorp.com/vault/api-docs/auth/jwt#configure).
 
 The following job, when run for the default branch, is able to read secrets under `secret/myproject/staging/`, but not the secrets under `secret/myproject/production/`:
 
@@ -242,7 +242,7 @@ read_secrets:
     # Vault's address can be provided here or as CI/CD variable
     - export VAULT_ADDR=http://vault.example.com:8200
     # Authenticate and get token. Token expiry time and other properties can be configured
-    # when configuring JWT Auth - https://www.vaultproject.io/api-docs/auth/jwt#parameters-1
+    # when configuring JWT Auth - https://developer.hashicorp.com/vault/api-docs/auth/jwt#parameters-1
     - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-staging jwt=$CI_JOB_JWT)"
     # Now use the VAULT_TOKEN to read the secret and store it in an environment variable
     - export PASSWORD="$(vault kv get -field=password secret/myproject/staging/db)"
@@ -271,7 +271,7 @@ read_secrets:
     # Vault's address can be provided here or as CI/CD variable
     - export VAULT_ADDR=http://vault.example.com:8200
     # Authenticate and get token. Token expiry time and other properties can be configured
-    # when configuring JWT Auth - https://www.vaultproject.io/api-docs/auth/jwt#parameters-1
+    # when configuring JWT Auth - https://developer.hashicorp.com/vault/api-docs/auth/jwt#parameters-1
     - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-production jwt=$CI_JOB_JWT)"
     # Now use the VAULT_TOKEN to read the secret and store it in environment variable
     - export PASSWORD="$(vault kv get -field=password secret/myproject/production/db)"
@@ -286,11 +286,11 @@ read_secrets:
 You can control `CI_JOB_JWT` access to Vault secrets by using Vault protections
 and GitLab features. For example, restrict the token by:
 
-- Using Vault [bound_claims](https://www.vaultproject.io/docs/auth/jwt#bound-claims)
+- Using Vault [bound_claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims)
   for specific groups using `group_claim`.
 - Hard coding values for Vault bound claims based on the `user_login` and `user_email`
   of specific users.
-- Setting Vault time limits for TTL of the token as specified in [`token_explicit_max_ttl`](https://www.vaultproject.io/api-docs/auth/jwt#token_explicit_max_ttl),
+- Setting Vault time limits for TTL of the token as specified in [`token_explicit_max_ttl`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#token_explicit_max_ttl),
   where the token expires after authentication.
 - Scoping the JWT to [GitLab protected branches](../../../user/project/protected_branches.md)
   that are restricted to a subset of project users.

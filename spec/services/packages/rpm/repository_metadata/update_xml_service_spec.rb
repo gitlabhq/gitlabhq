@@ -37,6 +37,16 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::UpdateXmlService do
       end
     end
 
+    shared_context 'with filelist xml file data' do
+      let(:filename) { :filelist }
+      let(:empty_xml) do
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <filelists xmlns="http://linux.duke.edu/metadata/filelists" packages="0"/>
+        XML
+      end
+    end
+
     context 'when building empty xml' do
       shared_examples 'generating empty xml' do
         it 'generate expected xml' do
@@ -54,6 +64,12 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::UpdateXmlService do
 
       context "for 'other' xml file" do
         include_context 'with other xml file data'
+
+        it_behaves_like 'generating empty xml'
+      end
+
+      context "for 'filelist' xml file" do
+        include_context 'with filelist xml file data'
 
         it_behaves_like 'generating empty xml'
       end
@@ -147,6 +163,12 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::UpdateXmlService do
 
       context "for 'other' xml file" do
         include_context 'with other xml file data'
+
+        it_behaves_like 'updating rpm xml file'
+      end
+
+      context "for 'filelist' xml file" do
+        include_context 'with filelist xml file data'
 
         it_behaves_like 'updating rpm xml file'
       end

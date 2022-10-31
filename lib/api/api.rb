@@ -172,8 +172,10 @@ module API
         mount ::API::AccessRequests
         mount ::API::Appearance
         mount ::API::DeployKeys
+        mount ::API::DeployTokens
         mount ::API::Deployments
         mount ::API::Features
+        mount ::API::FreezePeriods
         mount ::API::Metadata
         mount ::API::MergeRequestDiffs
         mount ::API::UserCounts
@@ -222,7 +224,6 @@ module API
       mount ::API::DebianGroupPackages
       mount ::API::DebianProjectPackages
       mount ::API::DependencyProxy
-      mount ::API::DeployTokens
       mount ::API::Discussions
       mount ::API::Environments
       mount ::API::ErrorTracking::ClientKeys
@@ -232,7 +233,6 @@ module API
       mount ::API::FeatureFlags
       mount ::API::FeatureFlagsUserLists
       mount ::API::Files
-      mount ::API::FreezePeriods
       mount ::API::GenericPackages
       mount ::API::Geo
       mount ::API::GoProxy

@@ -64,6 +64,6 @@ This error occurs when you use an activation code to activate your instance, but
 
 You may have connectivity issues due to the following reasons:
 
-- **You have an offline environment**: Configure your setup to allow connection to GitLab servers. If connection to GitLab servers is not possible, contact [GitLab support](https://about.gitlab.com/support/#contact-support) to request a license key.
+- **You have an offline environment**: Configure your setup to allow connection to GitLab servers. If connection to GitLab servers is not possible, contact your Sales Representative to request a license key. You can also contact [GitLab support](https://about.gitlab.com/support/#contact-support) if you need help finding out your Sales Representative.
 - **Firewall settings**: Enable an encrypted HTTPS connection from your GitLab instance to `customers.gitlab.com` (with IP addresses 104.18.26.123 and 104.18.27.123) on port 443.
 - **Customers Portal is not operational**: To check for performance or service disruptions, check the Customers Portal [status](https://status.gitlab.com/).

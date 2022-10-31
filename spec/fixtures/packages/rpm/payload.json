@@ -3,6 +3,9 @@
     "/usr/bin/test",
     "/usr/bin/test/hello.sh"
   ],
+  "directories": [
+    "/usr/bin/test/"
+  ],
   "changelogs": [
     {
       "changelogtext": "First build",

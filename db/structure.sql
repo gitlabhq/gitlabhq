@@ -11434,7 +11434,6 @@ CREATE TABLE application_settings (
     inactive_projects_min_size_mb integer DEFAULT 0 NOT NULL,
     inactive_projects_send_warning_email_after_months integer DEFAULT 1 NOT NULL,
     delayed_group_deletion boolean DEFAULT true NOT NULL,
-    maven_package_requests_forwarding boolean DEFAULT true NOT NULL,
     arkose_labs_namespace text DEFAULT 'client'::text NOT NULL,
     max_export_size integer DEFAULT 0,
     encrypted_slack_app_signing_secret bytea,
@@ -11473,17 +11472,18 @@ CREATE TABLE application_settings (
     cube_api_base_url text,
     encrypted_cube_api_key bytea,
     encrypted_cube_api_key_iv bytea,
+    maven_package_requests_forwarding boolean DEFAULT true NOT NULL,
+    dashboard_limit_enabled boolean DEFAULT false NOT NULL,
+    dashboard_limit integer DEFAULT 0 NOT NULL,
+    dashboard_notification_limit integer DEFAULT 0 NOT NULL,
+    dashboard_enforcement_limit integer DEFAULT 0 NOT NULL,
+    dashboard_limit_new_namespace_creation_enforcement_date date,
     jitsu_host text,
     jitsu_project_xid text,
     clickhouse_connection_string text,
     jitsu_administrator_email text,
     encrypted_jitsu_administrator_password bytea,
     encrypted_jitsu_administrator_password_iv bytea,
-    dashboard_limit_enabled boolean DEFAULT false NOT NULL,
-    dashboard_limit integer DEFAULT 0 NOT NULL,
-    dashboard_notification_limit integer DEFAULT 0 NOT NULL,
-    dashboard_enforcement_limit integer DEFAULT 0 NOT NULL,
-    dashboard_limit_new_namespace_creation_enforcement_date date,
     can_create_group boolean DEFAULT true NOT NULL,
     lock_maven_package_requests_forwarding boolean DEFAULT false NOT NULL,
     lock_pypi_package_requests_forwarding boolean DEFAULT false NOT NULL,
@@ -20192,8 +20192,8 @@ CREATE TABLE project_settings (
     selective_code_owner_removals boolean DEFAULT false NOT NULL,
     issue_branch_template text,
     show_diff_preview_in_email boolean DEFAULT true NOT NULL,
-    jitsu_key text,
     suggested_reviewers_enabled boolean DEFAULT false NOT NULL,
+    jitsu_key text,
     only_allow_merge_if_all_status_checks_passed boolean DEFAULT false NOT NULL,
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
@@ -28242,10 +28242,6 @@ CREATE UNIQUE INDEX p_ci_builds_metadata_build_id_partition_id_idx ON ONLY p_ci_
 
 CREATE UNIQUE INDEX index_ci_builds_metadata_on_build_id_partition_id_unique ON ci_builds_metadata USING btree (build_id, partition_id);
 
-CREATE UNIQUE INDEX p_ci_builds_metadata_id_partition_id_idx ON ONLY p_ci_builds_metadata USING btree (id, partition_id);
-
-CREATE UNIQUE INDEX index_ci_builds_metadata_on_id_partition_id_unique ON ci_builds_metadata USING btree (id, partition_id);
-
 CREATE INDEX p_ci_builds_metadata_project_id_idx ON ONLY p_ci_builds_metadata USING btree (project_id);
 
 CREATE INDEX index_ci_builds_metadata_on_project_id ON ci_builds_metadata USING btree (project_id);
@@ -32483,8 +32479,6 @@ ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_m
 ALTER INDEX p_ci_builds_metadata_build_id_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_id_and_interruptible;
 
 ALTER INDEX p_ci_builds_metadata_build_id_partition_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_partition_id_unique;
-
-ALTER INDEX p_ci_builds_metadata_id_partition_id_idx ATTACH PARTITION index_ci_builds_metadata_on_id_partition_id_unique;
 
 ALTER INDEX p_ci_builds_metadata_project_id_idx ATTACH PARTITION index_ci_builds_metadata_on_project_id;
 

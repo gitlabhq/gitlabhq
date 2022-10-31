@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 When a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs should run in that pipeline. You can configure jobs to run depending on
-the status of variables, the pipeline type, and so on.
+factors like the status of variables, or the pipeline type.
 
 To configure a job to be included or excluded from certain pipelines, you can use:
 
@@ -1061,7 +1061,7 @@ docker_build:
 
 When the `DOCKERFILES_DIR` variable is expanded in the `changes:` section, the full
 path becomes `path/to/files//*`. The double slashes might cause unexpected behavior
-depending on the keyword used, shell and OS of the runner, and so on.
+depending on factors like the keyword used, or the shell and OS of the runner.
 
 ### `You are not allowed to download code from this project.` error message
 

@@ -8,7 +8,6 @@ import {
   ListType,
   issuableTypes,
   BoardType,
-  listsQuery,
   DraggableItemTypes,
 } from 'ee_else_ce/boards/constants';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
@@ -21,7 +20,7 @@ import {
   getMoveData,
   updateListPosition,
 } from 'ee_else_ce/boards/boards_util';
-import { gqlClient } from '~/boards/graphql';
+import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
 import actions from '~/boards/stores/actions';
@@ -318,21 +317,18 @@ describe('fetchLists', () => {
       };
 
       const variables = {
-        query: listsQuery[issuableType].query,
-        variables: {
-          fullPath: 'gitlab-org',
-          boardId: fullBoardId,
-          filters: {},
-          isGroup,
-          isProject,
-        },
+        fullPath: 'gitlab-org',
+        boardId: fullBoardId,
+        filters: {},
+        isGroup,
+        isProject,
       };
 
       jest.spyOn(gqlClient, 'query').mockResolvedValue(queryResponse);
 
       await actions.fetchLists({ commit, state, dispatch });
 
-      expect(gqlClient.query).toHaveBeenCalledWith(variables);
+      expect(gqlClient.query).toHaveBeenCalledWith(expect.objectContaining({ variables }));
     },
   );
 });

@@ -212,8 +212,8 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 
 ##### Security
 
-1. I have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/engineering/security/#when-to-request-a-security-review), I have added the `~security` label and I have `@`-mentioned `@gitlab-com/gl-security/appsec`.
-1. I have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
+1. I have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/security/#when-to-request-a-security-review), I have added the `~security` label and I have `@`-mentioned `@gitlab-com/gl-security/appsec`.
+1. I have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
 
 ##### Deployment
 
@@ -508,7 +508,7 @@ people who add commits to an MR are not authorized to approve the merge request,
 so they must seek a maintainer who has not contributed to the MR to approve the MR before it can be merged.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
-[Change Management Controls](https://about.gitlab.com/handbook/engineering/security/security-assurance/security-compliance/guidance/change-management.html).
+[Change Management Controls](https://about.gitlab.com/handbook/security/security-assurance/security-compliance/guidance/change-management.html).
 
 To implement this policy in `gitlab-org/gitlab`, we have enabled the following
 settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:

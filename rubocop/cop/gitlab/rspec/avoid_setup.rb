@@ -68,7 +68,7 @@ module RuboCop
 
           NOT_ALLOWED = %i[let_it_be let_it_be_with_refind let_it_be_with_reload let let!
                            before after around it_behaves_like shared_examples shared_examples_for
-                           shared_context include_context].freeze
+                           shared_context include_context subject].freeze
 
           RESTRICT_ON_SEND = NOT_ALLOWED
 

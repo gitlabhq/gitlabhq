@@ -31,11 +31,14 @@ module RspecFlaky
       end
     end
 
-    def update_flakiness!(last_attempts_count: nil)
+    def update!(example_hash)
+      attributes[:file] = example_hash[:file]
+      attributes[:line] = example_hash[:line]
+      attributes[:description] = example_hash[:description]
       attributes[:first_flaky_at] ||= Time.now
       attributes[:last_flaky_at] = Time.now
       attributes[:flaky_reports] += 1
-      attributes[:last_attempts_count] = last_attempts_count if last_attempts_count
+      attributes[:last_attempts_count] = example_hash[:last_attempts_count] if example_hash[:last_attempts_count]
 
       if ENV['CI_JOB_URL']
         attributes[:last_flaky_job] = "#{ENV['CI_JOB_URL']}"

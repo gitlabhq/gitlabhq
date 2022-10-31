@@ -34,7 +34,7 @@ own advantages. These methods can be mixed and matched if needed:
 ## Basic Pipelines
 
 This is the simplest pipeline in GitLab. It runs everything in the build stage concurrently,
-and once all of those finish, it runs everything in the test stage the same way, and so on.
+and once all of those finish, it runs everything in the test and subsequent stages the same way.
 It's not the most efficient, and if you have lots of steps it can grow quite complex, but it's
 easier to maintain:
 

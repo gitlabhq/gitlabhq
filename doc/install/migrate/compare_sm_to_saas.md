@@ -83,7 +83,7 @@ In a self-managed instance:
 
 On GitLab SaaS:
 
-- You cannot use internal encryption key for the data store ([bring-your-own-key](https://about.gitlab.com/handbook/engineering/security/vulnerability_management/encryption-policy.html#rolling-your-own-crypto)).
+- You cannot use internal encryption key for the data store ([bring-your-own-key](https://about.gitlab.com/handbook/security/threat-management/vulnerability-management/encryption-policy.html#rolling-your-own-crypto)).
 - You cannot view console logs.
 - You cannot enforce jobs on every pipeline across the group or organization.
 - You cannot configure or control data backups. You must use [group](../../api/group_import_export.md) and [project](../../api/project_import_export.md) export.
@@ -106,7 +106,7 @@ In a self-managed instance, you control the encryption type and configuration.
 
 On GitLab SaaS:
 
-- An [Access Management Process](https://about.gitlab.com/handbook/engineering/security/#access-management-process) is in place.
+- An [Access Management Process](https://about.gitlab.com/handbook/security/#access-management-process) is in place.
 - All data on GitLab.com is encrypted at rest by default. Access to encryption keys is strictly managed by GitLab.
 - GitLab does not access your tenant data except as part of a verified service request from you.
 

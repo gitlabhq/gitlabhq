@@ -72,7 +72,7 @@ Some drawbacks of a package with bundled dependencies:
 1. Duplication with possibly existing software.
 1. Less flexibility in configuration.
 
-## Why would I install an omnibus package when I can use a system package?
+## Why would you install an omnibus package when you can use a system package?
 
 The answer can be simplified to: less maintenance required. Instead of handling
 multiple packages that *can* break existing functionality if the versions are

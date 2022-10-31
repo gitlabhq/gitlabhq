@@ -29,7 +29,7 @@ Members of every subgroup and project in the group:
 
 To subscribe to GitLab SaaS:
 
-1. View the [GitLab SaaS feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/)
+1. View the [GitLab SaaS feature comparison](https://about.gitlab.com/pricing/feature-comparison/)
    and decide which tier you want.
 1. Create a user account for yourself by using the
    [sign up page](https://gitlab.com/users/sign_up).

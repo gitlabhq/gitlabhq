@@ -34,7 +34,10 @@ review-build-cng-env:
     - .review:rules:review-build-cng
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:3.0-alpine3.13
   stage: prepare
-  needs: []
+  needs:
+    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build-assets-image
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem

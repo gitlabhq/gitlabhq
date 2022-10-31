@@ -337,6 +337,29 @@ RSpec.describe Trigger do
           it 'sets GITLAB_ASSETS_TAG to CI_COMMIT_SHA' do
             expect(subject.variables['GITLAB_ASSETS_TAG']).to eq(env['CI_COMMIT_SHA'])
           end
+
+          context 'when cached-assets-hash.txt does not exist' do
+            before do
+              expect(File).to receive(:exist?).with('cached-assets-hash.txt').and_return(false)
+            end
+
+            it 'sets GITLAB_ASSETS_TAG to CI_COMMIT_SHA' do
+              expect(subject.variables['GITLAB_ASSETS_TAG']).to eq(env['CI_COMMIT_SHA'])
+            end
+          end
+
+          context 'when cached-assets-hash.txt exists' do
+            before do
+              allow(File).to receive(:exist?).and_call_original
+              allow(File).to receive(:read).and_call_original
+              expect(File).to receive(:exist?).with('cached-assets-hash.txt').and_return(true)
+              expect(File).to receive(:read).with('cached-assets-hash.txt').and_return("42")
+            end
+
+            it 'sets GITLAB_ASSETS_TAG to CI_COMMIT_SHA' do
+              expect(subject.variables['GITLAB_ASSETS_TAG']).to eq("assets-hash-42")
+            end
+          end
         end
       end
 

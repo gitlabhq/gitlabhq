@@ -27,7 +27,7 @@ module RspecFlaky
       return unless current_example.attempts > 1
 
       flaky_example = suite_flaky_examples.fetch(current_example.uid) { RspecFlaky::FlakyExample.new(current_example.to_h) }
-      flaky_example.update_flakiness!(last_attempts_count: current_example.attempts)
+      flaky_example.update!(current_example.to_h)
 
       flaky_examples[current_example.uid] = flaky_example
     end

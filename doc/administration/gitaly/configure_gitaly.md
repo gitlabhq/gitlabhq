@@ -1100,8 +1100,8 @@ benefit from it. It is orthogonal to:
 
 - The transport (HTTP or SSH).
 - Git protocol version (v0 or v2).
-- The type of fetch (full clones, incremental fetches, shallow clones,
-  partial clones, and so on).
+- The type of fetch, such as full clones, incremental fetches, shallow clones,
+  or partial clones.
 
 The strength of this cache is its ability to deduplicate concurrent
 identical fetches. It:

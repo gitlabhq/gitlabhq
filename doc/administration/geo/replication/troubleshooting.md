@@ -1218,7 +1218,8 @@ If you set up a new secondary from scratch, you must also [remove the old site f
 
 The most common problems that prevent the database from replicating correctly are:
 
-- **Secondary** sites cannot reach the **primary** site. Check credentials, [firewall rules](../index.md#firewall-rules), and so on.
+- **Secondary** sites cannot reach the **primary** site. Check credentials and
+  [firewall rules](../index.md#firewall-rules).
 - SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** site.
 - Database storage disk is full.
 - Database replication slot is misconfigured.

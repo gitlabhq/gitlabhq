@@ -13,7 +13,7 @@ This page describes how to:
 
 ## Snowplow JavaScript frontend tracking
 
-GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/)
+GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/)
 to track custom events.
 
 For the recommended frontend tracking implementation, see [Usage recommendations](#usage-recommendations).
@@ -349,7 +349,7 @@ describe('MyTracking', () => {
 
 ### Form tracking
 
-To enable Snowplow automatic [form tracking](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracking-specific-events/#form-tracking):
+To enable Snowplow automatic [form tracking](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracking-specific-events/#form-tracking):
 
 1. Call `Tracking.enableFormTracking` when the DOM is ready.
 1. Provide a `config` object that includes at least one of the following elements:
@@ -389,7 +389,7 @@ describe('MyFormTracking', () => {
 
 ## Implement Ruby backend tracking
 
-`Gitlab::Tracking` is an interface that wraps the [Snowplow Ruby Tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/ruby-tracker/) for tracking custom events.
+`Gitlab::Tracking` is an interface that wraps the [Snowplow Ruby Tracker](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/ruby-tracker/) for tracking custom events.
 Backend tracking provides:
 
 - User behavior tracking
@@ -451,7 +451,7 @@ Before you test frontend events in development, you must:
 1. Turn off ad blockers that could prevent Snowplow JavaScript from loading in your environment.
 1. Turn off "Do Not Track" (DNT) in your browser.
 
-All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#Setting_a_custom_page_URL_and_referrer_URL) personally identifiable
+All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#setting-a-custom-page-url-and-referrer-url) personally identifiable
 information (PII). PII includes usernames, group, and project names.
 Page titles are hardcoded as `GitLab` for the same reason.
 
@@ -477,7 +477,7 @@ For a video tutorial, see the [Snowplow plugin walk through](https://www.youtube
 
 #### Snowplow Micro
 
-[Snowplow Micro](https://snowplowanalytics.com/blog/2019/07/17/introducing-snowplow-micro/) is a
+[Snowplow Micro](https://snowplow.io/blog/introducing-snowplow-micro/) is a
 Docker-based solution for testing backend and frontend in a local development environment. Snowplow Micro
 records the same events as the full Snowplow pipeline. To query events, use the Snowplow Micro API.
 

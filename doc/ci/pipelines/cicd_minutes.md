@@ -232,7 +232,7 @@ For this reduced cost factor:
 
 - The merge request source project must be a fork of a GitLab-maintained project,
   such as [`gitlab-com/www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-com),
-  [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab), and so on.
+  or [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab).
 - The merge request target project must be the fork's parent project.
 - The pipeline must be a merge request, merged results, or merge train pipeline.
 

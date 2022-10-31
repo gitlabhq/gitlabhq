@@ -26,8 +26,8 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Terraform plan](../../user/infrastructure/index.md).
 
 The token has the same permissions to access the API as the user that caused the
-job to run. A user can cause a job to run by pushing a commit, triggering a manual job,
-being the owner of a scheduled pipeline, and so on. Therefore, this user must be assigned to
+job to run. A user can cause a job to run by taking action like pushing a commit,
+triggering a manual job, or being the owner of a scheduled pipeline. Therefore, this user must be assigned to
 [a role that has the required privileges](../../user/permissions.md#gitlab-cicd-permissions).
 
 The token is valid only while the pipeline job runs. After the job finishes, you can't

@@ -25,8 +25,8 @@ from [owasp.org](https://owasp.org/).
 ### What data does the application receive, produce, and process?
 
 - Geo streams almost all data held by a GitLab instance between sites. This
-  includes full database replication, most files (user-uploaded attachments,
-  and so on) and repository + wiki data. In a typical configuration, this will
+  includes full database replication, most files such as user-uploaded attachments,
+  and repository + wiki data. In a typical configuration, this will
   happen across the public Internet, and be TLS-encrypted.
 - PostgreSQL replication is TLS-encrypted.
 - See also: [only TLSv1.2 should be supported](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/2948)
@@ -37,7 +37,7 @@ from [owasp.org](https://owasp.org/).
   private projects. Geo replicates them all indiscriminately. "Selective sync"
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** site if desired.
-- See also: [GitLab data classification policy](https://about.gitlab.com/handbook/engineering/security/data-classification-standard.html).
+- See also: [GitLab data classification policy](https://about.gitlab.com/handbook/security/data-classification-standard.html).
 
 ### What data backup and retention requirements have been defined for the application?
 
@@ -59,8 +59,8 @@ from [owasp.org](https://owasp.org/).
   (notably a HTTP/HTTPS web application, and HTTP/HTTPS or SSH Git repository
   access), but is constrained to read-only activities. The principal use case is
   envisioned to be cloning Git repositories from the **secondary** site in favor of the
-  **primary** site, but end-users may use the GitLab web interface to view projects,
-  issues, merge requests, snippets, and so on.
+  **primary** site, but end-users may use the GitLab web interface to view information like projects,
+  issues, merge requests, and snippets.
 
 ### What security expectations do the end‐users have?
 

@@ -1211,7 +1211,7 @@ Example usage for setting a `body-json` override:
 }
 ```
 
-Note that each JSON property name in the object `body-json` is set to a [JSON Path](https://goessner.net/articles/JsonPath/)
+Each JSON property name in the object `body-json` is set to a [JSON Path](https://goessner.net/articles/JsonPath/)
 expression. The JSON Path expression `$.credentials.access-token` identifies the node to be
 overridden with the value `iddqd!42.$`. The override engine uses `body-json` when the request body
 has only [JSON](https://www.json.org/json-en.html) content.
@@ -1250,7 +1250,7 @@ the second entry overrides an XML element:
 }
 ```
 
-Note that each JSON property name in the object `body-xml` is set to an
+Each JSON property name in the object `body-xml` is set to an
 [XPath v2](https://www.w3.org/TR/xpath20/)
 expression. The XPath expression `/credentials/@isEnabled` identifies the attribute node to override
 with the value `true`. The XPath expression `/credentials/access-token/text()` identifies the
@@ -1392,7 +1392,7 @@ It is also possible to write messages from your script to a log file that is col
 
 Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during normal running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
-Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Please notice two things in the script:
+Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Notice two things in the script:
 
 - Log file is saved in the location indicated by the environment variable `CI_PROJECT_DIR`.
 - Log filename should match `gl-*.log`.
@@ -1871,7 +1871,7 @@ variables:
 
 ##### Excluding two URLs and their child resources
 
-In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
+To exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
 
 ```yaml
 stages:
@@ -1888,7 +1888,11 @@ variables:
 
 ##### Excluding URL using regular expressions
 
-In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
+To exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more), we could use `https://target/api/v.*/user/create$`. In the previous regular expression:
+
+- `.` indicates any character.
+- `*` indicates zero or more times.
+- `$` indicates that the URL should end there.
 
 ```yaml
 stages:
@@ -2507,16 +2511,16 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 
 1. Identify the validation errors.
     1. Use the [Swagger Editor](https://editor.swagger.io/) to identify validation problems in your specification. The visual nature of the Swagger Editor makes it easier to understand what needs to change.
-    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Note that JSON Schema validation messages might not be easy to understand. This is why we recommend the use of editors to validate schema documents.
+    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
 1. Review the documentation for the OpenAPI generation your framework/tech stack is using. Identify the changes needed to produce a correct OpenAPI document.
-1. Once the validation issues are resolved, re-run your pipeline.
+1. After the validation issues are resolved, re-run your pipeline.
 
 **For manually created OpenAPI Specifications**
 
 1. Identify the validation errors.
    1. The simplest solution is to use a visual tool to edit and validate the OpenAPI document. For example the [Swagger Editor](https://editor.swagger.io/) highlights schema errors and possible solutions.
-   1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Correct each of the validation failures and then resubmit the OpenAPI doc. Note that JSON Schema validation message might not be easy to understand. This is why we recommend the use of editors to validate document.
-1. Once the validation issues are resolved, re-run your pipeline.
+   1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Correct each of the validation failures and then resubmit the OpenAPI doc. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
+1. After the validation issues are resolved, re-run your pipeline.
 
 ### `Failed to start scanner session (version header not found)`
 
@@ -2538,7 +2542,10 @@ The API Fuzzing analyzer outputs an error message when it cannot determine the t
 
 There is an order of precedence in which the API Fuzzing analyzer tries to get the target API when checking the different sources. First, it will try to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API Fuzzing analyzer will attempt to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API Fuzzing analyzer will then use the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
 
-The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case please refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
+The best-suited solution depends on whether or not your target API changes for each deployment:
+
+- If the target API is the same for each deployment (a static environment), use the [static environment solution](#static-environment-solution).
+- If the target API changes for each deployment, use a [dynamic environment solution](#dynamic-environment-solutions).
 
 #### Static environment solution
 
@@ -2643,10 +2650,10 @@ API Fuzzing uses the specified media types in the OpenAPI document to generate r
 
 ## Get support or request an improvement
 
-To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/get-help/).
+To get support for your particular problem use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and API Fuzzing.
-Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
+Use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 
@@ -2658,7 +2665,7 @@ When experiencing a behavior not working as expected, consider providing context
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
 WARNING:
-**Sanitize data attached to a support issue**. Please remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+**Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
 
 ## Glossary
 

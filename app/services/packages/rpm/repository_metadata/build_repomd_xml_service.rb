@@ -3,8 +3,6 @@ module Packages
   module Rpm
     module RepositoryMetadata
       class BuildRepomdXmlService
-        attr_reader :data
-
         ROOT_ATTRIBUTES = {
           xmlns: 'http://linux.duke.edu/metadata/repo',
           'xmlns:rpm': 'http://linux.duke.edu/metadata/rpm'
@@ -26,12 +24,6 @@ module Packages
         end
 
         def execute
-          build_repomd
-        end
-
-        private
-
-        def build_repomd
           Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
             xml.repomd(ROOT_ATTRIBUTES) do
               xml.revision Time.now.to_i
@@ -39,6 +31,10 @@ module Packages
             end
           end.to_xml
         end
+
+        private
+
+        attr_reader :data
 
         def build_data_info(xml)
           data.each do |filename, info|

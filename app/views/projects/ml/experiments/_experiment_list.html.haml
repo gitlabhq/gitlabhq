@@ -1,0 +1,7 @@
+- if experiments.blank?
+  .nothing-here-block= s_('MlExperimentsEmptyState|No Experiments to Show')
+- else
+  .ml-experiments-list-holder
+    %ul.content-list
+      = render partial: 'experiment', collection: experiments, as: :experiment
+      = paginate_collection @experiments

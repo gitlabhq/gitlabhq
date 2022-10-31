@@ -12,14 +12,14 @@ import {
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { defaultClient } from '~/graphql_shared/issuable_client';
 import { fullBoardId } from './boards_util';
-import { gqlClient } from './graphql';
 
 Vue.use(VueApollo);
 Vue.use(PortalVue);
 
 const apolloProvider = new VueApollo({
-  defaultClient: gqlClient,
+  defaultClient,
 });
 
 function mountBoardApp(el) {
