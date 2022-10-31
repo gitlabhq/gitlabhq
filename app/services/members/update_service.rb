@@ -12,7 +12,10 @@ module Members
       old_access_level = member.human_access
       old_expiry = member.expires_at
 
-      if member.update(params)
+      member.attributes = params
+      return success(member: member) unless member.changed?
+
+      if member.save
         after_execute(action: permission, old_access_level: old_access_level, old_expiry: old_expiry, member: member)
 
         # Deletes only confidential issues todos for guests

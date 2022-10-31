@@ -2,6 +2,7 @@
 
 require 'asciidoctor'
 require 'asciidoctor-plantuml'
+require 'asciidoctor/extensions/asciidoctor_kroki/version'
 require 'asciidoctor/extensions/asciidoctor_kroki/extension'
 require 'asciidoctor/extensions'
 require 'gitlab/asciidoc/html5_converter'

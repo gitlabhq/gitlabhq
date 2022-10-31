@@ -24,7 +24,7 @@
 {"name":"asana","version":"0.10.13","platform":"ruby","checksum":"36d0d37f8dd6118a54580f1b80224875d7b6a9027598938e1722a508bfc2d7ac"},
 {"name":"asciidoctor","version":"2.0.17","platform":"ruby","checksum":"ed5b5e399e8d64994cc16f0983f993d6e33990909a8415b6fc8b786cdeb00f3d"},
 {"name":"asciidoctor-include-ext","version":"0.4.0","platform":"ruby","checksum":"406adb9d2fbfc25536609ca13b787ed704dc06a4e49d6709b83f3bad578f7878"},
-{"name":"asciidoctor-kroki","version":"0.5.0","platform":"ruby","checksum":"622c8b74796689bdaf8abdf89ad5295b11ce310e3d193e28f19e5baf58d45f12"},
+{"name":"asciidoctor-kroki","version":"0.7.0","platform":"ruby","checksum":"528ae4e49cae10e98c76e91f9aa40c67bf8540aa5ce4bbd44c5cd57af9f0b121"},
 {"name":"asciidoctor-plantuml","version":"0.0.16","platform":"ruby","checksum":"407e47cd1186ded5ccc75f0c812e5524c26c571d542247c5132abb8f47bd1793"},
 {"name":"ast","version":"2.4.2","platform":"ruby","checksum":"1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12"},
 {"name":"atlassian-jwt","version":"0.2.0","platform":"ruby","checksum":"52e653e9d6062d7a740c3675b0e79fa08367927c6fc17f5476d1b6b3798c6eb2"},

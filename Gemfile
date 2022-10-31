@@ -187,7 +187,7 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 2.0.17'
 gem 'asciidoctor-include-ext', '~> 0.4.0', require: false
 gem 'asciidoctor-plantuml', '~> 0.0.16'
-gem 'asciidoctor-kroki', '~> 0.5.0', require: false
+gem 'asciidoctor-kroki', '~> 0.7.0', require: false
 gem 'rouge', '~> 3.30.0'
 gem 'truncato', '~> 0.7.12'
 gem 'bootstrap_form', '~> 4.2.0'

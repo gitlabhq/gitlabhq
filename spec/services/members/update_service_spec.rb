@@ -14,6 +14,11 @@ RSpec.describe Members::UpdateService do
     { access_level: access_level }
   end
 
+  before do
+    project.add_developer(member_user)
+    group.add_developer(member_user)
+  end
+
   subject { described_class.new(current_user, params).execute(member, permission: permission) }
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
@@ -81,11 +86,6 @@ RSpec.describe Members::UpdateService do
         expect(result[:status]).to eq(:error)
       end
     end
-  end
-
-  before do
-    project.add_developer(member_user)
-    group.add_developer(member_user)
   end
 
   context 'when current user cannot update the given member' do
@@ -181,6 +181,56 @@ RSpec.describe Members::UpdateService do
           let(:access_level) { Gitlab::Access::MAINTAINER }
         end
       end
+    end
+  end
+
+  context 'authorization updates' do
+    let_it_be(:user) { create(:user) }
+
+    shared_examples 'manages authorization updates' do
+      context 'access level changes' do
+        let(:params) do
+          { access_level: Gitlab::Access::MAINTAINER }
+        end
+
+        it 'authorization update callback is triggered' do
+          expect(member).to receive(:refresh_member_authorized_projects).once
+
+          described_class.new(current_user, params).execute(member, permission: permission)
+        end
+      end
+
+      context 'no attribute changes' do
+        let(:params) do
+          { access_level: Gitlab::Access::DEVELOPER }
+        end
+
+        it 'authorization update callback is not triggered' do
+          expect(member).not_to receive(:refresh_member_authorized_projects)
+
+          described_class.new(current_user, params).execute(member, permission: permission)
+        end
+      end
+    end
+
+    context 'group member' do
+      let(:source) { group }
+
+      before do
+        group.add_owner(current_user)
+      end
+
+      include_examples 'manages authorization updates'
+    end
+
+    context 'project member' do
+      let(:source) { project }
+
+      before do
+        project.add_maintainer(current_user)
+      end
+
+      include_examples 'manages authorization updates'
     end
   end
 end

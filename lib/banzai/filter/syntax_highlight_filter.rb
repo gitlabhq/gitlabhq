@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'rouge/plugins/common_mark'
-require "asciidoctor/extensions/asciidoctor_kroki/extension"
+require 'asciidoctor/extensions/asciidoctor_kroki/version'
+require 'asciidoctor/extensions/asciidoctor_kroki/extension'
 
 # Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/code_block.js
 module Banzai

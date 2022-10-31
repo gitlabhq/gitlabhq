@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-require "asciidoctor/extensions/asciidoctor_kroki/extension"
+require 'nokogiri'
+require 'asciidoctor/extensions/asciidoctor_kroki/version'
+require 'asciidoctor/extensions/asciidoctor_kroki/extension'
 
 module Banzai
   module Filter

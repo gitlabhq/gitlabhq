@@ -93,7 +93,7 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
 location, so even if the assets move to a different location, you can continue
-to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-link) or [updating](../../../api/releases/links.md#update-a-link) using the `filepath` API attribute.
+to use the same URL. This is defined during [link creation](../../../api/releases/links.md#create-a-release-link) or [updating](../../../api/releases/links.md#update-a-release-link) using the `filepath` API attribute.
 
 The format of the URL is:
 
@@ -133,7 +133,7 @@ The format of the URL is:
 https://host/namespace/project/-/releases/permalink/latest/downloads/:filepath
 ```
 
-If you have an asset with [`filepath`](../../../api/releases/links.md#create-a-link) for the `v11.9.0-rc2` latest release in the `gitlab-org`
+If you have an asset with [`filepath`](../../../api/releases/links.md#create-a-release-link) for the `v11.9.0-rc2` latest release in the `gitlab-org`
 namespace and `gitlab-runner` project on `gitlab.com`, for example:
 
 ```json

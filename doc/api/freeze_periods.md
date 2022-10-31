@@ -16,9 +16,9 @@ You can use the Freeze Periods API to manipulate GitLab [Freeze Period](../user/
 Only users with Maintainer [permissions](../user/permissions.md) can
 interact with the Freeze Period API endpoints.
 
-## List Freeze Periods
+## List freeze periods
 
-Paginated list of Freeze Periods, sorted by `created_at` in ascending order.
+Paginated list of freeze periods, sorted by `created_at` in ascending order.
 
 ```plaintext
 GET /projects/:id/freeze_periods
@@ -49,9 +49,9 @@ Example response:
 ]
 ```
 
-## Get a Freeze Period by a `freeze_period_id`
+## Get a freeze period by a `freeze_period_id`
 
-Get a Freeze Period for the given `freeze_period_id`.
+Get a freeze period for the given `freeze_period_id`.
 
 ```plaintext
 GET /projects/:id/freeze_periods/:freeze_period_id
@@ -60,7 +60,7 @@ GET /projects/:id/freeze_periods/:freeze_period_id
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
-| `freeze_period_id`    | string         | yes      | The database ID of the Freeze Period.                                     |
+| `freeze_period_id`    | integer         | yes      | The ID of the freeze period.                                     |
 
 Example request:
 
@@ -81,9 +81,9 @@ Example response:
 }
 ```
 
-## Create a Freeze Period
+## Create a freeze period
 
-Create a Freeze Period.
+Create a freeze period.
 
 ```plaintext
 POST /projects/:id/freeze_periods
@@ -92,8 +92,8 @@ POST /projects/:id/freeze_periods
 | Attribute          | Type            | Required                    | Description                                                                                                                      |
 | -------------------| --------------- | --------                    | -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer or string  | yes                         | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                                              |
-| `freeze_start`     | string          | yes                         | Start of the Freeze Period in [cron](https://crontab.guru/) format.                                                              |
-| `freeze_end`       | string          | yes                         | End of the Freeze Period in [cron](https://crontab.guru/) format.                                                                |
+| `freeze_start`     | string          | yes                         | Start of the freeze period in [cron](https://crontab.guru/) format.                                                              |
+| `freeze_end`       | string          | yes                         | End of the freeze period in [cron](https://crontab.guru/) format.                                                                |
 | `cron_timezone`    | string          | no                          | The time zone for the cron fields, defaults to UTC if not provided.                                                               |
 
 Example request:
@@ -117,9 +117,9 @@ Example response:
 }
 ```
 
-## Update a Freeze Period
+## Update a freeze period
 
-Update a Freeze Period for the given `freeze_period_id`.
+Update a freeze period for the given `freeze_period_id`.
 
 ```plaintext
 PUT /projects/:id/freeze_periods/:freeze_period_id
@@ -128,9 +128,9 @@ PUT /projects/:id/freeze_periods/:freeze_period_id
 | Attribute     | Type            | Required | Description                                                                                                 |
 | ------------- | --------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
 | `id`          | integer or string  | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding).                         |
-| `freeze_period_id`    | integer or string          | yes      | The database ID of the Freeze Period.                                                              |
-| `freeze_start`     | string          | no                         | Start of the Freeze Period in [cron](https://crontab.guru/) format.                                                              |
-| `freeze_end`       | string          | no                         | End of the Freeze Period in [cron](https://crontab.guru/) format.                                                                |
+| `freeze_period_id`    | integer          | yes      | The ID of the freeze period.                                                              |
+| `freeze_start`     | string          | no                         | Start of the freeze period in [cron](https://crontab.guru/) format.                                                              |
+| `freeze_end`       | string          | no                         | End of the freeze period in [cron](https://crontab.guru/) format.                                                                |
 | `cron_timezone`    | string          | no                          | The time zone for the cron fields.                                                               |
 
 Example request:
@@ -154,9 +154,9 @@ Example response:
 }
 ```
 
-## Delete a Freeze Period
+## Delete a freeze period
 
-Delete a Freeze Period for the given `freeze_period_id`.
+Delete a freeze period for the given `freeze_period_id`.
 
 ```plaintext
 DELETE /projects/:id/freeze_periods/:freeze_period_id
@@ -165,7 +165,7 @@ DELETE /projects/:id/freeze_periods/:freeze_period_id
 | Attribute     | Type           | Required | Description                                                                         |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
-| `freeze_period_id`    | string         | yes      | The database ID of the Freeze Period.                                     |
+| `freeze_period_id`    | integer         | yes      | The ID of the freeze period.                                     |
 
 Example request:
 
