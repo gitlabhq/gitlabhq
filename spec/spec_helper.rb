@@ -65,7 +65,6 @@ require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 # Requires helpers, and shared contexts/examples first since they're used in other support files
 
 # Load these first since they may be required by other helpers
-require Rails.root.join("spec/support/helpers/git_helpers.rb")
 require Rails.root.join("spec/support/helpers/stub_requests.rb")
 
 # Then the rest

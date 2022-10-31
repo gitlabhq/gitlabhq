@@ -46,10 +46,8 @@ export const i18n = {
   noIssuesSignedInDescription: __('Learn more about issues.'),
   noIssuesSignedInTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
-  noIssuesSignedOutDescription: __(
-    'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',
-  ),
-  noIssuesSignedOutTitle: __('There are no issues to show'),
+  noIssuesSignedOutDescription: __('Learn more about issues.'),
+  noIssuesSignedOutTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noSearchResultsDescription: __('To widen your search, change or remove filters above'),
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),

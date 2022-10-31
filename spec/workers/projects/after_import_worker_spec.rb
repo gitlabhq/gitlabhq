@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AfterImportWorker do
-  include GitHelpers
-
   subject { worker.perform(project.id) }
 
   let(:worker) { described_class.new }

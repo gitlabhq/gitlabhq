@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::DesignRepoRestorer do
-  include GitHelpers
-
   describe 'bundle a design Git repo' do
     let(:user) { create(:user) }
     let!(:project_with_design_repo) { create(:project, :design_repo) }

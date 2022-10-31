@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::SnippetsRepoRestorer do
-  include GitHelpers
-
   describe 'bundle a snippet Git repo' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, namespace: user.namespace) }

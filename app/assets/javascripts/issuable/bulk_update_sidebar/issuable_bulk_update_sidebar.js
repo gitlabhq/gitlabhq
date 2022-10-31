@@ -61,25 +61,13 @@ export default class IssuableBulkUpdateSidebar {
     // the import/no-unresolved lint rule when FOSS_ONLY=1, even though at
     // runtime this block won't execute.
     if (IS_EE) {
-      import('ee_else_ce/vue_shared/components/sidebar/health_status_select/health_status_bundle')
-        .then(({ default: HealthStatusSelect }) => {
-          HealthStatusSelect();
+      import('ee_else_ce/sidebar/mount_sidebar')
+        .then(({ mountEpicDropdown, mountHealthStatusDropdown, mountIterationDropdown }) => {
+          mountEpicDropdown();
+          mountHealthStatusDropdown();
+          mountIterationDropdown();
         })
         .catch(() => {});
-
-      import('ee_else_ce/vue_shared/components/sidebar/epics_select/epics_select_bundle')
-        .then(({ default: EpicSelect }) => {
-          EpicSelect();
-        })
-        .catch(() => {});
-
-      import('ee_else_ce/vue_shared/components/sidebar/iterations_dropdown_bundle')
-        .then(({ default: iterationsDropdown }) => {
-          iterationsDropdown();
-        })
-        .catch((e) => {
-          throw e;
-        });
     }
   }
 

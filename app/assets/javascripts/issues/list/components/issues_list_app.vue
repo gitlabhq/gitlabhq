@@ -947,12 +947,17 @@ export default {
 
     <gl-empty-state
       v-else
-      :description="$options.i18n.noIssuesSignedOutDescription"
       :title="$options.i18n.noIssuesSignedOutTitle"
       :svg-path="emptyStateSvgPath"
       :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
       :primary-button-link="signInPath"
-    />
+    >
+      <template #description>
+        <gl-link :href="issuesHelpPagePath" target="_blank">{{
+          $options.i18n.noIssuesSignedOutDescription
+        }}</gl-link>
+      </template>
+    </gl-empty-state>
 
     <issuable-by-email v-if="showIssuableByEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
   </div>

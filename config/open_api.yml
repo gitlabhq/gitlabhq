@@ -24,5 +24,7 @@ metadata:
     description: Operations related to deploy keys
   - name: deployments
     description: Operations related to deployments
+  - name: features
+    description: Operations related to managing Flipper-based feature flags
   - name: release_links
     description: Operations related to release assets (links)

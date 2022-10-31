@@ -105,6 +105,7 @@ module Gitlab
           target_project_id: merge_request.target_project_id,
           state: merge_request.state,
           merge_status: merge_request.public_merge_status,
+          detailed_merge_status: detailed_merge_status(merge_request),
           url: Gitlab::UrlBuilder.build(merge_request)
         }
       end
@@ -153,6 +154,10 @@ module Gitlab
           action: build.environment_action,
           deployment_tier: build.persisted_environment.try(:tier)
         }
+      end
+
+      def detailed_merge_status(merge_request)
+        ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: merge_request).execute.to_s
       end
     end
   end

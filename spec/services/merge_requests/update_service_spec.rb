@@ -794,7 +794,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
         end
 
         it "does not try to mark as unchecked if it's already unchecked" do
-          expect(merge_request).to receive(:unchecked?).and_return(true)
+          allow(merge_request).to receive(:unchecked?).twice.and_return(true)
           expect(merge_request).not_to receive(:mark_as_unchecked)
 
           update_merge_request({ target_branch: "target" })

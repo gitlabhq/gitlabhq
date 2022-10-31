@@ -316,7 +316,6 @@ Style/StringConcatenation:
     - 'spec/services/verify_pages_domain_service_spec.rb'
     - 'spec/support/capybara.rb'
     - 'spec/support/helpers/ci_artifact_metadata_generator.rb'
-    - 'spec/support/helpers/git_helpers.rb'
     - 'spec/support/helpers/gitaly_setup.rb'
     - 'spec/support/helpers/javascript_fixtures_helpers.rb'
     - 'spec/support/helpers/kubernetes_helpers.rb'

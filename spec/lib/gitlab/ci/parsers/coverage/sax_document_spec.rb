@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::SaxDocument do
   describe '#parse!' do
     let(:coverage_report) { Gitlab::Ci::Reports::CoverageReport.new }
     let(:project_path) { 'foo/bar' }
+    let(:windows_path) { 'foo\bar' }
     let(:paths) { ['app/user.rb'] }
 
     let(:cobertura) do
@@ -267,6 +268,36 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::SaxDocument do
           end
 
           it_behaves_like 'ignoring sources, project_path, and worktree_paths'
+        end
+
+        context 'and has Windows-style paths' do
+          let(:sources_xml) do
+            <<~EOF_WIN
+              <sources>
+                <source>D:\\builds\\#{windows_path}\\app</source>
+              </sources>
+            EOF_WIN
+          end
+
+          context 'when there is a single <class>' do
+            context 'with a single line' do
+              let(:classes_xml) do
+                <<~EOF
+                  <packages><package name="app"><classes>
+                    <class filename="user.rb"><lines>
+                      <line number="1" hits="2"/>
+                    </lines></class>
+                  </classes></package></packages>
+                EOF
+              end
+
+              it 'parses XML and returns a single file with the filename relative to project root' do
+                expect { parse_report }.not_to raise_error
+
+                expect(coverage_report.files).to eq({ 'app/user.rb' => { 1 => 2 } })
+              end
+            end
+          end
         end
 
         context 'and has multiple sources with a pattern for Go projects' do

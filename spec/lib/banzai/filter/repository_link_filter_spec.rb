@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Filter::RepositoryLinkFilter do
-  include GitHelpers
   include RepoHelpers
 
   def filter(doc, contexts = {})

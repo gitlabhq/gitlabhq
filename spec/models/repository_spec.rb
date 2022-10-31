@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Repository do
   include RepoHelpers
-  include GitHelpers
 
   TestBlob = Struct.new(:path)
 

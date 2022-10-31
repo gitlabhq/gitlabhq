@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::RepoRestorer do
-  include GitHelpers
-
   let_it_be(:project_with_repo) do
     create(:project, :repository, :wiki_repo, name: 'test-repo-restorer', path: 'test-repo-restorer').tap do |p|
       p.wiki.create_page('page', 'foobar', :markdown, 'created page')

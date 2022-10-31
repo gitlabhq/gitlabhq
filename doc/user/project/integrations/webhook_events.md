@@ -611,7 +611,8 @@ Payload example:
       "name": "User1",
       "username": "user1",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
-    }
+    },
+    "detailed_merge_status": "checking"
   }
 }
 ```
@@ -947,7 +948,8 @@ Payload example:
       "type": "ProjectLabel",
       "group_id": 41
     }],
-    "action": "open"
+    "action": "open",
+    "detailed_merge_status": "mergeable"
   },
   "labels": [{
     "id": 206,
@@ -1132,6 +1134,7 @@ Payload example:
       "target_project_id": 1,
       "state": "opened",
       "merge_status": "can_be_merged",
+      "detailed_merge_status": "mergeable",
       "url": "http://192.168.64.1:3005/gitlab-org/gitlab-test/merge_requests/1"
    },
    "user":{

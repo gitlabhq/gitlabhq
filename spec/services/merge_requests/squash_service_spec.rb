@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::SquashService do
-  include GitHelpers
-
   let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
   let(:user) { project.first_owner }
   let(:project) { create(:project, :repository) }
@@ -109,11 +107,10 @@ RSpec.describe MergeRequests::SquashService do
       end
 
       it 'has the same diff as the merge request, but a different SHA' do
-        rugged = rugged_repo(project.repository)
-        mr_diff = rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha)
-        squash_diff = rugged.diff(merge_request.diff_start_sha, squash_sha)
+        mr_diff = project.repository.diff(merge_request.diff_base_sha, merge_request.diff_head_sha)
+        squash_diff = project.repository.diff(merge_request.diff_start_sha, squash_sha)
 
-        expect(squash_diff.patch.length).to eq(mr_diff.patch.length)
+        expect(squash_diff.size).to eq(mr_diff.size)
         expect(squash_commit.sha).not_to eq(merge_request.diff_head_sha)
       end
 

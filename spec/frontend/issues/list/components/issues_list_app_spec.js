@@ -601,17 +601,20 @@ describe('CE IssuesListApp component', () => {
         beforeEach(() => {
           wrapper = mountComponent({
             provide: { hasAnyIssues: false, isSignedIn: false },
+            mountFn: mount,
           });
         });
 
         it('shows empty state', () => {
           expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noIssuesSignedOutDescription,
             title: IssuesListApp.i18n.noIssuesSignedOutTitle,
             svgPath: defaultProvide.emptyStateSvgPath,
             primaryButtonText: IssuesListApp.i18n.noIssuesSignedOutButtonText,
             primaryButtonLink: defaultProvide.signInPath,
           });
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noIssuesSignedOutDescription,
+          );
         });
       });
     });

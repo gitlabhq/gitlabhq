@@ -21,15 +21,17 @@ RSpec.describe "Internal references", :js do
           sign_in(private_project_user)
 
           visit(project_issue_path(private_project, private_project_issue))
+          wait_for_requests
 
           add_note("##{public_project_issue.to_reference(private_project)}")
         end
 
-        context "when user doesn't have access to private project", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
+        context "when user doesn't have access to private project" do
           before do
             sign_in(public_project_user)
 
             visit(project_issue_path(public_project, public_project_issue))
+            wait_for_requests
           end
 
           it { expect(page).not_to have_css(".note") }
@@ -41,6 +43,7 @@ RSpec.describe "Internal references", :js do
           sign_in(private_project_user)
 
           visit(project_merge_request_path(private_project, private_project_merge_request))
+          wait_for_requests
 
           add_note("##{public_project_issue.to_reference(private_project)}")
         end
@@ -50,9 +53,10 @@ RSpec.describe "Internal references", :js do
             sign_in(public_project_user)
 
             visit(project_issue_path(public_project, public_project_issue))
+            wait_for_requests
           end
 
-          it "doesn't show any references", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
+          it "doesn't show any references" do
             expect(page).not_to have_text 'Related merge requests'
           end
         end
@@ -60,6 +64,7 @@ RSpec.describe "Internal references", :js do
         context "when user has access to private project" do
           before do
             visit(project_issue_path(public_project, public_project_issue))
+            wait_for_requests
           end
 
           it "shows references", :sidekiq_might_not_need_inline do
@@ -85,15 +90,17 @@ RSpec.describe "Internal references", :js do
           sign_in(private_project_user)
 
           visit(project_issue_path(private_project, private_project_issue))
+          wait_for_requests
 
           add_note("##{public_project_merge_request.to_reference(private_project)}")
         end
 
-        context "when user doesn't have access to private project", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
+        context "when user doesn't have access to private project" do
           before do
             sign_in(public_project_user)
 
             visit(project_merge_request_path(public_project, public_project_merge_request))
+            wait_for_requests
           end
 
           it { expect(page).not_to have_css(".note") }
@@ -105,6 +112,7 @@ RSpec.describe "Internal references", :js do
           sign_in(private_project_user)
 
           visit(project_merge_request_path(private_project, private_project_merge_request))
+          wait_for_requests
 
           add_note("##{public_project_merge_request.to_reference(private_project)}")
         end
@@ -114,9 +122,10 @@ RSpec.describe "Internal references", :js do
             sign_in(public_project_user)
 
             visit(project_merge_request_path(public_project, public_project_merge_request))
+            wait_for_requests
           end
 
-          it "doesn't show any references", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
+          it "doesn't show any references" do
             expect(page).not_to have_text 'Related merge requests'
           end
         end
@@ -124,6 +133,7 @@ RSpec.describe "Internal references", :js do
         context "when user has access to private project" do
           before do
             visit(project_merge_request_path(public_project, public_project_merge_request))
+            wait_for_requests
           end
 
           it "shows references", :sidekiq_might_not_need_inline do

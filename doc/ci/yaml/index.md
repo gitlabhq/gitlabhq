@@ -3996,6 +3996,8 @@ trigger-multi-project-pipeline:
 - In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201938), you
   can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
   earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
+- You cannot [manually specify CI/CD variables](../jobs/index.md#specifying-variables-when-running-manual-jobs)
+  before running a manual trigger job.
 - [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)

@@ -237,7 +237,6 @@
     "jest-environment-jsdom": "^27.5.1",
     "jest-jasmine2": "^27.5.1",
     "jest-junit": "^12.0.0",
-    "jest-raw-loader": "^1.0.1",
     "jest-util": "^27.5.1",
     "jsonlint": "^1.6.3",
     "markdownlint-cli": "0.32.2",

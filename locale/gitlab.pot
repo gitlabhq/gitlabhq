@@ -15427,9 +15427,6 @@ msgstr ""
 msgid "Epics|Are you sure you want to remove %{bStart}%{targetIssueTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}?"
 msgstr ""
 
-msgid "Epics|Assign Epic"
-msgstr ""
-
 msgid "Epics|Leave empty to inherit from milestone dates"
 msgstr ""
 
@@ -15442,16 +15439,7 @@ msgstr ""
 msgid "Epics|Remove issue"
 msgstr ""
 
-msgid "Epics|Search epics"
-msgstr ""
-
-msgid "Epics|Select epic"
-msgstr ""
-
 msgid "Epics|Show more"
-msgstr ""
-
-msgid "Epics|Something went wrong while assigning issue to epic."
 msgstr ""
 
 msgid "Epics|Something went wrong while creating child epics."
@@ -15466,16 +15454,10 @@ msgstr ""
 msgid "Epics|Something went wrong while fetching epics list."
 msgstr ""
 
-msgid "Epics|Something went wrong while fetching group epics."
-msgstr ""
-
 msgid "Epics|Something went wrong while moving item."
 msgstr ""
 
 msgid "Epics|Something went wrong while ordering item."
-msgstr ""
-
-msgid "Epics|Something went wrong while removing issue from epic."
 msgstr ""
 
 msgid "Epics|Something went wrong while updating epics."
