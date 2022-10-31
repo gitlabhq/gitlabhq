@@ -6,8 +6,8 @@ module Sidebars
       class DeploymentsMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          add_item(feature_flags_menu_item)
           add_item(environments_menu_item)
+          add_item(feature_flags_menu_item)
           add_item(releases_menu_item)
 
           true

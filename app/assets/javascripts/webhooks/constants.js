@@ -15,3 +15,5 @@ export const descriptionText = {
   ),
   [BRANCH_FILTER_REGEX]: s__('Webhooks|Regex such as %{REGEX_CODE} is supported.'),
 };
+
+export const MASK_ITEM_VALUE_HIDDEN = '************';

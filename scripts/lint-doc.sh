@@ -151,7 +151,7 @@ if [ -z "${MD_DOC_PATH}" ]
 then
   echo "Merged results pipeline detected, but no markdown files found. Skipping."
 else
-  run_locally_or_in_docker 'markdownlint' "--config .markdownlint.yml ${MD_DOC_PATH}"
+  run_locally_or_in_docker 'markdownlint' "--config .markdownlint.yml ${MD_DOC_PATH} --rules doc/.markdownlint/rules"
 fi
 
 echo '=> Linting prose...'

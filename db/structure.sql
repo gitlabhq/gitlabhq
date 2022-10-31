@@ -31130,6 +31130,8 @@ CREATE INDEX tmp_idx_project_features_on_releases_al_and_repo_al_partial ON proj
 
 CREATE INDEX tmp_idx_vulnerabilities_on_id_where_report_type_7_99 ON vulnerabilities USING btree (id) WHERE (report_type = ANY (ARRAY[7, 99]));
 
+CREATE INDEX tmp_idx_where_user_details_fields_filled ON users USING btree (id) WHERE (((COALESCE(linkedin, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(twitter, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(skype, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(website_url, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(location, ''::character varying))::text IS DISTINCT FROM ''::text) OR ((COALESCE(organization, ''::character varying))::text IS DISTINCT FROM ''::text));
+
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
 CREATE INDEX tmp_index_ci_job_artifacts_on_id_expire_at_file_type_trace ON ci_job_artifacts USING btree (id) WHERE (((date_part('day'::text, timezone('UTC'::text, expire_at)) = ANY (ARRAY[(21)::double precision, (22)::double precision, (23)::double precision])) AND (date_part('minute'::text, timezone('UTC'::text, expire_at)) = ANY (ARRAY[(0)::double precision, (30)::double precision, (45)::double precision])) AND (date_part('second'::text, timezone('UTC'::text, expire_at)) = (0)::double precision)) OR (file_type = 3));

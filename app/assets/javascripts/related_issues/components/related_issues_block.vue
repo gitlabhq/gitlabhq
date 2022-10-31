@@ -95,6 +95,16 @@ export default {
       required: false,
       default: true,
     },
+    hasError: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    itemAddFailureMessage: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -233,7 +243,7 @@ export default {
         <div
           v-if="isFormVisible"
           class="js-add-related-issues-form-area card-body bordered-box bg-white"
-          :class="{ 'gl-mb-5': shouldShowTokenBody }"
+          :class="{ 'gl-mb-5': shouldShowTokenBody, 'gl-show-field-errors': hasError }"
         >
           <add-issuable-form
             :show-categorized-issues="showCategorizedIssues"
@@ -245,6 +255,8 @@ export default {
             :auto-complete-epics="autoCompleteEpics"
             :auto-complete-issues="autoCompleteIssues"
             :path-id-separator="pathIdSeparator"
+            :has-error="hasError"
+            :item-add-failure-message="itemAddFailureMessage"
             @pendingIssuableRemoveRequest="$emit('pendingIssuableRemoveRequest', $event)"
             @addIssuableFormInput="$emit('addIssuableFormInput', $event)"
             @addIssuableFormBlur="$emit('addIssuableFormBlur', $event)"

@@ -6,6 +6,10 @@ FactoryBot.define do
     enable_ssl_verification { false }
     project
 
+    trait :url_variables do
+      url_variables { { 'abc' => 'supers3cret' } }
+    end
+
     trait :token do
       token { generate(:token) }
     end

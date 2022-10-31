@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { GlFormGroup, GlFormInput, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
@@ -30,7 +30,7 @@ export default {
     return {
       maskEnabled: !isEmpty(this.initialUrlVariables),
       url: this.initialUrl,
-      items: isEmpty(this.initialUrlVariables) ? [{}] : this.initialUrlVariables,
+      items: this.getInitialItems(),
     };
   },
   computed: {
@@ -54,6 +54,16 @@ export default {
     },
   },
   methods: {
+    getInitialItems() {
+      return isEmpty(this.initialUrlVariables) ? [{}] : cloneDeep(this.initialUrlVariables);
+    },
+    isEditingItem(key) {
+      if (isEmpty(this.initialUrlVariables)) {
+        return false;
+      }
+
+      return this.initialUrlVariables.some((item) => item.key === key);
+    },
     onItemInput({ index, key, value }) {
       this.$set(this.items, index, { key, value });
     },
@@ -112,6 +122,7 @@ export default {
           :index="index"
           :item-key="key"
           :item-value="value"
+          :is-editing="isEditingItem(key)"
           @input="onItemInput"
           @remove="removeItem"
         />

@@ -38,7 +38,7 @@ RSpec.shared_examples Integrations::HasWebHook do
   end
 
   describe '#url_variables' do
-    it 'returns a string' do
+    it 'returns a hash' do
       expect(integration.url_variables).to be_a(Hash)
     end
   end

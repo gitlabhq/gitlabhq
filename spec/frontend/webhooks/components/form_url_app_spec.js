@@ -60,8 +60,10 @@ describe('FormUrlApp', () => {
         expect(findAllUrlMaskItems()).toHaveLength(1);
 
         const firstItem = findAllUrlMaskItems().at(0);
-        expect(firstItem.props('itemKey')).toBeNull();
-        expect(firstItem.props('itemValue')).toBeNull();
+        expect(firstItem.props()).toMatchObject({
+          itemKey: null,
+          itemValue: null,
+        });
       });
     });
 
@@ -90,12 +92,18 @@ describe('FormUrlApp', () => {
         expect(findAllUrlMaskItems()).toHaveLength(2);
 
         const firstItem = findAllUrlMaskItems().at(0);
-        expect(firstItem.props('itemKey')).toBe(mockItem1.key);
-        expect(firstItem.props('itemValue')).toBe(mockItem1.value);
+        expect(firstItem.props()).toMatchObject({
+          itemKey: mockItem1.key,
+          itemValue: mockItem1.value,
+          isEditing: true,
+        });
 
         const secondItem = findAllUrlMaskItems().at(1);
-        expect(secondItem.props('itemKey')).toBe(mockItem2.key);
-        expect(secondItem.props('itemValue')).toBe(mockItem2.value);
+        expect(secondItem.props()).toMatchObject({
+          itemKey: mockItem2.key,
+          itemValue: mockItem2.value,
+          isEditing: true,
+        });
       });
 
       describe('on mask item input', () => {
@@ -106,8 +114,10 @@ describe('FormUrlApp', () => {
           firstItem.vm.$emit('input', mockInput);
           await nextTick();
 
-          expect(firstItem.props('itemKey')).toBe(mockInput.key);
-          expect(firstItem.props('itemValue')).toBe(mockInput.value);
+          expect(firstItem.props()).toMatchObject({
+            itemKey: mockInput.key,
+            itemValue: mockInput.value,
+          });
         });
       });
 
@@ -119,8 +129,10 @@ describe('FormUrlApp', () => {
           expect(findAllUrlMaskItems()).toHaveLength(3);
 
           const lastItem = findAllUrlMaskItems().at(-1);
-          expect(lastItem.props('itemKey')).toBeNull();
-          expect(lastItem.props('itemValue')).toBeNull();
+          expect(lastItem.props()).toMatchObject({
+            itemKey: null,
+            itemValue: null,
+          });
         });
       });
 
@@ -133,8 +145,10 @@ describe('FormUrlApp', () => {
           expect(findAllUrlMaskItems()).toHaveLength(1);
 
           const newFirstItem = findAllUrlMaskItems().at(0);
-          expect(newFirstItem.props('itemKey')).toBe(mockItem2.key);
-          expect(newFirstItem.props('itemValue')).toBe(mockItem2.value);
+          expect(newFirstItem.props()).toMatchObject({
+            itemKey: mockItem2.key,
+            itemValue: mockItem2.value,
+          });
         });
       });
     });

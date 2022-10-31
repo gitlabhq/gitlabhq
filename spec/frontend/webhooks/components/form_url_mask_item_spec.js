@@ -31,19 +31,42 @@ describe('FormUrlMaskItem', () => {
 
   describe('template', () => {
     it('renders input for key and value', () => {
-      createComponent();
+      createComponent({ props: { itemKey: mockKey, itemValue: mockValue } });
 
       const keyInput = findMaskItemKey();
       expect(keyInput.attributes('label')).toBe(FormUrlMaskItem.i18n.keyLabel);
-      expect(keyInput.findComponent(GlFormInput).attributes('name')).toBe(
-        'hook[url_variables][][key]',
-      );
+      expect(keyInput.findComponent(GlFormInput).attributes()).toMatchObject({
+        name: 'hook[url_variables][][key]',
+        value: mockKey,
+      });
 
       const valueInput = findMaskItemValue();
       expect(valueInput.attributes('label')).toBe(FormUrlMaskItem.i18n.valueLabel);
-      expect(valueInput.findComponent(GlFormInput).attributes('name')).toBe(
-        'hook[url_variables][][value]',
-      );
+      expect(valueInput.findComponent(GlFormInput).attributes()).toMatchObject({
+        name: 'hook[url_variables][][value]',
+        value: mockValue,
+      });
+    });
+
+    describe('when isEditing is true', () => {
+      beforeEach(() => {
+        createComponent({ props: { isEditing: true } });
+      });
+
+      it('renders disabled key and value', () => {
+        expect(findMaskItemKey().findComponent(GlFormInput).attributes('disabled')).toBe('true');
+        expect(findMaskItemValue().findComponent(GlFormInput).attributes('disabled')).toBe('true');
+      });
+
+      it('renders disabled remove button', () => {
+        expect(findRemoveButton().attributes('disabled')).toBe('true');
+      });
+
+      it('displays ************ as input value', () => {
+        expect(findMaskItemValue().findComponent(GlFormInput).attributes('value')).toBe(
+          '************',
+        );
+      });
     });
 
     describe('on key input', () => {

@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { MASK_ITEM_VALUE_HIDDEN } from '../constants';
 
 export default {
   components: {
@@ -24,6 +25,11 @@ export default {
       required: false,
       default: null,
     },
+    isEditing: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     keyInputId() {
@@ -31,6 +37,9 @@ export default {
     },
     valueInputId() {
       return this.inputId('value');
+    },
+    displayValue() {
+      return this.isEditing ? MASK_ITEM_VALUE_HIDDEN : this.itemValue;
     },
   },
   methods: {
@@ -68,7 +77,8 @@ export default {
       <gl-form-input
         :id="valueInputId"
         :name="inputName('value')"
-        :value="itemValue"
+        :value="displayValue"
+        :disabled="isEditing"
         @input="onValueInput"
       />
     </gl-form-group>
@@ -82,9 +92,15 @@ export default {
         :id="keyInputId"
         :name="inputName('key')"
         :value="itemKey"
+        :disabled="isEditing"
         @input="onKeyInput"
       />
     </gl-form-group>
-    <gl-button icon="remove" :aria-label="__('Remove')" @click="onRemoveClick" />
+    <gl-button
+      icon="remove"
+      :aria-label="__('Remove')"
+      :disabled="isEditing"
+      @click="onRemoveClick"
+    />
   </div>
 </template>
