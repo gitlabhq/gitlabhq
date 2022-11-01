@@ -2835,6 +2835,13 @@ deploystacks: [vultr, data]
 deploystacks: [vultr, processing]
 ```
 
+**Additional details**:
+
+- `parallel:matrix` jobs add the variable values to the job names to differentiate
+  the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
+  - Job names must be [255 characters or fewer](../jobs/index.md#job-name-limitations).
+  - When using [`needs`](#needs), job names must be 128 characters or fewer.
+
 **Related topics**:
 
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).

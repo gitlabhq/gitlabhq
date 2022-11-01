@@ -5138,17 +5138,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
           end
 
           it 'returns false' do
-            expect(merge_request.diffable_merge_ref?).to eq(true)
-          end
-
-          context 'display_merge_conflicts_in_diff is disabled' do
-            before do
-              stub_feature_flags(display_merge_conflicts_in_diff: false)
-            end
-
-            it 'returns false' do
-              expect(merge_request.diffable_merge_ref?).to eq(false)
-            end
+            expect(merge_request.diffable_merge_ref?).to eq(false)
           end
         end
       end

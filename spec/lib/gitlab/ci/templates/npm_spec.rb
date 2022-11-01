@@ -14,7 +14,7 @@ RSpec.describe 'npm.gitlab-ci.yml' do
     let(:pipeline_tag) { 'v1.2.1' }
     let(:pipeline_ref) { pipeline_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref ) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     def create_branch(name:)
@@ -42,7 +42,8 @@ RSpec.describe 'npm.gitlab-ci.yml' do
 
     shared_examples 'no pipeline created' do
       it 'does not create a pipeline because the only job (publish) is not created' do
-        expect { pipeline }.to raise_error(Ci::CreatePipelineService::CreateError, 'No stages / jobs for this pipeline.')
+        expect(build_names).to be_empty
+        expect(pipeline.errors.full_messages).to match_array(["No stages / jobs for this pipeline."])
       end
     end
 

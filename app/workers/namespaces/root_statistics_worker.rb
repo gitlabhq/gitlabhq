@@ -4,7 +4,7 @@ module Namespaces
   class RootStatisticsWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky, feature_flag: :root_statistics_worker_read_replica
 
     sidekiq_options retry: 3
 

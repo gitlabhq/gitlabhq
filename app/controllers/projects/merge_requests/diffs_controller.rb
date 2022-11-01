@@ -44,7 +44,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       diff_view: diff_view,
       merge_ref_head_diff: render_merge_ref_head_diff?,
       pagination_data: diffs.pagination_data,
-      allow_tree_conflicts: display_merge_conflicts_in_diff?
+      merge_conflicts_in_diff: display_merge_conflicts_in_diff?
     }
 
     # NOTE: Any variables that would affect the resulting json needs to be added to the cache_context to avoid stale cache issues.
@@ -57,7 +57,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       params[:page],
       params[:per_page],
       options[:merge_ref_head_diff],
-      options[:allow_tree_conflicts]
+      options[:merge_conflicts_in_diff]
     ]
 
     if Feature.enabled?(:check_etags_diffs_batch_before_write_cache, merge_request.project) && !stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
@@ -81,7 +81,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     options = additional_attributes.merge(
       only_context_commits: show_only_context_commits?,
       merge_ref_head_diff: render_merge_ref_head_diff?,
-      allow_tree_conflicts: display_merge_conflicts_in_diff?
+      merge_conflicts_in_diff: display_merge_conflicts_in_diff?
     )
 
     render json: DiffsMetadataSerializer.new(project: @merge_request.project, current_user: current_user)
@@ -110,7 +110,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     options = additional_attributes.merge(
       diff_view: "inline",
       merge_ref_head_diff: render_merge_ref_head_diff?,
-      allow_tree_conflicts: display_merge_conflicts_in_diff?
+      merge_conflicts_in_diff: display_merge_conflicts_in_diff?
     )
 
     options[:context_commits] = @merge_request.recent_context_commits

@@ -36,12 +36,14 @@ describe('~/vue_merge_request_widget/components/widget/widget_content_row.vue', 
         },
         slots: {
           header: '<span>this is a header</span>',
+          'header-actions': '<span>this is a header action</span>',
           body: '<span>this is a body</span>',
         },
       });
 
       expect(wrapper.findByText('this is a body').exists()).toBe(true);
       expect(wrapper.findByText('this is a header').exists()).toBe(true);
+      expect(wrapper.findByText('this is a header action').exists()).toBe(true);
     });
   });
 

@@ -18236,9 +18236,6 @@ msgstr ""
 msgid "GitLab will create a branch in your fork and start a merge request."
 msgstr ""
 
-msgid "GitLab.com"
-msgstr ""
-
 msgid "GitLab.com (SaaS)"
 msgstr ""
 
@@ -23390,6 +23387,9 @@ msgstr ""
 msgid "Job|Retry"
 msgstr ""
 
+msgid "Job|Run again"
+msgstr ""
+
 msgid "Job|Running"
 msgstr ""
 
@@ -24742,6 +24742,9 @@ msgid "Managed Account"
 msgstr ""
 
 msgid "Manifest"
+msgstr ""
+
+msgid "Manifest file"
 msgstr ""
 
 msgid "Manifest file import"
@@ -29450,7 +29453,7 @@ msgstr ""
 msgid "Phabricator Server URL"
 msgstr ""
 
-msgid "Phabricator Tasks"
+msgid "Phabricator tasks"
 msgstr ""
 
 msgid "Phone"
@@ -47661,10 +47664,25 @@ msgstr ""
 msgid "ciReport|Dependency scanning"
 msgstr ""
 
+msgid "ciReport|Detects known vulnerabilities in your source code's dependencies."
+msgstr ""
+
+msgid "ciReport|Detects known vulnerabilities in your source code."
+msgstr ""
+
+msgid "ciReport|Detects known vulnerabilities in your web application."
+msgstr ""
+
+msgid "ciReport|Detects secrets and credentials vulnerabilities in your source code."
+msgstr ""
+
 msgid "ciReport|Download patch to resolve"
 msgstr ""
 
 msgid "ciReport|Download the patch to apply it manually"
+msgstr ""
+
+msgid "ciReport|Dynamic Application Security Testing (DAST)"
 msgstr ""
 
 msgid "ciReport|Dynamic Application Security Testing (DAST) detects known vulnerabilities in your web application."
@@ -47784,6 +47802,9 @@ msgid "ciReport|Showing %{fetchedItems} of %{totalItems} items"
 msgstr ""
 
 msgid "ciReport|Solution"
+msgstr ""
+
+msgid "ciReport|Static Application Security Testing (SAST)"
 msgstr ""
 
 msgid "ciReport|Static Application Security Testing (SAST) detects known vulnerabilities in your source code."

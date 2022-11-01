@@ -471,7 +471,6 @@ RSpec.describe DiffHelper do
 
   describe '#conflicts' do
     let(:merge_request) { instance_double(MergeRequest, cannot_be_merged?: true) }
-    let(:merge_ref_head_diff) { true }
     let(:can_be_resolved_in_ui?) { true }
     let(:allow_tree_conflicts) { false }
     let(:files) { [instance_double(Gitlab::Conflict::File, path: 'a')] }
@@ -479,7 +478,6 @@ RSpec.describe DiffHelper do
 
     before do
       allow(helper).to receive(:merge_request).and_return(merge_request)
-      allow(helper).to receive(:options).and_return(merge_ref_head_diff: merge_ref_head_diff)
 
       allow_next_instance_of(MergeRequests::Conflicts::ListService, merge_request, allow_tree_conflicts: allow_tree_conflicts) do |svc|
         allow(svc).to receive(:can_be_resolved_in_ui?).and_return(can_be_resolved_in_ui?)
@@ -494,14 +492,6 @@ RSpec.describe DiffHelper do
 
     it 'returns list of conflicts indexed by path' do
       expect(helper.conflicts).to eq('a' => files.first)
-    end
-
-    context 'when merge_ref_head_diff option is false' do
-      let(:merge_ref_head_diff) { false }
-
-      it 'returns nil' do
-        expect(helper.conflicts).to be_nil
-      end
     end
 
     context 'when merge request can be merged' do

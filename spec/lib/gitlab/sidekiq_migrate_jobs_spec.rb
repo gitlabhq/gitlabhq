@@ -382,5 +382,81 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues do
 
       it_behaves_like 'migrating queues'
     end
+
+    context 'when multiple workers are in the same queue' do
+      before do
+        ExportCsvWorker.sidekiq_options(queue: 'email_receiver') # follows EmailReceiverWorker's queue
+        ExportCsvWorker.perform_async('fizz')
+      end
+
+      after do
+        ExportCsvWorker.set_queue
+      end
+
+      context 'when the queue exists in mappings' do
+        let(:mappings) do
+          { 'EmailReceiverWorker' => 'email_receiver', 'AuthorizedProjectUpdate::ProjectRecalculateWorker' => 'default',
+            'ExportCsvWorker' => 'default' }
+        end
+
+        let(:queues_included_pre_migrate) do
+          ['email_receiver',
+           'authorized_project_update:authorized_project_update_project_recalculate']
+        end
+
+        let(:queues_excluded_pre_migrate) { ['default'] }
+        let(:queues_excluded_post_migrate) do
+          ['authorized_project_update:authorized_project_update_project_recalculate']
+        end
+
+        let(:queues_included_post_migrate) { %w[default email_receiver] }
+
+        it_behaves_like 'migrating queues'
+        def post_migrate_checks
+          # jobs from email_receiver are not migrated at all
+          jobs = list_jobs('email_receiver')
+          expect(jobs.length).to eq(3)
+          sorted = jobs.sort_by { |job| [job["class"], job["args"]] }
+          expect(sorted[0]).to include('class' => 'EmailReceiverWorker', 'args' => ['bar'], 'queue' => 'email_receiver')
+          expect(sorted[1]).to include('class' => 'EmailReceiverWorker', 'args' => ['foo'], 'queue' => 'email_receiver')
+          expect(sorted[2]).to include('class' => 'ExportCsvWorker', 'args' => ['fizz'], 'queue' => 'email_receiver')
+        end
+      end
+
+      context 'when the queue doesnt exist in mappings' do
+        let(:mappings) do
+          { 'EmailReceiverWorker' => 'default', 'AuthorizedProjectUpdate::ProjectRecalculateWorker' => 'default',
+            'ExportCsvWorker' => 'default' }
+        end
+
+        let(:queues_included_pre_migrate) do
+          ['email_receiver',
+           'authorized_project_update:authorized_project_update_project_recalculate']
+        end
+
+        let(:queues_excluded_pre_migrate) { ['default'] }
+        let(:queues_excluded_post_migrate) do
+          ['email_receiver', 'authorized_project_update:authorized_project_update_project_recalculate']
+        end
+
+        let(:queues_included_post_migrate) { ['default'] }
+
+        it_behaves_like 'migrating queues'
+        def post_migrate_checks
+          # jobs from email_receiver are all migrated
+          jobs = list_jobs('email_receiver')
+          expect(jobs.length).to eq(0)
+
+          jobs = list_jobs('default')
+          expect(jobs.length).to eq(4)
+          sorted = jobs.sort_by { |job| [job["class"], job["args"]] }
+          expect(sorted[0]).to include('class' => 'AuthorizedProjectUpdate::ProjectRecalculateWorker',
+                                       'queue' => 'default')
+          expect(sorted[1]).to include('class' => 'EmailReceiverWorker', 'args' => ['bar'], 'queue' => 'default')
+          expect(sorted[2]).to include('class' => 'EmailReceiverWorker', 'args' => ['foo'], 'queue' => 'default')
+          expect(sorted[3]).to include('class' => 'ExportCsvWorker', 'args' => ['fizz'], 'queue' => 'default')
+        end
+      end
+    end
   end
 end
