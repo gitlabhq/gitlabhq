@@ -66,7 +66,7 @@ module API
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
           post ':id/secure_files' do
             secure_file = user_project.secure_files.new(
-              name: params[:name]
+              name: Gitlab::Utils.check_path_traversal!(params[:name])
             )
 
             secure_file.file = params[:file]
