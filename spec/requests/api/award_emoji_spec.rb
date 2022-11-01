@@ -191,6 +191,36 @@ RSpec.describe API::AwardEmoji do
       expect(json_response['name']).to eq(rocket.name)
     end
 
+    context 'when a confidential note' do
+      subject(:perform_request) { get api(request_path, current_user) }
+
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :public, namespace: group) }
+      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:note) { create(:note, :confidential, project: project, noteable: issue, author: user) }
+
+      context 'with sufficient persmissions' do
+        let(:current_user) { user }
+
+        it 'returns an award emoji' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq(rocket.name)
+        end
+      end
+
+      context 'with insufficient permissions' do
+        let(:current_user) { nil }
+
+        it 'returns 404' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
     it_behaves_like 'unauthenticated request to public awardable'
     it_behaves_like 'request with insufficient permissions', :get
   end

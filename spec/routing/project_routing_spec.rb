@@ -189,6 +189,7 @@ RSpec.describe 'project routing' do
     end
 
     it 'to #logs_tree' do
+      expect(get('/gitlab/gitlabhq/-/refs/stable/logs_tree/..%2F..%2F..%2F..%2F..%2F@example.com/tree/a')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable', path: '../../../../../@example.com/tree/a')
       expect(get('/gitlab/gitlabhq/-/refs/stable/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable')
       expect(get('/gitlab/gitlabhq/-/refs/feature%2345/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45')
       expect(get('/gitlab/gitlabhq/-/refs/feature%2B45/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45')
@@ -214,6 +215,10 @@ RSpec.describe 'project routing' do
     it_behaves_like 'redirecting a legacy path',
       '/gitlab/gitlabhq/refs/stable/logs_tree/new%0A%0Aline.txt',
       '/gitlab/gitlabhq/-/refs/stable/logs_tree/new%0A%0Aline.txt'
+
+    it_behaves_like 'redirecting a legacy path',
+      '/gitlab/gitlabhq/refs/feature%2345/logs_tree/../../../../../@example.com/tree/a',
+      '/gitlab/gitlabhq/-/refs/feature#45/logs_tree/../../../../../-/example.com/tree/a'
   end
 
   describe Projects::MergeRequestsController, 'routing' do
