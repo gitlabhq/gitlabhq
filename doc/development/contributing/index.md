@@ -100,7 +100,7 @@ If you have any questions or need help, visit [Getting Help](https://about.gitla
 communicate with the GitLab community. GitLab prefers [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real-time communication.
 
 We do encourage you to connect and hang out with us. GitLab has a Gitter room dedicated for [contributors](https://gitter.im/gitlab/contributors), which is bridged with our
-internal Slack. We actively monitor this channel. There is also a community-run [Discord server](https://discord.gg/S4cwz9sR8u) where you can
+internal Slack. We actively monitor this channel. There is also a community-run [Discord server](http://discord.gg/gitlab) where you can
 find other contributors in the `#contributors` channel.
 
 Thanks for your contribution!

@@ -829,7 +829,7 @@ environment = ["DOCKER_DRIVER=overlay2"]
 If you're running multiple runners, you have to modify all configuration files.
 
 Read more about the [runner configuration](https://docs.gitlab.com/runner/configuration/)
-and [using the OverlayFS storage driver](https://docs.docker.com/engine/userguide/storagedriver/overlayfs-driver/).
+and [using the OverlayFS storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/).
 
 ## Docker alternatives
 

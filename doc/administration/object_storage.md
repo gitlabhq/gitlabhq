@@ -279,7 +279,7 @@ Here are the valid connection parameters for GCS:
 | `google_project`             | GCP project name. | `gcp-project-12345` |
 | `google_json_key_location`   | JSON key path.    | `/path/to/gcp-project-12345-abcde.json` |
 | `google_json_key_string`     | JSON key string.  | `{ "type": "service_account", "project_id": "example-project-382839", ... }` |
-| `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. | |
+| `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication#adc) to locate service account credentials. | |
 
 GitLab reads the value of `google_json_key_location`, then `google_json_key_string`, and finally, `google_application_default`.
 It uses the first of these settings that has a value.

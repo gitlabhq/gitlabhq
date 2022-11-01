@@ -24,7 +24,7 @@ module API
           end
 
           desc 'Get a list of features (deprecated, v2 client support)'
-          get 'features' do
+          get 'features', urgency: :low do
             if ::Feature.enabled?(:cache_unleash_client_api, project)
               present_feature_flags
             else
@@ -50,7 +50,7 @@ module API
             status :ok
           end
 
-          post 'client/metrics' do
+          post 'client/metrics', urgency: :low do
             # not supported yet
             status :ok
           end

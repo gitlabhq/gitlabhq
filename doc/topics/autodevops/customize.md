@@ -159,7 +159,7 @@ to `CI_COMMIT_SHA,CI_ENVIRONMENT_NAME`.
      ```
 
 When `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` is set, Auto DevOps
-enables the experimental [Docker BuildKit](https://docs.docker.com/develop/develop-images/build_enhancements/)
+enables the experimental [Docker BuildKit](https://docs.docker.com/build/buildkit/)
 feature to use the `--secret` flag.
 
 ## Custom Helm Chart

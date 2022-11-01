@@ -61,6 +61,14 @@ describe('Chunk component', () => {
   });
 
   describe('rendering', () => {
+    it('does not register window.requestIdleCallback if isFirstChunk prop is true, renders lines immediately', () => {
+      jest.clearAllMocks();
+      createComponent({ isFirstChunk: true });
+
+      expect(window.requestIdleCallback).not.toHaveBeenCalled();
+      expect(findContent().exists()).toBe(true);
+    });
+
     it('does not render a Chunk Line component if isHighlighted is false', () => {
       expect(findChunkLines().length).toBe(0);
     });

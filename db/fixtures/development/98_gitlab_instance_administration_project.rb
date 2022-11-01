@@ -2,6 +2,9 @@
 
 response = Sidekiq::Worker.skipping_transaction_check do
   result = ::Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService.new.execute
+
+  next result unless result[:status] == :success
+
   AuthorizedProjectUpdate::ProjectRecalculateService.new(result[:project]).execute
 
   result

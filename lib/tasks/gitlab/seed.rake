@@ -2,30 +2,36 @@
 
 namespace :gitlab do
   namespace :seed do
+    def projects_from_args(args)
+      full_path = args.project_full_path
+
+      if full_path
+        project = Project.find_by_full_path(full_path)
+
+        unless project
+          error_message = "Project '#{full_path}' does not exist!"
+          potential_projects = Project.search(full_path)
+
+          if potential_projects.present?
+            error_message += " Did you mean '#{potential_projects.first.full_path}'?"
+          end
+
+          puts error_message.color(:red)
+          exit 1
+        end
+
+        [project]
+      else
+        scope = Project.respond_to?(:not_mass_generated) ? Project.not_mass_generated : Project
+        scope.find_each
+      end
+    end
+
     desc "GitLab | Seed | Seeds issues"
     task :issues, [:project_full_path, :backfill_weeks, :average_issues_per_week] => :environment do |t, args|
       args.with_defaults(backfill_weeks: 5, average_issues_per_week: 2)
 
-      projects =
-        if args.project_full_path
-          project = Project.find_by_full_path(args.project_full_path)
-
-          unless project
-            error_message = "Project '#{args.project_full_path}' does not exist!"
-            potential_projects = Project.search(args.project_full_path)
-
-            if potential_projects.present?
-              error_message += " Did you mean '#{potential_projects.first.full_path}'?"
-            end
-
-            puts error_message.color(:red)
-            exit 1
-          end
-
-          [project]
-        else
-          Project.not_mass_generated.find_each
-        end
+      projects = projects_from_args(args)
 
       projects.each do |project|
         puts "\nSeeding issues for the '#{project.full_path}' project"
@@ -68,6 +74,18 @@ namespace :gitlab do
           average_issues_per_week: args.average_issues_per_week.to_i
         )
         puts "\n#{epics} epics created!"
+      end
+    end
+
+    desc "GitLab | Seed | Seed a project with vulnerabilities"
+    task :vulnerabilities, [:project_full_path] => :environment do |t, args|
+      projects = projects_from_args(args)
+
+      projects.each do |project|
+        puts "\nSeeding vulnerabilities for the '#{project.full_path}' project"
+        seeder = Quality::Seeders::Vulnerabilities.new(project)
+        seeder.seed!
+        puts "\nDone."
       end
     end
   end

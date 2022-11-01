@@ -262,7 +262,7 @@ GET /projects/:id/integrations/buildkite
 ## Campfire
 
 Send notifications about push events to Campfire chat rooms.
-[New users can no longer sign up for Campfire](https://basecamp.com/retired/campfire).
+[New users can no longer sign up for Campfire](https://basecamp.com/handbook/05-product-histories#campfire).
 
 ### Create/Edit Campfire integration
 

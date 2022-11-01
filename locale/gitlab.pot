@@ -27724,6 +27724,9 @@ msgstr ""
 msgid "Notify|No preview for this file type"
 msgstr ""
 
+msgid "Notify|Pipeline #%{pipeline_id} has failed!"
+msgstr ""
+
 msgid "Notify|Pipeline %{pipeline_link} triggered by"
 msgstr ""
 

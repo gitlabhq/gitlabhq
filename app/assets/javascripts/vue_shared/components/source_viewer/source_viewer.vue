@@ -203,6 +203,7 @@ export default {
       :content="firstChunk.content"
       :starting-from="firstChunk.startingFrom"
       :is-highlighted="firstChunk.isHighlighted"
+      is-first-chunk
       :language="firstChunk.language"
       :blame-path="blob.blamePath"
     />

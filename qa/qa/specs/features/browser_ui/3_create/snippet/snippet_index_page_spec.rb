@@ -49,13 +49,6 @@ module QA
         Flow::Login.sign_in
       end
 
-      after do
-        personal_snippet_with_single_file.remove_via_api!
-        personal_snippet_with_multiple_files.remove_via_api!
-        project_snippet_with_single_file.remove_via_api!
-        project_snippet_with_multiple_files.remove_via_api!
-      end
-
       shared_examples 'displaying details on index page' do |snippet_type, testcase|
         it "shows correct details of #{snippet_type} including file number", testcase: testcase do
           send(snippet_type)

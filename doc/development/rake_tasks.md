@@ -85,6 +85,18 @@ To import these metrics, you can run:
 bundle exec rake 'gitlab:seed:development_metrics[your_project_id]'
 ```
 
+#### Seed a project with vulnerabilities
+
+You can seed a project with [security vulnerabilities](../user/application_security/vulnerabilities/index.md).
+
+```shell
+# Seed all projects
+bin/rake 'gitlab:seed:vulnerabilities'
+
+# Seed a specific project
+bin/rake 'gitlab:seed:vulnerabilities[group-path/project-path]'
+```
+
 ### Automation
 
 If you're very sure that you want to **wipe the current database** and refill

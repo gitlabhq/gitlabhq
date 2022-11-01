@@ -34,7 +34,7 @@ The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) image contains t
 <!-- vale gitlab.Spelling = NO -->
 
 - [Bytefield](https://bytefield-svg.deepsymmetry.org/)
-- [Ditaa](http://ditaa.sourceforge.net)
+- [Ditaa](https://ditaa.sourceforge.net)
 - [Erd](https://github.com/BurntSushi/erd)
 - [GraphViz](https://www.graphviz.org/)
 - [Nomnoml](https://github.com/skanaar/nomnoml)

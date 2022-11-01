@@ -114,7 +114,6 @@ content:
 
 - Find learning tracks and certification options at [GitLab Learn](https://about.gitlab.com/learn/).
   GitLab learning platform login required (email and password for non-GitLab team members).
-  For more information, see [First time login details](https://about.gitlab.com/handbook/people-group/learning-and-development/gitlab-learn/user/#first-time-login-to-gitlab-learn).
 
 - Find recent tutorials on the GitLab blog by [searching by the `tutorial` tag](https://about.gitlab.com/blog/tags.html#tutorial).
 

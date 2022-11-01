@@ -82,7 +82,7 @@ go build -o analyzer
 
 Video walkthrough of how Dependency Scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
 
-[![How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](http://img.youtube.com/vi/KauRBlfUbDE/0.jpg)](http://www.youtube.com/watch?v=KauRBlfUbDE)
+[![How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://img.youtube.com/vi/KauRBlfUbDE/0.jpg)](https://www.youtube.com/watch?v=KauRBlfUbDE)
 
 ### Testing local changes
 

@@ -16,10 +16,6 @@ module QA
         Flow::Login.sign_in
       end
 
-      after do
-        snippet&.remove_via_api!
-      end
-
       context 'when the snippet is public' do
         it 'can be shared with not signed-in users', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347836' do
           snippet.visit!

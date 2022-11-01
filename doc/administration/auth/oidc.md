@@ -154,7 +154,7 @@ different providers with Omnibus GitLab.
 
 ### Configure Google
 
-See the [Google documentation](https://developers.google.com/identity/protocols/oauth2/openid-connect)
+See the [Google documentation](https://developers.google.com/identity/openid-connect/openid-connect)
 for more details:
 
 ```ruby

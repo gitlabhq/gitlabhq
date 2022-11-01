@@ -20,7 +20,7 @@ by using the GitLab agent for Kubernetes.
 
 **Prerequisites:**
 
-- A [Google Cloud Platform (GCP) service account](https://cloud.google.com/docs/authentication/getting-started).
+- A [Google Cloud Platform (GCP) service account](https://cloud.google.com/docs/authentication#service-accounts).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.
 
 **Steps:**
@@ -71,7 +71,7 @@ To create a GitLab agent for Kubernetes:
 
 To set up your project to communicate to GCP and the GitLab API:
 
-1. To authenticate GCP with GitLab, create a [GCP service account](https://cloud.google.com/docs/authentication/getting-started)
+1. To authenticate GCP with GitLab, create a [GCP service account](https://cloud.google.com/docs/authentication#service-accounts)
 with following roles: `Compute Network Viewer`, `Kubernetes Engine Admin`, `Service Account User`, and `Service Account Admin`. Both User and Admin
 service accounts are necessary. The User role impersonates the [default service account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account)
 when [creating the node pool](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/using_gke_with_terraform#node-pool-management).

@@ -170,8 +170,8 @@ To update the `CODEOWNERS` file:
    bundle exec rake tw:codeowners > ~/Desktop/updates.md
    ```
 
-1. Open the file (for example, `~/Desktop/updates.md`) and copy
-   the lines in the `^[Documentation Pages]` section.
+1. Open the file (for example, `~/Desktop/updates.md`) and copy everything
+   except the errors at the bottom of the file.
 1. Open the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)
    file and paste the lines into the `^[Documentation Pages]` section.
 

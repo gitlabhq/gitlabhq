@@ -1,18 +1,4 @@
-import Editor from '~/editor/source_editor';
 import { getBaseURL } from '~/lib/utils/url_utility';
-
-export function initSourceEditor({ el, ...args }) {
-  const editor = new Editor({
-    scrollbar: {
-      alwaysConsumeMouseWheel: false,
-    },
-  });
-
-  return editor.createInstance({
-    el,
-    ...args,
-  });
-}
 
 const blameLinesPerPage = document.querySelector('.js-per-page')?.dataset?.blamePerPage;
 

@@ -122,6 +122,7 @@ describe('Source Viewer component', () => {
 
     it('highlights the first chunk', () => {
       expect(hljs.highlight).toHaveBeenCalledWith(chunk1.trim(), { language: mappedLanguage });
+      expect(findChunks().at(0).props('isFirstChunk')).toBe(true);
     });
 
     describe('auto-detects if a language cannot be loaded', () => {

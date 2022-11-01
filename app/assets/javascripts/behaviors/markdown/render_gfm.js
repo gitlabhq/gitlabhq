@@ -15,7 +15,7 @@ $.fn.renderGFM = function renderGFM() {
   syntaxHighlight(this.find('.js-syntax-highlight').get());
   renderKroki(this.find('.js-render-kroki[hidden]').get());
   renderMath(this.find('.js-render-math'));
-  renderSandboxedMermaid(this.find('.js-render-mermaid'));
+  renderSandboxedMermaid(this.find('.js-render-mermaid').get());
   renderJSONTable(
     Array.from(this.find('[lang="json"][data-lang-params="table"]').get()).map((e) => e.parentNode),
   );

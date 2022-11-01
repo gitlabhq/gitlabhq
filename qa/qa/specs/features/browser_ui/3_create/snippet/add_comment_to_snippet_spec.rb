@@ -23,11 +23,6 @@ module QA
         Flow::Login.sign_in
       end
 
-      after do
-        personal_snippet&.remove_via_api!
-        project_snippet&.remove_via_api!
-      end
-
       shared_examples 'comments on snippets' do |snippet_type, testcase|
         it "adds, edits, and deletes a comment on a #{snippet_type}", testcase: testcase do
           send(snippet_type)

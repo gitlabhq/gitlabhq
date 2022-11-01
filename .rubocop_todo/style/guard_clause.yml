@@ -716,7 +716,6 @@ Style/GuardClause:
     - 'spec/support/capybara.rb'
     - 'spec/support/database/prevent_cross_joins.rb'
     - 'spec/support/helpers/access_matchers_helpers.rb'
-    - 'spec/support/helpers/bare_repo_operations.rb'
     - 'spec/support/helpers/capybara_helpers.rb'
     - 'spec/support/helpers/dropzone_helper.rb'
     - 'spec/support/helpers/fake_blob_helpers.rb'

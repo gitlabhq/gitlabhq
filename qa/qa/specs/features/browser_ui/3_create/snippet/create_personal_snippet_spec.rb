@@ -17,10 +17,6 @@ module QA
         Flow::Login.sign_in
       end
 
-      after do
-        snippet.remove_via_api!
-      end
-
       it 'user creates a personal snippet', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347799' do
         snippet
 

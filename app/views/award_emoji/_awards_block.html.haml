@@ -8,15 +8,19 @@
   - grouped_emojis = awardable.grouped_awards(with_thumbs: inline)
   .awards.js-awards-block{ class: ("hidden" if !inline && grouped_emojis.empty?), data: { award_url: toggle_award_url(awardable) } }
     - awards_sort(grouped_emojis).each do |emoji, awards|
-      = render Pajamas::ButtonComponent.new(button_options: { class: "#{award_state_class(awardable, awards, current_user)} award-control js-emoji-btn", title: award_user_list(awards, current_user), data: { toggle: 'tooltip', container: 'body' } }) do
+      %button.gl-button.btn.btn-default.award-control.js-emoji-btn.has-tooltip{ type: "button",
+        class: [award_state_class(awardable, awards, current_user)],
+        data: { title: award_user_list(awards, current_user) } }
         = emoji_icon(emoji)
         %span.award-control-text.js-counter
           = awards.count
 
     - if can?(current_user, :award_emoji, awardable)
       .award-menu-holder.js-award-holder
-        = render Pajamas::ButtonComponent.new(button_text_classes: 'gl-display-flex', button_options: { title: _('Add reaction'), class: 'js-add-award award-control has-tooltip', 'aria-label': _('Add reaction') }) do
-          = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral gl-icon gl-mr-0!')
-          = sprite_icon('smiley', css_class: 'award-control-icon-positive gl-icon')
-          = sprite_icon('smile', css_class: 'award-control-icon-super-positive gl-icon')
+        %button.gl-button.btn.btn-default.award-control.has-tooltip.js-add-award{ type: 'button',
+          'aria-label': _('Add reaction'),
+          data: { title: _('Add reaction') } }
+          %span{ class: "award-control-icon award-control-icon-neutral gl-icon" }= sprite_icon('slight-smile')
+          %span{ class: "award-control-icon award-control-icon-positive gl-icon" }= sprite_icon('smiley')
+          %span{ class: "award-control-icon award-control-icon-super-positive gl-icon" }= sprite_icon('smile')
     = yield

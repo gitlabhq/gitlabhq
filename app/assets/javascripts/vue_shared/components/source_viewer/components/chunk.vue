@@ -24,6 +24,11 @@ export default {
     SafeHtml: GlSafeHtmlDirective,
   },
   props: {
+    isFirstChunk: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     chunkIndex: {
       type: Number,
       required: false,
@@ -74,6 +79,11 @@ export default {
   },
 
   created() {
+    if (this.isFirstChunk) {
+      this.isLoading = false;
+      return;
+    }
+
     window.requestIdleCallback(() => {
       this.isLoading = false;
       const { hash } = this.$route;
