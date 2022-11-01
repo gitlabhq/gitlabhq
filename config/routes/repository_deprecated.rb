@@ -18,8 +18,12 @@ scope format: false do
     constraints: { id: Gitlab::PathRegex.git_reference_regex }
 
   get '/refs/:id/logs_tree/*path',
-    to: redirect('%{namespace_id}/%{project_id}/-/refs/%{id}/logs_tree/%{path}'),
-    constraints: { id: /.*/, path: /[^\0]*/ }
+    constraints: { id: /.*/, path: /[^\0]*/ },
+    to: redirect { |params, _request|
+      path = params[:path]
+      path.gsub!('@', '-/')
+      Addressable::URI.escape("#{params[:namespace_id]}/#{params[:project_id]}/-/refs/#{params[:id]}/logs_tree/#{path}")
+    }
 
   scope constraints: { id: /[^\0]+/ } do
     # Deprecated. Keep for compatibility.

@@ -703,6 +703,10 @@ class Note < ApplicationRecord
     super.sub!('task', 'checklist item')
   end
 
+  def issuable_ability_name
+    confidential? ? :read_confidential_notes : :read_note
+  end
+
   private
 
   def system_note_viewable_by?(user)
