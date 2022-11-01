@@ -36901,9 +36901,6 @@ msgstr ""
 msgid "Something went wrong while fetching the packages list."
 msgstr ""
 
-msgid "Something went wrong while initializing the OpenAPI viewer"
-msgstr ""
-
 msgid "Something went wrong while obtaining the Let's Encrypt certificate."
 msgstr ""
 
