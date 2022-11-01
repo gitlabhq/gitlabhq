@@ -89,6 +89,18 @@ RSpec.describe API::ImportGithub do
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
+
+    context 'when unauthenticated user' do
+      it 'returns 403 response' do
+        post api("/import/github"), params: {
+          target_namespace: user.namespace_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
   end
 
   describe "POST /import/github/cancel" do
@@ -125,6 +137,16 @@ RSpec.describe API::ImportGithub do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('The import cannot be canceled because it is finished')
+      end
+    end
+
+    context 'when unauthenticated user' do
+      it 'returns 403 response' do
+        post api("/import/github/cancel"), params: {
+          project_id: project.id
+        }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end

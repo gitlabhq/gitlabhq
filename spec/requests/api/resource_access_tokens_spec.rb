@@ -416,6 +416,41 @@ RSpec.describe API::ResourceAccessTokens do
               expect(response.body).to include("scopes is missing")
             end
           end
+
+          context "when using invalid 'scopes'" do
+            let_it_be(:params) do
+              {
+                name: "test",
+                scopes: ["test"],
+                expires_at: 5.days.from_now
+              }
+            end
+
+            it "does not create a #{source_type} access token with invalid 'scopes'", :aggregate_failures do
+              create_token
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response.body).to include("scopes does not have a valid value")
+            end
+          end
+
+          context "when using invalid 'access_level'" do
+            let_it_be(:params) do
+              {
+                name: "test",
+                scopes: ["api"],
+                expires_at: 5.days.from_now,
+                access_level: Gitlab::Access::NO_ACCESS
+              }
+            end
+
+            it "does not create a #{source_type} access token with invalid 'access_level'", :aggregate_failures do
+              create_token
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response.body).to include("access_level does not have a valid value")
+            end
+          end
         end
 
         context "when trying to create a token in a different #{source_type}" do

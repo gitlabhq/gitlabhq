@@ -2,6 +2,8 @@
 
 module API
   class ImportGithub < ::API::Base
+    before { authenticate! }
+
     feature_category :importers
     urgency :low
 

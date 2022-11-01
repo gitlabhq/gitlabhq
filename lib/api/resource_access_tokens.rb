@@ -4,6 +4,8 @@ module API
   class ResourceAccessTokens < ::API::Base
     include PaginationParams
 
+    ALLOWED_RESOURCE_ACCESS_LEVELS = Gitlab::Access.options_with_owner.freeze
+
     before { authenticate! }
 
     feature_category :authentication_and_authorization
@@ -79,8 +81,8 @@ module API
         params do
           requires :id, type: String, desc: "The #{source_type} ID"
           requires :name, type: String, desc: "Resource access token name"
-          requires :scopes, type: Array[String], desc: "The permissions of the token"
-          optional :access_level, type: Integer, desc: "The access level of the token in the #{source_type}"
+          requires :scopes, type: Array[String], values: ::Gitlab::Auth.resource_bot_scopes.map(&:to_s), desc: "The permissions of the token"
+          optional :access_level, type: Integer, values: ALLOWED_RESOURCE_ACCESS_LEVELS.values, default: Gitlab::Access::MAINTAINER, desc: "The access level of the token in the #{source_type}"
           optional :expires_at, type: Date, desc: "The expiration date of the token"
         end
         post ':id/access_tokens' do
