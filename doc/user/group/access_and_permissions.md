@@ -56,17 +56,19 @@ To change the permitted Git access protocols for a group:
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
 
-## Restrict group access by IP address **(PREMIUM)**
+## Restrict access to groups by IP address **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
 
-To ensure only people from your organization can access particular
-resources, you can restrict access to groups by IP address. This group-level setting
-applies to:
+To ensure only people from your organization can access particular resources, you can restrict access to groups by IP
+address. This group-level setting applies to:
 
 - The GitLab UI, including subgroups, projects, and issues.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
+
+Administrators can combine restricted access by IP address with
+[globally-allowed IP addresses](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
 
 ### Security implications
 
@@ -290,5 +292,4 @@ If a user sees a 404 when they would normally expect access, and the problem is 
 - `json.message`: `'Attempting to access IP restricted group'`
 - `json.allowed`: `false`
 
-In viewing the log entries, compare the `remote.ip` with the list of
-[allowed IPs](#restrict-group-access-by-ip-address) for the group.
+In viewing the log entries, compare the `remote.ip` with the list of [allowed IP addresses](#restrict-access-to-groups-by-ip-address) for the group.

@@ -280,13 +280,13 @@ work in every repository. They can only be re-enabled by an administrator user o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87579) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `group_ip_restrictions_allow_global`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) in GitLab 15.4. [Feature flag `group_ip_restrictions_allow_global`](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) removed.
 
-This setting allows you to set IP address ranges to be combined with group-level IP allowlists.
-It helps administrators prevent aspects of the GitLab installation from being blocked
-from working as intended when an IP allowlist is used.
+Administrators can set IP address ranges to be combined with [group-level IP restrictions](../../group/access_and_permissions.md#restrict-access-to-groups-by-ip-address).
+Use globally-allowed IP addresses to allow aspects of the GitLab installation to work even when group-level IP address
+restrictions are set.
 
-For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, specify that range in this
-field, as otherwise any group-level restrictions that don't include that range cause the Pages
-daemon to be unable to fetch artifacts from the pipeline runs.
+For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, you can specify that range as globally-allowed.
+This means GitLab Pages can still fetch artifacts from pipelines even if group-level IP address restrictions don't
+include the `10.0.0.0/24` range.
 
 To add a IP address range to the group-level allowlist:
 
@@ -294,7 +294,7 @@ To add a IP address range to the group-level allowlist:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. In **Globally-allowed IP ranges**, provide a value.
+1. In **Globally-allowed IP ranges**, provide IP address ranges.
 1. Select **Save changes**.
 
 <!-- ## Troubleshooting

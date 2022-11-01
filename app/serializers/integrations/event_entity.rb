@@ -25,6 +25,9 @@ module Integrations
       expose :value do |event|
         integration.event_channel_value(event)
       end
+      expose :placeholder do |_event|
+        integration.default_channel_placeholder
+      end
     end
 
     private

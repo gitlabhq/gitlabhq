@@ -49,6 +49,10 @@ RSpec.describe MergeRequests::RemoveApprovalService do
       it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
         let(:action) { execute! }
       end
+
+      it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { execute! }
+      end
     end
 
     context 'with a user who has not approved' do
@@ -67,6 +71,10 @@ RSpec.describe MergeRequests::RemoveApprovalService do
       end
 
       it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { execute! }
+      end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
         let(:action) { execute! }
       end
     end

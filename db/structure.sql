@@ -20195,9 +20195,11 @@ CREATE TABLE project_settings (
     suggested_reviewers_enabled boolean DEFAULT false NOT NULL,
     jitsu_key text,
     only_allow_merge_if_all_status_checks_passed boolean DEFAULT false NOT NULL,
+    mirror_branch_regex text,
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),
+    CONSTRAINT check_67292e4b99 CHECK ((char_length(mirror_branch_regex) <= 255)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),
     CONSTRAINT check_eaf7cfb6a7 CHECK ((char_length(merge_commit_template) <= 500))
@@ -20775,7 +20777,9 @@ CREATE TABLE remote_mirrors (
     only_protected_branches boolean DEFAULT false NOT NULL,
     remote_name character varying,
     error_notification_sent boolean,
-    keep_divergent_refs boolean
+    keep_divergent_refs boolean,
+    mirror_branch_regex text,
+    CONSTRAINT check_aa6b497785 CHECK ((char_length(mirror_branch_regex) <= 255))
 );
 
 CREATE SEQUENCE remote_mirrors_id_seq

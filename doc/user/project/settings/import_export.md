@@ -382,9 +382,9 @@ Rather than attempting to push all changes at once, this workaround:
 
 ### Manually execute export steps
 
-Exports sometimes fail without giving enough information to troubleshoot. In these cases, it can be
-helpful to [open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-and loop through [all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/b67a5b5a12498d57cd877023b7385f7251e57de8/app/services/projects/import_export/export_service.rb#L65).
+You usually export a project through [the web interface](#export-a-project-and-its-data) or through [the API](../../../api/project_import_export.md). Exporting using these
+methods can sometimes fail without giving enough information to troubleshoot. In these cases,
+[open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
 Execute each line individually, rather than pasting the entire block at once, so you can see any
 errors each command returns.
 
@@ -405,6 +405,8 @@ s = Gitlab::ImportExport::Saver.new(exportable: p, shared:p.import_export_shared
 s.send(:compress_and_save)
 s.send(:save_upload)
 ```
+
+After the project is successfully uploaded, the exported project is located in a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
 ### Import using the REST API fails when using a group access token
 

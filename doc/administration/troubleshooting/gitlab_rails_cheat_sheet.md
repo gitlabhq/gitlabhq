@@ -28,77 +28,6 @@ mentioned above, we recommend running these scripts under the supervision of a
 Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
 
-## Imports and exports
-
-### Import a project
-
-```ruby
-# Find the project and get the error
-p = Project.find_by_full_path('<username-or-group>/<project-name>')
-
-p.import_error
-
-# To finish the import on GitLab running version before 11.6
-p.import_finish
-
-# To finish the import on GitLab running version 11.6 or after
-p.import_state.mark_as_failed("Failed manually through console.")
-```
-
-### Rename imported repository
-
-In a specific situation, an imported repository needed to be renamed. The Support
-Team was informed of a backup restore that failed on a single repository, which created
-the project with an empty repository. The project was successfully restored to a development
-instance, then exported, and imported into a new project under a different name.
-
-The Support Team was able to transfer the incorrectly named imported project into the
-correctly named empty project using the steps below.
-
-Move the new repository to the empty repository:
-
-```shell
-mv /var/opt/gitlab/git-data/repositories/<group>/<new-project> /var/opt/gitlab/git-data/repositories/<group>/<empty-project>
-```
-
-Make sure the permissions are correct:
-
-```shell
-chown -R git:git <path-to-directory>.git
-```
-
-Clear the cache:
-
-```shell
-sudo gitlab-rake cache:clear
-```
-
-### Export a project
-
-It's typically recommended to export a project through [the web interface](../../user/project/settings/import_export.md#export-a-project-and-its-data) or through [the API](../../api/project_import_export.md). In situations where this is not working as expected, it may be preferable to export a project directly via the Rails console:
-
-```ruby
-user = User.find_by_username('<username>')
-# Sufficient permissions needed
-# Read https://docs.gitlab.com/ee/user/permissions.html#project-members-permissions
-
-project = Project.find_by_full_path('<username-or-group>/<project-name')
-Projects::ImportExport::ExportService.new(project, user).execute
-```
-
-If this all runs successfully, you see an output like the following before being returned to the Rails console prompt:
-
-```ruby
-=> nil
-```
-
-The exported project is located in a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
-
-If this fails, [enable verbose logging](../operations/rails_console.md#looking-up-database-persisted-objects),
-repeat the above procedure after,
-and report the output to
-[GitLab Support](https://about.gitlab.com/support/).
-
 ## Mirrors
 
 ### Find mirrors with "bad decrypt" errors
@@ -256,38 +185,6 @@ Find this content in the [Container Registry troubleshooting documentation](../p
 This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_troubleshooting.md).
 
 ## Geo
-
-### Reverify all uploads (or any SSF data type which is verified)
-
-1. SSH into a GitLab Rails node in the primary Geo site.
-1. Open [Rails console](../operations/rails_console.md).
-1. Mark all uploads as "pending verification":
-
-   ```ruby
-   Upload.verification_state_table_class.each_batch do |relation|
-     relation.update_all(verification_state: 0)
-   end
-   ```
-
-1. This will cause the primary to start checksumming all Uploads.
-1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
-
-A similar thing can be done for all Models handled by the [Geo Self-Service Framework](../../development/geo/framework.md) which have implemented verification:
-
-- `LfsObject`
-- `MergeRequestDiff`
-- `Packages::PackageFile`
-- `Terraform::StateVersion`
-- `SnippetRepository`
-- `Ci::PipelineArtifact`
-- `PagesDeployment`
-- `Upload`
-- `Ci::JobArtifact`
-- `Ci::SecureFile`
-
-NOTE:
-`GroupWikiRepository` is not in the previous list since verification is not implemented.
-There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
 ### Artifacts
 

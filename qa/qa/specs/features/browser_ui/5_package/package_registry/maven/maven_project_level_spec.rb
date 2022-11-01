@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable,
+  RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage, :reliable,
   feature_flag: {
     name: 'maven_central_request_forwarding',
     scope: :global
