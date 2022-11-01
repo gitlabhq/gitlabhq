@@ -342,11 +342,18 @@ RSpec.describe 'Pipelines', :js do
         end
 
         context 'when user played a delayed job immediately' do
+          let(:manual_action_selector) { '[data-testid="pipelines-manual-actions-dropdown"]' }
+
           before do
-            find('[data-testid="pipelines-manual-actions-dropdown"]').click
+            find(manual_action_selector).click
             accept_gl_confirm do
               click_button 'delayed job 1'
             end
+
+            # Wait for UI to transition to ensure a request has been made
+            within(manual_action_selector) { find('.gl-spinner') }
+            within(manual_action_selector) { find('[data-testid="play-icon"]') }
+
             wait_for_requests
           end
 
