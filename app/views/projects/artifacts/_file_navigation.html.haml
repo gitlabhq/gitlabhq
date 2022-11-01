@@ -1,0 +1,12 @@
+.nav-block
+  %ul.breadcrumb.repo-breadcrumb
+    %li.breadcrumb-item
+      = link_to _('Artifacts'), browse_project_job_artifacts_path(project, build)
+    - path_breadcrumbs do |title, breadcrumb|
+      - title = truncate(title, length: 40)
+      %li.breadcrumb-item
+        - if path == breadcrumb
+          = link_to file_project_job_artifacts_path(project, build, breadcrumb) do
+            %strong= title
+        - else
+          = link_to title, browse_project_job_artifacts_path(project, build, breadcrumb)

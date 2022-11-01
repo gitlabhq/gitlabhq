@@ -1,28 +1,27 @@
-import { SwaggerUIBundle } from 'swagger-ui-dist';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import renderOpenApi from '~/blob/openapi';
-
-jest.mock('swagger-ui-dist');
 
 describe('OpenAPI blob viewer', () => {
   const id = 'js-openapi-viewer';
   const mockEndpoint = 'some/endpoint';
+  let mock;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     setHTMLFixture(`<div id="${id}" data-endpoint="${mockEndpoint}"></div>`);
-    renderOpenApi();
+    mock = new MockAdapter(axios).onGet().reply(200);
+    await renderOpenApi();
   });
 
   afterEach(() => {
     resetHTMLFixture();
+    mock.restore();
   });
 
   it('initializes SwaggerUI with the correct configuration', () => {
-    expect(SwaggerUIBundle).toHaveBeenCalledWith({
-      url: mockEndpoint,
-      dom_id: `#${id}`,
-      deepLinking: true,
-      displayOperationId: true,
-    });
+    expect(document.body.innerHTML).toContain(
+      '<iframe src="/-/sandbox/swagger" sandbox="allow-scripts" frameborder="0" width="100%" height="1000"></iframe>',
+    );
   });
 });

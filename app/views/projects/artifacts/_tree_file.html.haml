@@ -1,13 +1,15 @@
 - blob = file.blob
-- path_to_file = file_project_job_artifacts_path(@project, @build, path: file.path)
 - external_link = blob.external_link?(@build)
+- if external_link
+  - path_to_file = external_file_project_job_artifacts_path(@project, @build, path: file.path)
+- else
+  - path_to_file = file_project_job_artifacts_path(@project, @build, path: file.path)
 
 %tr.tree-item.js-artifact-tree-row{ data: { link: path_to_file, external_link: "#{external_link}" } }
   %td.tree-item-file-name
     = tree_icon('file', blob.mode, blob.name)
     - if external_link
-      = link_to path_to_file, class: 'tree-item-file-external-link js-artifact-tree-tooltip str-truncated',
-          target: '_blank', rel: 'noopener noreferrer', title: _('Opens in a new window') do
+      = link_to path_to_file, class: 'tree-item-file-external-link js-artifact-tree-tooltip str-truncated' do
         %span>= blob.name
       = sprite_icon('external-link', css_class: 'js-artifact-tree-external-icon')
     - else
