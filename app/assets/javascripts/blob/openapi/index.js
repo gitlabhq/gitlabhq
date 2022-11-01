@@ -1,23 +1,29 @@
-import { SwaggerUIBundle } from 'swagger-ui-dist';
-import createFlash from '~/flash';
-import { __ } from '~/locale';
+import { setAttributes } from '~/lib/utils/dom_utils';
+import axios from '~/lib/utils/axios_utils';
 
-export default () => {
-  const el = document.getElementById('js-openapi-viewer');
+const createSandbox = () => {
+  const iframeEl = document.createElement('iframe');
+  setAttributes(iframeEl, {
+    src: '/-/sandbox/swagger',
+    sandbox: 'allow-scripts',
+    frameBorder: 0,
+    width: '100%',
+    // TODO: the height needs to be adjust dynamically,
+    // we could add `scrolling: 'no'` after that
+    height: '1000',
+  });
+  return iframeEl;
+};
 
-  Promise.all([import(/* webpackChunkName: 'openapi' */ 'swagger-ui-dist/swagger-ui.css')])
-    .then(() => {
-      SwaggerUIBundle({
-        url: el.dataset.endpoint,
-        dom_id: '#js-openapi-viewer',
-        deepLinking: true,
-        displayOperationId: true,
-      });
-    })
-    .catch((error) => {
-      createFlash({
-        message: __('Something went wrong while initializing the OpenAPI viewer'),
-      });
-      throw error;
-    });
+export default async () => {
+  const wrapperEl = document.getElementById('js-openapi-viewer');
+  const sandboxEl = createSandbox();
+
+  const { data } = await axios.get(wrapperEl.dataset.endpoint);
+
+  wrapperEl.appendChild(sandboxEl);
+
+  sandboxEl.addEventListener('load', () => {
+    sandboxEl.contentWindow.postMessage(data, '*');
+  });
 };
