@@ -47,6 +47,10 @@ RSpec.describe Integrations::Datadog do
     Gitlab::DataBuilder::ArchiveTrace.build(build)
   end
 
+  it_behaves_like Integrations::ResetSecretFields do
+    let(:integration) { instance }
+  end
+
   it_behaves_like Integrations::HasWebHook do
     let(:integration) { instance }
     let(:hook_url) { "#{described_class::URL_TEMPLATE % { datadog_domain: dd_site }}?dd-api-key={api_key}&env=#{dd_env}&service=#{dd_service}" }
@@ -238,6 +242,22 @@ RSpec.describe Integrations::Datadog do
         let(:enable_logs_collection) { false }
 
         it { expect(a_request(:post, expected_hook_url)).not_to have_been_made }
+      end
+    end
+  end
+
+  describe '#fields' do
+    it 'includes the archive_trace_events field' do
+      expect(instance.fields).to include(have_attributes(name: 'archive_trace_events'))
+    end
+
+    context 'when the FF :datadog_integration_logs_collection is disabled' do
+      before do
+        stub_feature_flags(datadog_integration_logs_collection: false)
+      end
+
+      it 'does not include the archive_trace_events field' do
+        expect(instance.fields).not_to include(have_attributes(name: 'archive_trace_events'))
       end
     end
   end
