@@ -107,6 +107,33 @@ job:
     - make build
 ```
 
+#### Skip job if the branch is empty
+
+Use [`rules:changes:compare_to`](../yaml/index.md#ruleschangescompare_to) to avoid
+running a job when the branch is empty, which saves CI/CD resources. Compare the
+branch to the default branch, and if the branch:
+
+- Doesn't have changed files, the job doesn't run.
+- Has changed files, the job runs.
+
+For example, in a project with `main` as the default branch:
+
+```yaml
+job:
+  script:
+    - echo "This job only runs for branches that are not empty"
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      changes:
+        compare_to: refs/heads/main
+        paths:
+          - '*'
+```
+
+The rule for this job compares all files and paths (`*`) in the current branch against
+the default branch `main`. The rule matches and the job runs only when there are
+changes to the files in the branch.
+
 ### Complex rules
 
 You can use all `rules` keywords, like `if`, `changes`, and `exists`, in the same

@@ -758,9 +758,9 @@ GEM
       multipart-post
       oauth (~> 0.5, >= 0.5.0)
     jmespath (1.6.1)
-    js_regex (3.7.0)
+    js_regex (3.8.0)
       character_set (~> 1.4)
-      regexp_parser (~> 2.1)
+      regexp_parser (~> 2.5)
       regexp_property_values (~> 1.0)
     json (2.5.1)
     json-jwt (1.15.3)
@@ -1673,7 +1673,7 @@ DEPENDENCIES
   ipaddress (~> 0.8.3)
   ipynbdiff!
   jira-ruby (~> 2.1.4)
-  js_regex (~> 3.7)
+  js_regex (~> 3.8)
   json (~> 2.5.1)
   json_schemer (~> 0.2.18)
   jwt (~> 2.1.0)

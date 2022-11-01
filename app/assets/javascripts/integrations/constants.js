@@ -85,10 +85,12 @@ export const billingPlanNames = {
 };
 
 const INTEGRATION_TYPE_SLACK = 'slack';
+const INTEGRATION_TYPE_SLACK_APPLICATION = 'gitlab_slack_application';
 const INTEGRATION_TYPE_MATTERMOST = 'mattermost';
 
 export const placeholderForType = {
   [INTEGRATION_TYPE_SLACK]: __('#general, #development'),
+  [INTEGRATION_TYPE_SLACK_APPLICATION]: __('#general, #development'),
   [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
 };
 

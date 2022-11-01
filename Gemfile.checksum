@@ -286,7 +286,7 @@
 {"name":"jaro_winkler","version":"1.5.4","platform":"ruby","checksum":"50c3e83c5a9e8769c1cf5b73c8b51bb6eebbf8852a0ee53bf6ad6e4dc63414f9"},
 {"name":"jira-ruby","version":"2.1.4","platform":"ruby","checksum":"4267c095cac8323b9eef3ba866eb28bb1388b7623a5abb60c1e7caf12d4adb9e"},
 {"name":"jmespath","version":"1.6.1","platform":"ruby","checksum":"40ca83f4141bdd1e503db5485de68b84237183d84cf7a159fbeebcc6005adbd6"},
-{"name":"js_regex","version":"3.7.0","platform":"ruby","checksum":"b13fac68c4416d1a5f21c3bab8a71b4530f424b7c4ff9f46d8e62b895dc05975"},
+{"name":"js_regex","version":"3.8.0","platform":"ruby","checksum":"7934bcdd5a0e6d5af4a520288fd4684a02a472ae55831d9178ccaf82356344b5"},
 {"name":"json","version":"2.5.1","platform":"java","checksum":"be284a0c4a9d0373e81b0d5dfe71ed5b18d0479f05970e60a77be89a2978ce6c"},
 {"name":"json","version":"2.5.1","platform":"ruby","checksum":"918d8c41dacb7cfdbe0c7bbd6014a5372f0cf1c454ca150e9f4010fe80cc3153"},
 {"name":"json-jwt","version":"1.15.3","platform":"ruby","checksum":"66db4f14e538a774c15502a5b5b26b1f3e7585481bbb96df490aa74b5c2d6110"},

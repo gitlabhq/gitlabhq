@@ -1155,7 +1155,7 @@ that use the same cache key use the same cache, including in different pipelines
 If not set, the default key is `default`. All jobs with the `cache` keyword but
 no `cache:key` share the `default` cache.
 
-Must be used with `cache: path`, or nothing is cached.
+Must be used with `cache: paths`, or nothing is cached.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1325,7 +1325,7 @@ rspec:
 
 Use `cache:when` to define when to save the cache, based on the status of the job.
 
-Must be used with `cache: path`, or nothing is cached.
+Must be used with `cache: paths`, or nothing is cached.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1365,7 +1365,7 @@ Use the `pull` policy when you have many jobs executing in parallel that use the
 This policy speeds up job execution and reduces load on the cache server. You can
 use a job with the `push` policy to build the cache.
 
-Must be used with `cache: path`, or nothing is cached.
+Must be used with `cache: paths`, or nothing is cached.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1773,7 +1773,7 @@ deploy:
 **Additional details**:
 
 - Enviroments created from this job definition are assigned a [tier](../environments/index.md#deployment-tier-of-environments) based on this value.
-- Existing environments don't have their tier updated if this value is added later. Existing enviroments must have their tier updated via the [Environments API](../../api/environments.md#edit-an-existing-environment).
+- Existing environments don't have their tier updated if this value is added later. Existing enviroments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
 
 **Related topics**:
 

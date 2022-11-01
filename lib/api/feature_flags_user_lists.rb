@@ -16,16 +16,19 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :feature_flags_user_lists do
-        desc 'Get all feature flags user lists of a project' do
-          detail 'This feature was introduced in GitLab 12.10'
+        desc 'List all feature flag user lists for a project' do
+          detail 'Gets all feature flag user lists for the requested project. ' \
+                 'This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
+          is_array true
+          tags %w[feature_flags_user_lists]
         end
         params do
-          optional :search, type: String, desc: 'Returns the list of user lists matching the search critiera'
+          optional :search, type: String, desc: 'Return user lists matching the search criteria'
 
           use :pagination
         end
@@ -35,9 +38,10 @@ module API
             with: ::API::Entities::FeatureFlag::UserList
         end
 
-        desc 'Create a feature flags user list for a project' do
-          detail 'This feature was introduced in GitLab 12.10'
+        desc 'Create a feature flag user list' do
+          detail 'Creates a feature flag user list. This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
+          tags %w[feature_flags_user_lists]
         end
         params do
           requires :name, type: String, desc: 'The name of the list'
@@ -59,12 +63,13 @@ module API
       end
 
       params do
-        requires :iid, type: String, desc: 'The internal ID of the user list'
+        requires :iid, types: [String, Integer], desc: "The internal ID of the project's feature flag user list"
       end
       resource 'feature_flags_user_lists/:iid' do
-        desc 'Get a single feature flag user list belonging to a project' do
-          detail 'This feature was introduced in GitLab 12.10'
+        desc 'Get a feature flag user list' do
+          detail 'Gets a feature flag user list. This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
+          tags %w[feature_flags_user_lists]
         end
         get do
           present user_project.operations_feature_flags_user_lists.find_by_iid!(params[:iid]),
@@ -72,8 +77,9 @@ module API
         end
 
         desc 'Update a feature flag user list' do
-          detail 'This feature was introduced in GitLab 12.10'
+          detail 'Updates a feature flag user list. This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
+          tags %w[feature_flags_user_lists]
         end
         params do
           optional :name, type: String, desc: 'The name of the list'
@@ -93,8 +99,9 @@ module API
           end
         end
 
-        desc 'Delete a feature flag user list' do
-          detail 'This feature was introduced in GitLab 12.10'
+        desc 'Delete feature flag user list' do
+          detail 'Deletes a feature flag user list. This feature was introduced in GitLab 12.10.'
+          tags %w[feature_flags_user_lists]
         end
         delete do
           # TODO: Move the business logic to a service class in app/services/feature_flags.

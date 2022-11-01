@@ -4548,9 +4548,6 @@ msgstr ""
 msgid "Analytics"
 msgstr ""
 
-msgid "AnalyticsDashboards|Dashboards"
-msgstr ""
-
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr ""
 
@@ -25468,6 +25465,9 @@ msgstr ""
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
+msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
+msgstr ""
+
 msgid "Merge the feature branch into the target branch and fix any conflicts. %{linkStart}How do I fix them?%{linkEnd}"
 msgstr ""
 
@@ -32058,6 +32058,9 @@ msgid "ProjectSettings|Squashing is always performed. Checkbox is visible and se
 msgstr ""
 
 msgid "ProjectSettings|Squashing is never performed and the checkbox is hidden."
+msgstr ""
+
+msgid "ProjectSettings|Status checks must succeed"
 msgstr ""
 
 msgid "ProjectSettings|Submit changes to be merged upstream."
