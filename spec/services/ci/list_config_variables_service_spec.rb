@@ -5,19 +5,16 @@ require 'spec_helper'
 RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
-  let(:project) { create(:project, :repository) }
+  let(:ci_config) { {} }
+  let(:files) { { '.gitlab-ci.yml' => YAML.dump(ci_config) } }
+  let(:project) { create(:project, :custom_repo, :auto_devops_disabled, files: files) }
   let(:user) { project.creator }
+  let(:sha) { project.default_branch }
   let(:service) { described_class.new(project, user) }
-  let(:result) { YAML.dump(ci_config) }
 
-  subject { service.execute(sha) }
-
-  before do
-    stub_gitlab_ci_yml_for_sha(sha, result)
-  end
+  subject(:result) { service.execute(sha) }
 
   context 'when sending a valid sha' do
-    let(:sha) { 'master' }
     let(:ci_config) do
       {
         variables: {
@@ -38,15 +35,14 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
     end
 
     it 'returns variable list' do
-      expect(subject['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
-      expect(subject['KEY2']).to eq({ value: 'val 2', description: '' })
-      expect(subject['KEY3']).to eq({ value: 'val 3', description: nil })
-      expect(subject['KEY4']).to eq({ value: 'val 4', description: nil })
+      expect(result['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
+      expect(result['KEY2']).to eq({ value: 'val 2', description: '' })
+      expect(result['KEY3']).to eq({ value: 'val 3', description: nil })
+      expect(result['KEY4']).to eq({ value: 'val 4', description: nil })
     end
   end
 
   context 'when config has includes' do
-    let(:sha) { 'master' }
     let(:ci_config) do
       {
         include: [{ local: 'other_file.yml' }],
@@ -60,24 +56,56 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
       }
     end
 
-    before do
-      allow_next_instance_of(Repository) do |repository|
-        allow(repository).to receive(:blob_data_at).with(sha, 'other_file.yml') do
-          <<~HEREDOC
-            variables:
-              KEY2:
-                value: 'val 2'
-                description: 'description 2'
-          HEREDOC
-        end
-      end
+    let(:other_file) do
+      {
+        variables: {
+          KEY2: { value: 'val 2', description: 'description 2' }
+        }
+      }
+    end
 
+    let(:files) { { '.gitlab-ci.yml' => YAML.dump(ci_config), 'other_file.yml' => YAML.dump(other_file) } }
+
+    before do
       synchronous_reactive_cache(service)
     end
 
     it 'returns variable list' do
-      expect(subject['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
-      expect(subject['KEY2']).to eq({ value: 'val 2', description: 'description 2' })
+      expect(result['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
+      expect(result['KEY2']).to eq({ value: 'val 2', description: 'description 2' })
+    end
+  end
+
+  context 'when project CI config is external' do
+    let(:other_project_ci_config) do
+      {
+        variables: { KEY1: { value: 'val 1', description: 'description 1' } },
+        test: { script: 'echo' }
+      }
+    end
+
+    let(:other_project_files) { { '.gitlab-ci.yml' => YAML.dump(other_project_ci_config) } }
+    let(:other_project) { create(:project, :custom_repo, files: other_project_files) }
+
+    before do
+      project.update!(ci_config_path: ".gitlab-ci.yml@#{other_project.full_path}:master")
+      synchronous_reactive_cache(service)
+    end
+
+    context 'when the user has access to the external project' do
+      before do
+        other_project.add_developer(user)
+      end
+
+      it 'returns variable list' do
+        expect(result['KEY1']).to eq({ value: 'val 1', description: 'description 1' })
+      end
+    end
+
+    context 'when the user has no access to the external project' do
+      it 'returns empty json' do
+        expect(result).to eq({})
+      end
     end
   end
 
@@ -90,12 +118,11 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
     end
 
     it 'returns empty json' do
-      expect(subject).to eq({})
+      expect(result).to eq({})
     end
   end
 
   context 'when sending an invalid config' do
-    let(:sha) { 'master' }
     let(:ci_config) do
       {
         variables: {
@@ -113,13 +140,11 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
     end
 
     it 'returns empty result' do
-      expect(subject).to eq({})
+      expect(result).to eq({})
     end
   end
 
   context 'when reading from cache' do
-    let(:sha) { 'master' }
-    let(:ci_config) { {} }
     let(:reactive_cache_params) { [sha] }
     let(:return_value) { { 'KEY1' => { value: 'val 1', description: 'description 1' } } }
 
@@ -128,13 +153,11 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
     end
 
     it 'returns variable list' do
-      expect(subject).to eq(return_value)
+      expect(result).to eq(return_value)
     end
   end
 
   context 'when the cache is empty' do
-    let(:sha) { 'master' }
-    let(:ci_config) { {} }
     let(:reactive_cache_params) { [sha] }
 
     it 'returns nil and enquques the worker to fill cache' do
@@ -142,16 +165,7 @@ RSpec.describe Ci::ListConfigVariablesService, :use_clean_rails_memory_store_cac
         .to receive(:perform_async)
         .with(service.class, service.id, *reactive_cache_params)
 
-      expect(subject).to be_nil
+      expect(result).to be_nil
     end
-  end
-
-  private
-
-  def stub_gitlab_ci_yml_for_sha(sha, result)
-    allow_any_instance_of(Repository)
-        .to receive(:gitlab_ci_yml_for)
-        .with(sha, '.gitlab-ci.yml')
-        .and_return(result)
   end
 end

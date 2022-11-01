@@ -1331,11 +1331,12 @@ RSpec.describe Projects::PipelinesController do
   describe 'GET config_variables.json', :use_clean_rails_memory_store_caching do
     include ReactiveCachingHelpers
 
-    let(:result) { YAML.dump(ci_config) }
-    let(:service) { Ci::ListConfigVariablesService.new(project, user) }
+    let(:ci_config) { '' }
+    let(:files) {  { '.gitlab-ci.yml' => YAML.dump(ci_config) } }
+    let(:project)  { create(:project, :auto_devops_disabled, :custom_repo, files: files) }
+    let(:service)  { Ci::ListConfigVariablesService.new(project, user) }
 
     before do
-      stub_gitlab_ci_yml_for_sha(sha, result)
       allow(Ci::ListConfigVariablesService)
         .to receive(:new)
         .and_return(service)
@@ -1369,7 +1370,6 @@ RSpec.describe Projects::PipelinesController do
 
     context 'when sending an invalid sha' do
       let(:sha) { 'invalid-sha' }
-      let(:ci_config) { nil }
 
       before do
         synchronous_reactive_cache(service)
@@ -1431,11 +1431,11 @@ RSpec.describe Projects::PipelinesController do
     end
 
     context 'when project uses external project ci config' do
-      let(:other_project) { create(:project) }
+      let(:other_project) { create(:project, :custom_repo, files: other_project_files) }
+      let(:other_project_files) { { '.gitlab-ci.yml' => YAML.dump(other_project_ci_config) } }
       let(:sha) { 'master' }
-      let(:service) { ::Ci::ListConfigVariablesService.new(other_project, user) }
 
-      let(:ci_config) do
+      let(:other_project_ci_config) do
         {
           variables: {
             KEY1: { value: 'val 1', description: 'description 1' }
@@ -1448,13 +1448,12 @@ RSpec.describe Projects::PipelinesController do
       end
 
       before do
-        project.update!(ci_config_path: ".gitlab-ci.yml@#{other_project.full_path}")
+        other_project.add_developer(user)
+        project.update!(ci_config_path: ".gitlab-ci.yml@#{other_project.full_path}:master")
         synchronous_reactive_cache(service)
       end
 
       it 'returns other project config variables' do
-        expect(::Ci::ListConfigVariablesService).to receive(:new).with(other_project, anything).and_return(service)
-
         get_config_variables
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -1463,13 +1462,6 @@ RSpec.describe Projects::PipelinesController do
     end
 
     private
-
-    def stub_gitlab_ci_yml_for_sha(sha, result)
-      allow_any_instance_of(Repository)
-          .to receive(:gitlab_ci_yml_for)
-          .with(sha, '.gitlab-ci.yml')
-          .and_return(result)
-    end
 
     def get_config_variables
       get :config_variables, params: { namespace_id: project.namespace,
