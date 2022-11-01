@@ -194,6 +194,7 @@ Users are notified of the following events:
 | Personal access tokens expiring soon     | User            | Security email, always sent.                                                                                                            |
 | Personal access tokens have been created | User            | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337591) in GitLab 14.9._                       |
 | Personal access tokens have expired      | User            | Security email, always sent.                                                                                                            |
+| Personal access token has been revoked   | User            | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98911) in GitLab 15.5.                 |
 | Project access level changed             | User            | Sent when user project access level is changed.                                                                                         |
 | SSH key has expired                      | User            | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.12._                      |
 | Two-factor authentication disabled       | User            | Security email, always sent.                                                                                                            |

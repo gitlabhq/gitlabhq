@@ -652,14 +652,14 @@ POST /runners
 |--------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens)                                                                                                 |
 | `description`      | string       | no       | Runner's description                                                                                                                                          |
-| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version` is displayed in the Admin Area of the UI |
-| `active`           | boolean      | no       | Deprecated: Use `:paused` instead. Whether the runner is allowed to receive jobs                                                                              |
-| `paused`           | boolean      | no       | Whether the runner should ignore new jobs                                                                                                                     |
-| `locked`           | boolean      | no       | Whether the runner should be locked for current project                                                                                                       |
-| `run_untagged`     | boolean      | no       | Whether the runner should handle untagged jobs                                                                                                                |
-| `tag_list`         | string array | no       | List of runner's tags                                                                                                                                         |
-| `access_level`     | string       | no       | The access_level of the runner; `not_protected` or `ref_protected`                                                                                            |
-| `maximum_timeout`  | integer      | no       | Maximum timeout set when this runner handles the job                                                                                                          |
+| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version`, `platform`, and `architecture` are displayed in the Admin Area of the UI |
+| `active`           | boolean      | no       | Deprecated: Use `paused` instead. Specifies whether the runner is allowed to receive new jobs                                                                 |
+| `paused`           | boolean      | no       | Specifies whether the runner should ignore new jobs                                                                                                           |
+| `locked`           | boolean      | no       | Specifies whether the runner should be locked for the current project                                                                                         |
+| `run_untagged`     | boolean      | no       | Specifies whether the runner should handle untagged jobs                                                                                                      |
+| `tag_list`         | string array | no       | A list of runner tags                                                                                                                                         |
+| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`                                                                                            |
+| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs                                                                         |
 | `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note`                                                                    |
 | `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters)                                                                                                  |
 
@@ -739,9 +739,9 @@ Validates authentication credentials for a registered runner.
 POST /runners/verify
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | Runner's [authentication token](#registration-and-authentication-tokens).  |
+| Attribute   | Type    | Required | Description                                                                   |
+|-------------|---------|----------|-------------------------------------------------------------------------------|
+| `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
@@ -759,7 +759,7 @@ Response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
-Resets the runner registration token for the GitLab instance.
+Reset the runner registration token for the GitLab instance.
 
 ```plaintext
 POST /runners/reset_registration_token
@@ -828,15 +828,15 @@ Example response:
 
 ## Reset runner's authentication token by using the current token
 
-Resets the runner's authentication token by using the current token's value as an input.
+Reset the runner's authentication token by using the current token's value as an input.
 
 ```plaintext
 POST /runners/reset_authentication_token
 ```
 
-| Attribute | Type    | Required | Description                     |
-|-----------|---------|----------|---------------------------------|
-| `token`   | string  | yes      | The current token of the runner |
+| Attribute | Type    | Required | Description                            |
+|-----------|---------|----------|----------------------------------------|
+| `token`   | string  | yes      | The authentication token of the runner |
 
 ```shell
 curl --request POST --form "token=<current token>" \

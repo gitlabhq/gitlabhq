@@ -28,7 +28,7 @@ RSpec.describe 'User views an SVG design that contains XSS', :js do
     expect(file_content).to include("<script>alert('FAIL')</script>")
   end
 
-  it 'displays the SVG' do
+  it 'displays the SVG', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/381115' do
     find("[data-testid='close-design']").click
     expect(page).to have_selector("img.design-img[alt='xss.svg']", count: 1, visible: false)
   end

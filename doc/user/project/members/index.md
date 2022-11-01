@@ -45,8 +45,7 @@ flowchart RL
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
-    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Add users to a project so they become members and have permission
 to perform actions.
@@ -90,8 +89,7 @@ The Owner [role](../../permissions.md#project-members-permissions) can be added 
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
-    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 When you add a group to a project, each user in the group gets access to the project.
 Each user's access is based on:
@@ -169,8 +167,9 @@ group itself.
 
 Prerequisites:
 
-- To remove direct members with the Maintainer, Developer, Reporter, or Guest role, you must have the Maintainer role.
-- To remove members with the Owner role, you must have the Owner role.
+- To remove direct members with the:
+  - Maintainer, Developer, Reporter, or Guest role, you must have the Maintainer role.
+  - Owner role, you must have the Owner role.
 - Optional. Unassign the member from all issues and merge requests that
   are assigned to them.
 

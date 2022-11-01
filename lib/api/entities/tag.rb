@@ -3,7 +3,9 @@
 module API
   module Entities
     class Tag < Grape::Entity
-      expose :name, :message, :target
+      expose :name, documentation: { type: 'string', example: 'v1.0.0' }
+      expose :message, documentation: { type: 'string', example: 'Release v1.0.0' }
+      expose :target, documentation: { type: 'string', example: '2695effb5807a22ff3d138d593fd856244e155e7' }
 
       expose :commit, using: Entities::Commit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
@@ -15,7 +17,7 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      expose :protected do |repo_tag, options|
+      expose :protected, documentation: { type: 'boolean', example: true } do |repo_tag, options|
         ::ProtectedTag.protected?(options[:project], repo_tag.name)
       end
     end
