@@ -101,7 +101,7 @@ gem 'rubyzip', '~> 2.3.2', require: 'zip'
 gem 'acme-client', '~> 2.0'
 
 # Browser detection
-gem 'browser', '~> 4.2'
+gem 'browser', '~> 5.3.1'
 
 # OS detection for usage ping
 gem 'ohai', '~> 16.10'

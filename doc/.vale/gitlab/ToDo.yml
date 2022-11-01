@@ -5,8 +5,8 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
-message: 'Use "to-do item" in most cases, or "Add a to do" if referring to the UI button.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#feature-names
+message: "Use 'to-do item' in most cases, or 'Add a to do' if referring to the UI button."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#to-do-item
 level: warning
 ignorecase: false
 swap:

@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: repetition
-message: '"%s" is repeated.'
+message: "Remove this duplicate word: '%s'."
 level: error
 alpha: true
 tokens:

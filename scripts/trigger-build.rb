@@ -160,8 +160,6 @@ module Trigger
   end
 
   class CNG < Base
-    ASSETS_HASH = "cached-assets-hash.txt"
-
     def variables
       # Delete variables that aren't useful when using native triggers.
       super.tap do |hash|
@@ -189,7 +187,7 @@ module Trigger
         "TRIGGER_BRANCH" => ref,
         "GITLAB_VERSION" => ENV['CI_COMMIT_SHA'],
         "GITLAB_TAG" => ENV['CI_COMMIT_TAG'], # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
-        "GITLAB_ASSETS_TAG" => assets_image_tag,
+        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_SHA'],
         "FORCE_RAILS_IMAGE_BUILDS" => 'true',
         "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "EE_PIPELINE" => Trigger.ee? ? "true" : nil # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
@@ -204,17 +202,6 @@ module Trigger
         "v#{raw_version}"
       else
         raw_version
-      end
-    end
-
-    # We're doing the same operation in `scripts/utils.sh` in the `assets_image_tag` function.
-    def assets_image_tag
-      if ENV['CI_COMMIT_TAG']
-        ENV['CI_COMMIT_REF_NAME']
-      elsif File.exist?(ASSETS_HASH)
-        "assets-hash-#{File.read(ASSETS_HASH).strip[0...10]}"
-      else
-        ENV['CI_COMMIT_SHA']
       end
     end
   end

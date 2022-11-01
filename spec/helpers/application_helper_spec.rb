@@ -253,17 +253,44 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#client_class_list' do
-    it 'returns string containing CSS classes representing client browser and platform' do
-      class_list = helper.client_class_list
-      expect(class_list).to eq('gl-browser-generic gl-platform-other')
+    context 'when browser or platform are unknown' do
+      it 'returns string containing CSS classes representing fallbacks' do
+        class_list = helper.client_class_list
+        expect(class_list).to eq('gl-browser-generic gl-platform-other')
+      end
+    end
+
+    context 'when browser and platform are known' do
+      before do
+        allow(helper.controller).to receive(:browser).and_return(::Browser.new('Google Chrome/Linux'))
+      end
+
+      it 'returns string containing CSS classes representing them' do
+        class_list = helper.client_class_list
+        expect(class_list).to eq('gl-browser-chrome gl-platform-linux')
+      end
     end
   end
 
   describe '#client_js_flags' do
-    it 'returns map containing JS flags representing client browser and platform' do
-      flags_list = helper.client_js_flags
-      expect(flags_list[:isGeneric]).to eq(true)
-      expect(flags_list[:isOther]).to eq(true)
+    context 'when browser or platform are unknown' do
+      it 'returns map containing JS flags representing falllbacks' do
+        flags_list = helper.client_js_flags
+        expect(flags_list[:isGeneric]).to eq(true)
+        expect(flags_list[:isOther]).to eq(true)
+      end
+    end
+
+    context 'when browser and platform are known' do
+      before do
+        allow(helper.controller).to receive(:browser).and_return(::Browser.new('Google Chrome/Linux'))
+      end
+
+      it 'returns map containing JS flags representing client browser and platform' do
+        flags_list = helper.client_js_flags
+        expect(flags_list[:isChrome]).to eq(true)
+        expect(flags_list[:isLinux]).to eq(true)
+      end
     end
   end
 

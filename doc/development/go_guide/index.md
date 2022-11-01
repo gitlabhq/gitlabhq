@@ -408,7 +408,7 @@ should be used in functions that can block and passed as the first parameter.
 Every project should have a `Dockerfile` at the root of their repository, to
 build and run the project. Since Go program are static binaries, they should
 not require any external dependency, and shells in the final image are useless.
-We encourage [Multistage builds](https://docs.docker.com/develop/develop-images/multistage-build/):
+We encourage [Multistage builds](https://docs.docker.com/build/building/multi-stage/):
 
 - They let the user build the project with the right Go version and
   dependencies.

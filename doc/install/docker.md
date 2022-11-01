@@ -31,7 +31,7 @@ to community resources (such as IRC or forums) to seek help from other users.
 
 ## Prerequisites
 
-Docker is required. See the [official installation documentation](https://docs.docker.com/install/).
+Docker is required. See the [official installation documentation](https://docs.docker.com/get-docker/).
 
 ## Set up the volumes location
 

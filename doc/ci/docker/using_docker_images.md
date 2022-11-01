@@ -64,7 +64,7 @@ For example, you can set the [Docker pull policy](https://docs.gitlab.com/runner
 to use local images.
 
 For more information about images and Docker Hub, see
-the [Docker Fundamentals](https://docs.docker.com/engine/understanding-docker/) documentation.
+the [Docker overview](https://docs.docker.com/get-started/overview/).
 
 ## Define `image` in the `.gitlab-ci.yml` file
 

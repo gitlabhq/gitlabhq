@@ -157,7 +157,7 @@ If the scanner requires a fully functional Linux environment,
 it is recommended to use a [Debian](https://www.debian.org/intro/about) "slim" distribution or [Alpine Linux](https://www.alpinelinux.org/).
 If possible, it is recommended to build the image from scratch, using the `FROM scratch` instruction,
 and to compile the scanner with all the libraries it needs.
-[Multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/)
+[Multi-stage builds](https://docs.docker.com/build/building/multi-stage/)
 might also help with keeping the image small.
 
 To keep an image size small, consider using [dive](https://github.com/wagoodman/dive#dive) to analyze layers in a Docker image to

@@ -7,7 +7,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: metric
-message: "The grade level - %s - refers to how hard the content is to understand. Aim for 8th grade or lower by using shorter sentences and words."
+message: "The grade level is %s. Aim for 8th grade or lower by using shorter sentences and words."
 link: https://docs.gitlab.com/ee/development/documentation/testing.html#vale-readability-score
 level: suggestion
 formula: |

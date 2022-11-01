@@ -1,4 +1,4 @@
 # Simple container to store assets for later use
 FROM scratch
-COPY public/assets /assets/
+ADD public/assets /assets/
 CMD /bin/true

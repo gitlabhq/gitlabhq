@@ -182,7 +182,7 @@ Dockerfiles to build and deploy <https://docs.gitlab.com>. It is heavily inspire
 
 Although build images are built automatically via GitLab CI/CD, you can build and tag all tooling images locally:
 
-1. Make sure you have [Docker installed](https://docs.docker.com/install/).
+1. Make sure you have [Docker installed](https://docs.docker.com/get-docker/).
 1. Make sure you're in the `dockerfiles/` directory of the `gitlab-docs` repository.
 1. Build the images:
 

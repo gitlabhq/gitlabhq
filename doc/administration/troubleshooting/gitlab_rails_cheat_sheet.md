@@ -308,24 +308,3 @@ Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md
 ## Generate Service Ping
 
 This content has been moved to [Service Ping Troubleshooting](../../development/service_ping/troubleshooting.md).
-
-## GraphQL
-
-Call a [GraphQL](../../api/graphql/getting_started.md) endpoint through the Rails console:
-
-```ruby
-query = <<~EOQ
-query securityGetProjects($search: String!) {
-  projects(search: $search) {
-    nodes {
-      path
-    }
-  }
-}
-EOQ
-
-variables = { "search": "gitlab" }
-
-result = GitlabSchema.execute(query, variables: variables, context: { current_user: current_user })
-result.to_h
-```

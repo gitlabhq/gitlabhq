@@ -5,10 +5,10 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Avoid using future tense: "%s". Use present tense instead.'
+message: "Instead of future tense '%s', use present tense."
 ignorecase: true
 level: warning
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#future-tense
 raw:
   - "(going to( |\n|[[:punct:]])[a-zA-Z]*|"
   - "will( |\n|[[:punct:]])[a-zA-Z]*|"

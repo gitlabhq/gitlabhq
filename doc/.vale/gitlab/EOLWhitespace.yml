@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Lines should not end with whitespace characters.'
+message: "Remove whitespace characters from the end of the line."
 link: https://docs.gitlab.com/ee/development/documentation/versions.html
 level: warning
 scope: raw

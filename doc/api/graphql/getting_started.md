@@ -18,6 +18,7 @@ The examples documented here can be run using:
 
 - The command line.
 - GraphiQL.
+- Rails console.
 
 ### Command line
 
@@ -72,6 +73,27 @@ Refer to [running GraphiQL](index.md#graphiql) for more information.
 NOTE:
 If you are running GitLab 12.0, enable the `graphql`
 [feature flag](../features.md#set-or-create-a-feature).
+
+### Rails console **(FREE SELF)**
+
+GraphQL queries can be run in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session). For example, to search projects:
+
+```ruby
+query = <<~EOQ
+query securityGetProjects($search: String!) {
+  projects(search: $search) {
+    nodes {
+      path
+    }
+  }
+}
+EOQ
+
+variables = { "search": "gitlab" }
+
+result = GitlabSchema.execute(query, variables: variables, context: { current_user: current_user })
+result.to_h
+```
 
 ## Queries and mutations
 

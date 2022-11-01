@@ -47,7 +47,7 @@ the Docker commands, but needs permission to do so.
    ```
 
 1. On the server where GitLab Runner is installed, install Docker Engine.
-   View a list of [supported platforms](https://docs.docker.com/engine/installation/).
+   View a list of [supported platforms](https://docs.docker.com/engine/install/).
 
 1. Add the `gitlab-runner` user to the `docker` group:
 

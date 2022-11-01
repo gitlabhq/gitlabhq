@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: conditional
-message: "'%s' is uppercase. Use lowercase or `backticks` if possible. Otherwise add this word to the rule's exception list."
+message: "Instead of uppercase for '%s', use lowercase or backticks (`) if possible. Otherwise, add this word or acronym to the rule's exception list."
 link: https://docs.gitlab.com/ee/development/documentation/testing.html#vale-uppercase-acronym-test
 level: warning
 ignorecase: false

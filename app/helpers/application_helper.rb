@@ -377,13 +377,13 @@ module ApplicationHelper
   end
 
   def client_class_list
-    "gl-browser-#{browser.id} gl-platform-#{browser.platform.id}"
+    "gl-browser-#{browser_id} gl-platform-#{platform_id}"
   end
 
   def client_js_flags
     {
-      "is#{browser.id.to_s.titlecase}": true,
-      "is#{browser.platform.id.to_s.titlecase}": true
+      "is#{browser_id.titlecase}": true,
+      "is#{platform_id.titlecase}": true
     }
   end
 
@@ -452,6 +452,14 @@ module ApplicationHelper
   end
 
   private
+
+  def browser_id
+    browser.unknown? ? 'generic' : browser.id.to_s
+  end
+
+  def platform_id
+    browser.platform.unknown? ? 'other' : browser.platform.id.to_s
+  end
 
   def appearance
     ::Appearance.current

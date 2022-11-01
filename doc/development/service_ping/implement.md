@@ -813,7 +813,7 @@ and run a local container instance:
 1. On your local machine, make sure you are signed in to the GitLab Docker registry. You can find the instructions for this in
    [Authenticate to the GitLab Container Registry](../../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
 1. Once signed in, download the new image by using `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
-1. For more information about working with and running Omnibus GitLab containers in Docker, refer to [GitLab Docker images](https://docs.gitlab.com/omnibus/docker/README.html) in the Omnibus documentation.
+1. For more information about working with and running Omnibus GitLab containers in Docker, refer to [GitLab Docker images](../../install/docker.md) documentation.
 
 ### Test with GitLab development toolkits
 

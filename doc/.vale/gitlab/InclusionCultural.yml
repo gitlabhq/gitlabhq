@@ -5,8 +5,8 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
-message: 'Use inclusive language. Consider "%s" instead of "%s".'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#inclusive-language
+message: "Use inclusive language. Consider '%s' instead of '%s'."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 level: warning
 ignorecase: true
 swap:

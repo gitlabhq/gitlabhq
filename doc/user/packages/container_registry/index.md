@@ -70,7 +70,7 @@ To download and run a container image hosted in the GitLab Container Registry:
 [Authentication](#authenticate-with-the-container-registry) is needed to download images from private repository.
 
 For more information on running Docker containers, visit the
-[Docker documentation](https://docs.docker.com/engine/userguide/intro/).
+[Docker documentation](https://docs.docker.com/get-started/).
 
 ## Image naming convention
 

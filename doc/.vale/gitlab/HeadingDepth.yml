@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'The subheading "%s" is nested too deeply. Headings deeper than H5 suggest the section or page should be refactored.'
+message: "Refactor the section or page to avoid headings greater than H5."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#headings-in-markdown
 level: warning
 scope: raw

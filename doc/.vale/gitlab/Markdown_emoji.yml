@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'This appears to be GLFM emoji syntax. Replace "%s" with GitLab SVGs or Unicode emojis.'
+message: "Replace '%s' with GitLab SVGs or Unicode emojis."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#gitlab-svg-icons
 level: warning
 scope: text

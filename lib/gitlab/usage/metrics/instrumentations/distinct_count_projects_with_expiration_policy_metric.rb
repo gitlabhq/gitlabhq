@@ -12,7 +12,11 @@ module Gitlab
 
           cache_start_and_finish_as :project_id
 
-          relation ->(options) { ::ContainerExpirationPolicy.where(enabled: options[:enabled]) }
+          relation ->(options) do
+            options.each_with_object(::ContainerExpirationPolicy.all) do |(key, value), ar_relation|
+              ar_relation.where!(key => value)
+            end
+          end
         end
       end
     end

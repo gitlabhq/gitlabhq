@@ -5,7 +5,7 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Use "dropdown list".'
+message: "Use 'dropdown list'."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#dropdown-list
 level: suggestion
 ignorecase: true
