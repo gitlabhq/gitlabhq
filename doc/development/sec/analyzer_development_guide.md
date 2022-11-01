@@ -118,6 +118,12 @@ To use Docker with `replace` in the `go.mod` file:
 1. Update the `replace` statement to make sure it matches the destination of the `COPY` statement in the step above:
 `replace gitlab.com/gitlab-org/security-products/analyzers/command/v3 => /command`
 
+## Analyzer scripts
+
+The [analyzer-scripts](https://gitlab.com/gitlab-org/secure/tools/analyzer-scripts) repository contains scripts that can be used to interact with most analyzers. They enable you to build, run, and debug analyzers in a GitLab CI-like environment, and are particularly useful for locally validating changes to an analyzer.
+
+For more information, refer to the [project README](https://gitlab.com/gitlab-org/secure/tools/analyzer-scripts/-/blob/master/README.md).
+
 ## Versioning and release process
 
 Analyzers are independent projects that follow their own versioning. `Patch` version bumps tend to correspond to a `Minor` version bump of the underlying tools (i.e. [`bandit`](https://wiki.openstack.org/wiki/Security/Projects/Bandit)), allowing us greater flexibility in reserving `Minor` bumps for more significant changes to our scanners. In case of breaking changes imposed by the wrapped scanner, creating a new analyzer on a separate repository must be considered.

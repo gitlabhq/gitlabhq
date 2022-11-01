@@ -196,7 +196,7 @@ same user) has the email `email@example.com` set as a secondary email, which
 is throwing this error.
 
 We can check where this conflicting email address is coming from using the
-[rails console](#rails-console). Once in the console, run the following:
+[rails console](#rails-console). In the console, run the following:
 
 ```ruby
 # This searches for an email among the primary AND secondary emails
@@ -546,7 +546,7 @@ this entry, it could be due to a mismatched DN stored in GitLab. See
 ```shell
 User with DN `uid=john0,ou=people,dc=example,dc=com` should have access
 to 'my_group' group but there is no user in GitLab with that
-identity. Membership will be updated once the user signs in for
+identity. Membership will be updated when the user signs in for
 the first time.
 ```
 
@@ -556,7 +556,7 @@ Finally, the following entry says syncing has finished for this group:
 Finished syncing all providers for 'my_group' group
 ```
 
-Once all the configured group links have been synchronized, GitLab looks
+When all the configured group links have been synchronized, GitLab looks
 for any Administrators or External users to sync:
 
 ```shell

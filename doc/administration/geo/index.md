@@ -306,7 +306,7 @@ For an example of how to set up a location-aware Git remote URL with AWS Route53
 
 ### Backfill
 
-Once a **secondary** site is set up, it starts replicating missing data from
+When a **secondary** site is set up, it starts replicating missing data from
 the **primary** site in a process known as **backfill**. You can monitor the
 synchronization process on each Geo site from the **primary** site's **Geo Nodes**
 dashboard in your browser.

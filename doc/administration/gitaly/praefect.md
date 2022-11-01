@@ -293,7 +293,7 @@ praefect['database_direct_dbname'] = 'praefect_production'
 #praefect['database_direct_sslrootcert'] = '...'
 ```
 
-Once configured, this connection is automatically used for the
+When configured, this connection is automatically used for the
 [SQL LISTEN](https://www.postgresql.org/docs/11/sql-listen.html) feature and
 allows Praefect to receive notifications from PostgreSQL for cache invalidation.
 

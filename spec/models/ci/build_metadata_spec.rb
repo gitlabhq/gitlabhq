@@ -204,4 +204,14 @@ RSpec.describe Ci::BuildMetadata do
       end
     end
   end
+
+  context 'jsonb fields serialization' do
+    it 'changing other fields does not change config_options' do
+      expect { metadata.id = metadata.id }.not_to change(metadata, :changes)
+    end
+
+    it 'accessing config_options does not change it' do
+      expect { metadata.config_options }.not_to change(metadata, :changes)
+    end
+  end
 end

@@ -239,8 +239,9 @@ keys must be manually replicated to the **secondary** site.
 
    If any of the checks fail, check the [troubleshooting documentation](troubleshooting.md).
 
-Once added to the Geo administration page and restarted, the **secondary** site automatically starts
-replicating missing data from the **primary** site in a process known as **backfill**.
+After the **secondary** site is added to the Geo administration page and restarted,
+the site automatically starts replicating missing data from the **primary** site
+in a process known as **backfill**.
 Meanwhile, the **primary** site starts to notify each **secondary** site of any changes, so
 that the **secondary** site can act on those notifications immediately.
 

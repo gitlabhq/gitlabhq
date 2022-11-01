@@ -14,7 +14,7 @@ downtime.
 
 As replication between Geo sites is asynchronous, a planned failover requires
 a maintenance window in which updates to the **primary** site are blocked. The
-length of this window is determined by your replication capacity - once the
+length of this window is determined by your replication capacity - when the
 **secondary** site is completely synchronized with the **primary** site, the failover can occur without
 data loss.
 

@@ -1309,18 +1309,38 @@ following keys (in this example, to disable the `hasDotgit` consistency check):
 - In [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later:
 
   ```ruby
+  ignored_blobs = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
+
   gitaly['gitconfig'] = [
+
+   # Populate a file with one unabbreviated SHA-1 per line.
+   # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
+   { key: "fsck.skipList", value: ignored_blobs },
+   { key: "fetch.fsck.skipList", value: ignored_blobs },
+   { key: "receive.fsck.skipList", value: ignored_blobs },
+
    { key: "fsck.hasDotgit", value: "ignore" },
    { key: "fetch.fsck.hasDotgit", value: "ignore" },
-   { key: "receive.fsck.hasDotgit", value: "ignore "},
+   { key: "receive.fsck.hasDotgit", value: "ignore" },
+   { key: "fsck.missingSpaceBeforeEmail", value: "ignore" },
   ]
   ```
 
 - In GitLab 15.2 and earlier (legacy method):
 
   ```ruby
-  ignored_git_errors = ["hasDotgit = ignore"]
+  ignored_git_errors = [
+    "hasDotgit = ignore",
+    "missingSpaceBeforeEmail = ignore",
+  ]
   omnibus_gitconfig['system'] = {
+
+   # Populate a file with one unabbreviated SHA-1 per line.
+   # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
+    "fsck.skipList" => ignored_blobs
+    "fetch.fsck.skipList" => ignored_blobs,
+    "receive.fsck.skipList" => ignored_blobs,
+
     "fsck" => ignored_git_errors,
     "fetch.fsck" => ignored_git_errors,
     "receive.fsck" => ignored_git_errors,
@@ -1342,6 +1362,30 @@ value = "ignore"
 [[git.config]]
 key = "receive.fsck.hasDotgit"
 value = "ignore"
+
+[[git.config]]
+key = "fsck.missingSpaceBeforeEmail"
+value = "ignore"
+
+[[git.config]]
+key = "fetch.fsck.missingSpaceBeforeEmail"
+value = "ignore"
+
+[[git.config]]
+key = "receive.fsck.missingSpaceBeforeEmail"
+value = "ignore"
+
+[[git.config]]
+key = "fsck.skipList"
+value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
+
+[[git.config]]
+key = "fetch.fsck.skipList"
+value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
+
+[[git.config]]
+key = "receive.fsck.skipList"
+value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
 ```
 
 ## Configure commit signing for GitLab UI commits

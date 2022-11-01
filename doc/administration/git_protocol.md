@@ -36,7 +36,7 @@ the SSH configuration of your server manually by adding this line to the `/etc/s
 AcceptEnv GIT_PROTOCOL
 ```
 
-Once configured, restart the SSH daemon for the change to take effect:
+When you have configured the SSH daemon, restart it for the change to take effect:
 
 ```shell
 # CentOS 6 / RHEL 6

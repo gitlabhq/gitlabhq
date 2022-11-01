@@ -352,7 +352,7 @@ are empty before attempting a restore. Read more about the
 
 ## Testing NFS
 
-Once you've set up the NFS server and client, you can verify NFS is configured correctly
+When you've set up the NFS server and client, you can verify NFS is configured correctly
 by testing the following commands:
 
 ```shell

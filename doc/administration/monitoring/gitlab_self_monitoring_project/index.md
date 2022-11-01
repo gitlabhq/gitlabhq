@@ -85,7 +85,7 @@ you [configure it manually](../../../user/project/integrations/prometheus.md#man
 You can [add a Prometheus integration](../../../operations/incident_management/integrations.md)
 to GitLab to receive notifications of any alerts.
 
-Once the integration is setup, you can
+When the integration is set up, you can
 [take action on incoming alerts](../../../operations/metrics/alerts.md#trigger-actions-from-alerts).
 
 ## Add custom metrics to the self-monitoring project
@@ -118,4 +118,4 @@ If this returns true, the first administrator user is an external user.
 If you face this issue, you can temporarily
 [make the administrator user a non-external user](../../../user/permissions.md#external-users)
 and then try to create the project.
-Once the project is created, the administrator user can be changed back to an external user.
+After the project is created, the administrator user can be changed back to an external user.
