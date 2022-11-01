@@ -342,7 +342,7 @@ RSpec.describe SearchController do
       it_behaves_like 'support for active record query timeouts', :autocomplete, { term: 'hello' }, :project, :json
 
       it 'returns an empty array when given abusive search term' do
-        get :autocomplete, params: { term: ('hal' * 9000), scope: 'projects' }
+        get :autocomplete, params: { term: ('hal' * 4000), scope: 'projects' }
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to match_array([])
       end
