@@ -266,7 +266,7 @@ Arguments:
 
 #### Ordinary Redis counters
 
-Example of implementation: [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb), using Redis methods [`INCR`](https://redis.io/commands/incr) and [`GET`](https://redis.io/commands/get).
+Example of implementation: [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb), using Redis methods [`INCR`](https://redis.io/commands/incr/) and [`GET`](https://redis.io/commands/get/).
 
 Events are handled by counter classes in the `Gitlab::UsageDataCounters` namespace, inheriting from `BaseCounter`, that are either:
 

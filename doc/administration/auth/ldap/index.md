@@ -179,7 +179,7 @@ These configuration settings are available:
 | `allow_username_or_email_login` | If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. | **{dotted-circle}** No | boolean |
 | `block_auto_created_users` | To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator (default: false). | **{dotted-circle}** No | boolean |
 | `base` | Base where we can search for users. | **{check-circle}** Yes | `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
-| `user_filter`      | Filter LDAP users. Format: [RFC 4515](https://tools.ietf.org/search/rfc4515) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | **{dotted-circle}** No | For examples, read [Examples of user filters](#examples-of-user-filters). |
+| `user_filter`      | Filter LDAP users. Format: [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html) Note: GitLab does not support `omniauth-ldap`'s custom filter syntax. | **{dotted-circle}** No | For examples, read [Examples of user filters](#examples-of-user-filters). |
 | `lowercase_usernames` | If enabled, GitLab converts the name to lower case. | **{dotted-circle}** No | boolean |
 | `retry_empty_result_with_codes` | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. | **{dotted-circle}** No | `[80]` |
 
@@ -281,7 +281,7 @@ This example results in a sign-in page with the following tabs:
 
 To limit all GitLab access to a subset of the LDAP users on your LDAP server, first narrow the
 configured `base`. However, to further filter users if
-necessary, you can set up an LDAP user filter. The filter must comply with [RFC 4515](https://tools.ietf.org/search/rfc4515).
+necessary, you can set up an LDAP user filter. The filter must comply with [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html).
 
 - Example user filter for Omnibus GitLab instances:
 
@@ -336,7 +336,7 @@ The `user_filter` DN can contain special characters. For example:
   ```
 
   These characters must be escaped as documented in
-  [RFC 4515](https://tools.ietf.org/search/rfc4515).
+  [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html).
 
 - Escape commas with `\2C`. For example:
 

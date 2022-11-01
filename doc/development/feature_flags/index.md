@@ -435,7 +435,7 @@ For example, the following feature flags are enabled for a certain percentage of
 
 If a project A has `:feature-set-1` enabled, there is no guarantee that project A also has `:feature-set-2` enabled.
 
-For more detail, see [This is how percentages work in Flipper](https://www.hackwithpassion.com/this-is-how-percentages-work-in-flipper).
+For more detail, see [This is how percentages work in Flipper](https://www.hackwithpassion.com/this-is-how-percentages-work-in-flipper/).
 
 #### Use actors for verifying in production
 

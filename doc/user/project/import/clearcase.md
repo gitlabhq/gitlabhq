@@ -27,7 +27,7 @@ The following table illustrates the main differences between ClearCase and Git:
 | Server | UNIX, Windows legacy systems | UNIX, macOS |
 | License | Proprietary | GPL |
 
-_Taken from the slides [ClearCase and the journey to Git](https://docplayer.net/42708453-Clearcase-the-journey-to-git-migrating-your-skills-and-vobs-to-git.html) provided by [collab.net](https://www.collab.net/)_
+_Taken from the slides [ClearCase and the journey to Git](https://docplayer.net/42708453-Clearcase-the-journey-to-git-migrating-your-skills-and-vobs-to-git.html) provided by `collab.net`_
 
 ## Why migrate
 

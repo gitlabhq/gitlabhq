@@ -91,11 +91,8 @@ RSpec.describe API::Groups do
           .to satisfy_one { |group| group['name'] == group1.name }
       end
 
-      it 'avoids N+1 queries' do
-        # Establish baseline
-        get api("/groups", admin)
-
-        control = ActiveRecord::QueryRecorder.new do
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/groups", admin)
         end
 
@@ -103,7 +100,7 @@ RSpec.describe API::Groups do
 
         expect do
           get api("/groups", admin)
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_all_query_limit(control)
       end
 
       context 'when statistics are requested' do

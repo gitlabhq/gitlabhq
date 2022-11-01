@@ -856,7 +856,7 @@ Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar`
 
 ### Zip Slip
 
-In 2018, the security company Snyk [released a blog post](https://snyk.io/research/zip-slip-vulnerability) describing research into a widespread and critical vulnerability present in many libraries and applications which allows an attacker to overwrite arbitrary files on the server file system which, in many cases, can be leveraged to achieve remote code execution. The vulnerability was dubbed Zip Slip.
+In 2018, the security company Snyk [released a blog post](https://security.snyk.io/research/zip-slip-vulnerability) describing research into a widespread and critical vulnerability present in many libraries and applications which allows an attacker to overwrite arbitrary files on the server file system which, in many cases, can be leveraged to achieve remote code execution. The vulnerability was dubbed Zip Slip.
 
 A Zip Slip vulnerability happens when an application extracts an archive without validating and sanitizing the filenames inside the archive for directory traversal sequences that change the file location when the file is extracted.
 

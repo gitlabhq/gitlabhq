@@ -133,8 +133,8 @@ However, you should **not** reinstate your old data _except_ under one of the fo
 If you require access to your old Grafana data but don't meet one of these criteria, you may consider:
 
 1. Reinstating it temporarily.
-1. [Exporting the dashboards](https://grafana.com/docs/grafana/latest/dashboards/export-import/#exporting-a-dashboard) you need.
-1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard).
+1. [Exporting the dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#export-and-import-dashboards) you need.
+1. Refreshing the data and [re-importing your dashboards](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#export-and-import-dashboards).
 
 WARNING:
 These actions pose a temporary vulnerability while your old Grafana data is in use.

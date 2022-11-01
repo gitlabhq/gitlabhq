@@ -39,11 +39,16 @@ end
 
 As an example you might create 5 issues in between counts, which would cause the query count to increase by 5 if an N+1 problem exists.
 
-In some cases the query count might change slightly between runs for unrelated reasons. In this case you might need to test `exceed_query_limit(control_count + acceptable_change)`, but this should be avoided if possible.
+In some cases, the query count might change slightly between runs for unrelated reasons. In this case you might need to test `exceed_query_limit(control_count + acceptable_change)`, but this should be avoided if possible.
 
 If this test fails, and the control was passed as a `QueryRecorder`, then the
 failure message indicates where the extra queries are by matching queries on
 the longest common prefix, grouping similar queries together.
+
+In some cases, N+1 specs have been written to include three requests: first one to
+warm the cache, second one to establish a control, third one to validate that
+ther are no N+1 queries. Rather than make an extra request to warm the cache, prefer two requests
+(control and test) and configure your test to ignore [cached queries](#cached-queries) in N+1 specs.
 
 ## Cached queries
 
@@ -62,7 +67,7 @@ end
 
 ## Use request specs instead of controller specs
 
-Use a [request spec](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/spec/requests) when writing a N+1 test on the controller level.
+Use a [request spec](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/requests) when writing a N+1 test on the controller level.
 
 Controller specs should not be used to write N+1 tests as the controller is only initialized once per example.
 This could lead to false successes where subsequent "requests" could have queries reduced (for example, because of memoization).

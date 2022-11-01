@@ -186,7 +186,7 @@ LIMIT 100
 
 ### Web-specific parameters
 
-Snowplow JavaScript adds [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
+Snowplow JavaScript adds [web-specific parameters](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
 
 ## Related topics
 

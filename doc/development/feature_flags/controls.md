@@ -16,7 +16,7 @@ To turn on/off features behind feature flags in any of the
 GitLab-provided environments, like staging and production, you need to
 have access to the [ChatOps](../chatops_on_gitlabcom.md) bot. The ChatOps bot
 is currently running on the ops instance, which is different from
-[GitLab.com](https://gitlab.com) or [`dev.gitlab.org`](https://dev.gitlab.org).
+[GitLab.com](https://gitlab.com) or `dev.gitlab.org`.
 
 Follow the ChatOps document to [request access](../chatops_on_gitlabcom.md#requesting-access).
 
@@ -55,8 +55,8 @@ change feature flags or you do not have access.
 ### Enabling a feature for pre-production testing
 
 As a first step in a feature rollout, you should enable the feature on
-[`staging.gitlab.com`](https://staging.gitlab.com)
-and [`dev.gitlab.org`](https://dev.gitlab.org).
+`staging.gitlab.com`
+and `dev.gitlab.org`.
 
 These two environments have different scopes.
 `dev.gitlab.org` is a production CE environment that has internal GitLab Inc.

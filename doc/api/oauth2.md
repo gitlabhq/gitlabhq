@@ -63,7 +63,7 @@ For a list of scopes in GitLab, see [the provider documentation](../integration/
 
 ### Prevent CSRF attacks
 
-To [protect redirect-based flows](https://tools.ietf.org/id/draft-ietf-oauth-security-topics-13.html#rec_redirect),
+To [protect redirect-based flows](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics-13#section-3.1),
 the OAuth specification recommends the use of "One-time use CSRF tokens carried in the state
 parameter, which are securely bound to the user agent", with each request to the
 `/oauth/authorize` endpoint. This can prevent

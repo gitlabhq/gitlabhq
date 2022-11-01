@@ -43,7 +43,7 @@ All metrics recorded in the GitLab production system have
 [one-year retention](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus/-/blob/31526b03fef823e2f9b3cda7c75dcd28a12418a3/attributes/prometheus.rb#L40).
 
 You can also zoom in and filter the time range directly on a graph. For more information, see the
-[Grafana Time Range Controls](https://grafana.com/docs/grafana/latest/dashboards/time-range-controls/)
+[Grafana Time Range Controls](https://grafana.com/docs/grafana/latest/dashboards/use-dashboards/#set-dashboard-time-range)
 documentation.
 
 ## Filters and annotations
@@ -51,7 +51,7 @@ documentation.
 On each dashboard, there are two filters and some annotation switches on the top of the page.
 
 Some special events are meaningful to development and operational activities.
-[Grafana annotations](https://grafana.com/docs/grafana/latest/dashboards/annotations/) mark them
+[Grafana annotations](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/) mark them
 directly on the graphs.
 
 ![Filters and annotations](img/stage_group_dashboards_filters.png)

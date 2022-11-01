@@ -59,7 +59,7 @@ encrypt plan output or modify the project visibility settings.
 To configure GitLab CI/CD as a backend:
 
 1. In your Terraform project, in a `.tf` file like `backend.tf`,
-   define the [HTTP backend](https://www.terraform.io/docs/language/settings/backends/http.html):
+   define the [HTTP backend](https://developer.hashicorp.com/terraform/language/settings/backends/http):
 
    ```hcl
    terraform {

@@ -169,10 +169,8 @@ RSpec.describe API::Projects do
     shared_examples_for 'projects response without N + 1 queries' do |threshold|
       let(:additional_project) { create(:project, :public) }
 
-      it 'avoids N + 1 queries' do
-        get api('/projects', current_user)
-
-        control = ActiveRecord::QueryRecorder.new do
+      it 'avoids N + 1 queries', :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api('/projects', current_user)
         end
 
@@ -180,7 +178,7 @@ RSpec.describe API::Projects do
 
         expect do
           get api('/projects', current_user)
-        end.not_to exceed_query_limit(control).with_threshold(threshold)
+        end.not_to exceed_all_query_limit(control).with_threshold(threshold)
       end
     end
 
