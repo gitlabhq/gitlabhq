@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.5.2 (2022-11-02)
+
+### Security (11 changes)
+
+- [Redact confidential references in Jira issue descriptions](gitlab-org/security/gitlab@b6df9d1e4e0c996655a41831fbfae8f457fe1e6b) ([merge request](gitlab-org/security/gitlab!2870))
+- [Forbid reading emojis on internal notes](gitlab-org/security/gitlab@0015523a32c38c184ffef9067d9952d0ef54e3f2) ([merge request](gitlab-org/security/gitlab!2854))
+- [Same-site redirect vulnerability](gitlab-org/security/gitlab@7fd87a5f0b8317d45171fb565c198cda4e65fa34) ([merge request](gitlab-org/security/gitlab!2878))
+- [BYPASS: Stored-XSS with CSP-bypass via scoped labels' color](gitlab-org/security/gitlab@2f1777b305d632b3256076967a798dab65fe6bf4) ([merge request](gitlab-org/security/gitlab!2860))
+- [Fix Running Upstream Pipelines Jobs Without Permission](gitlab-org/security/gitlab@9b3f469da7c0295eb12120027a45ac04f76cdad5) ([merge request](gitlab-org/security/gitlab!2881))
+- [Add length limit to addressable URLs](gitlab-org/security/gitlab@82ffc5825c9a7761d787c66b8c4a1593b3330c50) ([merge request](gitlab-org/security/gitlab!2856))
+- [Add a redirect wall before artifact redirect to pages](gitlab-org/security/gitlab@41a4480b3302ba8a67e94de5420d41298d258585) ([merge request](gitlab-org/security/gitlab!2875))
+- [Sandbox swagger-ui to prevent injection attacks](gitlab-org/security/gitlab@432913f802a093b67f2e5d46cc51b5f13bb16590) ([merge request](gitlab-org/security/gitlab!2857))
+- [Fix external project permission when using CI prefill variables](gitlab-org/security/gitlab@ec872da0ab949f447aec35d64d1db45b5d25b7fd) ([merge request](gitlab-org/security/gitlab!2853))
+- [Resolve users can view audit events from other members](gitlab-org/security/gitlab@34ffe2e88fa462b055f22d6af84fdb93a62fa575) ([merge request](gitlab-org/security/gitlab!2855))
+- [Path traversal fix for Secure Files](gitlab-org/security/gitlab@568c36b34a884cc877b6292b340de9da66537bc8) ([merge request](gitlab-org/security/gitlab!2858))
+
 ## 15.5.1 (2022-10-24)
 
 ### Fixed (2 changes)
