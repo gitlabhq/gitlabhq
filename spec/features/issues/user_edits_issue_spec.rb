@@ -186,7 +186,7 @@ RSpec.describe "Issues > User edits issue", :js do
               visit project_issue_path(project, issue)
 
               page.within('.assignee') do
-                expect(page).to have_content "#{user.name}"
+                expect(page).to have_content user.name.to_s
 
                 click_link 'Edit'
                 click_link 'Unassigned'
@@ -261,7 +261,7 @@ RSpec.describe "Issues > User edits issue", :js do
               visit project_issue_path(project, issue)
 
               page.within('.assignee') do
-                expect(page).to have_content "#{user.name}"
+                expect(page).to have_content user.name.to_s
 
                 click_button('Edit')
                 wait_for_requests

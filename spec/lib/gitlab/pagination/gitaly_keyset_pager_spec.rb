@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager do
 
         before do
           allow(request_context).to receive(:request).and_return(fake_request)
-          allow(finder).to receive(:is_a?).with(BranchesFinder) { true }
+          allow(BranchesFinder).to receive(:===).with(finder).and_return(true)
           expect(finder).to receive(:execute).with(gitaly_pagination: true).and_return(branches)
         end
 

@@ -213,6 +213,75 @@ RSpec.describe Oauth::AuthorizationsController do
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    context 'when the user is admin' do
+      context 'when disable_admin_oauth_scopes is set' do
+        before do
+          stub_application_setting(disable_admin_oauth_scopes: true)
+          scopes = Doorkeeper::OAuth::Scopes.from_string('api')
+
+          allow(Doorkeeper.configuration).to receive(:scopes).and_return(scopes)
+        end
+
+        let(:user) { create(:user, :admin) }
+
+        it 'returns 200 and renders forbidden view' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/forbidden')
+        end
+      end
+
+      context 'when disable_admin_oauth_scopes is set and the application is trusted' do
+        before do
+          stub_application_setting(disable_admin_oauth_scopes: true)
+
+          application.update!(trusted: true)
+        end
+
+        let(:application_scopes) { 'api' }
+        let(:user) { create(:user, :admin) }
+
+        it 'returns 200 and renders redirect view' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/redirect')
+        end
+      end
+
+      context 'when disable_admin_oauth_scopes is disabled' do
+        before do
+          stub_application_setting(disable_admin_oauth_scopes: false)
+        end
+
+        let(:application_scopes) { 'api' }
+        let(:user) { create(:user, :admin) }
+
+        it 'returns 200 and renders new view' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+        end
+      end
+    end
+
+    context 'when the user is not admin' do
+      context 'when disable_admin_oauth_scopes is enabled' do
+        before do
+          stub_application_setting(disable_admin_oauth_scopes: true)
+        end
+
+        it 'returns 200 and renders new view' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+        end
+      end
+    end
   end
 
   describe 'POST #create' do

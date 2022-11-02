@@ -104,7 +104,7 @@ RSpec.describe ProjectPresenter do
           expect(release).to be_truthy
           expect(presenter.releases_anchor_data).to have_attributes(
             is_link: true,
-            label: a_string_including("#{project.releases.count}"),
+            label: a_string_including(project.releases.count.to_s),
             link: presenter.project_releases_path(project)
           )
         end
@@ -295,7 +295,7 @@ RSpec.describe ProjectPresenter do
         expect(release).to be_truthy
         expect(presenter.releases_anchor_data).to have_attributes(
           is_link: true,
-          label: a_string_including("#{project.releases.count}"),
+          label: a_string_including(project.releases.count.to_s),
           link: presenter.project_releases_path(project)
         )
       end
@@ -329,7 +329,7 @@ RSpec.describe ProjectPresenter do
       it 'returns branches data' do
         expect(presenter.branches_anchor_data).to have_attributes(
           is_link: true,
-          label: a_string_including("#{project.repository.branches.size}"),
+          label: a_string_including(project.repository.branches.size.to_s),
           link: presenter.project_branches_path(project)
         )
       end
@@ -339,7 +339,7 @@ RSpec.describe ProjectPresenter do
       it 'returns tags data' do
         expect(presenter.tags_anchor_data).to have_attributes(
           is_link: true,
-          label: a_string_including("#{project.repository.tags.size}"),
+          label: a_string_including(project.repository.tags.size.to_s),
           link: presenter.project_tags_path(project)
         )
       end

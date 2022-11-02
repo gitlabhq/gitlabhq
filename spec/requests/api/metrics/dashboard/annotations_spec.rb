@@ -64,7 +64,7 @@ RSpec.describe API::Metrics::Dashboard::Annotations do
               {
                 'starting_at' => starting_at.to_time,
                 'ending_at' => ending_at.to_time,
-                "#{source_type}" => source,
+                source_type.to_s => source,
                 'dashboard_path' => dashboard_unescaped,
                 'description' => params[:description]
               }

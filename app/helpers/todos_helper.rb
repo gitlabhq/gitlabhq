@@ -121,9 +121,10 @@ module TodosHelper
 
     case todo.target
     when MergeRequest
-      if state == 'closed'
+      case state
+      when 'closed'
         background_class = 'gl-bg-red-500'
-      elsif state == 'merged'
+      when 'merged'
         background_class = 'gl-bg-blue-500'
       end
     when Issue

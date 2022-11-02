@@ -43,7 +43,7 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
         end
 
         [:created_desc, :updated_asc, :name_desc].each do |order|
-          context "#{order}" do
+          context order.to_s do
             let(:args) { { sort: order } }
 
             it { is_expected.to eq([sort_repository2, sort_repository]) }
@@ -51,7 +51,7 @@ RSpec.describe Resolvers::ContainerRepositoriesResolver do
         end
 
         [:created_asc, :updated_desc, :name_asc].each do |order|
-          context "#{order}" do
+          context order.to_s do
             let(:args) { { sort: order } }
 
             it { is_expected.to eq([sort_repository, sort_repository2]) }

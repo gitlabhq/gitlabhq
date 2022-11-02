@@ -72,9 +72,10 @@ RSpec.describe ShaAttribute do
         end
 
         it 'validates column type' do
-          if expected_error == :no_error
+          case expected_error
+          when :no_error
             expect { load_schema! }.not_to raise_error
-          elsif expected_error == :sha_mismatch_error
+          when :sha_mismatch_error
             expect { load_schema! }.to raise_error(
               described_class::ShaAttributeTypeMismatchError,
               /sha_attribute.*#{column_name}.* should be a :binary column/
@@ -89,9 +90,10 @@ RSpec.describe ShaAttribute do
         end
 
         it 'validates column type' do
-          if expected_error == :no_error
+          case expected_error
+          when :no_error
             expect { load_schema! }.not_to raise_error
-          elsif expected_error == :sha_mismatch_error
+          when :sha_mismatch_error
             expect { load_schema! }.to raise_error(
               described_class::Sha256AttributeTypeMismatchError,
               /sha256_attribute.*#{column_name}.* should be a :binary column/

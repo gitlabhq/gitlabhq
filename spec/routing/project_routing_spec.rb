@@ -543,7 +543,7 @@ RSpec.describe 'project routing' do
                        method: :get },
                     { controller: 'projects/find_file', action: 'show',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
-                      id: "#{newline_file}" })
+                      id: newline_file.to_s })
     end
 
     it 'to #list' do
@@ -554,7 +554,7 @@ RSpec.describe 'project routing' do
                        method: :get },
                     { controller: 'projects/find_file', action: 'list',
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
-                      id: "#{newline_file}" })
+                      id: newline_file.to_s })
     end
 
     it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/find_file", "/gitlab/gitlabhq/-/find_file"

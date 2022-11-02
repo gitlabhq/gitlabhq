@@ -318,7 +318,7 @@ RSpec.describe API::Terraform::State, :snowplow do
         Version: '0.1',
         Operation: 'OperationTypePlan',
         Info: '',
-        Who: "#{current_user.username}",
+        Who: current_user.username.to_s,
         Created: Time.now.utc.iso8601(6),
         Path: ''
       }
@@ -365,7 +365,7 @@ RSpec.describe API::Terraform::State, :snowplow do
         Version: '0.1',
         Operation: 'OperationTypePlan',
         Info: '',
-        Who: "#{current_user.username}",
+        Who: current_user.username.to_s,
         Created: Time.now.utc.iso8601(6),
         Path: ''
       }

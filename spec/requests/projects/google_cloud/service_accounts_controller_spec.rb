@@ -6,7 +6,7 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
   let_it_be(:project) { create(:project, :public) }
 
   describe 'GET index', :snowplow do
-    let_it_be(:url) { "#{project_google_cloud_service_accounts_path(project)}" }
+    let_it_be(:url) { project_google_cloud_service_accounts_path(project).to_s }
 
     let_it_be(:user_guest) { create(:user) }
     let_it_be(:user_developer) { create(:user) }

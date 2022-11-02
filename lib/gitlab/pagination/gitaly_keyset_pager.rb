@@ -35,11 +35,12 @@ module Gitlab
       def keyset_pagination_enabled?(finder)
         return false unless params[:pagination] == "keyset"
 
-        if finder.is_a?(BranchesFinder)
+        case finder
+        when BranchesFinder
           Feature.enabled?(:branch_list_keyset_pagination, project)
-        elsif finder.is_a?(TagsFinder)
+        when TagsFinder
           true
-        elsif finder.is_a?(::Repositories::TreeFinder)
+        when ::Repositories::TreeFinder
           Feature.enabled?(:repository_tree_gitaly_pagination, project)
         else
           false
@@ -49,11 +50,12 @@ module Gitlab
       def paginate_first_page?(finder)
         return false unless params[:page].blank? || params[:page].to_i == 1
 
-        if finder.is_a?(BranchesFinder)
+        case finder
+        when BranchesFinder
           Feature.enabled?(:branch_list_keyset_pagination, project)
-        elsif finder.is_a?(TagsFinder)
+        when TagsFinder
           true
-        elsif finder.is_a?(::Repositories::TreeFinder)
+        when ::Repositories::TreeFinder
           Feature.enabled?(:repository_tree_gitaly_pagination, project)
         else
           false

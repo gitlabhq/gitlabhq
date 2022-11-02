@@ -108,9 +108,10 @@ module IssuesHelper
 
   def awards_sort(awards)
     awards.sort_by do |award, award_emojis|
-      if award == "thumbsup"
+      case award
+      when "thumbsup"
         0
-      elsif award == "thumbsdown"
+      when "thumbsdown"
         1
       else
         2

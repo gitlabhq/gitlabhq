@@ -452,7 +452,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
     context 'when there are ignored K8s connections errors' do
       described_class::IGNORED_CONNECTION_EXCEPTIONS.each do |exception|
-        context "#{exception}" do
+        context exception.to_s do
           before do
             exception_args = ['arg1']
             exception_args.push('arg2', 'arg3') if exception.name == 'Kubeclient::HttpError'

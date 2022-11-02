@@ -6,14 +6,14 @@ RSpec.describe Graphql::Arguments do
   it 'returns a blank string if the arguments are blank' do
     args = described_class.new({})
 
-    expect("#{args}").to be_blank
+    expect(args.to_s).to be_blank
   end
 
   it 'returns a serialized arguments if the arguments are not blank' do
     units = described_class.new({ temp: :CELSIUS, time: :MINUTES })
     args = described_class.new({ temp: 180, time: 45, units: units })
 
-    expect("#{args}").to eq('temp: 180, time: 45, units: {temp: CELSIUS, time: MINUTES}')
+    expect(args.to_s).to eq('temp: 180, time: 45, units: {temp: CELSIUS, time: MINUTES}')
   end
 
   it 'supports merge with +' do

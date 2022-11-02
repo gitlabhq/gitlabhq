@@ -532,13 +532,14 @@ module Integrations
     end
 
     def build_entity_meta(entity)
-      if entity.is_a?(Commit)
+      case entity
+      when Commit
         {
           id: entity.short_id,
           description: entity.safe_message,
           branch: branch_name(entity)
         }
-      elsif entity.is_a?(MergeRequest)
+      when MergeRequest
         {
           id: entity.to_reference,
           branch: entity.source_branch

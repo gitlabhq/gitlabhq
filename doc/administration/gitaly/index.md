@@ -219,9 +219,6 @@ The availability objectives for Gitaly clusters assuming a single node failure a
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
 
-  Faster outage detection, to improve this speed to less than 1 second,
-  is tracked [in this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2608).
-
 WARNING:
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
 RPO and RTO discussed above.

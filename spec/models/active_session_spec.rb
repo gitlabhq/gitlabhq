@@ -477,7 +477,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
 
         it 'removes obsolete lookup entries even without active session' do
           Gitlab::Redis::Sessions.with do |redis|
-            redis.sadd(lookup_key, "#{max_number_of_sessions_plus_two + 1}")
+            redis.sadd(lookup_key, (max_number_of_sessions_plus_two + 1).to_s)
           end
 
           ActiveSession.cleanup(user)

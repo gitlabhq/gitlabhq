@@ -166,7 +166,7 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
 
         expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{role_binding_name}").with(
           body: hash_including(
-            metadata: { name: "gitlab-#{namespace}", namespace: "#{namespace}" },
+            metadata: { name: "gitlab-#{namespace}", namespace: namespace.to_s },
             roleRef: {
               apiGroup: 'rbac.authorization.k8s.io',
               kind: 'ClusterRole',

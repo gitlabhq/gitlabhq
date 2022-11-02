@@ -28,7 +28,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
       set_access(group, user, group_access) if group_access
     end
 
-    it "#{params[:method].to_s.humanize(capitalize: false)}" do
+    it params[:method].to_s.humanize(capitalize: false) do
       send(method_name)
     end
   end

@@ -221,6 +221,7 @@ module ApplicationSettingsHelper
       :default_projects_limit,
       :default_snippet_visibility,
       :delete_inactive_projects,
+      :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,

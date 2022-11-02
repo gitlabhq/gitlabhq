@@ -3279,7 +3279,7 @@ RSpec.describe API::MergeRequests do
       end
 
       it 'when removing labels, only removes those specified' do
-        put api_base, params: { remove_labels: "#{label.title}" }
+        put api_base, params: { remove_labels: label.title.to_s }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['labels']).to eq([label2.title])

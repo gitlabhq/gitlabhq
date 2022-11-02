@@ -107,9 +107,10 @@ module Gitlab
 
           section_name = sanitize_section_name(section)
 
-          if action == 'start'
+          case action
+          when 'start'
             handle_section_start(scanner, section_name, timestamp, options)
-          elsif action == 'end'
+          when 'end'
             handle_section_end(scanner, section_name, timestamp)
           else
             raise 'unsupported action'

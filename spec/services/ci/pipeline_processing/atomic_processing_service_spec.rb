@@ -53,9 +53,10 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
         expect(statuses.count).to eq(job_names.count) # ensure that we have the same counts
 
         statuses.each do |status|
-          if event == 'play'
+          case event
+          when 'play'
             status.play(user)
-          elsif event == 'retry'
+          when 'retry'
             ::Ci::RetryJobService.new(project, user).execute(status)
           else
             status.public_send("#{event}!")

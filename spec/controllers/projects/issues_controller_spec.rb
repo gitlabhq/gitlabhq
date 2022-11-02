@@ -1088,6 +1088,24 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
+    context 'when trying to create a objective' do
+      it 'defaults to issue type' do
+        issue = post_new_issue(issue_type: 'objective')
+
+        expect(issue.issue_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('issue')
+      end
+    end
+
+    context 'when trying to create a key_result' do
+      it 'defaults to issue type' do
+        issue = post_new_issue(issue_type: 'key_result')
+
+        expect(issue.issue_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('issue')
+      end
+    end
+
     context 'when create service return an unrecoverable error with http_status' do
       let(:http_status) { 403 }
 

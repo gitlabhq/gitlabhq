@@ -68,9 +68,10 @@ module Issuable
     end
 
     def find_issuables(parent, model_class, ids)
-      if parent.is_a?(Project)
+      case parent
+      when Project
         projects = parent
-      elsif parent.is_a?(Group)
+      when Group
         projects = parent.all_projects
       else
         return

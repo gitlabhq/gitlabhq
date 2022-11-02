@@ -105,9 +105,10 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
   def perform_for(db:)
     time = Time.current.midnight
 
-    if db == :main
+    case db
+    when :main
       time += 2.minutes
-    elsif db == :ci
+    when :ci
       time += 3.minutes
     end
 

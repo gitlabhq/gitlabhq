@@ -537,7 +537,7 @@ module KubernetesHelpers
       },
       "spec" => {
         "containers" => [
-          { "name" => "#{container_name}" },
+          { "name" => container_name.to_s },
           { "name" => "#{container_name}-1" }
         ]
       },

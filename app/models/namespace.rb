@@ -550,11 +550,12 @@ class Namespace < ApplicationRecord
   end
 
   def shared_runners_setting_higher_than?(other_setting)
-    if other_setting == SR_ENABLED
+    case other_setting
+    when SR_ENABLED
       false
-    elsif other_setting == SR_DISABLED_WITH_OVERRIDE
+    when SR_DISABLED_WITH_OVERRIDE
       shared_runners_setting == SR_ENABLED
-    elsif other_setting == SR_DISABLED_AND_UNOVERRIDABLE
+    when SR_DISABLED_AND_UNOVERRIDABLE
       shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
     else
       raise ArgumentError

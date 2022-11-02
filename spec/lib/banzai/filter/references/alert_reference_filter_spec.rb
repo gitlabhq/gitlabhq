@@ -229,7 +229,7 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter do
     let(:alert2_reference) { alert2.to_reference(full: true) }
 
     it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
-      markdown = "#{alert_reference}"
+      markdown = alert_reference.to_s
       max_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         reference_filter(markdown)
       end.count

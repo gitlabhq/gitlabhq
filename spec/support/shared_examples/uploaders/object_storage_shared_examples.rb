@@ -26,9 +26,10 @@ RSpec.shared_examples "migrates" do |to_store:, from_store: nil|
     expect(subject).to be_an(CarrierWave::Uploader::Base)
     expect(subject).to be_a(ObjectStorage::Concern)
 
-    if from == described_class::Store::REMOTE
+    case from
+    when described_class::Store::REMOTE
       expect(subject.file).to be_a(CarrierWave::Storage::Fog::File)
-    elsif from == described_class::Store::LOCAL
+    when described_class::Store::LOCAL
       expect(subject.file).to be_a(CarrierWave::SanitizedFile)
     else
       raise 'Unexpected file type'

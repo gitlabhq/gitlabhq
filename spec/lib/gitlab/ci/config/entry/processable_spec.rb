@@ -248,7 +248,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
       with_them do
         let(:config) { { script: 'ls', rules: rules, only: only }.compact }
 
-        it "#{name}" do
+        it name.to_s do
           expect(workflow).to receive(:has_rules?) { has_workflow_rules? }
 
           entry.compose!(deps)

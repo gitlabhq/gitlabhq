@@ -1826,7 +1826,7 @@ RSpec.describe Namespace do
 
         group.update!(parent: parent)
 
-        expect(group.full_path_before_last_save).to eq("#{group.path_before_last_save}")
+        expect(group.full_path_before_last_save).to eq(group.path_before_last_save.to_s)
       end
     end
 

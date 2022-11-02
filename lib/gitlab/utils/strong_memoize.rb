@@ -88,9 +88,10 @@ module Gitlab
       #
       # Depending on a type ensure that there's a single memory allocation
       def ivar(name)
-        if name.is_a?(Symbol)
+        case name
+        when Symbol
           name.to_s.prepend("@").to_sym
-        elsif name.is_a?(String)
+        when String
           :"@#{name}"
         else
           raise ArgumentError, "Invalid type of '#{name}'"

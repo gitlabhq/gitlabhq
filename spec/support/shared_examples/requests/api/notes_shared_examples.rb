@@ -179,7 +179,8 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         end
       end
 
-      if parent_type == 'projects'
+      case parent_type
+      when 'projects'
         context 'by a project owner' do
           let(:user) { project.first_owner }
 
@@ -211,7 +212,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
             expect(Time.parse(json_response['updated_at'])).to be_like_time(creation_time)
           end
         end
-      elsif parent_type == 'groups'
+      when 'groups'
         context 'by a group owner' do
           it 'sets the creation time on the new note' do
             post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
@@ -288,7 +289,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       end
 
       it 'allows user in allow-list to create notes' do
-        stub_application_setting(notes_create_limit_allowlist: ["#{user.username}"])
+        stub_application_setting(notes_create_limit_allowlist: [user.username.to_s])
         subject
 
         expect(response).to have_gitlab_http_status(:created)

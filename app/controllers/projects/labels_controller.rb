@@ -68,9 +68,10 @@ class Projects::LabelsController < Projects::ApplicationController
   def generate
     Gitlab::IssuesLabels.generate(@project)
 
-    if params[:redirect] == 'issues'
+    case params[:redirect]
+    when 'issues'
       redirect_to project_issues_path(@project)
-    elsif params[:redirect] == 'merge_requests'
+    when 'merge_requests'
       redirect_to project_merge_requests_path(@project)
     else
       redirect_to project_labels_path(@project)

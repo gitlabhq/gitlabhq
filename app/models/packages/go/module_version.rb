@@ -21,9 +21,10 @@ module Packages
         raise ArgumentError, "mod is required" unless mod
         raise ArgumentError, "commit is required" unless commit
 
-        if type == :ref
+        case type
+        when :ref
           raise ArgumentError, "ref is required" unless ref
-        elsif type == :pseudo
+        when :pseudo
           raise ArgumentError, "name is required" unless name
           raise ArgumentError, "semver is required" unless semver
         end

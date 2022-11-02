@@ -167,9 +167,10 @@ module Gitlab
     end
 
     def deep_indifferent_access(data)
-      if data.is_a?(Array)
+      case data
+      when Array
         data.map(&method(:deep_indifferent_access))
-      elsif data.is_a?(Hash)
+      when Hash
         data.with_indifferent_access
       else
         data
@@ -177,9 +178,10 @@ module Gitlab
     end
 
     def deep_symbolized_access(data)
-      if data.is_a?(Array)
+      case data
+      when Array
         data.map(&method(:deep_symbolized_access))
-      elsif data.is_a?(Hash)
+      when Hash
         data.deep_symbolize_keys
       else
         data

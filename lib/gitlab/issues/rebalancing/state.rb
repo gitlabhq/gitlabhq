@@ -136,9 +136,10 @@ module Gitlab
           current_rebalancing_containers.each do |string|
             container_type, container_id = string.split('/', 2).map(&:to_i)
 
-            if container_type == NAMESPACE
+            case container_type
+            when NAMESPACE
               namespace_ids << container_id
-            elsif container_type == PROJECT
+            when PROJECT
               project_ids << container_id
             end
           end

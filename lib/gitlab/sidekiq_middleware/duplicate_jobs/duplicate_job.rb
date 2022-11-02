@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'digest'
+require 'msgpack'
 
 module Gitlab
   module SidekiqMiddleware

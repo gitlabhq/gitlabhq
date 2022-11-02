@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   end
 
   Gitlab::Database::LoadBalancing::ConnectionProxy::NON_STICKY_READS.each do |name|
-    describe "#{name}" do
+    describe name.to_s do
       it 'runs the query on the replica' do
         expect(proxy).to receive(:read_using_load_balancer)
           .with(name, 'foo')
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   end
 
   Gitlab::Database::LoadBalancing::ConnectionProxy::STICKY_WRITES.each do |name|
-    describe "#{name}" do
+    describe name.to_s do
       it 'runs the query on the primary and sticks to it' do
         session = Gitlab::Database::LoadBalancing::Session.new
 

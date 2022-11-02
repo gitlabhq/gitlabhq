@@ -241,7 +241,7 @@ RSpec.describe Gitlab::BackgroundMigration::LegacyUploadMover, :aggregate_failur
   context 'when legacy uploads are stored in object storage' do
     let(:legacy_upload) { create_remote_upload(note, filename) }
     let(:remote_file) do
-      { key: "#{legacy_upload.path}" }
+      { key: legacy_upload.path.to_s }
     end
 
     let(:connection) { ::Fog::Storage.new(FileUploader.object_store_credentials) }

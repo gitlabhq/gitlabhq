@@ -330,7 +330,7 @@ RSpec.describe Gitlab::Database::BatchCount do
     end
 
     it 'counts with "id" field' do
-      expect(described_class.batch_distinct_count(model, "#{column}")).to eq(2)
+      expect(described_class.batch_distinct_count(model, column.to_s)).to eq(2)
     end
 
     it 'counts with table.column field' do

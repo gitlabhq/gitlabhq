@@ -170,9 +170,10 @@ module IssuableActions
 
     discussions = Discussion.build_collection(notes, issuable)
 
-    if issuable.is_a?(MergeRequest)
+    case issuable
+    when MergeRequest
       render_mr_discussions(discussions, discussion_serializer, discussion_cache_context)
-    elsif issuable.is_a?(Issue)
+    when Issue
       render json: discussion_serializer.represent(discussions, context: self) if stale?(etag: [discussion_cache_context, discussions])
     else
       render json: discussion_serializer.represent(discussions, context: self)

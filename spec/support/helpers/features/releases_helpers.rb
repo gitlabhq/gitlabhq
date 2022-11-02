@@ -39,7 +39,7 @@ module Spec
 
               wait_for_all_requests
 
-              click_button("#{branch_name}")
+              click_button(branch_name.to_s)
             end
           end
 

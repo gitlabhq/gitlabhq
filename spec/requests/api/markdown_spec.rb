@@ -193,7 +193,7 @@ RSpec.describe API::Markdown do
           end
 
           let(:issue)  { create(:issue, project: public_project, title: 'Team only title') }
-          let(:text)   { "#{issue.to_reference}" }
+          let(:text)   { issue.to_reference.to_s }
           let(:params) { { text: text, gfm: true, project: public_project.full_path } }
 
           shared_examples 'user without proper access' do

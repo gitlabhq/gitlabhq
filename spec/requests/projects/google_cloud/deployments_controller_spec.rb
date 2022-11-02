@@ -83,7 +83,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
     end
 
     it 'renders template' do
-      get "#{project_google_cloud_deployments_path(project)}"
+      get project_google_cloud_deployments_path(project).to_s
 
       expect(response).to render_template(:index)
 
@@ -98,7 +98,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
   end
 
   describe 'Authorized GET project/-/google_cloud/deployments/cloud_run', :snowplow do
-    let_it_be(:url) { "#{project_google_cloud_deployments_cloud_run_path(project)}" }
+    let_it_be(:url) { project_google_cloud_deployments_cloud_run_path(project).to_s }
 
     before do
       sign_in(user_maintainer)
@@ -188,7 +188,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController do
   end
 
   describe 'Authorized GET project/-/google_cloud/deployments/cloud_storage', :snowplow do
-    let_it_be(:url) { "#{project_google_cloud_deployments_cloud_storage_path(project)}" }
+    let_it_be(:url) { project_google_cloud_deployments_cloud_storage_path(project).to_s }
 
     before do
       allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|

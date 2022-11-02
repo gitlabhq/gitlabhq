@@ -312,9 +312,10 @@ module Gitlab
 
           normalized_section = section_to_class_name(section)
 
-          if action == "start"
+          case action
+          when "start"
             handle_section_start(normalized_section, timestamp)
-          elsif action == "end"
+          when "end"
             handle_section_end(normalized_section, timestamp)
           end
         end

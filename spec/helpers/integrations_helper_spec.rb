@@ -174,7 +174,7 @@ RSpec.describe IntegrationsHelper do
     end
 
     it "only consider these enumeration values are valid" do
-      expected_valid_types = %w[issue incident test_case requirement task]
+      expected_valid_types = %w[issue incident test_case requirement task objective key_result]
       expect(Issue.issue_types.keys).to contain_exactly(*expected_valid_types)
     end
   end

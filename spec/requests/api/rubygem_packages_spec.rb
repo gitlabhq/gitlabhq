@@ -325,9 +325,10 @@ RSpec.describe API::RubygemPackages do
         let(:headers) { user_headers.merge(workhorse_headers) }
         let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: snowplow_user } }
         let(:snowplow_user) do
-          if token_type == :deploy_token
+          case token_type
+          when :deploy_token
             deploy_token
-          elsif token_type == :job_token
+          when :job_token
             job.user
           else
             user

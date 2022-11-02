@@ -212,13 +212,13 @@ RSpec.describe 'Commits' do
     end
 
     context 'author is just a name' do
-      let(:author) { "#{author_commit.author_name}" }
+      let(:author) { author_commit.author_name.to_s }
 
       it_behaves_like 'show commits by author'
     end
 
     context 'author is just an email' do
-      let(:author) { "#{author_commit.author_email}" }
+      let(:author) { author_commit.author_email.to_s }
 
       it_behaves_like 'show commits by author'
     end

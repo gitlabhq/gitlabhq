@@ -74,7 +74,7 @@ RSpec.describe SnippetsHelper do
       let(:snippet) { public_personal_snippet }
 
       it 'returns copy button of embedded snippets' do
-        expect(subject).to eq(copy_button("#{blob.id}"))
+        expect(subject).to eq(copy_button(blob.id.to_s))
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe SnippetsHelper do
       let(:snippet) { public_project_snippet }
 
       it 'returns copy button of embedded snippets' do
-        expect(subject).to eq(copy_button("#{blob.id}"))
+        expect(subject).to eq(copy_button(blob.id.to_s))
       end
     end
 

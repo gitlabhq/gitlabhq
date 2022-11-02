@@ -114,7 +114,7 @@ RSpec.shared_examples 'group and project packages query' do
     end
 
     [:CREATED_ASC, :NAME_ASC, :VERSION_ASC, :TYPE_ASC, :CREATED_DESC, :NAME_DESC, :VERSION_DESC, :TYPE_DESC].each do |order|
-      context "#{order}" do
+      context order.to_s do
         let(:sorted_packages) { packages_order_map.fetch(order) }
 
         it_behaves_like 'sorted paginated query' do

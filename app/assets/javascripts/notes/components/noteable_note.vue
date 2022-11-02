@@ -91,6 +91,11 @@ export default {
       required: false,
       default: false,
     },
+    shouldScrollToNote: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -222,7 +227,7 @@ export default {
   },
 
   mounted() {
-    if (this.isTarget) {
+    if (this.isTarget && this.shouldScrollToNote) {
       this.scrollToNoteIfNeeded($(this.$el));
     }
   },

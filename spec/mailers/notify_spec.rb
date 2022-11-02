@@ -750,7 +750,7 @@ RSpec.describe Notify do
           before_all do
             private_project.add_guest(recipient)
 
-            note.update!(note: "#{private_issue.to_reference(full: true)}")
+            note.update!(note: private_issue.to_reference(full: true).to_s)
           end
 
           let(:html_part) { subject.body.parts.last.to_s }

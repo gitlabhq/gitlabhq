@@ -211,7 +211,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
     end
 
     with_them do
-      describe "#{name}" do
+      describe name.to_s do
         before do
           allow(primary_store).to receive(name).and_call_original
           allow(secondary_store).to receive(name).and_call_original
@@ -363,7 +363,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
     end
 
     with_them do
-      describe "#{name}" do
+      describe name.to_s do
         let(:expected_args) { args || no_args }
 
         before do

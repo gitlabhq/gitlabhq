@@ -13,11 +13,11 @@ RSpec.describe Backup::FileBackupError do
     it { is_expected.to respond_to :backup_tarball }
 
     it 'expects exception message to include file backup path location' do
-      expect(subject.message).to include("#{subject.backup_tarball}")
+      expect(subject.message).to include(subject.backup_tarball.to_s)
     end
 
     it 'expects exception message to include file being back-up' do
-      expect(subject.message).to include("#{subject.app_files_dir}")
+      expect(subject.message).to include(subject.app_files_dir.to_s)
     end
   end
 

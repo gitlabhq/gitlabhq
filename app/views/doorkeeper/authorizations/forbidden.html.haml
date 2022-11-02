@@ -1,0 +1,5 @@
+%h1.page-title.gl-font-size-h-display= _("Forbidden")
+%main{ :role => "main" }
+  %p
+    = sprite_icon('warning-solid')
+    = (_("Administrators are not permitted to connect applications with these scopes: %{code_open}api%{code_close}, %{code_open}read_api%{code_close}, %{code_open}read_repository%{code_close}, %{code_open}write_repository%{code_close}, %{code_open}write_registry%{code_close}, %{code_open}read_registry%{code_close}, and %{code_open}sudo%{code_close}. To permit this, change the %{code_open}disable_admin_oauth_scopes%{code_close} setting using the API.") % { code_open: '<code>', code_close: '</code>' }).html_safe

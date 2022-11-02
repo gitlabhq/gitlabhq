@@ -25,7 +25,7 @@ RSpec.shared_examples 'group and projects packages resolver' do
     end
 
     %w[CREATED_DESC NAME_DESC VERSION_DESC TYPE_ASC].each do |order|
-      context "#{order}" do
+      context order.to_s do
         let(:args) { { sort: order } }
 
         it { is_expected.to eq([maven_package, conan_package]) }
@@ -33,7 +33,7 @@ RSpec.shared_examples 'group and projects packages resolver' do
     end
 
     %w[CREATED_ASC NAME_ASC VERSION_ASC TYPE_DESC].each do |order|
-      context "#{order}" do
+      context order.to_s do
         let(:args) { { sort: order } }
 
         it { is_expected.to eq([conan_package, maven_package]) }

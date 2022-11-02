@@ -120,7 +120,7 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
       end
 
       Packages::Package.package_types.keys.without('maven', 'npm', 'pypi').each do |pkg_type|
-        context "#{pkg_type}" do
+        context pkg_type.to_s do
           let(:package_type) { pkg_type.to_sym }
 
           it 'raises an error' do

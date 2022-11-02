@@ -88,6 +88,7 @@ export default {
           :discussions-by-diff-order="true"
           :line="line"
           :help-page-path="helpPagePath"
+          :should-scroll-to-note="false"
           @noteDeleted="deleteNoteHandler"
         >
           <template v-if="renderAvatarBadge" #avatar-badge>

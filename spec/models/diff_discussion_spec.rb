@@ -128,7 +128,7 @@ RSpec.describe DiffDiscussion do
   end
 
   describe '#cache_key' do
-    let(:notes_sha) { Digest::SHA1.hexdigest("#{diff_note.post_processed_cache_key}") }
+    let(:notes_sha) { Digest::SHA1.hexdigest(diff_note.post_processed_cache_key.to_s) }
     let(:position_sha) { Digest::SHA1.hexdigest(diff_note.position.to_json) }
 
     it 'returns the cache key with the position sha' do

@@ -522,7 +522,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
       it_behaves_like 'logging' do
         let(:expected_action) { :enable }
-        let(:expected_extra) { { "extra.thing" => "#{thing.flipper_id}" } }
+        let(:expected_extra) { { "extra.thing" => thing.flipper_id.to_s } }
       end
     end
   end
@@ -548,7 +548,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
       it_behaves_like 'logging' do
         let(:expected_action) { :disable }
-        let(:expected_extra) { { "extra.thing" => "#{thing.flipper_id}" } }
+        let(:expected_extra) { { "extra.thing" => thing.flipper_id.to_s } }
       end
     end
   end
@@ -561,7 +561,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
     it_behaves_like 'logging' do
       let(:expected_action) { :enable_percentage_of_time }
-      let(:expected_extra) { { "extra.percentage" => "#{percentage}" } }
+      let(:expected_extra) { { "extra.percentage" => percentage.to_s } }
     end
   end
 
@@ -584,7 +584,7 @@ RSpec.describe Feature, stub_feature_flags: false do
 
     it_behaves_like 'logging' do
       let(:expected_action) { :enable_percentage_of_actors }
-      let(:expected_extra) { { "extra.percentage" => "#{percentage}" } }
+      let(:expected_extra) { { "extra.percentage" => percentage.to_s } }
     end
   end
 

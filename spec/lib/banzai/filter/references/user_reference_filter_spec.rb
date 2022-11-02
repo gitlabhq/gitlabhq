@@ -209,7 +209,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter do
     let(:reference3) { group.to_reference }
 
     it 'does not have N+1 per multiple user references', :use_sql_query_cache do
-      markdown = "#{reference}"
+      markdown = reference.to_s
 
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         reference_filter(markdown)

@@ -19,7 +19,8 @@ module QA
             options.to_a.each do |opt|
               # The argument for the --set-feature-flags option should look something like "flag1=enabled,flag2=disabled"
               # Here we translate that string into a hash, e.g.: { 'flag1' => 'enabled', 'flag2' => "disabled" }
-              if opt.name == :set_feature_flags
+              case opt.name
+              when :set_feature_flags
                 parser.on(opt.arg, opt.desc) do |flags|
                   value = flags.split(',').each_with_object({}) do |pair, hash|
                     flag_name, flag_value = pair.split('=')
@@ -31,7 +32,7 @@ module QA
                 end
 
                 next
-              elsif opt.name == :count_examples_only || opt.name == :test_metadata_only
+              when :count_examples_only, :test_metadata_only
                 parser.on(opt.arg, opt.desc) do |value|
                   QA::Runtime::Env.dry_run = true
                   Runtime::Scenario.define(opt.name, value)

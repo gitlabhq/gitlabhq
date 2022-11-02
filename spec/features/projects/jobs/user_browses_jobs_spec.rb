@@ -203,15 +203,15 @@ RSpec.describe 'User browses jobs' do
         end
 
         it 'contains a link to the job sha' do
-          expect(page.find('[data-testid="job-sha"]')).to have_content "#{job.sha[0..7]}"
+          expect(page.find('[data-testid="job-sha"]')).to have_content job.sha[0..7].to_s
         end
 
         it 'contains a link to the job id' do
-          expect(page.find('[data-testid="job-id-link"]')).to have_content "#{job.id}"
+          expect(page.find('[data-testid="job-id-link"]')).to have_content job.id.to_s
         end
 
         it 'contains a link to the job ref' do
-          expect(page.find('[data-testid="job-ref"]')).to have_content "#{job.ref}"
+          expect(page.find('[data-testid="job-ref"]')).to have_content job.ref.to_s
         end
       end
     end

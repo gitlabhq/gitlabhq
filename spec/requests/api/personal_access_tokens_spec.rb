@@ -18,9 +18,10 @@ RSpec.describe API::PersonalAccessTokens do
       it "status, count and result as expected" do
         subject
 
-        if status == :bad_request
+        case status
+        when :bad_request
           expect(json_response).to eq(result)
-        elsif status == :ok
+        when :ok
           expect(map_id(json_response)).to a_collection_containing_exactly(*result)
         end
 

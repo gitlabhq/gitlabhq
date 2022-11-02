@@ -6,7 +6,7 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter do
   include FilterSpecHelper
 
   def invalidate_reference(reference)
-    "#{reference.reverse}"
+    reference.reverse.to_s
   end
 
   def get_reference(project)
@@ -109,7 +109,7 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter do
     let_it_be(:nested_project_reference) { get_reference(nested_project) }
 
     it 'does not have N+1 per multiple project references', :use_sql_query_cache do
-      markdown = "#{normal_project_reference}"
+      markdown = normal_project_reference.to_s
 
       # warm up first
       reference_filter(markdown)

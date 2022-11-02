@@ -305,11 +305,12 @@ module QA
 
         prefix = "-o merge_request"
         opts.each_with_object([]) do |(key, value), options|
-          if value.is_a?(Array)
+          case value
+          when Array
             value.each do |item|
               options << "#{prefix}.#{key}=\"#{item}\""
             end
-          elsif value == true
+          when true
             options << "#{prefix}.#{key}"
           else
             options << "#{prefix}.#{key}=\"#{value}\""

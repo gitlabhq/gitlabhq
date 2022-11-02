@@ -91,7 +91,7 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter do
     link = create_link(closed_issue.to_reference(other_project), issue: closed_issue.id, reference_type: 'issue')
     doc = filter(link, context.merge(project: other_project))
 
-    expect(doc.css('a').last.text).to eq("#{closed_issue.to_reference(other_project)}")
+    expect(doc.css('a').last.text).to eq(closed_issue.to_reference(other_project).to_s)
   end
 
   it 'does not append state when filter is not enabled' do

@@ -71,7 +71,7 @@ RSpec.describe API::Tags do
 
     context 'searching' do
       it 'only returns searched tags' do
-        get api("#{route}", user), params: { search: 'v1.1.0' }
+        get api(route.to_s, user), params: { search: 'v1.1.0' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers

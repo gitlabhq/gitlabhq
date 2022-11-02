@@ -1037,7 +1037,7 @@ RSpec.describe TodoService do
     let_it_be(:noteable) { create(:issue, project: project) }
 
     let(:note) { create(:note, project: project, note: mentions, noteable: noteable) }
-    let(:addressed_note) { create(:note, project: project, note: "#{directly_addressed}", noteable: noteable) }
+    let(:addressed_note) { create(:note, project: project, note: directly_addressed.to_s, noteable: noteable) }
 
     it 'creates a todo for each valid mentioned user not included in skip_users' do
       service.update_note(note, author, skip_users)

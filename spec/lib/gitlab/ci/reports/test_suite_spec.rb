@@ -209,7 +209,7 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
 
   Gitlab::Ci::Reports::TestCase::STATUS_TYPES.each do |status_type|
     describe "##{status_type}" do
-      subject { test_suite.public_send("#{status_type}") }
+      subject { test_suite.public_send(status_type.to_s) }
 
       context "when #{status_type} test case exists" do
         before do

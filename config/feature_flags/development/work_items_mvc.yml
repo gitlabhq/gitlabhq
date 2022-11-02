@@ -1,0 +1,8 @@
+---
+name: work_items_mvc
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101062"
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377912
+milestone: '15.5'
+type: development
+group: group::project management
+default_enabled: false

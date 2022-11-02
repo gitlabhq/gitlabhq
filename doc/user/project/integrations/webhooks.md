@@ -119,9 +119,10 @@ NOTE:
 Testing is not supported for some types of events for project and groups webhooks.
 Read more in [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
 
-Prerequisite:
+Prerequisites:
 
-- To test group webhooks, you must have administrator access for your instance.
+- To test project webhooks, you must have at least the Maintainer role for the project.
+- To test group webhooks, you must have the Owner role for the group.
 
 To test a webhook:
 
@@ -245,9 +246,10 @@ Webhook requests to your endpoint include the following headers:
 GitLab records the history of each webhook request.
 You can view requests made in the last 2 days in the **Recent events** table.
 
-Prerequisite:
+Prerequisites:
 
-- To troubleshoot group webhooks, you must have administrator access for your instance.
+- To troubleshoot project webhooks, you must have at least the Maintainer role for the project.
+- To troubleshoot group webhooks, you must have the Owner role for the group.
 
 To view the table:
 
