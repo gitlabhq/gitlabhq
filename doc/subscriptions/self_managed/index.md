@@ -460,3 +460,40 @@ If your credit card is declined when purchasing a GitLab subscription, possible 
 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
+
+### Check daily and historical billable users
+
+You can get a list of daily and historical billable users in your GitLab instance.
+
+1. [Start a rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+1. Count the number of users in the instance:
+
+   ```ruby
+   User.billable.count
+   ```
+
+1. Get the historical maximum number of users on the instance from the past year:
+
+   ```ruby
+   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
+   ```
+
+### Update daily billable and historical users
+
+You can trigger a manual update of the daily and historical billable users in your GitLab instance.
+
+1. [Start a rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+1. Force an update of the daily billable users:
+
+   ```ruby
+   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+   ```
+   
+1. Force an update of the historical max billable users:
+
+   ```ruby
+   ::HistoricalDataWorker.new.perform
+   ```

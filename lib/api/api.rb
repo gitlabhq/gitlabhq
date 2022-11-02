@@ -171,6 +171,7 @@ module API
       namespace do
         mount ::API::AccessRequests
         mount ::API::Appearance
+        mount ::API::BulkImports
         mount ::API::Ci::Runner
         mount ::API::Clusters::Agents
         mount ::API::Clusters::AgentTokens
@@ -207,7 +208,6 @@ module API
       mount ::API::Boards
       mount ::API::Branches
       mount ::API::BroadcastMessages
-      mount ::API::BulkImports
       mount ::API::Ci::JobArtifacts
       mount ::API::Ci::Jobs
       mount ::API::Ci::PipelineSchedules

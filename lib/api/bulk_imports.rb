@@ -41,7 +41,15 @@ module API
     resource :bulk_imports do
       desc 'Start a new GitLab Migration' do
         detail 'This feature was introduced in GitLab 14.2.'
-        success Entities::BulkImport
+        success code: 200, model: Entities::BulkImport
+        consumes ['application/x-www-form-urlencoded']
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       params do
         requires :configuration, type: Hash, desc: 'The source GitLab instance configuration' do
@@ -88,7 +96,13 @@ module API
 
       desc 'List all GitLab Migrations' do
         detail 'This feature was introduced in GitLab 14.1.'
-        success Entities::BulkImport
+        is_array true
+        success code: 200, model: Entities::BulkImport
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       params do
         use :pagination
@@ -103,7 +117,13 @@ module API
 
       desc "List all GitLab Migrations' entities" do
         detail 'This feature was introduced in GitLab 14.1.'
-        success Entities::BulkImports::Entity
+        is_array true
+        success code: 200, model: Entities::BulkImports::Entity
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       params do
         use :pagination
@@ -123,7 +143,12 @@ module API
 
       desc 'Get GitLab Migration details' do
         detail 'This feature was introduced in GitLab 14.1.'
-        success Entities::BulkImport
+        success code: 200, model: Entities::BulkImport
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
@@ -134,7 +159,13 @@ module API
 
       desc "List GitLab Migration entities" do
         detail 'This feature was introduced in GitLab 14.1.'
-        success Entities::BulkImports::Entity
+        is_array true
+        success code: 200, model: Entities::BulkImports::Entity
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
@@ -148,7 +179,12 @@ module API
 
       desc 'Get GitLab Migration entity details' do
         detail 'This feature was introduced in GitLab 14.1.'
-        success Entities::BulkImports::Entity
+        success code: 200, model: Entities::BulkImports::Entity
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"

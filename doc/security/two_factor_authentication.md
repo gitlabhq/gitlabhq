@@ -104,12 +104,17 @@ instead of the Rails console.
 Using the [Rails console](../administration/operations/rails_console.md), 2FA for a single user can be disabled.
 Connect to the Rails console and run:
 
+**In GitLab 13.5 and later:**
+
 ```ruby
 admin = User.find_by_username('<USERNAME>')
 user_to_disable = User.find_by_username('<USERNAME>')
 
 TwoFactor::DestroyService.new(admin, user: user_to_disable).execute
 ```
+
+NOTE:
+The target user is notified that 2FA has been disabled.
 
 ### For all users
 

@@ -573,6 +573,8 @@
   rules:
     - <<: *if-merge-request-labels-group-global-search
       changes: *search-backend-patterns
+    - <<: *if-merge-request-labels-group-global-search
+      changes: *ci-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:

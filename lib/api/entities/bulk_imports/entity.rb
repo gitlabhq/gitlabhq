@@ -4,19 +4,21 @@ module API
   module Entities
     module BulkImports
       class Entity < Grape::Entity
-        expose :id
-        expose :bulk_import_id
-        expose :status_name, as: :status
-        expose :source_full_path
-        expose :destination_name # deprecated
-        expose :destination_slug
-        expose :destination_namespace
-        expose :parent_id
-        expose :namespace_id
-        expose :project_id
-        expose :created_at
-        expose :updated_at
-        expose :failures, using: EntityFailure
+        expose :id, documentation: { type: 'integer', example: 1 }
+        expose :bulk_import_id, documentation: { type: 'integer', example: 1 }
+        expose :status_name, as: :status, documentation: {
+          type: 'string', example: 'created', values: %w[created started finished timeout failed]
+        }
+        expose :source_full_path, documentation: { type: 'string', example: 'source_group' }
+        expose :destination_name, documentation: { type: 'string', example: 'destination_slug' } # deprecated
+        expose :destination_slug, documentation: { type: 'string', example: 'destination_slug' }
+        expose :destination_namespace, documentation: { type: 'string', example: 'destination_path' }
+        expose :parent_id, documentation: { type: 'integer', example: 1 }
+        expose :namespace_id, documentation: { type: 'integer', example: 1 }
+        expose :project_id, documentation: { type: 'integer', example: 1 }
+        expose :created_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
+        expose :updated_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
+        expose :failures, using: EntityFailure, documentation: { is_array: true }
       end
     end
   end

@@ -574,11 +574,6 @@ rspec-ee unit pg12 es8:
     - .rspec-ee-base-pg12-es8
     - .rspec-ee-unit-parallel
 
-rspec-ee unit pg12 opensearch1:
-  extends:
-    - .rspec-ee-base-pg12-opensearch1
-    - .rspec-ee-unit-parallel
-
 rspec-ee unit pg12 minimal:
   extends:
     - rspec-ee unit pg12
@@ -602,11 +597,6 @@ rspec-ee integration pg12 es8:
     - .rspec-ee-base-pg12-es8
     - .rspec-ee-integration-parallel
 
-rspec-ee integration pg12 opensearch1:
-  extends:
-    - .rspec-ee-base-pg12-opensearch1
-    - .rspec-ee-integration-parallel
-
 rspec-ee integration pg12 minimal:
   extends:
     - rspec-ee integration pg12
@@ -628,11 +618,6 @@ rspec-ee system pg12:
 rspec-ee system pg12 es8:
   extends:
     - .rspec-ee-base-pg12-es8
-    - .rspec-ee-system-parallel
-
-rspec-ee system pg12 opensearch1:
-  extends:
-    - .rspec-ee-base-pg12-opensearch1
     - .rspec-ee-system-parallel
 
 rspec-ee system pg12 minimal:
@@ -742,6 +727,61 @@ rspec-ee system pg11:
     - .rspec-ee-base-pg11
     - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
+
+# PG12
+rspec-ee unit pg12 es7:
+  extends:
+    - .rspec-ee-base-pg12-es7
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee unit pg12 opensearch1:
+  extends:
+    - .rspec-ee-base-pg12-opensearch1
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee unit pg12 opensearch2:
+  extends:
+    - .rspec-ee-base-pg12-opensearch2
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee integration pg12 es7:
+  extends:
+    - .rspec-ee-base-pg12-es7
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee integration pg12 opensearch1:
+  extends:
+    - .rspec-ee-base-pg12-opensearch1
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee integration pg12 opensearch2:
+  extends:
+    - .rspec-ee-base-pg12-opensearch2
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee system pg12 es7:
+  extends:
+    - .rspec-ee-base-pg12-es7
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee system pg12 opensearch1:
+  extends:
+    - .rspec-ee-base-pg12-opensearch1
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee system pg12 opensearch2:
+  extends:
+    - .rspec-ee-base-pg12-opensearch2
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
 
 # PG13
 rspec-ee migration pg13:

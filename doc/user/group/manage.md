@@ -859,3 +859,17 @@ Commands that change data can cause damage if not run correctly or under the rig
 ```ruby
 GroupDestroyWorker.new.perform(group_id, user_id)
 ```
+
+### Find a user's max permissions for a group or project
+
+```ruby
+user = User.find_by_username 'username'
+project = Project.find_by_full_path 'group/project'
+user.max_member_access_for_project project.id
+```
+
+```ruby
+user = User.find_by_username 'username'
+group = Group.find_by_full_path 'group'
+user.max_member_access_for_group group.id
+```

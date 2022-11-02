@@ -283,3 +283,62 @@ You can also delete a user and their contributions, such as merge requests, issu
 
 NOTE:
 Before 15.1, additionally groups of which deleted user were the only owner among direct members were deleted.
+
+## Troubleshooting
+
+When moderating users, you may need to perform bulk actions on them based on certain conditions. The following rails console scripts show some examples of this. You may [start a rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and use scripts similar to the following:
+
+### Deactivate Users that have no recent activity
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+days_inactive = 90
+inactive_users = User.active.where("last_activity_on <= ?", days_inactive.days.ago)
+
+inactive_users.each do |user|
+    puts "user '#{user.username}': #{user.last_activity_on}"
+    user.deactivate!
+end
+```
+
+### Block Users that have no recent activity
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+days_inactive = 90
+inactive_users = User.active.where("last_activity_on <= ?", days_inactive.days.ago)
+
+inactive_users.each do |user|
+    puts "user '#{user.username}': #{user.last_activity_on}"
+    user.block!
+end
+``` 
+
+### Block or Delete Users that have no projects or groups
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+users = User.where('id NOT IN (select distinct(user_id) from project_authorizations)')
+
+# How many users are removed?
+users.count
+
+# If that count looks sane:
+
+# You can either block the users:
+users.each { |user|  user.blocked? ? nil  : user.block! }
+
+# Or you can delete them:
+  # need 'current user' (your user) for auditing purposes
+current_user = User.find_by(username: '<your username>')
+
+users.each do |user|
+  DeleteUserWorker.perform_async(current_user.id, user.id)
+end
+```
