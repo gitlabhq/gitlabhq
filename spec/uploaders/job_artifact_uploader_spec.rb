@@ -26,7 +26,7 @@ RSpec.describe JobArtifactUploader do
 
     describe '#cdn_enabled_url' do
       it 'returns URL and false' do
-        result = uploader.cdn_enabled_url(nil, '127.0.0.1')
+        result = uploader.cdn_enabled_url('127.0.0.1')
 
         expect(result.used_cdn).to be false
       end

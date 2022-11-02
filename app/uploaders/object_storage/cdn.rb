@@ -12,8 +12,8 @@ module ObjectStorage
 
       UrlResult = Struct.new(:url, :used_cdn)
 
-      def cdn_enabled_url(project, ip_address)
-        if Feature.enabled?(:ci_job_artifacts_cdn, project) && use_cdn?(ip_address)
+      def cdn_enabled_url(ip_address)
+        if use_cdn?(ip_address)
           UrlResult.new(cdn_signed_url, true)
         else
           UrlResult.new(url, false)

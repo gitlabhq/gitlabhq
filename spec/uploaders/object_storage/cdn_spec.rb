@@ -44,30 +44,13 @@ RSpec.describe ObjectStorage::CDN do
     end
 
     describe '#cdn_enabled_url' do
-      context 'with ci_job_artifacts_cdn feature flag disabled' do
-        before do
-          stub_feature_flags(ci_job_artifacts_cdn: false)
-        end
+      it 'calls #cdn_signed_url' do
+        expect(subject).not_to receive(:url)
+        expect(subject).to receive(:cdn_signed_url).and_call_original
 
-        it 'calls #url' do
-          expect(subject).to receive(:url).and_call_original
-          expect(subject).not_to receive(:cdn_signed_url)
+        result = subject.cdn_enabled_url(public_ip)
 
-          result = subject.cdn_enabled_url(project, public_ip)
-
-          expect(result.used_cdn).to be false
-        end
-      end
-
-      context 'with ci_job_artifacts_cdn feature flag enabled' do
-        it 'calls #cdn_signed_url' do
-          expect(subject).not_to receive(:url)
-          expect(subject).to receive(:cdn_signed_url).and_call_original
-
-          result = subject.cdn_enabled_url(project, public_ip)
-
-          expect(result.used_cdn).to be true
-        end
+        expect(result.used_cdn).to be true
       end
     end
 

@@ -188,6 +188,7 @@ module API
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::Release::Links
         mount ::API::ResourceAccessTokens
+        mount ::API::ProtectedTags
         mount ::API::SnippetRepositoryStorageMoves
         mount ::API::ProtectedBranches
         mount ::API::Statistics

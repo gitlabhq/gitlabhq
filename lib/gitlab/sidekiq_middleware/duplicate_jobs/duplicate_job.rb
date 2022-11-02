@@ -352,7 +352,7 @@ module Gitlab
         end
 
         def cookie_key
-          "#{idempotency_key}:cookie"
+          "#{idempotency_key}:cookie:v2"
         end
 
         def get_cookie

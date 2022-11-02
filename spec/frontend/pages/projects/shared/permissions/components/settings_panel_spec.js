@@ -137,6 +137,8 @@ describe('Settings Panel', () => {
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);
   const findEnvironmentsSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findFeatureFlagsSettings = () => wrapper.findComponent({ ref: 'feature-flags-settings' });
+  const findInfrastructureSettings = () =>
+    wrapper.findComponent({ ref: 'infrastructure-settings' });
   const findReleasesSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findMonitorSettings = () => wrapper.findComponent({ ref: 'monitor-settings' });
 
@@ -838,6 +840,24 @@ describe('Settings Panel', () => {
         wrapper = mountComponent({});
 
         expect(findFeatureFlagsSettings().exists()).toBe(false);
+      });
+    });
+  });
+  describe('Infrastructure', () => {
+    describe('with feature flag', () => {
+      it('should show the infrastructure toggle', () => {
+        wrapper = mountComponent({
+          glFeatures: { splitOperationsVisibilityPermissions: true },
+        });
+
+        expect(findInfrastructureSettings().exists()).toBe(true);
+      });
+    });
+    describe('without feature flag', () => {
+      it('should not show the infrastructure toggle', () => {
+        wrapper = mountComponent({});
+
+        expect(findInfrastructureSettings().exists()).toBe(false);
       });
     });
   });

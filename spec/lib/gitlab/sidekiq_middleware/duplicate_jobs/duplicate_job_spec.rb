@@ -527,7 +527,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
   end
 
   context 'with Redis cookies' do
-    let(:cookie_key) { "#{idempotency_key}:cookie" }
+    let(:cookie_key) { "#{idempotency_key}:cookie:v2" }
     let(:cookie) { get_redis_msgpack(cookie_key) }
 
     def with_redis(&block)

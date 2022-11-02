@@ -31814,6 +31814,9 @@ msgstr ""
 msgid "ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release."
 msgstr ""
 
+msgid "ProjectSettings|Configure your infrastructure."
+msgstr ""
+
 msgid "ProjectSettings|Configure your project resources and monitor their health."
 msgstr ""
 
@@ -31911,6 +31914,9 @@ msgid "ProjectSettings|How do they differ?"
 msgstr ""
 
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."
+msgstr ""
+
+msgid "ProjectSettings|Infrastructure"
 msgstr ""
 
 msgid "ProjectSettings|Internal"

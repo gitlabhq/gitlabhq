@@ -85,4 +85,10 @@ RSpec.describe CommitSignatures::GpgSignature do
       end
     end
   end
+
+  describe '#user' do
+    it 'retrieves the gpg_key user' do
+      expect(signature.user).to eq(gpg_key.user)
+    end
+  end
 end

@@ -395,7 +395,8 @@ module ProjectsHelper
       membersPagePath: project_project_members_path(project),
       environmentsHelpPath: help_page_path('ci/environments/index'),
       featureFlagsHelpPath: help_page_path('operations/feature_flags'),
-      releasesHelpPath: help_page_path('user/project/releases/index')
+      releasesHelpPath: help_page_path('user/project/releases/index'),
+      infrastructureHelpPath: help_page_path('user/infrastructure/index')
     }
   end
 
@@ -664,7 +665,8 @@ module ProjectsHelper
       containerRegistryAccessLevel: feature.container_registry_access_level,
       environmentsAccessLevel: feature.environments_access_level,
       featureFlagsAccessLevel: feature.feature_flags_access_level,
-      releasesAccessLevel: feature.releases_access_level
+      releasesAccessLevel: feature.releases_access_level,
+      infrastructureAccessLevel: feature.infrastructure_access_level
     }
   end
 

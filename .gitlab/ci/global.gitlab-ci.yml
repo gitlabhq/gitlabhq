@@ -46,7 +46,7 @@
     files:
       - GITALY_SERVER_VERSION
       - lib/gitlab/setup_helper.rb
-    prefix: "gitaly-binaries-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+    prefix: "gitaly-binaries-${GITALY_SERVER_VERSION}-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
     - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install/

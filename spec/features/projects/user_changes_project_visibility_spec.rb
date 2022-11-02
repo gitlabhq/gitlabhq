@@ -103,6 +103,9 @@ RSpec.describe 'User changes public project visibility', :js do
       sign_in(project.first_owner)
 
       visit edit_project_path(project)
+
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/381259
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(110)
     end
 
     it_behaves_like 'does not require confirmation'

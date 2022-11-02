@@ -244,7 +244,7 @@ To enable or disable the banner:
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 
 NOTE:
-An alternative [compliance solution](../../group/manage.md#configure-a-compliance-pipeline)
+An alternative [compliance solution](../../group/compliance_frameworks.md#configure-a-compliance-pipeline)
 is available. We recommend this alternative solution because it provides greater flexibility,
 allowing required pipelines to be assigned to specific compliance framework labels.
 

@@ -10939,6 +10939,7 @@ Represents a code quality degradation on the pipeline.
 | <a id="commitmessage"></a>`message` | [`String`](#string) | Raw commit message. |
 | <a id="commitsha"></a>`sha` | [`String!`](#string) | SHA1 ID of the commit. |
 | <a id="commitshortid"></a>`shortId` | [`String!`](#string) | Short SHA1 ID of the commit. |
+| <a id="commitsignature"></a>`signature` | [`CommitSignature`](#commitsignature) | Signature of the commit. |
 | <a id="commitsignaturehtml"></a>`signatureHtml` | [`String`](#string) | Rendered HTML of the commit signature. |
 | <a id="committitle"></a>`title` | [`String`](#string) | Title of the commit message. |
 | <a id="committitlehtml"></a>`titleHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `title`. |
@@ -12798,6 +12799,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodeuploadregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 | <a id="geonodeuploadregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeuploadregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
+### `GpgSignature`
+
+GPG signature for a signed commit.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gpgsignaturecommitsha"></a>`commitSha` | [`String`](#string) | SHA of the associated commit. |
+| <a id="gpgsignaturegpgkeyprimarykeyid"></a>`gpgKeyPrimaryKeyid` | [`String`](#string) | ID of the GPG key. |
+| <a id="gpgsignaturegpgkeyuseremail"></a>`gpgKeyUserEmail` | [`String`](#string) | User email associated with the GPG key. |
+| <a id="gpgsignaturegpgkeyusername"></a>`gpgKeyUserName` | [`String`](#string) | User name associated with the GPG key. |
+| <a id="gpgsignatureproject"></a>`project` | [`Project`](#project) | Project of the associated commit. |
+| <a id="gpgsignatureuser"></a>`user` | [`UserCore`](#usercore) | User associated with the key. |
+| <a id="gpgsignatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
 
 ### `GrafanaIntegration`
 
@@ -20078,6 +20095,53 @@ Represents a weight widget.
 | <a id="workitemwidgetweighttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 | <a id="workitemwidgetweightweight"></a>`weight` | [`Int`](#int) | Weight of the work item. |
 
+### `X509Certificate`
+
+Represents an X.509 certificate.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="x509certificatecertificatestatus"></a>`certificateStatus` | [`String!`](#string) | Indicates if the certificate is good or revoked. |
+| <a id="x509certificatecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the certificate was saved. |
+| <a id="x509certificateemail"></a>`email` | [`String!`](#string) | Email associated with the cerificate. |
+| <a id="x509certificateid"></a>`id` | [`ID!`](#id) | ID of the certificate. |
+| <a id="x509certificateserialnumber"></a>`serialNumber` | [`String!`](#string) | Serial number of the certificate. |
+| <a id="x509certificatesubject"></a>`subject` | [`String!`](#string) | Subject of the certificate. |
+| <a id="x509certificatesubjectkeyidentifier"></a>`subjectKeyIdentifier` | [`String!`](#string) | Subject key identifier of the certificate. |
+| <a id="x509certificateupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the certificate was last updated. |
+| <a id="x509certificatex509issuer"></a>`x509Issuer` | [`X509Issuer!`](#x509issuer) | Issuer of the certificate. |
+
+### `X509Issuer`
+
+Issuer of an X.509 certificate.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="x509issuercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the issuer was created. |
+| <a id="x509issuercrlurl"></a>`crlUrl` | [`String`](#string) | Certificate revokation list of the issuer. |
+| <a id="x509issuerid"></a>`id` | [`ID`](#id) | ID of the issuer. |
+| <a id="x509issuersubject"></a>`subject` | [`String`](#string) | Subject of the issuer. |
+| <a id="x509issuersubjectkeyidentifier"></a>`subjectKeyIdentifier` | [`String`](#string) | Subject key identifier of the issuer. |
+| <a id="x509issuerupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the issuer was last updated. |
+
+### `X509Signature`
+
+X.509 signature for a signed commit.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="x509signaturecommitsha"></a>`commitSha` | [`String`](#string) | SHA of the associated commit. |
+| <a id="x509signatureproject"></a>`project` | [`Project`](#project) | Project of the associated commit. |
+| <a id="x509signatureuser"></a>`user` | [`UserCore`](#usercore) | User associated with the key. |
+| <a id="x509signatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
+| <a id="x509signaturex509certificate"></a>`x509Certificate` | [`X509Certificate`](#x509certificate) | Certificate used for the signature. |
+
 ## Enumeration types
 
 Also called _Enums_, enumeration types are a special kind of scalar that
@@ -21935,6 +21999,20 @@ Possible states of a user.
 | <a id="verificationstateenumstarted"></a>`STARTED` | Verification process is in progress. |
 | <a id="verificationstateenumsucceeded"></a>`SUCCEEDED` | Verification process finished successfully. |
 
+### `VerificationStatus`
+
+Verification status of a GPG or X.509 signature for a commit.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="verificationstatusmultiple_signatures"></a>`MULTIPLE_SIGNATURES` | multiple_signatures verification status. |
+| <a id="verificationstatusother_user"></a>`OTHER_USER` | other_user verification status. |
+| <a id="verificationstatussame_user_different_email"></a>`SAME_USER_DIFFERENT_EMAIL` | same_user_different_email verification status. |
+| <a id="verificationstatusunknown_key"></a>`UNKNOWN_KEY` | unknown_key verification status. |
+| <a id="verificationstatusunverified"></a>`UNVERIFIED` | unverified verification status. |
+| <a id="verificationstatusunverified_key"></a>`UNVERIFIED_KEY` | unverified_key verification status. |
+| <a id="verificationstatusverified"></a>`VERIFIED` | verified verification status. |
+
 ### `VisibilityLevelsEnum`
 
 | Value | Description |
@@ -22902,6 +22980,23 @@ Implementations:
 | <a id="civariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
 | <a id="civariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="civariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
+
+#### `CommitSignature`
+
+Represents signing information for a commit.
+
+Implementations:
+
+- [`GpgSignature`](#gpgsignature)
+- [`X509Signature`](#x509signature)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="commitsignaturecommitsha"></a>`commitSha` | [`String`](#string) | SHA of the associated commit. |
+| <a id="commitsignatureproject"></a>`project` | [`Project`](#project) | Project of the associated commit. |
+| <a id="commitsignatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
 
 #### `CurrentUserTodos`
 

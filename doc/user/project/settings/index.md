@@ -45,7 +45,7 @@ If you're an instance administrator, you can administer all project topics from 
 
 ## Add a compliance framework to a project **(PREMIUM)**
 
-[Compliance frameworks](../../group/manage.md#compliance-frameworks) can be assigned to projects within group that has a
+[Compliance frameworks](../../group/compliance_frameworks.md) can be assigned to projects within group that has a
 compliance framework using either:
 
 - The GitLab UI:

@@ -41,6 +41,8 @@ export default {
     featureFlagsHelpText: s__(
       'ProjectSettings|Roll out new features without redeploying with feature flags.',
     ),
+    infrastructureLabel: s__('ProjectSettings|Infrastructure'),
+    infrastructureHelpText: s__('ProjectSettings|Configure your infrastructure.'),
     monitorLabel: s__('ProjectSettings|Monitor'),
     packagesHelpText: s__(
       'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
@@ -157,6 +159,11 @@ export default {
       required: false,
       default: '',
     },
+    infrastructureHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     releasesHelpPath: {
       type: String,
       required: false,
@@ -245,6 +252,7 @@ export default {
       operationsAccessLevel: featureAccessLevel.EVERYONE,
       environmentsAccessLevel: featureAccessLevel.EVERYONE,
       featureFlagsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+      infrastructureAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       releasesAccessLevel: featureAccessLevel.EVERYONE,
       monitorAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
@@ -432,6 +440,10 @@ export default {
         this.featureFlagsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.featureFlagsAccessLevel,
+        );
+        this.infrastructureAccessLevel = Math.min(
+          featureAccessLevel.PROJECT_MEMBERS,
+          this.infrastructureAccessLevel,
         );
         this.releasesAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -979,6 +991,19 @@ export default {
             :label="$options.i18n.featureFlagsLabel"
             :options="featureAccessLevelOptions"
             name="project[project_feature_attributes][feature_flags_access_level]"
+          />
+        </project-setting-row>
+        <project-setting-row
+          ref="infrastructure-settings"
+          :label="$options.i18n.infrastructureLabel"
+          :help-text="$options.i18n.infrastructureHelpText"
+          :help-path="infrastructureHelpPath"
+        >
+          <project-feature-setting
+            v-model="infrastructureAccessLevel"
+            :label="$options.i18n.infrastructureLabel"
+            :options="featureAccessLevelOptions"
+            name="project[project_feature_attributes][infrastructure_access_level]"
           />
         </project-setting-row>
       </template>

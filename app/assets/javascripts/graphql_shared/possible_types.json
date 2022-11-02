@@ -9,6 +9,10 @@
     "CiManualVariable",
     "CiProjectVariable"
   ],
+  "CommitSignature": [
+    "GpgSignature",
+    "X509Signature"
+  ],
   "CurrentUserTodos": [
     "BoardEpic",
     "Design",

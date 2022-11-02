@@ -55,6 +55,7 @@ export default {
       class="js-sidebar-dropdown-toggle edit-link btn gl-text-gray-900! gl-ml-auto hide-collapsed btn-default btn-sm gl-button btn-default-tertiary float-right"
       href="#"
       data-test-id="edit-link"
+      data-qa-selector="edit_link"
       data-track-action="click_edit_button"
       data-track-label="right_sidebar"
       data-track-property="assignee"

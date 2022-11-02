@@ -11,6 +11,8 @@ module TestEnv
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
     'signed-commits' => 'c7794c1',
+    'gpg-signed' => '8a852d5',
+    'x509-signed' => 'a4df3c8',
     'not-merged-branch' => 'b83d6e3',
     'branch-merged' => '498214d',
     'empty-branch' => '7efb185',

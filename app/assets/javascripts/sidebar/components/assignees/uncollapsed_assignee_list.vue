@@ -91,6 +91,7 @@ export default {
           <div
             class="gl-ml-3 gl-line-height-normal gl-display-grid gl-align-items-center"
             data-testid="username"
+            data-qa-selector="username"
           >
             <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
           </div>
