@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.4.4 (2022-11-02)
+
+### Security (12 changes)
+
+- [Datadog API key leak by changing integration URL](gitlab-org/security/gitlab@15e90bacccbc5146411c7a4ac3400470d3985c18) ([merge request](gitlab-org/security/gitlab!2865))
+- [Redact confidential references in Jira issue descriptions](gitlab-org/security/gitlab@8b60fe8c3150348973a9d3ad79d781614db47103) ([merge request](gitlab-org/security/gitlab!2871))
+- [Forbid reading emojis on internal notes](gitlab-org/security/gitlab@ec9b40a9e9d3c91dc690d74d76187e41b5884ff9) ([merge request](gitlab-org/security/gitlab!2836))
+- [Same-site redirect vulnerability](gitlab-org/security/gitlab@de86e0b20c34d1475ab7535bc3ed0d7a21727a20) ([merge request](gitlab-org/security/gitlab!2879))
+- [BYPASS: Stored-XSS with CSP-bypass via scoped labels' color](gitlab-org/security/gitlab@52e8105445cdba63be5c4e866cb289d13b6d6e7c) ([merge request](gitlab-org/security/gitlab!2861))
+- [Fix Running Upstream Pipelines Jobs Without Permission](gitlab-org/security/gitlab@ad2fe7b8555fd568944718f5fb087de8de7b2425) ([merge request](gitlab-org/security/gitlab!2882))
+- [Add length limit to addressable URLs](gitlab-org/security/gitlab@8c44b371bd120979b339e4e5dbb7208fb048eadd) ([merge request](gitlab-org/security/gitlab!2829))
+- [Add a redirect wall before artifact redirect to pages](gitlab-org/security/gitlab@837c0f2245847c43d6cfd8f1d7860e46ffacfe18) ([merge request](gitlab-org/security/gitlab!2812))
+- [Sandbox swagger-ui to prevent injection attacks](gitlab-org/security/gitlab@90567191fae7f7d84d001e52f0adc11155dc564f) ([merge request](gitlab-org/security/gitlab!2849))
+- [Fix external project permission when using CI prefill variables](gitlab-org/security/gitlab@ae39f2b5a5a27b6e85ef642b768963b7ed018a14) ([merge request](gitlab-org/security/gitlab!2822))
+- [Resolve users can view audit events from other members](gitlab-org/security/gitlab@f819d033a190b2b5f7d635395575e5472b1fe8e7) ([merge request](gitlab-org/security/gitlab!2842))
+- [Path traversal fix for Secure Files](gitlab-org/security/gitlab@bd138464ee5fa71755f2b4d9b9aaaa3c8017a165) ([merge request](gitlab-org/security/gitlab!2848))
+
 ## 15.4.3 (2022-10-19)
 
 ### Fixed (4 changes)

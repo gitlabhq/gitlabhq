@@ -14,7 +14,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :authorize_destroy_artifacts!, only: [:destroy]
   before_action :extract_ref_name_and_path
   before_action :validate_artifacts!, except: [:index, :download, :raw, :destroy]
-  before_action :entry, only: [:file]
+  before_action :entry, only: [:external_file, :file]
 
   MAX_PER_PAGE = 20
 
@@ -58,12 +58,19 @@ class Projects::ArtifactsController < Projects::ApplicationController
     render_404 unless @entry.exists?
   end
 
+  # External files are redirected to Gitlab Pages and might have unsecure content
+  # To warn the user about the possible unsecure content, we show a warning page
+  # before redirecting the user.
+  def external_file
+    @blob = @entry.blob
+  end
+
   def file
     blob = @entry.blob
     conditionally_expand_blob(blob)
 
     if blob.external_link?(build)
-      redirect_to blob.external_url(@project, build)
+      redirect_to external_file_project_job_artifacts_path(@project, @build, path: params[:path])
     else
       respond_to do |format|
         format.html do

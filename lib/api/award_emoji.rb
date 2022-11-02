@@ -100,7 +100,7 @@ module API
       def read_ability(awardable)
         case awardable
         when Note
-          read_ability(awardable.noteable)
+          awardable.issuable_ability_name
         when Snippet, ProjectSnippet
           :read_snippet
         else
