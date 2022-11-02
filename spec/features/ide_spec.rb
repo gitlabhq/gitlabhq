@@ -3,47 +3,90 @@
 require 'spec_helper'
 
 RSpec.describe 'IDE', :js do
-  describe 'sub-groups' do
-    let(:ide_iframe_selector) { '#ide iframe' }
-    let(:user) { create(:user) }
-    let(:group) { create(:group) }
-    let(:subgroup) { create(:group, parent: group) }
-    let(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
+  include WebIdeSpecHelpers
+
+  let_it_be(:ide_iframe_selector) { '#ide iframe' }
+  let_it_be(:normal_project) { create(:project, :repository) }
+
+  let(:project) { normal_project }
+  let(:vscode_ff) { false }
+  let(:user) { create(:user) }
+
+  before do
+    project.add_maintainer(user)
+    stub_feature_flags(vscode_web_ide: vscode_ff)
+
+    sign_in(user)
+  end
+
+  shared_examples "legacy Web IDE" do
+    it 'loads legacy Web IDE', :aggregate_failures do
+      expect(page).to have_selector('.context-header', text: project.name)
+
+      # Assert new Web IDE is not loaded
+      expect(page).not_to have_selector(ide_iframe_selector)
+    end
+  end
+
+  shared_examples "new Web IDE" do
+    it 'loads new Web IDE', :aggregate_failures do
+      expect(page).not_to have_selector('.context-header')
+
+      iframe = find(ide_iframe_selector)
+
+      page.within_frame(iframe) do
+        expect(page).to have_selector('.title', text: project.name.upcase)
+      end
+    end
+  end
+
+  context 'with vscode feature flag off' do
+    before do
+      ide_visit(project)
+    end
+
+    it_behaves_like 'legacy Web IDE'
+
+    it 'does not show switch button' do
+      expect(page).not_to have_button('Switch to new Web IDE')
+    end
+  end
+
+  context 'with vscode feature flag on and use_legacy_web_ide=true' do
+    let(:vscode_ff) { true }
+    let(:user) { create(:user, use_legacy_web_ide: true) }
 
     before do
-      stub_feature_flags(vscode_web_ide: vscode_ff)
-      subgroup_project.add_maintainer(user)
-      sign_in(user)
-
-      visit project_path(subgroup_project)
-
-      click_link('Web IDE')
-
-      wait_for_requests
+      ide_visit(project)
     end
 
-    context 'with vscode feature flag on' do
-      let(:vscode_ff) { true }
+    it_behaves_like 'legacy Web IDE'
 
-      it 'loads project in Web IDE' do
-        iframe = find(ide_iframe_selector)
+    describe 'when user switches to new Web IDE' do
+      before do
+        click_button('Switch to new Web IDE')
 
-        page.within_frame(iframe) do
-          expect(page).to have_selector('.title', text: subgroup_project.name.upcase)
+        # Confirm modal
+        page.within('#confirmationModal') do
+          click_button('Switch editors')
         end
       end
+
+      it_behaves_like 'new Web IDE'
+    end
+  end
+
+  describe 'sub-groups' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
+
+    let(:project) { subgroup_project }
+
+    before do
+      ide_visit(project)
     end
 
-    context 'with vscode feature flag off' do
-      let(:vscode_ff) { false }
-
-      it 'loads project in legacy Web IDE' do
-        expect(page).to have_selector('.context-header', text: subgroup_project.name)
-      end
-
-      it 'does not load new Web IDE' do
-        expect(page).not_to have_selector(ide_iframe_selector)
-      end
-    end
+    it_behaves_like 'legacy Web IDE'
   end
 end

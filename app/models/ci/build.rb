@@ -218,10 +218,6 @@ module Ci
         preload(:job_artifacts_archive, :job_artifacts, :tags, project: [:namespace])
       end
 
-      def extra_accessors
-        []
-      end
-
       def clone_accessors
         %i[pipeline project ref tag options name
            allow_failure stage stage_idx trigger_request

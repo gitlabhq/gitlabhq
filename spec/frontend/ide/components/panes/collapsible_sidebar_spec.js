@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import IdeSidebarNav from '~/ide/components/ide_sidebar_nav.vue';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
@@ -125,6 +125,30 @@ describe('ide/components/panes/collapsible_sidebar.vue', () => {
           currentView: fakeComponentName,
           isOpen,
         });
+      });
+    });
+
+    describe('with initOpenView that does not exist', () => {
+      beforeEach(async () => {
+        createComponent({ extensionTabs, initOpenView: 'does-not-exist' });
+
+        await nextTick();
+      });
+
+      it('nothing is dispatched', () => {
+        expect(store.dispatch).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('with initOpenView that does exist', () => {
+      beforeEach(async () => {
+        createComponent({ extensionTabs, initOpenView: fakeView.name });
+
+        await nextTick();
+      });
+
+      it('dispatches open with view on create', () => {
+        expect(store.dispatch).toHaveBeenCalledWith('rightPane/open', fakeView);
       });
     });
   });

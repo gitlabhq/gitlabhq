@@ -10,7 +10,7 @@ module Banzai
     # HTML filter that implements our math syntax, adding class="code math"
     #
     class MathFilter < HTML::Pipeline::Filter
-      CSS_MATH   = 'pre.code.language-math'
+      CSS_MATH   = 'pre[lang="math"] > code'
       XPATH_MATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_MATH).freeze
       CSS_CODE   = 'code'
       XPATH_CODE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_CODE).freeze
@@ -125,9 +125,10 @@ module Banzai
 
       # corresponds to the "```math...```" syntax
       def process_math_codeblock
-        doc.xpath(XPATH_MATH).each do |el|
-          el[STYLE_ATTRIBUTE] = 'display'
-          el[:class] += " #{TAG_CLASS}"
+        doc.xpath(XPATH_MATH).each do |node|
+          pre_node = node.parent
+          pre_node[STYLE_ATTRIBUTE] = 'display'
+          pre_node[:class] = TAG_CLASS
         end
       end
 

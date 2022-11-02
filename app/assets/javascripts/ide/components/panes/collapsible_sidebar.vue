@@ -13,6 +13,11 @@ export default {
       required: false,
       default: () => [],
     },
+    initOpenView: {
+      type: String,
+      required: false,
+      default: '',
+    },
     side: {
       type: String,
       required: true,
@@ -44,6 +49,9 @@ export default {
       return this.tabViews.filter((view) => this.isAliveView(view.name));
     },
   },
+  created() {
+    this.openViewByName(this.initOpenView);
+  },
   methods: {
     ...mapActions({
       toggleOpen(dispatch) {
@@ -53,6 +61,13 @@ export default {
         return dispatch(`${this.namespace}/open`, view);
       },
     }),
+    openViewByName(viewName) {
+      const view = viewName && this.tabViews.find((x) => x.name === viewName);
+
+      if (view) {
+        this.open(view);
+      }
+    },
   },
 };
 </script>

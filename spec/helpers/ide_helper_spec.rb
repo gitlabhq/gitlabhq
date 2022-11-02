@@ -26,6 +26,8 @@ RSpec.describe IdeHelper do
             'can-use-new-web-ide' => 'true',
             'use-new-web-ide' => 'true',
             'user-preferences-path' => profile_preferences_path,
+            'new-web-ide-help-page-path' =>
+              help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
             'branch-name' => 'master',
             'project-path' => project.path_with_namespace,
             'csp-nonce' => 'test-csp-nonce'

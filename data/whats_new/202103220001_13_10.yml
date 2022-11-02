@@ -41,12 +41,12 @@
   release: 13.10
 - name: "DORA4-based lead time for changes"
   description: |
-    Measuring the efficiency of your software development lifecycle is an important step to grow DevOps adoption for any organization. In the previous milestone, we added support for [DORA4-based Deployment Frequency](https://docs.gitlab.com/ee/api/dora4_project_analytics.html). In this release, we are excited to announce the support of a new API for lead time for changes (via merge requests) on the project level. The lead time for changes gives you an indication of how long it takes for code to be committed and deployed to your production environment. Understanding and tracking this data is a great starting point in your journey to continuous improvement in your DevOps process.
+    Measuring the efficiency of your software development lifecycle is an important step to grow DevOps adoption for any organization. In the previous milestone, we added support for [DORA4-based Deployment Frequency](https://docs.gitlab.com/ee/api/dora/metrics.html). In this release, we are excited to announce the support of a new API for lead time for changes (via merge requests) on the project level. The lead time for changes gives you an indication of how long it takes for code to be committed and deployed to your production environment. Understanding and tracking this data is a great starting point in your journey to continuous improvement in your DevOps process.
   stage: Release
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/api/dora4_project_analytics.html#list-project-merge-request-lead-times
+  documentation_link: https://docs.gitlab.com/ee/api/dora/metrics.html#list-project-merge-request-lead-times
   image_url: https://about.gitlab.com/images/13_10/api.png
   published_at: 2021-03-22
   release: 13.10

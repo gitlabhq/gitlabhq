@@ -94,9 +94,18 @@ module Gitlab
         # Move this test back to the items hash when removing `use_cmark_renderer` feature flag.
         it "does not convert dangerous fenced code with inline script into HTML" do
           input = '```mypre"><script>alert(3)</script>'
-          output = "<div>\n<div>\n<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre class=\"code highlight js-syntax-highlight language-plaintext\" lang=\"plaintext\" data-canonical-lang=\"mypre\" v-pre=\"true\"><code></code></pre>\n<copy-code></copy-code>\n</div>\n</div>\n</div>"
+          output = <<~HTML
+            <div>
+            <div>
+            <div class=\"gl-relative markdown-code-block js-markdown-code\">
+            <pre lang=\"plaintext\" class=\"code highlight js-syntax-highlight language-plaintext\" data-canonical-lang=\"mypre\" v-pre=\"true\"><code></code></pre>
+            <copy-code></copy-code>
+            </div>
+            </div>
+            </div>
+          HTML
 
-          expect(render(input, context)).to include(output)
+          expect(render(input, context)).to include(output.strip)
         end
 
         it 'does not allow locked attributes to be overridden' do
@@ -360,7 +369,7 @@ module Gitlab
             <div>
             <div>
             <div class="gl-relative markdown-code-block js-markdown-code">
-            <pre class="code highlight js-syntax-highlight language-javascript" lang="javascript" data-canonical-lang="js" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+            <pre lang="javascript" class="code highlight js-syntax-highlight language-javascript" data-canonical-lang="js" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
             <copy-code></copy-code>
             </div>
             </div>
@@ -390,7 +399,7 @@ module Gitlab
             <div>class.cpp</div>
             <div>
             <div class="gl-relative markdown-code-block js-markdown-code">
-            <pre class="code highlight js-syntax-highlight language-cpp" lang="cpp" data-canonical-lang="c++" v-pre="true"><code><span id="LC1" class="line" lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span></span>
+            <pre lang="cpp" class="code highlight js-syntax-highlight language-cpp" data-canonical-lang="c++" v-pre="true"><code><span id="LC1" class="line" lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span></span>
             <span id="LC2" class="line" lang="cpp"></span>
             <span id="LC3" class="line" lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></span>
             <span id="LC4" class="line" lang="cpp">  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">"*"</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></span>
@@ -448,7 +457,7 @@ module Gitlab
             stem:[2+2] is 4
           MD
 
-          expect(render(input, context)).to include('<pre data-math-style="display" class="code math js-render-math"><code>eta_x gamma</code></pre>')
+          expect(render(input, context)).to include('<pre data-math-style="display" lang="plaintext" class="code math js-render-math" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">eta_x gamma</span></code></pre>')
           expect(render(input, context)).to include('<p><code data-math-style="inline" class="code math js-render-math">2+2</code> is 4</p>')
         end
       end

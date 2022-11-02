@@ -17,7 +17,6 @@ module Banzai
           Filter::SanitizationFilter,
           Filter::KrokiFilter,
           Filter::AssetProxyFilter,
-          Filter::SyntaxHighlightFilter,
           Filter::MathFilter,
           Filter::ColorFilter,
           Filter::MermaidFilter,
@@ -37,7 +36,8 @@ module Banzai
           Filter::CustomEmojiFilter,
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
-          Filter::SetDirectionFilter
+          Filter::SetDirectionFilter,
+          Filter::SyntaxHighlightFilter
         ]
       end
 
