@@ -60,6 +60,8 @@
           = render Pajamas::ButtonComponent.new(href: new_import_phabricator_path(namespace_id: namespace_id), icon: 'issues', button_options: { class: 'import_phabricator js-import-project-btn', data: { platform: 'phabricator', track_label: "#{track_label}", track_action: "click_button", track_property: "phabricator" } }) do
             = _('Phabricator tasks')
 
+      = render_if_exists "projects/gitee_import_button", namespace_id: namespace_id, track_label: track_label
+
 
   .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
     = gitlab_ui_form_for @project, html: { class: 'new_project gl-show-field-errors js-project-import' } do |f|

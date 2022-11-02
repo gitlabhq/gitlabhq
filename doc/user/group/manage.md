@@ -414,6 +414,55 @@ Group owners can create, edit, and delete compliance frameworks:
 1. Expand the **Compliance frameworks** section.
 1. Create, edit, or delete compliance frameworks.
 
+### Set a default compliance framework
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
+
+Group owners can set a default compliance framework. The default framework is applied to all the new projects
+that are created within that group. It does not affect the framework applied to the existing projects. The default
+framework cannot be deleted.
+
+#### Example GraphQL mutations for setting a default compliance framework
+
+Creating a new compliance framework and setting it as the default framework for the group.
+
+```graphql
+mutation {
+    createComplianceFramework(
+        input: {params: {name: "SOX", description: "Sarbanes-Oxley Act", color: "#87CEEB", default: true}, namespacePath: "gitlab-org"}
+    ) {
+        framework {
+            id
+            name
+            default
+            description
+            color
+            pipelineConfigurationFullPath
+        }
+        errors
+    }
+}
+```
+
+Setting an existing compliance framework as the default framework the group.
+
+```graphql
+mutation {
+    updateComplianceFramework(
+        input: {id: "gid://gitlab/ComplianceManagement::Framework/<id>", params: {default: true}}
+    ) {
+        complianceFramework {
+            id
+            name
+            default
+            description
+            color
+            pipelineConfigurationFullPath
+        }
+    }
+}
+```
+
 ### Configure a compliance pipeline **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../administration/feature_flags.md).

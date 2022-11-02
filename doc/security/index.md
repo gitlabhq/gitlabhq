@@ -6,7 +6,7 @@ comments: false
 type: index
 ---
 
-# Security **(FREE)**
+# Secure your installation **(FREE)**
 
 - [Passwords and OAuth tokens storage](password_storage.md)
 - [Password length limits](password_length_limits.md)

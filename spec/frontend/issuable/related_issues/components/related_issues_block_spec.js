@@ -40,12 +40,12 @@ describe('RelatedIssuesBlock', () => {
     });
 
     it.each`
-      issuableType | pathIdSeparator          | titleText         | helpLinkText                        | addButtonText
-      ${'issue'}   | ${PathIdSeparator.Issue} | ${'Linked items'} | ${'Read more about related issues'} | ${'Add a related issue'}
-      ${'epic'}    | ${PathIdSeparator.Epic}  | ${'Linked epics'} | ${'Read more about related epics'}  | ${'Add a related epic'}
+      issuableType | pathIdSeparator          | titleText         | addButtonText
+      ${'issue'}   | ${PathIdSeparator.Issue} | ${'Linked items'} | ${'Add a related issue'}
+      ${'epic'}    | ${PathIdSeparator.Epic}  | ${'Linked epics'} | ${'Add a related epic'}
     `(
-      'displays "$titleText" in the header, "$helpLinkText" aria-label for help link, and "$addButtonText" aria-label for add button when issuableType is set to "$issuableType"',
-      ({ issuableType, pathIdSeparator, titleText, helpLinkText, addButtonText }) => {
+      'displays "$titleText" in the header and "$addButtonText" aria-label for add button when issuableType is set to "$issuableType"',
+      ({ issuableType, pathIdSeparator, titleText, addButtonText }) => {
         wrapper = mountExtended(RelatedIssuesBlock, {
           propsData: {
             pathIdSeparator,
@@ -56,9 +56,6 @@ describe('RelatedIssuesBlock', () => {
         });
 
         expect(wrapper.find('.card-title').text()).toContain(titleText);
-        expect(wrapper.find('[data-testid="help-link"]').attributes('aria-label')).toBe(
-          helpLinkText,
-        );
         expect(findIssueCountBadgeAddButton().attributes('aria-label')).toBe(addButtonText);
       },
     );
@@ -100,7 +97,7 @@ describe('RelatedIssuesBlock', () => {
         slots: { 'header-actions': headerActions },
       });
 
-      expect(wrapper.find('[data-testid="custom-button"]').html()).toBe(headerActions);
+      expect(wrapper.findByTestId('custom-button').html()).toBe(headerActions);
     });
   });
 
@@ -260,15 +257,30 @@ describe('RelatedIssuesBlock', () => {
     });
   });
 
-  it('toggle button is disabled when issue has no related items', () => {
-    wrapper = shallowMountExtended(RelatedIssuesBlock, {
-      propsData: {
-        pathIdSeparator: PathIdSeparator.Issue,
-        relatedIssues: [],
-        issuableType: 'issue',
-      },
-    });
+  describe('empty state', () => {
+    it.each`
+      issuableType  | pathIdSeparator          | showCategorizedIssues | emptyText                                                                                 | helpLinkText
+      ${'issue'}    | ${PathIdSeparator.Issue} | ${false}              | ${"Link issues together to show that they're related."}                                   | ${'Learn more about linking issues'}
+      ${'issue'}    | ${PathIdSeparator.Issue} | ${true}               | ${"Link issues together to show that they're related or that one is blocking others."}    | ${'Learn more about linking issues'}
+      ${'incident'} | ${PathIdSeparator.Issue} | ${false}              | ${"Link incidents together to show that they're related."}                                | ${'Learn more about linking issues and incidents'}
+      ${'incident'} | ${PathIdSeparator.Issue} | ${true}               | ${"Link incidents together to show that they're related or that one is blocking others."} | ${'Learn more about linking issues and incidents'}
+      ${'epic'}     | ${PathIdSeparator.Epic}  | ${true}               | ${"Link epics together to show that they're related or that one is blocking others."}     | ${'Learn more about linking epics'}
+    `(
+      'displays "$emptyText" in the body and "$helpLinkText" aria-label for help link',
+      ({ issuableType, pathIdSeparator, showCategorizedIssues, emptyText, helpLinkText }) => {
+        wrapper = mountExtended(RelatedIssuesBlock, {
+          propsData: {
+            pathIdSeparator,
+            issuableType,
+            canAdmin: true,
+            helpPath: '/help/user/project/issues/related_issues',
+            showCategorizedIssues,
+          },
+        });
 
-    expect(findToggleButton().props('disabled')).toBe(true);
+        expect(wrapper.findByTestId('related-issues-body').text()).toContain(emptyText);
+        expect(wrapper.findByTestId('help-link').attributes('aria-label')).toBe(helpLinkText);
+      },
+    );
   });
 });

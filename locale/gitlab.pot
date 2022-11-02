@@ -20278,9 +20278,6 @@ msgstr ""
 msgid "IdentityVerification|Step %{stepNumber}: Verify phone number"
 msgstr ""
 
-msgid "IdentityVerification|Step 1: Verify phone number"
-msgstr ""
-
 msgid "IdentityVerification|The code has expired. Send a new code and try again."
 msgstr ""
 
@@ -23919,6 +23916,15 @@ msgstr ""
 msgid "Learn more about issues."
 msgstr ""
 
+msgid "Learn more about linking epics"
+msgstr ""
+
+msgid "Learn more about linking issues"
+msgstr ""
+
+msgid "Learn more about linking issues and incidents"
+msgstr ""
+
 msgid "Learn more about max seats used"
 msgstr ""
 
@@ -24313,6 +24319,12 @@ msgid "Line changes"
 msgstr ""
 
 msgid "Link"
+msgstr ""
+
+msgid "Link %{issuableType}s together to show that they're related or that one is blocking others."
+msgstr ""
+
+msgid "Link %{issuableType}s together to show that they're related."
 msgstr ""
 
 msgid "Link (optional)"
@@ -33288,12 +33300,6 @@ msgid "Read more"
 msgstr ""
 
 msgid "Read more about GitLab at %{link_to_promo}."
-msgstr ""
-
-msgid "Read more about related epics"
-msgstr ""
-
-msgid "Read more about related issues"
 msgstr ""
 
 msgid "Read their documentation."
