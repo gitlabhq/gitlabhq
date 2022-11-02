@@ -1,0 +1,15 @@
+- page_title @path, _('Artifacts'), "#{@build.name} (##{@build.id})", _('Jobs')
+
+= render "projects/jobs/header"
+
+.tree-holder
+  = render 'projects/artifacts/file_navigation', project: @project, build: @build, path: @path
+
+  %h2= _("You are being redirected away from GitLab")
+  %p= _("This page is hosted on GitLab pages but contains user-generated content and may contain malicious code. Do not accept unless you trust the author and source.")
+
+  = link_to @blob.external_url(@project, @build),
+      @blob.external_url(@project, @build),
+      target: '_blank',
+      title: _('Opens in a new window'),
+      rel: 'noopener noreferrer'

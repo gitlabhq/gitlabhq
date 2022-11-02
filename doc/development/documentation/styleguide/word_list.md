@@ -1155,6 +1155,14 @@ For example:
 
 See also [**enter**](#enter).
 
+## units of measurement
+
+Use a space between the number and the unit of measurement. For example, **128 GB**.
+([Vale](../testing.md#vale) rule: [`Units.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Units.yml))
+
+For other guidance, follow
+[the Microsoft style guidelines](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+
 ## update
 
 Use **update** for installing a newer **patch** version of the software only. For example:

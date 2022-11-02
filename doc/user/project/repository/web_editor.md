@@ -138,6 +138,7 @@ The **Create merge request** button doesn't display if:
 - A branch with the same name already exists.
 - A merge request already exists for this branch.
 - Your project has an active fork relationship.
+- Your project is private and the issue is confidential.
 
 To make this button appear, one possible workaround is to
 [remove your project's fork relationship](../settings/index.md#remove-a-fork-relationship).

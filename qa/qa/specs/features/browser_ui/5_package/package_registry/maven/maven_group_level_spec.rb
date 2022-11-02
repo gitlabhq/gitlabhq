@@ -131,7 +131,7 @@ module QA
             Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_disabled)
           end
 
-          it 'prevents users from publishing duplicates' do
+          it 'prevents users from publishing duplicates', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377491' do
             create_duplicated_package
 
             push_duplicated_package
@@ -151,7 +151,7 @@ module QA
             Page::Group::Settings::PackageRegistries.perform(&:set_allow_duplicates_enabled)
           end
 
-          it 'allows users to publish duplicates' do
+          it 'allows users to publish duplicates', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377492' do
             create_duplicated_package
 
             push_duplicated_package

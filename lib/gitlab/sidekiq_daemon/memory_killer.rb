@@ -221,7 +221,7 @@ module Gitlab
       end
 
       def get_rss_kb
-        Gitlab::Metrics::System.memory_usage_rss / 1.kilobytes
+        Gitlab::Metrics::System.memory_usage_rss[:total] / 1.kilobytes
       end
 
       def get_soft_limit_rss_kb

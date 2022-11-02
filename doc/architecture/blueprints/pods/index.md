@@ -309,7 +309,9 @@ Based on user research, we may want to change certain features to work across or
 The Pods architecture do have long lasting implications to data processing, location, scalability and the GitLab architecture.
 This section links all different technical proposals that are being evaluated.
 
-- [Stateless Router That Uses a Cache to Pick Pods and Is Redirected When Wrong Pod Is Reached](proposal-stateless-router.md)
+- [Stateless Router That Uses a Cache to Pick Pod and Is Redirected When Wrong Pod Is Reached](proposal-stateless-router-with-buffering-requests.md)
+
+- [Stateless Router That Uses a Cache to Pick Pod and pre-flight `/api/v4/pods/learn`](proposal-stateless-router-with-routes-learning.md)
 
 ## Links
 

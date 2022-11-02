@@ -125,7 +125,7 @@ module Gitlab
       end
 
       def process_rss_bytes
-        Gitlab::Metrics::System.memory_usage_rss
+        Gitlab::Metrics::System.memory_usage_rss[:total]
       end
 
       def worker_id

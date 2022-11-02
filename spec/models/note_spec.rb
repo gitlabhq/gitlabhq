@@ -1824,4 +1824,20 @@ RSpec.describe Note do
       end
     end
   end
+
+  describe '#issuable_ability_name' do
+    subject { note.issuable_ability_name }
+
+    context 'when not confidential note' do
+      let(:note) { build(:note) }
+
+      it { is_expected.to eq :read_note }
+    end
+
+    context 'when confidential note' do
+      let(:note) { build(:note, :confidential) }
+
+      it { is_expected.to eq :read_internal_note }
+    end
+  end
 end

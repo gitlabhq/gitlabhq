@@ -81,12 +81,11 @@ RSpec.describe "User browses artifacts" do
       end
 
       it "shows correct content" do
-        link = first(".tree-item-file-external-link")
-
-        expect(link[:target]).to eq("_blank")
-        expect(link[:rel]).to include("noopener").and include("noreferrer")
-        expect(page).to have_link("doc_sample.txt", href: file_project_job_artifacts_path(project, job, path: txt_entry.blob.path))
-                   .and have_selector(".js-artifact-tree-external-icon")
+        expect(page)
+          .to have_link(
+            "doc_sample.txt",
+            href: external_file_project_job_artifacts_path(project, job, path: txt_entry.blob.path)
+          ).and have_selector(".js-artifact-tree-external-icon")
 
         page.within(".tree-table") do
           expect(page).to have_content("..").and have_content("another-subdirectory")

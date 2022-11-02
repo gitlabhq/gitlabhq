@@ -24,8 +24,8 @@ To create an epic in the group you're in:
 
 1. Get to the New Epic form:
    - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
-   - From an epic in your group, select **New epic**.
-   - From anywhere, in the top menu, select **New...** (**{plus-square}**) **> New epic**.
+   - From an epic in your group, select the vertical ellipsis (**{ellipsis_v}**). Then select **New epic**.
+   - From anywhere, in the top menu, select **New...** (**{plus-square}**). Then select **New epic**.
    - In an empty [roadmap](../roadmap/index.md), select **New epic**.
 
 1. Enter a title.
@@ -488,9 +488,9 @@ New child epics appear at the top of the list of epics in the **Epics and Issues
 
 When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
 
-Epics can contain multiple nested child epics, up to a total of seven levels deep.
+Epics can contain multiple nested child epics, up to a total of 7 levels deep.
 
-Maximum number of direct child epics is 100.
+The maximum number of direct child epics is 100.
 
 ### Add a child epic to an epic
 

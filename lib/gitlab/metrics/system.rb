@@ -18,7 +18,9 @@ module Gitlab
 
       PRIVATE_PAGES_PATTERN = /^(Private_Clean|Private_Dirty|Private_Hugetlb):\s+(?<value>\d+)/.freeze
       PSS_PATTERN = /^Pss:\s+(?<value>\d+)/.freeze
-      RSS_PATTERN = /VmRSS:\s+(?<value>\d+)/.freeze
+      RSS_TOTAL_PATTERN = /^VmRSS:\s+(?<value>\d+)/.freeze
+      RSS_ANON_PATTERN = /^RssAnon:\s+(?<value>\d+)/.freeze
+      RSS_FILE_PATTERN = /^RssFile:\s+(?<value>\d+)/.freeze
       MAX_OPEN_FILES_PATTERN = /Max open files\s*(?<value>\d+)/.freeze
       MEM_TOTAL_PATTERN = /^MemTotal:\s+(?<value>\d+) (.+)/.freeze
 
@@ -27,7 +29,7 @@ module Gitlab
         {
           version: RUBY_DESCRIPTION,
           gc_stat: GC.stat,
-          memory_rss: memory_usage_rss,
+          memory_rss: memory_usage_rss[:total],
           memory_uss: proportional_mem[:uss],
           memory_pss: proportional_mem[:pss],
           time_cputime: cpu_time,
@@ -38,7 +40,21 @@ module Gitlab
 
       # Returns the given process' RSS (resident set size) in bytes.
       def memory_usage_rss(pid: 'self')
-        sum_matches(PROC_STATUS_PATH % pid, rss: RSS_PATTERN)[:rss].kilobytes
+        results = { total: 0, anon: 0, file: 0 }
+
+        safe_yield_procfile(PROC_STATUS_PATH % pid) do |io|
+          io.each_line do |line|
+            if (value = parse_metric_value(line, RSS_TOTAL_PATTERN)) > 0
+              results[:total] = value.kilobytes
+            elsif (value = parse_metric_value(line, RSS_ANON_PATTERN)) > 0
+              results[:anon] = value.kilobytes
+            elsif (value = parse_metric_value(line, RSS_FILE_PATTERN)) > 0
+              results[:file] = value.kilobytes
+            end
+          end
+        end
+
+        results
       end
 
       # Returns the given process' USS/PSS (unique/proportional set size) in bytes.
@@ -115,14 +131,19 @@ module Gitlab
         safe_yield_procfile(proc_file) do |io|
           io.each_line do |line|
             patterns.each do |metric, pattern|
-              match = line.match(pattern)
-              value = match&.named_captures&.fetch('value', 0)
-              results[metric] += value.to_i
+              results[metric] += parse_metric_value(line, pattern)
             end
           end
         end
 
         results
+      end
+
+      def parse_metric_value(line, pattern)
+        match = line.match(pattern)
+        return 0 unless match
+
+        match.named_captures.fetch('value', 0).to_i
       end
 
       def proc_stat_entries

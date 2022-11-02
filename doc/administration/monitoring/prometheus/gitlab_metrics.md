@@ -376,6 +376,8 @@ Some basic Ruby runtime metrics are available:
 | `ruby_process_cpu_seconds_total`         | Gauge     | 12.0  | Total amount of CPU time per process |
 | `ruby_process_max_fds`                   | Gauge     | 12.0  | Maximum number of open file descriptors per process |
 | `ruby_process_resident_memory_bytes`     | Gauge     | 12.0  | Memory usage by process (RSS/Resident Set Size) |
+| `ruby_process_resident_anon_memory_bytes`| Gauge     | 15.6  | Anonymous memory usage by process (RSS/Resident Set Size) |
+| `ruby_process_resident_file_memory_bytes`| Gauge     | 15.6  | File-backed memory usage by process (RSS/Resident Set Size) |
 | `ruby_process_unique_memory_bytes`       | Gauge     | 13.0  | Memory usage by process (USS/Unique Set Size) |
 | `ruby_process_proportional_memory_bytes` | Gauge     | 13.0  | Memory usage by process (PSS/Proportional Set Size) |
 | `ruby_process_start_time_seconds`        | Gauge     | 12.0  | UNIX timestamp of process start time |

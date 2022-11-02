@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::ObjectPoolService do
   let(:pool_repository) { create(:pool_repository) }
-  let(:project) { create(:project, :repository) }
+  let(:project) { pool_repository.source_project }
   let(:raw_repository) { project.repository.raw }
   let(:object_pool) { pool_repository.object_pool }
 
@@ -45,21 +45,32 @@ RSpec.describe Gitlab::GitalyClient::ObjectPoolService do
   end
 
   describe '#fetch' do
-    before do
-      subject.delete
+    context 'without changes' do
+      it 'fetches changes' do
+        expect(subject.fetch(project.repository)).to eq(Gitaly::FetchIntoObjectPoolResponse.new)
+      end
     end
 
-    it 'restores the pool repository objects' do
-      subject.fetch(project.repository)
+    context 'with new reference in source repository' do
+      let(:branch) { 'ref-to-be-fetched' }
+      let(:source_ref) { "refs/heads/#{branch}" }
+      let(:pool_ref) { "refs/remotes/origin/heads/#{branch}" }
 
-      expect(object_pool.repository.exists?).to be(true)
-    end
+      before do
+        # Create a new reference in the source repository that we can fetch.
+        project.repository.write_ref(source_ref, 'refs/heads/master')
+      end
 
-    context 'when called twice' do
-      it "doesn't raise an error" do
-        subject.delete
+      it 'fetches changes' do
+        # Sanity-check to verify that the reference only exists in the source repository now, but not in the
+        # object pool.
+        expect(project.repository.ref_exists?(source_ref)).to be(true)
+        expect(object_pool.repository.ref_exists?(pool_ref)).to be(false)
 
-        expect { subject.fetch(project.repository) }.not_to raise_error
+        subject.fetch(project.repository)
+
+        # The fetch should've created the reference in the object pool.
+        expect(object_pool.repository.ref_exists?(pool_ref)).to be(true)
       end
     end
   end

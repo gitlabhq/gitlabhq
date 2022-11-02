@@ -60,7 +60,9 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
     describe '#call' do
       before do
         stub_prometheus_metrics
-        allow(Gitlab::Metrics::System).to receive(:memory_usage_rss).at_least(:once).and_return(1024)
+        allow(Gitlab::Metrics::System).to receive(:memory_usage_rss).at_least(:once).and_return(
+          total: 1024
+        )
         allow(::Prometheus::PidProvider).to receive(:worker_id).and_return('worker_1')
 
         watchdog.configure do |config|

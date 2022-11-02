@@ -6,7 +6,6 @@ description: 'Pods Stateless Router Proposal'
 ---
 
 DISCLAIMER:
-
 This page may contain information related to upcoming products, features and
 functionality. It is important to note that the information presented is for
 informational purposes only, so please do not rely on the information for
@@ -40,6 +39,12 @@ different data dependent on their currently chosen "organization".
 [Organizations](index.md#organizations) will be a new model introduced to enforce isolation in the
 application and allow us to decide which request route to which pod, since an
 organization can only be on a single pod.
+
+## Differences
+
+The main difference between this proposal and one [with buffering requests](proposal-stateless-router-with-buffering-requests.md)
+is that this proposal uses a pre-flight API request (`/api/v4/pods/learn`) to redirect the request body to the correct Pod.
+This means that each request is sent exactly once to be processed, but the URI is used to decode which Pod it should be directed.
 
 ## Summary in diagrams
 
@@ -164,10 +169,43 @@ graph TD;
 1. The `application_settings` (and probably a few other instance level tables) are decomposed into `gitlab_admin` schema
 1. A new column `routes.pod_id` is added to `routes` table
 1. A new Router service exists to choose which pod to route a request to.
-1. A new concept will be introduced in GitLab called an organization and a user can select a "default organization" and this will be a user level setting. The default organization is used to redirect users away from ambiguous routes like `/dashboard` to organization scoped routes like `/organizations/my-organization/-/dashboard`. Legacy users will have a special default organization that allows them to keep using global resources on `Pod US0`. All existing namespaces will initially move to this public organization.
-1. If a pod receives a request for a `routes.pod_id` that it does not own it returns a `302` with `X-Gitlab-Pod-Redirect` header so that the router can send the request to the correct pod. The correct pod can also set a header `X-Gitlab-Pod-Cache` which contains information about how this request should be cached to remember the pod. For example if the request was `/gitlab-org/gitlab` then the header would encode `/gitlab-org/* => Pod US0` (ie. any requests starting with `/gitlab-org/` can always be routed to `Pod US0`
-1. When the pod does not know (from the cache) which pod to send a request to it just picks a random pod within it's region
+1. If a router receives a new request it will send `/api/v4/pods/learn?method=GET&path_info=/group-org/project` to learn which Pod can process it
+1. A new concept will be introduced in GitLab called an organization
+1. We require all existing endpoints to be routable by URI, or be fixed to a specific Pod for processing. This requires changing ambiguous endpoints like `/dashboard` to be scoped like `/organizations/my-organization/-/dashboard`
+1. Endpoints like `/admin` would be routed always to the specific Pod, like `pod_0`
+1. Each Pod can respond to `/api/v4/pods/learn` and classify each endpoint
 1. Writes to `gitlab_users` and `gitlab_routes` are sent to a primary PostgreSQL server in our `US` region but reads can come from replicas in the same region. This will add latency for these writes but we expect they are infrequent relative to the rest of GitLab.
+
+## Pre-flight request learning
+
+While processing a request the URI will be decoded and a pre-flight request
+will be sent for each non-cached endpoint.
+
+When asking for the endpoint GitLab Rails will return information about
+the routable path. GitLab Rails will decode `path_info` and match it to
+an existing endpoint and find a routable entity (like project). The router will
+treat this as short-lived cache information.
+
+1. Prefix match: `/api/v4/pods/learn?method=GET&path_info=/gitlab-org/gitlab-test/-/issues`
+
+   ```json
+   {
+      "path": "/gitlab-org/gitlab-test",
+      "pod": "pod_0",
+      "source": "routable"
+   }
+   ```
+
+1. Some endpoints might require an exact match: `/api/v4/pods/learn?method=GET&path_info=/-/profile`
+
+   ```json
+   {
+      "path": "/-/profile",
+      "pod": "pod_0",
+      "source": "fixed",
+      "exact": true
+   }
+   ```
 
 ## Detailed explanation of default organization in the first iteration
 
@@ -255,6 +293,10 @@ keeping settings in sync for all pods.
 1. This architecture implies that implemented endpoints can only access data
    that are readily accessible on a given Pod, but are unlikely
    to aggregate information from many Pods.
+1. All unknown routes are sent to the latest deployment which we assume to be `Pod US0`.
+   This is required as newly added endpoints will be only decodable by latest pod.
+   Likely this is not a problem for the `/pods/learn` is it is lightweight
+   to process and this should not cause a performance impact.
 
 ## Example database configuration
 
@@ -335,8 +377,8 @@ this limitation.
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. They request `/my-company/my-project` without the router cache, so the router chooses randomly `Pod EU1`
-1. `Pod EU1` does not have `/my-company`, but it knows that it lives in `Pod EU0` so it redirects the router to `Pod EU0`
-1. `Pod EU0` returns the correct response as well as setting the cache headers for the router `/my-company/* => Pod EU0`
+1. The `/pods/learn` is sent to `Pod EU1`, which responds that resource lives on `Pod EU0`
+1. `Pod EU0` returns the correct response
 1. The router now caches and remembers any request paths matching `/my-company/*` should go to `Pod EU0`
 
 ```mermaid
@@ -346,21 +388,22 @@ sequenceDiagram
     participant pod_eu0 as Pod EU0
     participant pod_eu1 as Pod EU1
     user->>router_eu: GET /my-company/my-project
-    router_eu->>pod_eu1: GET /my-company/my-project
-    pod_eu1->>router_eu: 302 /my-company/my-project X-Gitlab-Pod-Redirect={pod:Pod EU0}
+    router_eu->>pod_eu1: /api/v4/pods/learn?method=GET&path_info=/my-company/my-project
+    pod_eu1->>router_eu: {path: "/my-company", pod: "pod_eu0", source: "routable"}
     router_eu->>pod_eu0: GET /my-company/my-project
-    pod_eu0->>user: <h1>My Project... X-Gitlab-Pod-Cache={path_prefix:/my-company/}
+    pod_eu0->>user: <h1>My Project...
 ```
 
 #### Navigates to `/my-company/my-project` while not logged in
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router does not have `/my-company/*` cached yet so it chooses randomly `Pod EU1`
-1. `Pod EU1` redirects them through a login flow
-1. Stil they request `/my-company/my-project` without the router cache, so the router chooses a random pod `Pod EU1`
-1. `Pod EU1` does not have `/my-company`, but it knows that it lives in `Pod EU0` so it redirects the router to `Pod EU0`
-1. `Pod EU0` returns the correct response as well as setting the cache headers for the router `/my-company/* => Pod EU0`
-1. The router now caches and remembers any request paths matching `/my-company/*` should go to `Pod EU0`
+1. The `/pods/learn` is sent to `Pod EU1`, which responds that resource lives on `Pod EU0`
+1. `Pod EU0` redirects them through a login flow
+1. User requests `/users/sign_in`, uses random Pod to run `/pods/learn`
+1. The `Pod EU1` responds with `pod_0` as a fixed route
+1. User after login requests `/my-company/my-project` which is cached and stored in `Pod EU0`
+1. `Pod EU0` returns the correct response
 
 ```mermaid
 sequenceDiagram
@@ -369,19 +412,22 @@ sequenceDiagram
     participant pod_eu0 as Pod EU0
     participant pod_eu1 as Pod EU1
     user->>router_eu: GET /my-company/my-project
-    router_eu->>pod_eu1: GET /my-company/my-project
-    pod_eu1->>user: 302 /users/sign_in?redirect=/my-company/my-project
-    user->>router_eu: GET /users/sign_in?redirect=/my-company/my-project
-    router_eu->>pod_eu1: GET /users/sign_in?redirect=/my-company/my-project
-    pod_eu1->>user: <h1>Sign in...
-    user->>router_eu: POST /users/sign_in?redirect=/my-company/my-project
-    router_eu->>pod_eu1: POST /users/sign_in?redirect=/my-company/my-project
-    pod_eu1->>user: 302 /my-company/my-project
-    user->>router_eu: GET /my-company/my-project
-    router_eu->>pod_eu1: GET /my-company/my-project
-    pod_eu1->>router_eu: 302 /my-company/my-project X-Gitlab-Pod-Redirect={pod:Pod EU0}
+    router_eu->>pod_eu1: /api/v4/pods/learn?method=GET&path_info=/my-company/my-project
+    pod_eu1->>router_eu: {path: "/my-company", pod: "pod_eu0", source: "routable"}
     router_eu->>pod_eu0: GET /my-company/my-project
-    pod_eu0->>user: <h1>My Project... X-Gitlab-Pod-Cache={path_prefix:/my-company/}
+    pod_eu0->>user: 302 /users/sign_in?redirect=/my-company/my-project
+    user->>router_eu: GET /users/sign_in?redirect=/my-company/my-project
+    router_eu->>pod_eu1: /api/v4/pods/learn?method=GET&path_info=/users/sign_in
+    pod_eu1->>router_eu: {path: "/users", pod: "pod_eu0", source: "fixed"}
+    router_eu->>pod_eu0: GET /users/sign_in?redirect=/my-company/my-project
+    pod_eu0-->>user: <h1>Sign in...
+    user->>router_eu: POST /users/sign_in?redirect=/my-company/my-project
+    router_eu->>pod_eu0: POST /users/sign_in?redirect=/my-company/my-project
+    pod_eu0->>user: 302 /my-company/my-project
+    user->>router_eu: GET /my-company/my-project
+    router_eu->>pod_eu0: GET /my-company/my-project
+    router_eu->>pod_eu0: GET /my-company/my-project
+    pod_eu0->>user: <h1>My Project...
 ```
 
 #### Navigates to `/my-company/my-other-project` after last step
@@ -398,7 +444,7 @@ sequenceDiagram
     participant pod_eu1 as Pod EU1
     user->>router_eu: GET /my-company/my-project
     router_eu->>pod_eu0: GET /my-company/my-project
-    pod_eu0->>user: <h1>My Project... X-Gitlab-Pod-Cache={path_prefix:/my-company/}
+    pod_eu0->>user: <h1>My Project...
 ```
 
 #### Navigates to `/gitlab-org/gitlab` after last step
@@ -415,10 +461,10 @@ sequenceDiagram
     participant pod_eu0 as Pod EU0
     participant pod_us0 as Pod US0
     user->>router_eu: GET /gitlab-org/gitlab
-    router_eu->>pod_eu0: GET /gitlab-org/gitlab
-    pod_eu0->>router_eu: 302 /gitlab-org/gitlab X-Gitlab-Pod-Redirect={pod:Pod US0}
+    router_eu->>pod_eu0: /api/v4/pods/learn?method=GET&path_info=/gitlab-org/gitlab
+    pod_eu0->>router_eu: {path: "/gitlab-org", pod: "pod_us0", source: "routable"}
     router_eu->>pod_us0: GET /gitlab-org/gitlab
-    pod_us0->>user: <h1>GitLab.org... X-Gitlab-Pod-Cache={path_prefix:/gitlab-org/}
+    pod_us0->>user: <h1>GitLab.org...
 ```
 
 In this case the user is not on their "default organization" so their TODO
@@ -510,7 +556,7 @@ sequenceDiagram
     participant pod_us0 as Pod US0
     user->>router_us: GET /gitlab-org/gitlab
     router_us->>pod_us0: GET /gitlab-org/gitlab
-    pod_us0->>user: <h1>GitLab.org... X-Gitlab-Pod-Cache={path_prefix:/gitlab-org/}
+    pod_us0->>user: <h1>GitLab.org...
 ```
 
 #### Navigates to `/`
@@ -539,8 +585,8 @@ sequenceDiagram
     router_us->>pod_us1: GET /
     pod_us1->>user: 302 /dashboard
     user->>router_us: GET /dashboard
-    router_us->>pod_us1: GET /dashboard
-    pod_us1->>router_us: 302 /dashboard X-Gitlab-Pod-Redirect={pod:Pod US0}
+    router_us->>pod_us1: /api/v4/pods/learn?method=GET&path_info=/dashboard
+    pod_us1->>router_us: {path: "/dashboard", pod: "pod_us0", source: "routable"}
     router_us->>pod_us0: GET /dashboard
     pod_us0->>user: <h1>Dashboard...
 ```
@@ -580,9 +626,10 @@ TODO
 
 ### Loads `/admin` page
 
-1. Router picks a random pod `Pod US0`
-1. Pod US0 redirects user to `/admin/pods/podus0`
-1. Pod US0 renders an Admin Area page and also returns a cache header to cache `/admin/podss/podus0/* => Pod US0`. The Admin Area page contains a dropdown list showing other pods they could select and it changes the query parameter.
+1. The `/admin` is locked to `Pod US0`
+1. Some endpoints of `/admin`, like Projects in Admin are scoped to a Pod
+   and users needs to choose the correct one in a dropdown, which results in endpoint
+   like `/admin/pods/pod_0/projects`.
 
 Admin Area settings in Postgres are all shared across all pods to avoid
 divergence but we still make it clear in the URL and UI which pod is serving

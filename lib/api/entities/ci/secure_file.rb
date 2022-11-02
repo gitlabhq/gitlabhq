@@ -9,6 +9,8 @@ module API
         expose :checksum
         expose :checksum_algorithm
         expose :created_at
+        expose :expires_at
+        expose :metadata
       end
     end
   end

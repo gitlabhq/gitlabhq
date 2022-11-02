@@ -42,14 +42,34 @@ Example response:
         "name": "myfile.jks",
         "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
         "checksum_algorithm": "sha256",
-        "created_at": "2022-02-22T22:22:22.222Z"
+        "created_at": "2022-02-22T22:22:22.222Z",
+        "expires_at": null,
+        "metadata": null
     },
     {
         "id": 2,
-        "name": "myotherfile.jks",
+        "name": "myfile.cer",
         "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aa2",
         "checksum_algorithm": "sha256",
-        "created_at": "2022-02-22T22:22:22.222Z"
+        "created_at": "2022-02-22T22:22:22.222Z",
+        "expires_at": "2022-09-21T14:56:00.000Z",
+        "metadata": {
+            "id":"75949910542696343243264405377658443914",
+            "issuer": {
+                "C":"US",
+                "O":"Apple Inc.",
+                "CN":"Apple Worldwide Developer Relations Certification Authority",
+                "OU":"G3"
+            },
+            "subject": {
+                "C":"US",
+                "O":"Organization Name",
+                "CN":"Apple Distribution: Organization Name (ABC123XYZ)",
+                "OU":"ABC123XYZ",
+                "UID":"ABC123XYZ"
+            },
+            "expires_at":"2022-09-21T14:56:00.000Z"
+        }
     }
 ]
 ```
@@ -83,7 +103,9 @@ Example response:
     "name": "myfile.jks",
     "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
     "checksum_algorithm": "sha256",
-    "created_at": "2022-02-22T22:22:22.222Z"
+    "created_at": "2022-02-22T22:22:22.222Z",
+    "expires_at": null,
+    "metadata": null
 }
 ```
 
@@ -118,7 +140,9 @@ Example response:
     "name": "myfile.jks",
     "checksum": "16630b189ab34b2e3504f4758e1054d2e478deda510b2b08cc0ef38d12e80aac",
     "checksum_algorithm": "sha256",
-    "created_at": "2022-02-22T22:22:22.222Z"
+    "created_at": "2022-02-22T22:22:22.222Z",
+    "expires_at": null,
+    "metadata": null
 }
 ```
 

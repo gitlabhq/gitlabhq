@@ -222,8 +222,14 @@ module UnnestedInFilters
       @in_filters ||= arel_in_nodes.each_with_object({}) { |node, memo| memo[node.left.name] = node.right }
     end
 
+    def model_column_names
+      @model_column_names ||= model.columns.map(&:name)
+    end
+
+    # Actively filter any nodes that don't belong to the primary queried table to prevent sql type resolution issues
+    # Context: https://gitlab.com/gitlab-org/gitlab/-/issues/370271#note_1151019824
     def arel_in_nodes
-      where_clause_arel_nodes.select(&method(:in_predicate?))
+      where_clause_arel_nodes.select(&method(:in_predicate?)).select { model_column_names.include?(_1.left.name) }
     end
 
     # `ActiveRecord::WhereClause#ast` is returning a single node when there is only one
@@ -260,7 +266,7 @@ module UnnestedInFilters
     end
 
     def filter_attributes
-      @filter_attributes ||= where_values_hash.keys
+      @filter_attributes ||= where_clause.to_h.keys
     end
 
     def order_attributes

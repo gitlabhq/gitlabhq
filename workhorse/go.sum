@@ -960,8 +960,9 @@ gitlab.com/gitlab-org/gitaly/v15 v15.5.1 h1:EbkAYAeTLllJzX3N3Sy3ZcmKtBzI5OovT5c5
 gitlab.com/gitlab-org/gitaly/v15 v15.5.1/go.mod h1:G5q5H6OYMSEDnKXsQoYTzI+ysCTfM4Of2z0v6xeHtRY=
 gitlab.com/gitlab-org/golang-archive-zip v0.1.1 h1:35k9giivbxwF03+8A05Cm8YoxoakU8FBCj5gysjCTCE=
 gitlab.com/gitlab-org/golang-archive-zip v0.1.1/go.mod h1:ZDtqpWPGPB9qBuZnZDrKQjIdJtkN7ZAoVwhT6H2o2kE=
-gitlab.com/gitlab-org/labkit v1.16.0 h1:Vm3NAMZ8RqAunXlvPWby3GJ2R35vsYGP6Uu0YjyMIlY=
 gitlab.com/gitlab-org/labkit v1.16.0/go.mod h1:bcxc4ZpAC+WyACgyKl7FcvT2XXAbl8CrzN6UY+w8cMc=
+gitlab.com/gitlab-org/labkit v1.16.1 h1:J+HmNVR5bvPfrv9/fgKICFis2nmEugRXHMeRPvsVZUg=
+gitlab.com/gitlab-org/labkit v1.16.1/go.mod h1:tzZLVHeb0/Jrm9fPFdYuCrKmrYjfjEA0NmuLPXvvM+0=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=
 go.etcd.io/etcd/client/pkg/v3 v3.5.0/go.mod h1:IJHfcCEKxYu1Os13ZdwCwIUTUVGYTSAM3YSwc9/Ac1g=
