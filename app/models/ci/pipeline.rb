@@ -1273,7 +1273,9 @@ module Ci
     end
 
     def reset_source_bridge!(current_user)
+      # break recursion when no source_pipeline bridge (first upstream pipeline)
       return unless bridge_waiting?
+      return unless current_user.can?(:update_pipeline, source_bridge.pipeline)
 
       source_bridge.pending!
       Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass

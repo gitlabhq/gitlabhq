@@ -310,10 +310,27 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
         create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
       end
 
-      it 'marks source bridge as pending' do
-        service.execute(pipeline)
+      context 'without permission' do
+        it 'does nothing to the bridge' do
+          expect { service.execute(pipeline) }.to not_change { bridge.reload.status }
+           .and not_change { bridge.reload.user }
+        end
+      end
 
-        expect(bridge.reload).to be_pending
+      context 'with permission' do
+        let!(:bridge_pipeline) { create(:ci_pipeline, project: create(:project)) }
+        let!(:bridge) do
+          create(:ci_bridge, :strategy_depend, status: 'success', pipeline: bridge_pipeline)
+        end
+
+        before do
+          bridge_pipeline.project.add_maintainer(user)
+        end
+
+        it 'marks source bridge as pending' do
+          expect { service.execute(pipeline) }.to change { bridge.reload.status }.to('pending')
+            .and not_change { bridge.reload.user }
+        end
       end
     end
 

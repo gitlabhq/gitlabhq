@@ -143,6 +143,7 @@ function generateEntries() {
     jira_connect_app: './jira_connect/subscriptions/index.js',
     sandboxed_mermaid: './lib/mermaid.js',
     redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',
+    sandboxed_swagger: './lib/swagger.js',
   };
 
   return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));

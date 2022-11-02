@@ -36901,9 +36901,6 @@ msgstr ""
 msgid "Something went wrong while fetching the packages list."
 msgstr ""
 
-msgid "Something went wrong while initializing the OpenAPI viewer"
-msgstr ""
-
 msgid "Something went wrong while obtaining the Let's Encrypt certificate."
 msgstr ""
 
@@ -40270,6 +40267,9 @@ msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
 msgid "This only applies to repository indexing operations."
+msgstr ""
+
+msgid "This page is hosted on GitLab pages but contains user-generated content and may contain malicious code. Do not accept unless you trust the author and source."
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
@@ -44556,6 +44556,9 @@ msgid "You are attempting to delete a file that has been previously updated."
 msgstr ""
 
 msgid "You are attempting to update a file that has changed since you started editing it."
+msgstr ""
+
+msgid "You are being redirected away from GitLab"
 msgstr ""
 
 msgid "You are billed if you exceed this number. %{qsrOverageLinkStart}How does billing work?%{qsrOverageLinkEnd}"

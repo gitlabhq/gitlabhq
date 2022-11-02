@@ -310,4 +310,15 @@ RSpec.describe LabelsHelper do
       end
     end
   end
+
+  describe '#wrap_label_html' do
+    let(:project) { build_stubbed(:project) }
+    let(:xss_label) do
+      build_stubbed(:label, name: 'xsslabel', project: project, color: '"><img src=x onerror=prompt(1)>')
+    end
+
+    it 'does not include the color' do
+      expect(wrap_label_html('xss', label: xss_label, small: false)).not_to include('color:')
+    end
+  end
 end

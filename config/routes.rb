@@ -121,6 +121,7 @@ InitializerConnections.with_disabled_database_connections do
 
       # sandbox
       get '/sandbox/mermaid' => 'sandbox#mermaid'
+      get '/sandbox/swagger' => 'sandbox#swagger'
 
       get '/whats_new' => 'whats_new#index'
 

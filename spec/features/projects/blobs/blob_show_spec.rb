@@ -1001,11 +1001,9 @@ RSpec.describe 'File blob', :js do
         wait_for_requests
       end
 
-      it 'removes `style`, `class`, and `data-*`` attributes from HTML' do
-        expect(page).to have_css('h1', text: 'Swagger API documentation')
-        expect(page).not_to have_css('.foo-bar')
-        expect(page).not_to have_css('[style="background-color: red;"]')
-        expect(page).not_to have_css('[data-foo-bar="baz"]')
+      it 'renders sandboxed iframe' do
+        expected = %(<iframe src="/-/sandbox/swagger" sandbox="allow-scripts" frameborder="0" width="100%" height="1000">)
+        expect(page.html).to include(expected)
       end
     end
   end
