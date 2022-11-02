@@ -341,6 +341,15 @@ RSpec.describe API::Ci::SecureFiles do
 
         expect(response).to have_gitlab_http_status(:payload_too_large)
       end
+
+      it 'returns an error when and invalid file name is supplied' do
+        params = file_params.merge(name: '../../upload-keystore.jks')
+        expect do
+          post api("/projects/#{project.id}/secure_files", maintainer), params: params
+        end.not_to change { project.secure_files.count }
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+      end
     end
 
     context 'authenticated user with read permissions' do

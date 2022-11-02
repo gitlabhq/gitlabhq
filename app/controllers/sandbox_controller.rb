@@ -8,4 +8,8 @@ class SandboxController < ApplicationController # rubocop:disable Gitlab/Namespa
   def mermaid
     render layout: false
   end
+
+  def swagger
+    render layout: false
+  end
 end
