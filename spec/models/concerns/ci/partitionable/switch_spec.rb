@@ -264,6 +264,28 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
     end
   end
 
+  context 'with safe request store', :request_store do
+    it 'changing the flag to true does not affect the current request' do
+      stub_feature_flags(table_rollout_flag => false)
+
+      expect(model.table_name).to eq('_test_ci_jobs_metadata')
+
+      stub_feature_flags(table_rollout_flag => true)
+
+      expect(model.table_name).to eq('_test_ci_jobs_metadata')
+    end
+
+    it 'changing the flag to false does not affect the current request' do
+      stub_feature_flags(table_rollout_flag => true)
+
+      expect(model.table_name).to eq('_test_p_ci_jobs_metadata')
+
+      stub_feature_flags(table_rollout_flag => false)
+
+      expect(model.table_name).to eq('_test_p_ci_jobs_metadata')
+    end
+  end
+
   def rollout_and_rollback_flag(old, new)
     # Load class and SQL statements cache
     old.call

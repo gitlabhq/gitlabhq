@@ -619,6 +619,67 @@ Supported attributes:
 | `include_rebase_in_progress`     | boolean        | **{dotted-circle}** No       | If `true`, response includes whether a rebase operation is in progress. |
 | `render_html`                    | boolean        | **{dotted-circle}** No       | If `true`, response includes rendered HTML for title and description. |
 
+### Response
+
+| Attribute                        | Type | Description |
+|----------------------------------|------|-------------|
+| `approvals_before_merge` | integer | **(PREMIUM)** Number of approvals required before this can be merged. |
+| `assignee` | object | First assignee of the merge request. |
+| `assignees` | array | Assignees of the merge request. |
+| `author` | object | User who created this merge request. |
+| `blocking_discussions_resolved` | boolean | Indicates if all discussions are resolved only if all are required before merge request can be merged. |
+| `changes_count` | string | Number of changes made on the merge request. |
+| `closed_at` | datetime | Timestamp of when the merge request was closed. |
+| `closed_by` | object | User who closed this merge request. |
+| `created_at` | datetime | Timestamp of when the merge request was created. |
+| `description` | string | Description of the merge request (Markdown rendered as HTML for caching). |
+| `detailed_merge_status` | string | Detailed merge status of the merge request. |
+| `diff_refs` | object | References of the base SHA, the head SHA, and the start SHA for this merge request. |
+| `discussion_locked` | boolean | Indicates if comments on the merge request are locked to members only. |
+| `downvotes` | integer | Number of downvotes for the merge request. |
+| `draft` | boolean | Indicates if the merge request is a draft. |
+| `first_contribution` | boolean | Indicates if the merge request is the first contribution of the author. |
+| `first_deployed_to_production_at` | datetime | Timestamp of when the first deployment finished. |
+| `force_remove_source_branch` | boolean | Indicates if the project settings will lead to source branch deletion after merge. |
+| `has_conflicts` | boolean | Indicates if merge request has conflicts and cannot be merged. |
+| `head_pipeline` | object | Pipeline running on the branch HEAD of the merge request. |
+| `id` | integer | ID of the merge request. |
+| `iid` | integer | Internal ID of the merge request. |
+| `labels` | array | Labels of the merge request. |
+| `latest_build_finished_at` | datetime | Timestamp of when the latest build for the merge request finished. |
+| `latest_build_started_at` | datetime | Timestamp of when the latest build for the merge request started. |
+| `merge_commit_sha` | string | SHA of the merge request commit (set once merged). |
+| `merge_error` | string | Error message due to a merge error. |
+| `merge_user` | object | User who merged this merge request or set it to merge when pipeline succeeds. |
+| `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged` or `cannot_be_merged_recheck`. |
+| `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS). |
+| `merged_at` | datetime | Timestamp of when the merge request was merged. |
+| `merged_by` | object | Deprecated: Use `merge_user` instead. User who merged this merge request or set it to merge when pipeline succeeds. |
+| `milestone` | object | Milestone of the merge request. |
+| `pipeline` | object | Pipeline running on the branch HEAD of the merge request. |
+| `project_id` | integer | ID of the merge request project. |
+| `reference` | string | Deprecated: Use `references` instead. Internal reference of the merge request. Returned in shortened format by default. |
+| `references` | object | Internal references of the merge request. Includes `short`, `relative` and `full` references. |
+| `reviewers` | array | Reviewers of the merge request. |
+| `sha` | string | Diff head SHA of the merge request. |
+| `should_remove_source_branch` | boolean | Indicates if the source branch of the merge request will be deleted after merge. |
+| `source_branch` | string | Source branch of the merge request. |
+| `source_project_id` | integer | ID of the merge request source project. |
+| `squash` | boolean | Indicates if squash on merge is enabled. |
+| `squash_commit_sha` | string | SHA of the squash commit (set once merged). |
+| `state` | string | State of the merge request. Can be `opened`, `closed`, `merged` or `locked`. |
+| `subscribed` | boolean | Indicates if the currently logged in user is subscribed to this merge request. |
+| `target_branch` | string | Target branch of the merge request. |
+| `target_project_id` | integer | ID of the merge request target project. |
+| `task_completion_status` | object | Completion status of tasks. |
+| `title` | string | Title of the merge request. |
+| `updated_at` | datetime | Timestamp of when the merge request was updated. |
+| `upvotes` | integer | Number of upvotes for the merge request. |
+| `user` | object | Permissions of the user requested for the merge request. |
+| `user_notes_count` | integer | User notes count of the merge request. |
+| `web_url` | string | Web URL of the merge request. |
+| `work_in_progress` | boolean | Deprecated: Use `draft` instead. Indicates if the merge request is a draft. |
+
 ```json
 {
   "id": 155016530,
@@ -787,7 +848,7 @@ the `approvals_before_merge` parameter:
 
 ### Merge status
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
+> The `detailed_merge_status` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
 
 - The `merge_status` field may hold one of the following values:
   - `unchecked`: This merge request has not yet been checked.

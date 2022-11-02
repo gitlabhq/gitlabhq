@@ -346,6 +346,20 @@ $theme-light-red-500: #c24b38;
 $theme-light-red-600: #b03927;
 $theme-light-red-700: #a62e21;
 
+// Data visualization color palette
+
+$data-viz-blue-50: #e9ebff;
+$data-viz-blue-100: #d4dcfa;
+$data-viz-blue-200: #b7c6ff;
+$data-viz-blue-300: #97acff;
+$data-viz-blue-400: #748eff;
+$data-viz-blue-500: #5772ff;
+$data-viz-blue-600: #445cf2;
+$data-viz-blue-700: #3547de;
+$data-viz-blue-800: #232fcf;
+$data-viz-blue-900: #1e23a8;
+$data-viz-blue-950: #11118a;
+
 $border-white-light: darken($white, $darken-border-factor) !default;
 $border-white-normal: darken($white-normal, $darken-border-factor) !default;
 
@@ -710,11 +724,11 @@ $job-arrow-margin: 55px;
  */
 // See https://gitlab.com/gitlab-org/gitlab/-/issues/332150 to align with Pajamas Design System
 $calendar-activity-colors: (
-  #f5f5f5,
-  #d4dcfa,
-  #748eff,
-  #3547de,
-  #11118a,
+  $gray-50,
+  $data-viz-blue-100,
+  $data-viz-blue-400,
+  $data-viz-blue-700,
+  $data-viz-blue-950,
 ) !default;
 
 /*

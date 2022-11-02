@@ -99,7 +99,6 @@ export const LEGACY_FILE_TYPES = [
   'podspec',
   'podspec_json',
   'cartfile',
-  'godeps_json',
   'requirements_txt',
   'cargo_toml',
   'go_mod',

@@ -33,7 +33,9 @@ module Ci
         def routing_table_enabled?
           return false if routing_class?
 
-          ::Feature.enabled?(routing_table_name_flag)
+          Gitlab::SafeRequestStore.fetch(routing_table_name_flag) do
+            ::Feature.enabled?(routing_table_name_flag)
+          end
         end
 
         # We're delegating them to the `Partitioned` model.

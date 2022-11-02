@@ -189,6 +189,7 @@ module API
         mount ::API::Release::Links
         mount ::API::ResourceAccessTokens
         mount ::API::SnippetRepositoryStorageMoves
+        mount ::API::ProtectedBranches
         mount ::API::Statistics
         mount ::API::Suggestions
         mount ::API::Tags
@@ -296,7 +297,6 @@ module API
       mount ::API::ProjectStatistics
       mount ::API::ProjectTemplates
       mount ::API::Projects
-      mount ::API::ProtectedBranches
       mount ::API::ProtectedTags
       mount ::API::PypiPackages
       mount ::API::Releases

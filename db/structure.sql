@@ -15859,7 +15859,8 @@ CREATE TABLE ghost_user_migrations (
     initiator_user_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    hard_delete boolean DEFAULT false NOT NULL
+    hard_delete boolean DEFAULT false NOT NULL,
+    consume_after timestamp with time zone DEFAULT now() NOT NULL
 );
 
 CREATE SEQUENCE ghost_user_migrations_id_seq
@@ -29058,6 +29059,8 @@ CREATE INDEX index_geo_repository_updated_events_on_project_id ON geo_repository
 CREATE INDEX index_geo_repository_updated_events_on_source ON geo_repository_updated_events USING btree (source);
 
 CREATE INDEX index_geo_reset_checksum_events_on_project_id ON geo_reset_checksum_events USING btree (project_id);
+
+CREATE INDEX index_ghost_user_migrations_on_consume_after_id ON ghost_user_migrations USING btree (consume_after, id);
 
 CREATE UNIQUE INDEX index_ghost_user_migrations_on_user_id ON ghost_user_migrations USING btree (user_id);
 

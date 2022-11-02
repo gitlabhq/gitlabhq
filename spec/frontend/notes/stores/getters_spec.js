@@ -1,5 +1,5 @@
 import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
-import { DESC, ASC } from '~/notes/constants';
+import { DESC, ASC, NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import * as getters from '~/notes/stores/getters';
 import {
   notesDataMock,
@@ -535,5 +535,25 @@ describe('Getters Notes Store', () => {
     it('should return `discussionSortOrder`', () => {
       expect(getters.sortDirection(state)).toBe(DESC);
     });
+  });
+
+  describe('canUserAddIncidentTimelineEvents', () => {
+    it.each`
+      userData                              | noteableData                                | expected
+      ${{ can_add_timeline_events: true }}  | ${{ type: NOTEABLE_TYPE_MAPPING.Incident }} | ${true}
+      ${{ can_add_timeline_events: true }}  | ${{ type: NOTEABLE_TYPE_MAPPING.Issue }}    | ${false}
+      ${null}                               | ${{ type: NOTEABLE_TYPE_MAPPING.Incident }} | ${false}
+      ${{ can_add_timeline_events: false }} | ${{ type: NOTEABLE_TYPE_MAPPING.Incident }} | ${false}
+    `(
+      'with userData=$userData and noteableData=$noteableData, expected=$expected',
+      ({ userData, noteableData, expected }) => {
+        Object.assign(state, {
+          userData,
+          noteableData,
+        });
+
+        expect(getters.canUserAddIncidentTimelineEvents(state)).toBe(expected);
+      },
+    );
   });
 });

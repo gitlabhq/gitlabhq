@@ -8,5 +8,7 @@ module Users
     belongs_to :initiator_user, class_name: 'User'
 
     validates :user_id, presence: true
+
+    scope :consume_order, -> { order(:consume_after, :id) }
   end
 end

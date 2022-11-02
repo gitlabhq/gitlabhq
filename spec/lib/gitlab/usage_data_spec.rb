@@ -1078,10 +1078,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       context 'snowplow stats' do
-        before do
-          stub_feature_flags(usage_data_instrumentation: false)
-        end
-
         it 'gathers snowplow stats' do
           expect(subject[:settings][:snowplow_enabled]).to eq(Gitlab::CurrentSettings.snowplow_enabled?)
           expect(subject[:settings][:snowplow_configured_to_gitlab_collector]).to eq(snowplow_gitlab_host?)
