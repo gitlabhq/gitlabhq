@@ -9,9 +9,10 @@ module API
     resource :suggestions do
       desc 'Apply suggestion patch in the Merge Request it was created' do
         success Entities::Suggestion
+        tags %w[suggestions]
       end
       params do
-        requires :id, type: String, desc: 'The suggestion ID'
+        requires :id, type: Integer, desc: 'The ID of the suggestion'
         optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
       put ':id/apply', urgency: :low do
@@ -26,9 +27,10 @@ module API
 
       desc 'Apply multiple suggestion patches in the Merge Request where they were created' do
         success Entities::Suggestion
+        tags %w[suggestions]
       end
       params do
-        requires :ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: "An array of suggestion ID's"
+        requires :ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: "An array of the suggestion IDs"
         optional :commit_message, type: String, desc: "A custom commit message to use instead of the default generated message or the project's default message"
       end
       put 'batch_apply', urgency: :low do

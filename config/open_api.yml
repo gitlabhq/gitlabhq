@@ -14,12 +14,11 @@ metadata:
       name: private_token
       in: query
   tags:
-  - name: metadata
-    description: Operations related to metadata of the GitLab instance
+    # Keep in alphabetical order
   - name: access_requests
     description: Operations related to access requests
-  - name: merge_requests
-    description: Operations related to merge requests
+  - name: cluster_agents
+    description: Operations related to the GitLab agent for Kubernetes
   - name: deploy_keys
     description: Operations related to deploy keys
   - name: deploy_tokens
@@ -34,7 +33,11 @@ metadata:
     description: Operations related to managing Flipper-based feature flags
   - name: freeze_periods
     description: Operations related to deploy freeze periods
+  - name: merge_requests
+    description: Operations related to merge requests
+  - name: metadata
+    description: Operations related to metadata of the GitLab instance
   - name: release_links
     description: Operations related to release assets (links)
-  - name: cluster_agents
-    description: Operations related to the GitLab agent for Kubernetes
+  - name: suggestions
+    description: Operations related to suggestions

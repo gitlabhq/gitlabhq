@@ -14,9 +14,6 @@ QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 # Enable zero monkey patching mode before loading any other RSpec code.
 RSpec.configure(&:disable_monkey_patching!)
 
-Dir[::File.join(__dir__, "features/shared_examples/*.rb")].sort.each { |f| require f }
-Dir[::File.join(__dir__, "features/shared_contexts/*.rb")].sort.each { |f| require f }
-
 # For JH additionally process when `jh/` exists
 require_relative('../../../jh/qa/qa/specs/spec_helper') if GitlabEdition.jh?
 
@@ -149,3 +146,6 @@ RSpec.configure do |config|
     end
   end
 end
+
+Dir[::File.join(__dir__, "features/shared_examples/*.rb")].sort.each { |f| require f }
+Dir[::File.join(__dir__, "features/shared_contexts/*.rb")].sort.each { |f| require f }

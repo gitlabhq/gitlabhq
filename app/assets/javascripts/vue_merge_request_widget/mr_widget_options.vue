@@ -563,6 +563,7 @@ export default {
       :mr="mr"
       :service="service"
     />
+    <extensions-container :mr="mr" />
     <div class="mr-section-container mr-widget-workflow">
       <div v-if="hasAlerts" class="gl-overflow-hidden mr-widget-alert-container">
         <mr-widget-alert-message
@@ -588,8 +589,6 @@ export default {
           </template>
         </mr-widget-alert-message>
       </div>
-
-      <extensions-container :mr="mr" />
 
       <widget-container v-if="mr" :mr="mr" />
 

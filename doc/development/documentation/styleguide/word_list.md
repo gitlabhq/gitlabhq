@@ -936,6 +936,10 @@ Instead of:
 - Select **Create user** or **Save changes** if you created a new user or
   edited an existing one respectively.
 
+## review app
+
+Use lowercase for **review app**.
+
 ## roles
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.

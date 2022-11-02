@@ -17,6 +17,7 @@ export default {
       'section',
       {
         attrs: {
+          class: 'mr-section-container mr-widget-workflow',
           role: 'region',
           'aria-label': __('Merge request reports'),
         },
