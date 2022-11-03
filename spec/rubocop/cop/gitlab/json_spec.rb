@@ -25,6 +25,27 @@ RSpec.describe RuboCop::Cop::Gitlab::Json do
     end
   end
 
+  context 'when ::JSON is called in EE' do
+    it 'registers an offense and autocorrects' do
+      expect_offense(<<~RUBY, '/path/to/ee/foo.rb')
+        class Foo
+          def bar
+            JSON.parse('{ "foo": "bar" }')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Gitlab::Json` over calling `JSON` or `to_json` directly. [...]
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          def bar
+            ::Gitlab::Json.parse('{ "foo": "bar" }')
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when ActiveSupport::JSON is called' do
     it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)

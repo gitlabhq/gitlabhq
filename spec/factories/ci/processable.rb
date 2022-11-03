@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :ci_processable, class: 'Ci::Processable' do
     name { 'processable' }
     stage { 'test' }
-    stage_idx { 0 }
+    stage_idx { ci_stage.try(:position) || 0 }
     ref { 'master' }
     tag { false }
     pipeline factory: :ci_pipeline

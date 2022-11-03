@@ -19,7 +19,7 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def clone!(job, variables: [])
+    def clone!(job, variables: [], enqueue_if_actionable: false)
       # Cloning a job requires a strict type check to ensure
       # the attributes being used for the clone are taken straight
       # from the model and not overridden by other abstractions.
@@ -28,6 +28,9 @@ module Ci
       check_access!(job)
 
       new_job = job.clone(current_user: current_user, new_job_variables_attributes: variables)
+      if Feature.enabled?(:ci_retry_job_fix, project) && enqueue_if_actionable && new_job.action?
+        new_job.set_enqueue_immediately!
+      end
 
       new_job.run_after_commit do
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
@@ -56,13 +59,20 @@ module Ci
     def check_assignable_runners!(job); end
 
     def retry_job(job, variables: [])
-      clone!(job, variables: variables).tap do |new_job|
+      clone!(job, variables: variables, enqueue_if_actionable: true).tap do |new_job|
         check_assignable_runners!(new_job) if new_job.is_a?(Ci::Build)
 
         next if new_job.failed?
 
-        Gitlab::OptimisticLocking.retry_lock(new_job, name: 'retry_build', &:enqueue)
+        Gitlab::OptimisticLocking.retry_lock(new_job, name: 'retry_build', &:enqueue) if Feature.disabled?(
+          :ci_retry_job_fix, project)
+
         AfterRequeueJobService.new(project, current_user).execute(job)
+
+        if Feature.enabled?(:ci_retry_job_fix, project)
+          Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
+          new_job.reset
+        end
       end
     end
 

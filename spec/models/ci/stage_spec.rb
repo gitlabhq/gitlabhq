@@ -389,7 +389,7 @@ RSpec.describe Ci::Stage, :models do
     end
 
     context 'without pipeline' do
-      subject(:stage) { build(:ci_stage, pipeline: nil) }
+      subject(:stage) { build(:ci_stage, pipeline: nil, project: build_stubbed(:project)) }
 
       it { is_expected.to validate_presence_of(:partition_id) }
 

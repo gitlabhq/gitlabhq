@@ -11,6 +11,11 @@ module API
     resource :projects do
       desc 'Download a (possibly inconsistent) snapshot of a repository' do
         detail 'This feature was introduced in GitLab 10.7'
+        success File
+        produces 'application/x-tar'
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
       end
       params do
         optional :wiki, type: Boolean, desc: 'Set to true to receive the wiki repository'

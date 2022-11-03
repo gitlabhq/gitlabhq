@@ -15,6 +15,8 @@ module Ci
     private
 
     def process(build)
+      return enqueue(build) if Feature.enabled?(:ci_retry_job_fix, project) && build.enqueue_immediately?
+
       if build.schedulable?
         build.schedule
       elsif build.action?

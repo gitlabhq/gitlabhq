@@ -12,8 +12,9 @@ miss a step.
 Here is a list of steps you should take to attempt to fix problem:
 
 1. Perform [basic troubleshooting](#basic-troubleshooting).
-1. Fix any [replication errors](#fixing-replication-errors).
+1. Fix any [PostgreSQL database replication errors](#fixing-postgresql-database-replication-errors).
 1. Fix any [common](#fixing-common-errors) errors.
+1. Fix any [non-PostgreSQL replication failures](#fixing-non-postgresql-replication-failures).
 
 ## Basic troubleshooting
 
@@ -130,6 +131,8 @@ http://secondary.example.com/
 
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../logs/log_parsing.md#find-most-common-geo-sync-errors)
+
+If you notice replication or verification failures, you can try to [resolve them](#fixing-non-postgresql-replication-failures).
 
 ### Check if PostgreSQL replication is working
 
@@ -346,52 +349,7 @@ sudo gitlab-rake gitlab:geo:check
   When performing a PostgreSQL major version (9 > 10) update this is expected. Follow
   the [initiate-the-replication-process](../setup/database.md#step-3-initiate-the-replication-process).
 
-### Repository verification failures
-
-[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to gather the following, basic troubleshooting information.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-#### Get the number of verification failed repositories
-
-```ruby
-Geo::ProjectRegistry.verification_failed('repository').count
-```
-
-#### Find the verification failed repositories
-
-```ruby
-Geo::ProjectRegistry.verification_failed('repository')
-```
-
-#### Find repositories that failed to sync
-
-```ruby
-Geo::ProjectRegistry.sync_failed('repository')
-```
-
-### Resync repositories
-
-[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to enact the following, basic troubleshooting steps.
-
-#### Queue up all repositories for resync. Sidekiq handles each sync
-
-```ruby
-Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
-```
-
-#### Sync individual repository now
-
-```ruby
-project = Project.find_by_full_path('<group/project>')
-
-Geo::RepositorySyncService.new(project).execute
-```
-
-## Fixing replication errors
+## Fixing PostgreSQL database replication errors
 
 The following sections outline troubleshooting steps for fixing replication
 error messages (indicated by `Database replication working? ... no` in the
@@ -872,120 +830,6 @@ This behavior affects only the following data types through GitLab 14.6:
 to make Geo visibly surface data loss risks. The sync/verification loop is
 therefore short-circuited. `last_sync_failure` is now set to `The file is missing on the Geo primary site`.
 
-### Blob types
-
-- `Ci::JobArtifact`
-- `Ci::PipelineArtifact`
-- `Ci::SecureFile`
-- `LfsObject`
-- `MergeRequestDiff`
-- `Packages::PackageFile`
-- `PagesDeployment`
-- `Terraform::StateVersion`
-- `Upload`
-
-`Packages::PackageFile` is used in the following
-[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-examples, but things generally work the same for the other types.
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-#### The Replicator
-
-The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
-
-```ruby
-model_record = Packages::PackageFile.last
-model_record.replicator.registry.replicator.model_record # just showing that these methods exist
-```
-
-#### Replicate a package file, synchronously, given an ID
-
-```ruby
-model_record = Packages::PackageFile.find(id)
-model_record.replicator.send(:download)
-```
-
-#### Replicate a package file, synchronously, given a registry ID
-
-```ruby
-registry = Geo::PackageFileRegistry.find(registry_id)
-registry.replicator.send(:download)
-```
-
-#### Verify package files on the secondary manually
-
-This iterates over all package files on the secondary, looking at the
-`verification_checksum` stored in the database (which came from the primary)
-and then calculate this value on the secondary to check if they match. This
-does not change anything in the UI:
-
-```ruby
-# Run on secondary
-status = {}
-
-Packages::PackageFile.find_each do |package_file|
-  primary_checksum = package_file.verification_checksum
-  secondary_checksum = Packages::PackageFile.hexdigest(package_file.file.path)
-  verification_status = (primary_checksum == secondary_checksum)
-
-  status[verification_status.to_s] ||= []
-  status[verification_status.to_s] << package_file.id
-end
-
-# Count how many of each value we get
-status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
-
-# See the output in its entirety
-status
-```
-
-### Repository types newer than project/wiki repositories
-
-- `SnippetRepository`
-- `GroupWikiRepository`
-
-`SnippetRepository` is used in the examples below, but things generally work the same for the other Repository types.
-
-#### The Replicator
-
-The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it).
-
-```ruby
-model_record = SnippetRepository.last
-model_record.replicator.registry.replicator.model_record # just showing that these methods exist
-```
-
-#### Replicate a snippet repository, synchronously, given an ID
-
-```ruby
-model_record = SnippetRepository.find(id)
-model_record.replicator.send(:sync_repository)
-```
-
-#### Replicate a snippet repository, synchronously, given a registry ID
-
-```ruby
-registry = Geo::SnippetRepositoryRegistry.find(registry_id)
-registry.replicator.send(:sync_repository)
-```
-
-### Find failed artifacts
-
-[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
-to run the following commands:
-
-```ruby
-Geo::JobArtifactRegistry.failed
-```
-
-#### Find `ID` of synced artifacts that are missing on primary
-
-```ruby
-Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
-```
-
 #### Failed syncs with GitLab-managed object storage replication
 
 There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
@@ -1356,6 +1200,217 @@ To fix this issue, set the primary site's internal URL to a URL that is:
    GeoNode.where(primary: true).first.update!(internal_url: "https://unique.url.for.primary.site")
    ```
 
+## Fixing non-PostgreSQL replication failures
+
+If you notice replication failures in `Admin > Geo > Sites` or the [Sync status Rake task](#sync-status-rake-task), you can try to resolve the failures with the following general steps:
+
+1. Geo will automatically retry failures. If the failures are new and few in number, or if you suspect the root cause is already resolved, then you can wait to see if the failures go away.
+1. If failures were present for a long time, then many retries have already occurred, and the interval between automatic retries has increased to up to 4 hours depending on the type of failure. If you suspect the root cause is already resolved, you can [manually retry replication or verification](#manually-retry-replication-or-verification).
+1. If the failures persist, use the following sections to try to resolve them.
+
+### Manually retry replication or verification
+
+Project Git repositories and Project Wiki Git repositories have the ability in `Admin > Geo > Replication` to `Resync all`, `Reverify all`, or for a single resource, `Resync`  or `Reverify`.
+
+Adding this ability to other data types is proposed in issue [364725](https://gitlab.com/gitlab-org/gitlab/-/issues/364725).
+
+The following sections describe how to use internal application commands in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) to cause replication or verification immediately.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+### Blob types
+
+- `Ci::JobArtifact`
+- `Ci::PipelineArtifact`
+- `Ci::SecureFile`
+- `LfsObject`
+- `MergeRequestDiff`
+- `Packages::PackageFile`
+- `PagesDeployment`
+- `Terraform::StateVersion`
+- `Upload`
+
+`Packages::PackageFile` is used in the following
+[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+examples, but things generally work the same for the other types.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+#### The Replicator
+
+The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it):
+
+```ruby
+model_record = Packages::PackageFile.last
+model_record.replicator.registry.replicator.model_record # just showing that these methods exist
+```
+
+#### Replicate a package file, synchronously, given an ID
+
+```ruby
+model_record = Packages::PackageFile.find(id)
+model_record.replicator.send(:download)
+```
+
+#### Replicate a package file, synchronously, given a registry ID
+
+```ruby
+registry = Geo::PackageFileRegistry.find(registry_id)
+registry.replicator.send(:download)
+```
+
+#### Verify package files on the secondary manually
+
+This iterates over all package files on the secondary, looking at the
+`verification_checksum` stored in the database (which came from the primary)
+and then calculate this value on the secondary to check if they match. This
+does not change anything in the UI:
+
+```ruby
+# Run on secondary
+status = {}
+
+Packages::PackageFile.find_each do |package_file|
+  primary_checksum = package_file.verification_checksum
+  secondary_checksum = Packages::PackageFile.hexdigest(package_file.file.path)
+  verification_status = (primary_checksum == secondary_checksum)
+
+  status[verification_status.to_s] ||= []
+  status[verification_status.to_s] << package_file.id
+end
+
+# Count how many of each value we get
+status.keys.each {|key| puts "#{key} count: #{status[key].count}"}
+
+# See the output in its entirety
+status
+```
+
+### Reverify all uploads (or any SSF data type which is verified)
+
+1. SSH into a GitLab Rails node in the primary Geo site.
+1. Open [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Mark all uploads as "pending verification":
+
+   ```ruby
+   Upload.verification_state_table_class.each_batch do |relation|
+     relation.update_all(verification_state: 0)
+   end
+   ```
+
+1. This will cause the primary to start checksumming all Uploads.
+1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
+
+For other SSF data types replace `Upload` in the command above with the desired model class.
+
+NOTE:
+There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+
+### Repository types, except for project or project wiki repositories
+
+- `SnippetRepository`
+- `GroupWikiRepository`
+
+`SnippetRepository` is used in the examples below, but things generally work the same for the other Repository types.
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to enact the following, basic troubleshooting steps.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+#### The Replicator
+
+The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of these classes, you can get the others. The Registry and Model mostly manage PostgreSQL DB state. The Replicator knows how to replicate/verify (or it can call a service to do it).
+
+```ruby
+model_record = SnippetRepository.last
+model_record.replicator.registry.replicator.model_record # just showing that these methods exist
+```
+
+#### Replicate a snippet repository, synchronously, given an ID
+
+```ruby
+model_record = SnippetRepository.find(id)
+model_record.replicator.send(:sync_repository)
+```
+
+#### Replicate a snippet repository, synchronously, given a registry ID
+
+```ruby
+registry = Geo::SnippetRepositoryRegistry.find(registry_id)
+registry.replicator.send(:sync_repository)
+```
+
+### Find failed artifacts
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to run the following commands:
+
+```ruby
+Geo::JobArtifactRegistry.failed
+```
+
+#### Find `ID` of synced artifacts that are missing on primary
+
+```ruby
+Geo::JobArtifactRegistry.synced.missing_on_primary.pluck(:artifact_id)
+```
+
+### Project or project wiki repositories
+
+#### Find repository verification failures
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to gather the following, basic troubleshooting information.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+##### Get the number of verification failed repositories
+
+```ruby
+Geo::ProjectRegistry.verification_failed('repository').count
+```
+
+##### Find the verification failed repositories
+
+```ruby
+Geo::ProjectRegistry.verification_failed('repository')
+```
+
+##### Find repositories that failed to sync
+
+```ruby
+Geo::ProjectRegistry.sync_failed('repository')
+```
+
+#### Resync project and project wiki repositories
+
+[Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+to enact the following, basic troubleshooting steps.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+##### Queue up all repositories for resync
+
+When you run this, Sidekiq handles each sync.
+
+```ruby
+Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
+```
+
+##### Sync individual repository now
+
+```ruby
+project = Project.find_by_full_path('<group/project>')
+
+Geo::RepositorySyncService.new(project).execute
+```
+
 ## Fixing client errors
 
 ### Authorization errors from LFS HTTP(S) client requests
@@ -1425,10 +1480,6 @@ If the above steps are **not successful**, proceed through the next steps:
 
 1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
-
-## Additional tools
-
-There are useful snippets for manipulating Geo internals in the [GitLab Rails Cheat Sheet](../../troubleshooting/gitlab_rails_cheat_sheet.md#geo). For example, you can find how to manually sync or verify a replicable in Rails console.
 
 ## Check OS locale data compatibility
 

@@ -188,13 +188,15 @@ module API
         mount ::API::Keys
         mount ::API::Metadata
         mount ::API::MergeRequestDiffs
+        mount ::API::ProjectHooks
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::Releases
         mount ::API::Release::Links
         mount ::API::ResourceAccessTokens
+        mount ::API::ProjectSnapshots
         mount ::API::ProtectedTags
-        mount ::API::SnippetRepositoryStorageMoves
         mount ::API::ProtectedBranches
+        mount ::API::SnippetRepositoryStorageMoves
         mount ::API::Statistics
         mount ::API::Submodules
         mount ::API::Suggestions
@@ -291,11 +293,9 @@ module API
       mount ::API::ProjectDebianDistributions
       mount ::API::ProjectEvents
       mount ::API::ProjectExport
-      mount ::API::ProjectHooks
       mount ::API::ProjectImport
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
-      mount ::API::ProjectSnapshots
       mount ::API::ProjectSnippets
       mount ::API::ProjectStatistics
       mount ::API::ProjectTemplates

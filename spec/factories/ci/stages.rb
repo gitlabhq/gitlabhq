@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :ci_stage, class: 'Ci::Stage' do
-    project factory: :project
+    project { pipeline.project }
     pipeline factory: :ci_empty_pipeline
 
     name { 'test' }

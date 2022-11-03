@@ -243,6 +243,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "auto_devops_enabled": false,
     "auto_devops_deploy_strategy": "continuous",
     "autoclose_referenced_issues": true,
@@ -421,6 +422,7 @@ GET /users/:user_id/projects
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
     "marked_for_deletion_on": "2020-04-03",
     "statistics": {
@@ -544,6 +546,7 @@ GET /users/:user_id/projects
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -677,6 +680,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -793,6 +797,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -969,6 +974,7 @@ GET /projects/:id
   "enforce_auth_checks_on_uploads": true,
   "merge_commit_template": null,
   "squash_commit_template": null,
+  "issue_branch_template": "gitlab/%{id}-%{title}",
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
@@ -1334,6 +1340,7 @@ POST /projects/user/:user_id
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
+| `issue_branch_template`                                     | string  | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/repository/web_editor.md#create-a-new-branch-from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
 | `squash_commit_template`                                    | string  | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.)_ |
 | `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                                 | string  | **{dotted-circle}** No | The commit message used to apply merge request [suggestions](../user/project/merge_requests/reviews/suggestions.md). |
@@ -1439,6 +1446,7 @@ Supported attributes:
 | `shared_runners_enabled`                                    | boolean        | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
+| `issue_branch_template`                                     | string         | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/repository/web_editor.md#create-a-new-branch-from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
 | `squash_commit_template`                                    | string         | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.)_ |
 | `squash_option`                                             | string         | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                                 | string         | **{dotted-circle}** No | The commit message used to apply merge request suggestions. |

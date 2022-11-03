@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe PgFullTextSearchable do
-  let(:project) { create(:project) }
+  let(:project) { build(:project) }
 
   let(:model_class) do
     Class.new(ActiveRecord::Base) do

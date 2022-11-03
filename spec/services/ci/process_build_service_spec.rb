@@ -2,147 +2,118 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ProcessBuildService, '#execute' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  using RSpec::Parameterized::TableSyntax
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, ref: 'master', project: project) }
 
   subject { described_class.new(project, user).execute(build, current_status) }
 
-  before do
+  before_all do
     project.add_maintainer(user)
   end
 
-  context 'when build has on_success option' do
-    let(:build) { create(:ci_build, :created, when: :on_success, user: user, project: project) }
-
-    context 'when current status is success' do
-      let(:current_status) { 'success' }
-
-      it 'changes the build status' do
-        expect { subject }.to change { build.status }.to('pending')
-      end
-    end
-
-    context 'when current status is skipped' do
-      let(:current_status) { 'skipped' }
-
-      it 'changes the build status' do
-        expect { subject }.to change { build.status }.to('pending')
-      end
-    end
-
-    context 'when current status is failed' do
-      let(:current_status) { 'failed' }
-
-      it 'does not change the build status' do
-        expect { subject }.to change { build.status }.to('skipped')
-      end
-    end
-  end
-
-  context 'when build has on_failure option' do
-    let(:build) { create(:ci_build, :created, when: :on_failure, user: user, project: project) }
-
-    context 'when current status is success' do
-      let(:current_status) { 'success' }
-
-      it 'changes the build status' do
-        expect { subject }.to change { build.status }.to('skipped')
-      end
-    end
-
-    context 'when current status is failed' do
-      let(:current_status) { 'failed' }
-
-      it 'does not change the build status' do
-        expect { subject }.to change { build.status }.to('pending')
-      end
-    end
-  end
-
-  context 'when build has always option' do
-    let(:build) { create(:ci_build, :created, when: :always, user: user, project: project) }
-
-    context 'when current status is success' do
-      let(:current_status) { 'success' }
-
-      it 'changes the build status' do
-        expect { subject }.to change { build.status }.to('pending')
-      end
-    end
-
-    context 'when current status is failed' do
-      let(:current_status) { 'failed' }
-
-      it 'does not change the build status' do
-        expect { subject }.to change { build.status }.to('pending')
-      end
-    end
-  end
-
-  context 'when build has manual option' do
-    let(:build) { create(:ci_build, :created, :actionable, user: user, project: project) }
-
-    context 'when current status is success' do
-      let(:current_status) { 'success' }
-
-      it 'changes the build status' do
-        expect { subject }.to change { build.status }.to('manual')
-      end
-    end
-
-    context 'when current status is failed' do
-      let(:current_status) { 'failed' }
-
-      it 'does not change the build status' do
-        expect { subject }.to change { build.status }.to('skipped')
-      end
-    end
-  end
-
-  context 'when build has delayed option' do
+  shared_context 'with enqueue_immediately set' do
     before do
-      allow(Ci::BuildScheduleWorker).to receive(:perform_at) {}
+      build.set_enqueue_immediately!
+    end
+  end
+
+  shared_context 'with ci_retry_job_fix disabled' do
+    before do
+      stub_feature_flags(ci_retry_job_fix: false)
+    end
+  end
+
+  context 'for single build' do
+    let!(:build) { create(:ci_build, *[trait].compact, :created, **conditions, pipeline: pipeline) }
+
+    where(:trait, :conditions, :current_status, :after_status, :retry_after_status, :retry_disabled_after_status) do
+      nil          | { when: :on_success } | 'success' | 'pending'   | 'pending' | 'pending'
+      nil          | { when: :on_success } | 'skipped' | 'pending'   | 'pending' | 'pending'
+      nil          | { when: :on_success } | 'failed'  | 'skipped'   | 'skipped' | 'skipped'
+      nil          | { when: :on_failure } | 'success' | 'skipped'   | 'skipped' | 'skipped'
+      nil          | { when: :on_failure } | 'skipped' | 'skipped'   | 'skipped' | 'skipped'
+      nil          | { when: :on_failure } | 'failed'  | 'pending'   | 'pending' | 'pending'
+      nil          | { when: :always }     | 'success' | 'pending'   | 'pending' | 'pending'
+      nil          | { when: :always }     | 'skipped' | 'pending'   | 'pending' | 'pending'
+      nil          | { when: :always }     | 'failed'  | 'pending'   | 'pending' | 'pending'
+      :actionable  | { when: :manual }     | 'success' | 'manual'    | 'pending' | 'manual'
+      :actionable  | { when: :manual }     | 'skipped' | 'manual'    | 'pending' | 'manual'
+      :actionable  | { when: :manual }     | 'failed'  | 'skipped'   | 'skipped' | 'skipped'
+      :schedulable | { when: :delayed }    | 'success' | 'scheduled' | 'pending' | 'scheduled'
+      :schedulable | { when: :delayed }    | 'skipped' | 'scheduled' | 'pending' | 'scheduled'
+      :schedulable | { when: :delayed }    | 'failed'  | 'skipped'   | 'skipped' | 'skipped'
     end
 
-    let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }
-
-    context 'when current status is success' do
-      let(:current_status) { 'success' }
-
-      it 'changes the build status' do
-        expect { subject }.to change { build.status }.to('scheduled')
+    with_them do
+      it 'updates the job status to after_status' do
+        expect { subject }.to change { build.status }.to(after_status)
       end
-    end
 
-    context 'when current status is failed' do
-      let(:current_status) { 'failed' }
+      context 'when build is set to enqueue immediately' do
+        include_context 'with enqueue_immediately set'
 
-      it 'does not change the build status' do
-        expect { subject }.to change { build.status }.to('skipped')
+        it 'updates the job status to retry_after_status' do
+          expect { subject }.to change { build.status }.to(retry_after_status)
+        end
+
+        context 'when feature flag ci_retry_job_fix is disabled' do
+          include_context 'with ci_retry_job_fix disabled'
+
+          it "updates the job status to retry_disabled_after_status" do
+            expect { subject }.to change { build.status }.to(retry_disabled_after_status)
+          end
+        end
       end
     end
   end
 
   context 'when build is scheduled with DAG' do
-    using RSpec::Parameterized::TableSyntax
+    let!(:build) do
+      create(
+        :ci_build,
+        *[trait].compact,
+        :dependent,
+        :created,
+        when: build_when,
+        pipeline: pipeline,
+        needed: other_build
+      )
+    end
 
-    let(:pipeline) { create(:ci_pipeline, ref: 'master', project: project) }
-    let!(:build) { create(:ci_build, :created, when: build_when, pipeline: pipeline, scheduling_type: :dag) }
     let!(:other_build) { create(:ci_build, :created, when: :on_success, pipeline: pipeline) }
-    let!(:build_on_other_build) { create(:ci_build_need, build: build, name: other_build.name) }
 
-    where(:build_when, :current_status, :after_status) do
-      :on_success | 'success' | 'pending'
-      :on_success | 'skipped' | 'skipped'
-      :manual     | 'success' | 'manual'
-      :manual     | 'skipped' | 'skipped'
-      :delayed    | 'success' | 'manual'
-      :delayed    | 'skipped' | 'skipped'
+    where(:trait, :build_when, :current_status, :after_status, :retry_after_status, :retry_disabled_after_status) do
+      nil          | :on_success | 'success' | 'pending'   | 'pending' | 'pending'
+      nil          | :on_success | 'skipped' | 'skipped'   | 'skipped' | 'skipped'
+      nil          | :manual     | 'success' | 'manual'    | 'pending' | 'manual'
+      nil          | :manual     | 'skipped' | 'skipped'   | 'skipped' | 'skipped'
+      nil          | :delayed    | 'success' | 'manual'    | 'pending' | 'manual'
+      nil          | :delayed    | 'skipped' | 'skipped'   | 'skipped' | 'skipped'
+      :schedulable | :delayed    | 'success' | 'scheduled' | 'pending' | 'scheduled'
+      :schedulable | :delayed    | 'skipped' | 'skipped'   | 'skipped' | 'skipped'
     end
 
     with_them do
-      it 'proceeds the build' do
+      it 'updates the job status to after_status' do
         expect { subject }.to change { build.status }.to(after_status)
+      end
+
+      context 'when build is set to enqueue immediately' do
+        include_context 'with enqueue_immediately set'
+
+        it 'updates the job status to retry_after_status' do
+          expect { subject }.to change { build.status }.to(retry_after_status)
+        end
+
+        context 'when feature flag ci_retry_job_fix is disabled' do
+          include_context 'with ci_retry_job_fix disabled'
+
+          it "updates the job status to retry_disabled_after_status" do
+            expect { subject }.to change { build.status }.to(retry_disabled_after_status)
+          end
+        end
       end
     end
   end

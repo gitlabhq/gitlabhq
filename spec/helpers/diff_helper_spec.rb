@@ -445,6 +445,19 @@ RSpec.describe DiffHelper do
     end
   end
 
+  describe '#params_with_whitespace' do
+    before do
+      controller.params[:protocol] = 'HACKED!'
+      controller.params[:host] = 'HACKED!'
+    end
+
+    subject { helper.params_with_whitespace }
+
+    it "filters with safe_params" do
+      expect(subject).to eq({ 'w' => 1 })
+    end
+  end
+
   describe "#render_fork_suggestion" do
     subject { helper.render_fork_suggestion }
 

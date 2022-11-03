@@ -60,7 +60,7 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
     end
 
     it 'renders the version check badge' do
-      expect(rendered).to have_selector('.js-gitlab-version-check')
+      expect(rendered).to have_selector('.js-gitlab-version-check-badge')
     end
   end
 

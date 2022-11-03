@@ -23,7 +23,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
           record_type: 'A',
           interval: 60,
           disconnect_timeout: 120,
-          use_tcp: false
+          use_tcp: false,
+          max_replica_pools: nil
         )
         expect(config.pool_size).to eq(Gitlab::Database.default_pool_size)
       end
@@ -39,7 +40,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
             replica_check_interval: 3,
             hosts: %w[foo bar],
             discover: {
-              'record' => 'foo.example.com'
+              record: 'foo.example.com',
+              max_replica_pools: 5
             }
           }
         }
@@ -59,7 +61,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
           record_type: 'A',
           interval: 60,
           disconnect_timeout: 120,
-          use_tcp: false
+          use_tcp: false,
+          max_replica_pools: 5
         )
         expect(config.pool_size).to eq(4)
       end
@@ -95,7 +98,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
           record_type: 'A',
           interval: 60,
           disconnect_timeout: 120,
-          use_tcp: false
+          use_tcp: false,
+          max_replica_pools: nil
         )
         expect(config.pool_size).to eq(4)
       end

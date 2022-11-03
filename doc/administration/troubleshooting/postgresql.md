@@ -80,7 +80,7 @@ This section is for links to information elsewhere in the GitLab documentation.
   HINT:  Free one or increase max_replication_slots.
   ```
 
-- Geo [replication errors](../geo/replication/troubleshooting.md#fixing-replication-errors) including:
+- Geo [replication errors](../geo/replication/troubleshooting.md#fixing-postgresql-database-replication-errors) including:
 
   ```plaintext
   ERROR: replication slots can only be used if max_replication_slots > 0

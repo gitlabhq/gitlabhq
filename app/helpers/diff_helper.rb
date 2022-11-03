@@ -243,6 +243,10 @@ module DiffHelper
     {}
   end
 
+  def params_with_whitespace
+    hide_whitespace? ? safe_params.except(:w) : safe_params.merge(w: 1)
+  end
+
   private
 
   def diff_btn(title, name, selected)
@@ -274,10 +278,6 @@ module DiffHelper
 
   def hide_whitespace?
     params[:w] == '1'
-  end
-
-  def params_with_whitespace
-    hide_whitespace? ? request.query_parameters.except(:w) : request.query_parameters.merge(w: 1)
   end
 
   def toggle_whitespace_link(url, options)

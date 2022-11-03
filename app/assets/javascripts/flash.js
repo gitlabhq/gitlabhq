@@ -109,6 +109,7 @@ const addDismissFlashClickListener = (flashEl, fadeTransition) => {
  *
  * @param {object} options - Options to control the flash message
  * @param {string} options.message - Alert message text
+ * @param {string} [options.title] - Alert title
  * @param {VARIANT_SUCCESS|VARIANT_WARNING|VARIANT_DANGER|VARIANT_INFO|VARIANT_TIP} [options.variant] - Which GlAlert variant to use; it defaults to VARIANT_DANGER.
  * @param {object} [options.parent] - Reference to parent element under which alert needs to appear. Defaults to `document`.
  * @param {Function} [options.onDismiss] - Handler to call when this alert is dismissed.
@@ -126,6 +127,7 @@ const addDismissFlashClickListener = (flashEl, fadeTransition) => {
  */
 const createAlert = function createAlert({
   message,
+  title,
   variant = VARIANT_DANGER,
   parent = document,
   containerSelector = '.flash-container',
@@ -183,6 +185,7 @@ const createAlert = function createAlert({
         GlAlert,
         {
           props: {
+            title,
             dismissible: true,
             dismissLabel: __('Dismiss'),
             variant,

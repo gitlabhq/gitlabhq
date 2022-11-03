@@ -32,7 +32,7 @@ Assuming `project-name` is the trigger command, the slash commands are:
 | `/project-name deploy <from> to <to>` | [Deploys](#deploy-command) from the `<from>` environment to the `<to>` environment. |
 | `/project-name run <job name> <arguments>` | Executes the [ChatOps](../ci/chatops/index.md) job `<job name>` on the default branch. |
 
-If you are using the [GitLab Slack application](../user/project/integrations/gitlab_slack_application.md) for
+If you are using the [GitLab for Slack app](../user/project/integrations/gitlab_slack_application.md) for
 your GitLab.com projects, [add the `gitlab` keyword at the beginning of the command](../user/project/integrations/gitlab_slack_application.md#usage).
 
 ## Issue commands

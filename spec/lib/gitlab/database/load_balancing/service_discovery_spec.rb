@@ -231,9 +231,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
         nameserver: 'localhost',
         port: 8600,
         record: 'foo',
-        record_type: record_type
+        record_type: record_type,
+        max_replica_pools: max_replica_pools
       )
     end
+
+    let(:max_replica_pools) { nil }
 
     let(:packet) { double(:packet, answer: [res1, res2]) }
 
@@ -266,23 +269,50 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery do
       let(:res1) { double(:resource, host: 'foo1.service.consul.', port: 5432, weight: 1, priority: 1, ttl: 90) }
       let(:res2) { double(:resource, host: 'foo2.service.consul.', port: 5433, weight: 1, priority: 1, ttl: 90) }
       let(:res3) { double(:resource, host: 'foo3.service.consul.', port: 5434, weight: 1, priority: 1, ttl: 90) }
-      let(:packet) { double(:packet, answer: [res1, res2, res3], additional: []) }
+      let(:res4) { double(:resource, host: 'foo4.service.consul.', port: 5432, weight: 1, priority: 1, ttl: 90) }
+      let(:packet) { double(:packet, answer: [res1, res2, res3, res4], additional: []) }
 
       before do
         expect_next_instance_of(Gitlab::Database::LoadBalancing::SrvResolver) do |resolver|
           allow(resolver).to receive(:address_for).with('foo1.service.consul.').and_return(IPAddr.new('255.255.255.0'))
           allow(resolver).to receive(:address_for).with('foo2.service.consul.').and_return(IPAddr.new('127.0.0.1'))
           allow(resolver).to receive(:address_for).with('foo3.service.consul.').and_return(nil)
+          allow(resolver).to receive(:address_for).with('foo4.service.consul.').and_return("127.0.0.2")
         end
       end
 
       it 'returns a TTL and ordered list of hosts' do
         addresses = [
           described_class::Address.new('127.0.0.1', 5433),
+          described_class::Address.new('127.0.0.2', 5432),
           described_class::Address.new('255.255.255.0', 5432)
         ]
 
         expect(service.addresses_from_dns).to eq([90, addresses])
+      end
+
+      context 'when max_replica_pools is set' do
+        context 'when the number of addresses exceeds max_replica_pools' do
+          let(:max_replica_pools) { 2 }
+
+          it 'limits to max_replica_pools' do
+            expect(service.addresses_from_dns[1].count).to eq(2)
+          end
+        end
+
+        context 'when the number of addresses is less than max_replica_pools' do
+          let(:max_replica_pools) { 5 }
+
+          it 'returns all addresses' do
+            addresses = [
+              described_class::Address.new('127.0.0.1', 5433),
+              described_class::Address.new('127.0.0.2', 5432),
+              described_class::Address.new('255.255.255.0', 5432)
+            ]
+
+            expect(service.addresses_from_dns).to eq([90, addresses])
+          end
+        end
       end
     end
 

@@ -193,6 +193,20 @@ describe('Flash', () => {
         );
       });
 
+      describe('with title', () => {
+        const mockTitle = 'my title';
+
+        it('shows title and message', () => {
+          createAlert({
+            title: mockTitle,
+            message: mockMessage,
+          });
+
+          const text = document.querySelector('.flash-container').textContent.trim();
+          expect(text).toBe(`${mockTitle} ${mockMessage}`);
+        });
+      });
+
       describe('with buttons', () => {
         const findAlertAction = () => document.querySelector('.flash-container .gl-alert-action');
 

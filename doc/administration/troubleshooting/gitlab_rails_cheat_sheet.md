@@ -64,17 +64,23 @@ This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_trou
 
 ## Geo
 
+### Reverify all uploads (or any SSF data type which is verified)
+
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#reverify-all-uploads-or-any-ssf-data-type-which-is-verified).
+
 ### Artifacts
 
 Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#find-failed-artifacts).
 
 ### Repository verification failures
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#repository-verification-failures).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#find-repository-verification-failures).
 
 ### Resync repositories
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#resync-repositories).
+Moved to [Geo replication troubleshooting - Resync repository types except for project or project wiki repositories](../geo/replication/troubleshooting.md#repository-types-except-for-project-or-project-wiki-repositories).
+
+Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting.md#resync-project-and-project-wiki-repositories).
 
 ### Blob types
 

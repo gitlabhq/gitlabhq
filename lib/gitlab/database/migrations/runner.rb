@@ -7,6 +7,7 @@ module Gitlab
         BASE_RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
         METADATA_FILENAME = 'metadata.json'
         SCHEMA_VERSION = 4 # Version of the output format produced by the runner
+        POST_MIGRATION_MATCHER = %r{db/post_migrate/}.freeze
 
         class << self
           def up(database:, legacy_mode: false)
@@ -116,7 +117,10 @@ module Gitlab
           verbose_was = ActiveRecord::Migration.verbose
           ActiveRecord::Migration.verbose = true
 
-          sorted_migrations = migrations.sort_by(&:version)
+          sorted_migrations = migrations.sort_by do |m|
+            [m.filename.match?(POST_MIGRATION_MATCHER) ? 1 : 0, m.version]
+          end
+
           sorted_migrations.reverse! if direction == :down
 
           instrumentation = Instrumentation.new(result_dir: result_dir)

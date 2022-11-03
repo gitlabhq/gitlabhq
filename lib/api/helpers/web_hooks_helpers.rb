@@ -6,7 +6,7 @@ module API
       extend Grape::API::Helpers
 
       params :requires_url do
-        requires :url, type: String, desc: "The URL to send the request to"
+        requires :url, type: String, desc: "The URL to send the request to", documentation: { example: 'http://example.com/hook' }
       end
 
       params :optional_url do
@@ -15,8 +15,8 @@ module API
 
       params :url_variables do
         optional :url_variables, type: Array, desc: 'URL variables for interpolation' do
-          requires :key, type: String, desc: 'Name of the variable'
-          requires :value, type: String, desc: 'Value of the variable'
+          requires :key, type: String, desc: 'Name of the variable', documentation: { example: 'token' }
+          requires :value, type: String, desc: 'Value of the variable', documentation: { example: '123' }
         end
       end
 

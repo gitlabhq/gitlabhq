@@ -25,7 +25,7 @@ module RuboCop
           return unless method_name
 
           add_offense(node) do |corrector|
-            replacement = "Gitlab::Json.#{method_name}(#{arg_source})"
+            replacement = "#{cbased(node)}Gitlab::Json.#{method_name}(#{arg_source})"
 
             corrector.replace(node.source_range, replacement)
           end
@@ -38,13 +38,19 @@ module RuboCop
 
           # Only match if the method is implemented by Gitlab::Json
           if method_name && AVAILABLE_METHODS.include?(method_name)
-            return [method_name, arg_nodes.map(&:source).join(', ')]
+            return [method_name, arg_nodes.map(&:source).join(", ")]
           end
 
           receiver = to_json_call?(node)
           return [:dump, receiver.source] if receiver
 
           nil
+        end
+
+        def cbased(node)
+          return unless %r{/ee/}.match?(node.location.expression.source_buffer.name)
+
+          "::"
         end
       end
     end
