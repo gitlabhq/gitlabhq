@@ -115,7 +115,7 @@ create or update pipelines until their email address is confirmed.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
 
-You can [change](../../../security/password_length_limits.md#modify-minimum-password-length-using-gitlab-ui)
+You can [change](../../../security/password_length_limits.md#modify-minimum-password-length)
 the minimum number of characters a user must have in their password using the GitLab UI.
 
 ### Password complexity requirements **(PREMIUM SELF)**

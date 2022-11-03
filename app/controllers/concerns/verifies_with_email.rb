@@ -84,10 +84,7 @@ module VerifiesWithEmail
   def send_verification_instructions_email(user, token)
     return unless user.can?(:receive_notifications)
 
-    Notify.verification_instructions_email(
-      user.id,
-      token: token,
-      expires_in: Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES).deliver_later
+    Notify.verification_instructions_email(user.email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
   end
