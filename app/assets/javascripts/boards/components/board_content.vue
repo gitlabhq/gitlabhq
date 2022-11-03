@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy, throttle } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
@@ -25,6 +25,11 @@ export default {
       type: Boolean,
       required: true,
     },
+  },
+  data() {
+    return {
+      boardHeight: null,
+    };
   },
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
@@ -55,11 +60,27 @@ export default {
       return this.canDragColumns ? options : {};
     },
   },
+  mounted() {
+    this.setBoardHeight();
+
+    this.resizeObserver = new ResizeObserver(
+      throttle(() => {
+        this.setBoardHeight();
+      }, 150),
+    );
+    this.resizeObserver.observe(document.body);
+  },
+  unmounted() {
+    this.resizeObserver.disconnect();
+  },
   methods: {
     ...mapActions(['moveList', 'unsetError']),
     afterFormEnters() {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+    },
+    setBoardHeight() {
+      this.boardHeight = `${window.innerHeight - this.$el.getBoundingClientRect().top}px`;
     },
   },
 };
@@ -76,6 +97,7 @@ export default {
       ref="list"
       v-bind="draggableOptions"
       class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-scroll"
+      :style="{ height: boardHeight }"
       @end="moveList"
     >
       <board-column
@@ -99,6 +121,7 @@ export default {
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
       :disabled="disabled"
+      :style="{ height: boardHeight }"
     />
 
     <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />

@@ -82,8 +82,6 @@ export default {
     MrWidgetAutoMergeFailed: AutoMergeFailed,
     MrWidgetRebase: RebaseState,
     SourceBranchRemovalStatus,
-    GroupedCodequalityReportsApp: () =>
-      import('../reports/codequality_report/grouped_codequality_reports_app.vue'),
     GroupedTestReportsApp: () =>
       import('../reports/grouped_test_report/grouped_test_reports_app.vue'),
     MrWidgetApprovals,
@@ -217,9 +215,6 @@ export default {
     },
     shouldShowSecurityExtension() {
       return window.gon?.features?.refactorSecurityExtension;
-    },
-    shouldShowCodeQualityExtension() {
-      return window.gon?.features?.refactorCodeQualityExtension;
     },
     shouldShowMergeDetails() {
       if (this.mr.state === 'readyToMerge') return true;
@@ -519,7 +514,7 @@ export default {
       }
     },
     registerCodeQualityExtension() {
-      if (this.shouldRenderCodeQuality && this.shouldShowCodeQualityExtension) {
+      if (this.shouldRenderCodeQuality) {
         registerExtension(codeQualityExtension);
       }
     },
@@ -591,14 +586,6 @@ export default {
       </div>
 
       <widget-container v-if="mr" :mr="mr" />
-
-      <grouped-codequality-reports-app
-        v-if="shouldRenderCodeQuality && !shouldShowCodeQualityExtension"
-        :head-blob-path="mr.headBlobPath"
-        :base-blob-path="mr.baseBlobPath"
-        :codequality-reports-path="mr.codequalityReportsPath"
-        :codequality-help-path="mr.codequalityHelpPath"
-      />
 
       <security-reports-app
         v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"

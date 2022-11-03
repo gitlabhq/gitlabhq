@@ -5,13 +5,17 @@
   if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/'
 
 .if-not-ee: &if-not-ee
-  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
+  # Only consider FOSS not EE
+  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/ && $CI_PROJECT_NAME !~ /^gitlab-jh/'
 
 .if-not-foss: &if-not-foss
   if: '$CI_PROJECT_NAME != "gitlab-foss" && $CI_PROJECT_NAME != "gitlab-ce" && $CI_PROJECT_NAME != "gitlabhq"'
 
 .if-jh: &if-jh
-  if: '$CI_PROJECT_PATH =~ /^gitlab-(jh|cn)\/.*/'
+  # Example of these projects:
+  # https://jihulab.com/gitlab-cn/gitlab
+  # https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation
+  if: '$CI_PROJECT_PATH =~ /^gitlab-(jh|cn)\/.*/ || $CI_PROJECT_NAME =~ /^gitlab-jh/'
 
 .if-force-ci: &if-force-ci
   if: '$FORCE_GITLAB_CI'
@@ -558,6 +562,13 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-jh
+      when: never
+
+.as-if-jh-default-exclusion-rules:
+  rules:
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
       when: never
 
 .rails:rules:minimal-default-rules:
@@ -2024,3 +2035,21 @@
   rules:
     - <<: *if-default-refs
       changes: *lint-metrics-yaml-patterns
+
+##################
+# as-if-jh rules #
+##################
+.as-if-jh:rules:prepare-as-if-jh:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - !reference [".as-if-jh-default-exclusion-rules", rules]
+    - <<: *if-merge-request-labels-as-if-jh
+
+# This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
+# Because the jobs using this need jobs using the preparation rules
+.as-if-jh:rules:start-as-if-jh:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - !reference [".as-if-jh-default-exclusion-rules", rules]
+    - <<: *if-merge-request-labels-as-if-jh
+      allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136

@@ -171,7 +171,7 @@ module API
         detail 'This feature was introduced in GitLab 10.5.'
       end
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         requires :search, type: String, desc: 'The expression it should be searched for'
         requires :scope,
           type: String,

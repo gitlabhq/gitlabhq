@@ -1,6 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
@@ -53,6 +53,29 @@ describe('BoardContent', () => {
     });
   };
 
+  beforeAll(() => {
+    global.ResizeObserver = class MockResizeObserver {
+      constructor(callback) {
+        this.callback = callback;
+
+        this.entries = [];
+      }
+
+      observe(entry) {
+        this.entries.push(entry);
+      }
+
+      disconnect() {
+        this.entries = [];
+        this.callback = null;
+      }
+
+      trigger() {
+        this.callback(this.entries);
+      }
+    };
+  });
+
   afterEach(() => {
     wrapper.destroy();
   });
@@ -73,6 +96,17 @@ describe('BoardContent', () => {
     it('does not display EpicsSwimlanes component', () => {
       expect(wrapper.findComponent(EpicsSwimlanes).exists()).toBe(false);
       expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
+    });
+
+    it('resizes the list on resize', async () => {
+      window.innerHeight = 1000;
+      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100 });
+
+      wrapper.vm.resizeObserver.trigger();
+
+      await nextTick();
+
+      expect(wrapper.findComponent({ ref: 'list' }).attributes('style')).toBe('height: 900px;');
     });
   });
 

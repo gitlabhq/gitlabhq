@@ -108,7 +108,7 @@ module API
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       desc 'Get a project import status' do
         detail 'This feature was introduced in GitLab 10.6.'

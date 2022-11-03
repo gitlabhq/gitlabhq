@@ -125,6 +125,17 @@ RSpec.describe PgFullTextSearchable do
       end
     end
 
+    context 'when search term is a path with underscores' do
+      let(:path) { 'browser_ui/5_package/package_registry/maven/maven_group_level_spec.rb' }
+      let(:with_underscore) { model_class.create!(project: project, title: 'issue with path', description: "some #{path} other text") }
+
+      it 'allows searching by the path' do
+        with_underscore.update_search_data!
+
+        expect(model_class.pg_full_text_search(path)).to contain_exactly(with_underscore)
+      end
+    end
+
     context 'when text has numbers preceded by a dash' do
       let(:with_dash) { model_class.create!(project: project, title: 'issue with dash', description: 'ABC-123') }
 

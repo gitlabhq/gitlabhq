@@ -15,7 +15,7 @@ module API
       label_id: API::NO_SLASH_URL_PART_REGEX)
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: LABEL_ENDPOINT_REQUIREMENTS do
       desc 'Get all labels of the project' do

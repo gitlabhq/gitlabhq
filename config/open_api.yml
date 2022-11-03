@@ -29,6 +29,8 @@ metadata:
     description: Operations related to environments
   - name: feature_flags_user_lists
     description: Operations related to accessing GitLab feature flag user lists
+  - name: feature_flags
+    description: Operations related to feature flags
   - name: features
     description: Operations related to managing Flipper-based feature flags
   - name: freeze_periods
@@ -39,5 +41,7 @@ metadata:
     description: Operations related to metadata of the GitLab instance
   - name: release_links
     description: Operations related to release assets (links)
+  - name: releases
+    description: Operations related to releases
   - name: suggestions
     description: Operations related to suggestions

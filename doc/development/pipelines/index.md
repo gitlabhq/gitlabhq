@@ -257,27 +257,31 @@ set and get the `ee/` folder removed before the tests start running.
 
 The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to `gitlab-org/gitlab-foss`.
 
-## As-if-JH jobs
+## As-if-JH cross project downstream pipeline
 
-NOTE:
-This is disabled for now.
-
-The `* as-if-jh` jobs run the GitLab test suite "as if JiHu", meaning as if the jobs would run in the context
-of [GitLab JH](../jh_features_review.md). These jobs are only created in the following cases:
+The `start-as-if-jh` job triggers a cross project downstream pipeline which
+runs the GitLab test suite "as if JiHu", meaning as if the pipeline would run
+in the context of [GitLab JH](../jh_features_review.md). These jobs are only
+created in the following cases:
 
 - when the `pipeline:run-as-if-jh` label is set on the merge request
-- when the `pipeline:run-all-rspec` label is set on the merge request
-- when any code or backstage file is changed
-- when any startup CSS file is changed
 
-The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `jh/` folder is added before the tests start running.
+This pipeline runs under the context of a generated branch in the
+[GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
+project, which is a mirror of the
+[GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab).
 
-The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to [GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
+The generated branch name is prefixed with `as-if-jh/` along with the branch
+name in the merge request. This generated branch is based on the merge request
+branch, additionally adding changes downloaded from the
+[corresponding JH branch](#corresponding-jh-branch) on top to turn the whole
+pipeline as if JiHu.
+
+The intent is to ensure that a change doesn't introduce a failure after
+[GitLab](https://gitlab.com/gitlab-org/gitlab) is synchronized to
+[GitLab JH](https://jihulab.com/gitlab-cn/gitlab).
 
 ### When to consider applying `pipeline:run-as-if-jh` label
-
-NOTE:
-This is disabled for now.
 
 If a Ruby file is renamed and there's a corresponding [`prepend_mod` line](../jh_features_review.md#jh-features-based-on-ce-or-ee-features),
 it's likely that GitLab JH is relying on it and requires a corresponding
@@ -285,16 +289,108 @@ change to rename the module or class it's prepending.
 
 ### Corresponding JH branch
 
-NOTE:
-This is disabled for now.
-
 You can create a corresponding JH branch on [GitLab JH](https://jihulab.com/gitlab-cn/gitlab) by
 appending `-jh` to the branch name. If a corresponding JH branch is found,
-`* as-if-jh` jobs grab the `jh` folder from the respective branch,
-rather than from the default branch `main-jh`.
+as-if-jh pipeline grabs files from the respective branch, rather than from the
+default branch `main-jh`.
 
 NOTE:
 For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
+
+NOTE:
+While [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) is a mirror of
+[GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
+it does not include any corresponding JH branch beside the default `main-jh`.
+This is why when we want to fetch corresponding JH branch we should fetch it
+from the main mirror, rather than the validation project.
+
+### How as-if-JH pipeline was configured
+
+The whole process looks like this:
+
+```mermaid
+flowchart TD
+  subgraph "JiHuLab.com"
+    JH["gitlab-cn/gitlab"]
+  end
+
+  subgraph "GitLab.com"
+    Mirror["gitlab-org/gitlab-jh-mirrors/gitlab"]
+    Validation["gitlab-org-sandbox/gitlab-jh-validation"]
+
+    subgraph MR["gitlab-org/gitlab merge request"]
+      Add["add-jh-files job"]
+      Prepare["prepare-as-if-jh-branch job"]
+      Add --"download artifacts"--> Prepare
+    end
+
+    Mirror --"pull mirror with master and main-jh"--> Validation
+    Mirror --"download JiHu files with ADD_JH_FILES_TOKEN"--> Add
+    Prepare --"push as-if-jh branches with AS_IF_JH_TOKEN"--> Validation
+    Validation --> Pipeline["as-if-jh pipeline"]
+  end
+
+  JH --"pull mirror with corresponding JH branches"--> Mirror
+```
+
+#### Tokens set in the project variables
+
+- `ADD_JH_FILES_TOKEN`: This is a [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab)
+  project token with `read_api` permission, to be able to download JiHu files.
+- `AS_IF_JH_TOKEN`: This is a [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
+  project token with `write_repository` permission, to push generated `as-if-jh/*` branch.
+
+#### How we generate the as-if-JH branch
+
+First `add-jh-files` job will download the required JiHu files from the
+corresponding JH branch, saving in artifacts. Next `prepare-as-if-jh-branch`
+job will create a new branch from the merge request branch, commit the
+changes, and finally push the branch to the
+[validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation).
+
+#### How we trigger and run the as-if-JH pipeline
+
+After having the `as-if-jh/*` branch, `start-as-if-jh` job will trigger a pipeline
+in the [validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
+to run the cross-project downstream pipeline.
+
+#### How the GitLab JH mirror project is set up
+
+The [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab) project is private and CI is disabled.
+
+It's a pull mirror pulling from [GitLab JH](https://jihulab.com/gitlab-cn/gitlab),
+mirroring all branches, overriding divergent refs, triggering no pipelines
+when mirror is updated.
+
+The pulling user is [`@gitlab-jh-bot`](https://gitlab.com/gitlab-jh-bot), who
+is a maintainer in the project. The credentials can be found in the 1password
+engineering vault.
+
+No password is used from mirroring because GitLab JH is a public project.
+
+#### How the GitLab JH validation project is set up
+
+This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) project is public and CI is enabled, without any project variables.
+
+It's a pull mirror pulling from [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
+mirroring only protected branches, `master` and `main-jh`, overriding
+divergent refs, triggering no pipelines when mirror is updated.
+
+The pulling user is [`@gitlab-jh-validation-bot`](https://gitlab.com/gitlab-jh-validation-bot), who is a maintainer in the project, and also a
+reporter in the
+[GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab).
+The credentials can be found in the 1password engineering vault.
+
+A personal access token from `@gitlab-jh-validation-bot` with
+`write_repository` permission is used as the password to pull changes from
+the GitLab JH mirror. Username is set with `gitlab-jh-validation-bot`.
+
+There is also a [pipeline schedule](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation/-/pipeline_schedules)
+to run maintenance pipelines with variable `SCHEDULE_TYPE` set to `maintenance`
+running every day, updating cache.
+
+The default CI/CD configuration file is also set at `jh/.gitlab-ci.yml` so it
+runs exactly like [GitLab JH](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml).
 
 ## Ruby 3.0 jobs
 

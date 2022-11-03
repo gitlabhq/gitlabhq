@@ -3,7 +3,7 @@
 module API
   class ProjectDebianDistributions < ::API::Base
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
 
     before do

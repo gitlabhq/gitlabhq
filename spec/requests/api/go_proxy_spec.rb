@@ -406,6 +406,19 @@ RSpec.describe API::GoProxy do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'with access to package registry for everyone' do
+      let_it_be(:user) { nil }
+
+      before do
+        project.reload.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it_behaves_like 'a module version list resource', 'v1.0.1', 'v1.0.2', 'v1.0.3'
+      it_behaves_like 'a module version information resource', 'v1.0.1'
+      it_behaves_like 'a module file resource', 'v1.0.1'
+      it_behaves_like 'a module archive resource', 'v1.0.1', ['README.md', 'go.mod', 'a.go']
+    end
   end
 
   context 'with a public project' do

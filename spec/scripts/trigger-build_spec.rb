@@ -229,6 +229,7 @@ RSpec.describe Trigger do
 
           context "when set in a file" do
             before do
+              stub_env(version_file)
               allow(File).to receive(:read).and_call_original
             end
 

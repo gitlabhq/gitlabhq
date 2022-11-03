@@ -590,6 +590,12 @@ Graphql/Descriptions:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
 
+Graphql/EnumNames:
+  Enabled: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+
 # Cops for upgrade to gitlab-styles 3.1.0
 RSpec/ImplicitSubject:
   Enabled: false

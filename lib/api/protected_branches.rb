@@ -13,7 +13,10 @@ module API
     helpers Helpers::ProtectedBranchesHelpers
 
     params do
-      requires :id, type: String, desc: 'The ID of a project', documentation: { example: 'gitlab-org/gitlab' }
+      requires :id,
+        types: [String, Integer],
+        desc: 'The ID or URL-encoded path of the project',
+        documentation: { example: 'gitlab-org/gitlab' }
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc "Get a project's protected branches" do

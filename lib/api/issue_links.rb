@@ -10,7 +10,7 @@ module API
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
     end
     resource :projects, requirements: { id: %r{[^/]+} } do

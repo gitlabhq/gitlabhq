@@ -151,7 +151,8 @@ When implementing a service class, consider:
       developer's discretion, such as: `issue`, `project`, `merge_request`.
    1. When service represents an action initiated by a user or executed in the
       context of a user, the initializer must have the `current_user:` keyword argument.
-      Services with `current_user:` argument run high-level business logic.
+      Services with the `current_user:` argument run high-level business logic
+      and must validate user authorization to perform their operations.
    1. When service does not have a user context and it's not directly initiated
       by a user (like background service or side-effects), the `current_user:`
       argument is not needed. This describes low-level domain logic or instance-wide logic.

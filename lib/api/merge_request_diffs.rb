@@ -10,7 +10,7 @@ module API
     feature_category :code_review
 
     params do
-      requires :id, type: String, desc: 'The ID of the project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of merge request diff versions' do

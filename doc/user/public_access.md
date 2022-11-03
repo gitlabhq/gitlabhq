@@ -78,11 +78,12 @@ Prerequisite:
 
 ## Change group visibility
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for a group.
 - Subgroups and projects must already have visibility settings that are at least as
-  restrictive as the new setting of the parent group.
+  restrictive as the new setting of the parent group. For example, you cannot set a group
+  to private if a subgroup or project in that group is public.
 
 1. On the top bar, select **Main menu > Groups** and find your project.
 1. On the left sidebar, select **Settings > General**.

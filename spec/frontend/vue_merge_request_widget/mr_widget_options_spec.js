@@ -563,21 +563,6 @@ describe('MrWidgetOptions', () => {
       });
     });
 
-    describe('code quality widget', () => {
-      beforeEach(() => {
-        jest.spyOn(document, 'dispatchEvent');
-      });
-      it('renders the component when refactorCodeQualityExtension is false', () => {
-        createComponent(mockData, {}, { refactorCodeQualityExtension: false });
-        expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
-      });
-
-      it('does not render the component when refactorCodeQualityExtension is true', () => {
-        createComponent(mockData, {}, { refactorCodeQualityExtension: true });
-        expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
-      });
-    });
-
     describe('pipeline for target branch after merge', () => {
       describe('with information for target branch pipeline', () => {
         beforeEach(() => {
@@ -917,8 +902,7 @@ describe('MrWidgetOptions', () => {
     });
 
     it('extension polling is not called if enablePolling flag is not passed', () => {
-      // called one time due to parent component polling (mount)
-      expect(pollRequest).toHaveBeenCalledTimes(1);
+      expect(pollRequest).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -1004,7 +988,7 @@ describe('MrWidgetOptions', () => {
 
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(2);
+        expect(pollRequest).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -1042,7 +1026,7 @@ describe('MrWidgetOptions', () => {
         registerExtension(pollingErrorExtension);
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(2);
+        expect(pollRequest).toHaveBeenCalledTimes(1);
       });
 
       it('captures sentry error and displays error when poll has failed', async () => {

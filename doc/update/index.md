@@ -467,6 +467,10 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.6.0
+
+- Git 2.37.0 and later is required by Gitaly. For installations from source, we recommend you use the [Git version provided by Gitaly](../install/installation.md#git).
+
 ### 15.4.0
 
 - GitLab 15.4.0 includes a [batched background migration](#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).

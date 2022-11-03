@@ -182,11 +182,14 @@ module API
         mount ::API::Deployments
         mount ::API::Environments
         mount ::API::FeatureFlagsUserLists
+        mount ::API::FeatureFlags
         mount ::API::Features
         mount ::API::FreezePeriods
-        mount ::API::MergeRequestDiffs
+        mount ::API::Keys
         mount ::API::Metadata
+        mount ::API::MergeRequestDiffs
         mount ::API::ProjectRepositoryStorageMoves
+        mount ::API::Releases
         mount ::API::Release::Links
         mount ::API::ResourceAccessTokens
         mount ::API::ProtectedTags
@@ -238,7 +241,6 @@ module API
       mount ::API::ErrorTracking::Collector
       mount ::API::ErrorTracking::ProjectSettings
       mount ::API::Events
-      mount ::API::FeatureFlags
       mount ::API::Files
       mount ::API::GenericPackages
       mount ::API::Geo
@@ -263,7 +265,6 @@ module API
       mount ::API::Invitations
       mount ::API::IssueLinks
       mount ::API::Issues
-      mount ::API::Keys
       mount ::API::Labels
       mount ::API::Lint
       mount ::API::Markdown
@@ -301,7 +302,6 @@ module API
       mount ::API::Projects
       mount ::API::ProtectedTags
       mount ::API::PypiPackages
-      mount ::API::Releases
       mount ::API::RemoteMirrors
       mount ::API::Repositories
       mount ::API::ResourceLabelEvents

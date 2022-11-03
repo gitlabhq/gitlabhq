@@ -25,7 +25,7 @@ module PgFullTextSearchable
   TSVECTOR_MAX_LENGTH = 1.megabyte.freeze
   TEXT_SEARCH_DICTIONARY = 'english'
   URL_SCHEME_REGEX = %r{(?<=\A|\W)\w+://(?=\w+)}.freeze
-  TSQUERY_DISALLOWED_CHARACTERS_REGEX = %r{[^a-zA-Z0-9 .@/\-"]}.freeze
+  TSQUERY_DISALLOWED_CHARACTERS_REGEX = %r{[^a-zA-Z0-9 .@/\-_"]}.freeze
 
   def update_search_data!
     tsvector_sql_nodes = self.class.pg_full_text_searchable_columns.map do |column, weight|

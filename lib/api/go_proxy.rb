@@ -17,6 +17,10 @@ module API
     before { require_packages_enabled! }
 
     helpers do
+      def project
+        user_project(action: :read_package)
+      end
+
       def case_decode(str)
         # Converts "github.com/!azure" to "github.com/Azure"
         #
@@ -32,12 +36,12 @@ module API
       end
 
       def find_module
-        not_found! unless Feature.enabled?(:go_proxy, user_project)
+        not_found! unless Feature.enabled?(:go_proxy, project)
 
         module_name = case_decode params[:module_name]
         bad_request_missing_attribute!('Module Name') if module_name.blank?
 
-        mod = ::Packages::Go::ModuleFinder.new(user_project, module_name).execute
+        mod = ::Packages::Go::ModuleFinder.new(project, module_name).execute
 
         not_found! unless mod
 
@@ -58,13 +62,13 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       requires :module_name, type: String, desc: 'Module name', coerce_with: ->(val) { CGI.unescape(val) }
     end
     route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, authenticate_non_public: true
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
-        authorize_read_package!
+        authorize_read_package!(project)
       end
 
       namespace ':id/packages/go/*module_name/@v' do

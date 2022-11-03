@@ -16,11 +16,13 @@ module API
                release.milestones.order_by_dates_and_title
              end
 
-      expose :commit_path, expose_nil: false
-      expose :tag_path, expose_nil: false
+      expose :commit_path,
+        documentation: { type: 'string', example: '/root/app/commit/588440f66559714280628a4f9799f0c4eb880a4a' },
+        expose_nil: false
+      expose :tag_path, documentation: { type: 'string', example: '/root/app/-/tags/v1.0' }, expose_nil: false
 
       expose :assets do
-        expose :assets_count, as: :count
+        expose :assets_count, documentation: { type: 'integer', example: 2 }, as: :count
         expose :sources, using: Entities::Releases::Source, if: ->(_, _) { can_download_code? }
         expose :sorted_links, as: :links, using: Entities::Releases::Link
       end

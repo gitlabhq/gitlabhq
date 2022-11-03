@@ -3,6 +3,8 @@
 module API
   module Helpers
     module PackagesHelpers
+      extend ::Gitlab::Utils::Override
+
       MAX_PACKAGE_FILE_SIZE = 50.megabytes.freeze
 
       def require_packages_enabled!
@@ -46,6 +48,34 @@ module API
       def authorize_upload!(subject = user_project)
         authorize_create_package!(subject)
         require_gitlab_workhorse!
+      end
+
+      override :user_project
+      def user_project(action: :read_project)
+        case action
+        when :read_project
+          super()
+        when :read_package
+          user_project_with_read_package
+        else
+          raise ArgumentError, "unexpected action: #{action}"
+        end
+      end
+
+      # This function is similar to the `find_project!` function, but it considers the `read_package` ability.
+      def user_project_with_read_package
+        strong_memoize(:user_project_with_read_package) do
+          project = find_project(params[:id])
+
+          next forbidden! unless authorized_project_scope?(project)
+
+          next project if can?(current_user, :read_package, project&.packages_policy_subject)
+          # guest users can have :read_project but not :read_package
+          next forbidden! if can?(current_user, :read_project, project)
+          next unauthorized! if authenticate_non_public?
+
+          not_found!('Project')
+        end
       end
 
       def track_package_event(event_name, scope, **args)

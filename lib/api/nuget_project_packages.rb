@@ -91,7 +91,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project', regexp: ::API::Concerns::Packages::NugetEndpoints::POSITIVE_INTEGER_REGEX
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project', regexp: ::API::Concerns::Packages::NugetEndpoints::POSITIVE_INTEGER_REGEX
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/nuget' do

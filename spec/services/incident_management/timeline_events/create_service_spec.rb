@@ -288,7 +288,7 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
 
       let_it_be(:severity) { create(:issuable_severity, severity: :critical, issue: incident) }
 
-      let(:expected_note) { "@#{current_user.username} changed the incident severity to **Critical**" }
+      let(:expected_note) { "@#{current_user.username} changed the incident severity to **Critical - S1**" }
       let(:expected_action) { 'severity' }
 
       it_behaves_like 'successfully created timeline event'

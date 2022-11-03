@@ -28,7 +28,6 @@ describe('Codequality Reports actions', () => {
         baseBlobPath: 'baseBlobPath',
         headBlobPath: 'headBlobPath',
         reportsPath: 'reportsPath',
-        helpPath: 'codequalityHelpPath',
       };
 
       return testAction(

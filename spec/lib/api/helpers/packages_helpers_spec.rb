@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Helpers::PackagesHelpers do
-  let_it_be(:helper) { Class.new.include(described_class).new }
+  let_it_be(:helper) { Class.new.include(API::Helpers).include(described_class).new }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
   let_it_be(:package) { create(:package) }
@@ -119,6 +119,123 @@ RSpec.describe API::Helpers::PackagesHelpers do
       expect(helper).to receive(:require_gitlab_workhorse!)
 
       expect(subject).to eq nil
+    end
+  end
+
+  describe '#user_project' do
+    before do
+      allow(helper).to receive(:params).and_return(id: project.id)
+    end
+
+    it 'calls find_project! on default action' do
+      expect(helper).to receive(:find_project!)
+
+      helper.user_project
+    end
+
+    it 'calls find_project! on read_project action' do
+      expect(helper).to receive(:find_project!)
+
+      helper.user_project(action: :read_project)
+    end
+
+    it 'calls user_project_with_read_package on read_package action' do
+      expect(helper).to receive(:user_project_with_read_package)
+
+      helper.user_project(action: :read_package)
+    end
+
+    it 'throws ArgumentError on unexpected action' do
+      expect { helper.user_project(action: :other_action) }.to raise_error(ArgumentError, 'unexpected action: other_action')
+    end
+  end
+
+  describe '#user_project_with_read_package' do
+    before do
+      helper.clear_memoization(:user_project_with_read_package)
+
+      allow(helper).to receive(:params).and_return(id: params_id)
+      allow(helper).to receive(:route_authentication_setting).and_return({ authenticate_non_public: true })
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:initial_current_user).and_return(user)
+    end
+
+    subject { helper.user_project_with_read_package }
+
+    context 'with non-existing project' do
+      let_it_be(:params_id) { non_existing_record_id }
+
+      context 'with current user' do
+        let_it_be(:user) { create(:user) }
+
+        it 'returns Not Found' do
+          expect(helper).to receive(:render_api_error!).with('404 Project Not Found', 404)
+
+          is_expected.to be_nil
+        end
+      end
+
+      context 'without current user' do
+        let_it_be(:user) { nil }
+
+        it 'returns Unauthorized' do
+          expect(helper).to receive(:render_api_error!).with('401 Unauthorized', 401)
+
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    context 'with existing project' do
+      let_it_be(:params_id) { project.id }
+
+      context 'with current user' do
+        let_it_be(:user) { create(:user) }
+
+        context 'as developer member' do
+          before do
+            project.add_developer(user)
+          end
+
+          it 'returns project' do
+            is_expected.to eq(project)
+          end
+        end
+
+        context 'as guest member' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'returns Forbidden' do
+            expect(helper).to receive(:render_api_error!).with('403 Forbidden', 403)
+
+            is_expected.to be_nil
+          end
+        end
+      end
+
+      context 'without current user' do
+        let_it_be(:user) { nil }
+
+        it 'returns Unauthorized' do
+          expect(helper).to receive(:render_api_error!).with('401 Unauthorized', 401)
+
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    context 'if no authorized project scope' do
+      let_it_be(:params_id) { project.id }
+      let_it_be(:user) { nil }
+
+      it 'returns Forbidden' do
+        expect(helper).to receive(:authorized_project_scope?).and_return(false)
+        expect(helper).to receive(:render_api_error!).with('403 Forbidden', 403)
+
+        is_expected.to be_nil
+      end
     end
   end
 end

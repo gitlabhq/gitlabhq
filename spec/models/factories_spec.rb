@@ -162,6 +162,13 @@ RSpec.describe 'factories', :saas do
       board_assignee_lists
     ].index_with(true)
 
+    if Gitlab.jh?
+      licensed_features.merge! %i[
+        dingtalk_integration
+        feishu_bot_integration
+      ].index_with(true)
+    end
+
     before do
       stub_licensed_features(licensed_features)
     end

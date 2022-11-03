@@ -1,0 +1,63 @@
+.shared-as-if-jh:
+  variables:
+    SANDBOX_PROJECT: "gitlab-org-sandbox/gitlab-jh-validation"
+    SANDBOX_REPOSITORY: "https://dummy:${AS_IF_JH_TOKEN}@gitlab.com/${SANDBOX_PROJECT}.git"
+    GITLAB_JH_MIRROR_PROJECT: "33019816"
+    AS_IF_JH_BRANCH: "as-if-jh/${CI_COMMIT_REF_NAME}"
+    JH_FILES_TO_COMMIT: "jh package.json yarn.lock"
+
+add-jh-files:
+  extends:
+    - .shared-as-if-jh
+    - .as-if-jh:rules:prepare-as-if-jh
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:${RUBY_VERSION}
+  stage: prepare
+  before_script:
+    - source ./scripts/utils.sh
+    - source ./scripts/setup/as-if-jh.sh
+    - install_gitlab_gem
+  script:
+    - prepare_jh_branch
+    - download_jh_path ${JH_FILES_TO_COMMIT}
+    - echoinfo "Changes after downloading JiHu files:"
+    - git diff
+    - git status
+  artifacts:
+    expire_in: 2d
+    paths:
+      # This should match JH_FILES_TO_COMMIT
+      - jh/
+      - package.json
+      - yarn.lock
+
+prepare-as-if-jh-branch:
+  extends:
+    - .shared-as-if-jh
+    - .as-if-jh:rules:prepare-as-if-jh
+  stage: prepare
+  needs:
+    - add-jh-files
+  script:
+    - git checkout -b "${AS_IF_JH_BRANCH}"
+    - git add ${JH_FILES_TO_COMMIT}
+    - git commit -m 'Add JH files'  # TODO: Mark which SHA we add
+    # Fetch for the history of the branch so it does not cause the following error:
+    #   ! [remote rejected] ref -> ref (shallow update not allowed)
+    - git fetch --unshallow --filter=tree:0 origin "${CI_COMMIT_REF_NAME}"
+    - git push -f "${SANDBOX_REPOSITORY}" "${AS_IF_JH_BRANCH}"
+
+start-as-if-jh:
+  extends:
+    - .shared-as-if-jh
+    - .as-if-jh:rules:start-as-if-jh
+  stage: prepare
+  needs: ["prepare-as-if-jh-branch"]
+  inherit:
+    variables: false
+  variables:
+    AS_IF_EDITION: "jh"
+    FORCE_GITLAB_CI: "true"  # TODO: Trigger a merge request pipeline
+  trigger:
+    project: gitlab-org-sandbox/gitlab-jh-validation  # ${SANDBOX_PROJECT} does not work here
+    branch: as-if-jh/${CI_COMMIT_REF_NAME}  # ${AS_IF_JH_BRANCH} does not work here
+    strategy: depend

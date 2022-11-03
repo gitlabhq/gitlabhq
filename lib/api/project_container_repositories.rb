@@ -16,7 +16,7 @@ module API
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     route_setting :authentication, job_token_allowed: true, job_token_scope: :project
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

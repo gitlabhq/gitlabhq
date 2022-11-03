@@ -28,7 +28,7 @@ For authentication, the Releases API accepts either:
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
-Paginated list of Releases, sorted by `released_at`.
+Returns a paginated list of releases, sorted by `released_at`.
 
 ```plaintext
 GET /projects/:id/releases
@@ -235,7 +235,7 @@ Example response:
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
-Get a Release for the given tag.
+Gets a release for the given tag.
 
 ```plaintext
 GET /projects/:id/releases/:tag_name
@@ -366,7 +366,7 @@ Example response:
 
 ## Create a release
 
-Create a release. Developer level access to the project is required to create a release.
+Creates a release. Developer level access to the project is required to create a release.
 
 ```plaintext
 POST /projects/:id/releases
@@ -516,7 +516,7 @@ adding milestones for ancestor groups raises an error.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
-Create Evidence for an existing Release.
+Creates an evidence for an existing release.
 
 ```plaintext
 POST /projects/:id/releases/:tag_name/evidence
@@ -543,7 +543,7 @@ Example response:
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
-Update a release. Developer level access to the project is required to update a release.
+Updates a release. Developer level access to the project is required to update a release.
 
 ```plaintext
 PUT /projects/:id/releases/:tag_name
@@ -652,7 +652,7 @@ Example response:
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
-Delete a release. Deleting a release doesn't delete the associated tag. Maintainer level access to the project is required to delete a release.
+Deletes a release. Deleting a release doesn't delete the associated tag. Maintainer level access to the project is required to delete a release.
 
 ```plaintext
 DELETE /projects/:id/releases/:tag_name
