@@ -36252,6 +36252,9 @@ msgstr ""
 msgid "SecurityOrchestration|Inherited from %{namespace}"
 msgstr ""
 
+msgid "SecurityOrchestration|Invalid policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 

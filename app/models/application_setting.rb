@@ -318,6 +318,7 @@ class ApplicationSetting < ApplicationRecord
                             less_than_or_equal_to: Commit::MAX_DIFF_LINES_SETTING_UPPER_BOUND }
 
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
+  validates :default_preferred_language, presence: true, inclusion: { in: Gitlab::I18n.available_locales }
 
   validates :personal_access_token_prefix,
             format: { with: %r{\A[a-zA-Z0-9_+=/@:.-]+\z},

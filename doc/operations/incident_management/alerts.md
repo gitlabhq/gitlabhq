@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Alerts are a critical entity in your incident management workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
 
-## Alert List
+## Alert list
 
 Users with at least the Developer role can
 access the Alert list at **Monitor > Alerts** in your project's
@@ -137,7 +137,7 @@ timeline of the alert's investigation and assignment history.
 
 The following actions result in a system note:
 
-- [Updating the status of an alert](#update-an-alerts-status)
+- [Updating the status of an alert](#change-an-alerts-status)
 - [Creating an incident based on an alert](#create-an-incident-from-an-alert)
 - [Assignment of an alert to a user](#assign-an-alert)
 - [Escalation of an alert to on-call responders](paging.md#escalating-an-alert)
@@ -148,25 +148,45 @@ The following actions result in a system note:
 
 There are different actions available in GitLab to help triage and respond to alerts.
 
-### Update an alert's status
+### Change an alert's status
 
-**Triggered** is the default status for new alerts. For users with the Developer role or higher, the
-alert status can be updated from these locations:
+You can change the status of an alert.
 
-- [Alert list](#alert-list): select the status dropdown list corresponding to an alert, then select an
-  alternate status.
-- [Alert details page](#alert-details-page): select **Edit** in the right-hand side bar, then select
-  an alternate status.
+The available statuses are:
+
+- Triggered (default for new alerts)
+- Acknowledged
+- Resolved
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To change an alert's status:
+
+- From the [alert list](#alert-list):
+
+  1. In the **Status** column, next to an alert, select the status dropdown list.
+  1. Select a status.
+
+- From the [alert details page](#alert-details-page):
+
+  1. On the right sidebar, select **Edit**.
+  1. Select a status.
 
 To stop email notifications for alert reoccurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
-[change the alert's status](alerts.md#update-an-alerts-status) away from **Triggered**.
+change the alert's status away from **Triggered**.
 
-In projects with GitLab Premium, on-call responders can respond to [alert pages](paging.md#escalating-an-alert)
-by changing the status. Setting the status to:
+#### As an on-call responder **(PREMIUM)**
 
-- **Resolved** silences all on-call pages for the alert.
-- **Acknowledged** limits on-call pages based on the project's [escalation policy](escalation_policies.md).
-- **Triggered** from **Resolved** restarts the alert escalating from the beginning.
+On-call responders can respond to [alert pages](paging.md#escalating-an-alert)
+by changing the alert status.
+
+Changing the status has the following effects:
+
+- To **Acknowledged**: limits on-call pages based on the project's [escalation policy](escalation_policies.md).
+- To **Resolved**: silences all on-call pages for the alert.
+- From **Resolved** to **Triggered**: restarts the alert escalating.
 
 In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](alerts.md#create-an-incident-from-an-alert)
 also updates the incident status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
@@ -183,7 +203,7 @@ alert by selecting the **View Issue** button.
 
 You can also [create incidents for alerts automatically](incidents.md#create-incidents-automatically).
 
-Closing a GitLab issue associated with an alert [changes the alert's status](#update-an-alerts-status) to
+Closing a GitLab issue associated with an alert [changes the alert's status](#change-an-alerts-status) to
 **Resolved**. See [Alert List](#alert-list) for more details
 about alert statuses.
 

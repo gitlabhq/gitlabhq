@@ -123,9 +123,8 @@ test or a group of tests that are different than the groups in any of the existi
 
 For example, when we [dequarantine](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/debugging-qa-test-failures/#dequarantining-tests)
 a flaky test we first want to make sure that it's no longer flaky.
-We can do that using the `ce:custom-parallel` and `ee:custom-parallel` jobs.
-Both are manual jobs that you can configure using custom variables.
-When selecting the name (not the play icon) of one of the parallel jobs,
+We can do that by running `_ee:quarantine` manual job.
+When selecting the name (not the play icon) of manual job,
 you are prompted to enter variables. You can use any of
 [the variables that can be used with `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables)
 as well as these:
@@ -134,7 +133,7 @@ as well as these:
 |-|-|
 | `QA_SCENARIO` | The scenario to run (default `Test::Instance::Image`) |
 | `QA_TESTS` | The tests to run (no default, which means run all the tests in the scenario). Use file paths as you would when running tests via RSpec, for example, `qa/specs/features/ee/browser_ui` would include all the `EE` UI tests. |
-| `QA_RSPEC_TAGS` | The RSpec tags to add (no default) |
+| `QA_RSPEC_TAGS` | The RSpec tags to add (default `--tag quarantine`) |
 
 For now,
 [manual jobs with custom variables don't use the same variable when retried](https://gitlab.com/gitlab-org/gitlab/-/issues/31367),
@@ -156,6 +155,19 @@ against the [Review App](../review_apps.md).
 [Cloud Native components](https://gitlab.com/gitlab-org/build/CNG) built from your merge request's changes.**
 
 See [Review Apps](../review_apps.md) for more details about Review Apps.
+
+#### Selective test execution
+
+In order to limit amount of tests executed in a merge request, dynamic selection of which tests to execute is present. Algorithm of which tests to run is based
+on changed files and merge request labels. Following criteria determine which tests will run:
+
+1. Changes in `qa` framework code would execute the full suite
+1. Changes in particular `_spec.rb` file in `qa` folder would execute only that particular test
+1. Merge request with backend changes and label `devops::manage` would execute all e2e tests related to `manage` stage
+
+#### Overriding selective test execution
+
+To override selective test execution and trigger the full suite, label `pipeline:run-all-e2e` should be added to particular merge request.
 
 ### Run tests in parallel
 

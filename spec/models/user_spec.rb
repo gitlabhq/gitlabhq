@@ -3032,6 +3032,10 @@ RSpec.describe User do
     it 'returns no matches for nil' do
       expect(described_class.search(nil)).to be_empty
     end
+
+    it 'returns no matches for an array' do
+      expect(described_class.search(%w[the test])).to be_empty
+    end
   end
 
   describe '.user_search_minimum_char_limit' do

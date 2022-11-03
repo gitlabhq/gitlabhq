@@ -40,6 +40,8 @@ module Gitlab
         # lower_exact_match - When set to `true` we'll fall back to using
         #                     `LOWER(column) = query` instead of using `ILIKE`.
         def fuzzy_arel_match(column, query, lower_exact_match: false, use_minimum_char_limit: true)
+          return unless query.is_a?(String)
+
           query = query.squish
           return unless query.present?
 

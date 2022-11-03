@@ -34,7 +34,7 @@ a single email notification for new alerts.
    **Send a single email notification to Owners and Maintainers for new alerts** checkbox.
 1. Select **Save changes**.
 
-[Update the alert's status](alerts.md#update-an-alerts-status) to manage email notifications for an alert.
+[Update the alert's status](alerts.md#change-an-alerts-status) to manage email notifications for an alert.
 
 ## Paging **(PREMIUM)**
 
@@ -46,7 +46,7 @@ can be automatically paged about critical problems through email.
 When an alert is triggered, it begins escalating to the on-call responders immediately.
 For each escalation rule in the project's escalation policy, the designated on-call
 responders receive one email when the rule fires. You can respond to a page
-or stop alert escalations by [updating the alert's status](alerts.md#update-an-alerts-status).
+or stop alert escalations by [updating the alert's status](alerts.md#change-an-alerts-status).
 
 ### Escalating an incident
 

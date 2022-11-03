@@ -1129,6 +1129,11 @@ RSpec.describe ApplicationSetting do
         it { is_expected.to validate_presence_of(:error_tracking_api_url) }
       end
     end
+
+    context 'for default_preferred_language' do
+      it { is_expected.to allow_value(*Gitlab::I18n.available_locales).for(:default_preferred_language) }
+      it { is_expected.not_to allow_value(nil, '', 'invalid_locale').for(:default_preferred_language) }
+    end
   end
 
   context 'restrict creating duplicates' do

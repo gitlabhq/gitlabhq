@@ -29,6 +29,9 @@ RSpec.describe Gitlab::SQL::Pattern do
       'AH' | %i[title description] | %i[issue3]
       'oh' | %i[title]             | %i[issue3]
       'ah' | %i[description]       | %i[issue3]
+
+      ''      | %i[title]          | %i[issue1 issue2 issue3]
+      %w[a b] | %i[title]          | %i[issue1 issue2 issue3]
     end
 
     with_them do

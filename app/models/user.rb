@@ -696,6 +696,8 @@ class User < ApplicationRecord
     #
     # Returns an ActiveRecord::Relation.
     def search(query, **options)
+      return none unless query.is_a?(String)
+
       query = query&.delete_prefix('@')
       return none if query.blank?
 

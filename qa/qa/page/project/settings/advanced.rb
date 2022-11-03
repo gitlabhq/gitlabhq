@@ -48,15 +48,17 @@ module QA
           def transfer_project!(project_name, namespace)
             QA::Runtime::Logger.info "Transferring project: #{project_name} to namespace: #{namespace}"
 
-            scroll_to_transfer_project_content
+            wait_for_transfer_project_content
+
+            # Scroll to bottom of page to prevent namespace dropdown from changing position mid-click
+            # See https://gitlab.com/gitlab-org/gitlab/-/issues/381376 for details
+            page.scroll_to(:bottom)
 
             # Workaround for a failure to search when there are no spaces around the /
             # https://gitlab.com/gitlab-org/gitlab/-/issues/218965
             select_namespace(namespace.gsub(%r{([^\s])/([^\s])}, '\1 / \2'))
 
-            retry_until(sleep_interval: 1, message: 'Waiting for transfer project button to be enabled') do
-              has_element?(:transfer_project_button, disabled: false, wait: 3)
-            end
+            wait_for_enabled_transfer_project_button
 
             click_element :transfer_project_button
 
@@ -88,12 +90,16 @@ module QA
 
           private
 
-          def scroll_to_transfer_project_content
+          def wait_for_transfer_project_content
             retry_until(sleep_interval: 1, message: 'Waiting for transfer project content to display') do
               has_element?(:transfer_project_content, wait: 3)
             end
+          end
 
-            scroll_to_element :transfer_project_content
+          def wait_for_enabled_transfer_project_button
+            retry_until(sleep_interval: 1, message: 'Waiting for transfer project button to be enabled') do
+              has_element?(:transfer_project_button, disabled: false, wait: 3)
+            end
           end
         end
       end

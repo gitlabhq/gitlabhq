@@ -11,7 +11,7 @@ RSpec.describe Milestones::TransferService do
       let(:new_group) { create(:group) }
       let(:old_group) { create(:group) }
       let(:project) { create(:project, namespace: old_group) }
-      let(:group_milestone) { create(:milestone, group: old_group) }
+      let(:group_milestone) { create(:milestone, :closed, group: old_group) }
       let(:group_milestone2) { create(:milestone, group: old_group) }
       let(:project_milestone) { create(:milestone, project: project) }
       let!(:issue_with_group_milestone) { create(:issue, project: project, milestone: group_milestone) }
@@ -38,6 +38,7 @@ RSpec.describe Milestones::TransferService do
           expect(new_milestone).not_to eq(group_milestone)
           expect(new_milestone.title).to eq(group_milestone.title)
           expect(new_milestone.project_milestone?).to be_truthy
+          expect(new_milestone.state).to eq("closed")
         end
 
         context 'when milestone is from an ancestor group' do
@@ -88,6 +89,7 @@ RSpec.describe Milestones::TransferService do
           expect(new_milestone).not_to eq(group_milestone)
           expect(new_milestone.title).to eq(group_milestone.title)
           expect(new_milestone.project_milestone?).to be_truthy
+          expect(new_milestone.state).to eq("closed")
         end
 
         it 'does not apply new project milestone to issuables with project milestone' do

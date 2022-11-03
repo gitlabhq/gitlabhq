@@ -62,7 +62,7 @@ module Milestones
     # rubocop: enable CodeReuse/ActiveRecord
 
     def find_or_create_milestone(milestone)
-      params = milestone.attributes.slice('title', 'description', 'start_date', 'due_date')
+      params = milestone.attributes.slice('title', 'description', 'start_date', 'due_date', 'state')
 
       FindOrCreateService.new(project, current_user, params).execute
     end

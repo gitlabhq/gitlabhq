@@ -20,9 +20,9 @@
   when: manual
   allow_failure: true
 
-# QA framework changes present
-.qa-framework-changes: &qa-framework-changes
-  if: $QA_FRAMEWORK_CHANGES == "true"
+# Run all tests when framework changes present or explicitly enabled full suite execution
+.qa-run-all-tests: &qa-run-all-tests
+  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true"
 
 # Process test results (notify failure to slack, create test session report, relate test failures)
 .process-test-results: &process-test-results
@@ -91,7 +91,7 @@
 .rules:test:qa-non-parallel:
   rules:
     # always run parallel with full suite when framework changes present or ff state changed
-    - <<: *qa-framework-changes
+    - <<: *qa-run-all-tests
       when: never
     - <<: *all-specs
       when: never
@@ -100,7 +100,7 @@
 
 .rules:test:qa-parallel:
   rules:
-    - *qa-framework-changes
+    - *qa-run-all-tests
     - <<: *specific-specs
       when: manual
       allow_failure: true
@@ -111,7 +111,7 @@
 # general qa job rule for jobs without the need to run in parallel
 .rules:test:qa:
   rules:
-    - *qa-framework-changes
+    - *qa-run-all-tests
     - *feature-flags-set-manual
 
 .rules:test:update:
