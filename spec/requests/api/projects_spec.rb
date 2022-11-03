@@ -3426,18 +3426,6 @@ RSpec.describe API::Projects do
     end
 
     context 'when authenticated as project owner' do
-      it 'updates name' do
-        project_param = { name: 'bar' }
-
-        put api("/projects/#{project.id}", user), params: project_param
-
-        expect(response).to have_gitlab_http_status(:ok)
-
-        project_param.each_pair do |k, v|
-          expect(json_response[k.to_s]).to eq(v)
-        end
-      end
-
       it 'updates visibility_level' do
         project_param = { visibility: 'public' }
 
@@ -3795,10 +3783,16 @@ RSpec.describe API::Projects do
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
-      it 'does not update name' do
+      it 'updates name' do
         project_param = { name: 'bar' }
-        put api("/projects/#{project3.id}", user4), params: project_param
-        expect(response).to have_gitlab_http_status(:forbidden)
+
+        put api("/projects/#{project.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
       end
 
       it 'does not update visibility_level' do

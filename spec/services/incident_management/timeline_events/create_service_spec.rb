@@ -8,6 +8,9 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
   let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:incident) { create(:incident, project: project) }
   let_it_be(:comment) { create(:note, project: project, noteable: incident) }
+  let_it_be(:timeline_event_tag) do
+    create(:incident_management_timeline_event_tag, name: 'Test tag 1', project: project)
+  end
 
   let(:args) do
     {
@@ -131,6 +134,25 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         result = execute.payload[:timeline_event]
 
         expect(result.action).to eq(args[:action])
+      end
+    end
+
+    context 'when timeline event tag names are passed' do
+      let(:args) do
+        {
+          note: 'note',
+          occurred_at: Time.current,
+          action: 'new comment',
+          promoted_from_note: comment,
+          timeline_event_tag_names: ['Test tag 1']
+        }
+      end
+
+      it_behaves_like 'success response'
+
+      it 'matches the tag name' do
+        result = execute.payload[:timeline_event]
+        expect(result.timeline_event_tags.first).to eq(timeline_event_tag)
       end
     end
 

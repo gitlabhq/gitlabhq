@@ -30,7 +30,14 @@ module API
           requires :file_name, type: String, desc: 'Repository metadata file name'
         end
         get 'repodata/*file_name', requirements: { file_name: API::NO_SLASH_URL_PART_REGEX } do
-          not_found!
+          authorize_read_package!(authorized_user_project)
+
+          repository_file = Packages::Rpm::RepositoryFile.find_by_project_id_and_file_name!(
+            authorized_user_project.id,
+            "#{params['file_name']}.#{params['format']}"
+          )
+
+          present_carrierwave_file!(repository_file.file)
         end
 
         desc 'Download RPM package files'

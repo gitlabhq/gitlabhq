@@ -1,4 +1,7 @@
-<repomd xmlns="http://gitlab.com/api/v4/projects/1/packages/rpm/repodata/repomd.xml" xmlns:rpm="http://gitlab.com/api/v4/projects/1/packages/rpm/repodata/repomd.xml">
+<repomd
+  xmlns="http://gitlab.com/api/v4/projects/1/packages/rpm/repodata/364c77dd49e8f814d56e621d0b3306c4fd0696dcad506f527329b818eb0f5db3-repomd.xml"
+  xmlns:rpm="http://gitlab.com/api/v4/projects/1/packages/rpm/repodata/364c77dd49e8f814d56e621d0b3306c4fd0696dcad506f527329b818eb0f5db3-repomd.xml"
+>
   <revision>1644602779</revision>
   <data type="filelists">
     <checksum type="sha256">6503673de76312406ff8ecb06d9733c32b546a65abae4d4170d9b51fb75bf253</checksum>

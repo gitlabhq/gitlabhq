@@ -6,6 +6,9 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
+  let_it_be(:timeline_event_tag) do
+    create(:incident_management_timeline_event_tag, project: project)
+  end
 
   let(:args) { { note: 'note', occurred_at: Time.current } }
 
@@ -38,6 +41,18 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Create do
 
         it_behaves_like 'responding with an incident timeline errors',
           errors: ["Occurred at can't be blank and Timeline text can't be blank"]
+      end
+
+      context 'when timeline event tags are passed' do
+        let(:args) do
+          {
+            note: 'note',
+            occurred_at: Time.current,
+            timeline_event_tag_names: [timeline_event_tag.name.to_s]
+          }
+        end
+
+        it_behaves_like 'creating an incident timeline event'
       end
     end
 

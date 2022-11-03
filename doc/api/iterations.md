@@ -22,8 +22,8 @@ Returns a list of project iterations.
 GET /projects/:id/iterations
 GET /projects/:id/iterations?state=opened
 GET /projects/:id/iterations?state=closed
-GET /projects/:id/iterations?title=1.0
 GET /projects/:id/iterations?search=version
+GET /projects/:id/iterations?include_ancestors=false
 ```
 
 | Attribute           | Type    | Required | Description |

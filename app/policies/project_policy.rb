@@ -254,7 +254,6 @@ class ProjectPolicy < BasePolicy
 
     enable :change_namespace
     enable :change_visibility_level
-    enable :rename_project
     enable :remove_project
     enable :archive_project
     enable :remove_fork_project
@@ -497,6 +496,7 @@ class ProjectPolicy < BasePolicy
     enable :push_to_delete_protected_branch
     enable :update_snippet
     enable :admin_snippet
+    enable :rename_project
     enable :admin_project_member
     enable :admin_note
     enable :admin_wiki
@@ -844,6 +844,10 @@ class ProjectPolicy < BasePolicy
 
   rule { packages_enabled & can?(:admin_package) }.policy do
     enable :view_package_registry_project_settings
+  end
+
+  rule { can?(:read_project) }.policy do
+    enable :read_incident_management_timeline_event_tag
   end
 
   private

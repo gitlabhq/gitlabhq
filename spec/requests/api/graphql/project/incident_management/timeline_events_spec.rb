@@ -48,6 +48,7 @@ RSpec.describe 'getting incident timeline events' do
         note
         noteHtml
         promotedFromNote { id body }
+        timelineEventTags { nodes { name } }
         editable
         action
         occurredAt
@@ -100,12 +101,54 @@ RSpec.describe 'getting incident timeline events' do
         'id' => promoted_from_note.to_global_id.to_s,
         'body' => promoted_from_note.note
       },
+      'timelineEventTags' => { 'nodes' => [] },
       'editable' => true,
       'action' => timeline_event.action,
       'occurredAt' => timeline_event.occurred_at.iso8601,
       'createdAt' => timeline_event.created_at.iso8601,
       'updatedAt' => timeline_event.updated_at.iso8601
     )
+  end
+
+  context 'when timelineEvent tags are linked' do
+    let_it_be(:tag1) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 1') }
+    let_it_be(:tag2) { create(:incident_management_timeline_event_tag, project: project, name: 'Tag 2') }
+    let_it_be(:timeline_event_tag_link) do
+      create(:incident_management_timeline_event_tag_link,
+        timeline_event: timeline_event,
+        timeline_event_tag: tag1)
+    end
+
+    it_behaves_like 'a working graphql query'
+
+    it 'returns the set tags' do
+      expect(timeline_events.first['timelineEventTags']['nodes'].first['name']).to eq(tag1.name)
+    end
+
+    context 'when different timeline events are loaded' do
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new do
+          post_graphql(query, current_user: current_user)
+        end
+
+        new_event = create(:incident_management_timeline_event,
+          incident: incident,
+          project: project,
+          updated_by_user: updated_by_user,
+          promoted_from_note: promoted_from_note,
+          note: "Referencing #{issue.to_reference(full: true)} - Full URL #{issue_url}"
+        )
+
+        create(:incident_management_timeline_event_tag_link,
+          timeline_event: new_event,
+          timeline_event_tag: tag2
+        )
+
+        expect(incident.incident_management_timeline_events.length).to eq(3)
+        expect(post_graphql(query, current_user: current_user)).not_to exceed_query_limit(control)
+        expect(timeline_events.count).to eq(3)
+      end
+    end
   end
 
   context 'when filtering by id' do

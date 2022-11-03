@@ -21,6 +21,7 @@ RSpec.describe GitlabSchema.types['TimelineEventType'] do
       occurred_at
       created_at
       updated_at
+      timeline_event_tags
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

@@ -20,6 +20,8 @@ module IncidentManagement
     validates :name, uniqueness: { scope: :project_id }
     validates :name, length: { maximum: 255 }
 
+    scope :by_names, -> (tag_names) { where(name: tag_names) }
+
     def self.pluck_names
       pluck(:name)
     end

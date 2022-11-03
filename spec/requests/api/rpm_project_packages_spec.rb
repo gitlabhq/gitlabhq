@@ -37,7 +37,7 @@ RSpec.describe API::RpmProjectPackages do
     it_behaves_like 'returning response status', status
   end
 
-  shared_examples 'a deploy token for RPM requests' do
+  shared_examples 'a deploy token for RPM requests' do |success_status = :not_found|
     context 'with deploy token headers' do
       before do
         project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
@@ -46,7 +46,7 @@ RSpec.describe API::RpmProjectPackages do
       let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token) }
 
       context 'when token is valid' do
-        it_behaves_like 'returning response status', :not_found
+        it_behaves_like 'returning response status', success_status
       end
 
       context 'when token is invalid' do
@@ -57,7 +57,7 @@ RSpec.describe API::RpmProjectPackages do
     end
   end
 
-  shared_examples 'a job token for RPM requests' do
+  shared_examples 'a job token for RPM requests' do |success_status = :not_found|
     context 'with job token headers' do
       let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token) }
 
@@ -67,7 +67,7 @@ RSpec.describe API::RpmProjectPackages do
       end
 
       context 'with valid token' do
-        it_behaves_like 'returning response status', :not_found
+        it_behaves_like 'returning response status', success_status
       end
 
       context 'with invalid token' do
@@ -84,10 +84,10 @@ RSpec.describe API::RpmProjectPackages do
     end
   end
 
-  shared_examples 'a user token for RPM requests' do
+  shared_examples 'a user token for RPM requests' do |success_status = :not_found|
     context 'with valid project' do
       where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
-        'PUBLIC'  | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
+        'PUBLIC'  | :developer  | true  | true  | 'process rpm packages upload/download' | success_status
         'PUBLIC'  | :guest      | true  | true  | 'process rpm packages upload/download' | :forbidden
         'PUBLIC'  | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
         'PUBLIC'  | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
@@ -96,7 +96,7 @@ RSpec.describe API::RpmProjectPackages do
         'PUBLIC'  | :developer  | false | false | 'rejects rpm packages access'          | :unauthorized
         'PUBLIC'  | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process rpm packages upload/download' | :unauthorized
-        'PRIVATE' | :developer  | true  | true  | 'process rpm packages upload/download' | :not_found
+        'PRIVATE' | :developer  | true  | true  | 'process rpm packages upload/download' | success_status
         'PRIVATE' | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden
         'PRIVATE' | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
         'PRIVATE' | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
@@ -124,13 +124,15 @@ RSpec.describe API::RpmProjectPackages do
   end
 
   describe 'GET /api/v4/projects/:project_id/packages/rpm/repodata/:filename' do
-    let(:url) { "/projects/#{project.id}/packages/rpm/repodata/#{package_name}" }
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
+    let(:repository_file) { create(:rpm_repository_file, project: project) }
+    let(:url) { "/projects/#{project.id}/packages/rpm/repodata/#{repository_file.file_name}" }
 
     subject { get api(url), headers: headers }
 
-    it_behaves_like 'a job token for RPM requests'
-    it_behaves_like 'a deploy token for RPM requests'
-    it_behaves_like 'a user token for RPM requests'
+    it_behaves_like 'a job token for RPM requests', :success
+    it_behaves_like 'a deploy token for RPM requests', :success
+    it_behaves_like 'a user token for RPM requests', :success
   end
 
   describe 'GET /api/v4/projects/:id/packages/rpm/:package_file_id/:filename' do

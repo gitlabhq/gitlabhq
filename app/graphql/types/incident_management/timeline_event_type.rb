@@ -53,6 +53,13 @@ module Types
             null: false,
             description: 'Timestamp when the event occurred.'
 
+      field :timeline_event_tags,
+            ::Types::IncidentManagement::TimelineEventTagType.connection_type,
+            null: true,
+            description: 'Tags for the incident timeline event.',
+            extras: [:lookahead],
+            resolver: Resolvers::IncidentManagement::TimelineEventTagsResolver
+
       field :created_at,
             Types::TimeType,
             null: false,

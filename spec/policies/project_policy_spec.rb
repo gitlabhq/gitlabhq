@@ -533,6 +533,24 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'with timeline event tags' do
+    context 'when user is member of the project' do
+      it 'allows access to timeline event tags' do
+        expect(described_class.new(owner, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(developer, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(admin, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+      end
+    end
+
+    context 'when user is not a member of the project' do
+      let(:project) { private_project }
+
+      it 'disallows access to the timeline event tags' do
+        expect(described_class.new(non_member, project)).to be_disallowed(:read_incident_management_timeline_event_tag)
+      end
+    end
+  end
+
   context 'reading a project' do
     it 'allows access when a user has read access to the repo' do
       expect(described_class.new(owner, project)).to be_allowed(:read_project)

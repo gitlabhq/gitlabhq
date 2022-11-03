@@ -99,6 +99,9 @@ module IncidentManagement
 
         if timeline_event.save(context: validation_context)
           add_system_note(timeline_event)
+
+          create_timeline_event_tag_links(timeline_event, params[:timeline_event_tag_names])
+
           track_usage_event(:incident_management_timeline_event_created, user.id)
 
           success(timeline_event)
@@ -125,6 +128,22 @@ module IncidentManagement
 
       def validation_context
         :user_input if !auto_created && params[:promoted_from_note].blank?
+      end
+
+      def create_timeline_event_tag_links(timeline_event, tag_names)
+        return unless params[:timeline_event_tag_names]
+
+        tags = project.incident_management_timeline_event_tags.by_names(tag_names)
+
+        tag_links = tags.select(:id).map do |tag|
+          {
+            timeline_event_id: timeline_event.id,
+            timeline_event_tag_id: tag.id,
+            created_at: DateTime.current
+          }
+        end
+
+        IncidentManagement::TimelineEventTagLink.insert_all(tag_links) if tag_links.any?
       end
     end
   end

@@ -39,4 +39,21 @@ RSpec.describe IncidentManagement::TimelineEventTag do
     it { expect(described_class::START_TIME_TAG_NAME).to eq('Start time') }
     it { expect(described_class::END_TIME_TAG_NAME).to eq('End time') }
   end
+
+  describe '#by_names scope' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:tag1) { create(:incident_management_timeline_event_tag, name: 'Test tag 1', project: project) }
+    let_it_be(:tag2) { create(:incident_management_timeline_event_tag, name: 'Test tag 2', project: project) }
+    let_it_be(:tag3) { create(:incident_management_timeline_event_tag, name: 'Test tag 3', project: project2) }
+
+    it 'returns two matching tags' do
+      expect(described_class.by_names(['Test tag 1', 'Test tag 2'])).to contain_exactly(tag1, tag2)
+    end
+
+    it 'returns tags on the project' do
+      expect(project2.incident_management_timeline_event_tags.by_names(['Test tag 1',
+                                                                        'Test tag 3'])).to contain_exactly(tag3)
+    end
+  end
 end
