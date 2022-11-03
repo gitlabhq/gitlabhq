@@ -49,7 +49,7 @@ RSpec.describe 'get board lists' do
   end
 
   shared_examples 'group and project board lists query' do
-    let!(:board) { create(:board, resource_parent: board_parent) }
+    let_it_be(:board) { create(:board, resource_parent: board_parent) }
 
     context 'when the user does not have access to the board' do
       it 'returns nil' do
@@ -107,16 +107,20 @@ RSpec.describe 'get board lists' do
     end
 
     context 'when querying for a single list' do
+      let_it_be(:label_list) { create(:list, board: board, label: label, position: 10) }
+      let_it_be(:issues) do
+        [
+          create(:issue, project: project, labels: [label, label2]),
+          create(:issue, project: project, labels: [label, label2], confidential: true),
+          create(:issue, project: project, labels: [label])
+        ]
+      end
+
       before do
         board_parent.add_reporter(user)
       end
 
       it 'returns the correct list with issue count for matching issue filters' do
-        label_list = create(:list, board: board, label: label, position: 10)
-        create(:issue, project: project, labels: [label, label2])
-        create(:issue, project: project, labels: [label, label2], confidential: true)
-        create(:issue, project: project, labels: [label])
-
         post_graphql(
           query(
             id: global_id_of(label_list),
@@ -131,21 +135,56 @@ RSpec.describe 'get board lists' do
           expect(list_node['issuesCount']).to eq 1
         end
       end
+
+      context 'when filtering by a unioned argument' do
+        let_it_be(:another_user) { create(:user) }
+
+        it 'returns correctly filtered issues' do
+          issues[0].assignee_ids = user.id
+          issues[1].assignee_ids = another_user.id
+
+          post_graphql(
+            query(
+              id: global_id_of(label_list),
+              issueFilters: { or: { assignee_usernames: [user.username, another_user.username] } }
+            ), current_user: user
+          )
+
+          expect(lists_data[0]['node']['issuesCount']).to eq 2
+        end
+
+        context 'when feature flag is disabled' do
+          it 'returns an error' do
+            stub_feature_flags(or_issuable_queries: false)
+
+            post_graphql(
+              query(
+                id: global_id_of(label_list),
+                issueFilters: { or: { assignee_usernames: [user.username, another_user.username] } }
+              ), current_user: user
+            )
+
+            expect_graphql_errors_to_include(
+              "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
+            )
+          end
+        end
+      end
     end
   end
 
   describe 'for a project' do
-    let(:board_parent) { project }
-    let(:label) { project_label }
-    let(:label2) { project_label2 }
+    let_it_be(:board_parent) { project }
+    let_it_be(:label) { project_label }
+    let_it_be(:label2) { project_label2 }
 
     it_behaves_like 'group and project board lists query'
   end
 
   describe 'for a group' do
-    let(:board_parent) { group }
-    let(:label) { group_label }
-    let(:label2) { group_label2 }
+    let_it_be(:board_parent) { group }
+    let_it_be(:label) { group_label }
+    let_it_be(:label2) { group_label2 }
 
     before do
       allow(board_parent).to receive(:multiple_issue_boards_available?).and_return(false)

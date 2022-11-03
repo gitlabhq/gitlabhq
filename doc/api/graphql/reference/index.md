@@ -13207,6 +13207,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupissuesmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="groupissuesmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="groupissuesnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
+| <a id="groupissuesor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="groupissuessearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
 | <a id="groupissuesstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this issue. |
@@ -16871,6 +16872,7 @@ Returns [`Issue`](#issue).
 | <a id="projectissuemilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuemyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="projectissuenot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
+| <a id="projectissueor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="projectissuereleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the issue's milestone. |
 | <a id="projectissuereleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter issues by release tag ID wildcard. |
 | <a id="projectissuesearch"></a>`search` | [`String`](#string) | Search query for title or description. |
@@ -16910,6 +16912,7 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | <a id="projectissuestatuscountsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuestatuscountsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="projectissuestatuscountsnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
+| <a id="projectissuestatuscountsor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="projectissuestatuscountsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the issue's milestone. |
 | <a id="projectissuestatuscountsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter issues by release tag ID wildcard. |
 | <a id="projectissuestatuscountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
@@ -16956,6 +16959,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectissuesmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuesmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="projectissuesnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
+| <a id="projectissuesor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="projectissuesreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the issue's milestone. |
 | <a id="projectissuesreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter issues by release tag ID wildcard. |
 | <a id="projectissuessearch"></a>`search` | [`String`](#string) | Search query for title or description. |
@@ -23541,6 +23545,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. |
 | <a id="boardissueinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="boardissueinputnot"></a>`not` | [`NegatedBoardIssueInput`](#negatedboardissueinput) | List of negated arguments. |
+| <a id="boardissueinputor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="boardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
 | <a id="boardissueinputsearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
 | <a id="boardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
@@ -23944,6 +23949,15 @@ A time-frame defined as a closed inclusive range of two dates.
 | ---- | ---- | ----------- |
 | <a id="timeframeend"></a>`end` | [`Date!`](#date) | End of the range. |
 | <a id="timeframestart"></a>`start` | [`Date!`](#date) | Start of the range. |
+
+### `UnionedIssueFilterInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="unionedissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters issues that are assigned to at least one of the given users. |
+| <a id="unionedissuefilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters issues that are authored by one of the given users. |
 
 ### `UpdateDiffImagePositionInput`
 

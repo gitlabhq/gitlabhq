@@ -27937,6 +27937,8 @@ CREATE UNIQUE INDEX idx_serverless_domain_cluster_on_clusters_applications_knati
 
 CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
 
+CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_management_test_reports USING btree (issue_id, created_at, id);
+
 CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
 
 CREATE UNIQUE INDEX idx_vuln_signatures_on_occurrences_id_and_signature_sha ON vulnerability_finding_signatures USING btree (finding_id, signature_sha);

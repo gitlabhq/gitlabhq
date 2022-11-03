@@ -57,4 +57,11 @@ RSpec.describe 'Creating an incident timeline event' do
       'occurredAt' => event_occurred_at.iso8601
     )
   end
+
+  context 'when note is more than 280 characters long' do
+    let_it_be(:note) { 'n' * 281 }
+
+    it_behaves_like 'timeline event mutation responds with validation error',
+      error_message: 'Timeline text is too long (maximum is 280 characters)'
+  end
 end

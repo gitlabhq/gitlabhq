@@ -9,7 +9,7 @@ module Resolvers
     def resolve
       authorize!(object)
 
-      BatchLoader::GraphQL.for(object.id).batch(cache: false) do |ids, loader, args|
+      BatchLoader::GraphQL.for(object.id).batch(key: object.class.name, cache: false) do |ids, loader, args|
         labels = Label.for_targets(object.class.id_in(ids)).group_by(&:target_id)
 
         ids.each do |id|

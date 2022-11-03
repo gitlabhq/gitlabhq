@@ -27,6 +27,7 @@ RSpec.describe IncidentManagement::TimelineEvent do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:incident) }
     it { is_expected.to validate_presence_of(:note) }
+    it { is_expected.to validate_length_of(:note).is_at_most(280).on(:user_input) }
     it { is_expected.to validate_length_of(:note).is_at_most(10_000) }
     it { is_expected.to validate_length_of(:note_html).is_at_most(10_000) }
     it { is_expected.to validate_presence_of(:occurred_at) }

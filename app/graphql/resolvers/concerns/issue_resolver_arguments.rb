@@ -67,6 +67,9 @@ module IssueResolverArguments
     argument :not, Types::Issues::NegatedIssueFilterInputType,
              description: 'Negated arguments.',
              required: false
+    argument :or, Types::Issues::UnionedIssueFilterInputType,
+             description: 'List of arguments with inclusive OR.',
+             required: false
     argument :crm_contact_id, GraphQL::Types::String,
              required: false,
              description: 'ID of a contact assigned to the issues.'
@@ -84,7 +87,12 @@ module IssueResolverArguments
   end
 
   def ready?(**args)
-    args[:not] = args[:not].to_h if args[:not].present?
+    if args[:or].present? && ::Feature.disabled?(:or_issuable_queries, resource_parent)
+      raise ::Gitlab::Graphql::Errors::ArgumentError, "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
+    end
+
+    args[:not] = args[:not].to_h if args[:not]
+    args[:or] = args[:or].to_h if args[:or]
 
     params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
     params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
@@ -116,9 +124,12 @@ module IssueResolverArguments
 
   def prepare_finder_params(args)
     params = super(args)
+    params[:not] = params[:not].to_h if params[:not]
+    params[:or] = params[:or].to_h if params[:or]
     params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
     params[:attempt_project_search_optimizations] = true if params[:search].present?
 
+    prepare_author_username_params(params)
     prepare_assignee_username_params(params)
     prepare_release_tag_params(params)
 
@@ -132,9 +143,14 @@ module IssueResolverArguments
     args[:release_tag] ||= release_tag_wildcard
   end
 
+  def prepare_author_username_params(args)
+    args[:or][:author_username] = args[:or].delete(:author_usernames) if args.dig(:or, :author_usernames).present?
+  end
+
   def prepare_assignee_username_params(args)
     args[:assignee_username] = args.delete(:assignee_usernames) if args[:assignee_usernames].present?
     args[:not][:assignee_username] = args[:not].delete(:assignee_usernames) if args.dig(:not, :assignee_usernames).present?
+    args[:or][:assignee_username] = args[:or].delete(:assignee_usernames) if args.dig(:or, :assignee_usernames).present?
   end
 
   def mutually_exclusive_release_tag_args

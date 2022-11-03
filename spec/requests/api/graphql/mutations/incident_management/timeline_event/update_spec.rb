@@ -13,11 +13,12 @@ RSpec.describe 'Updating an incident timeline event' do
   end
 
   let(:occurred_at) { 1.minute.ago.iso8601 }
+  let(:note) { 'Updated note' }
 
   let(:variables) do
     {
       id: timeline_event.to_global_id.to_s,
-      note: 'Updated note',
+      note: note,
       occurred_at: occurred_at
     }
   end
@@ -70,11 +71,18 @@ RSpec.describe 'Updating an incident timeline event' do
         'id' => incident.to_global_id.to_s,
         'title' => incident.title
       },
-      'note' => 'Updated note',
+      'note' => note,
       'noteHtml' => timeline_event.note_html,
       'occurredAt' => occurred_at,
       'createdAt' => timeline_event.created_at.iso8601,
       'updatedAt' => timeline_event.updated_at.iso8601
     )
+  end
+
+  context 'when note is more than 280 characters long' do
+    let(:note) { 'n' * 281 }
+
+    it_behaves_like 'timeline event mutation responds with validation error',
+      error_message: 'Timeline text is too long (maximum is 280 characters)'
   end
 end

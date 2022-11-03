@@ -97,7 +97,7 @@ module IncidentManagement
 
         timeline_event = IncidentManagement::TimelineEvent.new(timeline_event_params)
 
-        if timeline_event.save
+        if timeline_event.save(context: validation_context)
           add_system_note(timeline_event)
           track_usage_event(:incident_management_timeline_event_created, user.id)
 
@@ -121,6 +121,10 @@ module IncidentManagement
         return if auto_created
 
         SystemNoteService.add_timeline_event(timeline_event)
+      end
+
+      def validation_context
+        :user_input if !auto_created && params[:promoted_from_note].blank?
       end
     end
   end

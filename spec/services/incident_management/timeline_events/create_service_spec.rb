@@ -161,6 +161,38 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
     it 'successfully creates a database record', :aggregate_failures do
       expect { execute }.to change { ::IncidentManagement::TimelineEvent.count }.by(1)
     end
+
+    context 'when note is more than 280 characters long' do
+      let(:args) do
+        {
+          note: 'a' * 281,
+          occurred_at: Time.current,
+          action: 'new comment',
+          promoted_from_note: comment,
+          auto_created: auto_created
+        }
+      end
+
+      let(:auto_created) { false }
+
+      context 'when was not promoted from note' do
+        let(:comment) { nil }
+
+        context 'when auto_created is true' do
+          let(:auto_created) { true }
+
+          it_behaves_like 'success response'
+        end
+
+        context 'when auto_created is false' do
+          it_behaves_like 'error response', 'Timeline text is too long (maximum is 280 characters)'
+        end
+      end
+
+      context 'when promoted from note' do
+        it_behaves_like 'success response'
+      end
+    end
   end
 
   describe 'automatically created timeline events' do
