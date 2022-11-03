@@ -1,8 +1,0 @@
----
-name: container_registry_show_shortened_path
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91548
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366808
-milestone: '15.2'
-type: development
-group: group::package
-default_enabled: false

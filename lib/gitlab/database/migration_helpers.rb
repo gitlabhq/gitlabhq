@@ -706,6 +706,10 @@ module Gitlab
         install_rename_triggers(table, old, new)
       end
 
+      def convert_to_type_column(column, from_type, to_type)
+        "#{column}_convert_#{from_type}_to_#{to_type}"
+      end
+
       def convert_to_bigint_column(column)
         "#{column}_convert_to_bigint"
       end
@@ -736,7 +740,22 @@ module Gitlab
       # columns - The name, or array of names, of the column(s) that we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
       def initialize_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :bigint)
+        mappings = Array(columns).map do |c|
+          {
+            c => {
+              from_type: :int,
+              to_type: :bigint,
+              default_value: 0
+            }
+          }
+        end.reduce(&:merge)
+
+        create_temporary_columns_and_triggers(
+          table,
+          mappings,
+          primary_key: primary_key,
+          old_bigint_column_naming: true
+        )
       end
 
       # Reverts `initialize_conversion_of_integer_to_bigint`
@@ -759,9 +778,23 @@ module Gitlab
       # table - The name of the database table containing the columns
       # columns - The name, or array of names, of the column(s) that we have converted to bigint.
       # primary_key - The name of the primary key column (most often :id)
-
       def restore_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :int)
+        mappings = Array(columns).map do |c|
+          {
+            c => {
+              from_type: :bigint,
+              to_type: :int,
+              default_value: 0
+            }
+          }
+        end.reduce(&:merge)
+
+        create_temporary_columns_and_triggers(
+          table,
+          mappings,
+          primary_key: primary_key,
+          old_bigint_column_naming: true
+        )
       end
 
       # Backfills the new columns used in an integer-to-bigint conversion using background migrations.
@@ -1170,13 +1203,20 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
       end
 
-      private
+      # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      def create_temporary_columns_and_triggers(table, mappings, primary_key: :id, old_bigint_column_naming: false)
+        raise ArgumentError, "No mappings for column conversion provided" if mappings.blank?
 
-      def multiple_columns(columns, separator: ', ')
-        Array.wrap(columns).join(separator)
-      end
+        unless mappings.values.all? { |values| mapping_has_required_columns?(values) }
+          raise ArgumentError, "Some mappings don't have required keys provided"
+        end
 
-      def create_temporary_columns_and_triggers(table, columns, primary_key: :id, data_type: :bigint)
+        neutral_values_for_type = {
+          int: 0,
+          bigint: 0,
+          uuid: '00000000-0000-0000-0000-000000000000'
+        }
+
         unless table_exists?(table)
           raise "Table #{table} does not exist"
         end
@@ -1185,7 +1225,7 @@ into similar problems in the future (e.g. when new tables are created).
           raise "Column #{primary_key} does not exist on #{table}"
         end
 
-        columns = Array.wrap(columns)
+        columns = mappings.keys
         columns.each do |column|
           next if column_exists?(table, column)
 
@@ -1194,25 +1234,80 @@ into similar problems in the future (e.g. when new tables are created).
 
         check_trigger_permissions!(table)
 
-        conversions = columns.to_h { |column| [column, convert_to_bigint_column(column)] }
+        if old_bigint_column_naming
+          mappings.each do |column, params|
+            params.merge!(
+              temporary_column_name: convert_to_bigint_column(column)
+            )
+          end
+        else
+          mappings.each do |column, params|
+            params.merge!(
+              temporary_column_name: convert_to_type_column(column, params[:from_type], params[:to_type])
+            )
+          end
+        end
 
         with_lock_retries do
-          conversions.each do |(source_column, temporary_name)|
-            column = column_for(table, source_column)
+          mappings.each do |(column_name, params)|
+            column = column_for(table, column_name)
+            temporary_name = params[:temporary_column_name]
+            data_type = params[:to_type]
+            default_value = params[:default_value]
 
             if (column.name.to_s == primary_key.to_s) || !column.null
               # If the column to be converted is either a PK or is defined as NOT NULL,
               # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
               # That way, we skip the expensive validation step required to add
               #  a NOT NULL constraint at the end of the process
-              add_column(table, temporary_name, data_type, default: column.default || 0, null: false)
+              add_column(
+                table,
+                temporary_name,
+                data_type,
+                default: column.default || default_value || neutral_values_for_type.fetch(data_type),
+                null: false
+              )
             else
-              add_column(table, temporary_name, data_type, default: column.default)
+              add_column(
+                table,
+                temporary_name,
+                data_type,
+                default: column.default
+              )
             end
           end
 
-          install_rename_triggers(table, conversions.keys, conversions.values)
+          old_column_names = mappings.keys
+          temporary_column_names = mappings.values.map { |v| v[:temporary_column_name] }
+          install_rename_triggers(table, old_column_names, temporary_column_names)
         end
+      end
+      # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+
+      private
+
+      def multiple_columns(columns, separator: ', ')
+        Array.wrap(columns).join(separator)
+      end
+
+      def cascade_statement(cascade)
+        cascade ? 'CASCADE' : ''
+      end
+
+      def validate_check_constraint_name!(constraint_name)
+        if constraint_name.to_s.length > MAX_IDENTIFIER_NAME_LENGTH
+          raise "The maximum allowed constraint name is #{MAX_IDENTIFIER_NAME_LENGTH} characters"
+        end
+      end
+
+      # mappings => {} where keys are column names and values are hashes with the following keys:
+      # from_type - from which type we're migrating
+      # to_type - to which type we're migrating
+      # default_value - custom default value, if not provided will be taken from neutral_values_for_type
+      def mapping_has_required_columns?(mapping)
+        %i[from_type to_type].map do |required_key|
+          mapping.has_key?(required_key)
+        end.all?
       end
 
       def column_is_nullable?(table, column)

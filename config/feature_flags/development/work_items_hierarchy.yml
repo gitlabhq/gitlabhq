@@ -1,8 +1,0 @@
----
-name: work_items_hierarchy
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88504
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363447
-milestone: '15.1'
-type: development
-group: group::product planning
-default_enabled: true

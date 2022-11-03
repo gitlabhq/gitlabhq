@@ -356,6 +356,8 @@ Advanced vulnerability tracking is available in a subset of the [supported langu
 
 Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 
+For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
+
 ### Using CI/CD variables to pass credentials for private repositories
 
 Some analyzers require downloading the project's dependencies to

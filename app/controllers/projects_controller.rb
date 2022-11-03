@@ -46,7 +46,6 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:package_registry_access_level)
-    push_frontend_feature_flag(:work_items_hierarchy, @project)
   end
 
   before_action only: :edit do

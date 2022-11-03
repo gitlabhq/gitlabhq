@@ -228,8 +228,9 @@ RSpec.describe Projects::ArtifactsController do
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(response.body).to include(
             'You must have developer or higher permissions in the associated project to view job logs when debug trace is enabled. ' \
-            'To disable debug trace, set the &#39;CI_DEBUG_TRACE&#39; variable to &#39;false&#39; in your pipeline configuration or CI/CD settings. ' \
-            'If you need to view this job log, a project maintainer or owner must add you to the project with developer permissions or higher.'
+            'To disable debug trace, set the &#39;CI_DEBUG_TRACE&#39; and &#39;CI_DEBUG_SERVICES&#39; variables to &#39;false&#39; ' \
+            'in your pipeline configuration or CI/CD settings. If you must view this job log, a project maintainer or owner must ' \
+            'add you to the project with developer permissions or higher.'
           )
         end
       end

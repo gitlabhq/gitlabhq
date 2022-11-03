@@ -179,16 +179,6 @@ RSpec.describe WorkItems::CreateService do
             let(:error_message) { 'only Issue and Incident can be parent of Task.' }
           end
         end
-
-        context 'when hierarchy feature flag is disabled' do
-          before do
-            stub_feature_flags(work_items_hierarchy: false)
-          end
-
-          it_behaves_like 'fails creating work item and returns errors' do
-            let(:error_message) { '`work_items_hierarchy` feature flag disabled for this project' }
-          end
-        end
       end
 
       context 'when user cannot admin parent link' do

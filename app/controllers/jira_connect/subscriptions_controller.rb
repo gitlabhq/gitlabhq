@@ -83,7 +83,8 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   def allowed_instance_connect_src
     [
       Gitlab::Utils.append_path(current_jira_installation.instance_url, '/-/jira_connect/'),
-      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/api/')
+      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/api/'),
+      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/oauth/token')
     ]
   end
 end

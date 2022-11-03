@@ -319,7 +319,7 @@ export default {
         (sortBy) =>
           sortBy.sortDirection.ascending === sort || sortBy.sortDirection.descending === sort,
       );
-      this.selectedSortDirection = Object.keys(this.selectedSortOption.sortDirection).find(
+      this.selectedSortDirection = Object.keys(this.selectedSortOption?.sortDirection || {}).find(
         (key) => this.selectedSortOption.sortDirection[key] === sort,
       );
     },

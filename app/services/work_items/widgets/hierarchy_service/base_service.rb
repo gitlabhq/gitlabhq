@@ -7,7 +7,6 @@ module WorkItems
         private
 
         def handle_hierarchy_changes(params)
-          return feature_flag_error unless feature_flag_enabled?
           return incompatible_args_error if incompatible_args?(params)
 
           if params.key?(:parent)
@@ -48,16 +47,8 @@ module WorkItems
             .execute
         end
 
-        def feature_flag_enabled?
-          Feature.enabled?(:work_items_hierarchy, work_item&.project)
-        end
-
         def incompatible_args?(params)
           params[:children] && params[:parent]
-        end
-
-        def feature_flag_error
-          error(_('`work_items_hierarchy` feature flag disabled for this project'))
         end
 
         def incompatible_args_error

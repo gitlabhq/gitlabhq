@@ -846,29 +846,6 @@ RSpec.shared_examples 'wiki model' do
     end
   end
 
-  describe '#ensure_repository' do
-    context 'if the repository exists' do
-      it 'does not create the repository' do
-        expect(subject.repository.exists?).to eq(true)
-        expect(subject.repository.raw).not_to receive(:create_repository)
-
-        subject.ensure_repository
-      end
-    end
-
-    context 'if the repository does not exist' do
-      let(:wiki_container) { wiki_container_without_repo }
-
-      it 'creates the repository' do
-        expect(subject.repository.exists?).to eq(false)
-
-        subject.ensure_repository
-
-        expect(subject.repository.exists?).to eq(true)
-      end
-    end
-  end
-
   describe '#hook_attrs' do
     it 'returns a hash with values' do
       expect(subject.hook_attrs).to be_a Hash

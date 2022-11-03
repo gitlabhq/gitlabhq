@@ -15,7 +15,6 @@ RSpec.describe 'Work item children', :js do
       sign_in(user)
 
       stub_feature_flags(work_items: true)
-      stub_feature_flags(work_items_hierarchy: true)
 
       visit project_issue_path(project, issue)
 

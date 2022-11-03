@@ -3,7 +3,6 @@ import { GlTooltipDirective, GlIcon, GlSprintf, GlSkeletonLoader, GlButton } fro
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { n__ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -38,7 +37,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   inject: ['config'],
   props: {
     item: {
@@ -91,17 +90,14 @@ export default {
       );
     },
     imageName() {
-      if (this.glFeatures.containerRegistryShowShortenedPath) {
-        if (this.showFullPath) {
-          return this.item.path;
-        }
-        const projectPath = this.item?.project?.path?.toLowerCase() ?? '';
-        if (this.item.name) {
-          return joinPaths(projectPath, this.item.name);
-        }
-        return projectPath;
+      if (this.showFullPath) {
+        return this.item.path;
       }
-      return this.item.path;
+      const projectPath = this.item?.project?.path?.toLowerCase() ?? '';
+      if (this.item.name) {
+        return joinPaths(projectPath, this.item.name);
+      }
+      return projectPath;
     },
     routerLinkEvent() {
       return this.deleting ? '' : 'click';
@@ -136,7 +132,7 @@ export default {
   >
     <template #left-primary>
       <gl-button
-        v-if="glFeatures.containerRegistryShowShortenedPath && !showFullPath"
+        v-if="!showFullPath"
         v-gl-tooltip="{
           placement: 'top',
           title: $options.i18n.IMAGE_FULL_PATH_LABEL,

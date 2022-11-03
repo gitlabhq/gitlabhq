@@ -24,7 +24,7 @@ module BulkImports
 
           Gitlab::UrlBlocker.validate!(url, schemes: %w[http https], allow_local_network: allow_local_requests?, allow_localhost: allow_local_requests?)
 
-          wiki.ensure_repository
+          wiki.create_wiki_repository
           wiki.repository.fetch_as_mirror(url)
         end
 

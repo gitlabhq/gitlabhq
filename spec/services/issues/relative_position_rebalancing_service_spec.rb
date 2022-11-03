@@ -34,10 +34,6 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
     end
   end
 
-  before do
-    stub_feature_flags(issue_rebalancing_with_retry: false)
-  end
-
   def issues_in_position_order
     project.reload.issues.order_by_relative_position.to_a
   end

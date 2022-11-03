@@ -6,10 +6,6 @@ import WorkItemLinks from './work_item_links.vue';
 Vue.use(GlToast);
 
 export default function initWorkItemLinks() {
-  if (!window.gon.features.workItemsHierarchy) {
-    return;
-  }
-
   const workItemLinksRoot = document.querySelector('.js-work-item-links-root');
 
   if (!workItemLinksRoot) {

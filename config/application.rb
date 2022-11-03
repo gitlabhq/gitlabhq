@@ -268,6 +268,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/cluster_agents.css"
     config.assets.precompile << "page_bundles/clusters.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
+    config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"
     config.assets.precompile << "page_bundles/design_management.css"
     config.assets.precompile << "page_bundles/dev_ops_reports.css"

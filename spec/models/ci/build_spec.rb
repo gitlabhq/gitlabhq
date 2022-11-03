@@ -5095,6 +5095,60 @@ RSpec.describe Ci::Build do
     context 'when CI_DEBUG_TRACE is not in variables' do
       it { is_expected.to eq false }
     end
+
+    context 'when CI_DEBUG_SERVICES=true is in variables' do
+      context 'when in instance variables' do
+        before do
+          create(:ci_instance_variable, key: 'CI_DEBUG_SERVICES', value: 'true')
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in group variables' do
+        before do
+          create(:ci_group_variable, key: 'CI_DEBUG_SERVICES', value: 'true', group: project.group)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in pipeline variables' do
+        before do
+          create(:ci_pipeline_variable, key: 'CI_DEBUG_SERVICES', value: 'true', pipeline: pipeline)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in project variables' do
+        before do
+          create(:ci_variable, key: 'CI_DEBUG_SERVICES', value: 'true', project: project)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in job variables' do
+        before do
+          create(:ci_job_variable, key: 'CI_DEBUG_SERVICES', value: 'true', job: build)
+        end
+
+        it { is_expected.to eq true }
+      end
+
+      context 'when in yaml variables' do
+        before do
+          build.update!(yaml_variables: [{ key: :CI_DEBUG_SERVICES, value: 'true' }])
+        end
+
+        it { is_expected.to eq true }
+      end
+    end
+
+    context 'when CI_DEBUG_SERVICES is not in variables' do
+      it { is_expected.to eq false }
+    end
   end
 
   describe '#drop_with_exit_code!' do

@@ -1040,7 +1040,8 @@ module Ci
       # TODO: Have `debug_mode?` check against data on sent back from runner
       # to capture all the ways that variables can be set.
       # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)
-      variables['CI_DEBUG_TRACE']&.value&.casecmp('true') == 0
+      variables['CI_DEBUG_TRACE']&.value&.casecmp('true') == 0 ||
+        variables['CI_DEBUG_SERVICES']&.value&.casecmp('true') == 0
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)

@@ -18137,6 +18137,12 @@ msgstr ""
 msgid "GitLab Billing Team."
 msgstr ""
 
+msgid "GitLab Community Edition"
+msgstr ""
+
+msgid "GitLab Enterprise Edition"
+msgstr ""
+
 msgid "GitLab Error Tracking"
 msgstr ""
 
@@ -46738,7 +46744,7 @@ msgstr ""
 msgid "You must be logged in to search across all of GitLab"
 msgstr ""
 
-msgid "You must have developer or higher permissions in the associated project to view job logs when debug trace is enabled. To disable debug trace, set the 'CI_DEBUG_TRACE' variable to 'false' in your pipeline configuration or CI/CD settings. If you need to view this job log, a project maintainer or owner must add you to the project with developer permissions or higher."
+msgid "You must have developer or higher permissions in the associated project to view job logs when debug trace is enabled. To disable debug trace, set the 'CI_DEBUG_TRACE' and 'CI_DEBUG_SERVICES' variables to 'false' in your pipeline configuration or CI/CD settings. If you must view this job log, a project maintainer or owner must add you to the project with developer permissions or higher."
 msgstr ""
 
 msgid "You must have maintainer access to force delete a lock"
@@ -47300,9 +47306,6 @@ msgid "`end_time` should not exceed one month after `start_time`"
 msgstr ""
 
 msgid "`start_time` should precede `end_time`"
-msgstr ""
-
-msgid "`work_items_hierarchy` feature flag disabled for this project"
 msgstr ""
 
 msgid "a deleted user"
