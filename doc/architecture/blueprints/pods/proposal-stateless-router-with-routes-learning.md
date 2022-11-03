@@ -73,7 +73,7 @@ graph TD;
     end
 ```
 
-<details><summary>More detail</summary>
+### More detail
 
 This shows that the router can actually send requests to any pod. The user will
 get the closest router to them geographically.
@@ -105,9 +105,7 @@ graph TD;
     router_us-.->pod_eu1;
 ```
 
-</details>
-
-<details><summary>Even more detail</summary>
+### Even more detail
 
 This shows the databases. `gitlab_users` and `gitlab_routes` exist only in the
 US region but are replicated to other regions. Replication does not have an
@@ -159,8 +157,6 @@ graph TD;
     router_us-.->pod_eu0;
     router_us-.->pod_eu1;
 ```
-
-</details>
 
 ## Summary of changes
 
@@ -302,7 +298,7 @@ keeping settings in sync for all pods.
 
 Handling shared `gitlab_users`, `gitlab_routes` and `gitlab_admin` databases, while having dedicated `gitlab_main` and `gitlab_ci` databases should already be handled by the way we use `config/database.yml`. We should also, already be able to handle the dedicated EU replicas while having a single US primary for `gitlab_users` and `gitlab_routes`. Below is a snippet of part of the database configuration for the Pod architecture described above.
 
-<details><summary>Pod US0</summary>
+**Pod US0**:
 
 ```yaml
 # config/database.yml
@@ -329,9 +325,7 @@ production:
       discovery: postgres-admin-replicas.us.consul
 ```
 
-</details>
-
-<details><summary>Pod EU0</summary>
+**Pod EU0**:
 
 ```yaml
 # config/database.yml
@@ -357,8 +351,6 @@ production:
     load_balancing:
       discovery: postgres-admin-replicas.eu.consul
 ```
-
-</details>
 
 ## Request flows
 

@@ -41,6 +41,11 @@ module Gitlab
       # as the underlying implementation of this varies wildly based on
       # the adapter in use.
       #
+      # This method does, in some situations, differ in the data it returns
+      # compared to .generate. Counter-intuitively, this is closest in
+      # terms of response to JSON.generate and to the default ActiveSupport
+      # .to_json method.
+      #
       # @param object [Object] the object to convert to JSON
       # @return [String]
       def dump(object)
@@ -261,6 +266,16 @@ module Gitlab
         end
 
         buffer.string
+      end
+    end
+
+    class RailsEncoder < ActiveSupport::JSON::Encoding::JSONGemEncoder
+      # Rails doesn't provide a way of changing the JSON adapter for
+      # render calls in controllers, so here we're overriding the parent
+      # class method to use our generator, and it's monkey-patched in
+      # config/initializers/active_support_json.rb
+      def stringify(jsonified)
+        Gitlab::Json.dump(jsonified)
       end
     end
   end

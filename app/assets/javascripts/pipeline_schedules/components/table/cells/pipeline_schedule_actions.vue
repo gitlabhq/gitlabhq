@@ -50,6 +50,8 @@ export default {
         v-gl-tooltip
         :title="$options.i18n.takeOwnershipTooltip"
         icon="user"
+        data-testid="take-ownership-pipeline-schedule-btn"
+        @click="$emit('showTakeOwnershipModal', schedule.id)"
       />
       <gl-button v-if="canUpdate" v-gl-tooltip :title="$options.i18n.editTooltip" icon="pencil" />
       <gl-button

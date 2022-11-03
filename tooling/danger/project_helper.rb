@@ -166,8 +166,9 @@ module Tooling
         %r{\A((ee|jh)/)?changelogs/} => :none,
         %r{\Alocale/gitlab\.pot\z} => :none,
 
-        # GraphQL auto generated doc files and schema
+        # API auto generated doc files and schema
         %r{\Adoc/api/graphql/reference/} => :backend,
+        %r{\Adoc/api/openapi/.*\.yaml\z} => :backend,
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,

@@ -231,13 +231,6 @@ Examples:
      estimate_batch_distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::Note.minimum(:id), finish: ::Note.maximum(:id))
    ```
 
-1. Execution of estimated batch counter with joined relation (`joins(:cluster)`),
-   for a custom column (`'clusters.user_id'`):
-
-   ```ruby
-     estimate_batch_distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
-   ```
-
 When instrumenting metric with usage of estimated batch counter please add
 `_estimated` suffix to its name, for example:
 

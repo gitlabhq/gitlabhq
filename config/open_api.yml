@@ -25,6 +25,8 @@ metadata:
     description: Operations related to deploy tokens
   - name: deployments
     description: Operations related to deployments
+  - name: dora_metrics
+    description: Operations related to DevOps Research and Assessment (DORA) key metrics
   - name: environments
     description: Operations related to environments
   - name: feature_flags_user_lists

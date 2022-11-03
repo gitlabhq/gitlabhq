@@ -66,5 +66,4 @@ Examples:
 ```ruby
 distinct_count(::Project, :creator_id)
 distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::User.minimum(:id), finish: ::User.maximum(:id))
-distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
 ```

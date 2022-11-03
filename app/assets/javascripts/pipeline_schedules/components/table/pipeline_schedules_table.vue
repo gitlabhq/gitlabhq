@@ -94,6 +94,7 @@ export default {
     <template #cell(actions)="{ item }">
       <pipeline-schedule-actions
         :schedule="item"
+        @showTakeOwnershipModal="$emit('showTakeOwnershipModal', $event)"
         @showDeleteModal="$emit('showDeleteModal', $event)"
       />
     </template>

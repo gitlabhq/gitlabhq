@@ -7158,9 +7158,6 @@ msgstr ""
 msgid "BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration"
 msgstr ""
 
-msgid "BulkImport|From source group"
-msgstr ""
-
 msgid "BulkImport|Group import history"
 msgstr ""
 
@@ -7191,6 +7188,9 @@ msgstr ""
 msgid "BulkImport|Name already used as a target for another group."
 msgstr ""
 
+msgid "BulkImport|New group"
+msgstr ""
+
 msgid "BulkImport|No additional information provided."
 msgstr ""
 
@@ -7204,6 +7204,9 @@ msgid "BulkImport|No parent"
 msgstr ""
 
 msgid "BulkImport|Only groups that you have the %{role} role for are listed as groups you can import."
+msgstr ""
+
+msgid "BulkImport|Path of the new group."
 msgstr ""
 
 msgid "BulkImport|Project import history"
@@ -7228,9 +7231,6 @@ msgid "BulkImport|Source group"
 msgstr ""
 
 msgid "BulkImport|Template / File-based import / GitLab Migration"
-msgstr ""
-
-msgid "BulkImport|To new group"
 msgstr ""
 
 msgid "BulkImport|Update of import statuses with realtime changes failed"
@@ -29732,10 +29732,16 @@ msgstr ""
 msgid "PipelineSchedules|Owner"
 msgstr ""
 
+msgid "PipelineSchedules|Pipeline schedule successfully deleted."
+msgstr ""
+
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
 msgid "PipelineSchedules|Run pipeline schedule"
+msgstr ""
+
+msgid "PipelineSchedules|Successfully taken ownership from %{owner}."
 msgstr ""
 
 msgid "PipelineSchedules|Take ownership"
@@ -29751,6 +29757,9 @@ msgid "PipelineSchedules|There was a problem deleting the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem fetching pipeline schedules."
+msgstr ""
+
+msgid "PipelineSchedules|There was a problem taking ownership of the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|Variables"

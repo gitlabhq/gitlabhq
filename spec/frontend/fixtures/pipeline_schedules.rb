@@ -71,5 +71,14 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)' do
 
       expect_graphql_errors_to_be_empty
     end
+
+    it "#{fixtures_path}#{get_pipeline_schedules_query}.take_ownership.json" do
+      maintainer = create(:user)
+      project.add_maintainer(maintainer)
+
+      post_graphql(query, current_user: maintainer, variables: { projectPath: project.full_path })
+
+      expect_graphql_errors_to_be_empty
+    end
   end
 end

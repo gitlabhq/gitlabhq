@@ -9,6 +9,19 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   presents ::Blob, as: :blob
 
+  def highlight_and_trim(ellipsis_svg:, trim_length:, plain: nil)
+    load_all_blob_data
+
+    trimmed_lines, trimmed_idx = trimmed_blob_data(trim_length)
+    Gitlab::Highlight.highlight(
+      blob.path,
+      trimmed_lines,
+      language: blob_language,
+      plain: plain,
+      context: { ellipsis_indexes: trimmed_idx, ellipsis_svg: ellipsis_svg }
+    )
+  end
+
   def highlight(to: nil, plain: nil)
     load_all_blob_data
 
@@ -24,6 +37,10 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     return if blob.binary?
 
     highlight(plain: false)
+  end
+
+  def trimmed_blob_data(trim_length)
+    @_trimmed_blob_data ||= limited_trimmed_blob_data(trim_length)
   end
 
   def blob_data(to)
@@ -167,6 +184,19 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def load_all_blob_data
     blob.load_all_data! if blob.respond_to?(:load_all_data!)
+  end
+
+  def limited_trimmed_blob_data(trim_length)
+    trimmed_idx = []
+
+    trimmed_lines = all_lines.map.with_index do |line, index|
+      next line if line.length <= trim_length
+
+      trimmed_idx << index
+      "#{line[0, trim_length]}\n"
+    end
+
+    [trimmed_lines.join, trimmed_idx]
   end
 
   def limited_blob_data(to: nil)

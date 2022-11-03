@@ -3,6 +3,15 @@ import { GlModal } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 
 export default {
+  components: {
+    GlModal,
+  },
+  props: {
+    ownershipUrl: {
+      type: String,
+      required: true,
+    },
+  },
   modalId: 'pipeline-take-ownership-modal',
   i18n: {
     takeOwnership: s__('PipelineSchedules|Take ownership'),
@@ -10,15 +19,6 @@ export default {
       'PipelineSchedules|Only the owner of a pipeline schedule can make changes to it. Do you want to take ownership of this schedule?',
     ),
     cancelLabel: __('Cancel'),
-  },
-  components: {
-    GlModal,
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     actionCancel() {
@@ -31,6 +31,8 @@ export default {
           {
             variant: 'confirm',
             category: 'primary',
+            href: this.ownershipUrl,
+            'data-method': 'post',
           },
         ],
       };
@@ -40,14 +42,10 @@ export default {
 </script>
 <template>
   <gl-modal
-    :visible="visible"
     :modal-id="$options.modalId"
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
     :title="$options.i18n.takeOwnership"
-    size="sm"
-    @primary="$emit('takeOwnership')"
-    @hide="$emit('hideModal')"
   >
     <p>{{ $options.i18n.ownershipMessage }}</p>
   </gl-modal>

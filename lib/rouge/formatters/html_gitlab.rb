@@ -12,6 +12,8 @@ module Rouge
       def initialize(options = {})
         @tag = options[:tag]
         @line_number = options[:line_number] || 1
+        @ellipsis_indexes = options[:ellipsis_indexes] || []
+        @ellipsis_svg = options[:ellipsis_svg]
       end
 
       def stream(tokens)
@@ -26,6 +28,8 @@ module Rouge
             yield highlight_unicode_control_characters(span(token, value.chomp! || value))
           end
 
+          yield ellipsis if @ellipsis_indexes.include?(@line_number - 1) && @ellipsis_svg.present?
+
           yield %(</span>)
 
           @line_number += 1
@@ -33,6 +37,10 @@ module Rouge
       end
 
       private
+
+      def ellipsis
+        %(<span class="gl-px-2 gl-rounded-base gl-mx-2 gl-bg-gray-100 gl-cursor-help has-tooltip" title="Content has been trimmed">#{@ellipsis_svg}</span>)
+      end
 
       def highlight_unicode_control_characters(text)
         text.gsub(Gitlab::Unicode::BIDI_REGEXP) do |char|

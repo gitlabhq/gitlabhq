@@ -1,11 +1,14 @@
 <script>
-import { GlAlert, GlBadge, GlButton, GlLoadingIcon, GlModal, GlTabs, GlTab } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { GlAlert, GlBadge, GlButton, GlLoadingIcon, GlTabs, GlTab } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
+import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
+import TakeOwnershipModal from './take_ownership_modal.vue';
+import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
 
 export default {
   i18n: {
@@ -13,31 +16,22 @@ export default {
     scheduleDeleteError: s__(
       'PipelineSchedules|There was a problem deleting the pipeline schedule.',
     ),
-    newSchedule: s__('PipelineSchedules|New schedule'),
-  },
-  modal: {
-    id: 'delete-pipeline-schedule-modal',
-    deleteConfirmation: s__(
-      'PipelineSchedules|Are you sure you want to delete this pipeline schedule?',
+    takeOwnershipError: s__(
+      'PipelineSchedules|There was a problem taking ownership of the pipeline schedule.',
     ),
-    actionPrimary: {
-      text: s__('PipelineSchedules|Delete pipeline schedule'),
-      attributes: [{ variant: 'danger' }],
-    },
-    actionCancel: {
-      text: __('Cancel'),
-      attributes: [],
-    },
+    newSchedule: s__('PipelineSchedules|New schedule'),
+    deleteSuccess: s__('PipelineSchedules|Pipeline schedule successfully deleted.'),
   },
   components: {
+    DeletePipelineScheduleModal,
     GlAlert,
     GlBadge,
     GlButton,
     GlLoadingIcon,
-    GlModal,
     GlTabs,
     GlTab,
     PipelineSchedulesTable,
+    TakeOwnershipModal,
   },
   inject: {
     fullPath: {
@@ -75,8 +69,9 @@ export default {
       scope,
       hasError: false,
       errorMessage: '',
-      scheduleToDeleteId: null,
-      showModal: false,
+      scheduleId: null,
+      showDeleteModal: false,
+      showTakeOwnershipModal: false,
       count: 0,
     };
   },
@@ -125,13 +120,18 @@ export default {
       this.hasError = true;
       this.errorMessage = error;
     },
-    showDeleteModal(id) {
-      this.showModal = true;
-      this.scheduleToDeleteId = id;
+    setDeleteModal(id) {
+      this.showDeleteModal = true;
+      this.scheduleId = id;
+    },
+    setTakeOwnershipModal(id) {
+      this.showTakeOwnershipModal = true;
+      this.scheduleId = id;
     },
     hideModal() {
-      this.showModal = false;
-      this.scheduleToDeleteId = null;
+      this.showDeleteModal = false;
+      this.showTakeOwnershipModal = false;
+      this.scheduleId = null;
     },
     async deleteSchedule() {
       try {
@@ -141,16 +141,48 @@ export default {
           },
         } = await this.$apollo.mutate({
           mutation: deletePipelineScheduleMutation,
-          variables: { id: this.scheduleToDeleteId },
+          variables: { id: this.scheduleId },
         });
 
         if (errors.length > 0) {
           throw new Error();
         } else {
           this.$apollo.queries.schedules.refetch();
+          this.$toast.show(this.$options.i18n.deleteSuccess);
         }
       } catch {
         this.reportError(this.$options.i18n.scheduleDeleteError);
+      }
+    },
+    async takeOwnership() {
+      try {
+        const {
+          data: {
+            pipelineScheduleTakeOwnership: { pipelineSchedule, errors },
+          },
+        } = await this.$apollo.mutate({
+          mutation: takeOwnershipMutation,
+          variables: { id: this.scheduleId },
+        });
+
+        if (errors.length > 0) {
+          throw new Error();
+        } else {
+          this.$apollo.queries.schedules.refetch();
+
+          if (pipelineSchedule?.owner?.name) {
+            const toastMsg = sprintf(
+              s__('PipelineSchedules|Successfully taken ownership from %{owner}.'),
+              {
+                owner: pipelineSchedule.owner.name,
+              },
+            );
+
+            this.$toast.show(toastMsg);
+          }
+        }
+      } catch {
+        this.reportError(this.$options.i18n.takeOwnershipError);
       }
     },
     fetchPipelineSchedulesByStatus(scope) {
@@ -196,7 +228,8 @@ export default {
           <pipeline-schedules-table
             v-else
             :schedules="schedules.list"
-            @showDeleteModal="showDeleteModal"
+            @showTakeOwnershipModal="setTakeOwnershipModal"
+            @showDeleteModal="setDeleteModal"
           />
         </gl-tab>
 
@@ -207,18 +240,17 @@ export default {
         </template>
       </gl-tabs>
 
-      <gl-modal
-        :visible="showModal"
-        :title="$options.modal.actionPrimary.text"
-        :modal-id="$options.modal.id"
-        :action-primary="$options.modal.actionPrimary"
-        :action-cancel="$options.modal.actionCancel"
-        size="sm"
-        @primary="deleteSchedule"
-        @hide="hideModal"
-      >
-        {{ $options.modal.deleteConfirmation }}
-      </gl-modal>
+      <take-ownership-modal
+        :visible="showTakeOwnershipModal"
+        @takeOwnership="takeOwnership"
+        @hideModal="hideModal"
+      />
+
+      <delete-pipeline-schedule-modal
+        :visible="showDeleteModal"
+        @deleteSchedule="deleteSchedule"
+        @hideModal="hideModal"
+      />
     </template>
   </div>
 </template>

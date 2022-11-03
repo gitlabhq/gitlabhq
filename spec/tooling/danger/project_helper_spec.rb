@@ -249,6 +249,11 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
       'app/views/layouts/header/_default.html.haml' | [:frontend, :backend]
       'app/views/layouts/header/_default.html.erb'  | [:frontend, :backend]
+
+      'doc/api/graphql/reference/index.md'               | [:docs]
+      'doc/api/graphql/reference/some_other_file.txt'    | [:backend]
+      'doc/api/openapi/openapi.yaml'                     | [:backend]
+      'doc/api/openapi/any_other_file.yaml'              | [:backend]
     end
 
     with_them do

@@ -10,7 +10,7 @@ module Gitlab
         attr_reader :attributes
 
         expose_attribute :id, :allow_force_pushes, :required_conversation_resolution, :required_signatures,
-                         :required_pull_request_reviews
+                         :required_pull_request_reviews, :require_code_owner_reviews
 
         # Builds a Branch Protection info from a GitHub API response.
         # Resource structure details:
@@ -24,7 +24,9 @@ module Gitlab
             allow_force_pushes: branch_protection.dig(:allow_force_pushes, :enabled),
             required_conversation_resolution: branch_protection.dig(:required_conversation_resolution, :enabled),
             required_signatures: branch_protection.dig(:required_signatures, :enabled),
-            required_pull_request_reviews: branch_protection[:required_pull_request_reviews].present?
+            required_pull_request_reviews: branch_protection[:required_pull_request_reviews].present?,
+            require_code_owner_reviews: branch_protection.dig(:required_pull_request_reviews,
+                                                              :require_code_owner_reviews).present?
           }
 
           new(hash)

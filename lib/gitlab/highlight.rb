@@ -2,9 +2,9 @@
 
 module Gitlab
   class Highlight
-    def self.highlight(blob_name, blob_content, language: nil, plain: false)
+    def self.highlight(blob_name, blob_content, language: nil, plain: false, context: {})
       new(blob_name, blob_content, language: language)
-        .highlight(blob_content, continue: false, plain: plain)
+        .highlight(blob_content, continue: false, plain: plain, context: context)
     end
 
     def self.too_large?(size)
