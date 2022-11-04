@@ -269,6 +269,67 @@ Sample response:
 }
 ```
 
+## Get the latest pipeline
+
+Get the latest pipeline for a specific ref in a project.
+
+```plaintext
+POST /projects/:id/pipeline/latest
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `ref`       | string  | no       | The branch or tag to check for the latest pipeline. Defaults to the default branch when not specified. |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
+```
+
+Example of response
+
+```json
+{
+    "id": 287,
+    "iid": 144,
+    "project_id": 21,
+    "sha": "50f0acb76a40e34a4ff304f7347dcc6587da8a14",
+    "ref": "main",
+    "status": "success",
+    "source": "push",
+    "created_at": "2022-09-21T01:05:07.200Z",
+    "updated_at": "2022-09-21T01:05:50.185Z",
+    "web_url": "http://127.0.0.1:3000/test-group/test-project/-/pipelines/287",
+    "before_sha": "8a24fb3c5877a6d0b611ca41fc86edc174593e2b",
+    "tag": false,
+    "yaml_errors": null,
+    "user": {
+        "id": 1,
+        "username": "root",
+        "name": "Administrator",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "web_url": "http://127.0.0.1:3000/root"
+    },
+    "started_at": "2022-09-21T01:05:14.197Z",
+    "finished_at": "2022-09-21T01:05:50.175Z",
+    "committed_at": null,
+    "duration": 34,
+    "queued_duration": 6,
+    "coverage": null,
+    "detailed_status": {
+        "icon": "status_success",
+        "text": "passed",
+        "label": "passed",
+        "group": "success",
+        "tooltip": "passed",
+        "has_details": false,
+        "details_path": "/test-group/test-project/-/pipelines/287",
+        "illustration": null,
+        "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
+    }
+}
+```
+
 ## Create a new pipeline
 
 > `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
