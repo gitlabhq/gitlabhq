@@ -60,6 +60,13 @@ To make submodules work correctly in CI/CD jobs:
      GIT_SUBMODULE_STRATEGY: recursive
    ```
 
+1. Use `GIT_SUBMODULE_DEPTH` to configure the cloning depth of submodules independently of the [`GIT_DEPTH`](runners/configure_runners.md#shallow-cloning) variable:
+
+   ```yaml
+   variables:
+     GIT_SUBMODULE_DEPTH: 1
+   ```
+
 1. You can filter or exclude specific submodules to control which submodules will be synced using
    [`GIT_SUBMODULE_PATHS`](runners/configure_runners.md#git-submodule-paths).
 

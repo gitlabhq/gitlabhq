@@ -292,7 +292,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
       expected_spec_html = <<~RENDERED_HTML
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
+        <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-yaml" lang="yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
         <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
         <copy-code></copy-code>
         </div>
@@ -311,7 +311,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
       expected_snapshot_spec_html = <<~RENDERED_HTML
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
+        <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-yaml" lang="yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
         <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
         <copy-code></copy-code>
         </div>
@@ -320,7 +320,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
         <h2 data-sourcepos="7:1-7:9" dir="auto">
         <a id="user-content-strong" class="anchor" href="#strong" aria-hidden="true"></a>Strong</h2>
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="9:1-13:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">__bold__</span>
+        <pre data-sourcepos="9:1-13:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">__bold__</span>
         <span id="LC2" class="line" lang="plaintext">.</span>
         <span id="LC3" class="line" lang="plaintext">&lt;p&gt;&lt;strong&gt;bold&lt;/strong&gt;&lt;/p&gt;</span></code></pre>
         <copy-code></copy-code>

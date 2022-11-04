@@ -119,26 +119,20 @@ RSpec.describe User do
       end
     end
 
-    context 'when pbkdf2_password_encryption is disabled' do
-      before do
-        stub_feature_flags(pbkdf2_password_encryption: false)
-      end
+    it 'calls default Devise encryptor and not the PBKDF2 encryptor' do
+      expect(Devise::Encryptor).to receive(:digest).at_least(:once).and_call_original
+      expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).not_to receive(:digest)
 
-      it 'calls default Devise encryptor and not the PBKDF2 encryptor' do
-        expect(Devise::Encryptor).to receive(:digest).at_least(:once).and_call_original
-        expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).not_to receive(:digest)
+      user.password = password
+    end
 
-        user.password = password
-      end
+    it 'saves the password in BCrypt format' do
+      user.password = password
+      user.save!
 
-      it 'saves the password in BCrypt format' do
-        user.password = password
-        user.save!
-
-        expect { compare_pbkdf2_password(user, password) }
-          .to raise_error Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
-        expect(compare_bcrypt_password(user, password)).to eq(true)
-      end
+      expect { compare_pbkdf2_password(user, password) }
+        .to raise_error Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
+      expect(compare_bcrypt_password(user, password)).to eq(true)
     end
   end
 end

@@ -77,6 +77,8 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change the namespace the subscription is linked to](#change-the-linked-namespace)
 - [Change customers portal account password](#change-customers-portal-account-password)
 
+The Customers Portal is available only to customers who purchased their subscription from GitLab. If you made your purchase through a partner or reseller, you must contact them directly for assistance with your subscription.
+
 ### Change account owner information
 
 Account owner personal details are used on invoices. The account owner email

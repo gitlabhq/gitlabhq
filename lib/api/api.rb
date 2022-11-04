@@ -186,6 +186,7 @@ module API
         mount ::API::Features
         mount ::API::FreezePeriods
         mount ::API::Keys
+        mount ::API::ImportBitbucketServer
         mount ::API::Metadata
         mount ::API::MergeRequestDiffs
         mount ::API::ProjectHooks
@@ -260,7 +261,6 @@ module API
       mount ::API::GroupVariables
       mount ::API::Groups
       mount ::API::HelmPackages
-      mount ::API::ImportBitbucketServer
       mount ::API::ImportGithub
       mount ::API::Integrations
       mount ::API::Integrations::JiraConnect::Subscriptions

@@ -43,6 +43,8 @@ metadata:
     description: Operations related to metadata of the GitLab instance
   - name: project_hooks
     description: Operations related to project hooks
+  - name: project_import_bitbucket
+    description: Operations related to import BitBucket projects    
   - name: release_links
     description: Operations related to release assets (links)
   - name: releases

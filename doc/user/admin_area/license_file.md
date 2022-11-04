@@ -25,7 +25,7 @@ Otherwise, to add your license:
 1. Select **Add license**.
 
 NOTE:
-For GitLab versions 14.1.x or newer, you can access the **Add License** page directly from the URL, `<YourGitLabURL>/admin/license/new`.
+In GitLab 14.1.x through 14.10.x, you can access the **Add License** page directly from the URL, `<YourGitLabURL>/admin/license/new`. In GitLab 15.0 and later, the path is `<YourGitLabURL>/admin/subscription`.
 
 ## Add your license file during installation
 

@@ -138,7 +138,7 @@ With [Docker Compose](https://docs.docker.com/compose/) you can easily configure
 install, and upgrade your Docker-based GitLab installation:
 
 1. [Install Docker Compose](https://docs.docker.com/compose/install/).
-1. Create a `docker-compose.yml` file (or [download an example](https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/docker/docker-compose.yml)):
+1. Create a `docker-compose.yml` file:
 
    ```yaml
    version: '3.6'
