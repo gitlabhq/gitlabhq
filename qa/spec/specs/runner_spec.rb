@@ -111,7 +111,7 @@ RSpec.describe QA::Specs::Runner do
 
       it 'sets the `--dry-run` flag' do
         expect_rspec_runner_arguments(
-          ['--dry-run'] + DEFAULT_SKIPPED_TAGS + ['--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS],
+          ['--dry-run', *described_class::DEFAULT_TEST_PATH_ARGS],
           [$stderr, anything]
         )
 

@@ -143,6 +143,8 @@ GitLab 14.0 introduced [batched background migrations](../user/admin_area/monito
 
 Some installations [may need to run GitLab 14.0 for at least a day](#1400) to complete the database changes introduced by that upgrade.
 
+Batched background migrations are handled by Sidekiq and [run in isolation](../development/database/batched_background_migrations.md#isolation), so an instance can remain operational while the migrations are processed. However, there may be performance degradation on larger instances that are heavily used while batched background migrations are run, so it's a good idea to [actively monitor the Sidekiq status](../user/admin_area/index.md#background-jobs) until all migrations are completed.
+
 #### Check the status of batched background migrations
 
 To check the status of batched background migrations:

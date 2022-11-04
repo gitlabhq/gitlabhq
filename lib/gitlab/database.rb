@@ -56,7 +56,7 @@ module Gitlab
         # Note that we use ActiveRecord::Base here and not ApplicationRecord.
         # This is deliberate, as we also use these classes to apply load
         # balancing to, and the load balancer must be enabled for _all_ models
-        # that inher from ActiveRecord::Base; not just our own models that
+        # that inherit from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
