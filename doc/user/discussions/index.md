@@ -45,7 +45,7 @@ mentions for yourself (the user currently signed in) are highlighted
 in a different color.
 
 Avoid mentioning `@all` in issues and merge requests. It sends an email notification
-to all members of that project's parent group, not only the participants of the project, 
+to all members of that project's parent group, not only the participants of the project,
 and may be interpreted as spam.
 Notifications and mentions can be disabled in
 [a group's settings](../group/manage.md#disable-email-notifications).
@@ -144,7 +144,7 @@ If you edit an existing comment to add a user mention that wasn't there before, 
 - Creates a to-do item for the mentioned user.
 - Does not send a notification email.
 
-## Prevent comments by locking an issue
+## Prevent comments by locking the discussion
 
 You can prevent public comments in an issue or merge request.
 When you do, only project members can add and edit comments.
@@ -154,12 +154,17 @@ Prerequisite:
 - In merge requests, you must have at least the Developer role.
 - In issues, you must have at least the Reporter role.
 
+To lock an issue or merge request:
+
 1. On the right sidebar, next to **Lock issue** or **Lock merge request**, select **Edit**.
 1. On the confirmation dialog, select **Lock**.
 
 Notes are added to the page details.
 
 If an issue or merge request is locked and closed, you cannot reopen it.
+
+<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+If you don't see this action on the right sidebar, your project or instance might have [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions) enabled.
 
 ## Add an internal note
 

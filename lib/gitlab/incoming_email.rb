@@ -2,30 +2,11 @@
 
 module Gitlab
   module IncomingEmail
-    UNSUBSCRIBE_SUFFIX        = '-unsubscribe'
-    UNSUBSCRIBE_SUFFIX_LEGACY = '+unsubscribe'
-    WILDCARD_PLACEHOLDER      = '%{key}'
-
     class << self
-      def enabled?
-        config.enabled && config.address.present?
-      end
+      include Gitlab::Email::Common
 
-      def supports_wildcard?
-        config.address.present? && config.address.include?(WILDCARD_PLACEHOLDER)
-      end
-
-      def supports_issue_creation?
-        enabled? && supports_wildcard?
-      end
-
-      def reply_address(key)
-        config.address.sub(WILDCARD_PLACEHOLDER, key)
-      end
-
-      # example: incoming+1234567890abcdef1234567890abcdef-unsubscribe@incoming.gitlab.com
-      def unsubscribe_address(key)
-        config.address.sub(WILDCARD_PLACEHOLDER, "#{key}#{UNSUBSCRIBE_SUFFIX}")
+      def config
+        incoming_email_config
       end
 
       def key_from_address(address, wildcard_address: nil)
@@ -37,21 +18,6 @@ module Gitlab
         return unless match
 
         match[1]
-      end
-
-      def key_from_fallback_message_id(mail_id)
-        message_id_regexp = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\z/
-
-        mail_id[message_id_regexp, 1]
-      end
-
-      def scan_fallback_references(references)
-        # It's looking for each <...>
-        references.scan(/(?!<)[^<>]+(?=>)/)
-      end
-
-      def config
-        Gitlab.config.incoming_email
       end
 
       private

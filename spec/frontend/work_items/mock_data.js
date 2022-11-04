@@ -41,6 +41,7 @@ export const workItemQueryResponse = {
     workItem: {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
+      iid: '1',
       title: 'Test',
       state: 'OPEN',
       description: 'description',
@@ -113,6 +114,7 @@ export const updateWorkItemMutationResponse = {
       workItem: {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
+        iid: '1',
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
@@ -199,6 +201,7 @@ export const workItemResponseFactory = ({
     workItem: {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
+      iid: 1,
       title: 'Updated title',
       state: 'OPEN',
       description: 'description',
@@ -331,6 +334,7 @@ export const createWorkItemMutationResponse = {
       workItem: {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
+        iid: '1',
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
@@ -368,6 +372,7 @@ export const createWorkItemFromTaskMutationResponse = {
         __typename: 'WorkItem',
         description: 'New description',
         id: 'gid://gitlab/WorkItem/1',
+        iid: '1',
         title: 'Updated title',
         state: 'OPEN',
         confidential: false,
@@ -405,6 +410,7 @@ export const createWorkItemFromTaskMutationResponse = {
       newWorkItem: {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1000000',
+        iid: '100',
         title: 'Updated title',
         state: 'OPEN',
         createdAt: '2022-08-03T12:41:54Z',
@@ -776,6 +782,7 @@ export const changeWorkItemParentMutationResponse = {
         },
         description: null,
         id: 'gid://gitlab/WorkItem/2',
+        iid: '2',
         state: 'OPEN',
         title: 'Foo',
         confidential: false,
@@ -1119,6 +1126,17 @@ export const projectMilestonesResponseWithNoMilestones = {
         __typename: 'MilestoneConnection',
       },
       __typename: 'Project',
+    },
+  },
+};
+
+export const projectWorkItemResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      workItems: {
+        nodes: [workItemQueryResponse.data.workItem],
+      },
     },
   },
 };

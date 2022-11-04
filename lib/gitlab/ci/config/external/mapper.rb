@@ -127,6 +127,7 @@ module Gitlab
 
           def verify!(location_object)
             verify_max_includes!
+            verify_execution_time!
             location_object.validate!
             expandset.add(location_object)
           end
@@ -135,6 +136,10 @@ module Gitlab
             if expandset.count >= context.max_includes
               raise TooManyIncludesError, "Maximum of #{context.max_includes} nested includes are allowed!"
             end
+          end
+
+          def verify_execution_time!
+            context.check_execution_time!
           end
 
           def expand_variables(data)

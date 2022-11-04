@@ -1817,7 +1817,6 @@ Layout/LineLength:
     - 'ee/spec/features/groups/scim_token_spec.rb'
     - 'ee/spec/features/groups/security/compliance_dashboards_spec.rb'
     - 'ee/spec/features/groups/sso_spec.rb'
-    - 'ee/spec/features/groups/usage_quotas_spec.rb'
     - 'ee/spec/features/integrations/jira/jira_issues_list_spec.rb'
     - 'ee/spec/features/invites_spec.rb'
     - 'ee/spec/features/issues/filtered_search/filter_issues_weight_spec.rb'

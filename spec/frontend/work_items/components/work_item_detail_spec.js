@@ -24,6 +24,7 @@ import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
@@ -37,6 +38,7 @@ import {
   workItemResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemAssigneesSubscriptionResponse,
+  projectWorkItemResponse,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -52,6 +54,7 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const successByIidHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
   const assigneesSubscriptionHandler = jest
@@ -87,12 +90,15 @@ describe('WorkItemDetail component', () => {
     error = undefined,
     includeWidgets = false,
     workItemsMvc2Enabled = false,
+    fetchByIid = false,
+    iidPathQueryParam = undefined,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
       [workItemTitleSubscription, subscriptionHandler],
       [workItemDatesSubscription, datesSubscriptionHandler],
       [workItemAssigneesSubscription, assigneesSubscriptionHandler],
+      [workItemByIidQuery, successByIidHandler],
       confidentialityMock,
     ];
 
@@ -104,7 +110,7 @@ describe('WorkItemDetail component', () => {
           typePolicies: includeWidgets ? config.cacheConfig.typePolicies : {},
         },
       ),
-      propsData: { isModal, workItemId },
+      propsData: { isModal, workItemId, iid: '1' },
       data() {
         return {
           updateInProgress,
@@ -114,14 +120,23 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
+          useIidInWorkItemsPath: fetchByIid,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         projectNamespace: 'namespace',
+        fullPath: 'group/project',
       },
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
+      },
+      mocks: {
+        $route: {
+          query: {
+            iid_path: iidPathQueryParam,
+          },
+        },
       },
     });
   };
@@ -421,8 +436,9 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('subscriptions', () => {
-    it('calls the title subscription', () => {
+    it('calls the title subscription', async () => {
       createComponent();
+      await waitForPromises();
 
       expect(titleSubscriptionHandler).toHaveBeenCalledWith({
         issuableId: workItemQueryResponse.data.workItem.id,
@@ -569,6 +585,37 @@ describe('WorkItemDetail component', () => {
     it('is not visible after reading local storage input', async () => {
       await findLocalStorageSync().vm.$emit('input', false);
       expect(findWorkItemInformationAlert().exists()).toBe(false);
+    });
+  });
+
+  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is false', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(successHandler).toHaveBeenCalledWith({
+      id: workItemQueryResponse.data.workItem.id,
+    });
+    expect(successByIidHandler).not.toHaveBeenCalled();
+  });
+
+  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is true but there is no `iid_path` parameter in URL', async () => {
+    createComponent({ fetchByIid: true });
+    await waitForPromises();
+
+    expect(successHandler).toHaveBeenCalledWith({
+      id: workItemQueryResponse.data.workItem.id,
+    });
+    expect(successByIidHandler).not.toHaveBeenCalled();
+  });
+
+  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present', async () => {
+    createComponent({ fetchByIid: true, iidPathQueryParam: 'true' });
+    await waitForPromises();
+
+    expect(successHandler).not.toHaveBeenCalled();
+    expect(successByIidHandler).toHaveBeenCalledWith({
+      fullPath: 'group/project',
+      iid: '1',
     });
   });
 });

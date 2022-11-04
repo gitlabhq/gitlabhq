@@ -422,20 +422,13 @@ module Gitlab
         allow do
           origins '*'
           resource oauth_path,
-            headers: %w(Authorization),
+            # These headers are added as defaults to axios.
+            # See: https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/app/assets/javascripts/lib/utils/axios_utils.js#L8)
+            # It's added to declare that this is a XHR request and add the CSRF token without which Rails may reject the request from the frontend.
+            headers: %w(Authorization X-CSRF-Token X-Requested-With),
             credentials: false,
             methods: %i(post options)
         end
-      end
-
-      # Cross-origin requests must be enabled to fetch the self-managed application oauth application ID
-      # for the GitLab for Jira app.
-      allow do
-        origins '*'
-        resource '/-/jira_connect/oauth_application_id',
-          headers: :any,
-          methods: %i(get options),
-          credentials: false
       end
 
       # These are routes from doorkeeper-openid_connect:

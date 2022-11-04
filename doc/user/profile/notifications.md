@@ -228,20 +228,20 @@ to change their user notification settings to **Watch** instead.
 
 ### Edit notification settings for issues, merge requests, and epics
 
-To enable notifications on a specific issue, merge request, or epic, you must turn on the
-**Notifications** toggle in the right sidebar.
+To toggle notifications on an issue, merge request, or epic: on the right sidebar, turn on or off the **Notifications** toggle.
 
-- To subscribe, **turn on** if you are not a participant in the discussion, but want to receive
-  notifications on each update.
+When you **turn on** notifications, you start receiving notifications on each update, even if you
+haven't participated in the discussion.
+When you turn notifications on in an epic, you aren't automatically subscribed to the issues linked
+to the epic.
 
-  When you turn notifications on in an epic, you aren't automatically subscribed to the issues linked
-  to the epic.
+When you **turn off** notifications, you stop receiving notifications for updates.
+Turning this toggle off only unsubscribes you from updates related to this issue, merge request, or epic.
+Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 
-- To unsubscribe, **turn off** if you are receiving notifications for updates but no longer want to
-  receive them.
-
-  Turning this toggle off only unsubscribes you from updates related to this issue, merge request, or epic.
-  Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
+<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+If you don't see this action on the right sidebar, your project or instance may have
+enabled a feature flag for [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions).
 
 ### Notification events on issues, merge requests, and epics
 

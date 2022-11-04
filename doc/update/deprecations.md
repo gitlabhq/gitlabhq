@@ -1707,17 +1707,17 @@ only supported report file in 15.0, but this is the first step towards GitLab su
 
 </div>
 
-<div class="deprecation removal-150 breaking-change">
+<div class="deprecation removal-160 breaking-change">
 
 ### merged_by API field
 
-Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `merge_user` field (already present in GraphQL) which more correctly identifies who merged a merge request when performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge.
+The `merged_by` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests) has been deprecated in favor of the `merge_user` field which more correctly identifies who merged a merge request when performing actions (merge when pipeline succeeds, add to merge train) other than a simple merge. API users are encouraged to use the new `merge_user` field instead. The `merged_by` field will be removed in v5 of the GitLab REST API.
 
 </div>
 </div>

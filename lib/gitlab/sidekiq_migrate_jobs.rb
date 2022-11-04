@@ -3,6 +3,7 @@
 module Gitlab
   class SidekiqMigrateJobs
     LOG_FREQUENCY = 1_000
+    LOG_FREQUENCY_QUEUES = 10
 
     attr_reader :logger, :mappings
 
@@ -72,7 +73,7 @@ module Gitlab
           migrated = 0
           while queue_length(queue_from) > 0
             begin
-              if migrated >= 0 && migrated % LOG_FREQUENCY == 0
+              if migrated >= 0 && migrated % LOG_FREQUENCY_QUEUES == 0
                 logger&.info("Migrating from #{queue_from}. Total: #{queue_length(queue_from)}. Migrated: #{migrated}.")
               end
 

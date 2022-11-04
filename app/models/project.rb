@@ -2789,7 +2789,7 @@ class Project < ApplicationRecord
     return unless service_desk_enabled?
 
     config = Gitlab.config.incoming_email
-    wildcard = Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
+    wildcard = Gitlab::Email::Common::WILDCARD_PLACEHOLDER
 
     config.address&.gsub(wildcard, "#{full_path_slug}-#{default_service_desk_suffix}")
   end

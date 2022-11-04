@@ -1,39 +1,11 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::ServiceDeskEmail do
-  describe '.enabled?' do
-    context 'when service_desk_email is enabled and address is set' do
-      before do
-        stub_service_desk_email_setting(enabled: true, address: 'foo')
-      end
+  let(:setting_name) { :service_desk_email }
 
-      it 'returns true' do
-        expect(described_class.enabled?).to be_truthy
-      end
-    end
-
-    context 'when service_desk_email is disabled' do
-      before do
-        stub_service_desk_email_setting(enabled: false, address: 'foo')
-      end
-
-      it 'returns false' do
-        expect(described_class.enabled?).to be_falsey
-      end
-    end
-
-    context 'when service desk address is not set' do
-      before do
-        stub_service_desk_email_setting(enabled: true, address: nil)
-      end
-
-      it 'returns false' do
-        expect(described_class.enabled?).to be_falsey
-      end
-    end
-  end
+  it_behaves_like 'common email methods'
 
   describe '.key_from_address' do
     context 'when service desk address is set' do
@@ -76,12 +48,6 @@ RSpec.describe Gitlab::ServiceDeskEmail do
       it 'returns nil' do
         expect(described_class.key_from_address('foo')).to be_nil
       end
-    end
-  end
-
-  context 'self.key_from_fallback_message_id' do
-    it 'returns reply key' do
-      expect(described_class.key_from_fallback_message_id('reply-key@localhost')).to eq('key')
     end
   end
 end

@@ -38,14 +38,12 @@ export default {
     this.ZenMode = new ZenMode();
   },
   methods: {
-    deleteWorkItem(workItemType) {
+    deleteWorkItem({ workItemType, workItemId: id }) {
       this.$apollo
         .mutate({
           mutation: deleteWorkItemMutation,
           variables: {
-            input: {
-              id: this.gid,
-            },
+            input: { id },
           },
         })
         .then(({ data: { workItemDelete, errors } }) => {
@@ -72,6 +70,6 @@ export default {
 <template>
   <div>
     <gl-alert v-if="error" variant="danger" @dismiss="error = ''">{{ error }}</gl-alert>
-    <work-item-detail :work-item-id="gid" @deleteWorkItem="deleteWorkItem($event)" />
+    <work-item-detail :work-item-id="gid" :iid="id" @deleteWorkItem="deleteWorkItem($event)" />
   </div>
 </template>

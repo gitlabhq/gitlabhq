@@ -19,6 +19,8 @@ metadata:
     description: Operations related to access requests
   - name: cluster_agents
     description: Operations related to the GitLab agent for Kubernetes
+  - name: ci_resource_groups
+    description: Operations to manage job concurrency with resource groups
   - name: deploy_keys
     description: Operations related to deploy keys
   - name: deploy_tokens

@@ -4,7 +4,6 @@ RSpec/EmptyLineAfterHook:
   Exclude:
     - 'ee/spec/controllers/projects/integrations/zentao/issues_controller_spec.rb'
     - 'ee/spec/controllers/projects/push_rules_controller_spec.rb'
-    - 'ee/spec/features/groups/usage_quotas_spec.rb'
     - 'ee/spec/features/issues/user_bulk_edits_issues_spec.rb'
     - 'ee/spec/features/profiles/usage_quotas_spec.rb'
     - 'ee/spec/lib/ee/api/entities/user_with_admin_spec.rb'

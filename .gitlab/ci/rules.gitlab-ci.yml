@@ -897,6 +897,7 @@
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
+    - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 

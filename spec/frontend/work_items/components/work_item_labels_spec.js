@@ -9,6 +9,7 @@ import labelSearchQuery from '~/vue_shared/components/sidebar/labels_select_widg
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS } from '~/work_items/constants';
 import {
@@ -18,6 +19,7 @@ import {
   workItemResponseFactory,
   updateWorkItemMutationResponse,
   workItemLabelsSubscriptionResponse,
+  projectWorkItemResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -33,6 +35,7 @@ describe('WorkItemLabels component', () => {
   const findLabelsTitle = () => wrapper.findByTestId('labels-title');
 
   const workItemQuerySuccess = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
   const successUpdateWorkItemMutationHandler = jest
     .fn()
@@ -45,12 +48,14 @@ describe('WorkItemLabels component', () => {
     workItemQueryHandler = workItemQuerySuccess,
     searchQueryHandler = successSearchQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
+    fetchByIid = false,
   } = {}) => {
     const apolloProvider = createMockApollo([
       [workItemQuery, workItemQueryHandler],
       [labelSearchQuery, searchQueryHandler],
       [updateWorkItemMutation, updateWorkItemMutationHandler],
       [workItemLabelsSubscription, subscriptionHandler],
+      [workItemByIidQuery, workItemByIidResponseHandler],
     ]);
 
     wrapper = mountExtended(WorkItemLabels, {
@@ -58,6 +63,10 @@ describe('WorkItemLabels component', () => {
         workItemId,
         canUpdate,
         fullPath: 'test-project-path',
+        queryVariables: {
+          id: workItemId,
+        },
+        fetchByIid,
       },
       attachTo: document.body,
       apolloProvider,
@@ -225,5 +234,21 @@ describe('WorkItemLabels component', () => {
         issuableId: workItemId,
       });
     });
+  });
+
+  it('calls the global ID work item query when `fetchByIid` prop is false', async () => {
+    createComponent({ fetchByIid: false });
+    await waitForPromises();
+
+    expect(workItemQuerySuccess).toHaveBeenCalled();
+    expect(workItemByIidResponseHandler).not.toHaveBeenCalled();
+  });
+
+  it('calls the IID work item query when when `fetchByIid` prop is true', async () => {
+    createComponent({ fetchByIid: true });
+    await waitForPromises();
+
+    expect(workItemQuerySuccess).not.toHaveBeenCalled();
+    expect(workItemByIidResponseHandler).toHaveBeenCalled();
   });
 });

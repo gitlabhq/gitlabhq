@@ -73,7 +73,7 @@ module Gitlab
         end
 
         def can_handle_legacy_format?
-          project_path && !incoming_email_token.include?('+') && !mail_key.include?(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY)
+          project_path && !incoming_email_token.include?('+') && !mail_key.include?(Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX_LEGACY)
         end
       end
     end

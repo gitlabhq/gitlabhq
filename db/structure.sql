@@ -31204,8 +31204,6 @@ CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes US
 
 CREATE INDEX tmp_index_issues_on_issue_type_and_id ON issues USING btree (issue_type, id);
 
-CREATE INDEX tmp_index_members_on_id_where_namespace_id_null ON members USING btree (id) WHERE (member_namespace_id IS NULL);
-
 CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (state = 2);
 
 CREATE INDEX tmp_index_migrated_container_registries ON container_repositories USING btree (project_id) WHERE ((migration_state = 'import_done'::text) OR (created_at >= '2022-01-23 00:00:00'::timestamp without time zone));

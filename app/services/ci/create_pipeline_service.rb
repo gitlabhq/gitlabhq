@@ -30,6 +30,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Limit::Deployments,
                 Gitlab::Ci::Pipeline::Chain::Validate::External,
                 Gitlab::Ci::Pipeline::Chain::Populate,
+                Gitlab::Ci::Pipeline::Chain::PopulateMetadata,
                 Gitlab::Ci::Pipeline::Chain::StopDryRun,
                 Gitlab::Ci::Pipeline::Chain::EnsureEnvironments,
                 Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups,

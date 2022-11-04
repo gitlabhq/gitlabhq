@@ -55,6 +55,7 @@ describe('Work items root component', () => {
       isModal: false,
       workItemId: 'gid://gitlab/WorkItem/1',
       workItemParentId: null,
+      iid: '1',
     });
   });
 
@@ -65,11 +66,15 @@ describe('Work items root component', () => {
       deleteWorkItemHandler,
     });
 
-    findWorkItemDetail().vm.$emit('deleteWorkItem');
+    findWorkItemDetail().vm.$emit('deleteWorkItem', { workItemType: 'task', workItemId: '1' });
 
     await waitForPromises();
 
-    expect(deleteWorkItemHandler).toHaveBeenCalled();
+    expect(deleteWorkItemHandler).toHaveBeenCalledWith({
+      input: {
+        id: '1',
+      },
+    });
     expect(mockToastShow).toHaveBeenCalled();
     expect(visitUrl).toHaveBeenCalledWith(issuesListPath);
   });
@@ -81,7 +86,7 @@ describe('Work items root component', () => {
       deleteWorkItemHandler,
     });
 
-    findWorkItemDetail().vm.$emit('deleteWorkItem');
+    findWorkItemDetail().vm.$emit('deleteWorkItem', { workItemType: 'task', workItemId: '1' });
 
     await waitForPromises();
 

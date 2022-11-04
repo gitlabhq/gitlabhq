@@ -47,12 +47,9 @@ module Gitlab
             end
 
             def validate!
-              context.logger.instrument(:config_file_validation) do
-                validate_execution_time!
-                validate_location!
-                validate_content! if errors.none?
-                validate_hash! if errors.none?
-              end
+              validate_location!
+              fetch_and_validate_content! if valid?
+              load_and_validate_expanded_hash! if valid?
             end
 
             def metadata
@@ -72,11 +69,41 @@ module Gitlab
 
             protected
 
-            def expanded_content_hash
-              return unless content_hash
+            def validate_location!
+              if invalid_location_type?
+                errors.push("Included file `#{masked_location}` needs to be a string")
+              elsif invalid_extension?
+                errors.push("Included file `#{masked_location}` does not have YAML extension!")
+              end
+            end
 
-              strong_memoize(:expanded_content_yaml) do
-                expand_includes(content_hash)
+            def fetch_and_validate_content!
+              context.logger.instrument(:config_file_fetch_content) do
+                content # calling the method fetches then memoizes the result
+              end
+
+              return if errors.any?
+
+              context.logger.instrument(:config_file_validate_content) do
+                validate_content!
+              end
+            end
+
+            def load_and_validate_expanded_hash!
+              context.logger.instrument(:config_file_fetch_content_hash) do
+                content_hash # calling the method loads then memoizes the result
+              end
+
+              context.logger.instrument(:config_file_expand_content_includes) do
+                expanded_content_hash # calling the method expands then memoizes the result
+              end
+
+              validate_hash!
+            end
+
+            def validate_content!
+              if content.blank?
+                errors.push("Included file `#{masked_location}` is empty or does not exist!")
               end
             end
 
@@ -88,21 +115,11 @@ module Gitlab
               nil
             end
 
-            def validate_execution_time!
-              context.check_execution_time!
-            end
+            def expanded_content_hash
+              return unless content_hash
 
-            def validate_location!
-              if invalid_location_type?
-                errors.push("Included file `#{masked_location}` needs to be a string")
-              elsif invalid_extension?
-                errors.push("Included file `#{masked_location}` does not have YAML extension!")
-              end
-            end
-
-            def validate_content!
-              if content.blank?
-                errors.push("Included file `#{masked_location}` is empty or does not exist!")
+              strong_memoize(:expanded_content_yaml) do
+                expand_includes(content_hash)
               end
             end
 

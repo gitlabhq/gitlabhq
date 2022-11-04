@@ -8,7 +8,7 @@ import LabelItem from '~/vue_shared/components/sidebar/labels_select_widget/labe
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
-import workItemQuery from '../graphql/work_item.query.graphql';
+import { getWorkItemQuery } from '../utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 
 import {
@@ -50,6 +50,15 @@ export default {
       type: String,
       required: true,
     },
+    fetchByIid: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -64,11 +73,14 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemQuery,
+      query() {
+        return getWorkItemQuery(this.fetchByIid);
+      },
       variables() {
-        return {
-          id: this.workItemId,
-        };
+        return this.queryVariables;
+      },
+      update(data) {
+        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
       },
       skip() {
         return !this.workItemId;

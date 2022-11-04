@@ -8,7 +8,7 @@ import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import workItemQuery from '../graphql/work_item.query.graphql';
+import { getWorkItemQuery } from '../utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
 
@@ -32,6 +32,15 @@ export default {
       type: String,
       required: true,
     },
+    fetchByIid: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -45,11 +54,14 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemQuery,
+      query() {
+        return getWorkItemQuery(this.fetchByIid);
+      },
       variables() {
-        return {
-          id: this.workItemId,
-        };
+        return this.queryVariables;
+      },
+      update(data) {
+        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
       },
       skip() {
         return !this.workItemId;
