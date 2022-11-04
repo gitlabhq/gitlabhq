@@ -32,27 +32,70 @@ In the event of an external authentication provider outage, use the [GitLab Rail
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
 
-When this feature is enabled, instance administrators are limited as regular users. During that period,
-they do not have access to all projects, groups, or the **Admin Area** menu.
+If you are an administrator, you might want to work in GitLab without the access that
+comes from being an administrator. While you could create a separate user account that
+doesn't have administrator access, a more secure solution is to use *Admin Mode*.
 
-To access potentially dangerous resources, an administrator can activate Admin Mode by:
+With Admin Mode, your account does not have administrative access by default.
+You can continue to access groups and projects you are a member of, but to access
+administrative functionality, you must authenticate.
 
-- Selecting the *Enable Admin Mode* button
-- Trying to access any part of the UI that requires administrator access, specifically those which call `/admin` endpoints.
+When Admin Mode is enabled, it applies to all administrators on the instance.
 
-The main use case allows administrators to perform their regular tasks as a regular
-user, based on their memberships, without having to set up a second account for
-security reasons.
+When Admin Mode is enabled for an instance, administrators:
 
-When Admin Mode status is disabled, administrative users cannot access resources unless
-they've been explicitly granted access. For example, when Admin Mode is disabled, they
-get a `404` error if they try to open a private group or project, unless
-they are members of that group or project.
+- Are allowed to access group and projects for which they are members.
+- Cannot access the **Admin Area**.
 
-2FA should be enabled for administrators and is supported for the Admin Mode flow, as are
-OmniAuth providers and LDAP auth. The Admin Mode status is stored in the active user
-session and remains active until it is explicitly disabled (it will be disabled
-automatically after a timeout otherwise).
+### Enable Admin Mode for your instance
+
+Administrators can enable Admin Mode though the API, the Rails console, or the UI.
+
+#### Use the API to enable Admin Mode
+
+Make the following request to your instance endpoint:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN:$ADMIN_TOKEN" "<gitlab.example.com>/api/v4/application/settings?admin_mode=true"
+```
+
+Replace `<gitlab.example.com>` with your instance URL.
+
+For more information, see the [list of settings that can be accessed through API calls](../../../api/settings.md).
+
+#### Use the Rails console to enable Admin Mode
+
+Open the [Rails console](../../../administration/operations/rails_console.md) and run the following:
+
+```ruby
+::Gitlab::CurrentSettings.update_attributes!(admin_mode: true)
+```
+
+#### Use the UI to enable Admin Mode
+
+To enable Admin Mode through the UI:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Sign-in restrictions**.
+1. In the **Admin Mode** section, select the **Require additional authentication for administrative tasks** checkbox.
+
+### Turn on Admin Mode for your session
+
+To turn on Admin Mode for your current session and access potentially dangerous resources:
+
+1. On the top bar, select **Enable Admin Mode**.
+1. Try to access any part of the UI with `/admin` in the URL (which requires administrator access).
+
+When Admin Mode status is disabled or turned off, administrators cannot access resources unless
+they've been explicitly granted access. For example, administrators get a `404` error
+if they try to open a private group or project, unless they are members of that group or project.
+
+2FA should be enabled for administrators. 2FA, OmniAuth providers, and LDAP
+authentication are supported by Admin Mode. Admin Mode status is stored in the current user session and remains active until either:
+
+- It is explicitly disabled.
+- It is disabled automatically after a timeout.
 
 ### Limitations of Admin Mode
 

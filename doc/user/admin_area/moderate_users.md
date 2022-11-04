@@ -288,7 +288,9 @@ Before 15.1, additionally groups of which deleted user were the only owner among
 
 When moderating users, you may need to perform bulk actions on them based on certain conditions. The following rails console scripts show some examples of this. You may [start a rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and use scripts similar to the following:
 
-### Deactivate Users that have no recent activity
+### Deactivate users that have no recent activity
+
+Administrators can deactivate users that have no recent activity.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -303,7 +305,9 @@ inactive_users.each do |user|
 end
 ```
 
-### Block Users that have no recent activity
+### Block users that have no recent activity
+
+Administrators can block users that have no recent activity.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -316,9 +320,11 @@ inactive_users.each do |user|
     puts "user '#{user.username}': #{user.last_activity_on}"
     user.block!
 end
-``` 
+```
 
-### Block or Delete Users that have no projects or groups
+### Block or delete users that have no projects or groups
+
+Administrators can block or delete users that have no projects or groups.
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.

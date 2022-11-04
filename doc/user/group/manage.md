@@ -652,16 +652,21 @@ Commands that change data can cause damage if not run correctly or under the rig
 GroupDestroyWorker.new.perform(group_id, user_id)
 ```
 
-### Find a user's max permissions for a group or project
+### Find a user's maximum permissions for a group or project
 
-```ruby
-user = User.find_by_username 'username'
-project = Project.find_by_full_path 'group/project'
-user.max_member_access_for_project project.id
-```
+Administrators can find a user's maximum permissions for a group or project.
 
-```ruby
-user = User.find_by_username 'username'
-group = Group.find_by_full_path 'group'
-user.max_member_access_for_group group.id
-```
+1. Start a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following commands:
+
+   ```ruby
+   user = User.find_by_username 'username'
+   project = Project.find_by_full_path 'group/project'
+   user.max_member_access_for_project project.id
+   ```
+
+   ```ruby
+   user = User.find_by_username 'username'
+   group = Group.find_by_full_path 'group'
+   user.max_member_access_for_group group.id
+   ```

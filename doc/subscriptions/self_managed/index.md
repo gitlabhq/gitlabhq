@@ -463,10 +463,9 @@ apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new
 
 ### Check daily and historical billable users
 
-You can get a list of daily and historical billable users in your GitLab instance.
+Administrators can get a list of daily and historical billable users in your GitLab instance.
 
-1. [Start a rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Count the number of users in the instance:
 
    ```ruby
@@ -481,17 +480,16 @@ You can get a list of daily and historical billable users in your GitLab instanc
 
 ### Update daily billable and historical users
 
-You can trigger a manual update of the daily and historical billable users in your GitLab instance.
+Administrators can trigger a manual update of the daily and historical billable users in your GitLab instance.
 
-1. [Start a rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Force an update of the daily billable users:
 
    ```ruby
    identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
    ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
    ```
-   
+
 1. Force an update of the historical max billable users:
 
    ```ruby

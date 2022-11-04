@@ -30479,6 +30479,8 @@ CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (c
 
 CREATE INDEX index_security_scans_on_date_created_at_and_id ON security_scans USING btree (date(timezone('UTC'::text, created_at)), id);
 
+CREATE INDEX index_security_scans_on_id_for_non_purged_records ON security_scans USING btree (id) WHERE (status <> 6);
+
 CREATE INDEX index_security_scans_on_length_of_errors ON security_scans USING btree (pipeline_id, jsonb_array_length(COALESCE((info -> 'errors'::text), '[]'::jsonb)));
 
 CREATE INDEX index_security_scans_on_length_of_warnings ON security_scans USING btree (pipeline_id, jsonb_array_length(COALESCE((info -> 'warnings'::text), '[]'::jsonb)));

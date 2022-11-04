@@ -1310,6 +1310,11 @@ gemnasium-python-dependency_scanning:
     - apt-get update && apt-get install -y libpq-dev
 ```
 
+### `NoSuchOptionException` when using `poetry config http-basic` with `CI_JOB_TOKEN`
+
+This error can occur when the automatically generated `CI_JOB_TOKEN` starts with a hyphen (`-`).
+To avoid this error, follow [Poetry's configuration advice](https://python-poetry.org/docs/repositories/#configuring-credentials).
+
 ### Error: Project has `<number>` unresolved dependencies
 
 The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file. In the current release, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered. However, There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337083) to allow `gemnasium-maven` to recover from unresolved dependency errors and produce a dependency graph. Until this issue has been resolved, you'll need to consult the [Gradle dependency resolution docs](https://docs.gradle.org/current/userguide/dependency_resolution.html) for details on how to fix your `gradle.build` file.

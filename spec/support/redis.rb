@@ -19,4 +19,10 @@ RSpec.configure do |config|
       public_send("redis_#{underscored_name}_cleanup!")
     end
   end
+
+  config.before(:suite) do
+    Gitlab::Redis::ALL_CLASSES.each do |instance_class|
+      instance_class.with(&:flushdb)
+    end
+  end
 end
