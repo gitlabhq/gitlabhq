@@ -1,13 +1,15 @@
-import Vue, { nextTick } from 'vue';
+import { GlModal } from '@gitlab/ui';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import ArtifactsTableRowDetails from '~/artifacts/components/artifacts_table_row_details.vue';
 import ArtifactRow from '~/artifacts/components/artifact_row.vue';
+import ArtifactDeleteModal from '~/artifacts/components/artifact_delete_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import destroyArtifactMutation from '~/artifacts/graphql/mutations/destroy_artifact.mutation.graphql';
-import { I18N_DESTROY_ERROR } from '~/artifacts/constants';
+import { I18N_DESTROY_ERROR, I18N_MODAL_TITLE } from '~/artifacts/constants';
 import { createAlert } from '~/flash';
 
 jest.mock('~/flash');
@@ -20,6 +22,8 @@ Vue.use(VueApollo);
 describe('ArtifactsTableRowDetails component', () => {
   let wrapper;
   let requestHandlers;
+
+  const findModal = () => wrapper.findComponent(GlModal);
 
   const createComponent = (
     handlers = {
@@ -55,38 +59,36 @@ describe('ArtifactsTableRowDetails component', () => {
       [0, 1, 2].forEach((index) => {
         expect(wrapper.findAllComponents(ArtifactRow).at(index).props()).toMatchObject({
           artifact: artifacts.nodes[index],
-          isLoading: false,
         });
       });
     });
   });
 
-  describe('when an artifact row emits the delete event', () => {
-    it('sets isLoading to true for that row', async () => {
+  describe('when the artifact row emits the delete event', () => {
+    it('shows the artifact delete modal', async () => {
       createComponent();
       await waitForPromises();
 
-      wrapper.findComponent(ArtifactRow).vm.$emit('delete');
+      expect(findModal().props('visible')).toBe(false);
 
-      await nextTick();
+      await wrapper.findComponent(ArtifactRow).vm.$emit('delete');
 
-      [
-        { index: 0, expectedLoading: true },
-        { index: 1, expectedLoading: false },
-      ].forEach(({ index, expectedLoading }) => {
-        expect(wrapper.findAllComponents(ArtifactRow).at(index).props('isLoading')).toBe(
-          expectedLoading,
-        );
-      });
+      expect(findModal().props('visible')).toBe(true);
+      expect(findModal().props('title')).toBe(I18N_MODAL_TITLE(artifacts.nodes[0].name));
     });
+  });
 
+  describe('when the artifact delete modal emits its primary event', () => {
     it('triggers the destroyArtifact GraphQL mutation', async () => {
       createComponent();
       await waitForPromises();
 
       wrapper.findComponent(ArtifactRow).vm.$emit('delete');
+      wrapper.findComponent(ArtifactDeleteModal).vm.$emit('primary');
 
-      expect(requestHandlers.destroyArtifactMutation).toHaveBeenCalled();
+      expect(requestHandlers.destroyArtifactMutation).toHaveBeenCalledWith({
+        id: artifacts.nodes[0].id,
+      });
     });
 
     it('displays a flash message and refetches artifacts when the mutation fails', async () => {
@@ -98,10 +100,23 @@ describe('ArtifactsTableRowDetails component', () => {
       expect(wrapper.emitted('refetch')).toBeUndefined();
 
       wrapper.findComponent(ArtifactRow).vm.$emit('delete');
+      wrapper.findComponent(ArtifactDeleteModal).vm.$emit('primary');
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({ message: I18N_DESTROY_ERROR });
       expect(wrapper.emitted('refetch')).toBeDefined();
+    });
+  });
+
+  describe('when the artifact delete modal is cancelled', () => {
+    it('does not trigger the destroyArtifact GraphQL mutation', async () => {
+      createComponent();
+      await waitForPromises();
+
+      wrapper.findComponent(ArtifactRow).vm.$emit('delete');
+      wrapper.findComponent(ArtifactDeleteModal).vm.$emit('cancel');
+
+      expect(requestHandlers.destroyArtifactMutation).not.toHaveBeenCalled();
     });
   });
 });

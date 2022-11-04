@@ -8,7 +8,6 @@ import JobArtifactsTable from '~/artifacts/components/job_artifacts_table.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import getJobArtifactsQuery from '~/artifacts/graphql/queries/get_job_artifacts.query.graphql';
-import destroyArtifactMutation from '~/artifacts/graphql/mutations/destroy_artifact.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ARCHIVE_FILE_TYPE, JOBS_PER_PAGE, I18N_FETCH_ERROR } from '~/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/artifacts/utils';
@@ -68,7 +67,6 @@ describe('JobArtifactsTable component', () => {
   const createComponent = (
     handlers = {
       getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponse),
-      destroyArtifactMutation: jest.fn(),
     },
     data = {},
   ) => {
@@ -76,7 +74,6 @@ describe('JobArtifactsTable component', () => {
     wrapper = mountExtended(JobArtifactsTable, {
       apolloProvider: createMockApollo([
         [getJobArtifactsQuery, requestHandlers.getJobArtifactsQuery],
-        [destroyArtifactMutation, requestHandlers.destroyArtifactMutation],
       ]),
       provide: { projectPath: 'project/path' },
       data() {

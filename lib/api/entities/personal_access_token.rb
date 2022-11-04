@@ -3,12 +3,12 @@
 module API
   module Entities
     class PersonalAccessToken < Grape::Entity
-      expose :id, documentation: { type: 'string', example: 2 }
+      expose :id, documentation: { type: 'integer', example: 2 }
       expose :name, documentation: { type: 'string', example: 'John Doe' }
       expose :revoked, documentation: { type: 'boolean' }
       expose :created_at, documentation: { type: 'dateTime' }
       expose :scopes, documentation: { type: 'array', example: ['api'] }
-      expose :user_id, documentation: { type: 'string', example: 3 }
+      expose :user_id, documentation: { type: 'integer', example: 3 }
       expose :last_used_at, documentation: { type: 'dateTime', example: '2020-08-31T15:53:00.073Z' }
       expose :active?, as: :active, documentation: { type: 'boolean' }
       expose :expires_at, documentation:

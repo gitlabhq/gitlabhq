@@ -236,3 +236,26 @@ To temporarily change the statement timeout:
 1. Perform the action for which you need a different timeout
    (for example the backup or the Rails command).
 1. Revert the edit in `/var/opt/gitlab/gitlab-rails/etc/database.yml`.
+
+## Troubleshooting
+
+### Database is not accepting commands to avoid wraparound data loss
+
+This error likely means that AUTOVACUUM is failing to complete its run:
+
+```plaintext
+ERROR:  database is not accepting commands to avoid wraparound data loss in database "gitlabhq_production"
+```
+
+To resolve the error, run `VACUUM` manually:
+
+1. Stop GitLab with the command `gitlab-ctl stop`.
+1. Place the database in single-user mode with the command:
+
+   ```shell
+   /opt/gitlab/embedded/bin/postgres --single -D /var/opt/gitlab/postgresql/data gitlabhq_production
+   ```
+
+1. In the `backend>` prompt, run `VACUUM;`. This command can take several minutes to complete.
+1. Wait for the command to complete, then press <kbd>Control</kbd> + <kbd>D</kbd> to exit.
+1. Start GitLab with the command `gitlab-ctl start`.

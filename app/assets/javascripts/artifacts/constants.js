@@ -1,4 +1,4 @@
-import { __, s__, n__ } from '~/locale';
+import { __, s__, n__, sprintf } from '~/locale';
 
 export const JOB_STATUS_GROUP_SUCCESS = 'success';
 
@@ -34,6 +34,14 @@ export const I18N_JOB = __('Job');
 export const I18N_SIZE = __('Size');
 export const I18N_CREATED = __('Created');
 export const I18N_ARTIFACTS_COUNT = (count) => n__('%d file', '%d files', count);
+
+export const I18N_MODAL_TITLE = (artifactName) =>
+  sprintf(s__('Artifacts|Delete %{name}?'), { name: artifactName });
+export const I18N_MODAL_BODY = s__(
+  'Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty.',
+);
+export const I18N_MODAL_PRIMARY = s__('Artifacts|Delete artifact');
+export const I18N_MODAL_CANCEL = __('Cancel');
 
 export const INITIAL_CURRENT_PAGE = 1;
 export const INITIAL_PREVIOUS_PAGE_CURSOR = '';

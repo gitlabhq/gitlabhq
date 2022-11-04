@@ -12,12 +12,24 @@ RSpec.describe Banzai::ReferenceParser::CommitParser do
   let(:link) { empty_html_link }
 
   describe '#nodes_visible_to_user' do
-    context 'when the link has a data-issue attribute' do
+    context 'when the link has a data-project attribute' do
       before do
-        link['data-commit'] = 123
+        link['data-project'] = project.id.to_s
       end
 
       it_behaves_like "referenced feature visibility", "repository"
+
+      it 'includes the link if can_read_reference? returns true' do
+        expect(subject).to receive(:can_read_reference?).with(user, project, link).and_return(true)
+
+        expect(subject.nodes_visible_to_user(user, [link])).to contain_exactly(link)
+      end
+
+      it 'excludes the link if can_read_reference? returns false' do
+        expect(subject).to receive(:can_read_reference?).with(user, project, link).and_return(false)
+
+        expect(subject.nodes_visible_to_user(user, [link])).to be_empty
+      end
     end
   end
 

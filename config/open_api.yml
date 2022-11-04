@@ -46,12 +46,14 @@ metadata:
   - name: project_hooks
     description: Operations related to project hooks
   - name: project_import_bitbucket
-    description: Operations related to import BitBucket projects    
+    description: Operations related to import BitBucket projects
   - name: project_import_github
-    description: Operations related to import GitHub projects    
+    description: Operations related to import GitHub projects
   - name: release_links
     description: Operations related to release assets (links)
   - name: releases
     description: Operations related to releases
   - name: suggestions
     description: Operations related to suggestions
+  - name: unleash_api
+    description: Operations related to Unleash API

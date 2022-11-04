@@ -66,7 +66,7 @@ class MergeRequestNoteableEntity < IssuableEntity
   expose :project_id
 
   expose :archived_project_docs_path, if: -> (merge_request) { merge_request.project.archived? } do |merge_request|
-    help_page_path('user/project/settings/index.md', anchor: 'archiving-a-project')
+    help_page_path('user/project/settings/index.md', anchor: 'archive-a-project')
   end
 
   private

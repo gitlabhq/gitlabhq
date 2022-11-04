@@ -10,6 +10,7 @@ import {
   ARTIFACTS_SHOWN_WITHOUT_SCROLLING,
 } from '../constants';
 import ArtifactRow from './artifact_row.vue';
+import ArtifactDeleteModal from './artifact_delete_modal.vue';
 
 export default {
   name: 'ArtifactsTableRowDetails',
@@ -17,6 +18,7 @@ export default {
     DynamicScroller,
     DynamicScrollerItem,
     ArtifactRow,
+    ArtifactDeleteModal,
   },
   props: {
     artifacts: {
@@ -30,7 +32,10 @@ export default {
   },
   data() {
     return {
+      isModalVisible: false,
+      deleteInProgress: false,
       deletingArtifactId: null,
+      deletingArtifactName: '',
     };
   },
   computed: {
@@ -47,8 +52,22 @@ export default {
     isLastRow(index) {
       return index === this.artifacts.nodes.length - 1;
     },
-    destroyArtifact(id) {
-      this.deletingArtifactId = id;
+    showModal(item) {
+      this.deletingArtifactId = item.id;
+      this.deletingArtifactName = item.name;
+      this.isModalVisible = true;
+    },
+    hideModal() {
+      this.isModalVisible = false;
+    },
+    clearModal() {
+      this.deletingArtifactId = null;
+      this.deletingArtifactName = '';
+    },
+    destroyArtifact() {
+      const id = this.deletingArtifactId;
+      this.deleteInProgress = true;
+
       this.$apollo
         .mutate({
           mutation: destroyArtifactMutation,
@@ -64,7 +83,8 @@ export default {
           this.$emit('refetch');
         })
         .finally(() => {
-          this.deletingArtifactId = null;
+          this.deleteInProgress = false;
+          this.clearModal();
         });
     },
   },
@@ -79,11 +99,20 @@ export default {
           <artifact-row
             :artifact="item"
             :is-last-row="isLastRow(index)"
-            :is-loading="item.id === deletingArtifactId"
-            @delete="destroyArtifact(item.id)"
+            @delete="showModal(item)"
           />
         </dynamic-scroller-item>
       </template>
     </dynamic-scroller>
+    <artifact-delete-modal
+      :artifact-name="deletingArtifactName"
+      :visible="isModalVisible"
+      :delete-in-progress="deleteInProgress"
+      @primary="destroyArtifact"
+      @cancel="hideModal"
+      @close="hideModal"
+      @hide="hideModal"
+      @hidden="clearModal"
+    />
   </div>
 </template>

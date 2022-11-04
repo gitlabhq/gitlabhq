@@ -16,10 +16,6 @@ export default {
       type: Object,
       required: true,
     },
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
     isLastRow: {
       type: Boolean,
       required: true,
@@ -81,7 +77,6 @@ export default {
             icon="remove"
             :title="$options.i18n.delete"
             :aria-label="$options.i18n.delete"
-            :loading="isLoading"
             data-testid="job-artifact-row-delete-button"
             @click="$emit('delete')"
           />

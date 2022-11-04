@@ -1253,4 +1253,35 @@ RSpec.describe API::Files do
       expect(json_response['content']).to eq(put_params[:content])
     end
   end
+
+  describe 'POST /projects/:id/repository/files with text encoding' do
+    let(:file_path) { 'test%2Etext' }
+    let(:put_params) do
+      {
+        branch: 'master',
+        content: 'test',
+        commit_message: 'Text file',
+        encoding: 'text'
+      }
+    end
+
+    let(:get_params) do
+      {
+        ref: 'master'
+      }
+    end
+
+    before do
+      post api(route(file_path), user), params: put_params
+    end
+
+    it 'returns base64-encoded text file' do
+      get api(route(file_path), user), params: get_params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['file_path']).to eq(CGI.unescape(file_path))
+      expect(json_response['file_name']).to eq(CGI.unescape(file_path))
+      expect(Base64.decode64(json_response['content'])).to eq("test")
+    end
+  end
 end

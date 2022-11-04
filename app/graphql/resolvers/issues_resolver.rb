@@ -2,7 +2,7 @@
 # rubocop:disable Graphql/ResolverType (inherited from BaseIssuesResolver)
 
 module Resolvers
-  class IssuesResolver < BaseIssuesResolver
+  class IssuesResolver < Issues::BaseParentResolver
     accept_release_tag
   end
 end

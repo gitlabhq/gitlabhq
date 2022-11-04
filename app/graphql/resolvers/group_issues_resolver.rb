@@ -2,7 +2,7 @@
 # rubocop:disable Graphql/ResolverType (inherited from BaseIssuesResolver)
 
 module Resolvers
-  class GroupIssuesResolver < BaseIssuesResolver
+  class GroupIssuesResolver < Issues::BaseParentResolver
     def self.issuable_collection_name
       'issues'
     end

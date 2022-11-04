@@ -191,6 +191,7 @@ module API
         mount ::API::ImportGithub
         mount ::API::Metadata
         mount ::API::MergeRequestDiffs
+        mount ::API::PersonalAccessTokens::SelfInformation
         mount ::API::ProjectHooks
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::Releases
@@ -204,6 +205,7 @@ module API
         mount ::API::Submodules
         mount ::API::Suggestions
         mount ::API::Tags
+        mount ::API::Unleash
         mount ::API::UserCounts
 
         add_open_api_documentation!
@@ -286,7 +288,6 @@ module API
       mount ::API::PackageFiles
       mount ::API::Pages
       mount ::API::PagesDomains
-      mount ::API::PersonalAccessTokens::SelfInformation
       mount ::API::PersonalAccessTokens
       mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
@@ -322,7 +323,6 @@ module API
       mount ::API::Terraform::StateVersion
       mount ::API::Todos
       mount ::API::Topics
-      mount ::API::Unleash
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
       mount ::API::UsageDataQueries

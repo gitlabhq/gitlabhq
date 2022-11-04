@@ -241,7 +241,6 @@ module Types
           Types::IssueStatusCountsType,
           null: true,
           description: 'Counts of issues by status for the project.',
-          extras: [:lookahead],
           resolver: Resolvers::IssueStatusCountsResolver
 
     field :milestones, Types::MilestoneType.connection_type,
