@@ -19,6 +19,11 @@
   redis_slot: users
   aggregation: weekly
   feature_flag: track_work_items_activity
+- name: users_updating_work_item_milestone
+  category: work_items
+  redis_slot: users
+  aggregation: weekly
+  feature_flag: track_work_items_activity
 - name: users_updating_work_item_iteration
   # The event tracks an EE feature.
   # It's added here so it can be aggregated into the CE/EE 'OR' aggregate metrics.

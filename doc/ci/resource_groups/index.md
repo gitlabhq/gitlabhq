@@ -171,7 +171,6 @@ deploy:
     include: deploy.gitlab-ci.yml
     strategy: depend
   resource_group: AWS-production
-  environment: production
 ```
 
 ```yaml

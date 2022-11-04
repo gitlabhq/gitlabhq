@@ -12,10 +12,14 @@ module ResourceEvents
     def execute
       create_event
 
+      track_event
+
       resource.expire_note_etag_cache
     end
 
     private
+
+    def track_event; end
 
     def create_event
       raise NotImplementedError

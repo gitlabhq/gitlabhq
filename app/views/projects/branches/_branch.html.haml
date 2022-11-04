@@ -46,4 +46,5 @@
 
     = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], class: 'gl-vertical-align-top'
 
-    = render 'projects/branches/delete_branch_modal_button', project: @project, branch: branch, merged: merged
+    - if can?(current_user, :push_code, @project)
+      = render 'projects/branches/delete_branch_modal_button', project: @project, branch: branch, merged: merged

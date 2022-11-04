@@ -16,12 +16,12 @@
                 = _('Check out branch')
           - if current_user
             %li.gl-new-dropdown-item
-              = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', data: { qa_selector: 'open_in_web_ide_button' } do
+              = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', target: '_blank', data: { qa_selector: 'open_in_web_ide_button' } do
                 .gl-new-dropdown-item-text-wrapper
                   = _('Open in Web IDE')
           - if Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
             %li.gl-new-dropdown-item
-              = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", class: 'dropdown-item' do
+              = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", target: '_blank', class: 'dropdown-item' do
                 .gl-new-dropdown-item-text-wrapper
                   = _('Open in Gitpod')
           %li.gl-new-dropdown-divider

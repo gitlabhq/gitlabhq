@@ -7,6 +7,19 @@ RSpec.describe 'Branches' do
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
 
+  context 'when logged in as reporter' do
+    before do
+      sign_in(user)
+      project.add_reporter(user)
+    end
+
+    it 'does not show delete button' do
+      visit project_branches_path(project)
+
+      expect(page).not_to have_css '.js-delete-branch-button'
+    end
+  end
+
   context 'when logged in as developer' do
     before do
       sign_in(user)

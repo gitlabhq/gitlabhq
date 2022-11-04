@@ -21,6 +21,6 @@ RSpec.describe 'IDE merge request', :js do
 
     wait_for_requests
 
-    expect(page).to have_selector('.monaco-diff-editor')
+    expect(page).not_to have_selector('.monaco-diff-editor')
   end
 end

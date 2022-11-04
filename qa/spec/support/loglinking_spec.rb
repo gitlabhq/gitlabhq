@@ -29,7 +29,7 @@ RSpec.describe QA::Support::Loglinking do
 
         expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
-          Kibana Url: https://kibana.address/app/discover#/?_a=(query:(language:kuery,query:'json.correlation_id%20:%20foo123'))&_g=(time:(from:now-24h,to:now))
+          Kibana Url: https://kibana.address/app/discover#/?_a=%28query%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foo123%27%29%29&_g=%28time%3A%28from%3Anow-24h%2Cto%3Anow%29%29
         ERROR
       end
     end

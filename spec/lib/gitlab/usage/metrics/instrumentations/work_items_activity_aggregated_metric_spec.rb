@@ -15,6 +15,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::WorkItemsActivityAggreg
           users_creating_work_items
           users_updating_work_item_title
           users_updating_work_item_dates
+          users_updating_work_item_labels
+          users_updating_work_item_milestone
           users_updating_work_item_iteration
         ]
       }
@@ -57,6 +59,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::WorkItemsActivityAggreg
           counter.track_event(:users_updating_work_item_title, values: author1_id, time: event_time)
           counter.track_event(:users_updating_work_item_dates, values: author1_id, time: event_time)
           counter.track_event(:users_updating_work_item_labels, values: author1_id, time: event_time)
+          counter.track_event(:users_updating_work_item_milestone, values: author1_id, time: event_time)
         end.to not_change { described_class.new(metric_definition).value }
 
         expect do

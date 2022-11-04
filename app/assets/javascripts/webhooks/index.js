@@ -10,11 +10,6 @@ export default () => {
 
   const { url: initialUrl, urlVariables } = el.dataset;
 
-  // Convert the array of 'key' strings to array of { key } objects
-  const initialUrlVariables = urlVariables
-    ? JSON.parse(urlVariables)?.map((key) => ({ key }))
-    : undefined;
-
   return new Vue({
     el,
     name: 'WebhookFormRoot',
@@ -22,7 +17,7 @@ export default () => {
       return createElement(FormUrlApp, {
         props: {
           initialUrl,
-          initialUrlVariables,
+          initialUrlVariables: JSON.parse(urlVariables),
         },
       });
     },

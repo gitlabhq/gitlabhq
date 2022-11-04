@@ -343,6 +343,7 @@ namespace_limits: :gitlab_main
 namespace_package_settings: :gitlab_main
 namespace_root_storage_statistics: :gitlab_main
 namespace_ci_cd_settings: :gitlab_main
+namespace_commit_emails: :gitlab_main
 namespace_settings: :gitlab_main
 namespace_details: :gitlab_main
 namespaces: :gitlab_main

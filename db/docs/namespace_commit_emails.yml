@@ -1,0 +1,9 @@
+---
+table_name: namespace_commit_emails
+classes:
+- Users::NamespaceCommitEmail
+feature_categories:
+- source_code_management
+description: User default email for commits from the GitLab UI
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101832
+milestone: '15.6'
