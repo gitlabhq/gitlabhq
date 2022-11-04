@@ -1,9 +1,7 @@
-import { createAppOptions, createPipelineTabs } from '~/pipelines/pipeline_tabs';
-import { updateHistory } from '~/lib/utils/url_utility';
+import { createAppOptions } from '~/pipelines/pipeline_tabs';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   removeParams: () => 'gitlab.com',
-  updateHistory: jest.fn(),
   joinPaths: () => {},
   setUrlFragment: () => {},
 }));
@@ -62,34 +60,6 @@ describe('~/pipelines/pipeline_tabs.js', () => {
 
     it('returns `null` if el does not exist', () => {
       expect(createAppOptions('foo', null)).toBe(null);
-    });
-  });
-
-  describe('createPipelineTabs', () => {
-    const title = 'Pipeline Tabs';
-
-    beforeAll(() => {
-      document.title = title;
-    });
-
-    afterAll(() => {
-      document.title = '';
-    });
-
-    it('calls `updateHistory` with correct params', () => {
-      createPipelineTabs({});
-
-      expect(updateHistory).toHaveBeenCalledWith({
-        title,
-        url: 'gitlab.com',
-        replace: true,
-      });
-    });
-
-    it("returns early if options aren't provided", () => {
-      createPipelineTabs();
-
-      expect(updateHistory).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,3 +1,4 @@
+import VueRouter from 'vue-router';
 import { createAlert } from '~/flash';
 import { __, s__ } from '~/locale';
 import createDagApp from './pipeline_details_dag';
@@ -32,9 +33,16 @@ export default async function initPipelineDetailsBundle() {
   if (gon.features?.pipelineTabsVue) {
     const { createAppOptions } = await import('ee_else_ce/pipelines/pipeline_tabs');
     const { createPipelineTabs } = await import('./pipeline_tabs');
+    const { routes } = await import('ee_else_ce/pipelines/routes');
+
+    const router = new VueRouter({
+      mode: 'history',
+      base: dataset.pipelinePath,
+      routes,
+    });
 
     try {
-      const appOptions = createAppOptions(SELECTORS.PIPELINE_TABS, apolloProvider);
+      const appOptions = createAppOptions(SELECTORS.PIPELINE_TABS, apolloProvider, router);
       createPipelineTabs(appOptions);
     } catch {
       createAlert({

@@ -433,8 +433,11 @@ export const mockList = {
   label: null,
   assignee: null,
   milestone: null,
+  iteration: null,
   loading: false,
   issuesCount: 1,
+  maxIssueCount: 0,
+  __typename: 'BoardList',
 };
 
 export const mockLabelList = {
@@ -449,11 +452,15 @@ export const mockLabelList = {
     color: '#F0AD4E',
     textColor: '#FFFFFF',
     description: null,
+    descriptionHtml: null,
   },
   assignee: null,
   milestone: null,
+  iteration: null,
   loading: false,
   issuesCount: 0,
+  maxIssueCount: 0,
+  __typename: 'BoardList',
 };
 
 export const mockMilestoneList = {
@@ -838,6 +845,22 @@ export const mockGroupLabelsResponse = {
       id: 'gid://gitlab/Group/1',
       labels: {
         nodes: [mockLabel1, mockLabel2],
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const boardListsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      board: {
+        id: 'gid://gitlab/Board/1',
+        hideBacklogList: false,
+        lists: {
+          nodes: mockLists,
+        },
       },
       __typename: 'Group',
     },

@@ -18,6 +18,7 @@ import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assi
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDueDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
+import BulkUpdateMilestoneDropdown from '~/sidebar/components/milestone/bulk_update_milestone_dropdown.vue';
 import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar_participants_widget.vue';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
@@ -286,6 +287,31 @@ function mountMilestoneSelect() {
           icon: 'clock',
         },
       }),
+  });
+}
+
+export function mountMilestoneDropdown() {
+  const el = document.querySelector('.js-milestone-dropdown');
+
+  if (!el) {
+    return null;
+  }
+
+  Vue.use(VueApollo);
+
+  return new Vue({
+    el,
+    name: 'BulkUpdateMilestoneDropdownRoot',
+    apolloProvider,
+    render(createElement) {
+      return createElement(BulkUpdateMilestoneDropdown, {
+        props: {
+          attrWorkspacePath: el.dataset.fullPath,
+          issuableType: isInIssuePage() ? IssuableType.Issue : IssuableType.MergeRequest,
+          workspaceType: el.dataset.workspaceType,
+        },
+      });
+    },
   });
 }
 

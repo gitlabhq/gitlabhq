@@ -8,7 +8,7 @@ import {
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
-import { IssuableType } from '~/issues/constants';
+import { IssuableType, WorkspaceType } from '~/issues/constants';
 import { __ } from '~/locale';
 import {
   defaultEpicSort,
@@ -73,6 +73,14 @@ export default {
         return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
       },
     },
+    workspaceType: {
+      type: String,
+      required: false,
+      default: WorkspaceType.project,
+      validator(value) {
+        return [WorkspaceType.group, WorkspaceType.project].includes(value);
+      },
+    },
   },
   data() {
     return {
@@ -86,7 +94,7 @@ export default {
       query() {
         const { list } = this.issuableAttributeQuery;
         const { query } = list[this.issuableType];
-        return query;
+        return query[this.workspaceType] || query;
       },
       variables() {
         if (!this.isEpic) {

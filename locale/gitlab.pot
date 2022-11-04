@@ -2734,13 +2734,25 @@ msgstr ""
 msgid "AdminSettings|CI/CD limits"
 msgstr ""
 
+msgid "AdminSettings|Clickhouse URL"
+msgstr ""
+
 msgid "AdminSettings|Configure Let's Encrypt"
 msgstr ""
 
 msgid "AdminSettings|Configure limits on the number of repositories users can download in a given time."
 msgstr ""
 
+msgid "AdminSettings|Configure product analytics to track events within your project applications."
+msgstr ""
+
 msgid "AdminSettings|Configure when inactive projects should be automatically deleted. %{linkStart}What are inactive projects?%{linkEnd}"
+msgstr ""
+
+msgid "AdminSettings|Cube API URL"
+msgstr ""
+
+msgid "AdminSettings|Cube API key"
 msgstr ""
 
 msgid "AdminSettings|Delete inactive projects"
@@ -2791,6 +2803,9 @@ msgstr ""
 msgid "AdminSettings|Enable pipeline suggestion banner"
 msgstr ""
 
+msgid "AdminSettings|Enable product analytics"
+msgstr ""
+
 msgid "AdminSettings|Enable shared runners for new projects"
 msgstr ""
 
@@ -2834,6 +2849,18 @@ msgid "AdminSettings|Inactive project deletion"
 msgstr ""
 
 msgid "AdminSettings|Instance runners expiration"
+msgstr ""
+
+msgid "AdminSettings|Jitsu administrator email"
+msgstr ""
+
+msgid "AdminSettings|Jitsu administrator password"
+msgstr ""
+
+msgid "AdminSettings|Jitsu host"
+msgstr ""
+
+msgid "AdminSettings|Jitsu project ID"
 msgstr ""
 
 msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines"
@@ -2974,7 +3001,16 @@ msgstr ""
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr ""
 
+msgid "AdminSettings|The ID of the project in Jitsu. The project contains all analytics instances."
+msgstr ""
+
+msgid "AdminSettings|The URL of your Cube instance."
+msgstr ""
+
 msgid "AdminSettings|The default domain to use for Auto Review Apps and Auto Deploy stages in all projects."
+msgstr ""
+
+msgid "AdminSettings|The host of your Jitsu instance."
 msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
@@ -2999,6 +3035,15 @@ msgid "AdminSettings|Total number of jobs in currently active pipelines"
 msgstr ""
 
 msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
+msgstr ""
+
+msgid "AdminSettings|Used to connect Jitsu to the Clickhouse instance."
+msgstr ""
+
+msgid "AdminSettings|Used to generate short-lived API access tokens."
+msgstr ""
+
+msgid "AdminSettings|Used to retrieve dashboard data from the Cube instance."
 msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
@@ -5330,9 +5375,6 @@ msgid "Assign custom color like #FF0000"
 msgstr ""
 
 msgid "Assign labels"
-msgstr ""
-
-msgid "Assign milestone"
 msgstr ""
 
 msgid "Assign myself"
@@ -30890,6 +30932,9 @@ msgstr ""
 msgid "Proceed"
 msgstr ""
 
+msgid "Product analytics"
+msgstr ""
+
 msgid "ProductAnalytics|Audience"
 msgstr ""
 
@@ -36144,10 +36189,10 @@ msgstr ""
 msgid "SecurityOrchestration|%{agent} for %{namespaces}"
 msgstr ""
 
-msgid "SecurityOrchestration|%{branches} %{plural}"
+msgid "SecurityOrchestration|%{branches} and %{lastBranch} branches"
 msgstr ""
 
-msgid "SecurityOrchestration|%{branches} and %{lastBranch} %{plural}"
+msgid "SecurityOrchestration|%{branches} branch"
 msgstr ""
 
 msgid "SecurityOrchestration|%{scanners}"
@@ -36504,10 +36549,10 @@ msgstr ""
 msgid "SecurityOrchestration|the %{branches}"
 msgstr ""
 
-msgid "SecurityOrchestration|the %{namespaces} %{plural}"
+msgid "SecurityOrchestration|the %{namespaces} and %{lastNamespace} namespaces"
 msgstr ""
 
-msgid "SecurityOrchestration|the %{namespaces} and %{lastNamespace} %{plural}"
+msgid "SecurityOrchestration|the %{namespaces} namespace"
 msgstr ""
 
 msgid "SecurityOrchestration|vulnerabilities"
@@ -48841,11 +48886,6 @@ msgstr ""
 
 msgid "my-topic"
 msgstr ""
-
-msgid "namespace"
-msgid_plural "namespaces"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "needs to be between 10 minutes and 1 month"
 msgstr ""

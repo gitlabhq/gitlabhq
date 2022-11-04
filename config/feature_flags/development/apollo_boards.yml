@@ -1,0 +1,8 @@
+---
+name: apollo_boards
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102719
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381210
+milestone: '15.6'
+type: development
+group: group::product planning
+default_enabled: false

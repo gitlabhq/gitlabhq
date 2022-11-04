@@ -19,6 +19,20 @@ module Gitlab
 
       scope :for_parent_table, ->(name) { where("parent_identifier = concat(current_schema(), '.', ?)", name).order(:name) }
 
+      def self.partition_exists?(table_name)
+        where("identifier = concat(current_schema(), '.', ?)", table_name).exists?
+      end
+
+      def self.legacy_partition_exists?(table_name)
+        result = connection.select_value(<<~SQL)
+          SELECT true FROM pg_class
+          WHERE relname = '#{table_name}'
+          AND relispartition = true;
+        SQL
+
+        !!result
+      end
+
       def to_s
         name
       end

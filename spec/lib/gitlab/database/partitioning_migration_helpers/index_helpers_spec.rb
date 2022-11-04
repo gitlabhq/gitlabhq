@@ -65,8 +65,11 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
       end
 
       def expect_add_concurrent_index_and_call_original(table, column, index)
-        expect(migration).to receive(:add_concurrent_index).ordered.with(table, column, { name: index })
-          .and_wrap_original { |_, table, column, options| connection.add_index(table, column, **options) }
+        expect(migration).to receive(:add_concurrent_index).ordered.with(table, column, { name: index, allow_partition: true })
+          .and_wrap_original do |_, table, column, options|
+            options.delete(:allow_partition)
+            connection.add_index(table, column, **options)
+          end
       end
     end
 
@@ -91,7 +94,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
 
       it 'forwards them to the index helper methods', :aggregate_failures do
         expect(migration).to receive(:add_concurrent_index)
-          .with(partition1_identifier, column_name, { name: partition1_index, where: 'x > 0', unique: true })
+          .with(partition1_identifier, column_name, { name: partition1_index, where: 'x > 0', unique: true, allow_partition: true })
 
         expect(migration).to receive(:add_index)
           .with(table_name, column_name, { name: index_name, where: 'x > 0', unique: true })

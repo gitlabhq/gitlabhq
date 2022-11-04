@@ -13,8 +13,7 @@ module AlertManagement
       key: Settings.attr_encrypted_db_key_base_32,
       algorithm: 'aes-256-gcm'
 
-    default_value_for(:endpoint_identifier, allows_nil: false) { SecureRandom.hex(8) }
-    default_value_for(:token) { generate_token }
+    attribute :endpoint_identifier, default: -> { SecureRandom.hex(8) }
 
     validates :project, presence: true
     validates :active, inclusion: { in: [true, false] }

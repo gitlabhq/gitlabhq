@@ -45,6 +45,8 @@ metadata:
     description: Operations related to project hooks
   - name: project_import_bitbucket
     description: Operations related to import BitBucket projects    
+  - name: project_import_github
+    description: Operations related to import GitHub projects    
   - name: release_links
     description: Operations related to release assets (links)
   - name: releases

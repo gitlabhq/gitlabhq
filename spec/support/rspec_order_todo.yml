@@ -4089,7 +4089,6 @@
 - './spec/features/incidents/user_creates_new_incident_spec.rb'
 - './spec/features/incidents/user_filters_incidents_by_status_spec.rb'
 - './spec/features/incidents/user_searches_incidents_spec.rb'
-- './spec/features/incidents/user_views_incident_spec.rb'
 - './spec/features/invites_spec.rb'
 - './spec/features/issuables/issuable_list_spec.rb'
 - './spec/features/issuables/markdown_references/internal_references_spec.rb'

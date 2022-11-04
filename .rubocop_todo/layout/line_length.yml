@@ -3920,7 +3920,6 @@ Layout/LineLength:
     - 'spec/features/groups/settings/repository_spec.rb'
     - 'spec/features/groups_spec.rb'
     - 'spec/features/ide/static_object_external_storage_csp_spec.rb'
-    - 'spec/features/incidents/user_views_incident_spec.rb'
     - 'spec/features/invites_spec.rb'
     - 'spec/features/issuables/issuable_list_spec.rb'
     - 'spec/features/issuables/markdown_references/internal_references_spec.rb'

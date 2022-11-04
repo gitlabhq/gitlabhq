@@ -11,7 +11,7 @@ export default {
     BoardSettingsSidebar,
     BoardTopBar,
   },
-  inject: ['disabled'],
+  inject: ['disabled', 'fullBoardId'],
   computed: {
     ...mapGetters(['isSidebarOpen']),
   },
@@ -27,7 +27,7 @@ export default {
 <template>
   <div class="boards-app gl-relative" :class="{ 'is-compact': isSidebarOpen }">
     <board-top-bar />
-    <board-content :disabled="disabled" />
+    <board-content :disabled="disabled" :board-id="fullBoardId" />
     <board-settings-sidebar />
   </div>
 </template>

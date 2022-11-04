@@ -24,7 +24,7 @@
       = c.body do
         - enable_service_ping_link_url = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'enable-or-disable-usage-statistics')
         - enable_service_ping_link = '<a href="%{url}">'.html_safe % { url: enable_service_ping_link_url }
-        - generate_manually_link_url = help_page_path('administration/troubleshooting/gitlab_rails_cheat_sheet', anchor: 'generate-service-ping')
+        - generate_manually_link_url = help_page_path('development/service_ping/troubleshooting', anchor: 'generate-service-ping')
         - generate_manually_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: generate_manually_link_url }
 
         = html_escape(s_('%{enable_service_ping_link_start}Enable%{link_end} or %{generate_manually_link_start}generate%{link_end} Service Ping to preview and download service usage data payload.')) % { enable_service_ping_link_start: enable_service_ping_link, generate_manually_link_start: generate_manually_link, link_end: '</a>'.html_safe }

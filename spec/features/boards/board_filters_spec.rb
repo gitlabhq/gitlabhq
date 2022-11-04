@@ -22,6 +22,7 @@ RSpec.describe 'Issue board filters', :js do
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
 
   before do
+    stub_feature_flags(apollo_boards: false)
     project.add_maintainer(user)
     sign_in(user)
 

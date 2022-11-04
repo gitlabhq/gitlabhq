@@ -389,6 +389,40 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         model.add_concurrent_index(:users, :foo)
       end
+
+      context 'when targeting a partition table' do
+        let(:schema) { 'public' }
+        let(:name) { '_test_partition_01' }
+        let(:identifier) { "#{schema}.#{name}" }
+
+        before do
+          model.execute(<<~SQL)
+            CREATE TABLE public._test_partitioned_table (
+              id serial NOT NULL,
+              partition_id serial NOT NULL,
+              PRIMARY KEY (id, partition_id)
+            ) PARTITION BY LIST(partition_id);
+
+            CREATE TABLE #{identifier} PARTITION OF public._test_partitioned_table
+            FOR VALUES IN (1);
+          SQL
+        end
+
+        context 'when allow_partition is true' do
+          it 'creates the index concurrently' do
+            expect(model).to receive(:add_index).with(:_test_partition_01, :foo, algorithm: :concurrently)
+
+            model.add_concurrent_index(:_test_partition_01, :foo, allow_partition: true)
+          end
+        end
+
+        context 'when allow_partition is not provided' do
+          it 'raises ArgumentError' do
+            expect { model.add_concurrent_index(:_test_partition_01, :foo) }
+              .to raise_error(ArgumentError, /use add_concurrent_partitioned_index/)
+          end
+        end
+      end
     end
 
     context 'inside a transaction' do
@@ -2887,6 +2921,38 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(model).to receive(:execute).with "CREATE SEQUENCE \"test_table_id_seq\" START 1;\nALTER TABLE \"test_table\" ALTER COLUMN \"test_column\" SET DEFAULT nextval(\'test_table_id_seq\')\n"
 
       model.add_sequence(:test_table, :test_column, :test_table_id_seq, 1)
+    end
+  end
+
+  describe "#partition?" do
+    subject { model.partition?(table_name) }
+
+    let(:table_name) { 'ci_builds_metadata' }
+
+    context "when a partition table exist" do
+      context 'when the view postgres_partitions exists' do
+        it 'calls the view', :aggregate_failures do
+          expect(Gitlab::Database::PostgresPartition).to receive(:partition_exists?).with(table_name).and_call_original
+          expect(subject).to be_truthy
+        end
+      end
+
+      context 'when the view postgres_partitions does not exist' do
+        before do
+          allow(model).to receive(:view_exists?).and_return(false)
+        end
+
+        it 'does not call the view', :aggregate_failures do
+          expect(Gitlab::Database::PostgresPartition).to receive(:legacy_partition_exists?).with(table_name).and_call_original
+          expect(subject).to be_truthy
+        end
+      end
+    end
+
+    context "when a partition table does not exist" do
+      let(:table_name) { 'partition_does_not_exist' }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

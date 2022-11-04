@@ -1,5 +1,5 @@
 import { createJobsHash, generateJobNeedsDict, getPipelineDefaultTab } from '~/pipelines/utils';
-import { TAB_QUERY_PARAM, validPipelineTabNames } from '~/pipelines/constants';
+import { validPipelineTabNames } from '~/pipelines/constants';
 
 describe('utils functions', () => {
   const jobName1 = 'build_1';
@@ -173,18 +173,25 @@ describe('utils functions', () => {
 
   describe('getPipelineDefaultTab', () => {
     const baseUrl = 'http://gitlab.com/user/multi-projects-small/-/pipelines/332/';
-    it('returns null if there was no `tab` params', () => {
+    it('returns null if there is only the base url', () => {
       expect(getPipelineDefaultTab(baseUrl)).toBe(null);
     });
 
-    it('returns null if there was no valid tab param', () => {
-      expect(getPipelineDefaultTab(`${baseUrl}?${TAB_QUERY_PARAM}=invalid`)).toBe(null);
+    it('returns null if there was no valid last url part', () => {
+      expect(getPipelineDefaultTab(`${baseUrl}something`)).toBe(null);
     });
 
     it('returns the correct tab name if present', () => {
       validPipelineTabNames.forEach((tabName) => {
-        expect(getPipelineDefaultTab(`${baseUrl}?${TAB_QUERY_PARAM}=${tabName}`)).toBe(tabName);
+        expect(getPipelineDefaultTab(`${baseUrl}${tabName}`)).toBe(tabName);
       });
+    });
+
+    it('returns the right value even with query params', () => {
+      const [tabName] = validPipelineTabNames;
+      expect(getPipelineDefaultTab(`${baseUrl}${tabName}?query="something"&query2="else"`)).toBe(
+        tabName,
+      );
     });
   });
 });

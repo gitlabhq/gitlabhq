@@ -190,6 +190,30 @@ If you add a member to a group by using the [share a group with another group](.
 - Remove the member from the shared group. You must be a group owner to do this.
 - From the group's membership page, remove access from the entire shared group.
 
+## Seat usage alerts
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `seat_flag_alerts`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
+
+If you have the Owner role of the top-level group, an alert notifies you 
+of your total seat usage. 
+
+The alert displays on group, subgroup, and project 
+pages, and only for top-level groups linked to subscriptions enrolled
+in [quarterly subscription reconciliations](../quarterly_reconciliation.md).
+After you dismiss the alert, it doesn't display until another seat is used.
+
+The alert displays based on the following seat usage. You cannot configure the 
+amounts at which the alert displays.
+
+| Seats in subscription | Seat usage                                                             |
+|-----------------------|------------------------------------------------------------------------|
+| 0-15                  | One seat remaining in the subscription.                                |
+| 16-25                 | Two seats remaining in the subscription.                               |
+| 26-99                 | 10% of seats have been used.                                           |
+| 100-999               | 8% of seats have been used.                                            |
+| 1000+                 | 5% of seats have been used                                             |
+
 ## Upgrade your GitLab SaaS subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):

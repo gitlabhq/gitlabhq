@@ -31,6 +31,7 @@ RSpec.describe 'User adds lists', :js do
 
   with_them do
     before do
+      stub_feature_flags(apollo_boards: false)
       sign_in(user)
 
       set_cookie('sidebar_collapsed', 'true')

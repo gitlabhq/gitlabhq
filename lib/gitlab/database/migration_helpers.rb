@@ -147,6 +147,12 @@ module Gitlab
             'in the body of your migration class'
         end
 
+        if !options.delete(:allow_partition) && partition?(table_name)
+          raise ArgumentError, 'add_concurrent_index can not be used on a partitioned '  \
+            'table. Please use add_concurrent_partitioned_index on the partitioned table ' \
+            'as we need to create indexes on each partition and an index on the parent table'
+        end
+
         options = options.merge({ algorithm: :concurrently })
 
         if index_exists?(table_name, column_name, **options)
@@ -1283,6 +1289,14 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+
+      def partition?(table_name)
+        if view_exists?(:postgres_partitions)
+          Gitlab::Database::PostgresPartition.partition_exists?(table_name)
+        else
+          Gitlab::Database::PostgresPartition.legacy_partition_exists?(table_name)
+        end
+      end
 
       private
 

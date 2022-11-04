@@ -639,14 +639,6 @@ class ApplicationSetting < ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
             numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
-  validates :cube_api_base_url,
-            addressable_url: { allow_localhost: true, allow_local_network: false },
-            allow_blank: true
-
-  validates :product_analytics_enabled,
-            presence: true,
-            allow_blank: true
-
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

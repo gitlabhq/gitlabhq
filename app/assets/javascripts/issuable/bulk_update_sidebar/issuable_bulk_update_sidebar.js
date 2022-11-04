@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import issuableEventHub from '~/issues/list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
-import MilestoneSelect from '~/milestones/milestone_select';
+import { mountMilestoneDropdown } from '~/sidebar/mount_sidebar';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 
 const HIDDEN_CLASS = 'hidden';
@@ -55,7 +55,7 @@ export default class IssuableBulkUpdateSidebar {
 
   initDropdowns() {
     new LabelsSelect();
-    new MilestoneSelect();
+    mountMilestoneDropdown();
 
     // Checking IS_EE and using ee_else_ce is odd, but we do it here to satisfy
     // the import/no-unresolved lint rule when FOSS_ONLY=1, even though at

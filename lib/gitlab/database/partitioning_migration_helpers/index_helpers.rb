@@ -40,7 +40,7 @@ module Gitlab
 
           partitioned_table.postgres_partitions.order(:name).each do |partition|
             partition_index_name = generated_index_name(partition.identifier, options[:name])
-            partition_options = options.merge(name: partition_index_name)
+            partition_options = options.merge(name: partition_index_name, allow_partition: true)
 
             add_concurrent_index(partition.identifier, column_names, partition_options)
           end

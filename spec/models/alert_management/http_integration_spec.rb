@@ -13,6 +13,11 @@ RSpec.describe AlertManagement::HttpIntegration do
     it { is_expected.to belong_to(:project) }
   end
 
+  describe 'default values' do
+    it { expect(described_class.new.endpoint_identifier).to be_present }
+    it { expect(described_class.new(endpoint_identifier: 'test').endpoint_identifier).to eq('test') }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:name) }
@@ -124,10 +129,6 @@ RSpec.describe AlertManagement::HttpIntegration do
     end
 
     context 'when unsaved' do
-      context 'when unassigned' do
-        it_behaves_like 'valid token'
-      end
-
       context 'when assigned' do
         include_context 'assign token', 'random_token'
 

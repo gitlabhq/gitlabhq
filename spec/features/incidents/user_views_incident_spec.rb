@@ -4,12 +4,16 @@ require "spec_helper"
 
 RSpec.describe "User views incident" do
   let_it_be(:project) { create(:project_empty_repo, :public) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:incident) { create(:incident, project: project, description: "# Description header\n\n**Lorem** _ipsum_ dolor sit [amet](https://example.com)", author: user) }
-  let_it_be(:note) { create(:note, noteable: incident, project: project, author: user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:user) { developer }
+  let(:author) { developer }
+  let(:description) { "# Description header\n\n**Lorem** _ipsum_ dolor sit [amet](https://example.com)" }
+  let(:incident) { create(:incident, project: project, description: description, author: author) }
 
   before_all do
-    project.add_developer(user)
+    project.add_developer(developer)
+    project.add_guest(guest)
   end
 
   before do
@@ -18,57 +22,61 @@ RSpec.describe "User views incident" do
     visit(project_issues_incident_path(project, incident))
   end
 
-  it { expect(page).to have_header_with_correct_id_and_link(1, "Description header", "description-header") }
+  specify do
+    expect(page).to have_header_with_correct_id_and_link(1, 'Description header', 'description-header')
+  end
 
   it_behaves_like 'page meta description', ' Description header Lorem ipsum dolor sit amet'
 
   describe 'user actions' do
     it 'shows the merge request and incident actions', :js, :aggregate_failures do
+      expected_href = new_project_issue_path(project,
+                                             issuable_template: 'incident',
+                                             issue: { issue_type: 'incident' },
+                                             add_related_issue: incident.iid)
+
       click_button 'Incident actions'
 
-      expect(page).to have_link('New related incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' }, add_related_issue: incident.iid }))
+      expect(page).to have_link('New related incident', href: expected_href)
       expect(page).to have_button('Create merge request')
       expect(page).to have_button('Close incident')
     end
 
-    context 'when user is a guest' do
-      before do
-        project.add_guest(user)
+    context 'when user is guest' do
+      let(:user) { guest }
 
-        login_as(user)
+      context 'and author' do
+        let(:author) { guest }
 
-        visit(project_issues_incident_path(project, incident))
+        it 'does not show the incident actions', :js do
+          expect(page).not_to have_button('Incident actions')
+        end
       end
 
-      it 'does not show the incident actions', :js, :aggregate_failures do
-        expect(page).not_to have_button('Incident actions')
+      context 'and not author' do
+        it 'shows incident actions', :js do
+          click_button 'Incident actions'
+
+          expect(page).to have_link 'Report abuse'
+        end
       end
     end
   end
 
   context 'when the project is archived' do
-    before do
+    before_all do
       project.update!(archived: true)
-      visit(project_issues_incident_path(project, incident))
     end
 
-    it 'hides the merge request and incident actions', :aggregate_failures do
-      expect(page).not_to have_link('New incident')
-      expect(page).not_to have_button('Create merge request')
-      expect(page).not_to have_link('Close incident')
+    it 'does not show the incident actions', :js do
+      expect(page).not_to have_button('Incident actions')
     end
   end
 
   describe 'user status' do
-    subject { visit(project_issues_incident_path(project, incident)) }
-
     context 'when showing status of the author of the incident' do
-      it_behaves_like 'showing user status' do
-        let(:user_with_status) { user }
-      end
-    end
+      subject { visit(project_issues_incident_path(project, incident)) }
 
-    context 'when showing status of a user who commented on an incident', :js do
       it_behaves_like 'showing user status' do
         let(:user_with_status) { user }
       end

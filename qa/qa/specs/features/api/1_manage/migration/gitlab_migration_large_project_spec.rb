@@ -98,12 +98,17 @@ module QA
       let(:mrs) { fetch_mrs(imported_project, target_api_client) }
       let(:issues) { fetch_issues(imported_project, target_api_client) }
 
+      let(:import_failures) { imported_group.import_details.sum([]) { |details| details[:failures] } }
+
       before do
         destination_group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
       end
 
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
+        # Log failures for easier debugging
+        Runtime::Logger.error("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
+
         next unless defined?(@import_time)
 
         # save data for comparison notification creation
@@ -112,7 +117,7 @@ module QA
           {
             importer: :gitlab,
             import_time: @import_time,
-            errors: imported_group.import_details.sum([]) { |details| details[:failures] },
+            errors: import_failures,
             source: {
               name: "GitLab Source",
               project_name: source_project.path_with_namespace,
@@ -154,7 +159,7 @@ module QA
       end
       # rubocop:enable RSpec/InstanceVariable
 
-      it "migrates large gitlab group via api", testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358842' do
+      it "migrates large gitlab group via api", testcase: "https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358842" do
         start = Time.now
 
         # trigger import and log imported group path
@@ -165,7 +170,11 @@ module QA
 
         # wait for import to finish and save import time
         logger.info("== Waiting for import to be finished ==")
-        expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+        expect { imported_group.import_status }.not_to eventually_eq("started").within(import_wait_duration)
+        # finished status actually means success, don't wait for finished status explicitly
+        # because test would wait full duration if returned status is "failed"
+        expect(imported_group.import_status).to eq("finished")
+
         @import_time = Time.now - start
 
         aggregate_failures do

@@ -1,30 +1,28 @@
 ---
 # Cop supports --auto-correct.
 Rails/NegateInclude:
-  # Offense count: 65
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/finders/projects_finder.rb'
     - 'app/helpers/application_settings_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/tree_helper.rb'
-    - 'app/models/concerns/timebox.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
+    - 'app/models/integrations/field.rb'
     - 'app/models/label.rb'
     - 'app/models/merge_request.rb'
+    - 'app/models/milestone.rb'
     - 'app/services/todo_service.rb'
+    - 'app/services/work_items/parent_links/create_service.rb'
     - 'config/application.rb'
     - 'config/initializers/1_settings.rb'
     - 'danger/roulette/Dangerfile'
     - 'ee/app/finders/security/pipeline_vulnerabilities_finder.rb'
-    - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/vulnerability.rb'
     - 'ee/app/services/epic_issues/create_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_remediations.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'
     - 'lib/api/maven_packages.rb'
-    - 'lib/generators/gitlab/usage_metric_generator.rb'
     - 'lib/gitlab/background_migration/legacy_upload_mover.rb'
     - 'lib/gitlab/ci/build/rules/rule/clause/exists.rb'
     - 'lib/gitlab/ci/parsers/coverage/sax_document.rb'
@@ -38,11 +36,10 @@ Rails/NegateInclude:
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/gitlab/url_blocker.rb'
     - 'lib/gitlab_edition.rb'
+    - 'qa/qa/page/merge_request/show.rb'
     - 'qa/qa/runtime/ip_address.rb'
     - 'qa/qa/support/run.rb'
     - 'qa/qa/tools/delete_test_users.rb'
-    - 'qa/qa/vendor/jenkins/page/configure_job.rb'
-    - 'qa/qa/vendor/jenkins/page/last_job_console.rb'
     - 'rubocop/cop/gitlab/feature_available_usage.rb'
     - 'rubocop/cop/graphql/id_type.rb'
     - 'rubocop/cop/migration/add_reference.rb'
@@ -56,3 +53,4 @@ Rails/NegateInclude:
     - 'spec/support/matchers/pushed_frontend_feature_flags_matcher.rb'
     - 'spec/support/shared_contexts/markdown_golden_master_shared_examples.rb'
     - 'spec/uploaders/object_storage_spec.rb'
+    - 'tooling/danger/specs.rb'

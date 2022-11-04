@@ -19,6 +19,7 @@ RSpec.describe 'Project issue boards', :js do
 
   context 'signed in user' do
     before do
+      stub_feature_flags(apollo_boards: false)
       project.add_maintainer(user)
       project.add_maintainer(user2)
 
@@ -29,7 +30,7 @@ RSpec.describe 'Project issue boards', :js do
 
     context 'no lists' do
       before do
-        visit_project_board_path_without_query_limit(project, board)
+        visit_project_board(project, board)
       end
 
       it 'creates default lists' do
@@ -73,7 +74,7 @@ RSpec.describe 'Project issue boards', :js do
       let_it_be(:issue10) { create(:labeled_issue, project: project, title: 'issue +', description: 'A+ great issue', labels: [a_plus]) }
 
       before do
-        visit_project_board_path_without_query_limit(project, board)
+        visit_project_board(project, board)
       end
 
       it 'shows description tooltip on list title', :quarantine do
@@ -124,7 +125,7 @@ RSpec.describe 'Project issue boards', :js do
       it 'infinite scrolls list' do
         create_list(:labeled_issue, 30, project: project, labels: [planning])
 
-        visit_project_board_path_without_query_limit(project, board)
+        visit_project_board(project, board)
 
         page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('38')
@@ -203,7 +204,7 @@ RSpec.describe 'Project issue boards', :js do
           expect(find('.board:nth-child(3) [data-testid="board-list-header"]')).to have_content(planning.title)
 
           # Make sure list positions are preserved after a reload
-          visit_project_board_path_without_query_limit(project, board)
+          visit_project_board(project, board)
 
           expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(development.title)
           expect(find('.board:nth-child(3) [data-testid="board-list-header"]')).to have_content(planning.title)
@@ -215,15 +216,19 @@ RSpec.describe 'Project issue boards', :js do
           let_it_be(:list2) { create(:list, board: board, label: development, position: 1) }
 
           it 'changes position of list' do
-            visit_project_board_path_without_query_limit(project, board)
+            inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+              visit_project_board(project, board)
+            end
 
             drag(list_from_index: 0, list_to_index: 1, selector: '.board-header')
 
             expect(find('.board:nth-child(1) [data-testid="board-list-header"]')).to have_content(development.title)
             expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(planning.title)
 
-            # Make sure list positions are preserved after a reload
-            visit_project_board_path_without_query_limit(project, board)
+            inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+              # Make sure list positions are preserved after a reload
+              visit_project_board(project, board)
+            end
 
             expect(find('.board:nth-child(1) [data-testid="board-list-header"]')).to have_content(development.title)
             expect(find('.board:nth-child(2) [data-testid="board-list-header"]')).to have_content(planning.title)
@@ -234,7 +239,9 @@ RSpec.describe 'Project issue boards', :js do
           selector = '.board:not(.is-ghost) .board-header'
           expect(page).to have_selector(selector, text: development.title, count: 1)
 
-          drag(list_from_index: 2, list_to_index: 1, selector: '.board-header', perform_drop: false)
+          inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
+            drag(list_from_index: 2, list_to_index: 1, selector: '.board-header', perform_drop: false)
+          end
 
           expect(page).to have_selector(selector, text: development.title, count: 1)
         end
@@ -492,7 +499,7 @@ RSpec.describe 'Project issue boards', :js do
 
     context 'keyboard shortcuts' do
       before do
-        visit_project_board_path_without_query_limit(project, board)
+        visit_project_board(project, board)
         wait_for_requests
       end
 
@@ -505,6 +512,7 @@ RSpec.describe 'Project issue boards', :js do
 
   context 'signed out user' do
     before do
+      stub_feature_flags(apollo_boards: false)
       visit project_board_path(project, board)
       wait_for_requests
     end
@@ -526,6 +534,7 @@ RSpec.describe 'Project issue boards', :js do
     let_it_be(:user_guest) { create(:user) }
 
     before do
+      stub_feature_flags(apollo_boards: false)
       project.add_guest(user_guest)
       sign_in(user_guest)
       visit project_board_path(project, board)
@@ -587,11 +596,9 @@ RSpec.describe 'Project issue boards', :js do
     end
   end
 
-  def visit_project_board_path_without_query_limit(project, board)
-    inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-      visit project_board_path(project, board)
+  def visit_project_board(project, board)
+    visit project_board_path(project, board)
 
-      wait_for_requests
-    end
+    wait_for_requests
   end
 end

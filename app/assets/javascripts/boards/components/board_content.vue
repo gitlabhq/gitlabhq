@@ -3,12 +3,24 @@ import { GlAlert } from '@gitlab/ui';
 import { sortBy, throttle } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { s__ } from '~/locale';
+import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
-import { DraggableItemTypes } from '../constants';
+import {
+  DraggableItemTypes,
+  issuableTypes,
+  BoardType,
+  listsQuery,
+} from 'ee_else_ce/boards/constants';
 import BoardColumn from './board_column.vue';
 
 export default {
+  i18n: {
+    fetchError: s__(
+      'Boards|An error occurred while fetching the board lists. Please reload the page.',
+    ),
+  },
   draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
@@ -19,26 +31,76 @@ export default {
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
-  inject: ['canAdminList'],
+  inject: ['canAdminList', 'boardType', 'fullPath', 'issuableType', 'isApolloBoard'],
   props: {
     disabled: {
       type: Boolean,
+      required: true,
+    },
+    boardId: {
+      type: String,
       required: true,
     },
   },
   data() {
     return {
       boardHeight: null,
+      boardListsApollo: {},
+      apolloError: null,
+      updatedBoardId: this.boardId,
     };
+  },
+  apollo: {
+    boardListsApollo: {
+      query() {
+        return listsQuery[this.issuableType].query;
+      },
+      variables() {
+        return this.queryVariables;
+      },
+      skip() {
+        return !this.isApolloBoard;
+      },
+      update(data) {
+        const { lists } = data[this.boardType].board;
+        return formatBoardLists(lists);
+      },
+      result() {
+        // this allows us to delay fetching lists when we switch a board to fetch the actual board lists
+        // instead of fetching lists for the "previous" board
+        this.updatedBoardId = this.boardId;
+      },
+      error() {
+        this.apolloError = this.$options.i18n.fetchError;
+      },
+    },
   },
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
-    ...mapGetters(['isSwimlanesOn', 'isEpicBoard', 'isIssueBoard']),
+    ...mapGetters(['isSwimlanesOn']),
+    isIssueBoard() {
+      return this.issuableType === issuableTypes.issue;
+    },
+    isEpicBoard() {
+      return this.issuableType === issuableTypes.epic;
+    },
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
     },
+    queryVariables() {
+      return {
+        ...(this.isIssueBoard && {
+          isGroup: this.boardType === BoardType.group,
+          isProject: this.boardType === BoardType.project,
+        }),
+        fullPath: this.fullPath,
+        boardId: this.boardId,
+        filterParams: this.filterParams,
+      };
+    },
     boardListsToUse() {
-      return sortBy([...Object.values(this.boardLists)], 'position');
+      const lists = this.isApolloBoard ? this.boardListsApollo : this.boardLists;
+      return sortBy([...Object.values(lists)], 'position');
     },
     canDragColumns() {
       return this.canAdminList;
@@ -58,6 +120,9 @@ export default {
       };
 
       return this.canDragColumns ? options : {};
+    },
+    errorToDisplay() {
+      return this.isApolloBoard ? this.apolloError : this.error;
     },
   },
   mounted() {
@@ -88,8 +153,8 @@ export default {
 
 <template>
   <div v-cloak data-qa-selector="boards_list">
-    <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="unsetError">
-      {{ error }}
+    <gl-alert v-if="errorToDisplay" variant="danger" :dismissible="true" @dismiss="unsetError">
+      {{ errorToDisplay }}
     </gl-alert>
     <component
       :is="boardColumnWrapper"

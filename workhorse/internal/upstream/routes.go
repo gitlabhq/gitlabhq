@@ -52,6 +52,7 @@ const (
 	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
 	apiProjectPattern    = apiPattern + `v4/projects/[^/]+` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
+	apiGroupPattern      = apiPattern + `v4/groups/[^/]+`
 	apiTopicPattern      = apiPattern + `v4/topics`
 	snippetUploadPattern = `^/uploads/personal_snippet`
 	userUploadPattern    = `^/uploads/user`
@@ -303,6 +304,7 @@ func configureRoutes(u *upstream) {
 		// we need to declare each routes until we have fixed all the routes on the rails codebase.
 		// Overall status can be seen at https://gitlab.com/groups/gitlab-org/-/epics/1802#current-status
 		u.route("POST", apiProjectPattern+`/wikis/attachments\z`, tempfileMultipartProxy),
+		u.route("POST", apiGroupPattern+`/wikis/attachments\z`, tempfileMultipartProxy),
 		u.route("POST", apiPattern+`graphql\z`, tempfileMultipartProxy),
 		u.route("POST", apiTopicPattern, tempfileMultipartProxy),
 		u.route("PUT", apiTopicPattern, tempfileMultipartProxy),
