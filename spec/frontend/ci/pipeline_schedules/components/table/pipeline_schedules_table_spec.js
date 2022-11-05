@@ -1,6 +1,6 @@
 import { GlTableLite } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import PipelineSchedulesTable from '~/pipeline_schedules/components/table/pipeline_schedules_table.vue';
+import PipelineSchedulesTable from '~/ci/pipeline_schedules/components/table/pipeline_schedules_table.vue';
 import { mockPipelineScheduleNodes } from '../../mock_data';
 
 describe('Pipeline schedules table', () => {

@@ -1,6 +1,6 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PipelineScheduleTarget from '~/pipeline_schedules/components/table/cells/pipeline_schedule_target.vue';
+import PipelineScheduleTarget from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_target.vue';
 import { mockPipelineScheduleNodes } from '../../../mock_data';
 
 describe('Pipeline schedule target', () => {

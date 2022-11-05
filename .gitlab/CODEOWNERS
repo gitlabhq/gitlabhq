@@ -153,7 +153,7 @@ Dangerfile @gl-quality/eng-prod
 /app/assets/javascripts/pipeline_new/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci_lint/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci_variable_list/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/ci/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/pipeline_editor/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/ci/ci_minutes_usage/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/usage_quotas/ci_minutes_usage/ @gitlab-org/ci-cd/verify/frontend

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
-import DeletePipelineScheduleModal from '~/pipeline_schedules/components/delete_pipeline_schedule_modal.vue';
+import DeletePipelineScheduleModal from '~/ci/pipeline_schedules/components/delete_pipeline_schedule_modal.vue';
 
 describe('Delete pipeline schedule modal', () => {
   let wrapper;

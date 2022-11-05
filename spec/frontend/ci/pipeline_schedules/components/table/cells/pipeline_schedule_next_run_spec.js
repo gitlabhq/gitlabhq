@@ -1,5 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PipelineScheduleNextRun from '~/pipeline_schedules/components/table/cells/pipeline_schedule_next_run.vue';
+import PipelineScheduleNextRun from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_next_run.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mockPipelineScheduleNodes } from '../../../mock_data';
 

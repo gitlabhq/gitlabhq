@@ -4,7 +4,7 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git abuse rate limit **(ULTIMATE SELF)**
+# Git abuse rate limit (administration) **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. Disabled by default.
 

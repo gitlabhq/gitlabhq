@@ -2,6 +2,8 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
 import API from '~/api';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
+import Tracking from '~/tracking';
+import { SNOWPLOW_DATA_SOURCE, SNOWPLOW_LABEL, SNOWPLOW_SCHEMA } from '../constants';
 import PipelineCharts from './pipeline_charts.vue';
 
 export default {
@@ -23,6 +25,7 @@ export default {
   leadTimeTabEvent: 'p_analytics_ci_cd_lead_time',
   timeToRestoreServiceTabEvent: 'p_analytics_ci_cd_time_to_restore_service',
   changeFailureRateTabEvent: 'p_analytics_ci_cd_change_failure_rate',
+  mixins: [Tracking.mixin()],
   inject: {
     shouldRenderDoraCharts: {
       type: Boolean,
@@ -75,8 +78,21 @@ export default {
         updateHistory({ url: path, title: window.title });
       }
     },
-    trackTabClick(tab) {
-      API.trackRedisHllUserEvent(tab);
+    trackTabClick(event, snowplow = false) {
+      API.trackRedisHllUserEvent(event);
+
+      if (snowplow) {
+        this.track('click_tab', {
+          label: SNOWPLOW_LABEL,
+          context: {
+            schema: SNOWPLOW_SCHEMA,
+            data: {
+              event_name: event,
+              data_source: SNOWPLOW_DATA_SOURCE,
+            },
+          },
+        });
+      }
     },
   },
 };
@@ -87,7 +103,7 @@ export default {
       <gl-tab
         :title="__('Pipelines')"
         data-testid="pipelines-tab"
-        @click="trackTabClick($options.piplelinesTabEvent)"
+        @click="trackTabClick($options.piplelinesTabEvent, true)"
       >
         <pipeline-charts />
       </gl-tab>
@@ -95,14 +111,14 @@ export default {
         <gl-tab
           :title="__('Deployment frequency')"
           data-testid="deployment-frequency-tab"
-          @click="trackTabClick($options.deploymentFrequencyTabEvent)"
+          @click="trackTabClick($options.deploymentFrequencyTabEvent, true)"
         >
           <deployment-frequency-charts />
         </gl-tab>
         <gl-tab
           :title="__('Lead time')"
           data-testid="lead-time-tab"
-          @click="trackTabClick($options.leadTimeTabEvent)"
+          @click="trackTabClick($options.leadTimeTabEvent, true)"
         >
           <lead-time-charts />
         </gl-tab>

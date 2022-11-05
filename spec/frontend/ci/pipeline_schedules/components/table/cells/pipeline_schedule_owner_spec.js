@@ -1,6 +1,6 @@
 import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PipelineScheduleOwner from '~/pipeline_schedules/components/table/cells/pipeline_schedule_owner.vue';
+import PipelineScheduleOwner from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_owner.vue';
 import { mockPipelineScheduleNodes } from '../../../mock_data';
 
 describe('Pipeline schedule owner', () => {

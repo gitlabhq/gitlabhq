@@ -8,6 +8,12 @@ import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/u
 import Component from '~/projects/pipelines/charts/components/app.vue';
 import PipelineCharts from '~/projects/pipelines/charts/components/pipeline_charts.vue';
 import API from '~/api';
+import { mockTracking } from 'helpers/tracking_helper';
+import {
+  SNOWPLOW_DATA_SOURCE,
+  SNOWPLOW_LABEL,
+  SNOWPLOW_SCHEMA,
+} from '~/projects/pipelines/charts/constants';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -125,21 +131,59 @@ describe('ProjectsPipelinesChartsApp', () => {
     });
 
     describe('event tracking', () => {
-      it.each`
-        testId                           | event
-        ${'pipelines-tab'}               | ${'p_analytics_ci_cd_pipelines'}
-        ${'deployment-frequency-tab'}    | ${'p_analytics_ci_cd_deployment_frequency'}
-        ${'lead-time-tab'}               | ${'p_analytics_ci_cd_lead_time'}
-        ${'time-to-restore-service-tab'} | ${'p_analytics_ci_cd_time_to_restore_service'}
-        ${'change-failure-rate-tab'}     | ${'p_analytics_ci_cd_change_failure_rate'}
-      `('tracks the $event event when clicked', ({ testId, event }) => {
-        jest.spyOn(API, 'trackRedisHllUserEvent');
+      describe('RedisHLL events', () => {
+        it.each`
+          testId                           | event
+          ${'pipelines-tab'}               | ${'p_analytics_ci_cd_pipelines'}
+          ${'deployment-frequency-tab'}    | ${'p_analytics_ci_cd_deployment_frequency'}
+          ${'lead-time-tab'}               | ${'p_analytics_ci_cd_lead_time'}
+          ${'time-to-restore-service-tab'} | ${'p_analytics_ci_cd_time_to_restore_service'}
+          ${'change-failure-rate-tab'}     | ${'p_analytics_ci_cd_change_failure_rate'}
+        `('tracks the $event event when clicked', ({ testId, event }) => {
+          const trackApiSpy = jest.spyOn(API, 'trackRedisHllUserEvent');
 
-        expect(API.trackRedisHllUserEvent).not.toHaveBeenCalled();
+          expect(trackApiSpy).not.toHaveBeenCalled();
 
-        wrapper.findByTestId(testId).vm.$emit('click');
+          wrapper.findByTestId(testId).vm.$emit('click');
 
-        expect(API.trackRedisHllUserEvent).toHaveBeenCalledWith(event);
+          expect(trackApiSpy).toHaveBeenCalledWith(event);
+        });
+      });
+
+      describe('Snowplow events', () => {
+        it.each`
+          testId                        | event
+          ${'pipelines-tab'}            | ${'p_analytics_ci_cd_pipelines'}
+          ${'deployment-frequency-tab'} | ${'p_analytics_ci_cd_deployment_frequency'}
+          ${'lead-time-tab'}            | ${'p_analytics_ci_cd_lead_time'}
+        `('tracks the $event event when clicked', ({ testId, event }) => {
+          const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+          wrapper.findByTestId(testId).vm.$emit('click');
+
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_tab', {
+            label: SNOWPLOW_LABEL,
+            context: {
+              schema: SNOWPLOW_SCHEMA,
+              data: {
+                event_name: event,
+                data_source: SNOWPLOW_DATA_SOURCE,
+              },
+            },
+          });
+        });
+
+        it.each`
+          tab
+          ${'time-to-restore-service-tab'}
+          ${'change-failure-rate-tab'}
+        `('does not track when tab $tab is clicked', ({ tab }) => {
+          const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
+          wrapper.findByTestId(tab).vm.$emit('click');
+
+          expect(trackingSpy).not.toHaveBeenCalled();
+        });
       });
     });
   });

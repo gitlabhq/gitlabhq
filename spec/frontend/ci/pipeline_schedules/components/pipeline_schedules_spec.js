@@ -5,13 +5,13 @@ import { trimText } from 'helpers/text_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import PipelineSchedules from '~/pipeline_schedules/components/pipeline_schedules.vue';
-import DeletePipelineScheduleModal from '~/pipeline_schedules/components/delete_pipeline_schedule_modal.vue';
-import TakeOwnershipModal from '~/pipeline_schedules/components/take_ownership_modal.vue';
-import PipelineSchedulesTable from '~/pipeline_schedules/components/table/pipeline_schedules_table.vue';
-import deletePipelineScheduleMutation from '~/pipeline_schedules/graphql/mutations/delete_pipeline_schedule.mutation.graphql';
-import takeOwnershipMutation from '~/pipeline_schedules/graphql/mutations/take_ownership.mutation.graphql';
-import getPipelineSchedulesQuery from '~/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
+import PipelineSchedules from '~/ci/pipeline_schedules/components/pipeline_schedules.vue';
+import DeletePipelineScheduleModal from '~/ci/pipeline_schedules/components/delete_pipeline_schedule_modal.vue';
+import TakeOwnershipModal from '~/ci/pipeline_schedules/components/take_ownership_modal.vue';
+import PipelineSchedulesTable from '~/ci/pipeline_schedules/components/table/pipeline_schedules_table.vue';
+import deletePipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/delete_pipeline_schedule.mutation.graphql';
+import takeOwnershipMutation from '~/ci/pipeline_schedules/graphql/mutations/take_ownership.mutation.graphql';
+import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
 import {
   mockGetPipelineSchedulesGraphQLResponse,
   mockPipelineScheduleNodes,

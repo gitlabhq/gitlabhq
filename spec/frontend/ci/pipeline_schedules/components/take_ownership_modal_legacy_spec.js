@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import TakeOwnershipModalLegacy from '~/pipeline_schedules/components/take_ownership_modal_legacy.vue';
+import TakeOwnershipModalLegacy from '~/ci/pipeline_schedules/components/take_ownership_modal_legacy.vue';
 
 describe('Take ownership modal', () => {
   let wrapper;

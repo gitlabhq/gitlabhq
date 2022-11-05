@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PipelineScheduleActions from '~/pipeline_schedules/components/table/cells/pipeline_schedule_actions.vue';
+import PipelineScheduleActions from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_actions.vue';
 import {
   mockPipelineScheduleNodes,
   mockPipelineScheduleAsGuestNodes,

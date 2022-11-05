@@ -124,6 +124,7 @@ From there, you can see the following actions:
   - Require user password to approve.
   - Remove all approvals when commits are added to the source branch.
 - Changes to streaming audit destination custom HTTP headers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
+- Group had a security policy project linked, changed, or unlinked. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6)
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
@@ -194,6 +195,7 @@ From there, you can see the following actions:
 - Squash commit message template is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
 - Default description template for merge requests is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
 - Project was scheduled for deletion due to inactivity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0)
+- Project had a security policy project linked, changed, or unlinked ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

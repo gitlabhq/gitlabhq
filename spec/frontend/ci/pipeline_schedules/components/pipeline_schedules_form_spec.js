@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlForm } from '@gitlab/ui';
-import PipelineSchedulesForm from '~/pipeline_schedules/components/pipeline_schedules_form.vue';
+import PipelineSchedulesForm from '~/ci/pipeline_schedules/components/pipeline_schedules_form.vue';
 
 describe('Pipeline schedules form', () => {
   let wrapper;
