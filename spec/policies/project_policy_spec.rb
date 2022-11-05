@@ -538,7 +538,23 @@ RSpec.describe ProjectPolicy do
       it 'allows access to timeline event tags' do
         expect(described_class.new(owner, project)).to be_allowed(:read_incident_management_timeline_event_tag)
         expect(described_class.new(developer, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(guest, project)).to be_allowed(:read_incident_management_timeline_event_tag)
         expect(described_class.new(admin, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+      end
+    end
+
+    context 'when user is a maintainer/owner' do
+      it 'allows to create timeline event tags' do
+        expect(described_class.new(maintainer, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(owner, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
+      end
+    end
+
+    context 'when user is a developer/guest/reporter' do
+      it 'disallows creation' do
+        expect(described_class.new(developer, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(guest, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(reporter, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
       end
     end
 
@@ -547,6 +563,7 @@ RSpec.describe ProjectPolicy do
 
       it 'disallows access to the timeline event tags' do
         expect(described_class.new(non_member, project)).to be_disallowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(non_member, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
       end
     end
   end

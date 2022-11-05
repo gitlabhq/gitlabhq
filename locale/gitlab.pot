@@ -46753,6 +46753,9 @@ msgstr ""
 msgid "You have insufficient permissions to manage resource links for this incident"
 msgstr ""
 
+msgid "You have insufficient permissions to manage timeline event tags for this project"
+msgstr ""
+
 msgid "You have insufficient permissions to manage timeline events for this incident"
 msgstr ""
 

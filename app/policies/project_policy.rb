@@ -537,6 +537,7 @@ class ProjectPolicy < BasePolicy
     enable :read_web_hooks
     enable :read_upload
     enable :destroy_upload
+    enable :admin_incident_management_timeline_event_tag
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

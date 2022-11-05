@@ -4944,6 +4944,26 @@ Input type: `TimelineEventPromoteFromNoteInput`
 | <a id="mutationtimelineeventpromotefromnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationtimelineeventpromotefromnotetimelineevent"></a>`timelineEvent` | [`TimelineEventType`](#timelineeventtype) | Timeline event. |
 
+### `Mutation.timelineEventTagCreate`
+
+Input type: `TimelineEventTagCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelineeventtagcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelineeventtagcreatename"></a>`name` | [`String!`](#string) | Name of the tag. |
+| <a id="mutationtimelineeventtagcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the timeline event tag in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtimelineeventtagcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtimelineeventtagcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtimelineeventtagcreatetimelineeventtag"></a>`timelineEventTag` | [`TimelineEventTagType`](#timelineeventtagtype) | Timeline event tag. |
+
 ### `Mutation.timelineEventUpdate`
 
 Input type: `TimelineEventUpdateInput`

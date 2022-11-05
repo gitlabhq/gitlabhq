@@ -51,6 +51,7 @@ module Types
     mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Update
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Destroy
+    mount_mutation Mutations::IncidentManagement::TimelineEventTag::Create
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
     mount_mutation Mutations::Issues::SetCrmContacts
