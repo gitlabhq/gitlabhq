@@ -667,16 +667,16 @@ import the following default SAST analyzer images from `registry.gitlab.com` int
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/brakeman:2
-registry.gitlab.com/security-products/flawfinder:2
-registry.gitlab.com/security-products/kubesec:2
-registry.gitlab.com/security-products/nodejs-scan:2
-registry.gitlab.com/security-products/phpcs-security-audit:2
-registry.gitlab.com/security-products/pmd-apex:2
-registry.gitlab.com/security-products/security-code-scan:2
-registry.gitlab.com/security-products/semgrep:2
-registry.gitlab.com/security-products/sobelow:2
-registry.gitlab.com/security-products/spotbugs:2
+registry.gitlab.com/security-products/brakeman:3
+registry.gitlab.com/security-products/flawfinder:3
+registry.gitlab.com/security-products/kubesec:3
+registry.gitlab.com/security-products/nodejs-scan:3
+registry.gitlab.com/security-products/phpcs-security-audit:3
+registry.gitlab.com/security-products/pmd-apex:3
+registry.gitlab.com/security-products/security-code-scan:3
+registry.gitlab.com/security-products/semgrep:3
+registry.gitlab.com/security-products/sobelow:3
+registry.gitlab.com/security-products/spotbugs:3
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

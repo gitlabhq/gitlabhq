@@ -42,15 +42,13 @@ the following tables:
 | [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
 | [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                   | **{check-circle}** Yes   | String                     | `INFO`, `WARNING`, `ERROR`         |
 | [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)                     | **{check-circle}** Yes   | Integer                    | `0`, `1`, `2`, `3`, `4`, `5`       |
-| [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                             | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
 | [`SpotBugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `11`, `12`, `18`    |
-| [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)                               | **{check-circle}** Yes   | String                     | `HIGH`, `MEDIUM`, `LOW`            |
-| [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)                             | **{check-circle}** Yes   | String                     | `HIGH`, `MEDIUM`, `LOW`            |
 | [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) | **{check-circle}** Yes   | String                     | `ERROR`, `WARNING`                 |
 | [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `4`, `5`            |
 | [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                           | **{check-circle}** Yes   | String                     | `CriticalSeverity`, `InfoSeverity` |
 | [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Critical` |
 | [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)                           | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` |
+| [`kics`](https://gitlab.com/gitlab-org/security-products/analyzers/kics)                                 | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` (gets mapped to `info` in [analyzer version 3.7.0 and later](https://gitlab.com/gitlab-org/security-products/analyzers/kics/-/releases/v3.7.0)) |
 
 ## Dependency Scanning
 

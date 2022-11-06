@@ -172,6 +172,7 @@ module API
         # Keep in alphabetical order
         mount ::API::AccessRequests
         mount ::API::Appearance
+        mount ::API::BroadcastMessages
         mount ::API::BulkImports
         mount ::API::Ci::ResourceGroups
         mount ::API::Ci::Runner
@@ -224,7 +225,6 @@ module API
       mount ::API::Badges
       mount ::API::Boards
       mount ::API::Branches
-      mount ::API::BroadcastMessages
       mount ::API::Ci::JobArtifacts
       mount ::API::Ci::Jobs
       mount ::API::Ci::PipelineSchedules

@@ -381,7 +381,7 @@ Prerequisites:
    [local Docker container registry](../../packages/container_registry/index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/secret-detection:3
+   registry.gitlab.com/security-products/secrets:4
    ```
 
    The Secret Detection analyzer's image is [periodically updated](../index.md#vulnerability-scanner-maintenance)
