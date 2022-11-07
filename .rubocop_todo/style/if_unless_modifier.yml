@@ -309,7 +309,6 @@ Style/IfUnlessModifier:
     - 'app/services/issues/update_service.rb'
     - 'app/services/lfs/lock_file_service.rb'
     - 'app/services/members/destroy_service.rb'
-    - 'app/services/members/update_service.rb'
     - 'app/services/merge_requests/add_context_service.rb'
     - 'app/services/merge_requests/base_service.rb'
     - 'app/services/merge_requests/build_service.rb'

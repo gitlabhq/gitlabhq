@@ -6,14 +6,14 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
   subject(:importer) { described_class.new(github_protected_branch, project, client) }
 
   let(:branch_name) { 'protection' }
-  let(:allow_force_pushes_on_github) { true }
+  let(:allow_force_pushes_on_github) { false }
   let(:require_code_owner_reviews_on_github) { false }
   let(:required_conversation_resolution) { false }
   let(:required_signatures) { false }
   let(:required_pull_request_reviews) { false }
   let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }
   let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
-  let(:expected_allow_force_push) { true }
+  let(:expected_allow_force_push) { false }
   let(:expected_code_owner_approval_required) { false }
   let(:github_protected_branch) do
     Gitlab::GithubImport::Representation::ProtectedBranch.new(
@@ -102,6 +102,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
     end
 
     context 'when branch is not protected on GitLab' do
+      let(:allow_force_pushes_on_github) { true }
       let(:expected_allow_force_push) { true }
 
       it_behaves_like 'create branch protection by the strictest ruleset'
@@ -110,6 +111,30 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
     context "when branch is default" do
       before do
         allow(project).to receive(:default_branch).and_return(branch_name)
+      end
+
+      context 'when "allow force pushes - everyone" rule is enabled' do
+        let(:allow_force_pushes_on_github) { true }
+
+        context 'when there is any default branch protection' do
+          before do
+            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
+          end
+
+          let(:expected_allow_force_push) { false }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+
+        context 'when there is no default branch protection' do
+          before do
+            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+          end
+
+          let(:expected_allow_force_push) { allow_force_pushes_on_github }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
       end
 
       context 'when required_conversation_resolution rule is enabled' do

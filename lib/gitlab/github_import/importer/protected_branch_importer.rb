@@ -43,10 +43,14 @@ module Gitlab
         end
 
         def allow_force_push?
-          if ProtectedBranch.protected?(project, protected_branch.id)
-            ProtectedBranch.allow_force_push?(project, protected_branch.id) && protected_branch.allow_force_pushes
+          return false unless protected_branch.allow_force_pushes
+
+          if protected_on_gitlab?
+            ProtectedBranch.allow_force_push?(project, protected_branch.id)
+          elsif default_branch?
+            !default_branch_protection.any?
           else
-            protected_branch.allow_force_pushes
+            true
           end
         end
 

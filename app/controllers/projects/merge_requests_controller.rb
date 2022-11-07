@@ -34,7 +34,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action only: [:show] do
     push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:refactor_mr_widget_test_summary, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:realtime_labels, project)
     push_frontend_feature_flag(:refactor_security_extension, @project)

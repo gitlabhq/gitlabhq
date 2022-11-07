@@ -248,18 +248,8 @@ msgid_plural "%d epics"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d error"
-msgid_plural "%d errors"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d exporter"
 msgid_plural "%d exporters"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d failed"
-msgid_plural "%d failed"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -270,11 +260,6 @@ msgstr[1] ""
 
 msgid "%d file"
 msgid_plural "%d files"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d fixed test result"
-msgid_plural "%d fixed test results"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -857,12 +842,6 @@ msgstr ""
 msgid "%{name} (Busy)"
 msgstr ""
 
-msgid "%{name} contained %{resultsString}"
-msgstr ""
-
-msgid "%{name} found %{resultsString}"
-msgstr ""
-
 msgid "%{name} is already being used for another emoji"
 msgstr ""
 
@@ -1191,9 +1170,6 @@ msgid "%{user} created an issue: %{issue_link}"
 msgstr ""
 
 msgid "%{value} is not included in the list"
-msgstr ""
-
-msgid "%{value} s"
 msgstr ""
 
 msgid "%{verb} %{time_spent_value} spent time."
@@ -34159,16 +34135,10 @@ msgstr ""
 msgid "Reports|Base report parsing error:"
 msgstr ""
 
-msgid "Reports|Classname"
-msgstr ""
-
 msgid "Reports|Copy failed test names to run locally"
 msgstr ""
 
 msgid "Reports|Copy failed tests"
-msgstr ""
-
-msgid "Reports|Execution time"
 msgstr ""
 
 msgid "Reports|Failed %{count} time in %{baseBranch} in the last 14 days"
@@ -34180,12 +34150,6 @@ msgid "Reports|Failed %{count} time in %{base_branch} in the last 14 days"
 msgid_plural "Reports|Failed %{count} times in %{base_branch} in the last 14 days"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Reports|Failure"
-msgstr ""
-
-msgid "Reports|Filename"
-msgstr ""
 
 msgid "Reports|Fixed"
 msgstr ""
@@ -34229,19 +34193,10 @@ msgstr ""
 msgid "Reports|Severity"
 msgstr ""
 
-msgid "Reports|System output"
-msgstr ""
-
 msgid "Reports|Test summary"
 msgstr ""
 
-msgid "Reports|Test summary failed loading results"
-msgstr ""
-
 msgid "Reports|Test summary failed to load results"
-msgstr ""
-
-msgid "Reports|Test summary results are being parsed"
 msgstr ""
 
 msgid "Reports|Test summary results are loading"
@@ -34257,9 +34212,6 @@ msgid "Reports|Vulnerability Name"
 msgstr ""
 
 msgid "Reports|metrics report"
-msgstr ""
-
-msgid "Reports|no changed test results"
 msgstr ""
 
 msgid "Repositories"
@@ -48970,11 +48922,6 @@ msgstr ""
 
 msgid "organizations can only be added to root groups"
 msgstr ""
-
-msgid "out of %d total test"
-msgid_plural "out of %d total tests"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "packages"
 msgstr ""

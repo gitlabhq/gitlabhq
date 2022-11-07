@@ -1,8 +1,0 @@
----
-name: refactor_mr_widget_test_summary
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83631
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358208
-milestone: '15.0'
-type: development
-group: group::pipeline insights
-default_enabled: false

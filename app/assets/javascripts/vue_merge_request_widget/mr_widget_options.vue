@@ -82,8 +82,6 @@ export default {
     MrWidgetAutoMergeFailed: AutoMergeFailed,
     MrWidgetRebase: RebaseState,
     SourceBranchRemovalStatus,
-    GroupedTestReportsApp: () =>
-      import('../reports/grouped_test_report/grouped_test_reports_app.vue'),
     MrWidgetApprovals,
     SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
@@ -182,9 +180,6 @@ export default {
     },
     shouldRenderTestReport() {
       return Boolean(this.mr?.testResultsPath);
-    },
-    shouldRenderRefactoredTestReport() {
-      return window.gon?.features?.refactorMrWidgetTestSummary;
     },
     mergeError() {
       let { mergeError } = this.mr;
@@ -519,7 +514,7 @@ export default {
       }
     },
     registerTestReportExtension() {
-      if (this.shouldRenderTestReport && this.shouldRenderRefactoredTestReport) {
+      if (this.shouldRenderTestReport) {
         registerExtension(testReportExtension);
       }
     },
@@ -594,14 +589,6 @@ export default {
         :security-reports-docs-path="mr.securityReportsDocsPath"
         :target-project-full-path="mr.targetProjectFullPath"
         :mr-iid="mr.iid"
-      />
-
-      <grouped-test-reports-app
-        v-if="shouldRenderTestReport && !shouldRenderRefactoredTestReport"
-        class="js-reports-container"
-        :endpoint="mr.testResultsPath"
-        :head-blob-path="mr.headBlobPath"
-        :pipeline-path="mr.pipeline.path"
       />
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">

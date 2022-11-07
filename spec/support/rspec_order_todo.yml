@@ -10079,7 +10079,6 @@
 - './spec/services/members/request_access_service_spec.rb'
 - './spec/services/members/standard_member_builder_spec.rb'
 - './spec/services/members/unassign_issuables_service_spec.rb'
-- './spec/services/members/update_service_spec.rb'
 - './spec/services/merge_requests/add_context_service_spec.rb'
 - './spec/services/merge_requests/add_spent_time_service_spec.rb'
 - './spec/services/merge_requests/add_todo_when_build_fails_service_spec.rb'

@@ -230,6 +230,8 @@ Supported GitHub branch protection rules are mapped to GitLab branch protection 
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) in GitLab 15.6.
 - GitHub rule **Require signed commits** for the project's default branch is mapped to the **Reject unsigned commits** GitLab push rule. Requires GitLab Premium or higher.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) in GitLab 15.5.
+- GitHub rule **Allow force pushes - Everyone** is mapped to the [**Allowed to force push** branch protection rule](../protected_branches.md#allow-force-push-on-a-protected-branch). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) in GitLab 15.6.
+- GitHub rule **Allow force pushes - Specify who can force push**  is proposed in issue [370945](https://gitlab.com/gitlab-org/gitlab/-/issues/370945).
 - Support for GitHub rule **Require status checks to pass before merging** was proposed in issue [370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule cannot be translated during project import into GitLab due to technical difficulties.
 You can still create [status checks](../merge_requests/status_checks.md) in GitLab yourself.
 

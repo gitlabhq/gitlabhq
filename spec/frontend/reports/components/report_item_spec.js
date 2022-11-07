@@ -10,7 +10,7 @@ describe('ReportItem', () => {
       const wrapper = shallowMount(ReportItem, {
         propsData: {
           issue: { foo: 'bar' },
-          component: componentNames.TestIssueBody,
+          component: componentNames.CodequalityIssueBody,
           status: STATUS_SUCCESS,
           showReportSectionStatusIcon: false,
         },
@@ -23,7 +23,7 @@ describe('ReportItem', () => {
       const wrapper = shallowMount(ReportItem, {
         propsData: {
           issue: { foo: 'bar' },
-          component: componentNames.TestIssueBody,
+          component: componentNames.CodequalityIssueBody,
           status: STATUS_SUCCESS,
         },
       });
