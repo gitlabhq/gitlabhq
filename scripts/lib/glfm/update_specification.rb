@@ -171,12 +171,15 @@ module Glfm
     def generate_spec_html_files(spec_txt_string, snapshot_spec_md_string)
       output("Generating spec.html and snapshot_spec.html from spec.txt and snapshot_spec.md markdown...")
 
+      spec_txt_string_split_examples = split_examples_into_html_and_md(spec_txt_string)
+      snapshot_spec_md_string_split_examples = split_examples_into_html_and_md(snapshot_spec_md_string)
+
       input_markdown_yml_string = <<~MARKDOWN
         ---
         spec_txt: |
-        #{spec_txt_string.gsub(/^/, '  ')}
+        #{spec_txt_string_split_examples.gsub(/^/, '  ')}
         snapshot_spec_md: |
-        #{snapshot_spec_md_string.gsub(/^/, '  ')}
+        #{snapshot_spec_md_string_split_examples.gsub(/^/, '  ')}
       MARKDOWN
 
       # NOTE: We must copy the input YAML file used by the `render_static_html.rb`
@@ -207,6 +210,13 @@ module Glfm
       output("Reading generated html from tempfile #{static_html_tempfile_path}...")
       rendered_html_hash = YAML.safe_load(File.open(static_html_tempfile_path), symbolize_names: true)
       [rendered_html_hash.fetch(:spec_txt), rendered_html_hash.fetch(:snapshot_spec_md)]
+    end
+
+    def split_examples_into_html_and_md(spec_md_string)
+      spec_md_string.gsub(
+        /(^#{EXAMPLE_BEGIN_STRING}.*?$(?:.|\n)*?)^\.$(\n(?:.|\n)*?^#{EXAMPLE_END_STRING}$)/mo,
+        "\\1#{EXAMPLE_BACKTICKS_STRING}\n\n#{EXAMPLE_BACKTICKS_STRING}\\2"
+      )
     end
 
     def write_spec_html(spec_html_string)

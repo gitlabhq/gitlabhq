@@ -1713,15 +1713,6 @@
         - '**/*.rb'
         - '**/Gemfile'
 
-.reports:rules:gosec-sast:
-  rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /gosec/
-      when: never
-    - changes:
-        - '**/*.go'
-
 .reports:rules:semgrep-sast:
   rules:
     - if: $SAST_DISABLED

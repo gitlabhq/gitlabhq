@@ -188,6 +188,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'Clusters::Cleanup::ProjectNamespaceWorker' => 3,
         'Clusters::Cleanup::ServiceAccountWorker' => 3,
         'ContainerExpirationPolicies::CleanupContainerRepositoryWorker' => 0,
+        'ContainerRegistry::DeleteContainerRepositoryWorker' => 0,
         'CreateCommitSignatureWorker' => 3,
         'CreateGithubWebhookWorker' => 3,
         'CreateNoteDiffFileWorker' => 3,

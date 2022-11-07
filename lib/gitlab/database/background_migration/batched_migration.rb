@@ -98,6 +98,11 @@ module Gitlab
             .executable.queue_order.first
         end
 
+        def self.find_executable(id, connection:)
+          for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
+            .executable.find_by_id(id)
+        end
+
         def self.successful_rows_counts(migrations)
           BatchedJob
             .with_status(:succeeded)

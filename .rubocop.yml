@@ -600,6 +600,12 @@ Graphql/EnumNames:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
 
+Graphql/EnumValues:
+  Enabled: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+
 # Cops for upgrade to gitlab-styles 3.1.0
 RSpec/ImplicitSubject:
   Enabled: false

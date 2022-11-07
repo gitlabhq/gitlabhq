@@ -21,6 +21,10 @@ FactoryBot.define do
       status { :delete_failed }
     end
 
+    trait :status_delete_ongoing do
+      status { :delete_ongoing }
+    end
+
     trait :cleanup_scheduled do
       expiration_policy_cleanup_status { :cleanup_scheduled }
     end

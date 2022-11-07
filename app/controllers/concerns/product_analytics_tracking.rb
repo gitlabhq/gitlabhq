@@ -6,6 +6,8 @@ module ProductAnalyticsTracking
   extend ActiveSupport::Concern
 
   class_methods do
+    # TODO: Remove once all the events are migrated to #track_custom_event
+    # during https://gitlab.com/groups/gitlab-org/-/epics/8641
     def track_event(*controller_actions, name:, conditions: nil, destinations: [:redis_hll], &block)
       custom_conditions = [:trackable_html_request?, *conditions]
 

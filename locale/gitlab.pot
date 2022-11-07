@@ -10806,6 +10806,9 @@ msgstr ""
 msgid "ContributionAnalytics|No pushes for the selected time period."
 msgstr ""
 
+msgid "ContributionAnalytics|There is too much data to calculate. Try lowering the period_limit setting in the insights configuration file."
+msgstr ""
+
 msgid "Contributions for %{calendar_date}"
 msgstr ""
 

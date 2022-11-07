@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'constants'
+
 # This module contains a Ruby port of Python logic from the `get_tests` method of the
 # `spec_test.py` script (see copy of original code in a comment at the bottom of this file):
 # https://github.com/github/cmark-gfm/blob/5dfedc7/test/spec_tests.py#L82
@@ -20,11 +22,11 @@
 # in `scripts/lib/glfm/update_example_snapshots.rb`
 module Glfm
   module ParseExamples
+    include Constants
+
     REGULAR_TEXT = 0
     MARKDOWN_EXAMPLE = 1
     HTML_OUTPUT = 2
-    EXAMPLE_BACKTICKS_LENGTH = 32
-    EXAMPLE_BACKTICKS_STRING = '`' * EXAMPLE_BACKTICKS_LENGTH
 
     # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
     def parse_examples(spec_txt_lines)
@@ -47,11 +49,11 @@ module Glfm
       spec_txt_lines.each do |line|
         line_number += 1
         stripped_line = line.strip
-        if stripped_line.start_with?("#{EXAMPLE_BACKTICKS_STRING} example")
+        if stripped_line.start_with?(EXAMPLE_BEGIN_STRING)
           # If beginning line of an example block...
           state = MARKDOWN_EXAMPLE
           extensions = stripped_line[(EXAMPLE_BACKTICKS_LENGTH + " example".length)..].split
-        elsif stripped_line == EXAMPLE_BACKTICKS_STRING
+        elsif stripped_line == EXAMPLE_END_STRING
           # Else if end line of an example block...
           state = REGULAR_TEXT
           example_number += 1

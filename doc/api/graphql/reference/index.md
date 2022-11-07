@@ -20669,6 +20669,7 @@ Status of a container repository.
 | Value | Description |
 | ----- | ----------- |
 | <a id="containerrepositorystatusdelete_failed"></a>`DELETE_FAILED` | Delete Failed status. |
+| <a id="containerrepositorystatusdelete_ongoing"></a>`DELETE_ONGOING` | Delete Ongoing status. |
 | <a id="containerrepositorystatusdelete_scheduled"></a>`DELETE_SCHEDULED` | Delete Scheduled status. |
 
 ### `ContainerRepositoryTagSort`

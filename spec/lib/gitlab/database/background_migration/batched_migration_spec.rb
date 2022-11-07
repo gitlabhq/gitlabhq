@@ -213,6 +213,59 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '.find_executable' do
+    let(:connection) { Gitlab::Database.database_base_models[:main].connection }
+    let(:migration_id) { migration.id }
+
+    subject(:executable_migration) { described_class.find_executable(migration_id, connection: connection) }
+
+    around do |example|
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        example.run
+      end
+    end
+
+    context 'when the migration does not exist' do
+      let(:migration_id) { non_existing_record_id }
+
+      it 'returns nil' do
+        expect(executable_migration).to be_nil
+      end
+    end
+
+    context 'when the migration is not active' do
+      let!(:migration) { create(:batched_background_migration, :finished) }
+
+      it 'returns nil' do
+        expect(executable_migration).to be_nil
+      end
+    end
+
+    context 'when the migration is on hold' do
+      let!(:migration) { create(:batched_background_migration, :active, on_hold_until: 10.minutes.from_now) }
+
+      it 'returns nil' do
+        expect(executable_migration).to be_nil
+      end
+    end
+
+    context 'when the migration is not available for the current connection' do
+      let!(:migration) { create(:batched_background_migration, :active, gitlab_schema: :gitlab_not_existing) }
+
+      it 'returns nil' do
+        expect(executable_migration).to be_nil
+      end
+    end
+
+    context 'when ther migration exists and is executable' do
+      let!(:migration) { create(:batched_background_migration, :active, gitlab_schema: :gitlab_main) }
+
+      it 'returns the migration' do
+        expect(executable_migration).to eq(migration)
+      end
+    end
+  end
+
   describe '.created_after' do
     let!(:migration_old) { create :batched_background_migration, created_at: 2.days.ago }
     let!(:migration_new) { create :batched_background_migration, created_at: 0.days.ago }

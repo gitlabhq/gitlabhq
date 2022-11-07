@@ -871,6 +871,28 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
+  describe '#set_delete_ongoing_status', :freeze_time do
+    let_it_be(:repository) { create(:container_repository) }
+
+    subject { repository.set_delete_ongoing_status }
+
+    it 'updates deletion status attributes' do
+      expect { subject }.to change(repository, :status).from(nil).to('delete_ongoing')
+                              .and change(repository, :delete_started_at).from(nil).to(Time.zone.now)
+    end
+  end
+
+  describe '#set_delete_scheduled_status' do
+    let_it_be(:repository) { create(:container_repository, :status_delete_ongoing, delete_started_at: 3.minutes.ago) }
+
+    subject { repository.set_delete_scheduled_status }
+
+    it 'updates delete attributes' do
+      expect { subject }.to change(repository, :status).from('delete_ongoing').to('delete_scheduled')
+                              .and change(repository, :delete_started_at).to(nil)
+    end
+  end
+
   context 'registry migration' do
     before do
       allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
