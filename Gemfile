@@ -151,7 +151,7 @@ gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.3'
-gem 'gitlab-fog-azure-rm', '~> 1.3.0', require: 'fog/azurerm'
+gem 'gitlab-fog-azure-rm', '~> 1.4.0', require: 'fog/azurerm'
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'

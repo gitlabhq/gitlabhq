@@ -213,7 +213,15 @@ class EventCreateService
 
     namespace = project.namespace
     if Feature.enabled?(:route_hll_to_snowplow, namespace)
-      Gitlab::Tracking.event(self.class.to_s, 'action_active_users_project_repo', namespace: namespace, user: current_user, project: project)
+      Gitlab::Tracking.event(
+        self.class.to_s,
+        :push,
+        label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo',
+        namespace: namespace,
+        user: current_user,
+        project: project,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'action_active_users_project_repo').to_context]
+      )
     end
 
     Users::LastPushEventService.new(current_user)

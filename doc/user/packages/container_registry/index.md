@@ -556,7 +556,7 @@ this setting. However, disabling the Container Registry disables all Container R
 
 ## Troubleshooting the GitLab Container Registry
 
-## Migrating OCI container images to GitLab Container Registry
+### Migrating OCI container images to GitLab Container Registry
 
 Migrating built container images to the GitLab registry is not a current feature. However, an [epic](https://gitlab.com/groups/gitlab-org/-/epics/5210) is open to track the work on this feature.
 

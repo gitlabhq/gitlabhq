@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.5.3 (2022-11-07)
+
+### Fixed (1 change)
+
+- [Fix Opensearch compatibility check](gitlab-org/gitlab@c7094017eb6fae71c0b8441a04f6927ed69025ea) ([merge request](gitlab-org/gitlab!103157)) **GitLab Enterprise Edition**
+
 ## 15.5.2 (2022-11-02)
 
 ### Security (11 changes)

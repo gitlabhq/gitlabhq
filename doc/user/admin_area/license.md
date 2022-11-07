@@ -64,6 +64,17 @@ This error occurs when you use an activation code to activate your instance, but
 
 You may have connectivity issues due to the following reasons:
 
-- **You have an offline environment**: Configure your setup to allow connection to GitLab servers. If connection to GitLab servers is not possible, contact your Sales Representative to request a license key. You can also contact [GitLab support](https://about.gitlab.com/support/#contact-support) if you need help finding out your Sales Representative.
-- **Firewall settings**: Enable an encrypted HTTPS connection from your GitLab instance to `customers.gitlab.com` (with IP addresses 104.18.26.123 and 104.18.27.123) on port 443.
-- **Customers Portal is not operational**: To check for performance or service disruptions, check the Customers Portal [status](https://status.gitlab.com/).
+- **You have an offline environment**:
+  - Configure your setup to allow connection to GitLab servers. If connection to GitLab servers is not possible, contact your Sales Representative to request a license key. You can also contact [GitLab support](https://about.gitlab.com/support/#contact-support) if you need help finding your Sales Representative.
+- **Customers Portal is not operational**:
+  - To check for performance or service disruptions, check the Customers Portal [status](https://status.gitlab.com/).
+- **Firewall settings**:
+  - Check if your GitLab instance has an encrypted connection to `customers.gitlab.com` (with IP addresses 104.18.26.123 and 104.18.27.123) on port 443:
+
+   ```shell
+   curl --verbose "telnet://customers.gitlab.com/"
+   ```
+
+  - If the curl command returns a failure, either:
+    - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html) in `gitlab.rb` to point to your server.
+    - Contact your network administrator to make changes to the proxy.

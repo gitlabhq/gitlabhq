@@ -11,7 +11,7 @@ description: 'Next Runner Token Architecture'
 
 GitLab Runner is a core component of GitLab CI/CD that runs
 CI/CD jobs in a reliable and concurrent environment. Ever since the beginnings
-of the service as a Ruby program, runners are registered in a GitLab instance with 
+of the service as a Ruby program, runners are registered in a GitLab instance with
 a registration token - a randomly generated string of text. The registration token is unique for its given scope
 (instance, group, or project). The registration token proves that the party that registers the runner has
 administrator access to the instance, group, or project to which the runner is registered.
@@ -197,7 +197,7 @@ using PAT tokens for example - such that every runner is associated with an owne
 | GitLab Runner    | `16.0` | Remove `register` command and support for `POST /runners` endpoint. |
 | GitLab Rails app | `16.0` | Remove legacy UI showing registration with a registration token. |
 | GitLab Rails app | `16.0` | Create database migrations to remove settings from `application_settings` and `namaspace_settings` tables. |
-| GitLab Rails app | `16.0` | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner) permanently return `410 Gone`. A future v5 version of the API would return `404 Not Found`. |
+| GitLab Rails app | `16.0` | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner-deprecated) permanently return `410 Gone`. A future v5 version of the API would return `404 Not Found`. |
 | GitLab Rails app | `16.0` | Start refusing job requests that don't include a unique ID. |
 
 ## Status

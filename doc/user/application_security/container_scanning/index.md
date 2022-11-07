@@ -359,45 +359,11 @@ The container-scanning analyzer can use different scanners, depending on the val
 
 The following options are available:
 
-| Scanner name | `CS_ANALYZER_IMAGE` |
-| ------------ | ------------------- |
-| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:5` |
+| Scanner name                                             | `CS_ANALYZER_IMAGE`                                                |
+|----------------------------------------------------------|--------------------------------------------------------------------|
+| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:5`       |
 | [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:5` |
 | Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:5` |
-
-If you're migrating from a GitLab 13.x release to a GitLab 14.x release and have customized the
-`container_scanning` job or its CI variables, you might need to perform these migration steps in
-your CI file:
-
-1. Remove these variables:
-
-   - `CS_MAJOR_VERSION`
-   - `CS_PROJECT`
-   - `SECURE_ANALYZERS_PREFIX`
-
-1. Review the `CS_ANALYZER_IMAGE` variable. It no longer depends on the variables above and its new
-   default value is `registry.gitlab.com/security-products/container-scanning:5`. If you have an
-   offline environment, see
-   [Running container scanning in an offline environment](#running-container-scanning-in-an-offline-environment).
-
-1. If present, remove the `.cs_common` and `container_scanning_new` configuration sections.
-
-1. If the `container_scanning` section is present, it's safer to create one from scratch based on
-   the new version of the [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
-   Once finished, it should not have any variables that are only applicable to Klar or Clair. For a
-   complete list of supported variables, see [available variables](#available-cicd-variables).
-
-1. Make any [necessary customizations](#customizing-the-container-scanning-settings)
-   to the chosen scanner. We recommend that you minimize such customizations, as they might require
-   changes in future GitLab major releases.
-
-1. Trigger a new run of a pipeline that includes the `container_scanning` job. Inspect the job
-   output and ensure that the log messages do not mention Clair.
-
-NOTE:
-Prior to the GitLab 14.0 release, any variable defined under the scope `container_scanning` is not
-considered for scanners other than Clair. In GitLab 14.0 and later, all variables can be defined
-either as a global variable or under `container_scanning`.
 
 ### Setting the default branch image
 

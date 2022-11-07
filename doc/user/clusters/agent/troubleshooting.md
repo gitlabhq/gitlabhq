@@ -208,3 +208,24 @@ kubectl delete jobs -l app.kubernetes.io/managed-by=starboard -n gitlab-agent
 ```
 
 [We're working on making the cleanup of these jobs more robust.](https://gitlab.com/gitlab-org/gitlab/-/issues/362016)
+
+## Inventory policy prevented actuation (strategy: Apply, status: Empty, policy: MustMatch)
+
+```json 
+{
+  "error":"inventory policy prevented actuation (strategy: Apply, status: Empty, policy: MustMatch)",
+  "group":"networking.k8s.io",
+  "kind":"Deployment",
+  "name":"resource-name",
+  "namespace":"namespace",
+  "status":"Skipped",
+  "timestamp":"2022-10-29T15:34:21Z",
+  "type":"apply"
+}
+```
+
+This error occurs when the GitLab agent tries to update an object and the object doesn't have the required annotations. To fix this error, you can:
+
+- Add the required annotations manually.
+- Delete the object and let the agent recreate it.
+- Change your [`inventory_policy`](../../infrastructure/clusters/deploy/inventory_object.md#inventory_policy-options) setting.
