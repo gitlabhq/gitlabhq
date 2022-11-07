@@ -4,6 +4,8 @@ module API
   class SystemHooks < ::API::Base
     include PaginationParams
 
+    system_hooks_tags = %w[system_hooks]
+
     feature_category :integrations
 
     before do
@@ -19,12 +21,13 @@ module API
       end
 
       params :hook_parameters do
-        optional :token, type: String, desc: 'The token used to validate payloads'
-        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
-        optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
-        optional :merge_requests_events, type: Boolean, desc: "Trigger hook on tag push events"
-        optional :repository_update_events, type: Boolean, desc: "Trigger hook on repository update events"
-        optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
+        optional :token, type: String,
+                         desc: "Secret token to validate received payloads; this isn't returned in the response"
+        optional :push_events, type: Boolean, desc: 'When true, the hook fires on push events'
+        optional :tag_push_events, type: Boolean, desc: 'When true, the hook fires on new tags being pushed'
+        optional :merge_requests_events, type: Boolean, desc: 'Trigger hook on merge requests events'
+        optional :repository_update_events, type: Boolean, desc: 'Trigger hook on repository update events'
+        optional :enable_ssl_verification, type: Boolean, desc: 'Do SSL verification when triggering the hook'
         use :url_variables
       end
     end
@@ -32,8 +35,11 @@ module API
     resource :hooks do
       mount ::API::Hooks::UrlVariables
 
-      desc 'Get the list of system hooks' do
+      desc 'List system hooks' do
+        detail 'Get a list of all system hooks'
         success Entities::Hook
+        is_array true
+        tags system_hooks_tags
       end
       params do
         use :pagination
@@ -42,8 +48,13 @@ module API
         present paginate(SystemHook.all), with: Entities::Hook
       end
 
-      desc 'Get a hook' do
+      desc 'Get system hook' do
+        detail 'Get a system hook by its ID. Introduced in GitLab 14.9.'
         success Entities::Hook
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags system_hooks_tags
       end
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'
@@ -52,8 +63,15 @@ module API
         present find_hook, with: Entities::Hook
       end
 
-      desc 'Create a new system hook' do
+      desc 'Add new system hook' do
+        detail 'Add a new system hook'
         success Entities::Hook
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags system_hooks_tags
       end
       params do
         use :requires_url
@@ -66,11 +84,18 @@ module API
         save_hook(hook, Entities::Hook)
       end
 
-      desc 'Update an existing system hook' do
+      desc 'Edit system hook' do
+        detail 'Edits a system hook'
         success Entities::Hook
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags system_hooks_tags
       end
       params do
-        requires :hook_id, type: Integer, desc: "The ID of the hook to update"
+        requires :hook_id, type: Integer, desc: 'The ID of the system hook'
         use :optional_url
         use :hook_parameters
       end
@@ -90,8 +115,13 @@ module API
         kind: 'system_hooks'
       }
 
-      desc 'Delete a hook' do
+      desc 'Delete system hook' do
+        detail 'Deletes a system hook'
         success Entities::Hook
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags system_hooks_tags
       end
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the system hook'

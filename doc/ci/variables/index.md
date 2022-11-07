@@ -357,15 +357,22 @@ The value of the variable must:
   - The `~` character (In [GitLab 13.12 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61517)).
 - Not match the name of an existing predefined or custom CI/CD variable.
 
-NOTE:
-Masking a CI/CD variable is not a guaranteed way to prevent malicious users from accessing
-variable values. To make variables more secure, you can [use external secrets](../secrets/index.md).
-
 WARNING:
-Due to a technical limitation, masked variables that are more than 4 KiB in length are not recommended. Printing such
-a large value to the trace log has the potential to be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128).
-When using GitLab Runner 14.2, only the tail of the variable, characters beyond 4KiB in length, have the potential to
-be revealed.
+Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
+accessing variable values. The masking feature is "best-effort" and there to
+help when a variable is accidentally revealed. To make variables more secure,
+consider using [external secrets](../secrets/index.md) and [file type variables](#cicd-variable-types)
+to prevent commands such as `env`/`printenv` from printing secret variables.
+
+Runner versions implement masking in different ways, some with technical
+limitations. Below is a table of such limitations.
+
+| Version from | Version to | Limitations |
+| ------------ | ---------- | ------ |
+| v0.1.0       | v11.8.0    | No masking functionality supported. |
+| v11.9.0      | v14.1.0    | Masking of large (> 4KiB) secrets could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
+| v14.2.0      | v15.3.0    | The tail of a large (> 4KiB) secret could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
+| v15.7.0      |            | Potential for secrets to be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/index.md#capturing-service-container-logs). |
 
 ### Protected CI/CD variables
 

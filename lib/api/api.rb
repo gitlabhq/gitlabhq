@@ -193,6 +193,7 @@ module API
         mount ::API::Metadata
         mount ::API::MergeRequestDiffs
         mount ::API::PersonalAccessTokens::SelfInformation
+        mount ::API::ProjectExport
         mount ::API::ProjectHooks
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::Releases
@@ -205,6 +206,7 @@ module API
         mount ::API::Statistics
         mount ::API::Submodules
         mount ::API::Suggestions
+        mount ::API::SystemHooks
         mount ::API::Tags
         mount ::API::Unleash
         mount ::API::UserCounts
@@ -293,7 +295,6 @@ module API
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectDebianDistributions
       mount ::API::ProjectEvents
-      mount ::API::ProjectExport
       mount ::API::ProjectImport
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
@@ -315,7 +316,6 @@ module API
       mount ::API::SidekiqMetrics
       mount ::API::Snippets
       mount ::API::Subscriptions
-      mount ::API::SystemHooks
       mount ::API::Tags
       mount ::API::Templates
       mount ::API::Terraform::Modules::V1::Packages

@@ -22,7 +22,7 @@ import InstallationCommands from '~/packages_and_registries/package_registry/com
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
-import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
+import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
 import {
   PACKAGE_TYPE_NUGET,
@@ -48,6 +48,7 @@ import {
   DELETE_MODAL_CONTENT,
   DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
   DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT,
+  GRAPHQL_PAGE_SIZE,
 } from '~/packages_and_registries/package_registry/constants';
 
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
@@ -65,13 +66,13 @@ export default {
     GlTabs,
     GlSprintf,
     PackageTitle,
-    VersionRow,
     DependencyRow,
     PackageHistory,
     AdditionalMetadata,
     InstallationCommands,
     PackageFiles,
     DeletePackage,
+    PackageVersionsList,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -132,6 +133,7 @@ export default {
     queryVariables() {
       return {
         id: convertToGraphQLId('Packages::Package', this.packageId),
+        first: GRAPHQL_PAGE_SIZE,
       };
     },
     packageFiles() {
@@ -156,6 +158,9 @@ export default {
     },
     hasVersions() {
       return this.packageEntity.versions?.nodes?.length > 0;
+    },
+    versionPageInfo() {
+      return this.packageEntity?.versions?.pageInfo ?? {};
     },
     packageDependencies() {
       return this.packageEntity.dependencyLinks?.nodes || [];
@@ -264,6 +269,34 @@ export default {
     resetDeleteModalContent() {
       this.deletePackageModalContent = DELETE_MODAL_CONTENT;
     },
+    updateQuery(_, { fetchMoreResult }) {
+      return fetchMoreResult;
+    },
+    fetchPreviousVersionsPage() {
+      const variables = {
+        ...this.queryVariables,
+        first: null,
+        last: GRAPHQL_PAGE_SIZE,
+        before: this.versionPageInfo?.startCursor,
+      };
+      this.$apollo.queries.packageEntity.fetchMore({
+        variables,
+        updateQuery: this.updateQuery,
+      });
+    },
+    fetchNextVersionsPage() {
+      const variables = {
+        ...this.queryVariables,
+        first: GRAPHQL_PAGE_SIZE,
+        last: null,
+        after: this.versionPageInfo?.endCursor,
+      };
+
+      this.$apollo.queries.packageEntity.fetchMore({
+        variables,
+        updateQuery: this.updateQuery,
+      });
+    },
   },
   i18n: {
     DELETE_MODAL_TITLE,
@@ -271,6 +304,7 @@ export default {
     deleteFileModalContent: s__(
       `PackageRegistry|You are about to delete %{filename}. This is a destructive action that may render your package unusable. Are you sure?`,
     ),
+    otherVersionsTabTitle: __('Other versions'),
   },
   modal: {
     packageDeletePrimaryAction: {
@@ -303,7 +337,7 @@ export default {
     :description="s__('PackageRegistry|There was a problem fetching the details for this package.')"
     :svg-path="emptyListIllustration"
   />
-  <div v-else-if="!isLoading" class="packages-app">
+  <div v-else-if="projectName" class="packages-app">
     <package-title :package-entity="packageEntity">
       <template #delete-button>
         <gl-button
@@ -358,14 +392,20 @@ export default {
         </p>
       </gl-tab>
 
-      <gl-tab :title="__('Other versions')" title-item-class="js-versions-tab">
-        <template v-if="hasVersions">
-          <version-row v-for="v in packageEntity.versions.nodes" :key="v.id" :package-entity="v" />
-        </template>
-
-        <p v-else class="gl-mt-3" data-testid="no-versions-message">
-          {{ s__('PackageRegistry|There are no other versions of this package.') }}
-        </p>
+      <gl-tab :title="$options.i18n.otherVersionsTabTitle" title-item-class="js-versions-tab" lazy>
+        <package-versions-list
+          :is-loading="isLoading"
+          :page-info="versionPageInfo"
+          :versions="packageEntity.versions.nodes"
+          @prev-page="fetchPreviousVersionsPage"
+          @next-page="fetchNextVersionsPage"
+        >
+          <template #empty-state>
+            <p class="gl-mt-3" data-testid="no-versions-message">
+              {{ s__('PackageRegistry|There are no other versions of this package.') }}
+            </p>
+          </template>
+        </package-versions-list>
       </gl-tab>
     </gl-tabs>
 

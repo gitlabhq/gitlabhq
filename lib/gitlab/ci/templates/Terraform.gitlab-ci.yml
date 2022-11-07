@@ -12,6 +12,7 @@ stages:
   - test
   - build
   - deploy
+  - cleanup
 
 fmt:
   extends: .terraform:fmt

@@ -244,6 +244,8 @@ module API
           # current_authenticated_job will be nil if user is using
           # a valid authentication (like PRIVATE-TOKEN) that is not CI_JOB_TOKEN
           not_found!('Job') unless current_authenticated_job
+
+          ::Gitlab::ApplicationContext.push(job: current_authenticated_job)
         end
       end
     end

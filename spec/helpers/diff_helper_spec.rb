@@ -539,4 +539,42 @@ RSpec.describe DiffHelper do
       end
     end
   end
+
+  describe '#show_only_context_commits?' do
+    let(:params) { {} }
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:has_no_commits) { true }
+
+    subject(:result) { helper.show_only_context_commits? }
+
+    before do
+      assign(:merge_request, merge_request)
+      allow(helper).to receive(:params).and_return(params)
+      allow(merge_request).to receive(:has_no_commits?).and_return(has_no_commits)
+    end
+
+    context 'when only_context_commits param is set to true' do
+      let(:params) { { only_context_commits: true } }
+
+      it { is_expected.to be_truthy }
+
+      context 'when merge request has commits' do
+        let(:has_no_commits) { false }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when only_context_commits param is set to false' do
+      let(:params) { { only_context_commits: false } }
+
+      it { is_expected.to be_truthy }
+
+      context 'when merge request has commits' do
+        let(:has_no_commits) { false }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
 end

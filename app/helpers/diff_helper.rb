@@ -24,7 +24,7 @@ module DiffHelper
   end
 
   def show_only_context_commits?
-    !!params[:only_context_commits] || @merge_request&.commits&.empty?
+    !!params[:only_context_commits] || @merge_request.has_no_commits?
   end
 
   def diff_options

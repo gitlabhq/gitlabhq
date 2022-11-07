@@ -122,7 +122,7 @@ the value of the [`$CI_PIPELINE_SOURCE` predefined variable](../variables/predef
 for all jobs is:
 
 - `pipeline` for multi-project pipelines.
-- `parent` for parent-child pipelines.
+- `parent_pipeline` for parent-child pipelines.
 
 For example, to control jobs in multi-project pipelines in a project that also runs
 merge request pipelines:

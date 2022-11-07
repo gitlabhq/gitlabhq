@@ -233,6 +233,12 @@ export const packageDetailsQuery = (extendPackage) => ({
       },
       versions: {
         nodes: packageVersions(),
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          endCursor: 'endCursor',
+          startCursor: 'startCursor',
+        },
         __typename: 'PackageConnection',
       },
       dependencyLinks: {

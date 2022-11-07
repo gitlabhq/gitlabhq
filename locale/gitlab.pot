@@ -10782,6 +10782,12 @@ msgstr ""
 msgid "ContributionAnalytics|No pushes for the selected time period."
 msgstr ""
 
+msgid "ContributionAnalytics|The given date range is larger than 31 days"
+msgstr ""
+
+msgid "ContributionAnalytics|The to date is earlier than the given from date"
+msgstr ""
+
 msgid "ContributionAnalytics|There is too much data to calculate. Try lowering the period_limit setting in the insights configuration file."
 msgstr ""
 

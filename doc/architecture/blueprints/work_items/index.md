@@ -58,14 +58,19 @@ All Work Item types share the same pool of predefined widgets and are customized
 
 ### Work Item widget types (updating)
 
-- assignees
-- description
-- hierarchy
-- iteration
-- labels
-- start and due date
-- verification status
-- weight
+| widget type  | feature flag  |
+|---|---|---|
+| assignees  | |
+| description | |
+| hierarchy | |
+| [iteration](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) | work_items_mvc_2 | 
+| [milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) | work_items_mvc_2 |
+| labels | |
+| start and due date | |
+| status\* | |
+| weight | |
+
+\* status is not currently a widget, but a part of the root work item, similar to title
 
 ### Work Item view
 
@@ -74,6 +79,16 @@ The new frontend view that renders Work Items of any type using global Work Item
 ### Task
 
 Task is a special Work Item type. Tasks can be added to issues as child items and can be displayed in the modal on the issue view.
+
+### Feature flags  
+    
+Since this is a large project with numerous moving parts, feature flags are being used to track promotions of available widgets. The table below shows the different feature flags that are being used, and the audience that they are available to.  
+
+| feature flag name | audience |
+|---|---|
+| `work_items` | defaulted to on |
+| `work_items_mvc` | `gitlab-org`, `gitlab-com` |
+| `work_items_mvc_2` | `gitlab-org/plan-stage` |
 
 ## Motivation
 

@@ -16,7 +16,14 @@ module API
     resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get export status' do
         detail 'This feature was introduced in GitLab 10.6.'
-        success Entities::ProjectExportStatus
+        success code: 200, model: Entities::ProjectExportStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+        tags ['project_export']
       end
       get ':id/export' do
         present user_project, with: Entities::ProjectExportStatus
@@ -24,6 +31,15 @@ module API
 
       desc 'Download export' do
         detail 'This feature was introduced in GitLab 10.6.'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+        tags ['project_export']
+        produces %w[application/octet-stream application/json]
       end
       get ':id/export/download' do
         check_rate_limit! :project_download_export, scope: [current_user, user_project.namespace]
@@ -41,6 +57,16 @@ module API
 
       desc 'Start export' do
         detail 'This feature was introduced in GitLab 10.6.'
+        success code: 202
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' },
+          { code: 429, message: 'Too many requests' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+        tags ['project_export']
       end
       params do
         optional :description, type: String, desc: 'Override the project description'
@@ -86,6 +112,15 @@ module API
 
         desc 'Start relations export' do
           detail 'This feature was introduced in GitLab 14.4'
+          success code: 202
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 503, message: 'Service unavailable' }
+          ]
+          tags ['project_export']
         end
         post ':id/export_relations' do
           response = ::BulkImports::ExportService.new(portable: user_project, user: current_user).execute
@@ -93,12 +128,23 @@ module API
           if response.success?
             accepted!
           else
-            render_api_error!(message: 'Project relations export could not be started.')
+            render_api_error!('Project relations export could not be started.', 500)
           end
         end
 
         desc 'Download relations export' do
           detail 'This feature was introduced in GitLab 14.4'
+          success code: 200
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 500, message: 'Internal Server Error' },
+            { code: 503, message: 'Service unavailable' }
+          ]
+          tags ['project_export']
+          produces %w[application/octet-stream application/json]
         end
         params do
           requires :relation,
@@ -119,6 +165,15 @@ module API
 
         desc 'Relations export status' do
           detail 'This feature was introduced in GitLab 14.4'
+          is_array true
+          success code: 200, model: Entities::BulkImports::ExportStatus
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 503, message: 'Service unavailable' }
+          ]
+          tags ['project_export']
         end
         get ':id/export_relations/status' do
           present user_project.bulk_import_exports, with: Entities::BulkImports::ExportStatus

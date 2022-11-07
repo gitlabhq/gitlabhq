@@ -78,7 +78,6 @@ require_relative '../tooling/quality/test_level'
 quality_level = Quality::TestLevel.new
 
 RSpec.configure do |config|
-  config.threadsafe = false
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
   config.fixture_path = Rails.root

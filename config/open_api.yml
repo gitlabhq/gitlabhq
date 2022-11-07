@@ -43,6 +43,8 @@ metadata:
     description: Operations related to merge requests
   - name: metadata
     description: Operations related to metadata of the GitLab instance
+  - name: project_export
+    description: Operations related to export projects
   - name: project_hooks
     description: Operations related to project hooks
   - name: project_import_bitbucket
@@ -55,5 +57,7 @@ metadata:
     description: Operations related to releases
   - name: suggestions
     description: Operations related to suggestions
+  - name: system_hooks
+    description: Operations related to system hooks
   - name: unleash_api
     description: Operations related to Unleash API

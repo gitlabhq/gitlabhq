@@ -1,4 +1,10 @@
-query getPackageDetails($id: PackagesPackageID!) {
+query getPackageDetails(
+  $id: PackagesPackageID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
   package(id: $id) {
     id
     name
@@ -55,7 +61,7 @@ query getPackageDetails($id: PackagesPackageID!) {
         downloadPath
       }
     }
-    versions(first: 100) {
+    versions(after: $after, before: $before, first: $first, last: $last) {
       nodes {
         id
         name
@@ -68,6 +74,12 @@ query getPackageDetails($id: PackagesPackageID!) {
             name
           }
         }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
       }
     }
     dependencyLinks {

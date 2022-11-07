@@ -6980,6 +6980,29 @@ The edge type for [`ContainerRepositoryTag`](#containerrepositorytag).
 | <a id="containerrepositorytagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerrepositorytagedgenode"></a>`node` | [`ContainerRepositoryTag`](#containerrepositorytag) | The item at the end of the edge. |
 
+#### `ContributionAnalyticsContributionConnection`
+
+The connection type for [`ContributionAnalyticsContribution`](#contributionanalyticscontribution).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="contributionanalyticscontributionconnectionedges"></a>`edges` | [`[ContributionAnalyticsContributionEdge]`](#contributionanalyticscontributionedge) | A list of edges. |
+| <a id="contributionanalyticscontributionconnectionnodes"></a>`nodes` | [`[ContributionAnalyticsContribution]`](#contributionanalyticscontribution) | A list of nodes. |
+| <a id="contributionanalyticscontributionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ContributionAnalyticsContributionEdge`
+
+The edge type for [`ContributionAnalyticsContribution`](#contributionanalyticscontribution).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="contributionanalyticscontributionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="contributionanalyticscontributionedgenode"></a>`node` | [`ContributionAnalyticsContribution`](#contributionanalyticscontribution) | The item at the end of the edge. |
+
 #### `CoverageFuzzingCorpusConnection`
 
 The connection type for [`CoverageFuzzingCorpus`](#coveragefuzzingcorpus).
@@ -11236,6 +11259,24 @@ A tag from a container repository.
 | <a id="containerrepositorytagshortrevision"></a>`shortRevision` | [`String`](#string) | Short revision of the tag. |
 | <a id="containerrepositorytagtotalsize"></a>`totalSize` | [`BigInt`](#bigint) | Size of the tag. |
 
+### `ContributionAnalyticsContribution`
+
+Represents the contributions of a user.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="contributionanalyticscontributionissuesclosed"></a>`issuesClosed` | [`Int`](#int) | Number of issues closed by the user. |
+| <a id="contributionanalyticscontributionissuescreated"></a>`issuesCreated` | [`Int`](#int) | Number of issues created by the user. |
+| <a id="contributionanalyticscontributionmergerequestsapproved"></a>`mergeRequestsApproved` | [`Int`](#int) | Number of merge requests approved by the user. |
+| <a id="contributionanalyticscontributionmergerequestsclosed"></a>`mergeRequestsClosed` | [`Int`](#int) | Number of merge requests closed by the user. |
+| <a id="contributionanalyticscontributionmergerequestscreated"></a>`mergeRequestsCreated` | [`Int`](#int) | Number of merge requests created by the user. |
+| <a id="contributionanalyticscontributionmergerequestsmerged"></a>`mergeRequestsMerged` | [`Int`](#int) | Number of merge requests merged by the user. |
+| <a id="contributionanalyticscontributionrepopushed"></a>`repoPushed` | [`Int`](#int) | Number of repository pushes the user made. |
+| <a id="contributionanalyticscontributiontotalevents"></a>`totalEvents` | [`Int`](#int) | Total number of events contributed by the user. |
+| <a id="contributionanalyticscontributionuser"></a>`user` | [`UserCore`](#usercore) | Contributor User object. |
+
 ### `CoverageFuzzingCorpus`
 
 Corpus for a coverage fuzzing job.
@@ -13078,6 +13119,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcontainerrepositoriesname"></a>`name` | [`String`](#string) | Filter the container repositories by their name. |
 | <a id="groupcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by this criteria. |
+
+##### `Group.contributions`
+
+Provides the aggregated contributions by users within the group and its subgroups.
+
+Returns [`ContributionAnalyticsContributionConnection`](#contributionanalyticscontributionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcontributionsfrom"></a>`from` | [`ISO8601Date!`](#iso8601date) | Start date of the reporting time range. |
+| <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 31 days after the start date. |
 
 ##### `Group.descendantGroups`
 
