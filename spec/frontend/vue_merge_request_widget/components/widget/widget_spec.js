@@ -28,7 +28,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       propsData: {
         isCollapsible: false,
         loadingText: 'Loading widget',
-        widgetName: 'MyWidget',
+        widgetName: 'WidgetTest',
         value: {
           collapsed: null,
           expanded: null,
@@ -93,6 +93,14 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(wrapper.text()).not.toContain('Loading');
       await nextTick();
       expect(wrapper.text()).toContain('Loading');
+    });
+
+    it('validates widget name', () => {
+      expect(() => {
+        createComponent({
+          propsData: { fetchCollapsedData: jest.fn(), widgetName: 'InvalidWidgetName' },
+        });
+      }).toThrow();
     });
   });
 

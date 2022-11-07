@@ -369,6 +369,25 @@ RSpec.describe Gitlab::ErrorTracking do
       end
     end
 
+    context 'when exception is excluded' do
+      before do
+        stub_const('SubclassRetryError', Class.new(Gitlab::SidekiqMiddleware::RetryError))
+      end
+
+      ['Gitlab::SidekiqMiddleware::RetryError', 'SubclassRetryError'].each do |ex|
+        let(:exception) { ex.constantize.new }
+
+        it "does not report #{ex} exception to Sentry" do
+          expect(Gitlab::ErrorTracking::Logger).to receive(:error)
+
+          track_exception
+
+          expect(Raven.client.transport.events).to eq([])
+          expect(Sentry.get_current_client.transport.events).to eq([])
+        end
+      end
+    end
+
     context 'when processing invalid URI exceptions' do
       let(:invalid_uri) { 'http://foo:bar' }
       let(:raven_exception_values) { raven_event['exception']['values'] }

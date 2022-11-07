@@ -131,6 +131,9 @@ module Gitlab
       end
 
       def before_send(event, hint)
+        # Don't report Sidekiq retry errors to Sentry
+        return if hint[:exception].is_a?(Gitlab::SidekiqMiddleware::RetryError)
+
         inject_context_for_exception(event, hint[:exception])
         custom_fingerprinting(event, hint[:exception])
 

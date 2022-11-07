@@ -13,6 +13,7 @@ import StatusIcon from './status_icon.vue';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
 const FETCH_TYPE_EXPANDED = 'expanded';
+const WIDGET_PREFIX = 'Widget';
 
 export default {
   components: {
@@ -89,6 +90,8 @@ export default {
     widgetName: {
       type: String,
       required: true,
+      // see https://docs.gitlab.com/ee/development/fe_guide/merge_request_widget_extensions.html#add-new-widgets
+      validator: (val) => val.startsWith(WIDGET_PREFIX),
     },
     telemetry: {
       type: Boolean,

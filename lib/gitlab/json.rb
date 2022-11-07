@@ -167,22 +167,10 @@ module Gitlab
       # @return [Boolean, String, Array, Hash, Object]
       # @raise [JSON::ParserError]
       def handle_legacy_mode!(data)
-        return data unless feature_table_exists?
+        return data unless Feature.feature_flags_available?
         return data unless Feature.enabled?(:json_wrapper_legacy_mode)
 
         raise parser_error if INVALID_LEGACY_TYPES.any? { |type| data.is_a?(type) }
-      end
-
-      # There are a variety of database errors possible when checking the feature
-      # flags at the wrong time during boot, e.g. during migrations. We don't care
-      # about these errors, we just need to ensure that we skip feature detection
-      # if they will fail.
-      #
-      # @return [Boolean]
-      def feature_table_exists?
-        Feature::FlipperFeature.table_exists?
-      rescue StandardError
-        false
       end
     end
 

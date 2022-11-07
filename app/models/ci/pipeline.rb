@@ -183,7 +183,11 @@ module Ci
       end
 
       event :succeed do
-        transition any - [:success] => :success
+        # A success pipeline can also be retried, for example; a pipeline with a failed manual job.
+        # When retrying the pipeline, the status of the pipeline is not changed because the failed
+        # manual job transitions to the `manual` status.
+        # More info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98967#note_1144718316
+        transition any => :success
       end
 
       event :cancel do

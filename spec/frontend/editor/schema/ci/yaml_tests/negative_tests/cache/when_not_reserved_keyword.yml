@@ -1,0 +1,4 @@
+when_not_reserved_keyword:
+  script: echo "This job uses a cache."
+  cache:
+    when: 'never'

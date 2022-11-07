@@ -1012,10 +1012,6 @@ class Group < Namespace
       Arel::Nodes::SqlLiteral.new(column_alias))
   end
 
-  def self.groups_including_descendants_by(group_ids)
-    Group.where(id: group_ids).self_and_descendants
-  end
-
   def disable_shared_runners!
     update!(
       shared_runners_enabled: false,

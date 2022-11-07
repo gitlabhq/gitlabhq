@@ -25,7 +25,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
         check_expectation(test_file.dig('init', 'expect'), "init")
 
         test_file['transitions'].each_with_index do |transition, idx|
-          event_on_jobs(transition['event'], transition['jobs'])
+          process_events(transition)
           Sidekiq::Worker.drain_all # ensure that all async jobs are executed
           check_expectation(transition['expect'], "transition:#{idx}")
         end
@@ -48,6 +48,14 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
         }
       end
 
+      def process_events(transition)
+        if transition['jobs']
+          event_on_jobs(transition['event'], transition['jobs'])
+        else
+          event_on_pipeline(transition['event'])
+        end
+      end
+
       def event_on_jobs(event, job_names)
         statuses = pipeline.latest_statuses.by_name(job_names).to_a
         expect(statuses.count).to eq(job_names.count) # ensure that we have the same counts
@@ -61,6 +69,14 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService do
           else
             status.public_send("#{event}!")
           end
+        end
+      end
+
+      def event_on_pipeline(event)
+        if event == 'retry'
+          pipeline.retry_failed(user)
+        else
+          pipeline.public_send("#{event}!")
         end
       end
     end

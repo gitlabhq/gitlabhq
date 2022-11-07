@@ -139,7 +139,7 @@ RSpec.describe 'Dashboard Projects' do
   end
 
   describe 'with a pipeline', :clean_gitlab_redis_shared_state do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch) }
+    let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch) }
 
     before do
       # Since the cache isn't updated when a new pipeline is created

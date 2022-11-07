@@ -269,7 +269,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/serializers/project_serializer_spec.rb'
     - 'spec/serializers/prometheus_alert_entity_spec.rb'
     - 'spec/serializers/release_serializer_spec.rb'
-    - 'spec/serializers/remote_mirror_entity_spec.rb'
     - 'spec/serializers/review_app_setup_entity_spec.rb'
     - 'spec/serializers/runner_entity_spec.rb'
     - 'spec/serializers/serverless/domain_entity_spec.rb'

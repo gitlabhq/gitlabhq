@@ -5,13 +5,15 @@ require 'spec_helper'
 RSpec.describe Ci::RetryPipelineService, '#execute' do
   include ProjectForksHelper
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let_it_be_with_refind(:user) { create(:user) }
+  let_it_be_with_refind(:project) { create(:project) }
+
   let(:pipeline) { create(:ci_pipeline, project: project) }
-  let(:service) { described_class.new(project, user) }
   let(:build_stage) { create(:ci_stage, name: 'build', position: 0, pipeline: pipeline) }
   let(:test_stage) { create(:ci_stage, name: 'test', position: 1, pipeline: pipeline) }
   let(:deploy_stage) { create(:ci_stage, name: 'deploy', position: 2, pipeline: pipeline) }
+
+  subject(:service) { described_class.new(project, user) }
 
   context 'when user has full ability to modify pipeline' do
     before do
@@ -270,6 +272,21 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
           expect(build('rspec 1')).to be_pending
           expect(build('staging')).to be_manual
           expect(pipeline.reload).to be_running
+        end
+      end
+
+      context 'when there is a failed manual action' do
+        before do
+          create_build('rspec', :success, build_stage)
+          create_build('manual-rspec', :failed, build_stage, when: :manual, allow_failure: true)
+        end
+
+        it 'processes the manual action' do
+          service.execute(pipeline)
+
+          expect(build('rspec')).to be_success
+          expect(build('manual-rspec')).to be_manual
+          expect(pipeline.reload).to be_success
         end
       end
     end

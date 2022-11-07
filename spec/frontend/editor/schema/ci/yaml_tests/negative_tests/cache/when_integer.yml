@@ -1,0 +1,4 @@
+when_integer:
+  script: echo "This job uses a cache."
+  cache:
+    when: 0

@@ -1,0 +1,6 @@
+cache-key-with-/:
+  script: echo "This job uses a cache."
+  cache:
+    key: binaries-ca/che
+    paths:
+      - binaries/

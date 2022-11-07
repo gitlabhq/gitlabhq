@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RemoteMirrorEntity do
-  let(:project) { create(:project, :repository, :remote_mirror, url: "https://test:password@gitlab.com") }
-  let(:remote_mirror) { project.remote_mirrors.first }
+  let(:remote_mirror) { build_stubbed(:remote_mirror, url: "https://test:password@gitlab.com") }
   let(:entity) { described_class.new(remote_mirror) }
 
   subject { entity.as_json }

@@ -367,6 +367,7 @@ protected_branches:
 - push_access_levels
 - unprotect_access_levels
 - approval_project_rules
+- external_status_checks
 - required_code_owners_sections
 protected_tags:
 - project

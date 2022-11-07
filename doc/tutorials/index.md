@@ -44,6 +44,8 @@ collaborating, and more.
 |-------|-------------|--------------------|
 | [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | For hands-on learning, select **Sample GitLab Project** and create a project with example issues and merge requests. | **{star}** |
 | [Migrate to GitLab](../user/project/import/index.md) | If you are coming to GitLab from another platform, you can import or convert your projects. | |
+| [Run an agile iteration](agile_sprint.md) | Use group, projects, and iterations to run an agile development iteration. |
+| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for multi-team planning (SAFe)](https://www.youtube.com/watch?v=KmASFwSap7c) (37m 37s) | A use case of a multi-team organization that uses GitLab with [Scaled Agile Framework (SAFe)](https://about.gitlab.com/solutions/agile-delivery/scaled-agile/). |
 
 ## Use CI/CD pipelines
 

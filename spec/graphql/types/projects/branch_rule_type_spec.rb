@@ -17,7 +17,7 @@ RSpec.describe GitlabSchema.types['BranchRule'] do
     ]
   end
 
-  specify { is_expected.to require_graphql_authorizations(:read_protected_branch) }
+  it { is_expected.to require_graphql_authorizations(:read_protected_branch) }
 
-  specify { is_expected.to have_graphql_fields(fields).at_least }
+  it { is_expected.to have_graphql_fields(fields).at_least }
 end

@@ -35,7 +35,6 @@ import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
-import CacheNegativeYaml from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
 import VariablesNegativeYaml from './yaml_tests/negative_tests/variables.yml';
@@ -61,6 +60,16 @@ import ProjectPathTriggerProjectInvalidVariableYaml from './yaml_tests/negative_
 import ProjectPathTriggerProjectLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/leading_slash.yml';
 import ProjectPathTriggerProjectNoSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/no_slash.yml';
 import ProjectPathTriggerProjectTailSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/tailing_slash.yml';
+
+import CacheKeyFilesNotArray from './yaml_tests/negative_tests/cache/key_files_not_an_array.yml';
+import CacheKeyPrefixArray from './yaml_tests/negative_tests/cache/key_prefix_array.yml';
+import CacheKeyWithDot from './yaml_tests/negative_tests/cache/key_with_dot.yml';
+import CacheKeyWithMultipleDots from './yaml_tests/negative_tests/cache/key_with_multiple_dots.yml';
+import CacheKeyWithSlash from './yaml_tests/negative_tests/cache/key_with_slash.yml';
+import CachePathsNotAnArray from './yaml_tests/negative_tests/cache/paths_not_an_array.yml';
+import CacheUntrackedString from './yaml_tests/negative_tests/cache/untracked_string.yml';
+import CacheWhenInteger from './yaml_tests/negative_tests/cache/when_integer.yml';
+import CacheWhenNotReservedKeyword from './yaml_tests/negative_tests/cache/when_not_reserved_keyword.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -116,7 +125,15 @@ describe('negative tests', () => {
 
       // YAML
       ArtifactsNegativeYaml,
-      CacheNegativeYaml,
+      CacheKeyFilesNotArray,
+      CacheKeyPrefixArray,
+      CacheKeyWithDot,
+      CacheKeyWithMultipleDots,
+      CacheKeyWithSlash,
+      CachePathsNotAnArray,
+      CacheUntrackedString,
+      CacheWhenInteger,
+      CacheWhenNotReservedKeyword,
       IncludeNegativeYaml,
       JobWhenNegativeYaml,
       RulesNegativeYaml,

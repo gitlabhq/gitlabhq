@@ -10,17 +10,27 @@ RSpec.describe ConfirmationsController do
   end
 
   describe '#show' do
+    let_it_be_with_reload(:user) { create(:user, :unconfirmed) }
+    let(:confirmation_token) { user.confirmation_token }
+
     render_views
 
     def perform_request
       get :show, params: { confirmation_token: confirmation_token }
     end
 
+    context 'when signup info is required' do
+      before do
+        allow(controller).to receive(:current_user) { user }
+        user.set_role_required!
+      end
+
+      it 'does not redirect' do
+        expect(perform_request).not_to redirect_to(users_sign_up_welcome_path)
+      end
+    end
+
     context 'user is already confirmed' do
-      let_it_be_with_reload(:user) { create(:user, :unconfirmed) }
-
-      let(:confirmation_token) { user.confirmation_token }
-
       before do
         user.confirm
       end
@@ -57,10 +67,6 @@ RSpec.describe ConfirmationsController do
     end
 
     context 'user accesses the link after the expiry of confirmation token has passed' do
-      let_it_be_with_reload(:user) { create(:user, :unconfirmed) }
-
-      let(:confirmation_token) { user.confirmation_token }
-
       before do
         allow(Devise).to receive(:confirm_within).and_return(1.day)
       end
@@ -131,6 +137,17 @@ RSpec.describe ConfirmationsController do
 
     before do
       stub_feature_flags(identity_verification: false)
+    end
+
+    context 'when signup info is required' do
+      before do
+        allow(controller).to receive(:current_user) { user }
+        user.set_role_required!
+      end
+
+      it 'does not redirect' do
+        expect(perform_request).not_to redirect_to(users_sign_up_welcome_path)
+      end
     end
 
     context 'when reCAPTCHA is disabled' do

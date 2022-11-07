@@ -166,13 +166,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it do
         pipeline.status = from_status.to_s
 
-        if from_status != to_status
+        if from_status != to_status || success_to_success?
           expect(pipeline.set_status(to_status.to_s))
             .to eq(true)
         else
           expect(pipeline.set_status(to_status.to_s))
             .to eq(false), "loopback transitions are not allowed"
         end
+      end
+
+      private
+
+      def success_to_success?
+        from_status == :success && to_status == :success
       end
     end
   end

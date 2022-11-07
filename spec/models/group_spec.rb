@@ -2406,23 +2406,6 @@ RSpec.describe Group do
     end
   end
 
-  describe '.groups_including_descendants_by' do
-    let_it_be(:parent_group1) { create(:group) }
-    let_it_be(:parent_group2) { create(:group) }
-    let_it_be(:extra_group)   { create(:group) }
-    let_it_be(:child_group1)  { create(:group, parent: parent_group1) }
-    let_it_be(:child_group2)  { create(:group, parent: parent_group1) }
-    let_it_be(:child_group3)  { create(:group, parent: parent_group2) }
-
-    subject { described_class.groups_including_descendants_by([parent_group2.id, parent_group1.id]) }
-
-    shared_examples 'returns the expected groups for a group and its descendants' do
-      specify { is_expected.to contain_exactly(parent_group1, parent_group2, child_group1, child_group2, child_group3) }
-    end
-
-    it_behaves_like 'returns the expected groups for a group and its descendants'
-  end
-
   describe '.preset_root_ancestor_for' do
     let_it_be(:rootgroup, reload: true) { create(:group) }
     let_it_be(:subgroup, reload: true) { create(:group, parent: rootgroup) }

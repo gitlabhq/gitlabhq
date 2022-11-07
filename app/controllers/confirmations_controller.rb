@@ -6,6 +6,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   include OneTrustCSP
   include GoogleAnalyticsCSP
 
+  skip_before_action :required_signup_info
   prepend_before_action :check_recaptcha, only: :create
   before_action :load_recaptcha, only: :new
 

@@ -1,0 +1,10 @@
+cache-key-prefix-array:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+      prefix:
+        - binaries-cache-$CI_JOB_NAME
+    paths:
+      - binaries/

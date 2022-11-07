@@ -7582,6 +7582,29 @@ The edge type for [`ExternalAuditEventDestination`](#externalauditeventdestinati
 | <a id="externalauditeventdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="externalauditeventdestinationedgenode"></a>`node` | [`ExternalAuditEventDestination`](#externalauditeventdestination) | The item at the end of the edge. |
 
+#### `ExternalStatusCheckConnection`
+
+The connection type for [`ExternalStatusCheck`](#externalstatuscheck).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="externalstatuscheckconnectionedges"></a>`edges` | [`[ExternalStatusCheckEdge]`](#externalstatuscheckedge) | A list of edges. |
+| <a id="externalstatuscheckconnectionnodes"></a>`nodes` | [`[ExternalStatusCheck]`](#externalstatuscheck) | A list of nodes. |
+| <a id="externalstatuscheckconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ExternalStatusCheckEdge`
+
+The edge type for [`ExternalStatusCheck`](#externalstatuscheck).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="externalstatuscheckedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="externalstatuscheckedgenode"></a>`node` | [`ExternalStatusCheck`](#externalstatuscheck) | The item at the end of the edge. |
+
 #### `GroupConnection`
 
 The connection type for [`Group`](#group).
@@ -10461,6 +10484,7 @@ List of branch rules for a project, grouped by branch name.
 | <a id="branchruleapprovalrules"></a>`approvalRules` | [`ApprovalProjectRuleConnection`](#approvalprojectruleconnection) | Merge request approval rules configured for this branch rule. (see [Connections](#connections)) |
 | <a id="branchrulebranchprotection"></a>`branchProtection` | [`BranchProtection!`](#branchprotection) | Branch protections configured for this branch rule. |
 | <a id="branchrulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the branch rule was created. |
+| <a id="branchruleexternalstatuschecks"></a>`externalStatusChecks` | [`ExternalStatusCheckConnection`](#externalstatuscheckconnection) | External status checks configured for this branch rule. (see [Connections](#connections)) |
 | <a id="branchruleisdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Check if this branch rule protects the project's default branch. |
 | <a id="branchrulename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
 | <a id="branchruleupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the branch rule was last updated. |
@@ -12635,6 +12659,18 @@ Represents an external issue.
 | <a id="externalissuetitle"></a>`title` | [`String`](#string) | Title of the issue in the external tracker. |
 | <a id="externalissueupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the issue was updated. |
 | <a id="externalissueweburl"></a>`webUrl` | [`String`](#string) | URL to the issue in the external tracker. |
+
+### `ExternalStatusCheck`
+
+Describes an external status check.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="externalstatuscheckexternalurl"></a>`externalUrl` | [`String!`](#string) | External URL for the status check. |
+| <a id="externalstatuscheckid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
+| <a id="externalstatuscheckname"></a>`name` | [`String!`](#string) | Name of the rule. |
 
 ### `FileUpload`
 
