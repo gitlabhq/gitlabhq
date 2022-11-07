@@ -1068,8 +1068,8 @@ To fix this, use one of the following solutions:
 - Remove `environment` keyword from the deployment job. GitLab has already been
   ignoring the invalid keyword, therefore your deployment pipelines stay intact
   even after the keyword removal.
-- Ensure the variable exists in the pipeline. Please note that there is
-  [a limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- Ensure the variable exists in the pipeline. Review the
+  [limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 #### If you get this error on Review Apps
 
@@ -1112,6 +1112,6 @@ to execute the following command on Rails console:
 Project.find_by_full_path(<your-project-full-path>).deployments.where(archived: true).each(&:create_ref)
 ```
 
-Please note that GitLab could drop this support in the future for the performance concern.
+GitLab might drop this support in the future for the performance concern.
 You can open an issue in [GitLab Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
 to discuss the behavior of this feature.

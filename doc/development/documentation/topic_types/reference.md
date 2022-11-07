@@ -19,11 +19,11 @@ Introductory sentence.
 | **Name** | Descriptive sentence about the setting. |
 ```
 
-## Reference headings
+## Reference topic titles
 
-Reference headings are usually nouns.
+Reference topic titles are usually nouns.
 
-Avoid these heading titles:
+Avoid these topic titles:
 
 - `Important notes`. Instead, incorporate this information
   closer to where it belongs. For example, this information might be a prerequisite

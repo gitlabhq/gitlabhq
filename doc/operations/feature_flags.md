@@ -422,7 +422,7 @@ At the moment, the feature flag API falls into **Unauthenticated traffic (from a
 in the [GitLab.com specific limits](../user/gitlab_com/index.md),
 so it's **500 requests per minute**.
 
-Please note that the polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
+The polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
 
 - Request once per minute ... 500 clients can be supported.
 - Request once per 15 sec ... 125 clients can be supported.

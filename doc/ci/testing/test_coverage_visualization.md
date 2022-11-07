@@ -360,7 +360,7 @@ The following [`.gitlab-ci.yml`](../yaml/index.md) example for Go uses:
 - [`gocover-cobertura`](https://github.com/boumenot/gocover-cobertura) to convert Go's coverage profile into the Cobertura XML format.
 
 This example assumes that [Go modules](https://go.dev/ref/mod)
-are being used. Please note that the `-covermode count` option does not work with the `-race` flag.
+are being used. The `-covermode count` option does not work with the `-race` flag.
 If you want to generate code coverage while also using the `-race` flag, you must switch to
 `-covermode atomic` which is slower than `-covermode count`. See [this blog post](https://go.dev/blog/cover)
 for more details.

@@ -36531,6 +36531,9 @@ msgstr ""
 msgid "SecurityOrchestration|vulnerability"
 msgstr ""
 
+msgid "SecurityPolicies|Invalid or empty policy"
+msgstr ""
+
 msgid "SecurityReports|%{count} Selected"
 msgstr ""
 

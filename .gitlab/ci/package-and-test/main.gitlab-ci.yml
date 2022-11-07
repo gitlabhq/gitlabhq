@@ -380,6 +380,15 @@ ee:update-major:
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
+ee:gitab-pages:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::GitlabPages
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::GitlabPages/
+    - !reference [.rules:test:manual, rules]
+
 ee:gitaly-cluster:
   extends: .qa
   variables:

@@ -325,7 +325,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
       is_expected.to eq(presenter.variables.to_runner_variables)
     end
 
-    context 'when there are variables to expand' do
+    context 'when there is a file variable to expand' do
       before_all do
         create(:ci_variable, project: project,
                              key: 'regular_var',
@@ -358,6 +358,49 @@ RSpec.describe Ci::BuildRunnerPresenter do
         ).once
 
         runner_variables
+      end
+    end
+
+    context 'when there is a raw variable to expand' do
+      before_all do
+        create(:ci_variable, project: project,
+                             key: 'regular_var',
+                             value: 'value 1')
+        create(:ci_variable, project: project,
+                             key: 'raw_var',
+                             value: 'value 2',
+                             raw: true)
+        create(:ci_variable, project: project,
+                             key: 'var_with_variables',
+                             value: 'value 3 and $regular_var and $raw_var and $undefined_var')
+      end
+
+      it 'returns expanded variables without expanding raws' do
+        expect(runner_variables).to include(
+          { key: 'regular_var', value: 'value 1',
+            public: false, masked: false },
+          { key: 'raw_var', value: 'value 2',
+            public: false, masked: false, raw: true },
+          { key: 'var_with_variables', value: 'value 3 and value 1 and $raw_var and $undefined_var',
+            public: false, masked: false }
+        )
+      end
+
+      context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
+        before do
+          stub_feature_flags(ci_raw_variables_in_yaml_config: false)
+        end
+
+        it 'returns expanded variables' do
+          expect(runner_variables).to include(
+            { key: 'regular_var', value: 'value 1',
+              public: false, masked: false },
+            { key: 'raw_var', value: 'value 2',
+              public: false, masked: false, raw: true },
+            { key: 'var_with_variables', value: 'value 3 and value 1 and value 2 and $undefined_var',
+              public: false, masked: false }
+          )
+        end
       end
     end
   end

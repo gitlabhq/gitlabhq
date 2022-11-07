@@ -447,6 +447,7 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   TABLE_NAME = :table_name
+  TABLE_FK = :table_references_by_fk
   PARENT_TABLE_NAME = :p_table_name
   FIRST_PARTITION = 100
   PARTITION_COLUMN = :partition_id
@@ -457,6 +458,7 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
       partitioning_column: PARTITION_COLUMN,
       parent_table_name: PARENT_TABLE_NAME,
       initial_partitioning_value: FIRST_PARTITION
+      lock_tables: [TABLE_FK, TABLE_NAME]
     )
   end
 

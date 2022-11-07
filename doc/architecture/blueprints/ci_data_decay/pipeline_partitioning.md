@@ -267,6 +267,24 @@ new routing tables. Depending on the chosen
 [partitioning strategy](#how-do-we-want-to-partition-cicd-data) for a given
 table, it is possible to have many logical partitions per one physical partition.
 
+### Attaching first partition and acquiring locks
+
+We learned when [partitioning](https://gitlab.com/gitlab-org/gitlab/-/issues/378644)
+the first table that `PostgreSQL` requires an `AccessExclusiveLock` on the table and
+all of the other tables that it references through foreign keys. This can cause a deadlock
+if the migration tries to acquire the locks in a different order from the application
+business logic.
+
+To solve this problem, we introduced a **priority locking strategy** to avoid
+further deadlock errors. This allows us to define the locking order and
+then try keep retrying aggressively until we acquire the locks or run out of retries.
+This process can take up to 40 minutes.
+
+With this strategy, we successfully acquired a lock on `ci_builds` table after 15 retries
+during a low traffic period([after `00:00 UTC`](https://dashboards.gitlab.net/d/web-main/web-overview?orgId=1&viewPanel=537181794&from=now-2d&to=now)).
+
+See an example of this strategy in our [partition tooling](../../../development/database/table_partitioning.md#step-6---create-parent-table-and-attach-existing-table-as-the-initial-partition)).
+
 ## Storing partitions metadata in the database
 
 To build an efficient mechanism that will be responsible for creating
@@ -652,7 +670,7 @@ application-wide outage.
    1. Make it possible to create partitions in an automatic way.
    1. Deliver the new architecture to self-managed instances.
 
-The diagram below visualizes this plan on Gantt chart. Please note that dates
+The diagram below visualizes this plan on Gantt chart. The dates
 on the chart below are just estimates to visualize the plan better, these are
 not deadlines and can change at any time.
 

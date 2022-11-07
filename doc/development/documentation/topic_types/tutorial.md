@@ -54,9 +54,9 @@ To do step 2:
 1. Another step.
 ```
 
-## Tutorial headings
+## Tutorial page title
 
-Start with `Tutorial:` followed by an active verb, like `Tutorial: Create a website`.
+Start the page title with `Tutorial:` followed by an active verb, like `Tutorial: Create a website`.
 
 ## Screenshots
 

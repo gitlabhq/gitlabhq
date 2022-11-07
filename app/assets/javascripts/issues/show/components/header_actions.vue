@@ -7,6 +7,7 @@ import {
   GlLink,
   GlModal,
   GlModalDirective,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import createFlash, { FLASH_TYPES } from '~/flash';
@@ -51,6 +52,7 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin],
   inject: {
@@ -287,12 +289,15 @@ export default {
 
     <gl-dropdown
       v-if="hasDesktopDropdown"
+      v-gl-tooltip.hover
       class="gl-display-none gl-sm-display-inline-flex! gl-ml-3"
       icon="ellipsis_v"
       category="tertiary"
       data-qa-selector="issue_actions_ellipsis_dropdown"
       :text="dropdownText"
       :text-sr-only="true"
+      :title="dropdownText"
+      :aria-label="dropdownText"
       data-testid="desktop-dropdown"
       no-caret
       right

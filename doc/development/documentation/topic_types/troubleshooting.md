@@ -46,12 +46,13 @@ The workaround is...
 If multiple causes or workarounds exist, consider putting them into a table format.
 If you use the exact error message, surround it in backticks so it's styled as code.
 
-## Troubleshooting headings
+## Troubleshooting topic titles
 
-For the heading of a **Troubleshooting reference** topic:
+For the title of a **Troubleshooting reference** topic:
 
 - Consider including at least a partial error message.
 - Use fewer than 70 characters.
+- Do not use links in the title.
 
 If you do not put the full error in the title, include it in the body text.
 

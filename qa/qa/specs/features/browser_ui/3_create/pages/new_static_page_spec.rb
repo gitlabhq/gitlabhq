@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 module QA
-  RSpec.describe 'Create', :runner, only: { subdomain: :staging }, product_group: :editor do
+  RSpec.describe 'Create', :gitlab_pages, :orchestrated, except: { job: 'review-qa-*', subdomain: :production } do
     # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300906
-    describe 'Pages' do
+    describe 'Pages', product_group: :editor do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'jekyll-pages-project'
@@ -21,7 +22,6 @@ module QA
 
       before do
         Flow::Login.sign_in
-
         Resource::Runner.fabricate_via_api! do |runner|
           runner.project = project
           runner.executor = :docker

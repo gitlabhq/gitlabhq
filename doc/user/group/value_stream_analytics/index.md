@@ -104,7 +104,7 @@ The **Overview** dashboard shows the following key metrics that measure team per
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355304) time to restore service tile in GitLab 15.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357071) change failure rate tile in GitLab 15.0.
 
-The value stream analytics **Overview** dashboard displays the following [DORA](../../../user/analytics/index.md) metrics:
+The value stream analytics **Overview** dashboard displays the following [DORA](../../../user/analytics/dora_metrics.md) metrics:
 
 - Deployment Frequency.
 - Lead time for changes.

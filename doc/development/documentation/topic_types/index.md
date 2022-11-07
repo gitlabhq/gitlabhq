@@ -66,14 +66,14 @@ Some pages are solely a list of links to other documentation.
 We do not encourage this page type. Lists of links can get out-of-date quickly
 and offer little value to users, who prefer to search to find information.
 
-## Heading text guidelines
+## Topic text guidelines
 
-In general, for heading text:
+In general, for topic text:
 
 - Be clear and direct. Make every word count.
 - Use articles and prepositions.
 - Follow [capitalization](../styleguide/index.md#capitalization) guidelines.
-- Do not repeat text from earlier headings. For example, if the page is about merge requests,
+- Do not repeat text from earlier topic titles. For example, if the page is about merge requests,
   instead of `Troubleshooting merge requests`, use only `Troubleshooting`.
 
-See also [guidelines for headings in Markdown](../styleguide/index.md#headings-in-markdown).
+See also [guidelines for heading levels in Markdown](../styleguide/index.md#heading-levels-in-markdown).

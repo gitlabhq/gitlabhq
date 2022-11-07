@@ -32,13 +32,13 @@ Remember, if you start to describe about another concept, stop yourself.
 Each concept should be about one concept only.
 ```
 
-## Concept headings
+## Concept topic titles
 
-For the heading text, use a noun. For example, `Widgets` or `GDK dependency management`.
+For the title text, use a noun. For example, `Widgets` or `GDK dependency management`.
 
 If a noun is ambiguous, you can add a gerund. For example, `Documenting versions` instead of `Versions`.
 
-Avoid these heading titles:
+Avoid these topic titles:
 
 - `Overview` or `Introduction`. Instead, use a more specific
   noun or phrase that someone would search for.

@@ -22208,13 +22208,13 @@ CREATE TABLE user_details (
     registration_objective smallint,
     phone text,
     requires_credit_card_verification boolean DEFAULT false NOT NULL,
-    password_last_changed_at timestamp with time zone,
     linkedin text DEFAULT ''::text NOT NULL,
     twitter text DEFAULT ''::text NOT NULL,
     skype text DEFAULT ''::text NOT NULL,
     website_url text DEFAULT ''::text NOT NULL,
     location text DEFAULT ''::text NOT NULL,
     organization text DEFAULT ''::text NOT NULL,
+    password_last_changed_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
     CONSTRAINT check_466a25be35 CHECK ((char_length(twitter) <= 500)),
@@ -30804,6 +30804,10 @@ CREATE INDEX index_user_credit_card_validations_meta_data_partial_match ON user_
 CREATE INDEX index_user_custom_attributes_on_key_and_value ON user_custom_attributes USING btree (key, value);
 
 CREATE UNIQUE INDEX index_user_custom_attributes_on_user_id_and_key ON user_custom_attributes USING btree (user_id, key);
+
+CREATE INDEX index_user_details_on_password_last_changed_at ON user_details USING btree (password_last_changed_at);
+
+COMMENT ON INDEX index_user_details_on_password_last_changed_at IS 'JiHu-specific index';
 
 CREATE UNIQUE INDEX index_user_details_on_phone ON user_details USING btree (phone) WHERE (phone IS NOT NULL);
 

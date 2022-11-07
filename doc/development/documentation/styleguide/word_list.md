@@ -35,7 +35,7 @@ Don't use backticks.
 
 ## 2FA, two-factor authentication
 
-Spell out **two-factor authentication** in sentence case for the first use and in section headings, and **2FA**
+Spell out **two-factor authentication** in sentence case for the first use and in topic titles, and **2FA**
 thereafter. If the first word in a sentence, do not capitalize `factor` or `authentication`. For example:
 
 - Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first log in.

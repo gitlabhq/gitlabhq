@@ -172,36 +172,37 @@ module API
         # Keep in alphabetical order
         mount ::API::AccessRequests
         mount ::API::Appearance
+        mount ::API::Applications
         mount ::API::BroadcastMessages
         mount ::API::BulkImports
         mount ::API::Ci::ResourceGroups
         mount ::API::Ci::Runner
         mount ::API::Ci::Runners
-        mount ::API::Clusters::Agents
         mount ::API::Clusters::AgentTokens
+        mount ::API::Clusters::Agents
         mount ::API::DeployKeys
         mount ::API::DeployTokens
         mount ::API::Deployments
         mount ::API::Environments
-        mount ::API::FeatureFlagsUserLists
         mount ::API::FeatureFlags
+        mount ::API::FeatureFlagsUserLists
         mount ::API::Features
         mount ::API::FreezePeriods
-        mount ::API::Keys
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
-        mount ::API::Metadata
+        mount ::API::Keys
         mount ::API::MergeRequestDiffs
+        mount ::API::Metadata
         mount ::API::PersonalAccessTokens::SelfInformation
         mount ::API::ProjectExport
         mount ::API::ProjectHooks
         mount ::API::ProjectRepositoryStorageMoves
-        mount ::API::Releases
-        mount ::API::Release::Links
-        mount ::API::ResourceAccessTokens
         mount ::API::ProjectSnapshots
-        mount ::API::ProtectedTags
         mount ::API::ProtectedBranches
+        mount ::API::ProtectedTags
+        mount ::API::Release::Links
+        mount ::API::Releases
+        mount ::API::ResourceAccessTokens
         mount ::API::SnippetRepositoryStorageMoves
         mount ::API::Statistics
         mount ::API::Submodules
@@ -221,7 +222,6 @@ module API
       mount ::API::Admin::PlanLimits
       mount ::API::Admin::Sidekiq
       mount ::API::AlertManagementAlerts
-      mount ::API::Applications
       mount ::API::Avatar
       mount ::API::AwardEmoji
       mount ::API::Badges

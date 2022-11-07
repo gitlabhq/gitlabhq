@@ -170,26 +170,17 @@ Hard-coded HTML is valid, although it's discouraged from being used. HTML is per
 - Special styling is required.
 - Reviewed and approved by a technical writer.
 
-### Headings in Markdown
+### Heading levels in Markdown
 
 Each documentation page begins with a level 1 heading (`#`). This becomes the `h1` element when
 the page is rendered to HTML. There can be only **one** level 1 heading per page.
 
 - For each subsection, increment the heading level. In other words, increment the number of `#` characters
-  in front of the heading.
-- Avoid headings greater than `H5` (`#####`). If you need more than five heading levels, move the topics to a new page instead.
-  Headings greater than `H5` do not display in the right sidebar navigation.
+  in front of the topic title.
+- Avoid heading levels greater than `H5` (`#####`). If you need more than five heading levels, move the topics to a new page instead.
+  Heading levels greater than `H5` do not display in the right sidebar navigation.
 - Do not skip a level. For example: `##` > `####`.
-- Leave one blank line before and after the heading.
-
-When you change heading text, the anchor link changes. To avoid broken links:
-
-- Do not use step numbers in headings.
-- When possible, do not use words that might change in the future.
-
-Also, do not use links as part of heading text.
-
-See also [heading guidelines for specific topic types](../structure.md).
+- Leave one blank line before and after the topic title.
 
 ### Backticks in Markdown
 
@@ -248,9 +239,9 @@ GitLab documentation should be clear and easy to understand.
 
 As a company, we tend toward lowercase.
 
-#### Headings
+#### Topic titles
 
-Use sentence case. For example:
+Use sentence case for topic titles. For example:
 
 - `# Use variables to configure pipelines`
 - `## Use the To-Do List`
@@ -356,7 +347,7 @@ Some contractions, however, should be avoided:
 ### Acronyms
 
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
-When possible, try to avoid acronyms in headings.
+When possible, try to avoid acronyms in topic titles.
 
 ### Numbers
 
@@ -713,22 +704,27 @@ use a URL like `https://docs.gitlab.com/charts/`.
 
 ### Anchor links
 
-Each heading has an anchor link. For example, a topic with the title
+Each topic title has an anchor link. For example, a topic with the title
 `## This is an example` has the anchor `#this-is-an-example`.
 
-The first topic on a page (the `h1`) has an anchor link,
+The first topic title on a page (the `h1`) has an anchor link,
 but do not use it. Link to the page instead.
 
-If a heading has a [product tier badge](#product-tier-badges),
-do not include it in the anchor link. For example, for the heading
+If a topic title has a [product tier badge](#product-tier-badges),
+do not include it in the anchor link. For example, for the topic
 `## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
 
 With Kramdown, you can add a custom ID to an HTML element, but these IDs
 don't work in `/help`, so you should not use them.
 
+When you change topic title text, the anchor link changes. To avoid broken links:
+
+- Do not use step numbers in topic titles.
+- When possible, do not use words that might change in the future.
+
 #### Changing links and titles
 
-When you change a heading, the anchor link changes. To ensure you update
+When you change a topic title, the anchor link changes. To ensure you update
 any related links, search these directories:
 
 - `doc/*`
@@ -1231,7 +1227,7 @@ Instead of adding a note:
 
 - Re-write the sentence as part of a paragraph.
 - Put the information into its own paragraph.
-- Put the content under a new subheading.
+- Put the content under a new topic title.
 
 If you must use a note, use this format:
 
@@ -1416,25 +1412,25 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges are displayed as orange text next to a heading. These badges link to the GitLab
+Tier badges are displayed as orange text next to a topic title. These badges link to the GitLab
 pricing page. For example:
 
 ![Tier badge](img/tier_badge.png)
 
 You must assign a tier badge:
 
-- To all H1 topic headings, except the pages under `doc/development/*`.
-- To topic headings that don't apply to the same tier as the H1.
+- To all H1 topic titles, except the pages under `doc/development/*`.
+- To topic titles that don't apply to the same tier as the H1.
 
-To add a tier badge to a heading, add the relevant tier badge
-after the heading text. For example:
+To add a tier badge to a topic title, add the relevant tier badge
+after the title text. For example:
 
 ```markdown
-# Heading title **(FREE)**
+# Topic title **(FREE)**
 ```
 
 Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
-The single source of truth for a feature should be the heading where the
+The single source of truth for a feature should be the topic where the
 functionality is described.
 
 #### Available product tier badges

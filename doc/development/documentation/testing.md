@@ -86,7 +86,7 @@ job, which runs two types of link checks. In both cases, links with destinations
 that begin with `http` or `https` are considered external links, and skipped:
 
 - `bundle exec nanoc check internal_links`: Tests links to internal pages.
-- `bundle exec nanoc check internal_anchors`: Tests links to subheadings (anchors) on internal pages.
+- `bundle exec nanoc check internal_anchors`: Tests links to topic title anchors on internal pages.
 
 Failures from these tests are displayed at the end of the test results in the **Issues found!** area.
 For example, failures in the `internal_anchors` test follow this format:
@@ -104,7 +104,7 @@ For example, failures in the `internal_anchors` test follow this format:
 - **Destination**: The full path to the file not found by the test. To find the
   file in the `gitlab` repository, replace `/tmp/gitlab-docs/public/ee` with `doc`, and `.html` with `.md`.
 - **Link**: The actual link the script attempted to find.
-- **Anchor**: If present, the subheading (anchor) the script attempted to find.
+- **Anchor**: If present, the topic title anchor the script attempted to find.
 
 Check for multiple instances of the same broken link on each page reporting an error.
 Even if a specific broken link appears multiple times on a page, the test reports it only once.
