@@ -180,6 +180,19 @@ export const mockParent = {
   },
 };
 
+export const descriptionTextWithCheckboxes = `- [ ] todo 1\n- [ ] todo 2`;
+
+export const descriptionHtmlWithCheckboxes = `
+  <ul dir="auto" class="task-list" data-sourcepos"1:1-2:12">
+    <li class="task-list-item" data-sourcepos="1:1-1:11">
+      <input class="task-list-item-checkbox" type="checkbox"> todo 1
+    </li>
+    <li class="task-list-item" data-sourcepos="2:1-2:12">
+      <input class="task-list-item-checkbox" type="checkbox"> todo 2
+    </li>
+  </ul>
+`;
+
 export const workItemResponseFactory = ({
   canUpdate = false,
   canDelete = false,
@@ -195,6 +208,7 @@ export const workItemResponseFactory = ({
   allowsScopedLabels = false,
   lastEditedAt = null,
   lastEditedBy = null,
+  withCheckboxes = false,
   parent = mockParent.parent,
 } = {}) => ({
   data: {
@@ -227,9 +241,10 @@ export const workItemResponseFactory = ({
         {
           __typename: 'WorkItemWidgetDescription',
           type: 'DESCRIPTION',
-          description: 'some **great** text',
-          descriptionHtml:
-            '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+          description: withCheckboxes ? descriptionTextWithCheckboxes : 'some **great** text',
+          descriptionHtml: withCheckboxes
+            ? descriptionHtmlWithCheckboxes
+            : '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
           lastEditedAt,
           lastEditedBy,
         },

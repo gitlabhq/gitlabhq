@@ -31,7 +31,7 @@ In this example, we have already set up:
 - `primary.example.com` as a Geo **primary** site.
 - `secondary.example.com` as a Geo **secondary** site.
 
-We will create a `git.example.com` subdomain that will automatically direct
+We create a `git.example.com` subdomain that automatically directs
 requests:
 
 - From Europe to the **secondary** site.

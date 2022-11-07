@@ -335,7 +335,7 @@ class IssuableFinder
     return items if items.is_a?(ActiveRecord::NullRelation)
     return items if Feature.enabled?(:disable_anonymous_search, type: :ops) && current_user.nil?
 
-    return items.pg_full_text_search(search, matched_columns: params[:in].to_s.split(',')) if use_full_text_search?
+    return filter_by_full_text_search(items) if use_full_text_search?
 
     if use_cte_for_search?
       cte = Gitlab::SQL::CTE.new(klass.table_name, items)
@@ -351,6 +351,10 @@ class IssuableFinder
     klass.try(:pg_full_text_searchable_columns).present? &&
       params[:search] =~ FULL_TEXT_SEARCH_TERM_REGEX &&
       Feature.enabled?(:issues_full_text_search, params.project || params.group)
+  end
+
+  def filter_by_full_text_search(items)
+    items.pg_full_text_search(search, matched_columns: params[:in].to_s.split(','))
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

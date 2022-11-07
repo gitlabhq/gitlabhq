@@ -9,6 +9,7 @@ import { updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
+import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -34,8 +35,8 @@ describe('WorkItemDescription', () => {
   const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   let workItemResponseHandler;
 
-  const findEditButton = () => wrapper.find('[data-testid="edit-description"]');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
+  const findRenderedDescription = () => wrapper.findComponent(WorkItemDescriptionRendered);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
 
   const editDescription = (newText) => wrapper.find('textarea').setValue(newText);
@@ -75,7 +76,7 @@ describe('WorkItemDescription', () => {
     await waitForPromises();
 
     if (isEditing) {
-      findEditButton().vm.$emit('click');
+      findRenderedDescription().vm.$emit('startEditing');
 
       await nextTick();
     }
@@ -83,28 +84,6 @@ describe('WorkItemDescription', () => {
 
   afterEach(() => {
     wrapper.destroy();
-  });
-
-  describe('Edit button', () => {
-    it('is not visible when canUpdate = false', async () => {
-      await createComponent({
-        canUpdate: false,
-      });
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-
-    it('toggles edit mode', async () => {
-      await createComponent({
-        canUpdate: true,
-      });
-
-      findEditButton().vm.$emit('click');
-
-      await nextTick();
-
-      expect(findMarkdownField().exists()).toBe(true);
-    });
   });
 
   describe('editing description', () => {

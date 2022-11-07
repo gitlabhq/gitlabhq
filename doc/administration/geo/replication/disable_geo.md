@@ -24,8 +24,8 @@ To disable Geo, follow these steps:
 
 ## Remove all secondary Geo sites
 
-To disable Geo, you need to first remove all your secondary Geo sites, which means replication will not happen
-anymore on these sites. You can follow our docs to [remove your secondary Geo sites](remove_geo_site.md).
+To disable Geo, you need to first remove all your secondary Geo sites, which means replication does not happen
+anymore on these sites. You can follow our documentation to [remove your secondary Geo sites](remove_geo_site.md).
 
 If the current site that you want to keep using is a secondary site, you need to first promote it to primary.
 You can use our steps on [how to promote a secondary site](../disaster_recovery/index.md#step-3-promoting-a-secondary-site)

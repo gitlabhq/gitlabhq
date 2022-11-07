@@ -212,6 +212,7 @@ class Issue < ApplicationRecord
   end
   scope :with_null_relative_position, -> { where(relative_position: nil) }
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
+  scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
@@ -270,11 +271,6 @@ class Issue < ApplicationRecord
     override :order_upvotes_asc
     def order_upvotes_asc
       reorder(upvotes_count: :asc)
-    end
-
-    override :pg_full_text_search
-    def pg_full_text_search(query, matched_columns: [])
-      super.where('issue_search_data.project_id = issues.project_id')
     end
   end
 

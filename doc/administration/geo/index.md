@@ -120,18 +120,18 @@ The following are required to run Geo:
   - [CentOS](https://www.centos.org) 7.4 or later
   - [Ubuntu](https://ubuntu.com) 16.04 or later
 - PostgreSQL 12 or 13 with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
-  - Note,[PostgreSQL 12 is deprecated](../../update/deprecations.md#postgresql-12-deprecated) and will be removed in GitLab 16.0.
+  - Note,[PostgreSQL 12 is deprecated](../../update/deprecations.md#postgresql-12-deprecated) and is removed in GitLab 16.0.
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run [the same GitLab and PostgreSQL versions](setup/database.md#postgresql-replication).
 - If using different operating system versions between Geo sites, [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility) across Geo sites.
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
-and we recommend you use the latest version of GitLab for a better experience.
+and use the latest version of GitLab for a better experience.
 
 ### Firewall rules
 
-The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo. To simplify failovers, we recommend opening ports in both directions.
+The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo. To simplify failovers, you should open ports in both directions.
 
 | Source site | Source port | Destination site | Destination port | Protocol    |
 |-------------|-------------|------------------|------------------|-------------|
