@@ -78,36 +78,53 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
         end
       end
 
-      context 'when two monitors are configured to be used' do
-        before do
-          configuration.monitors.use monitor_class_1, false, { message: 'monitor_1_text' }, max_strikes: 5
-          configuration.monitors.use monitor_class_2, true, { message: 'monitor_2_text' }, max_strikes: 0
+      context 'when two different monitor class are configured' do
+        shared_examples 'executes monitors and returns correct results' do
+          it 'calls each monitor and returns correct results', :aggregate_failures do
+            payloads = []
+            thresholds = []
+            strikes = []
+            monitor_names = []
+
+            configuration.monitors.call_each do |result|
+              payloads << result.payload
+              thresholds << result.threshold_violated?
+              strikes << result.strikes_exceeded?
+              monitor_names << result.monitor_name
+            end
+
+            expect(payloads).to eq([payload1, payload2])
+            expect(thresholds).to eq([false, true])
+            expect(strikes).to eq([false, true])
+            expect(monitor_names).to eq([:monitor1, :monitor2])
+          end
         end
 
-        it 'calls each monitor and returns correct results', :aggregate_failures do
-          payloads = []
-          thresholds = []
-          strikes = []
-          monitor_names = []
-
-          configuration.monitors.call_each do |result|
-            payloads << result.payload
-            thresholds << result.threshold_violated?
-            strikes << result.strikes_exceeded?
-            monitor_names << result.monitor_name
+        context 'when monitors are configured inline' do
+          before do
+            configuration.monitors.push monitor_class_1, false, { message: 'monitor_1_text' }, max_strikes: 5
+            configuration.monitors.push monitor_class_2, true, { message: 'monitor_2_text' }, max_strikes: 0
           end
 
-          expect(payloads).to eq([payload1, payload2])
-          expect(thresholds).to eq([false, true])
-          expect(strikes).to eq([false, true])
-          expect(monitor_names).to eq([:monitor1, :monitor2])
+          include_examples 'executes monitors and returns correct results'
+        end
+
+        context 'when monitors are configured in a block' do
+          before do
+            configuration.monitors do |stack|
+              stack.push monitor_class_1, false, { message: 'monitor_1_text' }, max_strikes: 5
+              stack.push monitor_class_2, true, { message: 'monitor_2_text' }, max_strikes: 0
+            end
+          end
+
+          include_examples 'executes monitors and returns correct results'
         end
       end
 
-      context 'when same monitor class is configured to be used twice' do
+      context 'when same monitor class is configured twice' do
         before do
-          configuration.monitors.use monitor_class_1, max_strikes: 1
-          configuration.monitors.use monitor_class_1, max_strikes: 1
+          configuration.monitors.push monitor_class_1, max_strikes: 1
+          configuration.monitors.push monitor_class_1, max_strikes: 1
         end
 
         it 'calls same monitor only once' do

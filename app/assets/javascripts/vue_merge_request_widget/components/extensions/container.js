@@ -11,13 +11,10 @@ export default {
   render(h) {
     const { extensions } = registeredExtensions;
 
-    if (extensions.length === 0) return null;
-
     return h(
       'section',
       {
         attrs: {
-          class: 'mr-section-container mr-widget-workflow',
           role: 'region',
           'aria-label': __('Merge request reports'),
         },

@@ -11,6 +11,8 @@ module Emails
       )
       @recipient = User.find(user_id)
 
+      add_project_headers
+
       mail_with_locale(
         to: @recipient.notification_email_for(@project.group),
         subject: subject(release_email_subject)

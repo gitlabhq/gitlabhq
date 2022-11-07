@@ -17,6 +17,8 @@ metadata:
     # Keep in alphabetical order
   - name: access_requests
     description: Operations related to access requests
+  - name: ci_variables
+    description: Operations related to CI/CD variables
   - name: cluster_agents
     description: Operations related to the GitLab agent for Kubernetes
   - name: ci_resource_groups
@@ -51,6 +53,8 @@ metadata:
     description: Operations related to import BitBucket projects
   - name: project_import_github
     description: Operations related to import GitHub projects
+  - name: protected environments
+    description: Operations related to protected environments
   - name: release_links
     description: Operations related to release assets (links)
   - name: releases

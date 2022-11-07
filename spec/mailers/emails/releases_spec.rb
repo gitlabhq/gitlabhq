@@ -16,6 +16,7 @@ RSpec.describe Emails::Releases do
     subject { Notify.new_release_email(user.id, release) }
 
     it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'an email with X-GitLab headers containing project details'
 
     context 'when the release has a name' do
       it 'shows the correct subject' do

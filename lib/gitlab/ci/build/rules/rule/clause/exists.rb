@@ -9,19 +9,33 @@ module Gitlab
         MAX_PATTERN_COMPARISONS = 10_000
 
         def initialize(globs)
-          globs = Array(globs)
-
-          @top_level_only = globs.all?(&method(:top_level_glob?))
-          @exact_globs, @pattern_globs = globs.partition(&method(:exact_glob?))
+          @globs = Array(globs)
+          @top_level_only = @globs.all?(&method(:top_level_glob?))
         end
 
         def satisfied_by?(_pipeline, context)
           paths = worktree_paths(context)
+          exact_globs, pattern_globs = separate_globs(context)
 
-          exact_matches?(paths) || pattern_matches?(paths)
+          exact_matches?(paths, exact_globs) || pattern_matches?(paths, pattern_globs)
         end
 
         private
+
+        def separate_globs(context)
+          if ::Feature.enabled?(:ci_variable_expansion_in_rules_exists, context.project)
+            expanded_globs = expand_globs(context)
+            expanded_globs.partition(&method(:exact_glob?))
+          else
+            @globs.partition(&method(:exact_glob?))
+          end
+        end
+
+        def expand_globs(context)
+          @globs.map do |glob|
+            ExpandVariables.expand_existing(glob, -> { context.variables_hash })
+          end
+        end
 
         def worktree_paths(context)
           return [] unless context.project
@@ -33,13 +47,16 @@ module Gitlab
           end
         end
 
-        def exact_matches?(paths)
-          @exact_globs.any? { |glob| paths.bsearch { |path| glob <=> path } }
+        def exact_matches?(paths, exact_globs)
+          exact_globs.any? do |glob|
+            paths.bsearch { |path| glob <=> path }
+          end
         end
 
-        def pattern_matches?(paths)
+        def pattern_matches?(paths, pattern_globs)
           comparisons = 0
-          @pattern_globs.any? do |glob|
+
+          pattern_globs.any? do |glob|
             paths.any? do |path|
               comparisons += 1
               comparisons > MAX_PATTERN_COMPARISONS || pattern_match?(glob, path)

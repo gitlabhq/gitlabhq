@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
           config.handler = handler
           config.logger = logger
           config.sleep_time_seconds = sleep_time_seconds
-          config.monitors.use monitor_class, threshold_violated, payload, max_strikes: max_strikes
+          config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
         end
 
         allow(handler).to receive(:call).and_return(true)
@@ -205,8 +205,8 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
                 config.handler = handler
                 config.logger = logger
                 config.sleep_time_seconds = sleep_time_seconds
-                config.monitors.use monitor_class, threshold_violated, payload, max_strikes: max_strikes
-                config.monitors.use monitor_class, threshold_violated, payload, max_strikes: max_strikes
+                config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
+                config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
               end
             end
 

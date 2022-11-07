@@ -1,7 +1,10 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
+import {
+  registerExtension,
+  registeredExtensions,
+} from '~/vue_merge_request_widget/components/extensions';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
@@ -47,6 +50,7 @@ import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
 import codeQualityExtension from './extensions/code_quality';
 import testReportExtension from './extensions/test_report';
+import ReportWidgetContainer from './components/report_widget_container.vue';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -86,6 +90,7 @@ export default {
     SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
     ReadyToMerge: ReadyToMergeState,
+    ReportWidgetContainer,
   },
   apollo: {
     state: {
@@ -215,6 +220,9 @@ export default {
       if (this.mr.state === 'readyToMerge') return true;
 
       return !this.mr.mergeDetailsCollapsed;
+    },
+    hasExtensions() {
+      return registeredExtensions.extensions.length;
     },
   },
   watch: {
@@ -553,7 +561,17 @@ export default {
       :mr="mr"
       :service="service"
     />
-    <extensions-container :mr="mr" />
+    <report-widget-container>
+      <extensions-container v-if="hasExtensions" :mr="mr" />
+      <security-reports-app
+        v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
+        :pipeline-id="mr.pipeline.id"
+        :project-id="mr.sourceProjectId"
+        :security-reports-docs-path="mr.securityReportsDocsPath"
+        :target-project-full-path="mr.targetProjectFullPath"
+        :mr-iid="mr.iid"
+      />
+    </report-widget-container>
     <div class="mr-section-container mr-widget-workflow">
       <div v-if="hasAlerts" class="gl-overflow-hidden mr-widget-alert-container">
         <mr-widget-alert-message
@@ -581,15 +599,6 @@ export default {
       </div>
 
       <widget-container v-if="mr" :mr="mr" />
-
-      <security-reports-app
-        v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
-        :pipeline-id="mr.pipeline.id"
-        :project-id="mr.sourceProjectId"
-        :security-reports-docs-path="mr.securityReportsDocsPath"
-        :target-project-full-path="mr.targetProjectFullPath"
-        :mr-iid="mr.iid"
-      />
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />

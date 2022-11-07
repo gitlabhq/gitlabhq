@@ -71,18 +71,13 @@ module IconsHelper
   #
   # See also https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-loading-icon--default
   def gl_loading_icon(inline: false, color: 'dark', size: 'sm', css_class: nil, data: nil)
-    spinner = content_tag(:span, "", {
-      class: %[gl-spinner gl-spinner-#{color} gl-spinner-#{size} gl-vertical-align-text-bottom!],
-      aria: { label: _('Loading') },
+    render Pajamas::SpinnerComponent.new(
+      inline: inline,
+      color: color,
+      size: size,
+      class: css_class,
       data: data
-    })
-
-    container_classes = ['gl-spinner-container']
-    container_classes << css_class unless css_class.blank?
-    content_tag(inline ? :span : :div, spinner, {
-      class: container_classes,
-      role: 'status'
-    })
+    )
   end
 
   def external_snippet_icon(name)

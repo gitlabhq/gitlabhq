@@ -103,31 +103,6 @@ When you upload an image, you can add text to the image and link it to the origi
 
 If you add a link, it is shown above the uploaded image.
 
-#### View an alert's logs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201846) in GitLab Ultimate 12.8.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) from GitLab Ultimate to GitLab Free in 12.9.
-
-Viewing logs from a metrics panel can be useful if you're triaging an
-application incident and need to [explore logs](../metrics/dashboards/index.md#chart-context-menu)
-from across your application. These logs help you understand what's affecting
-your application's performance and how to resolve any problems.
-
-Prerequisite:
-
-- You must have at least the Developer role.
-
-To view the logs for an alert:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Alerts**.
-1. Select the alert you want to view.
-1. Below the title of the alert, select the **Metrics** tab.
-1. Select the [menu](../metrics/dashboards/index.md#chart-context-menu) of
-   the metric chart to view options.
-1. Select **View logs**.
-
 ### Activity feed tab
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
@@ -176,6 +151,16 @@ To change an alert's status:
 
 To stop email notifications for alert reoccurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
 change the alert's status away from **Triggered**.
+
+#### Resolve an alert by closing the linked incident
+
+Prerequisites:
+
+- You must have at least the Reporter role.
+
+When you close an [incident](incidents.md) that is linked to an alert,
+the linked alert's status changes to **Resolved**.
+You are then credited with the alert's status change.
 
 #### As an on-call responder **(PREMIUM)**
 

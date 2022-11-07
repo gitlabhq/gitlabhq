@@ -9,7 +9,7 @@ module Gitlab
             @monitors = []
           end
 
-          def use(monitor_class, *args, **kwargs, &block)
+          def push(monitor_class, *args, **kwargs, &block)
             remove(monitor_class)
             @monitors.push(build_monitor_state(monitor_class, *args, **kwargs, &block))
           end
@@ -39,11 +39,12 @@ module Gitlab
 
         DEFAULT_SLEEP_TIME_SECONDS = 60
 
-        attr_reader :monitors
         attr_writer :logger, :handler, :sleep_time_seconds
 
-        def initialize
-          @monitors = MonitorStack.new
+        def monitors
+          @monitor_stack ||= MonitorStack.new
+          yield @monitor_stack if block_given?
+          @monitor_stack
         end
 
         def handler

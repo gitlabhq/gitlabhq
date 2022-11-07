@@ -95,7 +95,7 @@ Example response:
 }
 ```
 
-## Protect an environment
+## Protect a single environment
 
 Protects a single environment.
 
@@ -136,7 +136,7 @@ Example response:
 }
 ```
 
-## Update an environment
+## Update a protected environment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351854) in GitLab 15.4.
 
@@ -304,7 +304,7 @@ Example response:
 }
 ```
 
-## Unprotect environment
+## Unprotect a single environment
 
 Unprotects the given protected environment.
 

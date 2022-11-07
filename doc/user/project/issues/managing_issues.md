@@ -207,7 +207,8 @@ the appropriate project and followed up from there.
 
 ### Fields in the new issue form
 
-> Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
+> - Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
+> - Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.
 
 When you're creating a new issue, you can complete the following fields:
 
@@ -222,6 +223,7 @@ When you're creating a new issue, you can complete the following fields:
 - [Due date](due_dates.md)
 - [Milestone](../milestones/index.md)
 - [Labels](../labels.md)
+- [Iteration](../../group/iterations/index.md)
 
 ## Edit an issue
 

@@ -54,6 +54,17 @@ module Gitlab
         init_prometheus_metrics
       end
 
+      ##
+      # Configuration for Watchdog, use like:
+      #
+      #   watchdog.configure do |config|
+      #     config.handler = Gitlab::Memory::Watchdog::TermProcessHandler
+      #     config.sleep_time_seconds = 60
+      #     config.logger = Gitlab::AppLogger
+      #     config.monitors do |stack|
+      #       stack.push MyMonitorClass, args*, max_strikes:, kwargs**, &block
+      #     end
+      #   end
       def configure
         yield @configuration
       end

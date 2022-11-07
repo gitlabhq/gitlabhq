@@ -3437,7 +3437,8 @@ relative to `refs/heads/branch1` and the pipeline source is a merge request even
 
 #### `rules:exists`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24021) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24021) in GitLab 12.4.
+> - CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/283881) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_variable_expansion_in_rules_exists`. Disabled by default.
 
 Use `exists` to run a job when certain files exist in the repository.
 
@@ -3445,8 +3446,7 @@ Use `exists` to run a job when certain files exist in the repository.
 
 **Possible inputs**:
 
-- An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`)
-  and can't directly link outside it. File paths can use glob patterns.
+- An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly link outside it. File paths can use glob patterns and [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `rules:exists`**:
 

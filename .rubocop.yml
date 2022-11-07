@@ -784,6 +784,10 @@ Style/RegexpLiteralMixedPreserve:
     - mixed_preserve
   EnforcedStyle: mixed_preserve
 
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94317#note_1139610896
+Style/Lambda:
+  EnforcedStyle: literal
+
 RSpec/TopLevelDescribePath:
   Exclude:
     - 'spec/fixtures/**/*.rb'

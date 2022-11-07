@@ -1,5 +1,2 @@
-.gl-spinner-container{ class: @class }
-  - if @inline
-    %span{ class: spinner_class, aria: {label: @label} }
-  - else
-    %div{ class: spinner_class, aria: {label: @label} }
+= content_tag (@inline ? :span : :div), **html_options do
+  %span{ class: spinner_class, aria: {label: @label} }>

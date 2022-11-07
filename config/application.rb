@@ -566,7 +566,8 @@ module Gitlab
         # Used in app/services/web_hooks/log_execution_service.rb: log_execution
         ActiveSupport::TimeWithZone,
         ActiveSupport::TimeZone,
-        Gitlab::Color # https://gitlab.com/gitlab-org/gitlab/-/issues/368844
+        Gitlab::Color, # https://gitlab.com/gitlab-org/gitlab/-/issues/368844,
+        Hashie::Array # https://gitlab.com/gitlab-org/gitlab/-/issues/378089
       ]
 
       # on_master_start yields immediately in unclustered environments and runs

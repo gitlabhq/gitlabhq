@@ -3,8 +3,8 @@
 module API
   module Entities
     class CustomAttribute < Grape::Entity
-      expose :key
-      expose :value
+      expose :key, documentation: { type: 'string', example: 'foo' }
+      expose :value, documentation: { type: 'string', example: 'bar' }
     end
   end
 end

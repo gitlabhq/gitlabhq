@@ -7787,9 +7787,6 @@ msgstr ""
 msgid "Certificate Subject"
 msgstr ""
 
-msgid "Change"
-msgstr ""
-
 msgid "Change Failure Rate"
 msgstr ""
 
@@ -12008,9 +12005,6 @@ msgstr ""
 msgid "DORA4Metrics|%{startDate} - %{endDate}"
 msgstr ""
 
-msgid "DORA4Metrics|30 days before that"
-msgstr ""
-
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
@@ -12035,9 +12029,6 @@ msgstr ""
 msgid "DORA4Metrics|Deployment frequency"
 msgstr ""
 
-msgid "DORA4Metrics|Last 30 days"
-msgstr ""
-
 msgid "DORA4Metrics|Lead time for changes"
 msgstr ""
 
@@ -12051,6 +12042,9 @@ msgid "DORA4Metrics|Median time (last %{days}d)"
 msgstr ""
 
 msgid "DORA4Metrics|Median time an incident was open in a production environment over the given time period."
+msgstr ""
+
+msgid "DORA4Metrics|Month to date"
 msgstr ""
 
 msgid "DORA4Metrics|No incidents during this period"
@@ -48511,9 +48505,6 @@ msgstr ""
 msgid "mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}"
 msgstr ""
 
-msgid "mrWidget|%{linkStart}Set up now%{linkEnd} to analyze your source code for known security vulnerabilities."
-msgstr ""
-
 msgid "mrWidget|%{mergeError}."
 msgstr ""
 
@@ -48756,9 +48747,6 @@ msgid "mrWidget|Revert this merge request in a new merge request"
 msgstr ""
 
 msgid "mrWidget|Revoke approval"
-msgstr ""
-
-msgid "mrWidget|SAST and Secret Detection is not enabled."
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to be added to the merge train when the pipeline succeeds"

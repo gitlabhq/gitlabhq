@@ -54,3 +54,4 @@
           .col-12
             .issuable-form-select-holder
               = form.gitlab_ui_datepicker :due_date, placeholder: _('Select due date'), autocomplete: 'off', id: "issuable-due-date"
+        = render_if_exists "shared/issuable/form/iteration", form: form, group: project.group
