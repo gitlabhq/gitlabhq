@@ -248,7 +248,7 @@ incorrect sort order.
 There are times when the [complexity of sorting](#limitations-of-query-complexity)
 is more than our keyset pagination can handle.
 
-For example, in [`IssuesResolver`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/issues_resolver.rb),
+For example, in [`ProjectIssuesResolver`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/project_issues_resolver.rb),
 when sorting by `priority_asc`, we can't use keyset pagination as the ordering is much
 too complex. For more information, read [`issuable.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/issuable.rb).
 

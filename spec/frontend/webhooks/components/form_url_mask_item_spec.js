@@ -14,16 +14,13 @@ describe('FormUrlMaskItem', () => {
   const mockKey = 'key';
   const mockValue = 'value';
   const mockInput = 'input';
+  const mockFeedback = 'feedback';
 
   const createComponent = ({ props } = {}) => {
     wrapper = shallowMountExtended(FormUrlMaskItem, {
       propsData: { ...defaultProps, ...props },
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   const findMaskItemKey = () => wrapper.findByTestId('mask-item-key');
   const findMaskItemValue = () => wrapper.findByTestId('mask-item-value');
@@ -34,14 +31,20 @@ describe('FormUrlMaskItem', () => {
       createComponent({ props: { itemKey: mockKey, itemValue: mockValue } });
 
       const keyInput = findMaskItemKey();
-      expect(keyInput.attributes('label')).toBe(FormUrlMaskItem.i18n.keyLabel);
+      expect(keyInput.attributes()).toMatchObject({
+        label: FormUrlMaskItem.i18n.keyLabel,
+        state: 'true',
+      });
       expect(keyInput.findComponent(GlFormInput).attributes()).toMatchObject({
         name: 'hook[url_variables][][key]',
         value: mockKey,
       });
 
       const valueInput = findMaskItemValue();
-      expect(valueInput.attributes('label')).toBe(FormUrlMaskItem.i18n.valueLabel);
+      expect(valueInput.attributes()).toMatchObject({
+        label: FormUrlMaskItem.i18n.valueLabel,
+        state: 'true',
+      });
       expect(valueInput.findComponent(GlFormInput).attributes()).toMatchObject({
         name: 'hook[url_variables][][value]',
         value: mockValue,
@@ -66,6 +69,32 @@ describe('FormUrlMaskItem', () => {
         expect(findMaskItemValue().findComponent(GlFormInput).attributes('value')).toBe(
           '************',
         );
+      });
+    });
+
+    describe('when keyInvalidFeedback is passed', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { keyInvalidFeedback: mockFeedback },
+        });
+      });
+
+      it('sets validation message on key', () => {
+        expect(findMaskItemKey().attributes('invalid-feedback')).toBe(mockFeedback);
+        expect(findMaskItemKey().attributes('state')).toBeUndefined();
+      });
+    });
+
+    describe('when valueInvalidFeedback is passed', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { valueInvalidFeedback: mockFeedback },
+        });
+      });
+
+      it('sets validation message on value', () => {
+        expect(findMaskItemValue().attributes('invalid-feedback')).toBe(mockFeedback);
+        expect(findMaskItemValue().attributes('state')).toBeUndefined();
       });
     });
 

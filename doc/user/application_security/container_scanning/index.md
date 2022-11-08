@@ -173,7 +173,7 @@ container_scanning:
   before_script:
     - ruby -r open-uri -e "IO.copy_stream(URI.open('https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'), 'awscliv2.zip')"
     - unzip awscliv2.zip
-    - ./aws/install
+    - sudo ./aws/install
     - aws --version
     - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region region)
 

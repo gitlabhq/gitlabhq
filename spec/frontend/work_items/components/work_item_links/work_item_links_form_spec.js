@@ -14,6 +14,7 @@ import {
   projectWorkItemTypesQueryResponse,
   createWorkItemMutationResponse,
   updateWorkItemMutationResponse,
+  mockIterationWidgetResponse,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -24,11 +25,15 @@ describe('WorkItemLinksForm', () => {
   const updateMutationResolver = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
 
+  const mockParentIteration = mockIterationWidgetResponse;
+
   const createComponent = async ({
     listResponse = availableWorkItemsResponse,
     typesResponse = projectWorkItemTypesQueryResponse,
     parentConfidential = false,
     hasIterationsFeature = false,
+    workItemsMvc2Enabled = false,
+    parentIteration = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
@@ -37,8 +42,11 @@ describe('WorkItemLinksForm', () => {
         [updateWorkItemMutation, updateMutationResolver],
         [createWorkItemMutation, createMutationResolver],
       ]),
-      propsData: { issuableGid: 'gid://gitlab/WorkItem/1', parentConfidential },
+      propsData: { issuableGid: 'gid://gitlab/WorkItem/1', parentConfidential, parentIteration },
       provide: {
+        glFeatures: {
+          workItemsMvc2: workItemsMvc2Enabled,
+        },
         projectPath: 'project/path',
         hasIterationsFeature,
       },
@@ -131,6 +139,57 @@ describe('WorkItemLinksForm', () => {
 
     it('passes action to create task', () => {
       expect(findCombobox().props('actionList').length).toBe(1);
+    });
+  });
+
+  describe('associate iteration with task', () => {
+    it('does not update iteration when mvc2 feature flag is not enabled', async () => {
+      await createComponent({
+        hasIterationsFeature: true,
+        parentIteration: mockParentIteration,
+      });
+
+      findInput().vm.$emit('input', 'Create task test');
+
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+      await waitForPromises();
+      expect(updateMutationResolver).not.toHaveBeenCalled();
+    });
+    it('updates when parent has an iteration associated', async () => {
+      await createComponent({
+        workItemsMvc2Enabled: true,
+        hasIterationsFeature: true,
+        parentIteration: mockParentIteration,
+      });
+      findInput().vm.$emit('input', 'Create task test');
+
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+      await waitForPromises();
+      expect(updateMutationResolver).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          iterationWidget: {
+            iterationId: mockParentIteration.id,
+          },
+        },
+      });
+    });
+    it('does not update when parent has no iteration associated', async () => {
+      await createComponent({
+        workItemsMvc2Enabled: true,
+        hasIterationsFeature: true,
+      });
+      findInput().vm.$emit('input', 'Create task test');
+
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+      await waitForPromises();
+      expect(updateMutationResolver).not.toHaveBeenCalled();
     });
   });
 });

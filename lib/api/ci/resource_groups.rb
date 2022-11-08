@@ -7,6 +7,9 @@ module API
 
       ci_resource_groups_tags = %w[ci_resource_groups]
 
+      RESOURCE_GROUP_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+                                        .merge(key: API::NO_SLASH_URL_PART_REGEX)
+
       before { authenticate! }
 
       feature_category :continuous_delivery
@@ -47,7 +50,7 @@ module API
         params do
           requires :key, type: String, desc: 'The key of the resource group'
         end
-        get ':id/resource_groups/:key' do
+        get ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :read_resource_group, resource_group
 
           present resource_group, with: Entities::Ci::ResourceGroup
@@ -67,7 +70,7 @@ module API
 
           use :pagination
         end
-        get ':id/resource_groups/:key/upcoming_jobs' do
+        get ':id/resource_groups/:key/upcoming_jobs', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :read_resource_group, resource_group
           authorize! :read_build, user_project
 
@@ -96,7 +99,7 @@ module API
                    desc: 'The process mode of the resource group',
                    values: ::Ci::ResourceGroup.process_modes.keys
         end
-        put ':id/resource_groups/:key' do
+        put ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :update_resource_group, resource_group
 
           if resource_group.update(declared_params(include_missing: false))

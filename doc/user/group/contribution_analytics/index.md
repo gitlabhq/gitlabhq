@@ -62,6 +62,10 @@ Contributions per group member are also presented in tabular format. Select a co
 
 ![Contribution analytics contributions table](img/group_stats_table.png)
 
+## Contribution analytics GraphQL API
+
+To retrieve metrics for user contributions, use the [GraphQL](../../../api/graphql/reference/index.md#groupcontributions) API.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

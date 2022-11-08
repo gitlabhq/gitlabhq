@@ -13,7 +13,7 @@ module Terraform
     scope :with_files_stored_locally, -> { where(file_store: Terraform::StateUploader::Store::LOCAL) }
     scope :preload_state, -> { includes(:terraform_state) }
 
-    default_value_for(:file_store) { StateUploader.default_store }
+    attribute :file_store, default: -> { StateUploader.default_store }
 
     mount_file_store_uploader StateUploader
 

@@ -1568,7 +1568,6 @@ RSpec/ContextWording:
     - 'spec/graphql/resolvers/group_milestones_resolver_spec.rb'
     - 'spec/graphql/resolvers/group_packages_resolver_spec.rb'
     - 'spec/graphql/resolvers/issue_status_counts_resolver_spec.rb'
-    - 'spec/graphql/resolvers/issues_resolver_spec.rb'
     - 'spec/graphql/resolvers/kas/agent_configurations_resolver_spec.rb'
     - 'spec/graphql/resolvers/kas/agent_connections_resolver_spec.rb'
     - 'spec/graphql/resolvers/last_commit_resolver_spec.rb'

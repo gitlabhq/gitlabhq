@@ -2,6 +2,7 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { GlFormGroup, GlFormInput, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import { scrollToElement } from '~/lib/utils/common_utils';
 
 import FormUrlMaskItem from './form_url_mask_item.vue';
 
@@ -31,9 +32,14 @@ export default {
       maskEnabled: !isEmpty(this.initialUrlVariables),
       url: this.initialUrl,
       items: this.getInitialItems(),
+      isValidated: false,
+      formEl: null,
     };
   },
   computed: {
+    urlState() {
+      return !this.isValidated || !isEmpty(this.url);
+    },
     maskedUrl() {
       if (!this.url) {
         return null;
@@ -46,12 +52,19 @@ export default {
           return;
         }
 
-        const replacementExpression = new RegExp(value, 'g');
-        maskedUrl = maskedUrl.replace(replacementExpression, `{${key}}`);
+        maskedUrl = this.maskUrl(maskedUrl, key, value);
       });
 
       return maskedUrl;
     },
+  },
+  mounted() {
+    this.formEl = document.querySelector('.js-webhook-form');
+
+    this.formEl?.addEventListener('submit', this.handleSubmit);
+  },
+  destroy() {
+    this.formEl?.removeEventListener('submit', this.handleSubmit);
   },
   methods: {
     getInitialItems() {
@@ -63,6 +76,52 @@ export default {
       }
 
       return this.initialUrlVariables.some((item) => item.key === key);
+    },
+    keyInvalidFeedback(key) {
+      if (this.isValidated && isEmpty(key)) {
+        return this.$options.i18n.inputRequired;
+      }
+
+      return null;
+    },
+    valueInvalidFeedback(key, value) {
+      if (this.isEditingItem(key)) {
+        return null;
+      }
+
+      if (this.isValidated && isEmpty(value)) {
+        return this.$options.i18n.inputRequired;
+      }
+
+      return null;
+    },
+    isValid() {
+      this.isValidated = true;
+
+      if (!this.urlState) {
+        return false;
+      }
+
+      if (
+        this.maskEnabled &&
+        this.items.some(
+          ({ key, value }) => this.keyInvalidFeedback(key) || this.valueInvalidFeedback(key, value),
+        )
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    handleSubmit(e) {
+      if (!this.isValid()) {
+        scrollToElement(this.$refs.formUrl.$el);
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    maskUrl(url, key, value) {
+      return url.split(value).join(`{${key}}`);
     },
     onItemInput({ index, key, value }) {
       this.$set(this.items, index, { key, value });
@@ -76,6 +135,7 @@ export default {
   },
   i18n: {
     addItem: s__('Webhooks|+ Mask another portion of URL'),
+    inputRequired: __('This field is required.'),
     radioFullUrlText: s__('Webhooks|Show full URL'),
     radioMaskUrlText: s__('Webhooks|Mask portions of URL'),
     radioMaskUrlHelp: s__('Webhooks|Do not show sensitive data such as tokens in the UI.'),
@@ -92,14 +152,18 @@ export default {
 <template>
   <div>
     <gl-form-group
+      ref="formUrl"
       :label="$options.i18n.urlLabel"
       label-for="webhook-url"
       :description="$options.i18n.urlDescription"
+      :invalid-feedback="$options.i18n.inputRequired"
+      :state="urlState"
     >
       <gl-form-input
         id="webhook-url"
         v-model="url"
         name="hook[url]"
+        :state="urlState"
         :placeholder="$options.i18n.urlPlaceholder"
         data-testid="form-url"
       />
@@ -123,6 +187,8 @@ export default {
           :item-key="key"
           :item-value="value"
           :is-editing="isEditingItem(key)"
+          :key-invalid-feedback="keyInvalidFeedback(key)"
+          :value-invalid-feedback="valueInvalidFeedback(key, value)"
           @input="onItemInput"
           @remove="removeItem"
         />

@@ -272,6 +272,16 @@ class Issue < ApplicationRecord
     def order_upvotes_asc
       reorder(upvotes_count: :asc)
     end
+
+    override :full_search
+    def full_search(query, matched_columns: nil, use_minimum_char_limit: true)
+      return super if query.match?(IssuableFinder::FULL_TEXT_SEARCH_TERM_REGEX)
+
+      super.where(
+        'issues.title NOT SIMILAR TO :pattern OR issues.description NOT SIMILAR TO :pattern',
+        pattern: IssuableFinder::FULL_TEXT_SEARCH_TERM_PATTERN
+      )
+    end
   end
 
   def self.participant_includes

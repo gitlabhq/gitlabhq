@@ -56,6 +56,31 @@ RSpec.describe API::Ci::ResourceGroups do
       expect(Time.parse(json_response['updated_at'])).to be_like_time(resource_group.updated_at)
     end
 
+    context 'when resource group key contains multiple dots' do
+      let!(:resource_group) { create(:ci_resource_group, project: project, key: 'test..test') }
+
+      it 'returns the resource group', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(resource_group.id)
+        expect(json_response['key']).to eq(resource_group.key)
+      end
+    end
+
+    context 'when resource group key contains a slash' do
+      let!(:resource_group) { create(:ci_resource_group, project: project, key: 'test/test') }
+      let(:key) { 'test%2Ftest' }
+
+      it 'returns the resource group', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(resource_group.id)
+        expect(json_response['key']).to eq(resource_group.key)
+      end
+    end
+
     context 'when user is reporter' do
       let(:user) { reporter }
 
@@ -96,6 +121,25 @@ RSpec.describe API::Ci::ResourceGroups do
       expect(json_response[0]['ref']).to eq(upcoming_processable.ref)
       expect(json_response[0]['stage']).to eq(upcoming_processable.stage)
       expect(json_response[0]['status']).to eq(upcoming_processable.status)
+    end
+
+    context 'when resource group key contains a slash' do
+      let_it_be(:resource_group) { create(:ci_resource_group, project: project, key: 'test/test') }
+      let_it_be(:upcoming_processable) do
+        create(:ci_processable,
+               :waiting_for_resource,
+               resource_group: resource_group)
+      end
+
+      let(:key) { 'test%2Ftest' }
+
+      it 'returns the resource group', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response[0]['id']).to eq(upcoming_processable.id)
+        expect(json_response[0]['name']).to eq(upcoming_processable.name)
+      end
     end
 
     context 'when user is reporter' do

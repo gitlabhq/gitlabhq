@@ -48,18 +48,16 @@ module QA
         end
 
         def verify_protected_branches_import
-          branches = imported_project.protected_branches.map do |branch|
-            branch.slice(:name, :allow_force_push, :code_owner_approval_required)
+          # TODO: Add validation once https://gitlab.com/groups/gitlab-org/-/epics/8585 is closed
+          # At the moment both options are always set to false regardless of state in github
+          # allow_force_push: true,
+          # code_owner_approval_required: true
+          imported_branches = imported_project.protected_branches.map do |branch|
+            branch.slice(:name)
           end
-          expect(branches.first).to include(
-            {
-              name: 'main'
-              # TODO: Add validation once https://gitlab.com/groups/gitlab-org/-/epics/8585 is closed
-              # At the moment both options are always set to false regardless of state in github
-              # allow_force_push: true,
-              # code_owner_approval_required: true
-            }
-          )
+          actual_branches = [{ name: 'main' }, { name: 'release' }]
+
+          expect(imported_branches).to match_array(actual_branches)
         end
 
         def verify_commits_import

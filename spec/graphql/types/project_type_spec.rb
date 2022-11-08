@@ -290,14 +290,14 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { described_class.fields['issue'] }
 
     it { is_expected.to have_graphql_type(Types::IssueType) }
-    it { is_expected.to have_graphql_resolver(Resolvers::IssuesResolver.single) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ProjectIssuesResolver.single) }
   end
 
   describe 'issues field' do
     subject { described_class.fields['issues'] }
 
     it { is_expected.to have_graphql_type(Types::IssueType.connection_type) }
-    it { is_expected.to have_graphql_resolver(Resolvers::IssuesResolver) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ProjectIssuesResolver) }
   end
 
   describe 'merge_request field' do

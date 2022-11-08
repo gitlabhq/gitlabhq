@@ -9,7 +9,7 @@
     = render 'shared/web_hooks/title_and_docs', hook: @hook
 
   .col-lg-9.gl-mb-3
-    = gitlab_ui_form_for [@project, @hook], as: :hook, url: project_hook_path(@project, @hook) do |f|
+    = gitlab_ui_form_for [@project, @hook], as: :hook, url: project_hook_path(@project, @hook), html: { class: 'js-webhook-form' } do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
 
       = f.submit _('Save changes'), pajamas_button: true

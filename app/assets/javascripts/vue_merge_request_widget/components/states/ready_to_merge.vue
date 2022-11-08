@@ -521,7 +521,7 @@ export default {
 <template>
   <div
     data-testid="ready_to_merge_state"
-    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7"
   >
     <div v-if="loading" class="mr-widget-body">
       <div class="gl-w-full mr-ready-to-merge-loader">

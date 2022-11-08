@@ -2,6 +2,7 @@
 import { GlAlert, GlFormGroup, GlForm, GlFormCombobox, GlButton, GlFormInput } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
@@ -16,6 +17,7 @@ export default {
     GlFormGroup,
     GlFormInput,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['projectPath', 'hasIterationsFeature'],
   props: {
     issuableGid: {
@@ -61,6 +63,9 @@ export default {
     };
   },
   computed: {
+    workItemsMvc2Enabled() {
+      return this.glFeatures.workItemsMvc2;
+    },
     actionsList() {
       return [
         {
@@ -84,6 +89,9 @@ export default {
     },
     parentIterationId() {
       return this.parentIteration?.id;
+    },
+    associateIteration() {
+      return this.parentIterationId && this.hasIterationsFeature && this.workItemsMvc2Enabled;
     },
   },
   methods: {
@@ -145,7 +153,7 @@ export default {
              * call update mutation only when there is an iteration associated with the issue
              */
             // TODO: setting the iteration should be moved to the creation mutation once the backend is done
-            if (this.parentIterationId && this.hasIterationsFeature) {
+            if (this.associateIteration) {
               this.addIterationToWorkItem(data.workItemCreate.workItem.id);
             }
           }

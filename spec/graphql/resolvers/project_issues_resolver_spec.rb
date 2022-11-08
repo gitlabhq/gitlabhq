@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::IssuesResolver do
+RSpec.describe Resolvers::ProjectIssuesResolver do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -87,7 +87,7 @@ RSpec.describe Resolvers::IssuesResolver do
           end
         end
 
-        context 'negated filtering' do
+        context 'when using negated filters' do
           it 'returns issues matching the searched title after applying a negated filter' do
             expect(resolve_issues(milestone_title: ['past milestone'], not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
           end
@@ -252,7 +252,7 @@ RSpec.describe Resolvers::IssuesResolver do
         end
       end
 
-      context 'filtering by reaction emoji' do
+      context 'when filtering by reaction emoji' do
         let_it_be(:downvoted_issue) { create(:issue, project: project) }
         let_it_be(:downvote_award) { create(:award_emoji, :downvote, user: current_user, awardable: downvoted_issue) }
 
@@ -273,7 +273,7 @@ RSpec.describe Resolvers::IssuesResolver do
         end
       end
 
-      context 'confidential issues' do
+      context 'when listing confidential issues' do
         let_it_be(:confidential_issue1) { create(:issue, project: project, confidential: true) }
         let_it_be(:confidential_issue2) { create(:issue, project: other_project, confidential: true) }
 
@@ -375,13 +375,13 @@ RSpec.describe Resolvers::IssuesResolver do
           create(:issue_customer_relations_contact, issue: crm_issue3, contact: contact3)
         end
 
-        context 'contact' do
+        context 'when filtering by contact' do
           it 'returns only the issues for the contact' do
             expect(resolve_issues({ crm_contact_id: contact1.id })).to contain_exactly(crm_issue1)
           end
         end
 
-        context 'organization' do
+        context 'when filtering by organization' do
           it 'returns only the issues for the contact' do
             expect(resolve_issues({ crm_organization_id: organization.id })).to contain_exactly(crm_issue1, crm_issue2)
           end

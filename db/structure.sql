@@ -29345,6 +29345,8 @@ CREATE INDEX index_issues_on_confidential ON issues USING btree (confidential);
 
 CREATE INDEX index_issues_on_description_trigram ON issues USING gin (description gin_trgm_ops) WITH (fastupdate='false');
 
+CREATE INDEX index_issues_on_description_trigram_non_latin ON issues USING gin (description gin_trgm_ops) WHERE (((title)::text !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)) OR (description !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)));
+
 CREATE INDEX index_issues_on_duplicated_to_id ON issues USING btree (duplicated_to_id) WHERE (duplicated_to_id IS NOT NULL);
 
 CREATE INDEX index_issues_on_id_and_weight ON issues USING btree (id, weight);
@@ -29380,6 +29382,8 @@ CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted
 CREATE INDEX index_issues_on_sprint_id ON issues USING btree (sprint_id);
 
 CREATE INDEX index_issues_on_title_trigram ON issues USING gin (title gin_trgm_ops) WITH (fastupdate='false');
+
+CREATE INDEX index_issues_on_title_trigram_non_latin ON issues USING gin (title gin_trgm_ops) WHERE (((title)::text !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)) OR (description !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)));
 
 CREATE INDEX index_issues_on_updated_at ON issues USING btree (updated_at);
 

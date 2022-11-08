@@ -81,7 +81,7 @@ RSpec.describe Groups::ObservabilityController do
 
       describe 'CSP' do
         before do
-          setup_existing_csp_for_controller(described_class, csp)
+          setup_csp_for_controller(described_class, csp)
         end
 
         subject do

@@ -1,10 +1,14 @@
 import { nextTick } from 'vue';
-import { GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import { GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import { scrollToElement } from '~/lib/utils/common_utils';
 
 import FormUrlApp from '~/webhooks/components/form_url_app.vue';
 import FormUrlMaskItem from '~/webhooks/components/form_url_mask_item.vue';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+
+jest.mock('~/lib/utils/common_utils');
 
 describe('FormUrlApp', () => {
   let wrapper;
@@ -26,8 +30,11 @@ describe('FormUrlApp', () => {
   const findAllUrlMaskItems = () => wrapper.findAllComponents(FormUrlMaskItem);
   const findAddItem = () => wrapper.findComponent(GlLink);
   const findFormUrl = () => wrapper.findByTestId('form-url');
+  const findFormUrlGroup = () => wrapper.findAllComponents(GlFormGroup).at(0);
   const findFormUrlPreview = () => wrapper.findByTestId('form-url-preview');
   const findUrlMaskSection = () => wrapper.findByTestId('url-mask-section');
+  const findFormEl = () => document.querySelector('.js-webhook-form');
+  const submitForm = () => findFormEl().dispatchEvent(new Event('submit'));
 
   describe('template', () => {
     it('renders radio buttons for URL masking', () => {
@@ -149,6 +156,83 @@ describe('FormUrlApp', () => {
             itemKey: mockItem2.key,
             itemValue: mockItem2.value,
           });
+        });
+      });
+    });
+
+    describe('validations', () => {
+      const inputRequiredText = FormUrlApp.i18n.inputRequired;
+
+      beforeEach(() => {
+        setHTMLFixture('<form class="js-webhook-form"></form>');
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
+      });
+
+      it.each`
+        url                       | state        | scrollToElementCalls
+        ${null}                   | ${undefined} | ${1}
+        ${''}                     | ${undefined} | ${1}
+        ${'https://example.com/'} | ${'true'}    | ${0}
+      `('when URL is `$url`, state is `$state`', async ({ url, state, scrollToElementCalls }) => {
+        createComponent({
+          props: { initialUrl: url },
+        });
+
+        submitForm();
+        await nextTick();
+
+        expect(findFormUrlGroup().attributes('state')).toBe(state);
+        expect(scrollToElement).toHaveBeenCalledTimes(scrollToElementCalls);
+        expect(findFormUrlGroup().attributes('invalid-feedback')).toBe(inputRequiredText);
+      });
+
+      it.each`
+        key      | value      | keyInvalidFeedback   | valueInvalidFeedback | scrollToElementCalls
+        ${null}  | ${null}    | ${inputRequiredText} | ${inputRequiredText} | ${1}
+        ${null}  | ${'value'} | ${inputRequiredText} | ${null}              | ${1}
+        ${'key'} | ${null}    | ${null}              | ${inputRequiredText} | ${1}
+        ${'key'} | ${'value'} | ${null}              | ${null}              | ${0}
+      `(
+        'when key is `$key` and value is `$value`',
+        async ({ key, value, keyInvalidFeedback, valueInvalidFeedback, scrollToElementCalls }) => {
+          createComponent({
+            props: { initialUrl: 'url' },
+          });
+          findRadioGroup().vm.$emit('input', true);
+          await nextTick();
+
+          const maskItem = findAllUrlMaskItems().at(0);
+          const mockInput = { index: 0, key, value };
+          maskItem.vm.$emit('input', mockInput);
+
+          submitForm();
+          await nextTick();
+
+          expect(maskItem.props('keyInvalidFeedback')).toBe(keyInvalidFeedback);
+          expect(maskItem.props('valueInvalidFeedback')).toBe(valueInvalidFeedback);
+          expect(scrollToElement).toHaveBeenCalledTimes(scrollToElementCalls);
+        },
+      );
+
+      describe('when initialUrlVariables is passed', () => {
+        it('does not validate empty values', async () => {
+          const initialUrlVariables = [{ key: 'key' }];
+
+          createComponent({
+            props: { initialUrl: 'url', initialUrlVariables },
+          });
+
+          submitForm();
+          await nextTick();
+
+          const maskItem = findAllUrlMaskItems().at(0);
+
+          expect(maskItem.props('keyInvalidFeedback')).toBeNull();
+          expect(maskItem.props('valueInvalidFeedback')).toBeNull();
+          expect(scrollToElement).not.toHaveBeenCalled();
         });
       });
     });

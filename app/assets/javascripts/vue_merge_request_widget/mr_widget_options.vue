@@ -550,17 +550,8 @@ export default {
       :user-callout-feature-id="mr.suggestPipelineFeatureId"
       @dismiss="dismissSuggestPipelines"
     />
-    <mr-widget-pipeline-container
-      v-if="shouldRenderPipelines"
-      class="mr-widget-workflow"
-      :mr="mr"
-    />
-    <mr-widget-approvals
-      v-if="shouldRenderApprovals"
-      class="mr-widget-workflow"
-      :mr="mr"
-      :service="service"
-    />
+    <mr-widget-pipeline-container v-if="shouldRenderPipelines" :mr="mr" />
+    <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
       <extensions-container v-if="hasExtensions" :mr="mr" />
       <security-reports-app

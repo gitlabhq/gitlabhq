@@ -227,7 +227,7 @@ module Types
           null: true,
           description: 'Issues of the project.',
           extras: [:lookahead],
-          resolver: Resolvers::IssuesResolver
+          resolver: Resolvers::ProjectIssuesResolver
 
     field :work_items,
           Types::WorkItemType.connection_type,
@@ -274,7 +274,7 @@ module Types
           Types::IssueType,
           null: true,
           description: 'A single issue of the project.',
-          resolver: Resolvers::IssuesResolver.single
+          resolver: Resolvers::ProjectIssuesResolver.single
 
     field :packages,
           description: 'Packages of the project.',
