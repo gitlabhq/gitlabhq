@@ -304,12 +304,24 @@ spotbugs-sast:
 
 #### Pinning to minor image version
 
-While our templates use `MAJOR` version pinning to always ensure the latest analyzer
-versions are pulled, there are certain cases where it can be beneficial to pin
-an analyzer to a specific release. To do so, override the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
-in the job template directly.
+The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
 
-In the example below, we pin to a minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
+In some cases, you may need to use a specific version.
+For example, you might need to avoid a regression in a later release.
+
+To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
+in your CI/CD configuration file after you include the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
+
+Only set this variable within a specific job.
+If you set it [at the top level](../../../ci/variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+
+You can set the tag to:
+
+- A major version, like `3`. Your pipelines will use any minor or patch updates that are released within this major version.
+- A minor version, like `3.7`. Your pipelines will use any patch updates that are released within this minor version.
+- A patch version, like `3.7.0`. Your pipelines won't receive any updates.
+
+This example uses a specific minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
 
 ```yaml
 include:
@@ -317,11 +329,11 @@ include:
 
 semgrep-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.16"
+    SAST_ANALYZER_IMAGE_TAG: "3.7"
 
 brakeman-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.21.1"
+    SAST_ANALYZER_IMAGE_TAG: "3.1.1"
 ```
 
 ### False Positive Detection **(ULTIMATE)**

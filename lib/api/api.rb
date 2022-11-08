@@ -199,12 +199,14 @@ module API
         mount ::API::ProjectExport
         mount ::API::ProjectHooks
         mount ::API::ProjectRepositoryStorageMoves
+        mount ::API::ProjectSnippets
         mount ::API::ProjectSnapshots
         mount ::API::ProtectedBranches
         mount ::API::ProtectedTags
-        mount ::API::Release::Links
         mount ::API::Releases
+        mount ::API::Release::Links
         mount ::API::ResourceAccessTokens
+        mount ::API::Snippets
         mount ::API::SnippetRepositoryStorageMoves
         mount ::API::Statistics
         mount ::API::Submodules
@@ -299,7 +301,6 @@ module API
       mount ::API::ProjectImport
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
-      mount ::API::ProjectSnippets
       mount ::API::ProjectStatistics
       mount ::API::ProjectTemplates
       mount ::API::Projects
@@ -315,7 +316,6 @@ module API
       mount ::API::Search
       mount ::API::Settings
       mount ::API::SidekiqMetrics
-      mount ::API::Snippets
       mount ::API::Subscriptions
       mount ::API::Tags
       mount ::API::Templates

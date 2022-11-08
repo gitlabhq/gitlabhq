@@ -212,8 +212,8 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it "returns the project's sast configuration for analyzer variables" do
       analyzer = subject.dig('data', 'project', 'sastCiConfiguration', 'analyzers', 'nodes').first
-      expect(analyzer['name']).to eq('bandit')
-      expect(analyzer['label']).to eq('Bandit')
+      expect(analyzer['name']).to eq('brakeman')
+      expect(analyzer['label']).to eq('Brakeman')
       expect(analyzer['enabled']).to eq(true)
     end
 

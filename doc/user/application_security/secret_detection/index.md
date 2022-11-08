@@ -124,6 +124,33 @@ widget.
 
 If the scanner detects a secret you should rotate it immediately. [Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history) may not be effective in removing all references to the file. Also, the secret remains in any forks of the repository.
 
+## Pinning to specific analyzer version
+
+The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
+
+In some cases, you may need to use a specific version.
+For example, you might need to avoid a regression in a later release.
+
+To override the automatic update behavior, set the `SECRETS_ANALYZER_VERSION` CI/CD variable
+in your CI/CD configuration file after you include the [`Secret-Detection.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml).
+
+You can set the tag to:
+
+- A major version, like `4`. Your pipelines will use any minor or patch updates that are released within this major version.
+- A minor version, like `4.5`. Your pipelines will use any patch updates that are released within this minor version.
+- A patch version, like `4.5.0`. Your pipelines won't receive any updates.
+
+This example uses a specific minor version of the analyzer:
+
+```yaml
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+secret_detection:
+  variables:
+    SECRETS_ANALYZER_VERSION: "4.5"
+```
+
 ## Configure scan settings
 
 The Secret Detection scan settings can be changed through [CI/CD variables](#available-cicd-variables)

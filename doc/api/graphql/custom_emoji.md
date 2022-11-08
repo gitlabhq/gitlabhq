@@ -30,9 +30,11 @@ Parameters:
 
 ```graphql
 mutation CreateCustomEmoji($groupPath: ID!) {
-  createCustomEmoji(input: {groupPath: $groupPath, name: "party-parrot", file: "https://cultofthepartyparrot.com/parrots/hd/parrot.gif", external: true}) {
+  createCustomEmoji(input: {groupPath: $groupPath, name: "party-parrot", url: "https://cultofthepartyparrot.com/parrots/hd/parrot.gif"}) {
     clientMutationId
-    name
+    customEmoji {
+      name
+    }
     errors
   }
 }

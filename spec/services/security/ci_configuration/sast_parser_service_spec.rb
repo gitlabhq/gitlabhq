@@ -11,9 +11,9 @@ RSpec.describe Security::CiConfiguration::SastParserService do
     let(:sast_excluded_paths) { configuration['global'][1] }
     let(:sast_pipeline_stage) { configuration['pipeline'][0] }
     let(:sast_search_max_depth) { configuration['pipeline'][1] }
-    let(:bandit) { configuration['analyzers'][0] }
-    let(:brakeman) { configuration['analyzers'][1] }
+    let(:brakeman) { configuration['analyzers'][0] }
     let(:sast_brakeman_level) { brakeman['variables'][0] }
+    let(:semgrep) { configuration['analyzers'][1] }
     let(:secure_analyzers_prefix) { '$CI_TEMPLATE_REGISTRY_HOST/security-products' }
 
     it 'parses the configuration for SAST' do
@@ -34,7 +34,7 @@ RSpec.describe Security::CiConfiguration::SastParserService do
           expect(sast_pipeline_stage['value']).to eql('our_custom_security_stage')
           expect(sast_search_max_depth['value']).to eql('8')
           expect(brakeman['enabled']).to be(false)
-          expect(bandit['enabled']).to be(true)
+          expect(semgrep['enabled']).to be(true)
           expect(sast_brakeman_level['value']).to eql('2')
         end
 
@@ -43,7 +43,7 @@ RSpec.describe Security::CiConfiguration::SastParserService do
             allow(project.repository).to receive(:blob_data_at).and_return(gitlab_ci_yml_excluded_analyzers_content)
 
             expect(brakeman['enabled']).to be(false)
-            expect(bandit['enabled']).to be(true)
+            expect(semgrep['enabled']).to be(true)
           end
         end
       end
