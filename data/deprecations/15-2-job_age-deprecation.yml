@@ -24,7 +24,7 @@
   removal_date: "2023-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: jheimbuck_gl  # (required) GitLab username of the person reporting the deprecation
-  stage: Verify # (required) String value of the stage that the feature was created in. e.g., Growth
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334253  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The `job_age` parameter, returned from the `POST /jobs/request` API endpoint used in communication with GitLab Runner, was never used by any GitLab or Runner feature. This parameter will be removed in GitLab 16.0.

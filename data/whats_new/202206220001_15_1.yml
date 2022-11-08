@@ -17,7 +17,7 @@
   gitlab-com: true
   available_in: [Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/group/saml_sso/group_sync.html
-  image_url: https://about.gitlab.com/images/15_1/SAML_Group_Sync.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  image_url: https://about.gitlab.com/images/15_1/SAML_Group_Sync.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1
 - name: Enhancing visibility into Value Stream with DORA metrics
@@ -28,7 +28,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html
-  image_url: https://about.gitlab.com/images/15_1/vsa_dora_n_ttrs.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  image_url: https://about.gitlab.com/images/15_1/vsa_dora_n_ttrs.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   published_at: 2022-06-22
   release: 15.1
 - name: "SLSA-2 attestation included for build artifacts"

@@ -1,19 +1,19 @@
-- name: "Suggested Reviewers open beta" # Match the release post entry
+- name: "Suggested Reviewers open beta"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     Deciding the right person to [review your merge request](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/) isn't always straightforward or obvious. Choosing the wrong reviewer can cause delays, low quality reviews, back and forth reassigning reviewers, or even no review at all.
 
     Now, GitLab can recommend a reviewer with [Suggested Reviewers](https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#suggested-reviewers). Using the changes in a merge request and a project's contribution graph, machine learning powered suggestions appear in the [reviewer dropdown](https://docs.gitlab.com/ee/user/project/merge_requests/getting_started.html#reviewer) in the merge request sidebar.
 
     This feature is currently in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta) behind a [feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/368356). It will be rolling out to all Ultimate GitLab.com customers over the next week.
-  stage: create # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: false # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#suggested-reviewers' # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/15_4/create-code-review-suggested-reviewers.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2022-09-22 # YYYY-MM-DD
-  release: 15.4 # XX.Y
-- name: "Improved CI/CD integration in VS Code" # Match the release post entry
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: false  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#suggested-reviewers'  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_4/create-code-review-suggested-reviewers.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-09-22  # YYYY-MM-DD
+  release: 15.4  # XX.Y
+- name: "Improved CI/CD integration in VS Code"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     When you're constructing complicated GitLab CI configurations that may contain `include:` or `extends:` keywords, it's challenging to ensure the configuration is valid and the resulting file has your expected configuration. Use [GitLab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) for Visual Studio Code to preview your merged GitLab CI/CD configuration file directly in VS Code. You can view your changes locally, and ensure your configuration is as you expect, before you commit and push.
 
@@ -21,28 +21,28 @@
 
      * Download artifacts: [commit `f4d027c`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/commit/f4d027c616c884bef9fc42e5f20dfac43b811134), [merge request `!635`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/635)
      * Retry or cancel an existing pipeline: [commit `c2caee4`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/commit/c2caee40cfcbfb5d13cc790f9a2d1cfcf6c6a7ab), [merge request `!637`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/637)
-  stage: create # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: false # Boolean value (true or false)
-  available_in: [Free, Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: 'https://gitlab.com/gitlab-org/gitlab-vscode-extension#show-merged-gitlab-cicd-configuration' # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/15_4/create-vs-code-cicd-improvements.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2022-09-22 # YYYY-MM-DD
-  release: 15.4 # XX.Y
-- name: "Users on verified domains can bypass email validation" # Match the release post entry
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: false  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: 'https://gitlab.com/gitlab-org/gitlab-vscode-extension#show-merged-gitlab-cicd-configuration'  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_4/create-vs-code-cicd-improvements.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-09-22  # YYYY-MM-DD
+  release: 15.4  # XX.Y
+- name: "Users on verified domains can bypass email validation"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     New GitLab users created using SAML or SCIM that belong to a [verified domain](https://docs.gitlab.com/ee/user/project/pages/custom_domains_ssl_tls_certification/#1-add-a-custom-domain) no longer receive the GitLab account verification e-mail.
 
     This reduces account activation friction. Accounts generated through a provisioning process are already verified, so users should not have to individually verify them manually.
-  stage: manage # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: false # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/group/saml_sso/index.html#bypass-user-verification-with-verified-domains' # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/15_4/domain-verification.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2022-09-22 # YYYY-MM-DD
-  release: 15.4 # XX.Y
-- name: "Sortable, filterable data-driven tables in Markdown" # Match the release post entry
+  stage: manage  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: false  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/group/saml_sso/index.html#bypass-user-verification-with-verified-domains'  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_4/domain-verification.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-09-22  # YYYY-MM-DD
+  release: 15.4  # XX.Y
+- name: "Sortable, filterable data-driven tables in Markdown"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     Working with tables in Markdown can be a bit cumbersome. Not only is it difficult to figure out the correct number of pipes and empty cells, but the table output is static when you save your document. If you have to sort the table by the third column in an ascending order, you end up rewriting the whole thing.
 
@@ -58,46 +58,46 @@
     - Dynamic filtering of data using `"filter" : true`
 
     Now it's as simple as a click when you have to re-sort that 100-row table and as easy as a web search when you have to find that one issue reference lost in a sea of nearly identical URLs.
-  stage: create # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Free, Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/markdown.html#json' # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://img.youtube.com/vi/12yWKw1AdKY/hqdefault.jpg # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2022-09-22 # YYYY-MM-DD
-  release: 15.4 # XX.Y
-- name: "Getting started with GitLab Pages just got easier" # Match the release post entry
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/markdown.html#json'  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://img.youtube.com/vi/12yWKw1AdKY/hqdefault.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-09-22  # YYYY-MM-DD
+  release: 15.4  # XX.Y
+- name: "Getting started with GitLab Pages just got easier"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     We've made it much easier to get started with GitLab Pages. Instead of creating configuration files by hand, build them interactively using the GitLab UI. Just answer a few basic questions on how your app is built, and we'll build the `.gitlab-ci.yml` file to get you started.
 
     This is the first time we're using our new [Pipeline Wizard](https://docs.gitlab.com/ee/development/cicd/pipeline_wizard.html), a tool that makes it easy to create `.gitlab-ci.yml` files by building them in the GitLab UI. You can look forward to more simplified onboarding helpers like this one.
-  stage: create # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Free, Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/project/pages/getting_started/pages_ui.html' # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/15_4/create-pages-onboarding.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2022-09-22 # YYYY-MM-DD
-  release: 15.4 # XX.Y
-- name: "More powerful Linux machine types for GitLab SaaS runners" # Match the release post entry
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/pages/getting_started/pages_ui.html'  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_4/create-pages-onboarding.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-09-22  # YYYY-MM-DD
+  release: 15.4  # XX.Y
+- name: "More powerful Linux machine types for GitLab SaaS runners"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     When you run jobs on GitLab SaaS Linux runners, you now have access to more powerful machine types: medium and large. With these two machine types, you have more choices for your GitLab SaaS CI/CD jobs. And with 100% job isolation on an ephemeral virtual machine, and security and autoscaling fully managed by GitLab, you can confidently run your critical CI/CD jobs on GitLab SaaS.
-  stage: create # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: false # Boolean value (true or false)
-  gitlab-com: true # Boolean value (true or false)
-  available_in: [Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html' # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/15_4/select-multiple-gitlab-saas-linux-runners.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2022-09-22 # YYYY-MM-DD
-  release: 15.4 # XX.Y
-- name: "Limit the maximum number of custom domains per project" # Match the release post entry
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: false  # Boolean value (true or false)
+  gitlab-com: true  # Boolean value (true or false)
+  available_in: [Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html'  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_4/select-multiple-gitlab-saas-linux-runners.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-09-22  # YYYY-MM-DD
+  release: 15.4  # XX.Y
+- name: "Limit the maximum number of custom domains per project"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
     You can use GitLab Pages to define custom domains for your website. Too many custom domains, however, can result in slow response times from the Pages API and impact the overall reliability of the service. Now you can limit the maximum number of custom domains per project at the instance level and strike the right balance for your needs. The default value is `0` (unlimited).
-  stage: create # String value of the stage that the feature was created in. e.g., Growth
-  self-managed: true # Boolean value (true or false)
-  gitlab-com: false # Boolean value (true or false)
-  available_in: [Free, Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/administration/pages/#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project' # This is the documentation URL, but can be a URL to a video if there is one
-  image_url: https://about.gitlab.com/images/15_4/create-pages-domain-limits.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
-  published_at: 2022-09-22 # YYYY-MM-DD
-  release: 15.4 # XX.Y
+  stage: create  # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: false  # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate]  # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/administration/pages/#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project'  # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/15_4/create-pages-domain-limits.png  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2022-09-22  # YYYY-MM-DD
+  release: 15.4  # XX.Y

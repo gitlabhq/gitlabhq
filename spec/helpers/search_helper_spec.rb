@@ -861,8 +861,8 @@ RSpec.describe SearchHelper do
       where(:feature_flag_tab_enabled, :show_elasticsearch_tabs, :project_search_tabs, :condition) do
         false                           | false                   | false                  | false
         true                            | true                    | true                   | true
-        true                            | false                   | false                  | true
-        false                           | true                    | false                  | true
+        true                            | false                   | false                  | false
+        false                           | true                    | false                  | false
         false                           | false                   | true                   | true
         true                            | false                   | true                   | true
       end

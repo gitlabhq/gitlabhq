@@ -1028,7 +1028,11 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 
 ## sign in
 
-Use **sign in** instead of **sign on** or **log on** or **log in**. If the user interface has different words, use those.
+Use **sign in** or **sign in to**.
+
+Do not use **sign on** or **sign into**, or **log on**, **log in**, or **log into**.
+
+If the user interface has different words, use those.
 
 You can use **single sign-on**.
 

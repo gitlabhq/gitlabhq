@@ -61,7 +61,7 @@
     # always trigger smoke suite if review pipeline got triggered by specific changes in application code
     - <<: *app-changes
       variables:
-        QA_TESTS: "" # unset QA_TESTS even if specific tests were inferred from stage label
+        QA_TESTS: ""  # unset QA_TESTS even if specific tests were inferred from stage label
     - *qa-run-all-tests
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - *qa-manual
@@ -77,7 +77,7 @@
     # always trigger blocking suite if review pipeline got triggered by specific changes in application code
     - <<: *app-changes
       variables:
-        QA_TESTS: "" # unset QA_TESTS even if specific tests were inferred from stage label
+        QA_TESTS: ""  # unset QA_TESTS even if specific tests were inferred from stage label
     - !reference [.never-when-specific-specs-always-when-qa-run-all-tests]
     - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
 
@@ -88,7 +88,7 @@
 .rules:qa-non-blocking-parallel:
   rules:
     - !reference [.never-when-specific-specs-always-when-qa-run-all-tests]
-    - *all-specs-mr # set full suite to manual when no specific specs passed in mr
+    - *all-specs-mr  # set full suite to manual when no specific specs passed in mr
     - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
 
 # ------------------------------------------

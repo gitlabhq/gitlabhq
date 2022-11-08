@@ -91,7 +91,7 @@ review-build-cng:
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
     GITLAB_HELM_CHART_REF: "138c146a5ba787942f66d4c7d795d224d6ba206a"
   environment:
-    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
+    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
     auto_stop_in: 48 hours
@@ -172,7 +172,7 @@ review-stop:
   extends:
     - .review-stop-base
     - .review:rules:review-stop
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: deploy
   needs: []
   script:

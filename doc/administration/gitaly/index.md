@@ -219,6 +219,8 @@ The availability objectives for Gitaly clusters assuming a single node failure a
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
 
+Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/groups/gitlab-org/-/epics/8903).
+
 WARNING:
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
 RPO and RTO discussed above.

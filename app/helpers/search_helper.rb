@@ -431,7 +431,7 @@ module SearchHelper
   def search_navigation
     {
       projects: {       sort: 1, label: _("Projects"),                 data: { qa_selector: 'projects_tab' }, condition: @project.nil? },
-      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: project_search_tabs?(:blobs) || search_service.show_elasticsearch_tabs? || feature_flag_tab_enabled?(:global_search_code_tab) },
+      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: project_search_tabs?(:blobs) || (search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_code_tab)) },
       #  sort: 3 is reserved for EE items
       issues: {         sort: 4, label: _("Issues"),                   condition: project_search_tabs?(:issues) || feature_flag_tab_enabled?(:global_search_issues_tab) },
       merge_requests: { sort: 5, label: _("Merge requests"),           condition: project_search_tabs?(:merge_requests) || feature_flag_tab_enabled?(:global_search_merge_requests_tab) },

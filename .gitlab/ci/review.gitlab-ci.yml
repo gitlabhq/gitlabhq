@@ -3,10 +3,10 @@ review-cleanup:
     - .default-retry
     - .review:rules:review-cleanup
   image: ${REVIEW_APPS_IMAGE}
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: prepare
   environment:
-    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
+    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     action: stop
   before_script:
     - source scripts/utils.sh
@@ -23,7 +23,7 @@ review-cleanup:
 start-review-app-pipeline:
   extends:
     - .review:rules:start-review-app-pipeline
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: review
   needs:
     - job: e2e-test-pipeline-generate

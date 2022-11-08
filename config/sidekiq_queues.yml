@@ -299,6 +299,8 @@
   - 1
 - - merge_requests_create_approval_note
   - 1
+- - merge_requests_delete_branch
+  - 1
 - - merge_requests_delete_source_branch
   - 1
 - - merge_requests_execute_approval_hooks

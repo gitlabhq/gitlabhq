@@ -41,9 +41,9 @@
 #
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   end_of_support_date:  # (optional) The date of the milestone release when support for this feature will end.
-#
-# OTHER OPTIONAL FIELDS
-#
+  #
+  # OTHER OPTIONAL FIELDS
+  #
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url:  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature

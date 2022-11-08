@@ -2703,6 +2703,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_delete_branch
+  :worker_name: MergeRequests::DeleteBranchWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_delete_source_branch
   :worker_name: MergeRequests::DeleteSourceBranchWorker
   :feature_category: :source_code_management

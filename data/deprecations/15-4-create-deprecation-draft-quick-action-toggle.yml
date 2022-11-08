@@ -2,11 +2,11 @@
   announcement_milestone: "15.4"  # (required) The milestone when this feature was first announced as deprecated.
   announcement_date: "2022-09-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2022-05-22"# (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_date: "2022-05-22"  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: phikai  # (required) GitLab username of the person reporting the deprecation
   stage: create  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365365 # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365365  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     In order to make the behavior of toggling the draft status of a merge request more clear via a quick action, we're deprecating and removing the toggle behavior of the `/draft` quick action. Beginning with the 16.0 release of GitLab, `/draft` will only set a merge request to Draft and a new `/ready` quick action will be used to remove the draft status.
-  documentation_url: # (optional) This is a link to the current documentation page
+  documentation_url:  # (optional) This is a link to the current documentation page
