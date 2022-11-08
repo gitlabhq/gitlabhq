@@ -38,7 +38,7 @@ GitLab supports several ways of adding a new OAuth 2 application to an instance:
 - [Instance-wide applications](#instance-wide-applications)
 
 The only difference between these methods is the [permission](../user/permissions.md)
-levels. The default callback URL is `http://your-gitlab.example.com/users/auth/gitlab/callback`.
+levels. The default callback URL is `https://your-gitlab.example.com/users/auth/gitlab/callback` (you can also use a non-SSL URL, but you should use SSL URLs).
 
 ## User owned applications
 

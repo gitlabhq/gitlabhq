@@ -614,6 +614,16 @@ ldap_group.member_dns
 ldap_group.member_uids
 ```
 
+#### LDAP synchronization does not remove group creator from group
+
+[LDAP synchronization](ldap_synchronization.md) should remove an LDAP group's creator
+from that group, if that user does not exist in the group. If running LDAP synchronization
+does not do this:
+
+1. Add the user to the LDAP group.
+1. Wait until LDAP group synchronization has finished running.
+1. Remove the user from the LDAP group.
+
 ### User DN or/and email have changed
 
 When an LDAP user is created in GitLab, their LDAP DN is stored for later reference.

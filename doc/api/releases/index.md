@@ -364,6 +364,59 @@ Example response:
 }
 ```
 
+## Download a release asset
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+
+Download a release asset file by making a request with the following format:
+
+```plaintext
+GET /projects/:id/releases/:tag_name/downloads/:filepath
+```
+
+| Attribute                  | Type           | Required | Description                                                                         |
+|----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
+| `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding).  |
+| `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
+| `filepath`                 | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/downloads/bin/asset.exe"
+```
+
+### Get the latest release
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+
+Latest release information is accessible through a permanent API URL.
+
+The format of the URL is:
+
+```plaintext
+GET /projects/:id/releases/permalink/latest
+```
+
+To call any other GET API that requires a release tag, append a suffix to the `permalink/latest` API path.
+
+For example, to get latest [release evidence](#collect-release-evidence) you can use:
+
+```plaintext
+GET /projects/:id/releases/permalink/latest/evidence
+```
+
+Another example is [downloading an asset](#download-a-release-asset) of the latest release, for which you can use:
+
+```plaintext
+GET /projects/:id/releases/permalink/latest/downloads/bin/asset.exe
+```
+
+#### Sorting preferences
+
+By default, GitLab fetches the release using `released_at` time. The use of the query parameter
+`?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in issue 352945](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
+
 ## Create a release
 
 Creates a release. Developer level access to the project is required to create a release.

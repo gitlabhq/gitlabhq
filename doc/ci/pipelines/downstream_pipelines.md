@@ -586,6 +586,10 @@ trigger-job:
 The `UPSTREAM_BRANCH` variable, which contains the value of the upstream pipeline's `$CI_COMMIT_REF_NAME`
 predefined CI/CD variable, is available in the downstream pipeline.
 
+Do not use this method to pass [masked variables](../variables/index.md#mask-a-cicd-variable)
+to a multi-project pipeline. The CI/CD masking configuration is not passed to the
+downstream pipeline and the variable could be unmasked in job logs in the downstream project.
+
 You cannot use this method to forward [job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
 to a downstream pipeline, as they are not available in trigger jobs.
 

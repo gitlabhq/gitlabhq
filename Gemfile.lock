@@ -510,7 +510,7 @@ GEM
     fog-json (1.2.0)
       fog-core
       multi_json (~> 1.10)
-    fog-local (0.6.0)
+    fog-local (0.8.0)
       fog-core (>= 1.27, < 3.0)
     fog-openstack (1.0.8)
       fog-core (~> 2.1)
@@ -1616,7 +1616,7 @@ DEPENDENCIES
   fog-aws (~> 3.15)
   fog-core (= 2.1.0)
   fog-google (~> 1.15)
-  fog-local (~> 0.6)
+  fog-local (~> 0.8)
   fog-openstack (~> 1.0)
   fog-rackspace (~> 0.1.1)
   fugit (~> 1.2.1)

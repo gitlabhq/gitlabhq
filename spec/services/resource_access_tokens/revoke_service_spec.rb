@@ -29,35 +29,13 @@ RSpec.describe ResourceAccessTokens::RevokeService do
         expect(resource.reload.users).not_to include(resource_bot)
       end
 
-      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-        it 'initiates user removal' do
-          subject
+      it 'initiates user removal' do
+        subject
 
-          expect(
-            Users::GhostUserMigration.where(user: resource_bot,
-                                            initiator_user: user)
-          ).to be_exists
-        end
-      end
-
-      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-        before do
-          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-        end
-
-        it 'transfer issuables of bot user to ghost user' do
-          issue = create(:issue, author: resource_bot)
-
-          subject
-
-          expect(issue.reload.author.ghost?).to be true
-        end
-
-        it 'deletes project bot user' do
-          subject
-
-          expect(User.exists?(resource_bot.id)).to be_falsy
-        end
+        expect(
+          Users::GhostUserMigration.where(user: resource_bot,
+                                          initiator_user: user)
+        ).to be_exists
       end
 
       it 'logs the event' do

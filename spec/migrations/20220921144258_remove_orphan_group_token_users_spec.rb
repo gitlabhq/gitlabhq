@@ -34,11 +34,7 @@ RSpec.describe RemoveOrphanGroupTokenUsers, :migration, :sidekiq_inline do
   let(:members) { table(:members) }
   let(:namespaces) { table(:namespaces) }
 
-  before do
-    stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-  end
-
-  it 'removes orphan project bot and its tokens', :aggregate_failures do
+  it 'initiates orphan project bot removal', :aggregate_failures do
     expect(DeleteUserWorker)
       .to receive(:perform_async)
             .with(orphan_bot.id, orphan_bot.id, skip_authorization: true)
@@ -46,7 +42,8 @@ RSpec.describe RemoveOrphanGroupTokenUsers, :migration, :sidekiq_inline do
 
     migrate!
 
-    expect(users.count).to eq 2
+    expect(Users::GhostUserMigration.where(user: orphan_bot)).to be_exists
+    expect(users.count).to eq 3
     expect(personal_access_tokens.count).to eq 2
     expect(personal_access_tokens.find_by(user_id: orphan_bot.id)).to eq nil
   end

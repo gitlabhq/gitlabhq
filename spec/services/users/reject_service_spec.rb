@@ -35,29 +35,14 @@ RSpec.describe Users::RejectService do
 
     context 'success' do
       context 'when the executor user is an admin in admin mode', :enable_admin_mode do
-        context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-          it 'initiates user removal', :sidekiq_inline do
-            subject
+        it 'initiates user removal', :sidekiq_inline do
+          subject
 
-            expect(subject[:status]).to eq(:success)
-            expect(
-              Users::GhostUserMigration.where(user: user,
-                                              initiator_user: current_user)
-            ).to be_exists
-          end
-        end
-
-        context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-          before do
-            stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-          end
-
-          it 'deletes the user', :sidekiq_inline do
-            subject
-
-            expect(subject[:status]).to eq(:success)
-            expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
-          end
+          expect(subject[:status]).to eq(:success)
+          expect(
+            Users::GhostUserMigration.where(user: user,
+                                            initiator_user: current_user)
+          ).to be_exists
         end
 
         it 'emails the user on rejection' do

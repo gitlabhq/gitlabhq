@@ -306,6 +306,7 @@ globally or for individual jobs:
 
 - [`GIT_STRATEGY`](#git-strategy)
 - [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)
+- [`GIT_SUBMODULE_PATHS`](#sync-or-exclude-specific-submodules-from-ci-jobs)
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
@@ -563,6 +564,34 @@ WARNING:
 You should be aware of the implications for the security, stability, and reproducibility of
 your builds when using the `--remote` flag. In most cases, it is better to explicitly track
 submodule commits as designed, and update them using an auto-remediation/dependency bot.
+
+### Sync or exclude specific submodules from CI jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26495) in GitLab Runner 14.0.
+
+Some projects have a large number of submodules, and not all of them need to be
+synced or updated in all CI jobs. Use the `GIT_SUBMODULE_PATHS` variable to control this behavior.
+The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
+
+- To sync and update specific paths:
+
+  ```yaml
+  variables:
+     GIT_SUBMODULE_PATHS: 'submoduleA'
+  ```
+
+- To exclude specific paths:
+
+  ```yaml
+  variables:
+     GIT_SUBMODULE_PATHS: ':(exclude)submoduleA'
+  ```
+
+WARNING:
+Git ignores nested and multiple submodule paths. To ignore a nested submodule, exclude 
+the parent submodule and then manually clone it in the job's scripts. For example,
+ `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
+to wrap the string in single quotes so the YAML can be parsed successfully.
 
 ### Shallow cloning
 

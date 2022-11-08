@@ -19,10 +19,11 @@ GitLab.com generates an application ID and secret key for you to use.
    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
    - Redirect URI:
 
-   ```plaintext
-   http://your-gitlab.example.com/import/gitlab/callback
-   http://your-gitlab.example.com/users/auth/gitlab/callback
-   ```
+     ```plaintext
+     # You can also use a non-SSL URL, but you should use SSL URLs.
+     https://your-gitlab.example.com/import/gitlab/callback
+     https://your-gitlab.example.com/users/auth/gitlab/callback
+     ```
 
    The first link is required for the importer and second for authentication.
 

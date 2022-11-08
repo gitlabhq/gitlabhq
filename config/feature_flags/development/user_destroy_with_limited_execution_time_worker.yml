@@ -1,8 +1,0 @@
----
-name: user_destroy_with_limited_execution_time_worker
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97141
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373138
-milestone: '15.4'
-type: development
-group: group::authentication and authorization
-default_enabled: false

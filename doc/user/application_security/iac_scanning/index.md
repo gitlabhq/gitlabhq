@@ -100,7 +100,7 @@ To configure IaC Scanning for a project you can:
 ### Configure IaC Scanning manually
 
 To enable IaC Scanning you must [include](../../../ci/yaml/index.md#includetemplate) the
-[`SAST-IaC.gitlab-ci.yml template`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
+[`SAST-IaC.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml) provided as part of your GitLab installation. Here is an example of how to include it:
 
 ```yaml
 include:
@@ -124,6 +124,36 @@ To enable IaC Scanning in a project, you can create a merge request:
 1. Review and merge the merge request to enable IaC Scanning.
 
 Pipelines now include an IaC job.
+
+## Pinning to specific analyzer version
+
+The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
+
+In some cases, you may need to use a specific version.
+For example, you might need to avoid a regression in a later release.
+
+To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
+in your CI/CD configuration file after you include the [`SAST-IaC.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml).
+
+Only set this variable within a specific job.
+If you set it [at the top level](../../../ci/variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+
+You can set the tag to:
+
+- A major version, like `3`. Your pipelines will use any minor or patch updates that are released within this major version.
+- A minor version, like `3.7`. Your pipelines will use any patch updates that are released within this minor version.
+- A patch version, like `3.7.0`. Your pipelines won't receive any updates.
+
+This example uses a specific minor version of the `KICS` analyzer:
+
+```yaml
+include:
+  - template: Security/SAST-IaC.gitlab-ci.yml
+
+kics-iac-sast:
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: "3.1"
+```
 
 ## Reports JSON format
 

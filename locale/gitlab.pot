@@ -30665,22 +30665,58 @@ msgstr ""
 msgid "PreScanVerification|(optional)"
 msgstr ""
 
+msgid "PreScanVerification|Attempts to authenticate with the scan target"
+msgstr ""
+
+msgid "PreScanVerification|Attempts to find and connect to the scan target"
+msgstr ""
+
+msgid "PreScanVerification|Attempts to follow internal links and crawl 3 pages without errors"
+msgstr ""
+
+msgid "PreScanVerification|Authentication"
+msgstr ""
+
+msgid "PreScanVerification|Cancel pre-scan verification"
+msgstr ""
+
+msgid "PreScanVerification|Connection"
+msgstr ""
+
+msgid "PreScanVerification|Download results"
+msgstr ""
+
 msgid "PreScanVerification|Last run %{timeAgo} in pipeline"
 msgstr ""
 
 msgid "PreScanVerification|Pre-scan verification"
 msgstr ""
 
+msgid "PreScanVerification|Save and run verification"
+msgstr ""
+
 msgid "PreScanVerification|Started %{timeAgo} in pipeline"
 msgstr ""
 
+msgid "PreScanVerification|Target exploration"
+msgstr ""
+
 msgid "PreScanVerification|Test your configuration and identify potential errors before running a full scan."
+msgstr ""
+
+msgid "PreScanVerification|Verification checks"
+msgstr ""
+
+msgid "PreScanVerification|Verification checks are determined by a scan’s configuration details. Changing configuration details may alter or reset the verification checks and their status."
 msgstr ""
 
 msgid "PreScanVerification|Verify configuration"
 msgstr ""
 
 msgid "PreScanVerification|View results"
+msgstr ""
+
+msgid "PreScanVerification|You must complete the scan configuration form before running pre-scan verification"
 msgstr ""
 
 msgid "Preferences"
