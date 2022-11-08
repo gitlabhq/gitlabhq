@@ -9,6 +9,7 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { getWorkItemQuery } from '../utils';
+import workItemDescriptionSubscription from '../graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
@@ -71,7 +72,15 @@ export default {
         this.descriptionHtml = this.workItemDescription?.descriptionHtml;
       },
       error() {
-        this.error = i18n.fetchError;
+        this.$emit('error', i18n.fetchError);
+      },
+      subscribeToMore: {
+        document: workItemDescriptionSubscription,
+        variables() {
+          return {
+            issuableId: this.workItemId,
+          };
+        },
       },
     },
   },
@@ -233,7 +242,6 @@ export default {
           ></textarea>
         </template>
       </markdown-field>
-
       <div class="gl-display-flex">
         <gl-button
           category="primary"

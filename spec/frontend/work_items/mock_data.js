@@ -519,6 +519,28 @@ export const workItemTitleSubscriptionResponse = {
   },
 };
 
+export const workItemDescriptionSubscriptionResponse = {
+  data: {
+    issuableDescriptionUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetDescription',
+          type: 'DESCRIPTION',
+          description: 'New description',
+          descriptionHtml: '<p>New description</p>',
+          lastEditedAt: '2022-09-21T06:18:42Z',
+          lastEditedBy: {
+            id: 'gid://gitlab/User/2',
+            name: 'Someone else',
+            webPath: '/not-you',
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const workItemWeightSubscriptionResponse = {
   data: {
     issuableWeightUpdated: {

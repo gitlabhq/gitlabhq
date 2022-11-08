@@ -1,0 +1,20 @@
+subscription issuableDescription($issuableId: IssuableID!) {
+  issuableDescriptionUpdated(issuableId: $issuableId) {
+    ... on WorkItem {
+      id
+      widgets {
+        ... on WorkItemWidgetDescription {
+          type
+          description
+          descriptionHtml
+          lastEditedAt
+          lastEditedBy {
+            id
+            name
+            webPath
+          }
+        }
+      }
+    }
+  }
+}

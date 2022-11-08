@@ -12,11 +12,9 @@ module QA
       end
 
       let!(:group) do
-        group = QA::Resource::Group.fabricate_via_api! do |group|
+        QA::Resource::Group.fabricate_via_api! do |group|
           group.path = "group-to-test-access-termination-#{SecureRandom.hex(8)}"
         end
-        group.sandbox.add_member(user)
-        group
       end
 
       let!(:project) do
@@ -27,22 +25,18 @@ module QA
         end
       end
 
-      context 'for after parent group membership termination' do
+      context 'when parent group membership is terminated' do
         before do
-          Flow::Login.while_signed_in_as_admin do
-            group.sandbox.visit!
+          group.add_member(user)
 
-            Page::Group::Menu.perform(&:click_group_members_item)
+          Flow::Login.while_signed_in_as_admin do
+            group.visit!
+
+            Page::Group::Menu.perform(&:click_subgroup_members_item)
             Page::Group::Members.perform do |members_page|
               members_page.remove_member(user.username)
             end
           end
-        end
-
-        after do
-          user.remove_via_api!
-          project.remove_via_api!
-          group.remove_via_api!
         end
 
         it 'is not allowed to edit the project files',

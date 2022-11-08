@@ -12,10 +12,12 @@ import WorkItemDescription from '~/work_items/components/work_item_description.v
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemDescriptionSubscription from '~/work_items/graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   updateWorkItemMutationResponse,
+  workItemDescriptionSubscriptionResponse,
   workItemResponseFactory,
   workItemQueryResponse,
   projectWorkItemResponse,
@@ -32,6 +34,7 @@ describe('WorkItemDescription', () => {
   Vue.use(VueApollo);
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+  const subscriptionHandler = jest.fn().mockResolvedValue(workItemDescriptionSubscriptionResponse);
   const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   let workItemResponseHandler;
 
@@ -58,6 +61,7 @@ describe('WorkItemDescription', () => {
       apolloProvider: createMockApollo([
         [workItemQuery, workItemResponseHandler],
         [updateWorkItemMutation, mutationHandler],
+        [workItemDescriptionSubscription, subscriptionHandler],
         [workItemByIidQuery, workItemByIidResponseHandler],
       ]),
       propsData: {
@@ -84,6 +88,16 @@ describe('WorkItemDescription', () => {
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  it('has a subscription', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    expect(subscriptionHandler).toHaveBeenCalledWith({
+      issuableId: workItemQueryResponse.data.workItem.id,
+    });
   });
 
   describe('editing description', () => {

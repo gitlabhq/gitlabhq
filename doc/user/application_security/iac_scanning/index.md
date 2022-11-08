@@ -123,7 +123,87 @@ To enable IaC Scanning in a project, you can create a merge request:
 1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure with a merge request**.
 1. Review and merge the merge request to enable IaC Scanning.
 
-Pipelines now include an IaC job.
+Pipelines now include an IaC Scanning job.
+
+## Customize rulesets **(ULTIMATE)**
+
+> [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
+
+You can customize the default IaC Scanning rules provided with GitLab.
+
+The following customization options can be used separately, or together:
+
+- [Disable predefined rules](#disable-predefined-analyzer-rules).
+- [Override predefined rules](#override-predefined-analyzer-rules).
+
+### Disable predefined analyzer rules
+
+If there are specific IaC Scanning rules that you don't want active, you can disable them.
+
+To disable analyzer rules:
+
+1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
+1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory, if
+   one doesn't already exist.
+1. Set the `disabled` flag to `true` in the context of a `ruleset` section.
+1. In one or more `ruleset.identifier` subsections, list the rules to disable. Every
+   `ruleset.identifier` section has:
+   - A `type` field for the rule. For IaC Scanning, the identifier type is `kics_id`.
+   - A `value` field for the rule identifier. KICS rule identifiers are alphanumeric strings. To find the rule identifier, you can:
+     - Find it in the [JSON report artifact](#reports-json-format).
+     - Search for the rule name in the [list of KICS queries](https://docs.kics.io/latest/queries/all-queries/) and copy the alphanumeric identifier that's shown. The rule name is shown on the [Vulnerability Page](../vulnerabilities/index.md) when a rule violation is detected.
+
+In the following example `sast-ruleset.toml` file, the disabled rules are assigned to
+the `kics` analyzer by matching the `type` and `value` of identifiers:
+
+```toml
+[kics]
+  [[kics.ruleset]]
+    disable = true
+    [kics.ruleset.identifier]
+      type = "kics_id"
+      value = "8212e2d7-e683-49bc-bf78-d6799075c5a7"
+```
+
+### Override predefined analyzer rules
+
+If there are specific IaC Scanning rules you want to customize, you can override them. For
+example, you might lower the severity of a rule or link to your own documentation about how to fix a finding.
+
+To override rules:
+
+1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
+1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory, if
+   one doesn't already exist.
+1. In one or more `ruleset.identifier` subsections, list the rules to override. Every
+   `ruleset.identifier` section has:
+   - A `type` field for the rule. For IaC Scanning, the identifier type is `kics_id`.
+   - A `value` field for the rule identifier. KICS rule identifiers are alphanumeric strings. To find the rule identifier, you can:
+     - Find it in the [JSON report artifact](#reports-json-format).
+     - Search for the rule name in the [list of KICS queries](https://docs.kics.io/latest/queries/all-queries/) and copy the alphanumeric identifier that's shown. The rule name is shown on the [Vulnerability Page](../vulnerabilities/index.md) when a rule violation is detected.
+1. In the `ruleset.override` context of a `ruleset` section,
+   provide the keys to override. Any combination of keys can be
+   overridden. Valid keys are:
+   - description
+   - message
+   - name
+   - severity (valid options are: Critical, High, Medium, Low, Unknown, Info)
+
+In the following example `sast-ruleset.toml` file, rules are matched by the `type` and
+`value` of identifiers and then overridden:
+
+```toml
+[kics]
+  [[kics.ruleset]]
+    [kics.ruleset.identifier]
+      type = "kics_id"
+      value = "8212e2d7-e683-49bc-bf78-d6799075c5a7"
+    [kics.ruleset.override]
+      description = "OVERRIDDEN description"
+      message = "OVERRIDDEN message"
+      name = "OVERRIDDEN name"
+      severity = "Info"
+```
 
 ## Pinning to specific analyzer version
 
