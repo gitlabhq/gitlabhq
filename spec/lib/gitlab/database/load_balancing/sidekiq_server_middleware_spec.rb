@@ -358,7 +358,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
   end
 
   def process_job(job)
-    Sidekiq::JobRetry.new.local(worker_class, job.to_json, 'default') do
+    Sidekiq::JobRetry.new(Sidekiq).local(worker_class, job.to_json, 'default') do
       worker_class.process_job(job)
     end
   end

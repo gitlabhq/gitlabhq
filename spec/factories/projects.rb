@@ -252,6 +252,7 @@ FactoryBot.define do
       transient do
         create_templates { nil }
         create_branch { nil }
+        create_tag { nil }
       end
 
       after :create do |project, evaluator|
@@ -286,6 +287,13 @@ FactoryBot.define do
             message: 'Add README.md',
             branch_name: evaluator.create_branch)
 
+        end
+
+        if evaluator.create_tag
+          project.repository.add_tag(
+            project.creator,
+            evaluator.create_tag,
+            project.repository.commit.sha)
         end
 
         project.track_project_repository

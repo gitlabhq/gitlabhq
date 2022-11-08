@@ -11,6 +11,7 @@ module API
                             documentation: { type: 'boolean' }
         expose :masked?, as: :masked, if: -> (entity, _) { entity.respond_to?(:masked?) },
                          documentation: { type: 'boolean' }
+        expose :raw?, as: :raw, if: -> (entity, _) { entity.respond_to?(:raw?) }, documentation: { type: 'boolean' }
         expose :environment_scope, if: -> (entity, _) { entity.respond_to?(:environment_scope) },
                                    documentation: { type: 'string', example: '*' }
       end

@@ -3,8 +3,10 @@
 module Gitlab
   module SidekiqMiddleware
     class ArgumentsLogger
+      include Sidekiq::ServerMiddleware
+
       def call(worker, job, queue)
-        Sidekiq.logger.info "arguments: #{Gitlab::Json.dump(job['args'])}"
+        logger.info "arguments: #{Gitlab::Json.dump(job['args'])}"
         yield
       end
     end

@@ -59,12 +59,16 @@ module API
                   desc: 'The value of a variable'
 
                 optional :protected,
-                  type: String,
+                  type: Boolean,
                   desc: 'Whether the variable is protected'
 
                 optional :masked,
-                  type: String,
+                  type: Boolean,
                   desc: 'Whether the variable is masked'
+
+                optional :raw,
+                  type: Boolean,
+                  desc: 'Whether the variable will be expanded'
 
                 optional :variable_type,
                   type: String,
@@ -99,12 +103,16 @@ module API
                   desc: 'The value of a variable'
 
                 optional :protected,
-                  type: String,
+                  type: Boolean,
                   desc: 'Whether the variable is protected'
 
                 optional :masked,
-                  type: String,
+                  type: Boolean,
                   desc: 'Whether the variable is masked'
+
+                optional :raw,
+                  type: Boolean,
+                  desc: 'Whether the variable will be expanded'
 
                 optional :variable_type,
                   type: String,

@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import ResultsFilters from '~/search/sidebar/components/results_filters.vue';
+import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
 
 Vue.use(Vuex);
 
@@ -15,7 +16,7 @@ describe('GlobalSearchSidebar', () => {
     resetQuery: jest.fn(),
   };
 
-  const createComponent = (initialState) => {
+  const createComponent = (initialState, featureFlags) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -26,6 +27,11 @@ describe('GlobalSearchSidebar', () => {
 
     wrapper = shallowMount(GlobalSearchSidebar, {
       store,
+      provide: {
+        glFeatures: {
+          ...featureFlags,
+        },
+      },
     });
   };
 
@@ -35,6 +41,7 @@ describe('GlobalSearchSidebar', () => {
 
   const findSidebarSection = () => wrapper.find('section');
   const findFilters = () => wrapper.findComponent(ResultsFilters);
+  const findSidebarNavigation = () => wrapper.findComponent(ScopeNavigation);
 
   describe('renders properly', () => {
     describe('scope=projects', () => {
@@ -76,6 +83,24 @@ describe('GlobalSearchSidebar', () => {
       it('shows filters', () => {
         expect(findFilters().exists()).toBe(true);
       });
+    });
+  });
+
+  describe('when search_page_vertical_nav is enabled', () => {
+    beforeEach(() => {
+      createComponent({}, { searchPageVerticalNav: true });
+    });
+    it('shows the vertical navigation', () => {
+      expect(findSidebarNavigation().exists()).toBe(true);
+    });
+  });
+
+  describe('when search_page_vertical_nav is disabled', () => {
+    beforeEach(() => {
+      createComponent({}, { searchPageVerticalNav: false });
+    });
+    it('hides the vertical navigation', () => {
+      expect(findSidebarNavigation().exists()).toBe(false);
     });
   });
 });

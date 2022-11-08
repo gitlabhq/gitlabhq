@@ -126,7 +126,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
       stub_const("#{described_class}::CHECK_INTERVAL_SECONDS", check_interval_seconds)
       stub_const("#{described_class}::GRACE_BALLOON_SECONDS", grace_balloon_seconds)
       allow(Process).to receive(:getpgrp).and_return(pid)
-      allow(Sidekiq).to receive(:options).and_return(timeout: 9)
+      allow(Sidekiq).to receive(:[]).with(:timeout).and_return(9)
     end
 
     it 'return true when everything is within limit', :aggregate_failures do
@@ -257,7 +257,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
       before do
         stub_const("#{described_class}::SHUTDOWN_TIMEOUT_SECONDS", shutdown_timeout_seconds)
         stub_feature_flags(sidekiq_memory_killer_read_only_mode: false)
-        allow(Sidekiq).to receive(:options).and_return(timeout: 9)
+        allow(Sidekiq).to receive(:[]).with(:timeout).and_return(9)
         allow(memory_killer).to receive(:get_rss_kb).and_return(100)
         allow(memory_killer).to receive(:get_soft_limit_rss_kb).and_return(200)
         allow(memory_killer).to receive(:get_hard_limit_rss_kb).and_return(300)

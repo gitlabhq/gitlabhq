@@ -1,0 +1,27 @@
+# frozen_string_literal: true
+
+BLUEPRINT_LABEL = 'Architecture Evolution Blueprint'
+
+return unless helper.ci?
+
+blueprint_changes = helper.changed_files(%r{^doc/architecture/blueprints/.*})
+
+BLUEPRINT_SHORT_MESSAGE = <<~MSG
+This merge request requires a review from an [Architecture Evolution Coach](https://about.gitlab.com/handbook/engineering/architecture/workflow/).
+MSG
+
+BLUEPRINT_LONG_MESSAGE = <<~MSG
+## Architecture Evolution Review
+
+#{BLUEPRINT_SHORT_MESSAGE}
+
+Following files, that may require the additional review, have been changed:
+#{helper.markdown_list(blueprint_changes.to_set)}
+MSG
+
+if blueprint_changes.any?
+  message(BLUEPRINT_SHORT_MESSAGE)
+  markdown(BLUEPRINT_LONG_MESSAGE)
+
+  helper.labels_to_add.push(BLUEPRINT_LABEL) unless helper.mr_has_labels?(BLUEPRINT_LABEL)
+end

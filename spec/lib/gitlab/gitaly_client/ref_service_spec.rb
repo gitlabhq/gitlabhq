@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::RefService do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, create_tag: 'test') }
 
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
@@ -438,12 +438,28 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     it 'sends a find_refs_by_oid message' do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_refs_by_oid)
-        .with(gitaly_request_with_params(sort_field: 'refname', oid: oid, limit: 1), kind_of(Hash))
+        .with(gitaly_request_with_params(sort_field: 'refname',
+                                         oid: oid,
+                                         limit: 1), kind_of(Hash))
         .and_call_original
 
       refs = client.find_refs_by_oid(oid: oid, limit: 1)
 
       expect(refs.to_a).to eq([Gitlab::Git::BRANCH_REF_PREFIX + project.repository.root_ref])
+    end
+
+    it 'filters by ref_patterns' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_refs_by_oid)
+        .with(gitaly_request_with_params(sort_field: 'refname',
+                                         oid: oid,
+                                         limit: 1,
+                                         ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]), kind_of(Hash))
+        .and_call_original
+
+      refs = client.find_refs_by_oid(oid: oid, limit: 1, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX])
+
+      expect(refs.to_a).to eq([Gitlab::Git::TAG_REF_PREFIX + 'test'])
     end
   end
 end

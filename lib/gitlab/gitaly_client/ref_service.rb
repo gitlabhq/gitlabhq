@@ -232,8 +232,8 @@ module Gitlab
         GitalyClient.call(@storage, :ref_service, :pack_refs, request, timeout: GitalyClient.long_timeout)
       end
 
-      def find_refs_by_oid(oid:, limit:)
-        request = Gitaly::FindRefsByOIDRequest.new(repository: @gitaly_repo, sort_field: :refname, oid: oid, limit: limit)
+      def find_refs_by_oid(oid:, limit:, ref_patterns: nil)
+        request = Gitaly::FindRefsByOIDRequest.new(repository: @gitaly_repo, sort_field: :refname, oid: oid, limit: limit, ref_patterns: ref_patterns)
 
         response = GitalyClient.call(@storage, :ref_service, :find_refs_by_oid, request, timeout: GitalyClient.medium_timeout)
         response&.refs&.to_a

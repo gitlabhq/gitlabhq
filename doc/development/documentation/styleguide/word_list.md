@@ -1230,6 +1230,25 @@ Instead of:
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
+## while
+
+Use **while** to refer only to something occurring in time. For example,
+**Leave the window open while the process runs.**
+
+Do not use **while** for comparison. For example, use:
+
+- Job 1 can run quickly. However, job 2 is more precise.
+
+Instead of:
+
+- While job 1 can run quickly, job 2 is more precise.
+
+For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/w/while).
+
+## whilst
+
+Do not use **whilst**. Use [while](#while) instead. **While** is more succinct and easier for non-native English speakers to understand.
+
 ## whitelist
 
 Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))

@@ -118,9 +118,9 @@ module Gitlab
         return unless enabled?
 
         # Tell sidekiq to restart itself
-        # Keep extra safe to wait `Sidekiq.options[:timeout] + 2` seconds before SIGKILL
+        # Keep extra safe to wait `Sidekiq[:timeout] + 2` seconds before SIGKILL
         refresh_state(:shutting_down)
-        signal_and_wait(Sidekiq.options[:timeout] + 2, 'SIGTERM', 'gracefully shut down')
+        signal_and_wait(Sidekiq[:timeout] + 2, 'SIGTERM', 'gracefully shut down')
         return unless enabled?
 
         # Ideally we should never reach this condition

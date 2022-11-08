@@ -226,7 +226,6 @@ module Types
           Types::IssueType.connection_type,
           null: true,
           description: 'Issues of the project.',
-          extras: [:lookahead],
           resolver: Resolvers::ProjectIssuesResolver
 
     field :work_items,

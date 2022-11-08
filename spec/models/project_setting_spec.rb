@@ -6,6 +6,10 @@ RSpec.describe ProjectSetting, type: :model do
   using RSpec::Parameterized::TableSyntax
   it { is_expected.to belong_to(:project) }
 
+  describe 'default values' do
+    it { expect(subject.legacy_open_source_license_available).to be_truthy }
+  end
+
   describe 'scopes' do
     let_it_be(:project_1) { create(:project) }
     let_it_be(:project_2) { create(:project) }

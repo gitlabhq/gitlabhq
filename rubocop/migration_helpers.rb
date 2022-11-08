@@ -49,6 +49,14 @@ module RuboCop
       dirname(node).end_with?('db/post_migrate', 'db/geo/post_migrate')
     end
 
+    # Returns true if we've defined an 'EnforcedSince' variable in rubocop.yml and the migration version
+    # is greater.
+    def time_enforced?(node)
+      return false unless enforced_since
+
+      version(node) > enforced_since
+    end
+
     def version(node)
       File.basename(node.location.expression.source_buffer.name).split('_').first.to_i
     end
@@ -79,6 +87,10 @@ module RuboCop
 
     def rubocop_path
       File.expand_path(__dir__)
+    end
+
+    def enforced_since
+      @enforced_since ||= config.for_cop(name)['EnforcedSince']
     end
   end
 end

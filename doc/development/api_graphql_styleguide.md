@@ -1294,15 +1294,25 @@ class MyThingResolver < BaseResolver
 end
 ```
 
-The final thing that is needed is that every field that uses this resolver needs
-to advertise the need for lookahead:
+The `LooksAhead` concern also provides basic support for preloading associations based on nested GraphQL field
+definitions. The [WorkItemsResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/e824a7e39e08a83fb162db6851de147cf0bfe14a/app/graphql/resolvers/work_items_resolver.rb#L46)
+is a good example for this. `nested_preloads` is another method you can define to return a hash, but unlike the
+`preloads` method, the value for each hash key is another hash and not the list of associations to preload. So in
+the previous example, you could override `nested_preloads` like this:
 
 ```ruby
-  # in ParentType
-  field :my_things, MyThingType.connection_type, null: true,
-        extras: [:lookahead], # Necessary
-        resolver: MyThingResolver,
-        description: 'My things.'
+class MyThingResolver < BaseResolver
+  # ...
+
+  def nested_preloads
+    {
+      root_field: {
+        nested_field1: :association_to_preload,
+        nested_field2: [:association1, :association2]
+      }
+    }
+  end
+end
 ```
 
 For an example of real world use, please

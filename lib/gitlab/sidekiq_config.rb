@@ -162,7 +162,7 @@ module Gitlab
       # the current Sidekiq process
       def current_worker_queue_mappings
         worker_queue_mappings
-          .select { |worker, queue| Sidekiq.options[:queues].include?(queue) }
+          .select { |worker, queue| Sidekiq[:queues].include?(queue) }
           .to_h
       end
 

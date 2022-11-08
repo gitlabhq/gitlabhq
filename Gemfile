@@ -217,10 +217,10 @@ gem 'state_machines-activerecord', '~> 0.8.0'
 gem 'acts-as-taggable-on', '~> 9.0'
 
 # Background jobs
-gem 'sidekiq', '~> 6.4.0'
+gem 'sidekiq', '~> 6.5.7'
 gem 'sidekiq-cron', '~> 1.8.0'
 gem 'redis-namespace', '~> 1.9.0'
-gem 'gitlab-sidekiq-fetcher', '0.8.0', require: 'sidekiq-reliable-fetch'
+gem 'gitlab-sidekiq-fetcher', '0.9.0', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
 gem 'fugit', '~> 1.2.1'

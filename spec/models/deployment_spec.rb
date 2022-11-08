@@ -1323,9 +1323,12 @@ RSpec.describe Deployment do
     subject { deployment.tags }
 
     it 'will return tags related to this deployment' do
-      expect(project.repository).to receive(:tag_names_contains).with(deployment.sha, limit: 100).and_return(['test'])
+      expect(project.repository).to receive(:refs_by_oid).with(oid: deployment.sha,
+                                                               limit: 100,
+                                                               ref_patterns: [Gitlab::Git::TAG_REF_PREFIX])
+                                                         .and_return(["#{Gitlab::Git::TAG_REF_PREFIX}test"])
 
-      is_expected.to match_array(['test'])
+      is_expected.to match_array(['refs/tags/test'])
     end
   end
 

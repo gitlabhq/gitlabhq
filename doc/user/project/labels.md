@@ -410,7 +410,7 @@ To subscribe to a label:
 1. To the right of any label, select **Subscribe**.
 1. Optional. If you are subscribing to a group label from a project, select either:
    - **Subscribe at project level** to be notified about events in this project.
-   - **Subscribe at group level**: to be notified about events in the whole group.
+   - **Subscribe at group level** to be notified about events in the whole group.
 
 ## Set label priority
 

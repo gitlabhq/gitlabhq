@@ -71,7 +71,8 @@ RSpec.describe ::API::Admin::Ci::Variables do
               key: 'TEST_VARIABLE_2',
               value: 'PROTECTED_VALUE_2',
               protected: true,
-              masked: true
+              masked: true,
+              raw: true
             }
         end.to change { ::Ci::InstanceVariable.count }.by(1)
 
@@ -80,6 +81,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
         expect(json_response['value']).to eq('PROTECTED_VALUE_2')
         expect(json_response['protected']).to be_truthy
         expect(json_response['masked']).to be_truthy
+        expect(json_response['raw']).to be_truthy
         expect(json_response['variable_type']).to eq('env_var')
       end
 
@@ -107,6 +109,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_falsey
         expect(json_response['masked']).to be_falsey
+        expect(json_response['raw']).to be_falsey
         expect(json_response['variable_type']).to eq('file')
       end
 
@@ -162,7 +165,8 @@ RSpec.describe ::API::Admin::Ci::Variables do
             variable_type: 'file',
             value: 'VALUE_1_UP',
             protected: true,
-            masked: true
+            masked: true,
+            raw: true
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -170,6 +174,7 @@ RSpec.describe ::API::Admin::Ci::Variables do
         expect(variable.reload).to be_protected
         expect(json_response['variable_type']).to eq('file')
         expect(json_response['masked']).to be_truthy
+        expect(json_response['raw']).to be_truthy
       end
 
       it 'masks the new value when logging' do

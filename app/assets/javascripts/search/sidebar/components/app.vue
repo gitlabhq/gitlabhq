@@ -1,6 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SCOPE_ISSUES, SCOPE_MERGE_REQUESTS } from '../constants';
 import ResultsFilters from './results_filters.vue';
 
@@ -10,6 +11,7 @@ export default {
     ResultsFilters,
     ScopeNavigation,
   },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['urlQuery']),
     showFilters() {
@@ -21,7 +23,7 @@ export default {
 
 <template>
   <section class="search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4 gl-mb-6 gl-mt-5">
-    <scope-navigation />
+    <scope-navigation v-if="glFeatures.searchPageVerticalNav" />
     <results-filters v-if="showFilters" />
   </section>
 </template>

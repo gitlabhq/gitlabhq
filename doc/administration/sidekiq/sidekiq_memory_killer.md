@@ -64,5 +64,5 @@ The MemoryKiller is controlled using environment variables.
 
   If the process hard shutdown/restart is not performed by Sidekiq,
   the Sidekiq process is forcefully terminated after
-  `Sidekiq.options[:timeout] + 2` seconds. An external supervision mechanism
+  `Sidekiq[:timeout] + 2` seconds. An external supervision mechanism
   (for example, runit) must restart Sidekiq afterwards.

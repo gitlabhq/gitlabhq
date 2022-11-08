@@ -35,19 +35,19 @@ enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero?
 
 Sidekiq.configure_server do |config|
-  config.options[:strict] = false
-  config.options[:queues] = Gitlab::SidekiqConfig.expand_queues(config.options[:queues])
+  config[:strict] = false
+  config[:queues] = Gitlab::SidekiqConfig.expand_queues(config[:queues])
 
   if enable_json_logs
     config.log_formatter = Gitlab::SidekiqLogging::JSONFormatter.new
-    config.options[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
+    config[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
 
     # Remove the default-provided handler. The exception is logged inside
     # Gitlab::SidekiqLogging::StructuredLogger
-    config.error_handlers.reject! { |handler| handler.is_a?(Sidekiq::ExceptionHandler::Logger) }
+    config.error_handlers.delete(Sidekiq::DEFAULT_ERROR_HANDLER)
   end
 
-  Sidekiq.logger.info "Listening on queues #{config.options[:queues].uniq.sort}"
+  Sidekiq.logger.info "Listening on queues #{config[:queues].uniq.sort}"
 
   config.redis = queues_config_hash
 
@@ -84,13 +84,13 @@ Sidekiq.configure_server do |config|
   end
 
   if enable_reliable_fetch?
-    config.options[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
+    config[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
 
   Gitlab::SidekiqVersioning.install!
 
-  config.options[:cron_poll_interval] = Gitlab.config.cron_jobs.poll_interval
+  config[:cron_poll_interval] = Gitlab.config.cron_jobs.poll_interval
   load_cron_jobs!
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'

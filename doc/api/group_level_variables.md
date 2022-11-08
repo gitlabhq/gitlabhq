@@ -32,6 +32,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "value": "TEST_1",
         "protected": false,
         "masked": false,
+        "raw": false,
         "environment_scope": "*"
     },
     {
@@ -40,6 +41,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "value": "TEST_2",
         "protected": false,
         "masked": false,
+        "raw": false,
         "environment_scope": "*"
     }
 ]
@@ -69,6 +71,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "value": "TEST_1",
     "protected": false,
     "masked": false,
+    "raw": false,
     "environment_scope": "*"
 }
 ```
@@ -89,6 +92,7 @@ POST /groups/:id/variables
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
 | `masked`        | boolean | no       | Whether the variable is masked |
+| `raw`           | boolean | no       | Whether the variable is expandable |
 | `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 
 ```shell
@@ -103,6 +107,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
     "variable_type": "env_var",
     "protected": false,
     "masked": false,
+    "raw": false,
     "environment_scope": "*"
 }
 ```
@@ -123,6 +128,7 @@ PUT /groups/:id/variables/:key
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file` |
 | `protected`     | boolean | no       | Whether the variable is protected |
 | `masked`        | boolean | no       | Whether the variable is masked |
+| `raw`           | boolean | no       | Whether the variable is expandable |
 | `environment_scope` **(PREMIUM)** | string | no | The [environment scope](../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
 
 ```shell
@@ -137,6 +143,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
     "variable_type": "env_var",
     "protected": true,
     "masked": true,
+    "raw": true,
     "environment_scope": "*"
 }
 ```

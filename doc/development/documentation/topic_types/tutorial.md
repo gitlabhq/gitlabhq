@@ -4,7 +4,7 @@ group: Style Guide
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial topic type
+# Tutorial page type
 
 A tutorial is page that contains an end-to-end walkthrough of a complex workflow or scenario.
 In general, you might consider using a tutorial when:
@@ -77,3 +77,14 @@ you can:
 - Use future tense from time to time, especially when you're introducing
   steps. For example, `Next, you will associate your issues with your epics`.
 - Be more conversational. For example, `This task might take a while to complete`.
+
+## Metadata
+
+On pages that are tutorials, add the most appropriate `stage:` and `group:` metadata at the top of the file.
+If the majority of the content does not align with a single group, specify `none` for the stage
+and `Tutorials` for the group:
+
+```plaintext
+stage: none
+group: Tutorials
+```

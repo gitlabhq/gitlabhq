@@ -26,7 +26,7 @@ class ProjectSetting < ApplicationRecord
 
   validate :validates_mr_default_target_self
 
-  default_value_for(:legacy_open_source_license_available) do
+  attribute :legacy_open_source_license_available, default: -> do
     Feature.enabled?(:legacy_open_source_license_available, type: :ops)
   end
 

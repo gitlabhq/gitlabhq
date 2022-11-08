@@ -439,8 +439,9 @@ class Deployment < ApplicationRecord
   end
 
   # default tag limit is 100, 0 means no limit
+  # when refs_by_oid is passed an SHA, returns refs for that commit
   def tags(limit: 100)
-    project.repository.tag_names_contains(sha, limit: limit)
+    project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]) || []
   end
   strong_memoize_attr :tags
 

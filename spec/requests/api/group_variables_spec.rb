@@ -90,7 +90,7 @@ RSpec.describe API::GroupVariables do
 
       it 'creates variable' do
         expect do
-          post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true }
+          post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true, raw: true }
         end.to change { group.variables.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
@@ -100,6 +100,7 @@ RSpec.describe API::GroupVariables do
         expect(json_response['masked']).to be_truthy
         expect(json_response['variable_type']).to eq('env_var')
         expect(json_response['environment_scope']).to eq('*')
+        expect(json_response['raw']).to be_truthy
       end
 
       it 'masks the new value when logging' do
@@ -121,6 +122,7 @@ RSpec.describe API::GroupVariables do
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_falsey
         expect(json_response['masked']).to be_falsey
+        expect(json_response['raw']).to be_falsey
         expect(json_response['variable_type']).to eq('file')
         expect(json_response['environment_scope']).to eq('*')
       end
@@ -161,7 +163,7 @@ RSpec.describe API::GroupVariables do
         initial_variable = group.variables.reload.first
         value_before = initial_variable.value
 
-        put api("/groups/#{group.id}/variables/#{variable.key}", user), params: { variable_type: 'file', value: 'VALUE_1_UP', protected: true, masked: true }
+        put api("/groups/#{group.id}/variables/#{variable.key}", user), params: { variable_type: 'file', value: 'VALUE_1_UP', protected: true, masked: true, raw: true }
 
         updated_variable = group.variables.reload.first
 
@@ -171,6 +173,7 @@ RSpec.describe API::GroupVariables do
         expect(updated_variable).to be_protected
         expect(json_response['variable_type']).to eq('file')
         expect(json_response['masked']).to be_truthy
+        expect(json_response['raw']).to be_truthy
       end
 
       it 'masks the new value when logging' do

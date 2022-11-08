@@ -5,6 +5,16 @@ require 'spec_helper'
 RSpec.describe ::Serverless::DomainCluster do
   subject { create(:serverless_domain_cluster) }
 
+  describe 'default values' do
+    subject(:domain_cluster) { build(:serverless_domain_cluster) }
+
+    before do
+      allow(::Serverless::Domain).to receive(:generate_uuid).and_return('randomtoken')
+    end
+
+    it { expect(domain_cluster.uuid).to eq('randomtoken') }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:pages_domain) }
     it { is_expected.to validate_presence_of(:knative) }

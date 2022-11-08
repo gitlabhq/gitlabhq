@@ -15,10 +15,10 @@ RSpec.shared_context 'when handling retried jobs' do |url|
       'retry' => true
     )
 
-    allow(klass).to receive(:sidekiq_retry_in_block).and_return(proc { time })
+    allow(klass).to receive(:sidekiq_retry_in_block).and_return(proc { time.to_i })
 
     begin
-      Sidekiq::JobRetry.new.local(klass, message, klass.queue) { raise 'boom' }
+      Sidekiq::JobRetry.new(Sidekiq).local(klass, message, klass.queue) { raise 'boom' }
     rescue Sidekiq::JobRetry::Skip
       # Sidekiq scheduled the retry
     end

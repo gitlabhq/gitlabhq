@@ -758,7 +758,7 @@ If you are running GitLab 14.4 and earlier:
 
    To promote the **secondary** cluster to a **primary** cluster, update `role: secondary` to `role: primary`.
 
-   If the cluster remains as a primary site, you can remove the entire `psql` section; it refers to the tracking database and is ignored whilst the cluster is acting as a primary site.
+   If the cluster remains as a primary site, you can remove the entire `psql` section; it refers to the tracking database and is ignored while the cluster is acting as a primary site.
 
    Update the cluster with the new configuration:
 
