@@ -8,3 +8,9 @@ glfm-verify:
   script:
     - !reference [.base-script, script]
     - bundle exec scripts/glfm/verify-all-generated-files-are-up-to-date.rb
+  artifacts:
+    name: changed-files
+    when: on_failure
+    expire_in: 31d
+    paths:
+      - glfm_specification/

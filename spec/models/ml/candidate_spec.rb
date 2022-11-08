@@ -18,10 +18,8 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
     it { is_expected.to eq("/ml_candidate_#{candidate.iid}/-/") }
   end
 
-  describe '#new' do
-    it 'iid is not null' do
-      expect(candidate.iid).not_to be_nil
-    end
+  describe 'default values' do
+    it { expect(described_class.new.iid).to be_present }
   end
 
   describe '#by_project_id_and_iid' do

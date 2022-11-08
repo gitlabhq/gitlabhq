@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe SystemHook do
   context 'default attributes' do
-    let(:system_hook) { build(:system_hook) }
+    let(:system_hook) { described_class.new }
 
     it 'sets defined default parameters' do
       attrs = {

@@ -16,6 +16,11 @@ RSpec.describe Operations::FeatureFlag do
     it { is_expected.to have_many(:strategies) }
   end
 
+  describe 'default values' do
+    it { expect(described_class.new).to be_active }
+    it { expect(described_class.new.version).to eq('new_version_flag') }
+  end
+
   describe '.reference_pattern' do
     subject { described_class.reference_pattern }
 

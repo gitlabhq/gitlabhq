@@ -52,10 +52,13 @@ RSpec.describe Glfm::VerifyAllGeneratedFilesAreUpToDate, '#process' do
       before do
         # Simulate a clean repo, then simulate changes to generated files
         allow(subject).to receive(:run_external_cmd).twice.with(verify_cmd).and_return('', "M #{snapshots_path}")
+        allow(subject).to receive(:run_external_cmd).with('git diff')
+        allow(subject).to receive(:warn).and_call_original
       end
 
       it 'raises an error', :unlimited_max_formatted_output_length do
-        expect { subject.process }.to raise_error(/following files were modified.*#{snapshots_path}/m)
+        expect(subject).to receive(:warn).with(/following files were modified.*#{snapshots_path}/m)
+        expect { subject.process }.to raise_error(/The generated files are not up to date/)
       end
     end
   end

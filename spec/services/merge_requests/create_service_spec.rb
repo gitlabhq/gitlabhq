@@ -336,6 +336,12 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
       it_behaves_like 'reviewer_ids filter' do
         let(:execute) { service.execute }
       end
+
+      context 'when called in a transaction' do
+        it 'does not raise an error' do
+          expect { MergeRequest.transaction { described_class.new(project: project, current_user: user, params: opts).execute } }.not_to raise_error
+        end
+      end
     end
 
     it_behaves_like 'issuable record that supports quick actions' do

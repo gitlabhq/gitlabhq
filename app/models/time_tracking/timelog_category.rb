@@ -24,8 +24,7 @@ module TimeTracking
 
     DEFAULT_COLOR = ::Gitlab::Color.of('#6699cc')
 
-    attribute :color, ::Gitlab::Database::Type::Color.new
-    default_value_for :color, DEFAULT_COLOR
+    attribute :color, ::Gitlab::Database::Type::Color.new, default: DEFAULT_COLOR
 
     def self.find_by_name(namespace_id, name)
       where(namespace: namespace_id)

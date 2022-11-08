@@ -56,6 +56,11 @@ export const approvalRulesMock = [
   },
 ];
 
+export const statusChecksRulesMock = [
+  { __typename: 'StatusCheckRule', id: '123', name: 'test', externalUrl: 'https://test.test' },
+  { __typename: 'StatusCheckRule', id: '456', name: 'test 2', externalUrl: 'https://test2.test2' },
+];
+
 export const protectionPropsMock = {
   header: 'Test protection',
   headerLinkTitle: 'Test link title',
@@ -64,6 +69,7 @@ export const protectionPropsMock = {
   users: usersMock,
   groups: groupsMock,
   approvals: approvalRulesMock,
+  statusChecks: statusChecksRulesMock,
 };
 
 export const protectionRowPropsMock = {
@@ -71,6 +77,7 @@ export const protectionRowPropsMock = {
   users: usersMock,
   accessLevels: accessLevelsMock,
   approvalsRequired,
+  statusCheckUrl: statusChecksRulesMock[0].externalUrl,
 };
 
 export const accessLevelsMockResponse = [

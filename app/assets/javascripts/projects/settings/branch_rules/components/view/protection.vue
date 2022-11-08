@@ -46,6 +46,11 @@ export default {
       required: false,
       default: () => [],
     },
+    statusChecks: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     showUsersDivider() {
@@ -94,6 +99,15 @@ export default {
       :title="approval.name"
       :users="approval.eligibleApprovers.nodes"
       :approvals-required="approval.approvalsRequired"
+    />
+
+    <!-- Status checks -->
+    <protection-row
+      v-for="(statusCheck, index) in statusChecks"
+      :key="statusCheck.id"
+      :show-divider="index !== 0"
+      :title="statusCheck.name"
+      :status-check-url="statusCheck.externalUrl"
     />
   </gl-card>
 </template>

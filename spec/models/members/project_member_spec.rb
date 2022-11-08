@@ -13,6 +13,10 @@ RSpec.describe ProjectMember do
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
 
+  describe 'default values' do
+    it { expect(described_class.new.source_type).to eq('Project') }
+  end
+
   describe 'delegations' do
     it { is_expected.to delegate_method(:namespace_id).to(:project) }
   end

@@ -14,8 +14,7 @@ class Label < ApplicationRecord
 
   DEFAULT_COLOR = ::Gitlab::Color.of('#6699cc')
 
-  attribute :color, ::Gitlab::Database::Type::Color.new
-  default_value_for :color, DEFAULT_COLOR
+  attribute :color, ::Gitlab::Database::Type::Color.new, default: DEFAULT_COLOR
 
   has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'

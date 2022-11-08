@@ -13,7 +13,7 @@ module Ml
     has_many :params, class_name: 'Ml::CandidateParam'
     has_many :latest_metrics, -> { latest }, class_name: 'Ml::CandidateMetric', inverse_of: :candidate
 
-    default_value_for(:iid) { SecureRandom.uuid }
+    attribute :iid, default: -> { SecureRandom.uuid }
 
     scope :including_metrics_and_params, -> { includes(:latest_metrics, :params) }
 

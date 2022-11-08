@@ -60,7 +60,7 @@ class Note < ApplicationRecord
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
 
-  default_value_for :system, false
+  attribute :system, default: false
 
   attr_mentionable :note, pipeline: :note
   participant :author

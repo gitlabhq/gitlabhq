@@ -41,6 +41,11 @@ export default {
       required: false,
       default: 0,
     },
+    statusCheckUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     avatarBadgeSrOnlyText() {
@@ -67,7 +72,7 @@ export default {
     class="gl-display-flex gl-align-items-center gl-border-gray-100 gl-mb-4 gl-pt-4 gl-border-t-1"
     :class="{ 'gl-border-t-solid': showDivider }"
   >
-    <div class="gl-display-flex gl-w-half gl-justify-content-space-between gl-align-items-center">
+    <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-align-items-center">
       <div class="gl-mr-7 gl-w-quarter">{{ title }}</div>
 
       <gl-avatars-inline
@@ -94,6 +99,8 @@ export default {
         </template>
       </gl-avatars-inline>
 
+      <div v-if="statusCheckUrl" class="gl-ml-7 gl-flex-grow-1">{{ statusCheckUrl }}</div>
+
       <div
         v-for="(item, index) in accessLevels"
         :key="index"
@@ -104,7 +111,7 @@ export default {
         {{ item.accessLevelDescription }}
       </div>
 
-      <div class="gl-ml-7 gl-w-quarter">{{ approvalsRequiredTitle }}</div>
+      <div class="gl-ml-7 gl-flex-grow-1">{{ approvalsRequiredTitle }}</div>
     </div>
   </div>
 </template>

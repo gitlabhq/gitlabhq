@@ -24,6 +24,11 @@ export const I18N = {
     'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Lean more.%{linkEnd}',
   ),
   statusChecksTitle: s__('BranchRules|Status checks'),
+  statusChecksDescription: s__(
+    'BranchRules|Check for a status response in merge requests. Failures do not block merges. %{linkStart}Lean more.%{linkEnd}',
+  ),
+  statusChecksLinkTitle: s__('BranchRules|Manage in Status checks'),
+  statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
   allowedToPushHeader: s__('BranchRules|Allowed to push (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
   approvalsHeader: s__('BranchRules|Required approvals (%{total})'),
@@ -40,3 +45,5 @@ export const WILDCARDS_HELP_PATH =
 export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
 
 export const APPROVALS_HELP_PATH = 'user/project/merge_requests/approvals/index.md';
+
+export const STATUS_CHECKS_HELP_PATH = 'user/project/merge_requests/status_checks.md';

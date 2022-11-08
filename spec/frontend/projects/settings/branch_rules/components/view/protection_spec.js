@@ -65,4 +65,15 @@ describe('Branch rule protection', () => {
       approvalsRequired: approval.approvalsRequired,
     });
   });
+
+  it('renders a protection row for status checks', () => {
+    const statusCheck = protectionPropsMock.statusChecks[0];
+    expect(findProtectionRows().at(4).props()).toMatchObject({
+      title: statusCheck.name,
+      showDivider: false,
+      statusCheckUrl: statusCheck.externalUrl,
+    });
+
+    expect(findProtectionRows().at(5).props('showDivider')).toBe(true);
+  });
 });
