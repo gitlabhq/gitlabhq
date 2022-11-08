@@ -8,20 +8,13 @@
     %p
       = description
   .settings-content
-    - if Feature.enabled?(:ajax_new_deploy_token, group_or_project)
-      #js-new-deploy-token{ data: {
-          container_registry_enabled: container_registry_enabled?(group_or_project),
-          packages_registry_enabled: packages_registry_enabled?(group_or_project),
-          create_new_token_path: create_deploy_token_path(group_or_project),
-          token_type: group_or_project.is_a?(Group) ? 'group' : 'project',
-          deploy_tokens_help_url: help_page_path('user/project/deploy_tokens/index.md')
-        }
+    #js-new-deploy-token{ data: {
+        container_registry_enabled: container_registry_enabled?(group_or_project),
+        packages_registry_enabled: packages_registry_enabled?(group_or_project),
+        create_new_token_path: create_deploy_token_path(group_or_project),
+        token_type: group_or_project.is_a?(Group) ? 'group' : 'project',
+        deploy_tokens_help_url: help_page_path('user/project/deploy_tokens/index.md')
       }
-    - else
-      - if @created_deploy_token
-        = render 'shared/deploy_tokens/new_deploy_token', deploy_token: @created_deploy_token
-      %h5.gl-mt-0
-        = s_('DeployTokens|New deploy token')
-      = render 'shared/deploy_tokens/form', group_or_project: group_or_project, token: @new_deploy_token, presenter: @deploy_tokens
+    }
     %hr
     = render 'shared/deploy_tokens/table', group_or_project: group_or_project, active_tokens: @deploy_tokens

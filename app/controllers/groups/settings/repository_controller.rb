@@ -8,9 +8,6 @@ module Groups
       before_action :authorize_create_deploy_token!, only: :create_deploy_token
       before_action :authorize_access!, only: :show
       before_action :define_deploy_token_variables, if: -> { can?(current_user, :create_deploy_token, @group) }
-      before_action do
-        push_frontend_feature_flag(:ajax_new_deploy_token, @group)
-      end
 
       feature_category :continuous_delivery
       urgency :low

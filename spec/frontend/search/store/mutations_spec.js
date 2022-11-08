@@ -1,13 +1,20 @@
 import * as types from '~/search/store/mutation_types';
 import mutations from '~/search/store/mutations';
 import createState from '~/search/store/state';
-import { MOCK_QUERY, MOCK_GROUPS, MOCK_PROJECTS } from '../mock_data';
+import {
+  MOCK_QUERY,
+  MOCK_GROUPS,
+  MOCK_PROJECTS,
+  MOCK_NAVIGATION_DATA,
+  MOCK_NAVIGATION_ACTION_MUTATION,
+  MOCK_DATA_FOR_NAVIGATION_ACTION_MUTATION,
+} from '../mock_data';
 
 describe('Global Search Store Mutations', () => {
   let state;
 
   beforeEach(() => {
-    state = createState({ query: MOCK_QUERY });
+    state = createState({ query: MOCK_QUERY, navigation: MOCK_NAVIGATION_DATA });
   });
 
   describe('REQUEST_GROUPS', () => {
@@ -88,6 +95,17 @@ describe('Global Search Store Mutations', () => {
       mutations[types.LOAD_FREQUENT_ITEMS](state, payload);
 
       expect(state.frequentItems[payload.key]).toStrictEqual(payload.data);
+    });
+  });
+
+  describe('RECEIVE_NAVIGATION_COUNT', () => {
+    it('sets frequentItems[key] to data', () => {
+      const { payload } = MOCK_NAVIGATION_ACTION_MUTATION;
+      mutations[types.RECEIVE_NAVIGATION_COUNT](state, payload);
+
+      expect(state.navigation[payload.key]).toStrictEqual(
+        MOCK_DATA_FOR_NAVIGATION_ACTION_MUTATION[payload.key],
+      );
     });
   });
 });

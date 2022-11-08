@@ -12,7 +12,6 @@ module Projects
       before_action :check_builds_available!
       before_action :define_variables
       before_action do
-        push_frontend_feature_flag(:ajax_new_deploy_token, @project)
         push_frontend_feature_flag(:ci_variable_settings_graphql, @project)
       end
 

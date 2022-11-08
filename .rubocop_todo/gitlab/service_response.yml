@@ -1,6 +1,5 @@
 ---
 Gitlab/ServiceResponse:
-  Details: grace period
   Exclude:
     - 'app/services/alert_management/metric_images/upload_service.rb'
     - 'app/services/analytics/cycle_analytics/stages/base_service.rb'

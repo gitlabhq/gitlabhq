@@ -1,47 +1,28 @@
 {{- /* Modify Vale's output https://docs.errata.ai/vale/cli#--output */ -}}
 
-{{- /* Keep track of our various counts */ -}}
+{{- $fileIndexes := len .Files -}}
+{{- $fileIndexes = sub $fileIndexes 1 -}}
 
-{{- $e := 0 -}}
-{{- $w := 0 -}}
-{{- $s := 0 -}}
-{{- $f := 0 -}}
-
-{{- /* Range over the linted files */ -}}
-
-{{- range .Files}}
-
-{{- $f = add1 $f -}}
-{{- $path := .Path -}}
-
-{{- /* Range over the file's alerts */ -}}
 [
+  {{- /* Range over the linted files */ -}}
+  {{- range $idx1, $a := .Files -}}
+    {{- $path := .Path -}}
 
-{{- range $idx, $a := .Alerts -}}
+    {{/* Range over the file's alerts */}}
+    {{- range $idx2, $b := .Alerts -}}
+      {{- $error := "info" -}}
+      {{- if eq .Severity "error" -}}
+        {{- $error = "blocker" -}}
+      {{- else if eq .Severity "warning" -}}
+        {{- $error = "major" -}}
+      {{- end}}
 
-{{- $error := "" -}}
-{{- if eq .Severity "error" -}}
-    {{- $error = "blocker" -}}
-    {{- $e = add1 $e  -}}
-{{- else if eq .Severity "warning" -}}
-    {{- $error = "major" -}}
-    {{- $w = add1 $w -}}
-{{- else -}}
-    {{- $error ="info" -}}
-    {{- $s = add1 $s -}}
-{{- end}}
+      {{- /* Variables setup */ -}}
+      {{- $loc := printf "%d" .Line -}}
+      {{- $message := printf "%s" .Message -}}
+      {{- if $idx2 -}},{{- end -}}
 
-{{- /* Variables setup */ -}}
-
-{{- $path = $path -}}
-{{- $loc := printf "%d" .Line -}}
-{{- $check := printf "%s" .Check -}}
-{{- $message := printf "%s" .Message -}}
-{{- $link := printf "%s" .Link -}}
-{{- if $idx -}},{{- end -}}
-
-{{- /* Output */ -}}
-
+  {{/* Output */}}
   {
     "description": "{{ $message }}",
     "fingerprint": "{{ $path }}-{{ $loc }}",
@@ -53,6 +34,6 @@
       }
     }
   }
-{{end -}}
-{{end -}}
+    {{- end}}{{- if (lt $idx1 $fileIndexes) -}},{{- end -}}
+  {{- end}}
 ]

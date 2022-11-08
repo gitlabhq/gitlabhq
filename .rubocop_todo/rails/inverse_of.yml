@@ -1,6 +1,5 @@
 ---
 Rails/InverseOf:
-  Details: grace period
   Exclude:
     - 'app/models/alert_management/alert.rb'
     - 'app/models/alert_management/alert_assignee.rb'

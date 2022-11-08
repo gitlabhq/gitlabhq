@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/ExplicitBlockArgument:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/background_migrations_controller.rb'
     - 'app/controllers/admin/batched_jobs_controller.rb'

@@ -11,7 +11,6 @@ RSpec.describe 'Repository Settings > User sees revoke deploy token modal', :js 
   before do
     project.add_role(user, role)
     sign_in(user)
-    stub_feature_flags(ajax_new_deploy_token: project)
     visit(project_settings_repository_path(project))
     click_button('Revoke')
   end

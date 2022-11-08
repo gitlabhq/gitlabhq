@@ -31,13 +31,31 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, urgency: :low do
       desc 'Get a project repository commits' do
-        success Entities::Commit
+        success code: 200, model: Entities::Commit
+        tags %w[commits]
+        is_array true
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
-        optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :since, type: DateTime, desc: 'Only commits after or on this date will be returned'
-        optional :until, type: DateTime, desc: 'Only commits before or on this date will be returned'
-        optional :path, type: String, desc: 'The file path'
+        optional :ref_name,
+                 type: String,
+                 desc: 'The name of a repository branch or tag, if not given the default branch is used',
+                 documentation: { example: 'v1.1.0' }
+        optional :since,
+                 type: DateTime,
+                 desc: 'Only commits after or on this date will be returned',
+                 documentation: { example: '2021-09-20T11:50:22.001' }
+        optional :until,
+                 type: DateTime,
+                 desc: 'Only commits before or on this date will be returned',
+                 documentation: { example: '2021-09-20T11:50:22.001' }
+        optional :path,
+                 type: String,
+                 desc: 'The file path',
+                 documentation: { example: 'README.md' }
         optional :all, type: Boolean, desc: 'Every commit will be returned'
         optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
         optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges'
@@ -81,40 +99,87 @@ module API
       end
 
       desc 'Commit multiple file changes as one commit' do
-        success Entities::CommitDetail
+        success code: 200, model: Entities::CommitDetail
+        tags %w[commits]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' }
+        ]
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`.', allow_blank: false
-        requires :commit_message, type: String, desc: 'Commit message'
-        requires :actions, type: Array, desc: 'Actions to perform in commit' do
-          requires :action, type: String, desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze, allow_blank: false
-          requires :file_path, type: String, desc: 'Full path to the file. Ex. `lib/class.rb`'
+        requires :branch,
+                 type: String,
+                 desc: 'Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`.',
+                 allow_blank: false,
+                 documentation: { example: 'master' }
+        requires :commit_message,
+                 type: String,
+                 desc: 'Commit message',
+                 documentation: { example: 'initial commit' }
+        requires :actions,
+                 type: Array,
+                 desc: 'Actions to perform in commit' do
+          requires :action,
+                   type: String,
+                   desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze,
+                   allow_blank: false
+          requires :file_path,
+                   type: String,
+                   desc: 'Full path to the file.',
+                   documentation: { example: 'lib/class.rb' }
           given action: ->(action) { action == 'move' } do
-            requires :previous_path, type: String, desc: 'Original full path to the file being moved. Ex. `lib/class1.rb`'
+            requires :previous_path,
+                     type: String,
+                     desc: 'Original full path to the file being moved.',
+                     documentation: { example: 'lib/class.rb' }
           end
           given action: ->(action) { %w[create move].include? action } do
-            optional :content, type: String, desc: 'File content'
+            optional :content,
+                     type: String,
+                     desc: 'File content',
+                     documentation: { example: 'Some file content' }
           end
           given action: ->(action) { action == 'update' } do
-            requires :content, type: String, desc: 'File content'
+            requires :content,
+                     type: String,
+                     desc: 'File content',
+                     documentation: { example: 'Some file content' }
           end
           optional :encoding, type: String, desc: '`text` or `base64`', default: 'text', values: %w[text base64]
           given action: ->(action) { %w[update move delete].include? action } do
-            optional :last_commit_id, type: String, desc: 'Last known file commit id'
+            optional :last_commit_id,
+                     type: String,
+                     desc: 'Last known file commit id',
+                     documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
           end
           given action: ->(action) { action == 'chmod' } do
             requires :execute_filemode, type: Boolean, desc: 'When `true/false` enables/disables the execute flag on the file.'
           end
         end
 
-        optional :start_branch, type: String, desc: 'Name of the branch to start the new branch from'
-        optional :start_sha, type: String, desc: 'SHA of the commit to start the new branch from'
+        optional :start_branch,
+                 type: String,
+                 desc: 'Name of the branch to start the new branch from',
+                 documentation: { example: 'staging' }
+        optional :start_sha,
+                 type: String,
+                 desc: 'SHA of the commit to start the new branch from',
+                 documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
         mutually_exclusive :start_branch, :start_sha
 
-        optional :start_project, types: [Integer, String], desc: 'The ID or path of the project to start the new branch from'
-        optional :author_email, type: String, desc: 'Author email for commit'
-        optional :author_name, type: String, desc: 'Author name for commit'
+        optional :start_project,
+                 types: [Integer, String],
+                 desc: 'The ID or path of the project to start the new branch from',
+                 documentation: { example: 1 }
+        optional :author_email,
+                 type: String,
+                 desc: 'Author email for commit',
+                 documentation: { example: 'janedoe@example.com' }
+        optional :author_name,
+                 type: String,
+                 desc: 'Author name for commit',
+                 documentation: { example: 'Jane Doe' }
         optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
         optional :force, type: Boolean, default: false, desc: 'When `true` overwrites the target branch with a new commit based on the `start_branch` or `start_sha`'
       end
@@ -151,8 +216,11 @@ module API
       end
 
       desc 'Get a specific commit of a project' do
-        success Entities::CommitDetail
-        failure [[404, 'Commit Not Found']]
+        success code: 200, model: Entities::CommitDetail
+        tags %w[commits]
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
@@ -167,7 +235,12 @@ module API
       end
 
       desc 'Get the diff for a specific commit of a project' do
-        failure [[404, 'Commit Not Found']]
+        success code: 200, model: Entities::Diff
+        tags %w[commits]
+        is_array true
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
@@ -184,8 +257,12 @@ module API
       end
 
       desc "Get a commit's comments" do
-        success Entities::CommitNote
-        failure [[404, 'Commit Not Found']]
+        success code: 200, model: Entities::CommitNote
+        tags %w[commits]
+        is_array true
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         use :pagination
@@ -202,13 +279,25 @@ module API
 
       desc 'Cherry pick commit into a branch' do
         detail 'This feature was introduced in GitLab 8.15'
-        success Entities::Commit
+        success code: 200, model: Entities::Commit
+        tags %w[commits]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
-        requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
+        requires :branch,
+                 type: String,
+                 desc: 'The name of the branch',
+                 allow_blank: false,
+                 documentation: { example: 'master' }
         optional :dry_run, type: Boolean, default: false, desc: "Does not commit any changes"
-        optional :message, type: String, desc: 'A custom commit message to use for the picked commit'
+        optional :message,
+                 type: String,
+                 desc: 'A custom commit message to use for the picked commit',
+                 documentation: { example: 'Initial commit' }
       end
       post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize_push_to_branch!(params[:branch])
@@ -248,11 +337,20 @@ module API
 
       desc 'Revert a commit in a branch' do
         detail 'This feature was introduced in GitLab 11.5'
-        success Entities::Commit
+        success code: 200, model: Entities::Commit
+        tags %w[commits]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'Commit SHA to revert'
-        requires :branch, type: String, desc: 'Target branch name', allow_blank: false
+        requires :branch,
+                 type: String,
+                 desc: 'Target branch name',
+                 allow_blank: false,
+                 documentation: { example: 'master' }
         optional :dry_run, type: Boolean, default: false, desc: "Does not commit any changes"
       end
       post ':id/repository/commits/:sha/revert', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
@@ -292,7 +390,12 @@ module API
 
       desc 'Get all references a commit is pushed to' do
         detail 'This feature was introduced in GitLab 10.6'
-        success Entities::BasicRef
+        success code: 200, model: Entities::BasicRef
+        tags %w[commits]
+        is_array true
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha'
@@ -312,14 +415,28 @@ module API
       end
 
       desc 'Post comment to commit' do
-        success Entities::CommitNote
+        success  code: 200, model: Entities::CommitNote
+        tags %w[commits]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to post a comment'
-        requires :note, type: String, desc: 'The text of the comment'
-        optional :path, type: String, desc: 'The file path'
+        requires :note,
+                 type: String,
+                 desc: 'The text of the comment',
+                 documentation: { example: 'Nice code!' }
+        optional :path,
+                 type: String,
+                 desc: 'The file path',
+                 documentation: { example: 'doc/update/5.4-to-6.0.md' }
         given :path do
-          requires :line, type: Integer, desc: 'The line number'
+          requires :line,
+                   type: Integer,
+                   desc: 'The line number',
+                   documentation: { example: 11 }
           requires :line_type, type: String, values: %w[new old], default: 'new', desc: 'The type of the line'
         end
       end
@@ -361,7 +478,12 @@ module API
       end
 
       desc 'Get Merge Requests associated with a commit' do
-        success Entities::MergeRequestBasic
+        success code: 200, model: Entities::MergeRequestBasic
+        tags %w[commits]
+        is_array true
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
@@ -383,7 +505,11 @@ module API
       end
 
       desc "Get a commit's signature" do
-        success Entities::CommitSignature
+        success code: 200, model: Entities::CommitSignature
+        tags %w[commits]
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'

@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 RSpec/ScatteredLet:
-  Details: grace period
   Exclude:
     - 'ee/spec/features/boards/user_visits_board_spec.rb'
     - 'ee/spec/features/groups/group_roadmap_spec.rb'

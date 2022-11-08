@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/SingleArgumentDig:
-  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/namespace_projects_resolver.rb'
     - 'app/models/ci/build.rb'

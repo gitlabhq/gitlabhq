@@ -492,20 +492,42 @@ Epics can contain multiple nested child epics, up to a total of 7 levels deep.
 
 The maximum number of direct child epics is 100.
 
+### Child epics from other groups
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8502) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `child_epics_from_different_hierarchies`.
+On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+You can add a child epic that belongs to a group that is different from the parent epic's group.
+
+Prerequisites:
+
+- You must have at least the Reporter role for both the child and parent epics' groups.
+- Multi-level child epics must be available for both the child and parent epics' groups.
+
+To add a child epic from another group, paste the epic's URL when [adding an existing epic](#add-a-child-epic-to-an-epic).
+
 ### Add a child epic to an epic
 
 Prerequisites:
 
 - You must have at least the Reporter role for the parent epic's group.
 
-To add a child epic to an epic:
+To add a new epic as child epic:
 
-1. Select **Add**.
-1. Select **Add a new epic**.
+1. In an epic, in the **Child issues and epics** section, select **Add > Add a new epic**.
+1. Select a group from the dropdown. The epic's group is selected by default.
+1. Enter a title for the new epic.
+1. Select **Create epic**.
+
+To add an existing epic as child epic:
+
+1. In an epic, in the **Child issues and epics** section, select **Add > Add an existing epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
-   - Search for the desired issue by entering part of the epic's title, then selecting the desired
-     match ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9126) in GitLab 12.5).
+   - Search for the desired issue by entering part of the epic's title, then selecting the desired match. This search is only available for epics within the same group hierarchy.
 
    If there are multiple epics to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.

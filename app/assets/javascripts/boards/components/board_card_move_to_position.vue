@@ -1,6 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 
 import Tracking from '~/tracking';
@@ -31,10 +31,13 @@ export default {
       type: Number,
       required: true,
     },
+    listItemsLength: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     ...mapState(['pageInfoByListId']),
-    ...mapGetters(['getBoardItemsByList']),
     tracking() {
       return {
         category: 'boards:list',
@@ -42,14 +45,8 @@ export default {
         property: `type_card`,
       };
     },
-    listItems() {
-      return this.getBoardItemsByList(this.list.id);
-    },
     listHasNextPage() {
       return this.pageInfoByListId[this.list.id]?.hasNextPage;
-    },
-    lengthOfListItemsInBoard() {
-      return this.listItems?.length;
     },
     itemIdentifier() {
       return `${this.item.id}-${this.item.iid}-${this.index}`;
@@ -58,7 +55,7 @@ export default {
       return this.index === 0;
     },
     isLastItemInList() {
-      return this.index === this.lengthOfListItemsInBoard - 1;
+      return this.index === this.listItemsLength - 1;
     },
   },
   methods: {

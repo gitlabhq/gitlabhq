@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Layout/FirstArrayElementIndentation:
-  Details: grace period
   Exclude:
     - 'spec/lib/gitlab/github_import/importer/issues_importer_spec.rb'
     - 'spec/lib/gitlab/search/found_blob_spec.rb'

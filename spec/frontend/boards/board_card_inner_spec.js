@@ -7,7 +7,6 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
-import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { issuableTypes } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
@@ -49,7 +48,6 @@ describe('Board card component', () => {
   const findEpicCountablesTotalWeight = () => wrapper.findByTestId('epic-countables-total-weight');
   const findEpicProgressTooltip = () => wrapper.findByTestId('epic-progress-tooltip-content');
   const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
-  const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
   const findWorkItemIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
   const performSearchMock = jest.fn();
@@ -141,10 +139,6 @@ describe('Board card component', () => {
 
   it('does not render hidden issue icon', () => {
     expect(findHiddenIssueIcon().exists()).toBe(false);
-  });
-
-  it('renders the move to position icon', () => {
-    expect(findMoveToPositionComponent().exists()).toBe(true);
   });
 
   it('does not render the work type icon by default', () => {
@@ -594,11 +588,6 @@ describe('Board card component', () => {
 
       expect(findEpicCountablesTotalWeight().text()).toBe('15');
       expect(findEpicProgressTooltip().text()).toBe('10 of 15 weight completed');
-    });
-
-    it('does not render the move to position icon', () => {
-      createWrapper();
-      expect(findMoveToPositionComponent().exists()).toBe(false);
     });
   });
 });

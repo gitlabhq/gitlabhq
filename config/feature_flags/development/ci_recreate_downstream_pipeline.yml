@@ -1,8 +1,0 @@
----
-name: ci_recreate_downstream_pipeline
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83613
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358409
-milestone: '14.10'
-type: development
-group: group::pipeline authoring
-default_enabled: false

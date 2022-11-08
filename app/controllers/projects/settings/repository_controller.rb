@@ -6,9 +6,6 @@ module Projects
       layout 'project_settings'
       before_action :authorize_admin_project!
       before_action :define_variables, only: [:create_deploy_token]
-      before_action do
-        push_frontend_feature_flag(:ajax_new_deploy_token, @project)
-      end
 
       feature_category :source_code_management, [:show, :cleanup, :update]
       feature_category :continuous_delivery, [:create_deploy_token]

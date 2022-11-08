@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Rails/RedundantForeignKey:
-  Details: grace period
   Exclude:
     - 'app/models/alert_management/metric_image.rb'
     - 'app/models/ci/build.rb'

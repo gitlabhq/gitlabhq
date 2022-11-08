@@ -1,6 +1,5 @@
 ---
 RSpec/FactoryBot/AvoidCreate:
-  Details: grace period
   Exclude:
     - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
     - 'ee/spec/presenters/audit_event_presenter_spec.rb'

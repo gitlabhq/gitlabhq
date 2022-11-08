@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Rails/IndexWith:
-  Details: grace period
   Exclude:
     - 'app/helpers/ci/jobs_helper.rb'
     - 'app/models/ci/build_trace_chunk.rb'

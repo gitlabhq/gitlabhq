@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/BarePercentLiterals:
-  Details: grace period
   Exclude:
     - 'app/models/commit.rb'
     - 'app/models/concerns/storage/legacy_namespace.rb'

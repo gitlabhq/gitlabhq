@@ -27,22 +27,6 @@ RSpec.describe Ci::RetryJobService do
     project.add_reporter(reporter)
   end
 
-  shared_context 'retryable bridge' do
-    let_it_be(:downstream_project) { create(:project, :repository) }
-
-    let_it_be_with_refind(:job) do
-      create(:ci_bridge, :success,
-        pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', ci_stage: stage
-      )
-    end
-
-    let_it_be(:job_to_clone) { job }
-
-    before do
-      job.update!(retried: false)
-    end
-  end
-
   shared_context 'retryable build' do
     let_it_be_with_reload(:job) do
       create(:ci_build, :success, pipeline: pipeline, ci_stage: stage)
@@ -211,20 +195,6 @@ RSpec.describe Ci::RetryJobService do
       expect { service.clone!(create(:ci_build).present) }.to raise_error(TypeError)
     end
 
-    context 'when the job to be cloned is a bridge' do
-      include_context 'retryable bridge'
-
-      it_behaves_like 'clones the job'
-
-      context 'when given variables' do
-        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
-
-        it 'does not give variables to the new bridge' do
-          expect { new_job }.not_to raise_error
-        end
-      end
-    end
-
     context 'when the job to be cloned is a build' do
       include_context 'retryable build'
 
@@ -330,20 +300,6 @@ RSpec.describe Ci::RetryJobService do
     let(:new_job) { subject[:job] }
 
     subject { service.execute(job) }
-
-    context 'when the job to be retried is a bridge' do
-      include_context 'retryable bridge'
-
-      it_behaves_like 'retries the job'
-
-      context 'when given variables' do
-        let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
-
-        it 'does not give variables to the new bridge' do
-          expect { new_job }.not_to raise_error
-        end
-      end
-    end
 
     context 'when the job to be retried is a build' do
       include_context 'retryable build'

@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/NumericLiteralPrefix:
-  Details: grace period
   Exclude:
     - 'app/models/container_repository.rb'
     - 'app/services/packages/debian/generate_distribution_key_service.rb'

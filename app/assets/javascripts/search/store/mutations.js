@@ -32,4 +32,8 @@ export default {
   [types.LOAD_FREQUENT_ITEMS](state, { key, data }) {
     state.frequentItems[key] = data;
   },
+  [types.RECEIVE_NAVIGATION_COUNT](state, { key, count }) {
+    const item = { ...state.navigation[key], count };
+    state.navigation = { ...state.navigation, [key]: item };
+  },
 };

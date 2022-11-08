@@ -10,7 +10,7 @@ milestone: "15.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90468/
 time_frame: 28d
 data_source: redis_hll
-data_category: optional
+data_category: operational
 instrumentation_class: RedisHLLMetric
 options:
   events:

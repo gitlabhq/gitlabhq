@@ -1023,6 +1023,7 @@ RSpec.describe SearchHelper do
 
   describe '.search_navigation_json' do
     using RSpec::Parameterized::TableSyntax
+
     context 'with data' do
       example_data_1 = {
         projects: { label: _("Projects"), condition: true },
@@ -1041,18 +1042,35 @@ RSpec.describe SearchHelper do
       }
 
       where(:data, :matcher) do
-        example_data_1                  | -> { include("projects") }
-        example_data_2                  | -> { eq("{}") }
-        example_data_3                  | -> { include("projects", "blobs", "epics") }
+        example_data_1 | -> { include("projects") }
+        example_data_2 | -> { eq("{}") }
+        example_data_3 | -> { include("projects", "blobs", "epics") }
       end
 
       with_them do
-        it 'converts correctly' do
+        it 'renders data correctly' do
           allow(self).to receive(:search_navigation).with(no_args).and_return(data)
 
           expect(search_navigation_json).to instance_exec(&matcher)
         end
       end
+    end
+  end
+
+  describe '.search_navigation_json with .search_navigation' do
+    before do
+      allow(self).to receive(:current_user).and_return(build(:user))
+      allow(self).to receive(:can?).and_return(true)
+      allow(self).to receive(:project_search_tabs?).and_return(true)
+      allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
+      allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(true)
+      allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
+      @show_snippets = true
+      @project = nil
+    end
+
+    it 'test search navigation item order for CE all options enabled' do
+      expect(Gitlab::Json.parse(search_navigation_json).keys).to eq(%w[projects blobs issues merge_requests wiki_blobs commits notes milestones users snippet_titles])
     end
   end
 

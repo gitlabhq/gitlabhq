@@ -48,6 +48,7 @@ describe('Board Card Move to position', () => {
       propsData: {
         item: mockIssue2,
         list: mockList,
+        listItemsLength: 3,
         index: 0,
         ...propsData,
       },

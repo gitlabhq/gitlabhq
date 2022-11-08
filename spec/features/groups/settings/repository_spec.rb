@@ -23,26 +23,9 @@ RSpec.describe 'Group Repository settings', :js do
       stub_container_registry_config(enabled: true)
     end
 
-    context 'when ajax deploy tokens is enabled' do
-      before do
-        stub_feature_flags(ajax_new_deploy_token: true)
-      end
-
-      it_behaves_like 'a deploy token in settings' do
-        let(:entity_type) { 'group' }
-        let(:page_path) { group_settings_repository_path(group) }
-      end
-    end
-
-    context 'when ajax deploy tokens is disabled' do
-      before do
-        stub_feature_flags(ajax_new_deploy_token: false)
-      end
-
-      it_behaves_like 'a deploy token in settings' do
-        let(:entity_type) { 'group' }
-        let(:page_path) { group_settings_repository_path(group) }
-      end
+    it_behaves_like 'a deploy token in settings' do
+      let(:entity_type) { 'group' }
+      let(:page_path) { group_settings_repository_path(group) }
     end
   end
 

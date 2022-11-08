@@ -26,12 +26,6 @@ class Projects::ArtifactsController < Projects::ApplicationController
     # It should be removed only after resolving the underlying performance
     # issues: https://gitlab.com/gitlab-org/gitlab/issues/32281
     return head :no_content unless Feature.enabled?(:artifacts_management_page, @project)
-
-    finder = Ci::JobArtifactsFinder.new(@project, artifacts_params)
-    all_artifacts = finder.execute
-
-    @artifacts = all_artifacts.page(params[:page]).per(MAX_PER_PAGE)
-    @total_size = all_artifacts.total_size
   end
 
   def destroy

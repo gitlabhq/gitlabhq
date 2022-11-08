@@ -21,7 +21,7 @@ module API
       expose :web_url,
              documentation: {
                type: 'string',
-               example: 'https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746'
+               example: 'https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746'
              } do |commit, _options|
         c = commit
         c = c.__subject__ if c.is_a?(Gitlab::View::Presenter::Base)

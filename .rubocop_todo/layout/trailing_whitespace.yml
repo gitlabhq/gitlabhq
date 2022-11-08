@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Layout/TrailingWhitespace:
-  Details: grace period
   Exclude:
     - 'app/models/concerns/analytics/cycle_analytics/stage_event_model.rb'
     - 'db/migrate/20210611100359_rebuild_index_for_cadence_iterations_automation.rb'

@@ -30,28 +30,10 @@ RSpec.describe Projects::ArtifactsController do
         stub_feature_flags(artifacts_management_page: true)
       end
 
-      it 'sets the artifacts variable' do
+      it 'renders the page' do
         subject
 
-        expect(assigns(:artifacts)).to contain_exactly(*project.job_artifacts)
-      end
-
-      it 'sets the total size variable' do
-        subject
-
-        expect(assigns(:total_size)).to eq(project.job_artifacts.total_size)
-      end
-
-      describe 'pagination' do
-        before do
-          stub_const("#{described_class}::MAX_PER_PAGE", 1)
-        end
-
-        it 'paginates artifacts' do
-          subject
-
-          expect(assigns(:artifacts)).to contain_exactly(project.reload.job_artifacts.last)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -64,18 +46,6 @@ RSpec.describe Projects::ArtifactsController do
         subject
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end
-
-      it 'does not set the artifacts variable' do
-        subject
-
-        expect(assigns(:artifacts)).to eq(nil)
-      end
-
-      it 'does not set the total size variable' do
-        subject
-
-        expect(assigns(:total_size)).to eq(nil)
       end
     end
   end

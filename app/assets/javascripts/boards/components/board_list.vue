@@ -7,6 +7,7 @@ import { defaultSortableOptions } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
+import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import { toggleFormEventPrefix, DraggableItemTypes } from '../constants';
 import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
@@ -27,6 +28,7 @@ export default {
     BoardNewEpic: () => import('ee_component/boards/components/board_new_epic.vue'),
     GlLoadingIcon,
     GlIntersectionObserver,
+    BoardCardMoveToPosition,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -309,7 +311,16 @@ export default {
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :disabled="disabled"
         :show-work-item-type-icon="!isEpicBoard"
-      />
+      >
+        <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->
+        <board-card-move-to-position
+          v-if="!isEpicBoard"
+          :item="item"
+          :index="index"
+          :list="list"
+          :list-items-length="boardItems.length"
+        />
+      </board-card>
       <gl-intersection-observer @appear="onReachingListBottom">
         <li
           v-if="showCount"

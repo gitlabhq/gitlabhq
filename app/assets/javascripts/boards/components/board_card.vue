@@ -109,6 +109,8 @@ export default {
       :update-filters="true"
       :index="index"
       :show-work-item-type-icon="showWorkItemTypeIcon"
-    />
+    >
+      <slot></slot>
+    </board-card-inner>
   </li>
 </template>

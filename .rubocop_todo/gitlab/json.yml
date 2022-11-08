@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Gitlab/Json:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/concerns/authenticates_with_two_factor.rb'

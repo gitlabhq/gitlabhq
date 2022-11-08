@@ -37,18 +37,8 @@ RSpec.describe Ci::Bridge do
   describe '#retryable?' do
     let(:bridge) { create(:ci_bridge, :success) }
 
-    it 'returns true' do
-      expect(bridge.retryable?).to eq(true)
-    end
-
-    context 'without ci_recreate_downstream_pipeline ff' do
-      before do
-        stub_feature_flags(ci_recreate_downstream_pipeline: false)
-      end
-
-      it 'returns false' do
-        expect(bridge.retryable?).to eq(false)
-      end
+    it 'returns false' do
+      expect(bridge.retryable?).to eq(false)
     end
   end
 

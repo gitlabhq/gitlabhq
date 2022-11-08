@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/AccessorGrouping:
-  Details: grace period
   Exclude:
     - 'app/finders/template_finder.rb'
     - 'app/models/commit.rb'

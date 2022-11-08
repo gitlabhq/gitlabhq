@@ -107,3 +107,87 @@ export const PROMISE_ALL_EXPECTED_MUTATIONS = {
     payload: { key: PROJECTS_LOCAL_STORAGE_KEY, data: [MOCK_FRESH_DATA_RES, MOCK_FRESH_DATA_RES] },
   },
 };
+
+export const MOCK_NAVIGATION = {
+  projects: {
+    label: 'Projects',
+    scope: 'projects',
+    link: '/search?scope=projects&search=et',
+    count_link: '/search/count?scope=projects&search=et',
+  },
+  blobs: {
+    label: 'Code',
+    scope: 'blobs',
+    link: '/search?scope=blobs&search=et',
+    count_link: '/search/count?scope=blobs&search=et',
+  },
+  issues: {
+    label: 'Issues',
+    scope: 'issues',
+    link: '/search?scope=issues&search=et',
+    active: true,
+    count: '2,430',
+  },
+  merge_requests: {
+    label: 'Merge requests',
+    scope: 'merge_requests',
+    link: '/search?scope=merge_requests&search=et',
+    count_link: '/search/count?scope=merge_requests&search=et',
+  },
+  wiki_blobs: {
+    label: 'Wiki',
+    scope: 'wiki_blobs',
+    link: '/search?scope=wiki_blobs&search=et',
+    count_link: '/search/count?scope=wiki_blobs&search=et',
+  },
+  commits: {
+    label: 'Commits',
+    scope: 'commits',
+    link: '/search?scope=commits&search=et',
+    count_link: '/search/count?scope=commits&search=et',
+  },
+  notes: {
+    label: 'Comments',
+    scope: 'notes',
+    link: '/search?scope=notes&search=et',
+    count_link: '/search/count?scope=notes&search=et',
+  },
+  milestones: {
+    label: 'Milestones',
+    scope: 'milestones',
+    link: '/search?scope=milestones&search=et',
+    count_link: '/search/count?scope=milestones&search=et',
+  },
+  users: {
+    label: 'Users',
+    scope: 'users',
+    link: '/search?scope=users&search=et',
+    count_link: '/search/count?scope=users&search=et',
+  },
+};
+
+export const MOCK_NAVIGATION_DATA = {
+  projects: {
+    label: 'Projects',
+    scope: 'projects',
+    link: '/search?scope=projects&search=et',
+    count_link: '/search/count?scope=projects&search=et',
+  },
+};
+
+export const MOCK_ENDPOINT_RESPONSE = { count: '13' };
+
+export const MOCK_DATA_FOR_NAVIGATION_ACTION_MUTATION = {
+  projects: {
+    count: '13',
+    label: 'Projects',
+    scope: 'projects',
+    link: '/search?scope=projects&search=et',
+    count_link: '/search/count?scope=projects&search=et',
+  },
+};
+
+export const MOCK_NAVIGATION_ACTION_MUTATION = {
+  type: types.RECEIVE_NAVIGATION_COUNT,
+  payload: { key: 'projects', count: '13' },
+};

@@ -181,6 +181,7 @@ module API
         mount ::API::Ci::Runners
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
+        mount ::API::Commits
         mount ::API::CommitStatuses
         mount ::API::DeployKeys
         mount ::API::DeployTokens
@@ -190,9 +191,11 @@ module API
         mount ::API::FeatureFlagsUserLists
         mount ::API::Features
         mount ::API::FreezePeriods
+        mount ::API::GroupExport
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
         mount ::API::Keys
+        mount ::API::Lint
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::PersonalAccessTokens::SelfInformation
@@ -206,6 +209,7 @@ module API
         mount ::API::ProtectedTags
         mount ::API::Releases
         mount ::API::Release::Links
+        mount ::API::Repositories
         mount ::API::ResourceAccessTokens
         mount ::API::Snippets
         mount ::API::SnippetRepositoryStorageMoves
@@ -239,7 +243,6 @@ module API
       mount ::API::Ci::Triggers
       mount ::API::Ci::Variables
       mount ::API::CommitStatuses
-      mount ::API::Commits
       mount ::API::ComposerPackages
       mount ::API::ConanInstancePackages
       mount ::API::ConanProjectPackages
@@ -262,7 +265,6 @@ module API
       mount ::API::GroupClusters
       mount ::API::GroupContainerRepositories
       mount ::API::GroupDebianDistributions
-      mount ::API::GroupExport
       mount ::API::GroupImport
       mount ::API::GroupLabels
       mount ::API::GroupMilestones
@@ -276,7 +278,6 @@ module API
       mount ::API::IssueLinks
       mount ::API::Issues
       mount ::API::Labels
-      mount ::API::Lint
       mount ::API::Markdown
       mount ::API::MavenPackages
       mount ::API::Members
@@ -307,7 +308,6 @@ module API
       mount ::API::ProtectedTags
       mount ::API::PypiPackages
       mount ::API::RemoteMirrors
-      mount ::API::Repositories
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceMilestoneEvents
       mount ::API::ResourceStateEvents

@@ -1,4 +1,0 @@
----
-# Cop supports --auto-correct.
-Style/SpecialGlobalVars:
-  Details: grace period

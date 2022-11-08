@@ -58,11 +58,7 @@ module Ci
     end
 
     def retryable?
-      return false unless Feature.enabled?(:ci_recreate_downstream_pipeline, project)
-
-      return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
-
-      super
+      false
     end
 
     def self.with_preloads

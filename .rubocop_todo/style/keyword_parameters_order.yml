@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/KeywordParametersOrder:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/product_analytics_tracking.rb'
     - 'app/finders/group_descendants_finder.rb'
