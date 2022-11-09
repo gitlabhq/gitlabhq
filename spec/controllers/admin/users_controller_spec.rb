@@ -836,6 +836,60 @@ RSpec.describe Admin::UsersController do
 
         expect(session[:github_access_token]).to be_nil
       end
+
+      context "when the user's password is expired" do
+        before do
+          user.update!(password_expires_at: 1.day.ago)
+        end
+
+        it "shows a notice" do
+          post :impersonate, params: { id: user.username }
+
+          expect(flash[:alert]).to eq(_('You cannot impersonate a user with an expired password'))
+        end
+
+        it "doesn't sign us in as the user" do
+          post :impersonate, params: { id: user.username }
+
+          expect(warden.user).to eq(admin)
+        end
+      end
+
+      context "when the user is internal" do
+        before do
+          user.update!(user_type: :migration_bot)
+        end
+
+        it "shows a notice" do
+          post :impersonate, params: { id: user.username }
+
+          expect(flash[:alert]).to eq(_("You cannot impersonate an internal user"))
+        end
+
+        it "doesn't sign us in as the user" do
+          post :impersonate, params: { id: user.username }
+
+          expect(warden.user).to eq(admin)
+        end
+      end
+
+      context "when the user is a project bot" do
+        before do
+          user.update!(user_type: :project_bot)
+        end
+
+        it "shows a notice" do
+          post :impersonate, params: { id: user.username }
+
+          expect(flash[:alert]).to eq(_("You cannot impersonate a user who cannot log in"))
+        end
+
+        it "doesn't sign us in as the user" do
+          post :impersonate, params: { id: user.username }
+
+          expect(warden.user).to eq(admin)
+        end
+      end
     end
 
     context "when impersonation is disabled" do

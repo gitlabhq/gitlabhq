@@ -216,18 +216,6 @@ RSpec.describe 'Admin::Users::User' do
           icon = first('[data-testid="incognito-icon"]')
           expect(icon).not_to be nil
         end
-
-        context 'a user with an expired password' do
-          before do
-            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
-          end
-
-          it 'does not redirect to password change page' do
-            subject
-
-            expect(page).to have_current_path('/')
-          end
-        end
       end
 
       context 'ending impersonation' do

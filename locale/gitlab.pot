@@ -46613,6 +46613,9 @@ msgstr ""
 msgid "You cannot impersonate a user who cannot log in"
 msgstr ""
 
+msgid "You cannot impersonate a user with an expired password"
+msgstr ""
+
 msgid "You cannot impersonate an internal user"
 msgstr ""
 

@@ -47,7 +47,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def impersonate
-    if can?(user, :log_in) && !impersonation_in_progress?
+    if can?(user, :log_in) && !user.password_expired? && !impersonation_in_progress?
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
@@ -64,6 +64,8 @@ class Admin::UsersController < Admin::ApplicationController
           _("You are already impersonating another user")
         elsif user.blocked?
           _("You cannot impersonate a blocked user")
+        elsif user.password_expired?
+          _("You cannot impersonate a user with an expired password")
         elsif user.internal?
           _("You cannot impersonate an internal user")
         else
