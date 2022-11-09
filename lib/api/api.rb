@@ -172,6 +172,7 @@ module API
         # Keep in alphabetical order
         mount ::API::AccessRequests
         mount ::API::Admin::Ci::Variables
+        mount ::API::Admin::InstanceClusters
         mount ::API::Appearance
         mount ::API::Applications
         mount ::API::BroadcastMessages
@@ -179,6 +180,7 @@ module API
         mount ::API::Ci::ResourceGroups
         mount ::API::Ci::Runner
         mount ::API::Ci::Runners
+        mount ::API::Ci::Variables
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
         mount ::API::Commits
@@ -191,6 +193,7 @@ module API
         mount ::API::FeatureFlagsUserLists
         mount ::API::Features
         mount ::API::FreezePeriods
+        mount ::API::GroupClusters
         mount ::API::GroupExport
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
@@ -200,15 +203,18 @@ module API
         mount ::API::Metadata
         mount ::API::PersonalAccessTokens::SelfInformation
         mount ::API::PersonalAccessTokens
+        mount ::API::ProjectClusters
         mount ::API::ProjectExport
         mount ::API::ProjectHooks
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::ProjectSnippets
         mount ::API::ProjectSnapshots
+        mount ::API::ProjectTemplates
         mount ::API::ProtectedBranches
         mount ::API::ProtectedTags
         mount ::API::Releases
         mount ::API::Release::Links
+        mount ::API::RemoteMirrors
         mount ::API::Repositories
         mount ::API::ResourceAccessTokens
         mount ::API::Snippets
@@ -226,7 +232,6 @@ module API
 
       # Keep in alphabetical order
       mount ::API::Admin::BatchedBackgroundMigrations
-      mount ::API::Admin::InstanceClusters
       mount ::API::Admin::PlanLimits
       mount ::API::Admin::Sidekiq
       mount ::API::AlertManagementAlerts
@@ -241,7 +246,6 @@ module API
       mount ::API::Ci::Pipelines
       mount ::API::Ci::SecureFiles
       mount ::API::Ci::Triggers
-      mount ::API::Ci::Variables
       mount ::API::CommitStatuses
       mount ::API::ComposerPackages
       mount ::API::ConanInstancePackages
@@ -262,7 +266,6 @@ module API
       mount ::API::GoProxy
       mount ::API::GroupAvatar
       mount ::API::GroupBoards
-      mount ::API::GroupClusters
       mount ::API::GroupContainerRepositories
       mount ::API::GroupDebianDistributions
       mount ::API::GroupImport
@@ -295,7 +298,6 @@ module API
       mount ::API::PackageFiles
       mount ::API::Pages
       mount ::API::PagesDomains
-      mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectDebianDistributions
       mount ::API::ProjectEvents
@@ -303,11 +305,9 @@ module API
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
       mount ::API::ProjectStatistics
-      mount ::API::ProjectTemplates
       mount ::API::Projects
       mount ::API::ProtectedTags
       mount ::API::PypiPackages
-      mount ::API::RemoteMirrors
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceMilestoneEvents
       mount ::API::ResourceStateEvents

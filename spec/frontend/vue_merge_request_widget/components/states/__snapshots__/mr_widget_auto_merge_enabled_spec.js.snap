@@ -44,7 +44,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
     class="gl-display-flex gl-w-full"
   >
     <div
-      class="media-body gl-display-flex"
+      class="media-body gl-display-flex gl-align-items-center"
     >
        
       <h4
@@ -70,7 +70,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
       </h4>
        
       <div
-        class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
+        class="gl-display-flex gl-font-size-0 gl-ml-auto gl-gap-3"
       >
         <div
           class="gl-display-flex gl-align-items-flex-start"
@@ -221,7 +221,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
     class="gl-display-flex gl-w-full"
   >
     <div
-      class="media-body gl-display-flex"
+      class="media-body gl-display-flex gl-align-items-center"
     >
        
       <h4
@@ -247,7 +247,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
       </h4>
        
       <div
-        class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
+        class="gl-display-flex gl-font-size-0 gl-ml-auto gl-gap-3"
       >
         <div
           class="gl-display-flex gl-align-items-flex-start"

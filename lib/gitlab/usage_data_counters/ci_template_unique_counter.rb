@@ -10,13 +10,17 @@ module Gitlab::UsageDataCounters
         expanded_template_name = expand_template_name(template)
         return unless expanded_template_name
 
-        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(
-          ci_template_event_name(expanded_template_name, config_source), values: project.id
-        )
+        event_name = ci_template_event_name(expanded_template_name, config_source)
+        Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: project.id)
 
         namespace = project.namespace
         if Feature.enabled?(:route_hll_to_snowplow, namespace)
-          Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace, user: user, project: project)
+          context = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                             event: event_name).to_context
+          label = 'redis_hll_counters.ci_templates.ci_templates_total_unique_counts_monthly'
+          Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace,
+                                                              project: project, context: [context], user: user,
+                                                              label: label)
         end
       end
 

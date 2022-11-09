@@ -308,8 +308,16 @@ Rails/RakeEnvironment:
   # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982
   Enabled: false
 
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94064#note_1157289970
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96675#note_1094403693
 Rails/WhereExists:
+  Enabled: false
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/378105#note_1138487716
+Rails/HasManyOrHasOneDependent:
   Enabled: false
 
 # GitLab ###################################################################

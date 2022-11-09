@@ -26,7 +26,7 @@ export default {
 <template>
   <state-container :mr="mr" status="failed">
     <span
-      class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!"
+      class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body! gl-align-self-start"
     >
       {{ s__('mrWidget|Merge blocked: all threads must be resolved.') }}
     </span>
@@ -34,7 +34,7 @@ export default {
       <gl-button
         v-if="mr.createIssueToResolveDiscussionsPath"
         :href="mr.createIssueToResolveDiscussionsPath"
-        class="js-create-issue gl-align-self-start gl-vertical-align-top gl-mr-2"
+        class="js-create-issue gl-align-self-start gl-vertical-align-top"
         size="small"
         variant="confirm"
         category="secondary"
@@ -43,7 +43,7 @@ export default {
       </gl-button>
       <gl-button
         data-testid="jump-to-first"
-        class="gl-mb-2 gl-md-mb-0 gl-align-self-start gl-vertical-align-top"
+        class="gl-align-self-start gl-vertical-align-top"
         size="small"
         variant="confirm"
         category="primary"

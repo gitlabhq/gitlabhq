@@ -433,16 +433,16 @@ module API
         success Entities::SSHKey
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :user_id, type: Integer, desc: 'The ID of the user'
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      post ":id/keys", feature_category: :authentication_and_authorization do
+      post ":user_id/keys", feature_category: :authentication_and_authorization do
         authenticated_as_admin!
 
-        user = User.find_by(id: params.delete(:id))
+        user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user
 
         key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute

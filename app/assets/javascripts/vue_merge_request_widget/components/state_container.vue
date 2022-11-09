@@ -45,6 +45,9 @@ export default {
       if (this.status === 'closed') return 'gl-bg-red-50';
       return null;
     },
+    hasActionsSlot() {
+      return this.$scopedSlots.actions?.()?.length;
+    },
   },
 };
 </script>
@@ -72,15 +75,18 @@ export default {
       <div class="gl-display-flex gl-w-full">
         <div
           :class="{
-            'gl-display-flex': actions.length,
+            'gl-display-flex gl-align-items-center': actions.length,
             'gl-md-display-flex gl-align-items-center': !actions.length,
           }"
           class="media-body"
         >
           <slot></slot>
           <div
-            :class="{ 'gl-flex-direction-column-reverse': !actions.length }"
-            class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
+            :class="{
+              'gl-flex-direction-column-reverse gl-md-flex-direction-row gl-flex-wrap gl-justify-content-end': !actions.length,
+              'gl-md-pt-0 gl-pt-3': hasActionsSlot,
+            }"
+            class="gl-display-flex gl-font-size-0 gl-ml-auto gl-gap-3"
           >
             <slot name="actions">
               <actions v-if="actions.length" :tertiary-buttons="actions" />

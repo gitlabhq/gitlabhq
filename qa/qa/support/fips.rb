@@ -5,7 +5,7 @@ module QA
   module Support
     class FIPS
       def self.enabled?
-        %(1 true yes).include?(ENV['FIPS'].to_s)
+        %w[1 true yes].include?(ENV['FIPS'].to_s)
       end
     end
   end

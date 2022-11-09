@@ -116,4 +116,31 @@ RSpec.describe QA::Resource::User do
       expect(subject).to be_credentials_given
     end
   end
+
+  describe '#has_user?' do
+    let(:index_mock) do
+      instance_double(QA::Page::Admin::Overview::Users::Index)
+    end
+
+    users = [
+      ['foo', true],
+      ['bar', false]
+    ]
+
+    users.each do |(username, found)|
+      it "returns #{found} when has_username returns #{found}" do
+        subject.username = username
+
+        allow(QA::Flow::Login).to receive(:while_signed_in_as_admin).and_yield
+        allow(QA::Page::Main::Menu).to receive(:perform)
+        allow(QA::Page::Admin::Menu).to receive(:perform)
+        allow(QA::Page::Admin::Overview::Users::Index).to receive(:perform).and_yield(index_mock)
+
+        expect(index_mock).to receive(:search_user).with(username)
+        expect(index_mock).to receive(:has_username?).with(username).and_return(found)
+
+        expect(subject.has_user?(subject)).to eq(found)
+      end
+    end
+  end
 end

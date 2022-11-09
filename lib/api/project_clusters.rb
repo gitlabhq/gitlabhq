@@ -16,9 +16,14 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get all clusters from the project' do
-        detail 'This feature was introduced in GitLab 11.7.'
+      desc 'List project clusters' do
+        detail 'This feature was introduced in GitLab 11.7. Returns a list of project clusters.'
         success Entities::Cluster
+        failure [
+          { code: 403, message: 'Forbidden' }
+        ]
+        is_array true
+        tags %w[clusters]
       end
       params do
         use :pagination
@@ -29,9 +34,14 @@ module API
         present paginate(clusters_for_current_user), with: Entities::Cluster
       end
 
-      desc 'Get specific cluster for the project' do
-        detail 'This feature was introduced in GitLab 11.7.'
+      desc 'Get a single project cluster' do
+        detail 'This feature was introduced in GitLab 11.7. Gets a single project cluster.'
         success Entities::ClusterProject
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[clusters]
       end
       params do
         requires :cluster_id, type: Integer, desc: 'The cluster ID'
@@ -42,9 +52,15 @@ module API
         present cluster, with: Entities::ClusterProject
       end
 
-      desc 'Adds an existing cluster' do
-        detail 'This feature was introduced in GitLab 11.7.'
+      desc 'Add existing cluster to project' do
+        detail 'This feature was introduced in GitLab 11.7. Adds an existing Kubernetes cluster to the project.'
         success Entities::ClusterProject
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[clusters]
       end
       params do
         requires :name, type: String, desc: 'Cluster name'
@@ -76,9 +92,15 @@ module API
         end
       end
 
-      desc 'Update an existing cluster' do
-        detail 'This feature was introduced in GitLab 11.7.'
+      desc 'Edit project cluster' do
+        detail 'This feature was introduced in GitLab 11.7. Updates an existing project cluster.'
         success Entities::ClusterProject
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[clusters]
       end
       params do
         requires :cluster_id, type: Integer, desc: 'The cluster ID'
@@ -108,9 +130,14 @@ module API
         end
       end
 
-      desc 'Remove a cluster' do
-        detail 'This feature was introduced in GitLab 11.7.'
+      desc 'Delete project cluster' do
+        detail 'This feature was introduced in GitLab 11.7. Deletes an existing project cluster. Does not remove existing resources within the connected Kubernetes cluster.'
         success Entities::ClusterProject
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[clusters]
       end
       params do
         requires :cluster_id, type: Integer, desc: 'The Cluster ID'

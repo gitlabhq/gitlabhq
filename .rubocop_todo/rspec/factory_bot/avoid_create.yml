@@ -3,7 +3,6 @@ RSpec/FactoryBot/AvoidCreate:
   Exclude:
     - 'ee/spec/presenters/approval_rule_presenter_spec.rb'
     - 'ee/spec/presenters/audit_event_presenter_spec.rb'
-    - 'ee/spec/presenters/ci/build_presenter_spec.rb'
     - 'ee/spec/presenters/ci/build_runner_presenter_spec.rb'
     - 'ee/spec/presenters/ci/minutes/usage_presenter_spec.rb'
     - 'ee/spec/presenters/ci/pipeline_presenter_spec.rb'

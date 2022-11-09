@@ -21,6 +21,8 @@ metadata:
     description: Operations related to CI/CD variables
   - name: cluster_agents
     description: Operations related to the GitLab agent for Kubernetes
+  - name: clusters
+    description: Operations related to clusters
   - name: ci_resource_groups
     description: Operations to manage job concurrency with resource groups
   - name: deploy_keys

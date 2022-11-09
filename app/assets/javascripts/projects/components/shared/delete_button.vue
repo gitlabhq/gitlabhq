@@ -62,7 +62,11 @@ export default {
       return {
         primary: {
           text: __('Yes, delete project'),
-          attributes: [{ variant: 'danger' }, { disabled: this.confirmDisabled }],
+          attributes: [
+            { variant: 'danger' },
+            { disabled: this.confirmDisabled },
+            { 'data-qa-selector': 'confirm_delete_button' },
+          ],
         },
         cancel: {
           text: __('Cancel, keep project'),
@@ -97,9 +101,13 @@ export default {
     <input type="hidden" name="_method" value="delete" />
     <input :value="csrfToken" type="hidden" name="authenticity_token" />
 
-    <gl-button v-gl-modal="modalId" category="primary" variant="danger">{{
-      $options.strings.deleteProject
-    }}</gl-button>
+    <gl-button
+      v-gl-modal="modalId"
+      category="primary"
+      variant="danger"
+      data-qa-selector="delete_button"
+      >{{ $options.strings.deleteProject }}</gl-button
+    >
 
     <gl-modal
       ref="removeModal"
@@ -168,6 +176,7 @@ export default {
           v-model="userInput"
           name="confirm_name_input"
           type="text"
+          data-qa-selector="confirm_name_field"
         />
         <slot name="modal-footer"></slot>
       </div>

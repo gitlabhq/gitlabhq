@@ -3,8 +3,17 @@
 module QA
   RSpec.describe 'Plan', :smoke, product_group: :project_management do
     describe 'Issue creation' do
-      let(:project) { Resource::Project.fabricate_via_api! }
-      let(:closed_issue) { Resource::Issue.fabricate_via_api! { |issue| issue.project = project } }
+      let(:project) do
+        Resource::Project.fabricate_via_api_unless_fips! do |project|
+          project.name = "project-create-issue-#{SecureRandom.hex(8)}"
+          project.personal_namespace = Runtime::User.username
+          project.description = nil
+        end
+      end
+
+      let(:closed_issue) do
+        Resource::Issue.fabricate_via_api_unless_fips! { |issue| issue.project = project }
+      end
 
       before do
         Flow::Login.sign_in
@@ -55,7 +64,7 @@ module QA
         end
 
         before do
-          Resource::Issue.fabricate_via_api! { |issue| issue.project = project }.visit!
+          Resource::Issue.fabricate_via_api_unless_fips! { |issue| issue.project = project }.visit!
         end
 
         # The following example is excluded from running in `review-qa-smoke` job

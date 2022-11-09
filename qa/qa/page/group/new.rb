@@ -31,7 +31,7 @@ module QA
         end
 
         def create
-          click_button 'Create group'
+          click_element(:create_group_button)
         end
 
         def create_subgroup

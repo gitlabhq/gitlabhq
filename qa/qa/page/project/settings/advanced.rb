@@ -6,7 +6,12 @@ module QA
       module Settings
         class Advanced < Page::Base
           include QA::Page::Component::ConfirmModal
+          include QA::Page::Component::DeleteModal
           include Component::NamespaceSelect
+
+          view 'app/assets/javascripts/projects/components/shared/delete_button.vue' do
+            element :delete_button
+          end
 
           view 'app/views/projects/edit.html.haml' do
             element :project_path_field
@@ -86,6 +91,13 @@ module QA
           def unarchive_project
             click_element :unarchive_project_link
             click_confirmation_ok_button
+          end
+
+          def delete_project!(project_name)
+            click_element :delete_button
+            fill_confirmation_path(project_name)
+            wait_for_delete_button_enabled
+            confirm_delete
           end
 
           private

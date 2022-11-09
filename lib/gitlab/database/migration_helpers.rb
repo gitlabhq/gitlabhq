@@ -209,6 +209,12 @@ module Gitlab
             'in the body of your migration class'
         end
 
+        if partition?(table_name)
+          raise ArgumentError, 'remove_concurrent_index can not be used on a partitioned '  \
+            'table. Please use remove_concurrent_partitioned_index_by_name on the partitioned table ' \
+            'as we need to remove the index on the parent table'
+        end
+
         options = options.merge({ algorithm: :concurrently })
 
         unless index_exists?(table_name, column_name, **options)
@@ -236,6 +242,12 @@ module Gitlab
           raise 'remove_concurrent_index_by_name can not be run inside a transaction, ' \
             'you can disable transactions by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
+        end
+
+        if partition?(table_name)
+          raise ArgumentError, 'remove_concurrent_index_by_name can not be used on a partitioned '  \
+            'table. Please use remove_concurrent_partitioned_index_by_name on the partitioned table ' \
+            'as we need to remove the index on the parent table'
         end
 
         index_name = index_name[:name] if index_name.is_a?(Hash)

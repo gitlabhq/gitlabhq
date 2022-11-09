@@ -8,8 +8,13 @@ fi
 
 # Tag with commit SHA by default
 QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${CI_COMMIT_SHA}"
+
 # For branches, tag with slugified branch name. For tags, use the tag directly
-QA_IMAGE_BRANCH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${CI_COMMIT_TAG:-$CI_COMMIT_REF_SLUG}"
+# with v prefix removed
+IMAGE_TAG=${CI_COMMIT_TAG#v}
+IMAGE_TAG=${IMAGE_TAG:-$CI_COMMIT_REF_SLUG}
+
+QA_IMAGE_BRANCH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${IMAGE_TAG}"
 
 DESTINATIONS="--destination=${QA_IMAGE} --destination=${QA_IMAGE_BRANCH}"
 

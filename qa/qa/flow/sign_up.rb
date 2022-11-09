@@ -37,7 +37,9 @@ module QA
                     Page::Main::Menu.perform(&:not_signed_in?)
                   end
 
-        raise "Failed user registration attempt. Registration was expected to #{user.expect_fabrication_success ? 'succeed' : 'fail'} but #{success ? 'succeeded' : 'failed'}." unless success
+        return if success
+
+        raise "Failed user registration attempt. Registration was expected to #{user.expect_fabrication_success ? 'succeed' : 'fail'} but #{success ? 'succeeded' : 'failed'}."
       end
 
       def disable_sign_ups

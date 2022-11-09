@@ -8,7 +8,7 @@
 .top-area
   = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
     = gl_tab_link_to _("Your groups"), dashboard_groups_path
-    = gl_tab_link_to _("Explore public groups"), explore_groups_path
+    = gl_tab_link_to _("Explore public groups"), explore_groups_path, data: { qa_selector: "public_groups_tab" }
   .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'

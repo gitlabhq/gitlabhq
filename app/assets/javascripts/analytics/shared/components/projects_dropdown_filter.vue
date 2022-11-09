@@ -240,7 +240,7 @@ export default {
     </template>
     <template #header>
       <gl-dropdown-section-header>{{ __('Projects') }}</gl-dropdown-section-header>
-      <gl-search-box-by-type v-model.trim="searchTerm" />
+      <gl-search-box-by-type v-model.trim="searchTerm" :placeholder="__('Search')" />
     </template>
     <template #highlighted-items>
       <gl-dropdown-item

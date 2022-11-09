@@ -18,7 +18,7 @@ module QA
 
       it(
         'creates a basic merge request',
-        :smoke,
+        :smoke, :skip_fips_env,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347738'
       ) do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|

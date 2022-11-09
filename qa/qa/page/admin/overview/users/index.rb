@@ -28,6 +28,10 @@ module QA
                 click_link(username)
               end
             end
+
+            def has_username?(username)
+              has_element?(:user_row_content, text: username, wait: 1)
+            end
           end
         end
       end

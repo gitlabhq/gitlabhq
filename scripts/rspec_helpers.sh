@@ -60,6 +60,9 @@ function update_tests_metadata() {
   scripts/flaky_examples/prune-old-flaky-examples "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
 
   if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
+    if [[ -n "$RSPEC_PROFILING_PGSSLKEY" ]]; then
+      chmod 0600 $RSPEC_PROFILING_PGSSLKEY
+    fi
     PGSSLMODE=$RSPEC_PROFILING_PGSSLMODE PGSSLROOTCERT=$RSPEC_PROFILING_PGSSLROOTCERT PGSSLCERT=$RSPEC_PROFILING_PGSSLCERT PGSSLKEY=$RSPEC_PROFILING_PGSSLKEY scripts/insert-rspec-profiling-data
   else
     echo "Not inserting profiling data as the pipeline is not a scheduled one."

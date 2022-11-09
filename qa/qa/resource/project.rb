@@ -479,6 +479,16 @@ module QA
         end
       end
 
+      def remove_via_browser_ui!
+        Page::Project::Menu.perform(&:go_to_general_settings)
+
+        Page::Project::Settings::Main.perform(&:expand_advanced_settings)
+
+        Page::Project::Settings::Advanced.perform do |advanced|
+          advanced.delete_project!(full_path)
+        end
+      end
+
       # Calls the API endpoint that triggers the backend service that performs repository housekeeping (garbage
       # collection and similar tasks).
       def perform_housekeeping
