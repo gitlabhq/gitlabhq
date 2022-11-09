@@ -95,7 +95,7 @@ module Sbom
         # - The left side lowercased is the type: `type`
         # - The right side is the remainder: `namespace/name@version`
         @type, @string = partition(@string, '/', from: :left)
-        raise InvalidPackageURL, 'invalid or missing package type' if @type.empty?
+        raise InvalidPackageURL, 'invalid or missing package type' if @type.blank?
       end
 
       def decode_version!
@@ -123,7 +123,7 @@ module Sbom
       def decode_namespace!
         # If there is anything remaining, this is the namespace.
         # The namespace may contain multiple segments delimited by `/`.
-        @namespace = decode_segments(@string, &:empty?) unless @string.empty?
+        @namespace = decode_segments(@string, &:empty?) if @string.present?
       end
 
       def decode_segment(segment)

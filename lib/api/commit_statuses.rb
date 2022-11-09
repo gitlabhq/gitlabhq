@@ -66,7 +66,7 @@ module API
         optional :ref,          type: String, desc: 'The ref',
                                 documentation: { example: 'develop' }
         optional :target_url,   type: String, desc: 'The target URL to associate with this status',
-                                documentation: { example: 'https://gitlab.example.com/thedude/gitlab-foss/builds/91' }
+                                documentation: { example: 'https://gitlab.example.com/janedoe/gitlab-foss/builds/91' }
         optional :description,  type: String, desc: 'A short description of the status'
         optional :name,         type: String, desc: 'A string label to differentiate this status from the status of other systems',
                                 documentation: { example: 'coverage', default: 'default' }

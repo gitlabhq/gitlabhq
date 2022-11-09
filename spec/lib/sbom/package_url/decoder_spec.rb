@@ -33,10 +33,12 @@ RSpec.describe Sbom::PackageUrl::Decoder do
     end
 
     context 'when an invalid package URL string is passed' do
-      let(:url) { 'invalid' }
+      where(:url) { ['invalid', 'pkg:nil'] }
 
-      it 'raises an error' do
-        expect { decode }.to raise_error(Sbom::PackageUrl::InvalidPackageURL)
+      with_them do
+        it 'raises an error' do
+          expect { decode }.to raise_error(Sbom::PackageUrl::InvalidPackageURL)
+        end
       end
     end
 

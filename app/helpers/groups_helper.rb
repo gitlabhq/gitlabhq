@@ -112,16 +112,6 @@ module GroupsHelper
     s_("GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually.").html_safe % { group: link_to_group(group) }
   end
 
-  def parent_group_options(current_group)
-    exclude_groups = current_group.self_and_descendants.pluck_primary_key
-    exclude_groups << current_group.parent_id if current_group.parent_id
-    groups = GroupsFinder.new(current_user, min_access_level: Gitlab::Access::OWNER, exclude_group_ids: exclude_groups).execute.sort_by(&:human_name).map do |group|
-      { id: group.id, text: group.human_name }
-    end
-
-    Gitlab::Json.dump(groups)
-  end
-
   def render_setting_to_allow_project_access_token_creation?(group)
     group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
   end

@@ -39,7 +39,34 @@ module Helper
 
   def ast(source, file: '', version: nil)
     version ||= ruby_version
-    puts RuboCop::AST::ProcessedSource.new(source, version).ast.to_s
+
+    ast = RuboCop::AST::ProcessedSource.new(source, version).ast
+    return ast if ast
+
+    warn "Syntax error in `#{source}`."
+  end
+
+  def pattern(string)
+    RuboCop::NodePattern.new(string)
+  end
+
+  def help!
+    puts <<~HELP
+
+      Use `ast(source_string, version: nil)` method to parse code and return its AST.
+      Use `pattern(string)` to compile RuboCop's node patterns.
+
+      See https://docs.rubocop.org/rubocop-ast/node_pattern.html.
+
+      Examples:
+        node = ast('puts :hello')
+
+        pat = pattern('`(sym :hello)')
+        pat.match(node) # => true
+
+    HELP
+
+    nil
   end
 
   def ruby_version
@@ -56,11 +83,12 @@ def start_irb
 
   include Helper # rubocop:disable Style/MixinUsage
 
-  puts "Ruby version: #{ruby_version}"
-  puts
-  puts "Use `ast(source_string, version: nil)` method to parse code and output AST. For example:"
-  puts "  ast('puts :hello')"
-  puts
+  puts <<~BANNER
+    Ruby version: #{ruby_version}
+
+    Type `help!` for instructions and examples.
+
+  BANNER
 
   IRB.start
 end
@@ -103,12 +131,12 @@ elsif options.interactive
     start_irb
   end
 elsif options.eval
-  Helper.ast(options.eval)
+  puts Helper.ast(options.eval)
 elsif files.any?
   files.each do |file|
     if File.file?(file)
       source = File.read(file)
-      Helper.ast(source, file: file)
+      puts Helper.ast(source, file: file)
     else
       warn "Skipping non-file #{file.inspect}"
     end

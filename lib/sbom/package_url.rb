@@ -90,10 +90,10 @@ module Sbom
       @subpath = subpath
     end
 
-    # Creates a new PackageURL from a string.
+    # Creates a new PackageUrl from a string.
     # @param [String] string The package URL string.
     # @raise [InvalidPackageURL] If the string is not a valid package URL.
-    # @return [PackageURL]
+    # @return [PackageUrl]
     def self.parse(string)
       Decoder.new(string).decode!
     end

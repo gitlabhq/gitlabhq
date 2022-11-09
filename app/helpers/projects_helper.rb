@@ -478,6 +478,10 @@ module ProjectsHelper
     localized_access_names[access] || Gitlab::Access.human_access(access)
   end
 
+  def badge_count(number)
+    format_cached_count(1000, number)
+  end
+
   private
 
   def localized_access_names

@@ -1,18 +1,9 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { sprintf } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import TransferGroupForm, { i18n } from './components/transfer_group_form.vue';
-
-const prepareGroups = (rawGroups) => {
-  if (!rawGroups) {
-    return [];
-  }
-
-  return JSON.parse(rawGroups).map(({ id, text: humanName }) => ({
-    id,
-    humanName,
-  }));
-};
 
 export default () => {
   const el = document.querySelector('.js-transfer-group-form');
@@ -20,23 +11,28 @@ export default () => {
     return false;
   }
 
+  Vue.use(VueApollo);
+
   const {
     targetFormId = null,
     buttonText: confirmButtonText = '',
     groupName = '',
-    parentGroups,
+    groupId: resourceId,
     isPaidGroup,
   } = el.dataset;
 
   return new Vue({
     el,
+    apolloProvider: new VueApollo({
+      defaultClient: createDefaultClient(),
+    }),
     provide: {
       confirmDangerMessage: sprintf(i18n.confirmationMessage, { group_name: groupName }),
+      resourceId,
     },
     render(createElement) {
       return createElement(TransferGroupForm, {
         props: {
-          groupNamespaces: prepareGroups(parentGroups),
           isPaidGroup: parseBoolean(isPaidGroup),
           confirmButtonText,
           confirmationPhrase: groupName,

@@ -223,7 +223,7 @@ Example response:
   }],
   "compare_timeout": false,
   "compare_same_ref": false,
-  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/compare/ae73cb07c9eeaf35924a10f713b364d32b2dd34f...0b4bc9a49b562e85de7cc9e834518ea6828729b9"
+  "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/compare/ae73cb07c9eeaf35924a10f713b364d32b2dd34f...0b4bc9a49b562e85de7cc9e834518ea6828729b9"
 }
 ```
 

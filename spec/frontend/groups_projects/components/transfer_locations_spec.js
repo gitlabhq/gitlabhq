@@ -14,6 +14,7 @@ import transferLocationsResponsePage2 from 'test_fixtures/api/projects/transfer_
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { __ } from '~/locale';
 import TransferLocations from '~/groups_projects/components/transfer_locations.vue';
 import { getTransferLocations } from '~/api/projects_api';
 import currentUserNamespaceQuery from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';
@@ -30,6 +31,10 @@ describe('TransferLocations', () => {
   const defaultPropsData = {
     groupTransferLocationsApiMethod: getTransferLocations,
     value: null,
+  };
+  const additionalDropdownItem = {
+    id: -1,
+    humanName: __('No parent group'),
   };
 
   // Mock requests
@@ -93,9 +98,13 @@ describe('TransferLocations', () => {
       .findByTestId('group-transfer-locations')
       .findAllComponents(GlDropdownItem)
       .wrappers.map((dropdownItem) => dropdownItem.text());
+  const findDropdownItemByText = (text) =>
+    wrapper
+      .findAllComponents(GlDropdownItem)
+      .wrappers.find((dropdownItem) => dropdownItem.text() === text);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
-  const searchEmitInput = () => findSearch().vm.$emit('input', 'foo');
+  const searchEmitInput = (searchTerm = 'foo') => findSearch().vm.$emit('input', searchTerm);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const intersectionObserverEmitAppear = () => findIntersectionObserver().vm.$emit('appear');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -105,6 +114,15 @@ describe('TransferLocations', () => {
   });
 
   describe('when `GlDropdown` is opened', () => {
+    it('shows loading icon', async () => {
+      getTransferLocations.mockReturnValueOnce(new Promise(() => {}));
+      createComponent();
+      findDropdown().vm.$emit('show');
+      await nextTick();
+
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
     it('fetches and renders user and group transfer locations', async () => {
       mockResolvedGetTransferLocations();
       createComponent();
@@ -116,6 +134,49 @@ describe('TransferLocations', () => {
       expect(findGroupTransferLocations()).toEqual(
         transferLocationsResponsePage1.map((transferLocation) => transferLocation.full_name),
       );
+    });
+
+    describe('when `showUserTransferLocations` prop is `false`', () => {
+      it('does not fetch user transfer locations', async () => {
+        mockResolvedGetTransferLocations();
+        createComponent({
+          propsData: {
+            showUserTransferLocations: false,
+          },
+        });
+        await showDropdown();
+
+        expect(wrapper.findByTestId('user-transfer-locations').exists()).toBe(false);
+      });
+    });
+
+    describe('when `additionalDropdownItems` prop is passed', () => {
+      it('displays additional dropdown items', async () => {
+        mockResolvedGetTransferLocations();
+        createComponent({
+          propsData: {
+            additionalDropdownItems: [additionalDropdownItem],
+          },
+        });
+        await showDropdown();
+
+        expect(findDropdownItemByText(additionalDropdownItem.humanName).exists()).toBe(true);
+      });
+
+      describe('when loading', () => {
+        it('does not display additional dropdown items', async () => {
+          getTransferLocations.mockReturnValueOnce(new Promise(() => {}));
+          createComponent({
+            propsData: {
+              additionalDropdownItems: [additionalDropdownItem],
+            },
+          });
+          findDropdown().vm.$emit('show');
+          await nextTick();
+
+          expect(findDropdownItemByText(additionalDropdownItem.humanName)).toBeUndefined();
+        });
+      });
     });
 
     describe('when transfer locations have already been fetched', () => {
@@ -187,12 +248,12 @@ describe('TransferLocations', () => {
   describe('when search is typed in', () => {
     const transferLocationsResponseSearch = [transferLocationsResponsePage1[0]];
 
-    const arrange = async () => {
+    const arrange = async ({ propsData, searchTerm } = {}) => {
       mockResolvedGetTransferLocations();
-      createComponent();
+      createComponent({ propsData });
       await showDropdown();
       mockResolvedGetTransferLocations({ data: transferLocationsResponseSearch });
-      searchEmitInput();
+      searchEmitInput(searchTerm);
       await nextTick();
     };
 
@@ -214,6 +275,29 @@ describe('TransferLocations', () => {
       expect(findGroupTransferLocations()).toEqual(
         transferLocationsResponseSearch.map((transferLocation) => transferLocation.full_name),
       );
+    });
+
+    it('does not display additional dropdown items if they do not match the search', async () => {
+      await arrange({
+        propsData: {
+          additionalDropdownItems: [additionalDropdownItem],
+        },
+      });
+      await waitForPromises();
+
+      expect(findDropdownItemByText(additionalDropdownItem.humanName)).toBeUndefined();
+    });
+
+    it('displays additional dropdown items if they match the search', async () => {
+      await arrange({
+        propsData: {
+          additionalDropdownItems: [additionalDropdownItem],
+        },
+        searchTerm: 'No par',
+      });
+      await waitForPromises();
+
+      expect(findDropdownItemByText(additionalDropdownItem.humanName).exists()).toBe(true);
     });
   });
 
@@ -278,6 +362,16 @@ describe('TransferLocations', () => {
           ({ full_name: fullName }) => fullName,
         ),
       );
+    });
+  });
+
+  describe('when `label` prop is passed', () => {
+    it('renders label', () => {
+      const label = 'Foo bar';
+
+      createComponent({ propsData: { label } });
+
+      expect(wrapper.findByRole('group', { name: label }).exists()).toBe(true);
     });
   });
 });

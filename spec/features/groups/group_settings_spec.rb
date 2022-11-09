@@ -150,12 +150,14 @@ RSpec.describe 'Edit group settings' do
       it 'can successfully transfer the group' do
         visit edit_group_path(selected_group)
 
-        page.within('.js-group-transfer-form') do
-          namespace_select.find('button').click
-          namespace_select.find('.dropdown-menu p', text: target_group_name, match: :first).click
-
-          click_button 'Transfer group'
+        page.within('[data-testid="transfer-locations-dropdown"]') do
+          click_button _('Select parent group')
+          fill_in _('Search'), with: target_group_name
+          wait_for_requests
+          click_button target_group_name
         end
+
+        click_button s_('GroupSettings|Transfer group')
 
         page.within(confirm_modal) do
           expect(page).to have_text "You are going to transfer #{selected_group.name} to another namespace. Are you ABSOLUTELY sure?"
@@ -169,16 +171,16 @@ RSpec.describe 'Edit group settings' do
       end
     end
 
-    context 'from a subgroup' do
+    context 'when transfering from a subgroup' do
       let(:selected_group) { create(:group, path: 'foo-subgroup', parent: group) }
 
-      context 'to no parent group' do
+      context 'when transfering to no parent group' do
         let(:target_group_name) { 'No parent group' }
 
         it_behaves_like 'can transfer the group'
       end
 
-      context 'to a different parent group' do
+      context 'when transfering to a parent group' do
         let(:target_group) { create(:group, path: 'foo-parentgroup') }
         let(:target_group_name) { target_group.name }
 
@@ -190,14 +192,11 @@ RSpec.describe 'Edit group settings' do
       end
     end
 
-    context 'from a root group' do
+    context 'when transfering from a root group to a parent group' do
       let(:selected_group) { create(:group, path: 'foo-rootgroup') }
+      let(:target_group_name) { group.name }
 
-      context 'to a parent group' do
-        let(:target_group_name) { group.name }
-
-        it_behaves_like 'can transfer the group'
-      end
+      it_behaves_like 'can transfer the group'
     end
   end
 

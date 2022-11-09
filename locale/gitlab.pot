@@ -27216,9 +27216,6 @@ msgstr ""
 msgid "No milestone"
 msgstr ""
 
-msgid "No namespace"
-msgstr ""
-
 msgid "No other labels with such name or description"
 msgstr ""
 

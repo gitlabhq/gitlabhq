@@ -277,139 +277,128 @@
   .description p {
     margin-bottom: 0;
     color: $gl-text-color-secondary;
+    @include str-truncated(100%);
   }
 }
 
 .projects-list {
   @include basic-list;
-  display: flex;
-  flex-direction: column;
+  @include gl-display-table;
 
   .project-row {
-    @include basic-list-stats;
-    display: flex;
-    align-items: center;
-    padding: $gl-padding-12 0;
+    @include gl-display-table-row;
   }
 
-  h2 {
-    font-size: $gl-font-size;
-    font-weight: $gl-font-weight-bold;
-    margin-bottom: 0;
+  .project-cell {
+    @include gl-display-table-cell;
+    @include gl-border-b;
+    @include gl-vertical-align-top;
+    @include gl-py-4;
+  }
 
-    @include media-breakpoint-up(sm) {
-      .namespace-name {
-        font-weight: $gl-font-weight-normal;
-      }
+  .project-row:last-of-type {
+    .project-cell {
+      @include gl-border-none;
     }
   }
 
-  .avatar-container {
-    flex: 0 0 auto;
-    align-self: flex-start;
+
+  &.admin-projects,
+  &.group-settings-projects {
+    .project-row {
+      @include basic-list-stats;
+
+      .description > p {
+        @include gl-mb-0;
+      }
+    }
+
+    .controls {
+      @include gl-line-height-42;
+    }
   }
 
   .project-details {
-    min-width: 0;
-    line-height: $gl-line-height;
-
-    .flex-wrapper {
-      min-width: 0;
-      margin-top: -$gl-padding-8; // negative margin required for flex-wrap
-      flex: 1 1 100%;
-
-      .project-title {
-        line-height: 20px;
-      }
-    }
+    max-width: 625px;
 
     p,
     .commit-row-message {
+      @include gl-mb-0;
       @include str-truncated(100%);
-      margin-bottom: 0;
-    }
-
-    .user-access-role {
-      margin: 0;
     }
 
     .description {
       line-height: 1.5;
-      color: $gl-text-color-secondary;
-    }
-
-    @include media-breakpoint-down(md) {
-      .user-access-role {
-        line-height: $gl-line-height-14;
-      }
+      max-height: $gl-spacing-scale-8;
     }
   }
 
   .ci-status-link {
-    display: inline-block;
-    line-height: 17px;
-    vertical-align: middle;
-
-    &:hover {
-      text-decoration: none;
-    }
+    @include gl-text-decoration-none;
   }
 
-  .controls {
-    @include media-breakpoint-down(xs) {
-      margin-top: $gl-padding-8;
-    }
+  &:not(.compact) {
+    .controls {
+      @include media-breakpoint-up(lg) {
+        @include gl-justify-content-start;
+        @include gl-pr-9;
 
-    @include media-breakpoint-up(sm) {
-      margin-top: 0;
-    }
-
-    @include media-breakpoint-up(lg) {
-      flex: 1 1 40%;
-    }
-
-    .icon-wrapper {
-      color: inherit;
-      margin-right: $gl-padding;
-
-      @include media-breakpoint-down(md) {
-        margin-right: 0;
-        margin-left: $gl-padding-8;
-      }
-
-      @include media-breakpoint-down(xs) {
-        &:first-child {
-          margin-left: 0;
+        &:not(.with-pipeline-status) {
+          .icon-wrapper:first-of-type {
+            @include media-breakpoint-up(lg) {
+              @include gl-ml-7;
+            }
+          }
         }
       }
     }
 
-    &:not(.with-pipeline-status) {
-      .icon-wrapper:first-of-type {
-        @include media-breakpoint-up(lg) {
-          margin-left: $gl-padding-32;
+    .project-details {
+      p,
+      .commit-row-message {
+        @include gl-white-space-normal;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        /* stylelint-disable-next-line value-no-vendor-prefix */
+        display: -webkit-box;
+      }
+    }
+  }
+
+  .controls {
+    @include media-breakpoint-up(sm) {
+      @include gl-justify-content-end;
+    }
+
+    .icon-wrapper {
+      @include media-breakpoint-down(md) {
+        @include gl-mr-0;
+        @include gl-ml-3;
+      }
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          @include gl-ml-0;
         }
       }
     }
 
     .ci-status-link {
-      display: inline-flex;
+      @include gl-display-inline-flex;
     }
   }
 
   .icon-container {
-    @include media-breakpoint-down(xs) {
-      margin-right: $gl-padding-8;
+    @include media-breakpoint-up(lg) {
+      margin-right: $gl-spacing-scale-7;
     }
   }
 
   &.compact {
-    .project-row {
-      padding: $gl-padding 0;
-    }
-
-    h2 {
-      font-size: $gl-font-size;
+    .description {
+      @include gl-w-full;
+      @include gl-display-table;
+      @include gl-table-layout-fixed;
     }
 
     .avatar-container {
@@ -422,27 +411,15 @@
       }
     }
 
-    .controls {
-      @include media-breakpoint-up(sm) {
-        margin-top: 0;
-      }
-    }
-
     .updated-note {
       @include media-breakpoint-up(sm) {
-        margin-top: $gl-padding-8;
+        @include gl-mt-2;
       }
     }
 
     .icon-wrapper {
-      margin-left: $gl-padding-8;
-      margin-right: 0;
-
-      @include media-breakpoint-down(xs) {
-        &:first-child {
-          margin-left: 0;
-        }
-      }
+      @include gl-ml-3;
+      @include gl-mr-0;
     }
 
     .user-access-role {
@@ -451,10 +428,6 @@
   }
 
   @include media-breakpoint-down(md) {
-    h2 {
-      font-size: $gl-font-size;
-    }
-
     .avatar-container {
       @include avatar-size(40px, 10px);
       min-height: 40px;
@@ -468,24 +441,18 @@
 
   @include media-breakpoint-down(md) {
     .updated-note {
-      margin-top: $gl-padding-8;
-      text-align: right;
+      @include gl-mt-3;
+      @include gl-text-right;
     }
   }
 
   .forks,
   .pipeline-status,
   .updated-note {
-    display: flex;
+    @include gl-display-flex;
   }
 
   @include media-breakpoint-down(md) {
-    &:not(.explore) {
-      .forks {
-        display: none;
-      }
-    }
-
     &.explore {
       .pipeline-status,
       .updated-note {
@@ -496,8 +463,8 @@
 
   @include media-breakpoint-down(xs) {
     .updated-note {
-      margin-top: 0;
-      text-align: left;
+      @include gl-mt-0;
+      @include gl-text-left;
     }
   }
 }

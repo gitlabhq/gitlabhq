@@ -289,7 +289,7 @@ contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20GitLab"
 ```
 
 Use `%2F` for slashes (`/`).

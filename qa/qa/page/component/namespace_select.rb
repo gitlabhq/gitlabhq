@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view "app/assets/javascripts/vue_shared/components/namespace_select/namespace_select_deprecated.vue" do
+          base.view "app/assets/javascripts/groups_projects/components/transfer_locations.vue" do
             element :namespaces_list
             element :namespaces_list_groups
             element :namespaces_list_item

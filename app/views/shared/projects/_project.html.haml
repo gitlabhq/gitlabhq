@@ -8,102 +8,108 @@
 - access = max_project_member_access(project)
 - compact_mode = false unless local_assigns[:compact_mode] == true
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
-- css_class = '' unless local_assigns[:css_class]
-- css_class += " gl-display-flex!"
+- css_class = "gl-sm-display-flex gl-align-items-center gl-vertical-align-middle!" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project, pipeline_status: pipeline_status)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
 - show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
 - last_pipeline = project.last_pipeline if show_pipeline_status_icon
-- css_controls_class = compact_mode ? [] : ["flex-lg-row", "justify-content-lg-between"]
-- css_controls_class << "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?
-- avatar_container_class = project.creator && use_creator_avatar ? '' : 'rect-avatar'
+- css_controls_class = "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?
+- css_controls_container_class = compact_mode ? "" : "gl-lg-flex-direction-row gl-justify-content-space-between"
+- css_metadata_classes = "gl-display-flex gl-align-items-center gl-mr-5 gl-reset-color! icon-wrapper has-tooltip"
 
-%li.project-row.gl-align-items-center{ class: css_class }
+%li.project-row
   = cache(cache_key) do
     - if avatar
-      .flex-grow-0.flex-shrink-0{ class: avatar_container_class }
+      .project-cell.gl-w-11
         = link_to project_path(project), class: dom_class(project) do
           - if project.creator && use_creator_avatar
             = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '', class: 'gl-mr-5')
           - else
             = render Pajamas::AvatarComponent.new(project, size: 48, alt: '', class: 'gl-mr-5')
-    .project-details.d-sm-flex.flex-sm-fill.align-items-center{ data: { qa_selector: 'project_content', qa_project_name: project.name } }
-      .flex-wrapper
-        .d-flex.align-items-center.flex-wrap.project-title
-          %h2.d-flex.gl-mt-3
-            = link_to project_path(project), class: 'text-plain js-prefetch-document' do
-              %span.project-full-name.gl-mr-3><
-                %span.namespace-name
-                  - if project.namespace && !skip_namespace
-                    = project.namespace.human_name
-                    \/
-                %span.project-name<
-                  = project.name
+  .project-cell{ class: css_class }
+    .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-display-flex.gl-flex-direction-column{ data: { qa_selector: 'project_content', qa_project_name: project.name } }
+      .gl-display-flex.gl-align-items-center.gl-flex-wrap-wrap
+        %h2.gl-font-base.gl-line-height-20.gl-my-0
+          = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document' do
+            %span.namespace-name.gl-font-weight-normal
+              - if project.namespace && !skip_namespace
+                = project.namespace.human_name
+                \/
+            %span.project-name<
+              = project.name
 
-          %span.metadata-info.visibility-icon.gl-mr-3.gl-mt-3.text-secondary.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
-            = visibility_level_icon(project.visibility_level)
+        %span.gl-mr-3.has-tooltip{ data: { container: 'body', placement: 'top' }, title: visibility_icon_description(project) }
+          = visibility_level_icon(project.visibility_level)
 
-          - if explore_projects_tab? && project_license_name(project)
-            %span.metadata-info.d-inline-flex.align-items-center.gl-mr-3.gl-mt-3
-              = sprite_icon('scale', size: 14, css_class: 'gl-mr-2')
-              = project_license_name(project)
+        - if explore_projects_tab? && project_license_name(project)
+          %span.gl-display-inline-flex.gl-align-items-center.gl-mr-3
+            = sprite_icon('scale', size: 14, css_class: 'gl-mr-2')
+            = project_license_name(project)
 
-          - if !explore_projects_tab? && access&.nonzero?
-            -# haml-lint:disable UnnecessaryStringOutput
-            = ' ' # prevent haml from eating the space between elements
-            .metadata-info.gl-mt-3
-              %span.user-access-role.gl-display-block{ data: { qa_selector: 'user_role_content' } }= localized_project_human_access(access)
+        - if !explore_projects_tab? && access&.nonzero?
+          -# haml-lint:disable UnnecessaryStringOutput
+          = ' ' # prevent haml from eating the space between elements
+          %span.user-access-role.gl-display-block.gl-m-0{ data: { qa_selector: 'user_role_content' } }= Gitlab::Access.human_access(access)
 
-          - if !explore_projects_tab?
-            .metadata-info.gl-mt-3
-              = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project
+        - if !explore_projects_tab?
+          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project
 
-        - if show_last_commit_as_description
-          .description.d-none.d-sm-block.gl-mr-3
-            = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
-        - elsif project.description.present?
-          .description.d-none.d-sm-block.gl-mr-3
-            = markdown_field(project, :description)
+      - if show_last_commit_as_description
+        .description.gl-display-none.gl-sm-display-block.gl-overflow-hidden.gl-mr-3.gl-mt-2
+          = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
+      - elsif project.description.present?
+        .description.gl-display-none.gl-sm-display-block.gl-overflow-hidden.gl-mr-3.gl-mt-2
+          = markdown_field(project, :description)
 
-        - if project.topics.any?
-          .gl-mt-2
-            = render "shared/projects/topics", project: project.present(current_user: current_user)
+      - if project.topics.any?
+        .gl-mt-2
+          = render "shared/projects/topics", project: project.present(current_user: current_user)
 
-        = render_if_exists 'shared/projects/removed', project: project
+      = render_if_exists 'shared/projects/removed', project: project
 
-      .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class.join(" ") }
-        .icon-container.d-flex.align-items-center
+      .gl-display-flex.gl-mt-3{ class: "#{css_class} gl-sm-display-none!" }
+        .controls.gl-display-flex.gl-align-items-center
           - if show_pipeline_status_icon && last_pipeline.present?
             - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
-            %span.icon-wrapper.pipeline-status
+            %span.icon-wrapper.pipeline-status.gl-mr-5
               = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
           = render_if_exists 'shared/projects/archived', project: project
           - if stars
-            = link_to project_starrers_path(project),
-                class: "d-flex align-items-center icon-wrapper stars has-tooltip",
-                title: _('Stars'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('star', size: 14, css_class: 'gl-mr-2')
-              = number_with_delimiter(project.star_count)
-          - if forks
-            = link_to project_forks_path(project),
-                class: "align-items-center icon-wrapper forks has-tooltip",
-                title: _('Forks'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('fork', size: 14, css_class: 'gl-mr-2')
-              = number_with_delimiter(project.forks_count)
-          - if show_merge_request_count?(disabled: !merge_requests, compact_mode: compact_mode)
-            = link_to project_merge_requests_path(project),
-                class: "d-none d-xl-flex align-items-center icon-wrapper merge-requests has-tooltip",
-                title: _('Merge requests'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('git-merge', size: 14, css_class: 'gl-mr-2')
-              = number_with_delimiter(project.open_merge_requests_count)
-          - if show_issue_count?(disabled: !issues, compact_mode: compact_mode)
-            = link_to project_issues_path(project),
-                class: "d-none d-xl-flex align-items-center icon-wrapper issues has-tooltip",
-                title: _('Issues'), data: { container: 'body', placement: 'top' } do
-              = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
-              = number_with_delimiter(project.open_issues_count)
-        .updated-note
+            = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
+              = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
+              = badge_count(project.star_count)
+        .updated-note.gl-ml-3.gl-sm-ml-0
           %span
             = _('Updated')
             = updated_tooltip
+
+  .project-cell{ class: "#{css_class} gl-xs-display-none!" }
+    .project-controls.gl-display-flex.gl-flex-direction-column.gl-w-full{ class: css_controls_container_class, data: { testid: 'project_controls'} }
+      .controls.gl-display-flex.gl-align-items-center{ class: css_controls_class }
+        - if show_pipeline_status_icon && last_pipeline.present?
+          - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
+          %span.icon-wrapper.pipeline-status.gl-mr-5
+            = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
+
+        = render_if_exists 'shared/projects/archived', project: project
+        - if stars
+          = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
+            = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
+            = badge_count(project.star_count)
+        - if forks
+          = link_to project_forks_path(project), class: "#{css_metadata_classes} forks", title: _('Forks'), data: { container: 'body', placement: 'top' } do
+            = sprite_icon('fork', size: 14, css_class: 'gl-mr-2')
+            = badge_count(project.forks_count)
+        - if show_merge_request_count?(disabled: !merge_requests, compact_mode: compact_mode)
+          = link_to project_merge_requests_path(project), class: "#{css_metadata_classes} merge-requests", title: _('Merge requests'), data: { container: 'body', placement: 'top' } do
+            = sprite_icon('git-merge', size: 14, css_class: 'gl-mr-2')
+            = badge_count(project.open_merge_requests_count)
+        - if show_issue_count?(disabled: !issues, compact_mode: compact_mode)
+          = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' } do
+            = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
+            = badge_count(project.open_issues_count)
+      .updated-note.gl-white-space-nowrap.gl-justify-content-end
+        %span
+          = _('Updated')
+          = updated_tooltip

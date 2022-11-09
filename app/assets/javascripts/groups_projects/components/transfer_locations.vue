@@ -5,6 +5,7 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownSectionHeader,
+  GlDropdownDivider,
   GlSearchBoxByType,
   GlIntersectionObserver,
   GlLoadingIcon,
@@ -34,6 +35,7 @@ export default {
     GlDropdown,
     GlDropdownItem,
     GlDropdownSectionHeader,
+    GlDropdownDivider,
     GlSearchBoxByType,
     GlIntersectionObserver,
     GlLoadingIcon,
@@ -49,6 +51,23 @@ export default {
       type: Function,
       required: true,
     },
+    showUserTransferLocations: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    additionalDropdownItems: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    label: {
+      type: String,
+      required: false,
+      default: i18n.SELECT_A_NAMESPACE,
+    },
   },
   initialTransferLocationsLoaded: false,
   data() {
@@ -56,6 +75,7 @@ export default {
       searchTerm: '',
       userTransferLocations: [],
       groupTransferLocations: [],
+      filteredAdditionalDropdownItems: this.additionalDropdownItems,
       isLoading: false,
       isSearchLoading: false,
       hasError: false,
@@ -71,10 +91,13 @@ export default {
       return this.groupTransferLocations.length;
     },
     selectedText() {
-      return this.value?.humanName || i18n.SELECT_A_NAMESPACE;
+      return this.value?.humanName || this.label;
     },
     hasNextPageOfGroups() {
       return this.page < this.totalPages;
+    },
+    showAdditionalDropdownItems() {
+      return !this.isLoading && this.filteredAdditionalDropdownItems.length;
     },
   },
   watch: {
@@ -128,6 +151,10 @@ export default {
       }
     },
     async getUserTransferLocations() {
+      if (!this.showUserTransferLocations) {
+        return [];
+      }
+
       try {
         const {
           data: {
@@ -167,6 +194,10 @@ export default {
 
       this.groupTransferLocations = await this.getGroupTransferLocations();
 
+      this.filteredAdditionalDropdownItems = this.additionalDropdownItems.filter((dropdownItem) =>
+        dropdownItem.humanName.toLowerCase().includes(this.searchTerm.toLowerCase()),
+      );
+
       this.isSearchLoading = false;
     }, DEBOUNCE_DELAY),
     handleError() {
@@ -188,14 +219,30 @@ export default {
       @dismiss="handleAlertDismiss"
       >{{ $options.i18n.ERROR_MESSAGE }}</gl-alert
     >
-    <gl-form-group :label="$options.i18n.SELECT_A_NAMESPACE">
-      <gl-dropdown :text="selectedText" data-qa-selector="namespaces_list" block @show="handleShow">
+    <gl-form-group :label="label">
+      <gl-dropdown
+        :text="selectedText"
+        data-qa-selector="namespaces_list"
+        data-testid="transfer-locations-dropdown"
+        block
+        toggle-class="gl-mb-0"
+        @show="handleShow"
+      >
         <template #header>
           <gl-search-box-by-type
             v-model.trim="searchTerm"
             :is-loading="isSearchLoading"
             data-qa-selector="namespaces_list_search"
           />
+        </template>
+        <template v-if="showAdditionalDropdownItems">
+          <gl-dropdown-item
+            v-for="item in filteredAdditionalDropdownItems"
+            :key="item.id"
+            @click="handleSelect(item)"
+            >{{ item.humanName }}</gl-dropdown-item
+          >
+          <gl-dropdown-divider />
         </template>
         <div
           v-if="hasUserTransferLocations"
@@ -216,7 +263,9 @@ export default {
           data-qa-selector="namespaces_list_groups"
           data-testid="group-transfer-locations"
         >
-          <gl-dropdown-section-header>{{ $options.i18n.GROUPS }}</gl-dropdown-section-header>
+          <gl-dropdown-section-header v-if="showUserTransferLocations">{{
+            $options.i18n.GROUPS
+          }}</gl-dropdown-section-header>
           <gl-dropdown-item
             v-for="item in groupTransferLocations"
             :key="item.id"

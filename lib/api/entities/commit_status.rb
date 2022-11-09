@@ -10,7 +10,7 @@ module API
       expose :name, documentation: { type: 'string', example: 'default' }
       expose :target_url, documentation: {
         type: 'string',
-        example: 'https://gitlab.example.com/thedude/gitlab-foss/builds/91'
+        example: 'https://gitlab.example.com/janedoe/gitlab-foss/builds/91'
       }
       expose :description, documentation: { type: 'string' }
       expose :created_at, documentation: { type: 'dateTime', example: '2016-01-19T09:05:50.355Z' }

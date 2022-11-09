@@ -536,7 +536,7 @@ POST /projects/:id/repository/commits/:sha/comments
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" \
+     --form "note=Nice picture\!" --form "path=README.md" --form "line=11" --form "line_type=new" \
      "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments"
 ```
 
@@ -554,9 +554,9 @@ Example response:
    },
    "created_at" : "2016-01-19T09:44:55.600Z",
    "line_type" : "new",
-   "path" : "dudeism.md",
+   "path" : "README.md",
    "line" : 11,
-   "note" : "Nice picture man!"
+   "note" : "Nice picture!"
 }
 ```
 
