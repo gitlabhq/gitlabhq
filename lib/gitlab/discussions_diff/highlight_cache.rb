@@ -14,7 +14,7 @@ module Gitlab
         #
         # mapping - Write multiple cache values at once
         def write_multiple(mapping)
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.multi do |multi|
               mapping.each do |raw_key, value|
                 key = cache_key_for(raw_key)
@@ -37,7 +37,7 @@ module Gitlab
           keys = raw_keys.map { |id| cache_key_for(id) }
 
           content =
-            Redis::Cache.with do |redis|
+            with_redis do |redis|
               Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
                 redis.mget(keys)
               end
@@ -62,7 +62,7 @@ module Gitlab
 
           keys = raw_keys.map { |id| cache_key_for(id) }
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
               redis.del(keys)
             end
@@ -77,6 +77,10 @@ module Gitlab
 
         def cache_key_prefix
           "#{Redis::Cache::CACHE_NAMESPACE}:#{VERSION}:discussion-highlight"
+        end
+
+        def with_redis(&block)
+          Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
         end
       end
     end

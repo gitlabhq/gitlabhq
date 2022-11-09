@@ -26,7 +26,7 @@ module RedisCacheable
   end
 
   def cache_attributes(values)
-    Gitlab::Redis::Cache.with do |redis|
+    with_redis do |redis|
       redis.set(cache_attribute_key, Gitlab::Json.dump(values), ex: CACHED_ATTRIBUTES_EXPIRY_TIME)
     end
 
@@ -41,11 +41,15 @@ module RedisCacheable
 
   def cached_attributes
     strong_memoize(:cached_attributes) do
-      Gitlab::Redis::Cache.with do |redis|
+      with_redis do |redis|
         data = redis.get(cache_attribute_key)
         Gitlab::Json.parse(data, symbolize_names: true) if data
       end
     end
+  end
+
+  def with_redis(&block)
+    Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
   end
 
   def cast_value_from_cache(attribute, value)

@@ -12,7 +12,7 @@ module ReferenceParserHelpers
   end
 
   RSpec.shared_examples 'no project N+1 queries' do
-    it 'avoids N+1 queries in #nodes_visible_to_user' do
+    it 'avoids N+1 queries in #nodes_visible_to_user', :request_store do
       context = Banzai::RenderContext.new(project, user)
 
       request = lambda do |links|

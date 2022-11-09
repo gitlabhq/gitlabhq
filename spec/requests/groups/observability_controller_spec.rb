@@ -8,6 +8,8 @@ RSpec.describe Groups::ObservabilityController do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 
+  let(:observability_url) { Gitlab::Observability.observability_url }
+
   subject do
     get group_observability_index_path(group)
     response
@@ -15,16 +17,6 @@ RSpec.describe Groups::ObservabilityController do
 
   describe 'GET #index' do
     context 'when user is not authenticated' do
-      it 'returns 404' do
-        expect(subject).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'when observability url is missing' do
-      before do
-        allow(described_class).to receive(:observability_url).and_return("")
-      end
-
       it 'returns 404' do
         expect(subject).to have_gitlab_http_status(:not_found)
       end
@@ -46,6 +38,16 @@ RSpec.describe Groups::ObservabilityController do
         group.add_developer(user)
       end
 
+      context 'when observability url is missing' do
+        before do
+          allow(Gitlab::Observability).to receive(:observability_url).and_return("")
+        end
+
+        it 'returns 404' do
+          expect(subject).to have_gitlab_http_status(:not_found)
+        end
+      end
+
       it 'returns 200' do
         expect(subject).to have_gitlab_http_status(:ok)
       end
@@ -64,18 +66,9 @@ RSpec.describe Groups::ObservabilityController do
         end
 
         it 'sets the iframe src to the proper URL' do
-          expect(subject.attributes['src'].value).to eq("https://observe.gitlab.com/-/#{group.id}")
-        end
+          expected_url = "#{observability_url}/-/#{group.id}"
 
-        it 'when the env is staging, sets the iframe src to the proper URL' do
-          stub_config_setting(url: Gitlab::Saas.staging_com_url)
-          expect(subject.attributes['src'].value).to eq("https://staging.observe.gitlab.com/-/#{group.id}")
-        end
-
-        it 'overrides the iframe src url if specified by OVERRIDE_OBSERVABILITY_URL env' do
-          stub_env('OVERRIDE_OBSERVABILITY_URL', 'http://foo.test')
-
-          expect(subject.attributes['src'].value).to eq("http://foo.test/-/#{group.id}")
+          expect(subject.attributes['src'].value).to eq(expected_url)
         end
       end
 
@@ -106,21 +99,7 @@ RSpec.describe Groups::ObservabilityController do
 
           it 'appends the proper url to frame-src CSP directives' do
             expect(subject).to include(
-              "frame-src https://something.test https://observe.gitlab.com 'self'")
-          end
-
-          it 'appends the proper url to frame-src CSP directives when Gilab.staging?' do
-            stub_config_setting(url: Gitlab::Saas.staging_com_url)
-
-            expect(subject).to include(
-              "frame-src https://something.test https://staging.observe.gitlab.com 'self'")
-          end
-
-          it 'appends the proper url to frame-src CSP directives when OVERRIDE_OBSERVABILITY_URL is specified' do
-            stub_env('OVERRIDE_OBSERVABILITY_URL', 'http://foo.test')
-
-            expect(subject).to include(
-              "frame-src https://something.test http://foo.test 'self'")
+              "frame-src https://something.test #{observability_url} 'self'")
           end
         end
 
@@ -133,7 +112,7 @@ RSpec.describe Groups::ObservabilityController do
 
           it 'does not append self again' do
             expect(subject).to include(
-              "frame-src 'self' https://observe.gitlab.com;")
+              "frame-src 'self' #{observability_url};")
           end
         end
 
@@ -151,21 +130,7 @@ RSpec.describe Groups::ObservabilityController do
 
           it 'appends the proper url to frame-src CSP directives' do
             expect(subject).to include(
-              "frame-src https://something.test https://observe.gitlab.com 'self'")
-          end
-
-          it 'appends the proper url to frame-src CSP directives when Gilab.staging?' do
-            stub_config_setting(url: Gitlab::Saas.staging_com_url)
-
-            expect(subject).to include(
-              "frame-src https://something.test https://staging.observe.gitlab.com 'self'")
-          end
-
-          it 'appends the proper url to frame-src CSP directives when OVERRIDE_OBSERVABILITY_URL is specified' do
-            stub_env('OVERRIDE_OBSERVABILITY_URL', 'http://foo.test')
-
-            expect(subject).to include(
-              "frame-src https://something.test http://foo.test 'self'")
+              "frame-src https://something.test #{observability_url} 'self'")
           end
         end
 
@@ -179,7 +144,7 @@ RSpec.describe Groups::ObservabilityController do
 
           it 'appends to frame-src CSP directives' do
             expect(subject).to include(
-              "frame-src https://something.test https://observe.gitlab.com 'self'")
+              "frame-src https://something.test #{observability_url} 'self'")
             expect(subject).to include(
               "default-src https://something_default.test")
           end

@@ -81,24 +81,20 @@ RSpec.describe API::Release::Links do
       end
 
       context 'when project is public' do
-        let(:project) { create(:project, :repository, :public) }
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        end
 
         it 'allows the request' do
           get api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member)
 
           expect(response).to have_gitlab_http_status(:ok)
         end
-      end
 
-      context 'when project is public and the repository is private' do
-        let(:project) { create(:project, :repository, :public, :repository_private) }
-
-        it_behaves_like '403 response' do
-          let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member) }
-        end
-
-        context 'when the release does not exists' do
-          let!(:release) {}
+        context 'and the releases are private' do
+          before do
+            project.project_feature.update!(releases_access_level: ProjectFeature::PRIVATE)
+          end
 
           it_behaves_like '403 response' do
             let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member) }

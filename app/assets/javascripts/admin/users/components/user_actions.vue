@@ -139,6 +139,7 @@ export default {
             :key="action"
             :paths="userPaths"
             :username="user.name"
+            :user-id="user.id"
             :user-deletion-obstacles="obstaclesForUserDeletion"
             :data-testid="`delete-${action}`"
           >

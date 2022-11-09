@@ -5,23 +5,23 @@ module Gitlab
     module Metrics
       module NamesSuggestions
         module RelationParsers
-          class Constraints < ::Arel::Visitors::PostgreSQL
+          class HavingConstraints < ::Arel::Visitors::PostgreSQL
             # rubocop:disable Naming/MethodName
             def visit_Arel_Nodes_SelectCore(object, collector)
-              collect_nodes_for(object.wheres, collector, "") || collector
+              collect_nodes_for(object.havings, collector, "") || collector
             end
             # rubocop:enable Naming/MethodName
 
             def quote(value)
-              "#{value}"
+              value.to_s
             end
 
             def quote_table_name(name)
-              "#{name}"
+              name.to_s
             end
 
             def quote_column_name(name)
-              "#{name}"
+              name.to_s
             end
           end
         end

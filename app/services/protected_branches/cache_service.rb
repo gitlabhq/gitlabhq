@@ -10,7 +10,7 @@ module ProtectedBranches
     def fetch(ref_name, dry_run: false, &block)
       record = OpenSSL::Digest::SHA256.hexdigest(ref_name)
 
-      Gitlab::Redis::Cache.with do |redis|
+      with_redis do |redis|
         cached_result = redis.hget(redis_key, record)
 
         if cached_result.nil?
@@ -48,10 +48,14 @@ module ProtectedBranches
     end
 
     def refresh
-      Gitlab::Redis::Cache.with { |redis| redis.unlink(redis_key) }
+      with_redis { |redis| redis.unlink(redis_key) }
     end
 
     private
+
+    def with_redis(&block)
+      Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
+    end
 
     def check_and_log_discrepancy(cached_value, real_value, ref_name)
       return if cached_value.nil?

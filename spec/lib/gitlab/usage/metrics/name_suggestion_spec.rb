@@ -63,7 +63,6 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
     context 'for sum metrics' do
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with sum(JiraImportState.finished, :imported_issues_count)
-        let(:key_path) { 'counts.jira_imports_total_imported_issues_count' }
         let(:operation) { :sum }
         let(:relation) { JiraImportState.finished }
         let(:column) { :imported_issues_count }
@@ -74,7 +73,6 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
     context 'for average metrics' do
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with average(Ci::Pipeline, :duration)
-        let(:key_path) { 'counts.ci_pipeline_duration' }
         let(:operation) { :average }
         let(:relation) { Ci::Pipeline }
         let(:column) { :duration }
@@ -98,6 +96,17 @@ RSpec.describe Gitlab::Usage::Metrics::NameSuggestion do
         let(:column) { nil }
         let(:relation) { nil }
         let(:name_suggestion) { /<please fill metric name>/ }
+      end
+    end
+
+    context 'for metrics with `having` keyword' do
+      it_behaves_like 'name suggestion' do
+        let(:operation) { :count }
+        let(:relation) { Issue.with_alert_management_alerts.having('COUNT(alert_management_alerts) > 1').group(:id) }
+
+        let(:column) { nil }
+        let(:constraints) { /<adjective describing: '\(\(COUNT\(alert_management_alerts\) > 1\)\)'>/ }
+        let(:name_suggestion) { /count_#{constraints}_issues_<with>_alert_management_alerts/ }
       end
     end
   end

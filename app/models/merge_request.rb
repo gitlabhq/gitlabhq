@@ -653,8 +653,8 @@ class MergeRequest < ApplicationRecord
     context_commits.count
   end
 
-  def commits(limit: nil, load_from_gitaly: false)
-    return merge_request_diff.commits(limit: limit, load_from_gitaly: load_from_gitaly) if merge_request_diff.persisted?
+  def commits(limit: nil, load_from_gitaly: false, page: nil)
+    return merge_request_diff.commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page) if merge_request_diff.persisted?
 
     commits_arr = if compare_commits
                     reversed_commits = compare_commits.reverse
@@ -666,8 +666,8 @@ class MergeRequest < ApplicationRecord
     CommitCollection.new(source_project, commits_arr, source_branch)
   end
 
-  def recent_commits(load_from_gitaly: false)
-    commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: load_from_gitaly)
+  def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil)
+    commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page)
   end
 
   def commits_count

@@ -591,34 +591,4 @@ RSpec.describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:log_in) }
     end
   end
-
-  describe 'delete runners' do
-    context 'when anonymous' do
-      let(:current_user) { nil }
-
-      it { is_expected.not_to be_allowed(:delete_runners) }
-    end
-
-    context 'regular user' do
-      it { is_expected.not_to be_allowed(:delete_runners) }
-    end
-
-    context 'when external' do
-      let(:current_user) { build(:user, :external) }
-
-      it { is_expected.not_to be_allowed(:delete_runners) }
-    end
-
-    context 'admin user' do
-      let_it_be(:current_user) { create(:user, :admin) }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:delete_runners) }
-      end
-
-      context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:delete_runners) }
-      end
-    end
-  end
 end

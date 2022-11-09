@@ -33,7 +33,7 @@ module Gitlab
         # timeout - The new timeout of the key if the key is to be refreshed.
         def self.read(raw_key, timeout: TIMEOUT)
           key = cache_key_for(raw_key)
-          value = Redis::Cache.with { |redis| redis.get(key) }
+          value = with_redis { |redis| redis.get(key) }
 
           if value.present?
             # We refresh the expiration time so frequently used keys stick
@@ -44,7 +44,7 @@ module Gitlab
             # did not find a matching GitLab user. In that case we _don't_ want to
             # refresh the TTL so we automatically pick up the right data when said
             # user were to register themselves on the GitLab instance.
-            Redis::Cache.with { |redis| redis.expire(key, timeout) }
+            with_redis { |redis| redis.expire(key, timeout) }
           end
 
           value
@@ -69,7 +69,7 @@ module Gitlab
 
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.set(key, value, ex: timeout)
           end
 
@@ -85,7 +85,7 @@ module Gitlab
         def self.increment(raw_key, timeout: TIMEOUT)
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             value = redis.incr(key)
             redis.expire(key, timeout)
 
@@ -105,7 +105,7 @@ module Gitlab
 
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.incrby(key, value)
             redis.expire(key, timeout)
           end
@@ -121,7 +121,7 @@ module Gitlab
 
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.multi do |m|
               m.sadd(key, value)
               m.expire(key, timeout)
@@ -149,7 +149,7 @@ module Gitlab
         def self.values_from_set(raw_key)
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.smembers(key)
           end
         end
@@ -160,7 +160,7 @@ module Gitlab
         # key_prefix - prefix inserted before each key
         # timeout - The time after which the cache key should expire.
         def self.write_multiple(mapping, key_prefix: nil, timeout: TIMEOUT)
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.pipelined do |multi|
               mapping.each do |raw_key, value|
                 key = cache_key_for("#{key_prefix}#{raw_key}")
@@ -180,7 +180,7 @@ module Gitlab
         def self.expire(raw_key, timeout)
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.expire(key, timeout)
           end
         end
@@ -199,7 +199,7 @@ module Gitlab
           validate_redis_value!(value)
 
           key = cache_key_for(raw_key)
-          val = Redis::Cache.with do |redis|
+          val = with_redis do |redis|
             redis
               .eval(WRITE_IF_GREATER_SCRIPT, keys: [key], argv: [value, timeout])
           end
@@ -218,7 +218,7 @@ module Gitlab
 
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.multi do |m|
               m.hset(key, field, value)
               m.expire(key, timeout)
@@ -232,13 +232,17 @@ module Gitlab
         def self.values_from_hash(raw_key)
           key = cache_key_for(raw_key)
 
-          Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.hgetall(key)
           end
         end
 
         def self.cache_key_for(raw_key)
           "#{Redis::Cache::CACHE_NAMESPACE}:#{raw_key}"
+        end
+
+        def self.with_redis(&block)
+          Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
         end
 
         def self.validate_redis_value!(value)

@@ -13,6 +13,9 @@
 - else
   %ol#commits-list.list-unstyled
     = render "projects/commits/commits", merge_request: @merge_request
+  - if @next_page && @merge_request
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-load-more-commits', data: { next_page: @next_page } }) do
+      = _('Load more')
 
-- if can_update_merge_request && @merge_request.iid
+- if can_update_merge_request && @merge_request.iid && !@next_page
   .add-review-item-modal-wrapper{ data: { context_commits_path: context_commits_project_json_merge_request_url(@merge_request&.project, @merge_request, :json), target_branch: @merge_request.target_branch, merge_request_iid: @merge_request.iid, project_id: @merge_request.project.id } }

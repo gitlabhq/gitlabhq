@@ -323,7 +323,7 @@ RSpec.describe ProjectPolicy do
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
-        :destroy_release, :download_code, :build_download_code
+        :download_code, :build_download_code
       ]
     end
 

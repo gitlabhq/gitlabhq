@@ -82,6 +82,50 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         end
       end
     end
+
+    context 'when trigger variables have expand: true/false' do
+      let(:config) do
+        <<-YAML
+        child:
+          variables:
+            VAR1: "PROJECTID-$CI_PROJECT_ID"
+            VAR2: "PIPELINEID-$CI_PIPELINE_ID and $VAR1"
+            VAR3:
+              value: "PIPELINEID-$CI_PIPELINE_ID and $VAR1"
+              expand: false
+          trigger:
+            include: child.yml
+        YAML
+      end
+
+      let(:child) { find_job('child') }
+
+      it 'creates the pipeline with a trigger job that has downstream_variables expanded according to "expand"' do
+        expect(pipeline).to be_created_successfully
+
+        expect(child.downstream_variables).to include(
+          { key: 'VAR1', value: "PROJECTID-#{project.id}" },
+          { key: 'VAR2', value: "PIPELINEID-#{pipeline.id} and PROJECTID-$CI_PROJECT_ID" },
+          { key: 'VAR3', value: "PIPELINEID-$CI_PIPELINE_ID and $VAR1", raw: true }
+        )
+      end
+
+      context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
+        before do
+          stub_feature_flags(ci_raw_variables_in_yaml_config: false)
+        end
+
+        it 'creates the pipeline with a job that has all variables expanded' do
+          expect(pipeline).to be_created_successfully
+
+          expect(child.downstream_variables).to include(
+            { key: 'VAR1', value: "PROJECTID-#{project.id}" },
+            { key: 'VAR2', value: "PIPELINEID-#{pipeline.id} and PROJECTID-$CI_PROJECT_ID" },
+            { key: 'VAR3', value: "PIPELINEID-#{pipeline.id} and PROJECTID-$CI_PROJECT_ID" }
+          )
+        end
+      end
+    end
   end
 
   private

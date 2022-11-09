@@ -20,7 +20,7 @@ module Types
                                         description: 'Timestamp of when the merge request was created.'
     field :description, GraphQL::Types::String, null: true,
                                                 description: 'Description of the merge request (Markdown rendered as HTML for caching).'
-    field :diff_head_sha, GraphQL::Types::String, null: true,
+    field :diff_head_sha, GraphQL::Types::String, null: true, calls_gitaly: true,
                                                   description: 'Diff head SHA of the merge request.'
     field :diff_refs, Types::DiffRefsType, null: true,
                                            description: 'References of the base SHA, the head SHA, and the start SHA for this merge request.'

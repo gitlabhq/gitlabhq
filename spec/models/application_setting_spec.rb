@@ -211,6 +211,9 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value([]).for(:valid_runner_registrars) }
     it { is_expected.to allow_value(%w(project group)).for(:valid_runner_registrars) }
 
+    it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
+    it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
+
     context 'when deactivate_dormant_users is enabled' do
       before do
         stub_application_setting(deactivate_dormant_users: true)
@@ -269,6 +272,7 @@ RSpec.describe ApplicationSetting do
         end
 
         it { is_expected.not_to allow_value('http://localhost:9000').for(:grafana_url) }
+        it { is_expected.not_to allow_value('http://localhost:9000').for(:jira_connect_proxy_url) }
       end
 
       context 'with invalid grafana URL' do

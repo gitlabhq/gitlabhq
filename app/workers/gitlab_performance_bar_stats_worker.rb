@@ -18,7 +18,7 @@ class GitlabPerformanceBarStatsWorker
   idempotent!
 
   def perform(lease_uuid)
-    Gitlab::Redis::Cache.with do |redis|
+    with_redis do |redis|
       request_ids = fetch_request_ids(redis, lease_uuid)
       stats = Gitlab::PerformanceBar::Stats.new(redis)
 
@@ -29,6 +29,10 @@ class GitlabPerformanceBarStatsWorker
   end
 
   private
+
+  def with_redis(&block)
+    Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
+  end
 
   def fetch_request_ids(redis, lease_uuid)
     ids = redis.smembers(STATS_KEY)

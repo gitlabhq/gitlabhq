@@ -284,7 +284,11 @@ module Ci
       return [] unless forward_yaml_variables?
 
       yaml_variables.to_a.map do |hash|
-        { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], expand_variables) }
+        if hash[:raw] && ci_raw_variables_in_yaml_config_enabled?
+          { key: hash[:key], value: hash[:value], raw: true }
+        else
+          { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], expand_variables) }
+        end
       end
     end
 
@@ -292,7 +296,11 @@ module Ci
       return [] unless forward_pipeline_variables?
 
       pipeline.variables.to_a.map do |variable|
-        { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        if variable.raw? && ci_raw_variables_in_yaml_config_enabled?
+          { key: variable.key, value: variable.value, raw: true }
+        else
+          { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        end
       end
     end
 
@@ -301,7 +309,11 @@ module Ci
       return [] unless pipeline.pipeline_schedule
 
       pipeline.pipeline_schedule.variables.to_a.map do |variable|
-        { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        if variable.raw? && ci_raw_variables_in_yaml_config_enabled?
+          { key: variable.key, value: variable.value, raw: true }
+        else
+          { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        end
       end
     end
 
@@ -318,6 +330,12 @@ module Ci
         result = options&.dig(:trigger, :forward, :pipeline_variables)
 
         result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
+      end
+    end
+
+    def ci_raw_variables_in_yaml_config_enabled?
+      strong_memoize(:ci_raw_variables_in_yaml_config_enabled) do
+        ::Feature.enabled?(:ci_raw_variables_in_yaml_config, project)
       end
     end
   end

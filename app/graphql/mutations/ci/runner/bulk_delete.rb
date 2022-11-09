@@ -25,13 +25,12 @@ module Mutations
                 'Only present if operation was performed synchronously.'
 
         def resolve(**runner_attrs)
-          raise_resource_not_available_error! unless Ability.allowed?(current_user, :delete_runners)
-
           if ids = runner_attrs[:ids]
-            runners = find_all_runners_by_ids(model_ids_of(ids))
+            runner_ids = model_ids_of(ids)
+            runners = find_all_runners_by_ids(runner_ids)
 
-            result = ::Ci::Runners::BulkDeleteRunnersService.new(runners: runners).execute
-            result.payload.slice(:deleted_count, :deleted_ids).merge(errors: [])
+            result = ::Ci::Runners::BulkDeleteRunnersService.new(runners: runners, current_user: current_user).execute
+            result.payload.slice(:deleted_count, :deleted_ids, :errors)
           else
             { errors: [] }
           end
@@ -39,14 +38,15 @@ module Mutations
 
         private
 
-        def model_ids_of(ids)
-          ids.filter_map { |gid| gid.model_id.to_i }
+        def model_ids_of(global_ids)
+          global_ids.filter_map { |gid| gid.model_id.to_i }
         end
 
         def find_all_runners_by_ids(ids)
           return ::Ci::Runner.none if ids.blank?
 
-          ::Ci::Runner.id_in(ids)
+          limit = ::Ci::Runners::BulkDeleteRunnersService::RUNNER_LIMIT
+          ::Ci::Runner.id_in(ids).limit(limit + 1)
         end
       end
     end

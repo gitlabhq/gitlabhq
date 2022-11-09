@@ -19,6 +19,8 @@ module Preloaders
     end
 
     def execute
+      return unless @user
+
       project_authorizations = ProjectAuthorization.arel_table
 
       auths = @projects

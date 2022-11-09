@@ -7,6 +7,7 @@ module Gitlab
         FREE_TEXT_METRIC_NAME = "<please fill metric name>"
         REDIS_EVENT_METRIC_NAME = "<please fill metric name, suggested format is: {subject}_{verb}{ing|ed}_{object} eg: users_creating_epics or merge_requests_viewed_in_single_file_mode>"
         CONSTRAINTS_PROMPT_TEMPLATE = "<adjective describing: '%{constraints}'>"
+        EMPTY_CONSTRAINT = "()"
 
         class << self
           def for(operation, relation: nil, column: nil)
@@ -52,7 +53,8 @@ module Gitlab
             end
 
             arel = arel_query(relation: relation, column: arel_column, distinct: distinct)
-            constraints = parse_constraints(relation: relation, arel: arel)
+            where_constraints = parse_where_constraints(relation: relation, arel: arel)
+            having_constraints = parse_having_constraints(relation: relation, arel: arel)
 
             # In some cases due to performance reasons metrics are instrumented with joined relations
             # where relation listed in FROM statement is not the one that includes counted attribute
@@ -66,23 +68,35 @@ module Gitlab
             #   count_environment_id_from_clusters_with_deployments
             actual_source = parse_source(relation, arel_column)
 
-            append_constraints_prompt(actual_source, [constraints], parts)
+            append_constraints_prompt(actual_source, [where_constraints], [having_constraints], parts)
 
             parts << actual_source
-            parts += process_joined_relations(actual_source, arel, relation, constraints)
+            parts += process_joined_relations(actual_source, arel, relation, where_constraints)
             parts.compact.join('_').delete('"')
           end
 
-          def append_constraints_prompt(target, constraints, parts)
-            applicable_constraints = constraints.select { |constraint| constraint.include?(target) }
+          def append_constraints_prompt(target, where_constraints, having_constraints, parts)
+            where_constraints.select! do |constraint|
+              constraint.include?(target)
+            end
+            having_constraints.delete(EMPTY_CONSTRAINT)
+            applicable_constraints = where_constraints + having_constraints
             return unless applicable_constraints.any?
 
             parts << CONSTRAINTS_PROMPT_TEMPLATE % { constraints: applicable_constraints.join(' AND ') }
           end
 
-          def parse_constraints(relation:, arel:)
+          def parse_where_constraints(relation:, arel:)
             connection = relation.connection
-            ::Gitlab::Usage::Metrics::NamesSuggestions::RelationParsers::Constraints
+            ::Gitlab::Usage::Metrics::NamesSuggestions::RelationParsers::WhereConstraints
+              .new(connection)
+              .accept(arel, collector(connection))
+              .value
+          end
+
+          def parse_having_constraints(relation:, arel:)
+            connection = relation.connection
+            ::Gitlab::Usage::Metrics::NamesSuggestions::RelationParsers::HavingConstraints
               .new(connection)
               .accept(arel, collector(connection))
               .value
@@ -152,7 +166,7 @@ module Gitlab
               subtree.each do |parent, children|
                 parts << "<#{conjunction}>"
                 join_constraints = joins.find { |join| join[:source] == parent }&.dig(:constraints)
-                append_constraints_prompt(parent, [wheres, join_constraints].compact, parts)
+                append_constraints_prompt(parent, [wheres, join_constraints].compact, [], parts)
                 parts << parent
                 collect_join_parts(relations: children, joins: joins, wheres: wheres, parts: parts, conjunctions: conjunctions)
               end

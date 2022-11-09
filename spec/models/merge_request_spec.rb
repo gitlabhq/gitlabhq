@@ -5008,6 +5008,19 @@ RSpec.describe MergeRequest, factory_default: :keep do
           expect(subject.commits.size).to eq(29)
         end
       end
+
+      context 'with a page' do
+        it 'returns a limited number of commits for page' do
+          expect(subject.commits(limit: 1, page: 1).map(&:sha)).to eq(
+            %w[
+              b83d6e391c22777fca1ed3012fce84f633d7fed0
+            ])
+          expect(subject.commits(limit: 1, page: 2).map(&:sha)).to eq(
+            %w[
+              498214de67004b1da3d820901307bed2a68a8ef6
+            ])
+        end
+      end
     end
 
     context 'new merge request' do

@@ -1205,3 +1205,7 @@ $tabs-holder-z-index: 250;
     margin-bottom: 0;
   }
 }
+
+.commits ol:not(:last-of-type) {
+  margin-bottom: 0;
+}

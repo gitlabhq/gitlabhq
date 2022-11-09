@@ -86,7 +86,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
           expect(page).to have_link 'Create issue to resolve all threads', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
         end
 
-        context 'creating an issue for threads', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/381729' do
+        context 'creating an issue for threads' do
           before do
             page.within '.mr-state-widget' do
               page.click_link 'Create issue to resolve all threads', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)

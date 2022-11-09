@@ -632,7 +632,6 @@ class ProjectPolicy < BasePolicy
     prevent :read_commit_status
     prevent :read_pipeline
     prevent :read_pipeline_schedule
-    prevent(*create_read_update_admin_destroy(:release))
     prevent(*create_read_update_admin_destroy(:feature_flag))
     prevent(:admin_feature_flags_user_lists)
   end

@@ -623,7 +623,7 @@ Supported attributes:
 
 | Attribute                        | Type | Description |
 |----------------------------------|------|-------------|
-| `approvals_before_merge` | integer | **(PREMIUM)** Number of approvals required before this can be merged. |
+| `approvals_before_merge` | integer | **(PREMIUM)** Number of approvals required before this merge request can merge. |
 | `assignee` | object | First assignee of the merge request. |
 | `assignees` | array | Assignees of the merge request. |
 | `author` | object | User who created this merge request. |
@@ -632,41 +632,42 @@ Supported attributes:
 | `closed_at` | datetime | Timestamp of when the merge request was closed. |
 | `closed_by` | object | User who closed this merge request. |
 | `created_at` | datetime | Timestamp of when the merge request was created. |
-| `description` | string | Description of the merge request (Markdown rendered as HTML for caching). |
+| `description` | string | Description of the merge request. Contains Markdown rendered as HTML for caching. |
 | `detailed_merge_status` | string | Detailed merge status of the merge request. |
-| `diff_refs` | object | References of the base SHA, the head SHA, and the start SHA for this merge request. |
+| `diff_refs` | object | References of the base SHA, the head SHA, and the start SHA for this merge request. Corresponds to the latest diff version of the merge request. |
 | `discussion_locked` | boolean | Indicates if comments on the merge request are locked to members only. |
 | `downvotes` | integer | Number of downvotes for the merge request. |
 | `draft` | boolean | Indicates if the merge request is a draft. |
 | `first_contribution` | boolean | Indicates if the merge request is the first contribution of the author. |
 | `first_deployed_to_production_at` | datetime | Timestamp of when the first deployment finished. |
 | `force_remove_source_branch` | boolean | Indicates if the project settings will lead to source branch deletion after merge. |
-| `has_conflicts` | boolean | Indicates if merge request has conflicts and cannot be merged. |
-| `head_pipeline` | object | Pipeline running on the branch HEAD of the merge request. |
+| `has_conflicts` | boolean | Indicates if merge request has conflicts and cannot be merged. Dependent on the `merge_status` property. Returns
+ `false` unless `merge_status` is `cannot_be_merged`. |
+| `head_pipeline` | object | Pipeline running on the branch HEAD of the merge request. Contains more complete information than `pipeline` and should be used instead of it. |
 | `id` | integer | ID of the merge request. |
 | `iid` | integer | Internal ID of the merge request. |
 | `labels` | array | Labels of the merge request. |
 | `latest_build_finished_at` | datetime | Timestamp of when the latest build for the merge request finished. |
 | `latest_build_started_at` | datetime | Timestamp of when the latest build for the merge request started. |
-| `merge_commit_sha` | string | SHA of the merge request commit (set once merged). |
+| `merge_commit_sha` | string | SHA of the merge request commit. Returns `null` until merged. |
 | `merge_error` | string | Error message due to a merge error. |
-| `merge_user` | object | User who merged this merge request or set it to merge when pipeline succeeds. |
-| `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged` or `cannot_be_merged_recheck`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
+| `merge_user` | object | The user who merged this merge request, the user who set it to merge when pipeline succeeds, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
+| `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
 | `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds. |
 | `merged_at` | datetime | Timestamp of when the merge request was merged. |
-| `merged_by` | object | Deprecated: Use `merge_user` instead. User who merged this merge request or set it to merge when pipeline succeeds. |
+| `merged_by` | object | User who merged this merge request or set it to merge when pipeline succeeds. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. |
 | `milestone` | object | Milestone of the merge request. |
-| `pipeline` | object | Pipeline running on the branch HEAD of the merge request. |
+| `pipeline` | object | Pipeline running on the branch HEAD of the merge request. Consider using `head_pipeline` instead, as it contains more information. |
 | `project_id` | integer | ID of the merge request project. |
-| `reference` | string | Deprecated: Use `references` instead. Internal reference of the merge request. Returned in shortened format by default. |
-| `references` | object | Internal references of the merge request. Includes `short`, `relative` and `full` references. |
+| `reference` | string | Internal reference of the merge request. Returned in shortened format by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `references` instead. |
+| `references` | object | Internal references of the merge request. Includes `short`, `relative`, and `full` references. `references.relative` is relative to the merge request's group or project. When fetched from the merge request's project, `relative` and `short` formats are identical. When requested across groups or projects, `relative` and `full` formats are identical.|
 | `reviewers` | array | Reviewers of the merge request. |
 | `sha` | string | Diff head SHA of the merge request. |
 | `should_remove_source_branch` | boolean | Indicates if the source branch of the merge request will be deleted after merge. |
 | `source_branch` | string | Source branch of the merge request. |
 | `source_project_id` | integer | ID of the merge request source project. |
 | `squash` | boolean | Indicates if squash on merge is enabled. |
-| `squash_commit_sha` | string | SHA of the squash commit (set once merged). |
+| `squash_commit_sha` | string | SHA of the squash commit. Empty until merged. |
 | `state` | string | State of the merge request. Can be `opened`, `closed`, `merged` or `locked`. |
 | `subscribed` | boolean | Indicates if the currently logged in user is subscribed to this merge request. |
 | `target_branch` | string | Target branch of the merge request. |
@@ -690,7 +691,7 @@ Supported attributes:
   "state": "opened",
   "created_at": "2022-05-13T07:26:38.402Z",
   "updated_at": "2022-05-14T03:38:31.354Z",
-  "merged_by": null, // Deprecated and will be removed in API v5, use `merge_user` instead
+  "merged_by": null, // Deprecated and will be removed in API v5. Use `merge_user` instead.
   "merge_user": null,
   "merged_at": null,
   "closed_by": null,
@@ -726,7 +727,7 @@ Supported attributes:
   "discussion_locked": null,
   "should_remove_source_branch": null,
   "force_remove_source_branch": true,
-  "reference": "!133",
+  "reference": "!133", // Deprecated. Use `references` instead.
   "references": {
     "short": "!133",
     "relative": "!133",
@@ -752,7 +753,7 @@ Supported attributes:
   "latest_build_started_at": "2022-05-13T09:46:50.032Z",
   "latest_build_finished_at": null,
   "first_deployed_to_production_at": null,
-  "pipeline": { // Old parameter, use `head_pipeline` instead.
+  "pipeline": { // Use `head_pipeline` instead.
     "id": 538317940,
     "iid": 1877,
     "project_id": 15513260,
@@ -813,38 +814,21 @@ Supported attributes:
   "first_contribution": false,
   "user": {
     "can_merge": true
-  }
-}
-```
-
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 1,
-  "title": "test1",
-  "approvals_before_merge": null
-  ...
+  },
+  "approvals_before_merge": { // Available for GitLab Premium and higher tiers only
+    "id": 1,
+    "title": "test1",
+    "approvals_before_merge": null
+  },
 }
 ```
 
 ### Single merge request response notes
 
-- The `diff_refs` in the response correspond to the latest diff version of the merge request.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29984) in GitLab 12.8, the mergeability (`merge_status`)
   of each merge request is checked asynchronously when a request is made to this endpoint. Poll this API endpoint
   to get updated status. This affects the `has_conflicts` property as it is dependent on the `merge_status`. It returns
   `false` unless `merge_status` is `cannot_be_merged`.
-- `references.relative` is relative to the group or project that the merge request is being requested. When the merge
-  request is fetched from its project, `relative` format would be the same as `short` format, and when requested across
-  groups or projects, it is expected to be the same as `full` format.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7,
-  field `merge_user` can be either user who merged this merge request,
-  user who set it to merge when pipeline succeeds or `null`.
-  Field `merged_by` (user who merged this merge request or `null`) has been deprecated.
-- `pipeline` is an old parameter and should not be used. Use `head_pipeline` instead,
-  as it is faster and returns more information.
 
 ### Merge status
 

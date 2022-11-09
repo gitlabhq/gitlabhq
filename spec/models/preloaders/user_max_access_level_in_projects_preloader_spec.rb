@@ -31,30 +31,42 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader do
   shared_examples '#execute' do
     let(:projects_arg) { projects }
 
-    before do
-      Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_arg, user).execute
-    end
-
-    it 'avoids N+1 queries' do
-      expect { query }.not_to make_queries
-    end
-
-    context 'when projects is an array of IDs' do
-      let(:projects_arg) { projects.map(&:id) }
-
-      it 'avoids N+1 queries' do
-        expect { query }.not_to make_queries
-      end
-    end
-
-    # Test for handling of SQL table name clashes.
-    context 'when projects is a relation including project_authorizations' do
-      let(:projects_arg) do
-        Project.where(id: ProjectAuthorization.where(project_id: projects).select(:project_id))
+    context 'when user is present' do
+      before do
+        Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_arg, user).execute
       end
 
       it 'avoids N+1 queries' do
         expect { query }.not_to make_queries
+      end
+
+      context 'when projects is an array of IDs' do
+        let(:projects_arg) { projects.map(&:id) }
+
+        it 'avoids N+1 queries' do
+          expect { query }.not_to make_queries
+        end
+      end
+
+      # Test for handling of SQL table name clashes.
+      context 'when projects is a relation including project_authorizations' do
+        let(:projects_arg) do
+          Project.where(id: ProjectAuthorization.where(project_id: projects).select(:project_id))
+        end
+
+        it 'avoids N+1 queries' do
+          expect { query }.not_to make_queries
+        end
+      end
+    end
+
+    context 'when user is not present' do
+      before do
+        Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_arg, nil).execute
+      end
+
+      it 'does not avoid N+1 queries' do
+        expect { query }.to make_queries
       end
     end
   end

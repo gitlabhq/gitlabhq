@@ -532,7 +532,7 @@ class ApplicationSetting < ApplicationRecord
   validates :jira_connect_proxy_url,
             length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true,
-            addressable_url: true
+            public_url: true
 
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
     validates :throttle_unauthenticated_api_requests_per_period

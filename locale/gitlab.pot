@@ -560,6 +560,16 @@ msgstr[1] ""
 msgid "%{count} files touched"
 msgstr ""
 
+msgid "%{count} group"
+msgid_plural "%{count} groups"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{count} issue"
+msgid_plural "%{count} issues"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} item"
 msgid_plural "%{count} items"
 msgstr[0] ""
@@ -567,6 +577,11 @@ msgstr[1] ""
 
 msgid "%{count} items per page"
 msgstr ""
+
+msgid "%{count} merge request"
+msgid_plural "%{count} merge requests"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{count} more"
 msgstr ""
@@ -587,6 +602,11 @@ msgstr ""
 
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{count} project"
+msgid_plural "%{count} projects"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3124,6 +3144,9 @@ msgstr ""
 msgid "AdminUsers|Admins"
 msgstr ""
 
+msgid "AdminUsers|An error occurred while fetching this user's contributions, and the request cannot return the number of issues, merge requests, groups, and projects linked to this user. If you proceed with deleting the user, all their contributions will still be deleted."
+msgstr ""
+
 msgid "AdminUsers|Approve"
 msgstr ""
 
@@ -3361,7 +3384,7 @@ msgstr ""
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
-msgid "AdminUsers|To confirm, type %{username}"
+msgid "AdminUsers|To confirm, type %{username}."
 msgstr ""
 
 msgid "AdminUsers|Unban user"
@@ -3424,7 +3447,7 @@ msgstr ""
 msgid "AdminUsers|You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
 msgstr ""
 
-msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues, merge requests, and groups linked to them. To avoid data loss, consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd}, it cannot be undone or recovered."
+msgid "AdminUsers|You are about to permanently delete the user %{username}. This will delete all issues, merge requests, groups, and projects linked to them. To avoid data loss, consider using the %{strongStart}Block user%{strongEnd} feature instead. After you %{strongStart}Delete user%{strongEnd}, you cannot undo this action or recover the data."
 msgstr ""
 
 msgid "AdminUsers|You can always block their account again if needed."
@@ -5237,6 +5260,9 @@ msgid "Are you sure you want to retry this migration?"
 msgstr ""
 
 msgid "Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone."
+msgstr ""
+
+msgid "Are you sure you want to revoke this group access token? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to revoke this personal access token? This action cannot be undone."
@@ -11595,7 +11621,7 @@ msgstr ""
 msgid "CredentialsInventory|Personal Access Tokens"
 msgstr ""
 
-msgid "CredentialsInventory|Project Access Tokens"
+msgid "CredentialsInventory|Project and Group Access Tokens"
 msgstr ""
 
 msgid "CredentialsInventory|SSH Keys"
@@ -31542,6 +31568,9 @@ msgid "Project name"
 msgstr ""
 
 msgid "Project navigation"
+msgstr ""
+
+msgid "Project or Group"
 msgstr ""
 
 msgid "Project order will not be saved as local storage is not available."

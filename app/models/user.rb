@@ -1768,7 +1768,7 @@ class User < ApplicationRecord
   end
 
   def owns_runner?(runner)
-    ci_owned_runners.exists?(runner.id)
+    ci_owned_runners.include?(runner)
   end
 
   def notification_email_for(notification_group)

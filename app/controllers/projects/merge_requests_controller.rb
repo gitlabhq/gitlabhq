@@ -178,15 +178,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @merge_request.recent_context_commits
       )
 
-    # Get commits from repository
-    # or from cache if already merged
-    @commits =
-      set_commits_for_rendering(
-        @merge_request.recent_commits(load_from_gitaly: true).with_latest_pipeline(@merge_request.source_branch).with_markdown_cache,
-        commits_count: @merge_request.commits_count
-      )
+    per_page = [(params[:per_page] || MergeRequestDiff::COMMITS_SAFE_SIZE).to_i, MergeRequestDiff::COMMITS_SAFE_SIZE].min
+    recent_commits = @merge_request.recent_commits(load_from_gitaly: true, limit: per_page, page: params[:page]).with_latest_pipeline(@merge_request.source_branch).with_markdown_cache
+    @next_page = recent_commits.next_page
+    @commits = set_commits_for_rendering(
+      recent_commits,
+      commits_count: @merge_request.commits_count
+    )
 
-    render json: { html: view_to_html_string('projects/merge_requests/_commits') }
+    render json: { html: view_to_html_string('projects/merge_requests/_commits'), next_page: @next_page }
   end
 
   def pipelines

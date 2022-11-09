@@ -45,8 +45,8 @@ workflow:
         RUBY_VERSION: "3.0"
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
-    # For the maintenance scheduled pipelines, we set specific variables.
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+    # For the scheduled pipelines, we set specific variables.
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         CRYSTALBALL: "true"
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"

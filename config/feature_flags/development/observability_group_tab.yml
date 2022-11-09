@@ -1,7 +1,7 @@
 ---
 name: observability_group_tab
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96374
-rollout_issue_url: 
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381740
 milestone: '15.3'
 type: development
 group: group::observability
