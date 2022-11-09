@@ -10,6 +10,8 @@ module API
 
         execute_batch_counting(projects_relation)
 
+        postload_relation(projects_relation, options)
+
         preload_repository_cache(projects_relation)
 
         Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_relation, options[:current_user]).execute if options[:current_user]

@@ -292,16 +292,6 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       let(:expected_action) { 'severity' }
 
       it_behaves_like 'successfully created timeline event'
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(incident_timeline_events_for_severity: false)
-        end
-
-        it 'does not create new timeline event' do
-          expect { execute }.not_to change { incident.incident_management_timeline_events.count }
-        end
-      end
     end
 
     describe '.change_labels' do

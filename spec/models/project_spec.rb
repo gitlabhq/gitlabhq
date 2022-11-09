@@ -1353,7 +1353,7 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
-  describe '#open_issues_count', :aggregate_failures do
+  describe '#open_issues_count' do
     let(:project) { build(:project) }
 
     it 'provides the issue count' do

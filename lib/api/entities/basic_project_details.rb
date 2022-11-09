@@ -60,6 +60,8 @@ module API
         super
       end
 
+      def self.postload_relation(projects_relation, options = {}) end
+
       private
 
       alias_method :project, :object

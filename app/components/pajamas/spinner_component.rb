@@ -14,14 +14,14 @@ module Pajamas
       @html_options = html_options
     end
 
+    COLOR_OPTIONS = [:light, :dark].freeze
+    SIZE_OPTIONS = [:sm, :md, :lg, :xl].freeze
+
     private
 
     def spinner_class
       ["gl-spinner", "gl-spinner-#{@size}", "gl-spinner-#{@color} gl-vertical-align-text-bottom!"]
     end
-
-    COLOR_OPTIONS = [:light, :dark].freeze
-    SIZE_OPTIONS = [:sm, :md, :lg, :xl].freeze
 
     def html_options
       options = format_options(options: @html_options, css_classes: "gl-spinner-container")

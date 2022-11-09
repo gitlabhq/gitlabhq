@@ -30970,6 +30970,10 @@ CREATE INDEX index_vulnerability_feedback_on_author_id ON vulnerability_feedback
 
 CREATE INDEX index_vulnerability_feedback_on_comment_author_id ON vulnerability_feedback USING btree (comment_author_id);
 
+CREATE INDEX index_vulnerability_feedback_on_common_attributes ON vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
+
+CREATE INDEX index_vulnerability_feedback_on_feedback_type_and_finding_uuid ON vulnerability_feedback USING btree (feedback_type, finding_uuid);
+
 CREATE INDEX index_vulnerability_feedback_on_issue_id ON vulnerability_feedback USING btree (issue_id);
 
 CREATE INDEX index_vulnerability_feedback_on_issue_id_not_null ON vulnerability_feedback USING btree (id) WHERE (issue_id IS NOT NULL);
@@ -31257,8 +31261,6 @@ CREATE UNIQUE INDEX unique_vuln_merge_request_link_vuln_id_and_mr_id ON vulnerab
 CREATE INDEX user_follow_users_followee_id_idx ON user_follow_users USING btree (followee_id);
 
 CREATE INDEX users_forbidden_state_idx ON users USING btree (id) WHERE ((confirmed_at IS NOT NULL) AND ((state)::text <> ALL (ARRAY['blocked'::text, 'banned'::text, 'ldap_blocked'::text])));
-
-CREATE UNIQUE INDEX vulnerability_feedback_unique_idx ON vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
 

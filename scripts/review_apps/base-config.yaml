@@ -41,11 +41,11 @@ gitlab:
   migrations:
     resources:
       requests:
-        cpu: 200m
-        memory: 500Mi
-      limits:
         cpu: 400m
-        memory: 1000Mi
+        memory: 920Mi
+      limits:
+        cpu: 600m
+        memory: 1100Mi
   gitlab-shell:
     resources:
       requests:

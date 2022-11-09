@@ -7,8 +7,8 @@ module Pajamas
     #
     # See its design reference [here](https://design.gitlab.com/components/progress-bar).
     #
-    # @param value number
-    # @param variant select [primary, success]
+    # @param value range { min: 0, max: 100, step: 1 }
+    # @param variant select {{ Pajamas::ProgressComponent::VARIANT_OPTIONS }}
     def default(value: 50, variant: :primary)
       render Pajamas::ProgressComponent.new(value: value, variant: variant)
     end

@@ -7,9 +7,11 @@ module Preloaders
     def initialize(projects, user)
       @projects = if projects.is_a?(Array)
                     Project.where(id: projects)
-                  else
+                  elsif Feature.enabled?(:projects_preloader_fix)
                     # Push projects base query in to a sub-select to avoid
                     # table name clashes. Performs better than aliasing.
+                    Project.where(id: projects.subquery(:id))
+                  else
                     Project.where(id: projects.reselect(:id))
                   end
 

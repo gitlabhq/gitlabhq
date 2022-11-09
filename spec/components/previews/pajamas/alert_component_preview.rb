@@ -4,7 +4,7 @@ module Pajamas
     # @param title text
     # @param body text
     # @param dismissible toggle
-    # @param variant select [info, warning, success, danger, tip]
+    # @param variant select {{ Pajamas::AlertComponent::VARIANT_ICONS.keys }}
     def default(title: "Alert title (optional)", body: "Alert message goes here.", dismissible: true, variant: :info)
       render(Pajamas::AlertComponent.new(
                title: title,

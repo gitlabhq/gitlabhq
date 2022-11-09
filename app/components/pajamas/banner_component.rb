@@ -23,12 +23,14 @@ module Pajamas
       @button_text = button_text
       @button_link = button_link
       @embedded = embedded
-      @variant = variant.to_sym
+      @variant = filter_attribute(variant.to_sym, VARIANT_OPTIONS, default: :promotion)
       @svg_path = svg_path.to_s
       @banner_options = banner_options
       @button_options = button_options
       @close_options = close_options
     end
+
+    VARIANT_OPTIONS = [:introduction, :promotion].freeze
 
     private
 

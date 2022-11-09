@@ -10,9 +10,9 @@ module Pajamas
     # @param icon select [~, star-o, issue-closed, tanuki]
     # @param icon_only toggle
     # @param href url
-    # @param size select [sm, md, lg]
+    # @param size select {{ Pajamas::BadgeComponent::SIZE_OPTIONS }}
     # @param text text
-    # @param variant select [muted, neutral, info, success, warning, danger]
+    # @param variant select {{ Pajamas::BadgeComponent::VARIANT_OPTIONS }}
     def default(icon: :tanuki, icon_only: false, href: nil, size: :md, text: "Tanuki", variant: :muted)
       render Pajamas::BadgeComponent.new(
         text,

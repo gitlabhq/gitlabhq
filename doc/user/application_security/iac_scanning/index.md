@@ -146,7 +146,7 @@ To disable analyzer rules:
 1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory, if
    one doesn't already exist.
 1. Set the `disabled` flag to `true` in the context of a `ruleset` section.
-1. In one or more `ruleset.identifier` subsections, list the rules to disable. Every
+1. In one or more `ruleset` subsections, list the rules to disable. Every
    `ruleset.identifier` section has:
    - A `type` field for the rule. For IaC Scanning, the identifier type is `kics_id`.
    - A `value` field for the rule identifier. KICS rule identifiers are alphanumeric strings. To find the rule identifier, you can:
@@ -163,6 +163,12 @@ the `kics` analyzer by matching the `type` and `value` of identifiers:
     [kics.ruleset.identifier]
       type = "kics_id"
       value = "8212e2d7-e683-49bc-bf78-d6799075c5a7"
+
+  [[kics.ruleset]]
+    disable = true
+    [kics.ruleset.identifier]
+      type = "kics_id"
+      value = "b03a748a-542d-44f4-bb86-9199ab4fd2d5"
 ```
 
 ### Override predefined analyzer rules

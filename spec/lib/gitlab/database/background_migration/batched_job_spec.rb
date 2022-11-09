@@ -7,7 +7,15 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }
 
-  it { expect(described_class::TIMEOUT_EXCEPTIONS).to match_array [ActiveRecord::StatementTimeout, ActiveRecord::ConnectionTimeoutError, ActiveRecord::AdapterTimeout, ActiveRecord::LockWaitTimeout] }
+  specify do
+    expect(described_class::TIMEOUT_EXCEPTIONS).to contain_exactly(
+      ActiveRecord::StatementTimeout,
+      ActiveRecord::ConnectionTimeoutError,
+      ActiveRecord::AdapterTimeout,
+      ActiveRecord::LockWaitTimeout,
+      ActiveRecord::QueryCanceled
+    )
+  end
 
   describe 'associations' do
     it { is_expected.to belong_to(:batched_migration).with_foreign_key(:batched_background_migration_id) }
@@ -279,14 +287,6 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         let(:exception) { ActiveRecord::QueryCanceled.new }
 
         it { expect(subject).to be_truthy }
-
-        context 'when split_background_migration_on_query_canceled feature flag is disabled' do
-          before do
-            stub_feature_flags(split_background_migration_on_query_canceled: false)
-          end
-
-          it { expect(subject).to be_falsey }
-        end
       end
 
       context 'when is not a timeout exception' do

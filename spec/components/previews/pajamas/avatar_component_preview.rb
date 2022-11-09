@@ -9,17 +9,17 @@ module Pajamas
     end
 
     # We show user avatars in a circle.
-    # @param size select [16, 24, 32, 48, 64, 96]
+    # @param size select {{ Pajamas::AvatarComponent::SIZE_OPTIONS }}
     def user(size: 64)
       render(Pajamas::AvatarComponent.new(User.first, size: size))
     end
 
-    # @param size select [16, 24, 32, 48, 64, 96]
+    # @param size select {{ Pajamas::AvatarComponent::SIZE_OPTIONS }}
     def project(size: 64)
       render(Pajamas::AvatarComponent.new(Project.first, size: size))
     end
 
-    # @param size select [16, 24, 32, 48, 64, 96]
+    # @param size select {{ Pajamas::AvatarComponent::SIZE_OPTIONS }}
     def group(size: 64)
       render(Pajamas::AvatarComponent.new(Group.first, size: size))
     end

@@ -14,7 +14,8 @@ module Gitlab
         MAX_ATTEMPTS = 3
         STUCK_JOBS_TIMEOUT = 1.hour.freeze
         TIMEOUT_EXCEPTIONS = [ActiveRecord::StatementTimeout, ActiveRecord::ConnectionTimeoutError,
-                              ActiveRecord::AdapterTimeout, ActiveRecord::LockWaitTimeout].freeze
+                              ActiveRecord::AdapterTimeout, ActiveRecord::LockWaitTimeout,
+                              ActiveRecord::QueryCanceled].freeze
 
         belongs_to :batched_migration, foreign_key: :batched_background_migration_id
         has_many :batched_job_transition_logs, foreign_key: :batched_background_migration_job_id
@@ -112,7 +113,10 @@ module Gitlab
         end
 
         def can_split?(exception)
-          attempts >= MAX_ATTEMPTS && timeout_exception?(exception&.class) && batch_size > sub_batch_size && batch_size > 1
+          attempts >= MAX_ATTEMPTS &&
+            exception&.class&.in?(TIMEOUT_EXCEPTIONS) &&
+            batch_size > sub_batch_size &&
+            batch_size > 1
         end
 
         def split_and_retry!
@@ -160,15 +164,6 @@ module Gitlab
               new_record.save!
             end
           end
-        end
-
-        private
-
-        def timeout_exception?(exception_class)
-          return false unless exception_class
-
-          TIMEOUT_EXCEPTIONS.include?(exception_class) ||
-            (Feature.enabled?(:split_background_migration_on_query_canceled) && exception_class == ActiveRecord::QueryCanceled)
         end
       end
     end

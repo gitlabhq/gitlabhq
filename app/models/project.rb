@@ -39,6 +39,7 @@ class Project < ApplicationRecord
   include BulkUsersByEmailLoad
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
+  include Subquery
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

@@ -1,8 +1,0 @@
----
-name: split_background_migration_on_query_canceled
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101825
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378846
-milestone: '15.6'
-type: development
-group: group::database
-default_enabled: false

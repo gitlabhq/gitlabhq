@@ -50,8 +50,6 @@ module IncidentManagement
         end
 
         def change_severity(incident, user)
-          return if Feature.disabled?(:incident_timeline_events_for_severity, incident.project)
-
           severity_label = IssuableSeverity::SEVERITY_LABELS[incident.severity.to_sym]
           note = "@#{user.username} changed the incident severity to **#{severity_label}**"
           occurred_at = incident.updated_at

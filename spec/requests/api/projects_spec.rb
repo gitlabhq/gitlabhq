@@ -207,16 +207,28 @@ RSpec.describe API::Projects do
         let(:current_user) { user }
       end
 
-      it 'includes container_registry_access_level', :aggregate_failures do
-        project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+      shared_examples 'includes container_registry_access_level', :aggregate_failures do
+        it do
+          project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
 
-        get api('/projects', user)
-        project_response = json_response.find { |p| p['id'] == project.id }
+          get api('/projects', user)
+          project_response = json_response.find { |p| p['id'] == project.id }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(project_response['container_registry_access_level']).to eq('disabled')
-        expect(project_response['container_registry_enabled']).to eq(false)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(project_response['container_registry_access_level']).to eq('disabled')
+          expect(project_response['container_registry_enabled']).to eq(false)
+        end
+      end
+
+      include_examples 'includes container_registry_access_level'
+
+      context 'when projects_preloader_fix is disabled' do
+        before do
+          stub_feature_flags(projects_preloader_fix: false)
+        end
+
+        include_examples 'includes container_registry_access_level'
       end
 
       it 'includes releases_access_level', :aggregate_failures do
