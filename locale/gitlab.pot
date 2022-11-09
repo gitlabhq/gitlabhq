@@ -41891,6 +41891,9 @@ msgstr ""
 msgid "This variable can not be masked."
 msgstr ""
 
+msgid "This vulnerability type has been deprecated from GitLab's default ruleset and automatically resolved."
+msgstr ""
+
 msgid "This will invalidate your registered applications and U2F / WebAuthn devices."
 msgstr ""
 
@@ -48693,6 +48696,9 @@ msgid "mrWidget|Merge blocked: a Jira issue key must be mentioned in the title o
 msgstr ""
 
 msgid "mrWidget|Merge blocked: all required approvals must be given."
+msgstr ""
+
+msgid "mrWidget|Merge blocked: all status checks must pass."
 msgstr ""
 
 msgid "mrWidget|Merge blocked: all threads must be resolved."

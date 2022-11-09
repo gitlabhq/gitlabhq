@@ -124,7 +124,12 @@ module API
           repository: repository.gitaly_repository.to_h,
           address: Gitlab::GitalyClient.address(repository.shard),
           token: Gitlab::GitalyClient.token(repository.shard),
-          features: Feature::Gitaly.server_feature_flags(repository.project)
+          features: Feature::Gitaly.server_feature_flags(
+            user: ::Feature::Gitaly.user_actor(actor.user),
+            repository: repository,
+            project: ::Feature::Gitaly.project_actor(repository.container),
+            group: ::Feature::Gitaly.group_actor(repository.container)
+          )
         }
       end
     end

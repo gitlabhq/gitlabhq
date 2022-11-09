@@ -33,7 +33,12 @@ module Gitlab
           GitalyServer: {
             address: Gitlab::GitalyClient.address(repository.storage),
             token: Gitlab::GitalyClient.token(repository.storage),
-            features: Feature::Gitaly.server_feature_flags(repository.project)
+            features: Feature::Gitaly.server_feature_flags(
+              user: ::Feature::Gitaly.user_actor(user),
+              repository: repository,
+              project: ::Feature::Gitaly.project_actor(repository.container),
+              group: ::Feature::Gitaly.group_actor(repository.container)
+            )
           }
         }
 
@@ -252,7 +257,12 @@ module Gitlab
         {
           address: Gitlab::GitalyClient.address(repository.shard),
           token: Gitlab::GitalyClient.token(repository.shard),
-          features: Feature::Gitaly.server_feature_flags(repository.project)
+          features: Feature::Gitaly.server_feature_flags(
+            user: ::Feature::Gitaly.user_actor,
+            repository: repository,
+            project: ::Feature::Gitaly.project_actor(repository.container),
+            group: ::Feature::Gitaly.group_actor(repository.container)
+          )
         }
       end
 

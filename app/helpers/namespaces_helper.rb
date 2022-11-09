@@ -67,7 +67,7 @@ module NamespacesHelper
     end
 
     {
-      popover_data: Gitlab::Json.dump(popover_data),
+      popover_data: popover_data.to_json,
       testid: 'cascading-settings-lock-icon'
     }
   end

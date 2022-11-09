@@ -17,12 +17,11 @@ module Clusters
       include AfterCommitQueue
       include UsageStatistics
 
-      default_value_for :ingress_type, :nginx
-      default_value_for :version, VERSION
+      attribute :version, default: VERSION
 
       enum ingress_type: {
         nginx: 1
-      }
+      }, _default: :nginx
 
       FETCH_IP_ADDRESS_DELAY = 30.seconds
 

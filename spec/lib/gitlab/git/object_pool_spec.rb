@@ -78,44 +78,40 @@ RSpec.describe Gitlab::Git::ObjectPool do
   end
 
   describe '#fetch' do
-    let(:commit_count) { source_repository.commit_count }
+    context 'when the object pool repository exists' do
+      let!(:pool_repository) { create(:pool_repository, :ready) }
 
-    context "when the object's pool repository exists" do
-      it 'does not raise an error' do
-        expect { subject.fetch }.not_to raise_error
-      end
-    end
-
-    context "when the object's pool repository does not exist" do
-      before do
-        subject.delete
+      context 'without changes' do
+        it 'does not raise an error' do
+          expect { subject.fetch }.not_to raise_error
+        end
       end
 
-      it "re-creates the object pool's repository" do
-        subject.fetch
+      context 'with new commit in source repository' do
+        let(:branch_name) { Gitlab::Git::Ref.extract_branch_name(source_repository.root_ref) }
+        let(:source_ref_name) { "refs/heads/#{branch_name}" }
+        let(:pool_ref_name) { "refs/remotes/origin/heads/#{branch_name}" }
 
-        expect(subject.repository.exists?).to be true
-      end
+        let(:new_commit_id) do
+          source_repository.create_file(
+            pool_repository.source_project.owner,
+            'a.file',
+            'This is a file',
+            branch_name: branch_name,
+            message: 'Add a file'
+          )
+        end
 
-      it 'does not raise an error' do
-        expect { subject.fetch }.not_to raise_error
-      end
+        it 'fetches objects from the source repository' do
+          # Sanity-check that the commit does not yet exist in the pool repository.
+          expect(subject.repository.commit(new_commit_id)).to be_nil
 
-      it 'fetches objects from the source repository' do
-        new_commit_id = source_repository.create_file(
-          pool_repository.source_project.owner,
-          'a.file',
-          'This is a file',
-          branch_name: source_repository.root_ref,
-          message: 'Add a file'
-        )
+          subject.fetch
 
-        expect(subject.repository.exists?).to be false
-
-        subject.fetch
-
-        expect(subject.repository.commit_count('refs/remotes/origin/heads/master')).to eq(commit_count)
-        expect(subject.repository.commit(new_commit_id).id).to eq(new_commit_id)
+          expect(subject.repository.commit(pool_ref_name).id).to eq(new_commit_id)
+          expect(subject.repository.commit_count(pool_ref_name))
+            .to eq(source_repository.raw_repository.commit_count(source_ref_name))
+        end
       end
     end
   end

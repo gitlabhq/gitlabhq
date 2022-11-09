@@ -259,6 +259,58 @@ RSpec.describe Gitlab::GitalyClient do
       end
     end
 
+    shared_examples 'gitaly feature flags in metadata' do
+      before do
+        allow(Feature::Gitaly).to receive(:server_feature_flags).and_return(
+          'gitaly-feature-a' => 'true',
+          'gitaly-feature-b' => 'false'
+        )
+      end
+
+      it 'evaluates Gitaly server feature flags' do
+        metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+
+        expect(Feature::Gitaly).to have_received(:server_feature_flags).with(no_args)
+        expect(metadata['gitaly-feature-a']).to be('true')
+        expect(metadata['gitaly-feature-b']).to be('false')
+      end
+
+      context 'when there are actors' do
+        let(:repository_actor) { double(:actor) }
+        let(:project_actor) { double(:actor) }
+        let(:user_actor) { double(:actor) }
+        let(:group_actor) { double(:actor) }
+
+        it 'evaluates Gitaly server feature flags with actors' do
+          metadata = described_class.with_feature_flag_actors(
+            repository: repository_actor,
+            project: project_actor,
+            user: user_actor,
+            group: group_actor
+          ) do
+            described_class.request_kwargs('default', timeout: 1)[:metadata]
+          end
+
+          expect(Feature::Gitaly).to have_received(:server_feature_flags).with(
+            repository: repository_actor,
+            project: project_actor,
+            user: user_actor,
+            group: group_actor
+          )
+          expect(metadata['gitaly-feature-a']).to be('true')
+          expect(metadata['gitaly-feature-b']).to be('false')
+        end
+      end
+    end
+
+    context 'server_feature_flags when RequestStore is activated', :request_store do
+      it_behaves_like 'gitaly feature flags in metadata'
+    end
+
+    context 'server_feature_flags when RequestStore is not activated' do
+      it_behaves_like 'gitaly feature flags in metadata'
+    end
+
     context 'gitlab_git_env' do
       let(:policy) { 'gitaly-route-repository-accessor-policy' }
 
@@ -583,6 +635,44 @@ RSpec.describe Gitlab::GitalyClient do
           expect(described_class.decode_detailed_error(error)).to eq(result)
         end
       end
+    end
+  end
+
+  describe '.with_feature_flag_actor', :request_store do
+    shared_examples 'with_feature_flag_actor' do
+      let(:repository_actor) { double(:actor) }
+      let(:project_actor) { double(:actor) }
+      let(:user_actor) { double(:actor) }
+      let(:group_actor) { double(:actor) }
+
+      it 'allows access to feature flag actors inside the block' do
+        expect(described_class.feature_flag_actors).to eql({})
+
+        described_class.with_feature_flag_actors(
+          repository: repository_actor,
+          project: project_actor,
+          user: user_actor,
+          group: group_actor
+        ) do
+          expect(
+            described_class.feature_flag_actors
+          ).to eql(
+            repository: repository_actor,
+            project: project_actor,
+            user: user_actor,
+            group: group_actor)
+        end
+
+        expect(described_class.feature_flag_actors).to eql({})
+      end
+    end
+
+    context 'when RequestStore is activated', :request_store do
+      it_behaves_like 'with_feature_flag_actor'
+    end
+
+    context 'when RequestStore is not activated' do
+      it_behaves_like 'with_feature_flag_actor'
     end
   end
 end

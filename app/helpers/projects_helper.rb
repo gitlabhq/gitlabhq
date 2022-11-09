@@ -300,15 +300,13 @@ module ProjectsHelper
     return if setting.blank? || setting.project_slug.blank? ||
         setting.organization_slug.blank?
 
-    data = {
+    {
       sentry_project_id: setting.sentry_project_id,
       name: setting.project_name,
       organization_name: setting.organization_name,
       organization_slug: setting.organization_slug,
       slug: setting.project_slug
-    }
-
-    Gitlab::Json.dump(data)
+    }.to_json
   end
 
   def directory?

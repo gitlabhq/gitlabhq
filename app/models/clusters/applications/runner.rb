@@ -15,7 +15,7 @@ module Clusters
       belongs_to :runner, class_name: 'Ci::Runner', foreign_key: :runner_id
       delegate :project, :group, to: :cluster
 
-      default_value_for :version, VERSION
+      attribute :version, default: VERSION
 
       def chart
         "#{name}/gitlab-runner"

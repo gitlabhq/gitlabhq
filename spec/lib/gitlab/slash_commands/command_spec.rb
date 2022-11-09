@@ -122,5 +122,25 @@ RSpec.describe Gitlab::SlashCommands::Command do
 
       it { is_expected.to eq(Gitlab::SlashCommands::IssueComment) }
     end
+
+    context 'when incident declare is triggered' do
+      context 'IncidentNew is triggered' do
+        let(:params) { { text: 'incident declare' } }
+
+        it { is_expected.to eq(Gitlab::SlashCommands::IncidentManagement::IncidentNew) }
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(incident_declare_slash_command: false)
+        end
+
+        context 'IncidentNew is triggered' do
+          let(:params) { { text: 'incident declare' } }
+
+          it { is_expected.not_to eq(Gitlab::SlashCommands::IncidentManagement::IncidentNew) }
+        end
+      end
+    end
   end
 end

@@ -8,13 +8,14 @@ RSpec.describe Clusters::Providers::Gcp do
 
   include_examples 'provider status', :cluster_provider_gcp
 
-  describe 'default_value_for' do
+  describe 'default values' do
     let(:gcp) { build(:cluster_provider_gcp) }
 
     it "has default value" do
       expect(gcp.zone).to eq('us-central1-a')
       expect(gcp.num_nodes).to eq(3)
       expect(gcp.machine_type).to eq('n1-standard-2')
+      expect(gcp.cloud_run).to eq(false)
     end
   end
 

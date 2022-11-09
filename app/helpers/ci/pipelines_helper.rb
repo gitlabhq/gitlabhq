@@ -87,7 +87,7 @@ module Ci
         endpoint: list_url,
         project_id: project.id,
         default_branch_name: project.default_branch,
-        params: Gitlab::Json.dump(params),
+        params: params.to_json,
         artifacts_endpoint: downloadable_artifacts_project_pipeline_path(project, artifacts_endpoint_placeholder, format: :json),
         artifacts_endpoint_placeholder: artifacts_endpoint_placeholder,
         pipeline_schedule_url: pipeline_schedules_path(project),
@@ -100,7 +100,7 @@ module Ci
         reset_cache_path: can?(current_user, :admin_pipeline, project) && reset_cache_project_settings_ci_cd_path(project),
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
-        suggested_ci_templates: Gitlab::Json.dump(suggested_ci_templates),
+        suggested_ci_templates: suggested_ci_templates.to_json,
         ci_runner_settings_path: project_settings_ci_cd_path(project, ci_runner_templates: true, anchor: 'js-runners-settings')
       }
 

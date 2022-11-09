@@ -1,7 +1,14 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
-import { __ } from '~/locale';
+import {
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_RELEASE,
+  TOKEN_TITLE_TYPE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
@@ -742,7 +749,7 @@ export const mockConfidentialToken = {
 export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedIn) => [
   {
     icon: 'user',
-    title: __('Assignee'),
+    title: TOKEN_TITLE_ASSIGNEE,
     type: 'assignee',
     operators: [
       { value: '=', description: 'is' },
@@ -755,7 +762,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   },
   {
     icon: 'pencil',
-    title: __('Author'),
+    title: TOKEN_TITLE_AUTHOR,
     type: 'author',
     operators: [
       { value: '=', description: 'is' },
@@ -769,7 +776,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   },
   {
     icon: 'labels',
-    title: __('Label'),
+    title: TOKEN_TITLE_LABEL,
     type: 'label',
     operators: [
       { value: '=', description: 'is' },
@@ -783,7 +790,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   ...(isSignedIn ? [mockEmojiToken, mockConfidentialToken] : []),
   {
     icon: 'clock',
-    title: __('Milestone'),
+    title: TOKEN_TITLE_MILESTONE,
     symbol: '%',
     type: 'milestone',
     shouldSkipSort: true,
@@ -793,7 +800,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   },
   {
     icon: 'issues',
-    title: __('Type'),
+    title: TOKEN_TITLE_TYPE,
     type: 'type',
     token: GlFilteredSearchToken,
     unique: true,
@@ -804,7 +811,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   },
   {
     type: 'release',
-    title: __('Release'),
+    title: TOKEN_TITLE_RELEASE,
     icon: 'rocket',
     token: ReleaseToken,
     fetchReleases: expect.any(Function),

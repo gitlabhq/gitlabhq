@@ -18,6 +18,11 @@ RSpec.describe Clusters::Applications::Ingress do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
 
+  describe 'default values' do
+    it { expect(subject.ingress_type).to eq("nginx") }
+    it { expect(subject.version).to eq(described_class::VERSION) }
+  end
+
   describe '#can_uninstall?' do
     subject { ingress.can_uninstall? }
 

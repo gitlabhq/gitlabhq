@@ -36,7 +36,7 @@ module EmailsHelper
     }
 
     content_tag :script, type: 'application/ld+json' do
-      Gitlab::Json.dump(data).html_safe
+      data.to_json.html_safe
     end
   end
 

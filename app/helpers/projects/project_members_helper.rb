@@ -2,7 +2,7 @@
 
 module Projects::ProjectMembersHelper
   def project_members_app_data_json(project, members:, invited:, access_requests:, include_relations:, search:)
-    Gitlab::Json.dump({
+    {
       user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
       group: project_group_links_list_data(project, include_relations, search),
       invite: project_members_list_data(project, invited.nil? ? [] : invited),
@@ -10,7 +10,7 @@ module Projects::ProjectMembersHelper
       source_id: project.id,
       can_manage_members: Ability.allowed?(current_user, :admin_project_member, project),
       can_manage_access_requests: Ability.allowed?(current_user, :admin_member_access_request, project)
-    })
+    }.to_json
   end
 
   def project_member_header_subtext(project)

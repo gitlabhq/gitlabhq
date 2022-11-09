@@ -38,13 +38,13 @@ module Ci
     end
 
     def prepare_failed_jobs_summary_data(failed_builds)
-      Gitlab::Json.dump(failed_builds.map do |build|
+      failed_builds.map do |build|
         {
           id: build.id,
           failure: build.present.callout_failure_message,
           failure_summary: build_summary(build)
         }
-      end)
+      end.to_json
     end
   end
 end

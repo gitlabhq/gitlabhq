@@ -10,6 +10,10 @@ RSpec.describe Clusters::Applications::Jupyter do
 
   it { is_expected.to belong_to(:oauth_application) }
 
+  describe 'default values' do
+    it { expect(subject.version).to eq(described_class::VERSION) }
+  end
+
   describe '#can_uninstall?' do
     let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
     let(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }

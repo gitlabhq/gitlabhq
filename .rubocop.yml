@@ -289,11 +289,6 @@ Rails/InverseOf:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
-Rails/HasManyOrHasOneDependent:
-  Include:
-    - app/models/**/*.rb
-    - ee/app/models/**/*.rb
-
 Rails/HelperInstanceVariable:
   Include:
     - app/helpers/**/*.rb

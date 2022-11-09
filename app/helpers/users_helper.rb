@@ -3,8 +3,8 @@
 module UsersHelper
   def admin_users_data_attributes(users)
     {
-      users: Gitlab::Json.dump(Admin::UserSerializer.new.represent(users, { current_user: current_user })),
-      paths: Gitlab::Json.dump(admin_users_paths)
+      users: Admin::UserSerializer.new.represent(users, { current_user: current_user }).to_json,
+      paths: admin_users_paths.to_json
     }
   end
 
@@ -163,8 +163,8 @@ module UsersHelper
 
   def admin_user_actions_data_attributes(user)
     {
-      user: Gitlab::Json.dump(Admin::UserEntity.represent(user, { current_user: current_user })),
-      paths: Gitlab::Json.dump(admin_users_paths)
+      user: Admin::UserEntity.represent(user, { current_user: current_user }).to_json,
+      paths: admin_users_paths.to_json
     }
   end
 

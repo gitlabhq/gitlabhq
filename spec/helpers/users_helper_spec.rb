@@ -391,7 +391,7 @@ RSpec.describe UsersHelper do
       expect_next_instance_of(Admin::UserSerializer) do |instance|
         expect(instance).to receive(:represent).with([user], { current_user: user }).and_return(entity)
       end
-      expect(entity).to receive(:as_json).and_return({ "username" => "admin" })
+      expect(entity).to receive(:to_json).and_return("{\"username\":\"admin\"}")
       expect(data[:users]).to eq "{\"username\":\"admin\"}"
     end
 

@@ -13,6 +13,10 @@ RSpec.describe Clusters::Applications::Runner do
 
   it { is_expected.to belong_to(:runner) }
 
+  describe 'default values' do
+    it { expect(subject.version).to eq(described_class::VERSION) }
+  end
+
   describe '#can_uninstall?' do
     let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
 

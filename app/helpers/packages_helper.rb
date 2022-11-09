@@ -24,7 +24,7 @@ module PackagesHelper
   def package_from_presenter(package)
     presenter = ::Packages::Detail::PackagePresenter.new(package)
 
-    Gitlab::Json.dump(presenter.detail_view)
+    presenter.detail_view.to_json
   end
 
   def pypi_registry_url(project_id)
@@ -68,9 +68,9 @@ module PackagesHelper
     {
       project_id: @project.id,
       project_path: @project.full_path,
-      cadence_options: Gitlab::Json.dump(cadence_options),
-      keep_n_options: Gitlab::Json.dump(keep_n_options),
-      older_than_options: Gitlab::Json.dump(older_than_options),
+      cadence_options: cadence_options.to_json,
+      keep_n_options: keep_n_options.to_json,
+      older_than_options: older_than_options.to_json,
       is_admin: current_user&.admin.to_s,
       admin_settings_path: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'),
       project_settings_path: project_settings_packages_and_registries_path(@project),

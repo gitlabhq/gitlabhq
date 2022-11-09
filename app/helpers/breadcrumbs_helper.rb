@@ -40,11 +40,11 @@ module BreadcrumbsHelper
   end
 
   def schema_breadcrumb_json
-    Gitlab::Json.dump({
+    {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       'itemListElement': build_item_list_elements
-    })
+    }.to_json
   end
 
   private

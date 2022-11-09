@@ -26,7 +26,7 @@ module OperationsHelper
       'disabled' => disabled.to_s,
       'project_path' => @project.full_path,
       'multi_integrations' => 'false',
-      'templates' => Gitlab::Json.dump(templates),
+      'templates' => templates.to_json,
       'create_issue' => setting.create_issue.to_s,
       'issue_template_key' => setting.issue_template_key.to_s,
       'send_email' => setting.send_email.to_s,

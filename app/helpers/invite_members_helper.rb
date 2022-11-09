@@ -29,7 +29,7 @@ module InviteMembersHelper
       invalid_groups: source.related_group_ids,
       help_link: help_page_url('user/permissions'),
       is_project: is_project,
-      access_levels: Gitlab::Json.dump(member_class.permissible_access_level_roles(current_user, source))
+      access_levels: member_class.permissible_access_level_roles(current_user, source).to_json
     }.merge(group_select_data(source))
   end
 
@@ -44,8 +44,8 @@ module InviteMembersHelper
 
     if show_invite_members_for_task?(source)
       dataset.merge!(
-        tasks_to_be_done_options: Gitlab::Json.dump(tasks_to_be_done_options),
-        projects: Gitlab::Json.dump(projects_for_source(source)),
+        tasks_to_be_done_options: tasks_to_be_done_options.to_json,
+        projects: projects_for_source(source).to_json,
         new_project_path: source.is_a?(Group) ? new_project_path(namespace_id: source.id) : ''
       )
     end

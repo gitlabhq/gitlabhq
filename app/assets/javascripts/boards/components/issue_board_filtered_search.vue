@@ -15,6 +15,13 @@ import {
   TOKEN_TITLE_MY_REACTION,
   OPERATOR_IS_AND_IS_NOT,
   OPERATOR_IS_ONLY,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_RELEASE,
+  TOKEN_TITLE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -28,17 +35,8 @@ export default {
     INCIDENT: 'INCIDENT',
   },
   i18n: {
-    search: __('Search'),
-    epic: __('Epic'),
-    label: __('Label'),
-    author: __('Author'),
-    assignee: __('Assignee'),
-    type: __('Type'),
     incident: __('Incident'),
     issue: __('Issue'),
-    milestone: __('Milestone'),
-    release: __('Release'),
-    confidential: __('Confidential'),
   },
   components: { BoardFilteredSearch },
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'boardType'],
@@ -52,17 +50,7 @@ export default {
         : this.fullPath.slice(0, this.fullPath.lastIndexOf('/'));
     },
     tokensCE() {
-      const {
-        label,
-        author,
-        assignee,
-        issue,
-        incident,
-        type,
-        milestone,
-        release,
-        confidential,
-      } = this.$options.i18n;
+      const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
       const { fetchAuthors, fetchLabels } = issueBoardFilters(
         this.$apollo,
@@ -73,7 +61,7 @@ export default {
       const tokens = [
         {
           icon: 'user',
-          title: assignee,
+          title: TOKEN_TITLE_ASSIGNEE,
           type: 'assignee',
           operators: OPERATOR_IS_AND_IS_NOT,
           token: AuthorToken,
@@ -83,7 +71,7 @@ export default {
         },
         {
           icon: 'pencil',
-          title: author,
+          title: TOKEN_TITLE_AUTHOR,
           type: 'author',
           operators: OPERATOR_IS_AND_IS_NOT,
           symbol: '@',
@@ -94,7 +82,7 @@ export default {
         },
         {
           icon: 'labels',
-          title: label,
+          title: TOKEN_TITLE_LABEL,
           type: 'label',
           operators: OPERATOR_IS_AND_IS_NOT,
           token: LabelToken,
@@ -129,7 +117,7 @@ export default {
               {
                 type: 'confidential',
                 icon: 'eye-slash',
-                title: confidential,
+                title: TOKEN_TITLE_CONFIDENTIAL,
                 unique: true,
                 token: GlFilteredSearchToken,
                 operators: OPERATOR_IS_ONLY,
@@ -142,7 +130,7 @@ export default {
           : []),
         {
           type: 'milestone',
-          title: milestone,
+          title: TOKEN_TITLE_MILESTONE,
           icon: 'clock',
           symbol: '%',
           token: MilestoneToken,
@@ -152,7 +140,7 @@ export default {
         },
         {
           icon: 'issues',
-          title: type,
+          title: TOKEN_TITLE_TYPE,
           type: 'type',
           token: GlFilteredSearchToken,
           unique: true,
@@ -163,7 +151,7 @@ export default {
         },
         {
           type: 'release',
-          title: release,
+          title: TOKEN_TITLE_RELEASE,
           icon: 'rocket',
           token: ReleaseToken,
           fetchReleases: (search) => {

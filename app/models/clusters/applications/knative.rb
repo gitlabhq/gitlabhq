@@ -43,7 +43,7 @@ module Clusters
         end
       end
 
-      default_value_for :version, VERSION
+      attribute :version, default: VERSION
 
       validates :hostname, presence: true, hostname: true
 

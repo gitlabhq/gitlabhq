@@ -673,6 +673,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsrootnamespace"></a>`rootNamespace` | [`String`](#string) | Delete jobs matching root_namespace in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobssubscriptionplan"></a>`subscriptionPlan` | [`String`](#string) | Delete jobs matching subscription_plan in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsuser"></a>`user` | [`String`](#string) | Delete jobs matching user in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobsuserid"></a>`userId` | [`String`](#string) | Delete jobs matching user_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsworkerclass"></a>`workerClass` | [`String`](#string) | Delete jobs with the given worker class. |
 
 #### Fields

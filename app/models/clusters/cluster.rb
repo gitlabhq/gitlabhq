@@ -79,7 +79,7 @@ module Clusters
     validates :namespace_per_environment, inclusion: { in: [true, false] }
     validates :helm_major_version, inclusion: { in: [2, 3] }
 
-    default_value_for :helm_major_version, 3
+    attribute :helm_major_version, default: 3
 
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?

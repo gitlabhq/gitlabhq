@@ -3,7 +3,10 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import {
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_LABEL,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
@@ -17,7 +20,7 @@ describe('BoardFilteredSearch', () => {
   const tokens = [
     {
       icon: 'labels',
-      title: __('Label'),
+      title: TOKEN_TITLE_LABEL,
       type: 'label',
       operators: [
         { value: '=', description: 'is' },
@@ -30,7 +33,7 @@ describe('BoardFilteredSearch', () => {
     },
     {
       icon: 'pencil',
-      title: __('Author'),
+      title: TOKEN_TITLE_AUTHOR,
       type: 'author',
       operators: [
         { value: '=', description: 'is' },

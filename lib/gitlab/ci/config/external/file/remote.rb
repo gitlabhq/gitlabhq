@@ -30,6 +30,10 @@ module Gitlab
 
             private
 
+            def validate_context!
+              # no-op
+            end
+
             def validate_location!
               super
 

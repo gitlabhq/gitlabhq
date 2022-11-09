@@ -42,29 +42,20 @@ module Gitlab
               context&.parent_pipeline&.project
             end
 
-            def validate_content!
-              return unless ensure_preconditions_satisfied!
-
-              errors.push("File `#{masked_location}` is empty!") unless content.present?
+            def validate_context!
+              context.logger.instrument(:config_file_artifact_validate_context) do
+                if !creating_child_pipeline?
+                  errors.push('Including configs from artifacts is only allowed when triggering child pipelines')
+                elsif !job_name.present?
+                  errors.push("Job must be provided when including configs from artifacts")
+                elsif !artifact_job.present?
+                  errors.push("Job `#{masked_job_name}` not found in parent pipeline or does not have artifacts!")
+                end
+              end
             end
 
-            def ensure_preconditions_satisfied!
-              unless creating_child_pipeline?
-                errors.push('Including configs from artifacts is only allowed when triggering child pipelines')
-                return false
-              end
-
-              unless job_name.present?
-                errors.push("Job must be provided when including configs from artifacts")
-                return false
-              end
-
-              unless artifact_job.present?
-                errors.push("Job `#{masked_job_name}` not found in parent pipeline or does not have artifacts!")
-                return false
-              end
-
-              true
+            def validate_content!
+              errors.push("File `#{masked_location}` is empty!") unless content.present?
             end
 
             def artifact_job

@@ -21,6 +21,12 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
   it_behaves_like 'having unique enum values'
 
+  describe 'default values' do
+    let(:kubernetes) { create(:cluster_platform_kubernetes) }
+
+    it { expect(kubernetes.authorization_type).to eq("rbac") }
+  end
+
   describe 'before_validation' do
     let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 

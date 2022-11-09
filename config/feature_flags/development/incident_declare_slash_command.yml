@@ -1,0 +1,8 @@
+---
+name: incident_declare_slash_command
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101177
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378072
+milestone: '15.6'
+type: development
+group: group::respond
+default_enabled: false

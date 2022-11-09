@@ -37,7 +37,7 @@ For a full list of reference architectures, see
 | PostgreSQL<sup>1</sup>                    | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
+| Gitaly<sup>5</sup><sup>6</sup>            | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Sidekiq                                   | 4     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   |
@@ -59,6 +59,7 @@ For a full list of reference architectures, see
     - [Google Cloud Load Balancing](https://cloud.google.com/load-balancing) and [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing/) are known to work.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to the [Large Repositories](#large-repositories) for more info.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -164,9 +165,44 @@ Any "burstable" instance types are not recommended due to inconsistent performan
 
 ### Supported infrastructure
 
-As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP) and their services, or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section. However, this does not constitute a guarantee for every potential permutation.
+As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP) and their services,
+or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section.
+However, this does not constitute a guarantee for every potential permutation.
 
 See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+
+### Additional workloads
+
+The Reference Architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab setups with
+good headroom in mind to cover most scenarios. However, if any additional workloads are being added on the nodes,
+such as security software, you may still need to adjust the specs accordingly to compensate.
+
+This also applies for some GitLab features where it's possible to run custom scripts, for example [server hooks](../server_hooks.md).
+
+As a general rule, it's recommended to have robust monitoring in place to measure the impact of
+any additional workloads to inform any changes needed to be made.
+
+### Large repositories
+
+The Reference Architectures were tested with repositories of varying sizes that follow best practices.
+
+However, large repositories or monorepos (several gigabytes or more) can **significantly** impact the performance
+of Git and in turn the environment itself if best practices aren't being followed such as not storing
+binary or blob files in LFS. Repositories are at the core of any environment the consequences can be wide-ranging
+when they are not optimized. Some examples of this impact include [Git packing operations](https://git-scm.com/book/en/v2/Git-Internals-Packfiles)
+taking longer and consuming high CPU / Memory resources or Git checkouts taking longer that affect both users and
+CI pipelines alike.
+
+As such, large repositories come with notable cost and typically will require more resources to handle,
+significantly so in some cases. It's therefore **strongly** recommended then to review large repositories
+to ensure they maintain good repo health and reduce their size wherever possible.
+
+NOTE:
+If best practices aren't followed and large repositories are present on the environment,
+increased Gitaly specs may be required to ensure stable performance.
+
+Refer to the [Managing large repositories documentation](../../user/project/repository/managing_large_repositories.md)
+for more information and guidance.
 
 ### Praefect PostgreSQL
 
@@ -244,8 +280,7 @@ In a multi-node GitLab configuration, you'll need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
 or its exact configuration is beyond the scope of GitLab documentation. We assume
 that if you're managing multi-node systems like GitLab, you already have a load
-balancer of choice and that the routing methods used are distributing calls evenly
-between all nodes. Some load balancer examples include HAProxy (open-source),
+balancer of choice. Some load balancer examples include HAProxy (open-source),
 F5 Big-IP LTM, and Citrix Net Scaler. This documentation outline the ports and
 protocols needed for use with GitLab.
 
@@ -262,38 +297,13 @@ There are several different options:
 - [The load balancer terminates SSL with backend SSL](#load-balancer-terminates-ssl-with-backend-ssl)
   and communication is *secure* between the load balancer and the application node.
 
-### Application node terminates SSL
+### Balancing algorithm
 
-Configure your load balancer to pass connections on port 443 as `TCP` rather
-than `HTTP(S)` protocol. This will pass the connection to the application node's
-NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
+We recommend that a least-connection load balancing algorithm or equivalent
+is used wherever possible to ensure equal spread of calls to the nodes and good performance.
 
-See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
-for details on managing SSL certificates and configuring NGINX.
-
-### Load balancer terminates SSL without backend SSL
-
-Configure your load balancer to use the `HTTP(S)` protocol rather than `TCP`.
-The load balancer will then be responsible for managing SSL certificates and
-terminating SSL.
-
-Since communication between the load balancer and GitLab will not be secure,
-there is some additional configuration needed. See the
-[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
-for details.
-
-### Load balancer terminates SSL with backend SSL
-
-Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
-The load balancers will be responsible for managing SSL certificates that
-end users will see.
-
-Traffic will also be secure between the load balancers and NGINX in this
-scenario. There is no need to add configuration for proxied SSL since the
-connection will be secure all the way. However, configuration will need to be
-added to GitLab to configure SSL certificates. See the
-[HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
-for details on managing SSL certificates and configuring NGINX.
+We don't recommend the use of round-robin algorithms as they are known to not
+spread connections equally in practice.
 
 ### Readiness checks
 
@@ -353,6 +363,50 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 | LB Port | Backend Port | Protocol |
 | ------- | ------------ | -------- |
 | 443     | 22           | TCP      |
+
+### SSL
+
+The next question is how you will handle SSL in your environment.
+There are several different options:
+
+- [The application node terminates SSL](#application-node-terminates-ssl).
+- [The load balancer terminates SSL without backend SSL](#load-balancer-terminates-ssl-without-backend-ssl)
+  and communication is not secure between the load balancer and the application node.
+- [The load balancer terminates SSL with backend SSL](#load-balancer-terminates-ssl-with-backend-ssl)
+  and communication is *secure* between the load balancer and the application node.
+
+#### Application node terminates SSL
+
+Configure your load balancer to pass connections on port 443 as `TCP` rather
+than `HTTP(S)` protocol. This will pass the connection to the application node's
+NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
+
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
+for details on managing SSL certificates and configuring NGINX.
+
+#### Load balancer terminates SSL without backend SSL
+
+Configure your load balancer to use the `HTTP(S)` protocol rather than `TCP`.
+The load balancer will then be responsible for managing SSL certificates and
+terminating SSL.
+
+Since communication between the load balancer and GitLab will not be secure,
+there is some additional configuration needed. See the
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
+for details.
+
+#### Load balancer terminates SSL with backend SSL
+
+Configure your load balancers to use the 'HTTP(S)' protocol rather than 'TCP'.
+The load balancers will be responsible for managing SSL certificates that
+end users will see.
+
+Traffic will also be secure between the load balancers and NGINX in this
+scenario. There is no need to add configuration for proxied SSL since the
+connection will be secure all the way. However, configuration will need to be
+added to GitLab to configure SSL certificates. See
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
+for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -418,8 +472,14 @@ backend praefect
 ```
 
 Refer to your preferred Load Balancer's documentation for further guidance.
-Also ensure that the routing methods used are distributing calls evenly across
-all nodes.
+
+### Balancing algorithm
+
+We recommend that a least-connection load balancing algorithm or equivalent
+is used wherever possible to ensure equal spread of calls to the nodes and good performance.
+
+We don't recommend the use of round-robin algorithms as they are known to not
+spread connections equally in practice.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -1114,6 +1174,12 @@ NOTE:
 Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster).
 For implementations with sharded Gitaly, use the same Gitaly specs. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
 
+NOTE:
+Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
+However, large repositories or monorepos not following these practices can significantly
+impact Gitaly performance and requirements.
+Refer to the [Large Repositories](#large-repositories) for more info.
+
 The recommended cluster setup includes the following components:
 
 - 3 Gitaly nodes: Replicated storage of Git repositories.
@@ -1418,9 +1484,15 @@ The [Gitaly](../gitaly/index.md) server nodes that make up the cluster have
 requirements that are dependent on data and load.
 
 NOTE:
-The Reference Architecture specs have been designed with good headroom in mind
-but for Gitaly, increased specs or additional
-Gitaly Cluster arrays may be required for notably large data sets or load.
+Increased specs for Gitaly nodes may be required in some circumstances such as
+significantly large repositories or if any [additional workloads](#additional-workloads),
+such as [server hooks](../server_hooks.md), have been added.
+
+NOTE:
+Gitaly has been designed and tested with repositories of varying sizes that follow best practices.
+However, large repositories or monorepos not following these practices can significantly
+impact Gitaly performance and requirements.
+Refer to the [Large Repositories](#large-repositories) for more info.
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -2260,7 +2332,7 @@ services where applicable):
 | PostgreSQL<sup>1</sup>                    | 3     | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`  |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
-| Gitaly<sup>5</sup>                        | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge` |
+| Gitaly<sup>5</sup><sup>6</sup>            | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`  |
 | Object storage<sup>4</sup>                | -     | -                     | -               | -           |
@@ -2278,6 +2350,7 @@ services where applicable):
     - [Google Cloud Load Balancing](https://cloud.google.com/load-balancing) and [Amazon Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing/) are known to work.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+6. Gitaly has been designed and tested with repositories of varying sizes that follow best practices. However, large repositories or monorepos that don't follow these practices can significantly impact Gitaly requirements. Refer to the [Large Repositories](#large-repositories) for more info.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

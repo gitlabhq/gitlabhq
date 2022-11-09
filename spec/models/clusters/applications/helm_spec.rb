@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Clusters::Applications::Helm do
   include_examples 'cluster application core specs', :clusters_applications_helm
 
+  describe 'default values' do
+    it { expect(subject.version).to eq(Gitlab::Kubernetes::Helm::V2::BaseCommand::HELM_VERSION) }
+  end
+
   describe '.available' do
     subject { described_class.available }
 

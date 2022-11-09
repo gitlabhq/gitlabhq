@@ -55,6 +55,9 @@ export const TOKEN_TITLE_MILESTONE = __('Milestone');
 export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
 export const TOKEN_TITLE_ORGANIZATION = s__('Crm|Organization');
 export const TOKEN_TITLE_RELEASE = __('Release');
+export const TOKEN_TITLE_SOURCE_BRANCH = __('Source Branch');
+export const TOKEN_TITLE_STATUS = __('Status');
+export const TOKEN_TITLE_TARGET_BRANCH = __('Target Branch');
 export const TOKEN_TITLE_TYPE = __('Type');
 
 // As health status gets reused between issue lists and boards

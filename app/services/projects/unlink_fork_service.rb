@@ -60,3 +60,5 @@ module Projects
     end
   end
 end
+
+Projects::UnlinkForkService.prepend_mod_with('Projects::UnlinkForkService')

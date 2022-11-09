@@ -13,7 +13,7 @@ RSpec.describe Clusters::Providers::Aws do
 
   include_examples 'provider status', :cluster_provider_aws
 
-  describe 'default_value_for' do
+  describe 'default values' do
     let(:provider) { build(:cluster_provider_aws) }
 
     it "sets default values" do

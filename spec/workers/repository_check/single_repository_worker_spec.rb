@@ -16,7 +16,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
 
     repository = instance_double(::Gitlab::Git::Repository)
     allow(::Gitlab::Git::Repository).to receive(:new)
-      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything)
+      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything, container: project)
       .and_return(repository)
 
     worker.perform(project.id)
@@ -31,7 +31,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
     repository = project.repository.raw
     expect(repository).to receive(:fsck).and_raise(::Gitlab::Git::Repository::GitError)
     expect(::Gitlab::Git::Repository).to receive(:new)
-      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything)
+      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything, container: project)
       .and_return(repository)
 
     worker.perform(project.id)
@@ -46,7 +46,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
     repository = project.repository.raw
     expect(repository).to receive(:fsck).and_call_original
     expect(::Gitlab::Git::Repository).to receive(:new)
-      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything)
+      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything, container: project)
       .and_return(repository)
 
     expect do
@@ -68,7 +68,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
     repository = project.wiki.repository.raw
     expect(repository).to receive(:fsck).and_raise(::Gitlab::Git::Repository::GitError)
     expect(::Gitlab::Git::Repository).to receive(:new)
-      .with(project.repository_storage, "#{project.disk_path}.wiki.git", anything, anything)
+      .with(project.repository_storage, "#{project.disk_path}.wiki.git", anything, anything, container: project.wiki)
       .and_return(repository)
 
     worker.perform(project.id)
@@ -81,7 +81,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
     # Make sure the test would fail if the wiki repo was checked
     repository = instance_double(::Gitlab::Git::Repository)
     allow(::Gitlab::Git::Repository).to receive(:new)
-      .with(project.repository_storage, "#{project.disk_path}.wiki.git", anything, anything)
+      .with(project.repository_storage, "#{project.disk_path}.wiki.git", anything, anything, container: project)
       .and_return(repository)
 
     subject.perform(project.id)

@@ -53,7 +53,7 @@ module IssuablesDescriptionTemplatesHelper
   end
 
   def available_service_desk_templates_for(project)
-    Gitlab::Json.dump(issuable_templates(project, 'issue').flatten)
+    issuable_templates(project, 'issue').flatten.to_json
   end
 
   def template_names_path(parent, issuable)

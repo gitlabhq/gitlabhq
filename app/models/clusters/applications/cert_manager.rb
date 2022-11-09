@@ -15,11 +15,8 @@ module Clusters
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
-      default_value_for :version, VERSION
-
-      default_value_for :email do |cert_manager|
-        cert_manager.cluster&.user&.email
-      end
+      attribute :version, default: VERSION
+      after_initialize :set_default_email, if: :new_record?
 
       validates :email, presence: true
 
@@ -54,6 +51,10 @@ module Clusters
       end
 
       private
+
+      def set_default_email
+        self.email ||= self.cluster&.user&.email
+      end
 
       def pre_install_script
         [

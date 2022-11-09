@@ -1,5 +1,7 @@
-import { __ } from '~/locale';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  OPERATOR_IS_ONLY,
+  TOKEN_TITLE_STATUS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import {
   I18N_STATUS_ONLINE,
@@ -22,7 +24,7 @@ const options = [
 
 export const statusTokenConfig = {
   icon: 'status',
-  title: __('Status'),
+  title: TOKEN_TITLE_STATUS,
   type: PARAM_KEY_STATUS,
   token: BaseToken,
   unique: true,

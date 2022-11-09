@@ -45,7 +45,7 @@ module Gitlab
       # Relative path of repo
       attr_reader :relative_path
 
-      attr_reader :storage, :gl_repository, :gl_project_path
+      attr_reader :storage, :gl_repository, :gl_project_path, :container
 
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
@@ -56,17 +56,23 @@ module Gitlab
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
-      def initialize(storage, relative_path, gl_repository, gl_project_path)
+      def initialize(storage, relative_path, gl_repository, gl_project_path, container: nil)
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
         @gl_project_path = gl_project_path
+        @container = container
 
         @name = @relative_path.split("/").last
       end
 
       def to_s
         "<#{self.class.name}: #{self.gl_project_path}>"
+      end
+
+      # Support Feature Flag Repository actor
+      def flipper_id
+        "Repository:#{@relative_path}"
       end
 
       def ==(other)

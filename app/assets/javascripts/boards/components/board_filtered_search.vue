@@ -17,8 +17,6 @@ import eventHub from '../eventhub';
 export default {
   i18n: {
     search: __('Search'),
-    label: __('Label'),
-    author: __('Author'),
   },
   components: { FilteredSearch },
   inject: ['initialFilterParams'],

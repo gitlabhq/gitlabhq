@@ -64,9 +64,7 @@ module Clusters
         unknown_authorization: nil,
         rbac: 1,
         abac: 2
-      }
-
-      default_value_for :authorization_type, :rbac
+      }, _default: :rbac
 
       nullify_if_blank :namespace
 

@@ -47,12 +47,11 @@ module Gitlab
             end
 
             def validate!
-              context.logger.instrument(:config_file_validation) do
-                validate_execution_time!
-                validate_location!
-                validate_content! if errors.none?
-                validate_hash! if errors.none?
-              end
+              validate_execution_time!
+              validate_location!
+              validate_context! if valid?
+              fetch_and_validate_content! if valid?
+              load_and_validate_expanded_hash! if valid?
             end
 
             def metadata
@@ -98,6 +97,34 @@ module Gitlab
               elsif invalid_extension?
                 errors.push("Included file `#{masked_location}` does not have YAML extension!")
               end
+            end
+
+            def validate_context!
+              raise NotImplementedError, 'subclass must implement validate_context'
+            end
+
+            def fetch_and_validate_content!
+              context.logger.instrument(:config_file_fetch_content) do
+                content # calling the method fetches then memoizes the result
+              end
+
+              return if errors.any?
+
+              context.logger.instrument(:config_file_validate_content) do
+                validate_content!
+              end
+            end
+
+            def load_and_validate_expanded_hash!
+              context.logger.instrument(:config_file_fetch_content_hash) do
+                content_hash # calling the method loads then memoizes the result
+              end
+
+              context.logger.instrument(:config_file_expand_content_includes) do
+                expanded_content_hash # calling the method expands then memoizes the result
+              end
+
+              validate_hash!
             end
 
             def validate_content!

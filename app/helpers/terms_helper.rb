@@ -4,7 +4,7 @@ module TermsHelper
   def terms_data(terms, redirect)
     redirect_params = { redirect: redirect } if redirect
 
-    data = {
+    {
       terms: markdown_field(terms, :terms),
       permissions: {
         can_accept: can?(current_user, :accept_terms, terms),
@@ -15,8 +15,6 @@ module TermsHelper
         decline: decline_term_path(terms, redirect_params),
         root: root_path
       }
-    }
-
-    Gitlab::Json.dump(data)
+    }.to_json
   end
 end

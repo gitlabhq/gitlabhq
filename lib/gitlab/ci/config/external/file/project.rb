@@ -39,12 +39,16 @@ module Gitlab
 
             private
 
-            def validate_content!
+            def validate_context!
               if !can_access_local_content?
                 errors.push("Project `#{masked_project_name}` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.")
               elsif sha.nil?
                 errors.push("Project `#{masked_project_name}` reference `#{masked_ref_name}` does not exist!")
-              elsif content.nil?
+              end
+            end
+
+            def validate_content!
+              if content.nil?
                 errors.push("Project `#{masked_project_name}` file `#{masked_location}` does not exist!")
               elsif content.blank?
                 errors.push("Project `#{masked_project_name}` file `#{masked_location}` is empty!")
@@ -58,7 +62,11 @@ module Gitlab
             end
 
             def can_access_local_content?
-              Ability.allowed?(context.user, :download_code, project)
+              strong_memoize(:can_access_local_content) do
+                context.logger.instrument(:config_file_project_validate_access) do
+                  Ability.allowed?(context.user, :download_code, project)
+                end
+              end
             end
 
             def fetch_local_content

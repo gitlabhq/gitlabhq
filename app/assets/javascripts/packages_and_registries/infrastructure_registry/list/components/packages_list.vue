@@ -1,7 +1,6 @@
 <script>
 import { GlPagination } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
-import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
@@ -62,11 +61,6 @@ export default {
       this.track(TRACKING_ACTIONS.CANCEL_DELETE_PACKAGE);
       this.itemToBeDeleted = null;
     },
-  },
-  i18n: {
-    deleteModalContent: s__('PackageRegistry|You are about to delete %{name}, are you sure?'),
-    modalTitle: s__('PackageRegistry|Delete package'),
-    modalAction: s__('PackageRegistry|Permanently delete'),
   },
 };
 </script>

@@ -114,7 +114,7 @@ module IntegrationsHelper
       learn_more_path: integrations_help_page_path,
       about_pricing_url: Gitlab::Saas.about_pricing_url,
       trigger_events: trigger_events_for_integration(integration),
-      sections: Gitlab::Json.dump(integration.sections),
+      sections: integration.sections.to_json,
       fields: fields_for_integration(integration),
       inherit_from_id: integration.inherit_from_id,
       integration_level: integration_level(integration),
@@ -144,7 +144,7 @@ module IntegrationsHelper
 
   def integration_list_data(integrations, group: nil, project: nil)
     {
-      integrations: Gitlab::Json.dump(integrations.map { |i| serialize_integration(i, group: group, project: project) })
+      integrations: integrations.map { |i| serialize_integration(i, group: group, project: project) }.to_json
     }
   end
 
@@ -237,15 +237,11 @@ module IntegrationsHelper
   end
 
   def trigger_events_for_integration(integration)
-    serializer = Integrations::EventSerializer.new(integration: integration).represent(integration.configurable_events)
-
-    Gitlab::Json.dump(serializer)
+    Integrations::EventSerializer.new(integration: integration).represent(integration.configurable_events).to_json
   end
 
   def fields_for_integration(integration)
-    serializer = Integrations::FieldSerializer.new(integration: integration).represent(integration.form_fields)
-
-    Gitlab::Json.dump(serializer)
+    Integrations::FieldSerializer.new(integration: integration).represent(integration.form_fields).to_json
   end
 
   def integration_level(integration)

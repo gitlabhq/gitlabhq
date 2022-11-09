@@ -435,9 +435,93 @@ PATCH /projects/:id/protected_branches/:name
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch?allow_force_push=true&code_owner_approval_required=true"
 ```
 
-| Attribute                                    | Type | Required | Description                                                                                                                                     |
+| Attribute                                    | Type           | Required | Description                                                                                                                          |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                                  |
-| `name`                                       | string         | yes | The name of the branch                                                                                                                          |
-| `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. |
-| `code_owner_approval_required` **(PREMIUM)** | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). Defaults to `false`. |
+| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user                       |
+| `name`                                       | string         | yes      | The name of the branch                                                                                                               |
+| `allow_force_push`                           | boolean        | no       | When enabled, members who can push to this branch can also force push.                                                               |
+| `code_owner_approval_required` **(PREMIUM)** | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). Defaults to `false`. |
+| `allowed_to_push` **(PREMIUM)**              | array          | no       | Array of push access levels, with each described by a hash.                                                                          |
+| `allowed_to_merge` **(PREMIUM)**             | array          | no       | Array of merge access levels, with each described by a hash.                                                                         |
+| `allowed_to_unprotect` **(PREMIUM)**         | array          | no       | Array of unprotect access levels, with each described by a hash.                                                                     |
+
+Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should be one of `user_id`, `group_id` or
+`access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
+`{access_level: integer}`.
+
+To update:
+
+- `user_id`: Ensure the updated user has access to the project. You must also pass the
+  `id` of the `access_level` in the respective hash.
+- `group_id`: Ensure the updated group [has this project shared](../user/project/members/share_project_with_groups.md).
+  You must also pass the `id` of the `access_level` in the respective hash.
+
+To delete:
+
+- You must pass `_destroy` set to `true`. See the following examples.
+
+### Example: create a `push_access_level` record
+
+```shell
+curl --header 'Content-Type: application/json' --request PATCH \
+     --data '{"push_access_levels": [{"group_id": 9899829, access_level: 40}]}' \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
+```
+
+Example response:
+
+```json
+{
+   "name": "master",
+   "allowed_to_push": [
+      {
+         "id": 12,
+         "access_level": 40,
+         "access_level_description": "Administrator",
+         "user_id": null,
+         "group_id": 9899829
+      }
+   ]
+}
+```
+
+### Example: update a `push_access_level` record
+
+```shell
+curl --header 'Content-Type: application/json' --request PUT \
+     --data '{"push_access_levels": [{"id": 12, "group_id": 22034120}]' \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
+```
+
+```json
+{
+   "name": "master",
+   "deploy_access_levels": [
+      {
+         "id": 12,
+         "access_level": 40,
+         "access_level_description": "Administrator",
+         "user_id": null,
+         "group_id": 22034120
+      }
+   ]
+}
+```
+
+### Example: delete a `push_access_level` record
+
+```shell
+curl --header 'Content-Type: application/json' --request PUT \
+     --data '{"push_access_levels": [{"id": 12, "_destroy": true}]' \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
+```
+
+Example response:
+
+```json
+{
+   "name": "master",
+   "push_access_levels": []
+}
+```

@@ -14,9 +14,9 @@ module LearnGitlabHelper
 
   def learn_gitlab_data(project)
     {
-      actions: Gitlab::Json.dump(onboarding_actions_data(project)),
-      sections: Gitlab::Json.dump(onboarding_sections_data),
-      project: Gitlab::Json.dump(onboarding_project_data(project))
+      actions: onboarding_actions_data(project).to_json,
+      sections: onboarding_sections_data.to_json,
+      project: onboarding_project_data(project).to_json
     }
   end
 

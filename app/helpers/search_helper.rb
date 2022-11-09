@@ -447,9 +447,9 @@ module SearchHelper
   def search_navigation_json
     sorted_navigation = search_navigation.sort_by { |_, h| h[:sort] }
 
-    Gitlab::Json.dump(sorted_navigation.each_with_object({}) do |(key, value), hash|
+    sorted_navigation.each_with_object({}) do |(key, value), hash|
       hash[key] = search_filter_link_json(key, value[:label], value[:data], value[:search]) if value[:condition]
-    end)
+    end.to_json
   end
 
   def search_filter_input_options(type, placeholder = _('Search or filter results...'))
