@@ -57,7 +57,7 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
     context "race conditions" do
       context "when #{record_class_name} migration fails and is rolled back" do
         before do
-          expect_any_instance_of(ActiveRecord::Associations::CollectionProxy)
+          allow_any_instance_of(ActiveRecord::Associations::CollectionProxy)
             .to receive(:update_all).and_raise(ActiveRecord::StatementTimeout)
         end
 
@@ -68,6 +68,7 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
         end
 
         it "doesn't unblock a previously-blocked user" do
+          expect(user.starred_projects).to receive(:update_all).and_call_original
           user.block
 
           expect { service.execute }.to raise_error(ActiveRecord::StatementTimeout)

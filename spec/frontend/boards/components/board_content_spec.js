@@ -47,6 +47,8 @@ describe('BoardContent', () => {
     canAdminList = true,
     isApolloBoard = false,
     issuableType = 'issue',
+    isIssueBoard = true,
+    isEpicBoard = false,
     boardListQueryHandler = jest.fn().mockResolvedValue(boardListsQueryResponse),
   } = {}) => {
     fakeApollo = createMockApollo([[boardListsQuery, boardListQueryHandler]]);
@@ -67,6 +69,8 @@ describe('BoardContent', () => {
         boardType: 'group',
         fullPath: 'gitlab-org/gitlab',
         issuableType,
+        isIssueBoard,
+        isEpicBoard,
         isApolloBoard,
       },
       store,
@@ -133,7 +137,7 @@ describe('BoardContent', () => {
 
   describe('when issuableType is not issue', () => {
     beforeEach(() => {
-      createComponent({ issuableType: 'foo' });
+      createComponent({ issuableType: 'foo', isIssueBoard: false });
     });
 
     it('does not render BoardContentSidebar', () => {

@@ -10,7 +10,7 @@ module QA
         include Helpers
 
         QA_PATTERN = %r{^qa/}.freeze
-        SPEC_PATTERN = %r{^qa/qa/specs/features/}.freeze
+        SPEC_PATTERN = %r{^qa/qa/specs/features/\S+_spec\.rb}.freeze
         DEPENDENCY_PATTERN = Regexp.union(
           /_VERSION/,
           /Gemfile\.lock/,

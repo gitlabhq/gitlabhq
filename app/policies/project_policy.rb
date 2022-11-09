@@ -851,6 +851,10 @@ class ProjectPolicy < BasePolicy
     enable :read_incident_management_timeline_event_tag
   end
 
+  rule { can?(:download_code) }.policy do
+    enable :read_code
+  end
+
   private
 
   def user_is_user?

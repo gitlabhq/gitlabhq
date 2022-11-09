@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
@@ -31,6 +31,7 @@ export default {
     BoardCardMoveToPosition,
   },
   mixins: [Tracking.mixin()],
+  inject: ['isEpicBoard'],
   props: {
     disabled: {
       type: Boolean,
@@ -69,7 +70,6 @@ export default {
   },
   computed: {
     ...mapState(['pageInfoByListId', 'listsFlags', 'filterParams', 'isUpdateIssueOrderInProgress']),
-    ...mapGetters(['isEpicBoard']),
     listItemsCount() {
       return this.isEpicBoard ? this.list.epicsCount : this.boardList?.issuesCount;
     },

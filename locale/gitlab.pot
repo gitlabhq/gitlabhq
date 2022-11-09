@@ -15694,9 +15694,6 @@ msgstr ""
 msgid "Error uploading file. Please try again."
 msgstr ""
 
-msgid "Error uploading file: %{stripped}"
-msgstr ""
-
 msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
@@ -30555,9 +30552,6 @@ msgid "Please select a Jira project"
 msgstr ""
 
 msgid "Please select a country"
-msgstr ""
-
-msgid "Please select a file"
 msgstr ""
 
 msgid "Please select a group"

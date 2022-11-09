@@ -2884,6 +2884,27 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'read_code' do
+    let(:current_user) { create(:user) }
+
+    before do
+      allow(subject).to receive(:allowed?).and_call_original
+      allow(subject).to receive(:allowed?).with(:download_code).and_return(can_download_code)
+    end
+
+    context 'when the current_user can download_code' do
+      let(:can_download_code) { true }
+
+      it { expect_allowed(:read_code) }
+    end
+
+    context 'when the current_user cannot download_code' do
+      let(:can_download_code) { false }
+
+      it { expect_disallowed(:read_code) }
+    end
+  end
+
   private
 
   def project_subject(project_type)

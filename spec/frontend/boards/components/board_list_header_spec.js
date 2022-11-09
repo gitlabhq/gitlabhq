@@ -59,7 +59,6 @@ describe('Board List Header Component', () => {
     store = new Vuex.Store({
       state: {},
       actions: { updateList: updateListSpy, toggleListCollapsed: toggleListCollapsedSpy },
-      getters: { isEpicBoard: () => false },
     });
 
     fakeApollo = createMockApollo([[listQuery, listQueryHandler]]);
@@ -76,6 +75,7 @@ describe('Board List Header Component', () => {
           boardId,
           weightFeatureAvailable: false,
           currentUserId,
+          isEpicBoard: false,
         },
       }),
     );

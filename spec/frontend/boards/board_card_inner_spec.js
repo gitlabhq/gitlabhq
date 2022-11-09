@@ -52,7 +52,7 @@ describe('Board card component', () => {
 
   const performSearchMock = jest.fn();
 
-  const createStore = ({ isEpicBoard = false, isProjectBoard = false } = {}) => {
+  const createStore = ({ isProjectBoard = false } = {}) => {
     store = new Vuex.Store({
       ...defaultStore,
       actions: {
@@ -65,13 +65,12 @@ describe('Board card component', () => {
       },
       getters: {
         isGroupBoard: () => true,
-        isEpicBoard: () => isEpicBoard,
         isProjectBoard: () => isProjectBoard,
       },
     });
   };
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = ({ props = {}, isEpicBoard = false } = {}) => {
     wrapper = mountExtended(BoardCardInner, {
       store,
       propsData: {
@@ -97,6 +96,7 @@ describe('Board card component', () => {
       provide: {
         rootPath: '/',
         scopedLabelsAvailable: false,
+        isEpicBoard,
       },
     });
   };
@@ -111,7 +111,7 @@ describe('Board card component', () => {
     };
 
     createStore();
-    createWrapper({ item: issue, list });
+    createWrapper({ props: { item: issue, list } });
   });
 
   afterEach(() => {
@@ -146,7 +146,7 @@ describe('Board card component', () => {
   });
 
   it('renders the work type icon when props is passed', () => {
-    createWrapper({ item: issue, list, showWorkItemTypeIcon: true });
+    createWrapper({ props: { item: issue, list, showWorkItemTypeIcon: true } });
     expect(findWorkItemIcon().exists()).toBe(true);
     expect(findWorkItemIcon().props('workItemType')).toBe(issue.type);
   });
@@ -177,9 +177,11 @@ describe('Board card component', () => {
   describe('blocked', () => {
     it('renders blocked icon if issue is blocked', async () => {
       createWrapper({
-        item: {
-          ...issue,
-          blocked: true,
+        props: {
+          item: {
+            ...issue,
+            blocked: true,
+          },
         },
       });
 
@@ -188,9 +190,11 @@ describe('Board card component', () => {
 
     it('does not show blocked icon if issue is not blocked', () => {
       createWrapper({
-        item: {
-          ...issue,
-          blocked: false,
+        props: {
+          item: {
+            ...issue,
+            blocked: false,
+          },
         },
       });
 
@@ -201,9 +205,11 @@ describe('Board card component', () => {
   describe('confidential issue', () => {
     beforeEach(() => {
       createWrapper({
-        item: {
-          ...wrapper.props('item'),
-          confidential: true,
+        props: {
+          item: {
+            ...wrapper.props('item'),
+            confidential: true,
+          },
         },
       });
     });
@@ -216,9 +222,11 @@ describe('Board card component', () => {
   describe('hidden issue', () => {
     beforeEach(() => {
       createWrapper({
-        item: {
-          ...wrapper.props('item'),
-          hidden: true,
+        props: {
+          item: {
+            ...wrapper.props('item'),
+            hidden: true,
+          },
         },
       });
     });
@@ -241,11 +249,13 @@ describe('Board card component', () => {
     describe('with avatar', () => {
       beforeEach(() => {
         createWrapper({
-          item: {
-            ...wrapper.props('item'),
-            assignees: [user],
-            updateData(newData) {
-              Object.assign(this, newData);
+          props: {
+            item: {
+              ...wrapper.props('item'),
+              assignees: [user],
+              updateData(newData) {
+                Object.assign(this, newData);
+              },
             },
           },
         });
@@ -294,15 +304,17 @@ describe('Board card component', () => {
         global.gon.default_avatar_url = 'default_avatar';
 
         createWrapper({
-          item: {
-            ...wrapper.props('item'),
-            assignees: [
-              {
-                id: 1,
-                name: 'testing 123',
-                username: 'test',
-              },
-            ],
+          props: {
+            item: {
+              ...wrapper.props('item'),
+              assignees: [
+                {
+                  id: 1,
+                  name: 'testing 123',
+                  username: 'test',
+                },
+              ],
+            },
           },
         });
       });
@@ -323,28 +335,30 @@ describe('Board card component', () => {
   describe('multiple assignees', () => {
     beforeEach(() => {
       createWrapper({
-        item: {
-          ...wrapper.props('item'),
-          assignees: [
-            {
-              id: 2,
-              name: 'user2',
-              username: 'user2',
-              avatarUrl: 'test_image',
-            },
-            {
-              id: 3,
-              name: 'user3',
-              username: 'user3',
-              avatarUrl: 'test_image',
-            },
-            {
-              id: 4,
-              name: 'user4',
-              username: 'user4',
-              avatarUrl: 'test_image',
-            },
-          ],
+        props: {
+          item: {
+            ...wrapper.props('item'),
+            assignees: [
+              {
+                id: 2,
+                name: 'user2',
+                username: 'user2',
+                avatarUrl: 'test_image',
+              },
+              {
+                id: 3,
+                name: 'user3',
+                username: 'user3',
+                avatarUrl: 'test_image',
+              },
+              {
+                id: 4,
+                name: 'user4',
+                username: 'user4',
+                avatarUrl: 'test_image',
+              },
+            ],
+          },
         },
       });
     });
@@ -364,9 +378,11 @@ describe('Board card component', () => {
         });
 
         createWrapper({
-          item: {
-            ...wrapper.props('item'),
-            assignees,
+          props: {
+            item: {
+              ...wrapper.props('item'),
+              assignees,
+            },
           },
         });
       });
@@ -390,9 +406,11 @@ describe('Board card component', () => {
           })),
         ];
         createWrapper({
-          item: {
-            ...wrapper.props('item'),
-            assignees,
+          props: {
+            item: {
+              ...wrapper.props('item'),
+              assignees,
+            },
           },
         });
 
@@ -405,7 +423,7 @@ describe('Board card component', () => {
 
   describe('labels', () => {
     beforeEach(() => {
-      createWrapper({ item: { ...issue, labels: [list.label, label1] } });
+      createWrapper({ props: { item: { ...issue, labels: [list.label, label1] } } });
     });
 
     it('does not render list label but renders all other labels', () => {
@@ -417,7 +435,7 @@ describe('Board card component', () => {
     });
 
     it('does not render label if label does not have an ID', async () => {
-      createWrapper({ item: { ...issue, labels: [label1, { title: 'closed' }] } });
+      createWrapper({ props: { item: { ...issue, labels: [label1, { title: 'closed' }] } } });
 
       await nextTick();
 
@@ -429,11 +447,13 @@ describe('Board card component', () => {
   describe('filterByLabel method', () => {
     beforeEach(() => {
       createWrapper({
-        item: {
-          ...issue,
-          labels: [label1],
+        props: {
+          item: {
+            ...issue,
+            labels: [label1],
+          },
+          updateFilters: true,
         },
-        updateFilters: true,
       });
     });
 
@@ -480,9 +500,11 @@ describe('Board card component', () => {
   describe('loading', () => {
     it('renders loading icon', async () => {
       createWrapper({
-        item: {
-          ...issue,
-          isLoading: true,
+        props: {
+          item: {
+            ...issue,
+            isLoading: true,
+          },
         },
       });
 
@@ -504,17 +526,20 @@ describe('Board card component', () => {
     };
 
     beforeEach(() => {
-      createStore({ isEpicBoard: true });
+      createStore();
     });
 
     it('should render if the item has issues', () => {
       createWrapper({
-        item: {
-          ...issue,
-          descendantCounts,
-          descendantWeightSum,
-          hasIssues: true,
+        props: {
+          item: {
+            ...issue,
+            descendantCounts,
+            descendantWeightSum,
+            hasIssues: true,
+          },
         },
+        isEpicBoard: true,
       });
 
       expect(findEpicCountables().exists()).toBe(true);
@@ -535,18 +560,21 @@ describe('Board card component', () => {
 
     it('shows render item countBadge, weights, and progress correctly', () => {
       createWrapper({
-        item: {
-          ...issue,
-          descendantCounts: {
-            ...descendantCounts,
-            openedIssues: 1,
+        props: {
+          item: {
+            ...issue,
+            descendantCounts: {
+              ...descendantCounts,
+              openedIssues: 1,
+            },
+            descendantWeightSum: {
+              closedIssues: 10,
+              openedIssues: 5,
+            },
+            hasIssues: true,
           },
-          descendantWeightSum: {
-            closedIssues: 10,
-            openedIssues: 5,
-          },
-          hasIssues: true,
         },
+        isEpicBoard: true,
       });
 
       expect(findEpicCountablesBadgeIssues().text()).toBe('1');
@@ -556,15 +584,18 @@ describe('Board card component', () => {
 
     it('does not render progress when weight is zero', () => {
       createWrapper({
-        item: {
-          ...issue,
-          descendantCounts: {
-            ...descendantCounts,
-            openedIssues: 1,
+        props: {
+          item: {
+            ...issue,
+            descendantCounts: {
+              ...descendantCounts,
+              openedIssues: 1,
+            },
+            descendantWeightSum,
+            hasIssues: true,
           },
-          descendantWeightSum,
-          hasIssues: true,
         },
+        isEpicBoard: true,
       });
 
       expect(findEpicBadgeProgress().exists()).toBe(false);
@@ -572,15 +603,18 @@ describe('Board card component', () => {
 
     it('renders the tooltip with the correct data', () => {
       createWrapper({
-        item: {
-          ...issue,
-          descendantCounts,
-          descendantWeightSum: {
-            closedIssues: 10,
-            openedIssues: 5,
+        props: {
+          item: {
+            ...issue,
+            descendantCounts,
+            descendantWeightSum: {
+              closedIssues: 10,
+              openedIssues: 5,
+            },
+            hasIssues: true,
           },
-          hasIssues: true,
         },
+        isEpicBoard: true,
       });
 
       const tooltip = findEpicCountablesTotalTooltip();

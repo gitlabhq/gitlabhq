@@ -651,8 +651,8 @@ Supported attributes:
 | `merge_commit_sha` | string | SHA of the merge request commit (set once merged). |
 | `merge_error` | string | Error message due to a merge error. |
 | `merge_user` | object | User who merged this merge request or set it to merge when pipeline succeeds. |
-| `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged` or `cannot_be_merged_recheck`. |
-| `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS). |
+| `merge_status` | string | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged` or `cannot_be_merged_recheck`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
+| `merge_when_pipeline_succeeds` | boolean | Indicates if the merge has been set to be merged when its pipeline succeeds. |
 | `merged_at` | datetime | Timestamp of when the merge request was merged. |
 | `merged_by` | object | Deprecated: Use `merge_user` instead. User who merged this merge request or set it to merge when pipeline succeeds. |
 | `milestone` | object | Milestone of the merge request. |
@@ -848,14 +848,11 @@ the `approvals_before_merge` parameter:
 
 ### Merge status
 
-> The `detailed_merge_status` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
+> - The `detailed_merge_status` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
+> - The `merge_status` field was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6.
 
-- The `merge_status` field may hold one of the following values:
-  - `unchecked`: This merge request has not yet been checked.
-  - `checking`: This merge request is currently being checked to see if it can be merged.
-  - `can_be_merged`: This merge request can be merged without conflict.
-  - `cannot_be_merged`: There are merge conflicts between the source and target branches.
-  - `cannot_be_merged_recheck`: Currently unchecked. Before the current changes, there were conflicts.
+Use `detailed_merge_status` instead of `merge_status` to account for all potential statuses.
+
 - The `detailed_merge_status` field may hold one of the following values:
   - `blocked_status`: Merge request is blocked by another merge request.
   - `broken_status`: Can not merge the source into the target branch, potential conflict.

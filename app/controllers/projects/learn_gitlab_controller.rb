@@ -23,7 +23,6 @@ class Projects::LearnGitlabController < Projects::ApplicationController
 
     experiment(:invite_for_help_continuous_onboarding, namespace: project.namespace) do |e|
       e.candidate {}
-      e.publish_to_database
     end
   end
 

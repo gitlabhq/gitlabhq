@@ -57,6 +57,9 @@ export default {
     canCreateEpic: {
       default: false,
     },
+    isEpicBoard: {
+      default: false,
+    },
   },
   props: {
     list: {
@@ -76,7 +79,7 @@ export default {
   },
   computed: {
     ...mapState(['activeId', 'filterParams', 'boardId']),
-    ...mapGetters(['isEpicBoard', 'isSwimlanesOn']),
+    ...mapGetters(['isSwimlanesOn']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },

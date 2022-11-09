@@ -1658,6 +1658,33 @@ RSpec.describe Project, factory_default: :keep do
       expect(project.reload.star_count).to eq(0)
     end
 
+    it 'does not count stars from blocked users' do
+      user1 = create(:user)
+      user2 = create(:user)
+      project = create(:project, :public)
+
+      expect(project.star_count).to eq(0)
+
+      user1.toggle_star(project)
+      expect(project.reload.star_count).to eq(1)
+
+      user2.toggle_star(project)
+      project.reload
+      expect(project.reload.star_count).to eq(2)
+
+      user1.block
+      project.reload
+      expect(project.reload.star_count).to eq(1)
+
+      user2.block
+      project.reload
+      expect(project.reload.star_count).to eq(0)
+
+      user1.activate
+      project.reload
+      expect(project.reload.star_count).to eq(1)
+    end
+
     it 'counts stars on the right project' do
       user = create(:user)
       project1 = create(:project, :public)

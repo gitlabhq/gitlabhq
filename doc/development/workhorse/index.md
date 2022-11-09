@@ -21,7 +21,7 @@ but that repository is no longer used for development.
 
 ## Install Workhorse
 
-To install GitLab Workhorse you need [Go 1.15 or newer](https://go.dev/dl) and
+To install GitLab Workhorse you need [Go 1.18 or newer](https://go.dev/dl) and
 [GNU Make](https://www.gnu.org/software/make/).
 
 To install into `/usr/local/bin` run `make install`.

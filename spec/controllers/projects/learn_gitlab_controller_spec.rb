@@ -34,8 +34,15 @@ RSpec.describe Projects::LearnGitlabController do
         it { is_expected.to have_gitlab_http_status(:not_found) }
       end
 
-      it_behaves_like 'tracks assignment and records the subject', :invite_for_help_continuous_onboarding, :namespace do
-        subject { project.namespace }
+      context 'with invite_for_help_continuous_onboarding experiment' do
+        it 'tracks the assignment', :experiment do
+          stub_experiments(invite_for_help_continuous_onboarding: true)
+
+          expect(experiment(:invite_for_help_continuous_onboarding))
+            .to track(:assignment).with_context(namespace: project.namespace).on_next_instance
+
+          action
+        end
       end
     end
   end

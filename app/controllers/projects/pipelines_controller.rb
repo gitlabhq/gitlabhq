@@ -338,7 +338,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
       e.candidate {}
-      e.publish_to_database
     end
   end
 

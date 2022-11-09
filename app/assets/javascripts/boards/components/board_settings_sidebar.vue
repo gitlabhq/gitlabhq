@@ -31,7 +31,7 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
-  inject: ['canAdminList', 'scopedLabelsAvailable'],
+  inject: ['canAdminList', 'scopedLabelsAvailable', 'isIssueBoard'],
   inheritAttrs: false,
   data() {
     return {
@@ -40,10 +40,10 @@ export default {
   },
   modalId: 'board-settings-sidebar-modal',
   computed: {
-    ...mapGetters(['isSidebarOpen', 'isEpicBoard']),
+    ...mapGetters(['isSidebarOpen']),
     ...mapState(['activeId', 'sidebarType', 'boardLists']),
     isWipLimitsOn() {
-      return this.glFeatures.wipLimits && !this.isEpicBoard;
+      return this.glFeatures.wipLimits && this.isIssueBoard;
     },
     activeList() {
       return this.boardLists[this.activeId] || {};

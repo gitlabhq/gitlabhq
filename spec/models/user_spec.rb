@@ -2482,6 +2482,30 @@ RSpec.describe User do
     end
   end
 
+  describe 'starred_projects' do
+    let_it_be(:project) { create(:project) }
+
+    before do
+      user.toggle_star(project)
+    end
+
+    context 'when blocking a user' do
+      let_it_be(:user) { create(:user) }
+
+      it 'decrements star count of project' do
+        expect { user.block }.to change { project.reload.star_count }.by(-1)
+      end
+    end
+
+    context 'when activating a user' do
+      let_it_be(:user) { create(:user, :blocked) }
+
+      it 'increments star count of project' do
+        expect { user.activate }.to change { project.reload.star_count }.by(1)
+      end
+    end
+  end
+
   describe '.instance_access_request_approvers_to_be_notified' do
     let_it_be(:admin_issue_board_list) { create_list(:user, 12, :admin, :with_sign_ins) }
 

@@ -101,6 +101,8 @@ export default function createComponent({
       weightFeatureAvailable: false,
       boardWeight: null,
       canAdminList: true,
+      isIssueBoard: true,
+      isEpicBoard: false,
       ...provide,
     },
     stubs,

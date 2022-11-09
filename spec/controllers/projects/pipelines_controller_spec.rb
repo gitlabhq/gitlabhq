@@ -299,14 +299,15 @@ RSpec.describe Projects::PipelinesController do
       stub_application_setting(auto_devops_enabled: false)
     end
 
-    def action
-      get :index, params: { namespace_id: project.namespace, project_id: project }
-    end
+    context 'with runners_availability_section experiment' do
+      it 'tracks the assignment', :experiment do
+        stub_experiments(runners_availability_section: true)
 
-    subject { project.namespace }
+        expect(experiment(:runners_availability_section))
+          .to track(:assignment).with_context(namespace: project.namespace).on_next_instance
 
-    context 'runners_availability_section experiment' do
-      it_behaves_like 'tracks assignment and records the subject', :runners_availability_section, :namespace
+        get :index, params: { namespace_id: project.namespace, project_id: project }
+      end
     end
   end
 

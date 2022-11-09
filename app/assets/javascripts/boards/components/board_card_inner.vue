@@ -43,7 +43,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [boardCardInner],
-  inject: ['rootPath', 'scopedLabelsAvailable'],
+  inject: ['rootPath', 'scopedLabelsAvailable', 'isEpicBoard'],
   props: {
     item: {
       type: Object,
@@ -78,7 +78,7 @@ export default {
   },
   computed: {
     ...mapState(['isShowingLabels', 'issuableType', 'allowSubEpics']),
-    ...mapGetters(['isEpicBoard', 'isProjectBoard']),
+    ...mapGetters(['isProjectBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
       // Render up to all 4 assignees if there are only 4 assigness

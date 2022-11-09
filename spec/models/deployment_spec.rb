@@ -388,15 +388,30 @@ RSpec.describe Deployment do
     end
 
     context 'when deployment is behind current deployment' do
+      let_it_be(:commits) { project.repository.commits('master', limit: 2) }
+
+      let!(:deployment) do
+        create(:deployment, :success, project: project, environment: environment,
+                                      finished_at: 1.year.ago, sha: commits[0].sha)
+      end
+
+      let!(:last_deployment) do
+        create(:deployment, :success, project: project, environment: environment, sha: commits[1].sha)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when deployment is the same sha as the current deployment' do
       let!(:deployment) do
         create(:deployment, :success, project: project, environment: environment, finished_at: 1.year.ago)
       end
 
       let!(:last_deployment) do
-        create(:deployment, :success, project: project, environment: environment)
+        create(:deployment, :success, project: project, environment: environment, sha: deployment.sha)
       end
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be_falsey }
     end
   end
 

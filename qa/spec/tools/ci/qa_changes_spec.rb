@@ -49,6 +49,14 @@ RSpec.describe QA::Tools::Ci::QaChanges do
     end
   end
 
+  context "with shared example changes" do
+    let(:mr_diff) { [{ path: "qa/qa/specs/features/shared_context/some_context.rb", diff: "" }] }
+
+    it ".qa_tests do not return specific specs" do
+      expect(qa_changes.qa_tests).to be_nil
+    end
+  end
+
   context "with non qa changes" do
     let(:mr_diff) { [{ path: "Gemfile" }] }
 

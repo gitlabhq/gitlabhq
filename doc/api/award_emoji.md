@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Award emoji API **(FREE)**
+# Award emojis API **(FREE)**
 
 An [awarded emoji](../user/award_emojis.md) tells a thousand words.
 
@@ -15,11 +15,11 @@ We call GitLab objects on which you can award an emoji "awardables". You can awa
 - [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
 - [Snippets](../user/snippets.md) ([API](snippets.md)).
 
-Emojis can also [be awarded](../user/award_emojis.md#award-emoji-for-comments) on comments (also known as notes). See also [Notes API](notes.md).
+Emojis can also [be awarded](../user/award_emojis.md#award-emojis-for-comments) on comments (also known as notes). See also [Notes API](notes.md).
 
 ## Issues, merge requests, and snippets
 
-See [Award Emoji on Comments](#award-emoji-on-comments) for information on using these endpoints with comments.
+See [Award emojis on comments](#award-emojis-on-comments) for information on using these endpoints with comments.
 
 ### List an awardable's award emojis
 
@@ -201,7 +201,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344"
 ```
 
-## Award Emoji on Comments
+## Award emojis on comments
 
 Comments (also known as notes) are a sub-resource of issues, merge requests, and snippets.
 
@@ -366,7 +366,7 @@ Parameters:
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `issue_iid` | integer        | yes      | Internal ID of an issue.                                                     |
 | `note_id`   | integer        | yes      | ID of a comment (note).                                                      |
-| `award_id`  | integer        | yes      | ID of an award_emoji.                                                        |
+| `award_id`  | integer        | yes      | ID of an award emoji.                                                        |
 
 Example request:
 

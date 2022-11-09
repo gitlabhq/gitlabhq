@@ -306,8 +306,8 @@ class Deployment < ApplicationRecord
     last_deployment_id = environment.last_deployment&.id
 
     return false unless last_deployment_id.present?
-
     return false if self.id == last_deployment_id
+    return false if self.sha == environment.last_deployment&.sha
 
     self.id < last_deployment_id
   end

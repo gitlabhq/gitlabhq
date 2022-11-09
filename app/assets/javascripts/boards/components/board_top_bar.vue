@@ -1,5 +1,4 @@
 <script>
-import { mapGetters } from 'vuex';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
@@ -20,10 +19,7 @@ export default {
     EpicBoardFilteredSearch: () =>
       import('ee_component/boards/components/epic_filtered_search.vue'),
   },
-  inject: ['swimlanesFeatureAvailable', 'canAdminList', 'isSignedIn'],
-  computed: {
-    ...mapGetters(['isEpicBoard']),
-  },
+  inject: ['swimlanesFeatureAvailable', 'canAdminList', 'isSignedIn', 'isIssueBoard'],
 };
 </script>
 
@@ -37,8 +33,8 @@ export default {
       >
         <boards-selector />
         <new-board-button />
-        <epic-board-filtered-search v-if="isEpicBoard" />
-        <issue-board-filtered-search v-else />
+        <issue-board-filtered-search v-if="isIssueBoard" />
+        <epic-board-filtered-search v-else />
       </div>
       <div
         class="filter-dropdown-container gl-md-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-align-items-flex-start"

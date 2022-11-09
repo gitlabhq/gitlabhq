@@ -3,25 +3,6 @@
 class ApplicationExperiment < Gitlab::Experiment
   control { nil } # provide a default control for anonymous experiments
 
-  # Documented in:
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/357904
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/345932
-  #
-  # @deprecated
-  def publish_to_database
-    ActiveSupport::Deprecation.warn('publish_to_database is deprecated and should not be used for reporting anymore')
-
-    return unless should_track?
-
-    # if the context contains a namespace, group, project, user, or actor
-    value = context.value
-    subject = value[:namespace] || value[:group] || value[:project] || value[:user] || value[:actor]
-    return unless ExperimentSubject.valid_subject?(subject)
-
-    variant_name = :experimental if variant&.name != 'control'
-    Experiment.add_subject(name, variant: variant_name || :control, subject: subject)
-  end
-
   def control_behavior
     # define a default nil control behavior so we can omit it when not needed
   end

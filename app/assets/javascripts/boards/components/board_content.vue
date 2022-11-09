@@ -7,12 +7,7 @@ import { s__ } from '~/locale';
 import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
-import {
-  DraggableItemTypes,
-  issuableTypes,
-  BoardType,
-  listsQuery,
-} from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes, BoardType, listsQuery } from 'ee_else_ce/boards/constants';
 import BoardColumn from './board_column.vue';
 
 export default {
@@ -31,7 +26,15 @@ export default {
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
-  inject: ['canAdminList', 'boardType', 'fullPath', 'issuableType', 'isApolloBoard'],
+  inject: [
+    'canAdminList',
+    'boardType',
+    'fullPath',
+    'issuableType',
+    'isIssueBoard',
+    'isEpicBoard',
+    'isApolloBoard',
+  ],
   props: {
     disabled: {
       type: Boolean,
@@ -78,12 +81,6 @@ export default {
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
     ...mapGetters(['isSwimlanesOn']),
-    isIssueBoard() {
-      return this.issuableType === issuableTypes.issue;
-    },
-    isEpicBoard() {
-      return this.issuableType === issuableTypes.epic;
-    },
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
     },

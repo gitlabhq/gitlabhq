@@ -15,18 +15,14 @@ describe('BoardTopBar', () => {
 
   Vue.use(Vuex);
 
-  const createStore = ({ mockGetters = {} } = {}) => {
+  const createStore = () => {
     return new Vuex.Store({
       state: {},
-      getters: {
-        isEpicBoard: () => false,
-        ...mockGetters,
-      },
     });
   };
 
-  const createComponent = ({ provide = {}, mockGetters = {} } = {}) => {
-    const store = createStore({ mockGetters });
+  const createComponent = ({ provide = {} } = {}) => {
+    const store = createStore();
     wrapper = shallowMount(BoardTopBar, {
       store,
       provide: {
@@ -36,6 +32,7 @@ describe('BoardTopBar', () => {
         fullPath: 'gitlab-org',
         boardType: 'group',
         releasesFetchPath: '/releases',
+        isIssueBoard: true,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },

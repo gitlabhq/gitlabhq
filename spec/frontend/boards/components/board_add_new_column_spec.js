@@ -53,11 +53,11 @@ describe('Board card layout', () => {
           state: {
             labels,
             labelsLoading: false,
-            isEpicBoard: false,
           },
         }),
         provide: {
           scopedLabelsAvailable: true,
+          isEpicBoard: false,
         },
       }),
     );

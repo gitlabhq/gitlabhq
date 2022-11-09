@@ -72,6 +72,8 @@ function mountBoardApp(el) {
       emailsDisabled: parseBoolean(el.dataset.emailsDisabled),
       hasMissingBoards: parseBoolean(el.dataset.hasMissingBoards),
       weights: el.dataset.weights ? JSON.parse(el.dataset.weights) : [],
+      isIssueBoard: true,
+      isEpicBoard: false,
       // Permissions
       canUpdate: parseBoolean(el.dataset.canUpdate),
       canAdminList: parseBoolean(el.dataset.canAdminList),

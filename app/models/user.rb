@@ -452,6 +452,14 @@ class User < ApplicationRecord
     after_transition banned: :active do |user|
       user.banned_user&.destroy
     end
+
+    after_transition any => :active do |user|
+      user.starred_projects.update_counters(star_count: 1)
+    end
+
+    after_transition active: any do |user|
+      user.starred_projects.update_counters(star_count: -1)
+    end
   end
 
   # Scopes
