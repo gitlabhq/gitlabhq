@@ -464,18 +464,6 @@ module Issuable
     end
   end
 
-  def today?
-    Date.today == created_at.to_date
-  end
-
-  def created_hours_ago
-    (Time.now.utc.to_i - created_at.utc.to_i) / 3600
-  end
-
-  def new?
-    created_hours_ago < 24
-  end
-
   def open?
     opened?
   end

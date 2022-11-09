@@ -9,7 +9,11 @@ class SearchController < ApplicationController
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
 
-  track_event :show, name: 'i_search_total', destinations: [:redis_hll, :snowplow]
+  track_custom_event :show,
+              name: 'i_search_total',
+              label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
+              action: 'executed',
+              destinations: [:redis_hll, :snowplow]
 
   def self.search_rate_limited_endpoints
     %i[show count autocomplete]
@@ -241,6 +245,10 @@ class SearchController < ApplicationController
 
   def tracking_namespace_source
     search_service.project&.namespace || search_service.group
+  end
+
+  def tracking_project_source
+    search_service.project
   end
 
   def search_type

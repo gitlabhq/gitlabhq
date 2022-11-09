@@ -2178,32 +2178,44 @@ end
 
   ```ruby
   NameError: uninitialized constant Resolvers::GroupIssuesResolver
+
+  or
+
+  GraphQL::Pagination::Connections::ImplementationMissingError
   ```
+
+  though you might see something different.
 
   To fix this, we must create a new file that encapsulates the connection type,
   and then reference it using double quotes. This gives a delayed resolution,
   and the proper connection type. For example:
 
-  ```ruby
-  module Types
-    # rubocop: disable Graphql/AuthorizeTypes
-    class IssueConnectionType < CountableConnectionType
-    end
-  end
+  [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
+  originally contained the line
 
-  Types::IssueConnectionType.prepend_mod_with('Types::IssueConnectionType')
+  ```ruby
+  type Types::IssueType.connection_type, null: true
   ```
 
-  in [types/issue_connection_type.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/issue_connection_type.rb)
-  defines a new `Types::IssueConnectionType`, and is then referenced in
-  [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
+  Running the specs locally for this file caused the
+  `NameError: uninitialized constant Resolvers::GroupIssuesResolver` error.
+
+  The fix was to create a new file, [app/graphql/types/issue_connection.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/issue_connection.rb) with the
+  line:
+
+  ```ruby
+  Types::IssueConnection = Types::IssueType.connection_type
+  ```
+
+  and in [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
+  we use the line
 
   ```ruby
   type "Types::IssueConnection", null: true
   ```
 
   Only use this style if you are having spec failures. This is not intended to be a new
-  pattern that we use. This issue may disappear after we've upgraded to `2.x`.
+  pattern that we use. This issue should disappear after we've upgraded to `2.x`.
 
 - There can be instances where a spec fails because the class is not loaded correctly.
   It relates to the

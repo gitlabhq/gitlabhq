@@ -1,8 +1,0 @@
----
-name: realtime_labels
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83743
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357370
-milestone: '14.10'
-type: development
-group: group::project management
-default_enabled: true

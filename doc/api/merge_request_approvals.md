@@ -6,6 +6,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Merge request approvals API **(PREMIUM)**
 
+> Changing approval configuration with the `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
+
 Configuration for
 [approvals on all merge requests](../user/project/merge_requests/approvals/index.md)
 in the project. Must be authenticated for all endpoints.
@@ -57,7 +59,7 @@ Supported attributes:
 | Attribute                                        | Type    | Required | Description |
 | ------------------------------------------------ | ------- | -------- | -- |
 | `id`                                             | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
-| `approvals_before_merge`                         | integer | **{dotted-circle}** No       | How many approvals are required before a merge request can be merged. Deprecated in GitLab 12.0 in favor of Approval Rules API. |
+| `approvals_before_merge` (deprecated)            | integer | **{dotted-circle}** No       | How many approvals are required before a merge request can be merged. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. |
 | `disable_overriding_approvers_per_merge_request` | boolean | **{dotted-circle}** No       | Allow or prevent overriding approvers per merge request. |
 | `merge_requests_author_approval`                 | boolean | **{dotted-circle}** No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
 | `merge_requests_disable_committers_approval`     | boolean | **{dotted-circle}** No       | Allow or prevent committers from self approving merge requests. |
@@ -582,9 +584,16 @@ Supported attributes:
 }
 ```
 
-### Change approval configuration
+### Change approval configuration (deprecated)
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in GitLab 13.9.
+> - Endpoint `/approvals` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
+
+WARNING:
+The `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3
+and is planned for removal in 16.0. To change the approvals required for a merge request,
+use the `/approval_rules` endpoint described in [Create merge request level rule](#create-merge-request-level-rule).
+on this page. This change is a breaking change.
 
 If you are allowed to, you can change `approvals_required` using the following
 endpoint:
@@ -598,7 +607,7 @@ Supported attributes:
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
 | `id`                 | integer or string | **{check-circle}** Yes      | The ID or [URL-encoded path of a project](index.md#namespaced-path-encoding). |
-| `approvals_required` | integer           | **{check-circle}** Yes      | Approvals required before MR can be merged. Deprecated in GitLab 12.0 in favor of Approval Rules API. |
+| `approvals_required` | integer           | **{check-circle}** Yes      | Approvals required before MR can be merged. |
 | `merge_request_iid`  | integer           | **{check-circle}** Yes      | The IID of the merge request. |
 
 ```json

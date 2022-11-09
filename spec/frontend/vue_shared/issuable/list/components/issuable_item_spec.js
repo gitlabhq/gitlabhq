@@ -543,24 +543,6 @@ describe('IssuableItem', () => {
       });
     });
 
-    describe('when issuable was created within the past 24 hours', () => {
-      it('renders issuable card with a recently-created style', () => {
-        wrapper = createComponent({
-          issuable: { ...mockIssuable, createdAt: '2020-12-10T12:34:56' },
-        });
-
-        expect(wrapper.classes()).toContain('today');
-      });
-    });
-
-    describe('when issuable was created earlier than the past 24 hours', () => {
-      it('renders issuable card without a recently-created style', () => {
-        wrapper = createComponent({ issuable: { ...mockIssuable, createdAt: '2020-12-09' } });
-
-        expect(wrapper.classes()).not.toContain('today');
-      });
-    });
-
     describe('scoped labels', () => {
       describe.each`
         description                                                         | labelPosition | hasScopedLabelsFeature | scoped

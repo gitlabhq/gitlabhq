@@ -121,8 +121,8 @@ defined external service. This includes confidential merge requests.
 | Attribute              | Type             | Required | Description                                    |
 |------------------------|------------------|----------|------------------------------------------------|
 | `id`                   | integer          | yes      | ID of a project                                |
-| `name`                 | string           | yes      | Display name of status check                   |
-| `external_url`         | string           | yes      | URL of status check resource                   |
+| `name`                 | string           | yes      | Display name of external status check                   |
+| `external_url`         | string           | yes      | URL of external status check resource                   |
 | `protected_branch_ids` | `array<Integer>` | no       | IDs of protected branches to scope the rule by |
 
 ## Delete external status check
@@ -135,7 +135,7 @@ DELETE /projects/:id/external_status_checks/:check_id
 
 | Attribute              | Type           | Required | Description           |
 |------------------------|----------------|----------|-----------------------|
-| `rule_id`              | integer        | yes      | ID of an status check |
+| `check_id`              | integer        | yes      | ID of an external status check |
 | `id`                   | integer        | yes      | ID of a project       |
 
 ## Update external status check
@@ -149,8 +149,8 @@ PUT /projects/:id/external_status_checks/:check_id
 | Attribute              | Type             | Required | Description                                    |
 |------------------------|------------------|----------|------------------------------------------------|
 | `id`                   | integer          | yes      | ID of a project                                |
-| `rule_id`              | integer          | yes      | ID of an external status check                 |
-| `name`                 | string           | no       | Display name of status check                   |
+| `check_id`              | integer          | yes      | ID of an external status check                 |
+| `name`                 | string           | no       | Display name of external status check                   |
 | `external_url`         | string           | no       | URL of external status check resource          |
 | `protected_branch_ids` | `array<Integer>` | no       | IDs of protected branches to scope the rule by |
 

@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'includes Limitable concern' do
   describe '#exceeds_limits?' do
-    let(:plan_limits) { create(:plan_limits, :default_plan) }
+    let_it_be_with_reload(:plan_limits) { create(:plan_limits, :default_plan) }
 
     context 'without plan limits configured' do
       it { expect(subject.exceeds_limits?).to eq false }
@@ -26,7 +26,7 @@ RSpec.shared_examples 'includes Limitable concern' do
   end
 
   describe 'validations' do
-    let(:plan_limits) { create(:plan_limits, :default_plan) }
+    let_it_be_with_reload(:plan_limits) { create(:plan_limits, :default_plan) }
 
     it { is_expected.to be_a(Limitable) }
 

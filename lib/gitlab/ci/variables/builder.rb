@@ -171,16 +171,6 @@ module Gitlab
           end
         end
 
-        def strong_memoize_with(name, *args)
-          container = strong_memoize(name) { {} }
-
-          if container.key?(args)
-            container[args]
-          else
-            container[args] = yield
-          end
-        end
-
         def release
           return unless @pipeline.tag?
 

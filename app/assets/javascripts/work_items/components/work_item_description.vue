@@ -7,7 +7,9 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { getWorkItemQuery } from '../utils';
 import workItemDescriptionSubscription from '../graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -19,10 +21,11 @@ export default {
     EditedAt,
     GlButton,
     GlFormGroup,
+    MarkdownEditor,
     MarkdownField,
     WorkItemDescriptionRendered,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   props: {
     workItemId: {
       type: String,
@@ -133,7 +136,7 @@ export default {
 
       await this.$nextTick();
 
-      this.$refs.textarea.focus();
+      this.$refs.textarea?.focus();
     },
     async cancelEditing() {
       const isDirty = this.descriptionText !== this.workItemDescription?.description;
@@ -200,6 +203,10 @@ export default {
 
       this.isSubmitting = false;
     },
+    setDescriptionText(newText) {
+      this.descriptionText = newText;
+      updateDraft(this.autosaveKey, this.descriptionText);
+    },
     handleDescriptionTextUpdated(newText) {
       this.descriptionText = newText;
       this.updateWorkItem();
@@ -216,7 +223,24 @@ export default {
       :label="__('Description')"
       label-for="work-item-description"
     >
+      <markdown-editor
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-my-3 common-note-form"
+        :value="descriptionText"
+        :render-markdown-path="markdownPreviewPath"
+        :markdown-docs-path="$options.markdownDocsPath"
+        :form-field-aria-label="__('Description')"
+        :form-field-placeholder="__('Write a comment or drag your files here…')"
+        form-field-id="work-item-description"
+        form-field-name="work-item-description"
+        enable-autocomplete
+        init-on-autofocus
+        @input="setDescriptionText"
+        @keydown.meta.enter="updateWorkItem"
+        @keydown.ctrl.enter="updateWorkItem"
+      />
       <markdown-field
+        v-else
         can-attach-file
         :textarea-value="descriptionText"
         :is-submitting="isSubmitting"

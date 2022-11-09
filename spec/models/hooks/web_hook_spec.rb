@@ -198,7 +198,7 @@ RSpec.describe WebHook do
 
   describe '.web_hooks_disable_failed?' do
     it 'returns true when feature is enabled for parent' do
-      second_hook = build(:project_hook, project: create(:project))
+      second_hook = build(:project_hook)
       stub_feature_flags(web_hooks_disable_failed: [false, second_hook.project])
 
       expect(described_class.web_hooks_disable_failed?(hook)).to eq(false)

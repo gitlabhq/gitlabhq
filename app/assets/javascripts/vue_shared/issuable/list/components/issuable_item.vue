@@ -3,7 +3,7 @@ import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlSprintf, GlTooltipDirective 
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { differenceInSeconds, getTimeago, SECONDS_IN_DAY } from '~/lib/utils/datetime_utility';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
@@ -64,10 +64,6 @@ export default {
     },
     issuableIid() {
       return this.issuable.iid;
-    },
-    createdInPastDay() {
-      const createdSecondsAgo = differenceInSeconds(new Date(this.issuable.createdAt), new Date());
-      return createdSecondsAgo < SECONDS_IN_DAY;
     },
     author() {
       return this.issuable.author || {};
@@ -187,7 +183,7 @@ export default {
   <li
     :id="`issuable_${issuableId}`"
     class="issue gl-display-flex! gl-px-5!"
-    :class="{ closed: issuable.closedAt, today: createdInPastDay }"
+    :class="{ closed: issuable.closedAt }"
     :data-labels="labelIdsString"
     :data-qa-issue-id="issuableId"
   >

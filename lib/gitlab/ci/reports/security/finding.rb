@@ -156,6 +156,14 @@ module Gitlab
             signatures.present?
           end
 
+          def false_positive?
+            flags.any?(&:false_positive?)
+          end
+
+          def remediation_byte_offsets
+            remediations.map(&:byte_offsets).compact
+          end
+
           def raw_metadata
             @raw_metadata ||= original_data.to_json
           end
@@ -174,6 +182,10 @@ module Gitlab
 
           def location_data
             original_data['location']
+          end
+
+          def assets
+            original_data['assets'] || []
           end
 
           # Returns either the max priority signature hex

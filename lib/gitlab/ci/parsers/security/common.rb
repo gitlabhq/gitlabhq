@@ -41,7 +41,7 @@ module Gitlab
 
           private
 
-          attr_reader :json_data, :report, :validate
+          attr_reader :json_data, :report, :validate, :project
 
           def valid?
             return true unless validate

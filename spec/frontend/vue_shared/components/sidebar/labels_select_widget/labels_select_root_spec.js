@@ -49,7 +49,6 @@ describe('LabelsSelectRoot', () => {
     issuableType = IssuableType.Issue,
     queryHandler = successfulQueryHandler,
     mutationHandler = successfulMutationHandler,
-    isRealtimeEnabled = false,
   } = {}) => {
     const mockApollo = createMockApollo([
       [issueLabelsQuery, queryHandler],
@@ -74,9 +73,6 @@ describe('LabelsSelectRoot', () => {
         allowLabelEdit: true,
         allowLabelCreate: true,
         labelsManagePath: 'test',
-        glFeatures: {
-          realtimeLabels: isRealtimeEnabled,
-        },
       },
     });
   };
@@ -204,15 +200,8 @@ describe('LabelsSelectRoot', () => {
       });
     });
 
-    it('does not emit `updateSelectedLabels` event when the subscription is triggered and FF is disabled', async () => {
+    it('emits `updateSelectedLabels` event when the subscription is triggered', async () => {
       createComponent();
-      await waitForPromises();
-
-      expect(wrapper.emitted('updateSelectedLabels')).toBeUndefined();
-    });
-
-    it('emits `updateSelectedLabels` event when the subscription is triggered and FF is enabled', async () => {
-      createComponent({ isRealtimeEnabled: true });
       await waitForPromises();
 
       expect(wrapper.emitted('updateSelectedLabels')).toEqual([

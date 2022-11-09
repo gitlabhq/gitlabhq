@@ -69,48 +69,6 @@ RSpec.describe API::Internal::Kubernetes do
     context 'is authenticated for an agent' do
       let!(:agent_token) { create(:cluster_agent_token) }
 
-      # Todo: Remove gitops_sync_count and k8s_api_proxy_request_count in the next milestone
-      #       https://gitlab.com/gitlab-org/gitlab/-/issues/369489
-      #       We're only keeping it for backwards compatibility until KAS is released
-      #       using `counts:` instead
-      context 'deprecated events' do
-        it 'returns no_content for valid events' do
-          send_request(params: { gitops_sync_count: 10, k8s_api_proxy_request_count: 5 })
-
-          expect(response).to have_gitlab_http_status(:no_content)
-        end
-
-        it 'returns no_content for counts of zero' do
-          send_request(params: { gitops_sync_count: 0, k8s_api_proxy_request_count: 0 })
-
-          expect(response).to have_gitlab_http_status(:no_content)
-        end
-
-        it 'returns 400 for non number' do
-          send_request(params: { gitops_sync_count: 'string', k8s_api_proxy_request_count: 1 })
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-        end
-
-        it 'returns 400 for negative number' do
-          send_request(params: { gitops_sync_count: -1, k8s_api_proxy_request_count: 1 })
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-        end
-
-        it 'tracks events' do
-          counters = { gitops_sync_count: 10, k8s_api_proxy_request_count: 5 }
-          expected_counters = {
-            kubernetes_agent_gitops_sync: counters[:gitops_sync_count],
-            kubernetes_agent_k8s_api_proxy_request: counters[:k8s_api_proxy_request_count]
-          }
-
-          send_request(params: counters)
-
-          expect(Gitlab::UsageDataCounters::KubernetesAgentCounter.totals).to eq(expected_counters)
-        end
-      end
-
       it 'returns no_content for valid events' do
         counters = { gitops_sync: 10, k8s_api_proxy_request: 5 }
         unique_counters = { agent_users_using_ci_tunnel: [10] }

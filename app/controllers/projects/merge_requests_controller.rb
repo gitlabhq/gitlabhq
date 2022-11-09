@@ -35,7 +35,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
-    push_frontend_feature_flag(:realtime_labels, project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)

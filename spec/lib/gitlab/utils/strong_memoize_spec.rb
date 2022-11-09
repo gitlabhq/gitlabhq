@@ -46,6 +46,13 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
         true
       end
 
+      def method_name_with_args(*args)
+        strong_memoize_with(:method_name_with_args, args) do
+          trace << [value, args]
+          value
+        end
+      end
+
       def trace
         @trace ||= []
       end
@@ -136,6 +143,36 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
               object.strong_memoize(argument) { 10 }
             end.to perform_allocation(1)
           end
+        end
+      end
+    end
+  end
+
+  describe '#strong_memoize_with' do
+    [nil, false, true, 'value', 0, [0]].each do |value|
+      context "with value #{value}" do
+        let(:value) { value }
+
+        it 'only calls the block once' do
+          value0 = object.method_name_with_args(1)
+          value1 = object.method_name_with_args(1)
+          value2 = object.method_name_with_args([2, 3])
+          value3 = object.method_name_with_args([2, 3])
+
+          expect(value0).to eq(value)
+          expect(value1).to eq(value)
+          expect(value2).to eq(value)
+          expect(value3).to eq(value)
+
+          expect(object.trace).to contain_exactly([value, [1]], [value, [[2, 3]]])
+        end
+
+        it 'returns and defines the instance variable for the exact value' do
+          returned_value = object.method_name_with_args(1, 2, 3)
+          memoized_value = object.instance_variable_get(:@method_name_with_args)
+
+          expect(returned_value).to eql(value)
+          expect(memoized_value).to eql({ [[1, 2, 3]] => value })
         end
       end
     end

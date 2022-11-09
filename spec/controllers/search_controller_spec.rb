@@ -223,7 +223,14 @@ RSpec.describe SearchController do
 
         let(:project) { nil }
         let(:category) { described_class.to_s }
-        let(:action) { 'i_search_total' }
+        let(:action) { 'executed' }
+        let(:label) { 'redis_hll_counters.search.search_total_unique_counts_monthly' }
+        let(:property) { 'i_search_total' }
+        let(:context) do
+          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                    event: property).to_context]
+        end
+
         let(:namespace) { create(:group) }
         let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
       end

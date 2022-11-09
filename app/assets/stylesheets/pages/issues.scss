@@ -75,11 +75,6 @@ ul.related-merge-requests > li gl-emoji {
 
 .merge-request,
 .issue {
-  &.today {
-    background: $issues-today-bg;
-    border-color: $issues-today-border;
-  }
-
   &.closed,
   &.merged {
     background: $gray-light;

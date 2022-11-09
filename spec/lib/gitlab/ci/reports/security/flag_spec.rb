@@ -29,5 +29,11 @@ RSpec.describe Gitlab::Ci::Reports::Security::Flag do
         )
       end
     end
+
+    describe '#false_positive?' do
+      subject { security_flag.false_positive? }
+
+      it { is_expected.to be_truthy }
+    end
   end
 end

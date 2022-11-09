@@ -11,12 +11,14 @@ module API
     helpers ::API::Helpers::VariablesHelpers
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, type: String, desc: 'The ID of a group or URL-encoded path of the group owned by the authenticated
+      user'
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get group-level variables' do
+      desc 'Get a list of group-level variables' do
         success Entities::Ci::Variable
+        tags %w[ci_variables]
       end
       params do
         use :pagination
@@ -26,8 +28,10 @@ module API
         present paginate(variables), with: Entities::Ci::Variable
       end
 
-      desc 'Get a specific variable from a group' do
+      desc 'Get the details of a group’s specific variable' do
         success Entities::Ci::Variable
+        failure [{ code: 404, message: 'Group Variable Not Found' }]
+        tags %w[ci_variables]
       end
       params do
         requires :key, type: String, desc: 'The key of the variable'
@@ -42,16 +46,19 @@ module API
 
       desc 'Create a new variable in a group' do
         success Entities::Ci::Variable
+        failure [{ code: 400, message: '400 Bad Request' }]
+        tags %w[ci_variables]
       end
       route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
       params do
-        requires :key, type: String, desc: 'The key of the variable'
-        requires :value, type: String, desc: 'The value of the variable'
+        requires :key, type: String, desc: 'The ID of a group or URL-encoded path of the group owned by the
+        authenticated user'
+        requires :value, type: String, desc: 'The value of a variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
         optional :masked, type: String, desc: 'Whether the variable is masked'
         optional :raw, type: String, desc: 'Whether the variable will be expanded'
-        optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
-
+        optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
+        optional :environment_scope, type: String, desc: 'The environment scope of a variable'
         use :optional_group_variable_params_ee
       end
       post ':id/variables' do
@@ -75,15 +82,18 @@ module API
 
       desc 'Update an existing variable from a group' do
         success Entities::Ci::Variable
+        failure [{ code: 400, message: '400 Bad Request' }, { code: 404, message: 'Group Variable Not Found' }]
+        tags %w[ci_variables]
       end
       route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
       params do
-        optional :key, type: String, desc: 'The key of the variable'
-        optional :value, type: String, desc: 'The value of the variable'
+        optional :key, type: String, desc: 'The key of a variable'
+        optional :value, type: String, desc: 'The value of a variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
         optional :masked, type: String, desc: 'Whether the variable is masked'
         optional :raw, type: String, desc: 'Whether the variable will be expanded'
-        optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
+        optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
+        optional :environment_scope, type: String, desc: 'The environment scope of a variable'
 
         use :optional_group_variable_params_ee
       end
@@ -110,9 +120,11 @@ module API
 
       desc 'Delete an existing variable from a group' do
         success Entities::Ci::Variable
+        failure [{ code: 404, message: 'Group Variable Not Found' }]
+        tags %w[ci_variables]
       end
       params do
-        requires :key, type: String, desc: 'The key of the variable'
+        requires :key, type: String, desc: 'The key of a variable'
       end
       delete ':id/variables/:key' do
         variable = find_variable(user_group, params)

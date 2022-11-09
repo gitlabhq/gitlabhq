@@ -26,6 +26,12 @@ RSpec.describe Gitlab::UsageDataCounters::KubernetesAgentCounter do
       expect(described_class.totals).to eq(kubernetes_agent_gitops_sync: 3, kubernetes_agent_k8s_api_proxy_request: 6)
     end
 
+    context 'with empty events' do
+      let(:events) { nil }
+
+      it { expect { subject }.not_to change(described_class, :totals) }
+    end
+
     context 'event is unknown' do
       let(:events) do
         {

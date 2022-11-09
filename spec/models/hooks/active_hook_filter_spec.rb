@@ -9,8 +9,8 @@ RSpec.describe ActiveHookFilter do
     using RSpec::Parameterized::TableSyntax
 
     context 'for various types of branch_filter' do
-      let_it_be_with_reload(:hook) do
-        create(:project_hook, push_events: true, issues_events: true)
+      let(:hook) do
+        build(:project_hook, push_events: true, issues_events: true)
       end
 
       where(:branch_filter_strategy, :branch_filter, :ref, :expected_matches?) do
@@ -53,8 +53,8 @@ RSpec.describe ActiveHookFilter do
       end
 
       context 'when the branch filter is a invalid regex' do
-        let_it_be(:hook) do
-          create(
+        let(:hook) do
+          build(
             :project_hook,
             push_events: true,
             push_events_branch_filter: 'master',
@@ -70,8 +70,8 @@ RSpec.describe ActiveHookFilter do
       end
 
       context 'when the branch filter is not properly set to nil' do
-        let_it_be(:hook) do
-          create(
+        let(:hook) do
+          build(
             :project_hook,
             push_events: true,
             branch_filter_strategy: 'all_branches'
@@ -91,8 +91,8 @@ RSpec.describe ActiveHookFilter do
         stub_feature_flags(enhanced_webhook_support_regex: false)
       end
 
-      let_it_be(:hook) do
-        create(
+      let(:hook) do
+        build(
           :project_hook,
           push_events: true,
           push_events_branch_filter: '(master)',
