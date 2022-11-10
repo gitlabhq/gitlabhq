@@ -12,7 +12,11 @@ import {
 import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
 import branchRulesQuery from '~/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { sprintf } from '~/locale';
-import { branchProtectionsMockResponse, approvalRulesMock } from './mock_data';
+import {
+  branchProtectionsMockResponse,
+  approvalRulesMock,
+  statusChecksRulesMock,
+} from './mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),
@@ -118,11 +122,10 @@ describe('View branch rules', () => {
     expect(findStatusChecksTitle().exists()).toBe(true);
 
     expect(findBranchProtections().at(3).props()).toMatchObject({
-      // status checks BE/FE integration will happen on a follow-up, so we expect data to be empty
-      header: sprintf(I18N.statusChecksHeader, { total: 0 }),
+      header: sprintf(I18N.statusChecksHeader, { total: 2 }),
       headerLinkHref: statusChecksPath,
       headerLinkTitle: I18N.statusChecksLinkTitle,
-      statusChecks: [],
+      statusChecks: statusChecksRulesMock,
     });
   });
 });

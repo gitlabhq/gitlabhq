@@ -67,11 +67,19 @@ export default {
         return this.queryVariables;
       },
       update({ project: { jobs: { nodes = [], pageInfo = {}, count = 0 } = {} } }) {
-        return {
-          nodes: nodes.map(mapArchivesToJobNodes).map(mapBooleansToJobNodes),
-          count,
-          pageInfo,
-        };
+        this.pageInfo = pageInfo;
+        this.count = count;
+        return nodes
+          .map(mapArchivesToJobNodes)
+          .map(mapBooleansToJobNodes)
+          .map((jobNode) => {
+            return {
+              ...jobNode,
+              // GlTable uses an item's _showDetails attribute to determine whether
+              // it should show the <template #row-details /> for its table row
+              _showDetails: this.expandedJobs.includes(jobNode.id),
+            };
+          });
       },
       error() {
         createAlert({
@@ -82,11 +90,10 @@ export default {
   },
   data() {
     return {
-      jobArtifacts: {
-        nodes: [],
-        count: 0,
-        pageInfo: {},
-      },
+      jobArtifacts: [],
+      count: 0,
+      pageInfo: {},
+      expandedJobs: [],
       pagination: INITIAL_PAGINATION_STATE,
     };
   },
@@ -101,13 +108,13 @@ export default {
       };
     },
     showPagination() {
-      return this.jobArtifacts.count > JOBS_PER_PAGE;
+      return this.count > JOBS_PER_PAGE;
     },
     prevPage() {
-      return Number(this.jobArtifacts.pageInfo.hasPreviousPage);
+      return Number(this.pageInfo.hasPreviousPage);
     },
     nextPage() {
-      return Number(this.jobArtifacts.pageInfo.hasNextPage);
+      return Number(this.pageInfo.hasNextPage);
     },
   },
   methods: {
@@ -122,7 +129,7 @@ export default {
       return `#${id}`;
     },
     handlePageChange(page) {
-      const { startCursor, endCursor } = this.jobArtifacts.pageInfo;
+      const { startCursor, endCursor } = this.pageInfo;
 
       if (page > this.pagination.currentPage) {
         this.pagination = {
@@ -139,9 +146,15 @@ export default {
         };
       }
     },
-    handleRowToggle(toggleDetails, hasArtifacts) {
+    handleRowToggle(toggleDetails, hasArtifacts, id, detailsShowing) {
       if (!hasArtifacts) return;
       toggleDetails();
+
+      if (!detailsShowing) {
+        this.expandedJobs.push(id);
+      } else {
+        this.expandedJobs.splice(this.expandedJobs.indexOf(id), 1);
+      }
     },
     downloadPath(job) {
       return job.archive?.downloadPath;
@@ -202,7 +215,7 @@ export default {
 <template>
   <div>
     <gl-table
-      :items="jobArtifacts.nodes"
+      :items="jobArtifacts"
       :fields="$options.fields"
       :busy="$apollo.queries.jobArtifacts.loading"
       stacked="sm"
@@ -212,12 +225,12 @@ export default {
         <gl-loading-icon size="lg" />
       </template>
       <template
-        #cell(artifacts)="{ item: { artifacts, hasArtifacts }, toggleDetails, detailsShowing }"
+        #cell(artifacts)="{ item: { id, artifacts, hasArtifacts }, toggleDetails, detailsShowing }"
       >
         <span
           :class="{ 'gl-cursor-pointer': hasArtifacts }"
           data-testid="job-artifacts-count"
-          @click="handleRowToggle(toggleDetails, hasArtifacts)"
+          @click="handleRowToggle(toggleDetails, hasArtifacts, id, detailsShowing)"
         >
           <gl-icon
             v-if="hasArtifacts"

@@ -1,10 +1,12 @@
-import { GlLoadingIcon, GlTable, GlLink, GlBadge, GlPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlTable, GlLink, GlBadge, GlPagination, GlModal } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobArtifactsTable from '~/artifacts/components/job_artifacts_table.vue';
+import ArtifactsTableRowDetails from '~/artifacts/components/artifacts_table_row_details.vue';
+import ArtifactDeleteModal from '~/artifacts/components/artifact_delete_modal.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import getJobArtifactsQuery from '~/artifacts/graphql/queries/get_job_artifacts.query.graphql';
@@ -23,7 +25,14 @@ describe('JobArtifactsTable component', () => {
 
   const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
   const findTable = () => wrapper.findComponent(GlTable);
+  const findDetailsRows = () => wrapper.findAllComponents(ArtifactsTableRowDetails);
+  const findDetailsInRow = (i) =>
+    findTable().findAll('tbody tr').at(i).findComponent(ArtifactsTableRowDetails);
+
   const findCount = () => wrapper.findByTestId('job-artifacts-count');
+  const findCountAt = (i) => wrapper.findAllByTestId('job-artifacts-count').at(i);
+
+  const findModal = () => wrapper.findComponent(GlModal);
 
   const findStatuses = () => wrapper.findAllByTestId('job-artifacts-job-status');
   const findSuccessfulJobStatus = () => findStatuses().at(0);
@@ -41,6 +50,7 @@ describe('JobArtifactsTable component', () => {
   const findDownloadButton = () => wrapper.findByTestId('job-artifacts-download-button');
   const findBrowseButton = () => wrapper.findByTestId('job-artifacts-browse-button');
   const findDeleteButton = () => wrapper.findByTestId('job-artifacts-delete-button');
+  const findArtifactDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
 
   const findPagination = () => wrapper.findComponent(GlPagination);
   const setPage = async (page) => {
@@ -121,14 +131,6 @@ describe('JobArtifactsTable component', () => {
       expect(findCount().text()).toBe(`${job.artifacts.nodes.length} files`);
     });
 
-    it('expands to show the list of artifacts', async () => {
-      jest.spyOn(wrapper.vm, 'handleRowToggle');
-
-      findCount().trigger('click');
-
-      expect(wrapper.vm.handleRowToggle).toHaveBeenCalled();
-    });
-
     it('shows the job status as an icon for a successful job', () => {
       expect(findSuccessfulJobStatus().findComponent(CiIcon).exists()).toBe(true);
       expect(findSuccessfulJobStatus().findComponent(GlBadge).exists()).toBe(false);
@@ -160,6 +162,72 @@ describe('JobArtifactsTable component', () => {
     it('shows the created time', () => {
       expect(findCreated().text()).toBe('5 years ago');
     });
+
+    describe('row expansion', () => {
+      it('toggles the visibility of the row details', async () => {
+        expect(findDetailsRows().length).toBe(0);
+
+        findCount().trigger('click');
+        await waitForPromises();
+
+        expect(findDetailsRows().length).toBe(1);
+
+        findCount().trigger('click');
+        await waitForPromises();
+
+        expect(findDetailsRows().length).toBe(0);
+      });
+
+      it('expands and collapses jobs', async () => {
+        // both jobs start collapsed
+        expect(findDetailsInRow(0).exists()).toBe(false);
+        expect(findDetailsInRow(1).exists()).toBe(false);
+
+        findCountAt(0).trigger('click');
+        await waitForPromises();
+
+        // first job is expanded, second row has its details
+        expect(findDetailsInRow(0).exists()).toBe(false);
+        expect(findDetailsInRow(1).exists()).toBe(true);
+        expect(findDetailsInRow(2).exists()).toBe(false);
+
+        findCountAt(1).trigger('click');
+        await waitForPromises();
+
+        // both jobs are expanded, each has details below it
+        expect(findDetailsInRow(0).exists()).toBe(false);
+        expect(findDetailsInRow(1).exists()).toBe(true);
+        expect(findDetailsInRow(2).exists()).toBe(false);
+        expect(findDetailsInRow(3).exists()).toBe(true);
+
+        findCountAt(0).trigger('click');
+        await waitForPromises();
+
+        // first job collapsed, second job expanded
+        expect(findDetailsInRow(0).exists()).toBe(false);
+        expect(findDetailsInRow(1).exists()).toBe(false);
+        expect(findDetailsInRow(2).exists()).toBe(true);
+      });
+
+      it('keeps the job expanded when an artifact is deleted', async () => {
+        findCount().trigger('click');
+        await waitForPromises();
+
+        expect(findDetailsInRow(0).exists()).toBe(false);
+        expect(findDetailsInRow(1).exists()).toBe(true);
+
+        findArtifactDeleteButton().trigger('click');
+        await waitForPromises();
+
+        expect(findModal().props('visible')).toBe(true);
+
+        wrapper.findComponent(ArtifactDeleteModal).vm.$emit('primary');
+        await waitForPromises();
+
+        expect(findDetailsInRow(0).exists()).toBe(false);
+        expect(findDetailsInRow(1).exists()).toBe(true);
+      });
+    });
   });
 
   describe('download button', () => {
@@ -179,7 +247,7 @@ describe('JobArtifactsTable component', () => {
 
       createComponent(
         { getJobArtifactsQuery: jest.fn() },
-        { jobArtifacts: { nodes: [jobWithoutDownloadPath] } },
+        { jobArtifacts: [jobWithoutDownloadPath] },
       );
 
       await waitForPromises();
@@ -205,7 +273,7 @@ describe('JobArtifactsTable component', () => {
 
       createComponent(
         { getJobArtifactsQuery: jest.fn() },
-        { jobArtifacts: { nodes: [jobWithoutBrowsePath] } },
+        { jobArtifacts: [jobWithoutBrowsePath] },
       );
 
       await waitForPromises();
@@ -233,10 +301,8 @@ describe('JobArtifactsTable component', () => {
           getJobArtifactsQuery: jest.fn().mockResolvedValue(getJobArtifactsResponseThatPaginates),
         },
         {
-          jobArtifacts: {
-            count: enoughJobsToPaginate.length,
-            pageInfo,
-          },
+          count: enoughJobsToPaginate.length,
+          pageInfo,
         },
       );
 

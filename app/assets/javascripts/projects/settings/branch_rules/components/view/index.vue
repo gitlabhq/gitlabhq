@@ -54,7 +54,7 @@ export default {
         const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
         this.branchProtection = branchRule?.branchProtection;
         this.approvalRules = branchRule?.approvalRules;
-        this.statusChecks = branchRule?.externalStatusChecks || [];
+        this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
       },
     },
   },

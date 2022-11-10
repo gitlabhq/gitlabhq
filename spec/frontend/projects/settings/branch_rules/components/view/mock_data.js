@@ -137,6 +137,10 @@ export const branchProtectionsMockResponse = {
               __typename: 'ApprovalProjectRuleConnection',
               nodes: approvalRulesMock,
             },
+            externalStatusChecks: {
+              __typename: 'ExternalStatusCheckConnection',
+              nodes: statusChecksRulesMock,
+            },
           },
           {
             __typename: 'BranchRule',
@@ -156,6 +160,10 @@ export const branchProtectionsMockResponse = {
             },
             approvalRules: {
               __typename: 'ApprovalProjectRuleConnection',
+              nodes: [],
+            },
+            externalStatusChecks: {
+              __typename: 'ExternalStatusCheckConnection',
               nodes: [],
             },
           },

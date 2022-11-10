@@ -21,11 +21,11 @@ export const I18N = {
   approvalsTitle: s__('BranchRules|Approvals'),
   manageApprovalsLinkTitle: s__('BranchRules|Manage in Merge Request Approvals'),
   approvalsDescription: s__(
-    'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Lean more.%{linkEnd}',
+    'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}',
   ),
   statusChecksTitle: s__('BranchRules|Status checks'),
   statusChecksDescription: s__(
-    'BranchRules|Check for a status response in merge requests. Failures do not block merges. %{linkStart}Lean more.%{linkEnd}',
+    'BranchRules|Check for a status response in merge requests. Failures do not block merges. %{linkStart}Learn more.%{linkEnd}',
   ),
   statusChecksLinkTitle: s__('BranchRules|Manage in Status checks'),
   statusChecksHeader: s__('BranchRules|Status checks (%{total})'),

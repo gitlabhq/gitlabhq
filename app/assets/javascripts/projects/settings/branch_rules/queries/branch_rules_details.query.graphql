@@ -61,6 +61,13 @@ query getBranchRulesDetails($projectPath: ID!) {
             }
           }
         }
+        externalStatusChecks {
+          nodes {
+            id
+            name
+            externalUrl
+          }
+        }
       }
     }
   }

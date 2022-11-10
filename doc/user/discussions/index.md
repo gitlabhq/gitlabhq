@@ -78,7 +78,7 @@ To add a commit diff comment:
    You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
 1. Enter your comment and select **Start a review** or **Add comment now**.
 
-The comment is displayed on the merge request's **Discussions** tab.
+The comment is displayed on the merge request's **Overview** tab.
 
 The comment is not displayed on your project's **Repository > Commits** page.
 
@@ -200,7 +200,7 @@ You can also mark an [issue as confidential](../project/issues/confidential_issu
 
 For issues and merge requests with many comments, you can filter the page to show comments only.
 
-1. Open a merge request's **Discussion** tab, or epic or issue's **Overview** tab.
+1. Open the **Overview** tab in a merge request, issue, or epic.
 1. On the right side of the page, select from the filter:
    - **Show all activity**: Display all user comments and system notes.
      (issue updates, mentions from other issues, changes to the description, and so on).
