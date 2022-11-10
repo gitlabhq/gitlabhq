@@ -13494,6 +13494,21 @@ msgstr ""
 msgid "Deployment frequency"
 msgstr ""
 
+msgid "DeploymentApprovals|Approvals"
+msgstr ""
+
+msgid "DeploymentApprovals|Approved By"
+msgstr ""
+
+msgid "DeploymentApprovals|Approvers"
+msgstr ""
+
+msgid "DeploymentApprovals|Developers + Maintainers"
+msgstr ""
+
+msgid "DeploymentApprovals|Maintainers"
+msgstr ""
+
 msgid "DeploymentApproval| Current approvals: %{current}"
 msgstr ""
 

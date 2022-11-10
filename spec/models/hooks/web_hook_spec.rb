@@ -34,6 +34,11 @@ RSpec.describe WebHook do
       it { is_expected.to allow_value({ 'x' => ('a' * 100) }).for(:url_variables) }
       it { is_expected.to allow_value({ 'foo' => 'bar', 'bar' => 'baz' }).for(:url_variables) }
       it { is_expected.to allow_value((1..20).to_h { ["k#{_1}", 'value'] }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'MY-TOKEN' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'my_secr3t-token' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'x-y-z' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'x_y_z' => 'bar' }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'f.o.o' => 'bar' }).for(:url_variables) }
 
       it { is_expected.not_to allow_value([]).for(:url_variables) }
       it { is_expected.not_to allow_value({ 'foo' => 1 }).for(:url_variables) }
@@ -45,6 +50,10 @@ RSpec.describe WebHook do
       it { is_expected.not_to allow_value({ '' => 'foo' }).for(:url_variables) }
       it { is_expected.not_to allow_value({ '1foo' => 'foo' }).for(:url_variables) }
       it { is_expected.not_to allow_value((1..21).to_h { ["k#{_1}", 'value'] }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'MY--TOKEN' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'MY__SECRET' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'x-_y' => 'foo' }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'x..y' => 'foo' }).for(:url_variables) }
     end
 
     describe 'url' do
@@ -83,7 +92,7 @@ RSpec.describe WebHook do
         subject { hook }
 
         before do
-          hook.url_variables = { 'one' => 'a', 'two' => 'b' }
+          hook.url_variables = { 'one' => 'a', 'two' => 'b', 'url' => 'http://example.com' }
         end
 
         it { is_expected.to allow_value('http://example.com').for(:url) }
@@ -92,6 +101,8 @@ RSpec.describe WebHook do
         it { is_expected.to allow_value('http://example.com/{two}').for(:url) }
         it { is_expected.to allow_value('http://user:s3cret@example.com/{two}').for(:url) }
         it { is_expected.to allow_value('http://{one}:{two}@example.com').for(:url) }
+        it { is_expected.to allow_value('http://{one}').for(:url) }
+        it { is_expected.to allow_value('{url}').for(:url) }
 
         it { is_expected.not_to allow_value('http://example.com/{one}/{two}/{three}').for(:url) }
         it { is_expected.not_to allow_value('http://example.com/{foo}').for(:url) }

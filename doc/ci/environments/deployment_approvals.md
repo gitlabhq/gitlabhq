@@ -64,10 +64,9 @@ co-exist and multiple approval rules takes the precedence over the unified appro
 
 There are two ways to configure approvals for a protected environment:
 
-1. Using the [UI](protected_environments.md#protecting-environments)
-   1. Set the **Required approvals** field to 1 or more.
-1. Using the [REST API](../../api/protected_environments.md#protect-a-single-environment)
-   2. Set the `required_approval_count` field to 1 or more.
+- Using the [UI](protected_environments.md#protecting-environments), set the **Required approvals** field to 1 or more.
+- Using the [REST API](../../api/protected_environments.md#protect-a-single-environment),
+  set the `required_approval_count` field to 1 or more.
 
 After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
 
@@ -89,9 +88,9 @@ Maintainer role.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
 
-1. Using the [REST API](../../api/group_protected_environments.md#protect-a-single-environment).
-   1. `deploy_access_levels` represents which entity can execute the deployment job.
-   1. `approval_rules` represents which entity can approve the deployment job.
+- Using the [REST API](../../api/group_protected_environments.md#protect-a-single-environment).
+  - `deploy_access_levels` represents which entity can execute the deployment job.
+  - `approval_rules` represents which entity can approve the deployment job.
 
 After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
 
@@ -137,10 +136,6 @@ To approve or reject a deployment to a protected environment using the UI:
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
-
-NOTE:
-This feature might not work as expected when [Multiple approval rules](#multiple-approval-rules) is configured.
-See the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/355708) for planned improvement.
 
 ### Approve or reject a deployment using the API
 

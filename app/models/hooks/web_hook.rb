@@ -35,7 +35,7 @@ class WebHook < ApplicationRecord
   has_many :web_hook_logs
 
   validates :url, presence: true
-  validates :url, public_url: true, unless: ->(hook) { hook.is_a?(SystemHook) }
+  validates :url, public_url: true, unless: ->(hook) { hook.is_a?(SystemHook) || hook.url_variables? }
 
   validates :token, format: { without: /\n/ }
   after_initialize :initialize_url_variables
@@ -48,6 +48,7 @@ class WebHook < ApplicationRecord
 
   validates :url_variables, json_schema: { filename: 'web_hooks_url_variables' }
   validate :no_missing_url_variables
+  validates :interpolated_url, public_url: true, if: ->(hook) { hook.url_variables? && hook.errors.empty? }
 
   enum branch_filter_strategy: {
     wildcard: 0,

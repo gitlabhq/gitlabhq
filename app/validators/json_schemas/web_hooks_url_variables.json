@@ -5,7 +5,7 @@
   "additionalProperties": false,
   "maxProperties": 20,
   "patternProperties": {
-    "^[A-Za-z_][A-Za-z0-9_]*$": {
+    "^[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*$": {
       "type": "string",
       "minLength": 1,
       "maxLength": 100
