@@ -24,7 +24,7 @@ We use the following terms to describe components and properties of the Pods arc
 
 A Pod is a set of infrastructure components that contains multiple top-level namespaces that belong to different organizations. The components include both datastores (PostgreSQL, Redis etc.) and stateless services (web etc.). The infrastructure components provided within a Pod are shared among organizations and their top-level namespaces but not shared with other Pods. This isolation of infrastructure components means that Pods are independent from each other.
 
-![Term Pod](term-pod.png)
+![Term Pod](images/term-pod.png)
 
 #### Pod properties
 
@@ -42,7 +42,7 @@ Discouraged synonyms: GitLab instance, cluster, shard
 
 A cluster is a collection of Pods.
 
-![Term Cluster](term-cluster.png)
+![Term Cluster](images/term-cluster.png)
 
 #### Cluster properties
 
@@ -66,7 +66,7 @@ Organizations work under the following assumptions:
 1. Users understand that the majority of pages they view are only scoped to a single organization at a time.
 1. Organizations are located on a single pod.
 
-![Term Organization](term-organization.png)
+![Term Organization](images/term-organization.png)
 
 #### Organization properties
 
@@ -94,7 +94,7 @@ Top-level namespaces may [be replaced by workspaces](https://gitlab.com/gitlab-o
 
 Discouraged synonyms: Root-level namespace
 
-![Term Top-level Namespace](term-top-level-namespace.png)
+![Term Top-level Namespace](images/term-top-level-namespace.png)
 
 #### Top-level namespace properties
 
@@ -207,7 +207,7 @@ We synced with Fulfillment ([recording](https://youtu.be/FkQF3uF7vTY)) to discus
 
 A rough representation of this is:
 
-![Pods and Fulfillment](pods-and-fulfillment.png)
+![Pods and Fulfillment](images/pods-and-fulfillment.png)
 
 #### Potential conflicts with Pods
 
@@ -242,7 +242,7 @@ Organizations solve the following problems:
 1. Self-managed instances would set a default organization.
 1. Organizations can control user-profiles in a central way. This could be achieved by having an organization specific user-profile. Such a profile makes it possible for the organization administrators to control the user role in a company, enforce user emails, or show a graphical indicator of a user being part of the organization. An example would be a "GitLab Employee stamp" on comments.
 
-![Move to Organizations](iteration0-organizations-introduction.png)
+![Move to Organizations](images/iteration0-organizations-introduction.png)
 
 #### Why would customers opt-in to Organizations?
 
@@ -312,6 +312,13 @@ This section links all different technical proposals that are being evaluated.
 - [Stateless Router That Uses a Cache to Pick Pod and Is Redirected When Wrong Pod Is Reached](proposal-stateless-router-with-buffering-requests.md)
 
 - [Stateless Router That Uses a Cache to Pick Pod and pre-flight `/api/v4/pods/learn`](proposal-stateless-router-with-routes-learning.md)
+
+## Impacted features
+
+The Pods architecture will impact many features requiring some of them to be rewritten, or changed significantly.
+This is the list of known affected features with the proposed solutions.
+
+- [Pods: Git Access](pods-feature-git-access.md)
 
 ## Links
 

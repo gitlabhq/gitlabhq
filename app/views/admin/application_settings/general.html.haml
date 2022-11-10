@@ -119,7 +119,7 @@
 = render_if_exists 'admin/application_settings/feishu_integration'
 = render 'admin/application_settings/third_party_offers'
 = render 'admin/application_settings/snowplow'
-= render_if_exists 'admin/application_settings/product_analytics' if Feature.enabled?(:cube_api_proxy)
+= render_if_exists 'admin/application_settings/product_analytics'
 = render 'admin/application_settings/error_tracking' if Feature.enabled?(:gitlab_error_tracking)
 = render 'admin/application_settings/eks'
 = render 'admin/application_settings/floc'

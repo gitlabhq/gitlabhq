@@ -654,7 +654,7 @@ module API
 
       desc 'Upload a file'
       params do
-        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
+        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
       end
       post ":id/uploads", feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
         log_if_upload_exceed_max_size(user_project, params[:file])

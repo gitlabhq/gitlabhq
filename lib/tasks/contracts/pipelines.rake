@@ -24,9 +24,13 @@ namespace :contracts do
     end
 
     Pact::VerificationTask.new(:get_pipeline_header_data) do |pact|
+      # pact.uri(
+      #   "http://localhost:9292/pacts/provider/GET%20pipeline%20header%20data/consumer/Pipelines%23show/latest",
+      #   pact_helper: "#{provider}/pact_helpers/project/pipeline/show/get_pipeline_header_data_helper.rb"
+      # )
       pact.uri(
         "#{contracts}/show/pipelines#show-get_pipeline_header_data.json",
-        pact_helper: "#{provider}/pact_helpers/project/pipeline/show/get_pipeline_header_data_helper.rb"
+         pact_helper: "#{provider}/pact_helpers/project/pipeline/show/get_pipeline_header_data_helper.rb"
       )
     end
 

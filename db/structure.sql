@@ -15365,26 +15365,6 @@ CREATE SEQUENCE experiment_subjects_id_seq
 
 ALTER SEQUENCE experiment_subjects_id_seq OWNED BY experiment_subjects.id;
 
-CREATE TABLE experiment_users (
-    id bigint NOT NULL,
-    experiment_id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    group_type smallint DEFAULT 0 NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    converted_at timestamp with time zone,
-    context jsonb DEFAULT '{}'::jsonb NOT NULL
-);
-
-CREATE SEQUENCE experiment_users_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE experiment_users_id_seq OWNED BY experiment_users.id;
-
 CREATE TABLE experiments (
     id bigint NOT NULL,
     name text NOT NULL,
@@ -23775,8 +23755,6 @@ ALTER TABLE ONLY evidences ALTER COLUMN id SET DEFAULT nextval('evidences_id_seq
 
 ALTER TABLE ONLY experiment_subjects ALTER COLUMN id SET DEFAULT nextval('experiment_subjects_id_seq'::regclass);
 
-ALTER TABLE ONLY experiment_users ALTER COLUMN id SET DEFAULT nextval('experiment_users_id_seq'::regclass);
-
 ALTER TABLE ONLY experiments ALTER COLUMN id SET DEFAULT nextval('experiments_id_seq'::regclass);
 
 ALTER TABLE ONLY external_approval_rules ALTER COLUMN id SET DEFAULT nextval('external_approval_rules_id_seq'::regclass);
@@ -25674,9 +25652,6 @@ ALTER TABLE ONLY evidences
 
 ALTER TABLE ONLY experiment_subjects
     ADD CONSTRAINT experiment_subjects_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY experiment_users
-    ADD CONSTRAINT experiment_users_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY experiments
     ADD CONSTRAINT experiments_pkey PRIMARY KEY (id);
@@ -29041,10 +29016,6 @@ CREATE INDEX index_experiment_subjects_on_project_id ON experiment_subjects USIN
 
 CREATE INDEX index_experiment_subjects_on_user_id ON experiment_subjects USING btree (user_id);
 
-CREATE INDEX index_experiment_users_on_experiment_id ON experiment_users USING btree (experiment_id);
-
-CREATE INDEX index_experiment_users_on_user_id ON experiment_users USING btree (user_id);
-
 CREATE UNIQUE INDEX index_experiments_on_name ON experiments USING btree (name);
 
 CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON personal_access_tokens USING btree (id, expires_at) WHERE ((impersonation = false) AND (revoked = false) AND (expire_notification_delivered = false));
@@ -31218,8 +31189,6 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
-
-CREATE INDEX tmp_idx_project_features_on_releases_al_and_repo_al_partial ON project_features USING btree (releases_access_level, repository_access_level) WHERE (releases_access_level > repository_access_level);
 
 CREATE INDEX tmp_idx_vulnerabilities_on_id_where_report_type_7_99 ON vulnerabilities USING btree (id) WHERE (report_type = ANY (ARRAY[7, 99]));
 
@@ -34144,9 +34113,6 @@ ALTER TABLE ONLY issuable_metric_images
 ALTER TABLE ONLY group_deploy_keys
     ADD CONSTRAINT fk_rails_5682fc07f8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT;
 
-ALTER TABLE ONLY experiment_users
-    ADD CONSTRAINT fk_rails_56d4708b4a FOREIGN KEY (experiment_id) REFERENCES experiments(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY issue_user_mentions
     ADD CONSTRAINT fk_rails_57581fda73 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -35208,9 +35174,6 @@ ALTER TABLE ONLY customer_relations_contacts
 
 ALTER TABLE ONLY external_approval_rules
     ADD CONSTRAINT fk_rails_fd4f9ac573 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY experiment_users
-    ADD CONSTRAINT fk_rails_fd805f771a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_groups
     ADD CONSTRAINT fk_rails_fdb8648a96 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
