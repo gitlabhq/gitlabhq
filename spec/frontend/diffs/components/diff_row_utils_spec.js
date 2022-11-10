@@ -149,12 +149,12 @@ describe('classNameMapCell', () => {
 
 describe('addCommentTooltip', () => {
   const brokenSymLinkTooltip =
-    'Commenting on symbolic links that replace or are replaced by files is currently not supported.';
+    'Commenting on symbolic links that replace or are replaced by files is not supported';
   const brokenRealTooltip =
-    'Commenting on files that replace or are replaced by symbolic links is currently not supported.';
+    'Commenting on files that replace or are replaced by symbolic links is not supported';
   const lineMovedOrRenamedFileTooltip =
-    'Commenting on files that are only moved or renamed is currently not supported';
-  const lineWithNoLineCodeTooltip = 'Commenting on this line is currently not supported';
+    'Commenting on files that are only moved or renamed is not supported';
+  const lineWithNoLineCodeTooltip = 'Commenting on this line is not supported';
   const dragTooltip = 'Add a comment to this line or drag for multiple lines';
 
   it('should return default tooltip', () => {

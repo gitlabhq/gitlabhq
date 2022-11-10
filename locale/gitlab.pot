@@ -9789,16 +9789,16 @@ msgstr ""
 msgid "Comment/Reply (quoting selected text)"
 msgstr ""
 
-msgid "Commenting on files that are only moved or renamed is currently not supported"
+msgid "Commenting on files that are only moved or renamed is not supported"
 msgstr ""
 
-msgid "Commenting on files that replace or are replaced by symbolic links is currently not supported."
+msgid "Commenting on files that replace or are replaced by symbolic links is not supported"
 msgstr ""
 
-msgid "Commenting on symbolic links that replace or are replaced by files is currently not supported."
+msgid "Commenting on symbolic links that replace or are replaced by files is not supported"
 msgstr ""
 
-msgid "Commenting on this line is currently not supported"
+msgid "Commenting on this line is not supported"
 msgstr ""
 
 msgid "Comments"

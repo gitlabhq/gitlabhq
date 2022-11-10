@@ -72,17 +72,17 @@ export const addCommentTooltip = (line) => {
   if (brokenSymlink) {
     if (brokenSymlink.wasSymbolic || brokenSymlink.isSymbolic) {
       tooltip = __(
-        'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
+        'Commenting on symbolic links that replace or are replaced by files is not supported',
       );
     } else if (brokenSymlink.wasReal || brokenSymlink.isReal) {
       tooltip = __(
-        'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
+        'Commenting on files that replace or are replaced by symbolic links is not supported',
       );
     }
   } else if (fileOnlyMoved) {
-    tooltip = __('Commenting on files that are only moved or renamed is currently not supported');
+    tooltip = __('Commenting on files that are only moved or renamed is not supported');
   } else if (brokenLineCode) {
-    tooltip = __('Commenting on this line is currently not supported');
+    tooltip = __('Commenting on this line is not supported');
   }
 
   return tooltip;

@@ -205,6 +205,7 @@ module API
         mount ::API::PersonalAccessTokens::SelfInformation
         mount ::API::PersonalAccessTokens
         mount ::API::ProjectClusters
+        mount ::API::ProjectEvents
         mount ::API::ProjectExport
         mount ::API::ProjectHooks
         mount ::API::ProjectRepositoryStorageMoves
@@ -300,7 +301,6 @@ module API
       mount ::API::PagesDomains
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectDebianDistributions
-      mount ::API::ProjectEvents
       mount ::API::ProjectImport
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
