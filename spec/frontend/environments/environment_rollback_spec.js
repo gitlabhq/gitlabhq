@@ -76,7 +76,7 @@ describe('Rollback Component', () => {
 
     expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
       mutation: setEnvironmentToRollback,
-      variables: { environment },
+      variables: { environment: { ...environment, isLastDeployment: true, retryUrl } },
     });
   });
 });

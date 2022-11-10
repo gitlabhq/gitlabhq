@@ -30,7 +30,17 @@ module SendFileUpload
       headers.store(*Gitlab::Workhorse.send_url(file_upload.url(**redirect_params)))
       head :ok
     else
-      redirect_to file_upload.url(**redirect_params)
+      redirect_to cdn_fronted_url(file_upload, redirect_params)
+    end
+  end
+
+  def cdn_fronted_url(file, redirect_params)
+    if Feature.enabled?(:use_cdn_with_job_artifacts_ui_downloads) && file.respond_to?(:cdn_enabled_url)
+      result = file.cdn_enabled_url(request.remote_ip, redirect_params[:query])
+      Gitlab::ApplicationContext.push(artifact_used_cdn: result.used_cdn)
+      result.url
+    else
+      file.url(**redirect_params)
     end
   end
 

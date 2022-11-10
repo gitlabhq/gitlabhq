@@ -293,7 +293,7 @@ export default {
           v-model="variable.value"
           :state="variableValidationState"
           rows="3"
-          max-rows="6"
+          max-rows="10"
           data-testid="pipeline-form-ci-variable-value"
           data-qa-selector="ci_variable_value_field"
           class="gl-font-monospace!"

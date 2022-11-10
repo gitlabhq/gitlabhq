@@ -153,8 +153,10 @@ RSpec.describe Projects::ArtifactsController do
         end
 
         context 'when file is stored remotely' do
+          let(:cdn_config) {}
+
           before do
-            stub_artifacts_object_storage
+            stub_artifacts_object_storage(cdn: cdn_config)
             create(:ci_job_artifact, :remote_store, :codequality, job: job)
           end
 
@@ -169,6 +171,45 @@ RSpec.describe Projects::ArtifactsController do
               expect(Gitlab::Workhorse).to receive(:send_url).and_call_original
 
               download_artifact(file_type: file_type, proxy: true)
+            end
+          end
+
+          context 'when Google CDN is configured' do
+            let(:cdn_config) do
+              {
+                'provider' => 'Google',
+                'url' => 'https://cdn.example.org',
+                'key_name' => 'some-key',
+                'key' => Base64.urlsafe_encode64(SecureRandom.hex)
+              }
+            end
+
+            before do
+              allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
+              request.env['action_dispatch.remote_ip'] = '18.245.0.42'
+            end
+
+            context 'with use_cdn_with_job_artifacts_ui_downloads enabled' do
+              it 'redirects to a Google CDN request' do
+                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
+
+                download_artifact(file_type: file_type)
+
+                expect(response.redirect_url).to start_with("https://cdn.example.org/")
+              end
+            end
+
+            context 'with use_cdn_with_job_artifacts_ui_downloads disabled' do
+              before do
+                stub_feature_flags(use_cdn_with_job_artifacts_ui_downloads: false)
+              end
+
+              it 'does not redirect to the CDN' do
+                download_artifact(file_type: file_type)
+
+                expect(response.redirect_url).to be_present
+                expect(response.redirect_url).not_to start_with("https://cdn.example.org/")
+              end
             end
           end
         end

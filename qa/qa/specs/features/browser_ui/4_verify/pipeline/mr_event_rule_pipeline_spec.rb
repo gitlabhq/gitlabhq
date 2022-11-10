@@ -5,7 +5,7 @@ module QA
     context 'When job is configured to only run on merge_request_events' do
       let(:mr_only_job_name) { 'mr_only_job' }
       let(:non_mr_only_job_name) { 'non_mr_only_job' }
-      let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(8)}" }
+      let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

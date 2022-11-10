@@ -63,11 +63,11 @@ module QA
             tags: {
               name: example.full_description,
               file_path: file_path,
-              status: example.execution_result.status,
+              status: status(example),
               smoke: example.metadata.key?(:smoke).to_s,
               reliable: example.metadata.key?(:reliable).to_s,
               quarantined: quarantined(example.metadata),
-              retried: ((example.metadata[:retry_attempts] || 0) > 0).to_s,
+              retried: (retry_attempts(example.metadata) > 0).to_s,
               job_name: job_name,
               merge_request: merge_request,
               run_type: run_type,
@@ -81,7 +81,7 @@ module QA
               api_fabrication: api_fabrication,
               ui_fabrication: ui_fabrication,
               total_fabrication: api_fabrication + ui_fabrication,
-              retry_attempts: example.metadata[:retry_attempts] || 0,
+              retry_attempts: retry_attempts(example.metadata),
               job_url: QA::Runtime::Env.ci_job_url,
               pipeline_url: env('CI_PIPELINE_URL'),
               pipeline_id: env('CI_PIPELINE_ID'),
@@ -156,6 +156,28 @@ module QA
           return "true" unless metadata[:quarantine].is_a?(Hash)
 
           (!Specs::Helpers::Quarantine.quarantined_different_context?(metadata[:quarantine])).to_s
+        end
+
+        # Return a more detailed status
+        #
+        # - if test is failed or pending, return rspec status
+        # - if test passed but had more than 1 attempt, consider test flaky
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [String]
+        def status(example)
+          rspec_status = example.execution_result.status
+          return rspec_status if [:pending, :failed].include?(rspec_status)
+
+          retry_attempts(example.metadata) > 0 ? :flaky : :passed
+        end
+
+        # Retry attempts
+        #
+        # @param [Hash] metadata
+        # @return [Integer]
+        def retry_attempts(metadata)
+          metadata[:retry_attempts] || 0
         end
 
         # Print log message

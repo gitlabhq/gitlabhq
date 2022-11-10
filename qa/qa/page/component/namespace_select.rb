@@ -25,7 +25,10 @@ module QA
 
             wait_for_requests
 
-            click_element(:namespaces_list_item, text: item)
+            # Click element by JS in case dropdown changes position mid-click
+            # Workaround for issue https://gitlab.com/gitlab-org/gitlab/-/issues/381376
+            namespace = find_element(:namespaces_list_item, text: item, visible: false)
+            click_by_javascript(namespace)
           end
         end
       end

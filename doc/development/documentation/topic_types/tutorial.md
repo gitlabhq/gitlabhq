@@ -58,6 +58,13 @@ To do step 2:
 
 Start the page title with `Tutorial:` followed by an active verb, like `Tutorial: Create a website`.
 
+In the left nav, use the full page title. Do not abbreviate it.
+Put the text in quotes so the pipeline will pass. For example,
+`"Tutorial: Make your first Git commit"`.
+
+On [the **Learn GitLab with tutorials** page](../../../tutorials/index.md),
+do not use `Tutorial` in the title.
+
 ## Screenshots
 
 You can include screenshots in a tutorial to illustrate important steps in the process.

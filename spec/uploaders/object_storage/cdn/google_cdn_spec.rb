@@ -92,25 +92,51 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
     end
   end
 
-  describe '#signed_url' do
+  describe '#signed_url', :freeze_time do
     let(:path) { '/path/to/file.txt' }
+    let(:expiration) { (Time.current + 10.minutes).utc.to_i }
+    let(:cdn_query_params) { "Expires=#{expiration}&KeyName=#{key_name}" }
 
-    it 'returns a valid signed URL' do
-      url = subject.signed_url(path)
-
+    def verify_signature(url, unsigned_url)
       expect(url).to start_with("#{options[:url]}#{path}")
 
       uri = Addressable::URI.parse(url)
-      parsed_query = Rack::Utils.parse_nested_query(uri.query)
-      signature = parsed_query.delete('Signature')
+      query = uri.query_values
+      signature = query['Signature']
 
-      signed_url = "#{options[:url]}#{path}?Expires=#{parsed_query['Expires']}&KeyName=#{key_name}"
-      computed_signature = OpenSSL::HMAC.digest('SHA1', key, signed_url)
+      computed_signature = OpenSSL::HMAC.digest('SHA1', key, unsigned_url)
 
       aggregate_failures do
-        expect(parsed_query['Expires'].to_i).to be > 0
-        expect(parsed_query['KeyName']).to eq(key_name)
+        expect(query['Expires'].to_i).to be > 0
+        expect(query['KeyName']).to eq(key_name)
         expect(signature).to eq(Base64.urlsafe_encode64(computed_signature))
+      end
+    end
+
+    context 'with default query parameters' do
+      let(:url) { subject.signed_url(path) }
+      let(:unsigned_url) { "#{options[:url]}#{path}?#{cdn_query_params}" }
+
+      it 'returns a valid signed URL' do
+        verify_signature(url, unsigned_url)
+      end
+    end
+
+    context 'with nil query parameters' do
+      let(:url) { subject.signed_url(path, params: nil) }
+      let(:unsigned_url) { "#{options[:url]}#{path}?#{cdn_query_params}" }
+
+      it 'returns a valid signed URL' do
+        verify_signature(url, unsigned_url)
+      end
+    end
+
+    context 'with extra query parameters' do
+      let(:url) { subject.signed_url(path, params: { 'response-content-type' => 'text/plain' }) }
+      let(:unsigned_url) { "#{options[:url]}#{path}?response-content-type=text%2Fplain&#{cdn_query_params}" }
+
+      it 'returns a valid signed URL' do
+        verify_signature(url, unsigned_url)
       end
     end
   end

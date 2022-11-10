@@ -537,6 +537,7 @@ export const folder = {
 
 export const resolvedEnvironment = {
   id: 41,
+  retryUrl: '/h5bp/html5-boilerplate/-/jobs/1014/retry',
   globalId: 'gid://gitlab/Environment/41',
   name: 'review/hello',
   state: 'available',

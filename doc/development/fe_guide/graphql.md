@@ -907,7 +907,7 @@ For example, we have a query like this:
 query searchGroupsWhereUserCanTransfer {
   currentUser {
     id
-    groups {
+    groups(after: 'somecursor') {
       nodes {
         id
         fullName
@@ -920,9 +920,7 @@ query searchGroupsWhereUserCanTransfer {
 }
 ```
 
-Here, the `groups` field doesn't have a good candidate for `keyArgs`: both
-`nodes` and `pageInfo` will be updated when we're fetching a second page.
-Setting `keyArgs` to `false` makes the update work as intended:
+Here, the `groups` field doesn't have a good candidate for `keyArgs`: we don't want to account for `after` argument because it will change on requesting subsequent pages. Setting `keyArgs` to `false` makes the update work as intended:
 
 ```javascript
 typePolicies: {
