@@ -254,6 +254,10 @@ module FilteredSearchHelpers
     expect(page).to have_css '.gl-filtered-search-token', text: "Assignee = #{value}"
   end
 
+  def expect_unioned_assignee_token(value)
+    expect(page).to have_css '.gl-filtered-search-token', text: "Assignee is one of #{value}"
+  end
+
   def expect_author_token(value)
     expect(page).to have_css '.gl-filtered-search-token', text: "Author = #{value}"
   end

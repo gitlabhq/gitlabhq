@@ -63,7 +63,7 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
 
     context 'when the link does not have a data-project attribute' do
       it 'returns the nodes' do
-        expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
+        expect(subject.nodes_visible_to_user(user, [link])).to match_array([link])
       end
     end
   end

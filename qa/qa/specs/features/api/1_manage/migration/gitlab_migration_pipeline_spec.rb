@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'gitlab_project_migration_common'
-
 module QA
   RSpec.describe 'Manage' do
     describe 'Gitlab migration', product_group: :import do

@@ -611,7 +611,7 @@ To filter the list of issues:
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
    - `=`: Is
-   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
+   - `!=`: Is not one of
 1. Enter the text to filter the attribute by.
    You can filter some attributes by **None** or **Any**.
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
@@ -619,6 +619,21 @@ To filter the list of issues:
 
 GitLab displays the results on-screen, but you can also
 [retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
+
+### Filter with the OR operator
+
+> OR filtering for assignees was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+The feature is not ready for production use.
+
+When this feature is enabled, you can use the OR operator (**is one of: `||`**)
+when you [filter the list of issues](#filter-the-list-of-issues).
+
+`is one of` represents an inclusive OR. For example, if you filter by `Assignee is one of Sidney Jones` and
+`Assignee is one of Zhang Wei`, GitLab shows issues where either Sidney, Zhang, or both of them are assignees.
 
 ### Filter issues by ID
 

@@ -163,10 +163,8 @@ RSpec.describe PipelineSerializer do
 
       context 'with different refs' do
         before do
-          # rubocop:disable Rails/SkipsModelValidations
           Ci::Pipeline.update_all(%(ref = 'feature-' || id))
           Ci::Build.update_all(%(ref = 'feature-' || stage_id))
-          # rubocop:enable Rails/SkipsModelValidations
         end
 
         it 'verifies number of queries', :request_store do

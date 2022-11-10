@@ -24,6 +24,7 @@ query getIssues(
   $crmContactId: String
   $crmOrganizationId: String
   $not: NegatedIssueFilterInput
+  $or: UnionedIssueFilterInput
   $beforeCursor: String
   $afterCursor: String
   $firstPageSize: Int
@@ -49,6 +50,7 @@ query getIssues(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
       before: $beforeCursor
       after: $afterCursor
       first: $firstPageSize
@@ -84,6 +86,7 @@ query getIssues(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
       before: $beforeCursor
       after: $afterCursor
       first: $firstPageSize

@@ -31,6 +31,12 @@ RSpec.describe Banzai::ReferenceParser::CommitParser do
         expect(subject.nodes_visible_to_user(user, [link])).to be_empty
       end
     end
+
+    context 'when the link does not have a data-project attribute' do
+      it 'returns the nodes' do
+        expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
+      end
+    end
   end
 
   describe '#referenced_by' do
@@ -141,7 +147,7 @@ RSpec.describe Banzai::ReferenceParser::CommitParser do
     end
   end
 
-  context 'when checking commits on another projects' do
+  context 'when checking commits on another projects', :request_store do
     let!(:control_links) do
       [commit_link]
     end
@@ -153,7 +159,7 @@ RSpec.describe Banzai::ReferenceParser::CommitParser do
     def commit_link
       project = create(:project, :repository, :public)
 
-      Nokogiri::HTML.fragment(%Q{<a data-commit="#{project.commit.id}" data-project="#{project.id}"></a>}).children[0]
+      Nokogiri::HTML.fragment(%(<a data-commit="#{project.commit.id}" data-project="#{project.id}"></a>)).children[0]
     end
 
     it_behaves_like 'no project N+1 queries'

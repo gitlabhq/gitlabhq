@@ -46561,6 +46561,9 @@ msgstr ""
 msgid "You can enable project access token creation in %{link_start}group settings%{link_end}."
 msgstr ""
 
+msgid "You can enter up to 280 characters"
+msgstr ""
+
 msgid "You can filter by 'days to merge' by clicking on the columns in the chart."
 msgstr ""
 
@@ -47935,6 +47938,9 @@ msgstr ""
 msgid "ciReport|New"
 msgstr ""
 
+msgid "ciReport|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch."
+msgstr ""
+
 msgid "ciReport|No changes to Code Quality."
 msgstr ""
 
@@ -47963,6 +47969,9 @@ msgid "ciReport|Secret detection"
 msgstr ""
 
 msgid "ciReport|Security reports failed loading results"
+msgstr ""
+
+msgid "ciReport|Security scan results"
 msgstr ""
 
 msgid "ciReport|Security scanning"
@@ -48438,10 +48447,16 @@ msgstr ""
 msgid "is not in the member group"
 msgstr ""
 
+msgid "is not one of"
+msgstr ""
+
 msgid "is not the member project"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."
+msgstr ""
+
+msgid "is one of"
 msgstr ""
 
 msgid "is read-only"

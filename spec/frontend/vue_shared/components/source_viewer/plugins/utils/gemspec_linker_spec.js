@@ -5,7 +5,7 @@ describe('Highlight.js plugin for linking gemspec dependencies', () => {
     const inputValue =
       's.add_dependency(<span class="hljs-string">&#x27;rugged&#x27;</span>, <span class="hljs-string">&#x27;~&gt; 0.24.0&#x27;</span>)';
     const outputValue =
-      's.add_dependency(<span class="hljs-string linked">&#x27;<a href="https://rubygems.org/gems/rugged" rel="nofollow noreferrer noopener">rugged</a>&#x27;</span>, <span class="hljs-string">&#x27;~&gt; 0.24.0&#x27;</span>)';
+      's.add_dependency(<span class="hljs-string linked">&#x27;<a href="https://rubygems.org/gems/rugged" target="_blank" rel="nofollow noreferrer noopener">rugged</a>&#x27;</span>, <span class="hljs-string">&#x27;~&gt; 0.24.0&#x27;</span>)';
     const hljsResultMock = { value: inputValue };
 
     const output = gemspecLinker(hljsResultMock);

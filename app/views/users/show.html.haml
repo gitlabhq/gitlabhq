@@ -56,12 +56,12 @@
 
       - if @user.blocked? || !@user.confirmed?
         .user-info
-          .cover-title
+          %h1.cover-title
             = user_display_name(@user)
         = render "users/profile_basic_info"
       - else
         .user-info
-          .cover-title{ itemprop: 'name' }
+          %h1.cover-title{ itemprop: 'name' }
             = @user.name
             - if @user.pronouns.present?
               %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle

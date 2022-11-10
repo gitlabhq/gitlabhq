@@ -3,7 +3,7 @@ import godepsJsonLinker from '~/vue_shared/components/source_viewer/plugins/util
 const getInputValue = (dependencyString) =>
   `<span class="hljs-attr">&quot;ImportPath&quot;</span><span class="hljs-punctuation">:</span><span class=""> </span><span class="hljs-string">&quot;${dependencyString}&quot;</span>`;
 const getOutputValue = (dependencyString, expectedHref) =>
-  `<span class="hljs-attr">&quot;ImportPath&quot;</span><span class="hljs-punctuation">:</span><span class=""> </span><span class="hljs-attr">&quot;<a href="${expectedHref}" rel="nofollow noreferrer noopener">${dependencyString}</a>&quot;</span>`;
+  `<span class="hljs-attr">&quot;ImportPath&quot;</span><span class="hljs-punctuation">:</span><span class=""> </span><span class="hljs-attr">&quot;<a href="${expectedHref}" target="_blank" rel="nofollow noreferrer noopener">${dependencyString}</a>&quot;</span>`;
 
 describe('Highlight.js plugin for linking Godeps.json dependencies', () => {
   it.each`

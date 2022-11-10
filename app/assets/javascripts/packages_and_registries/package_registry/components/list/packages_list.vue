@@ -1,9 +1,10 @@
 <script>
-import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
@@ -14,12 +15,13 @@ import { packageTypeToTrackCategory } from '~/packages_and_registries/package_re
 import Tracking from '~/tracking';
 
 export default {
+  name: 'PackagesList',
   components: {
     GlAlert,
-    GlKeysetPagination,
     DeletePackageModal,
     PackagesListLoader,
     PackagesListRow,
+    RegistryList,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -56,9 +58,6 @@ export default {
       return {
         category,
       };
-    },
-    showPagination() {
-      return this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage;
     },
     errorTitleAlert() {
       return sprintf(
@@ -123,24 +122,19 @@ export default {
         @primaryAction="showConfirmationModal"
         >{{ $options.i18n.errorMessageBodyAlert }}</gl-alert
       >
-      <div data-testid="packages-table">
-        <packages-list-row
-          v-for="packageEntity in list"
-          :key="packageEntity.id"
-          :package-entity="packageEntity"
-          @packageToDelete="setItemToBeDeleted"
-        />
-      </div>
-
-      <div class="gl-display-flex gl-justify-content-center">
-        <gl-keyset-pagination
-          v-if="showPagination"
-          v-bind="pageInfo"
-          class="gl-mt-3"
-          @prev="$emit('prev-page')"
-          @next="$emit('next-page')"
-        />
-      </div>
+      <registry-list
+        data-testid="packages-table"
+        :hidden-delete="true"
+        :is-loading="isLoading"
+        :items="list"
+        :pagination="pageInfo"
+        @prev-page="$emit('prev-page')"
+        @next-page="$emit('next-page')"
+      >
+        <template #default="{ item }">
+          <packages-list-row :package-entity="item" @packageToDelete="setItemToBeDeleted(item)" />
+        </template>
+      </registry-list>
 
       <delete-package-modal
         :item-to-be-deleted="itemToBeDeleted"

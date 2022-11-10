@@ -14,7 +14,7 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 
   def package_table_row(index)
-    page.all("#{packages_table_selector} > [data-testid=\"package-row\"]")[index].text
+    page.all("#{packages_table_selector} [data-testid=\"package-row\"]")[index].text
   end
 end
 

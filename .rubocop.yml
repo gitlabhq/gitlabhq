@@ -311,6 +311,10 @@ Rails/SquishedSQLHeredocs:
 Rails/WhereExists:
   Enabled: false
 
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94061#note_1160343775
+Rails/SkipsModelValidations:
+  Enabled: false
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/378105#note_1138487716
 Rails/HasManyOrHasOneDependent:
   Enabled: false

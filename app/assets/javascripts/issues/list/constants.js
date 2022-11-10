@@ -7,6 +7,7 @@ import {
   FILTER_UPCOMING,
   OPERATOR_IS,
   OPERATOR_IS_NOT,
+  OPERATOR_OR,
   TOKEN_TYPE_HEALTH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
@@ -192,6 +193,9 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[assignee_username][]',
+      },
+      [OPERATOR_OR]: {
+        [NORMAL_FILTER]: 'or[assignee_username][]',
       },
     },
   },

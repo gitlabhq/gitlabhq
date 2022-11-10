@@ -121,6 +121,13 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute' do
 
             service = described_class.new(runners: runners_arg, current_user: user)
 
+            # Base cost per runner is:
+            #  - 1 `SELECT * FROM "taggings"` query
+            #  - 1 `SAVEPOINT` query
+            #  - 1 `DELETE FROM "ci_runners"` query
+            #  - 1 `RELEASE SAVEPOINT` query
+            # Project runners have an additional query:
+            #  - 1 `DELETE FROM "ci_runner_projects"` query, given the call to `destroy_all`
             instance_runner_cost = 4
             group_runner_cost = 4
             project_runner_cost = 5

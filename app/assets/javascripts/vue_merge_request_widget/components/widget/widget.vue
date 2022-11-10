@@ -1,9 +1,16 @@
 <script>
-import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLink,
+  GlTooltipDirective,
+  GlLoadingIcon,
+  GlSafeHtmlDirective,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
 import { createTelemetryHub } from '../extensions/telemetry';
@@ -19,13 +26,16 @@ export default {
   components: {
     ActionButtons,
     StatusIcon,
+    GlLink,
     GlButton,
     GlLoadingIcon,
     ContentRow,
     DynamicContent,
+    HelpPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     /**
@@ -74,8 +84,8 @@ export default {
     },
     statusIconName: {
       type: String,
-      default: 'neutral',
       required: false,
+      default: 'neutral',
       validator: (value) => Object.keys(EXTENSION_ICONS).indexOf(value) > -1,
     },
     isCollapsible: {
@@ -97,6 +107,19 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    /**
+     * @typedef {Object} helpPopover
+     * @property {Object} options
+     * @property {String} options.title
+     * @property {Object} content
+     * @property {String} content.text
+     * @property {String} content.learnMorePath
+     */
+    helpPopover: {
+      type: Object,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -209,6 +232,9 @@ export default {
     },
   },
   failedStatusIcon: EXTENSION_ICONS.failed,
+  i18n: {
+    learnMore: __('Learn more'),
+  },
 };
 </script>
 
@@ -229,12 +255,34 @@ export default {
           <span v-if="summaryError">{{ summaryError }}</span>
           <slot v-else name="summary">{{ isLoading ? loadingText : summary }}</slot>
         </div>
-        <action-buttons
-          v-if="actionButtons.length > 0"
-          :widget="widgetName"
-          :tertiary-buttons="actionButtons"
-          @clickedAction="onActionClick"
-        />
+        <div class="gl-display-flex">
+          <help-popover
+            v-if="helpPopover"
+            :options="helpPopover.options"
+            :class="{ 'gl-mr-3': actionButtons.length > 0 }"
+          >
+            <template v-if="helpPopover.content">
+              <p
+                v-if="helpPopover.content.text"
+                v-safe-html="helpPopover.content.text"
+                class="gl-mb-0"
+              ></p>
+              <gl-link
+                v-if="helpPopover.content.learnMorePath"
+                :href="helpPopover.content.learnMorePath"
+                target="_blank"
+                class="gl-font-sm"
+                >{{ $options.i18n.learnMore }}</gl-link
+              >
+            </template>
+          </help-popover>
+          <action-buttons
+            v-if="actionButtons.length > 0"
+            :widget="widgetName"
+            :tertiary-buttons="actionButtons"
+            @clickedAction="onActionClick"
+          />
+        </div>
         <div
           v-if="isCollapsible"
           class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"

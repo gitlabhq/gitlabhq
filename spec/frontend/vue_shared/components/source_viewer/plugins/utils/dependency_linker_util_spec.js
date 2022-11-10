@@ -7,7 +7,7 @@ describe('createLink', () => {
   it('generates a link with the correct attributes', () => {
     const href = 'http://test.com';
     const innerText = 'testing';
-    const result = `<a href="${href}" rel="nofollow noreferrer noopener">${innerText}</a>`;
+    const result = `<a href="${href}" target="_blank" rel="nofollow noreferrer noopener">${innerText}</a>`;
 
     expect(createLink(href, innerText)).toBe(result);
   });
@@ -18,7 +18,7 @@ describe('createLink', () => {
     const escapedHref = '&lt;script&gt;XSS&lt;/script&gt;';
     const href = `http://test.com/${unescapedXSS}`;
     const innerText = `testing${unescapedXSS}`;
-    const result = `<a href="http://test.com/${escapedHref}" rel="nofollow noreferrer noopener">testing${escapedPackageName}</a>`;
+    const result = `<a href="http://test.com/${escapedHref}" target="_blank" rel="nofollow noreferrer noopener">testing${escapedPackageName}</a>`;
 
     expect(createLink(href, innerText)).toBe(result);
   });

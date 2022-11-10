@@ -374,6 +374,8 @@ function verify_deploy() {
     return 0
   else
     echoerr "Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
+    echoerr "State of the pods:"
+    kubectl get pods
     return 1
   fi
 }

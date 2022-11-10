@@ -13,11 +13,19 @@ export const FILTER_NONE_ANY = [FILTER_NONE, FILTER_ANY];
 export const OPERATOR_IS = '=';
 export const OPERATOR_IS_TEXT = __('is');
 export const OPERATOR_IS_NOT = '!=';
-export const OPERATOR_IS_NOT_TEXT = __('is not');
+export const OPERATOR_IS_NOT_TEXT = __('is not one of');
+export const OPERATOR_OR = '||';
+export const OPERATOR_OR_TEXT = __('is one of');
 
 export const OPERATOR_IS_ONLY = [{ value: OPERATOR_IS, description: OPERATOR_IS_TEXT }];
 export const OPERATOR_IS_NOT_ONLY = [{ value: OPERATOR_IS_NOT, description: OPERATOR_IS_NOT_TEXT }];
+export const OPERATOR_OR_ONLY = [{ value: OPERATOR_OR, description: OPERATOR_OR_TEXT }];
 export const OPERATOR_IS_AND_IS_NOT = [...OPERATOR_IS_ONLY, ...OPERATOR_IS_NOT_ONLY];
+export const OPERATOR_IS_NOT_OR = [
+  ...OPERATOR_IS_ONLY,
+  ...OPERATOR_IS_NOT_ONLY,
+  ...OPERATOR_OR_ONLY,
+];
 
 export const DEFAULT_LABEL_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
 export const DEFAULT_LABEL_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };

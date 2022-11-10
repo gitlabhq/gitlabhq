@@ -1,6 +1,7 @@
 import {
   OPERATOR_IS,
   OPERATOR_IS_NOT,
+  OPERATOR_OR,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const getIssuesQueryResponse = {
@@ -122,6 +123,8 @@ export const locationSearch = [
   'assignee_username[]=5',
   'not[assignee_username][]=patty',
   'not[assignee_username][]=selma',
+  'or[assignee_username][]=carl',
+  'or[assignee_username][]=lenny',
   'milestone_title=season+3',
   'milestone_title=season+4',
   'not[milestone_title]=season+20',
@@ -173,6 +176,8 @@ export const filteredTokens = [
   { type: 'assignee_username', value: { data: '5', operator: OPERATOR_IS } },
   { type: 'assignee_username', value: { data: 'patty', operator: OPERATOR_IS_NOT } },
   { type: 'assignee_username', value: { data: 'selma', operator: OPERATOR_IS_NOT } },
+  { type: 'assignee_username', value: { data: 'carl', operator: OPERATOR_OR } },
+  { type: 'assignee_username', value: { data: 'lenny', operator: OPERATOR_OR } },
   { type: 'milestone', value: { data: 'season 3', operator: OPERATOR_IS } },
   { type: 'milestone', value: { data: 'season 4', operator: OPERATOR_IS } },
   { type: 'milestone', value: { data: 'season 20', operator: OPERATOR_IS_NOT } },
@@ -244,6 +249,9 @@ export const apiParams = {
     epicId: '34',
     weight: '3',
   },
+  or: {
+    assigneeUsernames: ['carl', 'lenny'],
+  },
 };
 
 export const apiParamsWithSpecialValues = {
@@ -263,6 +271,7 @@ export const urlParams = {
   'not[author_username]': 'marge',
   'assignee_username[]': ['bart', 'lisa', '5'],
   'not[assignee_username][]': ['patty', 'selma'],
+  'or[assignee_username][]': ['carl', 'lenny'],
   milestone_title: ['season 3', 'season 4'],
   'not[milestone_title]': ['season 20', 'season 30'],
   'label_name[]': ['cartoon', 'tv'],

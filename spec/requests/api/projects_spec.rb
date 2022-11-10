@@ -1065,7 +1065,7 @@ RSpec.describe API::Projects do
 
       let_it_be(:admin) { create(:admin) }
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', :use_sql_query_cache do
         get api('/projects', admin)
 
         base_project = create(:project, :public, namespace: admin.namespace)
@@ -1073,7 +1073,7 @@ RSpec.describe API::Projects do
         fork_project1 = fork_project(base_project, admin, namespace: create(:user).namespace)
         fork_project2 = fork_project(fork_project1, admin, namespace: create(:user).namespace)
 
-        control = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api('/projects', admin)
         end
 

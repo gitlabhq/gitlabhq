@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import * as Sentry from '@sentry/browser';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
@@ -22,6 +23,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findExpandedSection = () => wrapper.findByTestId('widget-extension-collapsed-section');
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findToggleButton = () => wrapper.findByTestId('toggle-button');
+  const findHelpPopover = () => wrapper.findComponent(HelpPopover);
 
   const createComponent = ({ propsData, slots } = {}) => {
     wrapper = shallowMountExtended(Widget, {
@@ -198,6 +200,30 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       });
 
       expect(findActionButtons().props('tertiaryButtons')).toEqual(actionButtons);
+    });
+  });
+
+  describe('help popover', () => {
+    it('renders a help popover', () => {
+      createComponent({
+        propsData: {
+          fetchCollapsedData: jest.fn(),
+          helpPopover: {
+            options: { title: 'My help popover title' },
+            content: { text: 'Help popover content', learnMorePath: '/path/to/docs' },
+          },
+        },
+      });
+
+      expect(findHelpPopover().props('options')).toEqual({ title: 'My help popover title' });
+      expect(wrapper.findByText('Help popover content').exists()).toBe(true);
+      expect(wrapper.findByText('Learn more').attributes('href')).toBe('/path/to/docs');
+      expect(wrapper.findByText('Learn more').attributes('target')).toBe('_blank');
+    });
+
+    it('does not render help popover when it is not provided', () => {
+      createComponent({ propsData: { fetchCollapsedData: jest.fn() } });
+      expect(findHelpPopover().exists()).toBe(false);
     });
   });
 

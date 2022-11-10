@@ -15,6 +15,8 @@ module API
         preload_repository_cache(projects_relation)
 
         Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects_relation, options[:current_user]).execute if options[:current_user]
+
+        options[:current_user].preloaded_member_roles_for_projects(projects_relation) if options[:current_user]
         Preloaders::SingleHierarchyProjectGroupPlansPreloader.new(projects_relation).execute if options[:single_hierarchy]
         preload_groups(projects_relation) if options[:with] == Entities::Project
 

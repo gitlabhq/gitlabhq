@@ -7,6 +7,7 @@ module QA
       include Integrations::Project
       include Members
       include Visibility
+      include ApprovalConfiguration
 
       attr_accessor :initialize_with_readme,
                     :auto_devops_enabled,

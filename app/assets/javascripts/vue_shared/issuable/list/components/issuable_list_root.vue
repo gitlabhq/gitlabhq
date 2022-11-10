@@ -178,6 +178,11 @@ export default {
       required: false,
       default: false,
     },
+    showFilteredSearchFriendlyText: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showPageSizeChangeControls: {
       type: Boolean,
       required: false,
@@ -310,6 +315,7 @@ export default {
       :sync-filter-and-sort="syncFilterAndSort"
       :show-checkbox="showBulkEditSidebar"
       :checkbox-checked="allIssuablesChecked"
+      :show-friendly-text="showFilteredSearchFriendlyText"
       class="gl-flex-grow-1 gl-border-t-none row-content-block"
       data-qa-selector="issuable_search_container"
       @checked-input="handleAllIssuablesCheckedInput"

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'gitlab_project_migration_common'
-
 module QA
   RSpec.describe 'Manage' do
     describe 'Gitlab migration', product_group: :import do
@@ -9,6 +7,7 @@ module QA
 
       let!(:source_project_with_readme) { true }
 
+      # We create additional user so that object being migrated is not owned by the user doing migration
       let!(:other_user) do
         Resource::User
           .fabricate_via_api! { |usr| usr.api_client = admin_api_client }
@@ -40,8 +39,22 @@ module QA
         end
       end
 
-      let(:imported_reviewers) { imported_mr.reviewers.map { |r| r.slice(:id, :username) } }
-      let(:source_mr_reviewers) { [{ id: other_user.id, username: other_user.username }] }
+      let(:imported_mr_reviewers) { imported_mr.reviewers.map { |r| r.slice(:name, :username) } }
+      let(:source_mr_reviewers) { [{ name: other_user.name, username: other_user.username }] }
+
+      let(:imported_mr_approvers) do
+        imported_mr.approval_configuration[:approved_by].map do |usr|
+          { username: usr.dig(:user, :username), name: usr.dig(:user, :name) }
+        end
+      end
+
+      before do
+        source_project.update_approval_configuration(
+          merge_requests_author_approval: true,
+          approvals_before_merge: 1
+        )
+        source_mr.approve
+      end
 
       after do
         other_user.remove_via_api!
@@ -59,7 +72,8 @@ module QA
             expect(imported_mr).to eq(source_mr.reload!)
 
             expect(imported_mr_comments).to match_array(source_mr_comments)
-            expect(imported_reviewers).to eq(source_mr_reviewers)
+            expect(imported_mr_reviewers).to eq(source_mr_reviewers)
+            expect(imported_mr_approvers).to eq([{ username: other_user.username, name: other_user.name }])
           end
         end
       end

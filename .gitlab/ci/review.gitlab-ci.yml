@@ -3,20 +3,16 @@ review-cleanup:
     - .default-retry
     - .review:rules:review-cleanup
   image: ${REVIEW_APPS_IMAGE}
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: prepare
   environment:
-    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
+    name: review/regular-cleanup
     action: stop
   before_script:
     - source scripts/utils.sh
-    - source scripts/review_apps/review-apps.sh
     - source scripts/review_apps/gcp_cleanup.sh
     - install_gitlab_gem
     - setup_gcp_dependencies
   script:
-    - delete_release
-    - delete_namespace
     - scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 

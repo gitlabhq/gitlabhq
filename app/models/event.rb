@@ -358,7 +358,7 @@ class Event < ApplicationRecord
     # hence we add the extra WHERE clause for last_activity_at.
     Project.unscoped.where(id: project_id)
       .where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago)
-      .touch_all(:last_activity_at, time: created_at) # rubocop: disable Rails/SkipsModelValidations
+      .touch_all(:last_activity_at, time: created_at)
 
     Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
   end
@@ -441,7 +441,7 @@ class Event < ApplicationRecord
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
       .where("last_repository_updated_at < ? OR last_repository_updated_at IS NULL", REPOSITORY_UPDATED_AT_INTERVAL.ago)
-      .touch_all(:last_repository_updated_at, time: created_at) # rubocop: disable Rails/SkipsModelValidations
+      .touch_all(:last_repository_updated_at, time: created_at)
   end
 
   def design_action_names

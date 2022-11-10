@@ -1,11 +1,13 @@
 import packageJsonLinker from './utils/package_json_linker';
 import gemspecLinker from './utils/gemspec_linker';
 import godepsJsonLinker from './utils/godeps_json_linker';
+import gemfileLinker from './utils/gemfile_linker';
 
 const DEPENDENCY_LINKERS = {
   package_json: packageJsonLinker,
   gemspec: gemspecLinker,
   godeps_json: godepsJsonLinker,
+  gemfile: gemfileLinker,
 };
 
 /**

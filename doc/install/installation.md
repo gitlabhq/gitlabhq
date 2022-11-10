@@ -864,12 +864,6 @@ Check if GitLab and its environment are configured correctly:
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
-### Compile GetText PO files
-
-```shell
-sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
-```
-
 ### Compile Assets
 
 ```shell

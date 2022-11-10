@@ -3,6 +3,8 @@
 module QA
   module Resource
     class MergeRequest < Issuable
+      include ApprovalConfiguration
+
       attr_accessor :approval_rules,
                     :source_branch,
                     :target_new_branch,
@@ -127,6 +129,10 @@ module QA
         "#{api_get_path}/reviewers"
       end
 
+      def api_approve_path
+        "#{api_get_path}/approve"
+      end
+
       def api_post_body
         {
           description: description,
@@ -157,6 +163,17 @@ module QA
 
           result
         end
+      end
+
+      # Approve merge request
+      #
+      # Due to internal implementation of api client, project needs to have
+      # setting 'Prevent approval by author' set to false since we use same user that created merge request which
+      # is set through approval configuration
+      #
+      # @return [void]
+      def approve
+        api_post_to(api_approve_path, {})
       end
 
       def fabricate_large_merge_request

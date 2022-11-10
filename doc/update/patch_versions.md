@@ -60,11 +60,6 @@ sudo -u git -H bundle clean
 # Run database migrations
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
-# Compile GetText PO files
-# Internationalization was added in `v9.2.0` so this command is only
-# required for versions equal or major to it.
-sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
-
 # Clean up assets and cache
 sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```

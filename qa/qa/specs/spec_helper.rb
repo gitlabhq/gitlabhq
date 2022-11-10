@@ -147,5 +147,5 @@ RSpec.configure do |config|
   end
 end
 
-Dir[::File.join(__dir__, "features/shared_examples/*.rb")].sort.each { |f| require f }
-Dir[::File.join(__dir__, "features/shared_contexts/*.rb")].sort.each { |f| require f }
+Dir[::File.join(__dir__, "features/shared_examples/**/*.rb")].sort.each { |f| require f }
+Dir[::File.join(__dir__, "features/shared_contexts/**/*.rb")].sort.each { |f| require f }

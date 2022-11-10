@@ -1206,6 +1206,10 @@ class User < ApplicationRecord
     authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
   end
 
+  def preloaded_member_roles_for_projects(projects)
+    # overridden in EE
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def require_ssh_key?
     count = Users::KeysCountService.new(self).count

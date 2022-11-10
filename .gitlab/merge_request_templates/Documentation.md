@@ -31,6 +31,8 @@ These labels cause the MR to be added to code verification QA issues.
 
 Documentation-related MRs should be reviewed by a Technical Writer for a non-blocking review, based on [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and the [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
 
+If you aren't sure which tech writer to ask, use [roulette](https://gitlab-org.gitlab.io/gitlab-roulette/?sortKey=stats.avg30&order=-1&hourFormat24=true&visible=maintainer%7Cdocs) or ask in the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) Slack channel.
+
 - [ ] If the content requires it, ensure the information is reviewed by a subject matter expert.
 - Technical writer review items:
   - [ ] Ensure docs metadata is present and up-to-date.

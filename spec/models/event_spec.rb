@@ -32,7 +32,7 @@ RSpec.describe Event do
     describe 'after_create :set_last_repository_updated_at' do
       context 'with a push event' do
         it 'updates the project last_repository_updated_at and updated_at' do
-          project.touch(:last_repository_updated_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
+          project.touch(:last_repository_updated_at, time: 1.year.ago)
 
           event = create_push_event(project, project.first_owner)
 
@@ -864,7 +864,7 @@ RSpec.describe Event do
       end
 
       it 'updates the project' do
-        project.touch(:last_activity_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
+        project.touch(:last_activity_at, time: 1.year.ago)
 
         event = create_push_event(project, project.first_owner)
 
@@ -880,7 +880,7 @@ RSpec.describe Event do
                                                "project:#{project.id}")
         end
 
-        project.touch(:last_activity_at, time: 1.year.ago) # rubocop: disable Rails/SkipsModelValidations
+        project.touch(:last_activity_at, time: 1.year.ago)
 
         create_push_event(project, project.first_owner)
       end

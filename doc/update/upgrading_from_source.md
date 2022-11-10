@@ -310,9 +310,6 @@ sudo -u git -H bundle clean
 # Run database migrations
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
-# Compile GetText PO files
-sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
-
 # Update node dependencies and recompile assets
 sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 

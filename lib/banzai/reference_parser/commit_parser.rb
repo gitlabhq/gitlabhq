@@ -32,6 +32,13 @@ module Banzai
         commits
       end
 
+      def nodes_visible_to_user(user, nodes)
+        projects = lazy { projects_for_nodes(nodes) }
+        user.preloaded_member_roles_for_projects(projects.values) if user
+
+        super
+      end
+
       private
 
       def can_read_reference?(user, ref_project, node)

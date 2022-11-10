@@ -29,15 +29,6 @@ module Gitlab
 
           attr_accessor :recorded_at
 
-          def aggregated_metrics_data(time_frame)
-            aggregated_metrics.each_with_object({}) do |aggregation, data|
-              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], type: :development)
-              next unless aggregation[:time_frame].include?(time_frame)
-
-              data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, time_frame: time_frame)
-            end
-          end
-
           def with_validate_configuration(aggregation, time_frame)
             source = aggregation[:source]
 

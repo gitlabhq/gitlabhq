@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_IS_NOT,
+  OPERATOR_OR,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   API_PARAM,
@@ -252,20 +253,36 @@ const formatData = (token) => {
 export const convertToApiParams = (filterTokens) => {
   const params = {};
   const not = {};
+  const or = {};
 
   filterTokens
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
     .forEach((token) => {
       const filterType = getFilterType(token.value.data, token.type);
       const field = filters[token.type][API_PARAM][filterType];
-      const obj = token.value.operator === OPERATOR_IS_NOT ? not : params;
+      let obj;
+      if (token.value.operator === OPERATOR_IS_NOT) {
+        obj = not;
+      } else if (token.value.operator === OPERATOR_OR) {
+        obj = or;
+      } else {
+        obj = params;
+      }
       const data = formatData(token);
       Object.assign(obj, {
         [field]: obj[field] ? [obj[field], data].flat() : data,
       });
     });
 
-  return Object.keys(not).length ? Object.assign(params, { not }) : params;
+  if (Object.keys(not).length) {
+    Object.assign(params, { not });
+  }
+
+  if (Object.keys(or).length) {
+    Object.assign(params, { or });
+  }
+
+  return params;
 };
 
 export const convertToUrlParams = (filterTokens) =>

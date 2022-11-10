@@ -322,6 +322,18 @@ describe('IssuableListRoot', () => {
       });
     });
 
+    describe('showFilteredSearchFriendlyText prop', () => {
+      describe.each([true, false])('when %s', (showFilteredSearchFriendlyText) => {
+        it('passes its value to FilteredSearchBar', () => {
+          wrapper = createComponent({ props: { showFilteredSearchFriendlyText } });
+
+          expect(findFilteredSearchBar().props('showFriendlyText')).toBe(
+            showFilteredSearchFriendlyText,
+          );
+        });
+      });
+    });
+
     describe('alert', () => {
       const error = 'oopsie!';
 

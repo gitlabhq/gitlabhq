@@ -151,7 +151,6 @@ module API
         project_params = project_finder_params
         support_order_by_similarity!(project_params)
         verify_project_filters!(project_params)
-
         ProjectsFinder.new(current_user: current_user, params: project_params).execute
       end
 

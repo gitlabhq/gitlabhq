@@ -31,6 +31,12 @@ RSpec.describe Banzai::ReferenceParser::CommitRangeParser do
         expect(subject.nodes_visible_to_user(user, [link])).to be_empty
       end
     end
+
+    context 'when the link does not have a data-project attribute' do
+      it 'returns the nodes' do
+        expect(subject.nodes_visible_to_user(user, [link])).to match_array([link])
+      end
+    end
   end
 
   describe '#referenced_by' do
@@ -149,7 +155,7 @@ RSpec.describe Banzai::ReferenceParser::CommitRangeParser do
     end
   end
 
-  context 'when checking commits ranges on another project' do
+  context 'when checking commits ranges on another projects', :request_store do
     let!(:control_links) do
       [commit_range_link]
     end
