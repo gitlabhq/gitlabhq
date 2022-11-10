@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates issue tracker', :js do
+RSpec.describe 'User activates issue tracker', :js, feature_category: :integrations do
   include_context 'project integration activation'
 
   let(:url) { 'http://tracker.example.com' }

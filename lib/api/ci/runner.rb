@@ -334,6 +334,7 @@ module API
 
         desc 'Download the artifacts file for job' do
           http_codes [[200, 'Upload allowed'],
+                      [401, 'Unauthorized'],
                       [403, 'Forbidden'],
                       [404, 'Artifact not found']]
         end
@@ -342,12 +343,9 @@ module API
           optional :token, type: String, desc: %q(Job's authentication token)
           optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
         end
+        route_setting :authentication, job_token_allowed: true
         get '/:id/artifacts', feature_category: :build_artifacts do
-          if request_using_running_job_token?
-            authenticate_job_via_dependent_job!
-          else
-            authenticate_job!(require_running: false)
-          end
+          authenticate_job_via_dependent_job!
 
           present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
         end

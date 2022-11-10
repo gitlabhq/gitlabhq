@@ -34,18 +34,24 @@ review-build-cng-env:
     - .review:rules:review-build-cng
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:3.0-alpine3.13
   stage: prepare
-  needs: []
+  needs:
+    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build-assets-image
+  variables:
+    BUILD_ENV: build.env
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
   script:
-    - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > build.env'
-    - cat build.env
+    - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > $BUILD_ENV'
+    - echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
+    - cat $BUILD_ENV
   artifacts:
     reports:
-      dotenv: build.env
+      dotenv: $BUILD_ENV
     paths:
-      - build.env
+      - $BUILD_ENV
     expire_in: 7 days
     when: always
 

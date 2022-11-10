@@ -149,8 +149,8 @@ job3:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
 
-You can use [`include:file`](../yaml/index.md#includefile) to trigger child pipelines
-with a configuration file in a different project:
+You can use [`include:project`](../yaml/index.md#includeproject) in a trigger job
+to trigger child pipelines with a configuration file in a different project:
 
 ```yaml
 microservice_a:

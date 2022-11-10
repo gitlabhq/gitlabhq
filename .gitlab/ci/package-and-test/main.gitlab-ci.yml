@@ -38,23 +38,6 @@ stages:
   extends:
     - .gitlab-qa-install
 
-.omnibus-env:
-  variables:
-    BUILD_ENV: build.env
-  script:
-    - |
-      SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
-      echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
-      echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
-      for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
-      echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
-      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
-      echo "Built environment file for omnibus build:"
-      cat $BUILD_ENV
-  artifacts:
-    reports:
-      dotenv: $BUILD_ENV
-
 .update-script:
   script:
     - export QA_COMMAND="bundle exec gitlab-qa Test::Omnibus::UpdateFromPrevious $RELEASE $GITLAB_VERSION $UPDATE_TYPE -- $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
@@ -108,9 +91,42 @@ dont-interrupt-me:
 
 trigger-omnibus-env:
   extends:
-    - .omnibus-env
     - .rules:omnibus-build
   stage: .pre
+  needs:
+    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream omnibus-gitlab pipeline.
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build-assets-image
+  variables:
+    BUILD_ENV: build.env
+  before_script:
+    - |
+      # This is duplicating the function from `scripts/utils.sh` since that file can be included in other projects.
+      function assets_image_tag() {
+        local cache_assets_hash_file="cached-assets-hash.txt"
+
+        if [[ -n "${CI_COMMIT_TAG}" ]]; then
+          echo -n "${CI_COMMIT_REF_NAME}"
+        elif [[ -f "${cache_assets_hash_file}" ]]; then
+          echo -n "assets-hash-$(cat ${cache_assets_hash_file} | cut -c1-10)"
+        else
+          echo -n "${CI_COMMIT_SHA}"
+        fi
+      }
+  script:
+    - |
+      SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
+      echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
+      for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
+      echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
+      echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
+      echo "Built environment file for omnibus build:"
+      cat $BUILD_ENV
+  artifacts:
+    reports:
+      dotenv: $BUILD_ENV
 
 trigger-omnibus:
   extends: .rules:omnibus-build
@@ -128,6 +144,7 @@ trigger-omnibus:
     GITLAB_SHELL_VERSION: $GITLAB_SHELL_VERSION
     GITLAB_WORKHORSE_VERSION: $GITLAB_WORKHORSE_VERSION
     GITLAB_VERSION: $CI_COMMIT_SHA
+    GITLAB_ASSETS_TAG: $GITLAB_ASSETS_TAG
     IMAGE_TAG: $CI_COMMIT_SHA
     TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
     SECURITY_SOURCES: $SECURITY_SOURCES

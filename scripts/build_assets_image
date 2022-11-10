@@ -1,36 +1,82 @@
+#!/bin/sh
+
+. scripts/utils.sh
+
 # Exit early if we don't want to build the image
-if [[ "${BUILD_ASSETS_IMAGE}" != "true" ]]
+if [ "${BUILD_ASSETS_IMAGE}" != "true" ]
 then
   exit 0
 fi
 
+get_repository_id() {
+  repository_name="${1}"
+  repositories_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/registry/repositories"
+
+  curl --header "PRIVATE-TOKEN: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${repositories_url}" | jq "map(select(.name == \"${repository_name}\")) | .[0].id"
+}
+
 # Generate the image name based on the project this is being run in
 ASSETS_IMAGE_NAME="gitlab-assets-ce"
+
 # `dev.gitlab-org` still has gitlab-ee.
-if [[ "${CI_PROJECT_NAME}" == "gitlab" ]] || [[ "${CI_PROJECT_NAME}" == "gitlab-ee" ]]
+if [ "${CI_PROJECT_NAME}" = "gitlab" ] || [ "${CI_PROJECT_NAME}" = "gitlab-ee" ]
 then
   ASSETS_IMAGE_NAME="gitlab-assets-ee"
 fi
 
-ASSETS_IMAGE_PATH=${CI_REGISTRY}/${CI_PROJECT_PATH}/${ASSETS_IMAGE_NAME}
+ASSETS_IMAGE_PATH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${ASSETS_IMAGE_NAME}"
+COMMIT_ASSETS_HASH_TAG="$(assets_image_tag)"
+COMMIT_ASSETS_HASH_DESTINATION="${ASSETS_IMAGE_PATH}:${COMMIT_ASSETS_HASH_TAG}"
+
+DESTINATIONS="--destination=${COMMIT_ASSETS_HASH_DESTINATION}"
+
+SKIP_ASSETS_IMAGE_BUILDING_IF_ALREADY_EXIST="true"
+
+# Also tag the image with GitLab version, if running on a tag pipeline
+# (and thus skip the performance optimization in that case), for back-compatibility.
+if [ -n "${CI_COMMIT_TAG}" ]; then
+  COMMIT_REF_NAME_DESTINATION="${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}"
+  DESTINATIONS="$DESTINATIONS --destination=$COMMIT_REF_NAME_DESTINATION"
+  SKIP_ASSETS_IMAGE_BUILDING_IF_ALREADY_EXIST="false"
+fi
+
+# The auto-deploy branch process still fetch assets image tagged with $CI_COMMIT_SHA,
+# so we need to push the image with it (and thus skip the performance optimization in that case),
+# for back-compatibility.
+if echo "${CI_COMMIT_BRANCH}" | grep -Eq "^[0-9]+-[0-9]+-auto-deploy-[0-9]+$"; then
+  COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
+  DESTINATIONS="$DESTINATIONS --destination=$COMMIT_SHA_DESTINATION"
+  SKIP_ASSETS_IMAGE_BUILDING_IF_ALREADY_EXIST="false"
+fi
+
+if [ "${SKIP_ASSETS_IMAGE_BUILDING_IF_ALREADY_EXIST}" = "true" ] && [ -n "${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" ]; then
+  echoinfo "Checking if the ${COMMIT_ASSETS_HASH_DESTINATION} image exists..."
+  repository_id=$(get_repository_id "${ASSETS_IMAGE_NAME}")
+
+  if [ -n "${repository_id}" ]; then
+    api_image_url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/registry/repositories/${repository_id}/tags/${COMMIT_ASSETS_HASH_TAG}"
+    echoinfo "api_image_url: ${api_image_url}"
+
+    if test_url "${api_image_url}" "--header \"PRIVATE-TOKEN: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}\""; then
+      echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, no need to rebuild it."
+      exit 0
+    else
+      echoinfo "Image ${COMMIT_ASSETS_HASH_DESTINATION} doesn't exist, we'll need to build it."
+    fi
+  else
+    echoerr "Repository ID couldn't be found for the '${ASSETS_IMAGE_NAME}' image!"
+  fi
+else
+  echoinfo "The 'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' variable is not present, so we cannot check if the image already exists."
+fi
 
 mkdir -p assets_container.build/public
 cp -r public/assets assets_container.build/public/
 cp Dockerfile.assets assets_container.build/
 
-COMMIT_REF_SLUG_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}
+echo "Building assets image for destinations: ${DESTINATIONS}"
 
-COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
-COMMIT_REF_NAME_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
-
-DESTINATIONS="--destination=$COMMIT_REF_SLUG_DESTINATION --destination=$COMMIT_SHA_DESTINATION"
-
-# Also tag the image with GitLab version, if running on a tag pipeline, so
-# other projects can simply use that instead of computing the slug.
-if [ -n "$CI_COMMIT_TAG" ]; then
-  DESTINATIONS="$DESTINATIONS --destination=$COMMIT_REF_NAME_DESTINATION"
-fi
-
-echo "building assets image for destinations: $DESTINATIONS"
-
-/kaniko/executor --context=assets_container.build --dockerfile=assets_container.build/Dockerfile.assets $DESTINATIONS
+/kaniko/executor \
+  --context="assets_container.build" \
+  --dockerfile="assets_container.build/Dockerfile.assets" \
+  ${DESTINATIONS}

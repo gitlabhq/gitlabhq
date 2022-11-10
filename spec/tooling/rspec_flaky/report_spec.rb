@@ -26,6 +26,7 @@ RSpec.describe RspecFlaky::Report, :aggregate_failures, :freeze_time do
         last_flaky_at: 4321,
         last_attempts_count: 3,
         flaky_reports: 1,
+        feature_category: 'feature_category',
         last_flaky_job: nil
       }
     }

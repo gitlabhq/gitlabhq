@@ -881,11 +881,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
-          shared_examples 'forbidden request' do
-            it 'responds with forbidden' do
+          shared_examples 'unauthorized request' do
+            it 'responds with unauthorized' do
               download_artifact
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(response).to have_gitlab_http_status(:unauthorized)
             end
           end
 
@@ -899,7 +899,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                 job.success!
               end
 
-              it_behaves_like 'successful artifact download'
+              it_behaves_like 'unauthorized request'
             end
           end
 
@@ -916,7 +916,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                 dependent_job.success!
               end
 
-              it_behaves_like 'forbidden request'
+              it_behaves_like 'unauthorized request'
             end
           end
 
@@ -942,7 +942,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
             let(:token) { ci_build.token }
 
-            it_behaves_like 'forbidden request'
+            it_behaves_like 'unauthorized request'
           end
 
           context 'when using a token from a cross pipeline build' do
@@ -981,19 +981,23 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             let!(:unrelated_ci_build) { create(:ci_build, :running, user: create(:user)) }
             let(:token) { unrelated_ci_build.token }
 
-            it_behaves_like 'forbidden request'
+            it 'responds with forbidden' do
+              download_artifact
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
           end
 
           context 'when using runnners token' do
             let(:token) { job.project.runners_token }
 
-            it_behaves_like 'forbidden request'
+            it_behaves_like 'unauthorized request'
           end
 
           context 'when using an invalid token' do
             let(:token) { 'invalid-token' }
 
-            it_behaves_like 'forbidden request'
+            it_behaves_like 'unauthorized request'
           end
         end
 

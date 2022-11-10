@@ -146,7 +146,7 @@ the time limit to resolve all files is 30 seconds.
 **Possible inputs**: The `include` subkeys:
 
 - [`include:local`](#includelocal)
-- [`include:file`](#includefile)
+- [`include:project`](#includeproject)
 - [`include:remote`](#includeremote)
 - [`include:template`](#includetemplate)
 
@@ -203,56 +203,50 @@ include: '.gitlab-ci-production.yml'
 - All [nested includes](includes.md#use-nested-includes) are executed in the scope of the same project,
   so you can use local, project, remote, or template includes.
 
-#### `include:file`
+#### `include:project`
 
 > Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
 
 To include files from another private project on the same GitLab instance,
-use `include:file`. You can use `include:file` in combination with `include:project` only.
+use `include:project` and `include:file`.
 
 **Keyword type**: Global keyword.
 
 **Possible inputs**:
 
-A full path, relative to the root directory (`/`):
+- `include:project`: The full GitLab project path.
+- `include:file` A full file path, or array of file paths, relative to the root directory (`/`).
+  The YAML files must have the `.yml` or `.yaml` extension.
+- `include:ref`: Optional. The ref to retrieve the file from. Defaults to the `HEAD` of the project
+  when not specified.
 
-- The YAML file must have the extension `.yml` or `.yaml`.
-- You can use [certain CI/CD variables](includes.md#use-variables-with-include).
+You can use [certain CI/CD variables](includes.md#use-variables-with-include).
 
-**Example of `include:file`**:
-
-```yaml
-include:
-  - project: 'my-group/my-project'
-    file: '/templates/.gitlab-ci-template.yml'
-```
-
-You can also specify a `ref`. If you do not specify a value, the ref defaults to the `HEAD` of the project:
+**Example of `include:project`**:
 
 ```yaml
 include:
   - project: 'my-group/my-project'
-    ref: main
     file: '/templates/.gitlab-ci-template.yml'
-
-  - project: 'my-group/my-project'
-    ref: v1.0.0  # Git Tag
-    file: '/templates/.gitlab-ci-template.yml'
-
-  - project: 'my-group/my-project'
-    ref: 787123b47f14b552955ca2786bc9542ae66fee5b  # Git SHA
-    file: '/templates/.gitlab-ci-template.yml'
-```
-
-You can include multiple files from the same project:
-
-```yaml
-include:
-  - project: 'my-group/my-project'
-    ref: main
+  - project: 'my-group/my-subgroup/my-project-2'
     file:
       - '/templates/.builds.yml'
       - '/templates/.tests.yml'
+```
+
+You can also specify a `ref`:
+
+```yaml
+include:
+  - project: 'my-group/my-project'
+    ref: main                                      # Git branch
+    file: '/templates/.gitlab-ci-template.yml'
+  - project: 'my-group/my-project'
+    ref: v1.0.0                                    # Git Tag
+    file: '/templates/.gitlab-ci-template.yml'
+  - project: 'my-group/my-project'
+    ref: 787123b47f14b552955ca2786bc9542ae66fee5b  # Git SHA
+    file: '/templates/.gitlab-ci-template.yml'
 ```
 
 **Additional details**:

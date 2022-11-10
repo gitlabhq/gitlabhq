@@ -13,6 +13,7 @@ module RspecFlaky
     last_flaky_job
     last_attempts_count
     flaky_reports
+    feature_category
   ].freeze
 
   # This represents a flaky RSpec example and is mainly meant to be saved in a JSON file
@@ -23,7 +24,8 @@ module RspecFlaky
         last_flaky_at: Time.now,
         last_flaky_job: nil,
         last_attempts_count: example_hash[:attempts],
-        flaky_reports: 0
+        flaky_reports: 0,
+        feature_category: example_hash[:feature_category]
       }.merge(example_hash.slice(*ALLOWED_ATTRIBUTES))
 
       %i[first_flaky_at last_flaky_at].each do |attr|
@@ -38,6 +40,7 @@ module RspecFlaky
       attributes[:first_flaky_at] ||= Time.now
       attributes[:last_flaky_at] = Time.now
       attributes[:flaky_reports] += 1
+      attributes[:feature_category] = example_hash[:feature_category]
       attributes[:last_attempts_count] = example_hash[:last_attempts_count] if example_hash[:last_attempts_count]
 
       if ENV['CI_JOB_URL']

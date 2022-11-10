@@ -15,7 +15,8 @@ RSpec.describe RspecFlaky::FlakyExample, :aggregate_failures do
       file: 'spec/foo/bar_spec.rb',
       line: 2,
       description: 'hello world',
-      last_attempts_count: 2
+      last_attempts_count: 2,
+      feature_category: :feature_category
     }
   end
 
@@ -35,6 +36,7 @@ RSpec.describe RspecFlaky::FlakyExample, :aggregate_failures do
         expect(attrs[:file]).to eq(example_attrs[:file])
         expect(attrs[:line]).to eq(example_attrs[:line])
         expect(attrs[:description]).to eq(example_attrs[:description])
+        expect(attrs[:feature_category]).to eq(example_attrs[:feature_category])
         expect(attrs[:first_flaky_at]).to eq(expected_first_flaky_at)
         expect(attrs[:last_flaky_at]).to eq(expected_last_flaky_at)
         expect(attrs[:last_attempts_count]).to eq(example_attrs[:last_attempts_count])

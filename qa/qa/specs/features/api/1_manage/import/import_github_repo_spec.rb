@@ -49,18 +49,16 @@ module QA
 
         def verify_protected_branches_import
           imported_branches = imported_project.protected_branches.map do |branch|
-            branch.slice(:name, :allow_force_push, :code_owner_approval_required)
+            branch.slice(:name, :allow_force_push)
           end
           actual_branches = [
             {
               name: 'main',
-              allow_force_push: false,
-              code_owner_approval_required: true
+              allow_force_push: false
             },
             {
               name: 'release',
-              allow_force_push: true,
-              code_owner_approval_required: true
+              allow_force_push: true
             }
           ]
 
