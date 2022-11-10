@@ -23,9 +23,9 @@ const PERSISTENT_USER_CALLOUTS = [
 ];
 
 const initCallouts = () => {
-  PERSISTENT_USER_CALLOUTS.forEach((calloutContainer) =>
-    PersistentUserCallout.factory(document.querySelector(calloutContainer)),
-  );
+  document
+    .querySelectorAll(PERSISTENT_USER_CALLOUTS)
+    .forEach((calloutContainer) => PersistentUserCallout.factory(calloutContainer));
 };
 
 export default initCallouts;

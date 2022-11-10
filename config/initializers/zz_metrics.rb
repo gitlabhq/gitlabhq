@@ -40,8 +40,9 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
   if Gitlab::Runtime.puma?
     Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
     Gitlab::Metrics::GlobalSearchSlis.initialize_slis!
-  elsif Gitlab.ee? && Gitlab::Runtime.sidekiq?
-    Gitlab::Metrics::GlobalSearchIndexingSlis.initialize_slis!
+  elsif Gitlab::Runtime.sidekiq?
+    Gitlab::Metrics::GlobalSearchIndexingSlis.initialize_slis! if Gitlab.ee?
+    Gitlab::Metrics::LooseForeignKeysSlis.initialize_slis!
   end
 
   GC::Profiler.enable

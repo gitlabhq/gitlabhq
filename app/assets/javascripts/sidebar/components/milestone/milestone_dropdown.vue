@@ -1,5 +1,7 @@
 <script>
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { GlDropdownItem } from '@gitlab/ui';
+import { TYPE_MILESTONE } from '~/graphql_shared/constants';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType, WorkspaceType } from '~/issues/constants';
 import { __ } from '~/locale';
 import { IssuableAttributeType } from '../../constants';
@@ -18,6 +20,7 @@ const placeholderMilestone = {
 export default {
   issuableAttribute: IssuableAttributeType.Milestone,
   components: {
+    GlDropdownItem,
     SidebarDropdown,
   },
   props: {
@@ -25,12 +28,37 @@ export default {
       required: true,
       type: String,
     },
+    canAdminMilestone: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     issuableType: {
       type: String,
       required: true,
       validator(value) {
         return [IssuableType.Issue, IssuableType.MergeRequest].includes(value);
       },
+    },
+    inputName: {
+      type: String,
+      required: false,
+      default: 'update[milestone_id]',
+    },
+    milestoneId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    milestoneTitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    projectMilestonesPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     workspaceType: {
       type: String,
@@ -42,10 +70,15 @@ export default {
   },
   data() {
     return {
-      milestone: placeholderMilestone,
+      milestone: this.milestoneId
+        ? { id: convertToGraphQLId(TYPE_MILESTONE, this.milestoneId), title: this.milestoneTitle }
+        : placeholderMilestone,
     };
   },
   computed: {
+    footerItemText() {
+      return this.canAdminMilestone ? __('Manage milestones') : __('View milestones');
+    },
     value() {
       return this.milestone.id === placeholderMilestone.id
         ? undefined
@@ -62,14 +95,21 @@ export default {
 
 <template>
   <div>
-    <input type="hidden" name="update[milestone_id]" :value="value" />
+    <input type="hidden" :name="inputName" :value="value" />
     <sidebar-dropdown
       :attr-workspace-path="attrWorkspacePath"
       :current-attribute="milestone"
       :issuable-attribute="$options.issuableAttribute"
       :issuable-type="issuableType"
       :workspace-type="workspaceType"
+      data-qa-selector="issuable_milestone_dropdown"
       @change="handleChange"
-    />
+    >
+      <template #footer>
+        <gl-dropdown-item v-if="projectMilestonesPath" :href="projectMilestonesPath">
+          {{ footerItemText }}
+        </gl-dropdown-item>
+      </template>
+    </sidebar-dropdown>
   </div>
 </template>

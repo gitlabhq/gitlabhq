@@ -60,7 +60,7 @@ describe('RoleDropdown', () => {
       .findAllComponents(GlDropdownItem)
       .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.props('isChecked'));
 
-  const findDropdownToggle = () => wrapper.find('button[aria-haspopup="true"]');
+  const findDropdownToggle = () => wrapper.find('button[aria-haspopup="menu"]');
   const findDropdown = () => wrapper.findComponent(GlDropdown);
 
   afterEach(() => {

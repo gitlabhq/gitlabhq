@@ -4,7 +4,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating groups **(FREE)**
+# Migrating groups with GitLab Migration **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
 > - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
@@ -18,15 +18,15 @@ this feature, ask an administrator to [enable the feature flag](../../../adminis
 `bulk_import_projects`. On GitLab.com, migrating group resources is available but migrating project resources is not
 available.
 
-Users with the Owner role on a top-level group can migrate it to:
+Users with the Owner role on a top-level group can use GitLab Migration to migrate the group to:
 
 - Another top-level group.
 - The subgroup of any existing top-level group.
 - Another GitLab instance, including GitLab.com.
 
-Migrating groups using the method documented here is not the same as [migrating groups using file exports](../settings/import_export.md).
+Migrating groups using GitLab Migration is not the same as [migrating groups using file exports](../settings/import_export.md).
 Importing and exporting groups using file exports requires you to export a group to a file and then import that file in
-another GitLab instance. Migrating groups using the method documented here automates this step.
+another GitLab instance. Migrating groups using GitLab Migration automates this step.
 
 ## Import your groups into GitLab
 

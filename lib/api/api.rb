@@ -177,6 +177,7 @@ module API
         mount ::API::Applications
         mount ::API::BroadcastMessages
         mount ::API::BulkImports
+        mount ::API::Ci::Jobs
         mount ::API::Ci::ResourceGroups
         mount ::API::Ci::Runner
         mount ::API::Ci::Runners
@@ -198,6 +199,7 @@ module API
         mount ::API::GroupVariables
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
+        mount ::API::Invitations
         mount ::API::Keys
         mount ::API::Lint
         mount ::API::MergeRequestDiffs
@@ -208,6 +210,7 @@ module API
         mount ::API::ProjectEvents
         mount ::API::ProjectExport
         mount ::API::ProjectHooks
+        mount ::API::ProjectImport
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::ProjectSnippets
         mount ::API::ProjectSnapshots
@@ -243,7 +246,6 @@ module API
       mount ::API::Boards
       mount ::API::Branches
       mount ::API::Ci::JobArtifacts
-      mount ::API::Ci::Jobs
       mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::Pipelines
       mount ::API::Ci::SecureFiles
@@ -278,7 +280,6 @@ module API
       mount ::API::HelmPackages
       mount ::API::Integrations
       mount ::API::Integrations::JiraConnect::Subscriptions
-      mount ::API::Invitations
       mount ::API::IssueLinks
       mount ::API::Issues
       mount ::API::Labels
@@ -301,7 +302,7 @@ module API
       mount ::API::PagesDomains
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectDebianDistributions
-      mount ::API::ProjectImport
+      mount ::API::ProjectEvents
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
       mount ::API::ProjectStatistics

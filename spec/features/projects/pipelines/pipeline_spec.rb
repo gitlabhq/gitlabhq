@@ -64,7 +64,9 @@ RSpec.describe 'Pipeline', :js do
     let_it_be(:group) { create(:group) }
     let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
 
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
+    let(:pipeline) do
+      create(:ci_pipeline, name: 'Build pipeline', project: project, ref: 'master', sha: project.commit.id, user: user)
+    end
 
     subject(:visit_pipeline) { visit project_pipeline_path(project, pipeline) }
 
@@ -93,6 +95,45 @@ RSpec.describe 'Pipeline', :js do
                                       "for #{pipeline.ref}")
         expect(page).to have_link(pipeline.ref,
           href: project_commits_path(pipeline.project, pipeline.ref))
+      end
+    end
+
+    context 'with pipeline_name feature flag enabled' do
+      before do
+        stub_feature_flags(pipeline_name: true)
+      end
+
+      it 'displays pipeline name instead of commit title' do
+        visit_pipeline
+
+        within 'h3' do
+          expect(page).to have_content(pipeline.name)
+        end
+
+        within '.well-segment[data-testid="commit-row"]' do
+          expect(page).to have_content(project.commit.title)
+          expect(page).to have_content(project.commit.short_id)
+        end
+      end
+    end
+
+    context 'with pipeline_name feature flag disabled' do
+      before do
+        stub_feature_flags(pipeline_name: false)
+      end
+
+      it 'displays commit title' do
+        visit_pipeline
+
+        within 'h3' do
+          expect(page).not_to have_content(pipeline.name)
+          expect(page).to have_content(project.commit.title)
+        end
+
+        within '.well-segment[data-testid="commit-row"]' do
+          expect(page).not_to have_content(project.commit.title)
+          expect(page).to have_content(project.commit.short_id)
+        end
       end
     end
 

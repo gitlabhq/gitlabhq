@@ -18,6 +18,7 @@ module API
         desc 'Invite non-members by email address to a group or project.' do
           detail 'This feature was introduced in GitLab 13.6'
           success Entities::Invitation
+          tags %w[invitations]
         end
         params do
           requires :access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'A valid access level (defaults: `30`, developer access level)'
@@ -44,8 +45,12 @@ module API
         desc 'Get a list of group or project invitations viewable by the authenticated user' do
           detail 'This feature was introduced in GitLab 13.6'
           success Entities::Invitation
+          is_array true
+          tags %w[invitations]
         end
         params do
+          optional :page, type: Integer, desc: 'Page to retrieve'
+          optional :per_page, type: Integer, desc: 'Number of member invitations to return per page'
           optional :query, type: String, desc: 'A query string to search for members'
           use :pagination
         end
@@ -62,6 +67,7 @@ module API
 
         desc 'Updates a group or project invitation.' do
           success Entities::Member
+          tags %w[invitations]
         end
         params do
           requires :email, type: String, desc: 'The email address of the invitation'
@@ -93,7 +99,15 @@ module API
           end
         end
 
-        desc 'Removes an invitation from a group or project.'
+        desc 'Removes an invitation from a group or project.' do
+          success code: 204
+          failure [
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 409, message: 'Could not delete invitation' }
+          ]
+          tags %w[invitations]
+        end
         params do
           requires :email, type: String, desc: 'The email address of the invitation'
         end

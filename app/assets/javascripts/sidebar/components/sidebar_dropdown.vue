@@ -201,6 +201,7 @@ export default {
     :header-text="i18n.assignAttribute"
     lazy
     :text="dropdownText"
+    toggle-class="gl-m-0"
     @show="handleShow"
     @shown="setFocus"
   >
@@ -243,6 +244,9 @@ export default {
           <template v-if="isAttributeOverdue(attrItem)">{{ $options.i18n.expired }}</template>
         </gl-dropdown-item>
       </slot>
+    </template>
+    <template #footer>
+      <slot name="footer"></slot>
     </template>
   </gl-dropdown>
 </template>

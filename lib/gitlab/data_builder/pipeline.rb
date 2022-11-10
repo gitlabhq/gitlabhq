@@ -147,7 +147,7 @@ module Gitlab
       end
 
       def environment_hook_attrs(build)
-        return unless build.has_environment?
+        return unless build.has_environment_keyword?
 
         {
           name: build.expanded_environment_name,

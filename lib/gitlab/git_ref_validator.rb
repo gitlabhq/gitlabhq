@@ -13,6 +13,7 @@ module Gitlab
     #
     # Returns true for a valid reference name, false otherwise
     def validate(ref_name)
+      return false if ref_name.to_s.empty? # #blank? raises an ArgumentError for invalid encodings
       return false if ref_name.start_with?(*(EXPANDED_PREFIXES + DISALLOWED_PREFIXES))
       return false if ref_name == 'HEAD'
 
@@ -24,6 +25,7 @@ module Gitlab
     end
 
     def validate_merge_request_branch(ref_name)
+      return false if ref_name.to_s.empty?
       return false if ref_name.start_with?(*DISALLOWED_PREFIXES)
 
       expanded_name = if ref_name.start_with?(*EXPANDED_PREFIXES)

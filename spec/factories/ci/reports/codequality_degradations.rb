@@ -26,7 +26,8 @@ FactoryBot.define do
         "remediation_points": 900000,
         "severity": "major",
         "type": "issue",
-        "engine_name": "structure"
+        "engine_name": "structure",
+        "web_url": "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_a.rb#L10"
       }.with_indifferent_access
     end
   end
@@ -56,7 +57,8 @@ FactoryBot.define do
         "remediation_points": 900000,
         "severity": "major",
         "type": "issue",
-        "engine_name": "structure"
+        "engine_name": "structure",
+        "web_url": "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_a.rb#L10"
       }.with_indifferent_access
     end
   end
@@ -91,7 +93,8 @@ FactoryBot.define do
         },
         "engine_name": "rubocop",
         "fingerprint": "ab5f8b935886b942d621399f5a2ca16e",
-        "severity": "minor"
+        "severity": "minor",
+        "web_url": "http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_b.rb#L10"
       }.with_indifferent_access
     end
   end

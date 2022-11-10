@@ -18,7 +18,7 @@ import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assi
 import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
 import SidebarDueDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
-import BulkUpdateMilestoneDropdown from '~/sidebar/components/milestone/bulk_update_milestone_dropdown.vue';
+import MilestoneDropdown from '~/sidebar/components/milestone/milestone_dropdown.vue';
 import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar_participants_widget.vue';
 import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
@@ -299,16 +299,31 @@ export function mountMilestoneDropdown() {
 
   Vue.use(VueApollo);
 
+  const {
+    canAdminMilestone,
+    fullPath,
+    inputName,
+    milestoneId,
+    milestoneTitle,
+    projectMilestonesPath,
+    workspaceType,
+  } = el.dataset;
+
   return new Vue({
     el,
-    name: 'BulkUpdateMilestoneDropdownRoot',
+    name: 'MilestoneDropdownRoot',
     apolloProvider,
     render(createElement) {
-      return createElement(BulkUpdateMilestoneDropdown, {
+      return createElement(MilestoneDropdown, {
         props: {
-          attrWorkspacePath: el.dataset.fullPath,
+          attrWorkspacePath: fullPath,
+          canAdminMilestone,
+          inputName,
           issuableType: isInIssuePage() ? IssuableType.Issue : IssuableType.MergeRequest,
-          workspaceType: el.dataset.workspaceType,
+          milestoneId,
+          milestoneTitle,
+          projectMilestonesPath,
+          workspaceType,
         },
       });
     },

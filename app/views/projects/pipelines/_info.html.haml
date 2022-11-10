@@ -1,9 +1,13 @@
-.commit-box
-  %h3.commit-title
-    = markdown(commit.title, pipeline: :single_line)
-  - if commit.description.present?
-    %pre.commit-description<
-      = preserve(markdown(commit.description, pipeline: :single_line))
+- if Feature.enabled?(:pipeline_name, @pipeline.project) && @pipeline.name
+  %h3
+    = @pipeline.name
+- else
+  .commit-box
+    %h3.commit-title
+      = markdown(commit.title, pipeline: :single_line)
+    - if commit.description.present?
+      %pre.commit-description<
+        = preserve(markdown(commit.description, pipeline: :single_line))
 
 .info-well
   .well-segment.pipeline-info{ class: "gl-align-items-baseline!" }
@@ -45,11 +49,16 @@
       - if @pipeline.stuck?
         = gl_badge_tag s_('Pipelines|stuck'), { variant: :warning, size: :sm }, { class: 'js-pipeline-url-stuck has-tooltip' }
 
-  .well-segment
+  .well-segment{ 'data-testid': 'commit-row' }
     .icon-container.commit-icon
       = sprite_icon('commit', css_class: 'gl-top-0!')
-    = link_to commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha"
-    = clipboard_button(text: @pipeline.sha, title: _("Copy commit SHA"))
+    - if Feature.enabled?(:pipeline_name, @pipeline.project) && @pipeline.name
+      = markdown(commit.title, pipeline: :single_line)
+      = clipboard_button(text: @pipeline.sha, title: _("Copy commit SHA"))
+      = link_to commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha"
+    - else
+      = link_to commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha"
+      = clipboard_button(text: @pipeline.sha, title: _("Copy commit SHA"))
 
   .well-segment.related-merge-request-info
     .icon-container

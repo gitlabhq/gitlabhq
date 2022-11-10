@@ -234,7 +234,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
         <!---->
         <button
           aria-expanded="false"
-          aria-haspopup="true"
+          aria-haspopup="menu"
           class="btn dropdown-toggle btn-default btn-md add-reaction-button btn-icon gl-relative! gl-button gl-dropdown-toggle btn-default-secondary"
           id="__BVID__13__BV_toggle_"
           type="button"

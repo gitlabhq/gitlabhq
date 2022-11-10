@@ -20,14 +20,10 @@ RSpec.shared_examples 'an editable merge request' do
       expect(page).to have_content user.name
     end
 
-    click_button 'Milestone'
-    page.within '.issue-milestone' do
-      click_link milestone.title
-    end
+    click_button 'Select milestone'
+    click_button milestone.title
     expect(find('input[name="merge_request[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
-    page.within '.js-milestone-select' do
-      expect(page).to have_content milestone.title
-    end
+    expect(page).to have_button milestone.title
 
     click_button 'Labels'
     page.within '.dropdown-menu-labels' do

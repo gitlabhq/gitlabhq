@@ -52,7 +52,7 @@ RSpec.shared_examples 'acts as branch pipeline' do |jobs|
   context 'when branch pipeline' do
     let(:pipeline_branch) { default_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
 
     it 'includes a job' do
       expect(pipeline.builds.pluck(:name)).to match_array(jobs)

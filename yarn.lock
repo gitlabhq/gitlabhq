@@ -1113,13 +1113,13 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.7.0.tgz#1257b69fb9898ea5614f992aa6b6dc3619c3c38c"
   integrity sha512-6vTqWZzY63ZUTUqk0dmMDcfU27qtkAu0WmlK4e3FMWmISvTxNhAk2j11c/YlLauf6okE4W2T2fnhvXp1mzcPgA==
 
-"@gitlab/ui@49.3.0":
-  version "49.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-49.3.0.tgz#63e6a375d66c6f6ae568f0d1a08fe0e9bd4e355b"
-  integrity sha512-c8GSajEdW2Q1ME7lYuQgImR493WaELKJOq/T+1zVs3i82cc1YDWbGEJyKZh6srJ6xNSLuIbn6d7oSqfM/jeSAQ==
+"@gitlab/ui@49.5.1":
+  version "49.5.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-49.5.1.tgz#aae75d633059110395caa452967c8d439c6e204f"
+  integrity sha512-2/m9VZw42kY4Bdrsfs7QbjXFL9r3bXbpagQnKC/msR5YcOScB3TXs7Vr/Hnzv+6xoOHEhGMySrL0Wd4EqaBv+Q==
   dependencies:
     "@popperjs/core" "^2.11.2"
-    bootstrap-vue "2.20.1"
+    bootstrap-vue "2.23.1"
     dompurify "^2.4.0"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
@@ -3118,21 +3118,26 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bootstrap-vue@2.20.1:
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.20.1.tgz#1b6cd4368632c1a6dd4a5ed161242baa131c3cd5"
-  integrity sha512-s+w83q0T2mo/RbFwTM8gExbLJMEOYpdTUqmyFaHv2Ir+TFprMvTWpeAzeNuawJ130W1gePZ3LW3cNp1t/tZbOw==
+bootstrap-vue@2.23.1:
+  version "2.23.1"
+  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.23.1.tgz#8f866f7cda27eb0e7e13a0bea8d55d8fc7a82199"
+  integrity sha512-SEWkG4LzmMuWjQdSYmAQk1G/oOKm37dtNfjB5kxq0YafnL2W6qUAmeDTcIZVbPiQd2OQlIkWOMPBRGySk/zGsg==
   dependencies:
     "@nuxt/opencollective" "^0.3.2"
-    bootstrap ">=4.5.3 <5.0.0"
+    bootstrap "^4.6.1"
     popper.js "^1.16.1"
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"
 
-bootstrap@4.5.3, "bootstrap@>=4.5.3 <5.0.0":
+bootstrap@4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.5.3.tgz#c6a72b355aaf323920be800246a6e4ef30997fe6"
   integrity sha512-o9ppKQioXGqhw8Z7mah6KdTYpNQY//tipnkxppWhPbiSWdD+1raYsnhwEZjkTHYbGee4cVQ0Rx65EhOY/HNLcQ==
+
+bootstrap@^4.6.1:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.2.tgz#8e0cd61611728a5bf65a3a2b8d6ff6c77d5d7479"
+  integrity sha512-51Bbp/Uxr9aTuy6ca/8FbFloBUJZLHwnhTcnjIeRn2suQWsWzcuJhGjKDB5eppVte/8oCdOL3VuwxvZDUggwGQ==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

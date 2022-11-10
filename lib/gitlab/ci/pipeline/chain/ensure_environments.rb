@@ -16,7 +16,7 @@ module Gitlab
           private
 
           def ensure_environment(build)
-            return unless build.instance_of?(::Ci::Build) && build.has_environment?
+            return unless build.instance_of?(::Ci::Build) && build.has_environment_keyword?
 
             environment = ::Gitlab::Ci::Pipeline::Seed::Environment
                             .new(build, merge_request: @command.merge_request)

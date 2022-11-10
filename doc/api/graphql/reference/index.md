@@ -11061,6 +11061,7 @@ Represents a code quality degradation on the pipeline.
 | <a id="codequalitydegradationline"></a>`line` | [`Int!`](#int) | Line on which the code quality degradation occurred. |
 | <a id="codequalitydegradationpath"></a>`path` | [`String!`](#string) | Relative path to the file containing the code quality degradation. |
 | <a id="codequalitydegradationseverity"></a>`severity` | [`CodeQualityDegradationSeverity!`](#codequalitydegradationseverity) | Status of the degradation (BLOCKER, CRITICAL, MAJOR, MINOR, INFO, UNKNOWN). |
+| <a id="codequalitydegradationweburl"></a>`webUrl` | [`String`](#string) | URL to the file along with line number. |
 
 ### `Commit`
 

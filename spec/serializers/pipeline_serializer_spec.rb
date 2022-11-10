@@ -238,6 +238,7 @@ RSpec.describe PipelineSerializer do
         create(:ci_empty_pipeline,
                project: project,
                status: status,
+               name: 'Build pipeline',
                ref: 'feature').tap do |pipeline|
           Ci::Build::AVAILABLE_STATUSES.each do |build_status|
             create_build(pipeline, status, build_status)

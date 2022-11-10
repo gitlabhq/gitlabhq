@@ -19,5 +19,6 @@
         window.uploads_path = "#{project_uploads_path(project)}";
 
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"
+= dispensable_render_if_exists "projects/free_user_cap_alert", project: @project
 
 = render template: "layouts/application"

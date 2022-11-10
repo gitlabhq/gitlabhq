@@ -1440,9 +1440,10 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
   resulting record to pass validation.
 - When instantiating from a factory, don't supply attributes that aren't
   required by the test.
-- Prefer [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition)
-  or [explicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#explicit-definition)
-  association definitions instead of using `create` / `build` for association setup.
+- Prefer [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition),
+  [explicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#explicit-definition), or
+  [inline](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#inline-definition) associations
+  over `create` / `build` for association setup in callbacks.
   See [issue #262624](https://gitlab.com/gitlab-org/gitlab/-/issues/262624) for further context.
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).

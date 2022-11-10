@@ -27,6 +27,26 @@ RSpec.describe Tags::CreateService do
       end
     end
 
+    context 'when tag_name is empty' do
+      it 'returns an error' do
+        response = service.execute('', 'foo', 'Foo')
+
+        expect(response[:status]).to eq(:error)
+        expect(response[:http_status]).to eq(400)
+        expect(response[:message]).to eq('Tag name invalid')
+      end
+    end
+
+    context 'when target is empty' do
+      it 'returns an error' do
+        response = service.execute('v1.1.0', '', 'Foo')
+
+        expect(response[:status]).to eq(:error)
+        expect(response[:http_status]).to eq(400)
+        expect(response[:message]).to eq('Target is empty')
+      end
+    end
+
     context 'when tag already exists' do
       it 'returns an error' do
         expect(repository).to receive(:add_tag)

@@ -135,17 +135,6 @@ module IssuablesHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def milestone_dropdown_label(milestone_title, default_label = _('Milestone'))
-    title =
-      case milestone_title
-      when Milestone::Upcoming.name then Milestone::Upcoming.title
-      when Milestone::Started.name then Milestone::Started.title
-      else milestone_title.presence
-      end
-
-    h(title || default_label)
-  end
-
   def issuable_meta_author_status(author)
     return "" unless author&.status&.customized? && status = user_status(author)
 

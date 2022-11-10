@@ -2,7 +2,7 @@
 
 exports[`JiraImportForm table body shows correct information in each cell 1`] = `
 <table
-  aria-busy="false"
+  aria-busy=""
   aria-colcount="3"
   class="table b-table gl-table b-table-fixed"
   role="table"
@@ -92,7 +92,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           <!---->
           <button
             aria-expanded="false"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
             type="button"
           >
@@ -223,7 +223,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           <!---->
           <button
             aria-expanded="false"
-            aria-haspopup="true"
+            aria-haspopup="menu"
             class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
             type="button"
           >

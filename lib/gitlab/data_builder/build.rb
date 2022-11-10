@@ -91,7 +91,7 @@ module Gitlab
       end
 
       def build_environment(build)
-        return unless build.has_environment?
+        return unless build.has_environment_keyword?
 
         {
           name: build.expanded_environment_name,

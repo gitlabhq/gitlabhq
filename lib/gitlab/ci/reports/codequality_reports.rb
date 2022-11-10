@@ -37,8 +37,6 @@ module Gitlab
           end.to_h
         end
 
-        private
-
         def valid_degradation?(degradation)
           JSONSchemer.schema(Pathname.new(CODECLIMATE_SCHEMA_PATH)).valid?(degradation)
         rescue StandardError => _

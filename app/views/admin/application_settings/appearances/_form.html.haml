@@ -101,7 +101,7 @@
             = parsed_with_gfm
 
       .gl-mt-3.gl-mb-3
-        = f.submit _('Update appearance settings'), class: 'btn gl-button btn-confirm'
+        = f.submit _('Update appearance settings'), pajamas_button: true
         - if @appearance.persisted? || @appearance.updated_at
           .mt-4
             - if @appearance.persisted?

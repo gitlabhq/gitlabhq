@@ -36,17 +36,17 @@ RSpec.describe MigrateSidekiqQueuedJobs, :clean_gitlab_redis_queues do
     end
 
     context 'without worker_queue_mappings mocked' do
-      it 'migration still works' do
-        # Assuming Settings.sidekiq.routing_rules is [['*', 'default']]
-        # If routing_rules or Gitlab::SidekiqConfig.worker_queue_mappings changed,
+      it 'migration still runs' do
+        # Assuming Settings.sidekiq.routing_rules is [] (named queue)
+        # If the default Settings.sidekiq.routing_rules or Gitlab::SidekiqConfig.worker_queue_mappings changed,
         # this spec might be failing. We'll have to adjust the migration or this spec.
         expect(queue_length('email_receiver')).to eq(2)
         expect(queue_length('default')).to eq(0)
         migrate!
-        expect(queue_length('email_receiver')).to eq(0)
-        expect(queue_length('default')).to eq(2)
+        expect(queue_length('email_receiver')).to eq(2)
+        expect(queue_length('default')).to eq(0)
 
-        jobs = list_jobs('default')
+        jobs = list_jobs('email_receiver')
         expect(jobs[0]).to include("class" => "EmailReceiverWorker", "args" => ["bar"])
         expect(jobs[1]).to include("class" => "EmailReceiverWorker", "args" => ["foo"])
       end
@@ -62,6 +62,8 @@ RSpec.describe MigrateSidekiqQueuedJobs, :clean_gitlab_redis_queues do
       end
 
       it 'logs an error' do
+        allow(Gitlab::SidekiqConfig).to receive(:worker_queue_mappings)
+                                          .and_return({ "EmailReceiverWorker" => "default" })
         allow(::Gitlab::BackgroundMigration::Logger).to receive(:build).and_return(Logger.new($stdout))
         migrate!
         expect($stdout.string).to include("Unmarshal JSON payload from SidekiqMigrateJobs failed. Job: #{job}")

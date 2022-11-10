@@ -3,6 +3,8 @@
 module Tags
   class CreateService < BaseService
     def execute(tag_name, target, message)
+      return error('Target is empty', 400) if target.blank?
+
       valid_tag = Gitlab::GitRefValidator.validate(tag_name)
       return error('Tag name invalid', 400) unless valid_tag
 

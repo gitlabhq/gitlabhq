@@ -35,6 +35,8 @@ RSpec.describe Gitlab::GitRefValidator do
     it { expect(described_class.validate('.tag')).to be false }
     it { expect(described_class.validate('my branch')).to be false }
     it { expect(described_class.validate("\xA0\u0000\xB0")).to be false }
+    it { expect(described_class.validate("")).to be false }
+    it { expect(described_class.validate(nil)).to be false }
   end
 
   describe '.validate_merge_request_branch' do
@@ -67,5 +69,7 @@ RSpec.describe Gitlab::GitRefValidator do
     it { expect(described_class.validate_merge_request_branch('.tag')).to be false }
     it { expect(described_class.validate_merge_request_branch('my branch')).to be false }
     it { expect(described_class.validate_merge_request_branch("\xA0\u0000\xB0")).to be false }
+    it { expect(described_class.validate_merge_request_branch("")).to be false }
+    it { expect(described_class.validate_merge_request_branch(nil)).to be false }
   end
 end

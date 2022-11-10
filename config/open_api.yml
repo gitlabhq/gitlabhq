@@ -46,19 +46,21 @@ metadata:
   - name: ci_lint
     description: Operations related to linting a CI config file
   - name: group_export
-    description: Operations related to export groups
+    description: Operations related to exporting groups
   - name: merge_requests
     description: Operations related to merge requests
   - name: metadata
     description: Operations related to metadata of the GitLab instance
   - name: project_export
-    description: Operations related to export projects
+    description: Operations related to exporting projects
   - name: project_hooks
     description: Operations related to project hooks
+  - name: project_import
+    description: Operations related to importing projects
   - name: project_import_bitbucket
-    description: Operations related to import BitBucket projects
+    description: Operations related to importing BitBucket projects
   - name: project_import_github
-    description: Operations related to import GitHub projects
+    description: Operations related to importing GitHub projects
   - name: protected environments
     description: Operations related to protected environments
   - name: release_links

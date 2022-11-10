@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::PipelineEntity do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, name: 'Build pipeline') }
 
   let(:request) { double('request') }
 
@@ -29,7 +29,7 @@ RSpec.describe MergeRequests::PipelineEntity do
 
       is_expected.to include(
         :id, :path, :active, :coverage, :ref, :commit, :details,
-        :flags, :triggered, :triggered_by
+        :flags, :triggered, :triggered_by, :name
       )
       expect(subject[:commit]).to include(:short_id, :commit_path)
       expect(subject[:ref]).to include(:branch)
@@ -50,6 +50,16 @@ RSpec.describe MergeRequests::PipelineEntity do
         .represent(pipeline, request: request, disable_coverage: true)
 
       expect(entity.as_json).not_to include(:coverage)
+    end
+
+    context 'when pipeline_name feature flag is disabled' do
+      before do
+        stub_feature_flags(pipeline_name: false)
+      end
+
+      it 'does not return name' do
+        is_expected.not_to include(:name)
+      end
     end
   end
 end

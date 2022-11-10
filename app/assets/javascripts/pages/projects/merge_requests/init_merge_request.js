@@ -6,8 +6,8 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
 import GLForm from '~/gl_form';
 import LabelsSelect from '~/labels/labels_select';
-import MilestoneSelect from '~/milestones/milestone_select';
 import IssuableTemplateSelectors from '~/issuable/issuable_template_selectors';
+import { mountMilestoneDropdown } from '~/sidebar/mount_sidebar';
 
 export default () => {
   new Diff();
@@ -15,8 +15,8 @@ export default () => {
   new GLForm($('.merge-request-form'));
   new IssuableForm($('.merge-request-form'));
   new LabelsSelect();
-  new MilestoneSelect();
   new IssuableTemplateSelectors({
     warnTemplateOverride: true,
   });
+  mountMilestoneDropdown('[name="merge_request[milestone_id]"]');
 };

@@ -649,9 +649,6 @@ msgstr ""
 msgid "%{docs_link_start}What is two-factor authentication?%{docs_link_end}"
 msgstr ""
 
-msgid "%{due_date} (Past due)"
-msgstr ""
-
 msgid "%{duration}ms"
 msgstr ""
 
@@ -17051,9 +17048,6 @@ msgstr ""
 msgid "Filter by merge requests that are currently merged."
 msgstr ""
 
-msgid "Filter by milestone"
-msgstr ""
-
 msgid "Filter by milestone name"
 msgstr ""
 
@@ -24684,9 +24678,6 @@ msgid "Logo will be removed. Are you sure?"
 msgstr ""
 
 msgid "Logs"
-msgstr ""
-
-msgid "Looks like you've reached your %{free_limit} member limit for %{strong_start}%{namespace_name}%{strong_end}"
 msgstr ""
 
 msgid "Low vulnerabilities present"
@@ -42422,6 +42413,9 @@ msgstr ""
 msgid "To reactivate your account, sign in to GitLab at %{gitlab_url}."
 msgstr ""
 
+msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your namespace to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
+msgstr ""
+
 msgid "To resolve this, try to:"
 msgstr ""
 
@@ -46636,9 +46630,6 @@ msgstr ""
 msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%{linkEnd}"
 msgstr ""
 
-msgid "You can't add any more, but you can manage your existing members, for example, by removing inactive members and replacing them with new members. To get more members an owner of the group can start a trial or upgrade to a paid tier."
-msgstr ""
-
 msgid "You can't follow more than %{limit} users. To follow more users, unfollow some others."
 msgstr ""
 
@@ -47273,6 +47264,9 @@ msgid "Your message here"
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your namespace %{namespace_name} is over the %{free_limit} user limit and has been placed in a read-only state."
 msgstr ""
 
 msgid "Your new %{accessTokenType}"

@@ -9,6 +9,7 @@ module LooseForeignKeys
     end
 
     def execute
+      raised_error = false
       modification_tracker = ModificationTracker.new
       tracked_tables.cycle do |table|
         records = load_batch_for_table(table)
@@ -35,12 +36,29 @@ module LooseForeignKeys
         break if modification_tracker.over_limit?
       end
 
+      ::Gitlab::Metrics::LooseForeignKeysSlis.record_apdex(
+        success: !modification_tracker.over_limit?,
+        db_config_name: db_config_name
+      )
+
       modification_tracker.stats
+    rescue StandardError
+      raised_error = true
+      raise
+    ensure
+      ::Gitlab::Metrics::LooseForeignKeysSlis.record_error_rate(
+        error: raised_error,
+        db_config_name: db_config_name
+      )
     end
 
     private
 
     attr_reader :connection
+
+    def db_config_name
+      ::Gitlab::Database.db_config_name(connection)
+    end
 
     def load_batch_for_table(table)
       fully_qualified_table_name = "#{current_schema}.#{table}"

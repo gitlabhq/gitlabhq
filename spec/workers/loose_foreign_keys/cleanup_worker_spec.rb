@@ -125,37 +125,6 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     expect(loose_fk_child_table_2_1.count).to eq(0)
   end
 
-  context 'when deleting in batches' do
-    before do
-      stub_const('LooseForeignKeys::CleanupWorker::BATCH_SIZE', 2)
-    end
-
-    it 'cleans up all rows' do
-      expect(LooseForeignKeys::BatchCleanerService).to receive(:new).exactly(:twice).and_call_original
-
-      perform_for(db: :main)
-
-      expect(loose_fk_child_table_1_1.count).to eq(0)
-      expect(loose_fk_child_table_1_2.where(parent_id_with_different_column: nil).count).to eq(4)
-      expect(loose_fk_child_table_2_1.count).to eq(0)
-    end
-  end
-
-  context 'when the deleted rows count limit have been reached' do
-    def count_deletable_rows
-      loose_fk_child_table_1_1.count + loose_fk_child_table_2_1.count
-    end
-
-    before do
-      stub_const('LooseForeignKeys::ModificationTracker::MAX_DELETES', 2)
-      stub_const('LooseForeignKeys::CleanerService::DELETE_LIMIT', 1)
-    end
-
-    it 'cleans up 2 rows' do
-      expect { perform_for(db: :main) }.to change { count_deletable_rows }.by(-2)
-    end
-  end
-
   describe 'multi-database support' do
     where(:current_minute, :configured_base_models, :expected_connection_model) do
       2 | { main: 'ActiveRecord::Base', ci: 'Ci::ApplicationRecord' } | 'ActiveRecord::Base'

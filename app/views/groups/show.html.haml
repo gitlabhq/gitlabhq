@@ -4,7 +4,6 @@
 - add_page_specific_style 'page_bundles/group'
 
 = render_if_exists 'shared/qrtly_reconciliation_alert', group: @group
-= render_if_exists 'shared/free_user_cap_alert', source: @group
 
 - if show_invite_banner?(@group)
   = content_for :group_invite_members_banner do

@@ -204,11 +204,5 @@ class Settings < Settingslogic
 
       "#{minute} #{hour} * * #{day_of_week}"
     end
-
-    # Route all jobs to 'default' queue. This setting is meant for self-managed instances use to keep things simple.
-    # See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1491
-    def build_sidekiq_routing_rules(rules)
-      rules.nil? || rules&.empty? ? [['*', 'default']] : rules
-    end
   end
 end

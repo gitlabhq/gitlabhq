@@ -115,6 +115,9 @@ export default {
     commitTitle() {
       return this.pipeline?.commit?.title;
     },
+    pipelineName() {
+      return this.pipeline?.name;
+    },
   },
   methods: {
     trackClick(action) {
@@ -125,7 +128,18 @@ export default {
 </script>
 <template>
   <div class="pipeline-tags" data-testid="pipeline-url-table-cell">
-    <div class="commit-title gl-mb-2" data-testid="commit-title-container">
+    <div v-if="pipelineName" class="gl-mb-2" data-testid="pipeline-name-container">
+      <span class="gl-display-flex">
+        <tooltip-on-truncate
+          :title="pipelineName"
+          class="gl-flex-grow-1 gl-text-truncate gl-text-gray-900"
+        >
+          {{ pipelineName }}
+        </tooltip-on-truncate>
+      </span>
+    </div>
+
+    <div v-if="!pipelineName" class="commit-title gl-mb-2" data-testid="commit-title-container">
       <span v-if="commitTitle" class="gl-display-flex">
         <tooltip-on-truncate :title="commitTitle" class="gl-flex-grow-1 gl-text-truncate">
           <gl-link

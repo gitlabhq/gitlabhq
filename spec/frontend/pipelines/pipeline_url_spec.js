@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineUrlComponent from '~/pipelines/components/pipelines_list/pipeline_url.vue';
@@ -20,6 +21,7 @@ describe('Pipeline Url Component', () => {
   const findCommitRefName = () => wrapper.findByTestId('commit-ref-name');
 
   const findCommitTitleContainer = () => wrapper.findByTestId('commit-title-container');
+  const findPipelineNameContainer = () => wrapper.findByTestId('pipeline-name-container');
   const findCommitTitle = (commitWrapper) => commitWrapper.find('[data-testid="commit-title"]');
 
   const defaultProps = mockPipeline(projectPath);
@@ -51,7 +53,16 @@ describe('Pipeline Url Component', () => {
     expect(findPipelineUrlLink().text()).toBe('#1');
   });
 
-  it('should render the commit title, commit reference and commit-short-sha', () => {
+  it('should render the pipeline name instead of commit title', () => {
+    createComponent(merge(mockPipeline(projectPath), { pipeline: { name: 'Build pipeline' } }));
+
+    expect(findCommitTitleContainer().exists()).toBe(false);
+    expect(findPipelineNameContainer().exists()).toBe(true);
+    expect(findRefName().exists()).toBe(true);
+    expect(findCommitShortSha().exists()).toBe(true);
+  });
+
+  it('should render the commit title when pipeline has no name', () => {
     createComponent();
 
     const commitWrapper = findCommitTitleContainer();
@@ -59,6 +70,7 @@ describe('Pipeline Url Component', () => {
     expect(findCommitTitle(commitWrapper).exists()).toBe(true);
     expect(findRefName().exists()).toBe(true);
     expect(findCommitShortSha().exists()).toBe(true);
+    expect(findPipelineNameContainer().exists()).toBe(false);
   });
 
   describe('commit user avatar', () => {
@@ -142,7 +154,7 @@ describe('Pipeline Url Component', () => {
     });
 
     it('tracks commit title click', () => {
-      createComponent(mockPipelineBranch());
+      createComponent(merge(mockPipelineBranch(), { pipeline: { name: null } }));
 
       findCommitTitle(findCommitTitleContainer()).vm.$emit('click');
 

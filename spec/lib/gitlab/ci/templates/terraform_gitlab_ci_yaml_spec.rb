@@ -15,7 +15,7 @@ RSpec.describe 'Terraform.gitlab-ci.yml' do
     let_it_be(:project) { create(:project, :repository, create_branch: 'patch-1') }
     let(:user) { project.first_owner }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do

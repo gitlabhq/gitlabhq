@@ -1620,8 +1620,8 @@ RSpec.describe Ci::Build do
   end
 
   describe 'environment' do
-    describe '#has_environment?' do
-      subject { build.has_environment? }
+    describe '#has_environment_keyword?' do
+      subject { build.has_environment_keyword? }
 
       context 'when environment is defined' do
         before do

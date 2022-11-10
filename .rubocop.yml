@@ -487,6 +487,12 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
 
+RSpec/FactoryBot/StrategyInCallback:
+  Enabled: true
+  Include:
+    - 'spec/factories/**/*.rb'
+    - 'ee/spec/factories/**/*.rb'
+
 Cop/IncludeSidekiqWorker:
   Enabled: true
   Exclude:

@@ -81,7 +81,7 @@ module Ci
     # Since Gitlab 12.9, we started persisting the expanded environment name to
     # avoid repeated variables expansion in `action: stop` builds as well.
     def persisted_environment
-      return unless has_environment?
+      return unless has_environment_keyword?
 
       strong_memoize(:persisted_environment) do
         # This code path has caused N+1s in the past, since environments are only indirectly
@@ -492,7 +492,7 @@ module Ci
     end
 
     def expanded_environment_name
-      return unless has_environment?
+      return unless has_environment_keyword?
 
       strong_memoize(:expanded_environment_name) do
         # We're using a persisted expanded environment name in order to avoid
@@ -506,7 +506,7 @@ module Ci
     end
 
     def expanded_kubernetes_namespace
-      return unless has_environment?
+      return unless has_environment_keyword?
 
       namespace = options.dig(:environment, :kubernetes, :namespace)
 
@@ -517,16 +517,16 @@ module Ci
       end
     end
 
-    def has_environment?
+    def has_environment_keyword?
       environment.present?
     end
 
     def starts_environment?
-      has_environment? && self.environment_action == 'start'
+      has_environment_keyword? && self.environment_action == 'start'
     end
 
     def stops_environment?
-      has_environment? && self.environment_action == 'stop'
+      has_environment_keyword? && self.environment_action == 'stop'
     end
 
     def environment_action
@@ -968,7 +968,7 @@ module Ci
 
     def collect_codequality_reports!(codequality_report)
       each_report(Ci::JobArtifact.file_types_for_report(:codequality)) do |file_type, blob|
-        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report)
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report, { project: project, commit_sha: pipeline.sha })
       end
 
       codequality_report
@@ -1183,7 +1183,7 @@ module Ci
 
     def environment_status
       strong_memoize(:environment_status) do
-        if has_environment? && merge_request
+        if has_environment_keyword? && merge_request
           EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
         end
       end

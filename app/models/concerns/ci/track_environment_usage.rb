@@ -17,7 +17,7 @@ module Ci
     end
 
     def verifies_environment?
-      has_environment? && environment_action == 'verify'
+      has_environment_keyword? && environment_action == 'verify'
     end
 
     def count_user_deployment?
