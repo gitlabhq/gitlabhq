@@ -22,10 +22,6 @@ module Integrations
     def default_channel_placeholder
     end
 
-    def webhook_placeholder
-      'https://chat.googleapis.com/v1/spaces…'
-    end
-
     def self.supported_events
       %w[push issue confidential_issue merge_request note confidential_note tag_push
          pipeline wiki_page]
@@ -33,7 +29,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', placeholder: "#{webhook_placeholder}" },
+        { type: 'text', name: 'webhook', help: 'https://chat.googleapis.com/v1/spaces…' },
         { type: 'checkbox', name: 'notify_only_broken_pipelines' },
         {
           type: 'select',

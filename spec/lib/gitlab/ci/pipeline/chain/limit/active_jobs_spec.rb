@@ -69,7 +69,9 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs do
         class: described_class.name,
         message: described_class::MESSAGE,
         project_id: project.id,
-        plan: default_plan.name
+        plan: default_plan.name,
+        project_path: project.path,
+        jobs_in_alive_pipelines_count: step.send(:count_jobs_in_alive_pipelines)
       )
     end
 

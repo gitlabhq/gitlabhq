@@ -94,7 +94,7 @@ module API
       end
       post ':id/repository_storage_moves' do
         storage_move = user_project.repository_storage_moves.build(
-          declared_params.merge(source_storage_name: user_project.repository_storage)
+          declared_params.compact.merge(source_storage_name: user_project.repository_storage)
         )
 
         if storage_move.schedule

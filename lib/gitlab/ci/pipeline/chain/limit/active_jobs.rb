@@ -21,7 +21,10 @@ module Gitlab
                 class: self.class.name,
                 message: MESSAGE,
                 project_id: project.id,
-                plan: project.actual_plan_name)
+                plan: project.actual_plan_name,
+                project_path: project.path,
+                jobs_in_alive_pipelines_count: count_jobs_in_alive_pipelines
+              )
             end
 
             def break?

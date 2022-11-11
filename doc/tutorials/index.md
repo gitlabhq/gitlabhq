@@ -53,7 +53,7 @@ CI/CD pipelines are used to automatically build, test, and deploy your code.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [Tutorial: Create and run your first GitLab CI/CD pipeline](../ci/quick_start/index.md) | Create a `.gitlab-ci.yml` file and start a pipeline. | **{star}** |
+| [Create and run your first GitLab CI/CD pipeline](../ci/quick_start/index.md) | Create a `.gitlab-ci.yml` file and start a pipeline. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Get started: Learn about CI/CD](https://www.youtube.com/watch?v=sIegJaLy2ug) (9m 02s) | Learn about the `.gitlab-ci.yml` file and how it's used. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [CI deep dive](https://www.youtube.com/watch?v=ZVUbmVac-m8&list=PL05JrBw4t0KorkxIFgZGnzzxjZRCGROt_&index=27) (22m 51s) | Take a closer look at pipelines and continuous integration concepts. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [CD deep dive](https://www.youtube.com/watch?v=Cn0rzND-Yjw&list=PL05JrBw4t0KorkxIFgZGnzzxjZRCGROt_&index=10) (47m 54s) | Learn about deploying in GitLab. | |

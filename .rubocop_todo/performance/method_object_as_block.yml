@@ -29,7 +29,6 @@ Performance/MethodObjectAsBlock:
     - 'ee/app/services/security/findings/cleanup_service.rb'
     - 'ee/app/services/security/ingestion/ingest_reports_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerability_statistics.rb'
-    - 'ee/app/services/security/store_findings_metadata_service.rb'
     - 'ee/app/services/security/store_grouped_scans_service.rb'
     - 'ee/lib/ee/container_registry/client.rb'
     - 'ee/lib/ee/gitlab/ci/config_ee.rb'

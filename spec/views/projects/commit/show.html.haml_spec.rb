@@ -67,5 +67,13 @@ RSpec.describe 'projects/commit/show.html.haml' do
       expect(rendered).to have_content("This commit is part of merge request")
       expect(rendered).to have_link(merge_request.to_reference, href: merge_request_url)
     end
+
+    context 'when merge request is nil' do
+      let(:merge_request) { nil }
+
+      it 'renders the page' do
+        expect { rendered }.not_to raise_error
+      end
+    end
   end
 end

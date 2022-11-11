@@ -1148,7 +1148,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer do
       end
     end
 
-    include_examples 'issuable update service' do
+    it_behaves_like 'issuable update service' do
       let(:open_issuable) { merge_request }
       let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
     end

@@ -1,4 +1,3 @@
-# invalid variable (unknown keyword is used)
 variables:
   FOO:
     value: BAR

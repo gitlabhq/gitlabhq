@@ -88,6 +88,10 @@ module Integrations
       param_values = return_value[:integration]
 
       if param_values.is_a?(ActionController::Parameters)
+        if action_name == 'update' && integration.chat? && param_values['webhook'] == BaseChatNotification::SECRET_MASK
+          param_values.delete('webhook')
+        end
+
         integration.secret_fields.each do |param|
           param_values.delete(param) if param_values[param].blank?
         end

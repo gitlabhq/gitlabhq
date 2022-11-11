@@ -3223,7 +3223,6 @@
 - './ee/spec/services/security/security_orchestration_policies/sync_opened_merge_requests_service_spec.rb'
 - './ee/spec/services/security/security_orchestration_policies/sync_open_merge_requests_head_pipeline_service_spec.rb'
 - './ee/spec/services/security/security_orchestration_policies/validate_policy_service_spec.rb'
-- './ee/spec/services/security/store_findings_metadata_service_spec.rb'
 - './ee/spec/services/security/store_grouped_scans_service_spec.rb'
 - './ee/spec/services/security/store_scan_service_spec.rb'
 - './ee/spec/services/security/store_scans_service_spec.rb'

@@ -63,6 +63,14 @@ describe('Work items router', () => {
     });
   };
 
+  beforeEach(() => {
+    window.gon = {
+      features: {
+        workItemsMvc2: false,
+      },
+    };
+  });
+
   afterEach(() => {
     wrapper.destroy();
     window.location.hash = '';
@@ -74,7 +82,14 @@ describe('Work items router', () => {
     expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
   });
 
+  it('does not render create work item page on `/new` route if `workItemsMvc2` feature flag is off', async () => {
+    await createComponent('/new');
+
+    expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(false);
+  });
+
   it('renders create work item page on `/new` route', async () => {
+    window.gon.features.workItemsMvc2 = true;
     await createComponent('/new');
 
     expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(true);

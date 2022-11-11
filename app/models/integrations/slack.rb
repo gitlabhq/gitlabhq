@@ -16,8 +16,8 @@ module Integrations
       'slack'
     end
 
-    override :webhook_placeholder
-    def webhook_placeholder
+    override :webhook_help
+    def webhook_help
       'https://hooks.slack.com/services/…'
     end
   end

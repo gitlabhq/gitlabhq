@@ -612,7 +612,7 @@ export default {
       >
         <alert-settings-form-help-block
           :message="viewCredentialsHelpMsg"
-          link="https://docs.gitlab.com/ee/operations/incident_management/alert_integrations.html"
+          link="https://docs.gitlab.com/ee/operations/incident_management/integrations.html#configuration"
         />
 
         <gl-form-group id="integration-webhook">

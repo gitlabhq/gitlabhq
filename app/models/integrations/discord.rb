@@ -10,8 +10,7 @@ module Integrations
 
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
-      placeholder: 'https://discordapp.com/api/webhooks/…',
-      help: 'URL to the webhook for the Discord channel.',
+      help: 'e.g. https://discordapp.com/api/webhooks/…',
       required: true
 
     field :notify_only_broken_pipelines,

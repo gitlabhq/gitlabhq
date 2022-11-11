@@ -25,7 +25,7 @@ module Integrations
       'my-channel'
     end
 
-    def webhook_placeholder
+    def webhook_help
       'http://mattermost.example.com/hooks/'
     end
 

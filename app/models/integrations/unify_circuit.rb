@@ -29,7 +29,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', placeholder: "https://yourcircuit.com/rest/v2/webhooks/incoming/…", required: true },
+        { type: 'text', name: 'webhook', help: 'https://yourcircuit.com/rest/v2/webhooks/incoming/…', required: true },
         { type: 'checkbox', name: 'notify_only_broken_pipelines' },
         {
           type: 'select',

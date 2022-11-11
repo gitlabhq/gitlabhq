@@ -7,7 +7,7 @@ RSpec.describe Integrations::BaseChatNotification do
     before do
       allow(subject).to receive(:activated?).and_return(true)
       allow(subject).to receive(:default_channel_placeholder).and_return('placeholder')
-      allow(subject).to receive(:webhook_placeholder).and_return('placeholder')
+      allow(subject).to receive(:webhook_help).and_return('help')
     end
 
     it { is_expected.to validate_presence_of :webhook }
@@ -280,9 +280,9 @@ RSpec.describe Integrations::BaseChatNotification do
     end
   end
 
-  describe '#webhook_placeholder' do
+  describe '#webhook_help' do
     it 'raises an error' do
-      expect { subject.webhook_placeholder }.to raise_error(NotImplementedError)
+      expect { subject.webhook_help }.to raise_error(NotImplementedError)
     end
   end
 

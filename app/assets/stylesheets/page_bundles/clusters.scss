@@ -20,3 +20,7 @@
     min-height: 372px;
   }
 }
+
+.cluster-button-container:focus-within {
+  @include gl-focus;
+}

@@ -589,6 +589,10 @@ class Integration < ApplicationRecord
     false
   end
 
+  def chat?
+    category == :chat
+  end
+
   private
 
   # Ancestors sorted by hierarchy depth in bottom-top order.

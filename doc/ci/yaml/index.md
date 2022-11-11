@@ -4255,6 +4255,38 @@ variables:
 - A global variable defined with `value` but no `description` behaves the same as
   [`variables`](#variables).
 
+### `variables:expand`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
+
+Use the `expand` keyword to configure a variable to be expandable or not.
+
+**Keyword type**: Global and job keyword. You can use it at the global level, and also at the job level.
+
+**Possible inputs**:
+
+- `true` (default): The variable is expandable.
+- `false`: The variable is not expandable.
+
+**Example of `variables:expand`**:
+
+```yaml
+variables:
+  VAR1: value1
+  VAR2: value2 $VAR1
+  VAR3:
+    value: value3 $VAR1
+    expand: false
+```
+
+- The result of `VAR2` is `value2 value1`.
+- The result of `VAR3` is `value3 $VAR1`.
+
+**Additional details**:
+
+- The `expand` keyword can only be used with the global and job-level `variables` keywords.
+  You can't use it with [`rules:variables`](#rulesvariables) or [`workflow:rules:variables`](#workflowrulesvariables).
+
 ### `when`
 
 Use `when` to configure the conditions for when jobs run. If not defined in a job,

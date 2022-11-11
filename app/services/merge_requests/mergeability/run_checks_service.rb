@@ -46,7 +46,6 @@ module MergeRequests
       attr_reader :merge_request, :params, :results
 
       def run_check(check)
-        return check.execute unless Feature.enabled?(:mergeability_caching, merge_request.project)
         return check.execute unless check.cacheable?
 
         cached_result = cached_results.read(merge_check: check)

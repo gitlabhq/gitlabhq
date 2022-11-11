@@ -13,7 +13,7 @@ time_frame: <%= time_frame %>
 data_source:
 data_category: optional
 instrumentation_class: <%= class_name %>
-performance_indicator_type:
+performance_indicator_type: []
 distribution:
 <%= distribution %>
 tier:

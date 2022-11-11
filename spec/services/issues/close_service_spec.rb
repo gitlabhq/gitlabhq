@@ -397,9 +397,26 @@ RSpec.describe Issues::CloseService do
     end
 
     context 'when issue is not confidential' do
+      let(:expected_payload) do
+        include(
+          event_type: 'issue',
+          object_kind: 'issue',
+          changes: {
+            closed_at: { current: kind_of(Time), previous: nil },
+            state_id: { current: 2, previous: 1 },
+            updated_at: { current: kind_of(Time), previous: kind_of(Time) }
+          },
+          object_attributes: include(
+            closed_at: kind_of(Time),
+            state: 'closed',
+            action: 'close'
+          )
+        )
+      end
+
       it 'executes issue hooks' do
-        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+        expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+        expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
         described_class.new(project: project, current_user: user).close_issue(issue)
       end

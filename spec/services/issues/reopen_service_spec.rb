@@ -85,9 +85,25 @@ RSpec.describe Issues::ReopenService do
       end
 
       context 'when issue is not confidential' do
+        let(:expected_payload) do
+          include(
+            event_type: 'issue',
+            object_kind: 'issue',
+            changes: {
+              closed_at: { current: nil, previous: kind_of(Time) },
+              state_id: { current: 1, previous: 2 },
+              updated_at: { current: kind_of(Time), previous: kind_of(Time) }
+            },
+            object_attributes: include(
+              state: 'opened',
+              action: 'reopen'
+            )
+          )
+        end
+
         it 'executes issue hooks' do
-          expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-          expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+          expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+          expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
           execute
         end

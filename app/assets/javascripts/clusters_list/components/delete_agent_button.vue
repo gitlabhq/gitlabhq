@@ -92,6 +92,9 @@ export default {
     disableModalSubmit() {
       return this.deleteConfirmText !== this.agent.name;
     },
+    containerTabIndex() {
+      return this.canAdminCluster ? -1 : 0;
+    },
   },
   methods: {
     async deleteAgent() {
@@ -156,8 +159,8 @@ export default {
   <div>
     <div
       v-gl-tooltip="deleteButtonTooltip"
-      class="gl-display-inline-block"
-      tabindex="-1"
+      :tabindex="containerTabIndex"
+      class="cluster-button-container gl-rounded-base gl-display-inline-block"
       data-testid="delete-agent-button-tooltip"
     >
       <gl-button

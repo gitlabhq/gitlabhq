@@ -736,6 +736,10 @@ class ProjectPolicy < BasePolicy
     enable :read_work_item
   end
 
+  rule { can?(:read_merge_request) }.policy do
+    enable :read_vulnerability_merge_request_link
+  end
+
   rule { can?(:developer_access) }.policy do
     enable :read_security_configuration
   end

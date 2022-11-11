@@ -1407,7 +1407,7 @@ module Gitlab
           context "when an array of wrong keyed object is provided" do
             let(:include_content) { [{ yolo: "/local.gitlab-ci.yml" }] }
 
-            it_behaves_like 'returns errors', /needs to match exactly one accessor/
+            it_behaves_like 'returns errors', /does not have a valid subkey for include/
           end
 
           context "when an array of mixed typed objects is provided" do
@@ -1432,7 +1432,7 @@ module Gitlab
           context "when the include type is incorrect" do
             let(:include_content) { { name: "/local.gitlab-ci.yml" } }
 
-            it_behaves_like 'returns errors', /needs to match exactly one accessor/
+            it_behaves_like 'returns errors', /does not have a valid subkey for include/
           end
         end
 

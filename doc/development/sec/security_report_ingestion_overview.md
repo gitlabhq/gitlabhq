@@ -30,7 +30,7 @@ Assumptions:
 1. `Security::StoreScansWorker` is called and it schedules `Security::StoreScansService`.
 1. `Security::StoreScansService` calls `Security::StoreGroupedScansService`.
 1. `Security::StoreGroupedScansService` calls `Security::StoreScanService`.
-1. `Security::StoreScanService` calls `Security::StoreFindingsMetadataService`.
+1. `Security::StoreScanService` calls `Security::StoreFindingsService`.
 1. At this point we have `Security::Finding` objects **only**.
 
 At this point, the following things can happen to the `Security::Finding`:

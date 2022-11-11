@@ -543,7 +543,7 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
-    context 'when decription is not changed' do
+    context 'when description is not changed' do
       it 'does not trigger GraphQL description updated subscription' do
         expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
 
@@ -1402,7 +1402,7 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
-    include_examples 'issuable update service' do
+    it_behaves_like 'issuable update service' do
       let(:open_issuable) { issue }
       let(:closed_issuable) { create(:closed_issue, project: project) }
     end

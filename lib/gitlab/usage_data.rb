@@ -337,17 +337,15 @@ module Gitlab
         # rubocop: disable UsageData/LargeTable
         base = ::ContainerExpirationPolicy.active
         # rubocop: enable UsageData/LargeTable
-        results[:projects_with_expiration_policy_enabled] = distinct_count(base, :project_id, start: start, finish: finish)
 
         # rubocop: disable UsageData/LargeTable
-        %i[keep_n cadence older_than].each do |option|
+        %i[cadence older_than].each do |option|
           ::ContainerExpirationPolicy.public_send("#{option}_options").keys.each do |value| # rubocop: disable GitlabSecurity/PublicSend
             results["projects_with_expiration_policy_enabled_with_#{option}_set_to_#{value}".to_sym] = distinct_count(base.where(option => value), :project_id, start: start, finish: finish)
           end
         end
         # rubocop: enable UsageData/LargeTable
 
-        results[:projects_with_expiration_policy_enabled_with_keep_n_unset] = distinct_count(base.where(keep_n: nil), :project_id, start: start, finish: finish)
         results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
 
         results

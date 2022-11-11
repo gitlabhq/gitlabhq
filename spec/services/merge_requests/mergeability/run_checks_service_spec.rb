@@ -104,18 +104,6 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
           expect(execute.success?).to eq(true)
         end
       end
-
-      context 'when mergeability_caching is turned off' do
-        before do
-          stub_feature_flags(mergeability_caching: false)
-        end
-
-        it 'does not call the results store' do
-          expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
-
-          expect(execute.success?).to eq(true)
-        end
-      end
     end
   end
 

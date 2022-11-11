@@ -391,22 +391,61 @@ RSpec.describe Issues::CreateService do
         end
       end
 
-      it 'executes issue hooks when issue is not confidential' do
-        opts = { title: 'Title', description: 'Description', confidential: false }
+      describe 'executing hooks' do
+        let(:opts) { { title: 'Title', description: 'Description' } }
+        let(:expected_payload) do
+          include(
+            event_type: 'issue',
+            object_kind: 'issue',
+            changes: {
+              author_id: { current: user.id, previous: nil },
+              created_at: { current: kind_of(Time), previous: nil },
+              description: { current: opts[:description], previous: nil },
+              id: { current: kind_of(Integer), previous: nil },
+              iid: { current: kind_of(Integer), previous: nil },
+              project_id: { current: project.id, previous: nil },
+              title: { current: opts[:title], previous: nil },
+              updated_at: { current: kind_of(Time), previous: nil }
+            },
+            object_attributes: include(
+              opts.merge(
+                author_id: user.id,
+                project_id: project.id
+              )
+            )
+          )
+        end
 
-        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
-        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :issue_hooks)
+        it 'executes issue hooks' do
+          expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+          expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
-        described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
-      end
+          described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
+        end
 
-      it 'executes confidential issue hooks when issue is confidential' do
-        opts = { title: 'Title', description: 'Description', confidential: true }
+        context 'when issue is confidential' do
+          let(:expected_payload) do
+            include(
+              event_type: 'confidential_issue',
+              object_kind: 'issue',
+              changes: include(
+                confidential: { current: true, previous: false }
+              ),
+              object_attributes: include(confidential: true)
+            )
+          end
 
-        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
+          before do
+            opts[:confidential] = true
+          end
 
-        described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
+          it 'executes confidential issue hooks' do
+            expect(project).to receive(:execute_hooks).with(expected_payload, :confidential_issue_hooks)
+            expect(project).to receive(:execute_integrations).with(expected_payload, :confidential_issue_hooks)
+
+            described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
+          end
+        end
       end
 
       context 'after_save callback to store_mentions' do

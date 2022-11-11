@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Use GitLab to run an Agile iteration
+# Tutorial: Use GitLab to run an Agile iteration
 
 To run an Agile development iteration in GitLab, you use multiple GitLab features
 that work together.

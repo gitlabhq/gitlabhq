@@ -13,7 +13,7 @@ RSpec.describe Integrations::FieldEntity do
 
   describe '#as_json' do
     context 'with Jira integration' do
-      let(:integration) { create(:jira_integration) }
+      let(:integration) { build(:jira_integration) }
 
       context 'with field with type text' do
         let(:field) { integration_field('username') }
@@ -59,7 +59,7 @@ RSpec.describe Integrations::FieldEntity do
     end
 
     context 'with EmailsOnPush integration' do
-      let(:integration) { create(:emails_on_push_integration, send_from_committer_email: '1') }
+      let(:integration) { build(:emails_on_push_integration, send_from_committer_email: '1') }
 
       context 'with field with type checkbox' do
         let(:field) { integration_field('send_from_committer_email') }
@@ -108,6 +108,36 @@ RSpec.describe Integrations::FieldEntity do
           }
 
           is_expected.to eq(expected_hash)
+        end
+      end
+    end
+
+    context 'with chat integration' do
+      let(:integration) { build(:mattermost_integration) }
+      let(:field) { integration_field('webhook') }
+
+      it 'exposes correct attributes but masks webhook' do
+        expected_hash = {
+          section: nil,
+          type: 'text',
+          name: 'webhook',
+          title: nil,
+          placeholder: nil,
+          help: 'http://mattermost.example.com/hooks/',
+          required: true,
+          choices: nil,
+          value: '************',
+          checkbox_label: nil
+        }
+
+        is_expected.to eq(expected_hash)
+      end
+
+      context 'when webhook was not set' do
+        let(:integration) { build(:mattermost_integration, webhook: nil) }
+
+        it 'does not show the masked webhook' do
+          expect(subject[:value]).to be_nil
         end
       end
     end

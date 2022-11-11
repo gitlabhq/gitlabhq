@@ -6,3 +6,13 @@ variables:
     description: "A single value variable"
   DEPLOY_ENVIRONMENT:
     description: "A multi-value variable"
+  RAW_VAR:
+    value: "Hello $FOO"
+    expand: false
+
+rspec:
+  script: rspec
+  variables:
+    RAW_VAR2:
+      value: "Hello $DEPLOY_ENVIRONMENT"
+      expand: false

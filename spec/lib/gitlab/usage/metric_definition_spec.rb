@@ -134,8 +134,9 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :repair_issue_url   | nil
       :removed_by_url     | 1
 
-      :instrumentation_class | 'Metric_Class'
-      :instrumentation_class | 'metricClass'
+      :performance_indicator_type | nil
+      :instrumentation_class      | 'Metric_Class'
+      :instrumentation_class      | 'metricClass'
     end
 
     with_them do

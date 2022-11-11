@@ -4,37 +4,22 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit Events **(PREMIUM)**
+# Audit events **(PREMIUM)**
 
-GitLab offers a way to view the changes made within the GitLab server for owners and administrators
-on a [paid plan](https://about.gitlab.com/pricing/).
+Use audit events to track important events, including who performed the related action and when.
+You can use audit events to track, for example:
 
-GitLab system administrators can also view all audit events by accessing the [`audit_json.log` file](logs/index.md#audit_jsonlog).
-The JSON audit log does not include events that are [only streamed](../development/audit_event_guide/index.md#event-streaming).
+- Who changed the permission level of a particular user for a GitLab project, and when.
+- Who added a new user or removed a user, and when.
 
-You can:
+The GitLab API, database, and `audit_json.log` record many audit events. Some audit events are only available through
+[streaming audit events](audit_event_streaming.md).
 
-- Generate an [audit report](audit_reports.md) of audit events.
-- [Stream audit events](audit_event_streaming.md) to an external endpoint.
+You can also generate an [audit report](audit_reports.md) of audit events.
 
-## Overview
-
-**Audit Events** is a tool for GitLab owners and administrators
-to track important events such as who performed certain actions and the
-time they happened. For example, these actions could be a change to a user
-permission level, who added a new user, or who removed a user.
-
-## Use cases
-
-- Check who changed the permission level of a particular
-  user for a GitLab project.
-- Track which users have access to a certain group of projects
-  in GitLab, and who gave them that permission level.
-
-## Retention policy
-
-There is no retention policy in place for audit events.
-See the [Specify a retention period for audit events](https://gitlab.com/groups/gitlab-org/-/epics/7917) for more information.
+NOTE:
+You can't configure a retention policy for audit events, but epic
+[7917](https://gitlab.com/groups/gitlab-org/-/epics/7917) proposes to change this.
 
 ## List of events
 

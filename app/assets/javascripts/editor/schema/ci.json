@@ -132,7 +132,7 @@
                 "$ref": "#/definitions/exists"
               },
               "variables": {
-                "$ref": "#/definitions/variables"
+                "$ref": "#/definitions/rulesVariables"
               },
               "when": {
                 "type": "string",
@@ -690,7 +690,7 @@
                 "$ref": "#/definitions/exists"
               },
               "variables": {
-                "$ref": "#/definitions/variables"
+                "$ref": "#/definitions/rulesVariables"
               },
               "when": {
                 "$ref": "#/definitions/when"
@@ -744,10 +744,57 @@
                 "description": {
                   "type": "string",
                   "markdownDescription": "Explains what the variable is used for, what the acceptable values are. Variables with `description` are prefilled when running a pipeline manually. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variablesdescription)."
+                },
+                "expand": {
+                  "type": "boolean",
+                  "markdownDescription": "If the variable is expandable or not. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variablesexpand)."
                 }
               },
               "additionalProperties": false
             }
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "jobVariables": {
+      "markdownDescription": "Defines variables for a job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "oneOf": [
+            {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "expand": {
+                  "type": "boolean",
+                  "markdownDescription": "Defines if the variable is expandable or not. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variablesexpand)."
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "rulesVariables": {
+      "markdownDescription": "Defines variables for a rule result. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#rulesvariables).",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": [
+            "string",
+            "number"
           ]
         },
         "additionalProperties": false
@@ -793,19 +840,6 @@
       "markdownDescription": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesexists).",
       "items": {
         "type": "string"
-      }
-    },
-    "variables": {
-      "markdownDescription": "Defines environment variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
-      "type": "object",
-      "patternProperties": {
-        ".*": {
-          "type": [
-            "string",
-            "number"
-          ]
-        },
-        "additionalProperties": false
       }
     },
     "timeout": {
@@ -1170,7 +1204,7 @@
           "$ref": "#/definitions/rules"
         },
         "variables": {
-          "$ref": "#/definitions/variables"
+          "$ref": "#/definitions/jobVariables"
         },
         "cache": {
           "$ref": "#/definitions/cache"

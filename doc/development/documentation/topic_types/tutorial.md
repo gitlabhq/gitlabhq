@@ -17,6 +17,8 @@ Tutorials are learning aids that complement our core documentation.
 They do not introduce new features.
 Always use the primary [topic types](index.md) to document new features.
 
+## Tutorial format
+
 Tutorials should be in this format:
 
 ```markdown
@@ -53,6 +55,9 @@ To do step 2:
 1. Another step.
 1. Another step.
 ```
+
+An example of a tutorial that follows this format is
+[Tutorial: Make your first Git commit](../../../tutorials/make_your_first_git_commit.md).
 
 ## Tutorial page title
 

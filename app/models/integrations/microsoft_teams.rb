@@ -18,10 +18,6 @@ module Integrations
       '<p>Use this service to send notifications about events in GitLab projects to your Microsoft Teams channels. <a href="https://docs.gitlab.com/ee/user/project/integrations/microsoft_teams.html" target="_blank" rel="noopener noreferrer">How do I configure this integration?</a></p>'
     end
 
-    def webhook_placeholder
-      'https://outlook.office.com/webhook/…'
-    end
-
     def default_channel_placeholder
     end
 
@@ -32,7 +28,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', section: SECTION_TYPE_CONNECTION, name: 'webhook', required: true, placeholder: "#{webhook_placeholder}" },
+        { type: 'text', section: SECTION_TYPE_CONNECTION, name: 'webhook', help: 'https://outlook.office.com/webhook/…', required: true },
         {
           type: 'checkbox',
           section: SECTION_TYPE_CONFIGURATION,

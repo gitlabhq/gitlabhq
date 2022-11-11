@@ -37,7 +37,8 @@ import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
-import VariablesNegativeYaml from './yaml_tests/negative_tests/variables.yml';
+import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
+import VariablesWrongSyntaxUsageExpand from './yaml_tests/negative_tests/variables/wrong_syntax_usage_expand.yml';
 import JobWhenNegativeYaml from './yaml_tests/negative_tests/job_when.yml';
 
 import ProjectPathIncludeEmptyYaml from './yaml_tests/negative_tests/project_path/include/empty.yml';
@@ -137,7 +138,8 @@ describe('negative tests', () => {
       IncludeNegativeYaml,
       JobWhenNegativeYaml,
       RulesNegativeYaml,
-      VariablesNegativeYaml,
+      VariablesInvalidSyntaxDescYaml,
+      VariablesWrongSyntaxUsageExpand,
       ProjectPathIncludeEmptyYaml,
       ProjectPathIncludeInvalidVariableYaml,
       ProjectPathIncludeLeadSlashYaml,

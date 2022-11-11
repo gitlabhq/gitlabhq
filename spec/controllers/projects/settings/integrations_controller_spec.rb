@@ -334,6 +334,23 @@ RSpec.describe Projects::Settings::IntegrationsController do
           )
         end
       end
+
+      context 'with chat notification integration' do
+        let_it_be(:integration) { project.create_microsoft_teams_integration(webhook: 'http://webhook.com') }
+        let(:message) { 'Microsoft Teams notifications settings saved and active.' }
+
+        it_behaves_like 'integration update'
+
+        context 'with masked token' do
+          let(:integration_params) { { active: true, webhook: '************' } }
+
+          it_behaves_like 'integration update'
+
+          it 'does not update the webhook' do
+            expect(integration.reload.webhook).to eq('http://webhook.com')
+          end
+        end
+      end
     end
 
     describe 'as JSON' do

@@ -234,6 +234,16 @@ RSpec.describe Integration do
     end
   end
 
+  describe '#chat?' do
+    it 'is true when integration is chat integration' do
+      expect(build(:mattermost_integration).chat?).to eq(true)
+    end
+
+    it 'is false when integration is not chat integration' do
+      expect(build(:integration).chat?).to eq(false)
+    end
+  end
+
   describe '.find_or_initialize_non_project_specific_integration' do
     let!(:integration_1) { create(:jira_integration, project_id: nil, group_id: group.id) }
     let!(:integration_2) { create(:jira_integration, project: project) }

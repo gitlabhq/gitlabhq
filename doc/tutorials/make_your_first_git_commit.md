@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Make your first Git commit
+# Tutorial: Make your first Git commit
 
 This tutorial is going to teach you a little bit about how Git works. It walks
 you through the steps of creating your own project, editing a file, and

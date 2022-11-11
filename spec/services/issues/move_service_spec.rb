@@ -228,18 +228,48 @@ RSpec.describe Issues::MoveService do
       end
 
       context 'project issue hooks' do
-        let!(:hook) { create(:project_hook, project: old_project, issues_events: true) }
+        let_it_be(:old_project_hook) { create(:project_hook, project: old_project, issues_events: true) }
+        let_it_be(:new_project_hook) { create(:project_hook, project: new_project, issues_events: true) }
 
-        it 'executes project issue hooks' do
-          allow_next_instance_of(WebHookService) do |instance|
-            allow(instance).to receive(:execute)
+        let(:expected_new_project_hook_payload) do
+          hash_including(
+            event_type: 'issue',
+            object_kind: 'issue',
+            object_attributes: include(
+              project_id: new_project.id,
+              state: 'opened',
+              action: 'open'
+            )
+          )
+        end
+
+        let(:expected_old_project_hook_payload) do
+          hash_including(
+            event_type: 'issue',
+            object_kind: 'issue',
+            changes: {
+              state_id: { current: 2, previous: 1 },
+              closed_at: { current: kind_of(Time), previous: nil },
+              updated_at: { current: kind_of(Time), previous: kind_of(Time) }
+            },
+            object_attributes: include(
+              id: old_issue.id,
+              closed_at: kind_of(Time),
+              state: 'closed',
+              action: 'close'
+            )
+          )
+        end
+
+        it 'executes project issue hooks for both projects' do
+          expect_next_instance_of(WebHookService, new_project_hook, expected_new_project_hook_payload, 'issue_hooks') do |service|
+            expect(service).to receive(:async_execute).once
+          end
+          expect_next_instance_of(WebHookService, old_project_hook, expected_old_project_hook_payload, 'issue_hooks') do |service|
+            expect(service).to receive(:async_execute).once
           end
 
-          # Ideally, we'd test that `WebHookWorker.jobs.size` increased by 1,
-          # but since the entire spec run takes place in a transaction, we never
-          # actually get to the `after_commit` hook that queues these jobs.
-          expect { move_service.execute(old_issue, new_project) }
-            .not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+          move_service.execute(old_issue, new_project)
         end
       end
 

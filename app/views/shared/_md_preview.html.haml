@@ -1,6 +1,6 @@
 - referenced_users = local_assigns.fetch(:referenced_users, nil)
 
-- if defined?(@merge_request) && @merge_request.discussion_locked?
+- if @merge_request&.discussion_locked?
   .issuable-note-warning
     = sprite_icon('lock', css_class: 'icon')
     %span

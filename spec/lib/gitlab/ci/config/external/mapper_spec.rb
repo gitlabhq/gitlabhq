@@ -113,7 +113,19 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
         it_behaves_like 'logging config file fetch', 'config_file_fetch_template_content_duration_s', 1
       end
 
-      context 'when the key is a hash of file and remote' do
+      context 'when the key is not valid' do
+        let(:local_file) { 'secret-file.yml' }
+        let(:values) do
+          { include: { invalid: local_file },
+            image: 'image:1.0' }
+        end
+
+        it 'returns ambigious specification error' do
+          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, '`{"invalid":"secret-file.yml"}` does not have a valid subkey for include. Valid subkeys are: `local`, `project`, `remote`, `template`, `artifact`')
+        end
+      end
+
+      context 'when the key is a hash of local and remote' do
         let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret-file', 'masked' => true }]) }
         let(:local_file) { 'secret-file.yml' }
         let(:remote_url) { 'https://gitlab.com/secret-file.yml' }
@@ -123,7 +135,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
         end
 
         it 'returns ambigious specification error' do
-          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, 'Include `{"local":"xxxxxxxxxxx.yml","remote":"https://gitlab.com/xxxxxxxxxxx.yml"}` needs to match exactly one accessor!')
+          expect { subject }.to raise_error(described_class::AmbigiousSpecificationError, 'Each include must use only one of: `local`, `project`, `remote`, `template`, `artifact`')
         end
       end
 
