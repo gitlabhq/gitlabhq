@@ -8,6 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
   include OneTrustCSP
   include BizibleCSP
   include GoogleAnalyticsCSP
+  include PreferredLanguageSwitcher
   include RegistrationsTracking
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
@@ -15,6 +16,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   prepend_before_action :check_captcha, only: :create
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
+  before_action :init_preferred_language, only: :new
   before_action :load_recaptcha, only: :new
   before_action :set_invite_params, only: :new
   before_action only: [:create] do
@@ -190,7 +192,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def resource
     @resource ||= Users::RegistrationsBuildService
-                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email? }))
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email?,
+                                                              preferred_language: preferred_language }))
                     .execute
   end
 

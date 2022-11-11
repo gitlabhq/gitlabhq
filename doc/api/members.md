@@ -313,9 +313,6 @@ Gets a list of group members that count as billable. The list includes members i
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
-NOTE:
-Unlike other API endpoints, billable members is updated once per day at 12:00 UTC.
-
 This function takes [pagination](index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.7, the `search` and

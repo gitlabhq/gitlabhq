@@ -343,7 +343,7 @@ A `package.json` file is created.
 
 ### Install NuGet
 
-Follow the instructions from [https://learn.microsoft.com/en-us/nuget/install-nuget-client-tools] Microsoft to install NuGet. If you have
+Follow the instructions from [Microsoft](https://learn.microsoft.com/en-us/nuget/install-nuget-client-tools) to install NuGet. If you have
 [Visual Studio](https://visualstudio.microsoft.com/vs/), NuGet is
 probably already installed.
 

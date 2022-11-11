@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
   include Gitlab::SearchContext::ControllerConcern
+  include PreferredLanguageSwitcher
   include SessionlessAuthentication
   include SessionsHelper
   include ConfirmEmailWarning
@@ -512,7 +513,13 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale(&block)
-    Gitlab::I18n.with_user_locale(current_user, &block)
+    return Gitlab::I18n.with_user_locale(current_user, &block) unless Feature.enabled?(:preferred_language_switcher)
+
+    if current_user
+      Gitlab::I18n.with_user_locale(current_user, &block)
+    else
+      Gitlab::I18n.with_locale(preferred_language, &block)
+    end
   end
 
   def set_session_storage(&block)

@@ -69,7 +69,7 @@ You may have connectivity issues due to the following reasons:
 - **Customers Portal is not operational**:
   - To check for performance or service disruptions, check the Customers Portal [status](https://status.gitlab.com/).
 - **Firewall settings**:
-  - Check if your GitLab instance has an encrypted connection to `customers.gitlab.com` (with IP addresses 104.18.26.123 and 104.18.27.123) on port 443:
+  - Check if your GitLab instance has an encrypted connection to `customers.gitlab.com` (with IP addresses 172.64.146.11 and 104.18.41.245) on port 443:
 
    ```shell
    curl --verbose "telnet://customers.gitlab.com/"

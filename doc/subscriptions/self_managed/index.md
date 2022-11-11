@@ -212,7 +212,7 @@ Example of a license sync request:
 ### Troubleshoot automatic subscription sync
 
 If the sync job is not working, ensure you allow network traffic from your GitLab instance
-to IP address `104.18.26.123:443` (`customers.gitlab.com`).
+to IP addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
 
 ## Manually sync your subscription details
 

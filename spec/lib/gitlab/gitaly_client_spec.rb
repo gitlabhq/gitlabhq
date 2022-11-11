@@ -311,6 +311,50 @@ RSpec.describe Gitlab::GitalyClient do
       it_behaves_like 'gitaly feature flags in metadata'
     end
 
+    context 'logging information in metadata' do
+      let(:user) { create(:user) }
+
+      context 'user is added to application context' do
+        it 'injects username and user_id into gRPC metadata' do
+          metadata = {}
+          ::Gitlab::ApplicationContext.with_context(user: user) do
+            metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+          end
+
+          expect(metadata['username']).to eql(user.username)
+          expect(metadata['user_id']).to eql(user.id.to_s)
+        end
+      end
+
+      context 'user is not added to application context' do
+        it 'does not inject username and user_id into gRPC metadata' do
+          metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+
+          expect(metadata).not_to have_key('username')
+          expect(metadata).not_to have_key('user_id')
+        end
+      end
+
+      context 'remote_ip is added to application context' do
+        it 'injects remote_ip into gRPC metadata' do
+          metadata = {}
+          ::Gitlab::ApplicationContext.with_context(remote_ip: '1.2.3.4') do
+            metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+          end
+
+          expect(metadata['remote_ip']).to eql('1.2.3.4')
+        end
+      end
+
+      context 'remote_ip is not added to application context' do
+        it 'does not inject remote_ip into gRPC metadata' do
+          metadata = described_class.request_kwargs('default', timeout: 1)[:metadata]
+
+          expect(metadata).not_to have_key('remote_ip')
+        end
+      end
+    end
+
     context 'gitlab_git_env' do
       let(:policy) { 'gitaly-route-repository-accessor-policy' }
 

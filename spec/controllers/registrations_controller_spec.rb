@@ -19,6 +19,8 @@ RSpec.describe RegistrationsController do
       expect(response).to have_gitlab_http_status(:ok)
       expect(assigns(:resource)).to be_a(User)
     end
+
+    it_behaves_like "switches to user preferred language", 'Sign up'
   end
 
   describe '#create' do
@@ -522,6 +524,32 @@ RSpec.describe RegistrationsController do
           category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
           action: 'track_weak_password_error'
         )
+      end
+    end
+
+    context 'with preferred language' do
+      let(:user_preferred_language) { nil }
+
+      before do
+        cookies['preferred_language'] = user_preferred_language
+
+        post :create, params: { new_user: base_user_params }
+      end
+
+      subject { User.last.preferred_language }
+
+      context 'with default behavior' do
+        it 'sets preferred language to default' do
+          is_expected.to eq(Gitlab::CurrentSettings.default_preferred_language)
+        end
+      end
+
+      context 'when user sets preferred language' do
+        let(:user_preferred_language) { 'zh_CN' }
+
+        it 'sets name from first and last name' do
+          is_expected.to eq(user_preferred_language)
+        end
       end
     end
   end
