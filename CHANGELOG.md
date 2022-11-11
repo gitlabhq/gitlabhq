@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.5.4 (2022-11-11)
+
+### Fixed (3 changes)
+
+- [Allow links to be opened from Swagger UI documentations](gitlab-org/gitlab@d0ee1589e00a695764a942e711dfe1be405f011c) ([merge request](gitlab-org/gitlab!103772))
+- [Add Hashie::Array to allowed YAML serialization classes](gitlab-org/gitlab@b450aae9dbc1a0cbe124de8e3643842a11a1ee77) ([merge request](gitlab-org/gitlab!103772))
+- [Revert Sidekiq default routing rules](gitlab-org/gitlab@f1db2eefe1d5039b220d4368dc25dbe5ad9060a1) ([merge request](gitlab-org/gitlab!103643))
+
 ## 15.5.3 (2022-11-07)
 
 ### Fixed (1 change)

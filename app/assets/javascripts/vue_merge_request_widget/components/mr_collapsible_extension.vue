@@ -46,8 +46,8 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <div class="mr-widget-extension d-flex align-items-center pl-3">
+  <div class="mr-widget-extension">
+    <div class="d-flex align-items-center pl-3">
       <div v-if="hasError" class="ci-widget media">
         <div class="media-body">
           <span class="gl-font-sm mr-widget-margin-left gl-line-height-24 js-error-state">

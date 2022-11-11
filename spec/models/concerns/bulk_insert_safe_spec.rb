@@ -73,9 +73,9 @@ RSpec.describe BulkInsertSafe do
         key: Settings.attr_encrypted_db_key_base_32,
         insecure_mode: false
 
-      default_value_for :enum_value, 'case_1'
-      default_value_for :sha_value, '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12'
-      default_value_for :jsonb_value, { "key" => "value" }
+      attribute :enum_value, default: 'case_1'
+      attribute :sha_value, default: '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12'
+      attribute :jsonb_value, default: -> { { "key" => "value" } }
 
       def self.name
         'BulkInsertItem'

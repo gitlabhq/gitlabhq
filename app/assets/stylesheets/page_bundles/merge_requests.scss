@@ -487,7 +487,8 @@ $tabs-holder-z-index: 250;
       border-top-right-radius: $border-radius-default - 1px;
     }
 
-    > :last-child {
+    > :last-child,
+    .deploy-heading:last-child {
       border-bottom-left-radius: $border-radius-default - 1px;
       border-bottom-right-radius: $border-radius-default - 1px;
     }
