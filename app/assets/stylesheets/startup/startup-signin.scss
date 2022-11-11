@@ -22,7 +22,7 @@ body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #333238;
+  color: #303030;
   text-align: left;
   background-color: #fff;
 }
@@ -110,7 +110,7 @@ h3 {
   margin-bottom: 0.25rem;
   font-weight: 600;
   line-height: 1.2;
-  color: #333238;
+  color: #303030;
 }
 h1 {
   font-size: 2.1875rem;
@@ -196,24 +196,24 @@ hr {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #333238;
+  color: #303030;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #89888d;
+  border: 1px solid #868686;
   border-radius: 0.25rem;
 }
 @media (prefers-reduced-motion: reduce) {
 }
 .form-control:-moz-focusring {
   color: transparent;
-  text-shadow: 0 0 0 #333238;
+  text-shadow: 0 0 0 #303030;
 }
 .form-control::placeholder {
-  color: #626168;
+  color: #5e5e5e;
   opacity: 1;
 }
 .form-control:disabled {
-  background-color: #fbfafd;
+  background-color: #fafafa;
   opacity: 1;
 }
 .form-group {
@@ -222,7 +222,7 @@ hr {
 .btn {
   display: inline-block;
   font-weight: 400;
-  color: #333238;
+  color: #303030;
   text-align: center;
   vertical-align: middle;
   user-select: none;
@@ -282,10 +282,10 @@ input.btn-block[type="button"] {
   border-color: #b3d7ff;
 }
 .custom-control-input:disabled ~ .custom-control-label {
-  color: #626168;
+  color: #5e5e5e;
 }
 .custom-control-input:disabled ~ .custom-control-label::before {
-  background-color: #fbfafd;
+  background-color: #fafafa;
 }
 .custom-control-label {
   position: relative;
@@ -302,7 +302,7 @@ input.btn-block[type="button"] {
   pointer-events: none;
   content: "";
   background-color: #fff;
-  border: #737278 solid 1px;
+  border: #666 solid 1px;
 }
 .custom-control-label::after {
   position: absolute;
@@ -400,8 +400,8 @@ input.btn-block[type="button"] {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   height: auto;
-  color: #333238;
-  box-shadow: inset 0 0 0 1px #89888d;
+  color: #303030;
+  box-shadow: inset 0 0 0 1px #868686;
   border-style: none;
   appearance: none;
   -moz-appearance: none;
@@ -410,27 +410,27 @@ input.btn-block[type="button"] {
 .gl-form-input:not(.form-control-plaintext):not([type="color"]):read-only,
 .gl-form-input.form-control:disabled,
 .gl-form-input.form-control:not(.form-control-plaintext):not([type="color"]):read-only {
-  background-color: #fbfafd;
-  box-shadow: inset 0 0 0 1px #dcdcde;
+  background-color: #f5f5f5;
+  box-shadow: inset 0 0 0 1px #dbdbdb;
 }
 .gl-form-input:disabled,
 .gl-form-input.form-control:disabled {
   cursor: not-allowed;
-  color: #737278;
+  color: #666;
 }
 .gl-form-input::placeholder,
 .gl-form-input.form-control::placeholder {
-  color: #89888d;
+  color: #868686;
 }
 .gl-form-checkbox {
   font-size: 0.875rem;
   line-height: 1rem;
-  color: #333238;
+  color: #303030;
 }
 .gl-form-checkbox .custom-control-input:disabled,
 .gl-form-checkbox .custom-control-input:disabled ~ .custom-control-label {
   cursor: not-allowed;
-  color: #89888d;
+  color: #868686;
 }
 .gl-form-checkbox.custom-control .custom-control-input ~ .custom-control-label {
   cursor: pointer;
@@ -447,7 +447,7 @@ input.btn-block[type="button"] {
   .custom-control-input
   ~ .custom-control-label::before {
   background-color: #fff;
-  border-color: #89888d;
+  border-color: #868686;
 }
 .gl-form-checkbox.custom-control
   .custom-control-input:checked
@@ -490,8 +490,8 @@ input.btn-block[type="button"] {
 .gl-form-checkbox.custom-control
   .custom-control-input:disabled
   ~ .custom-control-label::before {
-  background-color: #ececef;
-  border-color: #dcdcde;
+  background-color: #f0f0f0;
+  border-color: #dbdbdb;
   pointer-events: auto;
 }
 .gl-form-checkbox.custom-control
@@ -500,8 +500,8 @@ input.btn-block[type="button"] {
 .gl-form-checkbox.custom-control
   .custom-control-input[type="checkbox"]:indeterminate:disabled
   ~ .custom-control-label::before {
-  background-color: #dcdcde;
-  border-color: #dcdcde;
+  background-color: #dbdbdb;
+  border-color: #dbdbdb;
 }
 .gl-form-checkbox.custom-control
   .custom-control-input:checked:disabled
@@ -509,7 +509,7 @@ input.btn-block[type="button"] {
 .gl-form-checkbox.custom-control
   .custom-control-input[type="checkbox"]:indeterminate:disabled
   ~ .custom-control-label::after {
-  background-color: #626168;
+  background-color: #5e5e5e;
 }
 .gl-button {
   display: inline-flex;
@@ -526,9 +526,9 @@ input.btn-block[type="button"] {
   padding-right: 0.75rem;
   background-color: transparent;
   line-height: 1rem;
-  color: #333238;
+  color: #303030;
   fill: currentColor;
-  box-shadow: inset 0 0 0 1px #bfbfc3;
+  box-shadow: inset 0 0 0 1px #bfbfbf;
   justify-content: center;
   align-items: center;
   font-size: 0.875rem;
@@ -560,9 +560,9 @@ input.btn-block[type="button"] {
 .gl-button.gl-button.btn-default.active,
 .gl-button.gl-button.btn-block.btn-default:active,
 .gl-button.gl-button.btn-block.btn-default.active {
-  box-shadow: inset 0 0 0 1px #626168, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
+  box-shadow: inset 0 0 0 1px #5e5e5e, 0 0 0 1px #fff, 0 0 0 3px #428fdc;
   outline: none;
-  background-color: #dcdcde;
+  background-color: #dbdbdb;
 }
 .gl-button.gl-button.btn-confirm,
 .gl-button.gl-button.btn-block.btn-confirm {
@@ -636,20 +636,20 @@ body.navless {
   font-weight: 400;
   padding: 6px 10px;
   background-color: #fff;
-  border-color: #dcdcde;
-  color: #333238;
-  color: #333238;
+  border-color: #dbdbdb;
+  color: #303030;
+  color: #303030;
   white-space: nowrap;
 }
 .btn:active {
-  background-color: #ececef;
+  background-color: #f0f0f0;
   box-shadow: none;
 }
 .btn:active,
 .btn.active {
   background-color: #eaeaea;
   border-color: #e3e3e3;
-  color: #333238;
+  color: #303030;
 }
 .btn svg {
   height: 15px;
@@ -676,7 +676,7 @@ body.navless {
 }
 hr {
   margin: 1.5rem 0;
-  border-top: 1px solid #ececef;
+  border-top: 1px solid #eee;
 }
 .footer-links {
   margin-bottom: 20px;
@@ -704,7 +704,7 @@ hr {
 }
 input {
   border-radius: 0.25rem;
-  color: #333238;
+  color: #303030;
   background-color: #fff;
 }
 label {
@@ -721,7 +721,7 @@ label.label-bold {
   padding: 6px 10px;
 }
 .form-control::placeholder {
-  color: #89888d;
+  color: #868686;
 }
 .gl-show-field-errors .form-control:not(textarea) {
   height: 34px;
@@ -730,7 +730,7 @@ label.label-bold {
   justify-content: center;
   height: var(--header-height, 48px);
   background: #fff;
-  border-bottom: 1px solid #dcdcde;
+  border-bottom: 1px solid #dbdbdb;
 }
 .navbar-empty .tanuki-logo,
 .navbar-empty .brand-header-logo {
@@ -747,14 +747,14 @@ label.label-bold {
   fill: #fca326;
 }
 input::-moz-placeholder {
-  color: #89888d;
+  color: #868686;
   opacity: 1;
 }
 input::-ms-input-placeholder {
-  color: #89888d;
+  color: #868686;
 }
 input:-ms-input-placeholder {
-  color: #89888d;
+  color: #868686;
 }
 svg {
   fill: currentColor;
@@ -805,7 +805,7 @@ svg {
 }
 .login-page .login-box,
 .login-page .omniauth-container {
-  box-shadow: 0 0 0 1px #dcdcde;
+  box-shadow: 0 0 0 1px #dbdbdb;
   border-radius: 0.25rem;
 }
 .login-page .login-box .login-heading h3,
@@ -863,7 +863,7 @@ svg {
 }
 .login-page .new-session-tabs {
   display: flex;
-  box-shadow: 0 0 0 1px #dcdcde;
+  box-shadow: 0 0 0 1px #dbdbdb;
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
 }
@@ -874,7 +874,7 @@ svg {
 .login-page .new-session-tabs.nav-links-unboxed .nav-item {
   border-left: 0;
   border-right: 0;
-  border-bottom: 1px solid #dcdcde;
+  border-bottom: 1px solid #dbdbdb;
   background-color: transparent;
 }
 .login-page .new-session-tabs.custom-provider-tabs {
@@ -885,7 +885,7 @@ svg {
   flex-basis: auto;
 }
 .login-page .new-session-tabs.custom-provider-tabs li:nth-child(n + 5) {
-  border-top: 1px solid #dcdcde;
+  border-top: 1px solid #dbdbdb;
 }
 .login-page .new-session-tabs.custom-provider-tabs a {
   font-size: 16px;
@@ -893,7 +893,7 @@ svg {
 .login-page .new-session-tabs li {
   flex: 1;
   text-align: center;
-  border-left: 1px solid #dcdcde;
+  border-left: 1px solid #dbdbdb;
 }
 .login-page .new-session-tabs li:first-of-type {
   border-left: 0;
@@ -903,7 +903,7 @@ svg {
   border-top-right-radius: 4px;
 }
 .login-page .new-session-tabs li:not(.active) {
-  background-color: #fbfafd;
+  background-color: #fafafa;
 }
 .login-page .new-session-tabs li a {
   width: 100%;

@@ -20,7 +20,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
         <!---->
         <button
           aria-expanded="false"
-          aria-haspopup="menu"
+          aria-haspopup="true"
           class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
           id="__BVID__27__BV_toggle_"
           type="button"
@@ -59,6 +59,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
   </div>
    
   <fieldset
+    aria-describedby="installation-pip-command-group__BV_description_"
     class="form-group gl-form-group"
     id="installation-pip-command-group"
   >
@@ -74,7 +75,12 @@ exports[`PypiInstallation renders all the messages 1`] = `
        
       <!---->
     </legend>
-    <div>
+    <div
+      aria-labelledby="installation-pip-command-group__BV_label_"
+      class="bv-no-focus-ring"
+      role="group"
+      tabindex="-1"
+    >
       <div
         data-testid="pip-command"
         id="installation-pip-command"

@@ -294,7 +294,11 @@ To add a IP address range to the group-level allowlist:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. In **Globally-allowed IP ranges**, provide IP address ranges.
+1. In **Globally-allowed IP ranges**, provide a list of IP address ranges. This list:
+   - Has no limit on the number of IP address ranges.
+   - Has a size limit of 1 GB.
+   - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
+     this list by type of authorization.
 1. Select **Save changes**.
 
 <!-- ## Troubleshooting

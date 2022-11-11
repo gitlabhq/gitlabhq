@@ -46,7 +46,7 @@ describe('SortDropdown', () => {
   const findSortingComponent = () => wrapper.findComponent(GlSorting);
   const findSortDirectionToggle = () =>
     findSortingComponent().find('button[title^="Sort direction"]');
-  const findDropdownToggle = () => wrapper.find('button[aria-haspopup="menu"]');
+  const findDropdownToggle = () => wrapper.find('button[aria-haspopup="true"]');
   const findDropdownItemByText = (text) =>
     wrapper
       .findAllComponents(GlSortingItem)

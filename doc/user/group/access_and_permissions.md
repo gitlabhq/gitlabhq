@@ -96,7 +96,12 @@ To restrict group access by IP address:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. In the **Restrict access by IP address** field, enter IPv4 or IPv6 address ranges in CIDR notation.
+1. In the **Restrict access by IP address** field, enter a list of IPv4 or IPv6
+   address ranges in CIDR notation. This list:
+   - Has no limit on the number of IP address ranges.
+   - Has a size limit of 1 GB.
+   - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
+     this list by type of authorization.
 1. Select **Save changes**.
 
 In self-managed installations of GitLab 15.1 and later, you can also configure

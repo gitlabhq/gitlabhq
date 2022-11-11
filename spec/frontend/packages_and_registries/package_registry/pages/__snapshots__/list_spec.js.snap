@@ -94,7 +94,9 @@ exports[`PackagesListApp renders 1`] = `
             Learn how to 
             <b-link-stub
               class="gl-link"
+              event="click"
               href="/help/user/packages/package_registry/index"
+              routertag="a"
               target="_blank"
             >
               publish and share your packages

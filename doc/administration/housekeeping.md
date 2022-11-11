@@ -87,7 +87,7 @@ There are different ways in which GitLab runs housekeeping tasks:
   housekeeping tasks.
 - GitLab can automatically schedule housekeeping tasks [after a number of Git pushes](#push-based-trigger).
 - GitLab can [schedule a job](#scheduled-housekeeping) that runs housekeeping
-  tasks for all repositories in a configurable timeframe.
+  tasks for all repositories in a configurable time frame.
 
 ### Manual trigger
 

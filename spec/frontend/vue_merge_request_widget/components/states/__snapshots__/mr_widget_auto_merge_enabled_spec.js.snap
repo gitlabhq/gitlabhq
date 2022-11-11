@@ -84,7 +84,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
             <!---->
             <button
               aria-expanded="false"
-              aria-haspopup="menu"
+              aria-haspopup="true"
               class="btn dropdown-toggle btn-default btn-sm gl-p-2! gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret"
               type="button"
             >
@@ -261,7 +261,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
             <!---->
             <button
               aria-expanded="false"
-              aria-haspopup="menu"
+              aria-haspopup="true"
               class="btn dropdown-toggle btn-default btn-sm gl-p-2! gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret"
               type="button"
             >

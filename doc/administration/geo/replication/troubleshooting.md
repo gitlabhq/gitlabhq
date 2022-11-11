@@ -349,6 +349,40 @@ sudo gitlab-rake gitlab:geo:check
   When performing a PostgreSQL major version (9 > 10) update this is expected. Follow
   the [initiate-the-replication-process](../setup/database.md#step-3-initiate-the-replication-process).
 
+### Message: Machine clock is synchronized ... Exception
+
+The Rake task attempts to verify that the server clock is synchronized with NTP. Synchronized clocks
+are required for Geo to function correctly. As an example, for security, when the server time on the
+primary site and secondary site differ by about a minute or more, requests between Geo sites
+will fail. If this check task fails to complete due to a reason other than mismatching times, it
+does not necessarily mean that Geo will not work.
+
+The Ruby gem which performs the check is hard coded with `pool.ntp.org` as its reference time source.
+
+- Exception message `Machine clock is synchronized ... Exception: Timeout::Error`
+
+  This issue occurs when your server cannot access the host `pool.ntp.org`.
+
+- Exception message `Machine clock is synchronized ... Exception: No route to host - recvfrom(2)`
+
+  This issue occurs when the hostname `pool.ntp.org` resolves to a server which does not provide a time service.
+
+There is [an issue open](https://gitlab.com/gitlab-org/gitlab/-/issues/381422) for this dependency on `pool.ntp.org`.
+
+To workaround this, do one of the following:
+
+- Add entries in `/etc/hosts` for `pool.ntp.org` to direct the request to valid local time servers.
+  This fixes the long timeout and the timeout error.
+- Direct the check to any valid IP address. This resolves the timeout issue, but the check will fail
+  with the `No route to host` error, as noted above.
+
+[Cloud native GitLab deployments](https://docs.gitlab.com/charts/advanced/geo/#set-the-geo-primary-site)
+generate an error because containers in Kubernetes do not have access to the host clock:
+
+```plaintext
+Machine clock is synchronized ... Exception: getaddrinfo: Servname not supported for ai_socktype
+```
+
 ## Fixing PostgreSQL database replication errors
 
 The following sections outline troubleshooting steps for fixing replication
