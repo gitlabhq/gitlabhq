@@ -5,6 +5,8 @@ module API
   class Deployments < ::API::Base
     include PaginationParams
 
+    deployments_tags = %w[deployments]
+
     before { authenticate! }
 
     feature_category :continuous_delivery
@@ -17,8 +19,13 @@ module API
       desc 'List project deployments' do
         detail 'Get a list of deployments in a project. This feature was introduced in GitLab 8.11.'
         success Entities::Deployment
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
         is_array true
-        tags %w[deployments]
+        tags deployments_tags
       end
       params do
         use :pagination
@@ -68,7 +75,11 @@ module API
       desc 'Get a specific deployment' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::DeploymentExtended
-        tags %w[deployments]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deployments_tags
       end
       params do
         requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
@@ -84,7 +95,12 @@ module API
       desc 'Create a deployment' do
         detail 'This feature was introduced in GitLab 12.4.'
         success Entities::DeploymentExtended
-        tags %w[deployments]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deployments_tags
       end
       params do
         requires :environment,
@@ -137,7 +153,13 @@ module API
       desc 'Update a deployment' do
         detail 'This feature was introduced in GitLab 12.4.'
         success Entities::DeploymentExtended
-        tags %w[deployments]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deployments_tags
       end
       params do
         requires :status,
@@ -172,7 +194,7 @@ module API
           [403, 'Forbidden'],
           [400, '"Cannot destroy running deployment" or "Deployment currently deployed to environment"']
         ]
-        tags %w[deployments]
+        tags deployments_tags
       end
       params do
         requires :deployment_id, type: Integer, desc: 'The ID of the deployment'
@@ -196,7 +218,12 @@ module API
       desc 'List of merge requests associated with a deployment' do
         detail 'Retrieves the list of merge requests shipped with a given deployment. This feature was introduced in GitLab 12.7.'
         success Entities::MergeRequestBasic
-        tags %w[deployments]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        is_array true
+        tags deployments_tags
       end
       params do
         use :pagination

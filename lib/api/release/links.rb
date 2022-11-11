@@ -5,6 +5,8 @@ module API
     class Links < ::API::Base
       include PaginationParams
 
+      release_links_tags = %w[release_links]
+
       RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
         .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
@@ -25,8 +27,12 @@ module API
             desc 'List links of a release' do
               detail 'Get assets as links from a release. This feature was introduced in GitLab 11.7.'
               success Entities::Releases::Link
+              failure [
+                { code: 401, message: 'Unauthorized' },
+                { code: 404, message: 'Not found' }
+              ]
               is_array true
-              tags %w[release_links]
+              tags release_links_tags
             end
             params do
               use :pagination
@@ -41,7 +47,11 @@ module API
             desc 'Create a release link' do
               detail 'Create an asset as a link from a release. This feature was introduced in GitLab 11.7.'
               success Entities::Releases::Link
-              tags %w[release_links]
+              failure [
+                { code: 400, message: 'Bad request' },
+                { code: 401, message: 'Unauthorized' }
+              ]
+              tags release_links_tags
             end
             params do
               requires :name, type: String, desc: 'The name of the link. Link names must be unique in the release'
@@ -73,7 +83,11 @@ module API
               desc 'Get a release link' do
                 detail 'Get an asset as a link from a release. This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
-                tags %w[release_links]
+                failure [
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 404, message: 'Not found' }
+                ]
+                tags release_links_tags
               end
               route_setting :authentication, job_token_allowed: true
               get do
@@ -85,7 +99,11 @@ module API
               desc 'Update a release link' do
                 detail 'Update an asset as a link from a release. This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
-                tags %w[release_links]
+                failure [
+                  { code: 400, message: 'Bad request' },
+                  { code: 401, message: 'Unauthorized' }
+                ]
+                tags release_links_tags
               end
               params do
                 optional :name, type: String, desc: 'The name of the link'
@@ -113,7 +131,11 @@ module API
               desc 'Delete a release link' do
                 detail 'Deletes an asset as a link from a release. This feature was introduced in GitLab 11.7.'
                 success Entities::Releases::Link
-                tags %w[release_links]
+                failure [
+                  { code: 400, message: 'Bad request' },
+                  { code: 401, message: 'Unauthorized' }
+                ]
+                tags release_links_tags
               end
               route_setting :authentication, job_token_allowed: true
               delete do

@@ -5,6 +5,8 @@ module API
   class Environments < ::API::Base
     include PaginationParams
 
+    environments_tags = %w[environments]
+
     before { authenticate! }
 
     feature_category :continuous_delivery
@@ -19,10 +21,10 @@ module API
         success Entities::Environment
         is_array true
         failure [
-          { code: 403, message: 'Unauthenticated' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
-        tags %w[environments]
+        tags environments_tags
       end
       params do
         use :pagination
@@ -46,11 +48,11 @@ module API
         detail 'Creates a new environment with the given name and `external_url`. It returns `201` if the environment was successfully created, `400` for wrong parameters. This feature was introduced in GitLab 8.11.'
         success Entities::Environment
         failure [
-          { code: 403, message: 'Unauthenticated' },
-          { code: 404, message: 'Not found' },
-          { code: 422, message: 'Unprocessable entity' }
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
         ]
-        tags %w[environments]
+        tags environments_tags
       end
       params do
         requires :name,           type: String,   desc: 'The name of the environment'
@@ -74,11 +76,11 @@ module API
         detail 'Updates an existing environment name and/or `external_url`. It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned. This feature was introduced in GitLab 8.11.'
         success Entities::Environment
         failure [
-          { code: 403, message: 'Unauthenticated' },
-          { code: 404, message: 'Not found' },
-          { code: 422, message: 'Unprocessable entity' }
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
         ]
-        tags %w[environments]
+        tags environments_tags
       end
       params do
         requires :environment_id, type: Integer,  desc: 'The ID of the environment'
@@ -106,11 +108,11 @@ module API
         success Entities::EnvironmentBasic
         failure [
           { code: 400, message: 'Bad request' },
-          { code: 403, message: 'Unauthenticated' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' },
           { code: 409, message: 'Conflict' }
         ]
-        tags %w[environments]
+        tags environments_tags
       end
       params do
         optional :before, type: Time, desc: "The date before which environments can be deleted. Defaults to 30 days ago. Expected in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)", default: -> { 30.days.ago }
@@ -139,7 +141,7 @@ module API
         detail 'It returns 204 if the environment was successfully deleted, and 404 if the environment does not exist. This feature was introduced in GitLab 8.11.'
         success Entities::Environment
         failure [
-          { code: 403, message: 'Unauthenticated' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
         tags %w[environments]
@@ -160,7 +162,7 @@ module API
         detail 'It returns 200 if the environment was successfully stopped, and 404 if the environment does not exist.'
         success Entities::Environment
         failure [
-          { code: 403, message: 'Unauthenticated' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
         tags %w[environments]
@@ -183,7 +185,7 @@ module API
       desc 'Get a specific environment' do
         success Entities::Environment
         failure [
-          { code: 403, message: 'Unauthenticated' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
         tags %w[environments]

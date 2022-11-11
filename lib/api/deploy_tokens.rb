@@ -4,6 +4,8 @@ module API
   class DeployTokens < ::API::Base
     include PaginationParams
 
+    deploy_tokens_tags = %w[deploy_tokens]
+
     feature_category :continuous_delivery
     urgency :low
 
@@ -28,8 +30,12 @@ module API
     desc 'List all deploy tokens' do
       detail 'Get a list of all deploy tokens across the GitLab instance. This endpoint requires administrator access. This feature was introduced in GitLab 12.9.'
       success Entities::DeployToken
+      failure [
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' }
+      ]
       is_array true
-      tags %w[deploy_tokens]
+      tags deploy_tokens_tags
     end
     params do
       use :pagination
@@ -58,8 +64,13 @@ module API
       desc 'List project deploy tokens' do
         detail "Get a list of a project's deploy tokens. This feature was introduced in GitLab 12.9."
         success Entities::DeployToken
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
         is_array true
-        tags %w[deploy_tokens]
+        tags deploy_tokens_tags
       end
       get ':id/deploy_tokens' do
         authorize!(:read_deploy_token, user_project)
@@ -86,7 +97,12 @@ module API
       desc 'Create a project deploy token' do
         detail 'Creates a new deploy token for a project. This feature was introduced in GitLab 12.9.'
         success Entities::DeployTokenWithToken
-        tags %w[deploy_tokens]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_tokens_tags
       end
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_project)
@@ -105,7 +121,11 @@ module API
       desc 'Get a project deploy token' do
         detail "Get a single project's deploy token by ID. This feature was introduced in GitLab 14.9."
         success Entities::DeployToken
-        tags %w[deploy_tokens]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_tokens_tags
       end
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'
@@ -120,7 +140,11 @@ module API
 
       desc 'Delete a project deploy token' do
         detail 'This feature was introduced in GitLab 12.9.'
-        tags %w[deploy_tokens]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_tokens_tags
       end
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'
@@ -147,8 +171,13 @@ module API
       desc 'List group deploy tokens' do
         detail "Get a list of a group's deploy tokens. This feature was introduced in GitLab 12.9."
         success Entities::DeployToken
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
         is_array true
-        tags %w[deploy_tokens]
+        tags deploy_tokens_tags
       end
       get ':id/deploy_tokens' do
         authorize!(:read_deploy_token, user_group)
@@ -175,7 +204,12 @@ module API
       desc 'Create a group deploy token' do
         detail 'Creates a new deploy token for a group. This feature was introduced in GitLab 12.9.'
         success Entities::DeployTokenWithToken
-        tags %w[deploy_tokens]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_tokens_tags
       end
       post ':id/deploy_tokens' do
         authorize!(:create_deploy_token, user_group)
@@ -194,7 +228,11 @@ module API
       desc 'Get a group deploy token' do
         detail "Get a single group's deploy token by ID. This feature was introduced in GitLab 14.9. "
         success Entities::DeployToken
-        tags %w[deploy_tokens]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_tokens_tags
       end
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'
@@ -209,7 +247,11 @@ module API
 
       desc 'Delete a group deploy token' do
         detail 'Removes a deploy token from the group. This feature was introduced in GitLab 12.9.'
-        tags %w[deploy_tokens]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_tokens_tags
       end
       params do
         requires :token_id, type: Integer, desc: 'The ID of the deploy token'

@@ -37,6 +37,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
+      incident_management_timeline_event_tags
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -508,6 +509,12 @@ RSpec.describe GitlabSchema.types['Project'] do
     it { is_expected.to have_graphql_resolver(Resolvers::Ci::JobTokenScopeResolver) }
   end
 
+  describe 'incident_management_timeline_event_tags field' do
+    subject { described_class.fields['incidentManagementTimelineEventTags'] }
+
+    it { is_expected.to have_graphql_type(Types::IncidentManagement::TimelineEventTagType) }
+  end
+
   describe 'agent_configurations' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
@@ -728,6 +735,60 @@ RSpec.describe GitlabSchema.types['Project'] do
 
       it 'is empty' do
         expect(branch_rules_data.count).to eq(0)
+      end
+    end
+  end
+
+  describe 'timeline_event_tags' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) do
+      create(:project,
+      :private,
+      :repository,
+      creator_id: user.id,
+      namespace: user.namespace)
+    end
+
+    let_it_be(:tag1) do
+      create(:incident_management_timeline_event_tag,
+      project: project,
+      name: 'Tag 1')
+    end
+
+    let_it_be(:tag2) do
+      create(:incident_management_timeline_event_tag,
+      project: project,
+      name: 'Tag 2')
+    end
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            incidentManagementTimelineEventTags {
+              name
+              id
+            }
+          }
+        }
+      )
+    end
+
+    let(:tags) do
+      subject.dig('data', 'project', 'incidentManagementTimelineEventTags')
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    context 'when user has permissions to read project' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'contains timeline event tags' do
+        expect(tags.count).to eq(2)
+        expect(tags.first['name']).to eq(tag1.name)
+        expect(tags.last['name']).to eq(tag2.name)
       end
     end
   end

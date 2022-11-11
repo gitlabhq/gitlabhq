@@ -3,7 +3,7 @@
 module API
   module Entities
     class DeployTokenWithToken < Entities::DeployToken
-      expose :token
+      expose :token, documentation: { type: 'string', example: 'jMRvtPNxrn3crTAGukpZ' }
     end
   end
 end

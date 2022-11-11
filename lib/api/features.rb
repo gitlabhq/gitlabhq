@@ -4,6 +4,8 @@ module API
   class Features < ::API::Base
     before { authenticated_as_admin! }
 
+    features_tags = %w[features]
+
     feature_category :feature_flags
     urgency :low
 
@@ -48,7 +50,7 @@ module API
         detail 'Get a list of all persisted features, with its gate values.'
         success Entities::Feature
         is_array true
-        tags %w[features]
+        tags features_tags
       end
       get do
         features = Feature.all
@@ -60,7 +62,7 @@ module API
         detail 'Get a list of all feature definitions.'
         success Entities::Feature::Definition
         is_array true
-        tags %w[features]
+        tags features_tags
       end
       get :definitions do
         definitions = ::Feature::Definition.definitions.values.map(&:to_h)
@@ -72,7 +74,10 @@ module API
         detail "Set a feature's gate value. If a feature with the given name doesn't exist yet, it's created. " \
                "The value can be a boolean, or an integer to indicate percentage of time."
         success Entities::Feature
-        tags %w[features]
+        failure [
+          { code: 400, message: 'Bad request' }
+        ]
+        tags features_tags
       end
       params do
         requires :value,
@@ -149,7 +154,7 @@ module API
 
       desc 'Delete a feature' do
         detail "Removes a feature gate. Response is equal when the gate exists, or doesn't."
-        tags %w[features]
+        tags features_tags
       end
       delete ':name' do
         Feature.remove(params[:name])

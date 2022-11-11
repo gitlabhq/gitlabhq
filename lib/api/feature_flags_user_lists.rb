@@ -4,6 +4,8 @@ module API
   class FeatureFlagsUserLists < ::API::Base
     include PaginationParams
 
+    feature_flags_user_lists_tags = %w[feature_flags_user_lists]
+
     error_formatter :json, -> (message, _backtrace, _options, _env, _original_exception) {
       message.is_a?(String) ? { message: message }.to_json : message.to_json
     }
@@ -24,8 +26,12 @@ module API
           detail 'Gets all feature flag user lists for the requested project. ' \
                  'This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
           is_array true
-          tags %w[feature_flags_user_lists]
+          tags feature_flags_user_lists_tags
         end
         params do
           optional :search, type: String, desc: 'Return user lists matching the search criteria'
@@ -41,7 +47,12 @@ module API
         desc 'Create a feature flag user list' do
           detail 'Creates a feature flag user list. This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
-          tags %w[feature_flags_user_lists]
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_user_lists_tags
         end
         params do
           requires :name, type: String, desc: 'The name of the list'
@@ -69,7 +80,11 @@ module API
         desc 'Get a feature flag user list' do
           detail 'Gets a feature flag user list. This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
-          tags %w[feature_flags_user_lists]
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_user_lists_tags
         end
         get do
           present user_project.operations_feature_flags_user_lists.find_by_iid!(params[:iid]),
@@ -79,7 +94,12 @@ module API
         desc 'Update a feature flag user list' do
           detail 'Updates a feature flag user list. This feature was introduced in GitLab 12.10.'
           success ::API::Entities::FeatureFlag::UserList
-          tags %w[feature_flags_user_lists]
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_user_lists_tags
         end
         params do
           optional :name, type: String, desc: 'The name of the list'
@@ -101,7 +121,12 @@ module API
 
         desc 'Delete feature flag user list' do
           detail 'Deletes a feature flag user list. This feature was introduced in GitLab 12.10.'
-          tags %w[feature_flags_user_lists]
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' },
+            { code: 409, message: 'Conflict' }
+          ]
+          tags feature_flags_user_lists_tags
         end
         delete do
           # TODO: Move the business logic to a service class in app/services/feature_flags.

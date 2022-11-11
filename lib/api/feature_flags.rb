@@ -4,6 +4,8 @@ module API
   class FeatureFlags < ::API::Base
     include PaginationParams
 
+    feature_flags_tags = %w[feature_flags]
+
     FEATURE_FLAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
         .merge(name: API::NO_SLASH_URL_PART_REGEX)
 
@@ -22,8 +24,12 @@ module API
         desc 'List feature flags for a project' do
           detail 'Gets all feature flags of the requested project. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
           is_array true
-          tags %w[feature_flags]
+          tags feature_flags_tags
         end
         params do
           optional :scope,
@@ -43,7 +49,12 @@ module API
         desc 'Create a new feature flag' do
           detail 'Creates a new feature flag. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
-          tags %w[feature_flags]
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' }
+          ]
+          tags feature_flags_tags
         end
         params do
           requires :name, type: String, desc: 'The name of the feature flag'
@@ -88,7 +99,11 @@ module API
         desc 'Get a single feature flag' do
           detail 'Gets a single feature flag. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
-          tags %w[feature_flags]
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_tags
         end
         get do
           authorize_read_feature_flag!
@@ -100,7 +115,13 @@ module API
         desc 'Update a feature flag' do
           detail 'Updates a feature flag. This feature was introduced in GitLab 13.2.'
           success ::API::Entities::FeatureFlag
-          tags %w[feature_flags]
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 422, message: 'Unprocessable entity' }
+          ]
+          tags feature_flags_tags
         end
         params do
           optional :name, type: String, desc: 'The new name of the feature flag. Supported in GitLab 13.3 and later'
@@ -144,7 +165,12 @@ module API
         desc 'Delete a feature flag' do
           detail 'Deletes a feature flag. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
-          tags %w[feature_flags]
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_tags
         end
         delete do
           authorize_destroy_feature_flag!

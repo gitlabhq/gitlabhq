@@ -14,15 +14,9 @@ RSpec.describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
   end
 
   it 'logs to /dev/null' do
-    logger = described_class::Controller.new.logger
+    expect(ActiveSupport::Logger).to receive(:new).with(File::NULL)
 
-    # Taken from ActiveSupport.logger_outputs_to?
-    # There is no equivalent /dev/null stream like STDOUT, so
-    # we need to extract the path.
-    logdev = logger.instance_variable_get(:@logdev)
-    logger_source = logdev.dev
-
-    expect(logger_source.path).to eq(File::NULL)
+    described_class::Controller.new.logger
   end
 
   describe '.call' do

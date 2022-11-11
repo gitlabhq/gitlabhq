@@ -37,6 +37,10 @@ module Types
           null: false,
           description: 'Path of the project.'
 
+    field :incident_management_timeline_event_tags, [Types::IncidentManagement::TimelineEventTagType],
+          null: true,
+          description: 'Timeline event tags for the project.'
+
     field :sast_ci_configuration, Types::CiConfiguration::Sast::Type,
           null: true,
           calls_gitaly: true,

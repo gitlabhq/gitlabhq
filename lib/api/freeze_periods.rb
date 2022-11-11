@@ -20,6 +20,10 @@ module API
         detail 'Paginated list of Freeze Periods, sorted by created_at in ascending order. ' \
                'This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
         is_array true
         tags freeze_periods_tags
       end
@@ -38,6 +42,10 @@ module API
       desc 'Get a freeze period' do
         detail 'Get a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
         tags freeze_periods_tags
       end
       params do
@@ -52,6 +60,10 @@ module API
       desc 'Create a freeze period' do
         detail 'Creates a freeze period. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' }
+        ]
         tags freeze_periods_tags
       end
       params do
@@ -78,6 +90,10 @@ module API
       desc 'Update a freeze period' do
         detail 'Updates a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' }
+        ]
         tags freeze_periods_tags
       end
       params do
@@ -100,6 +116,9 @@ module API
       desc 'Delete a freeze period' do
         detail 'Deletes a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
         tags freeze_periods_tags
       end
       params do

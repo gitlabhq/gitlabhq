@@ -3,8 +3,8 @@
 module API
   module Entities
     class Feature < Grape::Entity
-      expose :name
-      expose :state
+      expose :name, documentation: { type: 'string', example: 'experimental_feature' }
+      expose :state, documentation: { type: 'string', example: 'off' }
       expose :gates, using: Entities::FeatureGate do |model|
         model.gates.map do |gate|
           value = model.gate_values[gate.key]

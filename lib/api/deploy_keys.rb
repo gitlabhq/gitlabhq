@@ -4,6 +4,8 @@ module API
   class DeployKeys < ::API::Base
     include PaginationParams
 
+    deploy_keys_tags = %w[deploy_keys]
+
     before { authenticate! }
 
     feature_category :continuous_delivery
@@ -24,8 +26,12 @@ module API
     desc 'List all deploy keys' do
       detail 'Get a list of all deploy keys across all projects of the GitLab instance. This endpoint requires administrator access and is not available on GitLab.com.'
       success Entities::DeployKey
+      failure [
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' }
+      ]
       is_array true
-      tags %w[deploy_keys]
+      tags deploy_keys_tags
     end
     params do
       use :pagination
@@ -48,8 +54,12 @@ module API
       desc 'List deploy keys for project' do
         detail "Get a list of a project's deploy keys."
         success Entities::DeployKeysProject
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
         is_array true
-        tags %w[deploy_keys]
+        tags deploy_keys_tags
       end
       params do
         use :pagination
@@ -65,7 +75,11 @@ module API
       desc 'Get a single deploy key' do
         detail 'Get a single key.'
         success Entities::DeployKeysProject
-        tags %w[deploy_keys]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_keys_tags
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
@@ -79,7 +93,12 @@ module API
       desc 'Add deploy key' do
         detail "Creates a new deploy key for a project. If the deploy key already exists in another project, it's joined to the current project only if the original one is accessible by the same user."
         success Entities::DeployKeysProject
-        tags %w[deploy_keys]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_keys_tags
       end
       params do
         requires :key, type: String, desc: 'New deploy key'
@@ -124,7 +143,13 @@ module API
       desc 'Update deploy key' do
         detail 'Updates a deploy key for a project.'
         success Entities::DeployKey
-        tags %w[deploy_keys]
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_keys_tags
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
@@ -160,7 +185,11 @@ module API
       desc 'Enable a deploy key' do
         detail 'Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful. This feature was added in GitLab 8.11.'
         success Entities::DeployKey
-        tags %w[deploy_keys]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_keys_tags
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
@@ -178,7 +207,11 @@ module API
 
       desc 'Delete deploy key' do
         detail "Removes a deploy key from the project. If the deploy key is used only for this project, it's deleted from the system."
-        tags %w[deploy_keys]
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags deploy_keys_tags
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
