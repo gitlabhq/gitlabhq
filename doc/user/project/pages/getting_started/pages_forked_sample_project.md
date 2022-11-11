@@ -29,6 +29,10 @@ When the pipeline is finished, go to **Settings > Pages** to find the link to yo
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.
 
+To view the HTMl and other assets that were created for the site,
+go to the **Pipelines** tab, view the job, and on the right side,
+select **Download artifacts**.
+
 You can take some **optional** further steps:
 
 - Remove the fork relationship. If you want to contribute to the project you forked from,

@@ -116,7 +116,13 @@ module QA
 
       # TODO: Remove this context when FF :ci_raw_variables_in_yaml_config is removed
       # Also archive testcase and close related issue
-      context 'when FF is off', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/381486' do
+      context 'when FF is off',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/381486',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/381806',
+          only: { pipeline: %w[staging staging-canary] },
+          type: :waiting_on
+        } do
         before do
           Runtime::Feature.disable(:ci_raw_variables_in_yaml_config, project: project)
           sleep 60

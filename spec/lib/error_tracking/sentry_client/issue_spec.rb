@@ -59,7 +59,7 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
     it_behaves_like 'issues have correct return type', Gitlab::ErrorTracking::Error
     it_behaves_like 'issues have correct length', 3
     it_behaves_like 'maps Sentry exceptions'
-    it_behaves_like 'Sentry API response size limit', enabled_by_default: true
+    it_behaves_like 'Sentry API response size limit'
 
     shared_examples 'has correct external_url' do
       describe '#external_url' do

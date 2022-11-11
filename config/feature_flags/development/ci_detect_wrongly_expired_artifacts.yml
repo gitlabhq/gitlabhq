@@ -1,8 +1,0 @@
----
-name: ci_detect_wrongly_expired_artifacts
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82084
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/354955
-milestone: '14.9'
-type: development
-group: group::pipeline insights
-default_enabled: true

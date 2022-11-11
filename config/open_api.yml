@@ -71,5 +71,9 @@ metadata:
     description: Operations related to suggestions
   - name: system_hooks
     description: Operations related to system hooks
+  - name: terraform_state
+    description: Operations related to Terraform state files
+  - name: terraform_registry
+    description: Operations related to the Terraform module registry
   - name: unleash_api
     description: Operations related to Unleash API

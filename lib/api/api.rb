@@ -230,6 +230,9 @@ module API
         mount ::API::Suggestions
         mount ::API::SystemHooks
         mount ::API::Tags
+        mount ::API::Terraform::Modules::V1::Packages
+        mount ::API::Terraform::State
+        mount ::API::Terraform::StateVersion
         mount ::API::Unleash
         mount ::API::UserCounts
         mount ::API::Wikis
@@ -321,9 +324,6 @@ module API
       mount ::API::Subscriptions
       mount ::API::Tags
       mount ::API::Templates
-      mount ::API::Terraform::Modules::V1::Packages
-      mount ::API::Terraform::State
-      mount ::API::Terraform::StateVersion
       mount ::API::Todos
       mount ::API::Topics
       mount ::API::UsageData

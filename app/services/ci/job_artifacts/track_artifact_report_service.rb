@@ -5,7 +5,7 @@ module Ci
     class TrackArtifactReportService
       include Gitlab::Utils::UsageData
 
-      REPORT_TRACKED = %i[test].freeze
+      REPORT_TRACKED = %i[test coverage].freeze
 
       def execute(pipeline)
         REPORT_TRACKED.each do |report|

@@ -18,10 +18,6 @@ module ErrorTracking
         issues = response[:issues]
         pagination = response[:pagination]
 
-        # We check validate size only with feture flag disabled because when
-        # enabled we already check it when parsing the response.
-        validate_size(issues) unless validate_size_guarded_by_feature_flag?
-
         handle_mapping_exceptions do
           {
             issues: map_to_errors(issues),

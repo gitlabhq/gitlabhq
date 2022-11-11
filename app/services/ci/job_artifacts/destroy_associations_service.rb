@@ -12,7 +12,7 @@ module Ci
 
       def destroy_records
         @job_artifacts_relation.each_batch(of: BATCH_SIZE) do |relation|
-          service = Ci::JobArtifacts::DestroyBatchService.new(relation, pick_up_at: Time.current, fix_expire_at: false)
+          service = Ci::JobArtifacts::DestroyBatchService.new(relation, pick_up_at: Time.current)
           result  = service.execute(update_stats: false)
           updates = result[:statistics_updates]
 

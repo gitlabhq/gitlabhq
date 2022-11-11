@@ -30,5 +30,9 @@ You can watch the pipeline run by navigating to **CI/CD > Pipelines**.
 When the pipeline is finished, go to **Settings > Pages** to find the link to
 your Pages website.
 
+To view the HTML and other assets that were created for the site,
+go to the **Pipelines** tab, view the job, and on the right side,
+select **Download artifacts**.
+
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.

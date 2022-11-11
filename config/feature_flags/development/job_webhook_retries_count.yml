@@ -1,0 +1,8 @@
+---
+name: job_webhook_retries_count
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101618
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382046
+milestone: '15.6'
+type: development
+group: group::delivery
+default_enabled: false

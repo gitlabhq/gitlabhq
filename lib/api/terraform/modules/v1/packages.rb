@@ -92,11 +92,29 @@ module API
               authorize_read_package!(package || module_namespace)
             end
 
+            desc 'List versions for a module' do
+              detail 'List versions for a module'
+              success code: 200, model: Entities::Terraform::ModuleVersions
+              failure [
+                { code: 403, message: 'Forbidden' }
+              ]
+              is_array true
+              tags %w[terraform_registry]
+            end
             get 'versions' do
               presenter = ::Terraform::ModulesPresenter.new(packages, params[:module_system])
               present presenter, with: ::API::Entities::Terraform::ModuleVersions
             end
 
+            desc 'Get download location for the latest version of a module' do
+              detail 'Download the latest version of a module'
+              success code: 302
+              failure [
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not found' }
+              ]
+              tags %w[terraform_registry]
+            end
             get 'download' do
               latest_version = packages.order_version.last&.version
 
@@ -115,6 +133,15 @@ module API
               redirect(download_path)
             end
 
+            desc 'Get details about the latest version of a module' do
+              detail 'Get details about the latest version of a module'
+              success code: 200, model: Entities::Terraform::ModuleVersion
+              failure [
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not found' }
+              ]
+              tags %w[terraform_registry]
+            end
             get do
               latest_package = packages.order_version.last
 
@@ -133,6 +160,15 @@ module API
                 not_found! unless package && package_file
               end
 
+              desc 'Get download location for specific version of a module' do
+                detail 'Download specific version of a module'
+                success code: 204
+                failure [
+                  { code: 403, message: 'Forbidden' },
+                  { code: 404, message: 'Not found' }
+                ]
+                tags %w[terraform_registry]
+              end
               get 'download' do
                 module_file_path = api_v4_packages_terraform_modules_v1_module_version_file_path(
                   module_namespace: params[:module_namespace],
@@ -154,6 +190,15 @@ module API
                   accept.token_types(:deploy_token_from_jwt, :job_token_from_jwt, :personal_access_token_from_jwt).sent_through(:token_param)
                 end
 
+                desc 'Download specific version of a module' do
+                  detail 'Download specific version of a module'
+                  success code: 200, model: File
+                  failure [
+                    { code: 403, message: 'Forbidden' },
+                    { code: 404, message: 'Not found' }
+                  ]
+                  tags %w[terraform_registry]
+                end
                 get do
                   track_package_event('pull_package', :terraform_module, project: package.project, namespace: module_namespace, user: current_user)
 
@@ -166,6 +211,15 @@ module API
               # format: false is required, otherwise grape splits the semver version into 2 params:
               # params[:module_version] and params[:format],
               # thus leading to an invalid/not found module version
+              desc 'Get details about specific version of a module' do
+                detail 'Get details about specific version of a module'
+                success code: 200, model: Entities::Terraform::ModuleVersion
+                failure [
+                  { code: 403, message: 'Forbidden' },
+                  { code: 404, message: 'Not found' }
+                ]
+                tags %w[terraform_registry]
+              end
               get format: false do
                 presenter = ::Terraform::ModuleVersionPresenter.new(package, params[:module_system])
                 present presenter, with: ::API::Entities::Terraform::ModuleVersion
@@ -189,6 +243,11 @@ module API
 
               desc 'Workhorse authorize Terraform Module package file' do
                 detail 'This feature was introduced in GitLab 13.11'
+                success code: 200
+                failure [
+                  { code: 403, message: 'Forbidden' }
+                ]
+                tags %w[terraform_registry]
               end
 
               put 'authorize' do
@@ -200,6 +259,15 @@ module API
 
               desc 'Upload Terraform Module package file' do
                 detail 'This feature was introduced in GitLab 13.11'
+                success code: 201
+                failure [
+                  { code: 400, message: 'Invalid file' },
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 403, message: 'Forbidden' },
+                  { code: 404, message: 'Not found' }
+                ]
+                consumes %w[multipart/form-data]
+                tags %w[terraform_registry]
               end
 
               params do

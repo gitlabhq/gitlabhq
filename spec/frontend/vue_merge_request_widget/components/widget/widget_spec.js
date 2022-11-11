@@ -31,6 +31,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         isCollapsible: false,
         loadingText: 'Loading widget',
         widgetName: 'WidgetTest',
+        fetchCollapsedData: () => Promise.resolve([]),
         value: {
           collapsed: null,
           expanded: null,
@@ -63,8 +64,9 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
 
     it('sets the error text when fetch method fails', async () => {
-      const fetchCollapsedData = jest.fn().mockReturnValue(() => Promise.reject());
-      createComponent({ propsData: { fetchCollapsedData } });
+      createComponent({
+        propsData: { fetchCollapsedData: jest.fn().mockRejectedValue('Something went wrong') },
+      });
       await waitForPromises();
       expect(wrapper.findByText('Failed to load').exists()).toBe(true);
       expect(findStatusIcon().props()).toMatchObject({ iconName: 'failed', isLoading: false });
@@ -90,8 +92,12 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
 
     it('displays the loading text', async () => {
-      const fetchCollapsedData = jest.fn().mockReturnValue(() => Promise.reject());
-      createComponent({ propsData: { fetchCollapsedData, statusIconName: 'warning' } });
+      createComponent({
+        propsData: {
+          statusIconName: 'warning',
+        },
+      });
+
       expect(wrapper.text()).not.toContain('Loading');
       await nextTick();
       expect(wrapper.text()).toContain('Loading');
@@ -100,7 +106,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     it('validates widget name', () => {
       expect(() => {
         createComponent({
-          propsData: { fetchCollapsedData: jest.fn(), widgetName: 'InvalidWidgetName' },
+          propsData: { widgetName: 'InvalidWidgetName' },
         });
       }).toThrow();
     });
@@ -155,7 +161,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           summary: 'Hello world',
-          fetchCollapsedData: () => Promise.resolve(),
         },
       });
 
@@ -164,15 +169,14 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
     it.todo('displays content property when content slot is not provided');
 
-    it('displays the summary slot when provided', () => {
+    it('displays the summary slot when provided', async () => {
       createComponent({
-        propsData: {
-          fetchCollapsedData: () => Promise.resolve(),
-        },
         slots: {
           summary: '<b>More complex summary</b>',
         },
       });
+
+      await waitForPromises();
 
       expect(wrapper.findByTestId('widget-extension-top-level-summary').text()).toBe(
         'More complex summary',
@@ -180,12 +184,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
 
     it('does not display action buttons if actionButtons is not provided', () => {
-      createComponent({
-        propsData: {
-          fetchCollapsedData: () => Promise.resolve(),
-        },
-      });
-
+      createComponent();
       expect(findActionButtons().exists()).toBe(false);
     });
 
@@ -194,7 +193,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
       createComponent({
         propsData: {
-          fetchCollapsedData: () => Promise.resolve(),
           actionButtons,
         },
       });
@@ -207,7 +205,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     it('renders a help popover', () => {
       createComponent({
         propsData: {
-          fetchCollapsedData: jest.fn(),
           helpPopover: {
             options: { title: 'My help popover title' },
             content: { text: 'Help popover content', learnMorePath: '/path/to/docs' },
@@ -222,7 +219,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
 
     it('does not render help popover when it is not provided', () => {
-      createComponent({ propsData: { fetchCollapsedData: jest.fn() } });
+      createComponent();
       expect(findHelpPopover().exists()).toBe(false);
     });
   });
@@ -232,7 +229,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           content: '<b>More complex content</b>',
@@ -247,7 +243,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           content: '<b>More complex content</b>',
@@ -264,7 +259,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: false,
-          fetchCollapsedData: () => Promise.resolve(),
         },
       });
 
@@ -321,7 +315,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve([]),
           fetchExpandedData,
         },
       });
@@ -349,7 +342,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve([]),
           fetchExpandedData,
         },
       });
@@ -372,8 +364,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: jest.fn(),
-          fetchExpandedData: jest.fn(),
           actionButtons: [
             {
               fullReport: true,
@@ -410,8 +400,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
         propsData: {
           isCollapsible: true,
           telemetry: false,
-          fetchCollapsedData: jest.fn(),
-          fetchExpandedData: jest.fn(),
         },
       });
     });

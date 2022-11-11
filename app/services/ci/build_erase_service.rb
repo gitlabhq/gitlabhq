@@ -33,9 +33,7 @@ module Ci
     attr_reader :build, :current_user
 
     def destroy_artifacts
-      # fix_expire_at is false because in this case we want to explicitly delete the job artifacts
-      # this flag is a workaround that will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/355833
-      Ci::JobArtifacts::DestroyBatchService.new(build.job_artifacts, fix_expire_at: false).execute
+      Ci::JobArtifacts::DestroyBatchService.new(build.job_artifacts).execute
     end
 
     def erase_trace!

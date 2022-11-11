@@ -12,7 +12,7 @@ module Gitlab
 
         author_url = build_author_url(build.commit, commit)
 
-        {
+        data = {
           object_kind: 'build',
 
           ref: build.ref,
@@ -68,6 +68,10 @@ module Gitlab
 
           environment: build_environment(build)
         }
+
+        data[:retries_count] = build.retries_count if Feature.enabled?(:job_webhook_retries_count, project)
+
+        data
       end
 
       private

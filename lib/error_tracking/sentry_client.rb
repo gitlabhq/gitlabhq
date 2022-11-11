@@ -17,14 +17,9 @@ module ErrorTracking
 
     attr_accessor :url, :token
 
-    def initialize(api_url, token, validate_size_guarded_by_feature_flag: false)
+    def initialize(api_url, token)
       @url = api_url
       @token = token
-      @validate_size_guarded_by_feature_flag = validate_size_guarded_by_feature_flag
-    end
-
-    def validate_size_guarded_by_feature_flag?
-      @validate_size_guarded_by_feature_flag
     end
 
     private
@@ -103,7 +98,7 @@ module ErrorTracking
     def handle_response(response)
       raise_error "Sentry response status code: #{response.code}" unless response.code.between?(200, 204)
 
-      validate_size(response.parsed_response) if validate_size_guarded_by_feature_flag?
+      validate_size(response.parsed_response)
 
       { body: response.parsed_response, headers: response.headers }
     end
