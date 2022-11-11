@@ -25,4 +25,5 @@ module.exports = {
     },
   }),
   timers: 'real',
+  testTimeout: process.env.CI ? 20000 : 7000,
 };

@@ -21,7 +21,7 @@ describe('OpenAPI blob viewer', () => {
 
   it('initializes SwaggerUI with the correct configuration', () => {
     expect(document.body.innerHTML).toContain(
-      '<iframe src="/-/sandbox/swagger" sandbox="allow-scripts" frameborder="0" width="100%" height="1000"></iframe>',
+      '<iframe src="/-/sandbox/swagger" sandbox="allow-scripts allow-popups" frameborder="0" width="100%" height="1000"></iframe>',
     );
   });
 });
