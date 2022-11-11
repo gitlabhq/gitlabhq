@@ -96,6 +96,10 @@ module API
         optional :project,
           type: String,
           desc: "A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths"
+        optional :repository,
+          type: String,
+          desc: "A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, " \
+                "`snippets/21.git`, to name a few. Use comma to separate multiple repository paths"
         optional :force, type: Boolean, desc: 'Skip feature flag validation checks, such as a YAML definition'
 
         mutually_exclusive :key, :feature_group
@@ -103,6 +107,7 @@ module API
         mutually_exclusive :key, :group
         mutually_exclusive :key, :namespace
         mutually_exclusive :key, :project
+        mutually_exclusive :key, :repository
       end
       post ':name' do
         if Feature.enabled?(:set_feature_flag_service)

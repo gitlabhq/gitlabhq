@@ -130,6 +130,15 @@ RSpec.describe Admin::SetFeatureFlagService do
         end
       end
 
+      context 'when enabling for a repository' do
+        let(:params) { { value: 'true', repository: project.repository.full_path } }
+
+        it 'enables the feature flag' do
+          expect(Feature).to receive(:enable).with(feature_name, project.repository)
+          expect(subject).to be_success
+        end
+      end
+
       context 'when enabling for a user actor and a feature group' do
         let(:params) { { value: 'true', user: user.username, feature_group: 'perf_team' } }
         let(:feature_group) { Feature.group('perf_team') }

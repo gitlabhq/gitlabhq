@@ -86,7 +86,7 @@ gem 'timfel-krb5-auth', '~> 0.8', group: :kerberos
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 4.11', require: 'recaptcha/rails'
 gem 'akismet', '~> 3.0'
-gem 'invisible_captcha', '~> 1.1.0'
+gem 'invisible_captcha', '~> 2.0.0'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 4.0.2'

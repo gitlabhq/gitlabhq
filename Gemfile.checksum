@@ -288,7 +288,7 @@
 {"name":"icalendar","version":"2.8.0","platform":"ruby","checksum":"e404f970c7572bdebf6f09f9890970b68aab400ba9e609dc7d46098f28d0ee87"},
 {"name":"ice_cube","version":"0.16.4","platform":"ruby","checksum":"da117e5de24bdc33931be629f9b55048641924442c7e9b72fedc05e5592531b7"},
 {"name":"imagen","version":"0.1.8","platform":"ruby","checksum":"fde7b727d4fe79c6bb5ac46c1f7184bf87a6d54df54d712ad2be039d2f93a162"},
-{"name":"invisible_captcha","version":"1.1.0","platform":"ruby","checksum":"3670294a998ab1430ff07cd1697d25c70e6367bdb0dff534df24a14fdee8b4d2"},
+{"name":"invisible_captcha","version":"2.0.0","platform":"ruby","checksum":"a381edcb1d1b8744e9dc398ecad142c3e2ab077604645f85eeb02f9ea535c042"},
 {"name":"ipaddr","version":"1.2.2","platform":"ruby","checksum":"27916ee6367d549850d3675bc020f1f1ddafbbe1cfc58635f17dfa56c42f9f79"},
 {"name":"ipaddress","version":"0.8.3","platform":"ruby","checksum":"85640c4f9194c26937afc8c78e3074a8e7c97d5d1210358d1440f01034d006f5"},
 {"name":"jaeger-client","version":"1.1.0","platform":"ruby","checksum":"cb5e9b9bbee6ee8d6a82d03d947a5b04543d8c0a949c22e484254f18d8a458a8"},

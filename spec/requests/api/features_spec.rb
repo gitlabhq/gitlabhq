@@ -193,7 +193,7 @@ RSpec.describe API::Features, stub_feature_flags: false do
               'state' => 'conditional',
               'gates' => [
                 { 'key' => 'boolean', 'value' => false },
-                { 'key' => 'actors', 'value' => ["#{actor.class}:#{actor.id}"] }
+                { 'key' => 'actors', 'value' => [actor.flipper_id] }
               ],
               'definition' => known_feature_flag_definition_hash
             )
@@ -265,6 +265,20 @@ RSpec.describe API::Features, stub_feature_flags: false do
 
             it_behaves_like 'does not enable the flag', :namespace do
               let(:actor_path) { project_namespace.full_path }
+            end
+          end
+        end
+
+        context 'when enabling for a repository by path' do
+          context 'when the repository exists' do
+            it_behaves_like 'enables the flag for the actor', :repository do
+              let_it_be(:actor) { create(:project).repository }
+            end
+          end
+
+          context 'when the repository does not exist' do
+            it_behaves_like 'does not enable the flag', :repository do
+              let(:actor_path) { 'not/a/repository' }
             end
           end
         end
@@ -356,6 +370,29 @@ RSpec.describe API::Features, stub_feature_flags: false do
           context 'when one of the namespaces does not exist' do
             it_behaves_like 'does not enable the flag', :namespace do
               let(:actor_path) { "#{namespaces.first.full_path},inexistent-entry" }
+              let(:expected_inexistent_path) { "inexistent-entry" }
+            end
+          end
+        end
+
+        context 'with multiple repository' do
+          let_it_be(:projects) { create_list(:project, 3) }
+
+          it_behaves_like 'creates an enabled feature for the specified entries' do
+            let(:gate_params) { { repository: projects.map { |p| p.repository.full_path }.join(',') } }
+            let(:expected_gate_params) { projects.map { |p| p.repository.flipper_id } }
+          end
+
+          context 'when empty value exists between comma' do
+            it_behaves_like 'creates an enabled feature for the specified entries' do
+              let(:gate_params) { { repository: "#{projects.first.repository.full_path},,,," } }
+              let(:expected_gate_params) { projects.first.repository.flipper_id }
+            end
+          end
+
+          context 'when one of the projects does not exist' do
+            it_behaves_like 'does not enable the flag', :project do
+              let(:actor_path) { "#{projects.first.repository.full_path},inexistent-entry" }
               let(:expected_inexistent_path) { "inexistent-entry" }
             end
           end

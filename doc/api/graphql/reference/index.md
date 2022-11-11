@@ -16348,6 +16348,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="pipelinejobssecurityreporttypes"></a>`securityReportTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filter jobs by the type of security report they produce. |
 | <a id="pipelinejobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 
+##### `Pipeline.securityReportFinding`
+
+Vulnerability finding reported on the pipeline.
+
+Returns [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String!`](#string) | UUID of the security report finding. |
+
 ##### `Pipeline.securityReportFindings`
 
 Vulnerability findings reported on the pipeline.

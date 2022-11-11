@@ -301,11 +301,11 @@ module Feature
     end
 
     def gate_specified?
-      %i(user project group feature_group namespace).any? { |key| params.key?(key) }
+      %i(user project group feature_group namespace repository).any? { |key| params.key?(key) }
     end
 
     def targets
-      [feature_group, users, projects, groups, namespaces].flatten.compact
+      [feature_group, users, projects, groups, namespaces, repositories].flatten.compact
     end
 
     private
@@ -348,6 +348,17 @@ module Feature
       params[:namespace].split(',').map do |arg|
         # We are interested in Group or UserNamespace
         Namespace.without_project_namespaces.find_by_full_path(arg) || (raise UnknowTargetError, "#{arg} is not found!")
+      end
+    end
+
+    def repositories
+      return unless params.key?(:repository)
+
+      params[:repository].split(',').map do |arg|
+        container, _project, _type, _path = Gitlab::RepoPath.parse(arg)
+        raise UnknowTargetError, "#{arg} is not found!" if container.nil?
+
+        container.repository
       end
     end
   end

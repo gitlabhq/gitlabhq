@@ -790,11 +790,47 @@ RSpec.describe Feature, stub_feature_flags: false do
       let(:group) { create(:group) }
       let(:user_name) { project.first_owner.username }
 
-      subject { described_class.new(user: user_name, project: project.full_path, group: group.full_path) }
+      subject do
+        described_class.new(
+          user: user_name,
+          project: project.full_path,
+          group: group.full_path,
+          repository: project.repository.full_path
+        )
+      end
 
       it 'returns all found targets' do
         expect(subject.targets).to be_an(Array)
-        expect(subject.targets).to eq([project.first_owner, project, group])
+        expect(subject.targets).to eq([project.first_owner, project, group, project.repository])
+      end
+
+      context 'when repository target works with different types of repositories' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, :wiki_repo, group: group) }
+        let_it_be(:project_in_user_namespace) { create(:project, namespace: create(:user).namespace) }
+        let(:personal_snippet) { create(:personal_snippet) }
+        let(:project_snippet) { create(:project_snippet, project: project) }
+
+        let(:targets) do
+          [
+            project,
+            project.wiki,
+            project_in_user_namespace,
+            personal_snippet,
+            project_snippet
+          ]
+        end
+
+        subject do
+          described_class.new(
+            repository: targets.map { |t| t.repository.full_path }.join(",")
+          )
+        end
+
+        it 'returns all found targets' do
+          expect(subject.targets).to be_an(Array)
+          expect(subject.targets).to eq(targets.map(&:repository))
+        end
       end
     end
   end

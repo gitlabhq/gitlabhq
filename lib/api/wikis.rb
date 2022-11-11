@@ -28,6 +28,11 @@ module API
 
         desc 'Get a list of wiki pages' do
           success Entities::WikiPageBasic
+          failure [
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[wikis]
+          is_array true
         end
         params do
           optional :with_content, type: Boolean, default: false, desc: "Include pages' content"
@@ -47,6 +52,10 @@ module API
 
         desc 'Get a wiki page' do
           success Entities::WikiPage
+          failure [
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[wikis]
         end
         params do
           requires :slug, type: String, desc: 'The slug of a wiki page'
@@ -67,6 +76,12 @@ module API
 
         desc 'Create a wiki page' do
           success Entities::WikiPage
+          failure [
+            { code: 400, message: 'Validation error' },
+            { code: 404, message: 'Not found' },
+            { code: 422, message: 'Unprocessable entity' }
+          ]
+          tags %w[wikis]
         end
         params do
           requires :title, type: String, desc: 'Title of a wiki page'
@@ -88,6 +103,12 @@ module API
 
         desc 'Update a wiki page' do
           success Entities::WikiPage
+          failure [
+            { code: 400, message: 'Validation error' },
+            { code: 404, message: 'Not found' },
+            { code: 422, message: 'Unprocessable entity' }
+          ]
+          tags %w[wikis]
         end
         params do
           optional :title, type: String, desc: 'Title of a wiki page'
@@ -110,7 +131,14 @@ module API
           end
         end
 
-        desc 'Delete a wiki page'
+        desc 'Delete a wiki page' do
+          success code: 204
+          failure [
+            { code: 400, message: 'Validation error' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[wikis]
+        end
         params do
           requires :slug, type: String, desc: 'The slug of a wiki page'
         end
@@ -131,6 +159,10 @@ module API
         desc 'Upload an attachment to the wiki repository' do
           detail 'This feature was introduced in GitLab 11.3.'
           success Entities::WikiAttachment
+          failure [
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[wikis]
         end
         params do
           requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
