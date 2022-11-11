@@ -202,18 +202,6 @@ RSpec.describe API::Unleash do
 
           3.times { get api(features_url), params: params, headers: headers }
         end
-
-        context 'when cache_unleash_client_api is disabled' do
-          before do
-            stub_feature_flags(cache_unleash_client_api: false)
-          end
-
-          it 'serializes feature flags every time' do
-            expect(::API::Entities::UnleashFeature).to receive(:represent).exactly(5).times
-
-            5.times { get api(features_url), params: params, headers: headers }
-          end
-        end
       end
 
       context 'with version 2 feature flags' do

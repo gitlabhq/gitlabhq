@@ -148,11 +148,6 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
-    shouldEnableBulkDelete() {
-      // Feature flag for `runners_group_bulk_delete`
-      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/378090
-      return this.glFeatures?.runnersGroupBulkDelete;
-    },
   },
   watch: {
     search: {
@@ -253,7 +248,7 @@ export default {
     <template v-else>
       <runner-list
         :runners="runners.items"
-        :checkable="shouldEnableBulkDelete"
+        :checkable="true"
         :loading="runnersLoading"
         @deleted="onDeleted"
       >

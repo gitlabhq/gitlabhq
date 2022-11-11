@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Group Runners" do
   include Spec::Support::Helpers::Features::RunnersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:group_owner) { create(:user) }
   let_it_be(:group) { create(:group) }
@@ -154,6 +155,19 @@ RSpec.describe "Group Runners" do
         within_runner_row(runner.id) do
           expect(page).not_to have_button 'Delete runner'
         end
+      end
+    end
+
+    context "with multiple runners" do
+      before do
+        create(:ci_runner, :group, groups: [group], description: 'runner-foo')
+        create(:ci_runner, :group, groups: [group], description: 'runner-bar')
+
+        visit group_runners_path(group)
+      end
+
+      it_behaves_like 'deletes runners in bulk' do
+        let(:runner_count) { '2' }
       end
     end
 

@@ -262,7 +262,7 @@ module API
             .select { |_role, role_access_level| role_access_level <= user_access_level }
             .map(&:first)
 
-          environment = if persisted_environment = current_authenticated_job.persisted_environment
+          environment = if persisted_environment = current_authenticated_job.actual_persisted_environment
                           { tier: persisted_environment.tier, slug: persisted_environment.slug }
                         end
 

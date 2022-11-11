@@ -192,6 +192,25 @@ You must have the Owner role for the group.
 
 From this page, you can edit, pause, and remove runners from the group, its subgroups, and projects.
 
+#### Delete multiple group runners
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6
+
+Prerequisites:
+
+- You must have either:
+  - Owner role for the group.
+  - Access to delete any runners in the group.
+
+To delete multiple runners in a single action in the group list:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **CI/CD > Runners**.
+1. To delete multiple runners, you can either:
+   - Select the checkbox next to the runner.
+   - Select the checkbox at the top of the runner list to select all runners in the list.
+1. To delete the runners, select **Delete selected**.
+
 #### Filter group runners to show only inherited
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337838/) in GitLab 15.5.

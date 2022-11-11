@@ -8,6 +8,6 @@
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/380872  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated. GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/), which introduces a new method for registering runners and eliminates the legacy [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+    The command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated. GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8, which introduces a new method for registering runners and eliminates the legacy [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
   end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   end_of_support_date: "2023-05-22"  # (optional) The date of the milestone release when support for this feature will end.

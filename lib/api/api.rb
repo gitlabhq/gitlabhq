@@ -195,6 +195,7 @@ module API
         mount ::API::FeatureFlags
         mount ::API::FeatureFlagsUserLists
         mount ::API::Features
+        mount ::API::Files
         mount ::API::FreezePeriods
         mount ::API::GroupClusters
         mount ::API::GroupExport
@@ -216,6 +217,7 @@ module API
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::ProjectSnippets
         mount ::API::ProjectSnapshots
+        mount ::API::ProjectStatistics
         mount ::API::ProjectTemplates
         mount ::API::ProtectedBranches
         mount ::API::ProtectedTags
@@ -268,7 +270,6 @@ module API
       mount ::API::ErrorTracking::Collector
       mount ::API::ErrorTracking::ProjectSettings
       mount ::API::Events
-      mount ::API::Files
       mount ::API::GenericPackages
       mount ::API::Geo
       mount ::API::GoProxy
@@ -309,7 +310,6 @@ module API
       mount ::API::ProjectEvents
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
-      mount ::API::ProjectStatistics
       mount ::API::Projects
       mount ::API::ProtectedTags
       mount ::API::PypiPackages

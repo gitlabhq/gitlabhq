@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'shows and resets runner registration token' do
-  include Spec::Support::Helpers::ModalHelpers
   include Spec::Support::Helpers::Features::RunnersHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   before do
     click_on dropdown_text
@@ -143,6 +143,23 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
 
       expect(page).to have_content runner.description
     end
+  end
+end
+
+RSpec.shared_examples 'deletes runners in bulk' do
+  describe 'when selecting all for deletion', :js do
+    before do
+      check s_('Runners|Select all')
+      click_button s_('Runners|Delete selected')
+
+      within_modal do
+        click_on "Permanently delete #{runner_count} runners"
+      end
+
+      wait_for_requests
+    end
+
+    it_behaves_like 'shows no runners registered'
   end
 end
 

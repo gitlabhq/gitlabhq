@@ -12,14 +12,7 @@ module Deployments
       # `create_deployment_in_separate_transaction` feature flag has been removed.
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/348778
 
-      # If build.persisted_environment is a BatchLoader, we need to remove
-      # the method proxy in order to clone into new item here
-      # https://github.com/exAspArk/batch-loader/issues/31
-      environment = if build.persisted_environment.respond_to?(:__sync)
-                      build.persisted_environment.__sync
-                    else
-                      build.persisted_environment
-                    end
+      environment = build.actual_persisted_environment
 
       deployment = ::Gitlab::Ci::Pipeline::Seed::Deployment
         .new(build, environment).to_resource

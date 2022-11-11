@@ -72,33 +72,6 @@ module Ci
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
 
-    ##
-    # Since Gitlab 11.5, deployments records started being created right after
-    # `ci_builds` creation. We can look up a relevant `environment` through
-    # `deployment` relation today.
-    # (See more https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22380)
-    #
-    # Since Gitlab 12.9, we started persisting the expanded environment name to
-    # avoid repeated variables expansion in `action: stop` builds as well.
-    def persisted_environment
-      return unless has_environment_keyword?
-
-      strong_memoize(:persisted_environment) do
-        # This code path has caused N+1s in the past, since environments are only indirectly
-        # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
-        # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
-        BatchLoader.for(expanded_environment_name).batch(key: project_id) do |names, loader, args|
-          Environment.where(name: names, project: args[:key]).find_each do |environment|
-            loader.call(environment.name, environment)
-          end
-        end
-      end
-    end
-
-    def persisted_environment=(environment)
-      strong_memoize(:persisted_environment) { environment }
-    end
-
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -489,6 +462,32 @@ module Ci
 
     def prerequisites
       Gitlab::Ci::Build::Prerequisite::Factory.new(self).unmet
+    end
+
+    def persisted_environment
+      return unless has_environment_keyword?
+
+      strong_memoize(:persisted_environment) do
+        # This code path has caused N+1s in the past, since environments are only indirectly
+        # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
+        # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
+        BatchLoader.for(expanded_environment_name).batch(key: project_id) do |names, loader, args|
+          Environment.where(name: names, project: args[:key]).find_each do |environment|
+            loader.call(environment.name, environment)
+          end
+        end
+      end
+    end
+
+    def persisted_environment=(environment)
+      strong_memoize(:persisted_environment) { environment }
+    end
+
+    # If build.persisted_environment is a BatchLoader, we need to remove
+    # the method proxy in order to clone into new item here
+    # https://github.com/exAspArk/batch-loader/issues/31
+    def actual_persisted_environment
+      persisted_environment.respond_to?(:__sync) ? persisted_environment.__sync : persisted_environment
     end
 
     def expanded_environment_name

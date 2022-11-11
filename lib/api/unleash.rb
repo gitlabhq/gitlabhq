@@ -30,12 +30,7 @@ module API
             tags unleash_tags
           end
           get 'features', urgency: :low do
-            if ::Feature.enabled?(:cache_unleash_client_api, project)
-              present_feature_flags
-            else
-              present :version, 1
-              present :features, feature_flags, with: ::API::Entities::UnleashFeature
-            end
+            present_feature_flags
           end
 
           # We decrease the urgency of this endpoint until the maxmemory issue of redis-cache has been resolved.
@@ -45,12 +40,7 @@ module API
             tags unleash_tags
           end
           get 'client/features', urgency: :low do
-            if ::Feature.enabled?(:cache_unleash_client_api, project)
-              present_feature_flags
-            else
-              present :version, 1
-              present :features, feature_flags, with: ::API::Entities::UnleashFeature
-            end
+            present_feature_flags
           end
 
           post 'client/register' do
