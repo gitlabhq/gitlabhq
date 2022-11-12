@@ -6,12 +6,11 @@ description: 'Pods: Git Access'
 ---
 
 DISCLAIMER:
-This page may contain information related to upcoming products, features and
-functionality. It is important to note that the information presented is for
-informational purposes only, so please do not rely on the information for
-purchasing or planning purposes. Just like with all projects, the items
-mentioned on the page are subject to change or delay, and the development,
-release, and timing of any products, features, or functionality remain at the
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
 This document is a work-in-progress and represents a very early state of the

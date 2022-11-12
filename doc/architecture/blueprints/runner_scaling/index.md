@@ -10,6 +10,14 @@ participating-stages: []
 
 # Next Runner Auto-scaling Architecture
 
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 ## Summary
 
 GitLab Runner is a core component of GitLab CI/CD. It makes it possible to run
@@ -52,18 +60,6 @@ needs to support auto-scaling, but it also needs to do that in the way to enable
 build on top of it to improve efficiency, reliability and availability.
 
 We call this new mechanism the "next GitLab Runner Scaling architecture".
-
-_Disclaimer The following contain information related to upcoming products,
-features, and functionality._
-
-_It is important to note that the information presented is for informational
-purposes only. Please do not rely on this information for purchasing or
-planning purposes._
-
-_As with all projects, the items mentioned in this document and linked pages are
-subject to change or delay. The development, release and timing of any
-products, features, or functionality remain at the sole discretion of GitLab
-Inc._
 
 ## Continuing building on Docker Machine
 

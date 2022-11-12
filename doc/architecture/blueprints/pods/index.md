@@ -10,6 +10,14 @@ participating-stages: []
 
 # Pods
 
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 This document is a work-in-progress and represents a very early state of the Pods design. Significant aspects are not documented, though we expect to add them in the future.
 
 ## Summary
@@ -217,7 +225,7 @@ A rough representation of this is:
 
 We can't ship the entire Pods architecture in one go - it is too large. Instead, we are adopting an iteration plan that provides value along the way.
 
-1. Introduce organizations 
+1. Introduce organizations
 1. Migrate existing top-level namespaces to organizations
 1. Create new organizations on `pod_0`
 1. Migrate existing organizations from `pod_0` to `pod_n`

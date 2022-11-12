@@ -10,6 +10,14 @@ participating-stages: []
 
 # CI/CD data time decay
 
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 ## Summary
 
 GitLab CI/CD is one of the most data and compute intensive components of GitLab.
@@ -25,18 +33,6 @@ the data storage for pipeline builds remains almost the same since 2012. In
 2021 we started working on database decomposition and extracting CI/CD data to
 ia separate database. Now we want to improve the architecture of GitLab CI/CD
 product to enable further scaling.
-
-_Disclaimer: The following contains information related to upcoming products,
-features, and functionality._
-
-_It is important to note that the information presented is for informational
-purposes only. Please do not rely on this information for purchasing or
-planning purposes._
-
-_As with all projects, the items mentioned in this document and linked pages are
-subject to change or delay. The development, release and timing of any
-products, features, or functionality remain at the sole discretion of GitLab
-Inc._
 
 ## Goals
 

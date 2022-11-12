@@ -8,10 +8,18 @@ owning-stage: "~devops::non_devops"
 participating-stages: []
 ---
 
+# Composable GitLab codebase - using Rails Engines
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 NOTE:
 Due to our focus on improving the overall availability of GitLab.com and reducing tech debt, we do not have capacity to act on this blueprint. We will re-evaluate in Q1-FY23.
-
-# Composable GitLab codebase - using Rails Engines
 
 The one of the major risks of a single codebase is an infinite growth of the whole
 application. The more code being added results in not only ever increasing resource requirements

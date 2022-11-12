@@ -10,6 +10,14 @@ participating-stages: []
 
 # Consolidating Groups and Projects
 
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 There are numerous features that exist exclusively within groups or
 projects. The boundary between group and project features used to be clear.
 However, there is growing demand to have group features within projects, and

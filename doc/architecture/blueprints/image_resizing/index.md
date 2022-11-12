@@ -10,6 +10,14 @@ participating-stages: []
 
 # Image resizing for avatars and content images
 
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 Currently, we are showing all uploaded images 1:1, which is of course not ideal. To improve performance greatly, add image resizing to the backend. There are two main areas of image resizing to consider; avatars and content images. The MVC for this implementation focuses on Avatars. Avatars requests consist of approximately 70% of total image requests. There is an identified set of sizes we intend to support which makes the scope of this first MVC very narrow. Content image resizing has many more considerations for size and features. It is entirely possible that we have two separate development efforts with the same goal of increasing performance via image resizing.
 
 ## MVC Avatar Resizing

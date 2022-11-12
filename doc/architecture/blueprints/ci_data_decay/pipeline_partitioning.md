@@ -7,17 +7,13 @@ description: 'Pipeline data partitioning design'
 
 # Pipeline data partitioning design
 
-_Disclaimer: The following contains information related to upcoming products,
-features, and functionality._
-
-_It is important to note that the information presented is for informational
-purposes only. Please do not rely on this information for purchasing or
-planning purposes._
-
-_As with all projects, the items mentioned in this document and linked pages
-are subject to change or delay. The development, release and timing of any
-products, features, or functionality remain at the sole discretion of GitLab
-Inc._
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
 
 ## What problem are we trying to solve?
 

@@ -53,6 +53,11 @@ as part of any review.
 -->
 
 <!--
+Start the document by pasting an exact copy of the disclaimer found at:
+https://docs.gitlab.com/ee/development/documentation/versions.html#legal-disclaimer-for-future-features
+-->
+
+<!--
 For long pages, consider creating a table of contents.
 The `[_TOC_]` function is not supported on docs.gitlab.com.
 -->

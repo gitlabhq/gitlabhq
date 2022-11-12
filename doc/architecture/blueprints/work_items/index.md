@@ -11,7 +11,12 @@ participating-stages: []
 # Work Items
 
 DISCLAIMER:
-This page may contain information related to upcoming products, features and functionality. It is important to note that the information presented is for informational purposes only, so please do not rely on the information for purchasing or planning purposes. Just like with all projects, the items mentioned on the page are subject to change or delay, and the development, release, and timing of any products, features, or functionality remain at the sole discretion of GitLab Inc.
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
 
 This document is a work-in-progress. Some aspects are not documented, though we expect to add them in the future.
 
@@ -63,7 +68,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | assignees  | |
 | description | |
 | hierarchy | |
-| [iteration](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) | work_items_mvc_2 | 
+| [iteration](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) | work_items_mvc_2 |
 | [milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) | work_items_mvc_2 |
 | labels | |
 | start and due date | |
@@ -80,8 +85,8 @@ The new frontend view that renders Work Items of any type using global Work Item
 
 Task is a special Work Item type. Tasks can be added to issues as child items and can be displayed in the modal on the issue view.
 
-### Feature flags  
-    
+### Feature flags
+
 Since this is a large project with numerous moving parts, feature flags are being used to track promotions of available widgets. The table below shows the different feature flags that are being used, and the audience that they are available to.  
 
 | feature flag name | audience |
