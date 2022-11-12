@@ -30736,6 +30736,12 @@ msgstr ""
 msgid "PreScanVerification|Test your configuration and identify potential errors before running a full scan."
 msgstr ""
 
+msgid "PreScanVerification|The last pre-scan verification job is no longer valid because this scan’s configuration has changed."
+msgstr ""
+
+msgid "PreScanVerification|The pre-scan verification status was reset for this scan"
+msgstr ""
+
 msgid "PreScanVerification|Verification checks"
 msgstr ""
 
@@ -36624,6 +36630,9 @@ msgid "SecurityReports|Add projects"
 msgstr ""
 
 msgid "SecurityReports|All activity"
+msgstr ""
+
+msgid "SecurityReports|All severities"
 msgstr ""
 
 msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your settings to make sure you've set up your dashboard correctly."
