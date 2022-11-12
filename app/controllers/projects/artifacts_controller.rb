@@ -4,6 +4,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
   include SendFileUpload
+  include Gitlab::Ci::Artifacts::Logger
 
   urgency :low, [:browse, :file, :latest_succeeded]
 
@@ -41,6 +42,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   def download
     return render_404 unless artifacts_file
 
+    log_artifacts_filesize(artifacts_file.model)
     send_upload(artifacts_file, attachment: artifacts_file.filename, proxy: params[:proxy])
   end
 

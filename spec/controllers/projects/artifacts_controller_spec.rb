@@ -158,9 +158,12 @@ RSpec.describe Projects::ArtifactsController do
           before do
             stub_artifacts_object_storage(cdn: cdn_config)
             create(:ci_job_artifact, :remote_store, :codequality, job: job)
+            allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
           end
 
           it 'sends the codequality report' do
+            expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
+
             expect(controller).to receive(:redirect_to).and_call_original
 
             download_artifact(file_type: file_type)
@@ -185,12 +188,12 @@ RSpec.describe Projects::ArtifactsController do
             end
 
             before do
-              allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
               request.env['action_dispatch.remote_ip'] = '18.245.0.42'
             end
 
             context 'with use_cdn_with_job_artifacts_ui_downloads enabled' do
               it 'redirects to a Google CDN request' do
+                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
                 expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
 
                 download_artifact(file_type: file_type)
