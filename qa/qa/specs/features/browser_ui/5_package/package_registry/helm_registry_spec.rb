@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage, product_group: :package_registry do
-    describe 'Helm Registry' do
+    describe 'Helm Registry', quarantine: { type: :broken, issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/382262" } do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

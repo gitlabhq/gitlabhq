@@ -435,9 +435,25 @@ module Gitlab
         end
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
-      end
-      # rubocop:enable Metrics/ParameterLists
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
 
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: e.details)
+        when :index_update
+          raise Gitlab::Git::Index::IndexError, index_error_message(detailed_error.index_update)
+        else
+          raise e
+        end
+      end
+
+      # rubocop:enable Metrics/ParameterLists
       def user_commit_patches(user, branch_name, patches)
         header = Gitaly::UserApplyPatchRequest::Header.new(
           repository: @gitaly_repo,
@@ -574,6 +590,27 @@ module Gitlab
         # Gitaly error as a fallback.
         custom_hook_output = custom_hook_error.stderr.presence || custom_hook_error.stdout
         EncodingHelper.encode!(custom_hook_output)
+      end
+
+      def index_error_message(index_error)
+        encoded_path = EncodingHelper.encode!(index_error.path)
+
+        case index_error.error_type
+        when :ERROR_TYPE_EMPTY_PATH
+          "Received empty path"
+        when :ERROR_TYPE_INVALID_PATH
+          "Invalid path: #{encoded_path}"
+        when :ERROR_TYPE_DIRECTORY_EXISTS
+          "Directory already exists: #{encoded_path}"
+        when :ERROR_TYPE_DIRECTORY_TRAVERSAL
+          "Directory traversal in path escapes repository: #{encoded_path}"
+        when :ERROR_TYPE_FILE_EXISTS
+          "File already exists: #{encoded_path}"
+        when :ERROR_TYPE_FILE_NOT_FOUND
+          "File not found: #{encoded_path}"
+        else
+          "Unknown error performing git operation"
+        end
       end
     end
   end

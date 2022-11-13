@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties do
-  subject(:parse_source) { described_class.parse_source(properties) }
+  subject(:parse_source_from_properties) { described_class.parse_source(properties) }
 
   context 'when properties are nil' do
     let(:properties) { nil }
@@ -50,9 +50,9 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties do
     end
 
     it 'does not call dependency_scanning parser' do
-      expect(Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning).not_to receive(:parse_source)
+      expect(Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning).not_to receive(:source)
 
-      parse_source
+      parse_source_from_properties
     end
   end
 
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties do
     it 'passes only supported properties to the dependency scanning parser' do
       expect(Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning).to receive(:source).with(expected_input)
 
-      parse_source
+      parse_source_from_properties
     end
   end
 end
