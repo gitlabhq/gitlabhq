@@ -4,15 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
   around do |example|
-    Sidekiq::Queue.new('foobar').clear
+    Sidekiq::Queue.new('default').clear
     Sidekiq::Testing.disable!(&example)
-    Sidekiq::Queue.new('foobar').clear
+    Sidekiq::Queue.new('default').clear
   end
 
   def add_job(args, user:, klass: 'AuthorizedProjectsWorker')
     Sidekiq::Client.push(
       'class' => klass,
-      'queue' => 'foobar',
+      'queue' => 'default',
       'args' => args,
       'meta.user' => user.username
     )
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
 
   describe '#drop_jobs!' do
     shared_examples 'queue processing' do
-      let(:sidekiq_queue) { described_class.new('foobar') }
+      let(:sidekiq_queue) { described_class.new('default') }
       let_it_be(:sidekiq_queue_user) { create(:user) }
 
       before do
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
       it 'raises NoMetadataError' do
         add_job([1], user: create(:user))
 
-        expect { described_class.new('foobar').drop_jobs!({ username: 'sidekiq_queue_user' }, timeout: 1) }
+        expect { described_class.new('default').drop_jobs!({ username: 'sidekiq_queue_user' }, timeout: 1) }
           .to raise_error(described_class::NoMetadataError)
       end
     end

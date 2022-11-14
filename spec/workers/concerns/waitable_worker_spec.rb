@@ -49,7 +49,8 @@ RSpec.describe WaitableWorker do
           expect(Gitlab::AppJsonLogger).to(
             receive(:info).with(a_hash_including('message' => 'running inline',
                                                  'class' => 'Gitlab::Foo::Bar::DummyWorker',
-                                                 'job_status' => 'running'))
+                                                 'job_status' => 'running',
+                                                 'queue' => 'foo_bar_dummy'))
                           .once)
 
           worker.bulk_perform_and_wait(args_list)
