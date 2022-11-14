@@ -14,16 +14,25 @@ module Groups
       p.frame_src(*frame_src_values)
     end
 
-    before_action :check_observability_allowed, only: :index
+    before_action :check_observability_allowed
 
-    def index
-      # Format: https://observe.gitlab.com/-/GROUP_ID
-      @observability_iframe_src = "#{observability_url}/-/#{@group.id}"
+    def dashboards
+      render_observability
+    end
 
-      render layout: 'group', locals: { base_layout: 'layouts/fullscreen' }
+    def manage
+      render_observability
+    end
+
+    def explore
+      render_observability
     end
 
     private
+
+    def render_observability
+      render 'observability', layout: 'group', locals: { base_layout: 'layouts/fullscreen' }
+    end
 
     def self.observability_url
       Gitlab::Observability.observability_url

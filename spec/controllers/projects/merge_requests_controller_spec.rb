@@ -1780,7 +1780,7 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     it 'renders MergeRequest as JSON' do
-      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'merge_status', 'can_be_merged', 'current_user')
+      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'current_user')
     end
   end
 
@@ -1814,7 +1814,7 @@ RSpec.describe Projects::MergeRequestsController do
     it 'renders MergeRequest as JSON' do
       subject
 
-      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'merge_status', 'can_be_merged', 'current_user')
+      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'current_user')
     end
   end
 

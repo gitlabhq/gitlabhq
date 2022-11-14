@@ -23,6 +23,8 @@ RSpec.describe Integrations::Jenkins do
     }
   end
 
+  it_behaves_like Integrations::BaseCi
+
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { jenkins_integration }
   end

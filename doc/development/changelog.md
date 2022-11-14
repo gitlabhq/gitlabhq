@@ -41,8 +41,8 @@ vendor field to be `gitlab` to avoid cve matching old versions.
 Changelog: changed
 ```
 
-If your merge request has multiple commits, 
-[make sure to add the `Changelog` entry to the first commit](changelog.md#how-to-generate-a-changelog-entry). 
+If your merge request has multiple commits,
+[make sure to add the `Changelog` entry to the first commit](changelog.md#how-to-generate-a-changelog-entry).
 This ensures that the correct entry is generated when commits are squashed.
 
 ### Overriding the associated merge request

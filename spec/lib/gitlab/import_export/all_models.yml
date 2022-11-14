@@ -552,6 +552,7 @@ project:
 - path_locks
 - approver_groups
 - repository_state
+- wiki_repository
 - wiki_repository_state
 - source_pipelines
 - sourced_pipelines

@@ -26,7 +26,7 @@ module Ci
       private
 
       def delete_runners
-        runner_count = @runners.count
+        runner_count = @runners.limit(RUNNER_LIMIT + 1).count
         authorized_runners_ids, unauthorized_runners_ids = compute_authorized_runners
         # rubocop:disable CodeReuse/ActiveRecord
         runners_to_be_deleted =

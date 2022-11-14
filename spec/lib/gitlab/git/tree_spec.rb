@@ -239,7 +239,7 @@ RSpec.describe Gitlab::Git::Tree do
           let(:pagination_params) { { limit: 5, page_token: 'aabbccdd' } }
 
           it 'raises a command error' do
-            expect { entries }.to raise_error(Gitlab::Git::CommandError, 'could not find starting OID: aabbccdd')
+            expect { entries }.to raise_error(Gitlab::Git::CommandError, /could not find starting OID: aabbccdd/)
           end
         end
 

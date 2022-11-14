@@ -3,8 +3,8 @@ import { GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import { createAlert } from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { AUTO_MERGE_STRATEGIES } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -16,9 +16,6 @@ export default {
   apollo: {
     state: {
       query: autoMergeEnabledQuery,
-      skip() {
-        return !this.glFeatures.mergeRequestWidgetGraphql;
-      },
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -31,7 +28,7 @@ export default {
     GlSprintf,
     StateContainer,
   },
-  mixins: [autoMergeMixin, glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  mixins: [autoMergeMixin, mergeRequestQueryVariablesMixin],
   props: {
     mr: {
       type: Object,
@@ -51,31 +48,21 @@ export default {
   },
   computed: {
     loading() {
-      return (
-        this.glFeatures.mergeRequestWidgetGraphql &&
-        this.$apollo.queries.state.loading &&
-        Object.keys(this.state).length === 0
-      );
+      return this.$apollo.queries.state.loading && Object.keys(this.state).length === 0;
     },
-    mergeUser() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.mergeUser;
-      }
-
-      return this.mr.setToAutoMergeBy;
-    },
-    targetBranch() {
-      return (this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr).targetBranch;
-    },
-    shouldRemoveSourceBranch() {
-      if (!this.glFeatures.mergeRequestWidgetGraphql) return this.mr.shouldRemoveSourceBranch;
-
+    stateRemoveSourceBranch() {
       if (!this.state.shouldRemoveSourceBranch) return false;
 
       return this.state.shouldRemoveSourceBranch || this.state.forceRemoveSourceBranch;
     },
-    autoMergeStrategy() {
-      return (this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr).autoMergeStrategy;
+    canRemoveSourceBranch() {
+      const { currentUserId } = this.mr;
+      const mergeUserId = getIdFromGraphQLId(this.state.mergeUser?.id);
+      const canRemoveSourceBranch = this.state.userPermissions.removeSourceBranch;
+
+      return (
+        !this.stateRemoveSourceBranch && canRemoveSourceBranch && mergeUserId === currentUserId
+      );
     },
     actions() {
       const actions = [];
@@ -104,12 +91,8 @@ export default {
       this.service
         .cancelAutomaticMerge()
         .then((res) => res.data)
-        .then((data) => {
-          if (this.glFeatures.mergeRequestWidgetGraphql) {
-            eventHub.$emit('MRWidgetUpdateRequested');
-          } else {
-            eventHub.$emit('UpdateWidgetData', data);
-          }
+        .then(() => {
+          eventHub.$emit('MRWidgetUpdateRequested');
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
@@ -121,7 +104,7 @@ export default {
     removeSourceBranch() {
       const options = {
         sha: this.mr.sha,
-        auto_merge_strategy: this.autoMergeStrategy,
+        auto_merge_strategy: this.state.autoMergeStrategy,
         should_remove_source_branch: true,
       };
 
@@ -135,9 +118,7 @@ export default {
           }
         })
         .then(() => {
-          if (this.glFeatures.mergeRequestWidgetGraphql) {
-            this.$apollo.queries.state.refetch();
-          }
+          this.$apollo.queries.state.refetch();
         })
         .catch(() => {
           this.isRemovingSourceBranch = false;
@@ -162,7 +143,7 @@ export default {
       <h4 class="gl-mr-3" data-testid="statusText">
         <gl-sprintf :message="statusText" data-testid="statusText">
           <template #merge_author>
-            <mr-widget-author :author="mergeUser" />
+            <mr-widget-author v-if="state.mergeUser" :author="state.mergeUser" />
           </template>
         </gl-sprintf>
       </h4>

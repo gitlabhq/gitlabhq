@@ -157,7 +157,6 @@ The following metrics can be controlled by feature flags:
 
 | Metric                                                         | Feature Flag                                                       |
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
-| `gitlab_method_call_duration_seconds`                          | `prometheus_metrics_method_instrumentation`                        |
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
 
 ## Praefect metrics

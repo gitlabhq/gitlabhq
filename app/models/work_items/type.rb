@@ -31,7 +31,7 @@ module WorkItems
       requirement: [Widgets::Description],
       task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate,
              Widgets::Milestone],
-      objective: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy],
+      objective: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::Milestone],
       key_result: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::StartAndDueDate]
     }.freeze
 

@@ -93,8 +93,12 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
 
     it 'resumes a started rebalance even if there are already too many rebalances running' do
       Gitlab::Redis::SharedState.with do |redis|
-        redis.sadd("gitlab:issues-position-rebalances:running_rebalances", "#{::Gitlab::Issues::Rebalancing::State::PROJECT}/#{project.id}")
-        redis.sadd("gitlab:issues-position-rebalances:running_rebalances", "1/100")
+        redis.sadd("gitlab:issues-position-rebalances:running_rebalances",
+          [
+            "#{::Gitlab::Issues::Rebalancing::State::PROJECT}/#{project.id}",
+            "1/100"
+          ]
+        )
       end
 
       caching = service.send(:caching)

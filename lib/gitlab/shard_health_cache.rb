@@ -17,7 +17,7 @@ module Gitlab
       with_redis do |redis|
         redis.multi do |m|
           m.del(HEALTHY_SHARDS_KEY)
-          shards.each { |shard_name| m.sadd(HEALTHY_SHARDS_KEY, shard_name) }
+          m.sadd(HEALTHY_SHARDS_KEY, shards) unless shards.blank?
           m.expire(HEALTHY_SHARDS_KEY, HEALTHY_SHARDS_TIMEOUT)
         end
       end

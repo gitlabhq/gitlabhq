@@ -18,6 +18,8 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
       click_button('Merge')
 
+      puts merge_request.short_merged_commit_sha
+
       expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
     end
 

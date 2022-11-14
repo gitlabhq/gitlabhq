@@ -468,6 +468,21 @@ RSpec.describe Gitlab::Json do
 
       expect(new_result).to eq(original_result)
     end
+
+    it "behaves the same when processing invalid unicode data" do
+      invalid_obj = { test: "Gr\x80\x81e" }
+      default_encoder = ActiveSupport::JSON::Encoding::JSONGemEncoder
+
+      original_result = ActiveSupport::JSON::Encoding.use_encoder(default_encoder) do
+        expect { ActiveSupport::JSON.encode(invalid_obj) }.to raise_error(JSON::GeneratorError)
+      end
+
+      new_result = ActiveSupport::JSON::Encoding.use_encoder(described_class) do
+        expect { ActiveSupport::JSON.encode(invalid_obj) }.to raise_error(JSON::GeneratorError)
+      end
+
+      expect(new_result).to eq(original_result)
+    end
   end
 end
 # rubocop: enable Gitlab/Json

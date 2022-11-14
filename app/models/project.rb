@@ -223,6 +223,7 @@ class Project < ApplicationRecord
   has_one :youtrack_integration, class_name: 'Integrations::Youtrack'
   has_one :zentao_integration, class_name: 'Integrations::Zentao'
 
+  has_one :wiki_repository, class_name: 'Projects::WikiRepository', inverse_of: :project
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
           inverse_of: :root_project,

@@ -720,6 +720,16 @@ RSpec.describe API::MavenPackages do
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
+      context 'with access to package registry for everyone' do
+        subject { download_file(file_name: package_file.file_name) }
+
+        before do
+          project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+        end
+
+        it_behaves_like 'successfully returning the file'
+      end
+
       it_behaves_like 'downloads with a job token'
       it_behaves_like 'downloads with a deploy token'
 

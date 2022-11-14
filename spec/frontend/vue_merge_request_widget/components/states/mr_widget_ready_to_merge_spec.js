@@ -60,6 +60,11 @@ const createTestMr = (customConfig) => {
     translateStateToMachine: () => this.transitionStateMachine(),
     state: 'open',
     canMerge: true,
+    mergeable: true,
+    userPermissions: {
+      removeSourceBranch: true,
+      canMerge: true,
+    },
   };
 
   Object.assign(mr, customConfig.mr);
@@ -68,7 +73,7 @@ const createTestMr = (customConfig) => {
 };
 
 const createTestService = () => ({
-  merge: jest.fn(),
+  merge: jest.fn().mockResolvedValue(),
   poll: jest.fn().mockResolvedValue(),
 });
 
@@ -87,21 +92,24 @@ const createReadyToMergeResponse = (customMr) => {
   });
 };
 
-const createComponent = (
-  customConfig = {},
-  mergeRequestWidgetGraphql = false,
-  restructuredMrWidget = true,
-) => {
+const createComponent = (customConfig = {}, createState = true) => {
   wrapper = shallowMount(ReadyToMerge, {
     propsData: {
       mr: createTestMr(customConfig),
       service: createTestService(),
     },
-    provide: {
-      glFeatures: {
-        mergeRequestWidgetGraphql,
-        restructuredMrWidget,
-      },
+    data() {
+      if (createState) {
+        return {
+          loading: false,
+          state: {
+            ...createTestMr(customConfig),
+          },
+        };
+      }
+      return {
+        loading: true,
+      };
     },
     stubs: {
       CommitEdit,
@@ -136,7 +144,7 @@ describe('ReadyToMerge', () => {
   describe('computed', () => {
     describe('isAutoMergeAvailable', () => {
       it('should return true when at least one merge strategy is available', () => {
-        createComponent();
+        createComponent({});
 
         expect(wrapper.vm.isAutoMergeAvailable).toBe(true);
       });
@@ -168,14 +176,14 @@ describe('ReadyToMerge', () => {
       });
 
       it('returns pending when pipeline is active', () => {
-        createComponent({ mr: { pipeline: {}, isPipelineActive: true } });
+        createComponent({ mr: { pipeline: { active: true }, isPipelineActive: true } });
 
         expect(wrapper.vm.status).toEqual('pending');
       });
 
       it('returns failed when pipeline is failed', () => {
         createComponent({
-          mr: { pipeline: {}, isPipelineFailed: true, availableAutoMergeStrategies: [] },
+          mr: { pipeline: { status: 'FAILED' }, availableAutoMergeStrategies: [], hasCI: true },
         });
 
         expect(wrapper.vm.status).toEqual('failed');
@@ -185,7 +193,7 @@ describe('ReadyToMerge', () => {
     describe('Merge Button Variant', () => {
       it('defaults to confirm class', () => {
         createComponent({
-          mr: { availableAutoMergeStrategies: [] },
+          mr: { availableAutoMergeStrategies: [], mergeable: true },
         });
 
         expect(findMergeButton().attributes('variant')).toBe('confirm');
@@ -194,19 +202,19 @@ describe('ReadyToMerge', () => {
 
     describe('status icon', () => {
       it('defaults to tick icon', () => {
-        createComponent();
+        createComponent({ mr: { mergeable: true } });
 
         expect(wrapper.vm.iconClass).toEqual('success');
       });
 
       it('shows tick for success status', () => {
-        createComponent({ mr: { pipeline: true } });
+        createComponent({ mr: { pipeline: { status: 'SUCCESS' }, mergeable: true } });
 
         expect(wrapper.vm.iconClass).toEqual('success');
       });
 
       it('shows tick for pending status', () => {
-        createComponent({ mr: { pipeline: {}, isPipelineActive: true } });
+        createComponent({ mr: { pipeline: { active: true }, mergeable: true } });
 
         expect(wrapper.vm.iconClass).toEqual('success');
       });
@@ -266,7 +274,7 @@ describe('ReadyToMerge', () => {
 
     describe('isMergeButtonDisabled', () => {
       it('should return false with initial data', () => {
-        createComponent({ mr: { isMergeAllowed: true } });
+        createComponent({ mr: { isMergeAllowed: true, mergeable: false } });
 
         expect(wrapper.vm.isMergeButtonDisabled).toBe(false);
       });
@@ -283,6 +291,7 @@ describe('ReadyToMerge', () => {
             isMergeAllowed: false,
             availableAutoMergeStrategies: [],
             onlyAllowMergeIfPipelineSucceeds: true,
+            mergeable: false,
           },
         });
 
@@ -544,7 +553,15 @@ describe('ReadyToMerge', () => {
   describe('Remove source branch checkbox', () => {
     describe('when user can merge but cannot delete branch', () => {
       it('should be disabled in the rendered output', () => {
-        createComponent();
+        createComponent({
+          mr: {
+            mergeable: true,
+            userPermissions: {
+              removeSourceBranch: false,
+              canMerge: true,
+            },
+          },
+        });
 
         expect(wrapper.find('#remove-source-branch-input').exists()).toBe(false);
       });
@@ -553,7 +570,7 @@ describe('ReadyToMerge', () => {
     describe('when user can merge and can delete branch', () => {
       beforeEach(() => {
         createComponent({
-          mr: { canRemoveSourceBranch: true },
+          mr: { canRemoveSourceBranch: true, mergeable: true },
         });
       });
 
@@ -567,7 +584,7 @@ describe('ReadyToMerge', () => {
     describe('squash checkbox', () => {
       it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
         createComponent({
-          mr: { commitsCount: 2, enableSquashBeforeMerge: true },
+          mr: { commitsCount: 2, enableSquashBeforeMerge: true, mergeable: true },
         });
 
         expect(findCheckboxElement().exists()).toBe(true);
@@ -665,6 +682,7 @@ describe('ReadyToMerge', () => {
               squashIsSelected: true,
               enableSquashBeforeMerge: true,
               commitsCount: 2,
+              mergeRequestsFfOnlyEnabled: true,
             },
           });
 
@@ -795,7 +813,9 @@ describe('ReadyToMerge', () => {
       });
 
       it('shows the diverged commits text when the source branch is behind the target', () => {
-        createComponent({ mr: { divergedCommitsCount: 9001, canMerge: false } });
+        createComponent({
+          mr: { divergedCommitsCount: 9001, userPermissions: { canMerge: false }, canMerge: false },
+        });
 
         expect(wrapper.text()).toEqual(
           expect.stringContaining('The source branch is 9001 commits behind the target branch'),
@@ -807,7 +827,7 @@ describe('ReadyToMerge', () => {
   describe('Merge button when pipeline has failed', () => {
     beforeEach(() => {
       createComponent({
-        mr: { pipeline: {}, isPipelineFailed: true, availableAutoMergeStrategies: [] },
+        mr: { headPipeline: { status: 'FAILED' }, availableAutoMergeStrategies: [], hasCI: true },
       });
     });
 
@@ -830,7 +850,7 @@ describe('ReadyToMerge', () => {
     const USER_COMMIT_MESSAGE = 'Merge message provided manually by user';
 
     const createDefaultGqlComponent = () =>
-      createComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: true } }, true);
+      createComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: true } }, false);
 
     beforeEach(() => {
       readyToMergeResponseSpy = jest

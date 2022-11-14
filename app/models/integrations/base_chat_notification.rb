@@ -24,7 +24,7 @@ module Integrations
 
     SECRET_MASK = '************'
 
-    default_value_for :category, 'chat'
+    attribute :category, default: 'chat'
 
     prop_accessor :webhook, :username, :channel, :branches_to_be_notified, :labels_to_be_notified, :labels_to_be_notified_behavior
 

@@ -100,3 +100,5 @@ module Routing
     end
   end
 end
+
+Routing::ProjectsHelper.prepend_mod

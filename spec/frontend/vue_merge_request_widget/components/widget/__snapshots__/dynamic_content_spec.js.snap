@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue renders given data 1`] = `
-"<content-row-stub level=\\"2\\" statusiconname=\\"success\\" widgetname=\\"MyWidget\\" header=\\"This is a header,This is a subheader\\" helppopover=\\"[object Object]\\">
+"<content-row-stub level=\\"2\\" statusiconname=\\"success\\" widgetname=\\"MyWidget\\" header=\\"This is a header,This is a subheader\\" helppopover=\\"[object Object]\\" actionbuttons=\\"\\">
   <div class=\\"gl-display-flex gl-flex-direction-column\\">
     <div>
       <p class=\\"gl-mb-0\\">Main text for the row</p>
@@ -15,7 +15,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
     </div>
     <ul class=\\"gl-m-0 gl-p-0 gl-list-style-none\\">
       <li>
-        <content-row-stub level=\\"3\\" statusiconname=\\"\\" widgetname=\\"MyWidget\\" header=\\"Child row header\\" data-qa-selector=\\"child_content\\">
+        <content-row-stub level=\\"3\\" statusiconname=\\"\\" widgetname=\\"MyWidget\\" header=\\"Child row header\\" actionbuttons=\\"\\" data-qa-selector=\\"child_content\\">
           <div class=\\"gl-display-flex gl-flex-direction-column\\">
             <div>
               <p class=\\"gl-mb-0\\">This is recursive. It will be listed in level 3.</p>

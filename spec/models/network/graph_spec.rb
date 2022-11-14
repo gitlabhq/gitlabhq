@@ -6,10 +6,24 @@ RSpec.describe Network::Graph do
   let(:project) { create(:project, :repository) }
   let!(:note_on_commit) { create(:note_on_commit, project: project) }
 
-  it '#initialize' do
-    graph = described_class.new(project, 'refs/heads/master', project.repository.commit, nil)
+  describe '#initialize' do
+    let(:graph) do
+      described_class.new(project, 'refs/heads/master', project.repository.commit, nil)
+    end
 
-    expect(graph.notes).to eq({ note_on_commit.commit_id => 1 })
+    it 'has initialized' do
+      expect(graph).to be_a(described_class)
+    end
+
+    context 'when disable_network_graph_note_counts is disabled' do
+      before do
+        stub_feature_flags(disable_network_graph_notes_count: false)
+      end
+
+      it 'initializes the notes hash' do
+        expect(graph.notes).to eq({ note_on_commit.commit_id => 1 })
+      end
+    end
   end
 
   describe '#commits' do

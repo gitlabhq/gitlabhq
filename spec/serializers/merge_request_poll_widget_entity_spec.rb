@@ -184,10 +184,4 @@ RSpec.describe MergeRequestPollWidgetEntity do
       end
     end
   end
-
-  describe '#mergeable_discussions_state?' do
-    it 'returns mergeable discussions state' do
-      expect(subject[:mergeable_discussions_state]).to eq(true)
-    end
-  end
 end

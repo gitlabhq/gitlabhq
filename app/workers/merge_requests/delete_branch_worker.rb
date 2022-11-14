@@ -16,12 +16,7 @@ module MergeRequests
 
       return unless merge_request.present? && user.present?
 
-      delete_service_result = ::Branches::DeleteService.new(merge_request.source_project, user)
-        .execute(branch_name)
-
-      if Feature.enabled?(:track_delete_source_errors, merge_request.source_project) && delete_service_result&.error?
-        delete_service_result.track_exception
-      end
+      ::Branches::DeleteService.new(merge_request.source_project, user).execute(branch_name)
 
       return unless retarget_branch
 

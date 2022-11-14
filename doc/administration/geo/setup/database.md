@@ -476,7 +476,7 @@ data before running `pg_basebackup`.
 
    WARNING:
    Each Geo **secondary** site must have its own unique replication slot name.
-   Using the same slot name between two secondaries breaks PostgreSQL replication. 
+   Using the same slot name between two secondaries breaks PostgreSQL replication.
 
    NOTE:
    Replication slot names must only contain lowercase letters, numbers, and the underscore character.

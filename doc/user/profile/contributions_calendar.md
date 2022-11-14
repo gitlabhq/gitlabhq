@@ -68,11 +68,11 @@ GitLab tracks the following contribution events:
 
 ### View daily contributions
 
-To view your daily contributions: 
+To view your daily contributions:
 
 1. On the top bar, in the top-right corner, select your avatar.
-1. Select your name from the dropdown list. 
-1. In the contributions calendar: 
+1. Select your name from the dropdown list.
+1. In the contributions calendar:
    - To view the number of contributions for a specific day, hover over a tile.
    - To view all contributions for a specific day, select a tile. A list displays all contributions and the time they were made.
 

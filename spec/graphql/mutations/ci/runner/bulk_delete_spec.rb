@@ -19,8 +19,9 @@ RSpec.describe Mutations::Ci::Runner::BulkDelete do
     end
 
     context 'when user can delete runners' do
+      let_it_be(:group) { create(:group) }
+
       let(:user) { admin_user }
-      let(:group) { create(:group) }
       let!(:runners) do
         create_list(:ci_runner, 2, :group, groups: [group])
       end

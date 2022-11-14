@@ -147,6 +147,20 @@ RSpec.describe Projects::MergeRequestsController, '(JavaScript fixtures)', type:
         expect_graphql_errors_to_be_empty
       end
     end
+
+    context 'merge request in state getState query' do
+      base_input_path = 'vue_merge_request_widget/queries/'
+      base_output_path = 'graphql/merge_requests/'
+      query_name = 'get_state.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(query, current_user: user, variables: { projectPath: project.full_path, iid: merge_request.iid.to_s })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
   end
 
   private

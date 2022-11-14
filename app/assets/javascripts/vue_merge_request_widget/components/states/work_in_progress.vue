@@ -5,14 +5,12 @@ import $ from 'jquery';
 import { createAlert } from '~/flash';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
-import MergeRequest from '~/merge_request';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import getStateQuery from '../../queries/get_state.query.graphql';
 import draftQuery from '../../queries/states/draft.query.graphql';
 import removeDraftMutation from '../../queries/toggle_draft.mutation.graphql';
 import StateContainer from '../state_container.vue';
+import eventHub from '../../event_hub';
 
 export default {
   name: 'WorkInProgress',
@@ -20,13 +18,10 @@ export default {
     GlButton,
     StateContainer,
   },
-  mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  mixins: [mergeRequestQueryVariablesMixin],
   apollo: {
     userPermissions: {
       query: draftQuery,
-      skip() {
-        return !this.glFeatures.mergeRequestWidgetGraphql;
-      },
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -35,7 +30,6 @@ export default {
   },
   props: {
     mr: { type: Object, required: true },
-    service: { type: Object, required: true },
   },
   data() {
     return {
@@ -43,17 +37,8 @@ export default {
       isMakingRequest: false,
     };
   },
-  computed: {
-    canUpdate() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.userPermissions.updateMergeRequest;
-      }
-
-      return Boolean(this.mr.removeWIPPath);
-    },
-  },
   methods: {
-    removeDraftMutation() {
+    handleRemoveDraft() {
       const { mergeRequestQueryVariables } = this;
 
       this.isMakingRequest = true;
@@ -138,26 +123,6 @@ export default {
           this.isMakingRequest = false;
         });
     },
-    handleRemoveDraft() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        this.removeDraftMutation();
-      } else {
-        this.isMakingRequest = true;
-        this.service
-          .removeWIP()
-          .then((res) => res.data)
-          .then((data) => {
-            eventHub.$emit('UpdateWidgetData', data);
-            MergeRequest.toggleDraftStatus(this.mr.title, true);
-          })
-          .catch(() => {
-            this.isMakingRequest = false;
-            createAlert({
-              message: __('Something went wrong. Please try again.'),
-            });
-          });
-      }
-    },
   },
 };
 </script>
@@ -169,12 +134,13 @@ export default {
     </span>
     <template #actions>
       <gl-button
-        v-if="canUpdate"
+        v-if="userPermissions.updateMergeRequest"
         size="small"
         :disabled="isMakingRequest"
         :loading="isMakingRequest"
         variant="confirm"
         class="js-remove-draft gl-md-ml-3 gl-align-self-start"
+        data-testid="removeWipButton"
         @click="handleRemoveDraft"
       >
         {{ s__('mrWidget|Mark as ready') }}

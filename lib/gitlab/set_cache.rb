@@ -34,7 +34,7 @@ module Gitlab
     def write(key, value)
       with do |redis|
         redis.pipelined do |pipeline|
-          pipeline.sadd(cache_key(key), value)
+          pipeline.sadd?(cache_key(key), value)
 
           pipeline.expire(cache_key(key), expires_in)
         end

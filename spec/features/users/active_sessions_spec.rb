@@ -30,7 +30,7 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions do
     user = create(:user)
 
     Gitlab::Redis::Sessions.with do |redis|
-      redis.sadd("session:lookup:user:gitlab:#{user.id}", '59822c7d9fcdfa03725eff41782ad97d')
+      redis.sadd?("session:lookup:user:gitlab:#{user.id}", '59822c7d9fcdfa03725eff41782ad97d')
     end
 
     gitlab_sign_in(user)
@@ -45,7 +45,7 @@ RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions do
     personal_access_token = create(:personal_access_token, user: user)
 
     Gitlab::Redis::Sessions.with do |redis|
-      redis.sadd("session:lookup:user:gitlab:#{user.id}", '59822c7d9fcdfa03725eff41782ad97d')
+      redis.sadd?("session:lookup:user:gitlab:#{user.id}", '59822c7d9fcdfa03725eff41782ad97d')
     end
 
     visit user_path(user, :atom, private_token: personal_access_token.token)

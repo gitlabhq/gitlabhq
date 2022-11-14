@@ -232,18 +232,20 @@ module API
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       get ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
+        project = user_project(action: :read_package)
+
         # return a similar failure to user_project
-        unless Feature.enabled?(:maven_central_request_forwarding, user_project&.root_ancestor)
+        unless Feature.enabled?(:maven_central_request_forwarding, project&.root_ancestor)
           not_found!('Project') unless path_exists?(params[:path])
         end
 
-        authorize_read_package!(user_project)
+        authorize_read_package!(project)
 
         file_name, format = extract_format(params[:file_name])
 
-        package = fetch_package(file_name: file_name, project: user_project)
+        package = fetch_package(file_name: file_name, project: project)
 
-        find_and_present_package_file(package, file_name, format, params.merge(target: user_project))
+        find_and_present_package_file(package, file_name, format, params.merge(target: project))
       end
 
       desc 'Workhorse authorize the maven package file upload' do

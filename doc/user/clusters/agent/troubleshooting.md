@@ -211,7 +211,7 @@ kubectl delete jobs -l app.kubernetes.io/managed-by=starboard -n gitlab-agent
 
 ## Inventory policy prevented actuation (strategy: Apply, status: Empty, policy: MustMatch)
 
-```json 
+```json
 {
   "error":"inventory policy prevented actuation (strategy: Apply, status: Empty, policy: MustMatch)",
   "group":"networking.k8s.io",

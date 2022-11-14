@@ -15519,9 +15519,6 @@ msgstr ""
 msgid "Epics|Remove issue"
 msgstr ""
 
-msgid "Epics|Show more"
-msgstr ""
-
 msgid "Epics|Something went wrong while creating child epics."
 msgstr ""
 
@@ -16203,9 +16200,6 @@ msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
 msgid "Experiment Candidates"
-msgstr ""
-
-msgid "ExperimentSubject|Must have exactly one of User, Namespace, or Project."
 msgstr ""
 
 msgid "Experiments"
@@ -24780,6 +24774,9 @@ msgid "Makes this %{type} confidential."
 msgstr ""
 
 msgid "Manage %{workspace} labels"
+msgstr ""
+
+msgid "Manage Dashboards"
 msgstr ""
 
 msgid "Manage Web IDE features."
@@ -36635,6 +36632,9 @@ msgstr ""
 msgid "SecurityReports|All severities"
 msgstr ""
 
+msgid "SecurityReports|All statuses"
+msgstr ""
+
 msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
@@ -37721,6 +37721,9 @@ msgid "Show latest version"
 msgstr ""
 
 msgid "Show list"
+msgstr ""
+
+msgid "Show more"
 msgstr ""
 
 msgid "Show one file at a time"
@@ -43771,6 +43774,9 @@ msgstr ""
 msgid "UsageQuota|The table below shows usage since %{timeElapsed}"
 msgstr ""
 
+msgid "UsageQuota|The table below shows usage since %{usageSince}"
+msgstr ""
+
 msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
 msgstr ""
 
@@ -43778,9 +43784,6 @@ msgid "UsageQuota|This is the total amount of storage used by projects above the
 msgstr ""
 
 msgid "UsageQuota|This namespace contains locked projects"
-msgstr ""
-
-msgid "UsageQuota|This namespace has no projects which use shared runners"
 msgstr ""
 
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"

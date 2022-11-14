@@ -748,7 +748,8 @@ class Note < ApplicationRecord
 
     if user_visible_reference_count.present? && total_reference_count.present?
       # if they are not equal, then there are private/confidential references as well
-      user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
+      total_reference_count == 0 ||
+        user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
     else
       refs = all_references(user)
       refs.all.any? && refs.all_visible?

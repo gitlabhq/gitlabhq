@@ -19,7 +19,6 @@ import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   AUTO_MERGE_STRATEGIES,
@@ -54,9 +53,6 @@ export default {
   apollo: {
     state: {
       query: readyToMergeQuery,
-      skip() {
-        return !this.glFeatures.mergeRequestWidgetGraphql;
-      },
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -123,14 +119,14 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [readyToMergeMixin, glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  mixins: [readyToMergeMixin, mergeRequestQueryVariablesMixin],
   props: {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
   },
   data() {
     return {
-      loading: this.glFeatures.mergeRequestWidgetGraphql,
+      loading: true,
       state: {},
       removeSourceBranch: this.mr.shouldRemoveSourceBranch,
       isMakingRequest: false,
@@ -148,7 +144,7 @@ export default {
   },
   computed: {
     stateData() {
-      return this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr;
+      return this.state;
     },
     hasCI() {
       return this.stateData.hasCI || this.stateData.hasCi;
@@ -157,35 +153,19 @@ export default {
       return !isEmpty(this.stateData.availableAutoMergeStrategies);
     },
     pipeline() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.headPipeline;
-      }
-
-      return this.mr.pipeline;
+      return this.state.headPipeline;
     },
     isPipelineFailed() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return ['FAILED', 'CANCELED'].indexOf(this.pipeline?.status) !== -1;
-      }
-
-      return this.mr.isPipelineFailed;
+      return ['FAILED', 'CANCELED'].indexOf(this.pipeline?.status) !== -1;
     },
     showMergeFailedPipelineConfirmationDialog() {
       return this.status === PIPELINE_FAILED_STATE && this.isPipelineFailed;
     },
     isMergeAllowed() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.mergeable;
-      }
-
-      return this.mr.isMergeAllowed;
+      return this.state.mergeable || false;
     },
     canRemoveSourceBranch() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.userPermissions.removeSourceBranch;
-      }
-
-      return this.mr.canRemoveSourceBranch;
+      return this.state.userPermissions.removeSourceBranch;
     },
     commitTemplateHelpPage() {
       return helpPagePath('user/project/merge_requests/commit_templates.md');
@@ -200,46 +180,24 @@ export default {
       return this.$options.i18n.mergeCommitTemplateHintText;
     },
     commits() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.commitsWithoutMergeCommits.nodes;
-      }
-
-      return this.mr.commits;
+      return this.state.commitsWithoutMergeCommits?.nodes;
     },
     commitsCount() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.commitCount || 0;
-      }
-
-      return this.mr.commitsCount;
+      return this.state.commitCount || 0;
     },
     preferredAutoMergeStrategy() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return MergeRequestStore.getPreferredAutoMergeStrategy(
-          this.state.availableAutoMergeStrategies,
-        );
-      }
-
-      return this.mr.preferredAutoMergeStrategy;
+      return MergeRequestStore.getPreferredAutoMergeStrategy(
+        this.state.availableAutoMergeStrategies,
+      );
     },
     squashIsSelected() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;
-      }
-
-      return this.mr.squashIsSelected;
+      return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;
     },
     isPipelineActive() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.pipeline?.active || false;
-      }
-
-      return this.mr.isPipelineActive;
+      return this.pipeline?.active || false;
     },
     status() {
-      const ciStatus = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.pipeline?.status.toLowerCase()
-        : this.mr.ciStatus;
+      const ciStatus = this.pipeline?.status?.toLowerCase();
 
       if ((this.hasCI && !ciStatus) || this.hasPipelineMustSucceedConflict) {
         return PIPELINE_FAILED_STATE;
@@ -304,11 +262,7 @@ export default {
       return this.squashBeforeMerge && this.shouldShowSquashBeforeMerge;
     },
     shouldShowMergeEdit() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return !this.state.mergeRequestsFfOnlyEnabled;
-      }
-
-      return !this.mr.ffOnlyEnabled;
+      return !this.state.mergeRequestsFfOnlyEnabled;
     },
     shaMismatchLink() {
       return this.mr.mergeRequestDiffsPath;
@@ -345,18 +299,15 @@ export default {
     },
   },
   mounted() {
-    if (this.glFeatures.mergeRequestWidgetGraphql) {
-      eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
-      eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
-      eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
-    }
+    eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
+    eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
   },
   beforeDestroy() {
-    if (this.glFeatures.mergeRequestWidgetGraphql) {
-      eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
-      eventHub.$off('MRWidgetUpdateRequested', this.updateGraphqlState);
-      eventHub.$off('mr.discussion.updated', this.updateGraphqlState);
-    }
+    eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
+    eventHub.$off('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$off('mr.discussion.updated', this.updateGraphqlState);
+    eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
 
     if (this.pollingInterval) {
       this.pollingInterval.destroy();
@@ -391,9 +342,7 @@ export default {
       if (mergeImmediately) {
         this.isMergingImmediately = true;
       }
-      const latestSha = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.state.diffHeadSha
-        : this.mr.latestSHA;
+      const latestSha = this.state.diffHeadSha;
 
       const options = {
         sha: latestSha || this.mr.sha,
@@ -435,9 +384,7 @@ export default {
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           }
 
-          if (this.glFeatures.mergeRequestWidgetGraphql) {
-            this.updateGraphqlState();
-          }
+          this.updateGraphqlState();
 
           this.isMakingRequest = false;
         })
@@ -613,7 +560,7 @@ export default {
                   :is-squash-enabled="squashBeforeMerge"
                   :is-fast-forward-enabled="!shouldShowMergeEdit"
                   :commits-count="commitsCount"
-                  :target-branch="stateData.targetBranch"
+                  :target-branch="state.targetBranch"
                 />
                 <template v-if="mr.relatedLinks">
                   &middot;
@@ -704,7 +651,7 @@ export default {
                     :is-squash-enabled="squashBeforeMerge"
                     :is-fast-forward-enabled="!shouldShowMergeEdit"
                     :commits-count="commitsCount"
-                    :target-branch="stateData.targetBranch"
+                    :target-branch="state.targetBranch"
                     :merge-commit-path="mr.mergeCommitPath"
                   />
                 </li>

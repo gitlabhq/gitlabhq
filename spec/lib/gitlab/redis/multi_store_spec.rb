@@ -130,15 +130,13 @@ RSpec.describe Gitlab::Redis::MultiStore do
       primary_store.multi do |multi|
         multi.set(key1, value1)
         multi.set(key2, value2)
-        multi.sadd(skey, value1)
-        multi.sadd(skey, value2)
+        multi.sadd(skey, [value1, value2])
       end
 
       secondary_store.multi do |multi|
         multi.set(key1, value1)
         multi.set(key2, value2)
-        multi.sadd(skey, value1)
-        multi.sadd(skey, value2)
+        multi.sadd(skey, [value1, value2])
       end
     end
 
@@ -332,8 +330,8 @@ RSpec.describe Gitlab::Redis::MultiStore do
     let_it_be(:skey) { "redis:set:key" }
     let_it_be(:svalues1) { [value2, value1] }
     let_it_be(:svalues2) { [value1] }
-    let_it_be(:skey_value1) { [skey, value1] }
-    let_it_be(:skey_value2) { [skey, value2] }
+    let_it_be(:skey_value1) { [skey, [value1]] }
+    let_it_be(:skey_value2) { [skey, [value2]] }
     let_it_be(:script) { %(redis.call("set", "#{key1}", "#{value1}")) }
 
     where(:case_name, :name, :args, :expected_value, :verification_name, :verification_args) do
@@ -353,12 +351,12 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
       primary_store.multi do |multi|
         multi.set(key2, value1)
-        multi.sadd(skey, value1)
+        multi.sadd?(skey, value1)
       end
 
       secondary_store.multi do |multi|
         multi.set(key2, value1)
-        multi.sadd(skey, value1)
+        multi.sadd?(skey, value1)
       end
     end
 

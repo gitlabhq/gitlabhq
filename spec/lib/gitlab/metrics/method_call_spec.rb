@@ -24,47 +24,22 @@ RSpec.describe Gitlab::Metrics::MethodCall do
         allow(method_call).to receive(:above_threshold?).and_return(true)
       end
 
-      context 'prometheus instrumentation is enabled' do
-        before do
-          stub_feature_flags(prometheus_metrics_method_instrumentation: true)
-        end
-
-        around do |example|
-          freeze_time do
-            example.run
-          end
-        end
-
-        it 'metric is not a NullMetric' do
-          method_call.measure { 'foo' }
-          expect(::Gitlab::Metrics::WebTransaction.prometheus_metric(:gitlab_method_call_duration_seconds, :histogram)).not_to be_instance_of(Gitlab::Metrics::NullMetric)
-        end
-
-        it 'observes the performance of the supplied block' do
-          expect(transaction)
-            .to receive(:observe).with(:gitlab_method_call_duration_seconds, be_a_kind_of(Numeric), { method: "#bar", module: :Foo })
-
-          method_call.measure { 'foo' }
+      around do |example|
+        freeze_time do
+          example.run
         end
       end
 
-      context 'prometheus instrumentation is disabled' do
-        before do
-          stub_feature_flags(prometheus_metrics_method_instrumentation: false)
-        end
+      it 'metric is not a NullMetric' do
+        method_call.measure { 'foo' }
+        expect(::Gitlab::Metrics::WebTransaction.prometheus_metric(:gitlab_method_call_duration_seconds, :histogram)).not_to be_instance_of(Gitlab::Metrics::NullMetric)
+      end
 
-        it 'observes the performance of the supplied block' do
-          expect(transaction)
-            .to receive(:observe).with(:gitlab_method_call_duration_seconds, be_a_kind_of(Numeric), { method: "#bar", module: :Foo })
+      it 'observes the performance of the supplied block' do
+        expect(transaction)
+          .to receive(:observe).with(:gitlab_method_call_duration_seconds, be_a_kind_of(Numeric), { method: "#bar", module: :Foo })
 
-          method_call.measure { 'foo' }
-        end
-
-        it 'observes using NullMetric' do
-          method_call.measure { 'foo' }
-
-          expect(::Gitlab::Metrics::WebTransaction.prometheus_metric(:gitlab_method_call_duration_seconds, :histogram)).to be_instance_of(Gitlab::Metrics::NullMetric)
-        end
+        method_call.measure { 'foo' }
       end
     end
 

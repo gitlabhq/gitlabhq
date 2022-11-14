@@ -96,7 +96,6 @@ export const LEGACY_FILE_TYPES = [
   'composer_json',
   'podfile',
   'podspec',
-  'podspec_json',
   'cartfile',
   'requirements_txt',
   'cargo_toml',

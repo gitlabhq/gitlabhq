@@ -12,6 +12,8 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
   let(:integration) { project.prometheus_integration }
 
+  it_behaves_like Integrations::BaseMonitoring
+
   context 'redirects' do
     it 'does not follow redirects' do
       redirect_to = 'https://redirected.example.com'

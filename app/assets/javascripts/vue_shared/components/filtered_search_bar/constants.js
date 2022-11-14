@@ -68,8 +68,21 @@ export const TOKEN_TITLE_STATUS = __('Status');
 export const TOKEN_TITLE_TARGET_BRANCH = __('Target Branch');
 export const TOKEN_TITLE_TYPE = __('Type');
 
+export const TOKEN_TYPE_ASSIGNEE = 'assignee';
+export const TOKEN_TYPE_AUTHOR = 'author';
+export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
+export const TOKEN_TYPE_CONTACT = 'contact';
+export const TOKEN_TYPE_EPIC = 'epic';
 // As health status gets reused between issue lists and boards
 // this is in the shared constants. Until we have not decoupled the EE filtered search bar
 // from the CE component, we need to keep this in the CE code.
 // https://gitlab.com/gitlab-org/gitlab/-/issues/377838
-export const TOKEN_TYPE_HEALTH = 'health_status';
+export const TOKEN_TYPE_HEALTH = 'health';
+export const TOKEN_TYPE_ITERATION = 'iteration';
+export const TOKEN_TYPE_LABEL = 'label';
+export const TOKEN_TYPE_MILESTONE = 'milestone';
+export const TOKEN_TYPE_MY_REACTION = 'my-reaction';
+export const TOKEN_TYPE_ORGANIZATION = 'organization';
+export const TOKEN_TYPE_RELEASE = 'release';
+export const TOKEN_TYPE_TYPE = 'type';
+export const TOKEN_TYPE_WEIGHT = 'weight';

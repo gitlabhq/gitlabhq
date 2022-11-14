@@ -53,6 +53,9 @@
         - '/app/finders/ci/auth_job_finder.rb'
         - '/ee/config/metrics/'
         - '/lib/gitlab/conan_token.rb'
+        - 'token_access/'
+        - 'pipelines/'
+        - 'ci/runner/'
       patterns:
         - '%{keyword}'
 

@@ -431,7 +431,7 @@ see the `group_saml` option and `provisioned_by_group_id` parameter:
 }
 ```
 
-Administrators can use the `created_by` parameter to see if a user account was created: 
+Administrators can use the `created_by` parameter to see if a user account was created:
 
 - [Manually by an administrator](../user/profile/account/create_accounts.md#create-users-in-admin-area).
 - As a [project bot user](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
@@ -510,7 +510,7 @@ Parameters:
 
 Modifies an existing user. Only administrators can change attributes of a user.
 
-The `email` field is the user's primary email address. You can only change this field to an already-added secondary email address for that user. To add more email addresses to the same user, use the [add email function](#add-email). 
+The `email` field is the user's primary email address. You can only change this field to an already-added secondary email address for that user. To add more email addresses to the same user, use the [add email function](#add-email).
 
 ```plaintext
 PUT /users/:id
@@ -1533,7 +1533,7 @@ Prerequisite:
 
 - You must be an administrator of a self-managed GitLab instance.
 
-Deletes an email address owned by a specified user. This cannot delete a primary email address. 
+Deletes an email address owned by a specified user. This cannot delete a primary email address.
 
 ```plaintext
 DELETE /users/:id/emails/:email_id

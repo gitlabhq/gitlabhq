@@ -25,7 +25,7 @@ module Gitlab
             redis.multi do |multi|
               # we trigger re-balance for namespaces(groups) or specific user project
               value = "#{rebalanced_container_type}/#{rebalanced_container_id}"
-              multi.sadd(CONCURRENT_RUNNING_REBALANCES_KEY, value)
+              multi.sadd?(CONCURRENT_RUNNING_REBALANCES_KEY, value)
               multi.expire(CONCURRENT_RUNNING_REBALANCES_KEY, REDIS_EXPIRY_TIME)
             end
           end
@@ -116,7 +116,7 @@ module Gitlab
               multi.del(issue_ids_key)
               multi.del(current_index_key)
               multi.del(current_project_key)
-              multi.srem(CONCURRENT_RUNNING_REBALANCES_KEY, value)
+              multi.srem?(CONCURRENT_RUNNING_REBALANCES_KEY, value)
               multi.set(self.class.recently_finished_key(rebalanced_container_type, rebalanced_container_id), true, ex: 1.hour)
             end
           end

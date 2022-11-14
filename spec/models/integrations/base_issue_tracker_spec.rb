@@ -7,6 +7,10 @@ RSpec.describe Integrations::BaseIssueTracker do
 
   let_it_be_with_refind(:project) { create :project }
 
+  describe 'default values' do
+    it { expect(subject.category).to eq(:issue_tracker) }
+  end
+
   describe 'Validations' do
     describe 'only one issue tracker per project' do
       before do

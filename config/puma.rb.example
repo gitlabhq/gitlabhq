@@ -57,6 +57,11 @@ on_worker_boot do
   Gitlab::Cluster::LifecycleEvents.do_worker_start
 end
 
+on_worker_shutdown do
+  # Signal application hooks that a worker is shutting down
+  Gitlab::Cluster::LifecycleEvents.do_worker_stop
+end
+
 # Preload the application before starting the workers; this conflicts with
 # phased restart feature. (off by default)
 preload_app!

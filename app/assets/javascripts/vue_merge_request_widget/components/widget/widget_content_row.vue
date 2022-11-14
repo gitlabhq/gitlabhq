@@ -2,6 +2,7 @@
 import { GlSafeHtmlDirective, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
 import { generateText } from '../extensions/utils';
 import StatusIcon from './status_icon.vue';
@@ -11,6 +12,7 @@ export default {
     StatusIcon,
     HelpPopover,
     GlLink,
+    ActionButtons,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
@@ -49,6 +51,11 @@ export default {
       required: false,
       default: null,
     },
+    actionButtons: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     generatedHeader() {
@@ -58,7 +65,7 @@ export default {
       return Array.isArray(this.header) && this.header[1] ? generateText(this.header[1]) : '';
     },
     shouldShowHeaderActions() {
-      return Boolean(this.helpPopover);
+      return Boolean(this.helpPopover) || this.actionButtons?.length > 0;
     },
   },
   i18n: {
@@ -84,8 +91,11 @@ export default {
             ></span>
           </div>
         </slot>
-        <div v-if="shouldShowHeaderActions" class="gl-ml-auto">
-          <help-popover :options="helpPopover.options">
+        <div
+          v-if="shouldShowHeaderActions"
+          class="gl-ml-auto gl-display-flex gl-align-items-baseline"
+        >
+          <help-popover v-if="helpPopover" :options="helpPopover.options">
             <template v-if="helpPopover.content">
               <p
                 v-if="helpPopover.content.text"
@@ -101,6 +111,12 @@ export default {
               >
             </template>
           </help-popover>
+          <action-buttons
+            v-if="actionButtons.length > 0"
+            :widget="widgetName"
+            :tertiary-buttons="actionButtons"
+            :class="{ 'gl-ml-2': helpPopover }"
+          />
         </div>
       </div>
       <div class="gl-display-flex gl-align-items-baseline gl-w-full">

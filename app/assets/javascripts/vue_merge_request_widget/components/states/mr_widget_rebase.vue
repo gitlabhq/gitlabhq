@@ -2,7 +2,6 @@
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
@@ -15,9 +14,6 @@ export default {
   apollo: {
     state: {
       query: rebaseQuery,
-      skip() {
-        return !this.glFeatures.mergeRequestWidgetGraphql;
-      },
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -29,7 +25,7 @@ export default {
     GlButton,
     StateContainer,
   },
-  mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  mixins: [mergeRequestQueryVariablesMixin],
   props: {
     mr: {
       type: Object,
@@ -49,28 +45,16 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.glFeatures.mergeRequestWidgetGraphql && this.$apollo.queries.state.loading;
+      return this.$apollo.queries.state.loading;
     },
     rebaseInProgress() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.rebaseInProgress;
-      }
-
-      return this.mr.rebaseInProgress;
+      return this.state.rebaseInProgress;
     },
     canPushToSourceBranch() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.userPermissions.pushToSourceBranch;
-      }
-
-      return this.mr.canPushToSourceBranch;
+      return this.state.userPermissions.pushToSourceBranch;
     },
     targetBranch() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.targetBranch;
-      }
-
-      return this.mr.targetBranch;
+      return this.state.targetBranch;
     },
     status() {
       if (this.isLoading) {

@@ -123,7 +123,7 @@ module Gitlab
 
           with_redis do |redis|
             redis.multi do |m|
-              m.sadd(key, value)
+              m.sadd?(key, value)
               m.expire(key, timeout)
             end
           end

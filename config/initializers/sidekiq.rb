@@ -83,6 +83,10 @@ Sidekiq.configure_server do |config|
     end
   end
 
+  config.on(:shutdown) do
+    Gitlab::Cluster::LifecycleEvents.do_worker_stop
+  end
+
   if enable_reliable_fetch?
     config[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)

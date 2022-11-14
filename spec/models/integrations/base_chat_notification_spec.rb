@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::BaseChatNotification do
+  describe 'default values' do
+    it { expect(subject.category).to eq(:chat) }
+  end
+
   describe 'validations' do
     before do
       allow(subject).to receive(:activated?).and_return(true)

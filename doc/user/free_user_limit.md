@@ -44,7 +44,7 @@ The group `example-1` has:
   - `project-1` inherits `A` and `B` as members from `subgroup-1`.
 
 The namespace `example-1` has four unique members: `A`, `B`, `C`, and `D`. Because `example-1` has only four unique members, it is not impacted by the five-user limit.
- 
+
 The group `example-2` has:
 
 - One group owner, `A`.

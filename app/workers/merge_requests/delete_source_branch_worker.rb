@@ -21,12 +21,7 @@ class MergeRequests::DeleteSourceBranchWorker
     if Feature.enabled?(:add_delete_branch_worker, merge_request.source_project)
       ::MergeRequests::DeleteBranchWorker.perform_async(merge_request_id, user_id, merge_request.source_branch, true)
     else
-      delete_service_result = ::Branches::DeleteService.new(merge_request.source_project, user)
-        .execute(merge_request.source_branch)
-
-      if Feature.enabled?(:track_delete_source_errors, merge_request.source_project)
-        delete_service_result.track_exception if delete_service_result&.error?
-      end
+      ::Branches::DeleteService.new(merge_request.source_project, user).execute(merge_request.source_branch)
 
       ::MergeRequests::RetargetChainService.new(project: merge_request.source_project, current_user: user)
         .execute(merge_request)

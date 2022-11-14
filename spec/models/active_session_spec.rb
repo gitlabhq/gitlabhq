@@ -260,7 +260,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           redis.set("session:gitlab:#{rack_session.private_id}", '')
 
           redis.set(session_key, serialized_session)
-          redis.sadd(lookup_key, active_session_lookup_key)
+          redis.sadd?(lookup_key, active_session_lookup_key)
         end
       end
 
@@ -338,7 +338,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
             session_private_id = Rack::Session::SessionId.new(session_public_id).private_id
             active_session = ActiveSession.new(session_private_id: session_private_id)
             redis.set(key_name(user.id, session_private_id), dump_session(active_session))
-            redis.sadd(lookup_key, session_private_id)
+            redis.sadd?(lookup_key, session_private_id)
           end
 
           # setup for unrelated user
@@ -347,7 +347,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
           active_session = ActiveSession.new(session_private_id: session_private_id)
 
           redis.set(key_name(unrelated_user_id, session_private_id), dump_session(active_session))
-          redis.sadd(described_class.lookup_key_name(unrelated_user_id), session_private_id)
+          redis.sadd?(described_class.lookup_key_name(unrelated_user_id), session_private_id)
         end
       end
 
@@ -372,7 +372,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         Gitlab::Redis::Sessions.with do |redis|
           redis.set(key_name(user.id, impersonated_session_id),
             dump_session(ActiveSession.new(session_id: Rack::Session::SessionId.new(impersonated_session_id), is_impersonated: true)))
-          redis.sadd(lookup_key, impersonated_session_id)
+          redis.sadd?(lookup_key, impersonated_session_id)
         end
 
         expect { ActiveSession.destroy_all_but_current(user, request.session) }.to change { ActiveSession.session_ids_for_user(user.id).size }.from(3).to(2)
@@ -418,8 +418,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
         it 'removes obsolete lookup entries' do
           Gitlab::Redis::Sessions.with do |redis|
             redis.set(session_key, '')
-            redis.sadd(lookup_key, current_session_id)
-            redis.sadd(lookup_key, '59822c7d9fcdfa03725eff41782ad97d')
+            redis.sadd(lookup_key, [current_session_id, '59822c7d9fcdfa03725eff41782ad97d'])
           end
 
           ActiveSession.cleanup(user)
@@ -445,7 +444,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
                 key_name(user.id, number),
                 dump_session(ActiveSession.new(session_id: number.to_s, updated_at: number.days.ago))
               )
-              redis.sadd(lookup_key, number.to_s)
+              redis.sadd?(lookup_key, number.to_s)
             end
           end
         end
@@ -477,7 +476,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
 
         it 'removes obsolete lookup entries even without active session' do
           Gitlab::Redis::Sessions.with do |redis|
-            redis.sadd(lookup_key, (max_number_of_sessions_plus_two + 1).to_s)
+            redis.sadd?(lookup_key, (max_number_of_sessions_plus_two + 1).to_s)
           end
 
           ActiveSession.cleanup(user)
@@ -534,7 +533,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
                 key_name(user.id, number),
                 dump_session(ActiveSession.new(session_private_id: number.to_s, updated_at: number.days.ago))
               )
-              redis.sadd(lookup_key, number.to_s)
+              redis.sadd?(lookup_key, number.to_s)
             end
           end
         end
@@ -601,11 +600,10 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
               dump_session(ActiveSession.new(session_id: number.to_s, updated_at: number.days.ago))
             )
 
-            redis.sadd(lookup_key, number.to_s)
+            redis.sadd?(lookup_key, number.to_s)
           end
 
-          redis.sadd(lookup_key, (active_count + 1).to_s)
-          redis.sadd(lookup_key, (active_count + 2).to_s)
+          redis.sadd?(lookup_key, [(active_count + 1).to_s, (active_count + 2).to_s])
         end
       end
 

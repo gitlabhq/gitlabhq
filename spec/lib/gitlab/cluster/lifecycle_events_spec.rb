@@ -3,38 +3,55 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cluster::LifecycleEvents do
+  using RSpec::Parameterized::TableSyntax
+
   # we create a new instance to ensure that we do not touch existing hooks
   let(:replica) { Class.new(described_class) }
 
-  context 'hooks execution' do
-    using RSpec::Parameterized::TableSyntax
+  before do
+    # disable blackout period to speed-up tests
+    stub_config(shutdown: { blackout_seconds: 0 })
+  end
 
-    where(:method, :hook_names) do
-      :do_worker_start             | %i[worker_start_hooks]
-      :do_before_fork              | %i[before_fork_hooks]
-      :do_before_graceful_shutdown | %i[master_blackout_period master_graceful_shutdown]
-      :do_before_master_restart    | %i[master_restart_hooks]
-    end
-
-    before do
-      # disable blackout period to speed-up tests
-      stub_config(shutdown: { blackout_seconds: 0 })
+  context 'outside of clustered environments' do
+    where(:hook, :was_executed_immediately) do
+      :on_worker_start             | true
+      :on_before_fork              | false
+      :on_before_graceful_shutdown | false
+      :on_before_master_restart    | false
+      :on_worker_stop              | false
     end
 
     with_them do
-      subject { replica.public_send(method) }
+      it 'executes the given block immediately' do
+        was_executed = false
+        replica.public_send(hook, &proc { was_executed = true })
 
-      it 'executes all hooks' do
-        hook_names.each do |hook_name|
-          hook = double
-          replica.instance_variable_set(:"@#{hook_name}", [hook])
+        expect(was_executed).to eq(was_executed_immediately)
+      end
+    end
+  end
 
-          # ensure that proper hooks are called
-          expect(hook).to receive(:call)
-          expect(replica).to receive(:call).with(hook_name, anything).and_call_original
-        end
+  context 'in clustered environments' do
+    before do
+      allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
+      replica.set_puma_options(workers: 2)
+    end
 
-        subject
+    where(:hook, :execution_helper) do
+      :on_worker_start             | :do_worker_start
+      :on_before_fork              | :do_before_fork
+      :on_before_graceful_shutdown | :do_before_graceful_shutdown
+      :on_before_master_restart    | :do_before_master_restart
+      :on_worker_stop              | :do_worker_stop
+    end
+
+    with_them do
+      it 'requires explicit execution via do_* helper' do
+        was_executed = false
+        replica.public_send(hook, &proc { was_executed = true })
+
+        expect { replica.public_send(execution_helper) }.to change { was_executed }.from(false).to(true)
       end
     end
   end

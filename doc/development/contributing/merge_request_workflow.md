@@ -40,7 +40,7 @@ if you can, and include tests.
 
 NOTE:
 Consider placing your code behind a feature flag if you think it might affect production availability.
-Not sure? Read [When to use feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags). 
+Not sure? Read [When to use feature flags](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags).
 
 If the change is non-trivial, we encourage you to
 start a discussion with [a product manager or a member of the team](https://about.gitlab.com/handbook/product/categories/).

@@ -215,7 +215,7 @@ Running the following commands changes data directly. This could be damaging if 
    ```
 
    For example, to unrevoke a token of `token-string-here123`:
-   
+
    ```ruby
    token = PersonalAccessToken.find_by_token('token-string-here123')
    token.update!(revoked:false)

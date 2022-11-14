@@ -211,7 +211,7 @@ RSpec.describe BranchesFinder do
         it 'raises an error' do
           expect do
             subject
-          end.to raise_error(Gitlab::Git::CommandError, '13:could not find page token.')
+          end.to raise_error(Gitlab::Git::CommandError, /could not find page token/)
         end
       end
 

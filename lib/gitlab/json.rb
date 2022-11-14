@@ -264,6 +264,10 @@ module Gitlab
       # config/initializers/active_support_json.rb
       def stringify(jsonified)
         Gitlab::Json.dump(jsonified)
+      rescue EncodingError => ex
+        # Raise the same error as the default implementation if we encounter
+        # an error. These are usually related to invalid UTF-8 errors.
+        raise JSON::GeneratorError, ex
       end
     end
   end

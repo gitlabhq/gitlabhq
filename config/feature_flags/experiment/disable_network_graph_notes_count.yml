@@ -1,0 +1,8 @@
+---
+name: disable_network_graph_notes_count
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103636"
+rollout_issue_url: 
+milestone: '15.6'
+type: experiment
+group: group::source code
+default_enabled: false

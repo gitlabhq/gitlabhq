@@ -29,6 +29,7 @@ export default class MergeRequestStore {
     this.stateMachine = machine(STATE_MACHINE.definition);
     this.machineValue = this.stateMachine.value;
     this.mergeDetailsCollapsed = window.innerWidth < 768;
+    this.mergeError = data.mergeError;
 
     this.setPaths(data);
 
@@ -156,25 +157,6 @@ export default class MergeRequestStore {
     this.mergePath = data.merge_path;
     this.mergeCommitPath = data.merged_commit_path;
     this.canPushToSourceBranch = data.can_push_to_source_branch;
-
-    if (!window.gon?.features?.mergeRequestWidgetGraphql) {
-      this.autoMergeEnabled = Boolean(data.auto_merge_enabled);
-      this.canBeMerged = data.can_be_merged || false;
-      this.canMerge = Boolean(data.merge_path);
-      this.commitsCount = data.commits_count;
-      this.branchMissing = data.branch_missing;
-      this.hasConflicts = data.has_conflicts;
-      this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
-      this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
-      this.mergeError = data.merge_error;
-      this.mergeStatus = data.merge_status;
-      this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
-      this.allowMergeOnSkippedPipeline = data.allow_merge_on_skipped_pipeline || false;
-      this.projectArchived = data.project_archived;
-      this.isSHAMismatch = this.sha !== data.diff_head_sha;
-      this.shouldBeRebased = Boolean(data.should_be_rebased);
-      this.draft = data.draft;
-    }
 
     const currentUser = data.current_user;
 

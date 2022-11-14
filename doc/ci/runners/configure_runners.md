@@ -588,7 +588,7 @@ The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-su
   ```
 
 WARNING:
-Git ignores nested and multiple submodule paths. To ignore a nested submodule, exclude 
+Git ignores nested and multiple submodule paths. To ignore a nested submodule, exclude
 the parent submodule and then manually clone it in the job's scripts. For example,
  `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
 to wrap the string in single quotes so the YAML can be parsed successfully.

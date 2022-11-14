@@ -132,7 +132,7 @@ module Gitlab
                 diff_file_id,
                 gzip_compress(highlighted_diff_lines_hash.to_json)
               )
-            rescue Encoding::UndefinedConversionError, EncodingError
+            rescue Encoding::UndefinedConversionError, EncodingError, JSON::GeneratorError
               nil
             end
 

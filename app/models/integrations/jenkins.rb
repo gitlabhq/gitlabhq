@@ -32,8 +32,8 @@ module Integrations
     validates :username, presence: true, if: ->(service) { service.activated? && service.password_touched? && service.password.present? }
     validates :password, presence: true, if: ->(service) { service.activated? && service.username.present? }
 
-    default_value_for :merge_requests_events, false
-    default_value_for :tag_push_events, false
+    attribute :merge_requests_events, default: false
+    attribute :tag_push_events, default: false
 
     def execute(data)
       return unless supported_events.include?(data[:object_kind])

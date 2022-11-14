@@ -19,7 +19,7 @@ module Gitlab
       def enqueue_stats_job(request_id)
         return unless Feature.enabled?(:performance_bar_stats, type: :ops)
 
-        @client.sadd(GitlabPerformanceBarStatsWorker::STATS_KEY, request_id)
+        @client.sadd?(GitlabPerformanceBarStatsWorker::STATS_KEY, request_id)
 
         return unless uuid = Gitlab::ExclusiveLease.new(
           GitlabPerformanceBarStatsWorker::LEASE_KEY,

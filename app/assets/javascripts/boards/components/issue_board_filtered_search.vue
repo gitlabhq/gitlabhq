@@ -12,16 +12,24 @@ import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
-  TOKEN_TITLE_MY_REACTION,
   OPERATOR_IS_AND_IS_NOT,
   OPERATOR_IS_ONLY,
-  TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -62,7 +70,7 @@ export default {
         {
           icon: 'user',
           title: TOKEN_TITLE_ASSIGNEE,
-          type: 'assignee',
+          type: TOKEN_TYPE_ASSIGNEE,
           operators: OPERATOR_IS_AND_IS_NOT,
           token: AuthorToken,
           unique: true,
@@ -72,7 +80,7 @@ export default {
         {
           icon: 'pencil',
           title: TOKEN_TITLE_AUTHOR,
-          type: 'author',
+          type: TOKEN_TYPE_AUTHOR,
           operators: OPERATOR_IS_AND_IS_NOT,
           symbol: '@',
           token: AuthorToken,
@@ -83,7 +91,7 @@ export default {
         {
           icon: 'labels',
           title: TOKEN_TITLE_LABEL,
-          type: 'label',
+          type: TOKEN_TYPE_LABEL,
           operators: OPERATOR_IS_AND_IS_NOT,
           token: LabelToken,
           unique: false,
@@ -93,7 +101,7 @@ export default {
         ...(this.isSignedIn
           ? [
               {
-                type: 'my-reaction',
+                type: TOKEN_TYPE_MY_REACTION,
                 title: TOKEN_TITLE_MY_REACTION,
                 icon: 'thumb-up',
                 token: EmojiToken,
@@ -115,7 +123,7 @@ export default {
                 },
               },
               {
-                type: 'confidential',
+                type: TOKEN_TYPE_CONFIDENTIAL,
                 icon: 'eye-slash',
                 title: TOKEN_TITLE_CONFIDENTIAL,
                 unique: true,
@@ -129,7 +137,7 @@ export default {
             ]
           : []),
         {
-          type: 'milestone',
+          type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
           icon: 'clock',
           symbol: '%',
@@ -141,7 +149,7 @@ export default {
         {
           icon: 'issues',
           title: TOKEN_TITLE_TYPE,
-          type: 'type',
+          type: TOKEN_TYPE_TYPE,
           token: GlFilteredSearchToken,
           unique: true,
           options: [
@@ -150,7 +158,7 @@ export default {
           ],
         },
         {
-          type: 'release',
+          type: TOKEN_TYPE_RELEASE,
           title: TOKEN_TITLE_RELEASE,
           icon: 'rocket',
           token: ReleaseToken,

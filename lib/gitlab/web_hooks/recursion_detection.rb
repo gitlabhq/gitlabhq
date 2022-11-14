@@ -41,7 +41,7 @@ module Gitlab
 
           ::Gitlab::Redis::SharedState.with do |redis|
             redis.multi do |multi|
-              multi.sadd(cache_key, hook.id)
+              multi.sadd?(cache_key, hook.id)
               multi.expire(cache_key, TOUCH_CACHE_TTL)
             end
           end

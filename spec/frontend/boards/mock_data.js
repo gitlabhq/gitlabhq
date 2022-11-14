@@ -10,6 +10,12 @@ import {
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -752,7 +758,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   {
     icon: 'user',
     title: TOKEN_TITLE_ASSIGNEE,
-    type: 'assignee',
+    type: TOKEN_TYPE_ASSIGNEE,
     operators: OPERATOR_IS_AND_IS_NOT,
     token: AuthorToken,
     unique: true,
@@ -762,7 +768,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   {
     icon: 'pencil',
     title: TOKEN_TITLE_AUTHOR,
-    type: 'author',
+    type: TOKEN_TYPE_AUTHOR,
     operators: OPERATOR_IS_AND_IS_NOT,
     symbol: '@',
     token: AuthorToken,
@@ -773,7 +779,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   {
     icon: 'labels',
     title: TOKEN_TITLE_LABEL,
-    type: 'label',
+    type: TOKEN_TYPE_LABEL,
     operators: OPERATOR_IS_AND_IS_NOT,
     token: LabelToken,
     unique: false,
@@ -785,7 +791,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
     icon: 'clock',
     title: TOKEN_TITLE_MILESTONE,
     symbol: '%',
-    type: 'milestone',
+    type: TOKEN_TYPE_MILESTONE,
     shouldSkipSort: true,
     token: MilestoneToken,
     unique: true,
@@ -794,7 +800,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   {
     icon: 'issues',
     title: TOKEN_TITLE_TYPE,
-    type: 'type',
+    type: TOKEN_TYPE_TYPE,
     token: GlFilteredSearchToken,
     unique: true,
     options: [
@@ -803,7 +809,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
     ],
   },
   {
-    type: 'release',
+    type: TOKEN_TYPE_RELEASE,
     title: TOKEN_TITLE_RELEASE,
     icon: 'rocket',
     token: ReleaseToken,

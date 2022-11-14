@@ -143,7 +143,7 @@ For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` keyword
     and [`after_script`](../yaml/index.md#after_script).
   - [`stage`](../yaml/index.md#stage) describes the sequential execution of jobs.
     Jobs in a single stage run in parallel as long as there are available runners.
-  - Use the [`needs` keyword](../yaml/index.md#needs) to run jobs out of stage order. 
+  - Use the [`needs` keyword](../yaml/index.md#needs) to run jobs out of stage order.
     This creates a [Directed Acyclic Graph (DAG)](../directed_acyclic_graph/index.md).
 - You can set additional configuration to customize how your jobs and stages perform:
   - Use the [`rules`](../yaml/index.md#rules) keyword to specify when to run or skip jobs.

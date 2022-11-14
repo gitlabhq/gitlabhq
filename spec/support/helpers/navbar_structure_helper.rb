@@ -90,7 +90,11 @@ module NavbarStructureHelper
       _('Kubernetes'),
       new_nav_item: {
         nav_item: _('Observability'),
-        nav_sub_items: []
+        nav_sub_items: [
+          _('Dashboards'),
+          _('Explore'),
+          _('Manage Dashboards')
+        ]
       }
     )
   end

@@ -203,16 +203,6 @@ RSpec.describe MergeRequestDiffFile do
       end
     end
 
-    context 'when externally_stored_diffs_caching_export feature flag is disabled' do
-      it 'calls #diff' do
-        stub_feature_flags(externally_stored_diffs_caching_export: false)
-
-        expect(file).to receive(:diff)
-
-        file.utf8_diff
-      end
-    end
-
     context 'when diff is not stored externally' do
       it 'calls #diff' do
         expect(file).to receive(:diff)

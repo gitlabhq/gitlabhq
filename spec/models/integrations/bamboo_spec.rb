@@ -23,6 +23,8 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
     )
   end
 
+  it_behaves_like Integrations::BaseCi
+
   it_behaves_like Integrations::ResetSecretFields
 
   include_context Integrations::EnableSslVerification

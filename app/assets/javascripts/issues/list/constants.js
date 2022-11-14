@@ -8,7 +8,20 @@ import {
   OPERATOR_IS,
   OPERATOR_IS_NOT,
   OPERATOR_OR,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
+  TOKEN_TYPE_EPIC,
   TOKEN_TYPE_HEALTH,
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -134,20 +147,6 @@ export const specialFilterValues = [
   FILTER_UPCOMING,
   FILTER_STARTED,
 ];
-
-export const TOKEN_TYPE_AUTHOR = 'author_username';
-export const TOKEN_TYPE_ASSIGNEE = 'assignee_username';
-export const TOKEN_TYPE_MILESTONE = 'milestone';
-export const TOKEN_TYPE_LABEL = 'labels';
-export const TOKEN_TYPE_TYPE = 'type';
-export const TOKEN_TYPE_RELEASE = 'release';
-export const TOKEN_TYPE_MY_REACTION = 'my_reaction_emoji';
-export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
-export const TOKEN_TYPE_ITERATION = 'iteration';
-export const TOKEN_TYPE_EPIC = 'epic_id';
-export const TOKEN_TYPE_WEIGHT = 'weight';
-export const TOKEN_TYPE_CONTACT = 'crm_contact';
-export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
 
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
 

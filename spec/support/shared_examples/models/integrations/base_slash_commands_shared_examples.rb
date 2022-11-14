@@ -6,6 +6,10 @@ RSpec.shared_examples Integrations::BaseSlashCommands do
     it { is_expected.to have_many :chat_names }
   end
 
+  describe 'default values' do
+    it { expect(subject.category).to eq(:chat) }
+  end
+
   describe '#valid_token?' do
     subject { described_class.new }
 

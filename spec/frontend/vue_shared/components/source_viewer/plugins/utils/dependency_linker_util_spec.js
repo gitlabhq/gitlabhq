@@ -1,7 +1,9 @@
 import {
   createLink,
   generateHLJSOpenTag,
+  getObjectKeysByKeyName,
 } from '~/vue_shared/components/source_viewer/plugins/utils/dependency_linker_util';
+import { PODSPEC_JSON_CONTENT } from '../mock_data';
 
 describe('createLink', () => {
   it('generates a link with the correct attributes', () => {
@@ -30,5 +32,13 @@ describe('generateHLJSOpenTag', () => {
     const result = `<span class="hljs-${type}">&quot;`;
 
     expect(generateHLJSOpenTag(type)).toBe(result);
+  });
+});
+
+describe('getObjectKeysByKeyName method', () => {
+  it('gets all object keys within specified key', () => {
+    const acc = [];
+    const keys = getObjectKeysByKeyName(JSON.parse(PODSPEC_JSON_CONTENT), 'dependencies', acc);
+    expect(keys).toEqual(['MyCheckCore', 'AFNetworking/Security']);
   });
 });

@@ -1,6 +1,5 @@
 <script>
 import { s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import autoMergeFailedQuery from '../../queries/states/auto_merge_failed.query.graphql';
@@ -11,13 +10,10 @@ export default {
   components: {
     StateContainer,
   },
-  mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  mixins: [mergeRequestQueryVariablesMixin],
   apollo: {
     mergeError: {
       query: autoMergeFailedQuery,
-      skip() {
-        return !this.glFeatures.mergeRequestWidgetGraphql;
-      },
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -32,7 +28,7 @@ export default {
   },
   data() {
     return {
-      mergeError: this.glFeatures.mergeRequestWidgetGraphql ? null : this.mr.mergeError,
+      mergeError: null,
       isRefreshing: false,
     };
   },

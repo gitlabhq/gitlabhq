@@ -55,36 +55,6 @@ RSpec.describe MergeRequests::DeleteBranchWorker do
           worker.perform(merge_request.id, user.id, branch, retarget_branch)
         end
       end
-
-      context 'when delete service returns an error' do
-        let(:service_result) { ServiceResponse.error(message: 'placeholder') }
-
-        it 'tracks the exception' do
-          expect_next_instance_of(::Branches::DeleteService) do |instance|
-            expect(instance).to receive(:execute).with(merge_request.source_branch).and_return(service_result)
-          end
-
-          expect(service_result).to receive(:track_exception).and_call_original
-
-          worker.perform(merge_request.id, user.id, branch, retarget_branch)
-        end
-
-        context 'when track_delete_source_errors is disabled' do
-          before do
-            stub_feature_flags(track_delete_source_errors: false)
-          end
-
-          it 'does not track the exception' do
-            expect_next_instance_of(::Branches::DeleteService) do |instance|
-              expect(instance).to receive(:execute).with(merge_request.source_branch).and_return(service_result)
-            end
-
-            expect(service_result).not_to receive(:track_exception)
-
-            worker.perform(merge_request.id, user.id, branch, retarget_branch)
-          end
-        end
-      end
     end
 
     it_behaves_like 'an idempotent worker' do
