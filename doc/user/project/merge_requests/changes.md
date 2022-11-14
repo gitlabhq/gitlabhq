@@ -149,7 +149,7 @@ The feature is not ready for production use.
 To avoid displaying the changes that are already on target branch in the diff,
 we compare the merge request's source branch with HEAD of the target branch.
 
-When there are conflicts between the source and target branch, we show the
-conflicts on the merge request diff:
+When there are conflicts between the source and target branch, we show an alert
+per conflicted file on the merge request diff:
 
-![Example of a conflict shown in a merge request diff](img/conflict_ui_v14_0.png)
+![Example of a conflict alert shown in a merge request diff](img/conflict_ui_v15_6.png)

@@ -41,6 +41,13 @@ const issueDetailsResponse = (confidential = false) => ({
           },
           __typename: 'Iteration',
         },
+        milestone: {
+          dueDate: null,
+          expired: false,
+          id: 'gid://gitlab/Milestone/28',
+          title: 'v2.0',
+          __typename: 'Milestone',
+        },
         __typename: 'Issue',
       },
       __typename: 'Project',

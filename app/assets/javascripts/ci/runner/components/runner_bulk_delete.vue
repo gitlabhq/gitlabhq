@@ -117,31 +117,34 @@ export default {
             const { errors, deletedIds } = data.bulkRunnerDelete;
 
             if (errors?.length) {
-              this.onError(new Error(errors.join(' ')));
-              this.$refs.modal.hide();
-              return;
+              createAlert({
+                message: s__(
+                  'Runners|An error occurred while deleting. Some runners may not have been deleted.',
+                ),
+                captureError: true,
+                error: new Error(errors.join(' ')),
+              });
             }
 
-            this.$emit('deleted', {
-              message: this.toastConfirmationMessage(deletedIds.length),
-            });
+            if (deletedIds?.length) {
+              this.$emit('deleted', {
+                message: this.toastConfirmationMessage(deletedIds.length),
+              });
 
-            // Clean up
-
-            // Remove deleted runners from the cache
-            deletedIds.forEach((id) => {
-              const cacheId = cache.identify({ __typename: RUNNER_TYPENAME, id });
-              cache.evict({ id: cacheId });
-            });
-            cache.gc();
-
-            this.$refs.modal.hide();
+              // Remove deleted runners from the cache
+              deletedIds.forEach((id) => {
+                const cacheId = cache.identify({ __typename: RUNNER_TYPENAME, id });
+                cache.evict({ id: cacheId });
+              });
+              cache.gc();
+            }
           },
         });
       } catch (error) {
         this.onError(error);
       } finally {
         this.isDeleting = false;
+        this.$refs.modal.hide();
       }
     },
     onError(error) {

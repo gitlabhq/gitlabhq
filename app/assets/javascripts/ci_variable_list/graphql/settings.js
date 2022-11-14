@@ -36,12 +36,12 @@ const mapVariableTypes = (variables = [], kind) => {
   });
 };
 
-const prepareProjectGraphQLResponse = ({ data, projectId, errors = [] }) => {
+const prepareProjectGraphQLResponse = ({ data, id, errors = [] }) => {
   return {
     errors,
     project: {
       __typename: GRAPHQL_PROJECT_TYPE,
-      id: convertToGraphQLId(GRAPHQL_PROJECT_TYPE, projectId),
+      id: convertToGraphQLId(GRAPHQL_PROJECT_TYPE, id),
       ciVariables: {
         __typename: `Ci${GRAPHQL_PROJECT_TYPE}VariableConnection`,
         pageInfo: {
@@ -57,12 +57,12 @@ const prepareProjectGraphQLResponse = ({ data, projectId, errors = [] }) => {
   };
 };
 
-const prepareGroupGraphQLResponse = ({ data, groupId, errors = [] }) => {
+const prepareGroupGraphQLResponse = ({ data, id, errors = [] }) => {
   return {
     errors,
     group: {
       __typename: GRAPHQL_GROUP_TYPE,
-      id: convertToGraphQLId(GRAPHQL_GROUP_TYPE, groupId),
+      id: convertToGraphQLId(GRAPHQL_GROUP_TYPE, id),
       ciVariables: {
         __typename: `Ci${GRAPHQL_GROUP_TYPE}VariableConnection`,
         pageInfo: {
@@ -95,20 +95,13 @@ const prepareAdminGraphQLResponse = ({ data, errors = [] }) => {
   };
 };
 
-async function callProjectEndpoint({
-  endpoint,
-  fullPath,
-  variable,
-  projectId,
-  cache,
-  destroy = false,
-}) {
+async function callProjectEndpoint({ endpoint, fullPath, variable, id, cache, destroy = false }) {
   try {
     const { data } = await axios.patch(endpoint, {
       variables_attributes: [prepareVariableForApi({ variable, destroy })],
     });
 
-    const graphqlData = prepareProjectGraphQLResponse({ data, projectId });
+    const graphqlData = prepareProjectGraphQLResponse({ data, id });
 
     cache.writeQuery({
       query: getProjectVariables,
@@ -122,26 +115,19 @@ async function callProjectEndpoint({
   } catch (e) {
     return prepareProjectGraphQLResponse({
       data: cache.readQuery({ query: getProjectVariables, variables: { fullPath } }),
-      projectId,
+      id,
       errors: [...e.response.data],
     });
   }
 }
 
-const callGroupEndpoint = async ({
-  endpoint,
-  fullPath,
-  variable,
-  groupId,
-  cache,
-  destroy = false,
-}) => {
+const callGroupEndpoint = async ({ endpoint, fullPath, variable, id, cache, destroy = false }) => {
   try {
     const { data } = await axios.patch(endpoint, {
       variables_attributes: [prepareVariableForApi({ variable, destroy })],
     });
 
-    const graphqlData = prepareGroupGraphQLResponse({ data, groupId });
+    const graphqlData = prepareGroupGraphQLResponse({ data, id });
 
     cache.writeQuery({
       query: getGroupVariables,
@@ -152,7 +138,7 @@ const callGroupEndpoint = async ({
   } catch (e) {
     return prepareGroupGraphQLResponse({
       data: cache.readQuery({ query: getGroupVariables, variables: { fullPath } }),
-      groupId,
+      id,
       errors: [...e.response.data],
     });
   }
@@ -182,23 +168,23 @@ const callAdminEndpoint = async ({ endpoint, variable, cache, destroy = false })
 
 export const resolvers = {
   Mutation: {
-    addProjectVariable: async (_, { endpoint, fullPath, variable, projectId }, { cache }) => {
-      return callProjectEndpoint({ endpoint, fullPath, variable, projectId, cache });
+    addProjectVariable: async (_, { endpoint, fullPath, variable, id }, { cache }) => {
+      return callProjectEndpoint({ endpoint, fullPath, variable, id, cache });
     },
-    updateProjectVariable: async (_, { endpoint, fullPath, variable, projectId }, { cache }) => {
-      return callProjectEndpoint({ endpoint, fullPath, variable, projectId, cache });
+    updateProjectVariable: async (_, { endpoint, fullPath, variable, id }, { cache }) => {
+      return callProjectEndpoint({ endpoint, fullPath, variable, id, cache });
     },
-    deleteProjectVariable: async (_, { endpoint, fullPath, variable, projectId }, { cache }) => {
-      return callProjectEndpoint({ endpoint, fullPath, variable, projectId, cache, destroy: true });
+    deleteProjectVariable: async (_, { endpoint, fullPath, variable, id }, { cache }) => {
+      return callProjectEndpoint({ endpoint, fullPath, variable, id, cache, destroy: true });
     },
-    addGroupVariable: async (_, { endpoint, fullPath, variable, groupId }, { cache }) => {
-      return callGroupEndpoint({ endpoint, fullPath, variable, groupId, cache });
+    addGroupVariable: async (_, { endpoint, fullPath, variable, id }, { cache }) => {
+      return callGroupEndpoint({ endpoint, fullPath, variable, id, cache });
     },
-    updateGroupVariable: async (_, { endpoint, fullPath, variable, groupId }, { cache }) => {
-      return callGroupEndpoint({ endpoint, fullPath, variable, groupId, cache });
+    updateGroupVariable: async (_, { endpoint, fullPath, variable, id }, { cache }) => {
+      return callGroupEndpoint({ endpoint, fullPath, variable, id, cache });
     },
-    deleteGroupVariable: async (_, { endpoint, fullPath, variable, groupId }, { cache }) => {
-      return callGroupEndpoint({ endpoint, fullPath, variable, groupId, cache, destroy: true });
+    deleteGroupVariable: async (_, { endpoint, fullPath, variable, id }, { cache }) => {
+      return callGroupEndpoint({ endpoint, fullPath, variable, id, cache, destroy: true });
     },
     addAdminVariable: async (_, { endpoint, variable }, { cache }) => {
       return callAdminEndpoint({ endpoint, variable, cache });
@@ -238,7 +224,7 @@ export const cacheConfig = {
       Project: {
         fields: {
           ciVariables: {
-            keyArgs: ['fullPath', 'endpoint', 'projectId'],
+            keyArgs: ['fullPath', 'endpoint', 'id'],
             merge: mergeVariables,
           },
         },

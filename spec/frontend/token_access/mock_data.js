@@ -38,6 +38,10 @@ export const projectsWithScope = {
               id: '2',
               fullPath: 'root/332268-test',
               name: 'root/332268-test',
+              namespace: {
+                id: '1234',
+                fullPath: 'root',
+              },
             },
           ],
         },
@@ -68,6 +72,10 @@ export const mockProjects = [
   {
     id: '1',
     name: 'merge-train-stuff',
+    namespace: {
+      id: '1235',
+      fullPath: 'root',
+    },
     fullPath: 'root/merge-train-stuff',
     isLocked: false,
     __typename: 'Project',
@@ -75,6 +83,10 @@ export const mockProjects = [
   {
     id: '2',
     name: 'ci-project',
+    namespace: {
+      id: '1236',
+      fullPath: 'root',
+    },
     fullPath: 'root/ci-project',
     isLocked: true,
     __typename: 'Project',

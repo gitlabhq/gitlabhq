@@ -214,19 +214,15 @@ end
 
 RSpec.describe Ci::Build, 'TokenAuthenticatable' do
   let(:token_field) { :token }
-  let(:build) { FactoryBot.build(:ci_build) }
+  let(:build) { FactoryBot.build(:ci_build, :created) }
 
   it_behaves_like 'TokenAuthenticatable'
 
   describe 'generating new token' do
     context 'token is not generated yet' do
       describe 'token field accessor' do
-        it 'makes it possible to access token' do
-          expect(build.token).to be_nil
-
-          build.save!
-
-          expect(build.token).to be_present
+        it 'does not generate a token when saving a build' do
+          expect { build.save! }.not_to change(build, :token).from(nil)
         end
       end
 

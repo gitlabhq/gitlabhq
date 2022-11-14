@@ -5,6 +5,8 @@ module API
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
 
+    resource_milestone_events_tags = %w[resource_milestone_events]
+
     before { authenticate! }
 
     {
@@ -15,17 +17,19 @@ module API
       eventables_str = eventable_type.to_s.underscore.pluralize
 
       params do
-        requires :id, type: String, desc: "The ID of a #{parent_type}"
+        requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{parent_type}"
       end
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Get a list of #{eventable_type.to_s.downcase} resource milestone events" do
+        desc "List project #{eventable_type.underscore.humanize} milestone events" do
+          detail "Gets a list of all milestone events for a single #{eventable_type.underscore.humanize}"
           success Entities::ResourceMilestoneEvent
+          is_array true
+          tags resource_milestone_events_tags
         end
         params do
           requires :eventable_id, types: [Integer, String], desc: 'The ID of the eventable'
           use :pagination
         end
-
         get ":id/#{eventables_str}/:eventable_id/resource_milestone_events", feature_category: feature_category, urgency: :low do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
@@ -34,8 +38,13 @@ module API
           present paginate(events), with: Entities::ResourceMilestoneEvent
         end
 
-        desc "Get a single #{eventable_type.to_s.downcase} resource milestone event" do
+        desc "Get single #{eventable_type.underscore.humanize} milestone event" do
+          detail "Returns a single milestone event for a specific project #{eventable_type.underscore.humanize}"
           success Entities::ResourceMilestoneEvent
+          failure [
+            { code: 404, message: 'Not found' }
+          ]
+          tags resource_milestone_events_tags
         end
         params do
           requires :event_id, type: String, desc: 'The ID of a resource milestone event'

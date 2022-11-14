@@ -199,7 +199,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
 
       expect(component_file)
         .to receive(:update_column)
-        .with(:file_store, ::Packages::PackageFileUploader::Store::LOCAL)
+        .with('file_store', ::Packages::PackageFileUploader::Store::LOCAL)
         .and_call_original
 
       expect { subject }.to change { component_file.size }.from(nil).to(74)

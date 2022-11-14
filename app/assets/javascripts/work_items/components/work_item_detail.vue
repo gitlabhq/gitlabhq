@@ -32,6 +32,7 @@ import {
 import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscription.graphql';
+import workItemMilestoneSubscription from '../graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 import { getWorkItemQuery } from '../utils';
@@ -170,6 +171,17 @@ export default {
             return !this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES) || !this.workItem?.id;
           },
         },
+        {
+          document: workItemMilestoneSubscription,
+          variables() {
+            return {
+              issuableId: this.workItem.id,
+            };
+          },
+          skip() {
+            return !this.isWidgetPresent(WIDGET_TYPE_MILESTONE) || !this.workItem?.id;
+          },
+        },
       ],
     },
   },
@@ -229,7 +241,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
     },
     workItemMilestone() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
+      return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
     fetchByIid() {
       return this.glFeatures.useIidInWorkItemsPath && parseBoolean(this.$route.query.iid_path);
@@ -457,8 +469,10 @@ export default {
         <work-item-milestone
           v-if="workItemMilestone"
           :work-item-id="workItem.id"
-          :work-item-milestone="workItemMilestone.nodes[0]"
+          :work-item-milestone="workItemMilestone.milestone"
           :work-item-type="workItemType"
+          :fetch-by-iid="fetchByIid"
+          :query-variables="queryVariables"
           :can-update="canUpdate"
           :full-path="fullPath"
           @error="updateError = $event"

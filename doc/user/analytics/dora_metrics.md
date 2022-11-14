@@ -52,8 +52,13 @@ To retrieve metrics for deployment frequency, use the [GraphQL](../../api/graphq
 
 ## Lead time for changes
 
-Lead time for changes measures the time to deliver a feature once it has been developed,
-as described in [Measuring DevOps Performance](https://devops.com/measuring-devops-performance/).
+DORA Lead time for changes measures the time to successfully deliver a commit into production.
+This metric reflects the efficiency of CI/CD pipelines.
+
+In GitLab, Lead time for changes calculates the median time it takes for a merge request to get merged into production.
+We measure **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+
+Over time, the lead time for changes should decrease, while your team's performance should increase.
 
 Lead time for changes displays in several charts:
 
@@ -62,6 +67,9 @@ Lead time for changes displays in several charts:
 - [CI/CD analytics](ci_cd_analytics.md)
 
 To retrieve metrics for lead time for changes, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+
+- The definition of lead time for change can vary widely, which often creates confusion within the industry.
+- "Lead time for changes" is not the same as "Lead time". In the value stream, "Lead time" measures the time it takes for work on an issue to move from the moment it's requested (Issue created) to the moment it's fulfilled and delivered (Issue closed).
 
 ## Time to restore service
 

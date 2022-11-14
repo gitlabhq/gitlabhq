@@ -39,7 +39,7 @@ module Types
                                              description: 'Name of the tag associated with the release.'
     field :tag_path, GraphQL::Types::String, null: true,
                                              description: 'Relative web path to the tag associated with the release.',
-                                             authorize: :download_code
+                                             authorize: :read_code
     field :upcoming_release, GraphQL::Types::Boolean, null: true, method: :upcoming_release?,
                                                       description: 'Indicates the release is an upcoming release.'
     field :historical_release, GraphQL::Types::Boolean, null: true, method: :historical_release?,

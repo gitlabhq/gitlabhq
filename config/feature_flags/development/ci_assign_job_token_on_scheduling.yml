@@ -1,0 +1,8 @@
+---
+name: ci_assign_job_token_on_scheduling
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103377
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382042
+milestone: '15.6'
+type: development
+group: group::pipeline execution
+default_enabled: false

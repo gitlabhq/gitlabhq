@@ -55,6 +55,20 @@ NOTE:
 The **Set up CI/CD** button does not appear on an empty repository. For the button
 to display, add a file to your repository.
 
+## Preview Markdown
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
+
+To preview Markdown content in the Web Editor, select the **Preview** tab.
+In this tab, you can see a live Markdown preview that updates as you type alongside your content.
+
+![The Markdown Live Preview](img/web_editor_markdown_live_preview.png)
+
+To close the preview panel, do one of the following:
+
+- Select the **Write** tab.
+- From the context menu, select **Hide Live Preview**.
+
 ## Highlight lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56159) in GitLab 13.10 for GitLab SaaS instances.

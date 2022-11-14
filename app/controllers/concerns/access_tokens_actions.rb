@@ -17,7 +17,7 @@ module AccessTokensActions
     respond_to do |format|
       format.html
       format.json do
-        render json: @active_resource_access_tokens
+        render json: @active_access_tokens
       end
     end
   end
@@ -30,7 +30,7 @@ module AccessTokensActions
     if token_response.success?
       @resource_access_token = token_response.payload[:access_token]
       render json: { new_token: @resource_access_token.token,
-                     active_access_tokens: active_resource_access_tokens }, status: :ok
+                     active_access_tokens: active_access_tokens }, status: :ok
     else
       render json: { errors: token_response.errors }, status: :unprocessable_entity
     end
@@ -69,36 +69,9 @@ module AccessTokensActions
     resource.members.load
 
     @scopes = Gitlab::Auth.resource_bot_scopes
-    @active_resource_access_tokens = active_resource_access_tokens
+    @active_access_tokens = active_access_tokens
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
-
-  def active_resource_access_tokens
-    tokens = finder(state: 'active', sort: 'expires_at_asc_id_desc').execute.preload_users
-
-    if Feature.enabled?('access_token_pagination')
-      tokens = tokens.page(page)
-      add_pagination_headers(tokens)
-    end
-
-    represent(tokens)
-  end
-
-  def add_pagination_headers(relation)
-    Gitlab::Pagination::OffsetHeaderBuilder.new(
-      request_context: self,
-      per_page: relation.limit_value,
-      page: relation.current_page,
-      next_page: relation.next_page,
-      prev_page: relation.prev_page,
-      total: relation.total_count,
-      params: params.permit(:page)
-    ).execute
-  end
-
-  def page
-    (params[:page] || 1).to_i
-  end
 
   def finder(options = {})
     PersonalAccessTokensFinder.new({ user: bot_users, impersonation: false }.merge(options))

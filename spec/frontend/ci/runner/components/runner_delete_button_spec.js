@@ -17,6 +17,7 @@ import { allRunnersData } from '../mock_data';
 
 const mockRunner = allRunnersData.data.runners.nodes[0];
 const mockRunnerId = getIdFromGraphQLId(mockRunner.id);
+const mockRunnerName = `#${mockRunnerId} (${mockRunner.shortSha})`;
 
 Vue.use(VueApollo);
 
@@ -96,7 +97,7 @@ describe('RunnerDeleteButton', () => {
   });
 
   it('Displays a modal with the runner name', () => {
-    expect(findModal().props('runnerName')).toBe(`#${mockRunnerId} (${mockRunner.shortSha})`);
+    expect(findModal().props('runnerName')).toBe(mockRunnerName);
   });
 
   it('Does not have tabindex when button is enabled', () => {
@@ -189,6 +190,10 @@ describe('RunnerDeleteButton', () => {
 
       it('error is shown to the user', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
+          title: expect.stringContaining(mockRunnerName),
+          message: mockErrorMsg,
+        });
       });
     });
 
@@ -217,6 +222,10 @@ describe('RunnerDeleteButton', () => {
 
       it('error is shown to the user', () => {
         expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
+          title: expect.stringContaining(mockRunnerName),
+          message: `${mockErrorMsg} ${mockErrorMsg2}`,
+        });
       });
 
       it('does not evict runner from apollo cache', () => {

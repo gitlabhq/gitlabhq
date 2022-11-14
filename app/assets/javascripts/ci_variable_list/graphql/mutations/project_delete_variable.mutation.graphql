@@ -4,13 +4,13 @@ mutation deleteProjectVariable(
   $variable: CiVariable!
   $endpoint: String!
   $fullPath: ID!
-  $projectId: ID!
+  $id: ID!
 ) {
-  deleteProjectVariable(
+  ciVariableMutation: deleteProjectVariable(
     variable: $variable
     endpoint: $endpoint
     fullPath: $fullPath
-    projectId: $projectId
+    id: $id
   ) @client {
     project {
       id

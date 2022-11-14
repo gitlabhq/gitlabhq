@@ -12,6 +12,7 @@ RSpec.describe GitlabSchema.types['BranchRule'] do
       name
       isDefault
       branch_protection
+      matching_branches_count
       created_at
       updated_at
     ]

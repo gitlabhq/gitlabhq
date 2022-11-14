@@ -3,6 +3,7 @@
 module Projects
   module Settings
     class AccessTokensController < Projects::ApplicationController
+      include RenderAccessTokens
       include AccessTokensActions
 
       layout 'project_settings'

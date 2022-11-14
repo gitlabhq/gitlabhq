@@ -2,6 +2,7 @@
 
 class ProjectSetting < ApplicationRecord
   include ::Gitlab::Utils::StrongMemoize
+  include EachBatch
 
   ALLOWED_TARGET_PLATFORMS = %w(ios osx tvos watchos android).freeze
 

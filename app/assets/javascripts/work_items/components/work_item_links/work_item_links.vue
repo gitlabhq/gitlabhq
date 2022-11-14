@@ -89,6 +89,9 @@ export default {
     issuableIteration() {
       return this.parentIssue?.iteration;
     },
+    issuableMilestone() {
+      return this.parentIssue?.milestone;
+    },
     children() {
       return (
         this.workItem?.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
@@ -309,6 +312,7 @@ export default {
           :children-ids="childrenIds"
           :parent-confidential="confidential"
           :parent-iteration="issuableIteration"
+          :parent-milestone="issuableMilestone"
           @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />

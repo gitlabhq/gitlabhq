@@ -24,6 +24,16 @@ FactoryBot.define do
 
     project { pipeline.project }
 
+    trait :with_token do
+      transient do
+        generate_token { true }
+      end
+
+      after(:build) do |build, evaluator|
+        build.ensure_token if evaluator.generate_token
+      end
+    end
+
     trait :degenerated do
       options { nil }
       yaml_variables { nil }
@@ -93,6 +103,7 @@ FactoryBot.define do
     end
 
     trait :pending do
+      with_token
       queued_at { 'Di 29. Okt 09:50:59 CET 2013' }
 
       status { 'pending' }
@@ -100,6 +111,7 @@ FactoryBot.define do
 
     trait :created do
       status { 'created' }
+      generate_token { false }
     end
 
     trait :preparing do

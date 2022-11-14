@@ -96,6 +96,20 @@ describe('HelpPopover', () => {
     });
   });
 
+  describe('with alternative icon', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          icon: 'information-o',
+        },
+      });
+    });
+
+    it('uses the given icon', () => {
+      expect(findQuestionButton().props('icon')).toBe('information-o');
+    });
+  });
+
   describe('with custom slots', () => {
     const titleSlot = '<h1>title</h1>';
     const defaultSlot = '<strong>content</strong>';

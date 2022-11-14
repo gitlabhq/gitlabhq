@@ -2,7 +2,7 @@
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import runnerDeleteMutation from '~/ci/runner/graphql/shared/runner_delete.mutation.graphql';
 import { createAlert } from '~/flash';
-import { sprintf } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { I18N_DELETE_RUNNER, I18N_DELETED_TOAST } from '../constants';
@@ -122,8 +122,11 @@ export default {
     onError(error) {
       this.deleting = false;
       const { message } = error;
+      const title = sprintf(s__('Runner|Runner %{runnerName} failed to delete'), {
+        runnerName: this.runnerName,
+      });
 
-      createAlert({ message });
+      createAlert({ title, message });
       captureException({ error, component: this.$options.name });
     },
   },

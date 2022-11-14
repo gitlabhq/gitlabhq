@@ -40,6 +40,11 @@ export default {
       required: false,
       default: () => {},
     },
+    parentMilestone: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   apollo: {
     workItemTypes: {
@@ -63,6 +68,27 @@ export default {
     };
   },
   computed: {
+    workItemInput() {
+      let workItemInput = {
+        title: this.search?.title || this.search,
+        projectPath: this.projectPath,
+        workItemTypeId: this.taskWorkItemType,
+        hierarchyWidget: {
+          parentId: this.issuableGid,
+        },
+        confidential: this.parentConfidential,
+      };
+
+      if (this.associateMilestone) {
+        workItemInput = {
+          ...workItemInput,
+          milestoneWidget: {
+            milestoneId: this.parentMilestoneId,
+          },
+        };
+      }
+      return workItemInput;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -92,6 +118,12 @@ export default {
     },
     associateIteration() {
       return this.parentIterationId && this.hasIterationsFeature && this.workItemsMvc2Enabled;
+    },
+    parentMilestoneId() {
+      return this.parentMilestone?.id;
+    },
+    associateMilestone() {
+      return this.parentMilestoneId && this.workItemsMvc2Enabled;
     },
   },
   methods: {
@@ -132,15 +164,7 @@ export default {
         .mutate({
           mutation: createWorkItemMutation,
           variables: {
-            input: {
-              title: this.search?.title || this.search,
-              projectPath: this.projectPath,
-              workItemTypeId: this.taskWorkItemType,
-              hierarchyWidget: {
-                parentId: this.issuableGid,
-              },
-              confidential: this.parentConfidential,
-            },
+            input: this.workItemInput,
           },
         })
         .then(({ data }) => {

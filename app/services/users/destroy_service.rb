@@ -8,6 +8,15 @@ module Users
 
     def initialize(current_user)
       @current_user = current_user
+
+      @scheduled_records_gauge = Gitlab::Metrics.gauge(
+        :gitlab_ghost_user_migration_scheduled_records_total,
+        'The total number of scheduled ghost user migrations'
+      )
+      @lag_gauge = Gitlab::Metrics.gauge(
+        :gitlab_ghost_user_migration_lag_seconds,
+        'The waiting time in seconds of the oldest scheduled record for ghost user migration'
+      )
     end
 
     # Asynchronously destroys +user+
@@ -64,6 +73,39 @@ module Users
       Users::GhostUserMigration.create!(user: user,
                                         initiator_user: current_user,
                                         hard_delete: hard_delete)
+
+      update_metrics
+    end
+
+    private
+
+    attr_reader :scheduled_records_gauge, :lag_gauge
+
+    def update_metrics
+      update_scheduled_records_gauge
+      update_lag_gauge
+    end
+
+    def update_scheduled_records_gauge
+      # We do not want to issue unbounded COUNT() queries, hence we limit the
+      # query to count 1001 records and then approximate the result.
+      count = Users::GhostUserMigration.limit(1001).count
+
+      if count == 1001
+        # more than 1000 records, approximate count
+        min = Users::GhostUserMigration.minimum(:id) || 0
+        max = Users::GhostUserMigration.maximum(:id) || 0
+
+        scheduled_records_gauge.set({}, max - min)
+      else
+        # less than 1000 records, count is accurate
+        scheduled_records_gauge.set({}, count)
+      end
+    end
+
+    def update_lag_gauge
+      oldest_job = Users::GhostUserMigration.first
+      lag_gauge.set({}, Time.current - oldest_job.created_at)
     end
   end
 end

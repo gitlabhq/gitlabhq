@@ -93,7 +93,7 @@ describe('WorkItemLinksForm', () => {
   });
 
   it('creates child task in confidential parent', async () => {
-    await createComponent({ parentConfidential: true });
+    await createComponent({ parentConfidential: true, workItemsMvc2Enabled: true });
 
     findInput().vm.$emit('input', 'Create confidential task');
 

@@ -367,28 +367,22 @@ EOF
 }
 
 function verify_deploy() {
-  echoinfo "Verifying deployment at ${CI_ENVIRONMENT_URL}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
+
+  echoinfo "[$(date '+%H:%M:%S')] Verifying deployment at ${CI_ENVIRONMENT_URL}"
 
   if retry "test_url \"${CI_ENVIRONMENT_URL}\""; then
-    echoinfo "Review app is deployed to ${CI_ENVIRONMENT_URL}"
+    echoinfo "[$(date '+%H:%M:%S')] Review app is deployed to ${CI_ENVIRONMENT_URL}"
     return 0
   else
-    echoerr "Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
-    echoerr "State of the pods:"
-    kubectl get pods
+    echoerr "[$(date '+%H:%M:%S')] Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
     return 1
   fi
 }
 
 function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
-  local release="${CI_ENVIRONMENT_SLUG}"
 
-  # Get all pods for this release
-  echoinfo "Pods for release ${release}"
-  kubectl get pods --namespace "${namespace}" -lrelease=${release}
-
-  # Get all non-completed jobs
-  echoinfo "Unsuccessful Jobs for release ${release}"
-  kubectl get jobs --namespace "${namespace}" -lrelease=${release} --field-selector=status.successful!=1
+  echoinfo "Environment debugging data:"
+  kubectl get svc,pods,jobs --namespace "${namespace}"
 }

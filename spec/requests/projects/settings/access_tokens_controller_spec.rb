@@ -6,11 +6,11 @@ RSpec.describe Projects::Settings::AccessTokensController do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:resource) { create(:project, group: group) }
-  let_it_be(:bot_user) { create(:user, :project_bot) }
+  let_it_be(:access_token_user) { create(:user, :project_bot) }
 
   before_all do
     resource.add_maintainer(user)
-    resource.add_maintainer(bot_user)
+    resource.add_maintainer(access_token_user)
   end
 
   before do
@@ -45,6 +45,7 @@ RSpec.describe Projects::Settings::AccessTokensController do
 
     it_behaves_like 'feature unavailable'
     it_behaves_like 'GET resource access tokens available'
+    it_behaves_like 'GET access tokens are paginated and ordered'
   end
 
   describe 'POST /:namespace/:project/-/settings/access_tokens' do
@@ -88,7 +89,7 @@ RSpec.describe Projects::Settings::AccessTokensController do
   end
 
   describe 'PUT /:namespace/:project/-/settings/access_tokens/:id', :sidekiq_inline do
-    let(:resource_access_token) { create(:personal_access_token, user: bot_user) }
+    let(:resource_access_token) { create(:personal_access_token, user: access_token_user) }
 
     subject do
       put revoke_project_settings_access_token_path(resource, resource_access_token)
@@ -100,17 +101,17 @@ RSpec.describe Projects::Settings::AccessTokensController do
   end
 
   describe '#index' do
-    let_it_be(:resource_access_tokens) { create_list(:personal_access_token, 3, user: bot_user) }
+    let_it_be(:resource_access_tokens) { create_list(:personal_access_token, 3, user: access_token_user) }
 
     before do
       get project_settings_access_tokens_path(resource)
     end
 
     it 'includes details of the active project access tokens' do
-      active_resource_access_tokens =
+      active_access_tokens =
         ::ProjectAccessTokenSerializer.new.represent(resource_access_tokens.reverse, project: resource)
 
-      expect(assigns(:active_resource_access_tokens).to_json).to eq(active_resource_access_tokens.to_json)
+      expect(assigns(:active_access_tokens).to_json).to eq(active_access_tokens.to_json)
     end
   end
 end

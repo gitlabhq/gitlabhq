@@ -10,7 +10,7 @@ RSpec.describe Users::DestroyService do
   let(:service)    { described_class.new(admin) }
   let(:gitlab_shell) { Gitlab::Shell.new }
 
-  describe "Deletes a user and all their personal projects", :enable_admin_mode do
+  describe "Initiates user deletion and deletes all their personal projects", :enable_admin_mode do
     context 'no options are given' do
       it 'creates GhostUserMigration record to handle migration in a worker' do
         expect { service.execute(user) }
@@ -161,6 +161,44 @@ RSpec.describe Users::DestroyService do
         expect_any_instance_of(GroupMember).to receive(:run_callbacks).with(:destroy).once
 
         service.execute(user)
+      end
+    end
+
+    describe 'prometheus metrics', :prometheus do
+      context 'scheduled records' do
+        context 'with a single record' do
+          it 'updates the scheduled records gauge' do
+            service.execute(user)
+
+            gauge = Gitlab::Metrics.registry.get(:gitlab_ghost_user_migration_scheduled_records_total)
+            expect(gauge.get).to eq(1)
+          end
+        end
+
+        context 'with approximate count due to large number of records' do
+          it 'updates the scheduled records gauge' do
+            allow(Users::GhostUserMigration)
+              .to(receive_message_chain(:limit, :count).and_return(1001))
+            allow(Users::GhostUserMigration).to(receive(:minimum)).and_return(42)
+            allow(Users::GhostUserMigration).to(receive(:maximum)).and_return(9042)
+
+            service.execute(user)
+
+            gauge = Gitlab::Metrics.registry.get(:gitlab_ghost_user_migration_scheduled_records_total)
+            expect(gauge.get).to eq(9000)
+          end
+        end
+      end
+
+      context 'lag' do
+        it 'update the lag gauge', :freeze_time do
+          create(:ghost_user_migration, created_at: 10.minutes.ago)
+
+          service.execute(user)
+
+          gauge = Gitlab::Metrics.registry.get(:gitlab_ghost_user_migration_lag_seconds)
+          expect(gauge.get).to eq(600)
+        end
       end
     end
   end

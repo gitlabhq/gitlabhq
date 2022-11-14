@@ -160,7 +160,7 @@ For example:
 
 ```ruby
 def initialize
-  name_of_the_future_flag_activated = false
+  name_of_the_feature_flag_activated = false
   ...
 end
 ```

@@ -1,9 +1,27 @@
 import {
+  ADD_MUTATION_ACTION,
+  DELETE_MUTATION_ACTION,
+  UPDATE_MUTATION_ACTION,
   variableTypes,
   groupString,
   instanceString,
   projectString,
 } from '~/ci_variable_list/constants';
+
+import addAdminVariable from '~/ci_variable_list/graphql/mutations/admin_add_variable.mutation.graphql';
+import deleteAdminVariable from '~/ci_variable_list/graphql/mutations/admin_delete_variable.mutation.graphql';
+import updateAdminVariable from '~/ci_variable_list/graphql/mutations/admin_update_variable.mutation.graphql';
+import addGroupVariable from '~/ci_variable_list/graphql/mutations/group_add_variable.mutation.graphql';
+import deleteGroupVariable from '~/ci_variable_list/graphql/mutations/group_delete_variable.mutation.graphql';
+import updateGroupVariable from '~/ci_variable_list/graphql/mutations/group_update_variable.mutation.graphql';
+import addProjectVariable from '~/ci_variable_list/graphql/mutations/project_add_variable.mutation.graphql';
+import deleteProjectVariable from '~/ci_variable_list/graphql/mutations/project_delete_variable.mutation.graphql';
+import updateProjectVariable from '~/ci_variable_list/graphql/mutations/project_update_variable.mutation.graphql';
+
+import getAdminVariables from '~/ci_variable_list/graphql/queries/variables.query.graphql';
+import getGroupVariables from '~/ci_variable_list/graphql/queries/group_variables.query.graphql';
+import getProjectEnvironments from '~/ci_variable_list/graphql/queries/project_environments.query.graphql';
+import getProjectVariables from '~/ci_variable_list/graphql/queries/project_variables.query.graphql';
 
 export const devName = 'dev';
 export const prodName = 'prod';
@@ -117,4 +135,63 @@ export const newVariable = {
   protected: false,
   value: 'devops',
   variableType: variableTypes.variableType,
+};
+
+export const createProjectProps = () => {
+  return {
+    componentName: 'ProjectVariable',
+    fullPath: '/namespace/project/',
+    id: 'gid://gitlab/Project/20',
+    mutationData: {
+      [ADD_MUTATION_ACTION]: addProjectVariable,
+      [UPDATE_MUTATION_ACTION]: updateProjectVariable,
+      [DELETE_MUTATION_ACTION]: deleteProjectVariable,
+    },
+    queryData: {
+      ciVariables: {
+        lookup: (data) => data?.project?.ciVariables,
+        query: getProjectVariables,
+      },
+      environments: {
+        lookup: (data) => data?.project?.environments,
+        query: getProjectEnvironments,
+      },
+    },
+  };
+};
+
+export const createGroupProps = () => {
+  return {
+    componentName: 'GroupVariable',
+    fullPath: '/my-group',
+    id: 'gid://gitlab/Group/20',
+    mutationData: {
+      [ADD_MUTATION_ACTION]: addGroupVariable,
+      [UPDATE_MUTATION_ACTION]: updateGroupVariable,
+      [DELETE_MUTATION_ACTION]: deleteGroupVariable,
+    },
+    queryData: {
+      ciVariables: {
+        lookup: (data) => data?.group?.ciVariables,
+        query: getGroupVariables,
+      },
+    },
+  };
+};
+
+export const createInstanceProps = () => {
+  return {
+    componentName: 'InstanceVariable',
+    mutationData: {
+      [ADD_MUTATION_ACTION]: addAdminVariable,
+      [UPDATE_MUTATION_ACTION]: updateAdminVariable,
+      [DELETE_MUTATION_ACTION]: deleteAdminVariable,
+    },
+    queryData: {
+      ciVariables: {
+        lookup: (data) => data?.ciVariables,
+        query: getAdminVariables,
+      },
+    },
+  };
 };

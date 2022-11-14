@@ -1,7 +1,7 @@
 #import "~/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
 
 mutation addAdminVariable($variable: CiVariable!, $endpoint: String!) {
-  addAdminVariable(variable: $variable, endpoint: $endpoint) @client {
+  ciVariableMutation: addAdminVariable(variable: $variable, endpoint: $endpoint) @client {
     ciVariables {
       nodes {
         ...BaseCiVariable

@@ -603,7 +603,7 @@ module Types
     end
 
     def sast_ci_configuration
-      return unless Ability.allowed?(current_user, :download_code, object)
+      return unless Ability.allowed?(current_user, :read_code, object)
 
       ::Security::CiConfiguration::SastParserService.new(object).configuration
     end

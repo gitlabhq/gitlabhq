@@ -301,11 +301,12 @@ export const workItemResponseFactory = ({
         milestoneWidgetPresent
           ? {
               __typename: 'WorkItemWidgetMilestone',
-              dueDate: null,
-              expired: false,
-              id: 'gid://gitlab/Milestone/30',
-              title: 'v4.0',
               type: 'MILESTONE',
+              milestone: {
+                expired: false,
+                id: 'gid://gitlab/Milestone/30',
+                title: 'v4.0',
+              },
             }
           : { type: 'MOCK TYPE' },
         {
@@ -603,6 +604,25 @@ export const workItemIterationSubscriptionResponse = {
             iid: '95',
             startDate: '2022-06-22',
             title: 'Iteration subcription title',
+          },
+        },
+      ],
+    },
+  },
+};
+
+export const workItemMilestoneSubscriptionResponse = {
+  data: {
+    issuableMilestoneUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetMilestone',
+          type: 'MILESTONE',
+          milestone: {
+            id: 'gid://gitlab/Milestone/1125',
+            expired: false,
+            title: 'Milestone title',
           },
         },
       ],
@@ -1116,7 +1136,7 @@ export const groupIterationsResponseWithNoIterations = {
 };
 
 export const mockMilestoneWidgetResponse = {
-  dueDate: null,
+  state: 'active',
   expired: false,
   id: 'gid://gitlab/Milestone/30',
   title: 'v4.0',

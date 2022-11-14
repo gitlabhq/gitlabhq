@@ -4,7 +4,7 @@ module Types
   class CommitType < BaseObject
     graphql_name 'Commit'
 
-    authorize :download_code
+    authorize :read_code
 
     present_using CommitPresenter
 

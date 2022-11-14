@@ -5,7 +5,7 @@ function retry() {
 
   for i in 2 1; do
     sleep 3s
-    echo "Retrying $i..."
+    echo "[$(date '+%H:%M:%S')] Retrying $i..."
     if eval "$@"; then
       return 0
     fi

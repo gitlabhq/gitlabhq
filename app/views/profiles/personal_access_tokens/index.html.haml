@@ -25,6 +25,6 @@
         scopes: @scopes,
         help_path: help_page_path('user/profile/personal_access_tokens.md', anchor: 'personal-access-token-scopes')
 
-    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_personal_access_tokens.to_json } }
+    #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json } }
 
 #js-tokens-app{ data: { tokens_data: tokens_app_data } }

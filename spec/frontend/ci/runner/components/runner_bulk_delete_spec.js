@@ -72,7 +72,6 @@ describe('RunnerBulkDelete', () => {
 
   afterEach(() => {
     bulkRunnerDeleteHandler.mockReset();
-    wrapper.destroy();
   });
 
   describe('When no runners are checked', () => {
@@ -126,50 +125,61 @@ describe('RunnerBulkDelete', () => {
     let evt;
     let mockHideModal;
 
+    const confirmDeletion = () => {
+      evt = {
+        preventDefault: jest.fn(),
+      };
+      findModal().vm.$emit('primary', evt);
+    };
+
     beforeEach(() => {
       mockCheckedRunnerIds = [mockId1, mockId2];
 
       createComponent();
 
       jest.spyOn(mockState.localMutations, 'clearChecked').mockImplementation(() => {});
-      mockHideModal = jest.spyOn(findModal().vm, 'hide');
+      mockHideModal = jest.spyOn(findModal().vm, 'hide').mockImplementation(() => {});
     });
 
-    describe('when deletion is successful', () => {
+    describe('when deletion is confirmed', () => {
       beforeEach(() => {
-        bulkRunnerDeleteHandler.mockResolvedValue({
-          data: {
-            bulkRunnerDelete: { deletedIds: mockCheckedRunnerIds, errors: [] },
-          },
-        });
-
-        evt = {
-          preventDefault: jest.fn(),
-        };
-        findModal().vm.$emit('primary', evt);
+        confirmDeletion();
       });
 
-      it('has loading state', async () => {
+      it('has loading state', () => {
         expect(findModal().props('actionPrimary').attributes.loading).toBe(true);
         expect(findModal().props('actionCancel').attributes.loading).toBe(true);
-
-        await waitForPromises();
-
-        expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
-        expect(findModal().props('actionCancel').attributes.loading).toBe(false);
       });
 
       it('modal is not prevented from closing', () => {
         expect(evt.preventDefault).toHaveBeenCalledTimes(1);
       });
 
-      it('mutation is called', async () => {
+      it('mutation is called', () => {
         expect(bulkRunnerDeleteHandler).toHaveBeenCalledWith({
           input: { ids: mockCheckedRunnerIds },
         });
       });
+    });
 
-      it('user interface is updated', async () => {
+    describe('when deletion is successful', () => {
+      beforeEach(async () => {
+        bulkRunnerDeleteHandler.mockResolvedValue({
+          data: {
+            bulkRunnerDelete: { deletedIds: mockCheckedRunnerIds, errors: [] },
+          },
+        });
+
+        confirmDeletion();
+        await waitForPromises();
+      });
+
+      it('removes loading state', () => {
+        expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
+        expect(findModal().props('actionCancel').attributes.loading).toBe(false);
+      });
+
+      it('user interface is updated', () => {
         const { evict, gc } = apolloCache;
 
         expect(evict).toHaveBeenCalledTimes(mockCheckedRunnerIds.length);
@@ -183,44 +193,80 @@ describe('RunnerBulkDelete', () => {
         expect(gc).toHaveBeenCalledTimes(1);
       });
 
+      it('emits deletion confirmation', () => {
+        expect(wrapper.emitted('deleted')).toEqual([
+          [{ message: expect.stringContaining(`${mockCheckedRunnerIds.length}`) }],
+        ]);
+      });
+
+      it('modal is hidden', () => {
+        expect(mockHideModal).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when deletion fails partially', () => {
+      beforeEach(async () => {
+        bulkRunnerDeleteHandler.mockResolvedValue({
+          data: {
+            bulkRunnerDelete: {
+              deletedIds: [mockId1], // only one runner could be deleted
+              errors: ['Can only delete up to 1 runners per call. Ignored 1 runner(s).'],
+            },
+          },
+        });
+
+        confirmDeletion();
+        await waitForPromises();
+      });
+
+      it('removes loading state', () => {
+        expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
+        expect(findModal().props('actionCancel').attributes.loading).toBe(false);
+      });
+
+      it('user interface is partially updated', () => {
+        const { evict, gc } = apolloCache;
+
+        expect(evict).toHaveBeenCalledTimes(1);
+        expect(evict).toHaveBeenCalledWith({
+          id: expect.stringContaining(mockId1),
+        });
+
+        expect(gc).toHaveBeenCalledTimes(1);
+      });
+
+      it('emits deletion confirmation', () => {
+        expect(wrapper.emitted('deleted')).toEqual([[{ message: expect.stringContaining('1') }]]);
+      });
+
+      it('alert is called', () => {
+        expect(createAlert).toHaveBeenCalled();
+        expect(createAlert).toHaveBeenCalledWith({
+          message: expect.any(String),
+          captureError: true,
+          error: expect.any(Error),
+        });
+      });
+
       it('modal is hidden', () => {
         expect(mockHideModal).toHaveBeenCalledTimes(1);
       });
     });
 
     describe('when deletion fails', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         bulkRunnerDeleteHandler.mockRejectedValue(new Error('error!'));
 
-        evt = {
-          preventDefault: jest.fn(),
-        };
-        findModal().vm.$emit('primary', evt);
+        confirmDeletion();
+        await waitForPromises();
       });
 
-      it('has loading state', async () => {
-        expect(findModal().props('actionPrimary').attributes.loading).toBe(true);
-        expect(findModal().props('actionCancel').attributes.loading).toBe(true);
-
-        await waitForPromises();
-
+      it('resolves loading state', () => {
         expect(findModal().props('actionPrimary').attributes.loading).toBe(false);
         expect(findModal().props('actionCancel').attributes.loading).toBe(false);
       });
 
-      it('modal is not prevented from closing', () => {
-        expect(evt.preventDefault).toHaveBeenCalledTimes(1);
-      });
-
-      it('mutation is called', () => {
-        expect(bulkRunnerDeleteHandler).toHaveBeenCalledWith({
-          input: { ids: mockCheckedRunnerIds },
-        });
-      });
-
-      it('user interface is not updated', async () => {
-        await waitForPromises();
-
+      it('user interface is not updated', () => {
         const { evict, gc } = apolloCache;
 
         expect(evict).not.toHaveBeenCalled();
@@ -228,15 +274,21 @@ describe('RunnerBulkDelete', () => {
         expect(mockState.localMutations.clearChecked).not.toHaveBeenCalled();
       });
 
-      it('alert is called', async () => {
-        await waitForPromises();
+      it('does not emit deletion confirmation', () => {
+        expect(wrapper.emitted('deleted')).toBeUndefined();
+      });
 
+      it('alert is called', () => {
         expect(createAlert).toHaveBeenCalled();
         expect(createAlert).toHaveBeenCalledWith({
           message: expect.any(String),
           captureError: true,
           error: expect.any(Error),
         });
+      });
+
+      it('modal is hidden', () => {
+        expect(mockHideModal).toHaveBeenCalledTimes(1);
       });
     });
   });

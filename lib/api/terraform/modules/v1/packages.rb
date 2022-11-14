@@ -192,7 +192,7 @@ module API
 
                 desc 'Download specific version of a module' do
                   detail 'Download specific version of a module'
-                  success code: 200, model: File
+                  success File
                   failure [
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not found' }

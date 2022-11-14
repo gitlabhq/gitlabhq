@@ -9942,6 +9942,36 @@ Represents the access level of a relationship between a User and object that it 
 | <a id="accesslevelintegervalue"></a>`integerValue` | [`Int`](#int) | Integer representation of access level. |
 | <a id="accesslevelstringvalue"></a>`stringValue` | [`AccessLevelEnum`](#accesslevelenum) | String representation of access level. |
 
+### `AccessLevelGroup`
+
+Representation of a GitLab group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accesslevelgroupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
+| <a id="accesslevelgroupid"></a>`id` | [`ID!`](#id) | ID of the group. |
+| <a id="accesslevelgroupname"></a>`name` | [`String!`](#string) | Name of the group. |
+| <a id="accesslevelgroupparent"></a>`parent` | [`AccessLevelGroup`](#accesslevelgroup) | Parent group. |
+| <a id="accesslevelgroupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
+
+### `AccessLevelUser`
+
+Representation of a GitLab user.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accessleveluseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="accessleveluserid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="accesslevelusername"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
+| <a id="accessleveluserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
+| <a id="accessleveluserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
+| <a id="accessleveluserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
+| <a id="accessleveluserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
+
 ### `AgentConfiguration`
 
 Configuration details for an Agent.
@@ -10553,6 +10583,7 @@ List of branch rules for a project, grouped by branch name.
 | <a id="branchrulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the branch rule was created. |
 | <a id="branchruleexternalstatuschecks"></a>`externalStatusChecks` | [`ExternalStatusCheckConnection`](#externalstatuscheckconnection) | External status checks configured for this branch rule. (see [Connections](#connections)) |
 | <a id="branchruleisdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Check if this branch rule protects the project's default branch. |
+| <a id="branchrulematchingbranchescount"></a>`matchingBranchesCount` | [`Int!`](#int) | Number of existing branches that match this branch rule. |
 | <a id="branchrulename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
 | <a id="branchruleupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the branch rule was last updated. |
 
@@ -14499,8 +14530,8 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | ---- | ---- | ----------- |
 | <a id="mergeaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
 | <a id="mergeaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
-| <a id="mergeaccesslevelgroup"></a>`group` | [`Group`](#group) | Group associated with this access level. |
-| <a id="mergeaccessleveluser"></a>`user` | [`UserCore`](#usercore) | User associated with this access level. |
+| <a id="mergeaccesslevelgroup"></a>`group` | [`AccessLevelGroup`](#accesslevelgroup) | Group associated with this access level. |
+| <a id="mergeaccessleveluser"></a>`user` | [`AccessLevelUser`](#accessleveluser) | User associated with this access level. |
 
 ### `MergeRequest`
 
@@ -18072,8 +18103,8 @@ Defines which user roles, users, or groups can push to a protected branch.
 | ---- | ---- | ----------- |
 | <a id="pushaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
 | <a id="pushaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
-| <a id="pushaccesslevelgroup"></a>`group` | [`Group`](#group) | Group associated with this access level. |
-| <a id="pushaccessleveluser"></a>`user` | [`UserCore`](#usercore) | User associated with this access level. |
+| <a id="pushaccesslevelgroup"></a>`group` | [`AccessLevelGroup`](#accesslevelgroup) | Group associated with this access level. |
+| <a id="pushaccessleveluser"></a>`user` | [`AccessLevelUser`](#accessleveluser) | User associated with this access level. |
 
 ### `PushRules`
 
@@ -19327,8 +19358,8 @@ Defines which user roles, users, or groups can unprotect a protected branch.
 | ---- | ---- | ----------- |
 | <a id="unprotectaccesslevelaccesslevel"></a>`accessLevel` | [`Int!`](#int) | GitLab::Access level. |
 | <a id="unprotectaccesslevelaccessleveldescription"></a>`accessLevelDescription` | [`String!`](#string) | Human readable representation for this access level. |
-| <a id="unprotectaccesslevelgroup"></a>`group` | [`Group`](#group) | Group associated with this access level. |
-| <a id="unprotectaccessleveluser"></a>`user` | [`UserCore`](#usercore) | User associated with this access level. |
+| <a id="unprotectaccesslevelgroup"></a>`group` | [`AccessLevelGroup`](#accesslevelgroup) | Group associated with this access level. |
+| <a id="unprotectaccessleveluser"></a>`user` | [`AccessLevelUser`](#accessleveluser) | User associated with this access level. |
 
 ### `UploadRegistry`
 

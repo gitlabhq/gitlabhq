@@ -4,13 +4,13 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
   presents ::Release, as: :release
 
   def commit_path
-    return unless release.commit && can_download_code?
+    return unless release.commit && can_read_code?
 
     project_commit_path(project, release.commit.id)
   end
 
   def tag_path
-    return unless can_download_code?
+    return unless can_read_code?
 
     project_tag_path(project, release.tag)
   end
@@ -47,7 +47,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
 
   delegator_override :assets_count
   def assets_count
-    if can_download_code?
+    if can_read_code?
       release.assets_count
     else
       release.assets_count(except: [:sources])
@@ -67,8 +67,8 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
 
   private
 
-  def can_download_code?
-    can?(current_user, :download_code, project)
+  def can_read_code?
+    can?(current_user, :read_code, project)
   end
 
   def params_for_issues_and_mrs(state: 'opened')

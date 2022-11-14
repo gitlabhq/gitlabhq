@@ -72,7 +72,7 @@ You may have connectivity issues due to the following reasons:
   - Check if your GitLab instance has an encrypted connection to `customers.gitlab.com` (with IP addresses 172.64.146.11 and 104.18.41.245) on port 443:
 
    ```shell
-   curl --verbose "telnet://customers.gitlab.com/"
+   curl --verbose "https://customers.gitlab.com/"
    ```
 
   - If the curl command returns a failure, either:

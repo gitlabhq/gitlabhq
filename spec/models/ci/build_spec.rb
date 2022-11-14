@@ -1331,6 +1331,8 @@ RSpec.describe Ci::Build do
     end
 
     context 'hide build token' do
+      let_it_be(:build) { FactoryBot.build(:ci_build, pipeline: pipeline) }
+
       let(:data) { "new #{build.token} data" }
 
       it { is_expected.to match(/^new x+ data$/) }
@@ -3810,6 +3812,26 @@ RSpec.describe Ci::Build do
       expect(build).to receive(:execute_hooks)
 
       build.enqueue
+    end
+
+    it 'assigns the token' do
+      expect { build.enqueue }.to change(build, :token).from(nil).to(an_instance_of(String))
+    end
+
+    context 'with ci_assign_job_token_on_scheduling disabled' do
+      before do
+        stub_feature_flags(ci_assign_job_token_on_scheduling: false)
+      end
+
+      it 'assigns the token on creation' do
+        expect(build.token).to be_present
+      end
+
+      it 'does not change the token when enqueuing' do
+        expect { build.enqueue }.not_to change(build, :token)
+
+        expect(build).to be_pending
+      end
     end
   end
 

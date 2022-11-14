@@ -11,10 +11,10 @@ import {
 import * as Sentry from '@sentry/browser';
 import { debounce } from 'lodash';
 import Tracking from '~/tracking';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
-import localUpdateWorkItemMutation from '../graphql/local_update_work_item.mutation.graphql';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
@@ -33,6 +33,7 @@ export default {
     MILESTONE_FETCH_ERROR: s__(
       'WorkItem|Something went wrong while fetching milestones. Please try again.',
     ),
+    EXPIRED_TEXT: __('(expired)'),
   },
   components: {
     GlFormGroup,
@@ -68,6 +69,15 @@ export default {
       type: String,
       required: true,
     },
+    fetchByIid: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -90,8 +100,13 @@ export default {
     emptyPlaceholder() {
       return this.canUpdate ? this.$options.i18n.MILESTONE_PLACEHOLDER : this.$options.i18n.NONE;
     },
+    expired() {
+      return this.localMilestone?.expired ? ` ${this.$options.i18n.EXPIRED_TEXT}` : '';
+    },
     dropdownText() {
-      return this.localMilestone?.title || this.emptyPlaceholder;
+      return this.localMilestone?.title
+        ? `${this.localMilestone?.title}${this.expired}`
+        : this.emptyPlaceholder;
     },
     isLoadingMilestones() {
       return this.$apollo.queries.milestones.loading;
@@ -104,6 +119,14 @@ export default {
         'gl-text-gray-500!': this.canUpdate && this.isNoMilestone,
         'is-not-focused': !this.isFocused,
       };
+    },
+  },
+  watch: {
+    workItemMilestone: {
+      handler(newVal) {
+        this.localMilestone = newVal;
+      },
+      deep: true,
     },
   },
   created() {
@@ -160,12 +183,13 @@ export default {
       this.updateInProgress = true;
       this.$apollo
         .mutate({
-          mutation: localUpdateWorkItemMutation,
+          mutation: updateWorkItemMutation,
           variables: {
             input: {
               id: this.workItemId,
-              milestone: {
-                milestoneId: this.localMilestone?.id,
+              milestoneWidget: {
+                milestoneId:
+                  this.localMilestone?.id === 'no-milestone-id' ? null : this.localMilestone?.id,
               },
             },
           },
@@ -240,6 +264,7 @@ export default {
           @click="handleMilestoneClick(milestone)"
         >
           {{ milestone.title }}
+          <template v-if="milestone.expired">{{ $options.i18n.EXPIRED_TEXT }}</template>
         </gl-dropdown-item>
       </template>
       <gl-dropdown-text v-else>{{ $options.i18n.NO_MATCHING_RESULTS }}</gl-dropdown-text>

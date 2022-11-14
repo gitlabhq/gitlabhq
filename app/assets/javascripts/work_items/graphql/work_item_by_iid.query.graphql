@@ -6,17 +6,6 @@ query workItemByIid($fullPath: ID!, $iid: String) {
     workItems(iid: $iid) {
       nodes {
         ...WorkItem
-        mockWidgets @client {
-          ... on LocalWorkItemMilestone {
-            type
-            nodes {
-              id
-              title
-              expired
-              dueDate
-            }
-          }
-        }
       }
     }
   }

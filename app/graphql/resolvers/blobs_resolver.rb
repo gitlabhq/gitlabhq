@@ -5,7 +5,7 @@ module Resolvers
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
     type Types::Tree::BlobType.connection_type, null: true
-    authorize :download_code
+    authorize :read_code
     calls_gitaly!
 
     alias_method :repository, :object

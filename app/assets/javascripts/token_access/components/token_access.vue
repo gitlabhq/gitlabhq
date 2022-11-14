@@ -117,7 +117,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createAlert({ message: error });
+        createAlert({ message: error.message });
       }
     },
     async addProject() {
@@ -140,7 +140,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createAlert({ message: error });
+        createAlert({ message: error.message });
       } finally {
         this.clearTargetProjectPath();
         this.getProjects();
@@ -166,7 +166,7 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        createAlert({ message: error });
+        createAlert({ message: error.message });
       } finally {
         this.getProjects();
       }

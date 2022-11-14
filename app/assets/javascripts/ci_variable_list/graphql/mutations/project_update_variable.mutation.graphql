@@ -4,13 +4,13 @@ mutation updateProjectVariable(
   $variable: CiVariable!
   $endpoint: String!
   $fullPath: ID!
-  $projectId: ID!
+  $id: ID!
 ) {
-  updateProjectVariable(
+  ciVariableMutation: updateProjectVariable(
     variable: $variable
     endpoint: $endpoint
     fullPath: $fullPath
-    projectId: $projectId
+    id: $id
   ) @client {
     project {
       id

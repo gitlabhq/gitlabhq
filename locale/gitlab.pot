@@ -1108,6 +1108,11 @@ msgstr ""
 msgid "%{text} is available"
 msgstr ""
 
+msgid "%{thenLabelStart}Then%{thenLabelEnd} Require %{approvalsRequired} approval from %{approverType}%{approvers}"
+msgid_plural "%{thenLabelStart}Then%{thenLabelEnd} Require %{approvalsRequired} approvals from %{approverType}%{approvers}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{timebox_type} does not support burnup charts"
 msgstr ""
 
@@ -18769,6 +18774,9 @@ msgstr ""
 msgid "Go to your projects"
 msgstr ""
 
+msgid "Go to your review requests"
+msgstr ""
+
 msgid "Go to your snippets"
 msgstr ""
 
@@ -34987,6 +34995,9 @@ msgstr ""
 msgid "Runners|An error has occurred fetching instructions"
 msgstr ""
 
+msgid "Runners|An error occurred while deleting. Some runners may not have been deleted."
+msgstr ""
+
 msgid "Runners|An upgrade is available for this runner"
 msgstr ""
 
@@ -35477,6 +35488,9 @@ msgid "Runners|specific"
 msgstr ""
 
 msgid "Runner|Owner"
+msgstr ""
+
+msgid "Runner|Runner %{runnerName} failed to delete"
 msgstr ""
 
 msgid "Running"
@@ -36290,6 +36304,9 @@ msgstr ""
 msgid "SecurityOrchestration|Choose a project"
 msgstr ""
 
+msgid "SecurityOrchestration|Choose approver type"
+msgstr ""
+
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
 msgstr ""
 
@@ -36347,7 +36364,13 @@ msgstr ""
 msgid "SecurityOrchestration|Failed to load vulnerability scanners."
 msgstr ""
 
+msgid "SecurityOrchestration|Groups"
+msgstr ""
+
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
+msgstr ""
+
+msgid "SecurityOrchestration|Individual users"
 msgstr ""
 
 msgid "SecurityOrchestration|Inherited"
@@ -36486,6 +36509,9 @@ msgid "SecurityOrchestration|Select policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Select security project"
+msgstr ""
+
+msgid "SecurityOrchestration|Select users"
 msgstr ""
 
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
@@ -41548,7 +41574,7 @@ msgstr ""
 msgid "This group"
 msgstr ""
 
-msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_adjourned_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
+msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_delayed_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
 msgstr ""
 
 msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."
@@ -48950,6 +48976,9 @@ msgid "must be top-level namespace"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"
+msgstr ""
+
+msgid "must belong to same project of its requirement object."
 msgstr ""
 
 msgid "must belong to same project of the work item."

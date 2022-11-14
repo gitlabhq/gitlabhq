@@ -65,7 +65,7 @@
             = gl_loading_icon(inline: true)
 
       - if issuable_sidebar.dig(:features_available, :health_status)
-        .js-sidebar-health-status-entry-point{ data: sidebar_status_data(issuable_sidebar, @project) }
+        .js-sidebar-health-status-widget-root{ data: sidebar_status_data(issuable_sidebar, @project) }
 
       - if issuable_sidebar.has_key?(:confidential)
         -# haml-lint:disable InlineJavaScript

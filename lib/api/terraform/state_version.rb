@@ -44,7 +44,7 @@ module API
 
           desc 'Get a Terraform state version' do
             detail 'Get a Terraform state version'
-            success code: 200, model: File
+            success File
             failure [
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not found' }
