@@ -502,7 +502,7 @@ For your app, complete the following steps on Casdoor:
    ensure the Casdoor app has the following
    `Redirect URI`: `https://gitlab.example.com/users/auth/openid_connect/callback`.
 
-See the [Casdoor documentation](https://casdoor.org/docs/integration/gitlab) for more details.
+See the [Casdoor documentation](https://casdoor.org/docs/integration/ruby/gitlab) for more details.
 
 Example Omnibus GitLab configuration (file path: `/etc/gitlab/gitlab.rb`):
 

@@ -572,6 +572,9 @@ Settings.cron_jobs['container_registry_migration_observer_worker']['job_class'] 
 Settings.cron_jobs['container_registry_migration_enqueuer_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['container_registry_migration_enqueuer_worker']['cron'] ||= '15,45 */1 * * *'
 Settings.cron_jobs['container_registry_migration_enqueuer_worker']['job_class'] = 'ContainerRegistry::Migration::EnqueuerWorker'
+Settings.cron_jobs['cleanup_container_registry_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['cleanup_container_registry_worker']['cron'] ||= '*/5 * * * *'
+Settings.cron_jobs['cleanup_container_registry_worker']['job_class'] = 'ContainerRegistry::CleanupWorker'
 Settings.cron_jobs['image_ttl_group_policy_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['image_ttl_group_policy_worker']['cron'] ||= '40 0 * * *'
 Settings.cron_jobs['image_ttl_group_policy_worker']['job_class'] = 'DependencyProxy::ImageTtlGroupPolicyWorker'

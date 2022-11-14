@@ -707,6 +707,14 @@ A few things to remember:
 
 ## Troubleshooting issue boards
 
+### `There was a problem fetching users` on group issue board when filtering by Author or Assignee
+
+If you get a banner with `There was a problem fetching users` error when filtering by author or assignee on
+group issue board, make sure that you are added as a member to the current group.
+Non-members do not have permission to list group members when filtering by author or assignee on issue boards.
+
+To fix this error, you should add all of your users to the top-level group with at least the Guest role.
+
 ### Use Rails console to fix issue boards not loading and timing out
 
 If you see issue board not loading and timing out in UI, use Rails console to call the Issue Rebalancing service to fix it:

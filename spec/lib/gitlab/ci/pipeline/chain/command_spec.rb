@@ -409,4 +409,21 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       end
     end
   end
+
+  describe '#observe_pipeline_size' do
+    let(:command) { described_class.new(project: project) }
+
+    let(:pipeline) { instance_double(Ci::Pipeline, total_size: 5, project: project, source: "schedule") }
+
+    it 'logs the pipeline total size to histogram' do
+      histogram = instance_double(Prometheus::Client::Histogram)
+
+      expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_size_histogram)
+        .and_return(histogram)
+      expect(histogram).to receive(:observe)
+        .with({ source: pipeline.source, plan: project.actual_plan_name }, pipeline.total_size)
+
+      command.observe_pipeline_size(pipeline)
+    end
+  end
 end

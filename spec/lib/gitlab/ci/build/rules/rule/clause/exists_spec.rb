@@ -24,24 +24,14 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists do
           allow(context).to receive(:variables_hash).and_return(variables_hash)
         end
 
-        context 'when the ci_variables_rules_exists FF is disabled' do
-          before do
-            stub_feature_flags(ci_variable_expansion_in_rules_exists: false)
-          end
-
-          it { is_expected.to be_falsey }
+        context 'when the context has the specified variables' do
+          it { is_expected.to be_truthy }
         end
 
-        context 'when the ci_variables_rules_exists FF is enabled' do
-          context 'when the context has the specified variables' do
-            it { is_expected.to be_truthy }
-          end
+        context 'when variable expansion does not match' do
+          let(:variables_hash) { {} }
 
-          context 'when variable expansion does not match' do
-            let(:variables_hash) { {} }
-
-            it { is_expected.to be_falsey }
-          end
+          it { is_expected.to be_falsey }
         end
       end
 

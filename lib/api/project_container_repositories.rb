@@ -47,8 +47,12 @@ module API
       end
       delete ':id/registry/repositories/:repository_id', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
+        repository.delete_scheduled!
 
-        DeleteContainerRepositoryWorker.perform_async(current_user.id, repository.id) # rubocop:disable CodeReuse/Worker
+        unless Feature.enabled?(:container_registry_delete_repository_with_cron_worker)
+          DeleteContainerRepositoryWorker.perform_async(current_user.id, repository.id) # rubocop:disable CodeReuse/Worker
+        end
+
         track_package_event('delete_repository', :container, user: current_user, project: user_project, namespace: user_project.namespace)
 
         status :accepted

@@ -56,10 +56,11 @@ RSpec.describe 'Container Registry', :js do
       expect(page).to have_content 'my/image'
     end
 
-    it 'user removes entire container repository', :sidekiq_might_not_need_inline do
+    it 'user removes entire container repository' do
       visit_container_registry
 
-      expect_any_instance_of(ContainerRepository).to receive(:delete_tags!).and_return(true)
+      expect_any_instance_of(ContainerRepository).to receive(:delete_scheduled!).and_call_original
+      expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async)
 
       find('[title="Remove repository"]').click
       expect(find('.modal .modal-title')).to have_content _('Remove repository')

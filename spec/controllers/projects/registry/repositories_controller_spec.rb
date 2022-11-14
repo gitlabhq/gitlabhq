@@ -103,10 +103,11 @@ RSpec.describe Projects::Registry::RepositoriesController do
           stub_container_registry_tags(repository: :any, tags: [])
         end
 
-        it 'schedules a job to delete a repository' do
-          expect(DeleteContainerRepositoryWorker).to receive(:perform_async).with(user.id, repository.id)
+        it 'marks the repository as delete_scheduled' do
+          expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async).with(user.id, repository.id)
 
-          delete_repository(repository)
+          expect { delete_repository(repository) }
+            .to change { repository.reload.status }.from(nil).to('delete_scheduled')
 
           expect(repository.reload).to be_delete_scheduled
           expect(response).to have_gitlab_http_status(:no_content)
@@ -118,6 +119,22 @@ RSpec.describe Projects::Registry::RepositoriesController do
           delete_repository(repository)
 
           expect_snowplow_event(category: anything, action: 'delete_repository')
+        end
+
+        context 'with container_registry_delete_repository_with_cron_worker disabled' do
+          before do
+            stub_feature_flags(container_registry_delete_repository_with_cron_worker: false)
+          end
+
+          it 'schedules a job to delete a repository' do
+            expect(DeleteContainerRepositoryWorker).to receive(:perform_async).with(user.id, repository.id)
+
+            expect { delete_repository(repository) }
+              .to change { repository.reload.status }.from(nil).to('delete_scheduled')
+
+            expect(repository.reload).to be_delete_scheduled
+            expect(response).to have_gitlab_http_status(:no_content)
+          end
         end
       end
     end

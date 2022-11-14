@@ -1,8 +1,0 @@
----
-name: ci_variable_expansion_in_rules_exists
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101639
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381046
-milestone: '15.6'
-type: development
-group: group::pipeline authoring
-default_enabled: false

@@ -70,12 +70,13 @@ export default {
     getInitialItems() {
       return isEmpty(this.initialUrlVariables) ? [{}] : cloneDeep(this.initialUrlVariables);
     },
-    isEditingItem(key) {
+    isEditingItem(index, key) {
       if (isEmpty(this.initialUrlVariables)) {
         return false;
       }
 
-      return this.initialUrlVariables.some((item) => item.key === key);
+      const item = this.initialUrlVariables[index];
+      return item && item.key === key;
     },
     keyInvalidFeedback(key) {
       if (this.isValidated && isEmpty(key)) {
@@ -84,13 +85,17 @@ export default {
 
       return null;
     },
-    valueInvalidFeedback(key, value) {
-      if (this.isEditingItem(key)) {
+    valueInvalidFeedback(index, key, value) {
+      if (this.isEditingItem(index, key)) {
         return null;
       }
 
       if (this.isValidated && isEmpty(value)) {
         return this.$options.i18n.inputRequired;
+      }
+
+      if (!isEmpty(value) && !this.url?.includes(value)) {
+        return this.$options.i18n.valuePartOfUrl;
       }
 
       return null;
@@ -105,7 +110,8 @@ export default {
       if (
         this.maskEnabled &&
         this.items.some(
-          ({ key, value }) => this.keyInvalidFeedback(key) || this.valueInvalidFeedback(key, value),
+          ({ key, value }, index) =>
+            this.keyInvalidFeedback(key) || this.valueInvalidFeedback(index, key, value),
         )
       ) {
         return false;
@@ -145,6 +151,7 @@ export default {
     urlLabel: __('URL'),
     urlPlaceholder: 'http://example.com/trigger-ci.json',
     urlPreview: s__('Webhooks|URL preview'),
+    valuePartOfUrl: s__('Webhooks|Must match part of URL'),
   },
 };
 </script>
@@ -186,9 +193,9 @@ export default {
           :index="index"
           :item-key="key"
           :item-value="value"
-          :is-editing="isEditingItem(key)"
+          :is-editing="isEditingItem(index, key)"
           :key-invalid-feedback="keyInvalidFeedback(key)"
-          :value-invalid-feedback="valueInvalidFeedback(key, value)"
+          :value-invalid-feedback="valueInvalidFeedback(index, key, value)"
           @input="onItemInput"
           @remove="removeItem"
         />

@@ -46,11 +46,7 @@ import ProjectPathIncludeInvalidVariableYaml from './yaml_tests/negative_tests/p
 import ProjectPathIncludeLeadSlashYaml from './yaml_tests/negative_tests/project_path/include/leading_slash.yml';
 import ProjectPathIncludeNoSlashYaml from './yaml_tests/negative_tests/project_path/include/no_slash.yml';
 import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/include/tailing_slash.yml';
-import ProjectPathTriggerIncludeEmptyYaml from './yaml_tests/negative_tests/project_path/trigger/include/empty.yml';
-import ProjectPathTriggerIncludeInvalidVariableYaml from './yaml_tests/negative_tests/project_path/trigger/include/invalid_variable.yml';
-import ProjectPathTriggerIncludeLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/include/leading_slash.yml';
-import ProjectPathTriggerIncludeNoSlashYaml from './yaml_tests/negative_tests/project_path/trigger/include/no_slash.yml';
-import ProjectPathTriggerIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/trigger/include/tailing_slash.yml';
+import ProjectPathTriggerIncludeYaml from './yaml_tests/negative_tests/project_path/trigger/trigger_include.yml';
 import ProjectPathTriggerMinimalEmptyYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/empty.yml';
 import ProjectPathTriggerMinimalInvalidVariableYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/invalid_variable.yml';
 import ProjectPathTriggerMinimalLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/leading_slash.yml';
@@ -80,7 +76,7 @@ const ajv = new Ajv({
 ajv.addKeyword('markdownDescription');
 
 AjvFormats(ajv);
-const schema = ajv.compile(CiSchema);
+const ajvSchema = ajv.compile(CiSchema);
 
 describe('positive tests', () => {
   it.each(
@@ -108,7 +104,11 @@ describe('positive tests', () => {
       ProjectPathYaml,
     }),
   )('schema validates %s', (_, input) => {
-    expect(input).toValidateJsonSchema(schema);
+    // We construct a new "JSON" from each main key that is inside a
+    // file which allow us to make sure each blob is valid.
+    Object.keys(input).forEach((key) => {
+      expect({ [key]: input[key] }).toValidateJsonSchema(ajvSchema);
+    });
   });
 });
 
@@ -145,11 +145,7 @@ describe('negative tests', () => {
       ProjectPathIncludeLeadSlashYaml,
       ProjectPathIncludeNoSlashYaml,
       ProjectPathIncludeTailSlashYaml,
-      ProjectPathTriggerIncludeEmptyYaml,
-      ProjectPathTriggerIncludeInvalidVariableYaml,
-      ProjectPathTriggerIncludeLeadSlashYaml,
-      ProjectPathTriggerIncludeNoSlashYaml,
-      ProjectPathTriggerIncludeTailSlashYaml,
+      ProjectPathTriggerIncludeYaml,
       ProjectPathTriggerMinimalEmptyYaml,
       ProjectPathTriggerMinimalInvalidVariableYaml,
       ProjectPathTriggerMinimalLeadSlashYaml,
@@ -162,6 +158,10 @@ describe('negative tests', () => {
       ProjectPathTriggerProjectTailSlashYaml,
     }),
   )('schema validates %s', (_, input) => {
-    expect(input).not.toValidateJsonSchema(schema);
+    // We construct a new "JSON" from each main key that is inside a
+    // file which allow us to make sure each blob is invalid.
+    Object.keys(input).forEach((key) => {
+      expect({ [key]: input[key] }).not.toValidateJsonSchema(ajvSchema);
+    });
   });
 });

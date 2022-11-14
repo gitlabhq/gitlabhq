@@ -1,0 +1,29 @@
+trigger-include-empty:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: ''
+
+trigger-include-invalid:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'slug#'
+
+trigger-include-leading-slash:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: '/slug'
+
+trigger-include-no-slash:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'slug'
+
+trigger-include-trailing-slash:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'slug/'

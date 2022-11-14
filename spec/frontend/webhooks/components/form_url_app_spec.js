@@ -190,16 +190,17 @@ describe('FormUrlApp', () => {
       });
 
       it.each`
-        key      | value      | keyInvalidFeedback   | valueInvalidFeedback | scrollToElementCalls
-        ${null}  | ${null}    | ${inputRequiredText} | ${inputRequiredText} | ${1}
-        ${null}  | ${'value'} | ${inputRequiredText} | ${null}              | ${1}
-        ${'key'} | ${null}    | ${null}              | ${inputRequiredText} | ${1}
-        ${'key'} | ${'value'} | ${null}              | ${null}              | ${0}
+        key      | value       | keyInvalidFeedback   | valueInvalidFeedback              | scrollToElementCalls
+        ${null}  | ${null}     | ${inputRequiredText} | ${inputRequiredText}              | ${1}
+        ${null}  | ${'random'} | ${inputRequiredText} | ${FormUrlApp.i18n.valuePartOfUrl} | ${1}
+        ${null}  | ${'secret'} | ${inputRequiredText} | ${null}                           | ${1}
+        ${'key'} | ${null}     | ${null}              | ${inputRequiredText}              | ${1}
+        ${'key'} | ${'secret'} | ${null}              | ${null}                           | ${0}
       `(
         'when key is `$key` and value is `$value`',
         async ({ key, value, keyInvalidFeedback, valueInvalidFeedback, scrollToElementCalls }) => {
           createComponent({
-            props: { initialUrl: 'url' },
+            props: { initialUrl: 'http://example.com?password=secret' },
           });
           findRadioGroup().vm.$emit('input', true);
           await nextTick();

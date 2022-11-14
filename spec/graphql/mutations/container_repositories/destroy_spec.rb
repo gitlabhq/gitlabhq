@@ -20,11 +20,10 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
     end
 
     shared_examples 'destroying the container repository' do
-      it 'destroys the container repistory' do
+      it 'marks the repository as delete_scheduled' do
         expect(::Packages::CreateEventService)
           .to receive(:new).with(nil, user, event_name: :delete_repository, scope: :container).and_call_original
-        expect(DeleteContainerRepositoryWorker)
-          .to receive(:perform_async).with(user.id, container_repository.id)
+        expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async)
 
         expect { subject }.to change { ::Packages::Event.count }.by(1)
         expect(container_repository.reload.delete_scheduled?).to be true
@@ -55,6 +54,23 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
         end
 
         it_behaves_like params[:shared_examples_name]
+      end
+
+      context 'with container_registry_delete_repository_with_cron_worker disabled' do
+        before do
+          project.add_maintainer(user)
+          stub_feature_flags(container_registry_delete_repository_with_cron_worker: false)
+        end
+
+        it 'enqueues a removal job' do
+          expect(::Packages::CreateEventService)
+            .to receive(:new).with(nil, user, event_name: :delete_repository, scope: :container).and_call_original
+          expect(DeleteContainerRepositoryWorker)
+            .to receive(:perform_async).with(user.id, container_repository.id)
+
+          expect { subject }.to change { ::Packages::Event.count }.by(1)
+          expect(container_repository.reload.delete_scheduled?).to be true
+        end
       end
     end
   end

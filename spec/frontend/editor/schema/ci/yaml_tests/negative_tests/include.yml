@@ -1,6 +1,3 @@
-stages:
-  - prepare
-
 # invalid trigger:include
 trigger missing file property:
   stage: prepare

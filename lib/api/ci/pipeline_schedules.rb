@@ -11,16 +11,24 @@ module API
       urgency :low
 
       params do
-        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
+                      documentation: { example: 18 }
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get all pipeline schedules' do
-          success Entities::Ci::PipelineSchedule
+          success code: 200, model: Entities::Ci::PipelineSchedule
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
         end
         params do
           use :pagination
           optional :scope,    type: String, values: %w[active inactive],
-                              desc: 'The scope of pipeline schedules'
+                              desc: 'The scope of pipeline schedules',
+                              documentation: { example: 'active' }
         end
         # rubocop: disable CodeReuse/ActiveRecord
         get ':id/pipeline_schedules' do
@@ -33,34 +41,51 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Get a single pipeline schedule' do
-          success Entities::Ci::PipelineScheduleDetails
+          success code: 200, model: Entities::Ci::PipelineScheduleDetails
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
         get ':id/pipeline_schedules/:pipeline_schedule_id' do
           present pipeline_schedule, with: Entities::Ci::PipelineScheduleDetails, user: current_user
         end
 
         desc 'Get all pipelines triggered from a pipeline schedule' do
-          success Entities::Ci::PipelineBasic
+          success code: 200, model: Entities::Ci::PipelineBasic
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule ID'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule ID', documentation: { example: 13 }
         end
         get ':id/pipeline_schedules/:pipeline_schedule_id/pipelines' do
           present paginate(pipeline_schedule.pipelines), with: Entities::Ci::PipelineBasic
         end
 
         desc 'Create a new pipeline schedule' do
-          success Entities::Ci::PipelineScheduleDetails
+          success code: 201, model: Entities::Ci::PipelineScheduleDetails
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :description, type: String, desc: 'The description of pipeline schedule'
-          requires :ref, type: String, desc: 'The branch/tag name will be triggered', allow_blank: false
-          requires :cron, type: String, desc: 'The cron'
-          optional :cron_timezone, type: String, default: 'UTC', desc: 'The timezone'
-          optional :active, type: Boolean, default: true, desc: 'The activation of pipeline schedule'
+          requires :description, type: String, desc: 'The description of pipeline schedule', documentation: { example: 'Test schedule pipeline' }
+          requires :ref, type: String, desc: 'The branch/tag name will be triggered', allow_blank: false, documentation: { example: 'develop' }
+          requires :cron, type: String, desc: 'The cron', documentation: { example: '* * * * *' }
+          optional :cron_timezone, type: String, default: 'UTC', desc: 'The timezone', documentation: { example: 'Asia/Tokyo' }
+          optional :active, type: Boolean, default: true, desc: 'The activation of pipeline schedule', documentation: { example: true }
         end
         post ':id/pipeline_schedules' do
           authorize! :create_pipeline_schedule, user_project
@@ -77,15 +102,21 @@ module API
         end
 
         desc 'Edit a pipeline schedule' do
-          success Entities::Ci::PipelineScheduleDetails
+          success code: 200, model: Entities::Ci::PipelineScheduleDetails
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
-          optional :description, type: String, desc: 'The description of pipeline schedule'
-          optional :ref, type: String, desc: 'The branch/tag name will be triggered'
-          optional :cron, type: String, desc: 'The cron'
-          optional :cron_timezone, type: String, desc: 'The timezone'
-          optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
+          requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id', documentation: { example: 13 }
+          optional :description, type: String, desc: 'The description of pipeline schedule', documentation: { example: 'Test schedule pipeline' }
+          optional :ref, type: String, desc: 'The branch/tag name will be triggered', documentation: { example: 'develop' }
+          optional :cron, type: String, desc: 'The cron', documentation: { example: '* * * * *' }
+          optional :cron_timezone, type: String, desc: 'The timezone', documentation: { example: 'Asia/Tokyo' }
+          optional :active, type: Boolean, desc: 'The activation of pipeline schedule', documentation: { example: true }
         end
         put ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :update_pipeline_schedule, pipeline_schedule
@@ -98,10 +129,16 @@ module API
         end
 
         desc 'Take ownership of a pipeline schedule' do
-          success Entities::Ci::PipelineScheduleDetails
+          success code: 201, model: Entities::Ci::PipelineScheduleDetails
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
         post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
           authorize! :take_ownership_pipeline_schedule, pipeline_schedule
@@ -114,10 +151,16 @@ module API
         end
 
         desc 'Delete a pipeline schedule' do
-          success Entities::Ci::PipelineScheduleDetails
+          success code: 204
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 412, message: 'Precondition Failed' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
         delete ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :admin_pipeline_schedule, pipeline_schedule
@@ -127,9 +170,15 @@ module API
 
         desc 'Play a scheduled pipeline immediately' do
           detail 'This feature was added in GitLab 12.8'
+          success code: 201
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
         end
         post ':id/pipeline_schedules/:pipeline_schedule_id/play' do
           authorize! :play_pipeline_schedule, pipeline_schedule
@@ -145,13 +194,20 @@ module API
         end
 
         desc 'Create a new pipeline schedule variable' do
-          success Entities::Ci::Variable
+          success code: 201, model: Entities::Ci::Variable
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
-          requires :key, type: String, desc: 'The key of the variable'
-          requires :value, type: String, desc: 'The value of the variable'
-          optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
+          requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
+          requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'new value' }
+          optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var',
+                                   documentation: { default: 'env_var' }
         end
         post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
           authorize! :update_pipeline_schedule, pipeline_schedule
@@ -166,13 +222,20 @@ module API
         end
 
         desc 'Edit a pipeline schedule variable' do
-          success Entities::Ci::Variable
+          success code: 200, model: Entities::Ci::Variable
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
-          requires :key, type: String, desc: 'The key of the variable'
-          optional :value, type: String, desc: 'The value of the variable'
-          optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
+          requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
+          optional :value, type: String, desc: 'The value of the variable', documentation: { example: 'new value' }
+          optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file',
+                                   documentation: { default: 'env_var' }
         end
         put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
           authorize! :update_pipeline_schedule, pipeline_schedule
@@ -185,11 +248,16 @@ module API
         end
 
         desc 'Delete a pipeline schedule variable' do
-          success Entities::Ci::Variable
+          success code: 202, model: Entities::Ci::Variable
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
-          requires :key, type: String, desc: 'The key of the variable'
+          requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id', documentation: { example: 13 }
+          requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
         end
         delete ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
           authorize! :admin_pipeline_schedule, pipeline_schedule

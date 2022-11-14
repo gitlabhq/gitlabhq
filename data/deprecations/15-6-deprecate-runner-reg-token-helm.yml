@@ -8,7 +8,12 @@
   stage: Verify # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381111 # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated. GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/). As part of the new architecture, we plan to introduce a single runner authentication token, `runnerToken`, and a unique system ID saved to the `config.toml` to allow traceability between jobs and runners.
-    We plan to introduce a new method of binding a GitLab Runner to a GitLab instance in GitLab 15.8. This will be the only supported method starting in GitLab 16.0.
+    The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
+
+    As part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/), in GitLab 15.8 we plan to introduce:
+
+    - A new method to bind runners to a GitLab instance.
+    - A unique system ID saved to the `config.toml`, which will ensure traceability between jobs and runners.
+    From GitLab 16.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
   end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   end_of_support_date: "2023-05-22" # (optional) The date of the milestone release when support for this feature will end.

@@ -135,7 +135,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         execute_service
 
         expect(histogram).to have_received(:observe)
-          .with({ source: 'push' }, 5)
+          .with({ source: 'push', plan: project.actual_plan_name }, 5)
       end
 
       it 'tracks included template usage' do

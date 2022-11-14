@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Sequence do
       subject.build!
 
       expect(histogram).to have_received(:observe)
-        .with({ source: 'push' }, 0)
+        .with({ source: 'push', plan: project.actual_plan_name }, 0)
     end
 
     describe 'active jobs by pipeline plan histogram' do

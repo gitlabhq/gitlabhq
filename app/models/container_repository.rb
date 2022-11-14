@@ -70,6 +70,7 @@ class ContainerRepository < ApplicationRecord
   scope :with_migration_pre_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_started_at, '01-01-1970') < ?", timestamp) }
   scope :with_migration_pre_import_done_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_done_at, '01-01-1970') < ?", timestamp) }
   scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.where('expiration_policy_started_at < ?', threshold) }
+  scope :with_stale_delete_at, ->(threshold) { where('delete_started_at < ?', threshold) }
   scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
 
   scope :recently_done_migration_step, -> do

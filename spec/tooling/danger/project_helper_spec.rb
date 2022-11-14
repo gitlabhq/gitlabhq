@@ -33,6 +33,12 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     where(:path, :expected_categories) do
       'glfm_specification/example_snapshots/prosemirror_json.yml' | [:frontend]
       'glfm_specification/input/glfm_anything.yml' | [:frontend, :backend]
+
+      'doc/api/graphql/reference/index.md'               | [:docs, :backend]
+      'doc/api/graphql/reference/some_other_file.txt'    | [:docs, :backend]
+      'doc/api/openapi/openapi.yaml'                     | [:docs, :backend]
+      'doc/api/openapi/any_other_file.yaml'              | [:docs, :backend]
+
       'usage_data.rb'   | [:database, :backend, :product_intelligence]
       'doc/foo.md'      | [:docs]
       'CONTRIBUTING.md' | [:docs]
@@ -249,11 +255,6 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
       'app/views/layouts/header/_default.html.haml' | [:frontend, :backend]
       'app/views/layouts/header/_default.html.erb'  | [:frontend, :backend]
-
-      'doc/api/graphql/reference/index.md'               | [:docs]
-      'doc/api/graphql/reference/some_other_file.txt'    | [:backend]
-      'doc/api/openapi/openapi.yaml'                     | [:backend]
-      'doc/api/openapi/any_other_file.yaml'              | [:backend]
     end
 
     with_them do

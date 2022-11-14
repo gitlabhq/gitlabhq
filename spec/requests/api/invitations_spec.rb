@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Invitations do
   let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
+  let_it_be(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
   let_it_be(:developer) { create(:user) }
   let_it_be(:access_requester) { create(:user) }
   let_it_be(:stranger) { create(:user) }
@@ -31,8 +32,8 @@ RSpec.describe API::Invitations do
     api("/#{source.model_name.plural}/#{source.id}/invitations", user)
   end
 
-  def invite_member_by_email(source, source_type, email, created_by)
-    create(:"#{source_type}_member", invite_token: '123', invite_email: email, source: source, user: nil, created_by: created_by)
+  def invite_member_by_email(source, source_type, email, created_by, access_level: :developer)
+    create(:"#{source_type}_member", access_level, invite_token: '123', invite_email: email, source: source, user: nil, created_by: created_by)
   end
 
   shared_examples 'POST /:source_type/:id/invitations' do |source_type|
@@ -44,15 +45,42 @@ RSpec.describe API::Invitations do
         end
       end
 
-      context 'when authenticated as a non-member or member with insufficient rights' do
-        %i[access_requester stranger developer].each do |type|
-          context "as a #{type}" do
-            it 'returns 403' do
-              user = public_send(type)
+      context 'when authenticated as a non-member or member with insufficient membership management rights' do
+        context 'when the user does not have rights to manage members' do
+          %i[access_requester stranger developer].each do |type|
+            context "as a #{type}" do
+              it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+                let(:route) do
+                  post invitations_url(source, public_send(type)),
+                       params: { email: email, access_level: Member::MAINTAINER }
+                end
+              end
+            end
+          end
+        end
 
-              post invitations_url(source, user), params: { email: email, access_level: Member::MAINTAINER }
+        context 'when the user has the rights to manage members but tries to manage members with a higher access level' do
+          let(:maintainer) { maintainer2 }
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+          before do
+            source.add_maintainer(maintainer)
+          end
+
+          context 'when an invitee is added as OWNER' do
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                post invitations_url(source, maintainer),
+                     params: { email: email, access_level: Member::OWNER }
+              end
+            end
+          end
+
+          context 'when an access_requester is added as OWNER' do
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                post invitations_url(source, maintainer),
+                     params: { user_id: access_requester.email, access_level: Member::OWNER }
+              end
             end
           end
         end
@@ -503,14 +531,12 @@ RSpec.describe API::Invitations do
         end
       end
 
-      %i[developer access_requester stranger].each do |type|
-        context "when authenticated as a #{type}" do
-          it 'returns 403' do
-            user = public_send(type)
-
-            get invitations_url(source, user)
-
-            expect(response).to have_gitlab_http_status(:forbidden)
+      %i[access_requester stranger developer].each do |type|
+        context "as a #{type}" do
+          it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+            let(:route) do
+              get invitations_url(source, public_send(type))
+            end
           end
         end
       end
@@ -581,14 +607,14 @@ RSpec.describe API::Invitations do
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
-        %i[access_requester stranger].each do |type|
-          context "as a #{type}" do
-            it 'returns 403' do
-              user = public_send(type)
-
-              delete invite_api(source, user, invite.invite_email)
-
-              expect(response).to have_gitlab_http_status(:forbidden)
+        context 'when the user does not have rights to manage members' do
+          %i[access_requester stranger].each do |type|
+            context "as a #{type}" do
+              it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+                let(:route) do
+                  delete invite_api(source, public_send(type), invite.invite_email)
+                end
+              end
             end
           end
         end
@@ -611,6 +637,23 @@ RSpec.describe API::Invitations do
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.members.count }.by(-1)
+        end
+
+        context 'when MAINTAINER tries to remove invitation of an OWNER' do
+          let_it_be(:maintainer) { maintainer2 }
+          let!(:owner_invite) do
+            invite_member_by_email(source, source_type, 'owner@owner.com', developer, access_level: :owner)
+          end
+
+          before do
+            source.add_maintainer(maintainer)
+          end
+
+          it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+            let(:route) do
+              delete invite_api(source, maintainer, owner_invite.invite_email)
+            end
+          end
         end
       end
 
@@ -659,14 +702,15 @@ RSpec.describe API::Invitations do
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
-        %i[access_requester stranger].each do |type|
-          context "as a #{type}" do
-            it 'returns 403' do
-              user = public_send(type)
-
-              put update_api(source, user, invite.invite_email), params: { access_level: Member::MAINTAINER }
-
-              expect(response).to have_gitlab_http_status(:forbidden)
+        context 'when the user does not have rights to manage members' do
+          %i[access_requester stranger].each do |type|
+            context "as a #{type}" do
+              it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+                let(:route) do
+                  put update_api(source, public_send(type), invite.invite_email),
+                    params: { access_level: Member::MAINTAINER }
+                end
+              end
             end
           end
         end
@@ -680,6 +724,21 @@ RSpec.describe API::Invitations do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['access_level']).to eq(Member::MAINTAINER)
             expect(invite.reload.access_level).to eq(Member::MAINTAINER)
+          end
+
+          context 'MAINTAINER tries to update access level to OWNER' do
+            let_it_be(:maintainer) { maintainer2 }
+
+            before do
+              source.add_maintainer(maintainer)
+            end
+
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                put update_api(source, maintainer, invite.invite_email),
+                  params: { access_level: Member::OWNER }
+              end
+            end
           end
         end
 

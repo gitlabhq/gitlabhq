@@ -346,22 +346,23 @@ EOF
 if [ -n "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
-  --set global.gitlab.license.secret="shared-gitlab-license"
+    --set global.gitlab.license.secret="shared-gitlab-license"
 EOF
 )
 fi
 
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
-  --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
-  -f "${base_config_file}" \
-  -v "${HELM_LOG_VERBOSITY:-1}" \
-  "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
+    --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
+    -f "${base_config_file}" \
+    -v "${HELM_LOG_VERBOSITY:-1}" \
+    "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
 EOF
 )
 
+  # Pretty-print the command for display
   echoinfo "Deploying with:"
-  echoinfo "${HELM_CMD}"
+  echo "${HELM_CMD}" | sed 's/    /\n\t/g'
 
   run_timed_command "eval \"${HELM_CMD}\""
 }

@@ -11,11 +11,13 @@
     The `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
     This endpoint and method [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
     with a GitLab instance at the instance, group, or project level through the API. We plan to remove this endpoint
-    and method in GitLab 16.0, and introduce a new
-    [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8.
-    This new architecture introduces a new method for registering runners and eliminates the legacy
+    and method in GitLab 16.0.
+
+    In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
+    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+    This new architecture introduces a new method for registering runners and will eliminate the legacy
     [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-    We plan to introduce a new method of binding a GitLab Runner to a GitLab instance in GitLab 15.8. This will be the only supported method starting in GitLab 16.0.
+    From GitLab 16.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
   end_of_support_milestone: "16.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   end_of_support_date: "2023-05-22" # (optional) The date of the milestone release when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]

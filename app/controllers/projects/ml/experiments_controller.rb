@@ -25,7 +25,7 @@ module Projects
       private
 
       def check_feature_flag
-        render_404 unless Feature.enabled?(:ml_experiment_tracking)
+        render_404 unless Feature.enabled?(:ml_experiment_tracking, @project)
       end
     end
   end

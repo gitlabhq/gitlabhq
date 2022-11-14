@@ -28,6 +28,13 @@ The reviewer can:
 - Give you a second opinion on the chosen solution and implementation.
 - Help look for bugs, logic problems, or uncovered edge cases.
 
+If the merge request is trivial (for example, fixing a typo or a tiny refactor that doesn't change the behavior or any data),
+you can skip the reviewer step and directly ask a [maintainer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
+Otherwise, a merge request should always be first reviewed by a reviewer in each
+[category (e.g. backend, database)](#approval-guidelines)
+the MR touches, as maintainers may not have the relevant domain knowledge, and
+also to spread the workload.
+
 For assistance with security scans or comments, include the Application Security Team (`@gitlab-com/gl-security/appsec`).
 
 The reviewers use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.

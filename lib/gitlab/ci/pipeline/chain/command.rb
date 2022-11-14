@@ -117,7 +117,7 @@ module Gitlab
             logger.observe(:pipeline_size_count, pipeline.total_size)
 
             metrics.pipeline_size_histogram
-              .observe({ source: pipeline.source.to_s }, pipeline.total_size)
+              .observe({ source: pipeline.source.to_s, plan: project.actual_plan_name }, pipeline.total_size)
           end
 
           def observe_jobs_count_in_alive_pipelines

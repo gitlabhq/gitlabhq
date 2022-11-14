@@ -319,6 +319,10 @@ Rails/SkipsModelValidations:
 Rails/HasManyOrHasOneDependent:
   Enabled: false
 
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94019#note_1139714728
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+
 # GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:

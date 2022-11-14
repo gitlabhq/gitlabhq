@@ -7,18 +7,12 @@ export default {
   components: {
     GlModal,
   },
-  computed: {
-    primaryProps() {
-      return {
-        text: __('Reset'),
-        attributes: [{ variant: 'danger' }, { category: 'primary' }],
-      };
-    },
-    cancelProps() {
-      return {
-        text: __('Cancel'),
-      };
-    },
+  primaryProps: {
+    text: __('Reset'),
+    attributes: [{ variant: 'danger' }, { category: 'primary' }],
+  },
+  cancelProps: {
+    text: __('Cancel'),
   },
   methods: {
     onReset() {
@@ -33,8 +27,8 @@ export default {
     modal-id="confirmResetIntegration"
     size="sm"
     :title="s__('Integrations|Reset integration?')"
-    :action-primary="primaryProps"
-    :action-cancel="cancelProps"
+    :action-primary="$options.primaryProps"
+    :action-cancel="$options.cancelProps"
     @primary="onReset"
   >
     <p>

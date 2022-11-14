@@ -21,7 +21,7 @@ module API
             module_version: SEMVER_REGEX
           }.freeze
 
-          feature_category :infrastructure_as_code
+          feature_category :package_registry
           urgency :low
 
           after_validation do

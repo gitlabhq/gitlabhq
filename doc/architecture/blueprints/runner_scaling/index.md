@@ -209,7 +209,7 @@ easier to understand how it performs.
 
 ## Details
 
-How the abstraction for the custom provider will look exactly is something that
+How the abstraction will look exactly is something that
 we will need to prototype, PoC and decide in a data-informed way. There are a
 few proposals that we should describe in detail, develop requirements for, PoC
 and score. We will choose the solution that seems to support our goals the
@@ -255,6 +255,10 @@ them each separately.
   various pre-defined stages and results and trace information returned
   to the Runner system. These details are highly dependent on the VM
   architecture and operating system as well as Executor type.
+
+See also Glossary below.
+
+#### Current state
 
 The current architecture has several points of coupling between concerns.
 Coupling reduces opportunities for abstraction (e.g. community supported
@@ -390,7 +394,7 @@ for by the plugin.
 
 Rationale: [Description of the Custom Executor Provider proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28848#note_823321515)
 
-### Fleeting VM provider
+### Taskscaler provider
 
 We can introduce a more simple version of the `Machine` abstraction in the
 form of a "Fleeting" interface. Fleeting provides a low-level interface to
@@ -410,6 +414,22 @@ component so it can be used by multiple Runner Executors (not just `docker+autos
 
 Rationale: [Description of the InstanceGroup / Fleeting proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28848#note_823430883)
 POC: [Merge request](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3315)
+
+## Glossary
+
+- **[GitLab Runner](../../../development/documentation/styleguide/word_list.md#gitlab-runner)** - the software application that you can choose to install and manage, whose source code is hosted at `gitlab.com/gitlab-org/gitlab-runner`.
+- **[runners](../../../development/documentation/styleguide/word_list.md#runner-runners)** - the runner is the agent that's responsible for running GitLab CI/CD jobs in an environment and reporting the results to a GitLab instance. It /1/ retrieves jobs from GitLab, /2/ configures a local or remote build environment, and /3/ executes jobs within the provisioned environment, passing along log data and status updates to GitLab.
+- **runner manager** - the runner process is often referred to as the `Runner Manager` as it manages multiple runners, which are the `[[runners]]` workers defined in the runners `config.toml` file.
+- **executor** - a concrete environment which can be prepared and used to run a job. A new executor is created for each job.
+- **executor provider** - an implementation capable of providing executors on demand. Executor providers are registered on import and initialized once when a runner starts up.
+- **custom executor** - works as an interface between GitLab Runner and a set of binaries or shell scripts with environment variable inputs that enable executing CI jobs in any host computing environment. New custom executors can be added to the system without making any changes to the GitLab Runner codebase.
+- **custom executor provider** - a new abstraction, proposed under the custom provider heading in the plugin boundary proposal section above, which allows new executor providers to be created without modifying the GitLab Runner codebase. The protocol could be similar to custom executors or done over gRPC. This abstraction places all the mechanics of producing executors within the plugin, delegating autoscaling and lifecycle management concerns to each implementation.
+- **taskscaler** - a new library, proposed under the taskscaler provider heading in the plugin boundary proposal section above, which is parameterized with a concrete executor provider and a fleeting provider. Taskscaler is responsible for the autoscaling concern and can be used to autoscale any executor provider using any VM shape. Taskscaler is also responsible for the runner-specific aspect of VM lifecycle and keeps track of how many jobs are using a give VM and how many times a VM has been used.
+- **fleeting** - a new library proposed along with taskscaler which provides abstractions for cloud provider VMs.
+- **fleeting instance group** - the abstraction that fleeting uses to represent a pool of like VMs. This would represent a GCP IGM or an AWS ASG (without the autoscaling). Instance groups can be increased, decreased or can provide connection details for a specific VM.
+- **fleeting plugin** - a concrete implementation of a fleeting instance group representing a specific IGM or ASG (when initialized). There will be N of these, one for each provider, each in its own project. We will own and maintain the core ones but some will be community supported. A new fleeting plugin can be created without making any changes to the runner, taskscaler or fleeting code bases. This makes it analogous to the custom executor provider in terms of self-service and decoupling, but along a different line of concerns.
+- **fleeting plugin Google Compute** - the fleeting plugin which creates GCP instances. This lives in a separate project from the fleeting and taskscaler.
+- **fleeting plugin AWS** - the fleeting plugin which creates AWS instances. This lives in a separate project from the fleeting and taskscaler.
 
 ## Status
 

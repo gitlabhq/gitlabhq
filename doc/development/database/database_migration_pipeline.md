@@ -22,7 +22,9 @@ For security reasons, access to the pipeline is restricted to database maintaine
 
 When the pipeline starts, a bot notifies you with a comment in the merge request.
 When it finishes, the comment gets updated with the test results.
-There are three sections which are described below.
+
+The comment contains testing information for both the `main` and `ci` databases.
+Each database tested has four sections which are described below.
 
 ## Summary
 
@@ -44,12 +46,23 @@ The next section of the comment contains detailed information for each migration
 | Queries           | Every query executed during the migration, along with the number of calls, timings, and the number of the changed rows. |
 | Runtime histogram | Indicates the distribution of query times for the migration.                                                            |
 
+## Background Migration Details
+
+The next section of the comment contains detailed information about each batched background migration, including:
+
+| Result                       | Description                                                                                                                                                                                                |
+|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Sampling Information         | The number of batches sampled during this test run. Sampled batches are chosen uniformly across the table's ID range. Sampling runs for 30 minutes, split evenly across each background migration to test. |
+| Aggregated Query Information | Aggregate data about each query executed across all the sampled batches, along with the number of calls, timings, and the number of changed rows.                                                          |
+| Batch runtime histogram      | A histogram of timings for each sampled batch from the background migration.                                                                                                                               |
+| Query runtime histogram      | A histogram of timings for all queries executed in any batch of this background migration.                                                                                                                 |
+
 ## Clone details and artifacts
 
 Some additional information is included at the bottom of the comment:
 
-| Result                           | Description                                                                                                                                                                                                                                                     |
-|----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Migrations pending on GitLab.com | A summary of migrations not deployed yet to GitLab.com. This information is useful when testing a migration that was merged but not deployed yet.                                                                                                                      |
-| Clone details                    | A link to the `Postgres.ai` thin clone created for this testing pipeline, along with information about its expiry. This can be used to further explore the results of running the migration. Only accessible by database maintainers or with an access request. |
-| Artifacts                        | A link to the pipeline's artifacts. Full query logs for each migration (ending in `.log`) are available there and only accessible by database maintainers or with an access request.                                                                            |
+| Result                           | Description                                                                                                                                                                                                                                                                   |
+|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Migrations pending on GitLab.com | A summary of migrations not deployed yet to GitLab.com. This information is useful when testing a migration that was merged but not deployed yet.                                                                                                                             |
+| Clone details                    | A link to the `Postgres.ai` thin clone created for this testing pipeline, along with information about its expiry. This can be used to further explore the results of running the migration. Only accessible by database maintainers or with an access request.               |
+| Artifacts                        | A link to the pipeline's artifacts. Full query logs for each migration (ending in `.log`) are available there and only accessible by database maintainers or with an access request. Details of the specific batched background migration batches sampled are also available. |

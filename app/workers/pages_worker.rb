@@ -11,7 +11,7 @@ class PagesWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :cpu
 
   def perform(action, *arg)
-    send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
+    deploy(*arg) if action == 'deploy'
   end
 
   def deploy(build_id)

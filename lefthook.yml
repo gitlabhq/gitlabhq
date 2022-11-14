@@ -79,3 +79,7 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'data/removals/*.yml'
       run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals
+    secrets-detection:
+      tags: secrets
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      run: 'if command -v ripsecrets > /dev/null 2>&1; then ripsecrets --strict-ignore {files}; else echo "WARNING: ripsecrets is not installed. Please install it."; fi'

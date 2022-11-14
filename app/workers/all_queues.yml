@@ -291,6 +291,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:container_registry_cleanup
+  :worker_name: ContainerRegistry::CleanupWorker
+  :feature_category: :container_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:container_registry_migration_enqueuer
   :worker_name: ContainerRegistry::Migration::EnqueuerWorker
   :feature_category: :container_registry

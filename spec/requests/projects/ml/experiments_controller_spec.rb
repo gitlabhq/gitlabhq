@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Ml::ExperimentsController do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { project.first_owner }
-  let_it_be(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
+  let_it_be(:project_with_feature) { create(:project, :repository) }
+  let_it_be(:user) { project_with_feature.first_owner }
+  let_it_be(:project_without_feature) do
+    create(:project, :repository).tap { |p| p.add_developer(user) }
+  end
+
   let_it_be(:experiment) do
-    create(:ml_experiments, project: project, user: user).tap do |e|
+    create(:ml_experiments, project: project_with_feature, user: user).tap do |e|
       create(:ml_candidates, experiment: e, user: user)
     end
   end
@@ -15,9 +18,12 @@ RSpec.describe Projects::Ml::ExperimentsController do
   let(:params) { basic_params }
   let(:ff_value) { true }
   let(:threshold) { 4 }
+  let(:project) { project_with_feature }
+  let(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
 
   before do
-    stub_feature_flags(ml_experiment_tracking: ff_value)
+    stub_feature_flags(ml_experiment_tracking: false)
+    stub_feature_flags(ml_experiment_tracking: project_with_feature) if ff_value
 
     sign_in(user)
   end
@@ -47,6 +53,14 @@ RSpec.describe Projects::Ml::ExperimentsController do
       create_list(:ml_experiments, 2, project: project, user: user)
 
       expect { list_experiments }.not_to exceed_all_query_limit(control_count).with_threshold(threshold)
+    end
+
+    context 'when :ml_experiment_tracking is disabled for the project' do
+      let(:project) { project_without_feature }
+
+      it 'responds with a 404' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
     it_behaves_like '404 if feature flag disabled'

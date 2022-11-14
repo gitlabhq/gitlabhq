@@ -23,12 +23,8 @@ module Gitlab
         private
 
         def separate_globs(context)
-          if ::Feature.enabled?(:ci_variable_expansion_in_rules_exists, context.project)
-            expanded_globs = expand_globs(context)
-            expanded_globs.partition(&method(:exact_glob?))
-          else
-            @globs.partition(&method(:exact_glob?))
-          end
+          expanded_globs = expand_globs(context)
+          expanded_globs.partition(&method(:exact_glob?))
         end
 
         def expand_globs(context)
