@@ -42,21 +42,15 @@ RSpec.describe GroupsController, factory_default: :keep do
     end
   end
 
-  shared_examples 'details view' do
-    let(:namespace) { group }
+  shared_examples 'details view as atom' do
+    let!(:event) { create(:event, project: project) }
+    let(:format) { :atom }
 
     it { is_expected.to render_template('groups/show') }
 
-    context 'as atom' do
-      let!(:event) { create(:event, project: project) }
-      let(:format) { :atom }
-
-      it { is_expected.to render_template('groups/show') }
-
-      it 'assigns events for all the projects in the group', :sidekiq_might_not_need_inline do
-        subject
-        expect(assigns(:events).map(&:id)).to contain_exactly(event.id)
-      end
+    it 'assigns events for all the projects in the group' do
+      subject
+      expect(assigns(:events).map(&:id)).to contain_exactly(event.id)
     end
   end
 
@@ -70,7 +64,9 @@ RSpec.describe GroupsController, factory_default: :keep do
     subject { get :show, params: { id: group.to_param }, format: format }
 
     context 'when the group is not importing' do
-      it_behaves_like 'details view'
+      it { is_expected.to render_template('groups/show') }
+
+      it_behaves_like 'details view as atom'
 
       it 'tracks page views', :snowplow do
         subject
@@ -115,7 +111,9 @@ RSpec.describe GroupsController, factory_default: :keep do
 
     subject { get :details, params: { id: group.to_param }, format: format }
 
-    it_behaves_like 'details view'
+    it { is_expected.to redirect_to(group_path(group)) }
+
+    it_behaves_like 'details view as atom'
   end
 
   describe 'GET edit' do

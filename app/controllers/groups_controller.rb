@@ -112,7 +112,7 @@ class GroupsController < Groups::ApplicationController
   def details
     respond_to do |format|
       format.html do
-        render_details_html
+        redirect_to group_path(group)
       end
 
       format.atom do
@@ -234,10 +234,6 @@ class GroupsController < Groups::ApplicationController
     Gitlab::Tracking.event('group_overview', 'render', user: current_user, namespace: @group)
 
     render 'groups/show', locals: { trial: params[:trial] }
-  end
-
-  def render_details_html
-    render 'groups/show'
   end
 
   def render_details_view_atom
