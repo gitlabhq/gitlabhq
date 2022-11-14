@@ -286,7 +286,7 @@ class Member < ApplicationRecord
     refresh_member_authorized_projects(blocking: false)
   end
 
-  default_value_for :notification_level, NotificationSetting.levels[:global]
+  attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
 
   class << self
     def search(query)

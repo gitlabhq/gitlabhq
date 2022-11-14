@@ -125,6 +125,32 @@ RSpec.describe Gitlab::Ci::Reports::Security::Reports do
 
         it { is_expected.to be(false) }
       end
+
+      context 'when target_reports is not nil and reports is empty' do
+        let(:without_reports) { described_class.new(pipeline) }
+
+        subject { without_reports.violates_default_policy_against?(target_reports, vulnerabilities_allowed, severity_levels, vulnerability_states) }
+
+        before do
+          target_reports.get_report('sast', artifact).add_finding(high_severity_dast)
+        end
+
+        context 'when require_approval_on_scan_removal feature is enabled' do
+          before do
+            stub_feature_flags(require_approval_on_scan_removal: true)
+          end
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'when require_approval_on_scan_removal feature is disabled' do
+          before do
+            stub_feature_flags(require_approval_on_scan_removal: false)
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
     end
   end
 end

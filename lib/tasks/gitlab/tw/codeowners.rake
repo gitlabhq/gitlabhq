@@ -67,6 +67,7 @@ namespace :tw do
       CodeOwnerRule.new('Release', '@rdickenson'),
       CodeOwnerRule.new('Respond', '@msedlakjakubowski'),
       CodeOwnerRule.new('Runner', '@fneill'),
+      CodeOwnerRule.new('Runner SaaS', '@fneill'),
       CodeOwnerRule.new('Pods', '@jglassman1'),
       CodeOwnerRule.new('Security Policies', '@claytoncornell'),
       CodeOwnerRule.new('Source Code', '@aqualls'),

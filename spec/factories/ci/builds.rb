@@ -303,14 +303,11 @@ FactoryBot.define do
         # Build deployment/environment relations if environment name is set
         # to the job. If `build.deployment` has already been set, it doesn't
         # build a new instance.
-        environment = Gitlab::Ci::Pipeline::Seed::Environment.new(build).to_resource
+        Environments::CreateForBuildService.new.execute(build)
+      end
 
-        build.assign_attributes(
-          deployment: Gitlab::Ci::Pipeline::Seed::Deployment.new(build, environment).to_resource,
-          metadata_attributes: {
-            expanded_environment_name: environment.name
-          }
-        )
+      after(:create) do |build, evaluator|
+        Deployments::CreateForBuildService.new.execute(build)
       end
     end
 

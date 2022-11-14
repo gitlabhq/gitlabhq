@@ -3,9 +3,7 @@
 class NotificationSetting < ApplicationRecord
   include FromUnion
 
-  enum level: { global: 3, watch: 2, participating: 1, mention: 4, disabled: 0, custom: 5 }
-
-  default_value_for :level, NotificationSetting.levels[:global]
+  enum level: { global: 3, watch: 2, participating: 1, mention: 4, disabled: 0, custom: 5 }, _default: :global
 
   belongs_to :user
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations

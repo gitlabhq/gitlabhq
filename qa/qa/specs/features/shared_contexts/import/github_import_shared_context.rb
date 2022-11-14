@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_context "with github import", :github, :skip_live_env, :requires_admin do
+  RSpec.shared_context "with github import", :github, :skip_live_env, :requires_admin, quarantine: {
+    type: :broken,
+    issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/382166"
+  } do
     let!(:api_client) { Runtime::API::Client.as_admin }
 
     let!(:group) do

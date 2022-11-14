@@ -647,6 +647,7 @@ project:
 - build_artifacts_size_refresh
 - project_callouts
 - pipeline_metadata
+- disable_download_button
 award_emoji:
 - awardable
 - user

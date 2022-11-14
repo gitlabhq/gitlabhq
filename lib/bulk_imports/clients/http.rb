@@ -56,8 +56,15 @@ module BulkImports
 
       def instance_version
         strong_memoize(:instance_version) do
-          response = with_error_handling do
-            Gitlab::HTTP.get(resource_url(:version), default_options)
+          response = begin
+            with_error_handling do
+              Gitlab::HTTP.get(resource_url(:version), default_options)
+            end
+          rescue BulkImports::NetworkError
+            # `version` endpoint is not available, try `metadata` endpoint instead
+            with_error_handling do
+              Gitlab::HTTP.get(resource_url(:metadata), default_options)
+            end
           end
 
           Gitlab::VersionInfo.parse(response.parsed_response['version'])

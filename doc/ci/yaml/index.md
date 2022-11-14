@@ -4255,7 +4255,7 @@ variables:
 - A global variable defined with `value` but no `description` behaves the same as
   [`variables`](#variables).
 
-### `variables:expand`
+#### `variables:expand`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
 

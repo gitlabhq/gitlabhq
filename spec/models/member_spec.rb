@@ -7,6 +7,12 @@ RSpec.describe Member do
 
   using RSpec::Parameterized::TableSyntax
 
+  describe 'default values' do
+    subject(:member) { build(:project_member) }
+
+    it { expect(member.notification_level).to eq(NotificationSetting.levels[:global]) }
+  end
+
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:member_namespace) }
