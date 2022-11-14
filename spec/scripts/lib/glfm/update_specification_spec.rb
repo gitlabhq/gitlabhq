@@ -300,7 +300,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
       expected_spec_html = <<~RENDERED_HTML
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-yaml" lang="yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
+        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
         <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
         <copy-code></copy-code>
         </div>
@@ -319,7 +319,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
       expected_snapshot_spec_html = <<~RENDERED_HTML
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-yaml" lang="yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
+        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
         <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
         <copy-code></copy-code>
         </div>
@@ -328,21 +328,21 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
         <h2 data-sourcepos="7:1-7:22" dir="auto">
         <a id="user-content-emphasis-and-strong" class="anchor" href="#emphasis-and-strong" aria-hidden="true"></a>Emphasis and Strong</h2>
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="9:1-12:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">_EMPHASIS LINE 1_</span>
+        <pre data-sourcepos="9:1-12:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">_EMPHASIS LINE 1_</span>
         <span id="LC2" class="line" lang="plaintext">_EMPHASIS LINE 2_</span></code></pre>
         <copy-code></copy-code>
         </div>
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="14:1-17:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;em&gt;EMPHASIS LINE 1&lt;/em&gt;</span>
+        <pre data-sourcepos="14:1-17:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;em&gt;EMPHASIS LINE 1&lt;/em&gt;</span>
         <span id="LC2" class="line" lang="plaintext">&lt;em&gt;EMPHASIS LINE 2&lt;/em&gt;&lt;/p&gt;</span></code></pre>
         <copy-code></copy-code>
         </div>
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="19:1-21:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">__STRONG!__</span></code></pre>
+        <pre data-sourcepos="19:1-21:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">__STRONG!__</span></code></pre>
         <copy-code></copy-code>
         </div>
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="23:1-25:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;strong&gt;STRONG!&lt;/strong&gt;&lt;/p&gt;</span></code></pre>
+        <pre data-sourcepos="23:1-25:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;strong&gt;STRONG!&lt;/strong&gt;&lt;/p&gt;</span></code></pre>
         <copy-code></copy-code>
         </div>
         <p data-sourcepos="27:1-27:36" dir="auto">End of last GitHub examples section.</p>

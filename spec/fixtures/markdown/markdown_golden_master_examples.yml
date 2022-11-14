@@ -297,7 +297,7 @@
     ```
   html: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-javascript" lang="javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" lang="javascript" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
     <copy-code></copy-code>
     </div>
 
@@ -308,7 +308,7 @@
     ```
   html: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  plaintext</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  plaintext</span></code></pre>
     <copy-code></copy-code>
     </div>
 
@@ -319,7 +319,7 @@
     ```
   html: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="foobar" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  custom_language = &gt;&gt; this &lt;&lt;</span></code></pre>
+    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="foobar" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  custom_language = &gt;&gt; this &lt;&lt;</span></code></pre>
     <copy-code></copy-code>
     </div>
 
@@ -531,7 +531,7 @@
     ;;;
   html: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-5:3" class="code highlight js-syntax-highlight language-json" lang="json" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="json"><span class="p">{</span></span>
+    <pre data-sourcepos="1:1-5:3" lang="json" class="code highlight js-syntax-highlight language-json" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="json"><span class="p">{</span></span>
     <span id="LC2" class="line" lang="json"><span class="w">  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Page title"</span></span>
     <span id="LC3" class="line" lang="json"><span class="p">}</span></span></code></pre>
     <copy-code></copy-code>
@@ -544,7 +544,7 @@
     +++
   html: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-toml" lang="toml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="toml"><span class="py">title</span> <span class="p">=</span> <span class="s">"Page title"</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" lang="toml" class="code highlight js-syntax-highlight language-toml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="toml"><span class="py">title</span> <span class="p">=</span> <span class="s">"Page title"</span></span></code></pre>
     <copy-code></copy-code>
     </div>
 
@@ -555,7 +555,7 @@
     ---
   html: |-
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-yaml" lang="yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">Page title</span></span></code></pre>
+    <pre data-sourcepos="1:1-3:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">Page title</span></span></code></pre>
     <copy-code></copy-code>
     </div>
 
@@ -690,7 +690,7 @@
     <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code class="code math js-render-math" data-math-style="inline">a^2+b^2=c^2</code>.</p>
     <p data-sourcepos="3:1-3:27" dir="auto">This is on a separate line:</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
-    <pre data-sourcepos="5:1-7:3" class="code highlight js-syntax-highlight language-math js-render-math" lang="math" v-pre="true" data-math-style="display"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>
+    <pre data-sourcepos="5:1-7:3" lang="math" data-math-style="display" class="js-render-math code highlight js-syntax-highlight language-math" v-pre="true"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>
     <copy-code></copy-code>
     </div>
 

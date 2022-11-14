@@ -568,6 +568,11 @@ $ide-commit-header-height: 48px;
       text-decoration: line-through;
     }
   }
+
+  .gl-form-radio,
+  .gl-form-checkbox {
+    color: var(--ide-text-color, $gl-text-color);
+  }
 }
 
 .ide-sidebar-link {

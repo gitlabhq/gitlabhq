@@ -1,5 +1,5 @@
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-yaml" lang="yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
+<pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
 <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
 <copy-code></copy-code>
 </div>
@@ -20,13 +20,13 @@ examples may be split into multiple top-level headings in the future.</p>
 <p data-sourcepos="22:1-23:143" dir="auto">See
 <a href="https://docs.gitlab.com/ee/user/markdown.html#footnotes" rel="nofollow noreferrer noopener" target="_blank">the footnotes section of the user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="25:1-29:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">footnote reference tag [^fortytwo]</span>
+<pre data-sourcepos="25:1-29:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">footnote reference tag [^fortytwo]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">[^fortytwo]: footnote text</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="31:1-51:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;</span>
+<pre data-sourcepos="31:1-51:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;</span>
 <span id="LC2" class="line" lang="plaintext">footnote reference tag</span>
 <span id="LC3" class="line" lang="plaintext">&lt;sup&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref&gt;</span>
@@ -59,11 +59,11 @@ GitLab Flavored Markdown specification.</p>
 <p data-sourcepos="65:1-65:80" dir="auto">The following are some basic examples; more examples may be added in the future.</p>
 <p data-sourcepos="67:1-67:16" dir="auto">Incomplete task:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="69:1-71:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [ ] incomplete</span></code></pre>
+<pre data-sourcepos="69:1-71:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [ ] incomplete</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="73:1-81:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="73:1-81:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;task-button/&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;input type="checkbox" disabled/&gt;</span>
@@ -74,11 +74,11 @@ GitLab Flavored Markdown specification.</p>
 </div>
 <p data-sourcepos="83:1-83:15" dir="auto">Completed task:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="85:1-87:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [x] completed</span></code></pre>
+<pre data-sourcepos="85:1-87:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [x] completed</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="89:1-97:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="89:1-97:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;task-button/&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;input type="checkbox" checked disabled/&gt;</span>
@@ -89,11 +89,11 @@ GitLab Flavored Markdown specification.</p>
 </div>
 <p data-sourcepos="99:1-99:18" dir="auto">Inapplicable task:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="101:1-103:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span></code></pre>
+<pre data-sourcepos="101:1-103:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="105:1-115:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="105:1-115:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;task-button/&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;input type="checkbox" data-inapplicable disabled&gt;</span>
@@ -107,13 +107,13 @@ GitLab Flavored Markdown specification.</p>
 <p data-sourcepos="117:1-118:50" dir="auto">Inapplicable task in a "loose" list. Note that the <code>&lt;del&gt;</code> tag is not applied to the
 loose text; it has strikethrough applied with CSS.</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="120:1-124:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span>
+<pre data-sourcepos="120:1-124:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">- [~] inapplicable</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">  text in loose list</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="126:1-141:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
+<pre data-sourcepos="126:1-141:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;ul&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;li&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;p&gt;</span>
 <span id="LC4" class="line" lang="plaintext">&lt;task-button/&gt;</span>
@@ -137,13 +137,13 @@ loose text; it has strikethrough applied with CSS.</p>
 This data can be used by static site generators like Jekyll, Hugo, and many other applications.</p>
 <p data-sourcepos="151:1-151:18" dir="auto">YAML front matter:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="153:1-157:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span>
+<pre data-sourcepos="153:1-157:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">---</span>
 <span id="LC2" class="line" lang="plaintext">title: YAML front matter</span>
 <span id="LC3" class="line" lang="plaintext">---</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="159:1-165:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
+<pre data-sourcepos="159:1-165:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;code&gt;</span>
 <span id="LC3" class="line" lang="plaintext">title: YAML front matter</span>
 <span id="LC4" class="line" lang="plaintext">&lt;/code&gt;</span>
@@ -152,13 +152,13 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 </div>
 <p data-sourcepos="167:1-167:18" dir="auto">TOML front matter:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="169:1-173:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+++</span>
+<pre data-sourcepos="169:1-173:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">+++</span>
 <span id="LC2" class="line" lang="plaintext">title: TOML front matter</span>
 <span id="LC3" class="line" lang="plaintext">+++</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="175:1-181:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
+<pre data-sourcepos="175:1-181:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;code&gt;</span>
 <span id="LC3" class="line" lang="plaintext">title: TOML front matter</span>
 <span id="LC4" class="line" lang="plaintext">&lt;/code&gt;</span>
@@ -167,7 +167,7 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 </div>
 <p data-sourcepos="183:1-183:18" dir="auto">JSON front matter:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="185:1-191:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">;;;</span>
+<pre data-sourcepos="185:1-191:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">;;;</span>
 <span id="LC2" class="line" lang="plaintext">{</span>
 <span id="LC3" class="line" lang="plaintext">  "title": "JSON front matter"</span>
 <span id="LC4" class="line" lang="plaintext">}</span>
@@ -175,7 +175,7 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="193:1-201:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
+<pre data-sourcepos="193:1-201:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;pre&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;code&gt;</span>
 <span id="LC3" class="line" lang="plaintext">{</span>
 <span id="LC4" class="line" lang="plaintext">  "title": "JSON front matter"</span>
@@ -186,7 +186,7 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 </div>
 <p data-sourcepos="203:1-203:66" dir="auto">Front matter blocks should be inserted at the top of the document:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="205:1-211:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">text</span>
+<pre data-sourcepos="205:1-211:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">text</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext">---</span>
 <span id="LC4" class="line" lang="plaintext">title: YAML front matter</span>
@@ -194,20 +194,20 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="213:1-217:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;text&lt;/p&gt;</span>
+<pre data-sourcepos="213:1-217:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;text&lt;/p&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;hr&gt;</span>
 <span id="LC3" class="line" lang="plaintext">&lt;h2&gt;title: YAML front matter&lt;/h2&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 <p data-sourcepos="219:1-219:74" dir="auto">Front matter block delimiters shouldn’t be preceded by space characters:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="221:1-225:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> ---</span>
+<pre data-sourcepos="221:1-225:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext"> ---</span>
 <span id="LC2" class="line" lang="plaintext">title: YAML front matter</span>
 <span id="LC3" class="line" lang="plaintext">---</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="227:1-230:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;hr&gt;</span>
+<pre data-sourcepos="227:1-230:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;hr&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;h2&gt;title: YAML front matter&lt;/h2&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
@@ -229,7 +229,7 @@ Add either the <code>[[_TOC_]]</code> or </p><ul class="section-nav">
 </li>
 </ul> tag on its own line.
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="241:1-247:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[TOC]</span>
+<pre data-sourcepos="241:1-247:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[TOC]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext"># Heading 1</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -237,7 +237,7 @@ Add either the <code>[[_TOC_]]</code> or </p><ul class="section-nav">
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="249:1-260:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
+<pre data-sourcepos="249:1-260:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
 <span id="LC2" class="line" lang="plaintext">  &lt;ul&gt;</span>
 <span id="LC3" class="line" lang="plaintext">    &lt;li&gt;&lt;a href="#heading-1"&gt;Heading 1&lt;/a&gt;&lt;/li&gt;</span>
 <span id="LC4" class="line" lang="plaintext">    &lt;ul&gt;</span>
@@ -250,7 +250,7 @@ Add either the <code>[[_TOC_]]</code> or </p><ul class="section-nav">
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="262:1-268:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
+<pre data-sourcepos="262:1-268:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext"># Heading 1</span>
 <span id="LC4" class="line" lang="plaintext"></span>
@@ -258,7 +258,7 @@ Add either the <code>[[_TOC_]]</code> or </p><ul class="section-nav">
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="270:1-281:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
+<pre data-sourcepos="270:1-281:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
 <span id="LC2" class="line" lang="plaintext">  &lt;ul&gt;</span>
 <span id="LC3" class="line" lang="plaintext">    &lt;li&gt;&lt;a href="#heading-1"&gt;Heading 1&lt;/a&gt;&lt;/li&gt;</span>
 <span id="LC4" class="line" lang="plaintext">    &lt;ul&gt;</span>
@@ -273,7 +273,7 @@ Add either the <code>[[_TOC_]]</code> or </p><ul class="section-nav">
 <p data-sourcepos="283:1-284:5" dir="auto">A table of contents is a block element. It should preceded and followed by a blank
 line.</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="286:1-292:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
+<pre data-sourcepos="286:1-292:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">[[_TOC_]]</span>
 <span id="LC2" class="line" lang="plaintext">text</span>
 <span id="LC3" class="line" lang="plaintext"></span>
 <span id="LC4" class="line" lang="plaintext">text</span>
@@ -281,19 +281,19 @@ line.</p>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="294:1-297:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;[[&lt;em&gt;TOC&lt;/em&gt;]]text&lt;/p&gt;</span>
+<pre data-sourcepos="294:1-297:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;[[&lt;em&gt;TOC&lt;/em&gt;]]text&lt;/p&gt;</span>
 <span id="LC2" class="line" lang="plaintext">&lt;p&gt;text[TOC]&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 <p data-sourcepos="299:1-299:60" dir="auto">A table of contents can be indented with up to three spaces.</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="301:1-305:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">   [[_TOC_]]</span>
+<pre data-sourcepos="301:1-305:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">   [[_TOC_]]</span>
 <span id="LC2" class="line" lang="plaintext"></span>
 <span id="LC3" class="line" lang="plaintext"># Heading 1</span></code></pre>
 <copy-code></copy-code>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="307:1-314:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
+<pre data-sourcepos="307:1-314:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;nav&gt;</span>
 <span id="LC2" class="line" lang="plaintext">  &lt;ul&gt;</span>
 <span id="LC3" class="line" lang="plaintext">    &lt;li&gt;&lt;a href="#heading-1"&gt;Heading 1&lt;/a&gt;&lt;/li&gt;</span>
 <span id="LC4" class="line" lang="plaintext">  &lt;/ul&gt;</span>

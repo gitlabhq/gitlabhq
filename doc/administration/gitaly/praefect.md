@@ -595,11 +595,7 @@ Updates to example must be made at:
    }
    ```
 
-   NOTE:
-   In [GitLab 13.8 and earlier](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4988),
-   Gitaly nodes were configured directly under the virtual storage, and not under the `nodes` key.
-
-1. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2013) in GitLab 13.1 and later, enable [distribution of reads](index.md#distributed-reads).
+1. Enable [distribution of reads](index.md#distributed-reads).
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
    [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
@@ -651,8 +647,6 @@ Updates to example must be made at:
    again before trying the `sql-ping` command.
 
 #### Enable TLS support
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1698) in GitLab 13.2.
 
 Praefect supports TLS encryption. To communicate with a Praefect instance that listens
 for secure connections, you must:
@@ -1380,7 +1374,8 @@ We recommend using [repository-specific primary nodes](#repository-specific-prim
 
 ### Repository-specific primary nodes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3492) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3492) in GitLab 13.12, with primary elections run when Praefect starts or the cluster's consensus of a Gitaly node's health changes.
+> - [Changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3543) in GitLab 14.1, primary elections are run lazily.
 
 Gitaly Cluster supports electing repository-specific primary Gitaly nodes. Repository-specific
 Gitaly primary nodes are enabled in `/etc/gitlab/gitlab.rb` by setting
@@ -1397,14 +1392,8 @@ The `per_repository` election strategy solves this problem by electing a primary
 repository. Combined with [configurable replication factors](#configure-replication-factor), you can
 horizontally scale storage capacity and distribute write load across Gitaly nodes.
 
-Primary elections are run:
-
-- In GitLab 14.1 and later, lazily. This means that Praefect doesn't immediately elect
-  a new primary node if the current one is unhealthy. A new primary is elected if it is
-  necessary to serve a request while the current primary is unavailable.
-- In GitLab 13.12 to GitLab 14.0 when:
-  - Praefect starts up.
-  - The cluster's consensus of a Gitaly node's health changes.
+Primary elections are run lazily. Praefect doesn't immediately elect a new primary node if the current
+one is unhealthy. A new primary is elected if a request must be served while the current primary is unavailable.
 
 A valid primary node candidate is a Gitaly node that:
 
@@ -1433,9 +1422,9 @@ To migrate existing clusters:
 
 1. Praefect nodes didn't historically keep database records of every repository stored on the cluster. When
    the `per_repository` election strategy is configured, Praefect expects to have database records of
-   each repository. A [background database migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749) is
-   included in GitLab 13.6 and later to create any missing database records for repositories. Before migrating,
-   check Praefect's logs to verify that the database migration ran.
+   each repository. A [background database migration](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2749)
+   creates any missing database records for repositories. Before migrating, check Praefect's logs to verify
+   that the database migration ran.
 
    Check Praefect's logs for `repository importer finished` message. The `virtual_storages` field contains
    the names of virtual storages and whether they've had any missing database records created.

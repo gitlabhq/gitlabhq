@@ -546,6 +546,7 @@ relicensing
 remediations
 renderers
 replicables
+rpcs
 repmgr
 repmgrd
 repurposing

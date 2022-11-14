@@ -57,21 +57,6 @@ The process for setting up Gitaly on its own server is:
 1. [Configure Gitaly clients](#configure-gitaly-clients).
 1. [Disable Gitaly where not required](#disable-gitaly-where-not-required-optional) (optional).
 
-When running Gitaly on its own server, note the following regarding GitLab versions:
-
-- From GitLab 11.4, Gitaly was able to serve all Git requests without requiring a shared NFS mount
-  for Git repository data, except for the
-  [Elasticsearch indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
-- From GitLab 11.8, the Elasticsearch indexer also uses Gitaly for data access. NFS can still be
-  leveraged for redundancy on block-level Git data, but should be mounted only on the Gitaly
-  servers.
-- From GitLab 11.8 to 12.2, it is possible to use Elasticsearch in a Gitaly setup that doesn't use
-  NFS. To use Elasticsearch in these versions, the
-  [repository indexer](../../integration/advanced_search/elasticsearch.md#elasticsearch-repository-indexer)
-  must be enabled in your GitLab configuration.
-- [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/6481), the new indexer is
-  the default and no configuration is required.
-
 ### Network architecture
 
 The following list depicts the network architecture of Gitaly:

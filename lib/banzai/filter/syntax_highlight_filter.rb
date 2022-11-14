@@ -14,8 +14,9 @@ module Banzai
 
       LANG_PARAMS_DELIMITER = ':'
       LANG_PARAMS_ATTR = 'data-lang-params'
+      CSS_CLASSES = 'code highlight js-syntax-highlight'
 
-      CSS   = 'pre:not([data-math-style]):not([data-mermaid-style]):not([data-kroki-style]) > code:only-child'
+      CSS   = 'pre:not([data-kroki-style]) > code:only-child'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
       def call
@@ -27,9 +28,9 @@ module Banzai
       end
 
       def highlight_node(node)
-        css_classes = +'code highlight js-syntax-highlight'
+        return if node.parent&.parent.nil?
+
         lang, lang_params = parse_lang_params(node)
-        sourcepos = node.parent.attr('data-sourcepos')
         retried = false
 
         if use_rouge?(lang)
@@ -42,7 +43,6 @@ module Banzai
 
         begin
           code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, node.text), tag: language)
-          css_classes << " language-#{language}" if language
         rescue StandardError
           # Gracefully handle syntax highlighter bugs/errors to ensure users can
           # still access an issue/comment/etc. First, retry with the plain text
@@ -57,16 +57,26 @@ module Banzai
           retry
         end
 
-        sourcepos_attr = sourcepos ? "data-sourcepos=\"#{escape_once(sourcepos)}\"" : ''
+        # maintain existing attributes already added. e.g math and mermaid nodes
+        node.children = code
+        pre_node = node.parent
 
-        highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code"><pre #{sourcepos_attr} class="#{css_classes}"
-                             lang="#{language}"
-                             #{lang != language ? "data-canonical-lang=\"#{escape_once(lang)}\"" : ""}
-                             #{lang_params}
-                             v-pre="true"><code>#{code}</code></pre><copy-code></copy-code></div>)
+        # ensure there are no extra children, such as a text node that might
+        # show up from an XSS attack
+        pre_node.children = node
+
+        pre_node[:lang] = language
+        pre_node.add_class(CSS_CLASSES)
+        pre_node.add_class("language-#{language}") if language
+        pre_node.set_attribute('data-canonical-lang', escape_once(lang)) if lang != language
+        pre_node.set_attribute(LANG_PARAMS_ATTR, escape_once(lang_params)) if lang_params.present?
+        pre_node.set_attribute('v-pre', 'true')
+        pre_node.remove_attribute('data-meta')
+
+        highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code">#{pre_node.to_html}<copy-code></copy-code></div>)
 
         # Extracted to a method to measure it
-        replace_parent_pre_element(node, highlighted)
+        replace_pre_element(pre_node, highlighted)
       end
 
       private
@@ -94,9 +104,8 @@ module Banzai
 
         language, language_params = language.split(LANG_PARAMS_DELIMITER, 2)
         language_params = [node.attr('data-meta'), language_params].compact.join(' ')
-        formatted_language_params = format_language_params(language_params)
 
-        [language, formatted_language_params]
+        [language, language_params]
       end
 
       # Separate method so it can be instrumented.
@@ -108,19 +117,13 @@ module Banzai
         (Rouge::Lexer.find(language) || Rouge::Lexers::PlainText).new
       end
 
-      # Replace the parent `pre` element with the entire highlighted block
-      def replace_parent_pre_element(node, highlighted)
-        node.parent.replace(highlighted)
+      # Replace the `pre` element with the entire highlighted block
+      def replace_pre_element(pre_node, highlighted)
+        pre_node.replace(highlighted)
       end
 
       def use_rouge?(language)
         (%w(math suggestion) + ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES).exclude?(language)
-      end
-
-      def format_language_params(language_params)
-        return if language_params.blank?
-
-        %(#{LANG_PARAMS_ATTR}="#{escape_once(language_params)}")
       end
     end
   end

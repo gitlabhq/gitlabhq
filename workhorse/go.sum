@@ -975,8 +975,8 @@ github.com/jmespath/go-jmespath v0.4.0/go.mod h1:T8mJZnbsbmF+m6zOOFylbeCJqk5+pHW
 github.com/jmespath/go-jmespath/internal/testify v1.5.1 h1:shLQSRRSCCPj3f2gpwzGwWFoC7ycTf1rcQZHOlsJ6N8=
 github.com/jmespath/go-jmespath/internal/testify v1.5.1/go.mod h1:L3OGu8Wl2/fWfCI6z80xFu9LTZmf1ZRjMHUOPmWr69U=
 github.com/joefitzgerald/rainbow-reporter v0.1.0/go.mod h1:481CNgqmVHQZzdIbN52CupLJyoVwB10FQ/IQlF1pdL8=
-github.com/johannesboyne/gofakes3 v0.0.0-20220627085814-c3ac35da23b2 h1:V5q1Mx2WTE5coXLG2QpkRZ7LsJvgkedm6Ib4AwC1Lfg=
-github.com/johannesboyne/gofakes3 v0.0.0-20220627085814-c3ac35da23b2/go.mod h1:LIAXxPvcUXwOcTIj9LSNSUpE9/eMHalTWxsP/kmWxQI=
+github.com/johannesboyne/gofakes3 v0.0.0-20221110173912-32fb85c5aed6 h1:eQGUsj2LcsLzfrHY1noKDSU7h+c9/rw9pQPwbQ9g1jQ=
+github.com/johannesboyne/gofakes3 v0.0.0-20221110173912-32fb85c5aed6/go.mod h1:LIAXxPvcUXwOcTIj9LSNSUpE9/eMHalTWxsP/kmWxQI=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/jonboulle/clockwork v0.2.2/go.mod h1:Pkfl5aHPm1nk2H9h0bjmnJD/BcgbGXUBGnn1kMkgxc8=
