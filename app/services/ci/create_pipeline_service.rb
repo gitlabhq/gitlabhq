@@ -119,17 +119,6 @@ module Ci
     end
     # rubocop: enable Metrics/ParameterLists
 
-    def execute!(*args, &block)
-      source = args[0]
-      params = Hash(args[1])
-
-      execute(source, **params, &block).tap do |response|
-        unless response.payload.persisted?
-          raise CreateError, pipeline.full_error_messages
-        end
-      end
-    end
-
     private
 
     def commit

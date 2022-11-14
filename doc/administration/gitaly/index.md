@@ -595,7 +595,7 @@ To migrate to Gitaly Cluster:
 1. Create the required storage. Refer to
    [repository storage recommendations](praefect.md#repository-storage-recommendations).
 1. Create and configure [Gitaly Cluster](praefect.md).
-1. Configure the existing Gitaly instance [to use TPC](praefect.md#use-tcp-for-existing-gitlab-instances), if not already configured that way.
+1. Configure the existing Gitaly instance [to use TCP](praefect.md#use-tcp-for-existing-gitlab-instances), if not already configured that way.
 1. [Move the repositories](../operations/moving_repositories.md#move-repositories). To migrate to
    Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
    automatic migration but the moves can be scheduled with the GitLab API.

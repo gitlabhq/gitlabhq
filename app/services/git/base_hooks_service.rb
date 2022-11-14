@@ -53,11 +53,11 @@ module Git
     def create_pipelines
       return unless params.fetch(:create_pipelines, true)
 
-      if ::Feature.enabled?(:refactored_create_pipeline_execution_method, project)
-        create_pipeline_refactored
-      else
-        create_pipeline_legacy
-      end
+      response = Ci::CreatePipelineService
+          .new(project, current_user, pipeline_params)
+          .execute(:push, **pipeline_options)
+
+      log_pipeline_errors(response.message) unless response.payload.persisted?
     end
 
     def execute_project_hooks
@@ -174,22 +174,6 @@ module Git
         # called, but this is included just in case.
         Gitlab::IntegrationsLogger
       end
-    end
-
-    def create_pipeline_refactored
-      response = Ci::CreatePipelineService
-          .new(project, current_user, pipeline_params)
-          .execute(:push, **pipeline_options)
-
-      log_pipeline_errors(response.message) unless response.payload.persisted?
-    end
-
-    def create_pipeline_legacy
-      Ci::CreatePipelineService
-      .new(project, current_user, pipeline_params)
-      .execute!(:push, pipeline_options)
-    rescue Ci::CreatePipelineService::CreateError => ex
-      log_pipeline_errors(ex.to_s) # Stringifying the ex here as I removed stringifying in log_pipeline_errors.
     end
   end
 end

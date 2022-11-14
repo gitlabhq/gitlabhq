@@ -38,6 +38,10 @@ RSpec.describe Database::BatchedBackgroundMigration::ExecutionWorker, :clean_git
       end
 
       context 'when the provided database is sharing config' do
+        before do
+          skip_if_multiple_databases_not_setup
+        end
+
         it 'does nothing' do
           ci_model = Gitlab::Database.database_base_models['ci']
           expect(Gitlab::Database).to receive(:db_config_share_with)

@@ -252,6 +252,29 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
 A public and private key are generated.
 [Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account).
 
+## Generate an SSH key pair with a password manager
+
+### Generate an SSH key pair with 1Password
+
+You can use [1Password](https://1password.com/) and the [1Password browser extension](https://support.1password.com/getting-started-browser/) to either:
+
+- Automatically generate a new SSH key.
+- Use an existing SSH in your 1Password vault to authenticate with GitLab.
+
+1. Sign in to GitLab.
+1. On the top bar, in the top right corner, select your avatar.
+1. Select **Preferences**.
+1. On the left sidebar, select **SSH Keys**.
+1. Select **Key**, and you should see the 1Password helper appear.
+1. Select the 1Password icon and unlock 1Password.
+1. You can then select **Create SSH Key** or select an existing SSH key to fill in the public key.
+1. In the **Title** box, type a description, like `Work Laptop` or
+   `Home Workstation`.
+1. Optional. Update **Expiration date** to modify the default expiration date.
+1. Select **Add key**.
+
+To learn more about using 1Password with SSH keys, see [1Password's documentation](https://developer.1password.com/docs/ssh/get-started).
+
 ## Add an SSH key to your GitLab account
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271239) in GitLab 15.4, default expiration date suggested in UI.

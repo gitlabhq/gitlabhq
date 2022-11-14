@@ -462,6 +462,20 @@ In the API:
   This includes associated Git-tag-names, release description, author information of the releases.
   However, other repository-related information, such as [source code](release_fields.md#source-code), [release evidence](#release-evidence) are redacted.
 
+### Publish releases without giving access to source code
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216485) in GitLab 15.6.
+
+Releases can be made accessible to non-project members while keeping repository-related information such as
+[source code](release_fields.md#source-code) and [release evidence](#release-evidence) private. This is useful for
+projects that use releases as a way to give access to new versions of software but do not want the source code to
+be public.
+
+To make releases available publicly, set the following [project settings](../settings/index.md#project-feature-settings):
+
+- Repository is enabled and set to **Only Project Members**
+- Releases is enabled and set to **Everyone With Access**
+
 ### Create, update, and delete a release and its assets
 
 - Users with at least the Developer role

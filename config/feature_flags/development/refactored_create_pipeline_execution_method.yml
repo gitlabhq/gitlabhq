@@ -1,8 +1,0 @@
----
-name: refactored_create_pipeline_execution_method
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98965
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378257
-milestone: '15.6'
-type: development
-group: group::pipeline execution
-default_enabled: false

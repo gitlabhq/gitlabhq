@@ -43,75 +43,40 @@ RSpec.describe RunPipelineScheduleWorker do
     end
 
     describe "#run_pipeline_schedule" do
-      context "when refactored_create_pipeline_execution_method feature flag is disabled" do
-        before do
-          stub_feature_flags(refactored_create_pipeline_execution_method: false)
+      let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService, execute: service_response) }
+      let(:service_response) { instance_double(ServiceResponse, payload: pipeline, error?: false) }
+
+      before do
+        expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
+
+        expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule).and_return(service_response)
+      end
+
+      context "when pipeline is persisted" do
+        let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
+
+        it "returns the service response" do
+          expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
         end
 
-        context 'when everything is ok' do
-          let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService) }
+        it "does not log errors" do
+          expect(worker).not_to receive(:log_extra_metadata_on_done)
 
-          it 'calls the Service' do
-            expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
-            expect(create_pipeline_service).to receive(:execute!).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule)
-
-            worker.perform(pipeline_schedule.id, user.id)
-          end
-        end
-
-        context 'when pipeline cannot be created' do
-          before do
-            allow(Ci::CreatePipelineService).to receive(:new) { raise Ci::CreatePipelineService::CreateError }
-          end
-
-          it 'logs a pipeline error' do
-            expect(worker)
-              .to receive(:log_extra_metadata_on_done)
-              .with(:pipeline_creation_error, an_instance_of(Ci::CreatePipelineService::CreateError))
-              .and_call_original
-
-            worker.perform(pipeline_schedule.id, user.id)
-          end
+          expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
         end
       end
 
-      context "when refactored_create_pipeline_execution_method feature flag is enabled" do
-        let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService, execute: service_response) }
-        let(:service_response) { instance_double(ServiceResponse, payload: pipeline, error?: false) }
+      context "when pipeline was not persisted" do
+        let(:service_response) { instance_double(ServiceResponse, error?: true, message: "Error", payload: pipeline) }
+        let(:pipeline) { instance_double(Ci::Pipeline, persisted?: false) }
 
-        before do
-          stub_feature_flags(refactored_create_pipeline_execution_method: project)
-          expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
+        it "logs a pipeline creation error" do
+          expect(worker)
+            .to receive(:log_extra_metadata_on_done)
+            .with(:pipeline_creation_error, service_response.message)
+            .and_call_original
 
-          expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule).and_return(service_response)
-        end
-
-        context "when pipeline is persisted" do
-          let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
-
-          it "returns the service response" do
-            expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
-          end
-
-          it "does not log errors" do
-            expect(worker).not_to receive(:log_extra_metadata_on_done) # aka pipeline_creation_error
-
-            expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
-          end
-        end
-
-        context "when pipeline was not persisted" do
-          let(:service_response) { instance_double(ServiceResponse, error?: true, message: "Error", payload: pipeline) }
-          let(:pipeline) { instance_double(Ci::Pipeline, persisted?: false) }
-
-          it "logs a pipeline creation error" do
-            expect(worker)
-              .to receive(:log_extra_metadata_on_done)
-              .with(:pipeline_creation_error, service_response.message)
-              .and_call_original
-
-            expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response.message)
-          end
+          expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response.message)
         end
       end
     end

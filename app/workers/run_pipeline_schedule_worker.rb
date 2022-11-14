@@ -21,12 +21,14 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def run_pipeline_schedule(schedule, user)
-    if ::Feature.enabled?(:refactored_create_pipeline_execution_method, schedule.project)
-      create_pipeline_refactored(schedule, user)
-    else
-      create_pipeline_legacy(schedule, user)
-    end
+    response = Ci::CreatePipelineService
+      .new(schedule.project, user, ref: schedule.ref)
+      .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
 
+    return response if response.payload.persisted?
+
+    # This is a user operation error such as corrupted .gitlab-ci.yml. Log the error for debugging purpose.
+    log_extra_metadata_on_done(:pipeline_creation_error, response.message)
   rescue StandardError => e
     error(schedule, e)
   end
@@ -55,25 +57,5 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
     @failed_creation_counter ||=
       Gitlab::Metrics.counter(:pipeline_schedule_creation_failed_total,
                               "Counter of failed attempts of pipeline schedule creation")
-  end
-
-  def create_pipeline_refactored(schedule, user)
-    response = Ci::CreatePipelineService
-      .new(schedule.project, user, ref: schedule.ref)
-      .execute(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
-
-    return response if response.payload.persisted?
-
-    # This is a user operation error such as corrupted .gitlab-ci.yml. Log the error for debugging purpose.
-    log_extra_metadata_on_done(:pipeline_creation_error, response.message)
-  end
-
-  def create_pipeline_legacy(schedule, user)
-    Ci::CreatePipelineService
-      .new(schedule.project, user, ref: schedule.ref)
-      .execute!(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
-  rescue Ci::CreatePipelineService::CreateError => e
-    # This is a user operation error such as corrupted .gitlab-ci.yml. Log the error for debugging purpose.
-    log_extra_metadata_on_done(:pipeline_creation_error, e)
   end
 end
