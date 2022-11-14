@@ -1,6 +1,6 @@
 - issuable_type = issuable_sidebar[:type]
 
-#js-vue-sidebar-reviewers{ data: { field: issuable_type, signed_in: signed_in } }
+.js-sidebar-reviewers-root{ data: { field: issuable_type, signed_in: signed_in } }
   .title.hide-collapsed
     = _('Reviewers')
     = gl_loading_icon(inline: true)

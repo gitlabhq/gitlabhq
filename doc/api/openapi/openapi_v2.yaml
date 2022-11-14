@@ -16,6 +16,8 @@ securityDefinitions:
     in: query
 host: gitlab.com
 tags:
+- name: user_counts
+  description: Operations about user_counts
 - name: metadata
   description: Operations related to metadata of the GitLab instance
 - name: access_requests
@@ -289,6 +291,20 @@ paths:
       tags:
       - access_requests
       operationId: getApiV4ProjectsIdAccessRequests
+  "/api/v4/user_counts":
+    get:
+      summary: Return the user specific counts
+      description: Assigned open issues, assigned MRs and pending todos count
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Return the user specific counts
+          schema:
+            "$ref": "#/definitions/API_Entities_UserCounts"
+      tags:
+      - user_counts
+      operationId: getApiV4UserCounts
   "/api/v4/metadata":
     get:
       summary: Retrieve metadata information for this GitLab instance.
@@ -374,6 +390,30 @@ definitions:
         type: string
       value:
         type: string
+  API_Entities_UserCounts:
+    type: object
+    properties:
+      merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      assigned_issues:
+        type: integer
+        format: int32
+        example: 10
+      assigned_merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      review_requested_merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      todos:
+        type: integer
+        format: int32
+        example: 10
+    description: API_Entities_UserCounts model
   API_Entities_Metadata:
     type: object
     properties:

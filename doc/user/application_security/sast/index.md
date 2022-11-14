@@ -117,7 +117,7 @@ Check the [SAST direction page](https://about.gitlab.com/direction/secure/static
 and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java projects.
 1. These analyzers reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) status [in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554).
 
-### Multi-project support
+## Multi-project support
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4895) in GitLab 13.7.
 
@@ -137,16 +137,52 @@ The following analyzers have multi-project support:
 - SpotBugs
 - Sobelow
 
-#### Enable multi-project support for Security Code Scan
+### Enable multi-project support for Security Code Scan
 
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
-### Supported distributions
+## False positive detection **(ULTIMATE)**
+
+> Introduced in GitLab 14.2.
+
+Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
+
+False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- Ruby, in the Brakeman-based analyzer
+
+![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
+
+## Advanced vulnerability tracking **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
+
+Source code is volatile; as developers make changes, source code may move within files or between files.
+Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/index.md).
+These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
+If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
+
+GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the same vulnerability has moved within a file due to refactoring or unrelated changes.
+
+Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- C, in the Semgrep-based analyzer only
+- Go, in the Gosec- and Semgrep-based analyzers
+- Java, in the Semgrep-based analyzer only
+- JavaScript, in the Semgrep-based analyzer only
+- Python, in the Semgrep-based analyzer only
+- Ruby, in the Brakeman-based analyzer
+
+Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
+
+For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
+
+## Supported distributions
 
 The default scanner images are build off a base Alpine image for size and maintainability.
 
-#### FIPS-enabled images
+### FIPS-enabled images
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
@@ -170,11 +206,7 @@ A FIPS-compliant image is only available for the Semgrep-based analyzer.
 
 To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers).
 
-### Making SAST analyzers available to all GitLab tiers
-
-All open source (OSS) analyzers have been moved to the GitLab Free tier as of GitLab 13.3.
-
-#### Summary of features per tier
+## Summary of features per tier
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
@@ -302,7 +334,7 @@ spotbugs-sast:
     FAIL_NEVER: 1
 ```
 
-#### Pinning to minor image version
+### Pinning to minor image version
 
 The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
 
@@ -335,42 +367,6 @@ brakeman-sast:
   variables:
     SAST_ANALYZER_IMAGE_TAG: "3.1.1"
 ```
-
-### False Positive Detection **(ULTIMATE)**
-
-> Introduced in GitLab 14.2.
-
-Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
-
-False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
-
-- Ruby, in the Brakeman-based analyzer
-
-![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
-
-### Advanced vulnerability tracking **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
-
-Source code is volatile; as developers make changes, source code may move within files or between files.
-Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/index.md).
-These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
-If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
-
-GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the same vulnerability has moved within a file due to refactoring or unrelated changes.
-
-Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
-
-- C, in the Semgrep-based analyzer only
-- Go, in the Gosec- and Semgrep-based analyzers
-- Java, in the Semgrep-based analyzer only
-- JavaScript, in the Semgrep-based analyzer only
-- Python, in the Semgrep-based analyzer only
-- Ruby, in the Brakeman-based analyzer
-
-Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
-
-For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
 
 ### Using CI/CD variables to pass credentials for private repositories
 

@@ -34,7 +34,7 @@
         .title
           = _('Milestone')
         .filter-item
-          .js-milestone-dropdown{ data: { full_path: @project.full_path, workspace_type: Namespaces::ProjectNamespace.sti_name.downcase } }
+          .js-milestone-dropdown-root{ data: { full_path: @project.full_path, workspace_type: Namespaces::ProjectNamespace.sti_name.downcase } }
       - if is_issue
         = render_if_exists 'shared/issuable/iterations_dropdown', parent: @project.group
       - if is_issue

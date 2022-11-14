@@ -284,15 +284,30 @@ module TestEnv
     unless File.directory?(repo_path)
       start = Time.now
       system(*%W(#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}))
-      system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} remote remove origin))
       puts "==> #{repo_path} set up in #{Time.now - start} seconds...\n"
     end
 
-    set_repo_refs(repo_path, refs)
+    create_bundle = !File.file?(repo_bundle_path)
 
-    unless File.file?(repo_bundle_path)
+    unless set_repo_refs(repo_path, refs)
+      # Prefer not to fetch over the network. Only fetch when we have failed to
+      # set all the required local branches. This would happen when a new
+      # branch is added to BRANCH_SHA, in which case we want to update
+      # everything.
+      unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
+        raise 'Could not fetch test seed repository.'
+      end
+
+      unless set_repo_refs(repo_path, refs)
+        raise "Could not update test seed repository, please delete #{repo_path} and try again"
+      end
+
+      create_bundle = true
+    end
+
+    if create_bundle
       start = Time.now
-      system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --all))
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --exclude refs/remotes/* --all))
       puts "==> #{repo_bundle_path} generated in #{Time.now - start} seconds...\n"
     end
   end
@@ -394,20 +409,13 @@ module TestEnv
   end
 
   def set_repo_refs(repo_path, branch_sha)
-    instructions = branch_sha.map { |branch, sha| "update refs/heads/#{branch}\x00#{sha}\x00" }.join("\x00") << "\x00"
-    update_refs = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
-    reset = proc do
-      Dir.chdir(repo_path) do
-        IO.popen(update_refs, "w") { |io| io.write(instructions) }
-        $?.success?
+    IO.popen(%W[#{Gitlab.config.git.bin_path} -C #{repo_path} update-ref --stdin -z], "w") do |io|
+      branch_sha.each do |branch, sha|
+        io.write("update refs/heads/#{branch}\x00#{sha}\x00\x00")
       end
     end
 
-    # Try to reset without fetching to avoid using the network.
-    unless reset.call
-      raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
-      raise "Could not update test seed repository, please delete #{repo_path} and try again" unless reset.call
-    end
+    $?.success?
   end
 
   def component_timed_setup(component, install_dir:, version:, task:, fresh_install: true, task_args: [])

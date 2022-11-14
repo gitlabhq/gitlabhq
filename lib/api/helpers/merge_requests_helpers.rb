@@ -8,6 +8,9 @@ module API
 
       UNPROCESSABLE_ERROR_KEYS = [:project_access, :branch_conflict, :validate_fork, :base].freeze
 
+      params :ee_approval_params do
+      end
+
       params :merge_requests_negatable_params do
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
         optional :author_username, type: String, desc: 'Return merge requests which are authored by the user with the given username'
@@ -136,3 +139,5 @@ module API
     end
   end
 end
+
+API::Helpers::MergeRequestsHelpers.prepend_mod_with('API::Helpers::MergeRequestsHelpers')

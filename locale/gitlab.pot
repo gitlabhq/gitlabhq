@@ -2651,6 +2651,9 @@ msgstr ""
 msgid "AdminArea|Total users"
 msgstr ""
 
+msgid "AdminArea|Updated %{last_update_time}"
+msgstr ""
+
 msgid "AdminArea|Users"
 msgstr ""
 
@@ -4008,9 +4011,6 @@ msgid "All users must have a name."
 msgstr ""
 
 msgid "All users with matching cards"
-msgstr ""
-
-msgid "Allow %{strongOpen}%{group_name}%{strongClose} to sign you in?"
 msgstr ""
 
 msgid "Allow access to members of the following group"
@@ -35517,16 +35517,19 @@ msgstr ""
 msgid "SAML single sign-on for %{group_name}"
 msgstr ""
 
+msgid "SAML|Allow %{groupName} to sign you in?"
+msgstr ""
+
 msgid "SAML|Sign in to GitLab to connect your organization's account"
 msgstr ""
 
-msgid "SAML|The %{strongOpen}%{group_path}%{strongClose} group allows you to sign in using single sign-on."
+msgid "SAML|The %{groupName} group allows you to sign in using single sign-on."
 msgstr ""
 
 msgid "SAML|To access %{strongOpen}%{group_name}%{strongClose}, you must sign in using single sign-on through an external sign-in page."
 msgstr ""
 
-msgid "SAML|To allow %{strongOpen}%{group_name}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}."
+msgid "SAML|To allow %{groupName} to manage your GitLab account %{username} after you sign in successfully using single sign-on, select %{strongStart}Authorize%{strongEnd}."
 msgstr ""
 
 msgid "SAML|Your organization's SSO has been connected to your GitLab account"

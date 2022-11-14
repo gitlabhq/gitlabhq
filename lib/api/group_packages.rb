@@ -14,13 +14,19 @@ module API
     helpers ::API::Helpers::PackagesHelpers
 
     params do
-      requires :id, type: String, desc: "Group's ID or path"
+      requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the group'
       optional :exclude_subgroups, type: Boolean, default: false, desc: 'Determines if subgroups should be excluded'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get all project packages within a group' do
-        detail 'This feature was introduced in GitLab 12.5'
+      desc 'List packages within a group' do
+        detail 'Get a list of project packages at the group level. This feature was introduced in GitLab 12.5'
         success ::API::Entities::Package
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Group Not Found' }
+        ]
+        is_array true
+        tags %w[group_packages]
       end
       params do
         use :pagination
@@ -53,10 +59,13 @@ module API
         packages = Packages::GroupPackagesFinder.new(
           current_user,
           user_group,
-          declared(params).slice(:exclude_subgroups, :order_by, :sort, :package_type, :package_name, :include_versionless, :status)
+          declared(params).slice(
+            :exclude_subgroups, :order_by, :sort, :package_type, :package_name, :include_versionless, :status
+          )
         ).execute
 
-        present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true, namespace: user_group
+        present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true,
+                                    namespace: user_group
       end
     end
   end

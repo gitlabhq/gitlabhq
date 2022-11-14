@@ -1,0 +1,5 @@
+---
+API/EnsureStringDetail:
+  Details: grace period
+  Exclude:
+    - 'ee/lib/api/analytics/group_activity_analytics.rb'

@@ -17,14 +17,14 @@
       %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", class: "#{'gl-display-block' if moved_sidebar_enabled}", href: "#", "aria-label" => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       - if signed_in && !moved_sidebar_enabled
-        .js-issuable-todo{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
+        .js-sidebar-todo-widget-root{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
 
     = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
       .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { qa_selector: 'assignee_block_container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
       - if issuable_sidebar[:supports_severity]
-        #js-severity
+        .js-sidebar-severity-root
 
       - if reviewers
         .block.reviewer{ data: { qa_selector: 'reviewers_block_container' } }
@@ -32,17 +32,17 @@
 
       - if issuable_sidebar[:supports_escalation]
         .block.escalation-status{ data: { testid: 'escalation_status_container' } }
-          #js-escalation-status{ data: { can_update: issuable_sidebar.dig(:current_user, :can_update_escalation_status).to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
+          .js-sidebar-escalation-status-root{ data: { can_update: issuable_sidebar.dig(:current_user, :can_update_escalation_status).to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
         = render_if_exists 'shared/issuable/sidebar_escalation_policy', issuable_sidebar: issuable_sidebar
 
       - if @project.group.present?
         = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
-      .js-sidebar-labels{ data: sidebar_labels_data(issuable_sidebar, @project) }
+      .js-sidebar-labels-widget-root{ data: sidebar_labels_data(issuable_sidebar, @project) }
 
       - if issuable_sidebar[:supports_milestone]
         .block.milestone{ :class => ("gl-border-b-0!" if in_group_context_with_iterations), data: { qa_selector: 'milestone_block', testid: 'sidebar-milestones' } }
-          .js-milestone-select{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
+          .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
       - if in_group_context_with_iterations
         .block.gl-collapse-empty{ data: { qa_selector: 'iteration_container', testid: 'iteration_container' } }<
@@ -50,15 +50,15 @@
 
       - if issuable_sidebar[:show_crm_contacts]
         .block.contact
-          #js-issue-crm-contacts{ data: { issue_id: issuable_sidebar[:id], group_issues_path: issues_group_path(@project.group) } }
+          .js-sidebar-crm-contacts-root{ data: { issue_id: issuable_sidebar[:id], group_issues_path: issues_group_path(@project.group) } }
 
       = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar, can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid]
 
       - if issuable_sidebar.has_key?(:due_date)
-        #js-due-date-entry-point
+        .js-sidebar-due-date-widget-root
 
       - if issuable_sidebar[:supports_time_tracking]
-        #issuable-time-tracker.block
+        .js-sidebar-time-tracking-root.block
           // Fallback while content is loading
           .title.hide-collapsed
             = _('Time tracking')
@@ -70,20 +70,20 @@
       - if issuable_sidebar.has_key?(:confidential)
         -# haml-lint:disable InlineJavaScript
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe
-        #js-confidential-entry-point
+        .js-sidebar-confidential-widget-root
 
         = render_if_exists 'shared/issuable/sidebar_cve_id_request', issuable_sidebar: issuable_sidebar
 
       - if !moved_sidebar_enabled
-        #js-lock-entry-point
+        .js-sidebar-lock-root
         - if signed_in
-          .js-sidebar-subscriptions-entry-point
+          .js-sidebar-subscriptions-widget-root
 
-      .js-sidebar-participants-entry-point
+      .js-sidebar-participants-widget-root
 
       .block.with-sub-blocks
         - if !moved_sidebar_enabled
-          #js-reference-entry-point
+          .js-sidebar-reference-widget-root
         - if issuable_type == 'merge_request' && !moved_sidebar_enabled
           .sub-block.js-sidebar-source-branch
             .sidebar-collapsed-icon.js-dont-change-state
@@ -95,7 +95,7 @@
 
       - if show_forwarding_email
         .block
-          #issuable-copy-email
+          .js-sidebar-copy-email-root
       - if issuable_sidebar.dig(:current_user, :can_move)
         .block.js-sidebar-move-issue-block
           .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }

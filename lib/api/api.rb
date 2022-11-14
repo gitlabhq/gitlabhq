@@ -176,6 +176,7 @@ module API
         mount ::API::Appearance
         mount ::API::Applications
         mount ::API::Badges
+        mount ::API::Branches
         mount ::API::BroadcastMessages
         mount ::API::BulkImports
         mount ::API::Ci::Jobs
@@ -199,15 +200,18 @@ module API
         mount ::API::Features
         mount ::API::Files
         mount ::API::FreezePeriods
+        mount ::API::GroupAvatar
         mount ::API::GroupClusters
         mount ::API::GroupExport
         mount ::API::GroupImport
+        mount ::API::GroupPackages
         mount ::API::GroupVariables
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
         mount ::API::Invitations
         mount ::API::Keys
         mount ::API::Lint
+        mount ::API::MergeRequestApprovals
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::Metrics::UserStarredDashboards
@@ -256,7 +260,6 @@ module API
       mount ::API::Avatar
       mount ::API::AwardEmoji
       mount ::API::Boards
-      mount ::API::Branches
       mount ::API::Ci::JobArtifacts
       mount ::API::Ci::Pipelines
       mount ::API::Ci::PipelineSchedules
@@ -278,13 +281,11 @@ module API
       mount ::API::GenericPackages
       mount ::API::Geo
       mount ::API::GoProxy
-      mount ::API::GroupAvatar
       mount ::API::GroupBoards
       mount ::API::GroupContainerRepositories
       mount ::API::GroupDebianDistributions
       mount ::API::GroupLabels
       mount ::API::GroupMilestones
-      mount ::API::GroupPackages
       mount ::API::Groups
       mount ::API::HelmPackages
       mount ::API::Integrations
@@ -295,7 +296,6 @@ module API
       mount ::API::Markdown
       mount ::API::MavenPackages
       mount ::API::Members
-      mount ::API::MergeRequestApprovals
       mount ::API::MergeRequests
       mount ::API::Metrics::Dashboard::Annotations
       mount ::API::Namespaces

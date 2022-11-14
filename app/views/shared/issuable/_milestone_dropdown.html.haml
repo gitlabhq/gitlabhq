@@ -2,7 +2,7 @@
 - project = @target_project || @project
 - selected = local_assigns.fetch(:selected, nil)
 
-.js-milestone-dropdown{ data: { can_admin_milestone: can?(current_user, :admin_milestone, project),
+.js-milestone-dropdown-root{ data: { can_admin_milestone: can?(current_user, :admin_milestone, project),
   full_path: project.full_path,
   input_name: name,
   milestone_id: selected.try(:id),

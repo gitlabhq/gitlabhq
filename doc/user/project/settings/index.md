@@ -91,9 +91,12 @@ Use the toggles to enable or disable features in the project.
 | **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
-| **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md).                                                                                                                                                                    |
 | **Releases**                     | ✓                         | Control access to [Releases](../releases/index.md).                                                                                                                                                                                      |
+| **Environments**                 | ✓                         | Control access to [Environments and Deployments](../../../ci/environments/index.md).                                                                   |
+| **Feature flags**                | ✓                         | Control access to [Feature Flags](../../../operations/feature_flags.md).                                                                               |
+| **Monitor**                      | ✓                         | Control access to [Monitor](../../../operations/index.md) features.                                                                                            |
+| **Infrastructure**               | ✓                         | Control access to [Infrastructure](../../infrastructure/index.md) features.                                                                                                    |
 
 When you disable a feature, the following additional features are also disabled:
 
