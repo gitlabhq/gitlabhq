@@ -108,6 +108,16 @@ export default {
         @execute="trackToolbarControlExecution"
       />
       <toolbar-button
+        data-testid="highlight"
+        content-type="highlight"
+        icon-name="highlight"
+        editor-command="toggleHighlight"
+        category="tertiary"
+        size="medium"
+        :label="__('Highlight')"
+        @execute="trackToolbarControlExecution"
+      />
+      <toolbar-button
         data-testid="link"
         content-type="link"
         icon-name="link"

@@ -7,20 +7,17 @@ type: reference, howto
 
 # DAST API **(ULTIMATE)**
 
-You can add dynamic application security testing (DAST) of web APIs to your
-[GitLab CI/CD](../../../ci/index.md) pipelines. This helps you discover bugs and potential security
-issues that other QA processes may miss.
-
-We recommend that you use DAST API testing in addition to [GitLab Secure](../index.md)'s
-other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
-you can run DAST API tests as part your CI/CD workflow.
+Perform Dynamic Application Security Testing (DAST) of web APIs to help discover bugs and potential
+security issues that other QA processes may miss. Use DAST API tests in addition to
+[GitLab Secure](../index.md)'s other security scanners and your own test processes. You can run DAST
+API tests either as part your CI/CD workflow, [on-demand](../dast/index.md#on-demand-scans), or both.
 
 WARNING:
-Do not run DAST API testing against a production server. Not only can it perform *any* function that
+Do not run DAST API testing against a production server. Not only can it perform _any_ function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run DAST API against a test server.
 
-You can run DAST API scanning against the following web API types:
+DAST API can test the following web API types:
 
 - REST API
 - SOAP
@@ -29,9 +26,9 @@ You can run DAST API scanning against the following web API types:
 
 ## When DAST API scans run
 
-DAST API scanning runs in the `dast` stage by default. To ensure DAST API scanning examines the latest
-code, ensure your CI/CD pipeline deploys changes to a test environment in a stage before the `dast`
-stage.
+When run in your CI/CD pipeline, DAST API scanning runs in the `dast` stage by default. To ensure
+DAST API scanning examines the latest code, ensure your CI/CD pipeline deploys changes to a test
+environment in a stage before the `dast` stage.
 
 If your pipeline is configured to deploy to the same web server on each run, running a pipeline
 while another is still running could cause a race condition in which one pipeline overwrites the

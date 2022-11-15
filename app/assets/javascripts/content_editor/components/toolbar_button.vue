@@ -32,7 +32,7 @@ export default {
     editorCommandParams: {
       type: Object,
       required: false,
-      default: null,
+      default: undefined,
     },
     variant: {
       type: String,

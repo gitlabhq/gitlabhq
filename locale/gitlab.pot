@@ -20066,6 +20066,9 @@ msgstr ""
 msgid "Highest role:"
 msgstr ""
 
+msgid "Highlight"
+msgstr ""
+
 msgid "HighlightBar|Alert events:"
 msgstr ""
 
@@ -24622,10 +24625,10 @@ msgstr ""
 msgid "Locked by %{fileLockUserName}"
 msgstr ""
 
-msgid "Locked the discussion."
+msgid "Locked files"
 msgstr ""
 
-msgid "Locks give the ability to lock specific file or folder."
+msgid "Locked the discussion."
 msgstr ""
 
 msgid "Locks the discussion."
@@ -38090,6 +38093,9 @@ msgstr ""
 msgid "SlackIntegration|Install Slack app"
 msgstr ""
 
+msgid "SlackIntegration|Notifications only work if you're on the latest version of the GitLab for Slack app"
+msgstr ""
+
 msgid "SlackIntegration|Project alias"
 msgstr ""
 
@@ -38115,6 +38121,9 @@ msgid "SlackIntegration|Team name"
 msgstr ""
 
 msgid "SlackIntegration|This integration allows users to perform common operations on this project by entering slash commands in Slack."
+msgstr ""
+
+msgid "SlackIntegration|Update to the latest version"
 msgstr ""
 
 msgid "SlackIntegration|Verification token"
@@ -40644,6 +40653,9 @@ msgid "The following Personal Access Token was revoked by an administrator, %{us
 msgstr ""
 
 msgid "The following SSH key was deleted by an administrator, %{username}."
+msgstr ""
+
+msgid "The following files or directories can only be modified by the user who locked them."
 msgstr ""
 
 msgid "The following items will NOT be exported:"

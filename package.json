@@ -73,6 +73,7 @@
     "@tiptap/extension-gapcursor": "^2.0.0-beta.38",
     "@tiptap/extension-hard-break": "^2.0.0-beta.33",
     "@tiptap/extension-heading": "^2.0.0-beta.29",
+    "@tiptap/extension-highlight": "^2.0.0-beta.35",
     "@tiptap/extension-history": "^2.0.0-beta.25",
     "@tiptap/extension-horizontal-rule": "^2.0.0-beta.36",
     "@tiptap/extension-image": "^2.0.0-beta.30",

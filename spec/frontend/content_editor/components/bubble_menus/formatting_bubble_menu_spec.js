@@ -56,6 +56,7 @@ describe('content_editor/components/bubble_menus/formatting_bubble_menu', () => 
     ${'code'}        | ${{ contentType: 'code', iconName: 'code', label: 'Code', editorCommand: 'toggleCode' }}
     ${'superscript'} | ${{ contentType: 'superscript', iconName: 'superscript', label: 'Superscript', editorCommand: 'toggleSuperscript' }}
     ${'subscript'}   | ${{ contentType: 'subscript', iconName: 'subscript', label: 'Subscript', editorCommand: 'toggleSubscript' }}
+    ${'highlight'}   | ${{ contentType: 'highlight', iconName: 'highlight', label: 'Highlight', editorCommand: 'toggleHighlight' }}
     ${'link'}        | ${{ contentType: 'link', iconName: 'link', label: 'Insert link', editorCommand: 'toggleLink', editorCommandParams: { href: '' } }}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {
     beforeEach(() => {

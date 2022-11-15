@@ -25,6 +25,7 @@ import FigureCaption from '~/content_editor/extensions/figure_caption';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
+import Highlight from '~/content_editor/extensions/highlight';
 import Image from '~/content_editor/extensions/image';
 import InlineDiff from '~/content_editor/extensions/inline_diff';
 import Italic from '~/content_editor/extensions/italic';
@@ -226,6 +227,7 @@ export const createTiptapEditor = (extensions = []) =>
       HorizontalRule,
       ...HTMLMarks,
       ...HTMLNodes,
+      Highlight,
       Image,
       InlineDiff,
       Italic,

@@ -22,6 +22,7 @@ import Frontmatter from '../extensions/frontmatter';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import HorizontalRule from '../extensions/horizontal_rule';
+import Highlight from '../extensions/highlight';
 import HTMLMarks from '../extensions/html_marks';
 import HTMLNodes from '../extensions/html_nodes';
 import Image from '../extensions/image';
@@ -78,6 +79,7 @@ const defaultSerializerConfig = {
     [Code.name]: code,
     [Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
     [Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
+    [Highlight.name]: { open: '<mark>', close: '</mark>', mixable: true },
     [InlineDiff.name]: {
       mixable: true,
       open(_, mark) {

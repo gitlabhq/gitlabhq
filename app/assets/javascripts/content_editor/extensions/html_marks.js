@@ -8,7 +8,6 @@ const marks = [
   'bdo',
   'cite',
   'dfn',
-  'mark',
   'small',
   'span',
   'time',

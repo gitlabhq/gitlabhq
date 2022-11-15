@@ -15,6 +15,7 @@ import FootnoteReference from '~/content_editor/extensions/footnote_reference';
 import HardBreak from '~/content_editor/extensions/hard_break';
 import Heading from '~/content_editor/extensions/heading';
 import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
+import Highlight from '~/content_editor/extensions/highlight';
 import HTMLNodes from '~/content_editor/extensions/html_nodes';
 import Image from '~/content_editor/extensions/image';
 import InlineDiff from '~/content_editor/extensions/inline_diff';
@@ -37,6 +38,7 @@ import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdow
 import { createTiptapEditor, createDocBuilder } from '../test_utils';
 
 jest.mock('~/emoji');
+
 const tiptapEditor = createTiptapEditor([Sourcemap]);
 
 const {
@@ -60,6 +62,7 @@ const {
     figureCaption,
     heading,
     hardBreak,
+    highlight,
     horizontalRule,
     image,
     inlineDiff,
@@ -98,6 +101,7 @@ const {
     hardBreak: { nodeType: HardBreak.name },
     heading: { nodeType: Heading.name },
     horizontalRule: { nodeType: HorizontalRule.name },
+    highlight: { markType: Highlight.name },
     image: { nodeType: Image.name },
     inlineDiff: { markType: InlineDiff.name },
     italic: { nodeType: Italic.name },
@@ -157,6 +161,12 @@ describe('markdownSerializer', () => {
         ),
       ),
     ).toBe('{++30 lines+}{--10 lines-}');
+  });
+
+  it('correctly serializes highlight', () => {
+    expect(serialize(paragraph('this is some ', highlight('highlighted'), ' text'))).toBe(
+      'this is some <mark>highlighted</mark> text',
+    );
   });
 
   it('correctly serializes a line break', () => {

@@ -698,6 +698,12 @@ entry.
 - [Add environment keyword to pages job](gitlab-org/gitlab@73af406f9101da0a2f076ac023de5dfd60c85445) by @edith007 ([merge request](gitlab-org/gitlab!98283))
 - [Remove feature flag ci_variables_refactoring_to_variable](gitlab-org/gitlab@f5d1e8277fb8c326082e58536aeae21ab3fd289c) ([merge request](gitlab-org/gitlab!97967))
 
+## 15.4.5 (2022-11-15)
+
+### Fixed (1 change)
+
+- [Revert Sidekiq default routing rules](gitlab-org/gitlab@b8b62286bc660decc83dad6295b121e134451924) ([merge request](gitlab-org/gitlab!103641))
+
 ## 15.4.4 (2022-11-02)
 
 ### Security (12 changes)

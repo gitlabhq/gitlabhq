@@ -24,6 +24,8 @@ module Clusters
           .include_integration(integration_association_name)
 
         projects.find_each do |project|
+          # This use of public_send is safe because we constructed the
+          # integration_association_name ourselves above.
           project.public_send(integration_association_name).update!(active: false) # rubocop:disable GitlabSecurity/PublicSend
         end
       end

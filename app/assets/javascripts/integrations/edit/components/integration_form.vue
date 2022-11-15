@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlBadge,
   GlButton,
   GlModalDirective,
@@ -9,7 +10,7 @@ import {
 import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
-
+import { s__ } from '~/locale';
 import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
@@ -59,6 +60,7 @@ export default {
       import(
         /* webpackChunkName: 'integrationSectionTrigger' */ '~/integrations/edit/components/sections/trigger.vue'
       ),
+    GlAlert,
     GlBadge,
     GlButton,
     GlForm,
@@ -223,6 +225,12 @@ export default {
   csrf,
   integrationFormSectionComponents,
   billingPlanNames,
+  slackUpgradeInfo: {
+    title: s__(
+      `SlackIntegration|Notifications only work if you're on the latest version of the GitLab for Slack app`,
+    ),
+    btnText: s__('SlackIntegration|Update to the latest version'),
+  },
 };
 </script>
 
@@ -277,6 +285,15 @@ export default {
     </section>
 
     <template v-if="hasSections">
+      <div v-if="customState.shouldUpgradeSlack && isSlackIntegration" class="gl-border-t">
+        <gl-alert
+          :title="$options.slackUpgradeInfo.title"
+          variant="warning"
+          :primary-button-link="customState.upgradeSlackUrl"
+          :primary-button-text="$options.slackUpgradeInfo.btnText"
+          class="gl-mb-8 gl-mt-5"
+        />
+      </div>
       <div
         v-for="(section, index) in customState.sections"
         :key="section.type"
