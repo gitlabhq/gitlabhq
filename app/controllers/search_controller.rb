@@ -144,8 +144,7 @@ class SearchController < ApplicationController
   def check_single_commit_result?
     return false if params[:force_search_results]
     return false unless @project.present?
-    # download_code project policy grants user the read_commit ability
-    return false unless Ability.allowed?(current_user, :download_code, @project)
+    return false unless Ability.allowed?(current_user, :read_code, @project)
 
     query = params[:search].strip.downcase
     return false unless Commit.valid_hash?(query)

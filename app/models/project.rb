@@ -2934,10 +2934,6 @@ class Project < ApplicationRecord
     ci_cd_settings.keep_latest_artifact?
   end
 
-  def runner_token_expiration_interval
-    ci_cd_settings&.runner_token_expiration_interval
-  end
-
   def group_runners_enabled?
     return false unless ci_cd_settings
 

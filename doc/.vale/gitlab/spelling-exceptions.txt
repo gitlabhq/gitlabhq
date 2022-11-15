@@ -571,6 +571,7 @@ roadmap
 roadmaps
 rollout
 rollouts
+RSpec
 rsync
 rsynced
 rsyncing

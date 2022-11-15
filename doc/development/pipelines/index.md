@@ -146,9 +146,9 @@ merge request. This prevents `rspec fail-fast` duration from exceeding the avera
 
 This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
 
-## Faster feedback when reverting merge requests
+## Faster feedback for merge requests that fix a broken `master`
 
-When you need to revert a merge request, to get accelerated feedback, you can add the `~pipeline:revert` label to your merge request.
+When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite-master-fixing` label to expedite the pipelines that run on the merge request.
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 
@@ -157,6 +157,8 @@ When this label is assigned, the following steps of the CI/CD pipeline are skipp
 - The entire [Review Apps process](../testing_guide/review_apps.md).
 
 Apply the label to the merge request, and run a new pipeline for the MR.
+
+Note that the merge request also needs to have the `master:broken` or `master:foss-broken` label set.
 
 ## Test jobs
 

@@ -18,10 +18,10 @@ module API
       end
 
       class ClientKey < Grape::Entity
-        expose :id
-        expose :active
-        expose :public_key
-        expose :sentry_dsn
+        expose :id, documentation: { type: 'integer', example: 1 }
+        expose :active, documentation: { type: 'boolean' }
+        expose :public_key, documentation: { type: 'string', example: 'glet_aa77551d849c083f76d0bc545ed053a3' }
+        expose :sentry_dsn, documentation: { type: 'string', example: 'https://glet_aa77551d849c083f76d0bc545ed053a3@gitlab.example.com/api/v4/error_tracking/collector/5' }
       end
     end
   end

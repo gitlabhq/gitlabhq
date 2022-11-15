@@ -81,6 +81,9 @@ namespace :tw do
       CodeOwnerRule.new('Workspace', '@lciutacu')
     ].freeze
 
+    CODEOWNERS_BLOCK_BEGIN = "# Begin rake-managed-docs-block"
+    CODEOWNERS_BLOCK_END = "# End rake-managed-docs-block"
+
     Document = Struct.new(:group, :redirect) do
       def has_a_valid_group?
         group && !redirect
@@ -124,7 +127,17 @@ namespace :tw do
       end
     end
 
-    deduplicated_mappings.sort.each { |mapping| puts mapping }
+    new_docs_owners = deduplicated_mappings.sort.join("\n")
+
+    codeowners_path = Rails.root.join('.gitlab/CODEOWNERS')
+    current_codeowners_content = File.read(codeowners_path)
+
+    docs_replace_regex = Regexp.new("#{CODEOWNERS_BLOCK_BEGIN}\n[\\s\\S]*?\n#{CODEOWNERS_BLOCK_END}")
+
+    new_codeowners_content = current_codeowners_content
+        .gsub(docs_replace_regex, "#{CODEOWNERS_BLOCK_BEGIN}\n#{new_docs_owners}\n#{CODEOWNERS_BLOCK_END}")
+
+    File.write(codeowners_path, new_codeowners_content)
 
     if errors.present?
       puts "-----"

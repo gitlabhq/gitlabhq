@@ -393,7 +393,7 @@ export default {
             v-else-if="conflictResolutionPath"
             :message="
               __(
-                'You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}.',
+                'You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.',
               )
             "
           >
@@ -415,7 +415,7 @@ export default {
           </gl-sprintf>
           <gl-sprintf
             v-else
-            :message="__('You can %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}.')"
+            :message="__('You can %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.')"
           >
             <template #resolveLocally="{ content }">
               <gl-button

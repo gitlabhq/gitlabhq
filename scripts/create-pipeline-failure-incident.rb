@@ -80,10 +80,12 @@ class CreatePipelineFailureIncident
 
     If you believe that there's an easy resolution by either:
 
-    - Reverting a particular merge request. Make sure to add the ~"pipeline:revert" label in that case, to speed up the revert pipeline.
+    - Reverting a particular merge request.
     - Making a quick fix (for example, one line or a few similar simple changes in a few lines).
       You can create a merge request, assign to any available maintainer, and ping people that were involved/related to the introduction of the failure.
       Additionally, a message can be posted in `#backend_maintainers` or `#frontend_maintainers` to get a maintainer take a look at the fix ASAP.
+
+    In both cases, make sure to add the ~"pipeline:expedite-master-fixing" label, and `master:broken` or `master:foss-broken` label, to speed up the `master`-fixing pipelines.
 
     ### Resolution
 

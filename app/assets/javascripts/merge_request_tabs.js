@@ -260,7 +260,7 @@ export default class MergeRequestTabs {
     }
   }
 
-  tabShown(action, href) {
+  tabShown(action, href, shouldScroll = true) {
     if (action !== this.currentTab && this.mergeRequestTabs) {
       this.currentTab = action;
 
@@ -336,7 +336,7 @@ export default class MergeRequestTabs {
 
       $('.detail-page-description').renderGFM();
 
-      this.recallScroll(action);
+      if (shouldScroll) this.recallScroll(action);
     } else if (action === this.currentAction) {
       // ContentTop is used to handle anything at the top of the page before the main content
       const mainContentContainer = document.querySelector('.content-wrapper');
@@ -350,7 +350,7 @@ export default class MergeRequestTabs {
         const scrollDestination = tabContentTop - mainContentTop - 51;
 
         // scrollBehavior is only available in browsers that support scrollToOptions
-        if ('scrollBehavior' in document.documentElement.style) {
+        if ('scrollBehavior' in document.documentElement.style && shouldScroll) {
           window.scrollTo({
             top: scrollDestination,
             behavior: 'smooth',

@@ -46510,10 +46510,10 @@ msgstr ""
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
-msgid "You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}."
+msgid "You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}."
 msgstr ""
 
-msgid "You can %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}."
+msgid "You can %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}."
 msgstr ""
 
 msgid "You can adjust rules on auto-banning %{link_start}here%{link_end}."

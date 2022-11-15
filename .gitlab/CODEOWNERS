@@ -397,6 +397,8 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /data/removals/ @gl-docsteam
 
 ^[Documentation Pages]
+# This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
+# Begin rake-managed-docs-block
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/audit_event_streaming.md @eread
 /doc/administration/audit_events.md @eread
@@ -1032,6 +1034,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
 /doc/user/workspace/ @lciutacu
+# End rake-managed-docs-block
 
 [Authentication and Authorization]
 /app/assets/javascripts/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers

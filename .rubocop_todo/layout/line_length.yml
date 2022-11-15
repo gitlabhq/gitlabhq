@@ -2948,7 +2948,6 @@ Layout/LineLength:
     - 'lib/api/feature_flags.rb'
     - 'lib/api/files.rb'
     - 'lib/api/generic_packages.rb'
-    - 'lib/api/go_proxy.rb'
     - 'lib/api/group_clusters.rb'
     - 'lib/api/group_import.rb'
     - 'lib/api/group_labels.rb'

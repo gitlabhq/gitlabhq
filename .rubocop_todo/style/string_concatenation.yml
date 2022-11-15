@@ -100,7 +100,6 @@ Style/StringConcatenation:
     - 'ee/spec/support/shared_examples/models/geo_framework_registry_shared_examples.rb'
     - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
     - 'lib/api/entities/tree_object.rb'
-    - 'lib/api/go_proxy.rb'
     - 'lib/api/internal/kubernetes.rb'
     - 'lib/backup/files.rb'
     - 'lib/backup/manager.rb'

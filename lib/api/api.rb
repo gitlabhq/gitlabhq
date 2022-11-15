@@ -196,6 +196,7 @@ module API
         mount ::API::DeployTokens
         mount ::API::Deployments
         mount ::API::Environments
+        mount ::API::ErrorTracking::ClientKeys
         mount ::API::ErrorTracking::ProjectSettings
         mount ::API::FeatureFlags
         mount ::API::FeatureFlagsUserLists
@@ -203,6 +204,7 @@ module API
         mount ::API::Files
         mount ::API::FreezePeriods
         mount ::API::Geo
+        mount ::API::GoProxy
         mount ::API::GroupAvatar
         mount ::API::GroupClusters
         mount ::API::GroupExport
@@ -278,11 +280,9 @@ module API
       mount ::API::DebianGroupPackages
       mount ::API::DebianProjectPackages
       mount ::API::Discussions
-      mount ::API::ErrorTracking::ClientKeys
       mount ::API::ErrorTracking::Collector
       mount ::API::Events
       mount ::API::GenericPackages
-      mount ::API::GoProxy
       mount ::API::GroupBoards
       mount ::API::GroupContainerRepositories
       mount ::API::GroupDebianDistributions

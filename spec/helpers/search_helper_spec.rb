@@ -195,7 +195,7 @@ RSpec.describe SearchHelper do
           expect(search_autocomplete_opts("Network").size).to eq(1)
           expect(search_autocomplete_opts("Graph").size).to eq(1)
 
-          allow(self).to receive(:can?).with(user, :download_code, @project).and_return(false)
+          allow(self).to receive(:can?).with(user, :read_code, @project).and_return(false)
 
           expect(search_autocomplete_opts("Files").size).to eq(0)
           expect(search_autocomplete_opts("Commits").size).to eq(0)

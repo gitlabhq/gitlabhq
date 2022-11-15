@@ -25,6 +25,7 @@ exceptions:
   - ARN
   - ASCII
   - ASG
+  - AST
   - AWS
   - BMP
   - BSD

@@ -15,6 +15,8 @@
 - add_page_specific_style 'page_bundles/ci_status'
 
 - add_page_startup_api_call @endpoint_metadata_url
+- if mr_action == 'diffs'
+  - add_page_startup_api_call @endpoint_diff_batch_url
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   - if moved_mr_sidebar_enabled?

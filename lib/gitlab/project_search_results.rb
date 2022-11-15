@@ -117,7 +117,7 @@ module Gitlab
     end
 
     def blobs(limit: count_limit)
-      return [] unless Ability.allowed?(@current_user, :download_code, @project)
+      return [] unless Ability.allowed?(@current_user, :read_code, @project)
 
       @blobs ||= Gitlab::FileFinder.new(project, repository_project_ref).find(query, content_match_cutoff: limit)
     end
@@ -153,7 +153,7 @@ module Gitlab
     end
 
     def find_commits(query, limit:)
-      return [] unless Ability.allowed?(@current_user, :download_code, @project)
+      return [] unless Ability.allowed?(@current_user, :read_code, @project)
 
       commits = find_commits_by_message(query, limit: limit)
       commit_by_sha = find_commit_by_sha(query)

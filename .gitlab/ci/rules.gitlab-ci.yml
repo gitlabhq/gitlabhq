@@ -83,8 +83,8 @@
 .if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
   if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
-.if-merge-request-labels-pipeline-revert: &if-merge-request-labels-pipeline-revert
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:revert/'
+.if-merge-request-labels-pipeline-expedite-master-fixing: &if-merge-request-labels-pipeline-expedite-master-fixing
+  if: '$CI_MERGE_REQUEST_LABELS =~ /master:(foss-)?broken/ && $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite-master-fixing/'
 
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
   if: '$CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
@@ -993,7 +993,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
@@ -1102,7 +1102,7 @@
       when: never
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
@@ -1541,7 +1541,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
@@ -1552,7 +1552,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
@@ -1587,7 +1587,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true" || $RETRY_FAILED_TESTS_IN_NEW_PROCESS == "true"'
       changes: *code-backstage-patterns
@@ -1868,7 +1868,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1933,7 +1933,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-labels-run-review-app
       when: manual

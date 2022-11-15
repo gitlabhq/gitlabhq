@@ -205,7 +205,7 @@ module SearchHelper
         hash[:project] = { id: @project.id, name: @project.name }
         hash[:project_metadata] = { issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project) }
         hash[:code_search] = search_scope.nil?
-        hash[:ref] = @ref if @ref && can?(current_user, :download_code, @project)
+        hash[:ref] = @ref if @ref && can?(current_user, :read_code, @project)
       end
 
       hash[:scope] = search_scope if search_has_project? || search_has_group?
@@ -268,7 +268,7 @@ module SearchHelper
 
       result = []
 
-      if can?(current_user, :download_code, @project)
+      if can?(current_user, :read_code, @project)
         result.concat([
                         { category: "In this project", label: _("Files"),          url: project_tree_path(@project, ref) },
                         { category: "In this project", label: _("Commits"),        url: project_commits_path(@project, ref) }

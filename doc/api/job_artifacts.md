@@ -25,7 +25,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 Example request using the `PRIVATE-TOKEN` header:
 
 ```shell
-curl --output artifacts.zip --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
+curl --location --output artifacts.zip --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
 ```
 
 To use this in a [`script` definition](../ci/yaml/index.md#script) inside
@@ -90,7 +90,7 @@ Parameters
 Example request using the `PRIVATE-TOKEN` header:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test"
+curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test"
 ```
 
 To use this in a [`script` definition](../ci/yaml/index.md#script) inside

@@ -62,8 +62,6 @@ to display, add a file to your repository.
 To preview Markdown content in the Web Editor, select the **Preview** tab.
 In this tab, you can see a live Markdown preview that updates as you type alongside your content.
 
-![The Markdown Live Preview](img/web_editor_markdown_live_preview.png)
-
 To close the preview panel, do one of the following:
 
 - Select the **Write** tab.

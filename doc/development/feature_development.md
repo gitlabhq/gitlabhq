@@ -197,6 +197,7 @@ The following integration guides are internal. Some integrations require access 
 - [Preventing transient bugs](transient/prevention-patterns.md)
 - [GitLab Application SLIs](application_slis/index.md)
 - [Spam protection and CAPTCHA development guide](spam_protection_and_captcha/index.md)
+- [RuboCop development guide](rubocop_development_guide.md)
 
 ## Other GitLab Development Kit (GDK) guides
 
