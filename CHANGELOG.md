@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.4.5 (2022-11-15)
+
+### Fixed (1 change)
+
+- [Revert Sidekiq default routing rules](gitlab-org/gitlab@b8b62286bc660decc83dad6295b121e134451924) ([merge request](gitlab-org/gitlab!103641))
+
 ## 15.4.4 (2022-11-02)
 
 ### Security (12 changes)
