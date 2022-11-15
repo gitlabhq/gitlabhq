@@ -30,6 +30,97 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
   end
 
+  shared_examples_for 'rate limited' do
+    it 'redirects to the login form and shows an alert message' do
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert])
+        .to eq(s_('IdentityVerification|Maximum login attempts exceeded. Wait 10 minutes and try again.'))
+    end
+  end
+
+  shared_examples_for 'two factor prompt or successful login' do
+    it 'shows the 2FA prompt when enabled or redirects to the root path' do
+      if user.two_factor_enabled?
+        expect(response.body).to include('Two-factor authentication code')
+      else
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
+
+  shared_examples_for 'verifying with email' do
+    context 'when rate limited' do
+      before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        sign_in
+      end
+
+      it_behaves_like 'rate limited'
+    end
+
+    context 'when the user already has an unlock_token set' do
+      before do
+        user.update!(unlock_token: 'token')
+        sign_in
+      end
+
+      it_behaves_like 'prompt for email verification'
+    end
+
+    context 'when the user is already locked' do
+      before do
+        user.update!(locked_at: Time.current)
+        perform_enqueued_jobs { sign_in }
+      end
+
+      it_behaves_like 'send verification instructions'
+      it_behaves_like 'prompt for email verification'
+    end
+
+    context 'when the user is signing in from an unknown ip address' do
+      before do
+        allow(AuthenticationEvent)
+          .to receive(:initial_login_or_known_ip_address?)
+          .and_return(false)
+        perform_enqueued_jobs { sign_in }
+      end
+
+      it_behaves_like 'send verification instructions'
+      it_behaves_like 'prompt for email verification'
+    end
+  end
+
+  shared_examples_for 'not verifying with email' do
+    context 'when rate limited' do
+      before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        sign_in
+      end
+
+      it_behaves_like 'two factor prompt or successful login'
+    end
+
+    context 'when the user already has an unlock_token set' do
+      before do
+        user.update!(unlock_token: 'token')
+        sign_in
+      end
+
+      it_behaves_like 'two factor prompt or successful login'
+    end
+
+    context 'when the user is signing in from an unknown ip address' do
+      before do
+        allow(AuthenticationEvent)
+          .to receive(:initial_login_or_known_ip_address?)
+          .and_return(false)
+        sign_in
+      end
+
+      it_behaves_like 'two factor prompt or successful login'
+    end
+  end
+
   describe 'verify_with_email' do
     context 'when user is locked and a verification_user_id session variable exists' do
       before do
@@ -99,69 +190,34 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
 
     context 'when signing in with a valid password' do
-      let(:sign_in) { post(user_session_path(user: { login: user.username, password: user.password })) }
+      let(:headers) { {} }
+      let(:sign_in) do
+        post user_session_path, params: { user: { login: user.username, password: user.password } }, headers: headers
+      end
+
+      it_behaves_like 'not verifying with email'
 
       context 'when the feature flag is toggled on' do
         before do
           stub_feature_flags(require_email_verification: user)
         end
 
-        context 'when rate limited' do
+        it_behaves_like 'verifying with email'
+
+        context 'when 2FA is enabled' do
           before do
-            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
-            sign_in
+            user.update!(otp_required_for_login: true)
           end
 
-          it 'redirects to the login form and shows an alert message' do
-            expect(response).to redirect_to(new_user_session_path)
-            expect(flash[:alert])
-              .to eq(s_('IdentityVerification|Maximum login attempts exceeded. Wait 10 minutes and try again.'))
-          end
+          it_behaves_like 'not verifying with email'
         end
 
-        context 'when the user already has an unlock_token set' do
+        context 'when request is not from a QA user' do
           before do
-            user.update!(unlock_token: 'token')
-            sign_in
+            allow(Gitlab::Qa).to receive(:request?).and_return(false)
           end
 
-          it_behaves_like 'prompt for email verification'
-        end
-
-        context 'when the user is already locked' do
-          before do
-            user.update!(locked_at: Time.current)
-            perform_enqueued_jobs { sign_in }
-          end
-
-          it_behaves_like 'send verification instructions'
-          it_behaves_like 'prompt for email verification'
-        end
-
-        context 'when the user is signing in from an unknown ip address' do
-          before do
-            allow(AuthenticationEvent)
-              .to receive(:initial_login_or_known_ip_address?)
-              .and_return(false)
-
-            perform_enqueued_jobs { sign_in }
-          end
-
-          it_behaves_like 'send verification instructions'
-          it_behaves_like 'prompt for email verification'
-        end
-      end
-
-      context 'when the feature flag is toggled off' do
-        let(:another_user) { build(:user) }
-
-        before do
-          stub_feature_flags(require_email_verification: another_user)
-          sign_in
-        end
-
-        it 'redirects to the root path' do
-          expect(response).to redirect_to(root_path)
+          it_behaves_like 'verifying with email'
         end
       end
     end

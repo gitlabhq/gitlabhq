@@ -28,7 +28,7 @@ full list of reference architectures, see
 | Internal load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    |
-| Gitaly<sup>5</sup><sup>6</sup>           | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge`   |
+| Gitaly<sup>5 6</sup>                     | 3     | 16 vCPU, 60 GB memory   | `n1-standard-16` | `m5.4xlarge`   |
 | Praefect<sup>5</sup>                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`     |
 | Sidekiq                                  | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`    |
@@ -2300,6 +2300,10 @@ compute deployments. With this, _stateless_ components can benefit from cloud na
 workload management benefits while _stateful_ components are deployed in compute VMs
 with Omnibus to benefit from increased permanence.
 
+Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts/advanced/)
+documentation for setup instructions including guidance on what GitLab secrets to sync
+between Kubernetes and the backend components.
+
 NOTE:
 This is an **advanced** setup. Running services in Kubernetes is well known
 to be complex. **This setup is only recommended** if you have strong working
@@ -2342,7 +2346,7 @@ services where applicable):
 | Internal load balancing node<sup>3</sup> | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4`  | `m5.xlarge`  |
-| Gitaly<sup>5</sup><sup>6</sup>           | 3     | 16 vCPU, 60 GB memory | `n1-standard-16` | `m5.4xlarge` |
+| Gitaly<sup>5 6</sup>                     | 3     | 16 vCPU, 60 GB memory | `n1-standard-16` | `m5.4xlarge` |
 | Praefect<sup>5</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`   | `c5.large`   |
 | Object storage<sup>4</sup>               | -     | -                     | -                | -            |
@@ -2467,7 +2471,7 @@ ratio for each additional pod.
 
 For further information on resource usage, see the [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
 
-### Supporting
+#### Supporting
 
 The Supporting Node Pool is designed to house all supporting deployments that don't need to be
 on the Webservice and Sidekiq pools.
@@ -2479,6 +2483,12 @@ If you wish to make any additional deployments, such as for Monitoring, it's rec
 to deploy these in this pool where possible and not in the Webservice or Sidekiq pools, as the Supporting pool has been designed
 specifically to accommodate several additional deployments. However, if your deployments don't fit into the
 pool as given, you can increase the node pool accordingly.
+
+## Secrets
+
+When setting up a Cloud Native Hybrid environment, it's worth noting that several secrets should be synced from backend VMs from the `/etc/gitlab/gitlab-secrets.json` file into Kubernetes.
+
+For this setup specifically, the [GitLab Rails](https://docs.gitlab.com/charts/installation/secrets.html#gitlab-rails-secret) and [GitLab Shell](https://docs.gitlab.com/charts/installation/secrets.html#gitlab-rails-secret) secrets should be synced.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

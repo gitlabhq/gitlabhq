@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/string/conversions"
+
 module QA
   module Support
     module Formatters
-      class TestStatsFormatter < RSpec::Core::Formatters::BaseFormatter
+      class TestMetricsFormatter < RSpec::Core::Formatters::BaseFormatter
         include Support::InfluxdbTools
 
         RSpec::Core::Formatters.register(self, :stop)
@@ -13,29 +15,43 @@ module QA
         # @param [RSpec::Core::Notifications::ExamplesNotification] notification
         # @return [void]
         def stop(notification)
-          push_test_stats(notification.examples)
-          push_fabrication_stats
+          return log(:warn, "Missing run_type, skipping metrics export!") unless run_type
+
+          parse_execution_data(notification.examples)
+
+          if Runtime::Env.export_metrics?
+            push_test_metrics
+            push_fabrication_metrics
+          end
+
+          save_test_metrics if Runtime::Env.save_metrics_json?
         end
 
         private
 
-        # Push test execution stats to influxdb
+        # Save execution data for the run
         #
         # @param [Array<RSpec::Core::Example>] examples
-        # @return [void]
-        def push_test_stats(examples)
-          data = examples.map { |example| test_stats(example) }.compact
-
-          write_api.write(data: data)
-          log(:debug, "Pushed #{data.length} test execution entries to influxdb")
-        rescue StandardError => e
-          log(:error, "Failed to push test execution stats to influxdb, error: #{e}")
+        # @return [Array<Hash>]
+        def execution_data(examples = nil)
+          @execution_metrics ||= examples.map { |example| test_stats(example) }.compact
         end
+        alias_method :parse_execution_data, :execution_data
 
-        # Push resource fabrication stats to influxdb
+        # Push test execution metrics to influxdb
         #
         # @return [void]
-        def push_fabrication_stats
+        def push_test_metrics
+          write_api.write(data: execution_data)
+          log(:debug, "Pushed #{execution_data.length} test execution entries to influxdb")
+        rescue StandardError => e
+          log(:error, "Failed to push test execution metrics to influxdb, error: #{e}")
+        end
+
+        # Push resource fabrication metrics to influxdb
+        #
+        # @return [void]
+        def push_fabrication_metrics
           data = Tools::TestResourceDataProcessor.resources.flat_map do |resource, values|
             values.map { |v| fabrication_stats(resource: resource, **v) }
           end
@@ -44,7 +60,16 @@ module QA
           write_api.write(data: data)
           log(:debug, "Pushed #{data.length} resource fabrication entries to influxdb")
         rescue StandardError => e
-          log(:error, "Failed to push fabrication stats to influxdb, error: #{e}")
+          log(:error, "Failed to push fabrication metrics to influxdb, error: #{e}")
+        end
+
+        # Save metrics in json file
+        #
+        # @return [void]
+        def save_test_metrics
+          File.write("tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}.json", execution_data.to_json)
+        rescue StandardError => e
+          log(:error, "Failed to save test execution metrics, error: #{e}")
         end
 
         # Transform example to influxdb compatible metrics data
@@ -56,6 +81,9 @@ module QA
           file_path = example.metadata[:file_path].gsub('./qa/specs/features', '')
           api_fabrication = ((example.metadata[:api_fabrication] || 0) * 1000).round
           ui_fabrication = ((example.metadata[:browser_ui_fabrication] || 0) * 1000).round
+
+          # do not export results for tests that are not compatible with environment
+          return if incompatible_env?(example)
 
           {
             name: 'test-stats',
@@ -101,6 +129,7 @@ module QA
         # @param [Symbol] fabrication_method
         # @param [Symbol] http_method
         # @param [Integer] fabrication_time
+        # @param [String] timestamp
         # @return [Hash]
         def fabrication_stats(resource:, info:, fabrication_method:, http_method:, fabrication_time:, timestamp:, **)
           {
@@ -136,7 +165,7 @@ module QA
           @time ||= begin
             return Time.now unless env('CI_PIPELINE_CREATED_AT')
 
-            DateTime.strptime(env('CI_PIPELINE_CREATED_AT')).to_time
+            env('CI_PIPELINE_CREATED_AT').to_time
           end
         end
 
@@ -170,6 +199,17 @@ module QA
           return rspec_status if [:pending, :failed].include?(rspec_status)
 
           retry_attempts(example.metadata) > 0 ? :flaky : :passed
+        end
+
+        # Check if test was skipped due to context condition
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [Boolean]
+        def incompatible_env?(example)
+          return false unless example.execution_result.status == :pending
+          return false unless example.metadata[:skip]
+
+          !example.metadata[:skip].to_s.include?("quarantine") # rubocop:disable Rails/NegateInclude
         end
 
         # Retry attempts

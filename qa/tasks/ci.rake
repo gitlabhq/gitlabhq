@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "helpers/util"
-
 namespace :ci do
+  require_relative "helpers/util"
+
   include Task::Helpers::Util
 
   desc "Detect changes and populate test variables for selective test execution and feature flag testing"
@@ -57,5 +57,12 @@ namespace :ci do
   desc "Download test results from downstream pipeline"
   task :download_test_results, [:trigger_name, :test_report_job_name, :report_path] do |_, args|
     QA::Tools::Ci::TestResults.get(args[:trigger_name], args[:test_report_job_name], args[:report_path])
+  end
+
+  desc "Export test run metrics to influxdb"
+  task :export_test_metrics, [:glob] do |_, args|
+    raise("Metrics file glob pattern is required") unless args[:glob]
+
+    QA::Tools::Ci::TestMetrics.export(args[:glob])
   end
 end

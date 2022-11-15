@@ -2954,7 +2954,7 @@ msgstr ""
 msgid "AdminSettings|Select a CI/CD template"
 msgstr ""
 
-msgid "AdminSettings|Select a group to use as the source for instance-level project templates."
+msgid "AdminSettings|Select a group to use as a source of custom templates for new projects. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Select to disable public access for Pages sites, which requires users to sign in for access to the Pages sites in your instance. %{link_start}Learn more.%{link_end}"
@@ -3015,9 +3015,6 @@ msgid "AdminSettings|The host of your Jitsu instance."
 msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
-msgstr ""
-
-msgid "AdminSettings|The projects in this group can be selected as templates for new projects created on the instance. %{link_start}Learn more.%{link_end} "
 msgstr ""
 
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
@@ -15164,6 +15161,9 @@ msgstr ""
 msgid "Enter at least three characters to search"
 msgstr ""
 
+msgid "Enter at least three characters to search."
+msgstr ""
+
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
@@ -19425,7 +19425,7 @@ msgstr ""
 msgid "GroupSettings|Reporting"
 msgstr ""
 
-msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
+msgid "GroupSettings|Select a subgroup to use as a source of custom templates for new projects in this group. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|Select parent group"
@@ -19444,9 +19444,6 @@ msgid "GroupSettings|Set the initial name and protections for the default branch
 msgstr ""
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
-msgstr ""
-
-msgid "GroupSettings|The projects in this subgroup can be selected as templates for new projects created in the group. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_messages}."
@@ -27302,6 +27299,9 @@ msgid "No results"
 msgstr ""
 
 msgid "No results found"
+msgstr ""
+
+msgid "No results found."
 msgstr ""
 
 msgid "No runner executable"
@@ -37033,6 +37033,9 @@ msgstr ""
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
 msgstr ""
 
+msgid "Select a group"
+msgstr ""
+
 msgid "Select a label"
 msgstr ""
 
@@ -41007,9 +41010,6 @@ msgstr ""
 msgid "There are no abuse reports!"
 msgstr ""
 
-msgid "There are no archived projects yet"
-msgstr ""
-
 msgid "There are no archived requirements"
 msgstr ""
 
@@ -41065,9 +41065,6 @@ msgid "There are no open test cases"
 msgstr ""
 
 msgid "There are no packages yet"
-msgstr ""
-
-msgid "There are no projects shared with this group yet"
 msgstr ""
 
 msgid "There are no secure files yet."
@@ -43210,6 +43207,12 @@ msgid "Unable to fetch branch list for this project."
 msgstr ""
 
 msgid "Unable to fetch branches list, please close the form and try again"
+msgstr ""
+
+msgid "Unable to fetch group. Reload the page to try again."
+msgstr ""
+
+msgid "Unable to fetch groups. Reload the page to try again."
 msgstr ""
 
 msgid "Unable to fetch upstream and downstream pipelines."

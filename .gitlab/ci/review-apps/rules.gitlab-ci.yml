@@ -98,7 +98,6 @@
   rules:
     - when: always
 
-.rules:notify-slack:
+.rules:main-run:
   rules:
-    - <<: *default-branch
-      when: on_failure
+    - *default-branch

@@ -8,140 +8,74 @@ RSpec.describe 'getting an issue list for a project' do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:issue_a, reload: true) { create(:issue, project: project, discussion_locked: true) }
-  let_it_be(:issue_b, reload: true) { create(:issue, :with_alert, project: project) }
-  let_it_be(:issues, reload: true) { [issue_a, issue_b] }
+  let_it_be(:another_user) { create(:user).tap { |u| group.add_reporter(u) } }
+  let_it_be(:early_milestone) { create(:milestone, project: project, due_date: 10.days.from_now) }
+  let_it_be(:late_milestone) { create(:milestone, project: project, due_date: 30.days.from_now) }
+  let_it_be(:priority1) { create(:label, project: project, priority: 1) }
+  let_it_be(:priority2) { create(:label, project: project, priority: 5) }
+  let_it_be(:priority3) { create(:label, project: project, priority: 10) }
+
+  let_it_be(:issue_a, reload: true) { create(:issue, project: project, discussion_locked: true, labels: [priority3]) }
+  let_it_be(:issue_b, reload: true) { create(:issue, :with_alert, project: project, title: 'title matching issue i') }
+  let_it_be(:issue_c) { create(:issue, project: project, labels: [priority1], milestone: late_milestone) }
+  let_it_be(:issue_d) { create(:issue, project: project, labels: [priority2]) }
+  let_it_be(:issue_e) { create(:issue, project: project, milestone: early_milestone) }
+  let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
 
   let(:issue_a_gid) { issue_a.to_global_id.to_s }
   let(:issue_b_gid) { issue_b.to_global_id.to_s }
-  let(:issues_data) { graphql_data['project']['issues']['edges'] }
+  let(:issues_data) { graphql_data['project']['issues']['nodes'] }
   let(:issue_filter_params) { {} }
 
   let(:fields) do
     <<~QUERY
-    edges {
-      node {
-        #{all_graphql_fields_for('issues'.classify)}
-      }
+    nodes {
+      #{all_graphql_fields_for('issues'.classify)}
     }
     QUERY
   end
 
-  it_behaves_like 'a working graphql query' do
-    before do
-      post_graphql(query, current_user: current_user)
-    end
-  end
+  # All new specs should be added to the shared example if the change also
+  # affects the `issues` query at the root level of the API.
+  # Shared example also used in spec/requests/api/graphql/issues_spec.rb
+  it_behaves_like 'graphql issue list request spec' do
+    subject(:post_query) { post_graphql(query, current_user: current_user) }
 
-  it 'includes a web_url' do
-    post_graphql(query, current_user: current_user)
+    # filters
+    let(:expected_negated_assignee_issues) { [issue_b, issue_c, issue_d, issue_e] }
+    let(:expected_unioned_assignee_issues) { [issue_a, issue_b] }
+    let(:voted_issues) { [issue_a] }
+    let(:no_award_issues) { [issue_b, issue_c, issue_d, issue_e] }
+    let(:locked_discussion_issues) { [issue_a] }
+    let(:unlocked_discussion_issues) { [issue_b, issue_c, issue_d, issue_e] }
+    let(:search_title_term) { 'matching issue' }
+    let(:title_search_issue) { issue_b }
 
-    expect(issues_data[0]['node']['webUrl']).to be_present
-  end
+    # sorting
+    let(:data_path) { [:project, :issues] }
+    let(:expected_severity_sorted_asc) { [issue_c, issue_a, issue_b, issue_e, issue_d] }
+    let(:expected_priority_sorted_asc) { [issue_e, issue_c, issue_d, issue_a, issue_b] }
+    let(:expected_priority_sorted_desc) { [issue_c, issue_e, issue_a, issue_d, issue_b] }
 
-  it 'includes discussion locked' do
-    post_graphql(query, current_user: current_user)
-
-    expect(issues_data[0]['node']['discussionLocked']).to eq(false)
-    expect(issues_data[1]['node']['discussionLocked']).to eq(true)
-  end
-
-  context 'when both assignee_username filters are provided' do
-    let(:issue_filter_params) { { assignee_username: current_user.username, assignee_usernames: [current_user.username] } }
-
-    it 'returns a mutually exclusive param error' do
-      post_graphql(query, current_user: current_user)
-
-      expect_graphql_errors_to_include('only one of [assigneeUsernames, assigneeUsername] arguments is allowed at the same time.')
-    end
-  end
-
-  context 'when filtering by a negated argument' do
-    let(:issue_filter_params) { { not: { assignee_usernames: current_user.username } } }
-
-    it 'returns correctly filtered issues' do
-      issue_a.assignee_ids = current_user.id
-
-      post_graphql(query, current_user: current_user)
-
-      expect(issues_ids).to contain_exactly(issue_b_gid)
-    end
-
-    context 'when argument is blank' do
-      let(:issue_filter_params) { { not: {} } }
-
-      it 'does not raise an error' do
-        post_graphql(query, current_user: current_user)
-
-        expect_graphql_errors_to_be_empty
-      end
-    end
-  end
-
-  context 'when filtering by a unioned argument' do
-    let(:another_user) { create(:user) }
-    let(:issue_filter_params) { { or: { assignee_usernames: [current_user.username, another_user.username] } } }
-
-    it 'returns correctly filtered issues' do
+    before_all do
       issue_a.assignee_ids = current_user.id
       issue_b.assignee_ids = another_user.id
 
-      post_graphql(query, current_user: current_user)
+      create(:award_emoji, :upvote, user: current_user, awardable: issue_a)
 
-      expect(issues_ids).to contain_exactly(issue_a_gid, issue_b_gid)
+      # severity sorting
+      create(:issuable_severity, issue: issue_a, severity: :unknown)
+      create(:issuable_severity, issue: issue_b, severity: :low)
+      create(:issuable_severity, issue: issue_d, severity: :critical)
+      create(:issuable_severity, issue: issue_e, severity: :high)
     end
 
-    context 'when argument is blank' do
-      let(:issue_filter_params) { { or: {} } }
-
-      it 'does not raise an error' do
-        post_graphql(query, current_user: current_user)
-
-        expect_graphql_errors_to_be_empty
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      it 'returns an error' do
-        stub_feature_flags(or_issuable_queries: false)
-
-        post_graphql(query, current_user: current_user)
-
-        expect_graphql_errors_to_include("'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled.")
-      end
-    end
-  end
-
-  context 'filtering by my_reaction_emoji' do
-    using RSpec::Parameterized::TableSyntax
-
-    let_it_be(:upvote_award) { create(:award_emoji, :upvote, user: current_user, awardable: issue_a) }
-
-    where(:value, :gids) do
-      'thumbsup'   | lazy { [issue_a_gid] }
-      'ANY'        | lazy { [issue_a_gid] }
-      'any'        | lazy { [issue_a_gid] }
-      'AnY'        | lazy { [issue_a_gid] }
-      'NONE'       | lazy { [issue_b_gid] }
-      'thumbsdown' | lazy { [] }
-    end
-
-    with_them do
-      let(:issue_filter_params) { { my_reaction_emoji: value } }
-
-      it 'returns correctly filtered issues' do
-        post_graphql(query, current_user: current_user)
-
-        expect(issues_ids).to eq(gids)
-      end
-    end
-  end
-
-  context 'when filtering by search' do
-    it_behaves_like 'query with a search term' do
-      let(:issuable_data) { issues_data }
-      let(:user) { current_user }
-      let_it_be(:issuable) { create(:issue, project: project, description: 'bar') }
+    def pagination_query(params)
+      graphql_query_for(
+        :project,
+        { full_path: project.full_path },
+        query_graphql_field(:issues, params, "#{page_info} nodes { id }")
+      )
     end
   end
 
@@ -211,10 +145,10 @@ RSpec.describe 'getting an issue list for a project' do
       it 'returns issues without confidential issues' do
         post_graphql(query, current_user: current_user)
 
-        expect(issues_data.size).to eq(2)
+        expect(issues_data.size).to eq(5)
 
         issues_data.each do |issue|
-          expect(issue.dig('node', 'confidential')).to eq(false)
+          expect(issue['confidential']).to eq(false)
         end
       end
 
@@ -234,7 +168,7 @@ RSpec.describe 'getting an issue list for a project' do
         it 'returns correctly filtered issues' do
           post_graphql(query, current_user: current_user)
 
-          expect(issues_ids).to contain_exactly(issue_a_gid, issue_b_gid)
+          expect(issue_ids).to match_array(issues.map { |i| i.to_gid.to_s })
         end
       end
     end
@@ -247,13 +181,13 @@ RSpec.describe 'getting an issue list for a project' do
       it 'returns issues with confidential issues' do
         post_graphql(query, current_user: current_user)
 
-        expect(issues_data.size).to eq(3)
+        expect(issues_data.size).to eq(6)
 
         confidentials = issues_data.map do |issue|
-          issue.dig('node', 'confidential')
+          issue['confidential']
         end
 
-        expect(confidentials).to eq([true, false, false])
+        expect(confidentials).to contain_exactly(true, false, false, false, false, false)
       end
 
       context 'filtering for confidential issues' do
@@ -262,7 +196,7 @@ RSpec.describe 'getting an issue list for a project' do
         it 'returns correctly filtered issues' do
           post_graphql(query, current_user: current_user)
 
-          expect(issues_ids).to contain_exactly(confidential_issue_gid)
+          expect(issue_ids).to contain_exactly(confidential_issue_gid)
         end
       end
 
@@ -272,7 +206,7 @@ RSpec.describe 'getting an issue list for a project' do
         it 'returns correctly filtered issues' do
           post_graphql(query, current_user: current_user)
 
-          expect(issues_ids).to contain_exactly(issue_a_gid, issue_b_gid)
+          expect(issue_ids).to match_array([issue_a, issue_b, issue_c, issue_d, issue_e].map { |i| i.to_gid.to_s })
         end
       end
     end
@@ -294,37 +228,7 @@ RSpec.describe 'getting an issue list for a project' do
       data.map { |issue| issue['iid'].to_i }
     end
 
-    context 'when sorting by severity' do
-      let_it_be(:severty_issue1) { create(:issue, project: sort_project) }
-      let_it_be(:severty_issue2) { create(:issue, project: sort_project) }
-      let_it_be(:severty_issue3) { create(:issue, project: sort_project) }
-      let_it_be(:severty_issue4) { create(:issue, project: sort_project) }
-      let_it_be(:severty_issue5) { create(:issue, project: sort_project) }
-
-      before(:all) do
-        create(:issuable_severity, issue: severty_issue1, severity: :unknown)
-        create(:issuable_severity, issue: severty_issue2, severity: :low)
-        create(:issuable_severity, issue: severty_issue4, severity: :critical)
-        create(:issuable_severity, issue: severty_issue5, severity: :high)
-      end
-
-      context 'when ascending' do
-        it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :SEVERITY_ASC }
-          let(:first_param)      { 2 }
-          let(:all_records) { [severty_issue3.iid, severty_issue1.iid, severty_issue2.iid, severty_issue5.iid, severty_issue4.iid] }
-        end
-      end
-
-      context 'when descending' do
-        it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :SEVERITY_DESC }
-          let(:first_param)      { 2 }
-          let(:all_records) { [severty_issue4.iid, severty_issue5.iid, severty_issue2.iid, severty_issue1.iid, severty_issue3.iid] }
-        end
-      end
-    end
-
+    # rubocop:disable RSpec/MultipleMemoizedHelpers
     context 'when sorting by due date' do
       let_it_be(:due_issue1) { create(:issue, project: sort_project, due_date: 3.days.from_now) }
       let_it_be(:due_issue2) { create(:issue, project: sort_project, due_date: nil) }
@@ -370,41 +274,6 @@ RSpec.describe 'getting an issue list for a project' do
       end
     end
 
-    context 'when sorting by priority' do
-      let_it_be(:on_project) { { project: sort_project } }
-      let_it_be(:early_milestone) { create(:milestone, **on_project, due_date: 10.days.from_now) }
-      let_it_be(:late_milestone) { create(:milestone, **on_project, due_date: 30.days.from_now) }
-      let_it_be(:priority_1) { create(:label, **on_project, priority: 1) }
-      let_it_be(:priority_2) { create(:label, **on_project, priority: 5) }
-      let_it_be(:priority_issue1) { create(:issue, **on_project, labels: [priority_1], milestone: late_milestone) }
-      let_it_be(:priority_issue2) { create(:issue, **on_project, labels: [priority_2]) }
-      let_it_be(:priority_issue3) { create(:issue, **on_project, milestone: early_milestone) }
-      let_it_be(:priority_issue4) { create(:issue, **on_project) }
-
-      context 'when ascending' do
-        it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :PRIORITY_ASC }
-          let(:first_param)      { 2 }
-          let(:all_records) do
-            [
-              priority_issue3.iid, priority_issue1.iid,
-              priority_issue2.iid, priority_issue4.iid
-            ]
-          end
-        end
-      end
-
-      context 'when descending' do
-        it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :PRIORITY_DESC }
-          let(:first_param)      { 2 }
-          let(:all_records) do
-            [priority_issue1.iid, priority_issue3.iid, priority_issue2.iid, priority_issue4.iid]
-          end
-        end
-      end
-    end
-
     context 'when sorting by label priority' do
       let_it_be(:label1) { create(:label, project: sort_project, priority: 1) }
       let_it_be(:label2) { create(:label, project: sort_project, priority: 5) }
@@ -430,6 +299,7 @@ RSpec.describe 'getting an issue list for a project' do
         end
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     context 'when sorting by milestone due date' do
       let_it_be(:early_milestone)  { create(:milestone, project: sort_project, due_date: 10.days.from_now) }
@@ -459,8 +329,7 @@ RSpec.describe 'getting an issue list for a project' do
   context 'when fetching alert management alert' do
     let(:fields) do
       <<~QUERY
-      edges {
-        node {
+        nodes {
           iid
           alertManagementAlert {
             title
@@ -471,7 +340,6 @@ RSpec.describe 'getting an issue list for a project' do
             }
           }
         }
-      }
       QUERY
     end
 
@@ -491,7 +359,7 @@ RSpec.describe 'getting an issue list for a project' do
     it 'returns the alert data' do
       post_graphql(query, current_user: current_user)
 
-      alert_titles = issues_data.map { |issue| issue.dig('node', 'alertManagementAlert', 'title') }
+      alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlert', 'title') }
       expected_titles = issues.map { |issue| issue.alert_management_alert&.title }
 
       expect(alert_titles).to contain_exactly(*expected_titles)
@@ -500,7 +368,7 @@ RSpec.describe 'getting an issue list for a project' do
     it 'returns the alerts data' do
       post_graphql(query, current_user: current_user)
 
-      alert_titles = issues_data.map { |issue| issue.dig('node', 'alertManagementAlerts', 'nodes') }
+      alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlerts', 'nodes') }
       expected_titles = issues.map do |issue|
         issue.alert_management_alerts.map { |alert| { 'title' => alert.title } }
       end
@@ -541,13 +409,11 @@ RSpec.describe 'getting an issue list for a project' do
   context 'when fetching labels' do
     let(:fields) do
       <<~QUERY
-        edges {
-          node {
-            id
-            labels {
-              nodes {
-                id
-              }
+        nodes {
+          id
+          labels {
+            nodes {
+              id
             }
           }
         }
@@ -563,8 +429,8 @@ RSpec.describe 'getting an issue list for a project' do
     end
 
     def response_label_ids(response_data)
-      response_data.map do |edge|
-        edge['node']['labels']['nodes'].map { |u| u['id'] }
+      response_data.map do |node|
+        node['labels']['nodes'].map { |u| u['id'] }
       end.flatten
     end
 
@@ -574,7 +440,7 @@ RSpec.describe 'getting an issue list for a project' do
 
     it 'avoids N+1 queries', :aggregate_failures do
       control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
-      expect(issues_data.count).to eq(2)
+      expect(issues_data.count).to eq(5)
       expect(response_label_ids(issues_data)).to match_array(labels_as_global_ids(issues))
 
       new_issues = issues + [create(:issue, project: project, labels: [create(:label, project: project)])]
@@ -582,8 +448,8 @@ RSpec.describe 'getting an issue list for a project' do
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
       # graphql_data is memoized (see spec/support/helpers/graphql_helpers.rb)
       # so we have to parse the body ourselves the second time
-      issues_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
-      expect(issues_data.count).to eq(3)
+      issues_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['nodes']
+      expect(issues_data.count).to eq(6)
       expect(response_label_ids(issues_data)).to match_array(labels_as_global_ids(new_issues))
     end
   end
@@ -591,13 +457,11 @@ RSpec.describe 'getting an issue list for a project' do
   context 'when fetching assignees' do
     let(:fields) do
       <<~QUERY
-        edges {
-          node {
-            id
-            assignees {
-              nodes {
-                id
-              }
+        nodes {
+          id
+          assignees {
+            nodes {
+              id
             }
           }
         }
@@ -613,8 +477,8 @@ RSpec.describe 'getting an issue list for a project' do
     end
 
     def response_assignee_ids(response_data)
-      response_data.map do |edge|
-        edge['node']['assignees']['nodes'].map { |node| node['id'] }
+      response_data.map do |node|
+        node['assignees']['nodes'].map { |node| node['id'] }
       end.flatten
     end
 
@@ -624,7 +488,7 @@ RSpec.describe 'getting an issue list for a project' do
 
     it 'avoids N+1 queries', :aggregate_failures do
       control = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
-      expect(issues_data.count).to eq(2)
+      expect(issues_data.count).to eq(5)
       expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(issues))
 
       new_issues = issues + [create(:issue, project: project, assignees: [create(:user)])]
@@ -632,8 +496,8 @@ RSpec.describe 'getting an issue list for a project' do
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
       # graphql_data is memoized (see spec/support/helpers/graphql_helpers.rb)
       # so we have to parse the body ourselves the second time
-      issues_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['edges']
-      expect(issues_data.count).to eq(3)
+      issues_data = Gitlab::Json.parse(response.body)['data']['project']['issues']['nodes']
+      expect(issues_data.count).to eq(6)
       expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(new_issues))
     end
   end
@@ -644,11 +508,9 @@ RSpec.describe 'getting an issue list for a project' do
     let(:statuses) { issue_data.to_h { |issue| [issue['iid'], issue['escalationStatus']] } }
     let(:fields) do
       <<~QUERY
-        edges {
-          node {
-            id
-            escalationStatus
-          }
+        nodes {
+          id
+          escalationStatus
         }
       QUERY
     end
@@ -660,9 +522,9 @@ RSpec.describe 'getting an issue list for a project' do
     it 'returns the escalation status values' do
       post_graphql(query, current_user: current_user)
 
-      statuses = issues_data.map { |issue| issue.dig('node', 'escalationStatus') }
+      statuses = issues_data.map { |issue| issue['escalationStatus'] }
 
-      expect(statuses).to contain_exactly(escalation_status.status_name.upcase.to_s, nil)
+      expect(statuses).to contain_exactly(escalation_status.status_name.upcase.to_s, nil, nil, nil, nil)
     end
 
     it 'avoids N+1 queries', :aggregate_failures do
@@ -798,8 +660,8 @@ RSpec.describe 'getting an issue list for a project' do
     end
   end
 
-  def issues_ids
-    graphql_dig_at(issues_data, :node, :id)
+  def issue_ids
+    graphql_dig_at(issues_data, :id)
   end
 
   def query(params = issue_filter_params)

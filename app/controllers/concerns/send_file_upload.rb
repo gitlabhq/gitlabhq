@@ -35,7 +35,7 @@ module SendFileUpload
   end
 
   def cdn_fronted_url(file, redirect_params)
-    if Feature.enabled?(:use_cdn_with_job_artifacts_ui_downloads) && file.respond_to?(:cdn_enabled_url)
+    if file.respond_to?(:cdn_enabled_url)
       result = file.cdn_enabled_url(request.remote_ip, redirect_params[:query])
       Gitlab::ApplicationContext.push(artifact_used_cdn: result.used_cdn)
       result.url

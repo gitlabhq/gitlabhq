@@ -65,6 +65,7 @@ module Gitlab
       push_frontend_feature_flag(:new_header_search)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:integration_slack_app_notifications)
+      push_frontend_feature_flag(:vue_group_select)
     end
 
     # Exposes the state of a feature flag to the frontend code.

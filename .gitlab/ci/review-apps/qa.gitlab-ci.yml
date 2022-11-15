@@ -178,7 +178,7 @@ notify-slack:
   extends:
     - .notify-slack-qa
     - .qa-cache
-    - .rules:notify-slack
+    - .rules:main-run
   stage: post-qa
   variables:
     RUN_WITH_BUNDLE: "true"
@@ -188,6 +188,16 @@ notify-slack:
     STATUS_SYM: ☠️
     STATUS: failed
     TYPE: "(review-app) "
+  when: on_failure
   script:
     - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml"  # generate summary
     - !reference [.notify-slack-qa, script]
+
+export-test-metrics:
+  extends:
+    - .bundle-base
+    - .rules:main-run
+  stage: post-qa
+  when: always
+  script:
+    - bundle exec rake "ci:export_test_metrics[tmp/test-metrics-*.json]"

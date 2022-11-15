@@ -373,12 +373,12 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
 To get the coverage report from a specific job, add
-the `job=coverage_job_name` parameter to the URL. For example, the following
-Markdown code embeds the test coverage report badge of the `coverage` job
-in your `README.md`:
+the `job=coverage_job_name` parameter to the URL. For example, you can use code
+similar to the following to add the test coverage report badge of the `coverage` job
+to a Markdown file:
 
 ```markdown
-![coverage](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage)
+![coverage](https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?job=coverage)
 ```
 
 #### Test coverage report badge colors and limits

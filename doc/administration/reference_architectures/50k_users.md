@@ -28,7 +28,7 @@ full list of reference architectures, see
 | Internal load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   | `c5.2xlarge`  |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
-| Gitaly<sup>5</sup><sup>6</sup>           | 3     | 64 vCPU, 240 GB memory  | `n1-standard-64` | `m5.16xlarge` |
+| Gitaly<sup>5 6</sup>                     | 3     | 64 vCPU, 240 GB memory  | `n1-standard-64` | `m5.16xlarge` |
 | Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    |
 | Sidekiq                                  | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
@@ -2321,6 +2321,10 @@ compute deployments. With this, _stateless_ components can benefit from cloud na
 workload management benefits while _stateful_ components are deployed in compute VMs
 with Omnibus to benefit from increased permanence.
 
+Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts/advanced/)
+documentation for setup instructions including guidance on what GitLab secrets to sync
+between Kubernetes and the backend components.
+
 NOTE:
 This is an **advanced** setup. Running services in Kubernetes is well known
 to be complex. **This setup is only recommended** if you have strong working
@@ -2363,7 +2367,7 @@ services where applicable):
 | Internal load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`   | `c5.2xlarge`  |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
-| Gitaly<sup>5</sup><sup>6</sup>           | 3     | 64 vCPU, 240 GB memory | `n1-standard-64` | `m5.16xlarge` |
+| Gitaly<sup>5 6</sup>                     | 3     | 64 vCPU, 240 GB memory | `n1-standard-64` | `m5.16xlarge` |
 | Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`   | `c5.xlarge`   |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
 | Object storage<sup>4</sup>               | -     | -                      | -                | -             |

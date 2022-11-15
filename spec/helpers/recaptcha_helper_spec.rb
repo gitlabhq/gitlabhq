@@ -10,29 +10,12 @@ RSpec.describe RecaptchaHelper, type: :helper do
   end
 
   shared_examples 'Gitlab QA bypass' do
-    context 'when GITLAB_QA_USER_AGENT env var is present' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:dot_com, :user_agent, :qa_user_agent, :result) do
-        false | 'qa_user_agent' | 'qa_user_agent' | true
-        true  | nil             | 'qa_user_agent' | true
-        true  | ''              | 'qa_user_agent' | true
-        true  | 'qa_user_agent' | ''              | true
-        true  | 'qa_user_agent' | nil             | true
-        true  | 'qa_user_agent' | 'qa_user_agent' | false
+    context 'when it is a QA request' do
+      before do
+        allow(Gitlab::Qa).to receive(:request?).and_return(true)
       end
 
-      with_them do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(dot_com)
-          stub_env('GITLAB_QA_USER_AGENT', qa_user_agent)
-
-          request_double = instance_double(ActionController::TestRequest, user_agent: user_agent)
-          allow(helper).to receive(:request).and_return(request_double)
-        end
-
-        it { is_expected.to eq result }
-      end
+      it { is_expected.to eq false }
     end
   end
 

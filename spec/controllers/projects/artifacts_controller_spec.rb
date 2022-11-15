@@ -191,28 +191,13 @@ RSpec.describe Projects::ArtifactsController do
               request.env['action_dispatch.remote_ip'] = '18.245.0.42'
             end
 
-            context 'with use_cdn_with_job_artifacts_ui_downloads enabled' do
-              it 'redirects to a Google CDN request' do
-                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
-                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
+            it 'redirects to a Google CDN request' do
+              expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
+              expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
 
-                download_artifact(file_type: file_type)
+              download_artifact(file_type: file_type)
 
-                expect(response.redirect_url).to start_with("https://cdn.example.org/")
-              end
-            end
-
-            context 'with use_cdn_with_job_artifacts_ui_downloads disabled' do
-              before do
-                stub_feature_flags(use_cdn_with_job_artifacts_ui_downloads: false)
-              end
-
-              it 'does not redirect to the CDN' do
-                download_artifact(file_type: file_type)
-
-                expect(response.redirect_url).to be_present
-                expect(response.redirect_url).not_to start_with("https://cdn.example.org/")
-              end
+              expect(response.redirect_url).to start_with("https://cdn.example.org/")
             end
           end
         end

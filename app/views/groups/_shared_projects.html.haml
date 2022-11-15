@@ -1,7 +1,0 @@
-#js-groups-shared-tree
-  .empty-state.text-center.hidden
-    %p= _("There are no projects shared with this group yet")
-
-  %ul.content-list{ data: { hide_projects: 'false', group_id: group.id, path: group_path(group) } }
-    .js-groups-list-holder{ data: { current_group_visibility: group.visibility } }
-      = gl_loading_icon

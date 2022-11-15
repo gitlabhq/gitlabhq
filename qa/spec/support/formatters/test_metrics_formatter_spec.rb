@@ -3,7 +3,7 @@
 require 'rspec/core/sandbox'
 require 'active_support/testing/time_helpers'
 
-describe QA::Support::Formatters::TestStatsFormatter do
+describe QA::Support::Formatters::TestMetricsFormatter do
   include QA::Support::Helpers::StubEnv
   include QA::Specs::Helpers::RSpec
   include ActiveSupport::Testing::TimeHelpers
@@ -58,7 +58,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
         testcase: testcase
       },
       fields: {
-        id: './spec/support/formatters/test_stats_formatter_spec.rb[1:1]',
+        id: './spec/support/formatters/test_metrics_formatter_spec.rb[1:1]',
         run_time: 0,
         api_fabrication: api_fabrication * 1000,
         ui_fabrication: ui_fabrication * 1000,
@@ -133,6 +133,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
       stub_env('CI_MERGE_REQUEST_IID', nil)
       stub_env('TOP_UPSTREAM_MERGE_REQUEST_IID', nil)
       stub_env('QA_RUN_TYPE', run_type)
+      stub_env('QA_EXPORT_TEST_METRICS', "true")
     end
 
     context 'with reliable spec' do
@@ -201,6 +202,20 @@ describe QA::Support::Formatters::TestStatsFormatter do
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with skipped spec' do
+      it 'skips export' do
+        run_spec do
+          it(
+            'spec',
+            skip: 'not compatible',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+          ) {}
+        end
+
+        expect(influx_write_api).to have_received(:write).with(data: [])
       end
     end
 
@@ -299,6 +314,22 @@ describe QA::Support::Formatters::TestStatsFormatter do
         run_spec
 
         expect(influx_write_api).to have_received(:write).with(data: [fabrication_data])
+      end
+    end
+
+    context 'with persisting metrics' do
+      before do
+        stub_env('QA_EXPORT_TEST_METRICS', "false")
+        stub_env('QA_SAVE_TEST_METRICS', "true")
+        stub_env('CI_JOB_NAME_SLUG', "test-job")
+
+        allow(File).to receive(:write)
+      end
+
+      it 'saves test metrics as json files' do
+        run_spec
+
+        expect(File).to have_received(:write).with("tmp/test-metrics-test-job.json", [data].to_json)
       end
     end
   end

@@ -97,7 +97,7 @@ module Resolvers
       end
 
       def ready?(**args)
-        if args[:or].present? && ::Feature.disabled?(:or_issuable_queries, resource_parent)
+        if args[:or].present? && or_issuable_queries_disabled?
           raise ::Gitlab::Graphql::Errors::ArgumentError,
             "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
         end
@@ -114,6 +114,14 @@ module Resolvers
       end
 
       private
+
+      def or_issuable_queries_disabled?
+        if respond_to?(:resource_parent, true)
+          ::Feature.disabled?(:or_issuable_queries, resource_parent)
+        else
+          ::Feature.disabled?(:or_issuable_queries)
+        end
+      end
 
       def prepare_finder_params(args)
         params = super(args)

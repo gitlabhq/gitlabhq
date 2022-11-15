@@ -1,8 +1,0 @@
----
-name: trigger_mr_subscription_on_merge_status_change
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99213"
-rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/375704"
-milestone: '15.5'
-type: development
-group: group::code review
-default_enabled: false

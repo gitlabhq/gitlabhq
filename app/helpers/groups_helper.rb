@@ -148,8 +148,13 @@ module GroupsHelper
     }
   end
 
-  def subgroups_and_projects_list_app_data(group)
+  def group_overview_tabs_app_data(group)
     {
+      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
+      shared_projects_endpoint: group_shared_projects_path(group, format: :json),
+      archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
+      current_group_visibility: group.visibility,
+      initial_sort: project_list_sort_by,
       show_schema_markup: 'true',
       new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
@@ -160,16 +165,6 @@ module GroupsHelper
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
     }
-  end
-
-  def group_overview_tabs_app_data(group)
-    {
-      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
-      shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
-      current_group_visibility: group.visibility,
-      initial_sort: project_list_sort_by
-    }.merge(subgroups_and_projects_list_app_data(group))
   end
 
   def enabled_git_access_protocol_options_for_group

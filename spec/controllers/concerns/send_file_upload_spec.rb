@@ -289,27 +289,13 @@ RSpec.describe SendFileUpload do
         allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { false }
       end
 
-      context 'when use_cdn_with_job_artifacts_ui_downloads feature is enabled' do
-        it 'sends a file when CDN URL' do
-          expect(uploader).to receive(:use_cdn?).and_return(true)
-          expect(uploader).to receive(:cdn_provider).and_return(cdn_provider)
-          expect(controller).to receive(:request).and_return(request)
-          expect(controller).to receive(:redirect_to).with(signed_url)
+      it 'sends a file when CDN URL' do
+        expect(uploader).to receive(:use_cdn?).and_return(true)
+        expect(uploader).to receive(:cdn_provider).and_return(cdn_provider)
+        expect(controller).to receive(:request).and_return(request)
+        expect(controller).to receive(:redirect_to).with(signed_url)
 
-          subject
-        end
-      end
-
-      context 'when use_cdn_with_job_artifacts_ui_downloads is disabled' do
-        before do
-          stub_feature_flags(use_cdn_with_job_artifacts_ui_downloads: false)
-        end
-
-        it 'sends a file' do
-          expect(controller).to receive(:redirect_to).with(/#{uploader.path}/)
-
-          subject
-        end
+        subject
       end
     end
   end

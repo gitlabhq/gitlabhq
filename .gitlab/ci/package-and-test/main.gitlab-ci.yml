@@ -620,6 +620,16 @@ upload-knapsack-report:
   stage: report
   when: always
 
+export-test-metrics:
+  extends:
+    - .qa-install
+    - .ruby-image
+    - .rules:report:process-results
+  stage: report
+  when: always
+  script:
+    - bundle exec rake "ci:export_test_metrics[$CI_PROJECT_DIR/gitlab-qa-run-*/**/test-metrics-*.json]"
+
 relate-test-failures:
   extends:
     - .qa-install

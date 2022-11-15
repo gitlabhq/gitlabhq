@@ -4229,14 +4229,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         transition!
       end
-
-      context 'when trigger_mr_subscription_on_merge_status_change is disabled' do
-        before do
-          stub_feature_flags(trigger_mr_subscription_on_merge_status_change: false)
-        end
-
-        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
-      end
     end
 
     shared_examples 'for an invalid state transition' do

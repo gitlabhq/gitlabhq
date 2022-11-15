@@ -1,7 +1,0 @@
-#js-groups-archived-tree
-  .empty-state.text-center.hidden
-    %p= _("There are no archived projects yet")
-
-  %ul.content-list{ data: { hide_projects: 'false', group_id: group.id, path: group_path(group) } }
-    .js-groups-list-holder
-      = gl_loading_icon(size: 'md', css_class: 'gl-mt-6')

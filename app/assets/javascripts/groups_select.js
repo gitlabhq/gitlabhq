@@ -1,10 +1,37 @@
+import Vue from 'vue';
 import $ from 'jquery';
 import { escape } from 'lodash';
+import GroupSelect from '~/vue_shared/components/group_select/group_select.vue';
 import { groupsPath } from '~/vue_shared/components/group_select/utils';
 import { __ } from '~/locale';
 import Api from './api';
 import { loadCSSFile } from './lib/utils/css_utils';
 import { select2AxiosTransport } from './lib/utils/select2_utils';
+
+const initVueSelect = () => {
+  [...document.querySelectorAll('.ajax-groups-select')].forEach((el) => {
+    const { parentId: parentGroupID, groupsFilter, inputId } = el.dataset;
+
+    return new Vue({
+      el,
+      components: {
+        GroupSelect,
+      },
+      render(createElement) {
+        return createElement(GroupSelect, {
+          props: {
+            inputName: el.name,
+            initialSelection: el.value || null,
+            parentGroupID,
+            groupsFilter,
+            inputId,
+            clearable: el.classList.contains('allowClear'),
+          },
+        });
+      },
+    });
+  });
+};
 
 const groupsSelect = () => {
   loadCSSFile(gon.select2_css_path)
@@ -84,8 +111,12 @@ const groupsSelect = () => {
 
 export default () => {
   if ($('.ajax-groups-select').length) {
-    import(/* webpackChunkName: 'select2' */ 'select2/select2')
-      .then(groupsSelect)
-      .catch(() => {});
+    if (gon.features?.vueGroupSelect) {
+      initVueSelect();
+    } else {
+      import(/* webpackChunkName: 'select2' */ 'select2/select2')
+        .then(groupsSelect)
+        .catch(() => {});
+    }
   }
 };

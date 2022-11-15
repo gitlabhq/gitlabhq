@@ -1,8 +1,0 @@
----
-name: use_cdn_with_job_artifacts_ui_downloads
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102839
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381479
-milestone: '15.6'
-type: development
-group: group::pipeline insights
-default_enabled: false

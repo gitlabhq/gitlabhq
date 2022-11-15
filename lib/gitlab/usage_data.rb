@@ -158,8 +158,7 @@ module Gitlab
             integrations_usage,
             user_preferences_usage,
             container_expiration_policies_usage,
-            service_desk_counts,
-            email_campaign_counts
+            service_desk_counts
           ).tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
@@ -707,37 +706,6 @@ module Gitlab
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def email_campaign_counts
-        # rubocop:disable UsageData/LargeTable
-        sent_emails = count(Users::InProductMarketingEmail.group(:track, :series))
-        clicked_emails = count(Users::InProductMarketingEmail.where.not(cta_clicked_at: nil).group(:track, :series))
-
-        Users::InProductMarketingEmail::ACTIVE_TRACKS.keys.each_with_object({}) do |track, result|
-          series_amount = Namespaces::InProductMarketingEmailsService.email_count_for_track(track)
-          # rubocop: enable UsageData/LargeTable:
-
-          0.upto(series_amount - 1).map do |series|
-            sent_count = sent_in_product_marketing_email_count(sent_emails, track, series)
-            clicked_count = clicked_in_product_marketing_email_count(clicked_emails, track, series)
-
-            result["in_product_marketing_email_#{track}_#{series}_sent"] = sent_count
-            result["in_product_marketing_email_#{track}_#{series}_cta_clicked"] = clicked_count unless track == 'experience'
-          end
-        end
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      def sent_in_product_marketing_email_count(sent_emails, track, series)
-        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
-        sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
-      end
-
-      def clicked_in_product_marketing_email_count(clicked_emails, track, series)
-        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
-        clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
-      end
 
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated

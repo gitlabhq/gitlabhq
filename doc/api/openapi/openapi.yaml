@@ -78,45 +78,45 @@ paths:
 
 metadata:
   get:
-  tags:
-    - metadata
-  summary: 'Retrieve metadata information for this GitLab instance.'
-  operationId: 'getMetadata'
-  responses:
-    '401':
-      description: 'unauthorized operation'
-    '200':
-      description: 'successful operation'
-      content:
-        'application/json':
-          schema:
-            title: 'MetadataResponse'
-            type: 'object'
-            properties:
-              version:
-                type: 'string'
-              revision:
-                type: 'string'
-              kas:
-                type: 'object'
-                properties:
-                  enabled:
-                    type: 'boolean'
-                  externalUrl:
-                    type: 'string'
-                    nullable: true
-                  version:
-                    type: 'string'
-                    nullable: true
-          examples:
-            Example:
-              value:
-                version: '15.0-pre'
-                revision: 'c401a659d0c'
+    tags:
+      - metadata
+    summary: 'Retrieve metadata information for this GitLab instance.'
+    operationId: 'getMetadata'
+    responses:
+      '401':
+        description: 'unauthorized operation'
+      '200':
+        description: 'successful operation'
+        content:
+          'application/json':
+            schema:
+              title: 'MetadataResponse'
+              type: 'object'
+              properties:
+                version:
+                  type: 'string'
+                revision:
+                  type: 'string'
                 kas:
-                  enabled: true
-                  externalUrl: 'grpc://gitlab.example.com:8150'
-                  version: '15.0.0'
+                  type: 'object'
+                  properties:
+                    enabled:
+                      type: 'boolean'
+                    externalUrl:
+                      type: 'string'
+                      nullable: true
+                    version:
+                      type: 'string'
+                      nullable: true
+            examples:
+              Example:
+                value:
+                  version: '15.0-pre'
+                  revision: 'c401a659d0c'
+                  kas:
+                    enabled: true
+                    externalUrl: 'grpc://gitlab.example.com:8150'
+                    version: '15.0.0'
 
 version:
   get:

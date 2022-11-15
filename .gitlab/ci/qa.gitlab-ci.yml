@@ -8,7 +8,6 @@
   variables:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
-    QA_EXPORT_TEST_METRICS: "false"
   before_script:
     - !reference [.default-before_script, before_script]
     - cd qa && bundle install
