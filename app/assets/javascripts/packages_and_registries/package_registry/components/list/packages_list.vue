@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import { s__, sprintf, n__ } from '~/locale';
 import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
@@ -48,6 +48,9 @@ export default {
     };
   },
   computed: {
+    listTitle() {
+      return n__('%d package', '%d packages', this.list.length);
+    },
     isListEmpty() {
       return !this.list || this.list.length === 0;
     },
@@ -82,6 +85,14 @@ export default {
     setItemToBeDeleted(item) {
       this.itemToBeDeleted = { ...item };
       this.track(REQUEST_DELETE_PACKAGE_TRACKING_ACTION);
+    },
+    setItemsToBeDeleted(items) {
+      if (items.length === 1) {
+        const [item] = items;
+        this.setItemToBeDeleted(item);
+        return;
+      }
+      this.$emit('delete', items);
     },
     deleteItemConfirmation() {
       this.$emit('package:delete', this.itemToBeDeleted);
@@ -124,15 +135,22 @@ export default {
       >
       <registry-list
         data-testid="packages-table"
-        :hidden-delete="true"
         :is-loading="isLoading"
         :items="list"
         :pagination="pageInfo"
+        :title="listTitle"
+        @delete="setItemsToBeDeleted"
         @prev-page="$emit('prev-page')"
         @next-page="$emit('next-page')"
       >
-        <template #default="{ item }">
-          <packages-list-row :package-entity="item" @packageToDelete="setItemToBeDeleted(item)" />
+        <template #default="{ selectItem, isSelected, item, first }">
+          <packages-list-row
+            :first="first"
+            :package-entity="item"
+            :selected="isSelected(item)"
+            @delete="setItemToBeDeleted(item)"
+            @select="selectItem(item)"
+          />
         </template>
       </registry-list>
 

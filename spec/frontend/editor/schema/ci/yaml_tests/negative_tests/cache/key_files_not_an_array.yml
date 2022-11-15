@@ -1,8 +1,0 @@
-cache-key-files-not-an-array:
-  script: echo "This job uses a cache."
-  cache:
-    key:
-      files: package.json
-    paths:
-      - vendor/ruby
-      - node_modules

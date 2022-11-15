@@ -183,11 +183,11 @@ describe('DiffsStoreActions', () => {
 
     beforeEach(() => {
       delete noFilesData.diff_files;
-
-      mock.onGet(endpointMetadata).reply(200, diffMetadata);
     });
 
     it('should fetch diff meta information', () => {
+      mock.onGet(endpointMetadata).reply(200, diffMetadata);
+
       return testAction(
         diffActions.fetchDiffFilesMeta,
         {},
@@ -205,6 +205,40 @@ describe('DiffsStoreActions', () => {
         ],
         [],
       );
+    });
+
+    it('should show a warning on 404 reponse', async () => {
+      mock.onGet(endpointMetadata).reply(404);
+
+      await testAction(
+        diffActions.fetchDiffFilesMeta,
+        {},
+        { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
+        [{ type: types.SET_LOADING, payload: true }],
+        [],
+      );
+
+      expect(createAlert).toHaveBeenCalledTimes(1);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: expect.stringMatching(
+          'Building your merge request. Wait a few moments, then refresh this page.',
+        ),
+        variant: 'warning',
+      });
+    });
+
+    it('should show no warning on any other status code', async () => {
+      mock.onGet(endpointMetadata).reply(500);
+
+      await testAction(
+        diffActions.fetchDiffFilesMeta,
+        {},
+        { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
+        [{ type: types.SET_LOADING, payload: true }],
+        [],
+      );
+
+      expect(createAlert).not.toHaveBeenCalled();
     });
   });
 

@@ -88,17 +88,6 @@ update-assets-compile-test-cache:
     - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
-# TODO: Remove this as it's duplicating update-assets-compile-*-cache
-update-yarn-cache:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .yarn-cache-push
-    - .shared:rules:update-cache
-  stage: prepare
-  script:
-    - yarn_install_script
-
 update-storybook-yarn-cache:
   extends:
     - .default-retry

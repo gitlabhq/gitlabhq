@@ -5,7 +5,7 @@ import {
   historyPushState,
   scrollToElement,
 } from '~/lib/utils/common_utils';
-import { createAlert } from '~/flash';
+import { createAlert, VARIANT_WARNING } from '~/flash';
 import { diffViewerModes } from '~/ide/constants';
 import axios from '~/lib/utils/axios_utils';
 
@@ -229,9 +229,17 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
 
       return data;
     })
-    .catch(() => worker.terminate());
-};
+    .catch((error) => {
+      worker.terminate();
 
+      if (error.response.status === httpStatusCodes.NOT_FOUND) {
+        createAlert({
+          message: __('Building your merge request. Wait a few moments, then refresh this page.'),
+          variant: VARIANT_WARNING,
+        });
+      }
+    });
+};
 export const fetchCoverageFiles = ({ commit, state }) => {
   const coveragePoll = new Poll({
     resource: {

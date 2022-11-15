@@ -1,4 +1,4 @@
-import { GlSprintf } from '@gitlab/ui';
+import { GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -40,9 +40,11 @@ describe('packages_list_row', () => {
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
   const findCreatedDateText = () => wrapper.findByTestId('created-date');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
+  const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
 
   const mountComponent = ({
     packageEntity = packageWithoutTags,
+    selected = false,
     provide = defaultProvide,
   } = {}) => {
     wrapper = shallowMountExtended(PackagesListRow, {
@@ -53,6 +55,7 @@ describe('packages_list_row', () => {
       },
       propsData: {
         packageEntity,
+        selected,
       },
       directives: {
         GlTooltip: createMockDirective(),
@@ -117,14 +120,13 @@ describe('packages_list_row', () => {
       });
     });
 
-    it('emits the packageToDelete event when the delete button is clicked', async () => {
+    it('emits the delete event when the delete button is clicked', async () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
       findDeleteDropdown().vm.$emit('click');
 
       await nextTick();
-      expect(wrapper.emitted('packageToDelete')).toHaveLength(1);
-      expect(wrapper.emitted('packageToDelete')[0]).toEqual([packageWithoutTags]);
+      expect(wrapper.emitted('delete')).toHaveLength(1);
     });
   });
 
@@ -148,6 +150,39 @@ describe('packages_list_row', () => {
 
     it('has a delete dropdown', () => {
       expect(findDeleteDropdown().exists()).toBe(true);
+    });
+  });
+
+  describe('left action template', () => {
+    it('does not render checkbox if not permitted', () => {
+      mountComponent({
+        packageEntity: { ...packageWithoutTags, canDestroy: false },
+      });
+
+      expect(findBulkDeleteAction().exists()).toBe(false);
+    });
+
+    it('renders checkbox', () => {
+      mountComponent();
+
+      expect(findBulkDeleteAction().exists()).toBe(true);
+      expect(findBulkDeleteAction().attributes('checked')).toBeUndefined();
+    });
+
+    it('emits select when checked', () => {
+      mountComponent();
+
+      findBulkDeleteAction().vm.$emit('change');
+
+      expect(wrapper.emitted('select')).toHaveLength(1);
+    });
+
+    it('renders checkbox in selected state if selected', () => {
+      mountComponent({
+        selected: true,
+      });
+
+      expect(findBulkDeleteAction().attributes('checked')).toBe('true');
     });
   });
 

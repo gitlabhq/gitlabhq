@@ -99,8 +99,8 @@ in the template you fetched to customize your configuration.
 - To collaborate on Terraform code changes and Infrastructure-as-Code workflows, use the
   [Terraform integration in merge requests](mr_integration.md).
 - To manage GitLab resources like users, groups, and projects, use the
-  [GitLab Terraform provider](https://github.com/gitlabhq/terraform-provider-gitlab). It is released separately from GitLab
-  and its documentation is available on [the Terraform docs site](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
+  [GitLab Terraform provider](https://gitlab.com/gitlab-org/terraform-provider-gitlab).
+  The GitLab Terraform provider documentation is available on [the Terraform docs site](https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs).
 - [Create a new cluster on Amazon Elastic Kubernetes Service (EKS)](../clusters/connect/new_eks_cluster.md).
 - [Create a new cluster on Google Kubernetes Engine (GKE)](../clusters/connect/new_gke_cluster.md).
 - [Troubleshoot](troubleshooting.md) issues with GitLab and Terraform.

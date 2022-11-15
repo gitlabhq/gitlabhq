@@ -1,0 +1,5 @@
+mutation destroyPackages($ids: [PackagesPackageID!]!) {
+  destroyPackages(input: { ids: $ids }) {
+    errors
+  }
+}

@@ -1,5 +1,0 @@
-cache-path-not-an-array:
-  script: echo "This job uses a cache."
-  cache:
-    key: binaries-cache
-    paths: binaries/*.apk

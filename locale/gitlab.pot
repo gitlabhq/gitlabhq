@@ -343,6 +343,11 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d package"
+msgid_plural "%d packages"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d pending comment"
 msgid_plural "%d pending comments"
 msgstr[0] ""
@@ -7196,6 +7201,9 @@ msgid "BuildArtifacts|An error occurred while fetching the artifacts"
 msgstr ""
 
 msgid "BuildArtifacts|Loading artifacts"
+msgstr ""
+
+msgid "Building your merge request. Wait a few moments, then refresh this page."
 msgstr ""
 
 msgid "Built-in"
@@ -28913,6 +28921,9 @@ msgstr ""
 msgid "PackageRegistry|Delete package version"
 msgstr ""
 
+msgid "PackageRegistry|Delete packages"
+msgstr ""
+
 msgid "PackageRegistry|Delete selected"
 msgstr ""
 
@@ -29047,6 +29058,9 @@ msgstr[1] ""
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
 msgstr ""
 
+msgid "PackageRegistry|Packages deleted successfully"
+msgstr ""
+
 msgid "PackageRegistry|Permanently delete"
 msgstr ""
 
@@ -29099,6 +29113,9 @@ msgid "PackageRegistry|Show PyPi commands"
 msgstr ""
 
 msgid "PackageRegistry|Show Yarn commands"
+msgstr ""
+
+msgid "PackageRegistry|Something went wrong while deleting packages."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while deleting the package asset."
@@ -29169,6 +29186,11 @@ msgstr ""
 
 msgid "PackageRegistry|You are about to delete 1 asset. This operation is irreversible."
 msgid_plural "PackageRegistry|You are about to delete %d assets. This operation is irreversible."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "PackageRegistry|You are about to delete 1 package. This operation is irreversible."
+msgid_plural "PackageRegistry|You are about to delete %d packages. This operation is irreversible."
 msgstr[0] ""
 msgstr[1] ""
 

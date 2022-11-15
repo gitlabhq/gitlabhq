@@ -5,14 +5,6 @@ comments: false
 description: 'Pods: Git Access'
 ---
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
-
 This document is a work-in-progress and represents a very early state of the
 Pods design. Significant aspects are not documented, though we expect to add
 them in the future. This is one possible architecture for Pods, and we intend to

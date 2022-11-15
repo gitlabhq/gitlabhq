@@ -1,7 +1,0 @@
-cache-key-with-multiple-.:
-  stage: test
-  script: echo "This job uses a cache."
-  cache:
-    key: ..
-    paths:
-      - binaries/

@@ -856,6 +856,8 @@
 
 .frontend:rules:minimal-default-rules:
   rules:
+    - <<: *if-merge-request-approved
+      when: never
     - <<: *if-automated-merge-request
       when: never
     - <<: *if-security-merge-request
@@ -930,14 +932,16 @@
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
-      changes: ["{package.json,yarn.lock}"]
+      changes: *frontend-dependency-patterns
     - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-default-branch-refs
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-default-refs
       changes: *code-backstage-patterns
 
 .frontend:rules:jest:minimal:
@@ -950,7 +954,7 @@
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       when: never
     - <<: *if-merge-request
-      changes: ["{package.json,yarn.lock}"]
+      changes: *frontend-dependency-patterns
       when: never
     - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
@@ -964,18 +968,24 @@
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request
-      changes: ["{package.json,yarn.lock}"]
+      changes: *frontend-dependency-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patterns-for-as-if-foss
 
 .frontend:rules:jest:minimal:as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:minimal-default-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss
+      when: never
     - <<: *if-merge-request-labels-run-all-jest
       when: never
     - <<: *if-merge-request
-      changes: ["{package.json,yarn.lock}"]
+      changes: *frontend-dependency-patterns
       when: never
     - <<: *if-fork-merge-request
       when: never

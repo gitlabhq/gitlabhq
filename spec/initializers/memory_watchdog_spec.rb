@@ -3,6 +3,24 @@
 require 'fast_spec_helper'
 
 RSpec.describe 'memory watchdog' do
+  shared_examples 'starts configured watchdog' do |configure_monitor_method|
+    shared_examples 'configures and starts watchdog' do
+      it "correctly configures and starts watchdog", :aggregate_failures do
+        expect(Gitlab::Memory::Watchdog::Configurator).to receive(configure_monitor_method)
+
+        expect(Gitlab::Memory::Watchdog).to receive(:new).and_return(watchdog)
+        expect(Gitlab::BackgroundTask).to receive(:new).with(watchdog).and_return(background_task)
+        expect(background_task).to receive(:start)
+        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start).and_yield
+
+        run_initializer
+      end
+    end
+  end
+
+  let(:watchdog) { instance_double(Gitlab::Memory::Watchdog) }
+  let(:background_task) { instance_double(Gitlab::BackgroundTask) }
+
   subject(:run_initializer) do
     load rails_root_join('config/initializers/memory_watchdog.rb')
   end
@@ -15,10 +33,6 @@ RSpec.describe 'memory watchdog' do
     end
 
     context 'when runtime is an application' do
-      let(:watchdog) { instance_double(Gitlab::Memory::Watchdog) }
-      let(:background_task) { instance_double(Gitlab::BackgroundTask) }
-      let(:logger) { Gitlab::AppLogger }
-
       before do
         allow(Gitlab::Runtime).to receive(:application?).and_return(true)
       end
@@ -27,21 +41,6 @@ RSpec.describe 'memory watchdog' do
         expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
 
         run_initializer
-      end
-
-      shared_examples 'starts configured watchdog' do |configure_monitor_method|
-        shared_examples 'configures and starts watchdog' do
-          it "correctly configures and starts watchdog", :aggregate_failures do
-            expect(Gitlab::Memory::Watchdog::Configurator).to receive(configure_monitor_method)
-
-            expect(Gitlab::Memory::Watchdog).to receive(:new).and_return(watchdog)
-            expect(Gitlab::BackgroundTask).to receive(:new).with(watchdog).and_return(background_task)
-            expect(background_task).to receive(:start)
-            expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start).and_yield
-
-            run_initializer
-          end
-        end
       end
 
       context 'when puma' do
@@ -92,10 +91,24 @@ RSpec.describe 'memory watchdog' do
       allow(Gitlab::Runtime).to receive(:application?).and_return(true)
     end
 
-    it 'does not register life-cycle hook' do
-      expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
+    context 'when puma' do
+      before do
+        allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
+      end
 
-      run_initializer
+      it_behaves_like 'starts configured watchdog', :configure_for_puma
+    end
+
+    context 'when sidekiq' do
+      before do
+        allow(Gitlab::Runtime).to receive(:sidekiq?).and_return(true)
+      end
+
+      it 'does not register life-cycle hook' do
+        expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
+
+        run_initializer
+      end
     end
   end
 end

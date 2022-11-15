@@ -1,3 +1,0 @@
-trigger-project:
-  trigger:
-    project: '/slug'

@@ -2,6 +2,7 @@
 
 require 'fast_spec_helper'
 require 'prometheus/client'
+require 'sidekiq'
 require_dependency 'gitlab/cluster/lifecycle_events'
 
 RSpec.describe Gitlab::Memory::Watchdog::Configurator do
@@ -184,4 +185,15 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
     end
   end
   # rubocop: enable RSpec/VerifiedDoubles
+
+  describe '.configure_for_sidekiq' do
+    let(:logger) { ::Sidekiq.logger }
+
+    subject(:configurator) { described_class.configure_for_sidekiq }
+
+    it_behaves_like 'as configurator',
+                    Gitlab::Memory::Watchdog::TermProcessHandler,
+                    'SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL',
+                    3
+  end
 end

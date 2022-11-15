@@ -2,6 +2,8 @@
 
 exports[`PackagesListApp renders 1`] = `
 <div>
+  <!---->
+   
   <gl-card-stub
     bodyclass="gl-display-flex gl-p-0!"
     class="gl-px-8 gl-py-6 gl-line-height-20 gl-mt-3"
@@ -53,7 +55,9 @@ exports[`PackagesListApp renders 1`] = `
     helpurl="/help/user/packages/index"
   />
    
-  <package-search-stub />
+  <package-search-stub
+    class="gl-mb-5"
+  />
    
   <div>
     <section
@@ -115,5 +119,7 @@ exports[`PackagesListApp renders 1`] = `
       </div>
     </section>
   </div>
+   
+  <div />
 </div>
 `;

@@ -38,7 +38,7 @@ Example response:
   "to_line": 10,
   "applicable": true,
   "applied": false,
-  "from_content": "This is an example\n",
+  "from_content": "This is an eaxmple\n",
   "to_content": "This is an example\n"
 }
 ```
@@ -68,7 +68,7 @@ Example response:
     "to_line": 10,
     "applicable": true,
     "applied": false,
-    "from_content": "This is an example\n",
+    "from_content": "This is an eaxmple\n",
     "to_content": "This is an example\n"
   }
   {

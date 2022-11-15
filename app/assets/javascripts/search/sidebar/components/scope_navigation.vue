@@ -45,7 +45,7 @@ export default {
 </script>
 
 <template>
-  <nav>
+  <nav class="search-filter">
     <gl-nav vertical pills>
       <gl-nav-item
         v-for="(item, scope, index) in navigation"

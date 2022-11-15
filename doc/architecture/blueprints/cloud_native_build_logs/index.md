@@ -10,14 +10,6 @@ participating-stages: []
 
 # Cloud Native Build Logs
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
-
 Cloud native and the adoption of Kubernetes has been recognised by GitLab to be
 one of the top two biggest tailwinds that are helping us grow faster as a
 company behind the project.

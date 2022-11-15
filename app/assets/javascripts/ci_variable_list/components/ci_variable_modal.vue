@@ -297,6 +297,7 @@ export default {
           data-testid="pipeline-form-ci-variable-value"
           data-qa-selector="ci_variable_value_field"
           class="gl-font-monospace!"
+          spellcheck="false"
         />
       </gl-form-group>
 

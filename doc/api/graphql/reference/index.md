@@ -7283,6 +7283,29 @@ The edge type for [`DependencyProxyBlob`](#dependencyproxyblob).
 | <a id="dependencyproxyblobedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="dependencyproxyblobedgenode"></a>`node` | [`DependencyProxyBlob`](#dependencyproxyblob) | The item at the end of the edge. |
 
+#### `DependencyProxyBlobRegistryConnection`
+
+The connection type for [`DependencyProxyBlobRegistry`](#dependencyproxyblobregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyblobregistryconnectionedges"></a>`edges` | [`[DependencyProxyBlobRegistryEdge]`](#dependencyproxyblobregistryedge) | A list of edges. |
+| <a id="dependencyproxyblobregistryconnectionnodes"></a>`nodes` | [`[DependencyProxyBlobRegistry]`](#dependencyproxyblobregistry) | A list of nodes. |
+| <a id="dependencyproxyblobregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DependencyProxyBlobRegistryEdge`
+
+The edge type for [`DependencyProxyBlobRegistry`](#dependencyproxyblobregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyblobregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="dependencyproxyblobregistryedgenode"></a>`node` | [`DependencyProxyBlobRegistry`](#dependencyproxyblobregistry) | The item at the end of the edge. |
+
 #### `DependencyProxyManifestConnection`
 
 The connection type for [`DependencyProxyManifest`](#dependencyproxymanifest).
@@ -11693,6 +11716,25 @@ Dependency proxy blob.
 | <a id="dependencyproxyblobsize"></a>`size` | [`String!`](#string) | Size of the blob file. |
 | <a id="dependencyproxyblobupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 
+### `DependencyProxyBlobRegistry`
+
+Represents the Geo replication and verification state of a dependency_proxy_blob.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxyblobregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyBlobRegistry was created. |
+| <a id="dependencyproxyblobregistrydependencyproxyblobid"></a>`dependencyProxyBlobId` | [`ID!`](#id) | ID of the Dependency Proxy Blob. |
+| <a id="dependencyproxyblobregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyBlobRegistry is resynced. |
+| <a id="dependencyproxyblobregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyBlobRegistry is reverified. |
+| <a id="dependencyproxyblobregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DependencyProxyBlobRegistry. |
+
 ### `DependencyProxyImageTtlGroupPolicy`
 
 Group-level Dependency Proxy TTL policy settings.
@@ -12897,6 +12939,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodecontainerrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 | <a id="geonodecontainerrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodecontainerrepositoryregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
+##### `GeoNode.dependencyProxyBlobRegistries`
+
+Find Dependency Proxy Blob registries on this Geo node. Ignored if `geo_dependency_proxy_blob_replication` feature flag is disabled.
+
+WARNING:
+**Introduced** in 15.6.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`DependencyProxyBlobRegistryConnection`](#dependencyproxyblobregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodedependencyproxyblobregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedependencyproxyblobregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonodedependencyproxyblobregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
 ##### `GeoNode.groupWikiRepositoryRegistries`
 

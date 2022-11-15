@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 return unless Gitlab::Runtime.application?
-return unless Gitlab::Utils.to_boolean(ENV['GITLAB_MEMORY_WATCHDOG_ENABLED'])
+return unless Gitlab::Utils.to_boolean(ENV['GITLAB_MEMORY_WATCHDOG_ENABLED'], default: Gitlab::Runtime.puma?)
 
 Gitlab::Cluster::LifecycleEvents.on_worker_start do
   watchdog = Gitlab::Memory::Watchdog.new

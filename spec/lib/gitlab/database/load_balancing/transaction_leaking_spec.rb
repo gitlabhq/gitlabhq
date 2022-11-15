@@ -60,6 +60,7 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
       conn = model.connection
 
       expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :transaction_leak))
+      expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :read_write_retry))
 
       conn.transaction do
         expect(conn).to be_transaction_open
@@ -78,6 +79,8 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
 
       expect(::Gitlab::Database::LoadBalancing::Logger)
         .not_to receive(:warn).with(hash_including(event: :transaction_leak))
+      expect(::Gitlab::Database::LoadBalancing::Logger)
+        .to receive(:warn).with(hash_including(event: :read_write_retry))
 
       expect(conn).not_to be_transaction_open
 
@@ -109,6 +112,8 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
     it 'retries when not in a transaction' do
       expect(::Gitlab::Database::LoadBalancing::Logger)
         .not_to receive(:warn).with(hash_including(event: :transaction_leak))
+      expect(::Gitlab::Database::LoadBalancing::Logger)
+        .to receive(:warn).with(hash_including(event: :read_write_retry))
 
       expect { execute(model.connection) }.not_to raise_error
     end

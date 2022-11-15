@@ -219,23 +219,16 @@
     - *node-modules-cache
     - *assets-tmp-cache
 
-# TODO: Remove this as it's duplicating .assets-compile-cache-push
-.yarn-cache-push:
-  cache:
-    - *node-modules-cache-push
-
 .assets-compile-cache:
   cache:
     - *ruby-gems-cache
     - *node-modules-cache
-    - *assets-cache
     - *assets-tmp-cache
 
 .assets-compile-cache-push:
   cache:
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *node-modules-cache-push
-    - *assets-cache-push
     - *assets-tmp-cache-push
 
 .storybook-yarn-cache:
@@ -245,7 +238,7 @@
 
 .storybook-yarn-cache-push:
   cache:
-    - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-yarn-cache`
+    - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
     - *storybook-node-modules-cache-push
 
 .use-pg11:

@@ -1,7 +1,9 @@
 {
   "gitlab-ci-variables-object": {
     "stage": "test",
-    "script": ["true"],
+    "script": [
+      "true"
+    ],
     "variables": {
       "DEPLOY_ENVIRONMENT": {
         "value": "staging",

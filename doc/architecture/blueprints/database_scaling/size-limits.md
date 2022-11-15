@@ -7,14 +7,6 @@ description: 'Database Scalability / Limit table sizes'
 
 # Database Scalability: Limit on-disk table size to < 100 GB for GitLab.com
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
-
 This document is a proposal to work towards reducing and limiting table sizes on GitLab.com. We establish a **measurable target** by limiting table size to a certain threshold. This is used as an indicator to drive database focus and decision making. With GitLab.com growing, we continuously re-evaluate which tables need to be worked on to prevent or otherwise fix violations.
 
 This is not meant to be a hard rule but rather a strong indication that work needs to be done to break a table apart or otherwise reduce its size.

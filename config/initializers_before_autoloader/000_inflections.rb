@@ -17,6 +17,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     award_emoji
     ci_secure_file_registry
     container_repository_registry
+    dependency_proxy_blob_registry
     design_registry
     event_log
     file_registry

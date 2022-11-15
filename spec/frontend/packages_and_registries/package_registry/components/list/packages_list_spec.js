@@ -99,10 +99,10 @@ describe('packages_list', () => {
 
     it('shows the registry list with the right props', () => {
       expect(findRegistryList().props()).toMatchObject({
+        title: '2 packages',
         items: defaultProps.list,
         pagination: defaultProps.pageInfo,
         isLoading: false,
-        hiddenDelete: true,
       });
     });
 
@@ -128,7 +128,7 @@ describe('packages_list', () => {
   describe('when the user can destroy the package', () => {
     beforeEach(async () => {
       mountComponent();
-      await findPackagesListRow().vm.$emit('packageToDelete', firstPackage);
+      await findPackagesListRow().vm.$emit('delete', firstPackage);
     });
 
     it('passes itemToBeDeleted to the modal', () => {
@@ -145,6 +145,27 @@ describe('packages_list', () => {
       await findPackageListDeleteModal().vm.$emit(event);
 
       expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
+    });
+  });
+
+  describe('when the user can bulk destroy packages', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('passes itemToBeDeleted to the modal when there is only one package', async () => {
+      await findRegistryList().vm.$emit('delete', [firstPackage]);
+
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(firstPackage);
+      expect(wrapper.emitted('delete')).toBeUndefined();
+    });
+
+    it('emits delete when there is more than one package', () => {
+      const items = [firstPackage, secondPackage];
+      findRegistryList().vm.$emit('delete', items);
+
+      expect(wrapper.emitted('delete')).toHaveLength(1);
+      expect(wrapper.emitted('delete')[0]).toEqual([items]);
     });
   });
 
@@ -210,7 +231,7 @@ describe('packages_list', () => {
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
       mountComponent();
-      findPackagesListRow().vm.$emit('packageToDelete', firstPackage);
+      findPackagesListRow().vm.$emit('delete', firstPackage);
       return nextTick();
     });
 

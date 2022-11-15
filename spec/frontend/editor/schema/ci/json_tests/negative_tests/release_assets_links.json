@@ -1,4 +1,24 @@
 {
+  "gitlab-ci-release-assets-links-missing": {
+    "script": "dostuff",
+    "stage": "deploy",
+    "release": {
+      "description": "Created using the release-cli $EXTRA_DESCRIPTION",
+      "tag_name": "$CI_COMMIT_TAG",
+      "assets": {}
+    }
+  },
+  "gitlab-ci-release-assets-links-empty": {
+    "script": "dostuff",
+    "stage": "deploy",
+    "release": {
+      "description": "Created using the release-cli $EXTRA_DESCRIPTION",
+      "tag_name": "$CI_COMMIT_TAG",
+      "assets": {
+        "links": []
+      }
+    }
+  },
   "gitlab-ci-release-assets-links-invalid-link-type": {
     "script": "dostuff",
     "stage": "deploy",

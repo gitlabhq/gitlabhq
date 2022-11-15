@@ -1,4 +1,0 @@
-cache-untracked-string:
-  script: echo "This job uses a cache."
-  cache:
-    untracked: 'true'

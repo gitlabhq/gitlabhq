@@ -1,5 +1,5 @@
 <script>
-import { GlBanner, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlBanner, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { getCookie, historyReplaceState, parseBoolean, setCookie } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
@@ -10,19 +10,23 @@ import {
   GRAPHQL_PAGE_SIZE,
   HIDE_PACKAGE_MIGRATION_SURVEY_COOKIE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
+  DELETE_PACKAGES_ERROR_MESSAGE,
+  DELETE_PACKAGES_SUCCESS_MESSAGE,
   EMPTY_LIST_HELP_URL,
   PACKAGE_HELP_URL,
   SURVEY_LINK,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
-
+import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
 import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import PackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
+import DeleteModal from '~/packages_and_registries/package_registry/components/delete_modal.vue';
 
 export default {
   components: {
+    GlAlert,
     GlBanner,
     GlEmptyState,
     GlLink,
@@ -30,11 +34,14 @@ export default {
     PackageList,
     PackageTitle,
     PackageSearch,
+    DeleteModal,
     DeletePackage,
   },
   inject: ['emptyListIllustration', 'isGroupPage', 'fullPath'],
   data() {
     return {
+      alertVariables: null,
+      itemsToBeDeleted: [],
       packages: {},
       sort: '',
       filters: {},
@@ -114,6 +121,45 @@ export default {
         historyReplaceState(cleanUrl);
       }
     },
+    async confirmDelete() {
+      const { itemsToBeDeleted } = this;
+      this.itemsToBeDeleted = [];
+      this.mutationLoading = true;
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: destroyPackagesMutation,
+          variables: {
+            ids: itemsToBeDeleted.map((i) => i.id),
+          },
+          awaitRefetchQueries: true,
+          refetchQueries: [
+            {
+              query: getPackagesQuery,
+              variables: { ...this.queryVariables, first: GRAPHQL_PAGE_SIZE },
+            },
+          ],
+        });
+
+        if (data?.destroyPackages?.errors[0]) {
+          throw new Error(data.destroyPackages.errors[0]);
+        }
+        this.showAlert({
+          variant: 'success',
+          message: DELETE_PACKAGES_SUCCESS_MESSAGE,
+        });
+      } catch {
+        this.showAlert({
+          variant: 'danger',
+          message: DELETE_PACKAGES_ERROR_MESSAGE,
+        });
+      } finally {
+        this.mutationLoading = false;
+      }
+    },
+    showDeletePackagesModal(toBeDeleted) {
+      this.itemsToBeDeleted = toBeDeleted;
+      this.$refs.deletePackagesModal.show();
+    },
     handleSearchUpdate({ sort, filters }) {
       this.sort = sort;
       this.filters = { ...filters };
@@ -151,6 +197,9 @@ export default {
         updateQuery: this.updateQuery,
       });
     },
+    showAlert(obj) {
+      this.alertVariables = { ...obj };
+    },
   },
   i18n: {
     widenFilters: s__('PackageRegistry|To widen your search, change or remove the filters above.'),
@@ -175,6 +224,15 @@ export default {
 
 <template>
   <div>
+    <gl-alert
+      v-if="alertVariables"
+      :variant="alertVariables.variant"
+      class="gl-mt-5"
+      dismissible
+      @dismiss="alertVariables = null"
+    >
+      {{ alertVariables.message }}
+    </gl-alert>
     <gl-banner
       v-if="showSurveyBanner"
       :title="$options.i18n.surveyBannerTitle"
@@ -187,7 +245,7 @@ export default {
       <p>{{ $options.i18n.surveyBannerDescription }}</p>
     </gl-banner>
     <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount" />
-    <package-search @update="handleSearchUpdate" />
+    <package-search class="gl-mb-5" @update="handleSearchUpdate" />
 
     <delete-package
       :refetch-queries="refetchQueriesData"
@@ -203,6 +261,7 @@ export default {
           @prev-page="fetchPreviousPage"
           @next-page="fetchNextPage"
           @package:delete="deletePackage"
+          @delete="showDeletePackagesModal"
         >
           <template #empty-state>
             <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
@@ -221,5 +280,11 @@ export default {
         </package-list>
       </template>
     </delete-package>
+
+    <delete-modal
+      ref="deletePackagesModal"
+      :items-to-be-deleted="itemsToBeDeleted"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>

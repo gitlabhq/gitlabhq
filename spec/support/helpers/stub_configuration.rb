@@ -38,6 +38,10 @@ module StubConfiguration
     allow(Rails.application.routes).to receive(:default_url_options).and_return(url_options)
   end
 
+  def stub_dependency_proxy_setting(messages)
+    allow(Gitlab.config.dependency_proxy).to receive_messages(to_settings(messages))
+  end
+
   def stub_gravatar_setting(messages)
     allow(Gitlab.config.gravatar).to receive_messages(to_settings(messages))
   end

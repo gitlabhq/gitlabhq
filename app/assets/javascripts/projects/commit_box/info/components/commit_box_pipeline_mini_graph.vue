@@ -124,7 +124,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-pt-2">
+  <div>
     <gl-loading-icon v-if="$apollo.queries.pipeline.loading" />
     <pipeline-mini-graph
       v-else

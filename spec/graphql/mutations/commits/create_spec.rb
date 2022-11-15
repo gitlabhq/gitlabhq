@@ -179,7 +179,7 @@ RSpec.describe Mutations::Commits::Create do
 
           it 'returns errors' do
             expect(mutated_commit).to be_nil
-            expect(subject[:errors].to_s).to match(/3:UserCommitFiles: empty CommitMessage/)
+            expect(subject[:errors].to_s).to match(/empty CommitMessage/)
           end
         end
 

@@ -1,0 +1,9 @@
+---
+table_name: dependency_proxy_blob_states
+classes:
+  - Geo::DependencyProxyBlobState
+feature_categories:
+  - geo_replication
+description: Separate table for dependency proxy blob verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101429
+milestone: '15.6'

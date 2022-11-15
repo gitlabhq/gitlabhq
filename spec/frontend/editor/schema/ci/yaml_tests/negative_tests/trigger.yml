@@ -1,3 +1,38 @@
+trigger-minimal-empty:
+  trigger: ''
+
+trigger-minimal-invalid-variable:
+  trigger: 'slug#'
+
+trigger-minimal-leading-slash:
+  trigger: '/slug'
+
+trigger-minimal-no-slash:
+  trigger: 'slug'
+
+trigger-minimal-trailing-slash:
+  trigger: 'slug/'
+
+trigger-project-empty:
+  trigger:
+    project: ''
+
+trigger-project-invalid-variable:
+  trigger:
+    project: 'slug#'
+
+trigger-project-leading-slash:
+  trigger:
+    project: '/slug'
+
+trigger-project-no-slash:
+  trigger:
+  project: 'slug'
+
+trigger-project-trailing-slash:
+  trigger:
+  project: 'slug/'
+
 trigger-include-empty:
   trigger:
     include:

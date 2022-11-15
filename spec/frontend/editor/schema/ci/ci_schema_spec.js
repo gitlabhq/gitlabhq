@@ -18,9 +18,7 @@ import VariablesJson from './json_tests/positive_tests/variables.json';
 import DefaultNoAdditionalPropertiesJson from './json_tests/negative_tests/default_no_additional_properties.json';
 import InheritDefaultNoAdditionalPropertiesJson from './json_tests/negative_tests/inherit_default_no_additional_properties.json';
 import JobVariablesMustNotContainObjectsJson from './json_tests/negative_tests/job_variables_must_not_contain_objects.json';
-import ReleaseAssetsLinksEmptyJson from './json_tests/negative_tests/release_assets_links_empty.json';
-import ReleaseAssetsLinksInvalidLinkTypeJson from './json_tests/negative_tests/release_assets_links_invalid_link_type.json';
-import ReleaseAssetsLinksMissingJson from './json_tests/negative_tests/release_assets_links_missing.json';
+import ReleaseAssetsLinksJson from './json_tests/negative_tests/release_assets_links.json';
 import RetryUnknownWhenJson from './json_tests/negative_tests/retry_unknown_when.json';
 
 // YAML POSITIVE TEST
@@ -35,38 +33,18 @@ import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
+import CacheKeyNeative from './yaml_tests/negative_tests/cache.yml';
 import IncludeNegativeYaml from './yaml_tests/negative_tests/include.yml';
-import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
-import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
-import VariablesWrongSyntaxUsageExpand from './yaml_tests/negative_tests/variables/wrong_syntax_usage_expand.yml';
 import JobWhenNegativeYaml from './yaml_tests/negative_tests/job_when.yml';
-
 import ProjectPathIncludeEmptyYaml from './yaml_tests/negative_tests/project_path/include/empty.yml';
 import ProjectPathIncludeInvalidVariableYaml from './yaml_tests/negative_tests/project_path/include/invalid_variable.yml';
 import ProjectPathIncludeLeadSlashYaml from './yaml_tests/negative_tests/project_path/include/leading_slash.yml';
 import ProjectPathIncludeNoSlashYaml from './yaml_tests/negative_tests/project_path/include/no_slash.yml';
 import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/include/tailing_slash.yml';
-import ProjectPathTriggerIncludeYaml from './yaml_tests/negative_tests/project_path/trigger/trigger_include.yml';
-import ProjectPathTriggerMinimalEmptyYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/empty.yml';
-import ProjectPathTriggerMinimalInvalidVariableYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/invalid_variable.yml';
-import ProjectPathTriggerMinimalLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/leading_slash.yml';
-import ProjectPathTriggerMinimalNoSlashYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/no_slash.yml';
-import ProjectPathTriggerMinimalTailSlashYaml from './yaml_tests/negative_tests/project_path/trigger/minimal/tailing_slash.yml';
-import ProjectPathTriggerProjectEmptyYaml from './yaml_tests/negative_tests/project_path/trigger/project/empty.yml';
-import ProjectPathTriggerProjectInvalidVariableYaml from './yaml_tests/negative_tests/project_path/trigger/project/invalid_variable.yml';
-import ProjectPathTriggerProjectLeadSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/leading_slash.yml';
-import ProjectPathTriggerProjectNoSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/no_slash.yml';
-import ProjectPathTriggerProjectTailSlashYaml from './yaml_tests/negative_tests/project_path/trigger/project/tailing_slash.yml';
-
-import CacheKeyFilesNotArray from './yaml_tests/negative_tests/cache/key_files_not_an_array.yml';
-import CacheKeyPrefixArray from './yaml_tests/negative_tests/cache/key_prefix_array.yml';
-import CacheKeyWithDot from './yaml_tests/negative_tests/cache/key_with_dot.yml';
-import CacheKeyWithMultipleDots from './yaml_tests/negative_tests/cache/key_with_multiple_dots.yml';
-import CacheKeyWithSlash from './yaml_tests/negative_tests/cache/key_with_slash.yml';
-import CachePathsNotAnArray from './yaml_tests/negative_tests/cache/paths_not_an_array.yml';
-import CacheUntrackedString from './yaml_tests/negative_tests/cache/untracked_string.yml';
-import CacheWhenInteger from './yaml_tests/negative_tests/cache/when_integer.yml';
-import CacheWhenNotReservedKeyword from './yaml_tests/negative_tests/cache/when_not_reserved_keyword.yml';
+import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
+import TriggerNegative from './yaml_tests/negative_tests/trigger.yml';
+import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
+import VariablesWrongSyntaxUsageExpand from './yaml_tests/negative_tests/variables/wrong_syntax_usage_expand.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -119,22 +97,12 @@ describe('negative tests', () => {
       DefaultNoAdditionalPropertiesJson,
       JobVariablesMustNotContainObjectsJson,
       InheritDefaultNoAdditionalPropertiesJson,
-      ReleaseAssetsLinksEmptyJson,
-      ReleaseAssetsLinksInvalidLinkTypeJson,
-      ReleaseAssetsLinksMissingJson,
+      ReleaseAssetsLinksJson,
       RetryUnknownWhenJson,
 
       // YAML
       ArtifactsNegativeYaml,
-      CacheKeyFilesNotArray,
-      CacheKeyPrefixArray,
-      CacheKeyWithDot,
-      CacheKeyWithMultipleDots,
-      CacheKeyWithSlash,
-      CachePathsNotAnArray,
-      CacheUntrackedString,
-      CacheWhenInteger,
-      CacheWhenNotReservedKeyword,
+      CacheKeyNeative,
       IncludeNegativeYaml,
       JobWhenNegativeYaml,
       RulesNegativeYaml,
@@ -145,17 +113,7 @@ describe('negative tests', () => {
       ProjectPathIncludeLeadSlashYaml,
       ProjectPathIncludeNoSlashYaml,
       ProjectPathIncludeTailSlashYaml,
-      ProjectPathTriggerIncludeYaml,
-      ProjectPathTriggerMinimalEmptyYaml,
-      ProjectPathTriggerMinimalInvalidVariableYaml,
-      ProjectPathTriggerMinimalLeadSlashYaml,
-      ProjectPathTriggerMinimalNoSlashYaml,
-      ProjectPathTriggerMinimalTailSlashYaml,
-      ProjectPathTriggerProjectEmptyYaml,
-      ProjectPathTriggerProjectInvalidVariableYaml,
-      ProjectPathTriggerProjectLeadSlashYaml,
-      ProjectPathTriggerProjectNoSlashYaml,
-      ProjectPathTriggerProjectTailSlashYaml,
+      TriggerNegative,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a

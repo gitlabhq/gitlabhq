@@ -85,7 +85,7 @@ In this mode, `jest` would resolve all the dependencies of related to the change
 
 In addition, there are a few circumstances where we would always run the full Jest tests:
 
-- when the `pipeline:run-all-jest` label is set on the merge request or is set by triage automation when the merge request is approved by any reviewer
+- when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
