@@ -20,10 +20,10 @@ for all projects:
 1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
 1. Optionally, set up the [Auto DevOps base domain](../../../topics/autodevops/requirements.md#auto-devops-base-domain)
    which is used for Auto Deploy and Auto Review Apps.
-1. Hit **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 From now on, every existing project and newly created ones that don't have a
-`.gitlab-ci.yml`, uses the Auto DevOps pipelines.
+`.gitlab-ci.yml` use the Auto DevOps pipelines.
 
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
@@ -174,7 +174,7 @@ To set the duration for which the jobs are considered as old and expired:
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
 1. Set the value of **Archive jobs**.
-1. Hit **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 After that time passes, the jobs are archived in the background and no longer able to be
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
@@ -201,7 +201,7 @@ of your GitLab instance (`.gitlab-ci.yml` if not set):
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Input the new file and path in the **Default CI/CD configuration file** field.
-1. Hit **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 

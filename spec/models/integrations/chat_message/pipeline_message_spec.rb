@@ -44,13 +44,18 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
 
   before do
     test_commit = double("A test commit", committer: args[:user], title: "A test commit message")
-    test_project = double("A test project", commit_by: test_commit, name: args[:project][:name], web_url: args[:project][:web_url])
+    test_project = build(:project, name: args[:project][:name])
+
+    allow(test_project).to receive(:commit_by).and_return(test_commit)
+    allow(test_project).to receive(:web_url).and_return(args[:project][:web_url])
     allow(test_project).to receive(:avatar_url).with(no_args).and_return("/avatar")
     allow(test_project).to receive(:avatar_url).with(only_path: false).and_return(args[:project][:avatar_url])
     allow(Project).to receive(:find) { test_project }
 
-    test_pipeline = double("A test pipeline",
-      has_yaml_errors?: has_yaml_errors, yaml_errors: "yaml error description here")
+    test_pipeline = build(:ci_empty_pipeline, name: 'Build pipeline')
+
+    allow(test_pipeline).to receive(:has_yaml_errors?).and_return(has_yaml_errors)
+    allow(test_pipeline).to receive(:yaml_errors).and_return("yaml error description here")
     allow(Ci::Pipeline).to receive(:find) { test_pipeline }
 
     allow(Gitlab::UrlBuilder).to receive(:build).with(test_commit).and_return("http://example.com/commit")
@@ -67,6 +72,24 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
         " of branch [develop](http://example.gitlab.com/-/commits/develop)" \
         " by The Hacker (hacker) has passed"
     )
+  end
+
+  it 'returns pipeline name' do
+    name_field = subject.attachments.first[:fields].find { |a| a[:title] == 'Pipeline name' }
+
+    expect(name_field[:value]).to eq('Build pipeline')
+  end
+
+  context 'when pipeline_name feature flag is disabled' do
+    before do
+      stub_feature_flags(pipeline_name: false)
+    end
+
+    it 'does not return pipeline name' do
+      name_field = subject.attachments.first[:fields].find { |a| a[:title] == 'Pipeline name' }
+
+      expect(name_field).to be nil
+    end
   end
 
   context "when the pipeline failed" do
@@ -204,8 +227,8 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
     expect(subject.attachments.first[:title_link]).to eq("http://example.gitlab.com/-/pipelines/123")
   end
 
-  it "returns two attachment fields" do
-    expect(subject.attachments.first[:fields].count).to eq(2)
+  it "returns three attachment fields" do
+    expect(subject.attachments.first[:fields].count).to eq(3)
   end
 
   it "returns the commit message as the attachment's second field property" do
@@ -232,8 +255,8 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
       ]
     end
 
-    it "returns four attachment fields" do
-      expect(subject.attachments.first[:fields].count).to eq(4)
+    it "returns five attachment fields" do
+      expect(subject.attachments.first[:fields].count).to eq(5)
     end
 
     it "returns the stage name and link to the 'Failed jobs' tab on the pipeline's page as the attachment's third field property" do
@@ -337,8 +360,8 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
   context "when the CI config file contains a YAML error" do
     let(:has_yaml_errors) { true }
 
-    it "returns three attachment fields" do
-      expect(subject.attachments.first[:fields].count).to eq(3)
+    it "returns four attachment fields" do
+      expect(subject.attachments.first[:fields].count).to eq(4)
     end
 
     it "returns the YAML error deatils as the attachment's third field property" do

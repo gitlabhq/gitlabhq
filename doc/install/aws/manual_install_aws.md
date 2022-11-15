@@ -147,7 +147,7 @@ We now create a VPC, a virtual networking environment that you control:
 
    ![Create VPC](img/create_vpc.png)
 
-1. Select the VPC, select **Actions**, select **Edit DNS resolution**, and enable DNS resolution. Hit **Save** when done.
+1. Select the VPC, select **Actions**, select **Edit DNS resolution**, and enable DNS resolution. Select **Save** when done.
 
 ### Subnets
 
@@ -226,7 +226,7 @@ it receive traffic from any destination.
    route to show the options at the bottom.
 1. Select the **Routes** tab, select **Edit routes > Add route** and set `0.0.0.0/0`
    as the destination. In the target column, select the `gitlab-gateway` we created previously.
-   Hit **Save routes** once done.
+   Select **Save routes** when done.
 
 Next, we must associate the **public** subnets to the route table:
 

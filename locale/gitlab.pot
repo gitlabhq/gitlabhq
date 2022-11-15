@@ -8004,6 +8004,9 @@ msgstr ""
 msgid "ChatMessage|Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status}"
 msgstr ""
 
+msgid "ChatMessage|Pipeline name"
+msgstr ""
+
 msgid "ChatMessage|Tag"
 msgstr ""
 
@@ -34810,7 +34813,7 @@ msgstr ""
 msgid "Review time"
 msgstr ""
 
-msgid "Review time is defined as the time it takes from first comment until merged."
+msgid "Review time is the amount of time since the first comment in a merge request."
 msgstr ""
 
 msgid "ReviewApp|Enable Review App"

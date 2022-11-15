@@ -211,6 +211,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
         expect(active_migration).to eq(migration3)
       end
     end
+
+    context 'when there are no active migrations available' do
+      it 'returns nil' do
+        expect(active_migration).to eq(nil)
+      end
+    end
   end
 
   describe '.find_executable' do
@@ -263,6 +269,43 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       it 'returns the migration' do
         expect(executable_migration).to eq(migration)
       end
+    end
+  end
+
+  describe '.active_migrations_distinct_on_table' do
+    let(:connection) { Gitlab::Database.database_base_models[:main].connection }
+
+    around do |example|
+      Gitlab::Database::SharedModel.using_connection(connection) do
+        example.run
+      end
+    end
+
+    it 'returns one pending executable migration per table' do
+      # non-active migration
+      create(:batched_background_migration, :finished)
+      # migration put on hold
+      create(:batched_background_migration, :active, on_hold_until: 10.minutes.from_now)
+      # migration not availab for the current connection
+      create(:batched_background_migration, :active, gitlab_schema: :gitlab_not_existing)
+      # active migration that is no longer on hold
+      migration_1 = create(:batched_background_migration, :active, table_name: :users, on_hold_until: 10.minutes.ago)
+      # another active migration for the same table
+      create(:batched_background_migration, :active, table_name: :users)
+      # active migration for different table
+      migration_2 = create(:batched_background_migration, :active, table_name: :projects)
+      # active migration for third table
+      create(:batched_background_migration, :active, table_name: :namespaces)
+
+      actual = described_class.active_migrations_distinct_on_table(connection: connection, limit: 2)
+
+      expect(actual).to eq([migration_1, migration_2])
+    end
+
+    it 'returns epmty collection when there are no pending executable migrations' do
+      actual = described_class.active_migrations_distinct_on_table(connection: connection, limit: 2)
+
+      expect(actual).to be_empty
     end
   end
 

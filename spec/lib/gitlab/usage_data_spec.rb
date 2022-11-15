@@ -606,10 +606,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       let_it_be(:disabled) { create(:container_expiration_policy, enabled: false) }
       let_it_be(:enabled) { create(:container_expiration_policy, enabled: true) }
 
-      %i[cadence older_than].each do |attribute|
-        ContainerExpirationPolicy.send("#{attribute}_options").keys.each do |value|
-          let_it_be("container_expiration_policy_with_#{attribute}_set_to_#{value}") { create(:container_expiration_policy, attribute => value) }
-        end
+      ::ContainerExpirationPolicy.older_than_options.keys.each do |value|
+        let_it_be("container_expiration_policy_with_older_than_set_to_#{value}") { create(:container_expiration_policy, older_than: value) }
       end
 
       let_it_be('container_expiration_policy_with_older_than_set_to_null') { create(:container_expiration_policy, older_than: nil) }
@@ -625,13 +623,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_14d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_30d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_60d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 7
-
-        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 8
-        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_7d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_14d]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1month]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_3month]).to eq 1
+        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 2
       end
     end
 

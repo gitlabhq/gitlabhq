@@ -6,6 +6,7 @@ module QA
   module Page
     class Base
       prepend Support::Page::Logging
+      prepend Mobile::Page::Base if QA::Runtime::Env.remote_mobile_device_name
 
       include Capybara::DSL
       include Scenario::Actable

@@ -101,6 +101,7 @@ module Banzai
 
         if uri.relative? && uri.path.present?
           html_attr.value = rebuild_relative_uri(uri).to_s
+          html_attr.parent.add_class('gfm')
         end
       rescue URI::Error, Addressable::URI::InvalidURIError
         # noop

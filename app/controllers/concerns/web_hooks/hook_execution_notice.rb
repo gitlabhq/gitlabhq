@@ -5,7 +5,7 @@ module WebHooks
     private
 
     def set_hook_execution_notice(result)
-      http_status = result[:http_status]
+      http_status = result.payload[:http_status]
       message = result[:message]
 
       if http_status && http_status >= 200 && http_status < 400

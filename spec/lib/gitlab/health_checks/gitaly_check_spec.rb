@@ -40,9 +40,9 @@ RSpec.describe Gitlab::HealthChecks::GitalyCheck do
       end
 
       let(:healthy_check) { double(check: { success: true }) }
-      let(:ready_check) { double(readiness_check: { success: false, message: 'Clock is out of sync' }) }
+      let(:ready_check) { double(readiness_check: { success: false, message: 'A readiness check has failed' }) }
 
-      it { is_expected.to match_array([result_class.new('gitaly_check', false, 'Clock is out of sync', shard: 'default')]) }
+      it { is_expected.to match_array([result_class.new('gitaly_check', false, 'A readiness check has failed', shard: 'default')]) }
     end
   end
 

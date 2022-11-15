@@ -94,13 +94,21 @@ module Gitlab
         end
 
         def self.active_migration(connection:)
-          for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
-            .executable.queue_order.first
+          active_migrations_distinct_on_table(connection: connection, limit: 1).first
         end
 
         def self.find_executable(id, connection:)
           for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
             .executable.find_by_id(id)
+        end
+
+        def self.active_migrations_distinct_on_table(connection:, limit:)
+          distinct_on_table = select('DISTINCT ON (table_name) id')
+            .for_gitlab_schema(Gitlab::Database.gitlab_schemas_for_connection(connection))
+            .executable
+            .order(table_name: :asc, id: :asc)
+
+          where(id: distinct_on_table).queue_order.limit(limit)
         end
 
         def self.successful_rows_counts(migrations)

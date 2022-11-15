@@ -30,39 +30,46 @@ Each database tested has four sections which are described below.
 
 The first section of the comment contains a summary of the test results, including:
 
-| Result            | Description                                                                                                         |
-|-------------------|---------------------------------------------------------------------------------------------------------------------|
-| Warnings          | Highlights critical issues such as exceptions or long-running queries.                                              |
-| Migrations        | The time each migration took to complete, whether it was successful, and the increment in the size of the database. |
-| Runtime histogram | Expand this section to see a histogram of query runtimes across all migrations.                                     |
+- **Warnings** - Highlights critical issues such as exceptions or long-running queries.
+- **Migrations** - The time each migration took to complete, whether it was successful,
+  and the increment in the size of the database.
+- **Runtime histogram** - Expand this section to see a histogram of query runtimes across all migrations.
 
 ## Migration details
 
 The next section of the comment contains detailed information for each migration, including:
 
-| Result            | Description                                                                                                             |
-|-------------------|-------------------------------------------------------------------------------------------------------------------------|
-| Details           | The type of migration, total duration, and database size change.                                                        |
-| Queries           | Every query executed during the migration, along with the number of calls, timings, and the number of the changed rows. |
-| Runtime histogram | Indicates the distribution of query times for the migration.                                                            |
+- **Details** - The type of migration, total duration, and database size change.
+- **Queries** - Every query executed during the migration, along with the number of
+  calls, timings, and the number of the changed rows.
+- **Runtime histogram** - Indicates the distribution of query times for the migration.
 
-## Background Migration Details
+## Background migration details
 
 The next section of the comment contains detailed information about each batched background migration, including:
 
-| Result                       | Description                                                                                                                                                                                                |
-|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Sampling Information         | The number of batches sampled during this test run. Sampled batches are chosen uniformly across the table's ID range. Sampling runs for 30 minutes, split evenly across each background migration to test. |
-| Aggregated Query Information | Aggregate data about each query executed across all the sampled batches, along with the number of calls, timings, and the number of changed rows.                                                          |
-| Batch runtime histogram      | A histogram of timings for each sampled batch from the background migration.                                                                                                                               |
-| Query runtime histogram      | A histogram of timings for all queries executed in any batch of this background migration.                                                                                                                 |
+- **Sampling information** - The number of batches sampled during this test run.
+  Sampled batches are chosen uniformly across the table's ID range. Sampling runs
+  for 30 minutes, split evenly across each background migration to test.
+- **Aggregated query information** - Aggregate data about each query executed across
+  all the sampled batches, along with the number of calls, timings, and the number of changed rows.
+- **Batch runtime histogram** - A histogram of timings for each sampled batch
+  from the background migration.
+- **Query runtime histogram** - A histogram of timings for all queries executed
+  in any batch of this background migration.
 
 ## Clone details and artifacts
 
 Some additional information is included at the bottom of the comment:
 
-| Result                           | Description                                                                                                                                                                                                                                                                   |
-|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Migrations pending on GitLab.com | A summary of migrations not deployed yet to GitLab.com. This information is useful when testing a migration that was merged but not deployed yet.                                                                                                                             |
-| Clone details                    | A link to the `Postgres.ai` thin clone created for this testing pipeline, along with information about its expiry. This can be used to further explore the results of running the migration. Only accessible by database maintainers or with an access request.               |
-| Artifacts                        | A link to the pipeline's artifacts. Full query logs for each migration (ending in `.log`) are available there and only accessible by database maintainers or with an access request. Details of the specific batched background migration batches sampled are also available. |
+- **Migrations pending on GitLab.com** - A summary of migrations not deployed yet
+  to GitLab.com. This information is useful when testing a migration that was merged
+  but not deployed yet.
+- **Clone details** - A link to the `Postgres.ai` thin clone created for this
+  testing pipeline, along with information about its expiry. This can be used to
+  further explore the results of running the migration. Only accessible by
+  database maintainers or with an access request.
+- **Artifacts** - A link to the pipeline's artifacts. Full query logs for each
+  migration (ending in `.log`) are available there, and only accessible by
+  database maintainers or with an access request. Details of the specific
+  batched background migration batches sampled are also available.

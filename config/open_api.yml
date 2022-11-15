@@ -17,14 +17,16 @@ metadata:
     # Keep in alphabetical order
   - name: access_requests
     description: Operations related to access requests
+  - name: ci_lint
+    description: Operations related to linting a CI config file
+  - name: ci_resource_groups
+    description: Operations to manage job concurrency with resource groups
   - name: ci_variables
     description: Operations related to CI/CD variables
   - name: cluster_agents
     description: Operations related to the GitLab agent for Kubernetes
   - name: clusters
     description: Operations related to clusters
-  - name: ci_resource_groups
-    description: Operations to manage job concurrency with resource groups
   - name: dependency_proxy
     description: Operations to manage dependency proxy for a groups
   - name: deploy_keys
@@ -37,6 +39,8 @@ metadata:
     description: Operations related to DevOps Research and Assessment (DORA) key metrics
   - name: environments
     description: Operations related to environments
+  - name: error_tracking_project_settings
+    description: Operations related to error tracking project settings
   - name: feature_flags_user_lists
     description: Operations related to accessing GitLab feature flag user lists
   - name: feature_flags
@@ -45,8 +49,8 @@ metadata:
     description: Operations related to managing Flipper-based feature flags
   - name: freeze_periods
     description: Operations related to deploy freeze periods
-  - name: ci_lint
-    description: Operations related to linting a CI config file
+  - name: geo
+    description: Operations related to Geo
   - name: geo_nodes
     description: Operations related Geo Nodes
   - name: group_export
@@ -61,6 +65,8 @@ metadata:
     description: Operations related to metadata of the GitLab instance
   - name: metrics_user_starred_dashboards
     description: Operations related to User-starred metrics dashboards
+  - name: package_files
+    description: Operations about package files
   - name: project_export
     description: Operations related to exporting projects
   - name: project_hooks

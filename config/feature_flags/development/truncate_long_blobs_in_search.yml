@@ -1,8 +1,0 @@
----
-name: truncate_long_blobs_in_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101743
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381009
-milestone: '15.6'
-type: development
-group: group::global search
-default_enabled: true

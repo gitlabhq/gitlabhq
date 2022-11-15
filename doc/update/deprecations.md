@@ -121,6 +121,20 @@ As part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee
 From GitLab 16.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### merge_status API field
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `merge_status` field in the [merge request API](https://docs.gitlab.com/ee/api/merge_requests.html#merge-status) has been deprecated in favor of the `detailed_merge_status` field which more correctly identifies all of the potential statuses that a merge request can be in. API users are encouraged to use the new `detailed_merge_status` field instead. The `merge_status` field will be removed in v5 of the GitLab REST API.
+
+</div>
 </div>
 
 <div class="announcement-milestone">

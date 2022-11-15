@@ -195,11 +195,13 @@ module API
         mount ::API::DeployTokens
         mount ::API::Deployments
         mount ::API::Environments
+        mount ::API::ErrorTracking::ProjectSettings
         mount ::API::FeatureFlags
         mount ::API::FeatureFlagsUserLists
         mount ::API::Features
         mount ::API::Files
         mount ::API::FreezePeriods
+        mount ::API::Geo
         mount ::API::GroupAvatar
         mount ::API::GroupClusters
         mount ::API::GroupExport
@@ -215,6 +217,7 @@ module API
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::Metrics::UserStarredDashboards
+        mount ::API::PackageFiles
         mount ::API::PersonalAccessTokens::SelfInformation
         mount ::API::PersonalAccessTokens
         mount ::API::ProjectClusters
@@ -245,6 +248,7 @@ module API
         mount ::API::Terraform::Modules::V1::Packages
         mount ::API::Terraform::State
         mount ::API::Terraform::StateVersion
+        mount ::API::Topics
         mount ::API::Unleash
         mount ::API::UserCounts
         mount ::API::Wikis
@@ -276,10 +280,8 @@ module API
       mount ::API::Discussions
       mount ::API::ErrorTracking::ClientKeys
       mount ::API::ErrorTracking::Collector
-      mount ::API::ErrorTracking::ProjectSettings
       mount ::API::Events
       mount ::API::GenericPackages
-      mount ::API::Geo
       mount ::API::GoProxy
       mount ::API::GroupBoards
       mount ::API::GroupContainerRepositories
@@ -305,7 +307,6 @@ module API
       mount ::API::NpmProjectPackages
       mount ::API::NugetGroupPackages
       mount ::API::NugetProjectPackages
-      mount ::API::PackageFiles
       mount ::API::Pages
       mount ::API::PagesDomains
       mount ::API::ProjectContainerRepositories
@@ -327,7 +328,6 @@ module API
       mount ::API::Tags
       mount ::API::Templates
       mount ::API::Todos
-      mount ::API::Topics
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
       mount ::API::UsageDataQueries

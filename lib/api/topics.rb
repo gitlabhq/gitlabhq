@@ -11,7 +11,9 @@ module API
       success Entities::Projects::Topic
     end
     params do
-      optional :search, type: String, desc: 'Return list of topics matching the search criteria'
+      optional :search, type: String,
+                        desc: 'Return list of topics matching the search criteria',
+                        documentation: { example: 'search' }
       optional :without_projects, type: Boolean, desc: 'Return list of topics without assigned projects'
       use :pagination
     end

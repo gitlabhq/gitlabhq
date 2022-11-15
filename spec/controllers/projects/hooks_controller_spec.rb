@@ -229,7 +229,7 @@ RSpec.describe Projects::HooksController do
     context 'when the hook fails completely' do
       before do
         allow_next(::TestHooks::ProjectService)
-          .to receive(:execute).and_return({ message: 'All is woe' })
+          .to receive(:execute).and_return(ServiceResponse.error(message: 'All is woe'))
       end
 
       it 'informs the user' do
@@ -247,7 +247,7 @@ RSpec.describe Projects::HooksController do
 
       it 'prevents making test requests' do
         expect_next_instance_of(TestHooks::ProjectService) do |service|
-          expect(service).to receive(:execute).and_return(http_status: 200)
+          expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { http_status: 200 }))
         end
 
         2.times { post :test, params: { namespace_id: project.namespace, project_id: project, id: hook } }

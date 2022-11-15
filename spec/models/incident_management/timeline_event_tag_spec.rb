@@ -18,7 +18,7 @@ RSpec.describe IncidentManagement::TimelineEventTag do
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to([:project_id]) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to([:project_id]).ignoring_case_sensitivity }
 
     it { is_expected.to allow_value('Test tag 1').for(:name) }
     it { is_expected.not_to allow_value('Test tag, 1').for(:name) }

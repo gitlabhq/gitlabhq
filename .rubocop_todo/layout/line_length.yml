@@ -2946,7 +2946,6 @@ Layout/LineLength:
     - 'lib/api/entities/project.rb'
     - 'lib/api/entities/user.rb'
     - 'lib/api/environments.rb'
-    - 'lib/api/error_tracking/project_settings.rb'
     - 'lib/api/feature_flags.rb'
     - 'lib/api/files.rb'
     - 'lib/api/generic_packages.rb'

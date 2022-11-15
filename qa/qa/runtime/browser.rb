@@ -111,6 +111,7 @@ module QA
 
             if QA::Runtime::Env.remote_mobile_device_name
               capabilities['platformName'] = 'Android'
+              capabilities['appium:automationName'] = 'UiAutomator2'
               capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
               capabilities['appium:platformVersion'] = 'latest'
             else
@@ -120,6 +121,7 @@ module QA
           when :safari
             if QA::Runtime::Env.remote_mobile_device_name
               capabilities['platformName'] = 'iOS'
+              capabilities['appium:automationName'] = 'XCUITest'
               capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
               capabilities['appium:platformVersion'] = 'latest'
             end

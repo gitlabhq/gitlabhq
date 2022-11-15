@@ -168,8 +168,8 @@ module Integrations
       result = execute(data)
 
       {
-        success: (200..299).cover?(result[:http_status]),
-        result: result[:message]
+        success: (200..299).cover?(result.payload[:http_status]),
+        result: result.message
       }
     end
 

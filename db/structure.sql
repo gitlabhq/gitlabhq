@@ -29229,7 +29229,7 @@ CREATE UNIQUE INDEX index_im_oncall_schedules_on_project_id_and_iid ON incident_
 
 CREATE INDEX index_im_timeline_event_id ON incident_management_timeline_event_tag_links USING btree (timeline_event_id);
 
-CREATE UNIQUE INDEX index_im_timeline_event_tags_name_project_id ON incident_management_timeline_event_tags USING btree (project_id, name);
+CREATE UNIQUE INDEX index_im_timeline_event_tags_on_lower_name_and_project_id ON incident_management_timeline_event_tags USING btree (project_id, lower(name));
 
 CREATE UNIQUE INDEX index_im_timeline_event_tags_on_tag_id_and_event_id ON incident_management_timeline_event_tag_links USING btree (timeline_event_tag_id, timeline_event_id);
 

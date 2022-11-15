@@ -685,7 +685,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
             canonical: |
               <p><a href="projects-test-file">projects-test-file</a></p>
             static: |-
-              <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file">projects-test-file</a></p>
+              <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file" class="gfm">projects-test-file</a></p>
             wysiwyg: |-
               <p><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
           06_03_00__api_request_overrides__project_snippet_ref__001:

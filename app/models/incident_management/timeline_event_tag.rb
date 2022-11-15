@@ -17,7 +17,7 @@ module IncidentManagement
       through: :timeline_event_tag_links
 
     validates :name, presence: true, format: { with: /\A[^,]+\z/ }
-    validates :name, uniqueness: { scope: :project_id }
+    validates :name, uniqueness: { scope: :project_id, case_sensitive: false }
     validates :name, length: { maximum: 255 }
 
     scope :by_names, -> (tag_names) { where(name: tag_names) }

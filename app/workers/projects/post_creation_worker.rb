@@ -17,6 +17,7 @@ module Projects
       return unless project
 
       create_prometheus_integration(project)
+      create_incident_management_timeline_event_tags(project)
     end
 
     private

@@ -47,8 +47,11 @@ After the author applies a suggestion:
 
 ## Multi-line suggestions
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/232339) in GitLab 13.11: suggestions in multi-line comments also become multi-line.
+
 Reviewers can also suggest changes to multiple lines with a single suggestion
-within merge request diff threads by adjusting the range offsets. The
+within merge request diff threads by selecting and dragging selection to all
+relevant line numbers or by adjusting the range offsets. The
 offsets are relative to the position of the diff thread, and specify the
 range to be replaced by the suggestion when it is applied.
 
