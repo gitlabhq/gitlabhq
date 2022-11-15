@@ -130,13 +130,13 @@ rule in the defined policy are met.
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `scan` | `string` | `dast`, `secret_detection`, `sast`, `container_scanning`, `dependency_scanning` | The action's type. |
-| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/index.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
-| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/index.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
+| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
+| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 
 Note the following:
 
-- You must create the [site profile](../dast/index.md#site-profile) and [scanner profile](../dast/index.md#scanner-profile)
+- You must create the [site profile](../dast/proxy-based.md#site-profile) and [scanner profile](../dast/proxy-based.md#scanner-profile)
   with selected names for each project that is assigned to the selected Security Policy Project.
   Otherwise, the policy is not applied and a job with an error message is created instead.
 - Once you associate the site profile and scanner profile by name in the policy, it is not possible
@@ -152,7 +152,7 @@ Note the following:
   mode when executed as part of a scheduled scan.
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
-- The Depndency Scanning and SAST scans use the default templates and run in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
+- The Dependency Scanning and SAST scans use the default templates and run in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 ## Example security policies project
 

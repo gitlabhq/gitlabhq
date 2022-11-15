@@ -371,7 +371,6 @@ Layout/LineLength:
     - 'app/models/diff_note.rb'
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/project_error_tracking_setting.rb'
-    - 'app/models/event_collection.rb'
     - 'app/models/exported_protected_branch.rb'
     - 'app/models/group.rb'
     - 'app/models/incident_management/project_incident_management_setting.rb'

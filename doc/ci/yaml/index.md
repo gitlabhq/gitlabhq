@@ -1479,8 +1479,8 @@ to select a specific site profile and scanner profile.
 
 **Related topics**:
 
-- [Site profile](../../user/application_security/dast/index.md#site-profile).
-- [Scanner profile](../../user/application_security/dast/index.md#scanner-profile).
+- [Site profile](../../user/application_security/dast/proxy-based.md#site-profile).
+- [Scanner profile](../../user/application_security/dast/proxy-based.md#scanner-profile).
 
 ### `dependencies`
 

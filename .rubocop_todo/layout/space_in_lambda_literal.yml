@@ -69,7 +69,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/diff_note.rb'
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/error.rb'
-    - 'app/models/event_collection.rb'
     - 'app/models/external_pull_request.rb'
     - 'app/models/group.rb'
     - 'app/models/integration.rb'

@@ -1132,12 +1132,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.3.tgz#9ea641146436da388ffbad25d7f2abe0df52c235"
   integrity sha512-NMV++7Ew1FSBDN1xiZaauU9tfeSfgDHcOLpn+8bGpP+O5orUPm2Eu66R5eC5gkjBPaXosNAxNWtriee+aFk4+g==
 
-"@gitlab/web-ide@0.0.1-dev-20220815034418":
-  version "0.0.1-dev-20220815034418"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20220815034418.tgz#c4c4f72d6ffe1ba18fdfc452b30d10ff7cde0550"
-  integrity sha512-cYTMAXfc+B549euU+IDHgFK0Rjwa5SNjs4coBJOD4eoZVvPd3YtHbArqqzmdO71SYjCqV1Bl4v0Jy4UnOJgcjQ==
-  dependencies:
-    mustache "^4.2.0"
+"@gitlab/web-ide@0.0.1-dev-20221114183058":
+  version "0.0.1-dev-20221114183058"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20221114183058.tgz#0b6e38900cf6986027919a6f7dd2166a7d9016e7"
+  integrity sha512-M+IfbTGVPBtOfJrEkoNHEomhPoDrFFkuPFIHC1X5G0ixbXdep4UPX3jIAT/3TrOM331nrcZKX7fDMw6wn9jQnw==
 
 "@graphql-eslint/eslint-plugin@3.12.0":
   version "3.12.0"
@@ -9211,11 +9209,6 @@ multicast-dns@^7.2.4:
   dependencies:
     dns-packet "^5.2.2"
     thunky "^1.0.2"
-
-mustache@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/mustache/-/mustache-4.2.0.tgz#e5892324d60a12ec9c2a73359edca52972bf6f64"
-  integrity sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==
 
 nanoid@^3.3.4:
   version "3.3.4"

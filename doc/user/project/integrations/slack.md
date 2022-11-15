@@ -15,7 +15,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 
 ## Configure Slack
 
-1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://api.slack.com/messaging/webhooks#getting_started).
+1. Sign in to your Slack team and [start a new Incoming WebHooks configuration](https://my.slack.com/services/new/incoming-webhook).
 1. Identify the Slack channel where notifications should be sent to by default.
    Select **Add Incoming WebHooks integration** to add the configuration.
 1. Copy the **Webhook URL** to use later when you configure GitLab.

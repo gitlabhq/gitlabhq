@@ -32,7 +32,7 @@ module Gitlab
             project,
             reader.project_tree,
             json_writer,
-            exportable_path: 'project',
+            exportable_path: 'tree/project',
             current_user: nil
           )
         end

@@ -36,8 +36,8 @@ current DAST scanner is much more effective at finding and testing every page in
 To enable the browser-based analyzer:
 
 1. Ensure the DAST [prerequisites](index.md#prerequisites) are met.
-1. Include the [DAST CI/CD template](index.md#include-the-dast-template).
-1. Set the target website using the [`DAST_WEBSITE` CI/CD variable](index.md#available-cicd-variables).
+1. Include the [DAST CI/CD template](proxy-based.md#include-the-dast-template).
+1. Set the target website using the [`DAST_WEBSITE` CI/CD variable](proxy-based.md#available-cicd-variables).
 1. Set the CI/CD variable `DAST_BROWSER_SCAN` to `true`.
 
 Example extract of `.gitlab-ci.yml` file:
@@ -79,7 +79,7 @@ The browser-based crawler can be configured using CI/CD variables.
 | `DAST_BROWSER_ELEMENT_TIMEOUT`               | [Duration string](https://pkg.go.dev/time#ParseDuration) | `600ms` | The maximum amount of time to wait for an element before determining it is ready for analysis. |
 | `DAST_BROWSER_PAGE_READY_SELECTOR`           | selector | `css:#page-is-ready`                               | Selector that when detected as visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Note: When this selector is set, but the element is not found, the scanner waits for the period defined in `DAST_BROWSER_STABILITY_TIMEOUT` before continuing the scan. This can significantly increase scanning time if the element is not present on multiple pages within the site. |
 
-The [DAST variables](index.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
+The [DAST variables](proxy-based.md#available-cicd-variables) `SECURE_ANALYZERS_PREFIX`, `DAST_FULL_SCAN_ENABLED`, `DAST_AUTO_UPDATE_ADDONS`, `DAST_EXCLUDE_RULES`, `DAST_REQUEST_HEADERS`, `DAST_HTML_REPORT`, `DAST_MARKDOWN_REPORT`, `DAST_XML_REPORT`,
 `DAST_AUTH_URL`, `DAST_USERNAME`, `DAST_PASSWORD`, `DAST_USERNAME_FIELD`, `DAST_PASSWORD_FIELD`, `DAST_FIRST_SUBMIT_FIELD`, `DAST_SUBMIT_FIELD`, `DAST_EXCLUDE_URLS`, `DAST_AUTH_VERIFICATION_URL`, `DAST_BROWSER_AUTH_VERIFICATION_SELECTOR`, `DAST_BROWSER_AUTH_VERIFICATION_LOGIN_FORM`, `DAST_BROWSER_AUTH_REPORT`,
 `DAST_INCLUDE_ALPHA_VULNERABILITIES`, `DAST_PATHS_FILE`, `DAST_PATHS`, `DAST_ZAP_CLI_OPTIONS`, and `DAST_ZAP_LOG_CONFIGURATION` are also compatible with browser-based crawler scans.
 

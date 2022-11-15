@@ -62,30 +62,17 @@ class EventCollection
   end
 
   def in_operator_optimized_relation(parent_column, parents, parent_model)
-    query_builder_params = if Feature.enabled?(:optimized_project_and_group_activity_queries)
-                             array_data = {
-                               scope_ids: parents.pluck(:id),
-                               scope_model: parent_model,
-                               mapping_column: parent_column
-                             }
-                             filter.in_operator_query_builder_params(array_data)
-                           else
-                             {
-                               scope: filtered_events,
-                               array_scope: parents.select(:id),
-                               array_mapping_scope: -> (parent_id_expression) { Event.where(Event.arel_table[parent_column].eq(parent_id_expression)).reorder(id: :desc) },
-                               finder_query: -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
-                             }
-                           end
+    array_data = {
+      scope_ids: parents.pluck(:id),
+      scope_model: parent_model,
+      mapping_column: parent_column
+    }
+    query_builder_params = filter.in_operator_query_builder_params(array_data)
 
     Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder
       .new(**query_builder_params)
       .execute
       .limit(@limit + @offset)
-  end
-
-  def filtered_events
-    filter.apply_filter(base_relation)
   end
 
   def paginate_events(events)

@@ -403,7 +403,7 @@ Learn more on overriding security jobs:
 - [Overriding Dependency Scanning jobs](dependency_scanning/index.md#overriding-dependency-scanning-jobs).
 - [Overriding Container Scanning jobs](container_scanning/index.md#overriding-the-container-scanning-template).
 - [Overriding Secret Detection jobs](secret_detection/index.md#configure-scan-settings).
-- [Overriding DAST jobs](dast/index.md#customize-dast-settings).
+- [Overriding DAST jobs](dast/proxy-based.md#customize-dast-settings).
 - [Overriding License Compliance jobs](../compliance/license_compliance/index.md#overriding-the-template).
 
 All the security scanning tools define their stage, so this error can occur with all of them.

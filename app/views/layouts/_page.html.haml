@@ -21,7 +21,6 @@
       = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
       = yield :page_level_alert
       = yield :free_user_cap_alert
-      = yield :usage_quotas_free_user_cap_alert
       = yield :group_invite_members_banner
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
