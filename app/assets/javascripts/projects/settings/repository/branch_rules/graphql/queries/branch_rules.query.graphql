@@ -4,9 +4,20 @@ query getBranchRules($projectPath: ID!) {
     branchRules {
       nodes {
         name
+        isDefault
         branchProtection {
           allowForcePush
           codeOwnerApprovalRequired
+        }
+        externalStatusChecks {
+          nodes {
+            id
+          }
+        }
+        approvalRules {
+          nodes {
+            id
+          }
         }
       }
     }

@@ -181,11 +181,12 @@ module API
         mount ::API::BroadcastMessages
         mount ::API::BulkImports
         mount ::API::Ci::Jobs
-        mount ::API::Ci::PipelineSchedules
         mount ::API::Ci::ResourceGroups
         mount ::API::Ci::Runner
         mount ::API::Ci::Runners
         mount ::API::Ci::Pipelines
+        mount ::API::Ci::PipelineSchedules
+        mount ::API::Ci::Triggers
         mount ::API::Ci::Variables
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
@@ -213,6 +214,7 @@ module API
         mount ::API::GroupVariables
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
+        mount ::API::Integrations
         mount ::API::Invitations
         mount ::API::Keys
         mount ::API::Lint
@@ -267,11 +269,7 @@ module API
       mount ::API::AwardEmoji
       mount ::API::Boards
       mount ::API::Ci::JobArtifacts
-      mount ::API::Ci::Pipelines
-      mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::SecureFiles
-      mount ::API::Ci::Triggers
-      mount ::API::CommitStatuses
       mount ::API::ComposerPackages
       mount ::API::ConanInstancePackages
       mount ::API::ConanProjectPackages
@@ -290,7 +288,6 @@ module API
       mount ::API::GroupMilestones
       mount ::API::Groups
       mount ::API::HelmPackages
-      mount ::API::Integrations
       mount ::API::Integrations::JiraConnect::Subscriptions
       mount ::API::IssueLinks
       mount ::API::Issues

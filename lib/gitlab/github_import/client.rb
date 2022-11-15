@@ -76,6 +76,10 @@ module Gitlab
         each_object(:pull_request_reviews, repo_name, iid)
       end
 
+      def pull_request_review_requests(repo_name, iid)
+        with_rate_limit { octokit.pull_request_review_requests(repo_name, iid).to_h }
+      end
+
       def repos(options = {})
         octokit.repos(nil, options).map(&:to_h)
       end

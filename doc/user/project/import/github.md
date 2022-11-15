@@ -208,6 +208,7 @@ The following items of a project are imported:
 - Regular issue and pull request comments.
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md).
 - Pull request reviews (GitLab.com and GitLab 13.7 and later).
+- Pull request assigned reviewers [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355137) in GitLab 15.6.
 - Pull request "merged by" information (GitLab.com and GitLab 13.7 and later).
 - Pull request comments replies in discussions ([GitLab.com and GitLab 14.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/336596)).
 - Diff Notes suggestions ([GitLab.com and GitLab 14.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340624)).

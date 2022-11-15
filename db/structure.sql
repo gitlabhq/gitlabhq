@@ -21215,7 +21215,7 @@ CREATE TABLE schema_migrations (
 
 CREATE TABLE scim_identities (
     id bigint NOT NULL,
-    group_id bigint NOT NULL,
+    group_id bigint,
     user_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -21236,7 +21236,7 @@ CREATE TABLE scim_oauth_access_tokens (
     id integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    group_id integer NOT NULL,
+    group_id integer,
     token_encrypted character varying NOT NULL
 );
 

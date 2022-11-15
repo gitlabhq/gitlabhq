@@ -7,7 +7,7 @@
 extends: existence
 message: "Use 'dropdown list'."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#dropdown-list
-level: suggestion
+level: warning
 ignorecase: true
 tokens:
   - drop-down( [\w]*)?

@@ -3,24 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Client do
-  describe '#parallel?' do
-    it 'returns true when the client is running in parallel mode' do
-      client = described_class.new('foo', parallel: true)
+  subject(:client) { described_class.new('foo', parallel: parallel) }
 
-      expect(client).to be_parallel
+  let(:parallel) { true }
+
+  describe '#parallel?' do
+    context 'when the client is running in parallel mode' do
+      it { expect(client).to be_parallel }
     end
 
-    it 'returns false when the client is running in sequential mode' do
-      client = described_class.new('foo', parallel: false)
+    context 'when the client is running in sequential mode' do
+      let(:parallel) { false }
 
-      expect(client).not_to be_parallel
+      it { expect(client).not_to be_parallel }
     end
   end
 
   describe '#user' do
     it 'returns the details for the given username' do
-      client = described_class.new('foo')
-
       expect(client.octokit).to receive(:user).with('foo')
       expect(client).to receive(:with_rate_limit).and_yield
 
@@ -30,8 +30,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#pull_request_reviews' do
     it 'returns the pull request reviews' do
-      client = described_class.new('foo')
-
       expect(client)
         .to receive(:each_object)
         .with(:pull_request_reviews, 'foo/bar', 999)
@@ -40,10 +38,17 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
   end
 
+  describe '#pull_request_review_requests' do
+    it 'returns the pull request review requests' do
+      expect(client.octokit).to receive(:pull_request_review_requests).with('foo/bar', 999)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.pull_request_review_requests('foo/bar', 999)
+    end
+  end
+
   describe '#repos' do
     it 'returns the user\'s repositories as a hash' do
-      client = described_class.new('foo')
-
       stub_request(:get, 'https://api.github.com/rate_limit')
         .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
 
@@ -58,8 +63,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#repository' do
     it 'returns the details of a repository' do
-      client = described_class.new('foo')
-
       expect(client.octokit).to receive(:repo).with('foo/bar')
       expect(client).to receive(:with_rate_limit).and_yield
 
@@ -67,8 +70,6 @@ RSpec.describe Gitlab::GithubImport::Client do
     end
 
     it 'returns repository data as a hash' do
-      client = described_class.new('foo')
-
       stub_request(:get, 'https://api.github.com/rate_limit')
         .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
 
@@ -83,8 +84,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#pull_request' do
     it 'returns the details of a pull_request' do
-      client = described_class.new('foo')
-
       expect(client.octokit).to receive(:pull_request).with('foo/bar', 999)
       expect(client).to receive(:with_rate_limit).and_yield
 
@@ -94,8 +93,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#labels' do
     it 'returns the labels' do
-      client = described_class.new('foo')
-
       expect(client)
         .to receive(:each_object)
         .with(:labels, 'foo/bar')
@@ -106,8 +103,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#milestones' do
     it 'returns the milestones' do
-      client = described_class.new('foo')
-
       expect(client)
         .to receive(:each_object)
         .with(:milestones, 'foo/bar')
@@ -118,8 +113,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#releases' do
     it 'returns the releases' do
-      client = described_class.new('foo')
-
       expect(client)
         .to receive(:each_object)
         .with(:releases, 'foo/bar')
@@ -130,8 +123,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#branches' do
     it 'returns the branches' do
-      client = described_class.new('foo')
-
       expect(client)
         .to receive(:each_object)
           .with(:branches, 'foo/bar')
@@ -142,8 +133,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#branch_protection' do
     it 'returns the protection details for the given branch' do
-      client = described_class.new('foo')
-
       expect(client.octokit)
         .to receive(:branch_protection).with('org/repo', 'bar')
       expect(client).to receive(:with_rate_limit).and_yield
@@ -156,8 +145,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#each_object' do
     it 'converts each object into a hash' do
-      client = described_class.new('foo')
-
       stub_request(:get, 'https://api.github.com/rate_limit')
         .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
 
@@ -171,7 +158,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#each_page' do
-    let(:client) { described_class.new('foo') }
     let(:object1) { double(:object1) }
     let(:object2) { double(:object2) }
 
@@ -242,8 +228,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#with_rate_limit' do
-    let(:client) { described_class.new('foo') }
-
     it 'yields the supplied block when enough requests remain' do
       expect(client).to receive(:requests_remaining?).and_return(true)
 
@@ -340,8 +324,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#requests_remaining?' do
-    let(:client) { described_class.new('foo') }
-
     context 'when default requests limit is set' do
       before do
         allow(client).to receive(:requests_limit).and_return(5000)
@@ -380,44 +362,43 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#raise_or_wait_for_rate_limit' do
-    it 'raises RateLimitError when running in parallel mode' do
-      client = described_class.new('foo', parallel: true)
-
-      expect { client.raise_or_wait_for_rate_limit }
-        .to raise_error(Gitlab::GithubImport::RateLimitError)
+    context 'when running in parallel mode' do
+      it 'raises RateLimitError' do
+        expect { client.raise_or_wait_for_rate_limit }
+          .to raise_error(Gitlab::GithubImport::RateLimitError)
+      end
     end
 
-    it 'sleeps when running in sequential mode' do
-      client = described_class.new('foo', parallel: false)
+    context 'when running in sequential mode' do
+      let(:parallel) { false }
 
-      expect(client).to receive(:rate_limit_resets_in).and_return(1)
-      expect(client).to receive(:sleep).with(1)
+      it 'sleeps' do
+        expect(client).to receive(:rate_limit_resets_in).and_return(1)
+        expect(client).to receive(:sleep).with(1)
 
-      client.raise_or_wait_for_rate_limit
-    end
+        client.raise_or_wait_for_rate_limit
+      end
 
-    it 'increments the rate limit counter' do
-      client = described_class.new('foo', parallel: false)
+      it 'increments the rate limit counter' do
+        expect(client)
+          .to receive(:rate_limit_resets_in)
+          .and_return(1)
 
-      expect(client)
-        .to receive(:rate_limit_resets_in)
-        .and_return(1)
+        expect(client)
+          .to receive(:sleep)
+          .with(1)
 
-      expect(client)
-        .to receive(:sleep)
-        .with(1)
+        expect(client.rate_limit_counter)
+          .to receive(:increment)
+          .and_call_original
 
-      expect(client.rate_limit_counter)
-        .to receive(:increment)
-        .and_call_original
-
-      client.raise_or_wait_for_rate_limit
+        client.raise_or_wait_for_rate_limit
+      end
     end
   end
 
   describe '#remaining_requests' do
     it 'returns the number of remaining requests' do
-      client = described_class.new('foo')
       rate_limit = double(remaining: 1)
 
       expect(client.octokit).to receive(:rate_limit).and_return(rate_limit)
@@ -427,7 +408,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#requests_limit' do
     it 'returns requests limit' do
-      client = described_class.new('foo')
       rate_limit = double(limit: 1)
 
       expect(client.octokit).to receive(:rate_limit).and_return(rate_limit)
@@ -437,7 +417,6 @@ RSpec.describe Gitlab::GithubImport::Client do
 
   describe '#rate_limit_resets_in' do
     it 'returns the number of seconds after which the rate limit is reset' do
-      client = described_class.new('foo')
       rate_limit = double(resets_in: 1)
 
       expect(client.octokit).to receive(:rate_limit).and_return(rate_limit)
@@ -447,8 +426,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#api_endpoint' do
-    let(:client) { described_class.new('foo') }
-
     context 'without a custom endpoint configured in Omniauth' do
       it 'returns the default API endpoint' do
         expect(client)
@@ -473,8 +450,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#web_endpoint' do
-    let(:client) { described_class.new('foo') }
-
     context 'without a custom endpoint configured in Omniauth' do
       it 'returns the default web endpoint' do
         expect(client)
@@ -499,8 +474,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#custom_api_endpoint' do
-    let(:client) { described_class.new('foo') }
-
     context 'without a custom endpoint' do
       it 'returns nil' do
         expect(client)
@@ -533,8 +506,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#verify_ssl' do
-    let(:client) { described_class.new('foo') }
-
     context 'without a custom configuration' do
       it 'returns true' do
         expect(client)
@@ -553,8 +524,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#github_omniauth_provider' do
-    let(:client) { described_class.new('foo') }
-
     context 'without a configured provider' do
       it 'returns an empty Hash' do
         expect(Gitlab.config.omniauth)
@@ -576,8 +545,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe '#rate_limiting_enabled?' do
-    let(:client) { described_class.new('foo') }
-
     it 'returns true when using GitHub.com' do
       expect(client.rate_limiting_enabled?).to eq(true)
     end
@@ -592,7 +559,6 @@ RSpec.describe Gitlab::GithubImport::Client do
   end
 
   describe 'search' do
-    let(:client) { described_class.new('foo') }
     let(:user) { { login: 'user' } }
     let(:org1) { { login: 'org1' } }
     let(:org2) { { login: 'org2' } }

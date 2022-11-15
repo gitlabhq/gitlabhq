@@ -133,7 +133,7 @@ module API
           .find_or_create_by_name(params[:environment])
 
         unless environment.persisted?
-          render_validation_error!(deployment)
+          render_validation_error!(environment)
         end
 
         authorize!(:create_deployment, environment)

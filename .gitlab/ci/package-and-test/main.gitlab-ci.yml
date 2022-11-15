@@ -225,7 +225,6 @@ ee:instance-parallel-ff-inverse:
     QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
     GITLAB_QA_OPTS: --set-feature-flags $QA_FEATURE_FLAGS
   rules:
-    - !reference [.rules:test:feature-flags-deleted, rules]  # skip job when only change is ff deletion
     - !reference [.rules:test:feature-flags-set, rules]
 
 # ------------------------------------------

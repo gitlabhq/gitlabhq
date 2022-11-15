@@ -30,10 +30,10 @@ module Gitlab
       #     end
       #     strong_memoize_attr :trigger_from_token
       #
-      #     strong_memoize_attr :enabled?, :enabled
       #     def enabled?
       #       Feature.enabled?(:some_feature)
       #     end
+      #     strong_memoize_attr :enabled?, :enabled
       #
       def strong_memoize(name)
         key = ivar(name)
@@ -68,23 +68,8 @@ module Gitlab
         def strong_memoize_attr(method_name, member_name = nil)
           member_name ||= method_name
 
-          if method_defined?(method_name) || private_method_defined?(method_name)
-            StrongMemoize.send( # rubocop:disable GitlabSecurity/PublicSend
-              :do_strong_memoize, self, method_name, member_name)
-          else
-            StrongMemoize.send( # rubocop:disable GitlabSecurity/PublicSend
-              :queue_strong_memoize, self, method_name, member_name)
-          end
-        end
-
-        def method_added(method_name)
-          super
-
-          if member_name = StrongMemoize
-            .send(:strong_memoize_queue, self).delete(method_name) # rubocop:disable GitlabSecurity/PublicSend
-            StrongMemoize.send( # rubocop:disable GitlabSecurity/PublicSend
-              :do_strong_memoize, self, method_name, member_name)
-          end
+          StrongMemoize.send( # rubocop:disable GitlabSecurity/PublicSend
+            :do_strong_memoize, self, method_name, member_name)
         end
       end
 
@@ -110,14 +95,6 @@ module Gitlab
 
       class <<self
         private
-
-        def strong_memoize_queue(klass)
-          klass.instance_variable_get(:@strong_memoize_queue) || klass.instance_variable_set(:@strong_memoize_queue, {})
-        end
-
-        def queue_strong_memoize(klass, method_name, member_name)
-          strong_memoize_queue(klass)[method_name] = member_name
-        end
 
         def do_strong_memoize(klass, method_name, member_name)
           method = klass.instance_method(method_name)

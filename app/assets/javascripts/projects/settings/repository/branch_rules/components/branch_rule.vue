@@ -1,13 +1,14 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf, n__ } from '~/locale';
 
 export const i18n = {
   defaultLabel: s__('BranchRules|default'),
-  protectedLabel: s__('BranchRules|protected'),
   detailsButtonLabel: s__('BranchRules|Details'),
   allowForcePush: s__('BranchRules|Allowed to force push'),
   codeOwnerApprovalRequired: s__('BranchRules|Requires CODEOWNERS approval'),
+  statusChecks: s__('BranchRules|%{total} status %{subject}'),
+  approvalRules: s__('BranchRules|%{total} approval %{subject}'),
 };
 
 export default {
@@ -32,15 +33,20 @@ export default {
       required: false,
       default: false,
     },
-    isProtected: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     branchProtection: {
       type: Object,
       required: false,
       default: () => {},
+    },
+    statusChecksTotal: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    approvalRulesTotal: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   computed: {
@@ -50,6 +56,18 @@ export default {
     detailsPath() {
       return `${this.branchRulesPath}?branch=${this.name}`;
     },
+    statusChecksText() {
+      return sprintf(this.$options.i18n.statusChecks, {
+        total: this.statusChecksTotal,
+        subject: n__('check', 'checks', this.statusChecksTotal),
+      });
+    },
+    approvalRulesText() {
+      return sprintf(this.$options.i18n.approvalRules, {
+        total: this.approvalRulesTotal,
+        subject: n__('rule', 'rules', this.approvalRulesTotal),
+      });
+    },
     approvalDetails() {
       const approvalDetails = [];
       if (this.branchProtection.allowForcePush) {
@@ -57,6 +75,12 @@ export default {
       }
       if (this.branchProtection.codeOwnerApprovalRequired) {
         approvalDetails.push(this.$options.i18n.codeOwnerApprovalRequired);
+      }
+      if (this.statusChecksTotal) {
+        approvalDetails.push(this.statusChecksText);
+      }
+      if (this.approvalRulesTotal) {
+        approvalDetails.push(this.approvalRulesText);
       }
       return approvalDetails;
     },
@@ -71,10 +95,6 @@ export default {
 
       <gl-badge v-if="isDefault" variant="info" size="sm" class="gl-ml-2">{{
         $options.i18n.defaultLabel
-      }}</gl-badge>
-
-      <gl-badge v-if="isProtected" variant="success" size="sm" class="gl-ml-2">{{
-        $options.i18n.protectedLabel
       }}</gl-badge>
 
       <ul v-if="hasApprovalDetails" class="gl-pl-6 gl-mt-2 gl-mb-0 gl-text-gray-500">

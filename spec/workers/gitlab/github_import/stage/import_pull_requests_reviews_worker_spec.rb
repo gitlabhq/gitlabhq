@@ -23,8 +23,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker do
         .to receive(:execute)
         .and_return(waiter)
 
-      expect(import_state)
-        .to receive(:refresh_jid_expiration)
+      expect(import_state).to receive(:refresh_jid_expiration)
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)

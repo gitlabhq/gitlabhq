@@ -170,7 +170,7 @@ Supported attributes:
 | `id`        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `ref`       | string         | **{check-circle}** Yes | The branch or tag to run the pipeline on. |
 | `token`     | string         | **{check-circle}** Yes | The trigger token or CI/CD job token. |
-| `variables` | array          | **{dotted-circle}** No | A map of key-valued strings containing the pipeline variables. For example: `{ VAR1: "value1", VAR2: "value2" }`. |
+| `variables` | hash           | **{dotted-circle}** No | A map of key-valued strings containing the pipeline variables. For example: `{ VAR1: "value1", VAR2: "value2" }`. |
 
 Example request:
 

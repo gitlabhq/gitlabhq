@@ -84,3 +84,73 @@ Example response:
   }
 ]
 ```
+
+## List merge requests in a merge train
+
+Get all merge requests added to a merge train for the requested target branch.
+
+```plaintext
+GET /projects/:id/merge_trains/:target_branch
+```
+
+Supported attributes:
+
+| Attribute       | Type           | Required | Description  |
+| --------------- | ---------------| -------- | ------------ |
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+| `target_branch` | string         | yes      | The target branch of the merge train. |
+| `scope`         | string         | no       | Return Merge Trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
+| `sort`          | string         | no       | Return Merge Trains sorted in `asc` or `desc` order. Default is `desc`. |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/597/merge_trains/main"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 267,
+    "merge_request": {
+      "id": 273,
+      "iid": 1,
+      "project_id": 597,
+      "title": "My title 9",
+      "description": null,
+      "state": "opened",
+      "created_at": "2022-10-31T19:06:05.725Z",
+      "updated_at": "2022-10-31T19:06:05.725Z",
+      "web_url": "http://localhost/namespace18/project21/-/merge_requests/1"
+    },
+    "user": {
+      "id": 933,
+      "username": "user12",
+      "name": "Sidney Jones31",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/6c8365de387cb3db10ecc7b1880203c4?s=80\u0026d=identicon",
+      "web_url": "http://localhost/user12"
+    },
+    "pipeline": {
+      "id": 273,
+      "iid": 1,
+      "project_id": 598,
+      "sha": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+      "ref": "main",
+      "status": "pending",
+      "source": "push",
+      "created_at": "2022-10-31T19:06:06.231Z",
+      "updated_at": "2022-10-31T19:06:06.231Z",
+      "web_url": "http://localhost/namespace19/project22/-/pipelines/273"
+    },
+    "created_at": "2022-10-31T19:06:06.237Z",
+    "updated_at":"2022-10-31T19:06:06.237Z",
+    "target_branch":"main",
+    "status":"idle",
+    "merged_at":null,
+    "duration":null
+  }
+]
+```

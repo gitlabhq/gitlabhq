@@ -3,6 +3,7 @@ import godepsJsonLinker from '~/vue_shared/components/source_viewer/plugins/util
 import gemspecLinker from '~/vue_shared/components/source_viewer/plugins/utils/gemspec_linker';
 import gemfileLinker from '~/vue_shared/components/source_viewer/plugins/utils/gemfile_linker';
 import podspecJsonLinker from '~/vue_shared/components/source_viewer/plugins/utils/podspec_json_linker';
+import composerJsonLinker from '~/vue_shared/components/source_viewer/plugins/utils/composer_json_linker';
 import linkDependencies from '~/vue_shared/components/source_viewer/plugins/link_dependencies';
 import {
   PACKAGE_JSON_FILE_TYPE,
@@ -11,6 +12,7 @@ import {
   GODEPS_JSON_FILE_TYPE,
   GEMFILE_FILE_TYPE,
   PODSPEC_JSON_FILE_TYPE,
+  COMPOSER_JSON_FILE_TYPE,
 } from './mock_data';
 
 jest.mock('~/vue_shared/components/source_viewer/plugins/utils/package_json_linker');
@@ -18,6 +20,7 @@ jest.mock('~/vue_shared/components/source_viewer/plugins/utils/gemspec_linker');
 jest.mock('~/vue_shared/components/source_viewer/plugins/utils/godeps_json_linker');
 jest.mock('~/vue_shared/components/source_viewer/plugins/utils/gemfile_linker');
 jest.mock('~/vue_shared/components/source_viewer/plugins/utils/podspec_json_linker');
+jest.mock('~/vue_shared/components/source_viewer/plugins/utils/composer_json_linker');
 
 describe('Highlight.js plugin for linking dependencies', () => {
   const hljsResultMock = { value: 'test' };
@@ -45,5 +48,10 @@ describe('Highlight.js plugin for linking dependencies', () => {
   it('calls podspecJsonLinker for podspec_json file types', () => {
     linkDependencies(hljsResultMock, PODSPEC_JSON_FILE_TYPE);
     expect(podspecJsonLinker).toHaveBeenCalled();
+  });
+
+  it('calls composerJsonLinker for composer_json file types', () => {
+    linkDependencies(hljsResultMock, COMPOSER_JSON_FILE_TYPE);
+    expect(composerJsonLinker).toHaveBeenCalled();
   });
 });

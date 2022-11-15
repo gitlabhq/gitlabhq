@@ -63,6 +63,8 @@ metadata:
     description: Operations related to importing groups
   - name: group_packages
     description: Operations related to group packages
+  - name: integrations
+    description: Operations related to integrations
   - name: merge_requests
     description: Operations related to merge requests
   - name: metadata

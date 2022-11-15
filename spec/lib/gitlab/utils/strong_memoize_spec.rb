@@ -35,16 +35,16 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
       end
       strong_memoize_attr :method_name_attr
 
-      strong_memoize_attr :different_method_name_attr, :different_member_name_attr
       def different_method_name_attr
         trace << value
         value
       end
+      strong_memoize_attr :different_method_name_attr, :different_member_name_attr
 
-      strong_memoize_attr :enabled?
       def enabled?
         true
       end
+      strong_memoize_attr :enabled?
 
       def method_name_with_args(*args)
         strong_memoize_with(:method_name_with_args, args) do
@@ -262,6 +262,22 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
         expect(klass.private_instance_methods).not_to include(:public_method)
         expect(klass.protected_instance_methods).not_to include(:public_method)
         expect(klass.public_instance_methods).to include(:public_method)
+      end
+    end
+
+    context "when method doesn't exist" do
+      let(:klass) do
+        strong_memoize_class = described_class
+
+        Struct.new(:value) do
+          include strong_memoize_class
+        end
+      end
+
+      subject { klass.strong_memoize_attr(:nonexistent_method) }
+
+      it 'fails when strong-memoizing a nonexistent method' do
+        expect { subject }.to raise_error(NameError, %r{undefined method `nonexistent_method' for class})
       end
     end
   end

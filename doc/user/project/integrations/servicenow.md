@@ -35,7 +35,5 @@ You can:
 For more information, refer to the following ServiceNow resources:
 
 - [ServiceNow DevOps home page](https://www.servicenow.com/products/devops.html)
-- [Install DevOps](https://docs.servicenow.com/bundle/paris-devops/page/product/enterprise-dev-ops/task/activate-dev-ops.html)
-- [Install DevOps Integrations](https://docs.servicenow.com/bundle/paris-devops/page/product/enterprise-dev-ops/task/activate-dev-ops-integrations.html)
+- [ServiceNow DevOps documentation](https://docs.servicenow.com/bundle/tokyo-devops/page/product/enterprise-dev-ops/concept/dev-ops-bundle-landing-page.html)
 - [GitLab SCM and Continuous Integration for DevOps](https://store.servicenow.com/sn_appstore_store.do#!/store/application/54dc4eacdbc2dcd02805320b7c96191e/)
-- [Model a GitLab CI pipeline in DevOps](https://docs.servicenow.com/bundle/paris-devops/page/product/enterprise-dev-ops/task/model-gitlab-pipeline-dev-ops.html).

@@ -89,9 +89,15 @@ class GenerateFailedPipelineSlackMessage
     @incident_exist = File.exist?(incident_json_file)
   end
 
+  def incident
+    return unless incident_exist?
+
+    @incident ||= JSON.parse(File.read(incident_json_file))
+  end
+
   def incident_button_text
     if incident_exist?
-      'View incident'
+      "View incident ##{incident['iid']}"
     else
       'Create incident'
     end
@@ -99,7 +105,7 @@ class GenerateFailedPipelineSlackMessage
 
   def incident_button_link
     if incident_exist?
-      JSON.parse(File.read(incident_json_file))['web_url']
+      incident['web_url']
     else
       "#{ENV['CI_SERVER_URL']}/#{ENV['BROKEN_MASTER_INCIDENTS_PROJECT']}/-/issues/new?" \
         "issuable_template=incident&issue%5Bissue_type%5D=incident"

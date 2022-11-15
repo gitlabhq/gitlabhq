@@ -8,11 +8,8 @@
 
 # FF changes
 .feature-flags-set: &feature-flags-set
-  if: $QA_FEATURE_FLAGS != ""
+  if: $QA_FEATURE_FLAGS =~ /enabled|disabled/
 
-# Only deleted feature flags
-.feature-flags-deleted: &feature-flags-deleted
-  if: $QA_FEATURE_FLAGS != "" && $QA_FEATURE_FLAGS !~ /enabled|disabled/
 
 # Manually trigger job on ff changes but with default ff state instead of inverted
 .feature-flags-set-manual: &feature-flags-set-manual
@@ -20,9 +17,9 @@
   when: manual
   allow_failure: true
 
-# Run all tests when framework changes present or explicitly enabled full suite execution
+# Run all tests when framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
 .qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true"
+  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_FEATURE_FLAGS =~ /deleted/
 
 # Process test results (notify failure to slack, create test session report, relate test failures)
 .process-test-results: &process-test-results
@@ -80,11 +77,6 @@
     - <<: *feature-flags-set
       variables:
         QA_TESTS: ""
-
-.rules:test:feature-flags-deleted:
-  rules:
-    - <<: *feature-flags-deleted
-      when: never
 
 # parallel and non parallel rules are used for jobs that require parallel execution and thus need to switch
 # between parallel and non parallel when only certain specs are executed

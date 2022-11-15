@@ -3,6 +3,7 @@ import gemspecLinker from './utils/gemspec_linker';
 import godepsJsonLinker from './utils/godeps_json_linker';
 import gemfileLinker from './utils/gemfile_linker';
 import podspecJsonLinker from './utils/podspec_json_linker';
+import composerJsonLinker from './utils/composer_json_linker';
 
 const DEPENDENCY_LINKERS = {
   package_json: packageJsonLinker,
@@ -10,6 +11,7 @@ const DEPENDENCY_LINKERS = {
   godeps_json: godepsJsonLinker,
   gemfile: gemfileLinker,
   podspec_json: podspecJsonLinker,
+  composer_json: composerJsonLinker,
 };
 
 /**

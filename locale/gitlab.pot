@@ -959,7 +959,7 @@ msgstr ""
 msgid "%{reportType} detected %{totalStart}%{total}%{totalEnd} potential %{vulnMessage}"
 msgstr ""
 
-msgid "%{reportType} detected no %{totalStart}new%{totalEnd} vulnerabilities."
+msgid "%{reportType} detected no new vulnerabilities."
 msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
@@ -6904,6 +6904,12 @@ msgstr ""
 msgid "BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/* are supported."
 msgstr ""
 
+msgid "BranchRules|%{total} approval %{subject}"
+msgstr ""
+
+msgid "BranchRules|%{total} status %{subject}"
+msgstr ""
+
 msgid "BranchRules|All branches"
 msgstr ""
 
@@ -7016,9 +7022,6 @@ msgid "BranchRules|Users"
 msgstr ""
 
 msgid "BranchRules|default"
-msgstr ""
-
-msgid "BranchRules|protected"
 msgstr ""
 
 msgid "Branches"
@@ -42460,6 +42463,9 @@ msgstr ""
 msgid "To reactivate your account, sign in to GitLab at %{gitlab_url}."
 msgstr ""
 
+msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, ask your namespace owner to reduce the number of users in your namespace to %{free_limit} users or less, or to upgrade to a paid tier which do not have user limits."
+msgstr ""
+
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your namespace to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
 msgstr ""
 
@@ -46896,9 +46902,6 @@ msgstr ""
 msgid "You have successfully purchased %{product}. You'll receive a receipt by email. Your purchase may take a minute to sync, so refresh the page if you don't see it yet."
 msgstr ""
 
-msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email. Your purchase may take a minute to sync, so refresh the page if you don't see it yet."
-msgstr ""
-
 msgid "You have unsaved changes"
 msgstr ""
 
@@ -47074,6 +47077,9 @@ msgid "You've already enabled two-factor authentication using one time password 
 msgstr ""
 
 msgid "You've rejected %{user}"
+msgstr ""
+
+msgid "You've successfully purchased the %{plan} plan subscription for %{seats} and you'll receive a receipt by email. Your purchase may take a minute to sync, refresh the page if your subscription details haven't displayed yet."
 msgstr ""
 
 msgid "YouTube"
@@ -47705,6 +47711,11 @@ msgid_plural "changes"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "check"
+msgid_plural "checks"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}others%{otherEnd}"
 msgstr ""
 
@@ -47765,7 +47776,7 @@ msgstr ""
 msgid "ciReport|%{scanner} detected no %{boldStart}new%{boldEnd} potential vulnerabilities"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected no %{strong_start}new%{strong_end} %{vulnStr}"
+msgid "ciReport|%{scanner} detected no new %{vulnStr}"
 msgstr ""
 
 msgid "ciReport|: Loading resulted in an error"
@@ -49249,6 +49260,11 @@ msgstr ""
 
 msgid "role's base access level does not match the access level of the membership"
 msgstr ""
+
+msgid "rule"
+msgid_plural "rules"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "running"
 msgstr ""

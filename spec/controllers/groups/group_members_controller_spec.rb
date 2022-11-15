@@ -342,6 +342,41 @@ RSpec.describe Groups::GroupMembersController do
           end
         end
 
+        context 'with owners from a parent' do
+          context 'when top-level group' do
+            context 'with group sharing' do
+              let!(:subgroup) { create(:group, parent: group) }
+
+              before do
+                create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
+                create(:group_member, :owner, group: subgroup)
+              end
+
+              it 'does not allow removal of last direct group owner' do
+                delete :leave, params: { group_id: group }
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+              end
+            end
+          end
+
+          context 'when subgroup' do
+            let!(:subgroup) { create(:group, parent: group) }
+
+            before do
+              subgroup.add_owner(user)
+            end
+
+            it 'allows removal of last direct group owner', :aggregate_failures do
+              delete :leave, params: { group_id: subgroup }
+
+              expect(controller).to set_flash.to "You left the \"#{subgroup.human_name}\" group."
+              expect(response).to redirect_to(dashboard_groups_path)
+              expect(subgroup.users).not_to include user
+            end
+          end
+        end
+
         context 'and there is another owner' do
           before do
             create(:group_member, :owner, source: group)

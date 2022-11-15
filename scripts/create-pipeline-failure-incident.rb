@@ -13,7 +13,7 @@ class CreatePipelineFailureIncident
     project: nil,
     incident_json_file: 'incident.json'
   }.freeze
-  DEFAULT_LABELS = ['Engineering Productivity'].freeze
+  DEFAULT_LABELS = ['Engineering Productivity', 'master-broken:undetermined'].freeze
 
   def initialize(options)
     @project = options.delete(:project)

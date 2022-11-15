@@ -21436,6 +21436,8 @@ Values for sorting issues.
 | <a id="issuesortdue_date_desc"></a>`DUE_DATE_DESC` | Due date by descending order. |
 | <a id="issuesortescalation_status_asc"></a>`ESCALATION_STATUS_ASC` | Status from triggered to resolved. |
 | <a id="issuesortescalation_status_desc"></a>`ESCALATION_STATUS_DESC` | Status from resolved to triggered. |
+| <a id="issuesorthealth_status_asc"></a>`HEALTH_STATUS_ASC` | Issues with healthy issues first. |
+| <a id="issuesorthealth_status_desc"></a>`HEALTH_STATUS_DESC` | Issues with unhealthy issues first. |
 | <a id="issuesortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |
 | <a id="issuesortlabel_priority_desc"></a>`LABEL_PRIORITY_DESC` | Label priority by descending order. |
 | <a id="issuesortmilestone_due_asc"></a>`MILESTONE_DUE_ASC` | Milestone due date by ascending order. |

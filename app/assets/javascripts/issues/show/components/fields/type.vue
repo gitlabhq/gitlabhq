@@ -42,7 +42,7 @@ export default {
       const {
         issueState: { issueType },
       } = this;
-      return capitalize(issueType);
+      return issuableTypes.find((type) => type.value === issueType)?.text || capitalize(issueType);
     },
     shouldShowIncident() {
       return this.issueType === INCIDENT_TYPE || this.canCreateIncident;

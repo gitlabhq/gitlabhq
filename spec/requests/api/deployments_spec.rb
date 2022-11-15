@@ -201,7 +201,7 @@ RSpec.describe API::Deployments do
           }
         )
 
-        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'links any merged merge requests to the deployment', :sidekiq_inline do

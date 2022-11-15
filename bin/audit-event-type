@@ -1,0 +1,354 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# Generate an audit event type file in the correct location.
+#
+# Automatically stages the file and amends the previous commit if the `--amend`
+# argument is used.
+
+require 'optparse'
+require 'yaml'
+require 'fileutils'
+require 'uri'
+require 'readline'
+
+require_relative '../lib/gitlab/audit/type/shared' unless defined?(::Gitlab::Audit::Type::Shared)
+require_relative '../lib/gitlab/utils' unless defined?(::Gitlab::Utils)
+
+module AuditEventTypeHelpers
+  Abort = Class.new(StandardError)
+  Done = Class.new(StandardError)
+
+  def capture_stdout(cmd)
+    output = IO.popen(cmd, &:read)
+    fail_with "command failed: #{cmd.join(' ')}" unless $?.success?
+    output
+  end
+
+  def fail_with(message)
+    raise Abort, "\e[31merror\e[0m #{message}"
+  end
+end
+
+class AuditEventTypeOptionParser
+  extend AuditEventTypeHelpers
+
+  Options = Struct.new(
+    :name,
+    :description,
+    :group,
+    :milestone,
+    :saved_to_database,
+    :streamed,
+    :ee,
+    :jh,
+    :amend,
+    :dry_run,
+    :force,
+    :introduced_by_issue,
+    :introduced_by_mr
+  )
+
+  class << self
+    def parse(argv)
+      options = Options.new
+
+      parser = OptionParser.new do |opts|
+        opts.banner = "Usage: #{__FILE__} [options] <audit-event-type>\n\n"
+
+        # Note: We do not provide a shorthand for this in order to match the `git
+        # commit` interface
+        opts.on('--amend', 'Amend the previous commit') do |value|
+          options.amend = value
+        end
+
+        opts.on('-f', '--force', 'Overwrite an existing entry') do |value|
+          options.force = value
+        end
+
+        opts.on('-d', '--description [string]', String,
+'A human-readable description of how this event is triggered') do |value|
+          options.description = value
+        end
+
+        opts.on('-g', '--group [string]', String,
+"Name of the group that introduced this audit event. For example, govern::compliance") do |value|
+          options.group = value
+        end
+
+        opts.on('-M', '--milestone [string]', String,
+'Milestone that introduced this audit event type. For example, 15.8') do |value|
+          options.milestone = value
+        end
+
+        opts.on('-s', '--[no-]saved-to-database',
+"Indicate whether to persist events to database and JSON logs") do |value|
+          options.saved_to_database = value
+        end
+
+        opts.on('-t', '--[no-]streamed',
+"Indicate that events should be streamed to external services (if configured)") do |value|
+          options.streamed = value
+        end
+
+        opts.on('-n', '--dry-run', "Don't actually write anything, just print") do |value|
+          options.dry_run = value
+        end
+
+        opts.on('-e', '--ee', 'Generate an audit event type entry for GitLab EE') do |value|
+          options.ee = value
+        end
+
+        opts.on('-j', '--jh', 'Generate an audit event type entry for GitLab JH') do |value|
+          options.jh = value
+        end
+
+        opts.on('-m', '--introduced-by-mr [string]', String,
+'URL to GitLab merge request that added this type of audit event') do |value|
+          options.introduced_by_mr = value
+        end
+
+        opts.on('-i', '--introduced-by-issue [string]', String,
+'URL to GitLab issue that added this type of audit event') do |value|
+          options.introduced_by_issue = value
+        end
+
+        opts.on('-h', '--help', 'Print help message') do
+          $stdout.puts opts
+          raise Done
+        end
+      end
+
+      parser.parse!(argv)
+
+      unless argv.one?
+        $stdout.puts parser.help
+        $stdout.puts
+        raise Abort, 'Name for the type of audit event is required'
+      end
+
+      options.name = argv.first.downcase.tr('-', '_')
+
+      options
+    end
+
+    def read_description
+      $stdout.puts
+      $stdout.puts ">> Specify a human-readable description of how this event is triggered:"
+
+      loop do
+        description = Readline.readline('?> ', false)&.strip
+        description = nil if description.empty?
+        return description unless description.nil?
+
+        warn "description is a required field."
+      end
+    end
+
+    def read_group
+      $stdout.puts
+      $stdout.puts ">> Specify the group introducing the audit event type, like `govern::compliance`:"
+
+      loop do
+        group = Readline.readline('?> ', false)&.strip
+        group = nil if group.empty?
+        return group unless group.nil?
+
+        warn "group is a required field."
+      end
+    end
+
+    def read_saved_to_database
+      $stdout.puts
+      $stdout.puts ">> Specify whether to persist events to database and JSON logs [yes, no]:"
+
+      loop do
+        saved_to_database = Readline.readline('?> ', false)&.strip
+        saved_to_database = Gitlab::Utils.to_boolean(saved_to_database)
+        return saved_to_database unless saved_to_database.nil?
+
+        warn "saved_to_database is a required boolean field."
+      end
+    end
+
+    def read_streamed
+      $stdout.puts
+      $stdout.puts ">> Specify if events should be streamed to external services (if configured) [yes, no]:"
+
+      loop do
+        streamed = Readline.readline('?> ', false)&.strip
+        streamed = Gitlab::Utils.to_boolean(streamed)
+        return streamed unless streamed.nil?
+
+        warn "streamed is a required boolean field."
+      end
+    end
+
+    def read_introduced_by_mr
+      $stdout.puts
+      $stdout.puts ">> URL to GitLab merge request that added this type of audit event:"
+
+      loop do
+        introduced_by_mr = Readline.readline('?> ', false)&.strip
+        introduced_by_mr = nil if introduced_by_mr.empty?
+        return introduced_by_mr if introduced_by_mr.nil? || introduced_by_mr.start_with?('https://')
+
+        warn "URL needs to start with https://"
+      end
+    end
+
+    def read_introduced_by_issue
+      $stdout.puts ">> URL to GitLab issue that added this type of audit event:"
+
+      loop do
+        created_url = Readline.readline('?> ', false)&.strip
+        created_url = nil if created_url.empty?
+        return created_url if !created_url.nil? && created_url.start_with?('https://')
+
+        warn "URL needs to start with https://"
+      end
+    end
+
+    def read_milestone
+      milestone = File.read('VERSION')
+      milestone.gsub(/^(\d+\.\d+).*$/, '\1').chomp
+    end
+  end
+end
+
+class AuditEventTypeCreator
+  include AuditEventTypeHelpers
+
+  attr_reader :options
+
+  def initialize(options)
+    @options = options
+  end
+
+  def execute
+    assert_feature_branch!
+    assert_name!
+    assert_existing_audit_event_type!
+
+    options.description ||= AuditEventTypeOptionParser.read_description
+    options.group ||= AuditEventTypeOptionParser.read_group
+    options.milestone ||= AuditEventTypeOptionParser.read_milestone
+    options.saved_to_database = AuditEventTypeOptionParser.read_saved_to_database if options.saved_to_database.nil?
+    options.streamed = AuditEventTypeOptionParser.read_streamed if options.streamed.nil?
+    options.introduced_by_mr ||= AuditEventTypeOptionParser.read_introduced_by_mr
+    options.introduced_by_issue ||= AuditEventTypeOptionParser.read_introduced_by_issue
+
+    $stdout.puts "\e[32mcreate\e[0m #{file_path}"
+    $stdout.puts contents
+
+    unless options.dry_run
+      write
+      amend_commit if options.amend
+    end
+
+    system("#{editor} '#{file_path}'") if editor
+  end
+
+  private
+
+  def contents
+    # Slice is used to ensure that YAML keys
+    # are always ordered in a predictable way
+    config_hash.slice(
+      *::Gitlab::Audit::Type::Shared::PARAMS.map(&:to_s)
+    ).to_yaml
+  end
+
+  def config_hash
+    {
+      'name' => options.name,
+      'description' => options.description,
+      'group' => options.group,
+      'milestone' => options.milestone,
+      'saved_to_database' => options.saved_to_database,
+      'streamed' => options.streamed,
+      'introduced_by_mr' => options.introduced_by_mr,
+      'introduced_by_issue' => options.introduced_by_issue
+    }
+  end
+
+  def write
+    FileUtils.mkdir_p(File.dirname(file_path))
+    File.write(file_path, contents)
+  end
+
+  def editor
+    ENV['EDITOR']
+  end
+
+  def amend_commit
+    fail_with "git add failed" unless system(*%W[git add #{file_path}])
+
+    Kernel.exec(*%w[git commit --amend])
+  end
+
+  def assert_feature_branch!
+    return unless branch_name == 'master'
+
+    fail_with "Create a branch first!"
+  end
+
+  def assert_existing_audit_event_type!
+    existing_path = all_audit_event_type_names[options.name]
+    return unless existing_path
+    return if options.force
+
+    fail_with "#{existing_path} already exists! Use `--force` to overwrite."
+  end
+
+  def assert_name!
+    return if options.name =~ /\A[a-z0-9_-]+\Z/
+
+    fail_with "Provide a name for the audit event type that is [a-z0-9_-]"
+  end
+
+  def file_path
+    audit_event_types_paths.last.sub('*.yml', "#{options.name}.yml")
+  end
+
+  def all_audit_event_type_names
+    @all_audit_event_type_names ||=
+      audit_event_types_paths.flat_map do |glob_path|
+        Dir.glob(glob_path).map do |path|
+          [File.basename(path, '.yml'), path]
+        end
+      end.to_h
+  end
+
+  def audit_event_types_paths
+    paths = []
+    paths << File.join('config', 'audit_events', 'types', '*.yml')
+    paths << File.join('ee', 'config', 'audit_events', 'types', '*.yml') if ee?
+    paths << File.join('jh', 'config', 'audit_events', 'types', '*.yml') if jh?
+    paths
+  end
+
+  def ee?
+    options.ee
+  end
+
+  def jh?
+    options.jh
+  end
+
+  def branch_name
+    @branch_name ||= capture_stdout(%w[git symbolic-ref --short HEAD]).strip
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  begin
+    options = AuditEventTypeOptionParser.parse(ARGV)
+    AuditEventTypeCreator.new(options).execute
+  rescue AuditEventTypeHelpers::Abort => ex
+    warn ex.message
+    exit 1
+  rescue AuditEventTypeHelpers::Done
+    exit
+  end
+end

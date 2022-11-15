@@ -3,6 +3,8 @@ module API
   class Integrations < ::API::Base
     feature_category :integrations
 
+    INTEGRATIONS_TAGS = %w[integrations].freeze
+
     integrations = Helpers::IntegrationsHelpers.integrations
     integration_classes = Helpers::IntegrationsHelpers.integration_classes
 
@@ -71,8 +73,15 @@ module API
         before { authenticate! }
         before { authorize_admin_project }
 
-        desc 'Get all active project integrations' do
+        desc 'List all active integrations' do
+          detail 'Get a list of all active project integrations.'
           success Entities::ProjectIntegrationBasic
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
+          tags INTEGRATIONS_TAGS
         end
         get path do
           integrations = user_project.integrations.active
@@ -81,7 +90,16 @@ module API
         end
 
         INTEGRATIONS.each do |slug, settings|
-          desc "Set #{slug} integration for project"
+          desc "Create/Edit #{slug.titleize} integration" do
+            detail "Set #{slug.titleize} integration for a project."
+            success Entities::ProjectIntegrationBasic
+            failure [
+              { code: 400, message: 'Bad request' },
+              { code: 401, message: 'Unauthorized' },
+              { code: 404, message: 'Not found' }
+            ]
+            tags INTEGRATIONS_TAGS
+          end
           params do
             settings.each do |setting|
               if setting[:required]
@@ -103,7 +121,16 @@ module API
           end
         end
 
-        desc "Delete an integration from a project"
+        desc "Disable an integration" do
+          detail "Disable the integration for a project. Integration settings are preserved."
+          success code: 204
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags INTEGRATIONS_TAGS
+        end
         params do
           requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the integration'
         end
@@ -124,8 +151,15 @@ module API
           end
         end
 
-        desc 'Get the integration settings for a project' do
+        desc "Get an integration settings" do
+          detail "Get the integration settings for a project."
           success Entities::ProjectIntegration
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags INTEGRATIONS_TAGS
         end
         params do
           requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the integration'
@@ -154,6 +188,11 @@ module API
         resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc "Trigger a slash command for #{integration_slug}" do
             detail 'Added in GitLab 8.13'
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 404, message: 'Not found' }
+            ]
+            tags INTEGRATIONS_TAGS
           end
           params do
             settings.each do |setting|
