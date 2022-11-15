@@ -208,16 +208,16 @@ RSpec.describe 'Admin updates settings' do
 
         context 'Email confirmation settings' do
           it "is set to 'hard' by default" do
-            expect(current_settings.email_confirmation_setting).to eq('hard')
+            expect(current_settings.email_confirmation_setting).to eq('off')
           end
 
           it 'changes the setting', :js do
             page.within('.as-signup') do
-              choose 'Off'
+              choose 'Hard'
               click_button 'Save changes'
             end
 
-            expect(current_settings.email_confirmation_setting).to eq('off')
+            expect(current_settings.email_confirmation_setting).to eq('hard')
             expect(page).to have_content "Application settings saved successfully"
           end
         end

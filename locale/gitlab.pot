@@ -12053,6 +12053,9 @@ msgstr ""
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
+msgid "DORA4Metrics|Change Failure Rate"
+msgstr ""
+
 msgid "DORA4Metrics|Change failure rate"
 msgstr ""
 
@@ -12071,7 +12074,13 @@ msgstr ""
 msgid "DORA4Metrics|Days from merge to deploy"
 msgstr ""
 
+msgid "DORA4Metrics|Deployment Frequency"
+msgstr ""
+
 msgid "DORA4Metrics|Deployment frequency"
+msgstr ""
+
+msgid "DORA4Metrics|Lead Time for Changes"
 msgstr ""
 
 msgid "DORA4Metrics|Lead time for changes"
@@ -12123,6 +12132,9 @@ msgid "DORA4Metrics|The chart displays the frequency of deployments to productio
 msgstr ""
 
 msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
+msgstr ""
+
+msgid "DORA4Metrics|Time to Restore Service"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service"
@@ -42368,9 +42380,6 @@ msgstr ""
 msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
-msgid "To add display name, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
 msgid "To add the entry manually, provide the following details to the application on your phone."
 msgstr ""
 
@@ -43376,6 +43385,9 @@ msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
 msgid "Unhappy?"
+msgstr ""
+
+msgid "Units|d"
 msgstr ""
 
 msgid "Units|ms"

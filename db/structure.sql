@@ -11521,7 +11521,7 @@ CREATE TABLE application_settings (
     password_expires_in_days integer DEFAULT 90 NOT NULL,
     password_expires_notice_before_days integer DEFAULT 7 NOT NULL,
     product_analytics_enabled boolean DEFAULT false NOT NULL,
-    email_confirmation_setting smallint DEFAULT 2,
+    email_confirmation_setting smallint DEFAULT 0,
     disable_admin_oauth_scopes boolean DEFAULT false NOT NULL,
     default_preferred_language text DEFAULT 'en'::text NOT NULL,
     disable_download_button boolean DEFAULT false NOT NULL,

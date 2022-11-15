@@ -61,7 +61,6 @@ To enable 2FA with a one-time password:
    1. Install a compatible application. For example:
       - Cloud-based (recommended because you can restore access if you lose the hardware device):
         - [Authy](https://authy.com/)
-        - [Duo Mobile](https://duo.com/product/multi-factor-authentication-mfa/duo-mobile-app)
       - Other:
         - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
         - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
@@ -72,6 +71,9 @@ To enable 2FA with a one-time password:
    1. Enter the six-digit pin number from the entry on your device into **Pin code**.
    1. Enter your current password.
    1. Select **Submit**.
+
+NOTE:
+DUO [cannot be used for 2FA](https://gitlab.com/gitlab-org/gitlab/-/issues/15760).
 
 If you entered the correct pin, GitLab displays a list of [recovery codes](#recovery-codes). Download them and keep them
 in a safe place.

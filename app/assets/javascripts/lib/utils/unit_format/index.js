@@ -22,6 +22,7 @@ export const SUPPORTED_FORMATS = {
   percentHundred: 'percentHundred',
 
   // Duration
+  days: 'days',
   seconds: 'seconds',
   milliseconds: 'milliseconds',
 
@@ -65,6 +66,9 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
   }
 
   // Durations
+  if (format === SUPPORTED_FORMATS.days) {
+    return suffixFormatter(s__('Units|d'));
+  }
   if (format === SUPPORTED_FORMATS.seconds) {
     return suffixFormatter(s__('Units|s'));
   }
@@ -159,6 +163,19 @@ export const percent = getFormatter(SUPPORTED_FORMATS.percent);
  * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const percentHundred = getFormatter(SUPPORTED_FORMATS.percentHundred);
+
+/**
+ * Formats a number of days
+ *
+ * @function
+ * @param {Number} value - Number to format, `1` is rendered as `1d`
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
+ */
+export const days = getFormatter(SUPPORTED_FORMATS.days);
 
 /**
  * Formats a number of seconds

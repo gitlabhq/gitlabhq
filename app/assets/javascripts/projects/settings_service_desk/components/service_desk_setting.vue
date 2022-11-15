@@ -265,34 +265,13 @@ export default {
           class="mt-3"
         >
           <gl-form-input
-            v-if="hasProjectKeySupport"
             id="service-desk-email-from-name"
             v-model.trim="outgoingName"
             data-testid="email-from-name"
           />
 
-          <template v-if="hasProjectKeySupport" #description>
+          <template #description>
             {{ __('Name to be used as the sender for emails from Service Desk.') }}
-          </template>
-          <template v-else #description>
-            <span class="gl-text-gray-900">
-              <gl-sprintf
-                :message="
-                  __(
-                    'To add display name, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}',
-                  )
-                "
-              >
-                <template #link="{ content }">
-                  <gl-link
-                    :href="customEmailAddressHelpUrl"
-                    target="_blank"
-                    class="gl-text-blue-600 font-size-inherit"
-                    >{{ content }}
-                  </gl-link>
-                </template>
-              </gl-sprintf>
-            </span>
           </template>
         </gl-form-group>
 

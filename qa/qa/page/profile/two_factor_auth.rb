@@ -23,7 +23,14 @@ module QA
         end
 
         def click_configure_it_later_button
+          # TO DO: Investigate why button does not appear sometimes:
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/382698
+          return unless has_element?(:configure_it_later_button)
+
           click_element :configure_it_later_button
+          wait_until(max_duration: 10, message: "Waiting for create a group page") do
+            has_text?("Welcome to GitLab") && has_text?("Create a group")
+          end
         end
 
         def otp_secret_content

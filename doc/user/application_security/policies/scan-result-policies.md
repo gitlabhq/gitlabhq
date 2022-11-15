@@ -40,6 +40,9 @@ before the policy changes take effect.
 
 The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
 
+NOTE:
+Propagating scan result policies created for groups with a large number of projects will take a while to complete.
+
 ## Scan result policies schema
 
 The YAML file with scan result policies consists of an array of objects matching the scan result
