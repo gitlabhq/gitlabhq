@@ -4018,6 +4018,9 @@ msgstr ""
 msgid "All users with matching cards"
 msgstr ""
 
+msgid "Allow %{strongOpen}%{group_name}%{strongClose} to sign you in?"
+msgstr ""
+
 msgid "Allow access to members of the following group"
 msgstr ""
 
@@ -7041,6 +7044,9 @@ msgstr ""
 msgid "Branches: %{source_branch} → %{target_branch}"
 msgstr ""
 
+msgid "Branches|A branch won't be deleted if it is protected or associated with an open merge request."
+msgstr ""
+
 msgid "Branches|Active"
 msgstr ""
 
@@ -7062,7 +7068,10 @@ msgstr ""
 msgid "Branches|Compare"
 msgstr ""
 
-msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgid "Branches|Delete all branches that are merged into '%{defaultBranch}'"
+msgstr ""
+
+msgid "Branches|Delete all merged branches?"
 msgstr ""
 
 msgid "Branches|Delete branch"
@@ -7081,9 +7090,6 @@ msgid "Branches|Delete protected branch. Are you ABSOLUTELY SURE?"
 msgstr ""
 
 msgid "Branches|Deleting the %{strongStart}%{branchName}%{strongEnd} branch cannot be undone. Are you sure?"
-msgstr ""
-
-msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
 msgstr ""
 
 msgid "Branches|Filter by branch name"
@@ -7105,6 +7111,9 @@ msgid "Branches|Overview"
 msgstr ""
 
 msgid "Branches|Please type the following to confirm:"
+msgstr ""
+
+msgid "Branches|Plese type the following to confirm: %{codeStart}delete%{codeEnd}."
 msgstr ""
 
 msgid "Branches|Show active branches"
@@ -7140,6 +7149,12 @@ msgstr ""
 msgid "Branches|This branch hasn't been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it."
 msgstr ""
 
+msgid "Branches|This bulk action is %{strongStart}permanent and cannot be undone or recovered%{strongEnd}."
+msgstr ""
+
+msgid "Branches|This may include merged branches that are not visible on the current screen."
+msgstr ""
+
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
 msgstr ""
 
@@ -7150,6 +7165,9 @@ msgid "Branches|Yes, delete branch"
 msgstr ""
 
 msgid "Branches|Yes, delete protected branch"
+msgstr ""
+
+msgid "Branches|You are about to %{strongStart}delete all branches%{strongEnd} that were merged into %{codeStart}%{defaultBranch}%{codeEnd}."
 msgstr ""
 
 msgid "Branches|You're about to permanently delete the branch %{branchName}."
@@ -10855,9 +10873,6 @@ msgid "Control emails linked to your account"
 msgstr ""
 
 msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
-msgstr ""
-
-msgid "Control how the GitLab Package Registry functions."
 msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
@@ -17380,9 +17395,6 @@ msgid "Forks"
 msgstr ""
 
 msgid "Format: %{dateFormat}"
-msgstr ""
-
-msgid "Forward %{package_type} package requests to the %{registry_type} Registry if the packages are not found in the GitLab Package Registry"
 msgstr ""
 
 msgid "Found errors in your %{gitlab_ci_yml}:"
@@ -28871,6 +28883,9 @@ msgstr ""
 msgid "PackageRegistry|Conan Command"
 msgstr ""
 
+msgid "PackageRegistry|Configure package forwarding and package file size limits."
+msgstr ""
+
 msgid "PackageRegistry|Copy .pypirc content"
 msgstr ""
 
@@ -28978,6 +28993,12 @@ msgstr ""
 msgid "PackageRegistry|Duplicate packages"
 msgstr ""
 
+msgid "PackageRegistry|Enforce %{packageType} setting for all subgroups"
+msgstr ""
+
+msgid "PackageRegistry|Enforce %{package_type} setting for all subgroups"
+msgstr ""
+
 msgid "PackageRegistry|Error publishing"
 msgstr ""
 
@@ -29000,6 +29021,18 @@ msgid "PackageRegistry|For more information on the NuGet registry, %{linkStart}s
 msgstr ""
 
 msgid "PackageRegistry|For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}."
+msgstr ""
+
+msgid "PackageRegistry|Forward %{packageType} package requests"
+msgstr ""
+
+msgid "PackageRegistry|Forward %{package_type} package requests"
+msgstr ""
+
+msgid "PackageRegistry|Forward package requests"
+msgstr ""
+
+msgid "PackageRegistry|Forward package requests to a public registry if the packages are not found in the GitLab package registry."
 msgstr ""
 
 msgid "PackageRegistry|Generic"
@@ -29087,6 +29120,9 @@ msgid "PackageRegistry|Package deleted successfully"
 msgstr ""
 
 msgid "PackageRegistry|Package formats"
+msgstr ""
+
+msgid "PackageRegistry|Package forwarding"
 msgstr ""
 
 msgid "PackageRegistry|Package has %{updatesCount} archived update"
@@ -29621,6 +29657,24 @@ msgid "Phabricator tasks"
 msgstr ""
 
 msgid "Phone"
+msgstr ""
+
+msgid "PhoneVerification|Enter a valid code."
+msgstr ""
+
+msgid "PhoneVerification|Something went wrong. Please try again."
+msgstr ""
+
+msgid "PhoneVerification|The code has expired. Request a new code and try again."
+msgstr ""
+
+msgid "PhoneVerification|There was a problem with the phone number you entered. Enter a different phone number and try again."
+msgstr ""
+
+msgid "PhoneVerification|There was a problem with the phone number you entered. Enter a valid phone number."
+msgstr ""
+
+msgid "PhoneVerification|You've reached the maximum number of tries. Request a new code and try again."
 msgstr ""
 
 msgid "Pick a name"
@@ -35590,19 +35644,16 @@ msgstr ""
 msgid "SAML single sign-on for %{group_name}"
 msgstr ""
 
-msgid "SAML|Allow %{groupName} to sign you in?"
-msgstr ""
-
 msgid "SAML|Sign in to GitLab to connect your organization's account"
 msgstr ""
 
-msgid "SAML|The %{groupName} group allows you to sign in using single sign-on."
+msgid "SAML|The %{strongOpen}%{group_path}%{strongClose} group allows you to sign in using single sign-on."
 msgstr ""
 
 msgid "SAML|To access %{strongOpen}%{group_name}%{strongClose}, you must sign in using single sign-on through an external sign-in page."
 msgstr ""
 
-msgid "SAML|To allow %{groupName} to manage your GitLab account %{username} after you sign in successfully using single sign-on, select %{strongStart}Authorize%{strongEnd}."
+msgid "SAML|To allow %{strongOpen}%{group_name}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}."
 msgstr ""
 
 msgid "SAML|Your organization's SSO has been connected to your GitLab account"

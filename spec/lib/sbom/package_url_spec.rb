@@ -32,37 +32,46 @@ require_relative '../../support/shared_contexts/lib/sbom/package_url_shared_cont
 RSpec.describe Sbom::PackageUrl do
   include NextInstanceOf
 
-  let(:args) do
-    {
-      type: 'example',
-      namespace: 'test',
-      name: 'test',
-      version: '1.0.0',
-      qualifiers: { 'arch' => 'x86_64' },
-      subpath: 'path/to/package'
-    }
-  end
-
   describe '#initialize' do
-    subject { described_class.new(**args) }
+    subject do
+      described_class.new(
+        type: type,
+        namespace: namespace,
+        name: name,
+        version: version,
+        qualifiers: qualifiers,
+        subpath: subpath
+      )
+    end
 
     context 'with well-formed arguments' do
-      it { is_expected.to have_attributes(**args) }
+      include_context 'with valid purl examples'
+
+      with_them do
+        it do
+          is_expected.to have_attributes(
+            type: type,
+            namespace: namespace,
+            name: name,
+            version: version,
+            qualifiers: qualifiers,
+            subpath: subpath
+          )
+        end
+      end
     end
 
     context 'when no arguments are given' do
       it { expect { described_class.new }.to raise_error(ArgumentError) }
     end
 
-    context 'when required parameters are missing' do
-      where(:param) { %i[type name] }
-
-      before do
-        args[param] = nil
-      end
+    context 'when parameters are invalid' do
+      include_context 'with invalid purl examples'
 
       with_them do
-        it { expect { subject }.to raise_error(ArgumentError) }
+        it 'raises an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
       end
     end
 
@@ -98,7 +107,7 @@ RSpec.describe Sbom::PackageUrl do
   end
 
   describe '#to_h' do
-    let(:purl) do
+    let(:package) do
       described_class.new(
         type: type,
         namespace: namespace,
@@ -109,9 +118,9 @@ RSpec.describe Sbom::PackageUrl do
       )
     end
 
-    subject(:to_h) { purl.to_h }
+    subject(:to_h) { package.to_h }
 
-    include_context 'with purl matrix'
+    include_context 'with valid purl examples'
 
     with_them do
       it do
@@ -131,7 +140,16 @@ RSpec.describe Sbom::PackageUrl do
   end
 
   describe '#to_s' do
-    let(:package) { described_class.new(**args) }
+    let(:package) do
+      described_class.new(
+        type: 'npm',
+        namespace: nil,
+        name: 'lodash',
+        version: nil,
+        qualifiers: nil,
+        subpath: nil
+      )
+    end
 
     it 'delegates to_s to the encoder' do
       expect_next_instance_of(described_class::Encoder, package) do |encoder|

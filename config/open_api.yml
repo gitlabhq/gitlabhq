@@ -69,6 +69,8 @@ metadata:
     description: Operations related to group packages
   - name: integrations
     description: Operations related to integrations
+  - name: issue_links
+    description: Operations related to issue links
   - name: merge_requests
     description: Operations related to merge requests
   - name: metadata

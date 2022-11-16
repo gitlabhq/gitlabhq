@@ -29,7 +29,9 @@ module Sbom
       private
 
       def strip(string, char)
-        string.delete_prefix(char).delete_suffix(char)
+        string = string.delete_prefix(char) while string.start_with?(char)
+        string = string.delete_suffix(char) while string.end_with?(char)
+        string
       end
 
       def split_segments(string)
@@ -66,7 +68,7 @@ module Sbom
 
         return [nil, value] if separator.empty? && require_separator
 
-        value = yield(value, remainder) if block_given?
+        value = yield(value) if block_given?
 
         [value, remainder]
       end

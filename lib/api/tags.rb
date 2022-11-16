@@ -7,7 +7,7 @@ module API
     TAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
     before do
-      authorize! :download_code, user_project
+      authorize! :read_code, user_project
 
       not_found! unless user_project.repo_exists?
     end

@@ -17,14 +17,15 @@ module Gitlab
       gon.markdown_surround_selection = current_user&.markdown_surround_selection
       gon.markdown_automatic_lists = current_user&.markdown_automatic_lists
 
-      # Support for Sentry setup via configuration will be removed in 16.0
-      # in favor of Gitlab::CurrentSettings.
-      if Feature.enabled?(:enable_old_sentry_clientside_integration) && Gitlab.config.sentry.enabled
-        gon.sentry_dsn           = Gitlab.config.sentry.clientside_dsn
-        gon.sentry_environment   = Gitlab.config.sentry.environment
+      if Gitlab.config.sentry.enabled
+        gon.sentry_dsn         = Gitlab.config.sentry.clientside_dsn
+        gon.sentry_environment = Gitlab.config.sentry.environment
       end
 
-      if Feature.enabled?(:enable_new_sentry_clientside_integration) && Gitlab::CurrentSettings.sentry_enabled
+      # Support for Sentry setup via configuration files will be removed in 16.0
+      # in favor of Gitlab::CurrentSettings.
+      if Feature.enabled?(:enable_new_sentry_clientside_integration,
+                          current_user) && Gitlab::CurrentSettings.sentry_enabled
         gon.sentry_dsn           = Gitlab::CurrentSettings.sentry_clientside_dsn
         gon.sentry_environment   = Gitlab::CurrentSettings.sentry_environment
       end

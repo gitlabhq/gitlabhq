@@ -425,10 +425,6 @@ class User < ApplicationRecord
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    # Ideally we should not call a service object here but user.block
-    # is also called by Users::MigrateToGhostUserService which references
-    # this state transition object in order to do a rollback.
-    # For this reason the tradeoff is to disable this cop.
     after_transition any => :blocked do |user|
       user.run_after_commit do
         Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)

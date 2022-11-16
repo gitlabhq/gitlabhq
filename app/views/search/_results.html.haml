@@ -7,7 +7,6 @@
     .gl-w-full.gl-flex-grow-1.gl-overflow-x-hidden
       = render partial: 'search/results_status', locals: { search_service: @search_service } unless @search_objects.to_a.empty?
       = render partial: 'search/results_list'
-
 - else
   = render partial: 'search/results_status', locals: { search_service: @search_service } unless @search_objects.to_a.empty?
 

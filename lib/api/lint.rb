@@ -56,7 +56,7 @@ module API
       end
 
       get ':id/ci/lint', urgency: :low do
-        authorize! :download_code, user_project
+        authorize! :read_code, user_project
 
         if user_project.commit.present?
           content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)

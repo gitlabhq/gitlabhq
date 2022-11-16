@@ -2,6 +2,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { n__ } from '~/locale';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
+import PackagesForwardingSettings from '~/packages_and_registries/settings/group/components/packages_forwarding_settings.vue';
 import DependencyProxySettings from '~/packages_and_registries/settings/group/components/dependency_proxy_settings.vue';
 
 import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
@@ -11,6 +12,7 @@ export default {
   components: {
     GlAlert,
     PackagesSettings,
+    PackagesForwardingSettings,
     DependencyProxySettings,
   },
   inject: ['groupPath'],
@@ -78,6 +80,12 @@ export default {
     <packages-settings
       :package-settings="packageSettings"
       :is-loading="isLoading"
+      @success="handleSuccess(2)"
+      @error="handleError(2)"
+    />
+
+    <packages-forwarding-settings
+      :forward-settings="packageSettings"
       @success="handleSuccess(2)"
       @error="handleError(2)"
     />

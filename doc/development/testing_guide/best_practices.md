@@ -933,9 +933,7 @@ In most specs, the Rails cache is actually an in-memory store. This is replaced
 between specs, so calls to `Rails.cache.read` and `Rails.cache.write` are safe.
 However, if a spec makes direct Redis calls, it should mark itself with the
 `:clean_gitlab_redis_cache`, `:clean_gitlab_redis_shared_state` or
-`:clean_gitlab_redis_queues` traits as appropriate. To avoid triggering rate
-limiting in specs, mark the spec with the `:clean_gitlab_redis_rate_limiting`
-trait.
+`:clean_gitlab_redis_queues` traits as appropriate.
 
 #### Background jobs / Sidekiq
 
@@ -968,6 +966,14 @@ it "really connects to Prometheus", :permit_dns do
 
 And if you need more specific control, the DNS blocking is implemented in
 `spec/support/helpers/dns_helpers.rb` and these methods can be called elsewhere.
+
+#### Rate Limiting
+
+[Rate limiting](../../security/rate_limits.md) is enabled in the test suite. Rate limits
+may be triggered in feature specs that use the `:js` trait. In most cases, triggering rate
+limiting can be avoided by marking the spec with the `:clean_gitlab_redis_rate_limiting`
+trait. This trait clears the rate limiting data stored in Redis cache between specs. If
+a single test triggers the rate limit, the `:disable_rate_limit` can be used instead.
 
 #### Stubbing File methods
 

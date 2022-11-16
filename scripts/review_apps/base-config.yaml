@@ -50,7 +50,8 @@ gitlab:
     minReplicas: 1
     maxReplicas: 1
     hpa:
-      targetAverageValue: 500m
+      cpu:
+        targetAverageValue: 500m
     deployment:
       livenessProbe:
         timeoutSeconds: 5
@@ -80,7 +81,8 @@ gitlab:
         cpu: 1282m
         memory: 2890Mi
     hpa:
-      targetAverageValue: 650m
+      cpu:
+        targetAverageValue: 650m
 
   toolbox:
     resources:

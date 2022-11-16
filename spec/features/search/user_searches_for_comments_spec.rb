@@ -2,45 +2,52 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for comments' do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+RSpec.describe 'User searches for comments', :js, :disable_rate_limiter do
+  using RSpec::Parameterized::TableSyntax
 
-  before do
-    stub_feature_flags(search_page_vertical_nav: false)
-    project.add_reporter(user)
-    sign_in(user)
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
 
-    visit(project_path(project))
-  end
+  where(search_page_vertical_nav_enabled: [true, false])
+  with_them do
+    before do
+      stub_feature_flags(search_page_vertical_nav: search_page_vertical_nav_enabled)
+      project.add_reporter(user)
+      sign_in(user)
 
-  include_examples 'search timeouts', 'notes'
+      visit(project_path(project))
+    end
 
-  context 'when a comment is in commits' do
-    context 'when comment belongs to an invalid commit' do
-      let(:comment) { create(:note_on_commit, author: user, project: project, commit_id: 12345678, note: 'Bug here') }
+    include_examples 'search timeouts', 'notes' do
+      let(:additional_params) { { project_id: project.id } }
+    end
 
-      it 'finds a commit' do
-        submit_search(comment.note)
-        select_search_scope('Comments')
+    context 'when a comment is in commits' do
+      context 'when comment belongs to an invalid commit' do
+        let(:comment) { create(:note_on_commit, author: user, project: project, commit_id: 12345678, note: 'Bug here') }
 
-        page.within('.results') do
-          expect(page).to have_content('Commit deleted')
-          expect(page).to have_content('12345678')
+        it 'finds a commit' do
+          submit_search(comment.note)
+          select_search_scope('Comments')
+
+          page.within('.results') do
+            expect(page).to have_content('Commit deleted')
+            expect(page).to have_content('12345678')
+          end
         end
       end
     end
-  end
 
-  context 'when a comment is in a snippet' do
-    let(:snippet) { create(:project_snippet, :private, project: project, author: user, title: 'Some title') }
-    let(:comment) { create(:note, noteable: snippet, author: user, note: 'Supercalifragilisticexpialidocious', project: project) }
+    context 'when a comment is in a snippet' do
+      let(:snippet) { create(:project_snippet, :private, project: project, author: user, title: 'Some title') }
+      let(:comment) { create(:note, noteable: snippet, author: user, note: 'Supercalifragilisticexpialidocious', project: project) }
 
-    it 'finds a snippet' do
-      submit_search(comment.note)
-      select_search_scope('Comments')
+      it 'finds a snippet' do
+        submit_search(comment.note)
+        select_search_scope('Comments')
 
-      expect(page).to have_selector('.results', text: snippet.title)
+        expect(page).to have_selector('.results', text: snippet.title)
+      end
     end
   end
 end

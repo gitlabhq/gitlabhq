@@ -1,8 +1,0 @@
----
-name: index_user_callback
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101326
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378364
-milestone: '15.6'
-type: development
-group: group::global search
-default_enabled: false

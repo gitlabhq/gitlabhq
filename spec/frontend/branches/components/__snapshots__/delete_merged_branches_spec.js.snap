@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delete merged branches component Delete merged branches confirmation modal matches snapshot 1`] = `
+<div>
+  <b-button-stub
+    class="gl-mr-3 gl-button btn-danger-secondary"
+    data-qa-selector="delete_merged_branches_button"
+    size="md"
+    tag="button"
+    type="button"
+    variant="danger"
+  >
+    <!---->
+     
+    <!---->
+      
+    <span
+      class="gl-button-text"
+    >
+      Delete merged branches
+  
+    </span>
+  </b-button-stub>
+   
+  <div>
+    <form
+      action="/namespace/project/-/merged_branches"
+      method="post"
+    >
+      <p>
+        You are about to 
+        <strong>
+          delete all branches
+        </strong>
+         that were merged into 
+        <code>
+          master
+        </code>
+        .
+      </p>
+       
+      <p>
+        
+        This may include merged branches that are not visible on the current screen.
+      
+      </p>
+       
+      <p>
+        
+        A branch won't be deleted if it is protected or associated with an open merge request.
+      
+      </p>
+       
+      <p>
+        This bulk action is 
+        <strong>
+          permanent and cannot be undone or recovered
+        </strong>
+        .
+      </p>
+       
+      <p>
+        Plese type the following to confirm: 
+        <code>
+          delete
+        </code>
+        . 
+        <b-form-input-stub
+          aria-labelledby="input-label"
+          autocomplete="off"
+          class="gl-form-input gl-mt-2 gl-form-input-sm"
+          data-qa-selector="delete_merged_branches_input"
+          debounce="0"
+          formatter="[Function]"
+          type="text"
+          value=""
+        />
+      </p>
+       
+      <input
+        name="_method"
+        type="hidden"
+        value="delete"
+      />
+       
+      <input
+        name="authenticity_token"
+        type="hidden"
+        value="mock-csrf-token"
+      />
+    </form>
+    <div
+      class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0 gl-mr-3"
+    >
+      <b-button-stub
+        class="gl-button"
+        data-testid="delete-merged-branches-cancel-button"
+        size="md"
+        tag="button"
+        type="button"
+        variant="default"
+      >
+        <!---->
+         
+        <!---->
+          
+        <span
+          class="gl-button-text"
+        >
+          
+          Cancel
+        
+        </span>
+      </b-button-stub>
+       
+      <b-button-stub
+        class="gl-button"
+        data-qa-selector="delete_merged_branches_confirmation_button"
+        data-testid="delete-merged-branches-confirmation-button"
+        disabled="true"
+        size="md"
+        tag="button"
+        type="button"
+        variant="danger"
+      >
+        <!---->
+         
+        <!---->
+          
+        <span
+          class="gl-button-text"
+        >
+          Delete merged branches
+        </span>
+      </b-button-stub>
+    </div>
+  </div>
+</div>
+`;

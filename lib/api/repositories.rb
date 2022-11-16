@@ -41,7 +41,7 @@ module API
       end
     end
 
-    before { authorize! :download_code, user_project }
+    before { authorize! :read_code, user_project }
 
     feature_category :source_code_management
 
@@ -63,7 +63,7 @@ module API
         end
 
         def assign_blob_vars!(limit:)
-          authorize! :download_code, user_project
+          authorize! :read_code, user_project
 
           @repo = user_project.repository
 

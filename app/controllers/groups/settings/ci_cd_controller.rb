@@ -10,9 +10,6 @@ module Groups
       before_action :define_variables, only: [:show]
       before_action :push_licensed_features, only: [:show]
       before_action :assign_variables_to_gon, only: [:show]
-      before_action do
-        push_frontend_feature_flag(:ci_variable_settings_graphql, @group)
-      end
 
       feature_category :continuous_integration
       urgency :low

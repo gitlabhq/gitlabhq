@@ -22,7 +22,8 @@ job is fully executed. The following video gives you an overview of GitLab scan 
 
 ## Scan result policy editor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/369473) in GitLab 15.6.
 
 NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)

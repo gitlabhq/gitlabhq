@@ -240,7 +240,6 @@ module Issuable
     end
 
     def validate_assignee_size_length
-      return true unless Feature.enabled?(:limit_assignees_per_issuable)
       return true unless assignees.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
       errors.add :assignees,

@@ -32,14 +32,15 @@ review-build-cng-env:
   extends:
     - .default-retry
     - .review:rules:review-build-cng
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:3.0-alpine3.13
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3
   stage: prepare
   needs: []
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
   script:
-    - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > build.env'
+    - ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > build.env
+    - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> build.env
     - cat build.env
   artifacts:
     reports:
@@ -77,6 +78,7 @@ review-build-cng:
     GITLAB_SHELL_VERSION: "${GITLAB_SHELL_VERSION}"
     GITLAB_WORKHORSE_VERSION: "${GITLAB_WORKHORSE_VERSION}"
     GITALY_SERVER_VERSION: "${GITALY_SERVER_VERSION}"
+    RUBY_VERSION: "${FULL_RUBY_VERSION}"
   trigger:
     project: gitlab-org/build/CNG-mirror
     branch: $TRIGGER_BRANCH
@@ -89,7 +91,7 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "138c146a5ba787942f66d4c7d795d224d6ba206a"
+    GITLAB_HELM_CHART_REF: "ed813953079c1d81aa69d4cb8171c69aa9741f01"  # 6.5.4: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/ed813953079c1d81aa69d4cb8171c69aa9741f01
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}

@@ -13,10 +13,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   before_action :disable_query_limiting, only: [:usage_data]
 
-  before_action do
-    push_frontend_feature_flag(:ci_variable_settings_graphql)
-  end
-
   feature_category :not_owned, [ # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
     :general, :reporting, :metrics_and_profiling, :network,
     :preferences, :update, :reset_health_check_token

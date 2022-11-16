@@ -41,41 +41,15 @@ RSpec.describe Gitlab::GonHelper do
     end
 
     describe 'sentry configuration' do
-      let(:legacy_clientside_dsn) { 'https://xxx@sentry-legacy.example.com/1' }
       let(:clientside_dsn) { 'https://xxx@sentry.example.com/1' }
-      let(:environment) { 'production' }
+      let(:environment) { 'staging' }
 
-      context 'with enable_old_sentry_clientside_integration enabled' do
+      describe 'sentry integration' do
         before do
-          stub_feature_flags(
-            enable_old_sentry_clientside_integration: true,
-            enable_new_sentry_clientside_integration: false
-          )
-
-          stub_config(sentry: { enabled: true, clientside_dsn: legacy_clientside_dsn, environment: environment })
+          stub_config(sentry: { enabled: true, clientside_dsn: clientside_dsn, environment: environment })
         end
 
         it 'sets sentry dsn and environment from config' do
-          expect(gon).to receive(:sentry_dsn=).with(legacy_clientside_dsn)
-          expect(gon).to receive(:sentry_environment=).with(environment)
-
-          helper.add_gon_variables
-        end
-      end
-
-      context 'with enable_new_sentry_clientside_integration enabled' do
-        before do
-          stub_feature_flags(
-            enable_old_sentry_clientside_integration: false,
-            enable_new_sentry_clientside_integration: true
-          )
-
-          stub_application_setting(sentry_enabled: true)
-          stub_application_setting(sentry_clientside_dsn: clientside_dsn)
-          stub_application_setting(sentry_environment: environment)
-        end
-
-        it 'sets sentry dsn and environment from application settings' do
           expect(gon).to receive(:sentry_dsn=).with(clientside_dsn)
           expect(gon).to receive(:sentry_environment=).with(environment)
 
@@ -83,25 +57,37 @@ RSpec.describe Gitlab::GonHelper do
         end
       end
 
-      context 'with enable_old_sentry_clientside_integration and enable_new_sentry_clientside_integration enabled' do
+      describe 'new sentry integration' do
         before do
-          stub_feature_flags(
-            enable_old_sentry_clientside_integration: true,
-            enable_new_sentry_clientside_integration: true
-          )
-
-          stub_config(sentry: { enabled: true, clientside_dsn: legacy_clientside_dsn, environment: environment })
-
           stub_application_setting(sentry_enabled: true)
           stub_application_setting(sentry_clientside_dsn: clientside_dsn)
           stub_application_setting(sentry_environment: environment)
         end
 
-        it 'sets sentry dsn and environment from application settings' do
-          expect(gon).to receive(:sentry_dsn=).with(clientside_dsn)
-          expect(gon).to receive(:sentry_environment=).with(environment)
+        context 'when enable_new_sentry_clientside_integration is disabled' do
+          before do
+            stub_feature_flags(enable_new_sentry_clientside_integration: false)
+          end
 
-          helper.add_gon_variables
+          it 'does not set sentry dsn and environment from config' do
+            expect(gon).not_to receive(:sentry_dsn=).with(clientside_dsn)
+            expect(gon).not_to receive(:sentry_environment=).with(environment)
+
+            helper.add_gon_variables
+          end
+        end
+
+        context 'when enable_new_sentry_clientside_integration is enabled' do
+          before do
+            stub_feature_flags(enable_new_sentry_clientside_integration: true)
+          end
+
+          it 'sets sentry dsn and environment from config' do
+            expect(gon).to receive(:sentry_dsn=).with(clientside_dsn)
+            expect(gon).to receive(:sentry_environment=).with(environment)
+
+            helper.add_gon_variables
+          end
         end
       end
     end

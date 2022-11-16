@@ -1,10 +1,9 @@
+#import "~/packages_and_registries/settings/group/graphql/fragments/package_settings_fields.fragment.graphql"
+
 mutation updateNamespacePackageSettings($input: UpdateNamespacePackageSettingsInput!) {
   updateNamespacePackageSettings(input: $input) {
     packageSettings {
-      mavenDuplicatesAllowed
-      mavenDuplicateExceptionRegex
-      genericDuplicatesAllowed
-      genericDuplicateExceptionRegex
+      ...PackageSettingsFields
     }
     errors
   }

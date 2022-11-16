@@ -9,7 +9,7 @@ module API
 
     before do
       require_repository_enabled!
-      authorize! :download_code, user_project
+      authorize! :read_code, user_project
 
       verify_pagination_params!
     end

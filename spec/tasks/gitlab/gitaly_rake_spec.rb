@@ -10,7 +10,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
   let(:repo) { 'https://gitlab.com/gitlab-org/gitaly.git' }
   let(:clone_path) { Rails.root.join('tmp/tests/gitaly').to_s }
   let(:storage_path) { Rails.root.join('tmp/tests/repositories').to_s }
-  let(:version) { Gitlab::GitalyClient.expected_server_version }
+  let(:version) { File.read(Rails.root.join(Gitlab::GitalyClient::SERVER_VERSION_FILE)).chomp }
 
   describe 'clone' do
     subject { run_rake_task('gitlab:gitaly:clone', clone_path, storage_path) }

@@ -475,11 +475,28 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 - Git 2.37.0 and later is required by Gitaly. For installations from source, we recommend you use the [Git version provided by Gitaly](../install/installation.md#git).
 
+### 15.5.0
+
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/extra_sidekiq_processes.md#queue-selector), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+  - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
+  - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    sidekiq['routing_rules'] = [['*', 'default']]
+    ```
+
 ### 15.4.0
 
 - GitLab 15.4.0 includes a [batched background migration](#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
   This migration might take hours or days to complete on larger GitLab instances.
 - By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org`. If your instance can not connect to `pool.ntp.org`, [configure the `NTP_HOST` variable](../administration/gitaly/praefect.md#customize-time-server-setting).
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/extra_sidekiq_processes.md#queue-selector), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+  - The default routing rule has been reverted in 15.4.5, so upgrading to that version or later will return to the previous behavior.
+  - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    sidekiq['routing_rules'] = [['*', 'default']]
+    ```
 
 ### 15.3.3
 

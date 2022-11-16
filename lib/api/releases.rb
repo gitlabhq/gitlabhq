@@ -131,7 +131,7 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
-        authorize_download_code!
+        authorize_read_code!
 
         not_found! unless release
 
@@ -157,7 +157,7 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/releases/:tag_name/downloads/*file_path', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
-        authorize_download_code!
+        authorize_read_code!
 
         not_found! unless release
 
@@ -185,7 +185,7 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/releases/permalink/latest(/)(*suffix_path)', format: false, requirements: RELEASE_ENDPOINT_REQUIREMENTS do
-        authorize_download_code!
+        authorize_read_code!
 
         # Try to find the latest release
         latest_release = find_latest_release
@@ -371,6 +371,10 @@ module API
 
       def authorize_download_code!
         authorize! :download_code, user_project
+      end
+
+      def authorize_read_code!
+        authorize! :read_code, user_project
       end
 
       def authorize_create_evidence!

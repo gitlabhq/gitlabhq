@@ -419,7 +419,7 @@ module SearchHelper
     result = { label: label, scope: scope_name, data: data, link: search_path(search_params), active: active_scope }
 
     if active_scope
-      result[:count] = !@timeout ? @search_results.formatted_count(scope_name) : 0
+      result[:count] = !@timeout ? @search_results.formatted_count(scope_name) : "0"
     end
 
     result[:count_link] = search_count_path(search_params) unless active_scope

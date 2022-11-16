@@ -84,11 +84,11 @@ module Sbom
         # - UTF-8-encode the name if needed in your programming language
         # - Append the percent-encoded name to the purl
         if @namespace.nil?
-          io.write(URI.encode_www_form_component(@name))
+          io.write(URI.encode_www_form_component(@name, Encoding::UTF_8))
         else
           io.write(encode_segments(@namespace, &:empty?))
           io.write('/')
-          io.write(URI.encode_www_form_component(strip(@name, '/')))
+          io.write(URI.encode_www_form_component(strip(@name, '/'), Encoding::UTF_8))
         end
       end
 
@@ -99,7 +99,7 @@ module Sbom
         # - UTF-8-encode the version if needed in your programming language
         # - Append the percent-encoded version to the purl
         io.write('@')
-        io.write(URI.encode_www_form_component(@version))
+        io.write(URI.encode_www_form_component(@version, Encoding::UTF_8))
       end
 
       def encode_qualifiers!
@@ -115,7 +115,7 @@ module Sbom
 
           next "#{key.downcase}=#{value.join(',')}" if key == 'checksums' && value.is_a?(::Array)
 
-          "#{key.downcase}=#{URI.encode_www_form_component(value)}"
+          "#{key.downcase}=#{URI.encode_www_form_component(value, Encoding::UTF_8)}"
         end.sort.join('&')
       end
 

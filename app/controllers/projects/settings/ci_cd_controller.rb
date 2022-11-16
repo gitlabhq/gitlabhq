@@ -11,9 +11,6 @@ module Projects
       before_action :authorize_admin_pipeline!
       before_action :check_builds_available!
       before_action :define_variables
-      before_action do
-        push_frontend_feature_flag(:ci_variable_settings_graphql, @project)
-      end
 
       helper_method :highlight_badge
 

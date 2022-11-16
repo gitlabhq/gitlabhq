@@ -10,7 +10,7 @@
 - is_group = !@group.nil?
 - is_project = !@project.nil?
 
-#js-ci-project-variables{ data: { endpoint: save_endpoint,
+#js-ci-variables{ data: { endpoint: save_endpoint,
   is_project: is_project.to_s,
   project_id: @project&.id || '',
   project_full_path: @project&.full_path || '',

@@ -108,6 +108,13 @@ Custom charts to visualize DORA data with Insights YAML-based reports.
 
 With this new visualization, software leaders can track metrics improvements, understand patterns in their metrics trends, and compare performance between groups and projects.
 
+### Measure DORA metrics without using GitLab CI/CD pipelines
+
+Deployment frequency is calculated based on the deployments record, which is created for typical push-based deployments.
+These deployment records are not created for pull-based deployments, for example when Container Images are connected to GitLab with an agent.
+
+To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API.
+
 ### Supported DORA metrics in GitLab
 
 | Metric                    | Level             | API                                                 | UI chart               | Comments |

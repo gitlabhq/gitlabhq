@@ -114,7 +114,7 @@ module API
       end
       expose :build_timeout, documentation: { type: 'integer', example: 3600 }
       expose :auto_cancel_pending_pipelines, documentation: { type: 'string', example: 'enabled' }
-      expose :ci_config_path, documentation: { type: 'string', example: '' }, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
+      expose :ci_config_path, documentation: { type: 'string', example: '' }, if: -> (project, options) { Ability.allowed?(options[:current_user], :read_code, project) }
       expose :shared_with_groups, documentation: { is_array: true } do |project, options|
         user = options[:current_user]
 

@@ -997,7 +997,6 @@
 - './ee/spec/graphql/types/vulnerability_severity_enum_spec.rb'
 - './ee/spec/graphql/types/vulnerability_sort_enum_spec.rb'
 - './ee/spec/graphql/types/vulnerability_state_enum_spec.rb'
-- './ee/spec/graphql/types/vulnerability_type_spec.rb'
 - './ee/spec/graphql/types/vulnerable_dependency_type_spec.rb'
 - './ee/spec/graphql/types/vulnerable_kubernetes_resource_type_spec.rb'
 - './ee/spec/graphql/types/vulnerable_package_type_spec.rb'

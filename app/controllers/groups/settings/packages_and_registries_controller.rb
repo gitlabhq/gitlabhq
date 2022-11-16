@@ -7,6 +7,10 @@ module Groups
       before_action :authorize_admin_group!
       before_action :verify_packages_enabled!
 
+      before_action do
+        push_frontend_feature_flag(:maven_central_request_forwarding, group)
+      end
+
       feature_category :package_registry
       urgency :low
 

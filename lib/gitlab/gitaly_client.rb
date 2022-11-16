@@ -371,8 +371,6 @@ module Gitlab
     end
 
     def self.expected_server_version
-      return ENV[SERVER_VERSION_FILE] if ENV[SERVER_VERSION_FILE]
-
       path = Rails.root.join(SERVER_VERSION_FILE)
       path.read.chomp
     end

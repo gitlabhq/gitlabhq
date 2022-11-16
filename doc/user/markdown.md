@@ -1160,17 +1160,15 @@ These details <em>remain</em> <strong>hidden</strong> until expanded.
 
 Markdown inside these tags is also supported.
 
-NOTE:
-If your Markdown isn't rendering correctly, try adding
-`{::options parse_block_html="true" /}` to the top of the page, and add
-`markdown="span"` to the opening summary tag like this: `<summary markdown="span">`.
-
-Remember to leave a blank line after the `</summary>` tag and before the `</details>` tag,
-as shown in the example:
+Remember to leave a blank line before and after any Markdown sections, as shown in the example:
 
 ````html
 <details>
-<summary>Click this to collapse/fold.</summary>
+<summary>
+
+Click this to _collapse/fold._
+
+</summary>
 
 These details _remain_ **hidden** until expanded.
 
@@ -1187,7 +1185,7 @@ works correctly in GitLab.
 -->
 
 <details>
-<summary>Click this to collapse/fold.</summary>
+<summary>Click this to <em>collapse/fold.</em></summary>
 
 These details <em>remain</em> <b>hidden</b> until expanded.
 

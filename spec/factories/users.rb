@@ -27,6 +27,10 @@ FactoryBot.define do
       after(:build) { |user, _| user.block! }
     end
 
+    trait :locked do
+      after(:build) { |user, _| user.lock_access! }
+    end
+
     trait :disallowed_password do
       password { User::DISALLOWED_PASSWORDS.first }
     end

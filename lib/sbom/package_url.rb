@@ -44,7 +44,7 @@ module Sbom
   class PackageUrl
     # Raised when attempting to parse an invalid package URL string.
     # @see #parse
-    InvalidPackageURL = Class.new(ArgumentError)
+    InvalidPackageUrl = Class.new(ArgumentError)
 
     # The URL scheme, which has a constant value of `"pkg"`.
     def scheme
@@ -79,20 +79,19 @@ module Sbom
     # @param qualifiers [Hash] Extra qualifying data for a package, specific to the type of package.
     # @param subpath [String] An extra subpath within a package, relative to the package root.
     def initialize(type:, name:, namespace: nil, version: nil, qualifiers: nil, subpath: nil)
-      raise ArgumentError, 'type is required' unless type.present?
-      raise ArgumentError, 'name is required' unless name.present?
-
-      @type = type.downcase
+      @type = type&.downcase
       @namespace = namespace
       @name = name
       @version = version
       @qualifiers = qualifiers
       @subpath = subpath
+
+      ArgumentValidator.new(self).validate!
     end
 
     # Creates a new PackageUrl from a string.
     # @param [String] string The package URL string.
-    # @raise [InvalidPackageURL] If the string is not a valid package URL.
+    # @raise [InvalidPackageUrl] If the string is not a valid package URL.
     # @return [PackageUrl]
     def self.parse(string)
       Decoder.new(string).decode!

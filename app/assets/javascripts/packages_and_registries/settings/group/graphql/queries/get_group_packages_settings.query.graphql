@@ -1,3 +1,5 @@
+#import "~/packages_and_registries/settings/group/graphql/fragments/package_settings_fields.fragment.graphql"
+
 query getGroupPackagesSettings($fullPath: ID!) {
   group(fullPath: $fullPath) {
     id
@@ -9,10 +11,7 @@ query getGroupPackagesSettings($fullPath: ID!) {
       enabled
     }
     packageSettings {
-      mavenDuplicatesAllowed
-      mavenDuplicateExceptionRegex
-      genericDuplicatesAllowed
-      genericDuplicateExceptionRegex
+      ...PackageSettingsFields
     }
   }
 }

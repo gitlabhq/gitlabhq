@@ -906,9 +906,14 @@ end
 
 Table **has records** but **no foreign keys**:
 
-- First release: Remove the application code related to the table, such as models,
-controllers and services.
-- Second release: Use the `drop_table` method in your migration.
+- Remove the application code related to the table, such as models,
+  controllers and services.
+- In a post-deployment migration, use `drop_table`.
+
+This can all be in a single migration if you're sure the code is not used.
+If you want to reduce risk slightly, consider putting the migrations into a
+second merge request after the application changes are merged. This approach
+provides an opportunity to roll back.
 
 ```ruby
 def up
@@ -922,12 +927,16 @@ end
 
 Table **has foreign keys**:
 
-- First release: Remove the application code related to the table, such as models,
-controllers, and services.
-- Second release: Remove the foreign keys using the `with_lock_retries`
-helper method. Use `drop_table` in another migration file.
+- Remove the application code related to the table, such as models,
+  controllers, and services.
+- In a post-deployment migration, remove the foreign keys using the
+  `with_lock_retries` helper method. In another subsequent post-deployment
+  migration, use `drop_table`.
 
-**Migrations for the second release:**
+This can all be in a single migration if you're sure the code is not used.
+If you want to reduce risk slightly, consider putting the migrations into a
+second merge request after the application changes are merged. This approach
+provides an opportunity to roll back.
 
 Removing the foreign key on the `projects` table:
 

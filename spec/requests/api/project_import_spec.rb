@@ -47,7 +47,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
     it 'executes a limited number of queries' do
       control_count = ActiveRecord::QueryRecorder.new { subject }.count
 
-      expect(control_count).to be <= 110
+      expect(control_count).to be <= 111
     end
 
     it 'schedules an import using a namespace' do
@@ -215,7 +215,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
         subject
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq('Name has already been taken')
+        expect(json_response['message']).to eq('Project namespace name has already been taken')
       end
 
       context 'when param overwrite is true' do

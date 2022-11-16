@@ -218,6 +218,7 @@ module API
         mount ::API::ImportGithub
         mount ::API::Integrations
         mount ::API::Invitations
+        mount ::API::IssueLinks
         mount ::API::Keys
         mount ::API::Lint
         mount ::API::Markdown
@@ -291,7 +292,6 @@ module API
       mount ::API::Groups
       mount ::API::HelmPackages
       mount ::API::Integrations::JiraConnect::Subscriptions
-      mount ::API::IssueLinks
       mount ::API::Issues
       mount ::API::Labels
       mount ::API::MavenPackages

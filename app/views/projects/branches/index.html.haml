@@ -13,16 +13,10 @@
     #js-branches-sort-dropdown{ data: { project_branches_filtered_path: project_branches_path(@project, state: 'all'), sort_options: branches_sort_options_hash.to_json, mode: @mode } }
 
     - if can? current_user, :push_code, @project
-      = link_to project_merged_branches_path(@project),
-        class: 'gl-button btn btn-danger btn-danger-secondary has-tooltip',
-        title: s_("Branches|Delete all branches that are merged into '%{default_branch}'") % { default_branch: @project.repository.root_ref },
-        method: :delete,
-        aria: { label: s_('Branches|Delete merged branches') },
-        data: { confirm: s_('Branches|Deleting the merged branches cannot be undone. Are you sure?'),
-          confirm_btn_variant: 'danger',
-          container: 'body',
-          qa_selector: 'delete_merged_branches_link' } do
-        = s_('Branches|Delete merged branches')
+      .js-delete-merged-branches{ data: {
+          default_branch: @project.repository.root_ref,
+          form_path: project_merged_branches_path(@project) }
+        }
       = link_to new_project_branch_path(@project), class: 'gl-button btn btn-confirm' do
         = s_('Branches|New branch')
 

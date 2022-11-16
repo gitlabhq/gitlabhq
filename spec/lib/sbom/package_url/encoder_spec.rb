@@ -20,10 +20,10 @@ RSpec.describe Sbom::PackageUrl::Encoder do
 
     subject(:encode) { described_class.new(package).encode }
 
-    include_context 'with purl matrix'
+    include_context 'with valid purl examples'
 
     with_them do
-      it { is_expected.to eq(url) }
+      it { is_expected.to eq(canonical_purl) }
     end
   end
 end

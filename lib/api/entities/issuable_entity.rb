@@ -3,10 +3,16 @@
 module API
   module Entities
     class IssuableEntity < Grape::Entity
-      expose :id, :iid
-      expose(:project_id) { |entity| entity&.project.try(:id) }
-      expose :title, :description
-      expose :state, :created_at, :updated_at
+      expose :id, documentation: { type: 'integer', example: 84 }
+      expose :iid, documentation: { type: 'integer', example: 14 }
+      expose :project_id, documentation: { type: 'integer', example: 4 } do |entity|
+        entity&.project.try(:id)
+      end
+      expose :title, documentation: { type: 'string', example: 'Impedit et ut et dolores vero provident ullam est' }
+      expose :description, documentation: { type: 'string', example: 'Repellendus impedit et vel velit dignissimos.' }
+      expose :state, documentation: { type: 'string', example: 'closed' }
+      expose :created_at, documentation: { type: 'dateTime', example: '2022-08-17T12:46:35.053Z' }
+      expose :updated_at, documentation: { type: 'dateTime', example: '2022-11-14T17:22:01.470Z' }
 
       def presented
         lazy_issuable_metadata

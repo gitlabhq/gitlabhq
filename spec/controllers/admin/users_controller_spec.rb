@@ -63,6 +63,114 @@ RSpec.describe Admin::UsersController do
       expect(response).to be_redirect
       expect(response.location).to end_with(user.username)
     end
+
+    describe 'impersonation_error_text' do
+      context 'when user can be impersonated' do
+        it 'sets impersonation_error_text to nil' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(nil)
+        end
+      end
+
+      context 'when impersonation is already in progress' do
+        let(:admin2) { create(:admin) }
+
+        before do
+          post :impersonate, params: { id: admin2.username }
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You are already impersonating another user"))
+        end
+      end
+
+      context 'when user is blocked' do
+        before do
+          user.block
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate a blocked user"))
+        end
+      end
+
+      context "when the user's password is expired" do
+        before do
+          user.update!(password_expires_at: 1.day.ago)
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate a user with an expired password"))
+        end
+      end
+
+      context "when the user is internal" do
+        before do
+          user.update!(user_type: :migration_bot)
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate an internal user"))
+        end
+      end
+
+      context "when the user is a project bot" do
+        before do
+          user.update!(user_type: :project_bot)
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate a user who cannot log in"))
+        end
+      end
+    end
+
+    describe 'can_impersonate' do
+      context 'when user can be impersonated' do
+        it 'sets can_impersonate to true' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:can_impersonate)).to eq(true)
+        end
+      end
+
+      context 'when impersonation is already in progress' do
+        let(:admin2) { create(:admin) }
+
+        before do
+          post :impersonate, params: { id: admin2.username }
+        end
+
+        it 'sets can_impersonate to false' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:can_impersonate)).to eq(false)
+        end
+      end
+
+      context 'when user cannot log in' do
+        before do
+          user.update!(user_type: :project_bot)
+        end
+
+        it 'sets can_impersonate to false' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:can_impersonate)).to eq(false)
+        end
+      end
+    end
   end
 
   describe 'DELETE #destroy', :sidekiq_might_not_need_inline do

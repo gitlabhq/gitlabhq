@@ -43,14 +43,18 @@ module Sbom
         decode_name!
         decode_namespace!
 
-        PackageUrl.new(
-          type: @type,
-          name: @name,
-          namespace: @namespace,
-          version: @version,
-          qualifiers: @qualifiers,
-          subpath: @subpath
-        )
+        begin
+          PackageUrl.new(
+            type: @type,
+            name: @name,
+            namespace: @namespace,
+            version: @version,
+            qualifiers: @qualifiers,
+            subpath: @subpath
+          )
+        rescue ArgumentError => e
+          raise InvalidPackageUrl, e.message
+        end
       end
 
       private
@@ -84,7 +88,7 @@ module Sbom
         # - The left side lowercased is the scheme: `scheme`
         # - The right side is the remainder: `type/namespace/name@version`
         @scheme, @string = partition(@string, ':', from: :left)
-        raise InvalidPackageURL, 'invalid or missing "pkg:" URL scheme' unless @scheme == 'pkg'
+        raise InvalidPackageUrl, 'invalid or missing "pkg:" URL scheme' unless @scheme == 'pkg'
       end
 
       def decode_type!
@@ -94,8 +98,7 @@ module Sbom
         # Given the string: `type/namespace/name@version`
         # - The left side lowercased is the type: `type`
         # - The right side is the remainder: `namespace/name@version`
-        @type, @string = partition(@string, '/', from: :left)
-        raise InvalidPackageURL, 'invalid or missing package type' if @type.blank?
+        @type, @string = partition(@string, '/', from: :left, &:downcase)
       end
 
       def decode_version!
@@ -116,20 +119,24 @@ module Sbom
         # - The right size is the name: `name`
         # - The name must be URI decoded
         @name, @string = partition(@string, '/', from: :right, require_separator: false) do |name|
-          URI.decode_www_form_component(name)
+          decoded_name = URI.decode_www_form_component(name)
+          Normalizer.new(type: @type, text: decoded_name).normalize_name
         end
       end
 
       def decode_namespace!
         # If there is anything remaining, this is the namespace.
         # The namespace may contain multiple segments delimited by `/`.
-        @namespace = decode_segments(@string, &:empty?) if @string.present?
+        return if @string.blank?
+
+        @namespace = decode_segments(@string, &:empty?)
+        @namespace = Normalizer.new(type: @type, text: @namespace).normalize_namespace
       end
 
       def decode_segment(segment)
         decoded = URI.decode_www_form_component(segment)
 
-        raise InvalidPackageURL, 'slash-separated segments may not contain `/`' if decoded.include?('/')
+        raise InvalidPackageUrl, 'slash-separated segments may not contain `/`' if decoded.include?('/')
 
         decoded
       end

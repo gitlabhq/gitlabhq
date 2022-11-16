@@ -5,7 +5,7 @@
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
   .fade-left= sprite_icon('chevron-lg-left', size: 12)
   .fade-right= sprite_icon('chevron-lg-right', size: 12)
-  = gl_tabs_nav({ class: 'search-filter scrolling-tabs nav-links'}) do
+  = gl_tabs_nav({ class: 'scrolling-tabs nav-links', data: { testid: 'search-filter' } }) do
     - if @project
       - if project_search_tabs?(:blobs)
         = search_filter_link 'blobs', _("Code"), data: { qa_selector: 'code_tab' }
