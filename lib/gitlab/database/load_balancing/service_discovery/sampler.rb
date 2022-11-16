@@ -5,7 +5,7 @@ module Gitlab
     module LoadBalancing
       class ServiceDiscovery
         class Sampler
-          def initialize(max_replica_pools:, seed: rand)
+          def initialize(max_replica_pools:, seed: Random.new_seed)
             # seed must be set once and consistent
             # for every invocation of #sample on
             # the same instance of Sampler

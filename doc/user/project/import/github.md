@@ -202,19 +202,21 @@ The following items of a project are imported:
   - Merge Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
-  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can be imported
-  [as an additional item](#select-additional-items-to-import). The feature flag was removed.
+  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can
+  be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
 - Pull request review comments.
 - Regular issue and pull request comments.
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md).
-- Pull request reviews (GitLab.com and GitLab 13.7 and later).
-- Pull request assigned reviewers [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355137) in GitLab 15.6.
-- Pull request "merged by" information (GitLab.com and GitLab 13.7 and later).
-- Pull request comments replies in discussions ([GitLab.com and GitLab 14.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/336596)).
-- Diff Notes suggestions ([GitLab.com and GitLab 14.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340624)).
-- Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4 with `github_importer_issue_events_import`
-  [feature flag](../../../administration/feature_flags.md) disabled by default.
-  From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
+- Pull request reviews.
+- Pull request assigned reviewers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355137) in GitLab 15.6.
+- Pull request "merged by" information.
+- Pull request comments replies in discussions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336596) in
+  GitLab 14.5.
+- Diff Notes suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
+- Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
+  with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
+  From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was
+  removed.
 
 References to pull requests and issues are preserved. Each imported repository maintains visibility level unless that
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it

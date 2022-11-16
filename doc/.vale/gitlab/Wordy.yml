@@ -10,7 +10,8 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.
 level: suggestion
 ignorecase: true
 swap:
-  note that: "Be more concise, and rewrite the sentence to not use 'note that'."
-  please: "Remove the word 'please' from the sentence."
-  respectively: "Be more precise, and rewrite the sentence to not use 'respectively'."
-  and so on: "Be more specific, and rewrite the sentence to not use 'and so on'."
+  note that: "Remove the phrase 'note that'."
+  please: "Use 'please' only if we've inconvenienced the user."
+  respectively: "Remove 'respectively' and list each option instead."
+  and so on: "Remove 'and so on'. Try to use 'like' and provide examples instead."
+  in order to: "Remove 'in order' and leave 'to'."
