@@ -2,7 +2,7 @@
 stage: enablement
 group: pods
 comments: false
-description: 'Pods architecture: Problem A'
+description: 'Pods: Problem A'
 ---
 
 This document is a work-in-progress and represents a very early state of the
@@ -12,7 +12,7 @@ contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Pods: Problem A
+# Pods: A
 
 > TL;DR
 

@@ -319,6 +319,11 @@ The Pods architecture will impact many features requiring some of them to be rew
 This is the list of known affected features with the proposed solutions.
 
 - [Pods: Git Access](pods-feature-git-access.md)
+- [Pods: Data Migration](pods-feature-data-migration.md)
+- [Pods: Database Sequences](pods-feature-database-sequences.md)
+- [Pods: GraphQL](pods-feature-graphql.md)
+- [Pods: Organizations](pods-feature-organizations.md)
+- [Pods: Router Endpoints Classification](pods-feature-router-endpoints-classification.md)
 
 ## Links
 

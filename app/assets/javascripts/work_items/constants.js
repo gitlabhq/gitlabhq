@@ -102,4 +102,9 @@ export const WORK_ITEMS_TYPE_MAP = {
   },
 };
 
+export const FORM_TYPES = {
+  create: 'create',
+  add: 'add',
+};
+
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;

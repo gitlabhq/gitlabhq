@@ -219,6 +219,7 @@ module API
         mount ::API::Invitations
         mount ::API::Keys
         mount ::API::Lint
+        mount ::API::Markdown
         mount ::API::MergeRequestApprovals
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
@@ -292,7 +293,6 @@ module API
       mount ::API::IssueLinks
       mount ::API::Issues
       mount ::API::Labels
-      mount ::API::Markdown
       mount ::API::MavenPackages
       mount ::API::Members
       mount ::API::MergeRequests

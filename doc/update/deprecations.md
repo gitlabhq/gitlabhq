@@ -112,7 +112,12 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated. GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8, which introduces a new method for registering runners and eliminates the legacy [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+The command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
+GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8,
+which introduces a new method for registering runners and eliminates the legacy
+[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+The new method will involve passing a [runner authentication token](https://docs.gitlab.com/ee/security/token_overview.html#runner-authentication-tokens-also-called-runner-tokens)
+to a new `gitlab-runner deploy` command.
 
 </div>
 

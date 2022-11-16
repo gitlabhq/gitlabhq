@@ -26,6 +26,7 @@ import {
 import deleteContainerRepositoryTagsMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
 import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
+import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
 
 import component from '~/packages_and_registries/container_registry/explorer/pages/details.vue';
 import Tracking from '~/tracking';
@@ -34,6 +35,7 @@ import {
   graphQLImageDetailsMock,
   graphQLDeleteImageRepositoryTagsMock,
   graphQLDeleteImageRepositoryTagImportingErrorMock,
+  graphQLProjectImageRepositoriesDetailsMock,
   containerRepositoryMock,
   graphQLEmptyImageDetailsMock,
   tagsMock,
@@ -64,6 +66,9 @@ describe('Details Page', () => {
 
   const defaultConfig = {
     noContainersImage: 'noContainersImage',
+    projectListUrl: 'projectListUrl',
+    groupListUrl: 'groupListUrl',
+    isGroupPage: false,
   };
 
   const cleanTags = tagsMock.map((t) => {
@@ -81,7 +86,8 @@ describe('Details Page', () => {
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock()),
     mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock),
-    tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock)),
+    tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock())),
+    detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock),
     options,
     config = defaultConfig,
   } = {}) => {
@@ -91,6 +97,7 @@ describe('Details Page', () => {
       [getContainerRepositoryDetailsQuery, resolver],
       [deleteContainerRepositoryTagsMutation, mutationResolver],
       [getContainerRepositoryTagsQuery, tagsResolver],
+      [getContainerRepositoriesDetails, detailsResolver],
     ];
 
     apolloProvider = createMockApollo(requestHandlers);
@@ -256,11 +263,13 @@ describe('Details Page', () => {
     describe('confirmDelete event', () => {
       let mutationResolver;
       let tagsResolver;
+      let detailsResolver;
 
       beforeEach(() => {
         mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
-        tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock));
-        mountComponent({ mutationResolver, tagsResolver });
+        tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock()));
+        detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
+        mountComponent({ mutationResolver, tagsResolver, detailsResolver });
 
         return waitForApolloRequestRender();
       });
@@ -280,6 +289,7 @@ describe('Details Page', () => {
           await waitForPromises();
 
           expect(tagsResolver).toHaveBeenCalled();
+          expect(detailsResolver).toHaveBeenCalled();
         });
       });
 
@@ -298,6 +308,7 @@ describe('Details Page', () => {
           await waitForPromises();
 
           expect(tagsResolver).toHaveBeenCalled();
+          expect(detailsResolver).toHaveBeenCalled();
         });
       });
     });
@@ -359,14 +370,16 @@ describe('Details Page', () => {
     describe('importing repository error', () => {
       let mutationResolver;
       let tagsResolver;
+      let detailsResolver;
 
       beforeEach(async () => {
         mutationResolver = jest
           .fn()
           .mockResolvedValue(graphQLDeleteImageRepositoryTagImportingErrorMock);
-        tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock));
+        tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock()));
+        detailsResolver = jest.fn().mockResolvedValue(graphQLProjectImageRepositoriesDetailsMock);
 
-        mountComponent({ mutationResolver, tagsResolver });
+        mountComponent({ mutationResolver, tagsResolver, detailsResolver });
         await waitForApolloRequestRender();
       });
 
@@ -378,6 +391,7 @@ describe('Details Page', () => {
         await waitForPromises();
 
         expect(tagsResolver).toHaveBeenCalled();
+        expect(detailsResolver).toHaveBeenCalled();
 
         const deleteAlert = findDeleteAlert();
         expect(deleteAlert.exists()).toBe(true);

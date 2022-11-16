@@ -46195,6 +46195,9 @@ msgstr ""
 msgid "WorkItem|Add task"
 msgstr ""
 
+msgid "WorkItem|Add tasks"
+msgstr ""
+
 msgid "WorkItem|Add to iteration"
 msgstr ""
 
@@ -46239,6 +46242,9 @@ msgstr ""
 msgid "WorkItem|Due date"
 msgstr ""
 
+msgid "WorkItem|Existing task"
+msgstr ""
+
 msgid "WorkItem|Expand tasks"
 msgstr ""
 
@@ -46258,6 +46264,9 @@ msgid "WorkItem|Learn about tasks."
 msgstr ""
 
 msgid "WorkItem|Milestone"
+msgstr ""
+
+msgid "WorkItem|New task"
 msgstr ""
 
 msgid "WorkItem|No iteration"
@@ -46285,6 +46294,9 @@ msgid "WorkItem|Remove"
 msgstr ""
 
 msgid "WorkItem|Requirements"
+msgstr ""
+
+msgid "WorkItem|Search existing tasks"
 msgstr ""
 
 msgid "WorkItem|Select type"

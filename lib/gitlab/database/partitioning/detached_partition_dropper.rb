@@ -7,7 +7,7 @@ module Gitlab
           Gitlab::AppLogger.info(message: "Checking for previously detached partitions to drop")
 
           Postgresql::DetachedPartition.ready_to_drop.find_each do |detached_partition|
-            if partition_attached?(qualify_partition_name(detached_partition.table_name))
+            if partition_attached?(detached_partition.fully_qualified_table_name)
               unmark_partition(detached_partition)
             else
               drop_partition(detached_partition)
@@ -41,14 +41,14 @@ module Gitlab
             # Another process may have already dropped the table and deleted this entry
             next unless try_lock_detached_partition(detached_partition.id)
 
-            drop_detached_partition(detached_partition.table_name)
+            drop_detached_partition(detached_partition)
 
             detached_partition.destroy!
           end
         end
 
         def remove_foreign_keys(detached_partition)
-          partition_identifier = qualify_partition_name(detached_partition.table_name)
+          partition_identifier = detached_partition.fully_qualified_table_name
 
           # We want to load all of these into memory at once to get a consistent view to loop over,
           # since we'll be deleting from this list as we go
@@ -65,7 +65,7 @@ module Gitlab
           # It is important to only drop one foreign key per transaction.
           # Dropping a foreign key takes an ACCESS EXCLUSIVE lock on both tables participating in the foreign key.
 
-          partition_identifier = qualify_partition_name(detached_partition.table_name)
+          partition_identifier = detached_partition.fully_qualified_table_name
           with_lock_retries do
             connection.transaction(requires_new: false) do
               next unless try_lock_detached_partition(detached_partition.id)
@@ -83,16 +83,10 @@ module Gitlab
           end
         end
 
-        def drop_detached_partition(partition_name)
-          partition_identifier = qualify_partition_name(partition_name)
+        def drop_detached_partition(detached_partition)
+          connection.drop_table(detached_partition.fully_qualified_table_name, if_exists: true)
 
-          connection.drop_table(partition_identifier, if_exists: true)
-
-          Gitlab::AppLogger.info(message: "Dropped previously detached partition", partition_name: partition_name)
-        end
-
-        def qualify_partition_name(table_name)
-          "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{table_name}"
+          Gitlab::AppLogger.info(message: "Dropped previously detached partition", partition_name: detached_partition.table_name)
         end
 
         def partition_attached?(partition_identifier)

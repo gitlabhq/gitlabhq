@@ -48,6 +48,7 @@ RSpec.describe 'Work item children', :js do
         expect(page).not_to have_selector('[data-testid="add-links-form"]')
 
         click_button 'Add'
+        click_button 'New task'
 
         expect(page).to have_selector('[data-testid="add-links-form"]')
 
@@ -57,9 +58,10 @@ RSpec.describe 'Work item children', :js do
       end
     end
 
-    it 'addss a child task', :aggregate_failures do
+    it 'adds a new child task', :aggregate_failures do
       page.within('[data-testid="work-item-links"]') do
         click_button 'Add'
+        click_button 'New task'
 
         expect(page).to have_button('Create task', disabled: true)
         fill_in 'Add a title', with: 'Task 1'
@@ -77,6 +79,7 @@ RSpec.describe 'Work item children', :js do
     it 'removes a child task and undoing', :aggregate_failures do
       page.within('[data-testid="work-item-links"]') do
         click_button 'Add'
+        click_button 'New task'
         fill_in 'Add a title', with: 'Task 1'
         click_button 'Create task'
         wait_for_all_requests
@@ -103,6 +106,30 @@ RSpec.describe 'Work item children', :js do
       page.within('[data-testid="work-item-links"]') do
         expect(find('[data-testid="links-child"]')).to have_content('Task 1')
         expect(find('[data-testid="children-count"]')).to have_content('1')
+      end
+    end
+
+    context 'with existing task' do
+      let_it_be(:task) { create(:work_item, :task, project: project) }
+
+      it 'adds an existing child task', :aggregate_failures do
+        page.within('[data-testid="work-item-links"]') do
+          click_button 'Add'
+          click_button 'Existing task'
+
+          expect(page).to have_button('Add task', disabled: true)
+          find('[data-testid="work-item-token-select-input"]').set(task.title)
+          wait_for_all_requests
+          click_button task.title
+
+          expect(page).to have_button('Add task', disabled: false)
+
+          click_button 'Add task'
+
+          wait_for_all_requests
+
+          expect(find('[data-testid="links-child"]')).to have_content(task.title)
+        end
       end
     end
   end

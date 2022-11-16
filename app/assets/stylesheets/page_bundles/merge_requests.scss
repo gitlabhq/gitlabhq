@@ -1210,3 +1210,15 @@ $tabs-holder-z-index: 250;
 .commits ol:not(:last-of-type) {
   margin-bottom: 0;
 }
+
+.mr-section-container {
+  .state-container-action-buttons {
+    @include media-breakpoint-up(md) {
+      flex-direction: row-reverse;
+
+      .btn {
+        margin-left: auto;
+      }
+    }
+  }
+}

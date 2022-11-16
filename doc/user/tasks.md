@@ -50,8 +50,25 @@ Prerequisites:
 To create a task:
 
 1. In the issue description, in the **Tasks** section, select **Add**.
+1. Select **New task**.
 1. Enter the task title.
 1. Select **Create task**.
+
+## Add existing tasks to an issue
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381868) in GitLab 15.6.
+
+Prerequisites:
+
+- You must have at least the Guest role for the project, or the project must be public.
+
+To add a task:
+
+1. In the issue description, in the **Tasks** section, select **Add**.
+1. Select **Existing task**.
+1. Search tasks by title.
+1. Select one or multiple tasks to add to the issue.
+1. Select **Add task**.
 
 ## Edit a task
 

@@ -1,18 +1,21 @@
 <script>
-import { GlAlert, GlFormGroup, GlForm, GlFormCombobox, GlButton, GlFormInput } from '@gitlab/ui';
+import { GlAlert, GlFormGroup, GlForm, GlTokenSelector, GlButton, GlFormInput } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
-import { TASK_TYPE_NAME } from '../../constants';
+import { FORM_TYPES, TASK_TYPE_NAME } from '../../constants';
 
 export default {
   components: {
     GlAlert,
     GlForm,
-    GlFormCombobox,
+    GlTokenSelector,
     GlButton,
     GlFormGroup,
     GlFormInput,
@@ -45,6 +48,10 @@ export default {
       required: false,
       default: () => ({}),
     },
+    formType: {
+      type: String,
+      required: true,
+    },
   },
   apollo: {
     workItemTypes: {
@@ -58,13 +65,33 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
     },
+    availableWorkItems: {
+      query: projectWorkItemsQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+          searchTerm: this.search?.title || this.search,
+          types: ['TASK'],
+          in: this.search ? 'TITLE' : undefined,
+        };
+      },
+      skip() {
+        return !this.searchStarted;
+      },
+      update(data) {
+        return data.workspace.workItems.nodes.filter((wi) => !this.childrenIds.includes(wi.id));
+      },
+    },
   },
   data() {
     return {
+      workItemTypes: [],
       availableWorkItems: [],
       search: '',
+      searchStarted: false,
       error: null,
       childToCreateTitle: null,
+      workItemsToAdd: [],
     };
   },
   computed: {
@@ -92,23 +119,19 @@ export default {
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
-    actionsList() {
-      return [
-        {
-          label: this.$options.i18n.createChildOptionLabel,
-          fn: () => {
-            this.childToCreateTitle = this.search?.title || this.search;
-          },
-        },
-      ];
+    isCreateForm() {
+      return this.formType === FORM_TYPES.create;
     },
     addOrCreateButtonLabel() {
-      return this.childToCreateTitle
-        ? this.$options.i18n.createChildOptionLabel
-        : this.$options.i18n.addTaskButtonLabel;
+      if (this.isCreateForm) {
+        return this.$options.i18n.createChildOptionLabel;
+      } else if (this.workItemsToAdd.length > 1) {
+        return this.$options.i18n.addTasksButtonLabel;
+      }
+      return this.$options.i18n.addTaskButtonLabel;
     },
     addOrCreateMethod() {
-      return this.childToCreateTitle ? this.createChild : this.addChild;
+      return this.isCreateForm ? this.createChild : this.addChild;
     },
     taskWorkItemType() {
       return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
@@ -125,6 +148,15 @@ export default {
     associateMilestone() {
       return this.parentMilestoneId && this.workItemsMvc2Enabled;
     },
+    isSubmitButtonDisabled() {
+      return this.isCreateForm ? this.search.length === 0 : this.workItemsToAdd.length === 0;
+    },
+    isLoading() {
+      return this.$apollo.queries.availableWorkItems.loading;
+    },
+  },
+  created() {
+    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {
     getIdFromGraphQLId,
@@ -132,6 +164,7 @@ export default {
       this.error = null;
     },
     addChild() {
+      this.searchStarted = false;
       this.$apollo
         .mutate({
           mutation: updateWorkItemMutation,
@@ -139,7 +172,7 @@ export default {
             input: {
               id: this.issuableGid,
               hierarchyWidget: {
-                childrenIds: [this.search.id],
+                childrenIds: this.workItemsToAdd.map((wi) => wi.id),
               },
             },
           },
@@ -149,7 +182,7 @@ export default {
             [this.error] = data.workItemUpdate.errors;
           } else {
             this.unsetError();
-            this.$emit('addWorkItemChild', this.search);
+            this.workItemsToAdd = [];
           }
         })
         .catch(() => {
@@ -203,10 +236,25 @@ export default {
         },
       });
     },
+    setSearchKey(value) {
+      this.search = value;
+    },
+    handleFocus() {
+      this.searchStarted = true;
+    },
+    handleMouseOver() {
+      this.timeout = setTimeout(() => {
+        this.searchStarted = true;
+      }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    },
+    handleMouseOut() {
+      clearTimeout(this.timeout);
+    },
   },
   i18n: {
     inputLabel: __('Title'),
     addTaskButtonLabel: s__('WorkItem|Add task'),
+    addTasksButtonLabel: s__('WorkItem|Add tasks'),
     addChildErrorMessage: s__(
       'WorkItem|Something went wrong when trying to add a child. Please try again.',
     ),
@@ -214,7 +262,8 @@ export default {
     createChildErrorMessage: s__(
       'WorkItem|Something went wrong when trying to create a child. Please try again.',
     ),
-    placeholder: s__('WorkItem|Add a title'),
+    createPlaceholder: s__('WorkItem|Add a title'),
+    addPlaceholder: s__('WorkItem|Search existing tasks'),
     fieldValidationMessage: __('Maximum of 255 characters'),
   },
 };
@@ -223,56 +272,59 @@ export default {
 <template>
   <gl-form
     class="gl-bg-white gl-mb-3 gl-p-4 gl-border gl-border-gray-100 gl-rounded-base"
-    @submit.prevent="createChild"
+    @submit.prevent="addOrCreateMethod"
   >
     <gl-alert v-if="error" variant="danger" class="gl-mb-3" @dismiss="unsetError">
       {{ error }}
     </gl-alert>
-    <!-- Follow up issue to turn this functionality back on https://gitlab.com/gitlab-org/gitlab/-/issues/368757 -->
-    <gl-form-combobox
-      v-if="false"
-      v-model="search"
-      :token-list="availableWorkItems"
-      match-value-to-attr="title"
-      class="gl-mb-4"
-      :label-text="$options.i18n.inputLabel"
-      :action-list="actionsList"
-      label-sr-only
-      autofocus
-    >
-      <template #result="{ item }">
-        <div class="gl-display-flex">
-          <div class="gl-text-secondary gl-mr-4">{{ getIdFromGraphQLId(item.id) }}</div>
-          <div>{{ item.title }}</div>
-        </div>
-      </template>
-      <template #action="{ item }">
-        <span class="gl-text-blue-500">{{ item.label }}</span>
-      </template>
-    </gl-form-combobox>
     <gl-form-group
+      v-if="isCreateForm"
       :label="$options.i18n.inputLabel"
       :description="$options.i18n.fieldValidationMessage"
     >
       <gl-form-input
         ref="wiTitleInput"
         v-model="search"
-        :placeholder="$options.i18n.placeholder"
+        :placeholder="$options.i18n.createPlaceholder"
         maxlength="255"
         class="gl-mb-3"
         autofocus
       />
     </gl-form-group>
+    <gl-token-selector
+      v-else
+      v-model="workItemsToAdd"
+      :dropdown-items="availableWorkItems"
+      :loading="isLoading"
+      :placeholder="$options.i18n.addPlaceholder"
+      menu-class="gl-dropdown-menu-wide dropdown-reduced-height gl-min-h-7!"
+      class="gl-mb-4"
+      data-testid="work-item-token-select-input"
+      @text-input="debouncedSearchKeyUpdate"
+      @focus="handleFocus"
+      @mouseover.native="handleMouseOver"
+      @mouseout.native="handleMouseOut"
+    >
+      <template #token-content="{ token }">
+        {{ token.title }}
+      </template>
+      <template #dropdown-item-content="{ dropdownItem }">
+        <div class="gl-display-flex">
+          <div class="gl-text-secondary gl-mr-4">{{ getIdFromGraphQLId(dropdownItem.id) }}</div>
+          <div class="gl-text-truncate">{{ dropdownItem.title }}</div>
+        </div>
+      </template>
+    </gl-token-selector>
     <gl-button
       category="primary"
       variant="confirm"
       size="small"
       type="submit"
-      :disabled="search.length === 0"
+      :disabled="isSubmitButtonDisabled"
       data-testid="add-child-button"
       class="gl-mr-2"
     >
-      {{ $options.i18n.createChildOptionLabel }}
+      {{ addOrCreateButtonLabel }}
     </gl-button>
     <gl-button category="secondary" size="small" @click="$emit('cancel')">
       {{ s__('WorkItem|Cancel') }}

@@ -331,7 +331,8 @@ export const workItemResponseFactory = ({
 export const projectWorkItemTypesQueryResponse = {
   data: {
     workspace: {
-      id: 'gid://gitlab/WorkItem/1',
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
       workItemTypes: {
         nodes: [
           { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
@@ -873,22 +874,20 @@ export const availableWorkItemsResponse = {
       __typename: 'Project',
       id: 'gid://gitlab/Project/2',
       workItems: {
-        edges: [
+        nodes: [
           {
-            node: {
-              id: 'gid://gitlab/WorkItem/458',
-              title: 'Task 1',
-              state: 'OPEN',
-              createdAt: '2022-08-03T12:41:54Z',
-            },
+            id: 'gid://gitlab/WorkItem/458',
+            title: 'Task 1',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            __typename: 'WorkItem',
           },
           {
-            node: {
-              id: 'gid://gitlab/WorkItem/459',
-              title: 'Task 2',
-              state: 'OPEN',
-              createdAt: '2022-08-03T12:41:54Z',
-            },
+            id: 'gid://gitlab/WorkItem/459',
+            title: 'Task 2',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            __typename: 'WorkItem',
           },
         ],
       },
