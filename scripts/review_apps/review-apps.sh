@@ -62,7 +62,7 @@ function previous_deploy_failed() {
   return $status
 }
 
-function delete_release() {
+function delete_helm_release() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
@@ -74,32 +74,6 @@ function delete_release() {
   if deploy_exists "${namespace}" "${release}"; then
     helm uninstall --namespace="${namespace}" "${release}"
   fi
-}
-
-function delete_failed_release() {
-  local namespace="${CI_ENVIRONMENT_SLUG}"
-  local release="${CI_ENVIRONMENT_SLUG}"
-
-  if [ -z "${release}" ]; then
-    echoerr "No release given, aborting the delete!"
-    return
-  fi
-
-  if ! deploy_exists "${namespace}" "${release}"; then
-    echoinfo "No Review App with ${release} is currently deployed."
-  else
-    # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
-    if previous_deploy_failed "${namespace}" "${release}" ; then
-      echoinfo "Review App deployment in bad state, cleaning up namespace ${release}"
-      delete_namespace
-    else
-      echoinfo "Review App deployment in good state"
-    fi
-  fi
-}
-
-function delete_namespace() {
-  local namespace="${CI_ENVIRONMENT_SLUG}"
 
   if namespace_exists "${namespace}"; then
     echoinfo "Deleting namespace ${namespace}..." true

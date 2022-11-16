@@ -4,6 +4,7 @@ module Gitlab
   module GitalyClient
     class ConflictsService
       include Gitlab::EncodingHelper
+      include WithFeatureFlagActors
 
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
@@ -12,6 +13,8 @@ module Gitlab
         @repository = repository
         @our_commit_oid = our_commit_oid
         @their_commit_oid = their_commit_oid
+
+        self.repository_actor = repository
       end
 
       def list_conflict_files(allow_tree_conflicts: false)
@@ -21,7 +24,7 @@ module Gitlab
           their_commit_oid: @their_commit_oid,
           allow_tree_conflicts: allow_tree_conflicts
         )
-        response = GitalyClient.call(@repository.storage, :conflicts_service, :list_conflict_files, request, timeout: GitalyClient.long_timeout)
+        response = gitaly_client_call(@repository.storage, :conflicts_service, :list_conflict_files, request, timeout: GitalyClient.long_timeout)
         GitalyClient::ConflictFilesStitcher.new(response, @gitaly_repo)
       end
 
@@ -50,7 +53,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :conflicts_service, :resolve_conflicts, req_enum, remote_storage: target_repository.storage, timeout: GitalyClient.long_timeout)
+        response = gitaly_client_call(@repository.storage, :conflicts_service, :resolve_conflicts, req_enum, remote_storage: target_repository.storage, timeout: GitalyClient.long_timeout)
 
         if response.resolution_error.present?
           raise Gitlab::Git::Conflict::Resolver::ResolutionError, response.resolution_error

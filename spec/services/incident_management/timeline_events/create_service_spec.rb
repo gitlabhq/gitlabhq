@@ -154,6 +154,48 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
         result = execute.payload[:timeline_event]
         expect(result.timeline_event_tags.first).to eq(timeline_event_tag)
       end
+
+      context 'when predefined tags are passed' do
+        let(:args) do
+          {
+            note: 'note',
+            occurred_at: Time.current,
+            action: 'new comment',
+            promoted_from_note: comment,
+            timeline_event_tag_names: ['start time', 'end time']
+          }
+        end
+
+        it_behaves_like 'success response'
+
+        it 'matches the two tags on the event and creates on project' do
+          result = execute.payload[:timeline_event]
+
+          expect(result.timeline_event_tags.count).to eq(2)
+          expect(result.timeline_event_tags.by_names(['Start time', 'End time']).pluck_names)
+            .to match_array(['Start time', 'End time'])
+          expect(project.incident_management_timeline_event_tags.pluck_names)
+            .to include('Start time', 'End time')
+        end
+      end
+
+      context 'when invalid tag names are passed' do
+        let(:args) do
+          {
+            note: 'note',
+            occurred_at: Time.current,
+            action: 'new comment',
+            promoted_from_note: comment,
+            timeline_event_tag_names: ['some other time']
+          }
+        end
+
+        it_behaves_like 'error response', "Following tags don't exist: [\"some other time\"]"
+
+        it 'does not create timeline event' do
+          expect { execute }.not_to change(IncidentManagement::TimelineEvent, :count)
+        end
+      end
     end
 
     context 'with editable param' do

@@ -39,6 +39,7 @@ describe('Ci variable modal', () => {
   const defaultProps = {
     areScopedVariablesAvailable: true,
     environments: [],
+    hideEnvironmentScope: false,
     mode: ADD_VARIABLE_ACTION,
     selectedVariable: {},
     variable: [],
@@ -75,6 +76,7 @@ describe('Ci variable modal', () => {
   const findEnvScopeInput = () =>
     wrapper.findByTestId('environment-scope').findComponent(GlFormInput);
   const findVariableTypeDropdown = () => wrapper.find('#ci-variable-type');
+  const findEnvironmentScopeText = () => wrapper.findByText('Environment scope');
 
   afterEach(() => {
     wrapper.destroy();
@@ -250,39 +252,83 @@ describe('Ci variable modal', () => {
 
   describe('Environment scope', () => {
     describe('when feature is available', () => {
-      it('renders the environment dropdown', () => {
-        createComponent({
-          mountFn: mountExtended,
-          props: {
-            areScopedVariablesAvailable: true,
-          },
+      describe('and section is not hidden', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: {
+              areScopedVariablesAvailable: true,
+              hideEnvironmentScope: false,
+            },
+          });
         });
 
-        expect(findCiEnvironmentsDropdown().exists()).toBe(true);
-        expect(findCiEnvironmentsDropdown().isVisible()).toBe(true);
+        it('renders the environment dropdown and section title', () => {
+          expect(findCiEnvironmentsDropdown().exists()).toBe(true);
+          expect(findCiEnvironmentsDropdown().isVisible()).toBe(true);
+          expect(findEnvironmentScopeText().exists()).toBe(true);
+        });
+
+        it('renders a link to documentation on scopes', () => {
+          const link = findEnvScopeLink();
+
+          expect(link.attributes('title')).toBe(ENVIRONMENT_SCOPE_LINK_TITLE);
+          expect(link.attributes('href')).toBe(defaultProvide.environmentScopeLink);
+        });
       });
 
-      it('renders a link to documentation on scopes', () => {
-        createComponent({ mountFn: mountExtended });
+      describe('and section is hidden', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: {
+              areScopedVariablesAvailable: true,
+              hideEnvironmentScope: true,
+            },
+          });
+        });
 
-        const link = findEnvScopeLink();
-
-        expect(link.attributes('title')).toBe(ENVIRONMENT_SCOPE_LINK_TITLE);
-        expect(link.attributes('href')).toBe(defaultProvide.environmentScopeLink);
+        it('does not renders the environment dropdown and section title', () => {
+          expect(findCiEnvironmentsDropdown().exists()).toBe(false);
+          expect(findEnvironmentScopeText().exists()).toBe(false);
+        });
       });
     });
 
     describe('when feature is not available', () => {
-      it('disables the dropdown', () => {
-        createComponent({
-          mountFn: mountExtended,
-          props: {
-            areScopedVariablesAvailable: false,
-          },
+      describe('and section is not hidden', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: {
+              areScopedVariablesAvailable: false,
+              hideEnvironmentScope: false,
+            },
+          });
         });
 
-        expect(findCiEnvironmentsDropdown().exists()).toBe(false);
-        expect(findEnvScopeInput().attributes('readonly')).toBe('readonly');
+        it('disables the dropdown', () => {
+          expect(findCiEnvironmentsDropdown().exists()).toBe(false);
+          expect(findEnvironmentScopeText().exists()).toBe(true);
+          expect(findEnvScopeInput().attributes('readonly')).toBe('readonly');
+        });
+      });
+
+      describe('and section is hidden', () => {
+        beforeEach(() => {
+          createComponent({
+            mountFn: mountExtended,
+            props: {
+              areScopedVariablesAvailable: false,
+              hideEnvironmentScope: true,
+            },
+          });
+        });
+
+        it('hides the dropdown', () => {
+          expect(findEnvironmentScopeText().exists()).toBe(false);
+          expect(findCiEnvironmentsDropdown().exists()).toBe(false);
+        });
       });
     });
   });

@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import TodoButton from './todo_button.vue';
 
 export default {

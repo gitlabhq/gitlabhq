@@ -51,7 +51,7 @@ PUT /suggestions/batch_apply
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `ids` | integer | yes | The ID of a suggestion |
+| `ids` | integer | yes | The IDs of suggestions |
 | `commit_message` | string | no | A custom commit message to use instead of the default generated message or the project's default message |
 
 ```shell

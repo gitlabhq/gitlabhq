@@ -31,6 +31,11 @@ export default {
       type: String,
       default: null,
     },
+    hideEnvironmentScope: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     id: {
       required: false,
       type: String,
@@ -216,6 +221,7 @@ export default {
 <template>
   <ci-variable-settings
     :are-scoped-variables-available="areScopedVariablesAvailable"
+    :hide-environment-scope="hideEnvironmentScope"
     :is-loading="isLoading"
     :variables="ciVariables"
     :environments="environments"

@@ -19,6 +19,11 @@ export default {
       required: false,
       default: () => [],
     },
+    hideEnvironmentScope: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isLoading: {
       type: Boolean,
       required: false,
@@ -78,6 +83,7 @@ export default {
         v-if="showModal"
         :are-scoped-variables-available="areScopedVariablesAvailable"
         :environments="environments"
+        :hide-environment-scope="hideEnvironmentScope"
         :variables="variables"
         :mode="mode"
         :selected-variable="selectedVariable"

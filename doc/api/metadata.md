@@ -24,6 +24,7 @@ Response body attributes:
 | `kas.enabled`     | boolean        | Indicates whether KAS is enabled.                                                        |
 | `kas.externalUrl` | string or null | URL used by the agents to communicate with KAS. It's `null` if `kas.enabled` is `false`. |
 | `kas.version`     | string or null | Version of KAS. It's `null` if `kas.enabled` is `false`.                                 |
+| `enterprise`      | boolean        | Indicates whether GitLab instance is Enterprise Edition.                                 |
 
 Example request:
 
@@ -41,6 +42,7 @@ Example response:
     "enabled": true,
     "externalUrl": "grpc://gitlab.example.com:8150",
     "version": "15.0.0"
-  }
+  },
+  "enterprise": true
 }
 ```

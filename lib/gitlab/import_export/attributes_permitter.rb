@@ -85,11 +85,11 @@ module Gitlab
         while stack.any?
           model_name, relations = stack.pop
 
-          if relations.is_a?(Hash)
-            add_permitted_attributes(model_name, relations.keys)
+          next unless relations.is_a?(Hash)
 
-            stack.concat(relations.to_a)
-          end
+          add_permitted_attributes(model_name, relations.keys)
+
+          stack.concat(relations.to_a)
         end
 
         @permitted_attributes

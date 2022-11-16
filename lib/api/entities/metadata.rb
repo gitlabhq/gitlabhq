@@ -10,6 +10,7 @@ module API
         expose :externalUrl, documentation: { type: 'string', example: 'grpc://gitlab.example.com:8150' }
         expose :version, documentation: { type: 'string', example: '15.0.0' }
       end
+      expose :enterprise, documentation: { type: 'boolean' }
     end
   end
 end

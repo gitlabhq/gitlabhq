@@ -9,7 +9,8 @@ RSpec.describe InstanceMetadata do
     expect(subject).to have_attributes(
       version: Gitlab::VERSION,
       revision: Gitlab.revision,
-      kas: kind_of(::InstanceMetadata::Kas)
+      kas: kind_of(::InstanceMetadata::Kas),
+      enterprise: Gitlab.ee?
     )
   end
 end

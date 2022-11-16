@@ -13,6 +13,5 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  // eslint-disable-next-line @gitlab/require-i18n-strings
   code: `git commit -a "Message"\ngit push`,
 };

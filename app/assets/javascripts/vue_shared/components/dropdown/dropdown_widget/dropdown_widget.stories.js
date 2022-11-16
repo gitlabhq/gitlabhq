@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { __ } from '~/locale';
 import DropdownWidget from './dropdown_widget.vue';
 

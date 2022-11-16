@@ -28,14 +28,6 @@ RSpec.describe JiraConnect::SubscriptionsController do
     it { is_expected.to include('http://self-managed-gitlab.com/api/') }
     it { is_expected.to include('http://self-managed-gitlab.com/oauth/') }
 
-    it 'allows cross-origin requests', :aggregate_failures do
-      get path, params: params, headers: cors_request_headers
-
-      expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
-      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, POST, OPTIONS'
-      expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
-    end
-
     context 'with no self-managed instance configured' do
       let_it_be(:installation) { create(:jira_connect_installation, instance_url: '') }
 
@@ -52,34 +44,6 @@ RSpec.describe JiraConnect::SubscriptionsController do
       it { is_expected.not_to include('http://self-managed-gitlab.com/-/jira_connect/') }
       it { is_expected.not_to include('http://self-managed-gitlab.com/api/') }
       it { is_expected.not_to include('http://self-managed-gitlab.com/oauth/') }
-    end
-  end
-
-  describe 'POST /-/jira_connect/subscriptions' do
-    let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'http://self-managed-gitlab.com') }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:user) { create(:user) }
-
-    let(:qsh) do
-      Atlassian::Jwt.create_query_string_hash('https://gitlab.test/subscriptions', 'GET', 'https://gitlab.test')
-    end
-
-    let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret) }
-    let(:cors_request_headers) { { 'Origin' => 'http://notgitlab.com' } }
-    let(:params) { { jwt: jwt, namespace_path: group.path, format: :json } }
-
-    before do
-      group.add_maintainer(user)
-      sign_in(user)
-      stub_application_setting(jira_connect_proxy_url: 'https://gitlab.com')
-    end
-
-    it 'allows cross-origin requests', :aggregate_failures do
-      post '/-/jira_connect/subscriptions', params: params, headers: cors_request_headers
-
-      expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
-      expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, POST, OPTIONS'
-      expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end
   end
 

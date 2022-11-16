@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
         it do
           stub_rails_env(env)
 
-          args = [:mget, 'foo', 'bar']
+          args = [[:mget, 'foo', 'bar']]
 
           if should_raise
             expect { described_class.validate!(args) }
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
 
     with_them do
       it do
-        args = [command] + arguments
+        args = [[command] + arguments]
 
         if should_raise
           expect { described_class.validate!(args) }
@@ -68,13 +68,32 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
         end
       end
     end
+
+    where(:arguments, :should_raise) do
+      [[:get, "foo"], [:get, "bar"]] | true
+      [[:get, "foo"], [:mget, "foo", "bar"]] | true # mix of single-key and multi-key cmds
+      [[:get, "{foo}:name"], [:get, "{foo}:profile"]] | false
+      [[:del, "foo"], [:del, "bar"]] | true
+      [] | false # pipeline or transaction opened and closed without ops
+    end
+
+    with_them do
+      it do
+        if should_raise
+          expect { described_class.validate!(arguments) }
+            .to raise_error(described_class::CrossSlotError)
+        else
+          expect { described_class.validate!(arguments) }.not_to raise_error
+        end
+      end
+    end
   end
 
   describe '.allow_cross_slot_commands' do
     it 'does not raise for invalid arguments' do
       expect do
         described_class.allow_cross_slot_commands do
-          described_class.validate!([:mget, 'foo', 'bar'])
+          described_class.validate!([[:mget, 'foo', 'bar']])
         end
       end.not_to raise_error
     end
@@ -83,10 +102,10 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
       expect do
         described_class.allow_cross_slot_commands do
           described_class.allow_cross_slot_commands do
-            described_class.validate!([:mget, 'foo', 'bar'])
+            described_class.validate!([[:mget, 'foo', 'bar']])
           end
 
-          described_class.validate!([:mget, 'foo', 'bar'])
+          described_class.validate!([[:mget, 'foo', 'bar']])
         end
       end.not_to raise_error
     end

@@ -15,10 +15,12 @@ module Gitlab
       def touch(*keys, only_if_missing: false)
         etags = keys.map { generate_etag }
 
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.pipelined do |pipeline|
-            keys.each_with_index do |key, i|
-              pipeline.set(redis_shared_state_key(key), etags[i], ex: EXPIRY_TIME, nx: only_if_missing)
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.pipelined do |pipeline|
+              keys.each_with_index do |key, i|
+                pipeline.set(redis_shared_state_key(key), etags[i], ex: EXPIRY_TIME, nx: only_if_missing)
+              end
             end
           end
         end

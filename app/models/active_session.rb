@@ -83,24 +83,26 @@ class ActiveSession
         is_impersonated: request.session[:impersonator_id].present?
       )
 
-      redis.pipelined do |pipeline|
-        pipeline.setex(
-          key_name(user.id, session_private_id),
-          expiry,
-          active_user_session.dump
-        )
+      Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+        redis.pipelined do |pipeline|
+          pipeline.setex(
+            key_name(user.id, session_private_id),
+            expiry,
+            active_user_session.dump
+          )
 
-        # Deprecated legacy format - temporary to support mixed deployments
-        pipeline.setex(
-          key_name_v1(user.id, session_private_id),
-          expiry,
-          Marshal.dump(active_user_session)
-        )
+          # Deprecated legacy format - temporary to support mixed deployments
+          pipeline.setex(
+            key_name_v1(user.id, session_private_id),
+            expiry,
+            Marshal.dump(active_user_session)
+          )
 
-        pipeline.sadd?(
-          lookup_key_name(user.id),
-          session_private_id
-        )
+          pipeline.sadd?(
+            lookup_key_name(user.id),
+            session_private_id
+          )
+        end
       end
     end
   end

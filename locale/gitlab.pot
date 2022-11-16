@@ -17232,6 +17232,9 @@ msgstr ""
 msgid "Followed users"
 msgstr ""
 
+msgid "Following tags don't exist"
+msgstr ""
+
 msgid "Font Color"
 msgstr ""
 
@@ -36653,6 +36656,9 @@ msgstr ""
 msgid "SecurityOrchestration|Use a scan execution policy to create rules which enforce security scans for particular branches at a certain time. Supported types are SAST, DAST, Secret detection, Container scanning, and Dependency scanning."
 msgstr ""
 
+msgid "SecurityOrchestration|Use a scan result policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."
+msgstr ""
+
 msgid "SecurityOrchestration|Use a scan result policy to create rules that ensure security issues are checked before merging a merge request."
 msgstr ""
 
@@ -36714,6 +36720,9 @@ msgid "SecurityReports|%{firstProject} and %{secondProject}"
 msgstr ""
 
 msgid "SecurityReports|%{firstProject}, %{secondProject}, and %{rest}"
+msgstr ""
+
+msgid "SecurityReports|Activity"
 msgstr ""
 
 msgid "SecurityReports|Add or remove projects to monitor in the security area. Projects included in this list will have their results displayed in the security dashboard and vulnerability report."
@@ -47867,10 +47876,10 @@ msgstr ""
 msgid "ciReport|%{scanner} detected %{strong_start}%{number}%{strong_end} new potential %{vulnStr}"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected no %{boldStart}new%{boldEnd} potential vulnerabilities"
+msgid "ciReport|%{scanner} detected no new %{vulnStr}"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected no new %{vulnStr}"
+msgid "ciReport|%{scanner} detected no new potential vulnerabilities"
 msgstr ""
 
 msgid "ciReport|: Loading resulted in an error"

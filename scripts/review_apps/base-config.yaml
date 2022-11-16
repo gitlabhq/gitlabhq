@@ -18,6 +18,7 @@ global:
     preemptible: "true"
 certmanager:
   install: false
+
 gitlab:
   gitaly:
     resources:
@@ -34,18 +35,10 @@ gitlab:
       preemptible: "false"
     podAnnotations:
       <<: *safe-to-evict
+
   gitlab-exporter:
     enabled: false
-  mailroom:
-    enabled: false
-  migrations:
-    resources:
-      requests:
-        cpu: 400m
-        memory: 920Mi
-      limits:
-        cpu: 600m
-        memory: 1100Mi
+
   gitlab-shell:
     resources:
       requests:
@@ -54,12 +47,30 @@ gitlab:
       limits:
         cpu: 750m
         memory: 150Mi
-    maxReplicas: 3
+    minReplicas: 1
+    maxReplicas: 1
     hpa:
       targetAverageValue: 500m
     deployment:
       livenessProbe:
         timeoutSeconds: 5
+
+  kas:
+    minReplicas: 1
+    maxReplicas: 1
+
+  mailroom:
+    enabled: false
+
+  migrations:
+    resources:
+      requests:
+        cpu: 400m
+        memory: 920Mi
+      limits:
+        cpu: 600m
+        memory: 1100Mi
+
   sidekiq:
     resources:
       requests:
@@ -70,6 +81,7 @@ gitlab:
         memory: 2890Mi
     hpa:
       targetAverageValue: 650m
+
   toolbox:
     resources:
       requests:
@@ -78,6 +90,7 @@ gitlab:
       limits:
         cpu: 450m
         memory: 2890Mi
+
   webservice:
     resources:
       requests:
@@ -86,6 +99,8 @@ gitlab:
       limits:
         cpu: 1119m
         memory: 4214Mi
+    minReplicas: 1
+    maxReplicas: 1
     deployment:
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
@@ -103,6 +118,7 @@ gitlab:
         initialDelaySeconds: 5  # Default is 0
         periodSeconds: 15  # Default is 10
         timeoutSeconds: 5  # Default is 2
+
 gitlab-runner:
   resources:
     requests:
@@ -115,6 +131,7 @@ gitlab-runner:
     preemptible: "true"
   podAnnotations:
     <<: *safe-to-evict
+
 minio:
   resources:
     requests:
@@ -127,6 +144,7 @@ minio:
     preemptible: "true"
   podAnnotations:
       <<: *safe-to-evict
+
 nginx-ingress:
   controller:
     config:
@@ -156,6 +174,7 @@ nginx-ingress:
         memory: 24Mi
     nodeSelector:
       preemptible: "true"
+
 postgresql:
   metrics:
     enabled: false
@@ -171,8 +190,10 @@ postgresql:
       preemptible: "false"
     podAnnotations:
       <<: *safe-to-evict
+
 prometheus:
   install: false
+
 redis:
   metrics:
     enabled: false
@@ -188,9 +209,11 @@ redis:
       preemptible: "true"
     podAnnotations:
       <<: *safe-to-evict
+
 registry:
   hpa:
     minReplicas: 1
+    maxReplicas: 1
   resources:
     requests:
       cpu: 100m

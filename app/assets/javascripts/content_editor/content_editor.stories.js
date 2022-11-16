@@ -11,7 +11,6 @@ const Template = (_, { argTypes }) => ({
   template: '<content-editor v-bind="$props" @initialized="loadContent" />',
   methods: {
     loadContent(contentEditor) {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
       contentEditor.setSerializedContent('Hello content editor');
     },
   },

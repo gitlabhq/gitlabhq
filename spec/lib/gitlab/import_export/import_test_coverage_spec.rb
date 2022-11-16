@@ -96,11 +96,11 @@ RSpec.describe 'Test coverage of the Project Import' do
     case item
     when Hash
       item.each do |k, v|
-        if (v.is_a?(Array) || v.is_a?(Hash)) && v.present?
-          new_path = path + [k]
-          res << new_path
-          gather_relations(v, res, new_path)
-        end
+        next unless (v.is_a?(Array) || v.is_a?(Hash)) && v.present?
+
+        new_path = path + [k]
+        res << new_path
+        gather_relations(v, res, new_path)
       end
     when Array
       item.each { |i| gather_relations(i, res, path) }

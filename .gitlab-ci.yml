@@ -52,7 +52,7 @@ workflow:
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
     # Run pipelines for ruby3 branch
-    - if: '$CI_COMMIT_BRANCH == "ruby3"'
+    - if: '$CI_COMMIT_BRANCH == "ruby3" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         RUBY_VERSION: "3.0"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "f_ruby3"

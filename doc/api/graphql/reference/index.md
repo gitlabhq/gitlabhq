@@ -15783,6 +15783,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="metadataenterprise"></a>`enterprise` | [`Boolean!`](#boolean) | Enterprise edition. |
 | <a id="metadatakas"></a>`kas` | [`Kas!`](#kas) | Metadata about KAS. |
 | <a id="metadatarevision"></a>`revision` | [`String!`](#string) | Revision. |
 | <a id="metadataversion"></a>`version` | [`String!`](#string) | Version. |

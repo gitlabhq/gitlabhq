@@ -99,11 +99,13 @@ module Gitlab
 
         def refresh_keys_expiration
           with_redis do |redis|
-            redis.multi do |multi|
-              multi.expire(issue_ids_key, REDIS_EXPIRY_TIME)
-              multi.expire(current_index_key, REDIS_EXPIRY_TIME)
-              multi.expire(current_project_key, REDIS_EXPIRY_TIME)
-              multi.expire(CONCURRENT_RUNNING_REBALANCES_KEY, REDIS_EXPIRY_TIME)
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              redis.multi do |multi|
+                multi.expire(issue_ids_key, REDIS_EXPIRY_TIME)
+                multi.expire(current_index_key, REDIS_EXPIRY_TIME)
+                multi.expire(current_project_key, REDIS_EXPIRY_TIME)
+                multi.expire(CONCURRENT_RUNNING_REBALANCES_KEY, REDIS_EXPIRY_TIME)
+              end
             end
           end
         end
@@ -112,12 +114,14 @@ module Gitlab
           value = "#{rebalanced_container_type}/#{rebalanced_container_id}"
 
           with_redis do |redis|
-            redis.multi do |multi|
-              multi.del(issue_ids_key)
-              multi.del(current_index_key)
-              multi.del(current_project_key)
-              multi.srem?(CONCURRENT_RUNNING_REBALANCES_KEY, value)
-              multi.set(self.class.recently_finished_key(rebalanced_container_type, rebalanced_container_id), true, ex: 1.hour)
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              redis.multi do |multi|
+                multi.del(issue_ids_key)
+                multi.del(current_index_key)
+                multi.del(current_project_key)
+                multi.srem?(CONCURRENT_RUNNING_REBALANCES_KEY, value)
+                multi.set(self.class.recently_finished_key(rebalanced_container_type, rebalanced_container_id), true, ex: 1.hour)
+              end
             end
           end
         end

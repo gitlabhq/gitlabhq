@@ -63,16 +63,18 @@ class AwarenessSession # rubocop:disable Gitlab/NamespacedClass
     user_key = user_sessions_key(user.id)
 
     with_redis do |redis|
-      redis.pipelined do |pipeline|
-        pipeline.sadd?(user_key, id_i)
-        pipeline.expire(user_key, USER_LIFETIME.to_i)
+      Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+        redis.pipelined do |pipeline|
+          pipeline.sadd?(user_key, id_i)
+          pipeline.expire(user_key, USER_LIFETIME.to_i)
 
-        pipeline.zadd(users_key, timestamp.to_f, user.id)
+          pipeline.zadd(users_key, timestamp.to_f, user.id)
 
-        # We also mark for expiry when a session key is created (first user joins),
-        # because some users might never actively leave a session and the key could
-        # therefore become stale, w/o us noticing.
-        reset_session_expiry(pipeline)
+          # We also mark for expiry when a session key is created (first user joins),
+          # because some users might never actively leave a session and the key could
+          # therefore become stale, w/o us noticing.
+          reset_session_expiry(pipeline)
+        end
       end
     end
 
@@ -83,26 +85,33 @@ class AwarenessSession # rubocop:disable Gitlab/NamespacedClass
     user_key = user_sessions_key(user.id)
 
     with_redis do |redis|
-      redis.pipelined do |pipeline|
-        pipeline.srem?(user_key, id_i)
-        pipeline.zrem(users_key, user.id)
+      Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+        redis.pipelined do |pipeline|
+          pipeline.srem?(user_key, id_i)
+          pipeline.zrem(users_key, user.id)
+        end
       end
 
       # cleanup orphan sessions and users
       #
       # this needs to be a second pipeline due to the delete operations being
       # dependent on the result of the cardinality checks
-      user_sessions_count, session_users_count = redis.pipelined do |pipeline|
-        pipeline.scard(user_key)
-        pipeline.zcard(users_key)
-      end
+      user_sessions_count, session_users_count =
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          redis.pipelined do |pipeline|
+            pipeline.scard(user_key)
+            pipeline.zcard(users_key)
+          end
+        end
 
-      redis.pipelined do |pipeline|
-        pipeline.del(user_key) unless user_sessions_count > 0
+      Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+        redis.pipelined do |pipeline|
+          pipeline.del(user_key) unless user_sessions_count > 0
 
-        unless session_users_count > 0
-          pipeline.del(users_key)
-          @id = nil
+          unless session_users_count > 0
+            pipeline.del(users_key)
+            @id = nil
+          end
         end
       end
     end

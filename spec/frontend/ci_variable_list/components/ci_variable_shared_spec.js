@@ -48,6 +48,7 @@ const mockProvide = {
 
 const defaultProps = {
   areScopedVariablesAvailable: true,
+  hideEnvironmentScope: false,
   refetchAfterMutation: false,
 };
 
@@ -318,6 +319,7 @@ describe('Ci Variable Shared Component', () => {
 
           expect(findCiSettings().props()).toEqual({
             areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
+            hideEnvironmentScope: defaultProps.hideEnvironmentScope,
             isLoading: false,
             variables: wrapper.props().queryData.ciVariables.lookup(mockVariablesValue.data)?.nodes,
             environments: expectedEnvironments,

@@ -17,7 +17,8 @@ RSpec.describe 'getting project information' do
             'enabled' => Gitlab::Kas.enabled?,
             'version' => expected_kas_version,
             'externalUrl' => expected_kas_external_url
-          }
+          },
+          'enterprise' => Gitlab.ee?
         }
       }
     end

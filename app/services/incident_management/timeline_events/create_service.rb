@@ -5,6 +5,7 @@ module IncidentManagement
     DEFAULT_ACTION = 'comment'
     DEFAULT_EDITABLE = false
     DEFAULT_AUTO_CREATED = false
+    AUTOCREATE_TAGS = [TimelineEventTag::START_TIME_TAG_NAME, TimelineEventTag::END_TIME_TAG_NAME].freeze
 
     class CreateService < TimelineEvents::BaseService
       def initialize(incident, user, params)
@@ -94,6 +95,10 @@ module IncidentManagement
           editable: params.fetch(:editable, DEFAULT_EDITABLE)
         }
 
+        non_existing_tags = validate_tags(project, params[:timeline_event_tag_names])
+
+        return error("#{_("Following tags don't exist")}: #{non_existing_tags}") unless non_existing_tags.empty?
+
         timeline_event = IncidentManagement::TimelineEvent.new(timeline_event_params)
 
         if timeline_event.save(context: validation_context)
@@ -130,8 +135,11 @@ module IncidentManagement
       end
 
       def create_timeline_event_tag_links(timeline_event, tag_names)
-        return unless params[:timeline_event_tag_names]
+        return unless tag_names&.any?
 
+        auto_create_predefined_tags(tag_names)
+
+        # Refetches the tag objects to consider predefined tags as well
         tags = project.incident_management_timeline_event_tags.by_names(tag_names)
 
         tag_links = tags.select(:id).map do |tag|
@@ -143,6 +151,30 @@ module IncidentManagement
         end
 
         IncidentManagement::TimelineEventTagLink.insert_all(tag_links) if tag_links.any?
+      end
+
+      def auto_create_predefined_tags(new_tags)
+        new_tags = new_tags.map(&:downcase)
+
+        tags_to_create = AUTOCREATE_TAGS.select { |tag| tag.downcase.in?(new_tags) }
+
+        tags_to_create.each do |name|
+          project.incident_management_timeline_event_tags.create(name: name)
+        end
+      end
+
+      def validate_tags(project, tag_names)
+        return [] unless tag_names&.any?
+
+        start_time_tag = AUTOCREATE_TAGS[0].downcase
+        end_time_tag = AUTOCREATE_TAGS[1].downcase
+
+        tag_names_downcased = tag_names.map(&:downcase)
+
+        tags = project.incident_management_timeline_event_tags.by_names(tag_names).pluck_names.map(&:downcase)
+
+        # remove tags from given tag_names and also remove predefined tags which can be auto created
+        tag_names_downcased - tags - [start_time_tag, end_time_tag]
       end
     end
   end

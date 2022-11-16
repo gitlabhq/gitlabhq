@@ -40,8 +40,9 @@ module Gitlab
 
           encrypted_tokens_sql = user_encrypted_tokens.compact.map { |(id, token)| "(#{id}, '#{token}')" }.join(',')
 
-          if user_encrypted_tokens.present?
-            User.connection.execute(<<~SQL)
+          next unless user_encrypted_tokens.present?
+
+          User.connection.execute(<<~SQL)
               WITH cte(cte_id, cte_token) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
                 SELECT *
                 FROM (VALUES #{encrypted_tokens_sql}) AS t (id, token)
@@ -50,8 +51,7 @@ module Gitlab
               SET static_object_token_encrypted = cte_token
               FROM cte
               WHERE cte_id = id
-            SQL
-          end
+          SQL
         end
 
         mark_job_as_succeeded(start_id, end_id)

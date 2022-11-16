@@ -1,4 +1,4 @@
-- user_email = "(#{params[:email]})" if params[:email].present?
+- user_email = "(#{params[:email]})" if Devise.email_regexp.match?(params[:email])
 - request_link_start = '<a href="%{new_user_confirmation_path}">'.html_safe % { new_user_confirmation_path: new_user_confirmation_path }
 - request_link_end = '</a>'.html_safe
 - content_for :page_specific_javascripts do

@@ -88,7 +88,7 @@ module ReviewApps
         if deployed_at < delete_threshold
           deleted_environment = delete_environment(environment, deployment)
           if deleted_environment
-            release = Tooling::Helm3Client::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, review_apps_namespace)
+            release = Tooling::Helm3Client::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, environment.slug)
             releases_to_delete << release
           end
         else
@@ -104,7 +104,7 @@ module ReviewApps
       end
 
       delete_stopped_environments(environment_type: :review_app, checked_environments: checked_environments, last_updated_threshold: delete_threshold) do |environment|
-        releases_to_delete << Tooling::Helm3Client::Release.new(environment.slug, 1, environment.updated_at, nil, nil, review_apps_namespace)
+        releases_to_delete << Tooling::Helm3Client::Release.new(environment.slug, 1, environment.updated_at, nil, nil, environment.slug)
       end
 
       delete_helm_releases(releases_to_delete)
@@ -190,6 +190,8 @@ module ReviewApps
 
     rescue Gitlab::Error::Forbidden
       puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) is forbidden: skipping it"
+    rescue Gitlab::Error::InternalServerError
+      puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) 500 error - ignoring it"
     end
 
     def stop_environment(environment, deployment)

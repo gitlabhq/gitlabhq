@@ -66,8 +66,8 @@ module Gitlab
           query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
         end
 
-        def redis_cluster_validate!(command)
-          ::Gitlab::Instrumentation::RedisClusterValidator.validate!(command) if @redis_cluster_validation
+        def redis_cluster_validate!(commands)
+          ::Gitlab::Instrumentation::RedisClusterValidator.validate!(commands) if @redis_cluster_validation
         end
 
         def enable_redis_cluster_validation

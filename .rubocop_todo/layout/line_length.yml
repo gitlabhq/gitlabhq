@@ -2983,7 +2983,6 @@ Layout/LineLength:
     - 'lib/api/members.rb'
     - 'lib/api/merge_request_diffs.rb'
     - 'lib/api/merge_requests.rb'
-    - 'lib/api/metrics/dashboard/annotations.rb'
     - 'lib/api/metrics/user_starred_dashboards.rb'
     - 'lib/api/milestone_responses.rb'
     - 'lib/api/namespaces.rb'

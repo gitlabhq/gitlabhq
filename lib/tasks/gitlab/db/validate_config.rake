@@ -64,15 +64,15 @@ namespace :gitlab do
         next unless identifier
 
         connections_with_tasks = connections.select { |connection| connection[:database_tasks?] }
-        if connections_with_tasks.many?
-          names = connections_with_tasks.pluck(:name)
+        next unless connections_with_tasks.many?
 
-          warnings << "- Many configurations (#{names.join(', ')}) " \
-            "share the same database (#{identifier}). " \
-            "This will result in failures provisioning or migrating this database. " \
-            "Ensure that additional databases are configured " \
-            "with 'database_tasks: false' or are pointing to a dedicated database host."
-        end
+        names = connections_with_tasks.pluck(:name)
+
+        warnings << "- Many configurations (#{names.join(', ')}) " \
+          "share the same database (#{identifier}). " \
+          "This will result in failures provisioning or migrating this database. " \
+          "Ensure that additional databases are configured " \
+          "with 'database_tasks: false' or are pointing to a dedicated database host."
       end
 
       # Each configuration with `database_tasks: false` should share the database with `main:`

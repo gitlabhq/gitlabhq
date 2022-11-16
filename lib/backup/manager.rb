@@ -396,13 +396,13 @@ module Backup
 
           timestamp = matched[1].to_i
 
-          if Time.at(timestamp) < (Time.now - keep_time)
-            begin
-              FileUtils.rm(file)
-              removed += 1
-            rescue StandardError => e
-              puts_time "Deleting #{file} failed: #{e.message}".color(:red)
-            end
+          next unless Time.at(timestamp) < (Time.now - keep_time)
+
+          begin
+            FileUtils.rm(file)
+            removed += 1
+          rescue StandardError => e
+            puts_time "Deleting #{file} failed: #{e.message}".color(:red)
           end
         end
       end

@@ -15,11 +15,13 @@ module Gitlab
         # mapping - Write multiple cache values at once
         def write_multiple(mapping)
           with_redis do |redis|
-            redis.multi do |multi|
-              mapping.each do |raw_key, value|
-                key = cache_key_for(raw_key)
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              redis.multi do |multi|
+                mapping.each do |raw_key, value|
+                  key = cache_key_for(raw_key)
 
-                multi.set(key, gzip_compress(value.to_json), ex: EXPIRATION)
+                  multi.set(key, gzip_compress(value.to_json), ex: EXPIRATION)
+                end
               end
             end
           end

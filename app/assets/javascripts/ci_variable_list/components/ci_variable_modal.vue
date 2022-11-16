@@ -86,6 +86,11 @@ export default {
       required: false,
       default: () => [],
     },
+    hideEnvironmentScope: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     mode: {
       type: String,
       required: true,
@@ -310,33 +315,35 @@ export default {
           />
         </gl-form-group>
 
-        <gl-form-group
-          label-for="ci-variable-env"
-          class="gl-w-half"
-          data-testid="environment-scope"
-        >
-          <template #label>
-            {{ __('Environment scope') }}
-            <gl-link
-              :title="$options.environmentScopeLinkTitle"
-              :href="environmentScopeLink"
-              target="_blank"
-              data-testid="environment-scope-link"
-            >
-              <gl-icon name="question" :size="12" />
-            </gl-link>
-          </template>
-          <ci-environments-dropdown
-            v-if="areScopedVariablesAvailable"
-            class="gl-w-full"
-            :selected-environment-scope="variable.environmentScope"
-            :environments="joinedEnvironments"
-            @select-environment="setEnvironmentScope"
-            @create-environment-scope="createEnvironmentScope"
-          />
+        <template v-if="!hideEnvironmentScope">
+          <gl-form-group
+            label-for="ci-variable-env"
+            class="gl-w-half"
+            data-testid="environment-scope"
+          >
+            <template #label>
+              {{ __('Environment scope') }}
+              <gl-link
+                :title="$options.environmentScopeLinkTitle"
+                :href="environmentScopeLink"
+                target="_blank"
+                data-testid="environment-scope-link"
+              >
+                <gl-icon name="question" :size="12" />
+              </gl-link>
+            </template>
+            <ci-environments-dropdown
+              v-if="areScopedVariablesAvailable"
+              class="gl-w-full"
+              :selected-environment-scope="variable.environmentScope"
+              :environments="joinedEnvironments"
+              @select-environment="setEnvironmentScope"
+              @create-environment-scope="createEnvironmentScope"
+            />
 
-          <gl-form-input v-else :value="$options.defaultScope" class="gl-w-full" readonly />
-        </gl-form-group>
+            <gl-form-input v-else :value="$options.defaultScope" class="gl-w-full" readonly />
+          </gl-form-group>
+        </template>
       </div>
 
       <gl-form-group :label="__('Flags')" label-for="ci-variable-flags">

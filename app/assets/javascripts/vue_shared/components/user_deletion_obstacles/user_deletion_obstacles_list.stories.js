@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { OBSTACLE_TYPES } from './constants';
 import UserDeletionObstaclesList from './user_deletion_obstacles_list.vue';
 

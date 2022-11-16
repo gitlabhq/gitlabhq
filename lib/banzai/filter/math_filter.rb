@@ -107,19 +107,18 @@ module Banzai
 
           # We need a sibling before and after.
           # They should end and start with $ respectively.
-          if closing && opening &&
-              closing.text? && opening.text? &&
-              closing.content.first == DOLLAR_SIGN &&
-              opening.content.last == DOLLAR_SIGN
+          next unless closing && opening &&
+            closing.text? && opening.text? &&
+            closing.content.first == DOLLAR_SIGN &&
+            opening.content.last == DOLLAR_SIGN
 
-            code[:class] = MATH_CLASSES
-            code[STYLE_ATTRIBUTE] = 'inline'
-            closing.content = closing.content[1..]
-            opening.content = opening.content[0..-2]
+          code[:class] = MATH_CLASSES
+          code[STYLE_ATTRIBUTE] = 'inline'
+          closing.content = closing.content[1..]
+          opening.content = opening.content[0..-2]
 
-            @nodes_count += 1
-            break if @nodes_count >= RENDER_NODES_LIMIT
-          end
+          @nodes_count += 1
+          break if @nodes_count >= RENDER_NODES_LIMIT
         end
       end
 

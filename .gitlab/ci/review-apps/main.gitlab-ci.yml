@@ -118,7 +118,7 @@ review-deploy:
     - run_timed_command "download_chart"
     - run_timed_command "deploy" || (display_deployment_debug && exit 1)
     - run_timed_command "verify_deploy"|| (display_deployment_debug && exit 1)
-    - run_timed_command "disable_sign_ups" || (delete_release && exit 1)
+    - run_timed_command "disable_sign_ups"
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.
@@ -166,7 +166,7 @@ review-delete-deployment:
     - .review:rules:review-delete-deployment
   stage: prepare
   script:
-    - delete_release
+    - delete_helm_release
 
 review-stop:
   extends:
@@ -176,4 +176,4 @@ review-stop:
   stage: deploy
   needs: []
   script:
-    - delete_namespace
+    - delete_helm_release

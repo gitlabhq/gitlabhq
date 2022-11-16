@@ -40,6 +40,7 @@ describe('Ci Group Variable wrapper', () => {
         areScopedVariablesAvailable: false,
         componentName: 'GroupVariables',
         fullPath: mockProvide.groupPath,
+        hideEnvironmentScope: false,
         mutationData: wrapper.vm.$options.mutationData,
         queryData: wrapper.vm.$options.queryData,
         refetchAfterMutation: false,

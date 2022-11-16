@@ -458,10 +458,13 @@ We also run our test suite against PG11 upon specific database library changes i
 | `maintenance` scheduled pipelines for the `ruby3` branch (every odd-numbered hour), see below. | 12 (default version), 11 for DB library changes | 3.0 (coded in the branch) |
 | `nightly` scheduled pipelines for the `master` branch                                          | 12 (default version), 11, 13                    | 2.7 (default version) |
 
-The pipeline configuration for the scheduled pipeline testing Ruby 3 is
-stored in the `ruby3-sync` branch. The pipeline updates the `ruby3` branch
-with latest `master`, and then it triggers a regular branch pipeline for
-`ruby3`. Any changes in `ruby3` are only for running the pipeline. It should
+There are 2 pipeline schedules used for testing Ruby 3. One is triggering a
+pipeline in `ruby3-sync` branch, which updates the `ruby3` branch with latest
+`master`, and no pipelines will be triggered by this push. The other schedule
+is triggering a pipeline in `ruby3` 5 minutes after it, which is considered
+the maintenance schedule to run test suites and update cache.
+
+Any changes in `ruby3` are only for running the pipeline. It should
 never be merged back to `master`. Any other Ruby 3 changes should go into
 `master` directly, which should be compatible with Ruby 2.7.
 

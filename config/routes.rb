@@ -56,7 +56,6 @@ InitializerConnections.with_disabled_database_connections do
     match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options
 
     match '/-/jira_connect/oauth_application_id' => 'jira_connect/cors_preflight_checks#index', via: :options
-    match '/-/jira_connect/subscriptions' => 'jira_connect/cors_preflight_checks#index', via: :options
     match '/-/jira_connect/subscriptions/:id' => 'jira_connect/cors_preflight_checks#index', via: :options
     match '/-/jira_connect/installations' => 'jira_connect/cors_preflight_checks#index', via: :options
 

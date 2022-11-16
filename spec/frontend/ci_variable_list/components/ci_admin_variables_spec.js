@@ -24,6 +24,7 @@ describe('Ci Project Variable wrapper', () => {
     expect(findCiShared().props()).toEqual({
       areScopedVariablesAvailable: false,
       componentName: 'InstanceVariables',
+      hideEnvironmentScope: true,
       mutationData: wrapper.vm.$options.mutationData,
       queryData: wrapper.vm.$options.queryData,
       refetchAfterMutation: true,

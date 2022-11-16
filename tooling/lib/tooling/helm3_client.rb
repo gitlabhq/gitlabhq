@@ -37,7 +37,6 @@ module Tooling
     def delete(release_name:)
       run_command([
         'uninstall',
-        %(--namespace "#{namespace}"),
         release_name
       ])
     end
@@ -60,7 +59,6 @@ module Tooling
     def raw_releases(page, args = [])
       command = [
         'list',
-        %(--namespace "#{namespace}"),
         %(--max #{PAGINATION_SIZE}),
         %(--offset #{PAGINATION_SIZE * page}),
         %(--output json),

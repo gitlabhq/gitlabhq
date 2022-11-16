@@ -3,11 +3,16 @@
   "required": [
     "version",
     "revision",
-    "kas"
+    "kas",
+    "enterprise"
   ],
   "properties": {
-    "version": { "type": "string" },
-    "revision": { "type": "string" },
+    "version": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string"
+    },
     "kas": {
       "type": "object",
       "required": [
@@ -16,10 +21,25 @@
         "version"
       ],
       "properties": {
-        "enabled": { "type": "boolean" },
-        "externalUrl": { "type": ["string", "null"] },
-        "version": { "type": ["string", "null"] }
+        "enabled": {
+          "type": "boolean"
+        },
+        "externalUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
+    },
+    "enterprise": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

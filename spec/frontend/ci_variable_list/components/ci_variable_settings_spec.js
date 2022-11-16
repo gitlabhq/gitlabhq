@@ -18,6 +18,7 @@ describe('Ci variable table', () => {
   const defaultProps = {
     areScopedVariablesAvailable: true,
     environments: mapEnvironmentNames(mockEnvs),
+    hideEnvironmentScope: false,
     isLoading: false,
     variables: mockVariablesWithScopes(projectString),
   };
@@ -56,6 +57,7 @@ describe('Ci variable table', () => {
       expect(findCiVariableModal().props()).toEqual({
         areScopedVariablesAvailable: defaultProps.areScopedVariablesAvailable,
         environments: defaultProps.environments,
+        hideEnvironmentScope: defaultProps.hideEnvironmentScope,
         variables: defaultProps.variables,
         mode: ADD_VARIABLE_ACTION,
         selectedVariable: {},

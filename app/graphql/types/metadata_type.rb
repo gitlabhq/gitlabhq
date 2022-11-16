@@ -6,6 +6,8 @@ module Types
 
     authorize :read_instance_metadata
 
+    field :enterprise, GraphQL::Types::Boolean, null: false,
+                                                description: 'Enterprise edition.'
     field :kas, ::Types::Metadata::KasType, null: false,
                                             description: 'Metadata about KAS.'
     field :revision, GraphQL::Types::String, null: false,

@@ -23,6 +23,7 @@ module API
             externalUrl
             version
           }
+          enterprise
         }
       }
     EOF

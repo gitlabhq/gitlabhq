@@ -36,6 +36,7 @@ describe('Ci Project Variable wrapper', () => {
       areScopedVariablesAvailable: true,
       componentName: 'ProjectVariables',
       fullPath: mockProvide.projectFullPath,
+      hideEnvironmentScope: false,
       mutationData: wrapper.vm.$options.mutationData,
       queryData: wrapper.vm.$options.queryData,
       refetchAfterMutation: false,

@@ -127,17 +127,15 @@ RSpec.describe Gitlab::Redis::MultiStore do
     end
 
     before(:all) do
-      primary_store.multi do |multi|
-        multi.set(key1, value1)
-        multi.set(key2, value2)
-        multi.sadd(skey, [value1, value2])
-      end
+      primary_store.set(key1, value1)
+      primary_store.set(key2, value2)
+      primary_store.sadd?(skey, value1)
+      primary_store.sadd?(skey, value2)
 
-      secondary_store.multi do |multi|
-        multi.set(key1, value1)
-        multi.set(key2, value2)
-        multi.sadd(skey, [value1, value2])
-      end
+      secondary_store.set(key1, value1)
+      secondary_store.set(key2, value2)
+      secondary_store.sadd?(skey, value1)
+      secondary_store.sadd?(skey, value2)
     end
 
     RSpec.shared_examples_for 'reads correct value' do
@@ -349,15 +347,11 @@ RSpec.describe Gitlab::Redis::MultiStore do
       primary_store.flushdb
       secondary_store.flushdb
 
-      primary_store.multi do |multi|
-        multi.set(key2, value1)
-        multi.sadd?(skey, value1)
-      end
+      primary_store.set(key2, value1)
+      primary_store.sadd?(skey, value1)
 
-      secondary_store.multi do |multi|
-        multi.set(key2, value1)
-        multi.sadd?(skey, value1)
-      end
+      secondary_store.set(key2, value1)
+      secondary_store.sadd?(skey, value1)
     end
 
     with_them do
