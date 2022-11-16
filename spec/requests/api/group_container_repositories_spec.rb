@@ -57,5 +57,13 @@ RSpec.describe API::GroupContainerRepositories do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'with URL-encoded path of the group' do
+      let(:url) { "/groups/#{group.full_path}/registry/repositories" }
+
+      it_behaves_like 'rejected container repository access', :guest, :forbidden
+      it_behaves_like 'rejected container repository access', :anonymous, :not_found
+      it_behaves_like 'returns repositories for allowed users', :reporter
+    end
   end
 end

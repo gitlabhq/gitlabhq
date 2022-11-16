@@ -5,17 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 disqus_identifier: 'https://docs.gitlab.com/ee/administration/custom_hooks.html'
 ---
 
-# Server hooks **(FREE SELF)**
+# Git server hooks **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/372991) from server hooks to Git server hooks in GitLab 15.6.
 
-Server hooks (not to be confused with [system hooks](system_hooks.md) or [file hooks](file_hooks.md)) run custom logic
+Git server hooks (not to be confused with [system hooks](system_hooks.md) or [file hooks](file_hooks.md)) run custom logic
 on the GitLab server. You can use them to run Git-related tasks such as:
 
 - Enforcing specific commit policies.
 - Performing tasks based on the state of the repository.
 
-Server hooks use `pre-receive`, `post-receive`, and `update`
+Git server hooks use `pre-receive`, `post-receive`, and `update`
 [Git server-side hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#_server_side_hooks).
 
 GitLab administrators configure server hooks on the file system of the GitLab server. If you don't have file system access,
@@ -47,7 +48,7 @@ To create server hooks for a repository:
    - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
      `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that directory.
 1. Make the server hook files executable and ensure that they are owned by the Git user.
-1. Write the code to make the server hook function as expected. Server hooks can be in any programming language. Ensure
+1. Write the code to make the server hook function as expected. Git server hooks can be in any programming language. Ensure
    the [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) at the top reflects the language type. For
    example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
 1. Make the hook file executable, ensure that it's owned by the Git user, and ensure it does not match the backup file
@@ -88,7 +89,7 @@ To create a global server hook for all repositories:
 
 1. On the GitLab server, go to the configured global server hook directory.
 1. In the configured global server hook directory, create a directory for the hooks that matches the hook type. For example, for a `pre-receive` server hook, the directory name should be `pre-receive.d`.
-1. Inside this new directory, add your server hooks. Server hooks can be in any programming language. Ensure the
+1. Inside this new directory, add your server hooks. Git server hooks can be in any programming language. Ensure the
    [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) at the top reflects the language type. For example, if the
    script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
 1. Make the hook file executable, ensure that it's owned by the Git user, and ensure it does not match the backup file

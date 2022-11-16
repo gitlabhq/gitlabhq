@@ -267,7 +267,7 @@ to use them as normal characters in a match condition.
 
 ## Related topics
 
-- [Server hooks](../../../administration/server_hooks.md), to create complex custom push rules
+- [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
 - [Signing commits with GPG](gpg_signed_commits/index.md)
 - [Protected branches](../protected_branches.md)
 

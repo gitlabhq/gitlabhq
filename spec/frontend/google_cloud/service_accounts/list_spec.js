@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlAlert, GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
+import { GlAlert, GlButton, GlEmptyState, GlLink, GlTable } from '@gitlab/ui';
 import ServiceAccountsList from '~/google_cloud/service_accounts/list.vue';
 
 describe('google_cloud/service_accounts/list', () => {
@@ -45,7 +45,26 @@ describe('google_cloud/service_accounts/list', () => {
 
     beforeEach(() => {
       const propsData = {
-        list: [{}, {}, {}],
+        list: [
+          {
+            ref: '*',
+            gcp_project: 'gcp-project-123',
+            service_account_exists: true,
+            service_account_key_exists: true,
+          },
+          {
+            ref: 'prod',
+            gcp_project: 'gcp-project-456',
+            service_account_exists: true,
+            service_account_key_exists: true,
+          },
+          {
+            ref: 'stag',
+            gcp_project: 'gcp-project-789',
+            service_account_exists: true,
+            service_account_key_exists: true,
+          },
+        ],
         createUrl: '#create-url',
         emptyIllustrationUrl: '#empty-illustration-url',
       };
@@ -66,6 +85,12 @@ describe('google_cloud/service_accounts/list', () => {
 
     it('table must have three rows + header row', () => {
       expect(findRows().length).toBe(4);
+    });
+
+    it('table row must contain link to the google cloud console', () => {
+      expect(findRows().at(1).findComponent(GlLink).attributes('href')).toBe(
+        `${ServiceAccountsList.GOOGLE_CONSOLE_URL}?project=gcp-project-123`,
+      );
     });
 
     it('shows the link to create new service accounts', () => {

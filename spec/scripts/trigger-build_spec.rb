@@ -319,6 +319,28 @@ RSpec.describe Trigger do
         end
       end
 
+      describe "GITLAB_ASSETS_TAG" do
+        context 'when CI_COMMIT_TAG is set' do
+          before do
+            stub_env('CI_COMMIT_TAG', 'v1.0')
+          end
+
+          it 'sets GITLAB_ASSETS_TAG to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['GITLAB_ASSETS_TAG']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+
+        context 'when CI_COMMIT_TAG is nil' do
+          before do
+            stub_env('CI_COMMIT_TAG', nil)
+          end
+
+          it 'sets GITLAB_ASSETS_TAG to CI_COMMIT_SHA' do
+            expect(subject.variables['GITLAB_ASSETS_TAG']).to eq(env['CI_COMMIT_SHA'])
+          end
+        end
+      end
+
       describe "CE_PIPELINE" do
         context 'when Trigger.ee? is true' do
           before do

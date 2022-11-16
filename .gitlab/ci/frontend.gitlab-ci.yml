@@ -28,7 +28,6 @@
         fi
       fi
     - assets_compile_script
-    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
 
 compile-production-assets:
   extends:
@@ -44,7 +43,6 @@ compile-production-assets:
       # These assets are used in multiple locations:
       # - in `build-assets-image` job to create assets image for packaging systems
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
-      - cached-assets-hash.txt
       - public/assets/
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
@@ -75,6 +73,9 @@ update-assets-compile-production-cache:
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
+  script:
+    - !reference [compile-production-assets, script]
+    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-assets-compile-test-cache:

@@ -35,6 +35,12 @@ module InjectEnterpriseEditionModule
     include_mod_with(name) # rubocop: disable Cop/InjectEnterpriseEditionModule
   end
 
+  def gitlab_extensions
+    extensions = [self]
+    each_extension_for(name, Object) { |c| extensions << c }
+    extensions
+  end
+
   private
 
   def prepend_module(mod, with_descendants)

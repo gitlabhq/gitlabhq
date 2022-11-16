@@ -1,6 +1,9 @@
 <script>
 import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf, GlTable } from '@gitlab/ui';
+import { setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+
+const GOOGLE_CONSOLE_URL = 'https://console.cloud.google.com/iam-admin/serviceaccounts';
 
 export default {
   components: { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf, GlTable },
@@ -40,6 +43,12 @@ export default {
       'Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}',
     ),
   },
+  methods: {
+    gcpProjectUrl(id) {
+      return setUrlParams({ project: id }, GOOGLE_CONSOLE_URL);
+    },
+  },
+  GOOGLE_CONSOLE_URL,
 };
 </script>
 
@@ -59,6 +68,9 @@ export default {
       <p>{{ $options.i18n.serviceAccountsDescription }}</p>
 
       <gl-table :items="list" :fields="$options.tableFields">
+        <template #cell(gcp_project)="{ value }">
+          <gl-link :href="gcpProjectUrl(value)">{{ value }}</gl-link>
+        </template>
         <template #cell(service_account_exists)="{ value }">
           {{ value ? $options.i18n.found : $options.i18n.notFound }}
         </template>

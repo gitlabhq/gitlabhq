@@ -185,7 +185,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Git configuration options
 
-- [Server hooks](server_hooks.md): Server hooks (on the file system) for when webhooks aren't enough.
+- [Git server hooks](server_hooks.md): Git server hooks (on the file system) for when webhooks aren't enough. Previously called server hooks.
 - [Git LFS configuration](lfs/index.md): Learn how to configure LFS for GitLab.
 - [Housekeeping](housekeeping.md): Keep your Git repositories tidy and fast.
 - [Configuring Git Protocol v2](git_protocol.md): Git protocol version 2 support.
