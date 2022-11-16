@@ -912,7 +912,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
         context 'when outside freeze period' do
           it 'creates two jobs' do
-            Timecop.freeze(2020, 4, 10, 22, 59) do
+            travel_to(Time.utc(2020, 4, 10, 22, 59)) do
               expect(pipeline).to be_persisted
               expect(build_names).to contain_exactly('test-job', 'deploy-job')
             end
@@ -921,7 +921,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
         context 'when inside freeze period' do
           it 'creates one job' do
-            Timecop.freeze(2020, 4, 10, 23, 1) do
+            travel_to(Time.utc(2020, 4, 10, 23, 1)) do
               expect(pipeline).to be_persisted
               expect(build_names).to contain_exactly('test-job')
             end
@@ -946,7 +946,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
         context 'when outside freeze period' do
           it 'creates two jobs' do
-            Timecop.freeze(2020, 4, 10, 22, 59) do
+            travel_to(Time.utc(2020, 4, 10, 22, 59)) do
               expect(pipeline).to be_persisted
               expect(build_names).to contain_exactly('deploy-job')
             end
@@ -955,7 +955,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
         context 'when inside freeze period' do
           it 'does not create the pipeline', :aggregate_failures do
-            Timecop.freeze(2020, 4, 10, 23, 1) do
+            travel_to(Time.utc(2020, 4, 10, 23, 1)) do
               expect(response).to be_error
               expect(pipeline).not_to be_persisted
             end

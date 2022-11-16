@@ -6,7 +6,7 @@ import {
   FILTER_STARTED,
   FILTER_UPCOMING,
   OPERATOR_IS,
-  OPERATOR_IS_NOT,
+  OPERATOR_NOT,
   OPERATOR_OR,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
@@ -174,7 +174,7 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'author_username',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[author_username]',
       },
     },
@@ -190,7 +190,7 @@ export const filters = {
         [SPECIAL_FILTER]: 'assignee_id',
         [ALTERNATIVE_FILTER]: 'assignee_username',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[assignee_username][]',
       },
       [OPERATOR_OR]: {
@@ -208,7 +208,7 @@ export const filters = {
         [NORMAL_FILTER]: 'milestone_title',
         [SPECIAL_FILTER]: 'milestone_title',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[milestone_title]',
         [SPECIAL_FILTER]: 'not[milestone_title]',
       },
@@ -225,7 +225,7 @@ export const filters = {
         [SPECIAL_FILTER]: 'label_name[]',
         [ALTERNATIVE_FILTER]: 'label_name',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
       },
     },
@@ -238,7 +238,7 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'type[]',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[type][]',
       },
     },
@@ -253,7 +253,7 @@ export const filters = {
         [NORMAL_FILTER]: 'release_tag',
         [SPECIAL_FILTER]: 'release_tag',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[release_tag]',
       },
     },
@@ -268,7 +268,7 @@ export const filters = {
         [NORMAL_FILTER]: 'my_reaction_emoji',
         [SPECIAL_FILTER]: 'my_reaction_emoji',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[my_reaction_emoji]',
       },
     },
@@ -293,7 +293,7 @@ export const filters = {
         [NORMAL_FILTER]: 'iteration_id',
         [SPECIAL_FILTER]: 'iteration_id',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[iteration_id]',
         [SPECIAL_FILTER]: 'not[iteration_id]',
       },
@@ -309,7 +309,7 @@ export const filters = {
         [NORMAL_FILTER]: 'epic_id',
         [SPECIAL_FILTER]: 'epic_id',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[epic_id]',
       },
     },
@@ -324,7 +324,7 @@ export const filters = {
         [NORMAL_FILTER]: 'weight',
         [SPECIAL_FILTER]: 'weight',
       },
-      [OPERATOR_IS_NOT]: {
+      [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[weight]',
       },
     },

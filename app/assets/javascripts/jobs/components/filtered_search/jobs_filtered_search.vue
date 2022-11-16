@@ -1,7 +1,7 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import JobStatusToken from './tokens/job_status_token.vue';
 
 export default {
@@ -27,7 +27,7 @@ export default {
           title: s__('Jobs|Status'),
           unique: true,
           token: JobStatusToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
         },
       ];
     },

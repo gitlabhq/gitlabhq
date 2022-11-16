@@ -42,17 +42,17 @@ module CycleAnalyticsHelpers
                 end_time = start_time + rand(1..5).days
 
                 start_time_conditions.each do |condition_name, condition_fn|
-                  Timecop.freeze(start_time) { condition_fn[self, data] }
+                  travel_to(start_time) { condition_fn[self, data] }
                 end
 
                 # Run `before_end_fn` at the midpoint between `start_time` and `end_time`
-                Timecop.freeze(start_time + (end_time - start_time) / 2) { before_end_fn[self, data] } if before_end_fn
+                travel_to(start_time + (end_time - start_time) / 2) { before_end_fn[self, data] } if before_end_fn
 
                 end_time_conditions.each do |condition_name, condition_fn|
-                  Timecop.freeze(end_time) { condition_fn[self, data] }
+                  travel_to(end_time) { condition_fn[self, data] }
                 end
 
-                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+                travel_to(end_time + 1.day) { post_fn[self, data] } if post_fn
 
                 end_time - start_time
               end
@@ -74,14 +74,14 @@ module CycleAnalyticsHelpers
                 end_time = rand(1..10).days.from_now
 
                 start_time_conditions.each do |condition_name, condition_fn|
-                  Timecop.freeze(start_time) { condition_fn[self, data] }
+                  travel_to(start_time) { condition_fn[self, data] }
                 end
 
                 end_time_conditions.each do |condition_name, condition_fn|
-                  Timecop.freeze(end_time) { condition_fn[self, data] }
+                  travel_to(end_time) { condition_fn[self, data] }
                 end
 
-                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+                travel_to(end_time + 1.day) { post_fn[self, data] } if post_fn
 
                 # Turn off the stub before checking assertions
                 allow(self).to receive(:project).and_call_original
@@ -97,17 +97,17 @@ module CycleAnalyticsHelpers
                 end_time = start_time + rand(1..5).days
 
                 # Run `before_end_fn` at the midpoint between `start_time` and `end_time`
-                Timecop.freeze(start_time + (end_time - start_time) / 2) { before_end_fn[self, data] } if before_end_fn
+                travel_to(start_time + (end_time - start_time) / 2) { before_end_fn[self, data] } if before_end_fn
 
                 end_time_conditions.each do |condition_name, condition_fn|
-                  Timecop.freeze(start_time) { condition_fn[self, data] }
+                  travel_to(start_time) { condition_fn[self, data] }
                 end
 
                 start_time_conditions.each do |condition_name, condition_fn|
-                  Timecop.freeze(end_time) { condition_fn[self, data] }
+                  travel_to(end_time) { condition_fn[self, data] }
                 end
 
-                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+                travel_to(end_time + 1.day) { post_fn[self, data] } if post_fn
 
                 expect(subject[phase].project_median).to be_nil
               end
@@ -122,10 +122,10 @@ module CycleAnalyticsHelpers
               end_time = rand(1..10).days.from_now
 
               end_time_conditions.each_with_index do |(_condition_name, condition_fn), index|
-                Timecop.freeze(end_time + index.days) { condition_fn[self, data] }
+                travel_to(end_time + index.days) { condition_fn[self, data] }
               end
 
-              Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+              travel_to(end_time + 1.day) { post_fn[self, data] } if post_fn
 
               expect(subject[phase].project_median).to be_nil
             end
@@ -139,7 +139,7 @@ module CycleAnalyticsHelpers
               start_time = Time.now
 
               start_time_conditions.each do |condition_name, condition_fn|
-                Timecop.freeze(start_time) { condition_fn[self, data] }
+                travel_to(start_time) { condition_fn[self, data] }
               end
 
               post_fn[self, data] if post_fn

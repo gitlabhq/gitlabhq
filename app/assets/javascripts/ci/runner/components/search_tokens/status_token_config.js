@@ -1,5 +1,5 @@
 import {
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS,
   TOKEN_TITLE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
@@ -38,5 +38,5 @@ export const statusTokenConfig = {
     // see: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1438
     title: title.replace(/\s/g, '\u00a0'),
   })),
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
 };

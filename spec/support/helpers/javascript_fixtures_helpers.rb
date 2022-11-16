@@ -3,12 +3,14 @@
 require 'action_dispatch/testing/test_request'
 require 'fileutils'
 require 'graphlyte'
+require 'active_support/testing/time_helpers'
 
 require_relative '../../../lib/gitlab/popen'
 
 module JavaScriptFixturesHelpers
   extend ActiveSupport::Concern
   include Gitlab::Popen
+  include ActiveSupport::Testing::TimeHelpers
 
   extend self
 
@@ -22,7 +24,7 @@ module JavaScriptFixturesHelpers
 
       # pick an arbitrary date from the past, so tests are not time dependent
       # Also see spec/frontend/__helpers__/fake_date/jest.js
-      Timecop.freeze(Time.utc(2015, 7, 3, 10)) { example.run }
+      travel_to(Time.utc(2015, 7, 3, 10)) { example.run }
 
       raise NoMethodError.new('You need to set `response` for the fixture generator! This will automatically happen with `type: :controller` or `type: :request`.', 'response') unless respond_to?(:response)
 

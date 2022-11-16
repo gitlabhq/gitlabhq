@@ -192,4 +192,8 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
 
     include_examples "XSS prevention", "ruby"
   end
+
+  it_behaves_like "filter timeout" do
+    let(:text) { '<pre lang="ruby"><code>def fun end</code></pre>' }
+  end
 end

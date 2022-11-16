@@ -2,8 +2,8 @@ import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
 import {
-  OPERATOR_IS_AND_IS_NOT,
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS_NOT,
+  OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_LABEL,
@@ -747,7 +747,7 @@ export const mockConfidentialToken = {
   title: 'Confidential',
   unique: true,
   token: GlFilteredSearchToken,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   options: [
     { icon: 'eye-slash', value: 'yes', title: 'Yes' },
     { icon: 'eye', value: 'no', title: 'No' },
@@ -759,7 +759,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
     icon: 'user',
     title: TOKEN_TITLE_ASSIGNEE,
     type: TOKEN_TYPE_ASSIGNEE,
-    operators: OPERATOR_IS_AND_IS_NOT,
+    operators: OPERATORS_IS_NOT,
     token: AuthorToken,
     unique: true,
     fetchAuthors,
@@ -769,7 +769,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
     icon: 'pencil',
     title: TOKEN_TITLE_AUTHOR,
     type: TOKEN_TYPE_AUTHOR,
-    operators: OPERATOR_IS_AND_IS_NOT,
+    operators: OPERATORS_IS_NOT,
     symbol: '@',
     token: AuthorToken,
     unique: true,
@@ -780,7 +780,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
     icon: 'labels',
     title: TOKEN_TITLE_LABEL,
     type: TOKEN_TYPE_LABEL,
-    operators: OPERATOR_IS_AND_IS_NOT,
+    operators: OPERATORS_IS_NOT,
     token: LabelToken,
     unique: false,
     symbol: '~',

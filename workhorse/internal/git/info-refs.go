@@ -59,8 +59,7 @@ func handleGetInfoRefsWithGitaly(ctx context.Context, responseWriter *HttpRespon
 		ctx,
 		a.GitalyServer,
 		gitaly.WithFeatures(a.GitalyServer.Features),
-		gitaly.WithUserID(a.GL_ID),
-		gitaly.WithUsername(a.GL_USERNAME),
+		gitaly.WithLoggingMetadata(a),
 	)
 	if err != nil {
 		return err

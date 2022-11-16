@@ -51,9 +51,12 @@ namespace :gitlab do
 
     desc 'GitLab | UsageDataMetrics | Generate raw SQL metrics queries for RSpec'
     task generate_sql_metrics_queries: :environment do
+      require 'active_support/testing/time_helpers'
+      include ActiveSupport::Testing::TimeHelpers
+
       path = Rails.root.join('tmp', 'test')
 
-      queries = Timecop.freeze(2021, 1, 1) do
+      queries = travel_to(Time.utc(2021, 1, 1)) do
         Gitlab::Usage::ServicePingReport.for(output: :metrics_queries)
       end
 

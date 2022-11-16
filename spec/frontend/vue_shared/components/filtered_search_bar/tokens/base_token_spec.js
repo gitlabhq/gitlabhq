@@ -17,7 +17,7 @@ import {
 import {
   DEFAULT_NONE_ANY,
   OPERATOR_IS,
-  OPERATOR_IS_NOT,
+  OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getRecentlyUsedSuggestions,
@@ -301,9 +301,9 @@ describe('BaseToken', () => {
 
     describe('with default suggestions', () => {
       describe.each`
-        operator           | shouldRenderFilteredSearchSuggestion
-        ${OPERATOR_IS}     | ${true}
-        ${OPERATOR_IS_NOT} | ${false}
+        operator        | shouldRenderFilteredSearchSuggestion
+        ${OPERATOR_IS}  | ${true}
+        ${OPERATOR_NOT} | ${false}
       `('when operator is $operator', ({ shouldRenderFilteredSearchSuggestion, operator }) => {
         beforeEach(() => {
           const props = {

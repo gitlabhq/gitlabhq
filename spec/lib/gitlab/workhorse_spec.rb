@@ -349,6 +349,23 @@ RSpec.describe Gitlab::Workhorse do
         expect(subject[:GitConfigOptions]).to be_empty
       end
     end
+
+    context 'when remote_ip is available in the application context' do
+      it 'includes a RemoteIP params' do
+        result = {}
+        Gitlab::ApplicationContext.with_context(remote_ip: "1.2.3.4") do
+          result = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
+        end
+        expect(result[:RemoteIP]).to eql("1.2.3.4")
+      end
+    end
+
+    context 'when remote_ip is not available in the application context' do
+      it 'does not include RemoteIP params' do
+        result = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
+        expect(result).not_to have_key(:RemoteIP)
+      end
+    end
   end
 
   describe '.set_key_and_notify' do

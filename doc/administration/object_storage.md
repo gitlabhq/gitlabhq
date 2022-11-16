@@ -638,6 +638,16 @@ if this access is not in place include:
    Received status code 403 from server: Forbidden
    ```
 
+- Object storage buckets need to allow Cross-Origin Resource Sharing
+  (CORS) access from the URL of the GitLab instance. Attempting to load
+  a PDF in the repository page may show the following error:
+
+  ```plaintext
+  An error occurred while loading the file. Please try again later.
+  ```
+
+  See [the LFS documentation](lfs/index.md#error-viewing-a-pdf-file) for more details.
+
 Getting a `403 Forbidden` response is specifically called out on the
 [package repository documentation](packages/index.md#using-object-storage)
 as a side effect of how some build tools work.

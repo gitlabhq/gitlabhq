@@ -2211,15 +2211,49 @@ RSpec.describe Gitlab::Git::Repository do
   end
 
   describe '#compare_source_branch' do
-    it 'delegates to Gitlab::Git::CrossRepoComparer' do
-      expect_next_instance_of(::Gitlab::Git::CrossRepoComparer) do |instance|
-        expect(instance.source_repo).to eq(:source_repository)
-        expect(instance.target_repo).to eq(repository)
+    it 'compares two branches cross repo' do
+      mutable_repository.commit_files(
+        user,
+        branch_name: mutable_repository.root_ref, message: 'Committing something',
+        actions: [{ action: :create, file_path: 'encoding/CHANGELOG', content: 'New file' }]
+      )
 
-        expect(instance).to receive(:compare).with('feature', 'master', straight: :straight)
+      repository.commit_files(
+        user,
+        branch_name: repository.root_ref, message: 'Commit to root ref',
+        actions: [{ action: :create, file_path: 'encoding/CHANGELOG', content: 'One more' }]
+      )
+
+      [
+        [repository, mutable_repository, true],
+        [repository, mutable_repository, false],
+        [mutable_repository, repository, true],
+        [mutable_repository, repository, false]
+      ].each do |source_repo, target_repo, straight|
+        raw_compare = target_repo.compare_source_branch(
+          target_repo.root_ref, source_repo, source_repo.root_ref, straight: straight)
+
+        expect(raw_compare).to be_a(::Gitlab::Git::Compare)
+
+        expect(raw_compare.commits).to eq([source_repo.commit])
+        expect(raw_compare.head).to eq(source_repo.commit)
+        expect(raw_compare.base).to eq(target_repo.commit)
+        expect(raw_compare.straight).to eq(straight)
       end
+    end
 
-      repository.compare_source_branch('master', :source_repository, 'feature', straight: :straight)
+    context 'source ref does not exist in source repo' do
+      it 'returns an empty comparison' do
+        expect_next_instance_of(::Gitlab::Git::CrossRepo) do |instance|
+          expect(instance).not_to receive(:fetch_source_branch!)
+        end
+
+        raw_compare = repository.compare_source_branch(
+          repository.root_ref, mutable_repository, 'does-not-exist', straight: true)
+
+        expect(raw_compare).to be_a(::Gitlab::Git::Compare)
+        expect(raw_compare.commits.size).to eq(0)
+      end
     end
   end
 

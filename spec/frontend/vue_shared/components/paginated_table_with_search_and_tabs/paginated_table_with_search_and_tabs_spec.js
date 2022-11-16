@@ -2,7 +2,7 @@ import { GlAlert, GlBadge, GlPagination, GlTabs, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Tracking from '~/tracking';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import PageWrapper from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
@@ -293,7 +293,7 @@ describe('AlertManagementEmptyState', () => {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchPath: '/link',
           fetchAuthors: expect.any(Function),
         },
@@ -304,7 +304,7 @@ describe('AlertManagementEmptyState', () => {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchPath: '/link',
           fetchAuthors: expect.any(Function),
         },

@@ -12,8 +12,8 @@ import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
-  OPERATOR_IS_AND_IS_NOT,
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS_NOT,
+  OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
@@ -71,7 +71,7 @@ export default {
           icon: 'user',
           title: TOKEN_TITLE_ASSIGNEE,
           type: TOKEN_TYPE_ASSIGNEE,
-          operators: OPERATOR_IS_AND_IS_NOT,
+          operators: OPERATORS_IS_NOT,
           token: AuthorToken,
           unique: true,
           fetchAuthors,
@@ -81,7 +81,7 @@ export default {
           icon: 'pencil',
           title: TOKEN_TITLE_AUTHOR,
           type: TOKEN_TYPE_AUTHOR,
-          operators: OPERATOR_IS_AND_IS_NOT,
+          operators: OPERATORS_IS_NOT,
           symbol: '@',
           token: AuthorToken,
           unique: true,
@@ -92,7 +92,7 @@ export default {
           icon: 'labels',
           title: TOKEN_TITLE_LABEL,
           type: TOKEN_TYPE_LABEL,
-          operators: OPERATOR_IS_AND_IS_NOT,
+          operators: OPERATORS_IS_NOT,
           token: LabelToken,
           unique: false,
           symbol: '~',
@@ -128,7 +128,7 @@ export default {
                 title: TOKEN_TITLE_CONFIDENTIAL,
                 unique: true,
                 token: GlFilteredSearchToken,
-                operators: OPERATOR_IS_ONLY,
+                operators: OPERATORS_IS,
                 options: [
                   { icon: 'eye-slash', value: 'yes', title: __('Yes') },
                   { icon: 'eye', value: 'no', title: __('No') },

@@ -80,7 +80,7 @@ RSpec.describe API::UsageDataQueries do
       end
 
       it 'matches the generated query' do
-        Timecop.freeze(2021, 1, 1) do
+        travel_to(Time.utc(2021, 1, 1)) do
           get api(endpoint, admin)
         end
 

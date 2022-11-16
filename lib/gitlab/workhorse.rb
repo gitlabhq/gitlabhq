@@ -48,6 +48,9 @@ module Gitlab
           attrs[:GitConfigOptions] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
         end
 
+        remote_ip = Gitlab::ApplicationContext.current_context_attribute(:remote_ip)
+        attrs[:RemoteIP] = remote_ip if remote_ip.present?
+
         attrs
       end
 

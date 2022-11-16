@@ -69,18 +69,6 @@ func InitializeSidechannelRegistry(logger *logrus.Logger) {
 
 type MetadataFunc func(metadata.MD)
 
-func WithUserID(userID string) MetadataFunc {
-	return func(md metadata.MD) {
-		md.Append("user_id", userID)
-	}
-}
-
-func WithUsername(username string) MetadataFunc {
-	return func(md metadata.MD) {
-		md.Append("username", username)
-	}
-}
-
 func WithFeatures(features map[string]string) MetadataFunc {
 	return func(md metadata.MD) {
 		for k, v := range features {
@@ -88,6 +76,20 @@ func WithFeatures(features map[string]string) MetadataFunc {
 				continue
 			}
 			md.Append(k, v)
+		}
+	}
+}
+
+func WithLoggingMetadata(r *api.Response) MetadataFunc {
+	return func(md metadata.MD) {
+		if r.GL_ID != "" {
+			md.Append("user_id", r.GL_ID)
+		}
+		if r.GL_USERNAME != "" {
+			md.Append("username", r.GL_USERNAME)
+		}
+		if r.RemoteIp != "" {
+			md.Append("remote_ip", r.RemoteIp)
 		}
 	}
 }

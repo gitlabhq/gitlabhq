@@ -1,7 +1,7 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 import Api from '~/api';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -202,7 +202,7 @@ export const mockBranchToken = {
   title: 'Source Branch',
   unique: true,
   token: BranchToken,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   fetchBranches: Api.branches.bind(Api),
 };
 
@@ -213,7 +213,7 @@ export const mockAuthorToken = {
   unique: false,
   symbol: '@',
   token: AuthorToken,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   fetchPath: 'gitlab-org/gitlab-test',
   fetchAuthors: Api.projectUsers.bind(Api),
 };
@@ -225,7 +225,7 @@ export const mockLabelToken = {
   unique: false,
   symbol: '~',
   token: LabelToken,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   fetchLabels: () => Promise.resolve(mockLabels),
 };
 
@@ -236,7 +236,7 @@ export const mockMilestoneToken = {
   unique: true,
   symbol: '%',
   token: MilestoneToken,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
 };
 
@@ -254,7 +254,7 @@ export const mockReactionEmojiToken = {
   title: 'My-Reaction',
   unique: true,
   token: EmojiToken,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   fetchEmojis: () => Promise.resolve(mockEmojis),
 };
 
@@ -265,7 +265,7 @@ export const mockCrmContactToken = {
   token: CrmContactToken,
   isProject: false,
   fullPath: 'group',
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   unique: true,
 };
 
@@ -276,7 +276,7 @@ export const mockCrmOrganizationToken = {
   token: CrmOrganizationToken,
   isProject: false,
   fullPath: 'group',
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   unique: true,
 };
 
@@ -286,7 +286,7 @@ export const mockMembershipToken = {
   title: 'Membership',
   token: GlFilteredSearchToken,
   unique: true,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
   options: [
     { value: 'exclude', title: 'Direct' },
     { value: 'only', title: 'Inherited' },

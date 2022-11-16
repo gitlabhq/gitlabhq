@@ -7,7 +7,7 @@ import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import TagToken, { TAG_SUGGESTIONS_PATH } from '~/ci/runner/components/search_tokens/tag_token.vue';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { getRecentlyUsedSuggestions } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 
 jest.mock('~/flash');
@@ -42,7 +42,7 @@ const mockTagTokenConfig = {
   type: 'tag',
   token: TagToken,
   recentSuggestionsStorageKey: mockStorageKey,
-  operators: OPERATOR_IS_ONLY,
+  operators: OPERATORS_IS,
 };
 
 describe('TagToken', () => {

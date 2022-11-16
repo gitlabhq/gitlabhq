@@ -2,7 +2,7 @@
 
 module Gitlab
   module Git
-    class CrossRepoComparer
+    class CrossRepo
       attr_reader :source_repo, :target_repo
 
       def initialize(source_repo, target_repo)
@@ -10,15 +10,8 @@ module Gitlab
         @target_repo = target_repo
       end
 
-      def compare(source_ref, target_ref, straight:)
-        ensuring_ref_in_source(target_ref) do |target_commit_id|
-          Gitlab::Git::Compare.new(
-            source_repo,
-            target_commit_id,
-            source_ref,
-            straight: straight
-          )
-        end
+      def execute(target_ref, &blk)
+        ensuring_ref_in_source(target_ref, &blk)
       end
 
       private

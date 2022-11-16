@@ -8,7 +8,7 @@ import {
   TOKEN_TYPE_TAG_NAME,
   TAG_LABEL,
 } from '~/packages_and_registries/harbor_registry/constants/index';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { createAlert } from '~/flash';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
@@ -39,7 +39,7 @@ export default {
       title: TAG_LABEL,
       unique: true,
       token: GlFilteredSearchToken,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     },
   ],
   data() {

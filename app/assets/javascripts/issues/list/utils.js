@@ -4,7 +4,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
   FILTERED_SEARCH_TERM,
-  OPERATOR_IS_NOT,
+  OPERATOR_NOT,
   OPERATOR_OR,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -261,7 +261,7 @@ export const convertToApiParams = (filterTokens) => {
       const filterType = getFilterType(token.value.data, token.type);
       const field = filters[token.type][API_PARAM][filterType];
       let obj;
-      if (token.value.operator === OPERATOR_IS_NOT) {
+      if (token.value.operator === OPERATOR_NOT) {
         obj = not;
       } else if (token.value.operator === OPERATOR_OR) {
         obj = or;

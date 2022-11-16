@@ -22,12 +22,16 @@ func TestNewSmartHTTPClient(t *testing.T) {
 		context.Background(),
 		serverFixture(),
 		WithFeatures(features()),
-		WithUsername("gl_username"),
-		WithUserID("gl_id"),
+		WithLoggingMetadata(&api.Response{
+			GL_USERNAME: "gl_username",
+			GL_ID:       "gl_id",
+			RemoteIp:    "1.2.3.4",
+		}),
 	)
 	require.NoError(t, err)
 	testOutgoingMetadata(t, ctx)
 	testOutgoingIDAndUsername(t, ctx)
+	testOutgoingRemoteIP(t, ctx)
 	require.NotNil(t, client.sidechannelRegistry)
 }
 
@@ -93,6 +97,13 @@ func testOutgoingIDAndUsername(t *testing.T, ctx context.Context) {
 
 	require.Equal(t, md["user_id"], []string{"gl_id"})
 	require.Equal(t, md["username"], []string{"gl_username"})
+}
+
+func testOutgoingRemoteIP(t *testing.T, ctx context.Context) {
+	md, ok := metadata.FromOutgoingContext(ctx)
+	require.True(t, ok, "get metadata from context")
+
+	require.Equal(t, md["remote_ip"], []string{"1.2.3.4"})
 }
 
 func features() map[string]string {

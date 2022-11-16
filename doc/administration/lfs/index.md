@@ -332,6 +332,28 @@ To check an installed Git LFS client's version, run this command:
 git lfs version
 ```
 
+## Error viewing a PDF file
+
+When LFS has been configured with object storage and `proxy_download` set to
+`false`, [you may see an error when previewing a PDF file from the Web browser](https://gitlab.com/gitlab-org/gitlab/-/issues/248100):
+
+```plaintext
+An error occurred while loading the file. Please try again later.
+```
+
+This occurs due to Cross-Origin Resource Sharing (CORS) restrictions:
+the browser attempts to load the PDF from object storage, but the object
+storage provider rejects the request since the GitLab domain differs
+from the object storage domain.
+
+To fix this issue, configure your object storage provider's CORS
+settings to allow the GitLab domain. See the following documentation
+for more details:
+
+1. [AWS S3](https://aws.amazon.com/premiumsupport/knowledge-center/s3-configure-cors/)
+1. [Google Cloud Storage](https://cloud.google.com/storage/docs/configuring-cors)
+1. [Azure Storage](https://learn.microsoft.com/en-us/rest/api/storageservices/cross-origin-resource-sharing--cors--support-for-the-azure-storage-services).
+
 ## Known limitations
 
 - Only compatible with the Git LFS client versions 1.1.0 and later, or 1.0.2.

@@ -1,7 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import { sortableFields } from '~/packages_and_registries/package_registry/utils';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
@@ -21,7 +21,7 @@ export default {
       title: s__('PackageRegistry|Type'),
       unique: true,
       token: PackageTypeToken,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     },
   ],
   components: { RegistrySearch, UrlSync, LocalStorageSync },

@@ -22,10 +22,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
     project.add_maintainer(user)
     mr1.metrics.update!(merged_at: 1.month.ago)
     mr2.metrics.update!(merged_at: Time.now)
-  end
-
-  around do |example|
-    Timecop.freeze { example.run }
+    freeze_time
   end
 
   describe 'date range parameters' do

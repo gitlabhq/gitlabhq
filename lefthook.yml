@@ -17,7 +17,7 @@ pre-push:
       tags: view haml style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.html.haml'
-      run: REVEAL_RUBOCOP_TODO=0 bundle exec haml-lint --config .haml-lint.yml {files}
+      run: REVEAL_RUBOCOP_TODO=0 bundle exec haml-lint --parallel --config .haml-lint.yml {files}
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

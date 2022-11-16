@@ -813,6 +813,7 @@ func gitOkBody(t *testing.T) *api.Response {
 	return &api.Response{
 		GL_ID:       "user-123",
 		GL_USERNAME: "username",
+		RemoteIp:    "1.2.3.4",
 		Repository: gitalypb.Repository{
 			StorageName:  "default",
 			RelativePath: "foo/bar.git",

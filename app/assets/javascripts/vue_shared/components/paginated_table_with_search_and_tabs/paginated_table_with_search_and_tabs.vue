@@ -11,7 +11,7 @@ import Api from '~/api';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import {
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -119,7 +119,7 @@ export default {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchPath: this.projectPath,
           fetchAuthors: Api.projectUsers.bind(Api),
         },
@@ -130,7 +130,7 @@ export default {
           unique: true,
           symbol: '@',
           token: AuthorToken,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchPath: this.projectPath,
           fetchAuthors: Api.projectUsers.bind(Api),
         },

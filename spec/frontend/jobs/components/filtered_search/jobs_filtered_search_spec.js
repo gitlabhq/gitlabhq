@@ -1,6 +1,6 @@
 import { GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import { mockFailedSearchToken } from '../../mock_data';
 
@@ -41,7 +41,7 @@ describe('Jobs filtered search', () => {
       icon: 'status',
       title: 'Status',
       unique: true,
-      operators: OPERATOR_IS_ONLY,
+      operators: OPERATORS_IS,
     });
   });
 

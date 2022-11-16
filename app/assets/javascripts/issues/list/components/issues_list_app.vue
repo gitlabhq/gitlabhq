@@ -28,7 +28,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   DEFAULT_NONE_ANY,
   FILTERED_SEARCH_TERM,
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
@@ -39,8 +39,8 @@ import {
   TOKEN_TITLE_ORGANIZATION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
-  OPERATOR_IS_NOT_OR,
-  OPERATOR_IS_AND_IS_NOT,
+  OPERATORS_IS_NOT_OR,
+  OPERATORS_IS_NOT,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -318,7 +318,7 @@ export default {
           token: AuthorToken,
           dataType: 'user',
           defaultAuthors: DEFAULT_NONE_ANY,
-          operators: this.hasOrFeature ? OPERATOR_IS_NOT_OR : OPERATOR_IS_AND_IS_NOT,
+          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchAuthors: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedAuthors,
@@ -378,7 +378,7 @@ export default {
           icon: 'eye-slash',
           token: GlFilteredSearchToken,
           unique: true,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           options: [
             { icon: 'eye-slash', value: 'yes', title: this.$options.i18n.confidentialYes },
             { icon: 'eye', value: 'no', title: this.$options.i18n.confidentialNo },
@@ -396,7 +396,7 @@ export default {
           isProject: this.isProject,
           defaultContacts: DEFAULT_NONE_ANY,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-crm-contacts`,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           unique: true,
         });
       }
@@ -411,7 +411,7 @@ export default {
           isProject: this.isProject,
           defaultOrganizations: DEFAULT_NONE_ANY,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-crm-organizations`,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           unique: true,
         });
       }

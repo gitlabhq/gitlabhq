@@ -128,6 +128,10 @@ type Response struct {
 	// GL_REPOSITORY is an environment variable used by gitlab-shell hooks during
 	// 'git push' and 'git pull'
 	GL_REPOSITORY string
+
+	// RemoteIp holds the IP of the request issuing the action
+	RemoteIp string
+
 	// GitConfigOptions holds the custom options that we want to pass to the git command
 	GitConfigOptions []string
 	// StoreLFSPath is provided by the GitLab Rails application to mark where the tmp file should be placed.

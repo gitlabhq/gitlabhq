@@ -1064,6 +1064,21 @@ Instead of **and/or**, use **or** or re-write the sentence. This rule also appli
 
 Do not use **slave**. Another option is **secondary**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
+## subscription tier
+
+Do not confuse **subscription** or **subscription tier** with **[license](#license)**.
+A user purchases a **subscription**. That subscription has a **tier**.
+
+To describe tiers:
+
+| Instead of                      | Use                                    |
+|---------------------------------|----------------------------------------|
+| In the Free tier or greater     | In any tier                            |
+| In the Free tier or higher      | In any tier                            |
+| In the Premium tier or greater  | In the Premium or Ultimate tier        |
+| In the Premium tier or higher   | In the Premium or Ultimate tier        |
+| In the Premium tier or lower    | In the Free or Premium tier            |
+
 ## subgroup
 
 Use **subgroup** (no hyphen) instead of **sub-group**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))

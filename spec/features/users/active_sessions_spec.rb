@@ -4,25 +4,29 @@ require 'spec_helper'
 
 RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions do
   it 'successful login adds a new active user login' do
+    user = create(:user)
+
     now = Time.zone.parse('2018-03-12 09:06')
-    Timecop.freeze(now) do
-      user = create(:user)
+    travel_to(now) do
       gitlab_sign_in(user)
       expect(page).to have_current_path root_path, ignore_query: true
 
       sessions = ActiveSession.list(user)
       expect(sessions.count).to eq 1
+      gitlab_sign_out
+    end
 
-      # refresh the current page updates the updated_at
-      Timecop.freeze(now + 1.minute) do
-        visit current_path
+    # refresh the current page updates the updated_at
+    travel_to(now + 1.minute) do
+      gitlab_sign_in(user)
 
-        sessions = ActiveSession.list(user)
-        expect(sessions.first).to have_attributes(
-          created_at: Time.zone.parse('2018-03-12 09:06'),
-          updated_at: Time.zone.parse('2018-03-12 09:07')
-        )
-      end
+      visit current_path
+
+      sessions = ActiveSession.list(user)
+      expect(sessions.first).to have_attributes(
+        created_at: Time.zone.parse('2018-03-12 09:06'),
+        updated_at: Time.zone.parse('2018-03-12 09:07')
+      )
     end
   end
 

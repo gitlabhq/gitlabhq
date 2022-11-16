@@ -823,9 +823,14 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
-        CrossRepoComparer
-          .new(source_repository, self)
-          .compare(source_branch_name, target_branch_name, straight: straight)
+        CrossRepo.new(source_repository, self).execute(target_branch_name) do |target_commit_id|
+          Gitlab::Git::Compare.new(
+            source_repository,
+            target_commit_id,
+            source_branch_name,
+            straight: straight
+          )
+        end
       end
 
       def write_ref(ref_path, ref, old_ref: nil)

@@ -104,7 +104,9 @@ Example response:
   "floc_enabled": false,
   "external_pipeline_validation_service_timeout": null,
   "external_pipeline_validation_service_token": null,
-  "external_pipeline_validation_service_url": null
+  "external_pipeline_validation_service_url": null,
+  "jira_connect_application_key": null,
+  "jira_connect_proxy_url": null
 }
 ```
 
@@ -218,7 +220,9 @@ Example response:
   "external_pipeline_validation_service_timeout": null,
   "external_pipeline_validation_service_token": null,
   "external_pipeline_validation_service_url": null,
-  "can_create_group": false
+  "can_create_group": false,
+  "jira_connect_application_key": "123",
+  "jira_connect_proxy_url": "http://gitlab.example.com"
 }
 ```
 
@@ -505,6 +509,8 @@ listed in the descriptions of the relevant settings.
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
 | `web_ide_clientside_preview_enabled`     | boolean          | no                                   | Live Preview (allow live previews of JavaScript projects in the Web IDE using CodeSandbox Live Preview). |
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
+| `jira_connect_application_key`           | String           | no                                   | Application ID of the OAuth application that should be used to authenticate with the GitLab.com for Jira Cloud app |
+| `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance that should be used as a proxy for the GitLab.com for Jira Cloud app |
 
 ### Package Registry: Package file size limits
 

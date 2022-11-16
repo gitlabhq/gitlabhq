@@ -4551,6 +4551,9 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
+msgid "An error occurred. Unable to reopen this merge request."
+msgstr ""
+
 msgid "An example project for managing Kubernetes clusters integrated with GitLab"
 msgstr ""
 
@@ -33684,6 +33687,9 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Refreshing..."
+msgstr ""
+
 msgid "Regenerate export"
 msgstr ""
 
@@ -34218,6 +34224,9 @@ msgid "Reopen this %{quick_action_target}"
 msgstr ""
 
 msgid "Reopened this %{quick_action_target}."
+msgstr ""
+
+msgid "Reopening..."
 msgstr ""
 
 msgid "Reopens this %{quick_action_target}."

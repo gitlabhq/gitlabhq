@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import {
-  OPERATOR_IS_ONLY,
+  OPERATORS_IS,
   DEFAULT_NONE_ANY,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
@@ -52,7 +52,7 @@ export default {
           initialMilestones: this.milestonesData,
           unique: true,
           symbol: '%',
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchMilestones: this.fetchMilestones,
         },
         {
@@ -64,7 +64,7 @@ export default {
           initialLabels: this.labelsData,
           unique: false,
           symbol: '~',
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchLabels: this.fetchLabels,
         },
         {
@@ -74,7 +74,7 @@ export default {
           token: AuthorToken,
           initialAuthors: this.authorsData,
           unique: true,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchAuthors: this.fetchAuthors,
         },
         {
@@ -84,7 +84,7 @@ export default {
           token: AuthorToken,
           initialAuthors: this.assigneesData,
           unique: false,
-          operators: OPERATOR_IS_ONLY,
+          operators: OPERATORS_IS,
           fetchAuthors: this.fetchAssignees,
         },
       ];
