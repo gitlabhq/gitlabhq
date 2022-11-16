@@ -53,7 +53,7 @@ tips and tricks to get the most out of white-box testing.
 What are flaky tests, the different kind of flaky tests we encountered, and what
 we do about them.
 
-## [GitLab pipelines](../pipelines.md)
+## [GitLab pipelines](../pipelines/index.md)
 
 How GitLab test suite is run in the CI context: setup, caches, artifacts,
 parallelization, monitoring.

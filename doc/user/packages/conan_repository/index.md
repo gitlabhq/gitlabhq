@@ -29,105 +29,7 @@ Package Registry.
 For documentation of the specific API endpoints that the Conan package manager
 client uses, see the [Conan API documentation](../../../api/packages/conan.md).
 
-## Build a Conan package
-
-This section explains how to install Conan and build a package for your C/C++
-project.
-
-If you already use Conan and know how to build your own packages, go to the
-[next section](#add-the-package-registry-as-a-conan-remote).
-
-### Install Conan
-
-Download the Conan package manager to your local development environment by
-following the instructions at [conan.io](https://conan.io/downloads.html).
-
-When installation is complete, verify you can use Conan in your terminal by
-running:
-
-```shell
-conan --version
-```
-
-The Conan version is printed in the output:
-
-```plaintext
-Conan version 1.20.5
-```
-
-### Install CMake
-
-When you develop with C++ and Conan, you can select from many available
-compilers. This example uses the CMake build system generator.
-
-To install CMake:
-
-- For Mac, use [Homebrew](https://brew.sh/) and run `brew install cmake`.
-- For other operating systems, follow the instructions at [cmake.org](https://cmake.org/install/).
-
-When installation is complete, verify you can use CMake in your terminal by
-running:
-
-```shell
-cmake --version
-```
-
-The CMake version is printed in the output.
-
-### Create a project
-
-To test the Package Registry, you need a C++ project. If you don't already have
-one, you can clone the Conan [hello world starter project](https://github.com/conan-io/hello).
-
-### Build a package
-
-To build a package:
-
-1. Open a terminal and navigate to your project's root folder.
-1. Generate a new recipe by running `conan new` with a package name and version:
-
-   ```shell
-   conan new Hello/0.1 -t
-   ```
-
-1. Create a package for the recipe by running `conan create` with the Conan user
-   and channel:
-
-   ```shell
-   conan create . mycompany/beta
-   ```
-
-   NOTE:
-   If you use an [instance remote](#add-a-remote-for-your-instance), you must
-   follow a specific [naming convention](#package-recipe-naming-convention-for-instance-remotes).
-
-A package with the recipe `Hello/0.1@mycompany/beta` is created.
-
-For more details about creating and managing Conan packages, see the
-[Conan documentation](https://docs.conan.io/en/latest/creating_packages.html).
-
-#### Package without a username and a channel
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345055) in GitLab 14.6.
-
-Even though they are [recommended](https://docs.conan.io/en/latest/reference/conanfile/attributes.html#user-channel)
-to distinguish your package from a similarly named existing package,
-the username and channel are not mandatory fields for a Conan package.
-
-You can create a package without a username and channel by removing them from
-the `create` command:
-
-```shell
-conan create .
-```
-
-The username _and_ the channel must be blank. If only one of these fields is
-blank, the request is rejected.
-
-NOTE:
-Empty usernames and channels can only be used if you use a [project remote](#add-a-remote-for-your-project).
-If you use an [instance remote](#add-a-remote-for-your-instance), the username
-and the channel must be set.
+Learn how to [build a Conan package](../workflows/build_packages.md#conan).
 
 ## Add the Package Registry as a Conan remote
 
@@ -193,12 +95,12 @@ recipe `user` must be the plus sign (`+`) separated project path.
 
 Example recipe names:
 
-| Project                            | Package                                         | Supported |
-| ---------------------------------- | ----------------------------------------------- | --------- |
-| `foo/bar`                          | `my-package/1.0.0@foo+bar/stable`               | Yes       |
-| `foo/bar-baz/buz`                  | `my-package/1.0.0@foo+bar-baz+buz/stable`       | Yes       |
-| `gitlab-org/gitlab-ce`             | `my-package/1.0.0@gitlab-org+gitlab-ce/stable`  | Yes       |
-| `gitlab-org/gitlab-ce`             | `my-package/1.0.0@foo/stable`                   | No        |
+| Project                | Package                                        | Supported |
+| ---------------------- | ---------------------------------------------- | --------- |
+| `foo/bar`              | `my-package/1.0.0@foo+bar/stable`              | Yes       |
+| `foo/bar-baz/buz`      | `my-package/1.0.0@foo+bar-baz+buz/stable`      | Yes       |
+| `gitlab-org/gitlab-ce` | `my-package/1.0.0@gitlab-org+gitlab-ce/stable` | Yes       |
+| `gitlab-org/gitlab-ce` | `my-package/1.0.0@foo/stable`                  | No        |
 
 [Project remotes](#add-a-remote-for-your-project) have a more flexible naming
 convention.

@@ -31,6 +31,9 @@ it's reset to a pristine test after each test.
   inconsistent state, so that following tests might not know about certain columns.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/368500): A test modifies data that is
   used by a following test.
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103434#note_1172316521): A test for a database query passes in a fresh database, but in a 
+  CI/CD pipeline where the database is used to process previous test sequences, the test fails. This likely
+    means that the query itself needs to be updated to work in a non-clean database.
 
 ### Ordering assertion
 

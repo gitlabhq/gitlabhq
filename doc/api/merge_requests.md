@@ -641,8 +641,7 @@ Supported attributes:
 | `first_contribution` | boolean | Indicates if the merge request is the first contribution of the author. |
 | `first_deployed_to_production_at` | datetime | Timestamp of when the first deployment finished. |
 | `force_remove_source_branch` | boolean | Indicates if the project settings will lead to source branch deletion after merge. |
-| `has_conflicts` | boolean | Indicates if merge request has conflicts and cannot be merged. Dependent on the `merge_status` property. Returns
- `false` unless `merge_status` is `cannot_be_merged`. |
+| `has_conflicts` | boolean | Indicates if merge request has conflicts and cannot be merged. Dependent on the `merge_status` property. Returns `false` unless `merge_status` is `cannot_be_merged`. |
 | `head_pipeline` | object | Pipeline running on the branch HEAD of the merge request. Contains more complete information than `pipeline` and should be used instead of it. |
 | `id` | integer | ID of the merge request. |
 | `iid` | integer | Internal ID of the merge request. |

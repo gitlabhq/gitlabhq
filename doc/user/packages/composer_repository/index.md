@@ -25,58 +25,7 @@ client uses, see the [Composer API documentation](../../../api/packages/composer
 Composer v2.0 is recommended. Composer v1.0 is supported, but it has lower performance when working
 in groups with very large numbers of packages.
 
-## Create a Composer package
-
-If you do not have a Composer package, create one and check it in to
-a repository. This example shows a GitLab repository, but the repository
-can be any public or private repository.
-
-WARNING:
-If you are using a GitLab repository, the project must have been created from
-a group's namespace, rather than a user's namespace. Composer packages
-[can't be published to projects created from a user's namespace](https://gitlab.com/gitlab-org/gitlab/-/issues/235467).
-
-1. Create a directory called `my-composer-package` and change to that directory:
-
-   ```shell
-   mkdir my-composer-package && cd my-composer-package
-   ```
-
-1. Run [`composer init`](https://getcomposer.org/doc/03-cli.md#init) and answer the prompts.
-
-   For namespace, enter your unique [namespace](../../../user/namespace/index.md), like your GitLab username or group name.
-
-   A file called `composer.json` is created:
-
-   ```json
-   {
-     "name": "<namespace>/composer-test",
-     "description": "Library XY",
-     "type": "library",
-     "license": "GPL-3.0-only",
-     "authors": [
-        {
-            "name": "John Doe",
-            "email": "john@example.com"
-        }
-     ],
-     "require": {}
-   }
-   ```
-
-1. Run Git commands to tag the changes and push them to your repository:
-
-   ```shell
-   git init
-   git add composer.json
-   git commit -m 'Composer package test'
-   git tag v1.0.0
-   git remote add origin git@gitlab.example.com:<namespace>/<project-name>.git
-   git push --set-upstream origin main
-   git push origin v1.0.0
-   ```
-
-The package is now in your GitLab Package Registry.
+Learn how to [build a Composer package](../workflows/build_packages.md#composer).
 
 ## Publish a Composer package by using the API
 
@@ -110,7 +59,7 @@ To publish the package with a personal access token:
   - `<personal-access-token>` is your personal access token.
   - `<project_id>` is your project ID.
   - `<tag>` is the Git tag name of the version you want to publish.
-     To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
+    To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
 
 To publish the package with a deploy token:
 
@@ -125,7 +74,7 @@ To publish the package with a deploy token:
   - `<deploy-token>` is your deploy token
   - `<project_id>` is your project ID.
   - `<tag>` is the Git tag name of the version you want to publish.
-     To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
+    To publish a branch, use `branch=<branch>` instead of `tag=<tag>`.
 
 You can view the published package by going to **Packages and registries > Package Registry** and
 selecting the **Composer** tab.

@@ -22,47 +22,7 @@ The Package Registry works with:
 For documentation of the specific API endpoints that these
 clients use, see the [NuGet API documentation](../../../api/packages/nuget.md).
 
-## Install NuGet
-
-The required minimum versions are:
-
-- [NuGet CLI 5.1 or later](https://www.nuget.org/downloads). If you have
-  [Visual Studio](https://visualstudio.microsoft.com/vs/), the NuGet CLI is
-  probably already installed.
-- Alternatively, you can use [.NET SDK 3.0 or later](https://dotnet.microsoft.com/download/dotnet/3.0),
-  which installs the NuGet CLI.
-- NuGet protocol version 3 or later.
-
-Verify that the [NuGet CLI](https://www.nuget.org/) is installed by running:
-
-```shell
-nuget help
-```
-
-The output should be similar to:
-
-```plaintext
-NuGet Version: 5.1.0.6013
-usage: NuGet <command> [args] [options]
-Type 'NuGet help <command>' for help on a specific command.
-
-Available commands:
-
-[output truncated]
-```
-
-### Install NuGet on macOS
-
-For macOS, you can use [Mono](https://www.mono-project.com/) to run the
-NuGet CLI.
-
-1. If you use Homebrew, to install Mono, run `brew install mono`.
-1. Download the Windows C# binary `nuget.exe` from the [NuGet CLI page](https://www.nuget.org/downloads).
-1. Run this command:
-
-   ```shell
-   mono nuget.exe
-   ```
+Learn how to [install NuGet](../workflows/build_packages.md#nuget).
 
 ## Use the GitLab endpoint for NuGet Packages
 
@@ -162,6 +122,7 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet en
 1. In the **NuGet** section, select **Sources** to view a list of all your NuGet sources.
 1. Select **Add**.
 1. Complete the following fields:
+
    - **Name**: Name for the source.
    - **Location**: `https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json`,
      where `<your_project_id>` is your project ID, and `gitlab.example.com` is
@@ -191,6 +152,7 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endp
 1. In the **NuGet** section, select **Sources** to view a list of all your NuGet sources.
 1. Select **Add**.
 1. Complete the following fields:
+
    - **Name**: Name for the source.
    - **Location**: `https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json`,
      where `<your_group_id>` is your group ID, and `gitlab.example.com` is

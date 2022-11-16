@@ -14,177 +14,7 @@ Then, install the packages whenever you need to use them as a dependency.
 For documentation of the specific API endpoints that the Maven package manager
 client uses, see the [Maven API documentation](../../../api/packages/maven.md).
 
-## Build a Maven package
-
-This section explains how to install Maven and build a package.
-
-If you already use Maven and know how to build your own packages, go to the
-[next section](#authenticate-to-the-package-registry-with-maven).
-
-Maven repositories work well with Gradle, too. To set up a Gradle project, see [get started with Gradle](#build-a-java-project-with-gradle).
-
-### Install Maven
-
-The required minimum versions are:
-
-- Java 11.0.5+
-- Maven 3.6+
-
-Follow the instructions at [maven.apache.org](https://maven.apache.org/install.html)
-to download and install Maven for your local development environment. After
-installation is complete, verify you can use Maven in your terminal by running:
-
-```shell
-mvn --version
-```
-
-The output should be similar to:
-
-```shell
-Apache Maven 3.6.1 (d66c9c0b3152b2e69ee9bac180bb8fcc8e6af555; 2019-04-04T20:00:29+01:00)
-Maven home: /Users/<your_user>/apache-maven-3.6.1
-Java version: 12.0.2, vendor: Oracle Corporation, runtime: /Library/Java/JavaVirtualMachines/jdk-12.0.2.jdk/Contents/Home
-Default locale: en_GB, platform encoding: UTF-8
-OS name: "mac os x", version: "10.15.2", arch: "x86_64", family: "mac"
-```
-
-### Create a project
-
-Follow these steps to create a Maven project that can be
-published to the GitLab Package Registry.
-
-1. Open your terminal and create a directory to store the project.
-1. From the new directory, run this Maven command to initialize a new package:
-
-   ```shell
-   mvn archetype:generate -DgroupId=com.mycompany.mydepartment -DartifactId=my-project -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
-   ```
-
-   The arguments are:
-
-   - `DgroupId`: A unique string that identifies your package. Follow
-   the [Maven naming conventions](https://maven.apache.org/guides/mini/guide-naming-conventions.html).
-   - `DartifactId`: The name of the `JAR`, appended to the end of the `DgroupId`.
-   - `DarchetypeArtifactId`: The archetype used to create the initial structure of
-   the project.
-   - `DinteractiveMode`: Create the project using batch mode (optional).
-
-This message indicates that the project was set up successfully:
-
-```shell
-...
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  3.429 s
-[INFO] Finished at: 2020-01-28T11:47:04Z
-[INFO] ------------------------------------------------------------------------
-```
-
-In the folder where you ran the command, a new directory should be displayed.
-The directory name should match the `DartifactId` parameter, which in this case,
-is `my-project`.
-
-## Build a Java project with Gradle
-
-This section explains how to install Gradle and initialize a Java project.
-
-If you already use Gradle and know how to build your own packages, go to the
-[next section](#authenticate-to-the-package-registry-with-maven).
-
-### Install Gradle
-
-If you want to create a new Gradle project, you must install Gradle. Follow
-instructions at [gradle.org](https://gradle.org/install/) to download and install
-Gradle for your local development environment.
-
-In your terminal, verify you can use Gradle by running:
-
-```shell
-gradle -version
-```
-
-To use an existing Gradle project, in the project directory,
-on Linux execute `gradlew`, or on Windows execute `gradlew.bat`.
-
-The output should be similar to:
-
-```plaintext
-------------------------------------------------------------
-Gradle 6.0.1
-------------------------------------------------------------
-
-Build time:   2019-11-18 20:25:01 UTC
-Revision:     fad121066a68c4701acd362daf4287a7c309a0f5
-
-Kotlin:       1.3.50
-Groovy:       2.5.8
-Ant:          Apache Ant(TM) version 1.10.7 compiled on September 1 2019
-JVM:          11.0.5 (Oracle Corporation 11.0.5+10)
-OS:           Windows 10 10.0 amd64
-```
-
-### Create a Java project
-
-Follow these steps to create a Maven project that can be
-published to the GitLab Package Registry.
-
-1. Open your terminal and create a directory to store the project.
-1. From this new directory, run this Maven command to initialize a new package:
-
-   ```shell
-   gradle init
-   ```
-
-   The output should be:
-
-   ```plaintext
-   Select type of project to generate:
-     1: basic
-     2: application
-     3: library
-     4: Gradle plugin
-   Enter selection (default: basic) [1..4]
-   ```
-
-1. Enter `3` to create a new Library project. The output should be:
-
-   ```plaintext
-   Select implementation language:
-     1: C++
-     2: Groovy
-     3: Java
-     4: Kotlin
-     5: Scala
-     6: Swift
-   ```
-
-1. Enter `3` to create a new Java Library project. The output should be:
-
-   ```plaintext
-   Select build script DSL:
-     1: Groovy
-     2: Kotlin
-   Enter selection (default: Groovy) [1..2]
-   ```
-
-1. Enter `1` to create a new Java Library project that is described in Groovy DSL, or `2` to create one that is described in Kotlin DSL. The output should be:
-
-   ```plaintext
-   Select test framework:
-     1: JUnit 4
-     2: TestNG
-     3: Spock
-     4: JUnit Jupiter
-   ```
-
-1. Enter `1` to initialize the project with JUnit 4 testing libraries. The output should be:
-
-   ```plaintext
-   Project name (default: test):
-   ```
-
-1. Enter a project name or press <kbd>Enter</kbd> to use the directory name as project name.
+Learn how to build a [Maven](../workflows/build_packages.md#maven) or [Gradle](../workflows/build_packages.md#gradle) package.
 
 ## Authenticate to the Package Registry with Maven
 
@@ -561,11 +391,11 @@ for download.
 **Only packages that have the same path as the project** are exposed by
 the instance-level endpoint.
 
-| Project | Package | Instance-level endpoint available |
-| ------- | ------- | --------------------------------- |
-| `foo/bar`           | `foo/bar/1.0-SNAPSHOT`           | Yes |
-| `gitlab-org/gitlab` | `foo/bar/1.0-SNAPSHOT`           | No  |
-| `gitlab-org/gitlab` | `gitlab-org/gitlab/1.0-SNAPSHOT` | Yes |
+| Project             | Package                          | Instance-level endpoint available |
+| ------------------- | -------------------------------- | --------------------------------- |
+| `foo/bar`           | `foo/bar/1.0-SNAPSHOT`           | Yes                               |
+| `gitlab-org/gitlab` | `foo/bar/1.0-SNAPSHOT`           | No                                |
+| `gitlab-org/gitlab` | `gitlab-org/gitlab/1.0-SNAPSHOT` | Yes                               |
 
 This example shows how relevant `repository` section of your `pom.xml`.
 You still need a project-specific URL in the `distributionManagement` section.
@@ -838,7 +668,7 @@ dependencies {
 
 ### Request forwarding to Maven Central
 
-> [Introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/362657>) behind a [feature flag](../../feature_flags.md), disabled by default in GitLab 15.4
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362657) behind a [feature flag](../../feature_flags.md), disabled by default in GitLab 15.4
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
@@ -1053,20 +883,20 @@ that you can use when performing tasks with GitLab CI/CD.
 
 - Specify where to find the `pom.xml` file (`-f,--file`):
 
-   ```yaml
-   package:
-     script:
-       - 'mvn --no-transfer-progress -f helloworld/pom.xml package'
-   ```
+  ```yaml
+  package:
+    script:
+      - 'mvn --no-transfer-progress -f helloworld/pom.xml package'
+  ```
 
 - Specify where to find the user settings (`-s,--settings`) instead of
   [the default location](https://maven.apache.org/settings.html). There's also a `-gs,--global-settings` option:
 
-   ```yaml
-   package:
-     script:
-       - 'mvn -s settings/ci.xml package'
-   ```
+  ```yaml
+  package:
+    script:
+      - 'mvn -s settings/ci.xml package'
+  ```
 
 ### Verify your Maven settings
 
