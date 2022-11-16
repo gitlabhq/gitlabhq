@@ -121,14 +121,7 @@ RSpec.describe Reenqueuer::ReenqueuerSleeper do
   # Unit test ensure_minimum_duration
   describe '#ensure_minimum_duration' do
     around do |example|
-      # Allow Timecop.travel without the block form
-      Timecop.safe_mode = false
-
-      Timecop.freeze do
-        example.run
-      end
-
-      Timecop.safe_mode = true
+      freeze_time { example.run }
     end
 
     let(:minimum_duration) { 4.seconds }
@@ -140,31 +133,31 @@ RSpec.describe Reenqueuer::ReenqueuerSleeper do
         expect(dummy).to receive(:sleep).with(a_value_within(0.01).of(time_left))
 
         dummy.ensure_minimum_duration(minimum_duration) do
-          Timecop.travel(minimum_duration - time_left)
+          travel(minimum_duration - time_left)
         end
       end
     end
 
     context 'when the block completes just before the minimum duration' do
-      let(:time_left) { 0.1.seconds }
+      let(:time_left) { 1.second }
 
       it 'sleeps until the minimum duration' do
         expect(dummy).to receive(:sleep).with(a_value_within(0.01).of(time_left))
 
         dummy.ensure_minimum_duration(minimum_duration) do
-          Timecop.travel(minimum_duration - time_left)
+          travel(minimum_duration - time_left)
         end
       end
     end
 
     context 'when the block completes just after the minimum duration' do
-      let(:time_over) { 0.1.seconds }
+      let(:time_over) { 1.second }
 
       it 'does not sleep' do
         expect(dummy).not_to receive(:sleep)
 
         dummy.ensure_minimum_duration(minimum_duration) do
-          Timecop.travel(minimum_duration + time_over)
+          travel(minimum_duration + time_over)
         end
       end
     end
@@ -176,7 +169,7 @@ RSpec.describe Reenqueuer::ReenqueuerSleeper do
         expect(dummy).not_to receive(:sleep)
 
         dummy.ensure_minimum_duration(minimum_duration) do
-          Timecop.travel(minimum_duration + time_over)
+          travel(minimum_duration + time_over)
         end
       end
     end

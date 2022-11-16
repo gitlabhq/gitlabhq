@@ -2906,7 +2906,6 @@ Layout/LineLength:
     - 'ee/spec/workers/update_all_mirrors_worker_spec.rb'
     - 'ee/spec/workers/vulnerability_exports/export_deletion_worker_spec.rb'
     - 'lib/api/admin/instance_clusters.rb'
-    - 'lib/api/admin/plan_limits.rb'
     - 'lib/api/api.rb'
     - 'lib/api/appearance.rb'
     - 'lib/api/award_emoji.rb'

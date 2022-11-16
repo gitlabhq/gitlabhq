@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../qa'
+require 'active_support/testing/time_helpers'
 
 QA::Specs::QaDeprecationToolkitEnv.configure!
 
@@ -18,6 +19,7 @@ RSpec.configure(&:disable_monkey_patching!)
 require_relative('../../../jh/qa/qa/specs/spec_helper') if GitlabEdition.jh?
 
 RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
   config.include QA::Support::Matchers::EventuallyMatcher
   config.include QA::Support::Matchers::HaveMatcher
 

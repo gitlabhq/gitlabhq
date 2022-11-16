@@ -7,8 +7,6 @@ class AuthorizedKeysWorker
 
   sidekiq_options retry: 3
 
-  PERMITTED_ACTIONS = %w[add_key remove_key].freeze
-
   feature_category :source_code_management
   urgency :high
   weight 2

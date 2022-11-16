@@ -2,6 +2,7 @@
 
 require './spec/support/sidekiq_middleware'
 require './spec/support/helpers/test_env'
+require 'active_support/testing/time_helpers'
 
 # Usage:
 #
@@ -18,6 +19,8 @@ require './spec/support/helpers/test_env'
 # VSA_SEED_PROJECT_ID=10 FILTER=cycle_analytics SEED_VSA=1 bundle exec rake db:seed_fu
 
 class Gitlab::Seeder::CycleAnalytics
+  include ActiveSupport::Testing::TimeHelpers
+
   attr_reader :project, :issues, :merge_requests, :developers
 
   FLAG = 'SEED_VSA'
@@ -133,7 +136,7 @@ class Gitlab::Seeder::CycleAnalytics
 
   def create_issues!
     @issue_count.times do
-      Timecop.travel start_time + rand(5).days do
+      travel_to(start_time + rand(5).days) do
         title = "#{FFaker::Product.brand}-#{suffix}"
         @issues << Issue.create!(project: project, title: title, author: developers.sample)
       end

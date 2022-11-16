@@ -15,3 +15,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SlashCommands::IncidentManagement::IncidentCommand.prepend_mod

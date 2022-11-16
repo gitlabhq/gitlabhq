@@ -4,46 +4,24 @@ module Gitlab
   module Database
     module QueryAnalyzers
       module Ci
-        # The purpose of this analyzer is to detect queries not going through a partitioning routing table
-        class PartitioningAnalyzer < Database::QueryAnalyzers::Base
-          RoutingTableNotUsedError = Class.new(QueryAnalyzerError)
+        # The purpose of this analyzer is to detect queries missing partition_id clause
+        # when selecting, inserting, updating or deleting data.
+        class PartitioningIdAnalyzer < Database::QueryAnalyzers::Base
           PartitionIdMissingError = Class.new(QueryAnalyzerError)
 
-          ENABLED_TABLES = %w[
-            ci_builds_metadata
-          ].freeze
-
-          ROUTING_TABLES = ENABLED_TABLES.map { |table| "p_#{table}" }.freeze
+          ROUTING_TABLES = %w[p_ci_builds_metadata].freeze
 
           class << self
             def enabled?
               ::Feature::FlipperFeature.table_exists? &&
-                ::Feature.enabled?(:ci_partitioning_analyze_queries, type: :ops)
-            end
-
-            def analyze(parsed)
-              analyze_legacy_tables_usage(parsed)
-              analyze_partition_id_presence(parsed) if partition_id_check_enabled?
-            end
-
-            private
-
-            def partition_id_check_enabled?
-              ::Feature::FlipperFeature.table_exists? &&
                 ::Feature.enabled?(:ci_partitioning_analyze_queries_partition_id_check, type: :ops)
             end
 
-            def analyze_legacy_tables_usage(parsed)
-              detected = ENABLED_TABLES & (parsed.pg.dml_tables + parsed.pg.select_tables)
-
-              return if detected.none?
-
-              log_and_raise_error(
-                RoutingTableNotUsedError.new(
-                  "Detected non-partitioned table use #{detected.inspect}: #{parsed.sql}"
-                )
-              )
+            def analyze(parsed)
+              analyze_partition_id_presence(parsed)
             end
+
+            private
 
             def analyze_partition_id_presence(parsed)
               detected = ROUTING_TABLES & (parsed.pg.dml_tables + parsed.pg.select_tables)
@@ -56,7 +34,7 @@ module Gitlab
                 return if partition_id_included?(detected_with_selected_columns)
               end
 
-              log_and_raise_error(
+              ::Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
                 PartitionIdMissingError.new(
                   "Detected query against a partitioned table without partition id: #{parsed.sql}"
                 )
@@ -76,10 +54,6 @@ module Gitlab
               return false if result.empty?
 
               result.all? { |_routing_table, columns| columns.include?('partition_id') }
-            end
-
-            def log_and_raise_error(error)
-              ::Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
             end
 
             def insert_query?(parsed)

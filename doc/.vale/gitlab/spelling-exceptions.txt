@@ -615,6 +615,7 @@ Silverlight
 Sisense
 Sitespeed
 skippable
+skopeo
 Slack
 Slackbot
 Slony

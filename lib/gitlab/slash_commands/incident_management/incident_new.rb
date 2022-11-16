@@ -16,12 +16,6 @@ module Gitlab
           text == 'incident declare'
         end
 
-        def execute(_match)
-          response = ServiceResponse.success(message: 'It works!')
-
-          presenter.present(response.message)
-        end
-
         private
 
         def presenter
@@ -31,3 +25,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SlashCommands::IncidentManagement::IncidentNew.prepend_mod

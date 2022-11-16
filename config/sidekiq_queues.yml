@@ -259,6 +259,8 @@
   - 1
 - - integrations_slack_event
   - 1
+- - integrations_slack_interactivity
+  - 1
 - - invalid_gpg_signature_update
   - 2
 - - issuable_export_csv

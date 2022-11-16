@@ -14,6 +14,8 @@ RSpec.describe 'Database schema' do
     issues: %w[work_item_type_id]
   }.with_indifferent_access.freeze
 
+  TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
+
   # List of columns historically missing a FK, don't add more columns
   # See: https://docs.gitlab.com/ee/development/database/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
@@ -32,7 +34,6 @@ RSpec.describe 'Database schema' do
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
-    ci_builds_metadata: %w[partition_id],
     p_ci_builds_metadata: %w[partition_id],
     ci_job_artifacts: %w[partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
@@ -108,7 +109,7 @@ RSpec.describe 'Database schema' do
   }.with_indifferent_access.freeze
 
   context 'for table' do
-    ActiveRecord::Base.connection.tables.sort.each do |table|
+    (ActiveRecord::Base.connection.tables - TABLE_PARTITIONS).sort.each do |table|
       describe table do
         let(:indexes) { connection.indexes(table) }
         let(:columns) { connection.columns(table) }

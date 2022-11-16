@@ -1157,6 +1157,9 @@ msgstr ""
 msgid "%{type} only supports %{name} name"
 msgstr ""
 
+msgid "%{url} (optional)"
+msgstr ""
+
 msgid "%{userName} (cannot merge)"
 msgstr ""
 
@@ -11643,6 +11646,9 @@ msgstr ""
 msgid "Credit card:"
 msgstr ""
 
+msgid "Critical - S1"
+msgstr ""
+
 msgid "Critical vulnerabilities present"
 msgstr ""
 
@@ -20083,6 +20089,9 @@ msgstr ""
 msgid "Hierarchy|You can start using these items now."
 msgstr ""
 
+msgid "High - S2"
+msgstr ""
+
 msgid "High or unknown vulnerabilities present"
 msgstr ""
 
@@ -21328,10 +21337,16 @@ msgstr ""
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "Incident creation cancelled."
+msgstr ""
+
 msgid "Incident details"
 msgstr ""
 
 msgid "Incident template (optional)."
+msgstr ""
+
+msgid "Incident title"
 msgstr ""
 
 msgid "IncidentManagement|%{hours} hours, %{minutes} minutes remaining"
@@ -24702,6 +24717,9 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
+msgid "Low - S4"
+msgstr ""
+
 msgid "Low vulnerabilities present"
 msgstr ""
 
@@ -25306,6 +25324,9 @@ msgid "Mean time to merge"
 msgstr ""
 
 msgid "Measured in bytes of code. Excludes generated and vendored code."
+msgstr ""
+
+msgid "Medium - S3"
 msgstr ""
 
 msgid "Medium timeout"
@@ -26950,6 +26971,9 @@ msgid "New health check access token has been generated!"
 msgstr ""
 
 msgid "New identity"
+msgstr ""
+
+msgid "New incident"
 msgstr ""
 
 msgid "New issue"
@@ -30509,6 +30533,9 @@ msgid "Please check your email (%{email}) to verify that you own this address an
 msgstr ""
 
 msgid "Please click the link in the confirmation email before continuing. It was sent to %{html_tag_strong_start}%{email}%{html_tag_strong_end}."
+msgstr ""
+
+msgid "Please complete the incident creation form."
 msgstr ""
 
 msgid "Please complete your profile with email address"
@@ -37181,6 +37208,9 @@ msgstr ""
 msgid "Select reviewer(s)"
 msgstr ""
 
+msgid "Select severity (optional)"
+msgstr ""
+
 msgid "Select source"
 msgstr ""
 
@@ -38370,6 +38400,9 @@ msgstr ""
 msgid "Something went wrong while closing the epic. Please try again later."
 msgstr ""
 
+msgid "Something went wrong while closing the incident form."
+msgstr ""
+
 msgid "Something went wrong while closing the merge request. Please try again later."
 msgstr ""
 
@@ -38437,6 +38470,9 @@ msgid "Something went wrong while fetching the packages list."
 msgstr ""
 
 msgid "Something went wrong while obtaining the Let's Encrypt certificate."
+msgstr ""
+
+msgid "Something went wrong while opening the incident form."
 msgstr ""
 
 msgid "Something went wrong while promoting the issue to an epic. Please try again."
@@ -46395,6 +46431,9 @@ msgstr ""
 msgid "Write a description or drag your files here…"
 msgstr ""
 
+msgid "Write a description..."
+msgstr ""
+
 msgid "Write a description…"
 msgstr ""
 
@@ -46779,6 +46818,9 @@ msgid "You can’t edit files directly in this project. Fork this project and su
 msgstr ""
 
 msgid "You could not create a new trigger."
+msgstr ""
+
+msgid "You do not have access to any projects for creating incidents."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"
@@ -47512,6 +47554,9 @@ msgstr ""
 msgid "ZentaoIntegration|ZenTao issues"
 msgstr ""
 
+msgid "Zoom"
+msgstr ""
+
 msgid "Zoom meeting added"
 msgstr ""
 
@@ -47525,6 +47570,9 @@ msgid "[REDACTED]"
 msgstr ""
 
 msgid "[Redacted]"
+msgstr ""
+
+msgid "[Supports GitLab-flavored markdown, including quick actions]"
 msgstr ""
 
 msgid "`end_time` should not exceed one month after `start_time`"

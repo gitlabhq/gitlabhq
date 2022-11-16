@@ -75,6 +75,8 @@ metadata:
     description: Operations related to User-starred metrics dashboards
   - name: package_files
     description: Operations about package files
+  - name: plan_limits
+    description: Operations related to plan limits
   - name: project_export
     description: Operations related to exporting projects
   - name: project_hooks

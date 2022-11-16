@@ -171,6 +171,9 @@ export default {
           filters: this.filterParams,
         };
       },
+      context: {
+        isSingleRequest: true,
+      },
       skip() {
         return this.isEpicBoard;
       },
