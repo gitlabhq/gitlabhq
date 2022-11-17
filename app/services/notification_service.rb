@@ -98,10 +98,10 @@ class NotificationService
   end
 
   # Notify the user when one of their personal access tokens is revoked
-  def access_token_revoked(user, token_name)
+  def access_token_revoked(user, token_name, source = nil)
     return unless user.can?(:receive_notifications)
 
-    mailer.access_token_revoked_email(user, token_name).deliver_later
+    mailer.access_token_revoked_email(user, token_name, source).deliver_later
   end
 
   # Notify the user when at least one of their ssh key has expired today

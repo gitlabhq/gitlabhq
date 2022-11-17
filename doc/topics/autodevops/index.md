@@ -129,7 +129,7 @@ for the subgroups and projects where you don't want to use it.
 
 Prerequisites:
 
-- You must have at least the Owner role for the group.
+- You must have the Owner role for the group.
 
 To enable Auto DevOps for a group:
 

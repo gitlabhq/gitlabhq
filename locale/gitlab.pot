@@ -45552,6 +45552,9 @@ msgstr ""
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+msgid "We found your token in a public project and have automatically revoked it to protect your account."
+msgstr ""
+
 msgid "We have found the following errors:"
 msgstr ""
 

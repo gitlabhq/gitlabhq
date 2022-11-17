@@ -573,6 +573,16 @@ ee:registry-object-storage-tls:
     GITLAB_TLS_CERTIFICATE: $QA_GITLAB_TLS_CERTIFICATE
     GITLAB_QA_OPTS: --omnibus-config registry_object_storage
 
+ee:importers:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Import
+    QA_ALLOW_LOCAL_REQUESTS: "true"
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::Import/
+    - !reference [.rules:test:manual, rules]
+
 # ==========================================
 # Post test stage
 # ==========================================

@@ -270,7 +270,7 @@ You can mark a project to be deleted.
 
 Prerequisite:
 
-- You must have at least the Owner role for a project.
+- You must have the Owner role for a project.
 
 To delete a project:
 
@@ -308,7 +308,7 @@ If you don't want to wait, you can delete a project immediately.
 
 Prerequisites:
 
-- You must have at least the Owner role for a project.
+- You must have the Owner role for a project.
 - You have [marked the project for deletion](#delete-a-project).
 
 To immediately delete a project marked for deletion:

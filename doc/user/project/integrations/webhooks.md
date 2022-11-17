@@ -62,6 +62,41 @@ You can configure a webhook for a group or a project.
 1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#manage-ssl-verification).
 1. Select **Add webhook**.
 
+## Mask sensitive portions of webhook URLs
+
+> Introduced in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. On GitLab.com, this feature is not available.
+
+You can define and mask sensitive portions of webhook URLs and replace them
+with configured values any number of times when webhooks are executed.
+Sensitive portions do not get logged and are encrypted at rest in the database.
+
+To mask sensitive portions of the webhook URL:
+
+1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
+1. In **URL**, enter the full webhook URL.
+1. Select **Mask portions of URL**.
+1. In **Sensitive portion of URL**, enter the portion you want to mask.
+1. In **How it looks in the UI**, enter the masking value.
+
+To interpolate sensitive portions for each webhook, use `url_variables`.
+For example, if a webhook has the following URL:
+
+```plaintext
+https://{subdomain}.example.com/{path}?key={value}
+```
+
+You must define the following variables:
+
+- `subdomain`
+- `path`
+- `value`
+
+Variable names can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
+You can define URL variables directly using the REST API.
+
 ## Configure your webhook receiver endpoint
 
 Webhook receiver endpoints should be fast and stable.

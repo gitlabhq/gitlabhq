@@ -78,7 +78,7 @@ If you don't want to wait, you can remove a group immediately.
 
 Prerequisites:
 
-- You must have at least the Owner role for a group.
+- You must have the Owner role for a group.
 - You have [marked the group for deletion](#remove-a-group).
 
 To immediately remove a group marked for deletion:

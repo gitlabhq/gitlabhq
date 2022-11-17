@@ -78,7 +78,7 @@ overrides it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
 
-Users with at least the Owner role of groups and subgroups can configure the default branch name for a group:
+Users with the Owner role of groups and subgroups can configure the default branch name for a group:
 
 1. Go to the group **Settings > Repository**.
 1. Expand **Default branch**.

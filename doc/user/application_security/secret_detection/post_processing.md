@@ -6,7 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Secret Detection post-processing and revocation **(FREE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
+> - [Disabled by default for GitLab personal access tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `gitlab_pat_auto_revocation`. Available to GitLab.com only.
+
+FLAG:
+By default, auto revocation of GitLab personal access tokens is not available. To opt-in on GitLab.com,
+please reach out to GitLab support.
 
 GitLab supports running post-processing hooks after detecting a secret. These
 hooks can perform actions, like notifying the cloud service that issued the secret.
@@ -16,7 +21,7 @@ The cloud provider can then confirm the credentials and take remediation actions
 - Reissuing a secret.
 - Notifying the creator of the secret.
 
-GitLab SaaS supports post-processing for Amazon Web Services (AWS).
+GitLab SaaS supports post-processing for [GitLab personal access tokens](../../profile/personal_access_tokens.md) and Amazon Web Services (AWS).
 Post-processing workflows vary by supported cloud providers.
 
 Post-processing is limited to a project's default branch. The epic

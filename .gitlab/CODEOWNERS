@@ -922,6 +922,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/free_user_limit.md @phillipwells
 /doc/user/group/ @lciutacu
 /doc/user/group/clusters/ @phillipwells
+/doc/user/group/compliance_frameworks.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @eread
 /doc/user/group/devops_adoption/ @lciutacu
@@ -931,6 +932,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/group/issues_analytics/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/planning_hierarchy/ @msedlakjakubowski
+/doc/user/group/reporting/ @phillipwells
 /doc/user/group/repositories_analytics/ @marcel.amirault
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @jglassman1
@@ -1017,6 +1019,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk.md @msedlakjakubowski
 /doc/user/project/settings/import_export.md @eread
+/doc/user/project/settings/import_export_troubleshooting.md @eread
 /doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/time_tracking.md @msedlakjakubowski
@@ -1026,7 +1029,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/public_access.md @lciutacu
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
-/doc/user/search/global_search/ @ashrafkhamis
 /doc/user/shortcuts.md @ashrafkhamis
 /doc/user/snippets.md @ashrafkhamis
 /doc/user/ssh.md @jglassman1

@@ -222,21 +222,26 @@ References to pull requests and issues are preserved. Each imported repository m
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it
 defaults to the default project visibility.
 
-### Branch protection rules
+### Branch protection rules and project settings
 
-Supported GitHub branch protection rules are mapped to GitLab branch protection rules or project-wide GitLab settings when they are imported:
+When they are imported, supported GitHub branch protection rules are mapped to either:
 
-- GitHub rule **Require conversation resolution before merging** for the project's default branch is mapped to the [**All threads must be resolved** GitLab setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) in GitLab 15.5.
-- GitHub rule **Require a pull request before merging** is mapped to the **No one** option in the **Allowed to push** list of the branch protection rule. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) in GitLab 15.5.
-- GitHub rule **Require a pull request before merging - Require review from Code Owners** is mapped to the
-  [**Code owner approval** branch protection rule](../protected_branches.md#require-code-owner-approval-on-a-protected-branch). Requires GitLab Premium or higher.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) in GitLab 15.6.
-- GitHub rule **Require signed commits** for the project's default branch is mapped to the **Reject unsigned commits** GitLab push rule. Requires GitLab Premium or higher.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) in GitLab 15.5.
-- GitHub rule **Allow force pushes - Everyone** is mapped to the [**Allowed to force push** branch protection rule](../protected_branches.md#allow-force-push-on-a-protected-branch). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) in GitLab 15.6.
-- GitHub rule **Allow force pushes - Specify who can force push**  is proposed in issue [370945](https://gitlab.com/gitlab-org/gitlab/-/issues/370945).
-- Support for GitHub rule **Require status checks to pass before merging** was proposed in issue [370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule cannot be translated during project import into GitLab due to technical difficulties.
-You can still create [status checks](../merge_requests/status_checks.md) in GitLab yourself.
+- GitLab branch protection rules.
+- Project-wide GitLab settings.
+
+| GitHub rule                                                                         | GitLab rule                                                                                                                                                 | Introduced in                                                       |
+|:------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------|
+| **Require conversation resolution before merging** for the project's default branch | **All threads must be resolved** [project setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
+| **Require a pull request before merging**                                           | **No one** option in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
+| **Require signed commits** for the project's default branch                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
+| **Allow force pushes - Everyone**                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
+| **Require a pull request before merging - Require review from Code Owners**         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
+
+Mapping GitHub rule **Require status checks to pass before merging** to
+[external status checks](../merge_requests/status_checks.md) was considered in issue
+[370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule is not imported during project import
+into GitLab due to technical difficulties. You can still create [external status checks](../merge_requests/status_checks.md)
+manually.
 
 ## Alternative way to import notes and diff notes
 

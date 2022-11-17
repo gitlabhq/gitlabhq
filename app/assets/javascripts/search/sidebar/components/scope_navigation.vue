@@ -3,7 +3,11 @@ import { GlNav, GlNavItem } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
 import { formatNumber } from '~/locale';
 import Tracking from '~/tracking';
-import { NAV_LINK_DEFAULT_CLASSES, NUMBER_FORMATING_OPTIONS } from '../constants';
+import {
+  NAV_LINK_DEFAULT_CLASSES,
+  NUMBER_FORMATING_OPTIONS,
+  NAV_LINK_COUNT_DEFAULT_CLASSES,
+} from '../constants';
 
 export default {
   name: 'ScopeNavigation',
@@ -20,9 +24,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchSidebarCount']),
-    activeClasses(currentScope) {
-      return currentScope === this.urlQuery.scope ? 'gl-font-weight-bold' : '';
-    },
     showFormatedCount(count) {
       if (!count) {
         return '0';
@@ -33,14 +34,21 @@ export default {
     handleClick(scope) {
       this.track('click_menu_item', { label: `vertical_navigation_${scope}` });
     },
-    linkClasses(scope) {
+    linkClasses(isHighlighted) {
+      return [...this.$options.NAV_LINK_DEFAULT_CLASSES, { 'gl-font-weight-bold': isHighlighted }];
+    },
+    countClasses(isHighlighted) {
       return [
-        { 'gl-font-weight-bold': scope === this.urlQuery.scope },
-        ...this.$options.NAV_LINK_DEFAULT_CLASSES,
+        ...this.$options.NAV_LINK_COUNT_DEFAULT_CLASSES,
+        isHighlighted ? 'gl-text-gray-900' : 'gl-text-gray-500',
       ];
+    },
+    isActive(scope, index) {
+      return this.urlQuery.scope ? this.urlQuery.scope === scope : index === 0;
     },
   },
   NAV_LINK_DEFAULT_CLASSES,
+  NAV_LINK_COUNT_DEFAULT_CLASSES,
 };
 </script>
 
@@ -50,13 +58,13 @@ export default {
       <gl-nav-item
         v-for="(item, scope, index) in navigation"
         :key="scope"
-        :link-classes="linkClasses(scope)"
+        :link-classes="linkClasses(isActive(scope, index))"
         class="gl-mb-1"
         :href="item.link"
-        :active="urlQuery.scope ? urlQuery.scope === scope : index === 0"
+        :active="isActive(scope, index)"
         @click="handleClick(scope)"
         ><span>{{ item.label }}</span
-        ><span v-if="item.count" class="gl-font-sm gl-font-weight-normal">
+        ><span v-if="item.count" :class="countClasses(isActive(scope, index))">
           {{ showFormatedCount(item.count) }}
         </span>
       </gl-nav-item>

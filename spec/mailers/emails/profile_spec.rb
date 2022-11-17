@@ -269,6 +269,38 @@ RSpec.describe Emails::Profile do
         is_expected.to have_body_text /#{token.name}/
       end
 
+      it 'wont include the revocation reason' do
+        is_expected.not_to have_body_text %r{We found your token in a public project and have automatically revoked it to protect your account.$}
+      end
+
+      it 'includes the email reason' do
+        is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost<\/a>}
+      end
+    end
+
+    context 'when source is provided' do
+      subject { Notify.access_token_revoked_email(user, token.name, 'secret_detection') }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+
+      it 'is sent to the user' do
+        is_expected.to deliver_to user.email
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /^A personal access token has been revoked$/i
+      end
+
+      it 'provides the names of the token' do
+        is_expected.to have_body_text /#{token.name}/
+      end
+
+      it 'includes the revocation reason' do
+        is_expected.to have_body_text %r{We found your token in a public project and have automatically revoked it to protect your account.$}
+      end
+
       it 'includes the email reason' do
         is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost<\/a>}
       end

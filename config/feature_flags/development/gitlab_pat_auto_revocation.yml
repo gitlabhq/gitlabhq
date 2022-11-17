@@ -1,0 +1,8 @@
+---
+name: gitlab_pat_auto_revocation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103713
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382610
+milestone: '15.6'
+type: development
+group: group::static analysis
+default_enabled: false

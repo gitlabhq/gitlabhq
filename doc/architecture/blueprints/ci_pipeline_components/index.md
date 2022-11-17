@@ -110,7 +110,8 @@ identifying abstract concepts and are subject to changes as we refine the design
 
 ## Definition of pipeline component
 
-A pipeline component is a reusable single-purpose building block that abstracts away a single pipeline configuration unit. Components are used to compose a part or entire pipeline configuration.
+A pipeline component is a reusable single-purpose building block that abstracts away a single pipeline configuration unit.
+Components are used to compose a part or entire pipeline configuration.
 It can optionally take input parameters and set output data to be adaptable and reusable in different pipeline contexts,
 while encapsulating and isolating implementation details.
 
@@ -133,27 +134,145 @@ For best experience with any systems made of components it's fundamental that co
   The version identifies the exact interface and behavior of the component.
 - **Resolvable**: when a component depends on another component, this dependency must be explicit and trackable.
 
-## Proposal
+## Structure of a component
 
-Prerequisites to create a component:
+A pipeline component is identified by the path to a repository or directory that defines it
+and a specific version: `<component-path>@<version>`.
 
-- Create a project. Description and avatar are highly recommended to improve discoverability.
-- Add a `README.md` in the top level directory that documents the component.
-  What it does, how to use it, how to contribute, etc.
-  This file is mandatory.
-- Add a `.gitlab-ci.yml` in the top level directory to test that the components works as expected.
-  This file is highly recommended.
+For example: `gitlab-org/dast@1.0`.
 
-Characteristics of a component:
+### The component path
 
-- It must have a **name** to be referenced to and **description** for extra details.
-- It must specify its **type** which defines how it can be used (raw configuration to be `include`d, child pipeline workflow, job step).
-- It must define its **content** based on the type.
-- It must specify **input parameters** that it accepts. Components should depend on input parameters for dynamic values and not environment variables.
-- It can optionally define **output data** that it returns.
-- Its YAML specification should be **validated statically** (for example: using JSON schema validators).
-- It should be possible to use specific **versions** of a component by referencing official releases and SHA.
-- It should be possible to use components defined locally in the same repository.
+A component path must contain at least the metadata YAML and optionally a related `README.md` documentation file.
+
+The component path can be:
+
+- A path to a project: `gitlab-org/dast`. In this case the 2 files are defined in the root directory of the repository.
+- A path to a project subdirectory: `gitlab-org/dast/api-scan`. In this case the 2 files are defined in the `api-scan` directory.
+- A path to a local directory: `/path/to/component`. This path must contain the metadata YAML that defines the component.
+  The path must start with `/` to indicate a full path in the repository.
+
+The metadata YAML file follows the filename convention `gitlab-<component-type>.yml` where component type is one of:
+
+| Component type | Context |
+| -------------- | ------- |
+| `template`     | For components used under `include:` keyword |
+| `step`         | For components used under `steps:` keyword  |
+| `workflow`     | For components used under `trigger:` keyword |
+
+Based on the context where the component is used we fetch the correct YAML file.
+For example, if we are including a component `gitlab-org/dast@1.0` we expect a YAML file named `gitlab-template.yml` in the
+top level directory of `gitlab-org/dast` repository.
+
+A `gitlab-<component-type>.yml` file:
+
+- Must have a **name** to be referenced to and **description** for extra details.
+- Must specify its **type** in the filename, which defines how it can be used (raw configuration to be `include`d, child pipeline workflow, job step).
+- Must define its **content** based on the type.
+- Must specify **input parameters** that it accepts. Components should depend on input parameters for dynamic values and not environment variables.
+- Can optionally define **output data** that it returns.
+- Should be **validated statically** (for example: using JSON schema validators).
+
+Components that are released in the catalog must have a `README.md` file in the same directory as the
+metadata YAML file. The `README.md` represents the documentation for the specific component, hence it's recommended
+even when not releasing versions in the catalog.
+
+### The component version
+
+The version of the component can be (in order of highest priority first):
+
+1. A commit SHA - For example: `gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
+1. A released tag - For example: `gitlab-org/dast@1.0`
+1. A special moving target version that points to the most recent released tag - For example: `gitlab-org/dast@~latest`
+1. An unreleased tag - For example: `gitlab-org/dast@rc-1.0`
+1. A branch name - For example: `gitlab-org/dast@master`
+
+If a tag and branch exist with the same name, the tag takes precedence over the branch.
+Similarly, if a tag is named `e3262fdd0914fa823210cdb79a8c421e2cef79d8`, a commit SHA (if exists)
+takes precedence over the tag.
+
+As we want to be able to reference any revisions (even those not released), a component must be defined in a Git repository.
+
+NOTE:
+When referencing a component by local path (for example `./path/to/component`), its version is implicit and matches
+the commit SHA of the current pipeline context.
+
+## Components project
+
+A components project is a GitLab project/repository that exclusively hosts one or more pipeline components.
+
+For components projects it's highly recommended to set an appropriate avatar and project description
+to improve discoverability in the catalog.
+
+### Structure of a components project
+
+A project can host one or more components depending on whether the author wants to define a single component
+per project or include multiple cohesive components under the same project.
+
+Let's imagine we are developing a component that runs RSpec tests for a Rails app. We create a component project
+called `myorg/rails-rspec`.
+
+The following directory structure would support 1 component per project:
+
+```plaintext
+.
+├── gitlab-<type>.yml
+├── README.md
+└── .gitlab-ci.yml
+```
+
+The `.gitlab-ci.yml` is recommended for the project to ensure changes are verified accordingly.
+
+The component is now identified by the path `myorg/rails-rspec`. In other words, this means that
+the `gitlab-<type>.yml` and `README.md` are located in the root directory of the repository.
+
+The following directory structure would support multiple components per project:
+
+```plaintext
+.
+├── .gitlab-ci.yml
+├── unit/
+│   ├── gitlab-workflow.yml
+│   └── README.md
+├── integration/
+│   ├── gitlab-workflow.yml
+│   └── README.md
+└── feature/
+    ├── gitlab-workflow.yml
+    └── README.md
+```
+
+In this example we are defining multiple test profiles that are executed with RSpec.
+The user could choose to use one or more of these.
+
+Each of these components are identified by their path `myorg/rails-rspec/unit`, `myorg/rails-rspec/integration`
+and `myorg/rails-rspec/feature`.
+
+This directory structure could also support both strategies:
+
+```plaintext
+.
+├── gitlab-template.yml # myorg/rails-rspec
+├── README.md
+├── .gitlab-ci.yml
+├── unit/
+│   ├── gitlab-workflow.yml # myorg/rails-rspec/unit
+│   └── README.md
+├── integration/
+│   ├── gitlab-workflow.yml # myorg/rails-rspec/integration
+│   └── README.md
+└── feature/
+    ├── gitlab-workflow.yml # myorg/rails-rspec/feature
+    └── README.md
+```
+
+With the above structure we could have a top-level component that can be used as the
+default component. For example, `myorg/rails-rspec` could run all the test profiles together.
+However, more specific test profiles could be used separately (for example `myorg/rails-rspec/integration`).
+
+NOTE:
+Any nesting more than 1 level is initially not permitted.
+This limitation encourages cohesion at project level and keeps complexity low.
 
 ## Limits
 
@@ -188,3 +307,34 @@ Some limits we could consider adding:
     - Allow self-managed administrators to populate their self-managed catalog by importing/updating
       components from GitLab.com or from repository exports.
     - Iterate on feedback.
+
+## Who
+
+Proposal:
+
+<!-- vale gitlab.Spelling = NO -->
+
+| Role                         | Who
+|------------------------------|-------------------------|
+| Author                       | Fabio Pitino            |
+| Engineering Leader           | ?                       |
+| Product Manager              | Dov Hershkovitch        |
+| Architecture Evolution Coach | Kamil Trzciński, Grzegorz Bizon |
+
+DRIs:
+
+| Role                         | Who
+|------------------------------|------------------------|
+| Leadership                   | ?                      |
+| Product                      | Dov Hershkovitch       |
+| Engineering                  | Fabio Pitino           |
+| UX                           | Kevin Comoli              |
+
+Domain experts:
+
+| Area                         | Who
+|------------------------------|------------------------|
+| Verify / Pipeline authoring  | Avielle Wolfe          |
+| Verify / Pipeline authoring  | Furkan Ayhan           |
+
+<!-- vale gitlab.Spelling = YES -->

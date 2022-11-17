@@ -335,7 +335,7 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 Prerequisite:
 
-- You must have at least the Owner role.
+- You must have the Owner role.
 
 You can purchase a storage subscription for your personal or group namespace.
 

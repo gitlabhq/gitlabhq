@@ -37,6 +37,7 @@ describe('ScopeNavigation', () => {
   const findGlNav = () => wrapper.findComponent(GlNav);
   const findGlNavItems = () => wrapper.findAllComponents(GlNavItem);
   const findGlNavItemActive = () => findGlNavItems().wrappers.filter((w) => w.attributes('active'));
+  const findGlNavItemActiveLabel = () => findGlNavItemActive().at(0).findAll('span').at(0).text();
   const findGlNavItemActiveCount = () => findGlNavItemActive().at(0).findAll('span').at(1);
 
   describe('scope navigation', () => {
@@ -64,17 +65,35 @@ describe('ScopeNavigation', () => {
     });
   });
 
-  describe('scope navigation sets proper state', () => {
+  describe('scope navigation sets proper state with url scope set', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('sets proper class to active item', () => {
+    it('correct item is active', () => {
       expect(findGlNavItemActive()).toHaveLength(1);
+      expect(findGlNavItemActiveLabel()).toBe('Issues');
     });
 
-    it('active item', () => {
+    it('correct active item count', () => {
       expect(findGlNavItemActiveCount().text()).toBe('2.4K');
+    });
+
+    it('correct active item count is highlighted', () => {
+      expect(findGlNavItemActiveCount().classes('gl-text-gray-900')).toBe(true);
+    });
+  });
+
+  describe('scope navigation sets proper state with NO url scope set', () => {
+    beforeEach(() => {
+      createComponent({
+        urlQuery: {},
+      });
+    });
+
+    it('correct item is active', () => {
+      expect(findGlNavItems().at(0).attributes('active')).toBe('true');
+      expect(findGlNavItemActiveLabel()).toBe('Projects');
     });
   });
 });

@@ -493,6 +493,10 @@ module QA
         enabled?(ENV['QA_USE_PUBLIC_IP_API'], default: false)
       end
 
+      def allow_local_requests?
+        enabled?(ENV['QA_ALLOW_LOCAL_REQUESTS'], default: false)
+      end
+
       def chrome_default_download_path
         ENV['DEFAULT_CHROME_DOWNLOAD_PATH']
       end

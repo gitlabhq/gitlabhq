@@ -8,7 +8,12 @@ RSpec.describe PersonalAccessTokens::RevokeService do
     it { expect(service.token.revoked?).to be true }
 
     it 'logs the event' do
-      expect(Gitlab::AppLogger).to receive(:info).with(/PAT REVOCATION: revoked_by: '#{current_user.username}', revoked_for: '#{token.user.username}', token_id: '\d+'/)
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        class: described_class.to_s,
+        message: 'PAT Revoked',
+        revoked_by: revoked_by,
+        revoked_for: token.user.username,
+        token_id: token.id)
 
       subject
     end
@@ -29,7 +34,9 @@ RSpec.describe PersonalAccessTokens::RevokeService do
         let_it_be(:current_user) { create(:admin) }
         let_it_be(:token) { create(:personal_access_token) }
 
-        it_behaves_like 'a successfully revoked token'
+        it_behaves_like 'a successfully revoked token' do
+          let(:revoked_by) { current_user.username }
+        end
       end
 
       context 'when admin mode is disabled' do
@@ -52,7 +59,38 @@ RSpec.describe PersonalAccessTokens::RevokeService do
       context 'token belongs to current_user' do
         let_it_be(:token) { create(:personal_access_token, user: current_user) }
 
-        it_behaves_like 'a successfully revoked token'
+        it_behaves_like 'a successfully revoked token' do
+          let(:revoked_by) { current_user.username }
+        end
+      end
+    end
+
+    context 'when source' do
+      let(:service) { described_class.new(nil, token: token, source: source) }
+
+      let_it_be(:current_user) { nil }
+
+      context 'when source is valid' do
+        let_it_be(:source) { 'secret_detection' }
+        let_it_be(:token) { create(:personal_access_token) }
+
+        it_behaves_like 'a successfully revoked token' do
+          let(:revoked_by) { 'secret_detection' }
+        end
+      end
+
+      context 'when source is invalid' do
+        let_it_be(:source) { 'external_request' }
+        let_it_be(:token) { create(:personal_access_token) }
+
+        it_behaves_like 'an unsuccessfully revoked token'
+      end
+
+      context 'when source is missing' do
+        let_it_be(:source) { nil }
+        let_it_be(:token) { create(:personal_access_token) }
+
+        it_behaves_like 'an unsuccessfully revoked token'
       end
     end
   end
